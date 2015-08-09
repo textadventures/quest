@@ -22,16 +22,29 @@ Public Class LegacyGame
         Dim EndLine As Integer
     End Structure
 
-    Friend Structure ThreadData
-        Dim CallingObjectID As Integer
-        Dim NumParameters As Integer
-        Dim Parameters() As String
-        Dim FunctionReturnValue As String
-        Dim AllowRealNamesInCommand As Boolean
-        Dim DontProcessCommand As Boolean
-        Dim CancelExec As Boolean
-        Dim StackCounter As Integer
-    End Structure
+    Friend Class Context
+        Public CallingObjectID As Integer
+        Public NumParameters As Integer
+        Public Parameters() As String
+        Public FunctionReturnValue As String
+        Public AllowRealNamesInCommand As Boolean
+        Public DontProcessCommand As Boolean
+        Public CancelExec As Boolean
+        Public StackCounter As Integer
+    End Class
+
+    Private Function CopyThread(ctx As Context) As Context
+        Dim result As Context = New Context
+        result.CallingObjectID = ctx.CallingObjectID
+        result.NumParameters = ctx.NumParameters
+        result.Parameters = ctx.Parameters
+        result.FunctionReturnValue = ctx.FunctionReturnValue
+        result.AllowRealNamesInCommand = ctx.AllowRealNamesInCommand
+        result.DontProcessCommand = ctx.DontProcessCommand
+        result.CancelExec = ctx.CancelExec
+        result.StackCounter = ctx.StackCounter
+        Return result
+    End Function
 
     Private OpenErrorReport As String
     Private CASkeywords(255) As String 'Tokenised CAS keywords
@@ -39,7 +52,7 @@ Public Class LegacyGame
     Private DefineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
     Private NumberSections As Integer 'Number of define sections
     Private GameName As String 'The name of the game
-    Friend NullThread As New ThreadData
+    Friend _nullContext As New Context
 
     Public Const LOGTYPE_MISC As Integer = 0
     Public Const LOGTYPE_FATALERROR As Integer = 1
@@ -1390,7 +1403,7 @@ Public Class LegacyGame
                 End If
 
                 If sBlockType = blockname Then
-                    sBlockName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread, False)
+                    sBlockName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext, False)
 
                     sBlockName = "k" & sBlockName
 
@@ -1578,7 +1591,7 @@ Public Class LegacyGame
                 ' gets executed before something-specific's, as we execute the
                 ' lib startscripts backwards as well
                 If BeginsWith(Lines(i), "!include ") Then
-                    LibFileName = RetrieveParameter(Lines(i), NullThread)
+                    LibFileName = RetrieveParameter(Lines(i), _nullContext)
                     'Clear !include statement
                     Lines(i) = ""
                     LibraryAlreadyIncluded = False
@@ -1652,7 +1665,7 @@ Public Class LegacyGame
                         If LibCode(1) = "!library" Then
                             For c = 1 To LibLines
                                 If BeginsWith(LibCode(c), "!asl-version ") Then
-                                    LibVer = CInt(RetrieveParameter(LibCode(c), NullThread))
+                                    LibVer = CInt(RetrieveParameter(LibCode(c), _nullContext))
                                     c = LibLines
                                 End If
                             Next c
@@ -1765,7 +1778,7 @@ Public Class LegacyGame
                                     Loop Until BeginsWith(LibCode(c), "!end")
                                 ElseIf BeginsWith(LibCode(c), "!addto type ") Then
                                     InDefTypeBlock = 0
-                                    TypeBlockName = LCase(RetrieveParameter(LibCode(c), NullThread))
+                                    TypeBlockName = LCase(RetrieveParameter(LibCode(c), _nullContext))
                                     For D = 1 To UBound(Lines)
                                         If LCase(Lines(D)) = "define type <" & TypeBlockName & ">" Then
                                             InDefTypeBlock = 1
@@ -1963,7 +1976,7 @@ ErrorHandler:
 
     End Sub
 
-    Friend Function RetrieveParameter(InputString As String, Thread As ThreadData, Optional bConvertStringVariables As Boolean = True) As String
+    Friend Function RetrieveParameter(InputString As String, ctx As Context, Optional bConvertStringVariables As Boolean = True) As String
 
         ' Returns the parameters between < and > in a string
         Dim RetrParam As String
@@ -1983,10 +1996,10 @@ ErrorHandler:
 
         If bConvertStringVariables Then
             If GameASLVersion >= 320 Then
-                NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, Thread), "%", CONVERT_NUMERIC, Thread), "$", CONVERT_FUNCTIONS, Thread)
+                NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, ctx), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx)
             Else
                 If Not Left(RetrParam, 9) = "~Internal" Then
-                    NewParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, Thread), "%", CONVERT_NUMERIC, Thread), "~", CONVERT_COLLECTABLES, Thread), "$", CONVERT_FUNCTIONS, Thread)
+                    NewParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, ctx), "%", CONVERT_NUMERIC, ctx), "~", CONVERT_COLLECTABLES, ctx), "$", CONVERT_FUNCTIONS, ctx)
                 Else
                     NewParam = RetrParam
                 End If
@@ -2195,27 +2208,27 @@ ErrorHandler:
         System.IO.Directory.CreateDirectory(sPath)
     End Sub
 
-    Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, Thread As ThreadData)
+    Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, ctx As Context)
 
         If DoAdd Then
-            AddToObjectProperties("parent=" & Objs(ParentObjID).ObjectName, ChildObjID, Thread)
+            AddToObjectProperties("parent=" & Objs(ParentObjID).ObjectName, ChildObjID, ctx)
             Objs(ChildObjID).ContainerRoom = Objs(ParentObjID).ContainerRoom
         Else
-            AddToObjectProperties("not parent", ChildObjID, Thread)
+            AddToObjectProperties("not parent", ChildObjID, ctx)
         End If
 
         If GameASLVersion >= 410 Then
             ' Putting something in a container implicitly makes that
             ' container "seen". Otherwise we could try to "look at" the
             ' object we just put in the container and have disambigution fail!
-            AddToObjectProperties("seen", ParentObjID, Thread)
+            AddToObjectProperties("seen", ParentObjID, ctx)
         End If
 
-        UpdateVisibilityInContainers(Thread, Objs(ParentObjID).ObjectName)
+        UpdateVisibilityInContainers(ctx, Objs(ParentObjID).ObjectName)
 
     End Sub
 
-    Private Sub DoLook(ObjID As Integer, Thread As ThreadData, Optional ShowExamineError As Boolean = False, Optional ShowDefaultDescription As Boolean = True)
+    Private Sub DoLook(ObjID As Integer, ctx As Context, Optional ShowExamineError As Boolean = False, Optional ShowDefaultDescription As Boolean = True)
 
         Dim FoundLook As Boolean
         Dim i, ErrMsgID As Integer
@@ -2227,8 +2240,8 @@ ErrorHandler:
         ' object that is contained by this object.
 
         If GameASLVersion >= 391 Then
-            AddToObjectProperties("seen", ObjID, Thread)
-            UpdateVisibilityInContainers(Thread, Objs(ObjID).ObjectName)
+            AddToObjectProperties("seen", ObjID, ctx)
+            UpdateVisibilityInContainers(ctx, Objs(ObjID).ObjectName)
         End If
 
         ' First look for action, then look
@@ -2241,7 +2254,7 @@ ErrorHandler:
             For i = 1 To .NumberActions
                 If .Actions(i).ActionName = "look" Then
                     FoundLook = True
-                    ExecuteScript(.Actions(i).Script, Thread)
+                    ExecuteScript(.Actions(i).Script, ctx)
                     Exit For
                 End If
             Next i
@@ -2250,7 +2263,7 @@ ErrorHandler:
                 For i = 1 To .NumberProperties
                     If .Properties(i).PropertyName = "look" Then
                         ' do this odd RetrieveParameter stuff to convert any variables
-                        Print(RetrieveParameter("<" & .Properties(i).PropertyValue & ">", Thread), Thread)
+                        Print(RetrieveParameter("<" & .Properties(i).PropertyValue & ">", ctx), ctx)
                         FoundLook = True
                         Exit For
                     End If
@@ -2264,9 +2277,9 @@ ErrorHandler:
                         sLookLine = Trim(GetEverythingAfter(Lines(i), "look "))
 
                         If Left(sLookLine, 1) = "<" Then
-                            Print(RetrieveParameter(Lines(i), Thread), Thread)
+                            Print(RetrieveParameter(Lines(i), ctx), ctx)
                         Else
-                            ExecuteScript(sLookLine, Thread, ObjID)
+                            ExecuteScript(sLookLine, ctx, ObjID)
                         End If
 
                         FoundLook = True
@@ -2277,7 +2290,7 @@ ErrorHandler:
         End With
 
         If GameASLVersion >= 391 Then
-            ObjectContents = ListContents(ObjID, Thread)
+            ObjectContents = ListContents(ObjID, ctx)
         Else
             ObjectContents = ""
         End If
@@ -2293,23 +2306,23 @@ ErrorHandler:
             ' Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
             ' any contents.
 
-            If ObjectContents = "" Then PlayerErrorMessage(ErrMsgID, Thread)
+            If ObjectContents = "" Then PlayerErrorMessage(ErrMsgID, ctx)
         End If
 
-        If ObjectContents <> "" And ObjectContents <> "<script>" Then Print(ObjectContents, Thread)
+        If ObjectContents <> "" And ObjectContents <> "<script>" Then Print(ObjectContents, ctx)
 
     End Sub
 
-    Private Sub DoOpenClose(ObjID As Integer, DoOpen As Boolean, ShowLook As Boolean, Thread As ThreadData)
+    Private Sub DoOpenClose(ObjID As Integer, DoOpen As Boolean, ShowLook As Boolean, ctx As Context)
 
         If DoOpen Then
-            AddToObjectProperties("opened", ObjID, Thread)
-            If ShowLook Then DoLook(ObjID, Thread, , False)
+            AddToObjectProperties("opened", ObjID, ctx)
+            If ShowLook Then DoLook(ObjID, ctx, , False)
         Else
-            AddToObjectProperties("not opened", ObjID, Thread)
+            AddToObjectProperties("not opened", ObjID, ctx)
         End If
 
-        UpdateVisibilityInContainers(Thread, Objs(ObjID).ObjectName)
+        UpdateVisibilityInContainers(ctx, Objs(ObjID).ObjectName)
 
     End Sub
 
@@ -2378,7 +2391,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecAddRemove(CommandLine As String, Thread As ThreadData)
+    Private Sub ExecAddRemove(CommandLine As String, ctx As Context)
         Dim ChildObjID As Integer
         Dim ChildObjectName As String
         Dim DoAdd As Boolean
@@ -2438,7 +2451,7 @@ ErrorHandler:
         ChildLength = SepPos - (Len(Verb) + 2)
 
         If ChildLength < 0 Then
-            PlayerErrorMessage(ERROR_BADCOMMAND, Thread)
+            PlayerErrorMessage(ERROR_BADCOMMAND, ctx)
             BadCmdBefore = Verb
             Exit Sub
         End If
@@ -2448,17 +2461,17 @@ ErrorHandler:
         GotObject = False
 
         If GameASLVersion >= 392 And DoAdd Then
-            ChildObjID = Disambiguate(ChildObjectName, CurrentRoom & ";" & InventoryPlace, Thread)
+            ChildObjID = Disambiguate(ChildObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
 
             If ChildObjID > 0 Then
                 If Objs(ChildObjID).ContainerRoom = InventoryPlace Then
                     GotObject = True
                 Else
                     ' Player is not carrying the object they referred to. So, first take the object.
-                    Print("(first taking " & Objs(ChildObjID).Article & ")", Thread)
+                    Print("(first taking " & Objs(ChildObjID).Article & ")", ctx)
                     ' Try to take the object
-                    Thread.AllowRealNamesInCommand = True
-                    ExecCommand("take " & Objs(ChildObjID).ObjectName, Thread, False, , True)
+                    ctx.AllowRealNamesInCommand = True
+                    ExecCommand("take " & Objs(ChildObjID).ObjectName, ctx, False, , True)
 
                     If Objs(ChildObjID).ContainerRoom = InventoryPlace Then GotObject = True
                 End If
@@ -2468,24 +2481,24 @@ ErrorHandler:
                     Exit Sub
                 End If
             Else
-                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, Thread)
+                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, ctx)
                 BadCmdBefore = Verb
                 Exit Sub
             End If
 
         Else
-            ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & CurrentRoom, Thread)
+            ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & CurrentRoom, ctx)
 
             If ChildObjID <= 0 Then
-                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                 BadCmdBefore = Verb
                 Exit Sub
             End If
         End If
 
         If NoParentSpecified And DoAdd Then
-            SetStringContents("quest.error.article", Objs(ChildObjID).Article, Thread)
-            PlayerErrorMessage(ERROR_BADPUT, Thread)
+            SetStringContents("quest.error.article", Objs(ChildObjID).Article, ctx)
+            PlayerErrorMessage(ERROR_BADPUT, ctx)
             Exit Sub
         End If
 
@@ -2498,10 +2511,10 @@ ErrorHandler:
         If Not NoParentSpecified Then
             ParentObjectName = Trim(Mid(CommandLine, SepPos + SepLen))
 
-            ParentObjID = Disambiguate(ParentObjectName, CurrentRoom & ";" & InventoryPlace, Thread)
+            ParentObjID = Disambiguate(ParentObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
 
             If ParentObjID <= 0 Then
-                If ParentObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                If ParentObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                 BadCmdBefore = Left(CommandLine, SepPos + SepLen)
                 Exit Sub
             End If
@@ -2510,7 +2523,7 @@ ErrorHandler:
             ' if it is even in an object already
 
             If Not IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
-                PlayerErrorMessage(ERROR_CANTREMOVE, Thread)
+                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
                 Exit Sub
             End If
 
@@ -2523,9 +2536,9 @@ ErrorHandler:
 
         If Not IsContainer Then
             If DoAdd Then
-                PlayerErrorMessage(ERROR_CANTPUT, Thread)
+                PlayerErrorMessage(ERROR_CANTPUT, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTREMOVE, Thread)
+                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
             End If
             Exit Sub
         End If
@@ -2534,24 +2547,24 @@ ErrorHandler:
 
         If IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
             If DoAdd And LCase(GetObjectProperty("parent", ChildObjID, False, False)) = LCase(Objs(ParentObjID).ObjectName) Then
-                PlayerErrorMessage(ERROR_ALREADYPUT, Thread)
+                PlayerErrorMessage(ERROR_ALREADYPUT, ctx)
             End If
         End If
 
         ' NEW: Check parent and child are accessible to player
         If Not PlayerCanAccessObject(ChildObjID, , ErrorMsg) Then
             If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
         If Not PlayerCanAccessObject(ParentObjID, , ErrorMsg) Then
             If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
@@ -2561,9 +2574,9 @@ ErrorHandler:
         If Not IsYes(GetObjectProperty("surface", ParentObjID, True, False)) And Not IsYes(GetObjectProperty("opened", ParentObjID, True, False)) Then
             ' Not a surface and not open, so can't add to this closed container.
             If DoAdd Then
-                PlayerErrorMessage(ERROR_CANTPUT, Thread)
+                PlayerErrorMessage(ERROR_CANTPUT, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTREMOVE, Thread)
+                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
             End If
             Exit Sub
         End If
@@ -2582,8 +2595,8 @@ ErrorHandler:
         End With
 
         If FoundAction Then
-            SetStringContents("quest." & LCase(Action) & ".object.name", Objs(ChildObjID).ObjectName, Thread)
-            ExecuteScript(ActionScript, Thread, ParentObjID)
+            SetStringContents("quest." & LCase(Action) & ".object.name", Objs(ChildObjID).ObjectName, ctx)
+            ExecuteScript(ActionScript, ctx, ParentObjID)
         Else
             ' Now check for a property
             PropertyExists = IsYes(GetObjectProperty(Action, ParentObjID, True, False))
@@ -2591,31 +2604,31 @@ ErrorHandler:
             If Not PropertyExists Then
                 ' Show error message
                 If DoAdd Then
-                    PlayerErrorMessage(ERROR_CANTPUT, Thread)
+                    PlayerErrorMessage(ERROR_CANTPUT, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTREMOVE, Thread)
+                    PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
                 End If
             Else
                 TextToPrint = GetObjectProperty(Action, ParentObjID, False, False)
                 If TextToPrint = "" Then
                     ' Show default message
                     If DoAdd Then
-                        PlayerErrorMessage(ERROR_DEFAULTPUT, Thread)
+                        PlayerErrorMessage(ERROR_DEFAULTPUT, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_DEFAULTREMOVE, Thread)
+                        PlayerErrorMessage(ERROR_DEFAULTREMOVE, ctx)
                     End If
                 Else
-                    Print(TextToPrint, Thread)
+                    Print(TextToPrint, ctx)
                 End If
 
-                DoAddRemove(ChildObjID, ParentObjID, DoAdd, Thread)
+                DoAddRemove(ChildObjID, ParentObjID, DoAdd, ctx)
 
             End If
         End If
 
     End Sub
 
-    Private Sub ExecAddRemoveScript(Parameter As String, DoAdd As Boolean, Thread As ThreadData)
+    Private Sub ExecAddRemoveScript(Parameter As String, DoAdd As Boolean, ctx As Context)
 
         Dim ChildObjID, ParentObjID As Integer
         Dim CommandName As String
@@ -2655,15 +2668,15 @@ ErrorHandler:
                 Exit Sub
             End If
 
-            DoAddRemove(ChildObjID, ParentObjID, DoAdd, Thread)
+            DoAddRemove(ChildObjID, ParentObjID, DoAdd, ctx)
         Else
-            AddToObjectProperties("not parent", ChildObjID, Thread)
-            UpdateVisibilityInContainers(Thread, Objs(ParentObjID).ObjectName)
+            AddToObjectProperties("not parent", ChildObjID, ctx)
+            UpdateVisibilityInContainers(ctx, Objs(ParentObjID).ObjectName)
         End If
 
     End Sub
 
-    Private Sub ExecOpenClose(CommandLine As String, Thread As ThreadData)
+    Private Sub ExecOpenClose(CommandLine As String, ctx As Context)
         Dim ObjID As Integer
         Dim ObjectName As String
         Dim DoOpen As Boolean
@@ -2689,10 +2702,10 @@ ErrorHandler:
 
         ObjectName = GetEverythingAfter(CommandLine, Action & " ")
 
-        ObjID = Disambiguate(ObjectName, CurrentRoom & ";" & InventoryPlace, Thread)
+        ObjID = Disambiguate(ObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
 
         If ObjID <= 0 Then
-            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
             BadCmdBefore = Action
             Exit Sub
         End If
@@ -2703,9 +2716,9 @@ ErrorHandler:
 
         If Not IsContainer Then
             If DoOpen Then
-                PlayerErrorMessage(ERROR_CANTOPEN, Thread)
+                PlayerErrorMessage(ERROR_CANTOPEN, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTCLOSE, Thread)
+                PlayerErrorMessage(ERROR_CANTCLOSE, ctx)
             End If
             Exit Sub
         End If
@@ -2716,11 +2729,11 @@ ErrorHandler:
 
         If DoOpen And IsOpen Then
             ' Object is already open
-            PlayerErrorMessage(ERROR_ALREADYOPEN, Thread)
+            PlayerErrorMessage(ERROR_ALREADYOPEN, ctx)
             Exit Sub
         ElseIf Not DoOpen And Not IsOpen Then
             ' Object is already closed
-            PlayerErrorMessage(ERROR_ALREADYCLOSED, Thread)
+            PlayerErrorMessage(ERROR_ALREADYCLOSED, ctx)
             Exit Sub
         End If
 
@@ -2728,9 +2741,9 @@ ErrorHandler:
 
         If Not PlayerCanAccessObject(ObjID, , ErrorMsg) Then
             If DoOpen Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTOPEN, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTOPEN, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTCLOSE, Thread, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(ERROR_CANTCLOSE, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
@@ -2749,7 +2762,7 @@ ErrorHandler:
         End With
 
         If FoundAction Then
-            ExecuteScript(ActionScript, Thread, ObjID)
+            ExecuteScript(ActionScript, ctx, ObjID)
         Else
             ' Now check for a property
             PropertyExists = IsYes(GetObjectProperty(Action, ObjID, True, False))
@@ -2757,31 +2770,31 @@ ErrorHandler:
             If Not PropertyExists Then
                 ' Show error message
                 If DoOpen Then
-                    PlayerErrorMessage(ERROR_CANTOPEN, Thread)
+                    PlayerErrorMessage(ERROR_CANTOPEN, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTCLOSE, Thread)
+                    PlayerErrorMessage(ERROR_CANTCLOSE, ctx)
                 End If
             Else
                 TextToPrint = GetObjectProperty(Action, ObjID, False, False)
                 If TextToPrint = "" Then
                     ' Show default message
                     If DoOpen Then
-                        PlayerErrorMessage(ERROR_DEFAULTOPEN, Thread)
+                        PlayerErrorMessage(ERROR_DEFAULTOPEN, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_DEFAULTCLOSE, Thread)
+                        PlayerErrorMessage(ERROR_DEFAULTCLOSE, ctx)
                     End If
                 Else
-                    Print(TextToPrint, Thread)
+                    Print(TextToPrint, ctx)
                 End If
 
-                DoOpenClose(ObjID, DoOpen, True, Thread)
+                DoOpenClose(ObjID, DoOpen, True, ctx)
 
             End If
         End If
 
     End Sub
 
-    Private Sub ExecuteSelectCase(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecuteSelectCase(ScriptLine As String, ctx As Context)
         Dim CaseBlockName As String
         Dim i As Integer
         Dim CaseBlock As DefineBlock
@@ -2803,9 +2816,9 @@ ErrorHandler:
             Exit Sub
         End If
 
-        CaseBlockName = RetrieveParameter(AfterLine, Thread)
+        CaseBlockName = RetrieveParameter(AfterLine, ctx)
         CaseBlock = DefineBlockParam("procedure", CaseBlockName)
-        CheckValue = RetrieveParameter(ScriptLine, Thread)
+        CheckValue = RetrieveParameter(ScriptLine, ctx)
         CaseMatch = False
 
         For i = CaseBlock.StartLine + 1 To CaseBlock.EndLine - 1
@@ -2820,7 +2833,7 @@ ErrorHandler:
                         CaseMatch = True
                         CaseScript = GetEverythingAfter(Lines(i), "case else ")
                     Else
-                        ThisCase = RetrieveParameter(Lines(i), Thread)
+                        ThisCase = RetrieveParameter(Lines(i), ctx)
 
                         FinLoop = False
 
@@ -2843,7 +2856,7 @@ ErrorHandler:
                     End If
 
                     If CaseMatch Then
-                        ExecuteScript(CaseScript, Thread)
+                        ExecuteScript(CaseScript, ctx)
                         Exit For
                     End If
                 End If
@@ -2852,7 +2865,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecVerb(CommandString As String, Thread As ThreadData, Optional LibCommands As Boolean = False) As Boolean
+    Private Function ExecVerb(CommandString As String, ctx As Context, Optional LibCommands As Boolean = False) As Boolean
         Dim gameblock As DefineBlock
         Dim FoundVerb As Boolean
         Dim VerbProperty As String = ""
@@ -2878,7 +2891,7 @@ ErrorHandler:
         gameblock = GetDefineBlock("game")
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), VerbTag) Then
-                VerbsList = RetrieveParameter(Lines(i), Thread)
+                VerbsList = RetrieveParameter(Lines(i), ctx)
 
                 ' The property or action the verb uses is either after a colon,
                 ' or it's the first (or only) verb on the line.
@@ -2926,7 +2939,7 @@ ErrorHandler:
 
             InventoryPlace = "inventory"
 
-            ObjID = Disambiguate(VerbObject, InventoryPlace & ";" & CurrentRoom, Thread)
+            ObjID = Disambiguate(VerbObject, InventoryPlace & ";" & CurrentRoom, ctx)
 
             If ObjID < 0 Then
                 FoundItem = False
@@ -2935,10 +2948,10 @@ ErrorHandler:
             End If
 
             If FoundItem = False Then
-                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                 BadCmdBefore = ThisVerb
             Else
-                SetStringContents("quest.error.article", Objs(ObjID).Article, Thread)
+                SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
 
                 ' Now see if this object has the relevant action or property
                 With Objs(ObjID)
@@ -2953,7 +2966,7 @@ ErrorHandler:
 
                 If ThisScript <> "" Then
                     ' Avoid an RTE "this array is fixed or temporarily locked"
-                    ExecuteScript(ThisScript, Thread, ObjID)
+                    ExecuteScript(ThisScript, ctx, ObjID)
                 End If
 
                 With Objs(ObjID)
@@ -2962,7 +2975,7 @@ ErrorHandler:
                         For i = 1 To .NumberProperties
                             If LCase(.Properties(i).PropertyName) = VerbProperty Then
                                 FoundAction = True
-                                Print(.Properties(i).PropertyValue, Thread)
+                                Print(.Properties(i).PropertyValue, ctx)
                                 Exit For
                             End If
                         Next i
@@ -2970,7 +2983,7 @@ ErrorHandler:
 
                     If Not FoundAction Then
                         ' Execute the default script from the verb definition
-                        ExecuteScript(Script, Thread)
+                        ExecuteScript(Script, ctx)
                     End If
                 End With
             End If
@@ -3164,7 +3177,7 @@ ErrorHandler:
         NumberStringVariables = 0
     End Sub
 
-    Private Function ListContents(ObjID As Integer, Thread As ThreadData) As String
+    Private Function ListContents(ObjID As Integer, ctx As Context) As String
 
         ' Returns a formatted list of the contents of a container.
         ' If the list action causes a script to be run instead, ListContents
@@ -3184,7 +3197,7 @@ ErrorHandler:
         If Not IsYes(GetObjectProperty("opened", ObjID, True, False)) And Not IsYes(GetObjectProperty("transparent", ObjID, True, False)) And Not IsYes(GetObjectProperty("surface", ObjID, True, False)) Then
             ' Container is closed, so return "list closed" property if there is one.
 
-            If DoAction(ObjID, "list closed", Thread, False) Then
+            If DoAction(ObjID, "list closed", ctx, False) Then
                 ListContents = "<script>"
             Else
                 ListContents = GetObjectProperty("list closed", ObjID, False, False)
@@ -3211,7 +3224,7 @@ ErrorHandler:
 
                 ' Check if list property is set.
 
-                If DoAction(ObjID, "list", Thread, False) Then
+                If DoAction(ObjID, "list", ctx, False) Then
                     ListContents = "<script>"
                 Else
 
@@ -3264,7 +3277,7 @@ ErrorHandler:
             Else
                 ' Container is empty, so return "list empty" property if there is one.
 
-                If DoAction(ObjID, "list empty", Thread, False) Then
+                If DoAction(ObjID, "list empty", ctx, False) Then
                     ListContents = "<script>"
                 Else
                     ListContents = GetObjectProperty("list empty", ObjID, False, False)
@@ -3303,7 +3316,7 @@ ErrorHandler:
 
         If BeginsWith(ListLine, "list closed <") Then
             ListInfo.Type = TA_TEXT
-            ListInfo.Data = RetrieveParameter(ListLine, NullThread)
+            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list closed"
         ElseIf Trim(ListLine) = "list closed off" Then
             ' default for list closed is off anyway
@@ -3316,7 +3329,7 @@ ErrorHandler:
 
         ElseIf BeginsWith(ListLine, "list empty <") Then
             ListInfo.Type = TA_TEXT
-            ListInfo.Data = RetrieveParameter(ListLine, NullThread)
+            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list empty"
         ElseIf Trim(ListLine) = "list empty off" Then
             ' default for list empty is off anyway
@@ -3328,11 +3341,11 @@ ErrorHandler:
 
 
         ElseIf Trim(ListLine) = "list off" Then
-            AddToObjectProperties("not list", ObjID, NullThread)
+            AddToObjectProperties("not list", ObjID, _nullContext)
             Exit Sub
         ElseIf BeginsWith(ListLine, "list <") Then
             ListInfo.Type = TA_TEXT
-            ListInfo.Data = RetrieveParameter(ListLine, NullThread)
+            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list"
         ElseIf BeginsWith(ListLine, "list ") Then
             ListInfo.Type = TA_SCRIPT
@@ -3342,9 +3355,9 @@ ErrorHandler:
 
         If PropName <> "" Then
             If ListInfo.Type = TA_TEXT Then
-                AddToObjectProperties(PropName & "=" & ListInfo.Data, ObjID, NullThread)
+                AddToObjectProperties(PropName & "=" & ListInfo.Data, ObjID, _nullContext)
             Else
-                AddToObjectActions("<" & PropName & "> " & ListInfo.Data, ObjID, NullThread)
+                AddToObjectActions("<" & PropName & "> " & ListInfo.Data, ObjID, _nullContext)
             End If
         End If
     End Sub
@@ -3380,7 +3393,7 @@ ErrorHandler:
         RaiseEvent PrintText(m_textFormatter.OutputHTML(OutputText))
     End Sub
 
-    Private Sub DestroyExit(ExitData As String, Thread As ThreadData)
+    Private Sub DestroyExit(ExitData As String, ctx As Context)
         Dim SCP As Integer
         Dim FoundID As Boolean
         Dim FromRoom As String = ""
@@ -3446,8 +3459,8 @@ ErrorHandler:
         End If
 
         ' Update quest.* vars and obj list
-        ShowRoomInfo(CurrentRoom, Thread, True)
-        UpdateObjectList(Thread)
+        ShowRoomInfo(CurrentRoom, ctx, True)
+        UpdateObjectList(ctx)
 
         AddToChangeLog("room " & FromRoom, "destroy exit " & ToRoom)
 
@@ -3468,17 +3481,17 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteFlag(InputLine As String, Thread As ThreadData)
+    Private Sub ExecuteFlag(InputLine As String, ctx As Context)
         Dim PropertyString As String = ""
 
         If BeginsWith(InputLine, "on ") Then
-            PropertyString = RetrieveParameter(InputLine, Thread)
+            PropertyString = RetrieveParameter(InputLine, ctx)
         ElseIf BeginsWith(InputLine, "off ") Then
-            PropertyString = "not " & RetrieveParameter(InputLine, Thread)
+            PropertyString = "not " & RetrieveParameter(InputLine, ctx)
         End If
 
         ' Game object always has ObjID 1
-        AddToObjectProperties(PropertyString, 1, Thread)
+        AddToObjectProperties(PropertyString, 1, ctx)
 
     End Sub
 
@@ -3494,13 +3507,13 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteIncDec(InputLine As String, Thread As ThreadData)
+    Private Sub ExecuteIncDec(InputLine As String, ctx As Context)
         Dim SC As Integer
         Dim Param, Var As String
         Dim Change As Double
         Dim Value As Double
         Dim ArrayIndex As Integer
-        Param = RetrieveParameter(InputLine, Thread)
+        Param = RetrieveParameter(InputLine, ctx)
 
         SC = InStr(Param, ";")
         If SC = 0 Then
@@ -3511,7 +3524,7 @@ ErrorHandler:
             Var = Trim(Left(Param, SC - 1))
         End If
 
-        Value = GetNumericContents(Var, Thread, True)
+        Value = GetNumericContents(Var, ctx, True)
         If Value <= -32766 Then Value = 0
 
         If BeginsWith(InputLine, "inc ") Then
@@ -3520,9 +3533,9 @@ ErrorHandler:
             Value = Value - Change
         End If
 
-        ArrayIndex = GetArrayIndex(Var, Thread)
+        ArrayIndex = GetArrayIndex(Var, ctx)
 
-        SetNumericVariableContents(Var, Value, Thread, ArrayIndex)
+        SetNumericVariableContents(Var, Value, ctx, ArrayIndex)
 
     End Sub
 
@@ -3679,7 +3692,7 @@ ErrorHandler:
             End If
 
             If Left(Trim(GiveData), 1) = "<" Then
-                ObjectName = RetrieveParameter(GiveData, NullThread)
+                ObjectName = RetrieveParameter(GiveData, _nullContext)
 
                 ThisAction.ActionName = ThisAction.ActionName & "'" & ObjectName & "'"
 
@@ -3712,7 +3725,7 @@ ErrorHandler:
 
     End Sub
 
-    Friend Sub AddToObjectActions(ActionInfo As String, ObjID As Integer, Thread As ThreadData)
+    Friend Sub AddToObjectActions(ActionInfo As String, ObjID As Integer, ctx As Context)
         Dim FoundExisting As Boolean
         Dim ActionName As String
         Dim ActionScript As String
@@ -3720,7 +3733,7 @@ ErrorHandler:
         Dim ActionNum, i As Integer
         FoundExisting = False
 
-        ActionName = LCase(RetrieveParameter(ActionInfo, Thread))
+        ActionName = LCase(RetrieveParameter(ActionInfo, ctx))
         EP = InStr(ActionInfo, ">")
         If EP = Len(ActionInfo) Then
             LogASLError("No script given for '" & ActionName & "' action data", LOGTYPE_WARNINGERROR)
@@ -3776,7 +3789,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Friend Sub AddToObjectProperties(PropertyInfo As String, ObjID As Integer, Thread As ThreadData)
+    Friend Sub AddToObjectProperties(PropertyInfo As String, ObjID As Integer, ctx As Context)
         Dim CurInfo As String
         Dim SCP, EP As Integer
         Dim CurName, CurValue As String
@@ -3849,8 +3862,8 @@ ErrorHandler:
                             .ObjectAlias = CurValue
                         End If
                         If GameFullyLoaded Then
-                            UpdateObjectList(Thread)
-                            UpdateItems(Thread)
+                            UpdateObjectList(ctx)
+                            UpdateItems(ctx)
                         End If
                     Case "prefix"
                         If .IsRoom Then
@@ -3877,7 +3890,7 @@ ErrorHandler:
                         .Suffix = CurValue
                     Case "displaytype"
                         .DisplayType = CurValue
-                        If GameFullyLoaded Then UpdateObjectList(Thread)
+                        If GameFullyLoaded Then UpdateObjectList(ctx)
                     Case "gender"
                         .Gender = CurValue
                     Case "article"
@@ -3891,7 +3904,7 @@ ErrorHandler:
                             .Exists = False
                         End If
 
-                        If GameFullyLoaded Then UpdateObjectList(Thread)
+                        If GameFullyLoaded Then UpdateObjectList(ctx)
                     Case "invisible"
                         If FalseProperty Then
                             .Visible = True
@@ -3899,7 +3912,7 @@ ErrorHandler:
                             .Visible = False
                         End If
 
-                        If GameFullyLoaded Then UpdateObjectList(Thread)
+                        If GameFullyLoaded Then UpdateObjectList(ctx)
                     Case "take"
                         If GameASLVersion >= 392 Then
                             If FalseProperty Then
@@ -3946,7 +3959,7 @@ ErrorHandler:
             End If
 
             If Left(Trim(UseData), 1) = "<" Then
-                ObjectName = RetrieveParameter(UseData, NullThread)
+                ObjectName = RetrieveParameter(UseData, _nullContext)
                 Found = False
                 For i = 1 To .NumberUseData
                     If .UseData(i).UseType = CurUseType And LCase(.UseData(i).UseObject) = LCase(ObjectName) Then
@@ -3978,11 +3991,11 @@ ErrorHandler:
         CapFirst = UCase(Left(InputString, 1)) & Mid(InputString, 2)
     End Function
 
-    Private Function ConvertVarsIn(InputString As String, Thread As ThreadData) As String
-        ConvertVarsIn = RetrieveParameter("<" & InputString & ">", Thread)
+    Private Function ConvertVarsIn(InputString As String, ctx As Context) As String
+        ConvertVarsIn = RetrieveParameter("<" & InputString & ">", ctx)
     End Function
 
-    Private Function DisambObjHere(Thread As ThreadData, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
+    Private Function DisambObjHere(ctx As Context, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
 
         Dim OnlySeen, ObjIsSeen As Boolean
         Dim RoomObjID As Integer
@@ -3995,7 +4008,7 @@ ErrorHandler:
                 TwoPlaces = False
                 SecondPlace = ""
                 OnlySeen = True
-                RoomObjID = Rooms(GetRoomID(Objs(ObjID).ContainerRoom, Thread)).ObjID
+                RoomObjID = Rooms(GetRoomID(Objs(ObjID).ContainerRoom, ctx)).ObjID
 
                 InventoryPlace = "inventory"
 
@@ -4025,7 +4038,7 @@ ErrorHandler:
         End If
     End Function
 
-    Private Sub ExecClone(CloneString As String, Thread As ThreadData)
+    Private Sub ExecClone(CloneString As String, ctx As Context)
         Dim SC2, SC, ObjID As Integer
         Dim NewObjName, ObjToClone, CloneTo As String
 
@@ -4070,24 +4083,24 @@ ErrorHandler:
             AddToChangeLog("object " & NewObjName, "create " & Objs(NumberObjs).ContainerRoom)
         End If
 
-        UpdateObjectList(Thread)
+        UpdateObjectList(ctx)
 
 
     End Sub
 
-    Private Sub ExecOops(Correction As String, Thread As ThreadData)
+    Private Sub ExecOops(Correction As String, ctx As Context)
 
         If BadCmdBefore <> "" Then
             If BadCmdAfter = "" Then
-                ExecCommand(BadCmdBefore & " " & Correction, Thread, False)
+                ExecCommand(BadCmdBefore & " " & Correction, ctx, False)
             Else
-                ExecCommand(BadCmdBefore & " " & Correction & " " & BadCmdAfter, Thread, False)
+                ExecCommand(BadCmdBefore & " " & Correction & " " & BadCmdAfter, ctx, False)
             End If
         End If
 
     End Sub
 
-    Private Sub ExecType(TypeData As String, Thread As ThreadData)
+    Private Sub ExecType(TypeData As String, ctx As Context)
         Dim SCP As Integer
         Dim ObjName, TypeName As String
         Dim ObjID As Integer
@@ -4123,7 +4136,7 @@ ErrorHandler:
             .TypesIncluded(.NumberTypesIncluded) = TypeName
 
             PropertyData = GetPropertiesInType(TypeName)
-            AddToObjectProperties(PropertyData.Properties, ObjID, Thread)
+            AddToObjectProperties(PropertyData.Properties, ObjID, ctx)
             For i = 1 To PropertyData.NumberActions
                 AddObjectAction(ObjID, PropertyData.Actions(i))
             Next i
@@ -4238,7 +4251,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetArrayIndex(sVarName As String, Thread As ThreadData) As Integer
+    Private Function GetArrayIndex(sVarName As String, ctx As Context) As Integer
         Dim BeginPos, EndPos As Integer
         Dim ArrayIndexData As String
         Dim ArrayIndex As Integer
@@ -4250,7 +4263,7 @@ ErrorHandler:
             If IsNumeric(ArrayIndexData) Then
                 ArrayIndex = CInt(ArrayIndexData)
             Else
-                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, Thread))
+                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
             End If
             sVarName = Left(sVarName, BeginPos - 1)
         End If
@@ -4259,14 +4272,14 @@ ErrorHandler:
 
     End Function
 
-    Friend Function Disambiguate(ObjectName As String, ContainedIn As String, Thread As ThreadData, Optional bExit As Boolean = False) As Integer
+    Friend Function Disambiguate(ObjectName As String, ContainedIn As String, ctx As Context, Optional bExit As Boolean = False) As Integer
         ' Returns object ID being referred to by player.
         ' Returns -1 if object doesn't exist, calling function
         '   then expected to print relevant error.
         ' Returns -2 if "it" meaningless, prints own error.
         ' If it returns an object ID, it also sets quest.lastobject to the name
         ' of the object referred to.
-        ' If Thread.AllowRealNamesInCommand is True, will allow an object's real
+        ' If ctx.AllowRealNamesInCommand is True, will allow an object's real
         ' name to be used even when the object has an alias - this is used when
         ' Disambiguate has been called after an "exec" command to prevent the
         ' player having to choose an object from the disambiguation menu twice
@@ -4289,7 +4302,7 @@ ErrorHandler:
 
         ObjectName = Trim(ObjectName)
 
-        SetStringContents("quest.lastobject", "", Thread)
+        SetStringContents("quest.lastobject", "", ctx)
 
         Dim SCP As Integer
         If InStr(ContainedIn, ";") <> 0 Then
@@ -4302,13 +4315,13 @@ ErrorHandler:
             FirstPlace = ContainedIn
         End If
 
-        If Thread.AllowRealNamesInCommand Then
+        If ctx.AllowRealNamesInCommand Then
             For i = 1 To NumberObjs
-                If DisambObjHere(Thread, i, FirstPlace, TwoPlaces, SecondPlace) Then
+                If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace) Then
                     If LCase(Objs(i).ObjectName) = LCase(ObjectName) Then
                         FoundItem = True
                         Disambiguate = i
-                        SetStringContents("quest.lastobject", Objs(i).ObjectName, Thread)
+                        SetStringContents("quest.lastobject", Objs(i).ObjectName, ctx)
                         Exit For
                     End If
                 End If
@@ -4319,38 +4332,38 @@ ErrorHandler:
 
         ' If player uses "it", "them" etc. as name:
         If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
-            SetStringContents("quest.error.pronoun", ObjectName, Thread)
-            If LastIt <> 0 And LastItMode = IT_INANIMATE And DisambObjHere(Thread, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            SetStringContents("quest.error.pronoun", ObjectName, ctx)
+            If LastIt <> 0 And LastItMode = IT_INANIMATE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 FoundItem = True
                 Disambiguate = LastIt
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, Thread)
+                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Exit Function
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, Thread)
+                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
                 Disambiguate = -2
                 Exit Function
             End If
         ElseIf ObjectName = "him" Then
-            SetStringContents("quest.error.pronoun", ObjectName, Thread)
-            If LastIt <> 0 And LastItMode = IT_MALE And DisambObjHere(Thread, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            SetStringContents("quest.error.pronoun", ObjectName, ctx)
+            If LastIt <> 0 And LastItMode = IT_MALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 FoundItem = True
                 Disambiguate = LastIt
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, Thread)
+                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Exit Function
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, Thread)
+                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
                 Disambiguate = -2
                 Exit Function
             End If
         ElseIf ObjectName = "her" Then
-            SetStringContents("quest.error.pronoun", ObjectName, Thread)
-            If LastIt <> 0 And LastItMode = IT_FEMALE And DisambObjHere(Thread, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            SetStringContents("quest.error.pronoun", ObjectName, ctx)
+            If LastIt <> 0 And LastItMode = IT_FEMALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 FoundItem = True
                 Disambiguate = LastIt
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, Thread)
+                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Exit Function
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, Thread)
+                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
                 Disambiguate = -2
                 Exit Function
             End If
@@ -4364,7 +4377,7 @@ ErrorHandler:
 
         For i = 1 To NumberObjs
 
-            If DisambObjHere(Thread, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
+            If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
 
                 NumValidNames = Objs(i).NumberAltNames + 1
                 ReDim ValidNames(NumValidNames)
@@ -4389,7 +4402,7 @@ ErrorHandler:
             ' Check for abbreviated object names
 
             For i = 1 To NumberObjs
-                If DisambObjHere(Thread, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
+                If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
                     If Objs(i).ObjectAlias <> "" Then ThisName = LCase(Objs(i).ObjectAlias) Else ThisName = LCase(Objs(i).ObjectName)
                     If GameASLVersion >= 410 Then
                         If Objs(i).Prefix <> "" Then ThisName = Trim(LCase(Objs(i).Prefix)) & " " & ThisName
@@ -4407,7 +4420,7 @@ ErrorHandler:
         Dim Question As String
         If NumberCorresIDs = 1 Then
             FoundItem = True
-            SetStringContents("quest.lastobject", Objs(IDNumbers(1)).ObjectName, Thread)
+            SetStringContents("quest.lastobject", Objs(IDNumbers(1)).ObjectName, ctx)
             Disambiguate = IDNumbers(1)
             ThisTurnIt = IDNumbers(1)
 
@@ -4426,7 +4439,7 @@ ErrorHandler:
             FoundItem = True
 
             Question = "Please select which " & ObjectName & " you mean:"
-            Print("- |i" & Question & "|xi", Thread)
+            Print("- |i" & Question & "|xi", ctx)
 
             Dim menuItems As New Dictionary(Of String, String)
 
@@ -4449,7 +4462,7 @@ ErrorHandler:
 
             ChoiceNumber = CInt(response)
 
-            SetStringContents("quest.lastobject", Objs(IDNumbers(ChoiceNumber)).ObjectName, Thread)
+            SetStringContents("quest.lastobject", Objs(IDNumbers(ChoiceNumber)).ObjectName, ctx)
 
             Disambiguate = IDNumbers(ChoiceNumber)
             ThisTurnIt = IDNumbers(ChoiceNumber)
@@ -4463,19 +4476,19 @@ ErrorHandler:
                     ThisTurnItMode = IT_INANIMATE
             End Select
 
-            Print("- " & DescriptionText(ChoiceNumber) & "|n", Thread)
+            Print("- " & DescriptionText(ChoiceNumber) & "|n", ctx)
 
         End If
 
         If Not FoundItem Then
             Disambiguate = -1
             ThisTurnIt = LastIt
-            SetStringContents("quest.error.object", ObjectName, Thread)
+            SetStringContents("quest.error.object", ObjectName, ctx)
         End If
 
     End Function
 
-    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As Integer, Thread As ThreadData) As String
+    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As Integer, ctx As Context) As String
         Dim DisplayData As String = ""
         Dim ExcPos As Integer
         Dim FirstStar, SecondStar As Integer
@@ -4486,7 +4499,7 @@ ErrorHandler:
         ArrayIndex = 0
 
         If VariableType = VARTYPE_STRING Then
-            DisplayData = ConvertVarsIn(StringVariable(VarNum).DisplayString, Thread)
+            DisplayData = ConvertVarsIn(StringVariable(VarNum).DisplayString, ctx)
             ExcPos = InStr(DisplayData, "!")
 
             If ExcPos <> 0 Then
@@ -4496,7 +4509,7 @@ ErrorHandler:
             If NumericVariable(VarNum).NoZeroDisplay And Val(NumericVariable(VarNum).VariableContents(ArrayIndex)) = 0 Then
                 Return ""
             End If
-            DisplayData = ConvertVarsIn(NumericVariable(VarNum).DisplayString, Thread)
+            DisplayData = ConvertVarsIn(NumericVariable(VarNum).DisplayString, ctx)
             ExcPos = InStr(DisplayData, "!")
 
             If ExcPos <> 0 Then
@@ -4522,7 +4535,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Function DoAction(ObjID As Integer, ActionName As String, Thread As ThreadData, Optional LogError As Boolean = True) As Boolean
+    Friend Function DoAction(ObjID As Integer, ActionName As String, ctx As Context, Optional LogError As Boolean = True) As Boolean
 
         Dim FoundAction As Boolean
         Dim ActionScript As String = ""
@@ -4546,8 +4559,7 @@ ErrorHandler:
 
         End With
 
-        Dim NewThread As ThreadData
-        NewThread = Thread
+        Dim NewThread As Context = CopyThread(ctx)
         NewThread.CallingObjectID = ObjID
 
         ExecuteScript(ActionScript, NewThread, ObjID)
@@ -4569,7 +4581,7 @@ ErrorHandler:
         End With
     End Function
 
-    Private Sub ExecForEach(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecForEach(ScriptLine As String, ctx As Context)
         Dim InLocation, ScriptToExecute As String
         Dim i, BracketPos As Integer
         Dim bExit As Boolean
@@ -4606,7 +4618,7 @@ ErrorHandler:
             InLocation = ""
             ScriptToExecute = GetEverythingAfter(ScriptLine, "game ")
         Else
-            InLocation = LCase(RetrieveParameter(ScriptLine, Thread))
+            InLocation = LCase(RetrieveParameter(ScriptLine, ctx))
             BracketPos = InStr(ScriptLine, ">")
             ScriptToExecute = Trim(Mid(ScriptLine, BracketPos + 1))
         End If
@@ -4614,14 +4626,14 @@ ErrorHandler:
         For i = 1 To NumberObjs
             If InLocation = "" Or LCase(Objs(i).ContainerRoom) = InLocation Then
                 If Objs(i).IsRoom = bRoom And Objs(i).IsExit = bExit Then
-                    SetStringContents("quest.thing", Objs(i).ObjectName, Thread)
-                    ExecuteScript(ScriptToExecute, Thread)
+                    SetStringContents("quest.thing", Objs(i).ObjectName, ctx)
+                    ExecuteScript(ScriptToExecute, ctx)
                 End If
             End If
         Next i
     End Sub
 
-    Private Sub ExecuteAction(ActionData As String, Thread As ThreadData)
+    Private Sub ExecuteAction(ActionData As String, ctx As Context)
         Dim FoundExisting As Boolean
         Dim ActionName As String
         Dim ActionScript As String
@@ -4635,7 +4647,7 @@ ErrorHandler:
         FoundExisting = False
         FoundObject = False
 
-        ActionParam = RetrieveParameter(ActionData, Thread)
+        ActionParam = RetrieveParameter(ActionData, ctx)
         SCP = InStr(ActionParam, ";")
         If SCP = 0 Then
             LogASLError("No action name specified in 'action " & ActionData & "'", LOGTYPE_WARNINGERROR)
@@ -4690,7 +4702,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecuteCondition(Condition As String, Thread As ThreadData) As Boolean
+    Private Function ExecuteCondition(Condition As String, ctx As Context) As Boolean
         Dim bThisResult, bThisNot As Boolean
 
         If BeginsWith(Condition, "not ") Then
@@ -4701,27 +4713,27 @@ ErrorHandler:
         End If
 
         If BeginsWith(Condition, "got ") Then
-            bThisResult = ExecuteIfGot(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfGot(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "has ") Then
-            bThisResult = ExecuteIfHas(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfHas(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "ask ") Then
-            bThisResult = ExecuteIfAsk(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfAsk(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "is ") Then
-            bThisResult = ExecuteIfIs(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfIs(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "here ") Then
-            bThisResult = ExecuteIfHere(RetrieveParameter(Condition, Thread), Thread)
+            bThisResult = ExecuteIfHere(RetrieveParameter(Condition, ctx), ctx)
         ElseIf BeginsWith(Condition, "exists ") Then
-            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, Thread), False)
+            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, ctx), False)
         ElseIf BeginsWith(Condition, "real ") Then
-            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, Thread), True)
+            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, ctx), True)
         ElseIf BeginsWith(Condition, "property ") Then
-            bThisResult = ExecuteIfProperty(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfProperty(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "action ") Then
-            bThisResult = ExecuteIfAction(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfAction(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "type ") Then
-            bThisResult = ExecuteIfType(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfType(RetrieveParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "flag ") Then
-            bThisResult = ExecuteIfFlag(RetrieveParameter(Condition, Thread))
+            bThisResult = ExecuteIfFlag(RetrieveParameter(Condition, ctx))
         End If
 
         If bThisNot Then bThisResult = Not bThisResult
@@ -4729,7 +4741,7 @@ ErrorHandler:
         ExecuteCondition = bThisResult
     End Function
 
-    Private Function ExecuteConditions(ConditionList As String, Thread As ThreadData) As Boolean
+    Private Function ExecuteConditions(ConditionList As String, ctx As Context) As Boolean
         Dim Conditions() As String
         Dim iNumConditions As Integer
         Dim Operations() As String
@@ -4778,7 +4790,7 @@ ErrorHandler:
         bConditionResult = True
 
         For i = 1 To iNumConditions
-            bThisResult = ExecuteCondition(Conditions(i), Thread)
+            bThisResult = ExecuteCondition(Conditions(i), ctx)
 
             If Operations(i - 1) = "AND" Then
                 bConditionResult = bThisResult And bConditionResult
@@ -4791,7 +4803,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteCreate(CreateData As String, Thread As ThreadData)
+    Private Sub ExecuteCreate(CreateData As String, ctx As Context)
         Dim NewName As String
         Dim SCP As Integer
         Dim ParamData As String
@@ -4799,7 +4811,7 @@ ErrorHandler:
 
         Dim ContainerRoom As String
         If BeginsWith(CreateData, "room ") Then
-            NewName = RetrieveParameter(CreateData, Thread)
+            NewName = RetrieveParameter(CreateData, ctx)
             NumberRooms = NumberRooms + 1
             ReDim Preserve Rooms(NumberRooms)
             Rooms(NumberRooms).RoomName = NewName
@@ -4816,7 +4828,7 @@ ErrorHandler:
             AddToChangeLog("room " & NewName, "create")
 
             If GameASLVersion >= 410 Then
-                AddToObjectProperties(m_oDefaultRoomProperties.Properties, NumberObjs, Thread)
+                AddToObjectProperties(m_oDefaultRoomProperties.Properties, NumberObjs, ctx)
                 For j = 1 To m_oDefaultRoomProperties.NumberActions
                     AddObjectAction(NumberObjs, m_oDefaultRoomProperties.Actions(j))
                 Next j
@@ -4826,7 +4838,7 @@ ErrorHandler:
             End If
 
         ElseIf BeginsWith(CreateData, "object ") Then
-            ParamData = RetrieveParameter(CreateData, Thread)
+            ParamData = RetrieveParameter(CreateData, ctx)
             SCP = InStr(ParamData, ";")
             If SCP = 0 Then
                 NewName = ParamData
@@ -4852,20 +4864,20 @@ ErrorHandler:
             AddToChangeLog("object " & NewName, "create " & Objs(NumberObjs).ContainerRoom)
 
             If GameASLVersion >= 410 Then
-                AddToObjectProperties(m_oDefaultProperties.Properties, NumberObjs, Thread)
+                AddToObjectProperties(m_oDefaultProperties.Properties, NumberObjs, ctx)
                 For j = 1 To m_oDefaultProperties.NumberActions
                     AddObjectAction(NumberObjs, m_oDefaultProperties.Actions(j))
                 Next j
             End If
 
-            If Not m_gameLoading Then UpdateObjectList(Thread)
+            If Not m_gameLoading Then UpdateObjectList(ctx)
 
         ElseIf BeginsWith(CreateData, "exit ") Then
-            ExecuteCreateExit(CreateData, Thread)
+            ExecuteCreateExit(CreateData, ctx)
         End If
     End Sub
 
-    Private Sub ExecuteCreateExit(CreateData As String, Thread As ThreadData)
+    Private Sub ExecuteCreateExit(CreateData As String, ctx As Context)
         Dim ExitData As String
         Dim SrcRoom As String
         Dim DestRoom As String = ""
@@ -4878,7 +4890,7 @@ ErrorHandler:
         Dim SaveData As String
 
         ExitData = GetEverythingAfter(CreateData, "exit ")
-        NewName = RetrieveParameter(CreateData, Thread)
+        NewName = RetrieveParameter(CreateData, ctx)
         SCP = InStr(NewName, ";")
         If GameASLVersion < 410 Then
             If SCP = 0 Then
@@ -4892,7 +4904,7 @@ ErrorHandler:
         Else
             SrcRoom = Trim(Left(NewName, SCP - 1))
         End If
-        SrcID = GetRoomID(SrcRoom, Thread)
+        SrcID = GetRoomID(SrcRoom, ctx)
 
         If SrcID = 0 Then
             LogASLError("No such room '" & SrcRoom & "'", LOGTYPE_WARNINGERROR)
@@ -4905,7 +4917,7 @@ ErrorHandler:
 
             DestRoom = Trim(Mid(NewName, SCP + 1))
             If DestRoom <> "" Then
-                DestID = GetRoomID(DestRoom, Thread)
+                DestID = GetRoomID(DestRoom, ctx)
 
                 If DestID = 0 Then
                     LogASLError("No such room '" & DestRoom & "'", LOGTYPE_WARNINGERROR)
@@ -4941,14 +4953,14 @@ ErrorHandler:
         Else
             SaveData = Left(ExitData, ParamPos - 1)
             ' We do this so the changelog doesn't contain unconverted variable names
-            SaveData = SaveData & "<" & RetrieveParameter(ExitData, Thread) & ">"
+            SaveData = SaveData & "<" & RetrieveParameter(ExitData, ctx) & ">"
         End If
         AddToChangeLog("room " & Rooms(SrcID).RoomName, "exit " & SaveData)
 
         With Rooms(SrcID)
 
             If GameASLVersion >= 410 Then
-                .Exits.AddExitFromCreateScript(ExitData, Thread)
+                .Exits.AddExitFromCreateScript(ExitData, ctx)
             Else
                 If BeginsWith(ExitData, "north ") Then
                     .North.Data = DestRoom
@@ -4994,31 +5006,31 @@ ErrorHandler:
 
         If Not m_gameLoading Then
             ' Update quest.doorways variables
-            ShowRoomInfo(CurrentRoom, Thread, True)
+            ShowRoomInfo(CurrentRoom, ctx, True)
 
-            UpdateObjectList(Thread)
+            UpdateObjectList(ctx)
 
             If GameASLVersion < 410 Then
                 If CurrentRoom = Rooms(SrcID).RoomName Then
-                    UpdateDoorways(SrcID, Thread)
+                    UpdateDoorways(SrcID, ctx)
                 ElseIf CurrentRoom = Rooms(DestID).RoomName Then
-                    UpdateDoorways(DestID, Thread)
+                    UpdateDoorways(DestID, ctx)
                 End If
             Else
                 ' Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 ' for current room anyway.
-                UpdateDoorways(GetRoomID(CurrentRoom, Thread), Thread)
+                UpdateDoorways(GetRoomID(CurrentRoom, ctx), ctx)
             End If
         End If
     End Sub
 
-    Private Sub ExecDrop(DropItem As String, Thread As ThreadData)
+    Private Sub ExecDrop(DropItem As String, ctx As Context)
         Dim FoundItem, ObjectIsInContainer As Boolean
         Dim ParentID, ObjectID, i As Integer
         Dim Parent As String
         Dim ParentDisplayName As String
 
-        ObjectID = Disambiguate(DropItem, "inventory", Thread)
+        ObjectID = Disambiguate(DropItem, "inventory", ctx)
 
         If ObjectID > 0 Then
             FoundItem = True
@@ -5029,9 +5041,9 @@ ErrorHandler:
         If Not FoundItem Then
             If ObjectID <> -2 Then
                 If GameASLVersion >= 391 Then
-                    PlayerErrorMessage(ERROR_NOITEM, Thread)
+                    PlayerErrorMessage(ERROR_NOITEM, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_BADDROP, Thread)
+                    PlayerErrorMessage(ERROR_BADDROP, ctx)
                 End If
             End If
             BadCmdBefore = "drop"
@@ -5060,7 +5072,7 @@ ErrorHandler:
             End If
         Next i
 
-        SetStringContents("quest.error.article", Objs(ObjectID).Article, Thread)
+        SetStringContents("quest.error.article", Objs(ObjectID).Article, ctx)
 
         If Not DropFound Or BeginsWith(DropStatement, "everywhere") Then
             If ObjectIsInContainer Then
@@ -5073,11 +5085,11 @@ ErrorHandler:
                     ParentDisplayName = Objs(ParentID).ObjectName
                 End If
 
-                Print("(first removing " & Objs(ObjectID).Article & " from " & ParentDisplayName & ")", Thread)
+                Print("(first removing " & Objs(ObjectID).Article & " from " & ParentDisplayName & ")", ctx)
 
                 ' Try to remove the object
-                Thread.AllowRealNamesInCommand = True
-                ExecCommand("remove " & Objs(ObjectID).ObjectName, Thread, False, , True)
+                ctx.AllowRealNamesInCommand = True
+                ExecCommand("remove " & Objs(ObjectID).ObjectName, ctx, False, , True)
 
                 If GetObjectProperty("parent", ObjectID, False, False) <> "" Then
                     ' removing the object failed
@@ -5087,30 +5099,30 @@ ErrorHandler:
         End If
 
         If Not DropFound Then
-            PlayerErrorMessage(ERROR_DEFAULTDROP, Thread)
-            PlayerItem(Objs(ObjectID).ObjectName, False, Thread)
+            PlayerErrorMessage(ERROR_DEFAULTDROP, ctx)
+            PlayerItem(Objs(ObjectID).ObjectName, False, ctx)
         Else
             If BeginsWith(DropStatement, "everywhere") Then
-                PlayerItem(Objs(ObjectID).ObjectName, False, Thread)
+                PlayerItem(Objs(ObjectID).ObjectName, False, ctx)
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(InputString:=DropStatement, Thread:=Thread), Thread)
+                    Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
                 Else
-                    PlayerErrorMessage(ERROR_DEFAULTDROP, Thread)
+                    PlayerErrorMessage(ERROR_DEFAULTDROP, ctx)
                 End If
             ElseIf BeginsWith(DropStatement, "nowhere") Then
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(InputString:=DropStatement, Thread:=Thread), Thread)
+                    Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTDROP, Thread)
+                    PlayerErrorMessage(ERROR_CANTDROP, ctx)
                 End If
             Else
-                ExecuteScript(DropStatement, Thread)
+                ExecuteScript(DropStatement, ctx)
             End If
         End If
 
     End Sub
 
-    Private Sub ExecExamine(CommandInfo As String, Thread As ThreadData)
+    Private Sub ExecExamine(CommandInfo As String, ctx As Context)
         Dim ExamineItem, ExamineAction As String
         Dim FoundItem As Boolean
         Dim FoundExamineAction As Boolean
@@ -5125,12 +5137,12 @@ ErrorHandler:
         ExamineItem = LCase(Trim(GetEverythingAfter(CommandInfo, "examine ")))
 
         If ExamineItem = "" Then
-            PlayerErrorMessage(ERROR_BADEXAMINE, Thread)
+            PlayerErrorMessage(ERROR_BADEXAMINE, ctx)
             BadCmdBefore = "examine"
             Exit Sub
         End If
 
-        ObjID = Disambiguate(ExamineItem, CurrentRoom & ";" & InventoryPlace, Thread)
+        ObjID = Disambiguate(ExamineItem, CurrentRoom & ";" & InventoryPlace, ctx)
         If ObjID > 0 Then
             FoundItem = True
         Else
@@ -5143,7 +5155,7 @@ ErrorHandler:
                 ' Find "examine" action:
                 For i = 1 To .NumberActions
                     If .Actions(i).ActionName = "examine" Then
-                        ExecuteScript(.Actions(i).Script, Thread, ObjID)
+                        ExecuteScript(.Actions(i).Script, ctx, ObjID)
                         FoundExamineAction = True
                         i = .NumberActions
                     End If
@@ -5153,7 +5165,7 @@ ErrorHandler:
                 If Not FoundExamineAction Then
                     For i = 1 To .NumberProperties
                         If .Properties(i).PropertyName = "examine" Then
-                            Print(.Properties(i).PropertyValue, Thread)
+                            Print(.Properties(i).PropertyValue, ctx)
                             FoundExamineAction = True
                             i = .NumberProperties
                         End If
@@ -5166,9 +5178,9 @@ ErrorHandler:
                         If BeginsWith(Lines(j), "examine ") Then
                             ExamineAction = Trim(GetEverythingAfter(Lines(j), "examine "))
                             If Left(ExamineAction, 1) = "<" Then
-                                Print(RetrieveParameter(Lines(j), Thread), Thread)
+                                Print(RetrieveParameter(Lines(j), ctx), ctx)
                             Else
-                                ExecuteScript(ExamineAction, Thread, ObjID)
+                                ExecuteScript(ExamineAction, ctx, ObjID)
                             End If
                             FoundExamineAction = True
                         End If
@@ -5176,20 +5188,20 @@ ErrorHandler:
                 End If
 
                 If Not FoundExamineAction Then
-                    DoLook(ObjID, Thread, True)
+                    DoLook(ObjID, ctx, True)
                 End If
 
             End With
         End If
 
         If Not FoundItem Then
-            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
             BadCmdBefore = "examine"
         End If
 
     End Sub
 
-    Private Sub ExecMoveThing(sThingData As String, sThingType As Integer, Thread As ThreadData)
+    Private Sub ExecMoveThing(sThingData As String, sThingType As Integer, ctx As Context)
         Dim SemiColonPos As Integer
         Dim ThingName, MoveToPlace As String
 
@@ -5198,11 +5210,11 @@ ErrorHandler:
         ThingName = Trim(Left(sThingData, SemiColonPos - 1))
         MoveToPlace = Trim(Mid(sThingData, SemiColonPos + 1))
 
-        MoveThing(ThingName, MoveToPlace, sThingType, Thread)
+        MoveThing(ThingName, MoveToPlace, sThingType, ctx)
 
     End Sub
 
-    Private Sub ExecProperty(PropertyData As String, Thread As ThreadData)
+    Private Sub ExecProperty(PropertyData As String, ctx As Context)
         Dim SCP As Integer
         Dim ObjName, Properties As String
         Dim ObjID, i As Integer
@@ -5230,21 +5242,19 @@ ErrorHandler:
             Exit Sub
         End If
 
-        AddToObjectProperties(Properties, ObjID, Thread)
+        AddToObjectProperties(Properties, ObjID, ctx)
 
     End Sub
 
-    Private Sub ExecuteDo(ProcedureName As String, Thread As ThreadData)
+    Private Sub ExecuteDo(ProcedureName As String, ctx As Context)
         Dim ProcedureBlock As DefineBlock
         Dim i, BracketPos As Integer
         Dim CloseBracketPos As Integer
         Dim ParameterData As String
-        Dim NewThread As ThreadData
+        Dim NewThread As Context = CopyThread(ctx)
         Dim iNumParameters As Integer
         Dim RunInNewThread As Boolean
         Dim iCurPos, SCP As Integer
-
-        NewThread = Thread
 
         If GameASLVersion >= 392 And Left(ProcedureName, 8) = "!intproc" Then
             ' If "do" procedure is run in a new thread, thread info is not passed to any nested
@@ -5286,16 +5296,16 @@ ErrorHandler:
         Else
             For i = ProcedureBlock.StartLine + 1 To ProcedureBlock.EndLine - 1
                 If Not RunInNewThread Then
-                    ExecuteScript((Lines(i)), Thread)
+                    ExecuteScript((Lines(i)), ctx)
                 Else
                     ExecuteScript((Lines(i)), NewThread)
-                    Thread.DontProcessCommand = NewThread.DontProcessCommand
+                    ctx.DontProcessCommand = NewThread.DontProcessCommand
                 End If
             Next i
         End If
     End Sub
 
-    Private Sub ExecuteDoAction(ActionData As String, Thread As ThreadData)
+    Private Sub ExecuteDoAction(ActionData As String, ctx As Context)
         Dim SCP As Integer
         Dim ObjName, ActionName As String
         Dim ObjID, i As Integer
@@ -5325,11 +5335,11 @@ ErrorHandler:
             Exit Sub
         End If
 
-        DoAction(ObjID, ActionName, Thread)
+        DoAction(ObjID, ActionName, ctx)
 
     End Sub
 
-    Private Function ExecuteIfHere(HereThing As String, Thread As ThreadData) As Boolean
+    Private Function ExecuteIfHere(HereThing As String, ctx As Context) As Boolean
         Dim bResult, bFound As Boolean
         Dim i As Integer
 
@@ -5471,7 +5481,7 @@ ErrorHandler:
         End If
     End Function
 
-    Private Sub ExecuteRepeat(RepeatData As String, Thread As ThreadData)
+    Private Sub ExecuteRepeat(RepeatData As String, ctx As Context)
         Dim RepeatWhileTrue As Boolean
         Dim RepeatScript As String = ""
         Dim BracketPos As Integer
@@ -5510,15 +5520,15 @@ ErrorHandler:
         FinishedLoop = False
 
         Do
-            If ExecuteConditions(Conditions, Thread) = RepeatWhileTrue Then
-                ExecuteScript(RepeatScript, Thread)
+            If ExecuteConditions(Conditions, ctx) = RepeatWhileTrue Then
+                ExecuteScript(RepeatScript, ctx)
             Else
                 FinishedLoop = True
             End If
         Loop Until FinishedLoop Or m_gameFinished
     End Sub
 
-    Private Sub ExecuteSetCollectable(setparam As String, Thread As ThreadData)
+    Private Sub ExecuteSetCollectable(setparam As String, ctx As Context)
         Dim NewVal As Double
         Dim SemiColonPos As Integer
         Dim FoundCollectable As Boolean
@@ -5564,19 +5574,19 @@ ErrorHandler:
 
         CheckCollectable(ColNum)
 
-        UpdateItems(Thread)
+        UpdateItems(ctx)
     End Sub
 
-    Private Sub ExecuteWait(WaitLine As String, Thread As ThreadData)
+    Private Sub ExecuteWait(WaitLine As String, ctx As Context)
 
         If WaitLine <> "" Then
-            Print(RetrieveParameter(WaitLine, Thread), Thread)
+            Print(RetrieveParameter(WaitLine, ctx), ctx)
         Else
 
             If GameASLVersion >= 410 Then
-                PlayerErrorMessage(ERROR_DEFAULTWAIT, Thread)
+                PlayerErrorMessage(ERROR_DEFAULTWAIT, ctx)
             Else
-                Print("|nPress a key to continue...", Thread)
+                Print("|nPress a key to continue...", ctx)
             End If
         End If
 
@@ -5612,7 +5622,7 @@ ErrorHandler:
         Dim ActionScript As String
         Dim EP As Integer
 
-        ActionName = LCase(RetrieveParameter(ActionInfo, NullThread))
+        ActionName = LCase(RetrieveParameter(ActionInfo, _nullContext))
         EP = InStr(ActionInfo, ">")
         If EP = Len(ActionInfo) Then
             LogASLError("No script given for '" & ActionName & "' action data", LOGTYPE_WARNINGERROR)
@@ -5626,7 +5636,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetObjectID(ObjectName As String, Thread As ThreadData, Optional ObjectRoom As String = "") As Integer
+    Private Function GetObjectID(ObjectName As String, ctx As Context, Optional ObjectRoom As String = "") As Integer
 
         Dim CurID, i As Integer
         Dim FoundItem As Boolean
@@ -5645,7 +5655,7 @@ ErrorHandler:
         Next i
 
         If Not FoundItem And GameASLVersion >= 280 Then
-            CurID = Disambiguate(ObjectName, ObjectRoom, Thread)
+            CurID = Disambiguate(ObjectName, ObjectRoom, ctx)
             If CurID > 0 Then FoundItem = True
         End If
 
@@ -5728,7 +5738,7 @@ ErrorHandler:
 
         For i = 1 To NumberSections
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define type") Then
-                If LCase(RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread)) = LCase(TypeName) Then
+                If LCase(RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
                     SecID = i
                     i = NumberSections
                     Found = True
@@ -5745,7 +5755,7 @@ ErrorHandler:
 
         For i = DefineBlocks(SecID).StartLine + 1 To DefineBlocks(SecID).EndLine - 1
             If BeginsWith(Lines(i), "type ") Then
-                IncTypeName = LCase(RetrieveParameter(Lines(i), NullThread))
+                IncTypeName = LCase(RetrieveParameter(Lines(i), _nullContext))
                 NewProperties = GetPropertiesInType(IncTypeName)
                 With PropertyList
                     .Properties = .Properties & NewProperties.Properties
@@ -5775,7 +5785,7 @@ ErrorHandler:
                     .Actions(.NumberActions) = GetObjectActions(GetEverythingAfter(Lines(i), "action "))
                 End With
             ElseIf BeginsWith(Lines(i), "properties ") Then
-                PropertyList.Properties = PropertyList.Properties & RetrieveParameter(Lines(i), NullThread) & ";"
+                PropertyList.Properties = PropertyList.Properties & RetrieveParameter(Lines(i), _nullContext) & ";"
             ElseIf Trim(Lines(i)) <> "" Then
                 PropertyList.Properties = PropertyList.Properties & Lines(i) & ";"
             End If
@@ -5784,13 +5794,13 @@ ErrorHandler:
         GetPropertiesInType = PropertyList
     End Function
 
-    Friend Function GetRoomID(RoomName As String, Thread As ThreadData) As Integer
+    Friend Function GetRoomID(RoomName As String, ctx As Context) As Integer
         Dim Found As Boolean
         Dim ArrayIndex, i As Integer
         Found = False
 
         If InStr(RoomName, "[") > 0 Then
-            ArrayIndex = GetArrayIndex(RoomName, Thread)
+            ArrayIndex = GetArrayIndex(RoomName, ctx)
             RoomName = RoomName & Trim(Str(ArrayIndex))
         End If
 
@@ -5811,7 +5821,7 @@ ErrorHandler:
 
         If Left(TextScript, 1) = "<" Then
             GetTextOrScript.Type = TA_TEXT
-            GetTextOrScript.Data = RetrieveParameter(TextScript, NullThread)
+            GetTextOrScript.Data = RetrieveParameter(TextScript, _nullContext)
         Else
             GetTextOrScript.Type = TA_SCRIPT
             GetTextOrScript.Data = TextScript
@@ -6032,14 +6042,14 @@ ErrorHandler:
 
     End Function
 
-    Private Sub MoveThing(sThingName As String, sThingRoom As String, iThingType As Integer, Thread As ThreadData)
+    Private Sub MoveThing(sThingName As String, sThingRoom As String, iThingType As Integer, ctx As Context)
         Dim i, iThingNum, ArrayIndex As Integer
         Dim OldRoom As String = ""
 
         iThingNum = GetThingNumber(sThingName, "", iThingType)
 
         If InStr(sThingRoom, "[") > 0 Then
-            ArrayIndex = GetArrayIndex(sThingRoom, Thread)
+            ArrayIndex = GetArrayIndex(sThingRoom, ctx)
             sThingRoom = sThingRoom & Trim(Str(ArrayIndex))
         End If
 
@@ -6054,15 +6064,15 @@ ErrorHandler:
             ' If this object contains other objects, move them too
             For i = 1 To NumberObjs
                 If LCase(GetObjectProperty("parent", i, False, False)) = LCase(sThingName) Then
-                    MoveThing(Objs(i).ObjectName, sThingRoom, iThingType, Thread)
+                    MoveThing(Objs(i).ObjectName, sThingRoom, iThingType, ctx)
                 End If
             Next i
         End If
 
-        UpdateObjectList(Thread)
+        UpdateObjectList(ctx)
 
         If BeginsWith(LCase(sThingRoom), "inventory") Or BeginsWith(LCase(OldRoom), "inventory") Then
-            UpdateItems(Thread)
+            UpdateItems(ctx)
         End If
 
     End Sub
@@ -6076,7 +6086,7 @@ ErrorHandler:
         End SyncLock
     End Sub
 
-    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As Integer, Thread As ThreadData) As String
+    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As Integer, ctx As Context) As String
         ' Returns a string with functions, string and
         ' numeric variables executed or converted as
         ' appropriate, read for display/etc.
@@ -6117,12 +6127,12 @@ ErrorHandler:
                 Else
 
                     If ConvertAction = CONVERT_STRINGS Then
-                        NewParam = NewParam & GetStringContents(sVarName, Thread)
+                        NewParam = NewParam & GetStringContents(sVarName, ctx)
                     ElseIf ConvertAction = CONVERT_FUNCTIONS Then
                         sVarName = EvaluateInlineExpressions(sVarName)
-                        NewParam = NewParam & DoFunction(sVarName, Thread)
+                        NewParam = NewParam & DoFunction(sVarName, ctx)
                     ElseIf ConvertAction = CONVERT_NUMERIC Then
-                        NewParam = NewParam & Trim(Str(GetNumericContents(sVarName, Thread)))
+                        NewParam = NewParam & Trim(Str(GetNumericContents(sVarName, ctx)))
                     ElseIf ConvertAction = CONVERT_COLLECTABLES Then
                         NewParam = NewParam & Trim(Str(GetCollectableAmount(sVarName)))
                     End If
@@ -6136,11 +6146,10 @@ ErrorHandler:
 
     End Function
 
-    Private Function DoFunction(FunctionData As String, Thread As ThreadData) As String
+    Private Function DoFunction(FunctionData As String, ctx As Context) As String
         Dim FunctionName, FunctionParameter As String
         Dim sIntFuncResult As String = ""
         Dim bIntFuncExecuted As Boolean
-        Dim NewThread As ThreadData
         Dim ParameterData As String
         Dim ParamPos, EndParamPos As Integer
         Dim SCP, i As Integer
@@ -6166,7 +6175,7 @@ ErrorHandler:
 
         If procblock.StartLine = 0 And procblock.EndLine = 0 Then
             'Function does not exist; try an internal function.
-            sIntFuncResult = DoInternalFunction(FunctionName, FunctionParameter, Thread)
+            sIntFuncResult = DoInternalFunction(FunctionName, FunctionParameter, ctx)
             If sIntFuncResult = "__NOTDEFINED" Then
                 LogASLError("No such function '" & FunctionName & "'", LOGTYPE_WARNINGERROR)
                 Return "[ERROR]"
@@ -6179,7 +6188,7 @@ ErrorHandler:
         If bIntFuncExecuted Then
             Return sIntFuncResult
         Else
-            NewThread = Thread
+            Dim NewThread As Context = CopyThread(ctx)
 
             iNumParameters = 0 : iCurPos = 1
 
@@ -6190,7 +6199,7 @@ ErrorHandler:
                     SCP = InStr(iCurPos, FunctionParameter, ";")
 
                     ParameterData = Trim(Mid(FunctionParameter, iCurPos, SCP - iCurPos))
-                    SetStringContents("quest.function.parameter." & Trim(Str(iNumParameters)), ParameterData, Thread)
+                    SetStringContents("quest.function.parameter." & Trim(Str(iNumParameters)), ParameterData, ctx)
 
                     NewThread.NumParameters = iNumParameters
                     ReDim Preserve NewThread.Parameters(iNumParameters)
@@ -6198,9 +6207,9 @@ ErrorHandler:
 
                     iCurPos = SCP + 1
                 Loop Until iCurPos >= Len(FunctionParameter)
-                SetStringContents("quest.function.numparameters", Trim(Str(iNumParameters)), Thread)
+                SetStringContents("quest.function.numparameters", Trim(Str(iNumParameters)), ctx)
             Else
-                SetStringContents("quest.function.numparameters", "0", Thread)
+                SetStringContents("quest.function.numparameters", "0", ctx)
                 NewThread.NumParameters = 0
             End If
 
@@ -6216,7 +6225,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function DoInternalFunction(FunctionName As String, FunctionParameter As String, Thread As ThreadData) As String
+    Private Function DoInternalFunction(FunctionName As String, FunctionParameter As String, ctx As Context) As String
         ' Split FunctionParameter into individual parameters
         Dim iNumParameters, iCurPos As Integer
         Dim Parameter() As String
@@ -6254,32 +6263,32 @@ ErrorHandler:
         Dim Param2 As String
         Dim oExit As RoomExit
         If FunctionName = "displayname" Then
-            ObjID = GetObjectID(Parameter(1), Thread)
+            ObjID = GetObjectID(Parameter(1), ctx)
             If ObjID = -1 Then
                 LogASLError("Object '" & Parameter(1) & "' does not exist", LOGTYPE_WARNINGERROR)
                 Return "!"
             Else
-                Return Objs(GetObjectID(Parameter(1), Thread)).ObjectAlias
+                Return Objs(GetObjectID(Parameter(1), ctx)).ObjectAlias
             End If
         ElseIf FunctionName = "numberparameters" Then
-            Return Trim(Str(Thread.NumParameters))
+            Return Trim(Str(ctx.NumParameters))
         ElseIf FunctionName = "parameter" Then
             If iNumParameters = 0 Then
                 LogASLError("No parameter number specified for $parameter$ function", LOGTYPE_WARNINGERROR)
                 Return ""
             Else
-                If Val(Parameter(1)) > Thread.NumParameters Then
+                If Val(Parameter(1)) > ctx.NumParameters Then
                     LogASLError("No parameter number " & Parameter(1) & " sent to this function", LOGTYPE_WARNINGERROR)
                     Return ""
                 Else
-                    Return Trim(Thread.Parameters(CInt(Parameter(1))))
+                    Return Trim(ctx.Parameters(CInt(Parameter(1))))
                 End If
             End If
         ElseIf FunctionName = "gettag" Then
             ' Deprecated
             Return FindStatement(DefineBlockParam("room", Parameter(1)), Parameter(2))
         ElseIf FunctionName = "objectname" Then
-            Return Objs(Thread.CallingObjectID).ObjectName
+            Return Objs(ctx.CallingObjectID).ObjectName
         ElseIf FunctionName = "locationof" Then
             For i = 1 To NumberChars
                 If LCase(Chars(i).ObjectName) = LCase(Parameter(1)) Then
@@ -6434,12 +6443,12 @@ ErrorHandler:
             End If
         ElseIf FunctionName = "getobjectname" Then
             If iNumParameters = 3 Then
-                ObjID = Disambiguate(Parameter(1), Parameter(2) & ";" & Parameter(3), Thread)
+                ObjID = Disambiguate(Parameter(1), Parameter(2) & ";" & Parameter(3), ctx)
             ElseIf iNumParameters = 2 Then
-                ObjID = Disambiguate(Parameter(1), Parameter(2), Thread)
+                ObjID = Disambiguate(Parameter(1), Parameter(2), ctx)
             Else
 
-                ObjID = Disambiguate(Parameter(1), CurrentRoom & ";inventory", Thread)
+                ObjID = Disambiguate(Parameter(1), CurrentRoom & ";inventory", ctx)
             End If
 
             If ObjID <= -1 Then
@@ -6449,9 +6458,9 @@ ErrorHandler:
                 Return Objs(ObjID).ObjectName
             End If
         ElseIf FunctionName = "thisobject" Then
-            Return Objs(Thread.CallingObjectID).ObjectName
+            Return Objs(ctx.CallingObjectID).ObjectName
         ElseIf FunctionName = "thisobjectname" Then
-            Return Objs(Thread.CallingObjectID).ObjectAlias
+            Return Objs(ctx.CallingObjectID).ObjectAlias
         ElseIf FunctionName = "speechenabled" Then
             If optEnableSpeech Then
                 Return "1"
@@ -6473,10 +6482,10 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecFor(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecFor(ScriptLine As String, ctx As Context)
         ' See if this is a "for each" loop:
         If BeginsWith(ScriptLine, "each ") Then
-            ExecForEach(GetEverythingAfter(ScriptLine, "each "), Thread)
+            ExecForEach(GetEverythingAfter(ScriptLine, "each "), ctx)
             Exit Sub
         End If
 
@@ -6491,7 +6500,7 @@ ErrorHandler:
         Dim SCPos2, SCPos1, SCPos3 As Integer
         Dim i As Double
 
-        ForData = RetrieveParameter(ScriptLine, Thread)
+        ForData = RetrieveParameter(ScriptLine, ctx)
 
         ' Extract individual components:
         SCPos1 = InStr(ForData, ";")
@@ -6512,14 +6521,14 @@ ErrorHandler:
         LoopScript = Trim(Mid(ScriptLine, InStr(ScriptLine, ">") + 1))
 
         For i = StartValue To EndValue Step StepValue
-            SetNumericVariableContents(CounterVariable, i, Thread)
-            ExecuteScript(LoopScript, Thread)
-            i = GetNumericContents(CounterVariable, Thread)
+            SetNumericVariableContents(CounterVariable, i, ctx)
+            ExecuteScript(LoopScript, ctx)
+            i = GetNumericContents(CounterVariable, ctx)
         Next i
 
     End Sub
 
-    Private Sub ExecSetVar(VarInfo As String, Thread As ThreadData)
+    Private Sub ExecSetVar(VarInfo As String, ctx As Context)
         ' Sets variable contents from a script parameter.
         ' Eg <var1;7> sets numeric variable var1
         ' to 7
@@ -6538,7 +6547,7 @@ ErrorHandler:
         sVarName = Trim(Left(VarInfo, iSemiColonPos - 1))
         iVarCont = Trim(Mid(VarInfo, iSemiColonPos + 1))
 
-        ArrayIndex = GetArrayIndex(sVarName, Thread)
+        ArrayIndex = GetArrayIndex(sVarName, ctx)
 
         If IsNumeric(sVarName) Then
             LogASLError("Invalid numeric variable name '" & sVarName & "' - variable names cannot be numeric", LOGTYPE_WARNINGERROR)
@@ -6587,7 +6596,7 @@ ErrorHandler:
         End If
 
 
-        SetNumericVariableContents(sVarName, Val(iVarCont), Thread, ArrayIndex)
+        SetNumericVariableContents(sVarName, Val(iVarCont), ctx, ArrayIndex)
 
         Exit Sub
 
@@ -6813,7 +6822,7 @@ errhandle:
         ExecuteIfIs = Satisfied
     End Function
 
-    Private Function GetNumericContents(NumericName As String, Thread As ThreadData, Optional NOERROR As Boolean = False) As Double
+    Private Function GetNumericContents(NumericName As String, ctx As Context, Optional NOERROR As Boolean = False) As Double
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
         Dim ArrayIndex, i As Integer
@@ -6831,7 +6840,7 @@ errhandle:
             If IsNumeric(ArrayIndexData) Then
                 ArrayIndex = CInt(ArrayIndexData)
             Else
-                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, Thread))
+                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
             End If
             NumericName = Left(NumericName, OpenPos - 1)
         Else
@@ -6864,14 +6873,14 @@ errhandle:
         GetNumericContents = Val(NumericVariable(iNumNumber).VariableContents(ArrayIndex))
     End Function
 
-    Friend Sub PlayerErrorMessage(iErrorNumber As Integer, Thread As ThreadData)
-        Print(GetErrorMessage(iErrorNumber, Thread), Thread)
+    Friend Sub PlayerErrorMessage(iErrorNumber As Integer, ctx As Context)
+        Print(GetErrorMessage(iErrorNumber, ctx), ctx)
     End Sub
 
-    Private Sub PlayerErrorMessage_ExtendInfo(iErrorNumber As Integer, Thread As ThreadData, sExtraInfo As String)
+    Private Sub PlayerErrorMessage_ExtendInfo(iErrorNumber As Integer, ctx As Context, sExtraInfo As String)
         Dim sErrorMessage As String
 
-        sErrorMessage = GetErrorMessage(iErrorNumber, Thread)
+        sErrorMessage = GetErrorMessage(iErrorNumber, ctx)
 
         If sExtraInfo <> "" Then
             If Right(sErrorMessage, 1) = "." Then
@@ -6881,11 +6890,11 @@ errhandle:
             sErrorMessage = sErrorMessage & " - " & sExtraInfo & "."
         End If
 
-        Print(sErrorMessage, Thread)
+        Print(sErrorMessage, ctx)
     End Sub
 
-    Private Function GetErrorMessage(iErrorNumber As Integer, Thread As ThreadData) As String
-        GetErrorMessage = ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, Thread), "$", CONVERT_FUNCTIONS, Thread), "#", CONVERT_STRINGS, Thread)
+    Private Function GetErrorMessage(iErrorNumber As Integer, ctx As Context) As String
+        GetErrorMessage = ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
     End Function
 
     Private Sub PlayMedia(filename As String)
@@ -6986,7 +6995,7 @@ errhandle:
                 Dim createData As String = AppliesTo & ";" & GetEverythingAfter(data, "create ")
                 ' workaround bug where duplicate "create" entries appear in the restore data
                 If Not createdObjects.Contains(createData) Then
-                    ExecuteCreate("object <" & createData & ">", NullThread)
+                    ExecuteCreate("object <" & createData & ">", _nullContext)
                     createdObjects.Add(createData)
                 End If
             Else
@@ -7025,11 +7034,11 @@ errhandle:
             data = GetNextChunk()
 
             If BeginsWith(data, "exit ") Then
-                ExecuteCreate(data, NullThread)
+                ExecuteCreate(data, _nullContext)
             ElseIf data = "create" Then
-                ExecuteCreate("room <" & AppliesTo & ">", NullThread)
+                ExecuteCreate("room <" & AppliesTo & ">", _nullContext)
             ElseIf BeginsWith(data, "destroy exit ") Then
-                DestroyExit(AppliesTo & "; " & GetEverythingAfter(data, "destroy exit "), NullThread)
+                DestroyExit(AppliesTo & "; " & GetEverythingAfter(data, "destroy exit "), _nullContext)
             End If
         Next i
 
@@ -7038,9 +7047,9 @@ errhandle:
         For i = 1 To NumStoredData
             With StoredData(i)
                 If BeginsWith(.Change, "properties ") Then
-                    AddToObjectProperties(GetEverythingAfter(.Change, "properties "), GetObjectIDNoAlias(.AppliesTo), NullThread)
+                    AddToObjectProperties(GetEverythingAfter(.Change, "properties "), GetObjectIDNoAlias(.AppliesTo), _nullContext)
                 ElseIf BeginsWith(.Change, "action ") Then
-                    AddToObjectActions(GetEverythingAfter(.Change, "action "), GetObjectIDNoAlias(.AppliesTo), NullThread)
+                    AddToObjectActions(GetEverythingAfter(.Change, "action "), GetObjectIDNoAlias(.AppliesTo), _nullContext)
                 End If
             End With
         Next i
@@ -7088,11 +7097,11 @@ errhandle:
 
             If VarUBound = 0 Then
                 data = GetNextChunk()
-                SetStringContents(AppliesTo, data, NullThread)
+                SetStringContents(AppliesTo, data, _nullContext)
             Else
                 For j = 0 To VarUBound
                     data = GetNextChunk()
-                    SetStringContents(AppliesTo, data, NullThread, j)
+                    SetStringContents(AppliesTo, data, _nullContext, j)
                 Next j
             End If
         Next i
@@ -7106,11 +7115,11 @@ errhandle:
 
             If VarUBound = 0 Then
                 data = GetNextChunk()
-                SetNumericVariableContents(AppliesTo, Val(data), NullThread)
+                SetNumericVariableContents(AppliesTo, Val(data), _nullContext)
             Else
                 For j = 0 To VarUBound
                     data = GetNextChunk()
-                    SetNumericVariableContents(AppliesTo, Val(data), NullThread, j)
+                    SetNumericVariableContents(AppliesTo, Val(data), _nullContext, j)
                 Next j
             End If
         Next i
@@ -7168,17 +7177,17 @@ errhandle:
         PlayerErrorMessageString(ERROR_ALREADYTAKEN) = "You already have that."
     End Sub
 
-    Private Sub SetFont(FontName As String, Thread As ThreadData, Optional OutputTo As String = "normal")
+    Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
         If FontName = "" Then FontName = DefaultFontName
         m_player.SetFont(FontName)
     End Sub
 
-    Private Sub SetFontSize(FontSize As Double, Thread As ThreadData, Optional OutputTo As String = "normal")
+    Private Sub SetFontSize(FontSize As Double, ctx As Context, Optional OutputTo As String = "normal")
         If FontSize = 0 Then FontSize = DefaultFontSize
         m_player.SetFontSize(CStr(FontSize))
     End Sub
 
-    Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, Thread As ThreadData, Optional ArrayIndex As Integer = 0)
+    Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, ctx As Context, Optional ArrayIndex As Integer = 0)
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
         Dim NumTitle, OnChangeScript As String
@@ -7232,16 +7241,16 @@ errhandle:
 
         If NumericVariable(iNumNumber).OnChangeScript <> "" And Not m_gameIsRestoring Then
             OnChangeScript = NumericVariable(iNumNumber).OnChangeScript
-            ExecuteScript(OnChangeScript, Thread)
+            ExecuteScript(OnChangeScript, ctx)
         End If
 
         If NumericVariable(iNumNumber).DisplayString <> "" Then
-            UpdateStatusVars(Thread)
+            UpdateStatusVars(ctx)
         End If
 
     End Sub
 
-    Private Sub SetOpenClose(ObjectName As String, DoOpen As Boolean, Thread As ThreadData)
+    Private Sub SetOpenClose(ObjectName As String, DoOpen As Boolean, ctx As Context)
         Dim ObjID As Integer
         Dim CommandName As String
 
@@ -7257,7 +7266,7 @@ errhandle:
             Exit Sub
         End If
 
-        DoOpenClose(ObjID, DoOpen, False, Thread)
+        DoOpenClose(ObjID, DoOpen, False, ctx)
 
     End Sub
 
@@ -7281,7 +7290,7 @@ errhandle:
 
     End Sub
 
-    Private Function SetUnknownVariableType(VariableData As String, Thread As ThreadData) As Integer
+    Private Function SetUnknownVariableType(VariableData As String, ctx As Context) As Integer
         Dim SCP As Integer
         Dim VariableName As String
         Dim VariableContents As String
@@ -7306,7 +7315,7 @@ errhandle:
 
         For i = 1 To NumberStringVariables
             If LCase(StringVariable(i).VariableName) = LCase(VariableName) Then
-                ExecSetString(VariableData, Thread)
+                ExecSetString(VariableData, ctx)
                 i = NumberStringVariables
                 FoundVariable = True
             End If
@@ -7319,7 +7328,7 @@ errhandle:
 
         For i = 1 To NumberNumericVariables
             If LCase(NumericVariable(i).VariableName) = LCase(VariableName) Then
-                ExecSetVar(VariableData, Thread)
+                ExecSetVar(VariableData, ctx)
                 i = NumberNumericVariables
                 FoundVariable = True
             End If
@@ -7332,7 +7341,7 @@ errhandle:
 
         For i = 1 To NumCollectables
             If LCase(Collectables(i).collectablename) = LCase(VariableName) Then
-                ExecuteSetCollectable(VariableData, Thread)
+                ExecuteSetCollectable(VariableData, ctx)
                 i = NumCollectables
                 FoundVariable = True
             End If
@@ -7347,7 +7356,7 @@ errhandle:
 
     End Function
 
-    Private Function SetUpChoiceForm(choicesection As String, Thread As ThreadData) As String
+    Private Function SetUpChoiceForm(choicesection As String, ctx As Context) As String
         ' Returns script to execute from choice block
         Dim choiceblock As DefineBlock
         Dim P As String
@@ -7361,17 +7370,17 @@ errhandle:
 
         For i = choiceblock.StartLine + 1 To choiceblock.EndLine - 1
             If BeginsWith(Lines(i), "choice ") Then
-                menuOptions.Add(CStr(i), RetrieveParameter(Lines(i), Thread))
+                menuOptions.Add(CStr(i), RetrieveParameter(Lines(i), ctx))
                 menuScript.Add(CStr(i), Trim(Right(Lines(i), Len(Lines(i)) - InStr(Lines(i), ">"))))
             End If
         Next i
 
-        Print("- |i" & P & "|xi", Thread)
+        Print("- |i" & P & "|xi", ctx)
 
         Dim mnu As New MenuData(P, menuOptions, False)
         Dim choice As String = ShowMenu(mnu)
 
-        Print("- " & menuOptions(choice) & "|n", Thread)
+        Print("- " & menuOptions(choice) & "|n", ctx)
         SetUpChoiceForm = menuScript(choice)
 
     End Function
@@ -7389,12 +7398,12 @@ errhandle:
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), "default fontname ") Then
-                ThisFontName = RetrieveParameter(Lines(i), NullThread)
+                ThisFontName = RetrieveParameter(Lines(i), _nullContext)
                 If ThisFontName <> "" Then
                     DefaultFontName = ThisFontName
                 End If
             ElseIf BeginsWith(Lines(i), "default fontsize ") Then
-                ThisFontSize = CInt(RetrieveParameter(Lines(i), NullThread))
+                ThisFontSize = CInt(RetrieveParameter(Lines(i), _nullContext))
                 If ThisFontSize <> 0 Then
                     DefaultFontSize = ThisFontSize
                 End If
@@ -7417,7 +7426,7 @@ errhandle:
                 ReDim ThisVariable.VariableContents(0)
 
                 With ThisVariable
-                    .VariableName = RetrieveParameter(Lines(i), NullThread)
+                    .VariableName = RetrieveParameter(Lines(i), _nullContext)
                     .DisplayString = ""
                     .NoZeroDisplay = False
                     .OnChangeScript = ""
@@ -7444,9 +7453,9 @@ errhandle:
                             ThisVariable.NoZeroDisplay = True
                             DisplayString = GetEverythingAfter(DisplayString, "nozero ")
                         End If
-                        ThisVariable.DisplayString = RetrieveParameter(Lines(i), NullThread, False)
+                        ThisVariable.DisplayString = RetrieveParameter(Lines(i), _nullContext, False)
                     ElseIf BeginsWith(Lines(i), "value ") Then
-                        ThisVariable.VariableContents(0) = RetrieveParameter(Lines(i), NullThread)
+                        ThisVariable.VariableContents(0) = RetrieveParameter(Lines(i), _nullContext)
                     End If
 
                 Loop Until Trim(Lines(i)) = "end define"
@@ -7508,19 +7517,19 @@ errhandle:
                     If BeginsWith(Lines(i), "define ") Then
                         NestBlock = NestBlock + 1
                     ElseIf BeginsWith(Lines(i), "properties ") Then
-                        AddToObjectProperties(RetrieveParameter(Lines(i), NullThread), NumberObjs, NullThread)
+                        AddToObjectProperties(RetrieveParameter(Lines(i), _nullContext), NumberObjs, _nullContext)
                     ElseIf BeginsWith(Lines(i), "type ") Then
                         .NumberTypesIncluded = .NumberTypesIncluded + 1
                         ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                        .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(i), NullThread)
+                        .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(i), _nullContext)
 
-                        PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), NullThread))
-                        AddToObjectProperties(PropertyData.Properties, NumberObjs, NullThread)
+                        PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), _nullContext))
+                        AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                         For k = 1 To PropertyData.NumberActions
                             AddObjectAction(NumberObjs, PropertyData.Actions(k))
                         Next k
                     ElseIf BeginsWith(Lines(i), "action ") Then
-                        AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, NullThread)
+                        AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, _nullContext)
                     End If
                 Else
                     If Trim(Lines(i)) = "end define" Then
@@ -7545,9 +7554,9 @@ errhandle:
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define menu ") Then
 
                 If MenuExists Then
-                    LogASLError("Can't load menu '" & RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread) & "' - only one menu can be added.", LOGTYPE_WARNINGERROR)
+                    LogASLError("Can't load menu '" & RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LOGTYPE_WARNINGERROR)
                 Else
-                    menuTitle = RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread)
+                    menuTitle = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
 
                     For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
                         If Trim(Lines(j)) <> "" Then
@@ -7627,7 +7636,7 @@ errhandle:
                 ReDim Preserve Objs(NumberObjs)
 
                 With Rooms(NumberRooms)
-                    .RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread)
+                    .RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
                     Objs(NumberObjs).ObjectName = .RoomName
                     Objs(NumberObjs).IsRoom = True
                     Objs(NumberObjs).CorresRoom = .RoomName
@@ -7648,7 +7657,7 @@ errhandle:
                     NestedBlock = 0
 
                     If DefaultExists Then
-                        AddToObjectProperties(DefaultProperties.Properties, NumberObjs, NullThread)
+                        AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
                         For k = 1 To DefaultProperties.NumberActions
                             AddObjectAction(NumberObjs, DefaultProperties.Actions(k))
                         Next k
@@ -7669,9 +7678,9 @@ errhandle:
                         End If
 
                         If GameASLVersion >= 280 And BeginsWith(Lines(j), "alias ") Then
-                            .RoomAlias = RetrieveParameter(Lines(j), NullThread)
+                            .RoomAlias = RetrieveParameter(Lines(j), _nullContext)
                             Objs(NumberObjs).ObjectAlias = .RoomAlias
-                            If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & .RoomAlias, NumberObjs, NullThread)
+                            If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & .RoomAlias, NumberObjs, _nullContext)
                         ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "description ") Then
                             .Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
                             If GameASLVersion >= 350 Then
@@ -7680,11 +7689,11 @@ errhandle:
                                     ThisAction.Script = .Description.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("description=" & .Description.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("description=" & .Description.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "out ") Then
-                            .out.Text = RetrieveParameter(Lines(j), NullThread)
+                            .out.Text = RetrieveParameter(Lines(j), _nullContext)
                             .out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                             If GameASLVersion >= 350 Then
                                 If .out.Script <> "" Then
@@ -7693,7 +7702,7 @@ errhandle:
                                     AddObjectAction(NumberObjs, ThisAction)
                                 End If
 
-                                AddToObjectProperties("out=" & .out.Text, NumberObjs, NullThread)
+                                AddToObjectProperties("out=" & .out.Text, NumberObjs, _nullContext)
                             End If
                         ElseIf BeginsWith(Lines(j), "east ") Then
                             .East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
@@ -7703,7 +7712,7 @@ errhandle:
                                     ThisAction.Script = .East.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("east=" & .East.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("east=" & .East.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "west ") Then
@@ -7714,7 +7723,7 @@ errhandle:
                                     ThisAction.Script = .West.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("west=" & .West.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("west=" & .West.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "north ") Then
@@ -7725,7 +7734,7 @@ errhandle:
                                     ThisAction.Script = .North.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("north=" & .North.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("north=" & .North.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "south ") Then
@@ -7736,7 +7745,7 @@ errhandle:
                                     ThisAction.Script = .South.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("south=" & .South.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("south=" & .South.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "northeast ") Then
@@ -7747,7 +7756,7 @@ errhandle:
                                     ThisAction.Script = .NorthEast.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("northeast=" & .NorthEast.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("northeast=" & .NorthEast.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "northwest ") Then
@@ -7758,7 +7767,7 @@ errhandle:
                                     ThisAction.Script = .NorthWest.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("northwest=" & .NorthWest.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("northwest=" & .NorthWest.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "southeast ") Then
@@ -7769,7 +7778,7 @@ errhandle:
                                     ThisAction.Script = .SouthEast.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("southeast=" & .SouthEast.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("southeast=" & .SouthEast.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "southwest ") Then
@@ -7780,7 +7789,7 @@ errhandle:
                                     ThisAction.Script = .SouthWest.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("southwest=" & .SouthWest.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("southwest=" & .SouthWest.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "up ") Then
@@ -7791,7 +7800,7 @@ errhandle:
                                     ThisAction.Script = .Up.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("up=" & .Up.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("up=" & .Up.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf BeginsWith(Lines(j), "down ") Then
@@ -7802,18 +7811,18 @@ errhandle:
                                     ThisAction.Script = .Down.Data
                                     AddObjectAction(NumberObjs, ThisAction)
                                 Else
-                                    AddToObjectProperties("down=" & .Down.Data, NumberObjs, NullThread)
+                                    AddToObjectProperties("down=" & .Down.Data, NumberObjs, _nullContext)
                                 End If
                             End If
                         ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "indescription ") Then
-                            .InDescription = RetrieveParameter(Lines(j), NullThread)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & .InDescription, NumberObjs, NullThread)
+                            .InDescription = RetrieveParameter(Lines(j), _nullContext)
+                            If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & .InDescription, NumberObjs, _nullContext)
                         ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "look ") Then
-                            .Look = RetrieveParameter(Lines(j), NullThread)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("look=" & .Look, NumberObjs, NullThread)
+                            .Look = RetrieveParameter(Lines(j), _nullContext)
+                            If GameASLVersion >= 350 Then AddToObjectProperties("look=" & .Look, NumberObjs, _nullContext)
                         ElseIf BeginsWith(Lines(j), "prefix ") Then
-                            .Prefix = RetrieveParameter(Lines(j), NullThread)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, NullThread)
+                            .Prefix = RetrieveParameter(Lines(j), _nullContext)
+                            If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, _nullContext)
                         ElseIf BeginsWith(Lines(j), "script ") Then
                             .Script = GetEverythingAfter(Lines(j), "script ")
                             ThisAction.ActionName = "script"
@@ -7822,12 +7831,12 @@ errhandle:
                         ElseIf BeginsWith(Lines(j), "command ") Then
                             .NumberCommands = .NumberCommands + 1
                             ReDim Preserve .Commands(.NumberCommands)
-                            .Commands(.NumberCommands).CommandText = RetrieveParameter(Lines(j), NullThread, False)
+                            .Commands(.NumberCommands).CommandText = RetrieveParameter(Lines(j), _nullContext, False)
                             .Commands(.NumberCommands).CommandScript = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                         ElseIf BeginsWith(Lines(j), "place ") Then
                             .NumberPlaces = .NumberPlaces + 1
                             ReDim Preserve .Places(.NumberPlaces)
-                            PlaceData = RetrieveParameter(Lines(j), NullThread)
+                            PlaceData = RetrieveParameter(Lines(j), _nullContext)
                             SCP = InStr(PlaceData, ";")
                             If SCP = 0 Then
                                 .Places(.NumberPlaces).PlaceName = PlaceData
@@ -7839,22 +7848,22 @@ errhandle:
                         ElseIf BeginsWith(Lines(j), "use ") Then
                             .NumberUse = .NumberUse + 1
                             ReDim Preserve .use(.NumberUse)
-                            .use(.NumberUse).Text = RetrieveParameter(Lines(j), NullThread)
+                            .use(.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
                             .use(.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                         ElseIf BeginsWith(Lines(j), "properties ") Then
-                            AddToObjectProperties(RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                            AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                         ElseIf BeginsWith(Lines(j), "type ") Then
                             Objs(NumberObjs).NumberTypesIncluded = Objs(NumberObjs).NumberTypesIncluded + 1
                             ReDim Preserve Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded)
-                            Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(Lines(j), NullThread)
+                            Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
 
-                            PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), NullThread))
-                            AddToObjectProperties(PropertyData.Properties, NumberObjs, NullThread)
+                            PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                            AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                             For k = 1 To PropertyData.NumberActions
                                 AddObjectAction(NumberObjs, PropertyData.Actions(k))
                             Next k
                         ElseIf BeginsWith(Lines(j), "action ") Then
-                            AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, NullThread)
+                            AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
                         ElseIf BeginsWith(Lines(j), "beforeturn ") Then
                             .BeforeTurnScript = .BeforeTurnScript & GetEverythingAfter(Lines(j), "beforeturn ") & vbCrLf
                         ElseIf BeginsWith(Lines(j), "afterturn ") Then
@@ -7923,12 +7932,12 @@ errhandle:
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define timer ") Then
                 NumberTimers = NumberTimers + 1
                 ReDim Preserve Timers(NumberTimers)
-                Timers(NumberTimers).TimerName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread)
+                Timers(NumberTimers).TimerName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
                 Timers(NumberTimers).TimerActive = False
 
                 For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
                     If BeginsWith(Lines(j), "interval ") Then
-                        Timers(NumberTimers).TimerInterval = CInt(RetrieveParameter(Lines(j), NullThread))
+                        Timers(NumberTimers).TimerInterval = CInt(RetrieveParameter(Lines(j), _nullContext))
                     ElseIf BeginsWith(Lines(j), "action ") Then
                         Timers(NumberTimers).TimerAction = GetEverythingAfter(Lines(j), "action ")
                     ElseIf Trim(LCase(Lines(j))) = "enabled" Then
@@ -7976,7 +7985,7 @@ errhandle:
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), "error ") Then
-                ErrorInfo = RetrieveParameter(Lines(i), NullThread, False)
+                ErrorInfo = RetrieveParameter(Lines(i), _nullContext, False)
                 SemiColonPos = InStr(ErrorInfo, ";")
 
                 sErrorName = Left(ErrorInfo, SemiColonPos - 1)
@@ -8080,7 +8089,7 @@ errhandle:
 
     End Sub
 
-    Private Sub SetVisibility(ThingString As String, ThingType As Integer, ThingVisible As Boolean, Thread As ThreadData)
+    Private Sub SetVisibility(ThingString As String, ThingType As Integer, ThingVisible As Boolean, ctx As Context)
         ' Sets visibilty of objects and characters
 
         Dim i, AtPos As Integer
@@ -8094,9 +8103,9 @@ errhandle:
                 If LCase(Objs(i).ObjectName) = LCase(ThingString) Then
                     Objs(i).Visible = ThingVisible
                     If ThingVisible Then
-                        AddToObjectProperties("not invisible", i, Thread)
+                        AddToObjectProperties("not invisible", i, ctx)
                     Else
-                        AddToObjectProperties("invisible", i, Thread)
+                        AddToObjectProperties("invisible", i, ctx)
                     End If
 
                     i = NumberObjs + 1
@@ -8139,7 +8148,7 @@ errhandle:
             End If
         End If
 
-        UpdateObjectList(Thread)
+        UpdateObjectList(ctx)
     End Sub
 
     Private Sub ShowPictureInText(sFileName As String)
@@ -8191,7 +8200,7 @@ errhandle:
         'see if room has an alias
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(Lines(i), "alias") Then
-                AliasName = RetrieveParameter(Lines(i), NullThread)
+                AliasName = RetrieveParameter(Lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
@@ -8212,7 +8221,7 @@ errhandle:
         InDesc = "unfound"
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(Lines(i), "indescription") Then
-                InDesc = Trim(RetrieveParameter(Lines(i), NullThread))
+                InDesc = Trim(RetrieveParameter(Lines(i), _nullContext))
                 i = roomblock.EndLine
             End If
         Next i
@@ -8233,7 +8242,7 @@ errhandle:
 
         m_player.LocationUpdated(PANF)
 
-        SetStringContents("quest.formatroom", PANF, NullThread)
+        SetStringContents("quest.formatroom", PANF, _nullContext)
 
         'FIND CHARACTERS ===
 
@@ -8247,11 +8256,11 @@ errhandle:
 
         If CharsFound = 0 Then
             CharsViewable = "There is nobody here."
-            SetStringContents("quest.characters", "", NullThread)
+            SetStringContents("quest.characters", "", _nullContext)
         Else
             'chop off final comma and add full stop (.)
             CharList = Left(CharsViewable, Len(CharsViewable) - 2)
-            SetStringContents("quest.characters", CharList, NullThread)
+            SetStringContents("quest.characters", CharList, _nullContext)
 
             'if more than one character, add "and" before
             'last one:
@@ -8308,12 +8317,12 @@ errhandle:
             End If
 
             ObjsViewable = "There is " & ObjListString & " here."
-            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), NullThread)
-            SetStringContents("quest.formatobjects", ObjListString, NullThread)
+            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), _nullContext)
+            SetStringContents("quest.formatobjects", ObjListString, _nullContext)
             RoomDisplayText = RoomDisplayText & ObjsViewable & vbCrLf
         Else
-            SetStringContents("quest.objects", "", NullThread)
-            SetStringContents("quest.formatobjects", "", NullThread)
+            SetStringContents("quest.objects", "", _nullContext)
+            SetStringContents("quest.formatobjects", "", _nullContext)
         End If
 
         'FIND DOORWAYS
@@ -8324,7 +8333,7 @@ errhandle:
 
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(Lines(i), "out") Then
-                Doorways = RetrieveParameter(Lines(i), NullThread)
+                Doorways = RetrieveParameter(Lines(i), _nullContext)
             End If
 
             If BeginsWith(Lines(i), "north ") Then
@@ -8355,7 +8364,7 @@ errhandle:
 
             If BeginsWith(Lines(i), "place") Then
                 'remove any prefix semicolon from printed text
-                PL = RetrieveParameter(Lines(i), NullThread)
+                PL = RetrieveParameter(Lines(i), _nullContext)
                 PLNF = PL 'Used in object list - no formatting or prefix
                 If InStr(PL, ";") > 0 Then
                     PLNF = Right(PL, Len(PL) - (InStr(PL, ";") + 1))
@@ -8375,7 +8384,7 @@ errhandle:
             outside = DefineBlockParam("room", Doorways)
             For i = outside.StartLine + 1 To outside.EndLine - 1
                 If BeginsWith(Lines(i), "alias") Then
-                    AliasOut = RetrieveParameter(Lines(i), NullThread)
+                    AliasOut = RetrieveParameter(Lines(i), _nullContext)
                     i = outside.EndLine
                 End If
             Next i
@@ -8383,9 +8392,9 @@ errhandle:
 
             RoomDisplayText = RoomDisplayText & "You can go out to " & AliasOut & "." & vbCrLf
             PossDir = PossDir & "o"
-            SetStringContents("quest.doorways.out", AliasOut, NullThread)
+            SetStringContents("quest.doorways.out", AliasOut, _nullContext)
         Else
-            SetStringContents("quest.doorways.out", "", NullThread)
+            SetStringContents("quest.doorways.out", "", _nullContext)
         End If
 
         Dim bFinNSEW As Boolean
@@ -8408,12 +8417,12 @@ errhandle:
             End If
 
             RoomDisplayText = RoomDisplayText & "You can go " & NSEW & "." & vbCrLf
-            SetStringContents("quest.doorways.dirs", NSEW, NullThread)
+            SetStringContents("quest.doorways.dirs", NSEW, _nullContext)
         Else
-            SetStringContents("quest.doorways.dirs", "", NullThread)
+            SetStringContents("quest.doorways.dirs", "", _nullContext)
         End If
 
-        UpdateDirButtons(PossDir, NullThread)
+        UpdateDirButtons(PossDir, _nullContext)
 
         If Places <> "" Then
             'strip final comma
@@ -8437,9 +8446,9 @@ errhandle:
             End If
 
             RoomDisplayText = RoomDisplayText & "You can go to " & Places & "." & vbCrLf
-            SetStringContents("quest.doorways.places", Places, NullThread)
+            SetStringContents("quest.doorways.places", Places, _nullContext)
         Else
-            SetStringContents("quest.doorways.places", "", NullThread)
+            SetStringContents("quest.doorways.places", "", _nullContext)
         End If
 
         'Print RoomDisplayText if there is no "description" tag,
@@ -8469,7 +8478,7 @@ errhandle:
         If DescTagExist = False Then
             'Remove final vbCrLf:
             RoomDisplayText = Left(RoomDisplayText, Len(RoomDisplayText) - 2)
-            Print(RoomDisplayText, NullThread)
+            Print(RoomDisplayText, _nullContext)
         Else
             'execute description tag:
             'If no script, just print the tag's parameter.
@@ -8477,13 +8486,13 @@ errhandle:
 
             DescLine = GetEverythingAfter(Trim(DescLine), "description ")
             If Left(DescLine, 1) = "<" Then
-                Print(RetrieveParameter(DescLine, NullThread), NullThread)
+                Print(RetrieveParameter(DescLine, _nullContext), _nullContext)
             Else
-                ExecuteScript(DescLine, NullThread)
+                ExecuteScript(DescLine, _nullContext)
             End If
         End If
 
-        UpdateObjectList(NullThread)
+        UpdateObjectList(_nullContext)
 
         DefBlk = 0
 
@@ -8492,12 +8501,12 @@ errhandle:
             If BeginsWith(Lines(i), "define") Then DefBlk = DefBlk + 1
             If BeginsWith(Lines(i), "end define") Then DefBlk = DefBlk - 1
             If BeginsWith(Lines(i), "look") And DefBlk = 0 Then
-                LookString = RetrieveParameter(Lines(i), NullThread)
+                LookString = RetrieveParameter(Lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
 
-        If LookString <> "" Then Print(LookString, NullThread)
+        If LookString <> "" Then Print(LookString, _nullContext)
 
     End Sub
 
@@ -8548,22 +8557,21 @@ errhandle:
 
     End Function
 
-    Private Sub ExecExec(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecExec(ScriptLine As String, ctx As Context)
         Dim EX, ExecLine, R As String
         Dim SemiColonPos As Integer
 
-        If Thread.CancelExec Then Exit Sub
+        If ctx.CancelExec Then Exit Sub
 
-        ExecLine = RetrieveParameter(ScriptLine, Thread)
+        ExecLine = RetrieveParameter(ScriptLine, ctx)
 
-        Dim NewThread As ThreadData
-        NewThread = Thread
+        Dim NewThread As Context = CopyThread(ctx)
 
         NewThread.StackCounter = NewThread.StackCounter + 1
 
         If NewThread.StackCounter > 500 Then
             LogASLError("Out of stack space running '" & ScriptLine & "' - infinite loop?", LOGTYPE_WARNINGERROR)
-            Thread.CancelExec = True
+            ctx.CancelExec = True
             Exit Sub
         End If
 
@@ -8595,11 +8603,11 @@ errhandle:
             LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LOGTYPE_WARNINGERROR)
         End If
 
-        Thread.CancelExec = True
+        ctx.CancelExec = True
 
     End Sub
 
-    Private Sub ExecSetString(StringInfo As String, Thread As ThreadData)
+    Private Sub ExecSetString(StringInfo As String, ctx As Context)
         ' Sets string contents from a script parameter.
         ' Eg <string1;contents> sets string variable string1
         ' to "contents"
@@ -8625,13 +8633,13 @@ errhandle:
             End If
         End If
 
-        ArrayIndex = GetArrayIndex(sVarName, Thread)
+        ArrayIndex = GetArrayIndex(sVarName, ctx)
 
-        SetStringContents(sVarName, sVarCont, Thread, ArrayIndex)
+        SetStringContents(sVarName, sVarCont, ctx, ArrayIndex)
 
     End Sub
 
-    Private Function ExecUserCommand(thecommand As String, Thread As ThreadData, Optional LibCommands As Boolean = False) As Boolean
+    Private Function ExecUserCommand(thecommand As String, ctx As Context, Optional LibCommands As Boolean = False) As Boolean
         'Executes a user-defined command. If unavailable, returns
         'false.
         Dim FoundCommand As Boolean
@@ -8646,7 +8654,7 @@ errhandle:
         FoundCommand = False
 
         'First, check for a command in the current room block
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
 
         ' RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         If RoomID <> 0 Then
@@ -8686,7 +8694,7 @@ errhandle:
             For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
                 If BeginsWith(Lines(i), CommandTag) Then
 
-                    CommandList = RetrieveParameter(Lines(i), Thread, False)
+                    CommandList = RetrieveParameter(Lines(i), ctx, False)
                     Do
                         EndPos = InStr(CommandList, ";")
                         If EndPos = 0 Then
@@ -8710,19 +8718,19 @@ errhandle:
         End If
 
         If FoundCommand Then
-            If GetCommandParameters(thecommand, CommandLine, Thread) Then
-                ExecuteScript(ScriptToExecute, Thread)
+            If GetCommandParameters(thecommand, CommandLine, ctx) Then
+                ExecuteScript(ScriptToExecute, ctx)
             End If
         End If
 
         ExecUserCommand = FoundCommand
     End Function
 
-    Private Sub ExecuteChoose(choicesection As String, Thread As ThreadData)
-        ExecuteScript(SetUpChoiceForm(choicesection, Thread), Thread)
+    Private Sub ExecuteChoose(choicesection As String, ctx As Context)
+        ExecuteScript(SetUpChoiceForm(choicesection, ctx), ctx)
     End Sub
 
-    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, Thread As ThreadData) As Boolean
+    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, ctx As Context) As Boolean
         'Gets parameters from line. For example, if RequiredLine
         'is "read #1#" and TestLine is "read sign", #1# returns
         '"sign".
@@ -8795,7 +8803,7 @@ errhandle:
         For i = 1 To NumberChunks - 1
             ' If VarName contains array name, change to index number
             If InStr(VarName(i), "[") > 0 Then
-                ArrayIndex = GetArrayIndex(VarName(i), Thread)
+                ArrayIndex = GetArrayIndex(VarName(i), ctx)
             Else
                 ArrayIndex = 0
             End If
@@ -8804,13 +8812,13 @@ errhandle:
 
             If BeginsWith(VarName(i), "@") Then
                 VarName(i) = GetEverythingAfter(VarName(i), "@")
-                ObjID = Disambiguate(CurChunk, CurrentRoom & ";" & "inventory", Thread)
+                ObjID = Disambiguate(CurChunk, CurrentRoom & ";" & "inventory", ctx)
 
                 If ObjID = -1 Then
                     If GameASLVersion >= 391 Then
-                        PlayerErrorMessage(ERROR_BADTHING, Thread)
+                        PlayerErrorMessage(ERROR_BADTHING, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADITEM, Thread)
+                        PlayerErrorMessage(ERROR_BADITEM, ctx)
                     End If
                     ' The Mid$(...,2) and Left$(...,2) removes the initial/final "."
                     BadCmdBefore = Mid(Trim(Left(TestLine, ChunksEnd(i) - 1)), 2)
@@ -8822,10 +8830,10 @@ errhandle:
                     BadCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
                     success = False
                 Else
-                    SetStringContents(VarName(i), Objs(ObjID).ObjectName, Thread, ArrayIndex)
+                    SetStringContents(VarName(i), Objs(ObjID).ObjectName, ctx, ArrayIndex)
                 End If
             Else
-                SetStringContents(VarName(i), CurChunk, Thread, ArrayIndex)
+                SetStringContents(VarName(i), CurChunk, ctx, ArrayIndex)
             End If
         Next i
 
@@ -8833,18 +8841,18 @@ errhandle:
 
     End Function
 
-    Private Function GetGender(CharacterName As String, Capitalise As Boolean, Thread As ThreadData) As String
+    Private Function GetGender(CharacterName As String, Capitalise As Boolean, ctx As Context) As String
         Dim G, GL As String
 
         If GameASLVersion >= 281 Then
             G = Objs(GetObjectIDNoAlias(CharacterName)).Gender
         Else
-            GL = RetrLine("character", CharacterName, "gender", Thread)
+            GL = RetrLine("character", CharacterName, "gender", ctx)
 
             If GL = "<unfound>" Then
                 G = "it "
             Else
-                G = RetrieveParameter(GL, Thread) & " "
+                G = RetrieveParameter(GL, ctx) & " "
             End If
         End If
 
@@ -8853,7 +8861,7 @@ errhandle:
 
     End Function
 
-    Private Function GetStringContents(StringName As String, Thread As ThreadData) As String
+    Private Function GetStringContents(StringName As String, ctx As Context) As String
 
         Dim bStringExists As Boolean
         Dim iStringNumber As Integer
@@ -8879,7 +8887,7 @@ errhandle:
             If B1 <> 0 Then
                 B2 = InStr(B1, ObjName, ")")
                 If B2 <> 0 Then
-                    ObjName = GetStringContents(Mid(ObjName, B1 + 1, (B2 - B1) - 1), Thread)
+                    ObjName = GetStringContents(Mid(ObjName, B1 + 1, (B2 - B1) - 1), ctx)
                 End If
             End If
 
@@ -8897,7 +8905,7 @@ errhandle:
                 If IsNumeric(ArrayIndexData) Then
                     ArrayIndex = CInt(ArrayIndexData)
                 Else
-                    ArrayIndex = CInt(GetNumericContents(ArrayIndexData, Thread))
+                    ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
                     If ArrayIndex = -32767 Then
                         GetStringContents = ""
                         LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LOGTYPE_WARNINGERROR)
@@ -8941,7 +8949,7 @@ errhandle:
         End If
     End Function
 
-    Private Function IsAvailable(ThingString As String, ThingType As Integer, Thread As ThreadData) As Boolean
+    Private Function IsAvailable(ThingString As String, ThingType As Integer, ctx As Context) As Boolean
         ' Returns availability of object/character
 
         ' split ThingString into character name and room
@@ -9188,7 +9196,7 @@ errhandle:
                     CName = Trim(Left(CData, SemiColonPos - 1))
                     CData = Right(CData, Len(CData) - SemiColonPos)
 
-                    SetStringContents(CName, CData, NullThread)
+                    SetStringContents(CName, CData, _nullContext)
                 End If
             Loop Until CData = "!n"
 
@@ -9200,7 +9208,7 @@ errhandle:
                     CName = Trim(Left(CData, SemiColonPos - 1))
                     CData = Right(CData, Len(CData) - SemiColonPos)
 
-                    SetNumericVariableContents(CName, Val(CData), NullThread)
+                    SetNumericVariableContents(CName, Val(CData), _nullContext)
                 End If
             Loop Until CData = "!e"
 
@@ -9225,10 +9233,8 @@ errhandle:
     End Sub
 
     Private Function SaveGame(theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
-        Dim NewThread As ThreadData
+        Dim NewThread As Context = New Context()
         Dim saveData As String
-
-        NewThread = NullThread
 
         If GameASLVersion >= 391 Then ExecuteScript(BeforeSaveScript, NewThread)
 
@@ -9292,7 +9298,7 @@ errhandle:
         Return String.Join(vbCrLf, lines)
     End Function
 
-    Private Sub SetAvailability(ThingString As String, ThingExist As Boolean, Thread As ThreadData, Optional ThingType As Integer = QUEST_OBJECT)
+    Private Sub SetAvailability(ThingString As String, ThingExist As Boolean, ctx As Context, Optional ThingType As Integer = QUEST_OBJECT)
         ' Sets availability of objects (and characters in ASL<281)
 
         Dim i, ObjID, AtPos As Integer
@@ -9305,9 +9311,9 @@ errhandle:
                 If LCase(Objs(i).ObjectName) = LCase(ThingString) Then
                     Objs(i).Exists = ThingExist
                     If ThingExist Then
-                        AddToObjectProperties("not hidden", i, Thread)
+                        AddToObjectProperties("not hidden", i, ctx)
                     Else
-                        AddToObjectProperties("hidden", i, Thread)
+                        AddToObjectProperties("hidden", i, ctx)
                     End If
                     ObjID = i
                     FoundObject = True
@@ -9348,13 +9354,13 @@ errhandle:
             End If
         End If
 
-        UpdateItems(Thread)
+        UpdateItems(ctx)
 
-        UpdateObjectList(Thread)
+        UpdateObjectList(ctx)
 
     End Sub
 
-    Friend Sub SetStringContents(StringName As String, StringContents As String, Thread As ThreadData, Optional ArrayIndex As Integer = 0)
+    Friend Sub SetStringContents(StringName As String, StringContents As String, ctx As Context, Optional ArrayIndex As Integer = 0)
         Dim bStringExists As Boolean
         Dim iStringNumber, i As Integer
         Dim StringTitle, OnChangeScript As String
@@ -9369,7 +9375,7 @@ errhandle:
         If GameASLVersion >= 281 Then
             BracketPos = InStr(StringName, "[")
             If BracketPos <> 0 Then
-                ArrayIndex = GetArrayIndex(StringName, Thread)
+                ArrayIndex = GetArrayIndex(StringName, ctx)
                 StringName = Left(StringName, BracketPos - 1)
             End If
         End If
@@ -9420,11 +9426,11 @@ errhandle:
 
         If StringVariable(iStringNumber).OnChangeScript <> "" Then
             OnChangeScript = StringVariable(iStringNumber).OnChangeScript
-            ExecuteScript(OnChangeScript, Thread)
+            ExecuteScript(OnChangeScript, ctx)
         End If
 
         If StringVariable(iStringNumber).DisplayString <> "" Then
-            UpdateStatusVars(Thread)
+            UpdateStatusVars(ctx)
         End If
     End Sub
 
@@ -9455,7 +9461,7 @@ errhandle:
             cdf = DefineBlocks(i)
             If BeginsWith(Lines(cdf.StartLine), "define room") Or BeginsWith(Lines(cdf.StartLine), "define game") Or BeginsWith(Lines(cdf.StartLine), "define object ") Then
                 If BeginsWith(Lines(cdf.StartLine), "define room") Then
-                    OrigCRoomName = RetrieveParameter(Lines(cdf.StartLine), NullThread)
+                    OrigCRoomName = RetrieveParameter(Lines(cdf.StartLine), _nullContext)
                 Else
                     OrigCRoomName = ""
                 End If
@@ -9473,7 +9479,7 @@ errhandle:
                         ReDim Preserve Objs(NumberObjs)
 
                         With Objs(NumberObjs)
-                            .ObjectName = RetrieveParameter(Lines(j), NullThread)
+                            .ObjectName = RetrieveParameter(Lines(j), _nullContext)
                             .ObjectAlias = .ObjectName
                             .DefinitionSectionStart = j
                             .ContainerRoom = CRoomName
@@ -9484,13 +9490,13 @@ errhandle:
                             .take.Type = TA_NOTHING
 
                             If DefaultExists Then
-                                AddToObjectProperties(DefaultProperties.Properties, NumberObjs, NullThread)
+                                AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
                                 For k = 1 To DefaultProperties.NumberActions
                                     AddObjectAction(NumberObjs, DefaultProperties.Actions(k))
                                 Next k
                             End If
 
-                            If GameASLVersion >= 391 Then AddToObjectProperties("list", NumberObjs, NullThread)
+                            If GameASLVersion >= 391 Then AddToObjectProperties("list", NumberObjs, _nullContext)
 
                             e = 0
                             Do
@@ -9498,32 +9504,32 @@ errhandle:
                                 If Trim(Lines(j)) = "hidden" Then
                                     .Exists = False
                                     e = 1
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, NullThread)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                    CRoomName = RetrieveParameter(Lines(j), NullThread)
+                                    CRoomName = RetrieveParameter(Lines(j), _nullContext)
                                 ElseIf BeginsWith(Lines(j), "prefix ") Then
-                                    .Prefix = RetrieveParameter(Lines(j), NullThread) & " "
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, NullThread)
+                                    .Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "suffix ") Then
-                                    .Suffix = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & .Suffix, NumberObjs, NullThread)
+                                    .Suffix = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & .Suffix, NumberObjs, _nullContext)
                                 ElseIf Trim(Lines(j)) = "invisible" Then
                                     .Visible = False
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, NullThread)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "alias ") Then
-                                    .ObjectAlias = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & .ObjectAlias, NumberObjs, NullThread)
+                                    .ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & .ObjectAlias, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "alt ") Then
-                                    AddToObjectAltNames(RetrieveParameter(Lines(j), NullThread), NumberObjs)
+                                    AddToObjectAltNames(RetrieveParameter(Lines(j), _nullContext), NumberObjs)
                                 ElseIf BeginsWith(Lines(j), "detail ") Then
-                                    .Detail = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & .Detail, NumberObjs, NullThread)
+                                    .Detail = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & .Detail, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "gender ") Then
-                                    .Gender = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & .Gender, NumberObjs, NullThread)
+                                    .Gender = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & .Gender, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "article ") Then
-                                    .Article = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("article=" & .Article, NumberObjs, NullThread)
+                                    .Article = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("article=" & .Article, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "gain ") Then
                                     .GainScript = GetEverythingAfter(Lines(j), "gain ")
                                     ThisAction.ActionName = "gain"
@@ -9535,13 +9541,13 @@ errhandle:
                                     ThisAction.Script = .LoseScript
                                     AddObjectAction(NumberObjs, ThisAction)
                                 ElseIf BeginsWith(Lines(j), "displaytype ") Then
-                                    .DisplayType = RetrieveParameter(Lines(j), NullThread)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & .DisplayType, NumberObjs, NullThread)
+                                    .DisplayType = RetrieveParameter(Lines(j), _nullContext)
+                                    If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & .DisplayType, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "look ") Then
                                     If GameASLVersion >= 311 Then
                                         RestOfLine = GetEverythingAfter(Lines(j), "look ")
                                         If Left(RestOfLine, 1) = "<" Then
-                                            AddToObjectProperties("look=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                            AddToObjectProperties("look=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                         Else
                                             ThisAction.ActionName = "look"
                                             ThisAction.Script = RestOfLine
@@ -9552,7 +9558,7 @@ errhandle:
                                     If GameASLVersion >= 311 Then
                                         RestOfLine = GetEverythingAfter(Lines(j), "examine ")
                                         If Left(RestOfLine, 1) = "<" Then
-                                            AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                            AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                         Else
                                             ThisAction.ActionName = "examine"
                                             ThisAction.Script = RestOfLine
@@ -9562,21 +9568,21 @@ errhandle:
                                 ElseIf GameASLVersion >= 311 And BeginsWith(Lines(j), "speak ") Then
                                     RestOfLine = GetEverythingAfter(Lines(j), "speak ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         ThisAction.ActionName = "speak"
                                         ThisAction.Script = RestOfLine
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf BeginsWith(Lines(j), "properties ") Then
-                                    AddToObjectProperties(RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                    AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "type ") Then
                                     .NumberTypesIncluded = .NumberTypesIncluded + 1
                                     ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                                    .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(j), NullThread)
+                                    .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
 
-                                    PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), NullThread))
-                                    AddToObjectProperties(PropertyData.Properties, NumberObjs, NullThread)
+                                    PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                                    AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                                     For k = 1 To PropertyData.NumberActions
                                         AddObjectAction(NumberObjs, PropertyData.Actions(k))
                                     Next k
@@ -9587,20 +9593,20 @@ errhandle:
                                     Next k
                                     .NumberTypesIncluded = .NumberTypesIncluded + PropertyData.NumberTypesIncluded
                                 ElseIf BeginsWith(Lines(j), "action ") Then
-                                    AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, NullThread)
+                                    AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "use ") Then
                                     AddToUseInfo(NumberObjs, GetEverythingAfter(Lines(j), "use "))
                                 ElseIf BeginsWith(Lines(j), "give ") Then
                                     AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
                                 ElseIf Trim(Lines(j)) = "take" Then
                                     .take.Type = TA_DEFAULT
-                                    AddToObjectProperties("take", NumberObjs, NullThread)
+                                    AddToObjectProperties("take", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "take ") Then
                                     If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
                                         .take.Type = TA_TEXT
-                                        .take.Data = RetrieveParameter(Lines(j), NullThread)
+                                        .take.Data = RetrieveParameter(Lines(j), _nullContext)
 
-                                        AddToObjectProperties("take=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         .take.Type = TA_SCRIPT
                                         RestOfLine = GetEverythingAfter(Lines(j), "take ")
@@ -9611,21 +9617,21 @@ errhandle:
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf Trim(Lines(j)) = "container" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, NullThread)
+                                    If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
                                 ElseIf Trim(Lines(j)) = "surface" Then
                                     If GameASLVersion >= 391 Then
-                                        AddToObjectProperties("container", NumberObjs, NullThread)
-                                        AddToObjectProperties("surface", NumberObjs, NullThread)
+                                        AddToObjectProperties("container", NumberObjs, _nullContext)
+                                        AddToObjectProperties("surface", NumberObjs, _nullContext)
                                     End If
                                 ElseIf Trim(Lines(j)) = "opened" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, NullThread)
+                                    If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, _nullContext)
                                 ElseIf Trim(Lines(j)) = "transparent" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, NullThread)
+                                    If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, _nullContext)
                                 ElseIf Trim(Lines(j)) = "open" Then
-                                    AddToObjectProperties("open", NumberObjs, NullThread)
+                                    AddToObjectProperties("open", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "open ") Then
                                     If Left(GetEverythingAfter(Lines(j), "open "), 1) = "<" Then
-                                        AddToObjectProperties("open=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("open=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "open ")
 
@@ -9634,10 +9640,10 @@ errhandle:
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf Trim(Lines(j)) = "close" Then
-                                    AddToObjectProperties("close", NumberObjs, NullThread)
+                                    AddToObjectProperties("close", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "close ") Then
                                     If Left(GetEverythingAfter(Lines(j), "close "), 1) = "<" Then
-                                        AddToObjectProperties("close=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("close=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "close ")
 
@@ -9646,10 +9652,10 @@ errhandle:
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf Trim(Lines(j)) = "add" Then
-                                    AddToObjectProperties("add", NumberObjs, NullThread)
+                                    AddToObjectProperties("add", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "add ") Then
                                     If Left(GetEverythingAfter(Lines(j), "add "), 1) = "<" Then
-                                        AddToObjectProperties("add=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("add=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "add ")
 
@@ -9658,10 +9664,10 @@ errhandle:
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf Trim(Lines(j)) = "remove" Then
-                                    AddToObjectProperties("remove", NumberObjs, NullThread)
+                                    AddToObjectProperties("remove", NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "remove ") Then
                                     If Left(GetEverythingAfter(Lines(j), "remove "), 1) = "<" Then
-                                        AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                        AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "remove ")
 
@@ -9670,7 +9676,7 @@ errhandle:
                                         AddObjectAction(NumberObjs, ThisAction)
                                     End If
                                 ElseIf BeginsWith(Lines(j), "parent ") Then
-                                    AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), NullThread), NumberObjs, NullThread)
+                                    AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "list") Then
                                     ProcessListInfo(Lines(j), NumberObjs)
                                 End If
@@ -9684,7 +9690,7 @@ errhandle:
                         CRoomName = OrigCRoomName
                         NumberChars = NumberChars + 1
                         ReDim Preserve Chars(NumberChars)
-                        Chars(NumberChars).ObjectName = RetrieveParameter(Lines(j), NullThread)
+                        Chars(NumberChars).ObjectName = RetrieveParameter(Lines(j), _nullContext)
                         Chars(NumberChars).DefinitionSectionStart = j
                         Chars(NumberChars).ContainerRoom = ""
                         Chars(NumberChars).Visible = True
@@ -9695,17 +9701,17 @@ errhandle:
                                 Chars(NumberChars).Exists = False
                                 e = 1
                             ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                CRoomName = RetrieveParameter(Lines(j), NullThread)
+                                CRoomName = RetrieveParameter(Lines(j), _nullContext)
                             ElseIf BeginsWith(Lines(j), "prefix ") Then
-                                Chars(NumberChars).Prefix = RetrieveParameter(Lines(j), NullThread) & " "
+                                Chars(NumberChars).Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
                             ElseIf BeginsWith(Lines(j), "suffix ") Then
-                                Chars(NumberChars).Suffix = " " & RetrieveParameter(Lines(j), NullThread)
+                                Chars(NumberChars).Suffix = " " & RetrieveParameter(Lines(j), _nullContext)
                             ElseIf Trim(Lines(j)) = "invisible" Then
                                 Chars(NumberChars).Visible = False
                             ElseIf BeginsWith(Lines(j), "alias ") Then
-                                Chars(NumberChars).ObjectAlias = RetrieveParameter(Lines(j), NullThread)
+                                Chars(NumberChars).ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
                             ElseIf BeginsWith(Lines(j), "detail ") Then
-                                Chars(NumberChars).Detail = RetrieveParameter(Lines(j), NullThread)
+                                Chars(NumberChars).Detail = RetrieveParameter(Lines(j), _nullContext)
                             End If
 
                             Chars(NumberChars).ContainerRoom = CRoomName
@@ -9719,11 +9725,11 @@ errhandle:
             End If
         Next i
 
-        UpdateVisibilityInContainers(NullThread)
+        UpdateVisibilityInContainers(_nullContext)
 
     End Sub
 
-    Private Sub ShowGameAbout(Thread As ThreadData)
+    Private Sub ShowGameAbout(ctx As Context)
         Dim GameAuthor, GameVersion, GameCopy As String
         Dim GameInfo As String
 
@@ -9732,14 +9738,14 @@ errhandle:
         GameCopy = FindStatement(GetDefineBlock("game"), "game copyright")
         GameInfo = FindStatement(GetDefineBlock("game"), "game info")
 
-        Print("|bGame name:|cl  " & GameName & "|cb|xb", Thread)
-        If GameVersion <> "" Then Print("|bVersion:|xb    " & GameVersion, Thread)
-        If GameAuthor <> "" Then Print("|bAuthor:|xb     " & GameAuthor, Thread)
-        If GameCopy <> "" Then Print("|bCopyright:|xb  " & GameCopy, Thread)
+        Print("|bGame name:|cl  " & GameName & "|cb|xb", ctx)
+        If GameVersion <> "" Then Print("|bVersion:|xb    " & GameVersion, ctx)
+        If GameAuthor <> "" Then Print("|bAuthor:|xb     " & GameAuthor, ctx)
+        If GameCopy <> "" Then Print("|bCopyright:|xb  " & GameCopy, ctx)
 
         If GameInfo <> "" Then
-            Print("", Thread)
-            Print(GameInfo, Thread)
+            Print("", ctx)
+            Print(GameInfo, ctx)
         End If
 
     End Sub
@@ -9763,13 +9769,13 @@ errhandle:
             sFileName = Trim(Left(sFileName, InStr(sFileName, "@") - 1))
         End If
 
-        If Caption.Length > 0 Then Print(Caption, NullThread)
+        If Caption.Length > 0 Then Print(Caption, _nullContext)
 
         ShowPictureInText(sFileName)
 
     End Sub
 
-    Private Sub ShowRoomInfo(Room As String, Thread As ThreadData, Optional NoPrint As Boolean = False)
+    Private Sub ShowRoomInfo(Room As String, ctx As Context, Optional NoPrint As Boolean = False)
         If GameASLVersion < 280 Then
             ShowRoomInfoV2(Room)
             Exit Sub
@@ -9798,7 +9804,7 @@ errhandle:
         gameblock = GetDefineBlock("game")
 
         CurrentRoom = Room
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
 
         If RoomID = 0 Then Exit Sub
 
@@ -9835,7 +9841,7 @@ errhandle:
 
         m_player.LocationUpdated(UCase(Left(RoomAlias, 1)) & Mid(RoomAlias, 2))
 
-        SetStringContents("quest.formatroom", RoomDisplayNameNoFormat, Thread)
+        SetStringContents("quest.formatroom", RoomDisplayNameNoFormat, ctx)
 
         ' SHOW OBJECTS *************************************************************
 
@@ -9874,24 +9880,24 @@ errhandle:
 
         If colVisibleObjects.Count() > 0 Then
 
-            SetStringContents("quest.formatobjects", VisibleObjects, Thread)
+            SetStringContents("quest.formatobjects", VisibleObjects, ctx)
 
             VisibleObjects = "There is " & VisibleObjects & " here."
 
-            SetStringContents("quest.objects", VisibleObjectsNoFormat, Thread)
+            SetStringContents("quest.objects", VisibleObjectsNoFormat, ctx)
 
             RoomDisplayText = RoomDisplayText & VisibleObjects & vbCrLf
         Else
-            SetStringContents("quest.objects", "", Thread)
-            SetStringContents("quest.formatobjects", "", Thread)
+            SetStringContents("quest.objects", "", ctx)
+            SetStringContents("quest.formatobjects", "", ctx)
         End If
 
         ' SHOW EXITS ***************************************************************
 
-        DoorwayString = UpdateDoorways(RoomID, Thread)
+        DoorwayString = UpdateDoorways(RoomID, ctx)
 
         If GameASLVersion < 410 Then
-            PlaceList = GetGoToExits(RoomID, Thread)
+            PlaceList = GetGoToExits(RoomID, ctx)
 
             If PlaceList <> "" Then
                 'strip final comma
@@ -9915,9 +9921,9 @@ errhandle:
                 End If
 
                 RoomDisplayText = RoomDisplayText & "You can go to " & PlaceList & "." & vbCrLf
-                SetStringContents("quest.doorways.places", PlaceList, Thread)
+                SetStringContents("quest.doorways.places", PlaceList, ctx)
             Else
-                SetStringContents("quest.doorways.places", "", Thread)
+                SetStringContents("quest.doorways.places", "", ctx)
             End If
         End If
 
@@ -9933,7 +9939,7 @@ errhandle:
             LookDesc = ObjLook
         End If
 
-        SetStringContents("quest.lookdesc", LookDesc, Thread)
+        SetStringContents("quest.lookdesc", LookDesc, ctx)
 
 
         ' FIND DESCRIPTION TAG, OR ACTION ******************************************
@@ -9960,7 +9966,7 @@ errhandle:
                     DescLine = GetEverythingAfter(Lines(i), "description ")
                     DescTagExist = True
                     If Left(DescLine, 1) = "<" Then
-                        DescLine = RetrieveParameter(DescLine, Thread)
+                        DescLine = RetrieveParameter(DescLine, ctx)
                         DescType = TA_TEXT
                     Else
                         DescType = TA_SCRIPT
@@ -9978,27 +9984,27 @@ errhandle:
             If DescTagExist = False Then
                 'Remove final vbCrLf:
                 RoomDisplayText = Left(RoomDisplayText, Len(RoomDisplayText) - 2)
-                Print(RoomDisplayText, Thread)
-                If DoorwayString <> "" Then Print(DoorwayString, Thread)
+                Print(RoomDisplayText, ctx)
+                If DoorwayString <> "" Then Print(DoorwayString, ctx)
             Else
                 'execute description tag:
                 'If no script, just print the tag's parameter.
                 'Otherwise, execute it as ASL script:
 
                 If DescType = TA_TEXT Then
-                    Print(DescLine, Thread)
+                    Print(DescLine, ctx)
                 Else
-                    ExecuteScript(DescLine, Thread)
+                    ExecuteScript(DescLine, ctx)
                 End If
             End If
 
-            UpdateObjectList(Thread)
+            UpdateObjectList(ctx)
 
             ' SHOW "LOOK" DESCRIPTION **************************************************
 
             If ShowLookText Then
                 If LookDesc <> "" Then
-                    Print(LookDesc, Thread)
+                    Print(LookDesc, ctx)
                 End If
             End If
         End If
@@ -10085,7 +10091,7 @@ errhandle:
 
     End Function
 
-    Private Sub DisplayTextSection(sectionname As String, Thread As ThreadData, Optional OutputTo As String = "normal")
+    Private Sub DisplayTextSection(sectionname As String, ctx As Context, Optional OutputTo As String = "normal")
         Dim textblock As DefineBlock
         textblock = DefineBlockParam("text", sectionname)
         Dim i As Integer
@@ -10094,13 +10100,13 @@ errhandle:
             For i = textblock.StartLine + 1 To textblock.EndLine - 1
                 If GameASLVersion >= 392 Then
                     ' Convert string variables etc.
-                    Print(RetrieveParameter("<" & Lines(i) & ">", Thread), Thread, OutputTo)
+                    Print(RetrieveParameter("<" & Lines(i) & ">", ctx), ctx, OutputTo)
                 Else
-                    Print(Lines(i), Thread, OutputTo)
+                    Print(Lines(i), ctx, OutputTo)
                 End If
             Next i
 
-            Print("", Thread)
+            Print("", ctx)
         End If
 
     End Sub
@@ -10108,13 +10114,12 @@ errhandle:
     ' Returns true if the system is ready to process a new command after completion - so it will be
     ' in most cases, except when ExecCommand just caused an "enter" script command to complete
 
-    Private Function ExecCommand(thecommand As String, Thread As ThreadData, Optional EchoCommand As Boolean = True, Optional RunUserCommand As Boolean = True, Optional DontSetIt As Boolean = False) As Boolean
+    Private Function ExecCommand(thecommand As String, ctx As Context, Optional EchoCommand As Boolean = True, Optional RunUserCommand As Boolean = True, Optional DontSetIt As Boolean = False) As Boolean
         Dim cmd As String
         Dim EnteredHelpCommand As Boolean
         Dim RoomID As Integer
         Dim GlobalOverride As Boolean
         Dim OldBadCmdBefore As String
-        Dim NewThread As ThreadData
         Dim CP, i, n As Integer
         Dim SkipAfterTurn As Boolean
         Dim G, D, c, P, T As String
@@ -10125,7 +10130,7 @@ errhandle:
 
         OldBadCmdBefore = BadCmdBefore
 
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
         EnteredHelpCommand = False
 
         If thecommand = "" Then Return True
@@ -10138,7 +10143,7 @@ errhandle:
                 ' so put input into previously specified variable
                 ' and exit:
 
-                SetStringContents(CommandOverrideVariable, thecommand, Thread)
+                SetStringContents(CommandOverrideVariable, thecommand, ctx)
                 System.Threading.Monitor.PulseAll(m_commandLock)
                 Return False
             End If
@@ -10148,14 +10153,14 @@ errhandle:
         Dim newcommand As String
 
         If EchoCommand = True Then
-            Print("> " & thecommand, Thread, , True)
+            Print("> " & thecommand, ctx, , True)
 
             If optSpeakEverything Then Speak(thecommand)
         End If
 
         thecommand = LCase(thecommand)
 
-        SetStringContents("quest.originalcommand", thecommand, Thread)
+        SetStringContents("quest.originalcommand", thecommand, ctx)
 
         newcommand = " " & thecommand & " "
 
@@ -10174,11 +10179,11 @@ errhandle:
         'strip starting and ending spaces
         thecommand = Mid(newcommand, 2, Len(newcommand) - 2)
 
-        SetStringContents("quest.command", thecommand, Thread)
+        SetStringContents("quest.command", thecommand, ctx)
 
         ' Execute any "beforeturn" script:
 
-        NewThread = Thread
+        Dim NewThread As Context = CopyThread(ctx)
         GlobalOverride = False
 
         ' RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
@@ -10194,7 +10199,7 @@ errhandle:
         End If
         If BeforeTurnScript <> "" And GlobalOverride = False Then ExecuteScript(BeforeTurnScript, NewThread)
 
-        ' In executing BeforeTurn script, "dontprocess" sets Thread.DontProcessCommand,
+        ' In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
         ' in which case we don't process the command.
 
         If Not NewThread.DontProcessCommand Then
@@ -10202,20 +10207,20 @@ errhandle:
 
             UserCommandReturn = False
             If RunUserCommand = True Then
-                UserCommandReturn = ExecUserCommand(thecommand, Thread)
+                UserCommandReturn = ExecUserCommand(thecommand, ctx)
 
                 If Not UserCommandReturn Then
-                    UserCommandReturn = ExecVerb(thecommand, Thread)
+                    UserCommandReturn = ExecVerb(thecommand, ctx)
                 End If
 
                 If Not UserCommandReturn Then
                     ' Try command defined by a library
-                    UserCommandReturn = ExecUserCommand(thecommand, Thread, True)
+                    UserCommandReturn = ExecUserCommand(thecommand, ctx, True)
                 End If
 
                 If Not UserCommandReturn Then
                     ' Try verb defined by a library
-                    UserCommandReturn = ExecVerb(thecommand, Thread, True)
+                    UserCommandReturn = ExecVerb(thecommand, ctx, True)
                 End If
             End If
 
@@ -10232,123 +10237,123 @@ errhandle:
 
             If CmdStartsWith(thecommand, "speak to ") Then
                 c = GetEverythingAfter(thecommand, "speak to ")
-                ExecSpeak(c, Thread)
+                ExecSpeak(c, ctx)
             ElseIf CmdStartsWith(thecommand, "talk to ") Then
                 c = GetEverythingAfter(thecommand, "talk to ")
-                ExecSpeak(c, Thread)
+                ExecSpeak(c, ctx)
             ElseIf cmd = "exit" Or cmd = "out" Or cmd = "leave" Then
-                LeaveRoom(Thread)
+                LeaveRoom(ctx)
                 LastIt = 0
             ElseIf cmd = "north" Or cmd = "south" Or cmd = "east" Or cmd = "west" Then
-                GoDirection(thecommand, Thread)
+                GoDirection(thecommand, ctx)
                 LastIt = 0
             ElseIf cmd = "n" Or cmd = "s" Or cmd = "w" Or cmd = "e" Then
                 Select Case InStr("nswe", cmd)
                     Case 1
-                        GoDirection("north", Thread)
+                        GoDirection("north", ctx)
                     Case 2
-                        GoDirection("south", Thread)
+                        GoDirection("south", ctx)
                     Case 3
-                        GoDirection("west", Thread)
+                        GoDirection("west", ctx)
                     Case 4
-                        GoDirection("east", Thread)
+                        GoDirection("east", ctx)
                 End Select
                 LastIt = 0
             ElseIf cmd = "ne" Or cmd = "northeast" Or cmd = "north-east" Or cmd = "north east" Or cmd = "go ne" Or cmd = "go northeast" Or cmd = "go north-east" Or cmd = "go north east" Then
-                GoDirection("northeast", Thread)
+                GoDirection("northeast", ctx)
                 LastIt = 0
             ElseIf cmd = "nw" Or cmd = "northwest" Or cmd = "north-west" Or cmd = "north west" Or cmd = "go nw" Or cmd = "go northwest" Or cmd = "go north-west" Or cmd = "go north west" Then
-                GoDirection("northwest", Thread)
+                GoDirection("northwest", ctx)
                 LastIt = 0
             ElseIf cmd = "se" Or cmd = "southeast" Or cmd = "south-east" Or cmd = "south east" Or cmd = "go se" Or cmd = "go southeast" Or cmd = "go south-east" Or cmd = "go south east" Then
-                GoDirection("southeast", Thread)
+                GoDirection("southeast", ctx)
                 LastIt = 0
             ElseIf cmd = "sw" Or cmd = "southwest" Or cmd = "south-west" Or cmd = "south west" Or cmd = "go sw" Or cmd = "go southwest" Or cmd = "go south-west" Or cmd = "go south west" Then
-                GoDirection("southwest", Thread)
+                GoDirection("southwest", ctx)
                 LastIt = 0
             ElseIf cmd = "up" Or cmd = "u" Then
-                GoDirection("up", Thread)
+                GoDirection("up", ctx)
                 LastIt = 0
             ElseIf cmd = "down" Or cmd = "d" Then
-                GoDirection("down", Thread)
+                GoDirection("down", ctx)
                 LastIt = 0
             ElseIf CmdStartsWith(thecommand, "go ") Then
                 If GameASLVersion >= 410 Then
-                    Rooms(GetRoomID(CurrentRoom, Thread)).Exits.ExecuteGo(thecommand, Thread)
+                    Rooms(GetRoomID(CurrentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
                 Else
                     D = GetEverythingAfter(thecommand, "go ")
                     If D = "out" Then
-                        LeaveRoom(Thread)
+                        LeaveRoom(ctx)
                     ElseIf D = "north" Or D = "south" Or D = "east" Or D = "west" Or D = "up" Or D = "down" Then
-                        GoDirection(D, Thread)
+                        GoDirection(D, ctx)
                     ElseIf BeginsWith(D, "to ") Then
                         P = GetEverythingAfter(D, "to ")
-                        GoToPlace(P, Thread)
+                        GoToPlace(P, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADGO, Thread)
+                        PlayerErrorMessage(ERROR_BADGO, ctx)
                     End If
                 End If
                 LastIt = 0
             ElseIf CmdStartsWith(thecommand, "give ") Then
                 G = GetEverythingAfter(thecommand, "give ")
-                ExecGive(G, Thread)
+                ExecGive(G, ctx)
             ElseIf CmdStartsWith(thecommand, "take ") Then
                 T = GetEverythingAfter(thecommand, "take ")
-                ExecTake(T, Thread)
+                ExecTake(T, ctx)
             ElseIf CmdStartsWith(thecommand, "drop ") And GameASLVersion >= 280 Then
                 D = GetEverythingAfter(thecommand, "drop ")
-                ExecDrop(D, Thread)
+                ExecDrop(D, ctx)
             ElseIf CmdStartsWith(thecommand, "get ") Then
                 T = GetEverythingAfter(thecommand, "get ")
-                ExecTake(T, Thread)
+                ExecTake(T, ctx)
             ElseIf CmdStartsWith(thecommand, "pick up ") Then
                 T = GetEverythingAfter(thecommand, "pick up ")
-                ExecTake(T, Thread)
+                ExecTake(T, ctx)
             ElseIf cmd = "pick it up" Or cmd = "pick them up" Or cmd = "pick this up" Or cmd = "pick that up" Or cmd = "pick these up" Or cmd = "pick those up" Or cmd = "pick him up" Or cmd = "pick her up" Then
-                ExecTake(Mid(cmd, 6, InStr(7, cmd, " ") - 6), Thread)
+                ExecTake(Mid(cmd, 6, InStr(7, cmd, " ") - 6), ctx)
             ElseIf CmdStartsWith(thecommand, "look ") Then
-                ExecLook(thecommand, Thread)
+                ExecLook(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "l ") Then
-                ExecLook("look " & GetEverythingAfter(thecommand, "l "), Thread)
+                ExecLook("look " & GetEverythingAfter(thecommand, "l "), ctx)
             ElseIf CmdStartsWith(thecommand, "examine ") And GameASLVersion >= 280 Then
-                ExecExamine(thecommand, Thread)
+                ExecExamine(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "x ") And GameASLVersion >= 280 Then
-                ExecExamine("examine " & GetEverythingAfter(thecommand, "x "), Thread)
+                ExecExamine("examine " & GetEverythingAfter(thecommand, "x "), ctx)
             ElseIf cmd = "l" Or cmd = "look" Then
-                ExecLook("look", Thread)
+                ExecLook("look", ctx)
             ElseIf cmd = "x" Or cmd = "examine" Then
-                ExecExamine("examine", Thread)
+                ExecExamine("examine", ctx)
             ElseIf CmdStartsWith(thecommand, "use ") Then
-                ExecUse(thecommand, Thread)
+                ExecUse(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "open ") And GameASLVersion >= 391 Then
-                ExecOpenClose(thecommand, Thread)
+                ExecOpenClose(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "close ") And GameASLVersion >= 391 Then
-                ExecOpenClose(thecommand, Thread)
+                ExecOpenClose(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "put ") And GameASLVersion >= 391 Then
-                ExecAddRemove(thecommand, Thread)
+                ExecAddRemove(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "add ") And GameASLVersion >= 391 Then
-                ExecAddRemove(thecommand, Thread)
+                ExecAddRemove(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "remove ") And GameASLVersion >= 391 Then
-                ExecAddRemove(thecommand, Thread)
+                ExecAddRemove(thecommand, ctx)
             ElseIf cmd = "save" Then
                 m_player.RequestSave(Nothing)
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then
-                ShowHelp(Thread)
+                ShowHelp(ctx)
                 EnteredHelpCommand = True
             ElseIf cmd = "about" Then
-                ShowGameAbout(Thread)
+                ShowGameAbout(ctx)
             ElseIf cmd = "clear" Then
                 DoClear()
             ElseIf cmd = "ver" Then
-                Print("Quest ASL4 Interpreter " & QuestVersion, Thread)
-                Print("Highest supported ASL version: " & ASLVersionNumber, Thread)
-                Print("Current file uses ASL version: " & Trim(Str(GameASLVersion)), Thread)
+                Print("Quest ASL4 Interpreter " & QuestVersion, ctx)
+                Print("Highest supported ASL version: " & ASLVersionNumber, ctx)
+                Print("Current file uses ASL version: " & Trim(Str(GameASLVersion)), ctx)
             ElseIf cmd = "debug" Then
                 ' TO DO: This is temporary, would be better to have a log viewer built in to Player
                 For Each logEntry As String In m_log
-                    Print(logEntry, Thread)
+                    Print(logEntry, ctx)
                 Next
             ElseIf cmd = "inventory" Or cmd = "inv" Or cmd = "i" Then
                 InventoryPlace = "inventory"
@@ -10392,16 +10397,16 @@ errhandle:
                         End If
                     Loop Until ThisComma = 0
                     If LastComma <> 0 Then InvList = Left(InvList, LastComma - 1) & " and" & Mid(InvList, LastComma + 1)
-                    Print("You are carrying:|n" & InvList & ".", Thread)
+                    Print("You are carrying:|n" & InvList & ".", ctx)
                 Else
-                    Print("You are not carrying anything.", Thread)
+                    Print("You are not carrying anything.", ctx)
                 End If
             ElseIf CmdStartsWith(thecommand, "oops ") Then
-                ExecOops(GetEverythingAfter(thecommand, "oops "), Thread)
+                ExecOops(GetEverythingAfter(thecommand, "oops "), ctx)
             ElseIf CmdStartsWith(thecommand, "the ") Then
-                ExecOops(GetEverythingAfter(thecommand, "the "), Thread)
+                ExecOops(GetEverythingAfter(thecommand, "the "), ctx)
             Else
-                PlayerErrorMessage(ERROR_BADCOMMAND, Thread)
+                PlayerErrorMessage(ERROR_BADCOMMAND, ctx)
             End If
         End If
 
@@ -10412,19 +10417,19 @@ errhandle:
             If RoomID <> 0 Then
                 If Rooms(RoomID).AfterTurnScript <> "" Then
                     If BeginsWith(Rooms(RoomID).AfterTurnScript, "override") Then
-                        ExecuteScript(GetEverythingAfter(Rooms(RoomID).AfterTurnScript, "override"), Thread)
+                        ExecuteScript(GetEverythingAfter(Rooms(RoomID).AfterTurnScript, "override"), ctx)
                         GlobalOverride = True
                     Else
-                        ExecuteScript(Rooms(RoomID).AfterTurnScript, Thread)
+                        ExecuteScript(Rooms(RoomID).AfterTurnScript, ctx)
                     End If
                 End If
             End If
 
             ' was set to NullThread here for some reason
-            If AfterTurnScript <> "" And GlobalOverride = False Then ExecuteScript(AfterTurnScript, Thread)
+            If AfterTurnScript <> "" And GlobalOverride = False Then ExecuteScript(AfterTurnScript, ctx)
         End If
 
-        Print("", Thread)
+        Print("", ctx)
 
         If Not DontSetIt Then
             ' Use "DontSetIt" when we don't want "it" etc. to refer to the object used in this turn.
@@ -10446,7 +10451,7 @@ errhandle:
         CmdStartsWith = BeginsWith(Trim(sCommand), sCheck)
     End Function
 
-    Private Sub ExecGive(GiveString As String, Thread As ThreadData)
+    Private Sub ExecGive(GiveString As String, ctx As Context)
         Dim characterblock As DefineBlock
         Dim ObjArticle As String
         Dim ToLoc As Integer
@@ -10466,7 +10471,7 @@ errhandle:
         If ToLoc = 0 Then
             ToLoc = InStr(GiveString, " the ")
             If ToLoc = 0 Then
-                PlayerErrorMessage(ERROR_BADGIVE, Thread)
+                PlayerErrorMessage(ERROR_BADGIVE, ctx)
                 Exit Sub
             Else
                 ItemToGive = Trim(Mid(GiveString, ToLoc + 4, Len(GiveString) - (ToLoc + 2)))
@@ -10487,10 +10492,10 @@ errhandle:
         If GameASLVersion >= 280 Then
             InventoryPlace = "inventory"
 
-            ItemID = Disambiguate(ItemToGive, InventoryPlace, Thread)
+            ItemID = Disambiguate(ItemToGive, InventoryPlace, ctx)
 
             If ItemID = -1 Then
-                PlayerErrorMessage(ERROR_NOITEM, Thread)
+                PlayerErrorMessage(ERROR_NOITEM, ctx)
                 BadCmdBefore = "give"
                 BadCmdAfter = "to " & CharToGive
                 Exit Sub
@@ -10515,7 +10520,7 @@ errhandle:
             Next i
 
             If NotGotItem = True Then
-                PlayerErrorMessage(ERROR_NOITEM, Thread)
+                PlayerErrorMessage(ERROR_NOITEM, ctx)
                 Exit Sub
             Else
                 ObjArticle = Objs(ItemID).Article
@@ -10526,13 +10531,13 @@ errhandle:
             FoundGiveScript = False
             FoundGiveToObject = False
 
-            GiveToObjectID = Disambiguate(CharToGive, CurrentRoom, Thread)
+            GiveToObjectID = Disambiguate(CharToGive, CurrentRoom, ctx)
             If GiveToObjectID > 0 Then
                 FoundGiveToObject = True
             End If
 
             If Not FoundGiveToObject Then
-                If GiveToObjectID <> -2 Then PlayerErrorMessage(ERROR_BADCHARACTER, Thread)
+                If GiveToObjectID <> -2 Then PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
                 BadCmdBefore = "give " & ItemToGive & " to"
                 Exit Sub
             End If
@@ -10569,7 +10574,7 @@ errhandle:
                 GiveScript = Objs(GiveToObjectID).GiveAnything
                 If GiveScript <> "" Then
                     FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", Objs(ItemID).ObjectName, Thread)
+                    SetStringContents("quest.give.object.name", Objs(ItemID).ObjectName, ctx)
                 End If
             End If
 
@@ -10578,28 +10583,28 @@ errhandle:
                 GiveScript = Objs(ItemID).GiveToAnything
                 If GiveScript <> "" Then
                     FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", Objs(GiveToObjectID).ObjectName, Thread)
+                    SetStringContents("quest.give.object.name", Objs(GiveToObjectID).ObjectName, ctx)
                 End If
             End If
 
             If FoundGiveScript Then
-                ExecuteScript(GiveScript, Thread, ItemID)
+                ExecuteScript(GiveScript, ctx, ItemID)
             Else
-                SetStringContents("quest.error.charactername", Objs(GiveToObjectID).ObjectName, Thread)
+                SetStringContents("quest.error.charactername", Objs(GiveToObjectID).ObjectName, ctx)
 
                 ObjGender = Trim(Objs(GiveToObjectID).Gender)
                 ObjGender = UCase(Left(ObjGender, 1)) & Mid(ObjGender, 2)
-                SetStringContents("quest.error.gender", ObjGender, Thread)
+                SetStringContents("quest.error.gender", ObjGender, ctx)
 
-                SetStringContents("quest.error.article", ObjArticle, Thread)
-                PlayerErrorMessage(ERROR_ITEMUNWANTED, Thread)
+                SetStringContents("quest.error.article", ObjArticle, ctx)
+                PlayerErrorMessage(ERROR_ITEMUNWANTED, ctx)
             End If
         Else
             ' ASL2:
             characterblock = GetThingBlock(CharToGive, CurrentRoom, ObjectType)
 
-            If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & CurrentRoom, ObjectType, Thread) = False Then
-                PlayerErrorMessage(ERROR_BADCHARACTER, Thread)
+            If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & CurrentRoom, ObjectType, ctx) = False Then
+                PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
                 Exit Sub
             End If
 
@@ -10611,7 +10616,7 @@ errhandle:
             GiveLine = 0
             For i = characterblock.StartLine + 1 To characterblock.EndLine - 1
                 If BeginsWith(Lines(i), "give") Then
-                    ItemCheck = RetrieveParameter(Lines(i), Thread)
+                    ItemCheck = RetrieveParameter(Lines(i), ctx)
                     If LCase(ItemCheck) = LCase(ItemToGive) Then
                         GiveLine = i
                     End If
@@ -10620,20 +10625,20 @@ errhandle:
 
             If GiveLine = 0 Then
                 If ObjArticle = "" Then ObjArticle = "it"
-                SetStringContents("quest.error.charactername", RealName, Thread)
-                SetStringContents("quest.error.gender", Trim(GetGender(CharToGive, True, Thread)), Thread)
-                SetStringContents("quest.error.article", ObjArticle, Thread)
-                PlayerErrorMessage(ERROR_ITEMUNWANTED, Thread)
+                SetStringContents("quest.error.charactername", RealName, ctx)
+                SetStringContents("quest.error.gender", Trim(GetGender(CharToGive, True, ctx)), ctx)
+                SetStringContents("quest.error.article", ObjArticle, ctx)
+                PlayerErrorMessage(ERROR_ITEMUNWANTED, ctx)
                 Exit Sub
             End If
 
             ' now, execute the statement on GiveLine
-            ExecuteScript(GetSecondChunk(Lines(GiveLine)), Thread)
+            ExecuteScript(GetSecondChunk(Lines(GiveLine)), ctx)
         End If
 
     End Sub
 
-    Private Sub ExecLook(LookLine As String, Thread As ThreadData)
+    Private Sub ExecLook(LookLine As String, ctx As Context)
 
         Dim AtPos As Integer
         Dim LookStuff, LookItem, LookText As String
@@ -10642,7 +10647,7 @@ errhandle:
         Dim FoundObject As Boolean
         Dim ObjID As Integer
         If Trim(LookLine) = "look" Then
-            ShowRoomInfo((CurrentRoom), Thread)
+            ShowRoomInfo((CurrentRoom), ctx)
         Else
             If GameASLVersion < 391 Then
                 AtPos = InStr(LookLine, " at ")
@@ -10671,70 +10676,70 @@ errhandle:
 
                 InventoryPlace = "inventory"
 
-                ObjID = Disambiguate(LookItem, InventoryPlace & ";" & CurrentRoom, Thread)
+                ObjID = Disambiguate(LookItem, InventoryPlace & ";" & CurrentRoom, ctx)
                 If ObjID > 0 Then
                     FoundObject = True
                 End If
 
                 If Not FoundObject Then
-                    If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                    If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                     BadCmdBefore = "look at"
                     Exit Sub
                 End If
 
                 If Objs(ObjID).IsNetPlayer Then
-                    Print(Objs(ObjID).ObjectAlias & " is another player.", Thread)
+                    Print(Objs(ObjID).ObjectAlias & " is another player.", ctx)
                 Else
-                    DoLook(ObjID, Thread)
+                    DoLook(ObjID, ctx)
                 End If
             Else
                 If BeginsWith(LookItem, "the ") Then
                     LookItem = GetEverythingAfter(LookItem, "the ")
                 End If
 
-                LookLine = RetrLine("object", LookItem, "look", Thread)
+                LookLine = RetrLine("object", LookItem, "look", ctx)
 
                 If LookLine <> "<unfound>" Then
                     'Check for availability
-                    If IsAvailable(LookItem, QUEST_OBJECT, Thread) = False Then
+                    If IsAvailable(LookItem, QUEST_OBJECT, ctx) = False Then
                         LookLine = "<unfound>"
                     End If
                 End If
 
                 If LookLine = "<unfound>" Then
-                    LookLine = RetrLine("character", LookItem, "look", Thread)
+                    LookLine = RetrLine("character", LookItem, "look", ctx)
 
                     If LookLine <> "<unfound>" Then
-                        If IsAvailable(LookItem, QUEST_CHARACTER, Thread) = False Then
+                        If IsAvailable(LookItem, QUEST_CHARACTER, ctx) = False Then
                             LookLine = "<unfound>"
                         End If
                     End If
 
                     If LookLine = "<unfound>" Then
-                        PlayerErrorMessage(ERROR_BADTHING, Thread)
+                        PlayerErrorMessage(ERROR_BADTHING, ctx)
                         Exit Sub
                     ElseIf LookLine = "<undefined>" Then
-                        PlayerErrorMessage(ERROR_DEFAULTLOOK, Thread)
+                        PlayerErrorMessage(ERROR_DEFAULTLOOK, ctx)
                         Exit Sub
                     End If
                 ElseIf LookLine = "<undefined>" Then
-                    PlayerErrorMessage(ERROR_DEFAULTLOOK, Thread)
+                    PlayerErrorMessage(ERROR_DEFAULTLOOK, ctx)
                     Exit Sub
                 End If
 
                 LookStuff = Trim(GetEverythingAfter(Trim(LookLine), "look "))
                 If Left(LookStuff, 1) = "<" Then
-                    LookText = RetrieveParameter(LookLine, Thread)
-                    Print(LookText, Thread)
+                    LookText = RetrieveParameter(LookLine, ctx)
+                    Print(LookText, ctx)
                 Else
-                    ExecuteScript(LookStuff, Thread, ObjID)
+                    ExecuteScript(LookStuff, ctx, ObjID)
                 End If
             End If
         End If
 
     End Sub
 
-    Private Sub ExecSpeak(c As String, Thread As ThreadData)
+    Private Sub ExecSpeak(c As String, ctx As Context)
         Dim i As Integer
         Dim l, s As String
 
@@ -10763,13 +10768,13 @@ errhandle:
 
             InventoryPlace = "inventory"
 
-            ObjID = Disambiguate(ObjectName, InventoryPlace & ";" & CurrentRoom, Thread)
+            ObjID = Disambiguate(ObjectName, InventoryPlace & ";" & CurrentRoom, ctx)
             If ObjID > 0 Then
                 FoundObject = True
             End If
 
             If Not FoundObject Then
-                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                 BadCmdBefore = "speak to"
                 Exit Sub
             End If
@@ -10816,54 +10821,54 @@ errhandle:
             End With
 
             If Not FoundSpeak Then
-                SetStringContents("quest.error.gender", UCase(Left(Objs(ObjID).Gender, 1)) & Mid(Objs(ObjID).Gender, 2), Thread)
-                PlayerErrorMessage(ERROR_DEFAULTSPEAK, Thread)
+                SetStringContents("quest.error.gender", UCase(Left(Objs(ObjID).Gender, 1)) & Mid(Objs(ObjID).Gender, 2), ctx)
+                PlayerErrorMessage(ERROR_DEFAULTSPEAK, ctx)
                 Exit Sub
             End If
 
             SpeakLine = GetEverythingAfter(SpeakLine, "speak ")
 
             If BeginsWith(SpeakLine, "<") Then
-                SpeakText = RetrieveParameter(SpeakLine, Thread)
+                SpeakText = RetrieveParameter(SpeakLine, ctx)
                 If GameASLVersion >= 350 Then
-                    Print(SpeakText, Thread)
+                    Print(SpeakText, ctx)
                 Else
-                    Print(Chr(34) & SpeakText & Chr(34), Thread)
+                    Print(Chr(34) & SpeakText & Chr(34), ctx)
                 End If
             Else
-                ExecuteScript(SpeakLine, Thread, ObjID)
+                ExecuteScript(SpeakLine, ctx, ObjID)
             End If
 
         Else
-            l = RetrLine("character", c, "speak", Thread)
+            l = RetrLine("character", c, "speak", ctx)
             ObjectType = QUEST_CHARACTER
 
             s = Trim(GetEverythingAfter(Trim(l), "speak "))
 
             If l <> "<unfound>" And l <> "<undefined>" Then
                 ' Character exists; but is it available??
-                If IsAvailable(c & "@" & CurrentRoom, ObjectType, Thread) = False Then
+                If IsAvailable(c & "@" & CurrentRoom, ObjectType, ctx) = False Then
                     l = "<undefined>"
                 End If
             End If
 
             If l = "<undefined>" Then
-                PlayerErrorMessage(ERROR_BADCHARACTER, Thread)
+                PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
             ElseIf l = "<unfound>" Then
-                SetStringContents("quest.error.gender", Trim(GetGender(c, True, Thread)), Thread)
-                SetStringContents("quest.error.charactername", c, Thread)
-                PlayerErrorMessage(ERROR_DEFAULTSPEAK, Thread)
+                SetStringContents("quest.error.gender", Trim(GetGender(c, True, ctx)), ctx)
+                SetStringContents("quest.error.charactername", c, ctx)
+                PlayerErrorMessage(ERROR_DEFAULTSPEAK, ctx)
             ElseIf BeginsWith(s, "<") Then
-                s = RetrieveParameter(l, Thread)
-                Print(Chr(34) & s & Chr(34), Thread)
+                s = RetrieveParameter(l, ctx)
+                Print(Chr(34) & s & Chr(34), ctx)
             Else
-                ExecuteScript(s, Thread)
+                ExecuteScript(s, ctx)
             End If
         End If
 
     End Sub
 
-    Private Sub ExecTake(TakeItem As String, Thread As ThreadData)
+    Private Sub ExecTake(TakeItem As String, ctx As Context)
         Dim i As Integer
         Dim FoundItem, FoundTake As Boolean
         Dim OriginalTakeItem As String
@@ -10878,7 +10883,7 @@ errhandle:
         FoundTake = False
         OriginalTakeItem = TakeItem
 
-        ObjID = Disambiguate(TakeItem, CurrentRoom, Thread)
+        ObjID = Disambiguate(TakeItem, CurrentRoom, ctx)
 
         If ObjID < 0 Then
             FoundItem = False
@@ -10889,23 +10894,23 @@ errhandle:
         If FoundItem = False Then
             If ObjID <> -2 Then
                 If GameASLVersion >= 410 Then
-                    ObjID = Disambiguate(TakeItem, "inventory", Thread)
+                    ObjID = Disambiguate(TakeItem, "inventory", ctx)
                     If ObjID >= 0 Then
                         ' Player already has this item
-                        PlayerErrorMessage(ERROR_ALREADYTAKEN, Thread)
+                        PlayerErrorMessage(ERROR_ALREADYTAKEN, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADTHING, Thread)
+                        PlayerErrorMessage(ERROR_BADTHING, ctx)
                     End If
                 ElseIf GameASLVersion >= 391 Then
-                    PlayerErrorMessage(ERROR_BADTHING, Thread)
+                    PlayerErrorMessage(ERROR_BADTHING, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_BADITEM, Thread)
+                    PlayerErrorMessage(ERROR_BADITEM, ctx)
                 End If
             End If
             BadCmdBefore = "take"
             Exit Sub
         Else
-            SetStringContents("quest.error.article", Objs(ObjID).Article, Thread)
+            SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
         End If
 
         ObjectIsInContainer = False
@@ -10913,7 +10918,7 @@ errhandle:
         If GameASLVersion >= 391 Then
 
             If Not PlayerCanAccessObject(ObjID, ParentID, ContainerError) Then
-                PlayerErrorMessage_ExtendInfo(ERROR_BADTAKE, Thread, ContainerError)
+                PlayerErrorMessage_ExtendInfo(ERROR_BADTAKE, ctx, ContainerError)
                 Exit Sub
             End If
 
@@ -10932,11 +10937,11 @@ errhandle:
                         ParentDisplayName = Objs(ParentID).ObjectName
                     End If
 
-                    Print("(first removing " & Objs(ObjID).Article & " from " & ParentDisplayName & ")", Thread)
+                    Print("(first removing " & Objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
 
                     ' Try to remove the object
-                    Thread.AllowRealNamesInCommand = True
-                    ExecCommand("remove " & Objs(ObjID).ObjectName, Thread, False, , True)
+                    ctx.AllowRealNamesInCommand = True
+                    ExecCommand("remove " & Objs(ObjID).ObjectName, ctx, False, , True)
 
                     If GetObjectProperty("parent", ObjID, False, False) <> "" Then
                         ' removing the object failed
@@ -10945,15 +10950,15 @@ errhandle:
                 End If
 
                 If .Type = TA_DEFAULT Then
-                    PlayerErrorMessage(ERROR_DEFAULTTAKE, Thread)
-                    PlayerItem(TakeItem, True, Thread, ObjID)
+                    PlayerErrorMessage(ERROR_DEFAULTTAKE, ctx)
+                    PlayerItem(TakeItem, True, ctx, ObjID)
                 ElseIf .Type = TA_TEXT Then
-                    Print(.Data, Thread)
-                    PlayerItem(TakeItem, True, Thread, ObjID)
+                    Print(.Data, ctx)
+                    PlayerItem(TakeItem, True, ctx, ObjID)
                 ElseIf .Type = TA_SCRIPT Then
-                    ExecuteScript(.Data, Thread, ObjID)
+                    ExecuteScript(.Data, ctx, ObjID)
                 Else
-                    PlayerErrorMessage(ERROR_BADTAKE, Thread)
+                    PlayerErrorMessage(ERROR_BADTAKE, ctx)
                 End If
             End With
         Else
@@ -10962,20 +10967,20 @@ errhandle:
             For i = Objs(ObjID).DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
                 If BeginsWith(Lines(i), "take") Then
                     ScriptLine = Trim(GetEverythingAfter(Trim(Lines(i)), "take"))
-                    ExecuteScript(ScriptLine, Thread, ObjID)
+                    ExecuteScript(ScriptLine, ctx, ObjID)
                     FoundTake = True
                     i = Objs(ObjID).DefinitionSectionEnd
                 End If
             Next i
 
             If FoundTake = False Then
-                PlayerErrorMessage(ERROR_BADTAKE, Thread)
+                PlayerErrorMessage(ERROR_BADTAKE, ctx)
             End If
         End If
 
     End Sub
 
-    Private Sub ExecUse(tuseline As String, Thread As ThreadData)
+    Private Sub ExecUse(tuseline As String, ctx As Context)
         Dim OnWithPos, i, EndOnWith As Integer
         Dim UseLine As String
         Dim UseDeclareLine As String = "", UseOn, UseItem, ScriptLine As String
@@ -10983,7 +10988,7 @@ errhandle:
         UseLine = Trim(GetEverythingAfter(tuseline, "use "))
 
         Dim RoomID As Integer
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
 
         OnWithPos = InStr(UseLine, " on ")
         If OnWithPos = 0 Then
@@ -11013,11 +11018,11 @@ errhandle:
 
             FoundItem = False
 
-            ItemID = Disambiguate(UseItem, InventoryPlace, Thread)
+            ItemID = Disambiguate(UseItem, InventoryPlace, ctx)
             If ItemID > 0 Then FoundItem = True
 
             If Not FoundItem Then
-                If ItemID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, Thread)
+                If ItemID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, ctx)
                 If UseOn = "" Then
                     BadCmdBefore = "use"
                 Else
@@ -11041,7 +11046,7 @@ errhandle:
             Next i
 
             If NotGotItem = True Then
-                PlayerErrorMessage(ERROR_NOITEM, Thread)
+                PlayerErrorMessage(ERROR_NOITEM, ctx)
                 Exit Sub
             End If
         End If
@@ -11074,18 +11079,18 @@ errhandle:
             Else
                 FoundUseOnObject = False
 
-                UseOnObjectID = Disambiguate(UseOn, CurrentRoom, Thread)
+                UseOnObjectID = Disambiguate(UseOn, CurrentRoom, ctx)
                 If UseOnObjectID > 0 Then
                     FoundUseOnObject = True
                 Else
-                    UseOnObjectID = Disambiguate(UseOn, InventoryPlace, Thread)
+                    UseOnObjectID = Disambiguate(UseOn, InventoryPlace, ctx)
                     If UseOnObjectID > 0 Then
                         FoundUseOnObject = True
                     End If
                 End If
 
                 If Not FoundUseOnObject Then
-                    If UseOnObjectID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, Thread)
+                    If UseOnObjectID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
                     BadCmdBefore = "use " & UseItem & " on"
                     Exit Sub
                 End If
@@ -11122,7 +11127,7 @@ errhandle:
                     UseScript = Objs(UseOnObjectID).UseAnything
                     If UseScript <> "" Then
                         FoundUseScript = True
-                        SetStringContents("quest.use.object.name", Objs(ItemID).ObjectName, Thread)
+                        SetStringContents("quest.use.object.name", Objs(ItemID).ObjectName, ctx)
                     End If
                 End If
 
@@ -11131,19 +11136,19 @@ errhandle:
                     UseScript = Objs(ItemID).UseOnAnything
                     If UseScript <> "" Then
                         FoundUseScript = True
-                        SetStringContents("quest.use.object.name", Objs(UseOnObjectID).ObjectName, Thread)
+                        SetStringContents("quest.use.object.name", Objs(UseOnObjectID).ObjectName, ctx)
                     End If
                 End If
             End If
 
             If FoundUseScript Then
-                ExecuteScript(UseScript, Thread, ItemID)
+                ExecuteScript(UseScript, ctx, ItemID)
             Else
-                PlayerErrorMessage(ERROR_DEFAULTUSE, Thread)
+                PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
             End If
         Else
             If UseOn <> "" Then
-                UseDeclareLine = RetrLineParam("object", UseOn, "use", UseItem, Thread)
+                UseDeclareLine = RetrLineParam("object", UseOn, "use", UseItem, ctx)
             Else
                 Found = False
                 For i = 1 To Rooms(RoomID).NumberUse
@@ -11159,42 +11164,42 @@ errhandle:
                 End If
 
                 If Not Found And UseDeclareLine = "" Then
-                    PlayerErrorMessage(ERROR_DEFAULTUSE, Thread)
+                    PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
                     Exit Sub
                 End If
             End If
 
             If UseDeclareLine <> "<unfound>" And UseDeclareLine <> "<undefined>" And UseOn <> "" Then
                 'Check for object availablity
-                If IsAvailable(UseOn, QUEST_OBJECT, Thread) = False Then
+                If IsAvailable(UseOn, QUEST_OBJECT, ctx) = False Then
                     UseDeclareLine = "<undefined>"
                 End If
             End If
 
             If UseDeclareLine = "<undefined>" Then
-                UseDeclareLine = RetrLineParam("character", UseOn, "use", UseItem, Thread)
+                UseDeclareLine = RetrLineParam("character", UseOn, "use", UseItem, ctx)
 
                 If UseDeclareLine <> "<undefined>" Then
                     'Check for character availability
-                    If IsAvailable(UseOn, QUEST_CHARACTER, Thread) = False Then
+                    If IsAvailable(UseOn, QUEST_CHARACTER, ctx) = False Then
                         UseDeclareLine = "<undefined>"
                     End If
                 End If
 
                 If UseDeclareLine = "<undefined>" Then
-                    PlayerErrorMessage(ERROR_BADTHING, Thread)
+                    PlayerErrorMessage(ERROR_BADTHING, ctx)
                     Exit Sub
                 ElseIf UseDeclareLine = "<unfound>" Then
-                    PlayerErrorMessage(ERROR_DEFAULTUSE, Thread)
+                    PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
                     Exit Sub
                 End If
             ElseIf UseDeclareLine = "<unfound>" Then
-                PlayerErrorMessage(ERROR_DEFAULTUSE, Thread)
+                PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
                 Exit Sub
             End If
 
             ScriptLine = Right(UseDeclareLine, Len(UseDeclareLine) - InStr(UseDeclareLine, ">"))
-            ExecuteScript(ScriptLine, Thread)
+            ExecuteScript(ScriptLine, ctx)
         End If
 
     End Sub
@@ -11256,7 +11261,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecuteIf(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecuteIf(ScriptLine As String, ctx As Context)
         Dim IfLine, Conditions, ObscuredLine As String
         Dim ElsePos, ThenPos, ThenEndPos As Integer
         Dim ThenScript As String, ElseScript As String = ""
@@ -11299,15 +11304,15 @@ errhandle:
             ElseScript = Mid(ElseScript, 2, Len(ElseScript) - 2)
         End If
 
-        If ExecuteConditions(Conditions, Thread) Then
-            ExecuteScript((ThenScript), Thread)
+        If ExecuteConditions(Conditions, ctx) Then
+            ExecuteScript((ThenScript), ctx)
         Else
-            If ElsePos <> 0 Then ExecuteScript((ElseScript), Thread)
+            If ElsePos <> 0 Then ExecuteScript((ElseScript), ctx)
         End If
 
     End Sub
 
-    Private Sub ExecuteScript(ScriptLine As String, Thread As ThreadData, Optional NewCallingObjectID As Integer = 0)
+    Private Sub ExecuteScript(ScriptLine As String, ctx As Context, Optional NewCallingObjectID As Integer = 0)
 
         On Error GoTo ErrorHandler
 
@@ -11333,7 +11338,7 @@ errhandle:
 
                 CurScriptLine = Trim(Mid(ScriptLine, CurPos, CRLFPos - CurPos))
                 If CurScriptLine <> vbCrLf Then
-                    ExecuteScript(CurScriptLine, Thread)
+                    ExecuteScript(CurScriptLine, ctx)
                 End If
                 CurPos = CRLFPos + 2
             Loop Until bFinLoop
@@ -11341,169 +11346,169 @@ errhandle:
         End If
 
         If NewCallingObjectID <> 0 Then
-            Thread.CallingObjectID = NewCallingObjectID
+            ctx.CallingObjectID = NewCallingObjectID
         End If
 
         Dim procblock As DefineBlock
 
         Dim ModVol As Integer
         If BeginsWith(ScriptLine, "if ") Then
-            ExecuteIf(ScriptLine, Thread)
+            ExecuteIf(ScriptLine, ctx)
         ElseIf BeginsWith(ScriptLine, "select case ") Then
-            ExecuteSelectCase(ScriptLine, Thread)
+            ExecuteSelectCase(ScriptLine, ctx)
         ElseIf BeginsWith(ScriptLine, "choose ") Then
-            ExecuteChoose(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecuteChoose(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "set ") Then
-            ExecuteSet(GetEverythingAfter(ScriptLine, "set "), Thread)
+            ExecuteSet(GetEverythingAfter(ScriptLine, "set "), ctx)
         ElseIf BeginsWith(ScriptLine, "inc ") Or BeginsWith(ScriptLine, "dec ") Then
-            ExecuteIncDec(ScriptLine, Thread)
+            ExecuteIncDec(ScriptLine, ctx)
         ElseIf BeginsWith(ScriptLine, "say ") Then
-            Print(Chr(34) & RetrieveParameter(ScriptLine, Thread) & Chr(34), Thread)
+            Print(Chr(34) & RetrieveParameter(ScriptLine, ctx) & Chr(34), ctx)
         ElseIf BeginsWith(ScriptLine, "do ") Then
-            ExecuteDo(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecuteDo(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "doaction ") Then
-            ExecuteDoAction(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecuteDoAction(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "give ") Then
-            PlayerItem(RetrieveParameter(ScriptLine, Thread), True, Thread)
+            PlayerItem(RetrieveParameter(ScriptLine, ctx), True, ctx)
         ElseIf BeginsWith(ScriptLine, "lose ") Or BeginsWith(ScriptLine, "drop ") Then
-            PlayerItem(RetrieveParameter(ScriptLine, Thread), False, Thread)
+            PlayerItem(RetrieveParameter(ScriptLine, ctx), False, ctx)
         ElseIf BeginsWith(ScriptLine, "msg nospeak ") Then
-            Print(RetrieveParameter(ScriptLine, Thread), Thread, , True)
+            Print(RetrieveParameter(ScriptLine, ctx), ctx, , True)
         ElseIf BeginsWith(ScriptLine, "msg ") Then
-            Print(RetrieveParameter(ScriptLine, Thread), Thread)
+            Print(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "speak ") Then
-            Speak(RetrieveParameter(ScriptLine, Thread))
+            Speak(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "helpmsg ") Then
-            Print(RetrieveParameter(ScriptLine, Thread), Thread, "help")
+            Print(RetrieveParameter(ScriptLine, ctx), ctx, "help")
         ElseIf Trim(LCase(ScriptLine)) = "helpclose" Then
             ' This command does nothing in the Quest 5 player, as there is no separate help window
         ElseIf BeginsWith(ScriptLine, "goto ") Then
-            PlayGame(RetrieveParameter(ScriptLine, Thread), Thread)
+            PlayGame(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "playerwin") Then
-            FinishGame(STOPGAME_WIN, Thread)
+            FinishGame(STOPGAME_WIN, ctx)
         ElseIf BeginsWith(ScriptLine, "playerlose") Then
-            FinishGame(STOPGAME_LOSE, Thread)
+            FinishGame(STOPGAME_LOSE, ctx)
         ElseIf Trim(LCase(ScriptLine)) = "stop" Then
-            FinishGame(STOPGAME_NULL, Thread)
+            FinishGame(STOPGAME_NULL, ctx)
         ElseIf BeginsWith(ScriptLine, "playwav ") Then
-            PlayWav(RetrieveParameter(ScriptLine, Thread))
+            PlayWav(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "playmidi ") Then
-            PlayMidi(RetrieveParameter(ScriptLine, Thread))
+            PlayMidi(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
-            PlayMP3(RetrieveParameter(ScriptLine, Thread))
+            PlayMP3(RetrieveParameter(ScriptLine, ctx))
         ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
             ' This command does nothing in the Quest 5 player, as there is no separate picture window
         ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (GameASLVersion >= 282 And GameASLVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (GameASLVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
-            ShowPicture(RetrieveParameter(ScriptLine, Thread))
+            ShowPicture(RetrieveParameter(ScriptLine, ctx))
         ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
-            ShowPictureInText(RetrieveParameter(ScriptLine, Thread))
+            ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "animate persist ") Then
-            ShowPicture(RetrieveParameter(ScriptLine, Thread), ANIMATION_PERSIST)
+            ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_PERSIST)
         ElseIf BeginsWith(ScriptLine, "animate ") Then
-            ShowPicture(RetrieveParameter(ScriptLine, Thread), ANIMATION_NORMAL)
+            ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_NORMAL)
         ElseIf BeginsWith(ScriptLine, "extract ") Then
-            ExtractFile(RetrieveParameter(ScriptLine, Thread))
+            ExtractFile(RetrieveParameter(ScriptLine, ctx))
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), False, Thread)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), True, Thread)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, Thread)
+            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), False, Thread, QUEST_CHARACTER)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx, QUEST_CHARACTER)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), True, Thread, QUEST_CHARACTER)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx, QUEST_CHARACTER)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, Thread), QUEST_CHARACTER, Thread)
+            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, True, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, False, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_CHARACTER, True, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, True, ctx)
         ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_CHARACTER, False, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, False, ctx)
         ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), False, Thread)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
         ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, Thread), True, Thread)
+            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
         ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, Thread)
+            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
         ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, True, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
         ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, Thread), QUEST_OBJECT, False, Thread)
+            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
         ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
-            SetOpenClose(RetrieveParameter(ScriptLine, Thread), True, Thread)
+            SetOpenClose(RetrieveParameter(ScriptLine, ctx), True, ctx)
         ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
-            SetOpenClose(RetrieveParameter(ScriptLine, Thread), False, Thread)
+            SetOpenClose(RetrieveParameter(ScriptLine, ctx), False, ctx)
         ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
-            ExecAddRemoveScript(RetrieveParameter(ScriptLine, Thread), True, Thread)
+            ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), True, ctx)
         ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
-            ExecAddRemoveScript(RetrieveParameter(ScriptLine, Thread), False, Thread)
+            ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), False, ctx)
         ElseIf BeginsWith(ScriptLine, "clone ") Then
-            ExecClone(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecClone(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "exec ") Then
-            ExecExec(ScriptLine, Thread)
+            ExecExec(ScriptLine, ctx)
         ElseIf BeginsWith(ScriptLine, "setstring ") Then
-            ExecSetString(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecSetString(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "setvar ") Then
-            ExecSetVar(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecSetVar(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "for ") Then
-            ExecFor(GetEverythingAfter(ScriptLine, "for "), Thread)
+            ExecFor(GetEverythingAfter(ScriptLine, "for "), ctx)
         ElseIf BeginsWith(ScriptLine, "property ") Then
-            ExecProperty(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecProperty(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "type ") Then
-            ExecType(RetrieveParameter(ScriptLine, Thread), Thread)
+            ExecType(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "action ") Then
-            ExecuteAction(GetEverythingAfter(ScriptLine, "action "), Thread)
+            ExecuteAction(GetEverythingAfter(ScriptLine, "action "), ctx)
         ElseIf BeginsWith(ScriptLine, "flag ") Then
-            ExecuteFlag(GetEverythingAfter(ScriptLine, "flag "), Thread)
+            ExecuteFlag(GetEverythingAfter(ScriptLine, "flag "), ctx)
         ElseIf BeginsWith(ScriptLine, "create ") Then
-            ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), Thread)
+            ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), ctx)
         ElseIf BeginsWith(ScriptLine, "destroy exit ") Then
-            DestroyExit(RetrieveParameter(ScriptLine, Thread), Thread)
+            DestroyExit(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "repeat ") Then
-            ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), Thread)
+            ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), ctx)
         ElseIf BeginsWith(ScriptLine, "enter ") Then
-            ExecuteEnter(ScriptLine, Thread)
+            ExecuteEnter(ScriptLine, ctx)
         ElseIf BeginsWith(ScriptLine, "displaytext ") Then
-            DisplayTextSection(RetrieveParameter(ScriptLine, Thread), Thread, "normal")
+            DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "normal")
         ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
-            DisplayTextSection(RetrieveParameter(ScriptLine, Thread), Thread, "help")
+            DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "help")
         ElseIf BeginsWith(ScriptLine, "font ") Then
-            SetFont(RetrieveParameter(ScriptLine, Thread), Thread)
+            SetFont(RetrieveParameter(ScriptLine, ctx), ctx)
         ElseIf BeginsWith(ScriptLine, "pause ") Then
-            Pause(CInt(RetrieveParameter(ScriptLine, Thread)))
+            Pause(CInt(RetrieveParameter(ScriptLine, ctx)))
         ElseIf Trim(LCase(ScriptLine)) = "clear" Then
             DoClear()
         ElseIf Trim(LCase(ScriptLine)) = "helpclear" Then
             ' This command does nothing in the Quest 5 player, as there is no separate help window
         ElseIf BeginsWith(ScriptLine, "background ") Then
-            SetBackground(RetrieveParameter(ScriptLine, Thread))
+            SetBackground(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "foreground ") Then
-            SetForeground(RetrieveParameter(ScriptLine, Thread))
+            SetForeground(RetrieveParameter(ScriptLine, ctx))
         ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
             AutoIntro = False
         ElseIf BeginsWith(ScriptLine, "debug ") Then
-            LogASLError(RetrieveParameter(ScriptLine, Thread), LOGTYPE_MISC)
+            LogASLError(RetrieveParameter(ScriptLine, ctx), LOGTYPE_MISC)
         ElseIf BeginsWith(ScriptLine, "mailto ") Then
-            Dim emailAddress As String = RetrieveParameter(ScriptLine, Thread)
+            Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
             RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
         ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
             LogASLError("'shell' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
         ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
             LogASLError("'shellexe' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
         ElseIf BeginsWith(ScriptLine, "wait") Then
-            ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), Thread)
+            ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
         ElseIf BeginsWith(ScriptLine, "timeron ") Then
-            SetTimerState(RetrieveParameter(ScriptLine, Thread), True)
+            SetTimerState(RetrieveParameter(ScriptLine, ctx), True)
         ElseIf BeginsWith(ScriptLine, "timeroff ") Then
-            SetTimerState(RetrieveParameter(ScriptLine, Thread), False)
+            SetTimerState(RetrieveParameter(ScriptLine, ctx), False)
         ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
             OutPutOn = True
-            UpdateObjectList(Thread)
-            UpdateItems(Thread)
+            UpdateObjectList(ctx)
+            UpdateItems(ctx)
         ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
             OutPutOn = False
         ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
@@ -11511,17 +11516,17 @@ errhandle:
         ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
             m_player.SetPanesVisible("on")
         ElseIf BeginsWith(ScriptLine, "lock ") Then
-            ExecuteLock(RetrieveParameter(ScriptLine, Thread), True)
+            ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
         ElseIf BeginsWith(ScriptLine, "unlock ") Then
-            ExecuteLock(RetrieveParameter(ScriptLine, Thread), False)
+            ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
         ElseIf BeginsWith(ScriptLine, "playmod ") And GameASLVersion < 410 Then
             LogASLError("'playmod' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
         ElseIf BeginsWith(ScriptLine, "modvolume") And GameASLVersion < 410 Then
             LogASLError("'modvolume' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
         ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
-            Thread.DontProcessCommand = True
+            ctx.DontProcessCommand = True
         ElseIf BeginsWith(ScriptLine, "return ") Then
-            Thread.FunctionReturnValue = RetrieveParameter(ScriptLine, Thread)
+            ctx.FunctionReturnValue = RetrieveParameter(ScriptLine, ctx)
         Else
             If BeginsWith(ScriptLine, "'") = False Then
                 LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LOGTYPE_WARNINGERROR)
@@ -11531,14 +11536,14 @@ errhandle:
         Exit Sub
 
 ErrorHandler:
-        Print("[An internal error occurred]", Thread)
+        Print("[An internal error occurred]", ctx)
         LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LOGTYPE_INTERNALERROR)
 
     End Sub
 
-    Private Sub ExecuteEnter(ScriptLine As String, Thread As ThreadData)
+    Private Sub ExecuteEnter(ScriptLine As String, ctx As Context)
         CommandOverrideModeOn = True
-        CommandOverrideVariable = RetrieveParameter(ScriptLine, Thread)
+        CommandOverrideVariable = RetrieveParameter(ScriptLine, ctx)
 
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
@@ -11556,7 +11561,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteSet(SetInstruction As String, Thread As ThreadData)
+    Private Sub ExecuteSet(SetInstruction As String, ctx As Context)
 
         Dim i As Integer
 
@@ -11567,7 +11572,7 @@ ErrorHandler:
         Dim Result As Integer
         If GameASLVersion >= 280 Then
             If BeginsWith(SetInstruction, "interval ") Then
-                TimerInterval = RetrieveParameter(SetInstruction, Thread)
+                TimerInterval = RetrieveParameter(SetInstruction, ctx)
                 SCPos = InStr(TimerInterval, ";")
                 If SCPos = 0 Then
                     LogASLError("Too few parameters in 'set " & SetInstruction & "'", LOGTYPE_WARNINGERROR)
@@ -11590,13 +11595,13 @@ ErrorHandler:
                     Exit Sub
                 End If
             ElseIf BeginsWith(SetInstruction, "string ") Then
-                ExecSetString(RetrieveParameter(SetInstruction, Thread), Thread)
+                ExecSetString(RetrieveParameter(SetInstruction, ctx), ctx)
             ElseIf BeginsWith(SetInstruction, "numeric ") Then
-                ExecSetVar(RetrieveParameter(SetInstruction, Thread), Thread)
+                ExecSetVar(RetrieveParameter(SetInstruction, ctx), ctx)
             ElseIf BeginsWith(SetInstruction, "collectable ") Then
-                ExecuteSetCollectable(RetrieveParameter(SetInstruction, Thread), Thread)
+                ExecuteSetCollectable(RetrieveParameter(SetInstruction, ctx), ctx)
             Else
-                Result = SetUnknownVariableType(RetrieveParameter(SetInstruction, Thread), Thread)
+                Result = SetUnknownVariableType(RetrieveParameter(SetInstruction, ctx), ctx)
                 If Result = SET_ERROR Then
                     LogASLError("Error on setting 'set " & SetInstruction & "'", LOGTYPE_WARNINGERROR)
                 ElseIf Result = SET_UNFOUND Then
@@ -11604,7 +11609,7 @@ ErrorHandler:
                 End If
             End If
         Else
-            ExecuteSetCollectable(RetrieveParameter(SetInstruction, Thread), Thread)
+            ExecuteSetCollectable(RetrieveParameter(SetInstruction, ctx), ctx)
         End If
 
     End Sub
@@ -11626,7 +11631,7 @@ ErrorHandler:
             ' that is begin searched for
             If BeginsWith(Lines(i), statement) Then
                 ' Return the parameters between < and > :
-                Return RetrieveParameter(Lines(i), NullThread)
+                Return RetrieveParameter(Lines(i), _nullContext)
             End If
         Next i
 
@@ -11649,7 +11654,7 @@ ErrorHandler:
             ' Check to see if the line matches the statement
             ' that is begin searched for
             If BeginsWith(Lines(i), statement) Then
-                If UCase(Trim(RetrieveParameter(Lines(i), NullThread))) = UCase(Trim(statementparam)) Then
+                If UCase(Trim(RetrieveParameter(Lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
                     Return Trim(Lines(i))
                 End If
             End If
@@ -11688,7 +11693,7 @@ ErrorHandler:
         GetSecondChunk = SecondChunk
     End Function
 
-    Private Sub GoDirection(Direction As String, Thread As ThreadData)
+    Private Sub GoDirection(Direction As String, ctx As Context)
         ' leaves the current room in direction specified by
         ' 'direction'
 
@@ -11697,12 +11702,12 @@ ErrorHandler:
 
         Dim RoomID As Integer
         Dim DirData As New TextAction
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
 
         If RoomID = 0 Then Exit Sub
 
         If GameASLVersion >= 410 Then
-            Rooms(RoomID).Exits.ExecuteGo(Direction, Thread)
+            Rooms(RoomID).Exits.ExecuteGo(Direction, ctx)
             Exit Sub
         End If
 
@@ -11739,25 +11744,25 @@ ErrorHandler:
         End With
 
         If DirData.Type = TA_SCRIPT And DirData.Data <> "" Then
-            ExecuteScript(DirData.Data, Thread)
+            ExecuteScript(DirData.Data, ctx)
         ElseIf DirData.Data <> "" Then
             NewRoom = DirData.Data
             SCP = InStr(NewRoom, ";")
             If SCP <> 0 Then
                 NewRoom = Trim(Mid(NewRoom, SCP + 1))
             End If
-            PlayGame(NewRoom, Thread)
+            PlayGame(NewRoom, ctx)
         Else
             If Direction = "out" Then
-                PlayerErrorMessage(ERROR_DEFAULTOUT, Thread)
+                PlayerErrorMessage(ERROR_DEFAULTOUT, ctx)
             Else
-                PlayerErrorMessage(ERROR_BADPLACE, Thread)
+                PlayerErrorMessage(ERROR_BADPLACE, ctx)
             End If
         End If
 
     End Sub
 
-    Private Sub GoToPlace(placecheck As String, Thread As ThreadData)
+    Private Sub GoToPlace(placecheck As String, ctx As Context)
         ' leaves the current room in direction specified by
         ' 'direction'
 
@@ -11765,13 +11770,13 @@ ErrorHandler:
         Dim NP As String, Destination As String = "", P, s As String
         DisallowedDirection = False
 
-        P = PlaceExist(placecheck, Thread)
+        P = PlaceExist(placecheck, ctx)
 
         If P <> "" Then
             Destination = P
         ElseIf BeginsWith(placecheck, "the ") Then
             NP = GetEverythingAfter(placecheck, "the ")
-            P = PlaceExist(NP, Thread)
+            P = PlaceExist(NP, ctx)
             If P <> "" Then
                 Destination = P
             Else
@@ -11784,14 +11789,14 @@ ErrorHandler:
         If Destination <> "" Then
             If InStr(Destination, ";") > 0 Then
                 s = Trim(Right(Destination, Len(Destination) - InStr(Destination, ";")))
-                ExecuteScript(s, Thread)
+                ExecuteScript(s, ctx)
             Else
-                PlayGame(Destination, Thread)
+                PlayGame(Destination, ctx)
             End If
         End If
 
         If DisallowedDirection = True Then
-            PlayerErrorMessage(ERROR_BADPLACE, Thread)
+            PlayerErrorMessage(ERROR_BADPLACE, ctx)
         End If
 
     End Sub
@@ -11830,7 +11835,7 @@ ErrorHandler:
                 ErrorString = ErrorString & ":" & vbCrLf & vbCrLf & OpenErrorReport
             End If
 
-            Print("Error: " & ErrorString, NullThread)
+            Print("Error: " & ErrorString, _nullContext)
 
             InitialiseGame = False
 
@@ -11845,7 +11850,7 @@ ErrorHandler:
         GameType = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), "asl-version ") Then
-                ASLVersion = RetrieveParameter(Lines(i), NullThread)
+                ASLVersion = RetrieveParameter(Lines(i), _nullContext)
             ElseIf BeginsWith(Lines(i), "gametype ") Then
                 GameType = GetEverythingAfter(Lines(i), "gametype ")
             End If
@@ -11872,7 +11877,7 @@ ErrorHandler:
         End If
 
         ' Get the name of the game:
-        GameName = RetrieveParameter(Lines(GetDefineBlock("game").StartLine), NullThread)
+        GameName = RetrieveParameter(Lines(GetDefineBlock("game").StartLine), _nullContext)
 
         m_player.UpdateGameName(GameName)
         m_player.Show("Panes")
@@ -11937,12 +11942,12 @@ ErrorHandler:
 
     End Function
 
-    Private Sub LeaveRoom(Thread As ThreadData)
+    Private Sub LeaveRoom(ctx As Context)
         ' leaves the current room
-        GoDirection("out", Thread)
+        GoDirection("out", ctx)
     End Sub
 
-    Private Function PlaceExist(PlaceName As String, Thread As ThreadData) As String
+    Private Function PlaceExist(PlaceName As String, ctx As Context) As String
 
         ' Returns actual name of an available "place" exit, and if
         ' script is executed on going in that direction, that script
@@ -11955,7 +11960,7 @@ ErrorHandler:
         Dim FoundPlace, ScriptPresent As Boolean
         Dim i As Integer
 
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
         FoundPlace = False
         ScriptPresent = False
 
@@ -11973,7 +11978,7 @@ ErrorHandler:
                 CheckPlaceName = CheckPlace
 
                 If GameASLVersion >= 311 And .Places(i).Script = "" Then
-                    DestRoomID = GetRoomID(CheckPlace, Thread)
+                    DestRoomID = GetRoomID(CheckPlace, ctx)
                     If DestRoomID <> 0 Then
                         If Rooms(DestRoomID).RoomAlias <> "" Then
                             CheckPlaceName = Rooms(DestRoomID).RoomAlias
@@ -11998,7 +12003,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub PlayerItem(anitem As String, gotit As Boolean, Thread As ThreadData, Optional ObjID As Integer = 0)
+    Private Sub PlayerItem(anitem As String, gotit As Boolean, ctx As Context, Optional ObjID As Integer = 0)
         ' Gives the player an item (if gotit=True) or takes an
         ' item away from the player (if gotit=False).
 
@@ -12026,18 +12031,18 @@ ErrorHandler:
                 If gotit Then
                     If GameASLVersion >= 391 Then
                         ' Unset parent information, if any
-                        AddToObjectProperties("not parent", ObjID, Thread)
+                        AddToObjectProperties("not parent", ObjID, ctx)
                     End If
-                    MoveThing(Objs(ObjID).ObjectName, "inventory", QUEST_OBJECT, Thread)
+                    MoveThing(Objs(ObjID).ObjectName, "inventory", QUEST_OBJECT, ctx)
 
                     If Objs(ObjID).GainScript <> "" Then
-                        ExecuteScript(Objs(ObjID).GainScript, Thread)
+                        ExecuteScript(Objs(ObjID).GainScript, ctx)
                     End If
                 Else
-                    MoveThing(Objs(ObjID).ObjectName, CurrentRoom, QUEST_OBJECT, Thread)
+                    MoveThing(Objs(ObjID).ObjectName, CurrentRoom, QUEST_OBJECT, ctx)
 
                     If Objs(ObjID).LoseScript <> "" Then
-                        ExecuteScript(Objs(ObjID).LoseScript, Thread)
+                        ExecuteScript(Objs(ObjID).LoseScript, ctx)
                     End If
 
                 End If
@@ -12048,8 +12053,8 @@ ErrorHandler:
             If Not FoundObjectName Then
                 LogASLError("No such object '" & anitem & "'", LOGTYPE_WARNINGERROR)
             Else
-                UpdateItems(Thread)
-                UpdateObjectList(Thread)
+                UpdateItems(ctx)
+                UpdateObjectList(ctx)
             End If
         Else
             For i = 1 To NumberItems
@@ -12059,18 +12064,18 @@ ErrorHandler:
                 End If
             Next i
 
-            UpdateItems(Thread)
+            UpdateItems(ctx)
 
         End If
 
     End Sub
 
-    Friend Function PlayGame(Room As String, Thread As ThreadData) As Boolean
+    Friend Function PlayGame(Room As String, ctx As Context) As Boolean
         'plays the specified room
 
         Dim RoomID As Integer
         Dim RoomScript As String
-        RoomID = GetRoomID(Room, Thread)
+        RoomID = GetRoomID(Room, ctx)
 
         If RoomID = 0 Then
             LogASLError("No such room '" & Room & "'", LOGTYPE_WARNINGERROR)
@@ -12082,30 +12087,30 @@ ErrorHandler:
 
         CurrentRoom = Room
 
-        SetStringContents("quest.currentroom", Room, Thread)
+        SetStringContents("quest.currentroom", Room, ctx)
 
         If GameASLVersion >= 391 And GameASLVersion < 410 Then
-            AddToObjectProperties("visited", Rooms(RoomID).ObjID, Thread)
+            AddToObjectProperties("visited", Rooms(RoomID).ObjID, ctx)
         End If
 
-        ShowRoomInfo((Room), Thread)
+        ShowRoomInfo((Room), ctx)
 
-        UpdateItems(Thread)
+        UpdateItems(ctx)
 
         ' Find script lines and execute them.
 
         If Rooms(RoomID).Script <> "" Then
             RoomScript = Rooms(RoomID).Script
-            ExecuteScript(RoomScript, Thread)
+            ExecuteScript(RoomScript, ctx)
         End If
 
         If GameASLVersion >= 410 Then
-            AddToObjectProperties("visited", Rooms(RoomID).ObjID, Thread)
+            AddToObjectProperties("visited", Rooms(RoomID).ObjID, ctx)
         End If
 
     End Function
 
-    Friend Sub Print(txt As String, Thread As ThreadData, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
+    Friend Sub Print(txt As String, ctx As Context, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
         Dim i As Integer
         Dim PrintString As String
         Dim PrintThis As Boolean
@@ -12127,7 +12132,7 @@ ErrorHandler:
                     PrintThis = False
                     i = i + 1
 
-                    ExecuteScript("wait <>", Thread)
+                    ExecuteScript("wait <>", ctx)
 
                 ElseIf Mid(txt, i, 2) = "|c" Then
                     Select Case Mid(txt, i, 3)
@@ -12141,7 +12146,7 @@ ErrorHandler:
                             PrintThis = False
                             i = i + 1
 
-                            ExecuteScript("clear", Thread)
+                            ExecuteScript("clear", ctx)
                     End Select
                 End If
 
@@ -12153,7 +12158,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Function RetrLine(BlockType As String, blockparam As String, lineret As String, Thread As ThreadData) As String
+    Private Function RetrLine(BlockType As String, blockparam As String, lineret As String, ctx As Context) As String
         'retrieves the line lineret in the block of type blocktype
         'with parameter blockparam in the current room/game block
 
@@ -12193,7 +12198,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function RetrLineParam(BlockType As String, blockparam As String, lineret As String, lineparam As String, Thread As ThreadData) As String
+    Private Function RetrLineParam(BlockType As String, blockparam As String, lineret As String, lineparam As String, ctx As Context) As String
         'retrieves the line lineret with parameter lineparam
         'in the block of type blocktype with parameter blockparam
         'in the current room - of course.
@@ -12219,7 +12224,7 @@ ErrorHandler:
         If searchblock.StartLine <> 0 And searchblock.EndLine <> 0 Then
             For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
                 If BeginsWith(LCase(Lines(i)), LCase(lineret)) Then
-                    If LCase(RetrieveParameter(Lines(i), Thread)) = LCase(lineparam) Then
+                    If LCase(RetrieveParameter(Lines(i), ctx)) = LCase(lineparam) Then
                         RetrLineParam = Trim(Lines(i))
                         FinishLoop = True
                         nonefound = False
@@ -12255,7 +12260,7 @@ ErrorHandler:
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(a), "collectables ") Then
                 DisplayStatus = True
-                PossItems = Trim(RetrieveParameter(Lines(a), NullThread, False))
+                PossItems = Trim(RetrieveParameter(Lines(a), _nullContext, False))
 
                 ' if collectables is a null string, there are no
                 ' collectables. Otherwise, there is one more object than
@@ -12336,7 +12341,7 @@ ErrorHandler:
         ' block, and get its parameters:
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(a), "possitems ") Or BeginsWith(Lines(a), "items ") Then
-                PossItems = RetrieveParameter(Lines(a), NullThread)
+                PossItems = RetrieveParameter(Lines(a), _nullContext)
 
                 If PossItems <> "" Then
                     NumberItems = NumberItems + 1
@@ -12382,7 +12387,7 @@ ErrorHandler:
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(a), "startitems ") Then
-                StartItems = RetrieveParameter(Lines(a), NullThread)
+                StartItems = RetrieveParameter(Lines(a), _nullContext)
 
                 If StartItems <> "" Then
                     CharPos = 1
@@ -12420,18 +12425,18 @@ ErrorHandler:
         Next a
     End Sub
 
-    Private Sub ShowHelp(Thread As ThreadData)
+    Private Sub ShowHelp(ctx As Context)
         ' In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
         ' in the same window as the game text.
-        Print("|b|cl|s14Quest Quick Help|xb|cb|s00", Thread, "help")
-        Print("", Thread, "help")
-        Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", Thread, "help")
-        Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", Thread, "help")
-        Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", Thread, "help")
-        Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", Thread, "help")
-        Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", Thread, "help")
-        Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n", Thread, "help")
-        Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", Thread, "help")
+        Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx, "help")
+        Print("", ctx, "help")
+        Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx, "help")
+        Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx, "help")
+        Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx, "help")
+        Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx, "help")
+        Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx, "help")
+        Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n", ctx, "help")
+        Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx, "help")
     End Sub
 
     Private Sub ReadCatalog(CatData As String)
@@ -12464,7 +12469,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub UpdateDirButtons(AvailableDirs As String, Thread As ThreadData)
+    Private Sub UpdateDirButtons(AvailableDirs As String, ctx As Context)
 
         Dim compassExits As New List(Of ListData)
 
@@ -12521,7 +12526,7 @@ ErrorHandler:
         exitList.Add(New ListData(name, m_listVerbs(ListType.ExitsList)))
     End Sub
 
-    Private Function UpdateDoorways(RoomID As Integer, Thread As ThreadData) As String
+    Private Function UpdateDoorways(RoomID As Integer, ctx As Context) As String
         Dim RoomDisplayText As String = "", OutPlace As String = ""
         Dim SCP As Integer
         Dim Directions As String = "", NSEW As String = "", OutPlaceName As String = ""
@@ -12609,7 +12614,7 @@ ErrorHandler:
             If OutPlace <> "" Then
                 'see if outside has an alias
 
-                OutPlaceAlias = Rooms(GetRoomID(OutPlaceName, Thread)).RoomAlias
+                OutPlaceAlias = Rooms(GetRoomID(OutPlaceName, ctx)).RoomAlias
                 If OutPlaceAlias = "" Then
                     OutPlaceAlias = OutPlace
                 Else
@@ -12625,14 +12630,14 @@ ErrorHandler:
 
                 Directions = Directions & "o"
                 If GameASLVersion >= 280 Then
-                    SetStringContents("quest.doorways.out", OutPlaceName, Thread)
+                    SetStringContents("quest.doorways.out", OutPlaceName, ctx)
                 Else
-                    SetStringContents("quest.doorways.out", OutPlaceAlias, Thread)
+                    SetStringContents("quest.doorways.out", OutPlaceAlias, ctx)
                 End If
-                SetStringContents("quest.doorways.out.display", OutPlaceAlias, Thread)
+                SetStringContents("quest.doorways.out.display", OutPlaceAlias, ctx)
             Else
-                SetStringContents("quest.doorways.out", "", Thread)
-                SetStringContents("quest.doorways.out.display", "", Thread)
+                SetStringContents("quest.doorways.out", "", ctx)
+                SetStringContents("quest.doorways.out.display", "", ctx)
             End If
 
             If NSEW <> "" Then
@@ -12654,19 +12659,19 @@ ErrorHandler:
                 End If
 
                 RoomDisplayText = RoomDisplayText & "You can go " & NSEW & "."
-                SetStringContents("quest.doorways.dirs", NSEW, Thread)
+                SetStringContents("quest.doorways.dirs", NSEW, ctx)
             Else
-                SetStringContents("quest.doorways.dirs", "", Thread)
+                SetStringContents("quest.doorways.dirs", "", ctx)
             End If
         End If
 
-        UpdateDirButtons(Directions, Thread)
+        UpdateDirButtons(Directions, ctx)
 
         UpdateDoorways = RoomDisplayText
 
     End Function
 
-    Private Sub UpdateItems(Thread As ThreadData)
+    Private Sub UpdateItems(ctx As Context)
 
         ' displays the items a player has
         Dim i, j As Integer
@@ -12701,7 +12706,7 @@ ErrorHandler:
         RaiseEvent UpdateList(ListType.InventoryList, invList)
 
         If GameASLVersion >= 284 Then
-            UpdateStatusVars(Thread)
+            UpdateStatusVars(ctx)
         Else
             If NumCollectables > 0 Then
 
@@ -12722,19 +12727,19 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub FinishGame(wingame As Integer, Thread As ThreadData)
+    Private Sub FinishGame(wingame As Integer, ctx As Context)
 
         If wingame = STOPGAME_WIN Then
-            DisplayTextSection("win", Thread)
+            DisplayTextSection("win", ctx)
         ElseIf wingame = STOPGAME_LOSE Then
-            DisplayTextSection("lose", Thread)
+            DisplayTextSection("lose", ctx)
         End If
 
         GameFinished()
 
     End Sub
 
-    Private Sub UpdateObjectList(Thread As ThreadData)
+    Private Sub UpdateObjectList(ctx As Context)
 
         ' Updates object list
         Dim i, PlaceID As Integer
@@ -12766,11 +12771,11 @@ ErrorHandler:
             Next i
 
             If CharsFound = 0 Then
-                SetStringContents("quest.characters", "", Thread)
+                SetStringContents("quest.characters", "", ctx)
             Else
                 'chop off final comma and add full stop (.)
                 CharList = Left(CharsViewable, Len(CharsViewable) - 2)
-                SetStringContents("quest.characters", CharList, Thread)
+                SetStringContents("quest.characters", CharList, ctx)
             End If
         End If
 
@@ -12800,16 +12805,16 @@ ErrorHandler:
             ObjListString = Left(ObjsViewable, Len(ObjsViewable) - 2)
             NFObjListString = Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2)
             ObjsViewable = "There is " & ObjListString & "."
-            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), Thread)
-            SetStringContents("quest.formatobjects", ObjListString, Thread)
+            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), ctx)
+            SetStringContents("quest.formatobjects", ObjListString, ctx)
         Else
-            SetStringContents("quest.objects", "", Thread)
-            SetStringContents("quest.formatobjects", "", Thread)
+            SetStringContents("quest.objects", "", ctx)
+            SetStringContents("quest.formatobjects", "", ctx)
         End If
 
         'FIND DOORWAYS
         Dim RoomID As Integer
-        RoomID = GetRoomID(CurrentRoom, Thread)
+        RoomID = GetRoomID(CurrentRoom, ctx)
 
         With Rooms(RoomID)
 
@@ -12825,7 +12830,7 @@ ErrorHandler:
                 For i = 1 To .NumberPlaces
 
                     If GameASLVersion >= 311 And Rooms(RoomID).Places(i).Script = "" Then
-                        PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, Thread)
+                        PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, ctx)
                         If PlaceID = 0 Then
                             ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
                         Else
@@ -12869,14 +12874,14 @@ ErrorHandler:
         RaiseEvent UpdateList(ListType.ExitsList, mergedList)
     End Sub
 
-    Private Sub UpdateStatusVars(Thread As ThreadData)
+    Private Sub UpdateStatusVars(ctx As Context)
         Dim DisplayData As String
         Dim i As Integer
         Dim status As String = ""
 
         If NumDisplayStrings > 0 Then
             For i = 1 To NumDisplayStrings
-                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_STRING, Thread)
+                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_STRING, ctx)
 
                 If DisplayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
@@ -12887,7 +12892,7 @@ ErrorHandler:
 
         If NumDisplayNumerics > 0 Then
             For i = 1 To NumDisplayNumerics
-                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_NUMERIC, Thread)
+                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_NUMERIC, ctx)
                 If DisplayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
                     status += DisplayData
@@ -12900,7 +12905,7 @@ ErrorHandler:
     End Sub
 
 
-    Private Sub UpdateVisibilityInContainers(Thread As ThreadData, Optional OnlyParent As String = "")
+    Private Sub UpdateVisibilityInContainers(ctx As Context, Optional OnlyParent As String = "")
         ' Use OnlyParent to only update objects that are contained by a specific parent
 
         Dim i, ParentID As Integer
@@ -12942,9 +12947,9 @@ ErrorHandler:
                         ' Otherwise, only if the parent has been seen, AND is either open or transparent,
                         ' then the contents are available.
 
-                        SetAvailability(Objs(i).ObjectName, True, Thread)
+                        SetAvailability(Objs(i).ObjectName, True, ctx)
                     Else
-                        SetAvailability(Objs(i).ObjectName, False, Thread)
+                        SetAvailability(Objs(i).ObjectName, False, ctx)
                     End If
 
                 End If
@@ -13018,7 +13023,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetGoToExits(RoomID As Integer, Thread As ThreadData) As String
+    Private Function GetGoToExits(RoomID As Integer, ctx As Context) As String
 
         Dim i As Integer
         Dim PlaceID As Integer
@@ -13028,7 +13033,7 @@ ErrorHandler:
 
         For i = 1 To Rooms(RoomID).NumberPlaces
             If GameASLVersion >= 311 And Rooms(RoomID).Places(i).Script = "" Then
-                PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, Thread)
+                PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, ctx)
                 If PlaceID = 0 Then
                     LogASLError("No such room '" & Rooms(RoomID).Places(i).PlaceName & "'", LOGTYPE_WARNINGERROR)
                     ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
@@ -13066,8 +13071,8 @@ ErrorHandler:
 
         For i = 1 To NumberSections
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define room ") Then
-                sRoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), NullThread)
-                lRoomID = GetRoomID(sRoomName, NullThread)
+                sRoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+                lRoomID = GetRoomID(sRoomName, _nullContext)
 
                 For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
                     If BeginsWith(Lines(j), "define ") Then
@@ -13110,7 +13115,7 @@ ErrorHandler:
         sRoom = Trim(asParams(0))
         sExit = Trim(asParams(1))
 
-        lRoomID = GetRoomID(sRoom, NullThread)
+        lRoomID = GetRoomID(sRoom, _nullContext)
 
         If lRoomID = 0 Then
             LogASLError("Can't find room '" & sRoom & "'", LOGTYPE_WARNINGERROR)
@@ -13162,21 +13167,21 @@ ErrorHandler:
 
     Private Sub DoBegin()
         Dim gameblock As DefineBlock = GetDefineBlock("game")
-        Dim NewThread As New ThreadData
+        Dim NewThread As New Context
         Dim i As Integer
 
-        SetFont("", NullThread)
-        SetFontSize(0, NullThread)
+        SetFont("", _nullContext)
+        SetFontSize(0, _nullContext)
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(i), "background ") Then
-                SetBackground(RetrieveParameter(Lines(i), NullThread))
+                SetBackground(RetrieveParameter(Lines(i), _nullContext))
             End If
         Next i
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(i), "foreground ") Then
-                SetForeground(RetrieveParameter(Lines(i), NullThread))
+                SetForeground(RetrieveParameter(Lines(i), _nullContext))
             End If
         Next i
 
@@ -13196,7 +13201,7 @@ ErrorHandler:
                 ' the statements which are included last should be executed first.
                 For i = gameblock.EndLine - 1 To gameblock.StartLine + 1 Step -1
                     If BeginsWith(Lines(i), "lib startscript ") Then
-                        NewThread = NullThread
+                        NewThread = _nullContext
                         ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "lib startscript ")), NewThread)
                     End If
                 Next i
@@ -13204,10 +13209,10 @@ ErrorHandler:
 
             For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
                 If BeginsWith(Lines(i), "startscript ") Then
-                    NewThread = NullThread
+                    NewThread = _nullContext
                     ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "startscript")), NewThread)
                 ElseIf BeginsWith(Lines(i), "lib startscript ") And GameASLVersion < 311 Then
-                    NewThread = NullThread
+                    NewThread = _nullContext
                     ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "lib startscript ")), NewThread)
                 End If
             Next i
@@ -13217,31 +13222,31 @@ ErrorHandler:
         GameFullyLoaded = True
 
         ' Display intro text
-        If AutoIntro And GameLoadMethod = "normal" Then DisplayTextSection("intro", NullThread)
+        If AutoIntro And GameLoadMethod = "normal" Then DisplayTextSection("intro", _nullContext)
 
         ' Start game from room specified by "start" statement
         Dim StartRoom As String = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), "start ") Then
-                StartRoom = RetrieveParameter(Lines(i), NullThread)
+                StartRoom = RetrieveParameter(Lines(i), _nullContext)
             End If
         Next i
 
         If Not m_loadedFromQSG Then
-            NewThread = NullThread
+            NewThread = _nullContext
             PlayGame(StartRoom, NewThread)
-            Print("", NullThread)
+            Print("", _nullContext)
         Else
-            UpdateItems(NullThread)
+            UpdateItems(_nullContext)
 
-            Print("Restored saved game", NullThread)
-            Print("", NullThread)
-            PlayGame(CurrentRoom, NullThread)
-            Print("", NullThread)
+            Print("Restored saved game", _nullContext)
+            Print("", _nullContext)
+            PlayGame(CurrentRoom, _nullContext)
+            Print("", _nullContext)
 
             If GameASLVersion >= 391 Then
                 ' For ASL>=391, OnLoad is now run for all games.
-                NewThread = NullThread
+                NewThread = _nullContext
                 ExecuteScript(OnLoadScript, NewThread)
             End If
 
@@ -13332,7 +13337,7 @@ ErrorHandler:
         ' Process command, and change state to Ready if the command finished processing
 
         Try
-            If ExecCommand(DirectCast(command, String), New ThreadData) Then
+            If ExecCommand(DirectCast(command, String), New Context) Then
                 ChangeState(State.Ready)
             End If
         Catch ex As Exception
@@ -13469,7 +13474,7 @@ ErrorHandler:
 
         For Each script As String In scriptList
             Try
-                ExecuteScript(script, NullThread)
+                ExecuteScript(script, _nullContext)
             Catch ex As Exception
                 LogException(ex)
             End Try

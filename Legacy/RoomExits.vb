@@ -120,7 +120,7 @@ Friend Class RoomExits
             End If
 
             If Left(Trim(sTag), 1) = "<" Then
-                asParams = Split(m_game.RetrieveParameter(sTag, m_game.NullThread), ";")
+                asParams = Split(m_game.RetrieveParameter(sTag, m_game._nullContext), ";")
                 sAfterParam = Trim(Mid(sTag, InStr(sTag, ">") + 1))
                 bParam = True
             Else
@@ -160,7 +160,7 @@ Friend Class RoomExits
 
     End Function
 
-    Friend Function AddExitFromCreateScript(sScript As String, ByRef Thread As ThreadData) As Boolean
+    Friend Function AddExitFromCreateScript(sScript As String, ByRef ctx As Context) As Boolean
         ' sScript is the "create exit ..." script, but without the "create exit" at the beginning.
         ' So it's very similar to creating an exit from a tag, except we have the source room
         ' name before the semicolon (which we don't even care about as we ARE the source room).
@@ -183,7 +183,7 @@ Friend Class RoomExits
         ' to
         '   north <dest_room>
 
-        sParam = m_game.RetrieveParameter(sScript, Thread)
+        sParam = m_game.RetrieveParameter(sScript, ctx)
         asParam = Split(sParam, ";")
 
         lParamStart = InStr(sScript, "<")
@@ -226,7 +226,7 @@ Friend Class RoomExits
         End Get
     End Property
 
-    Friend Sub ExecuteGo(sCommand As String, ByRef Thread As ThreadData)
+    Friend Sub ExecuteGo(sCommand As String, ByRef ctx As Context)
         ' This will handle "n", "go east", "go [to] library" etc.
 
         Dim lExitID As Integer
@@ -238,13 +238,13 @@ Friend Class RoomExits
             sCommand = m_game.GetEverythingAfter(sCommand, "go ")
         End If
 
-        lExitID = m_game.Disambiguate(sCommand, m_game.CurrentRoom, Thread, True)
+        lExitID = m_game.Disambiguate(sCommand, m_game.CurrentRoom, ctx, True)
 
         If lExitID = -1 Then
-            m_game.PlayerErrorMessage(ERROR_BADPLACE, Thread)
+            m_game.PlayerErrorMessage(ERROR_BADPLACE, ctx)
         Else
             oExit = GetExitByObjectID(lExitID)
-            oExit.Go(Thread)
+            oExit.Go(ctx)
         End If
 
     End Sub
@@ -276,7 +276,7 @@ Friend Class RoomExits
             End If
         Next
 
-        m_game.SetStringContents("quest.doorways", sDescription, m_game.NullThread)
+        m_game.SetStringContents("quest.doorways", sDescription, m_game._nullContext)
 
         If lCount > 0 Then
             sDescription = sDescPrefix & " " & sDescription & "."

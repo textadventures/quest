@@ -34,7 +34,7 @@ Friend Class RoomExit
             ExitProperty = m_game.GetObjectProperty(PropertyName, m_lObjID, False, False)
         End Get
         Set(Value As String)
-            m_game.AddToObjectProperties(PropertyName & "=" & Value, m_lObjID, m_game.NullThread)
+            m_game.AddToObjectProperties(PropertyName & "=" & Value, m_lObjID, m_game._nullContext)
         End Set
     End Property
 
@@ -46,13 +46,13 @@ Friend Class RoomExit
             Dim sPropertyString As String
             sPropertyString = PropertyName
             If Not Value Then sPropertyString = "not " & sPropertyString
-            m_game.AddToObjectProperties(sPropertyString, m_lObjID, m_game.NullThread)
+            m_game.AddToObjectProperties(sPropertyString, m_lObjID, m_game._nullContext)
         End Set
     End Property
 
     Private WriteOnly Property Action(ActionName As String) As String
         Set(Value As String)
-            m_game.AddToObjectActions("<" & ActionName & "> " & Value, m_lObjID, m_game.NullThread)
+            m_game.AddToObjectActions("<" & ActionName & "> " & Value, m_lObjID, m_game._nullContext)
         End Set
     End Property
 
@@ -120,7 +120,7 @@ Friend Class RoomExit
     Private ReadOnly Property RooMid() As Integer
         Get
             If m_lRoomID = 0 Then
-                m_lRoomID = m_game.GetRoomID(ToRoom, m_game.NullThread)
+                m_lRoomID = m_game.GetRoomID(ToRoom, m_game._nullContext)
             End If
 
             RooMid = m_lRoomID
@@ -157,12 +157,12 @@ Friend Class RoomExit
             ExitProperty("lockmessage") = Value
         End Set
     End Property
-    Private Sub RunAction(ByRef ActionName As String, ByRef Thread As ThreadData)
-        m_game.DoAction(m_lObjID, ActionName, Thread)
+    Private Sub RunAction(ByRef ActionName As String, ByRef ctx As Context)
+        m_game.DoAction(m_lObjID, ActionName, ctx)
     End Sub
 
-    Friend Sub RunScript(ByRef Thread As ThreadData)
-        RunAction("script", Thread)
+    Friend Sub RunScript(ByRef ctx As Context)
+        RunAction("script", ctx)
     End Sub
 
     Private Sub UpdateObjectName()
@@ -189,7 +189,7 @@ Friend Class RoomExit
                 lLastExitID = CInt(lLastExitID)
             End If
             lLastExitID = lLastExitID + 1
-            m_game.AddToObjectProperties("quest.lastexitid=" & CStr(lLastExitID), (m_oParent.ObjID), m_game.NullThread)
+            m_game.AddToObjectProperties("quest.lastexitid=" & CStr(lLastExitID), (m_oParent.ObjID), m_game._nullContext)
             sObjName = sObjName & ".exit" & CStr(lLastExitID)
 
             If RooMid = 0 Then
@@ -215,18 +215,18 @@ Friend Class RoomExit
 
     End Sub
 
-    Friend Sub Go(ByRef Thread As ThreadData)
+    Friend Sub Go(ByRef ctx As Context)
         If IsLocked Then
             If ExitPropertyBool("lockmessage") Then
-                m_game.Print(ExitProperty("lockmessage"), Thread)
+                m_game.Print(ExitProperty("lockmessage"), ctx)
             Else
-                m_game.PlayerErrorMessage(ERROR_LOCKED, Thread)
+                m_game.PlayerErrorMessage(ERROR_LOCKED, ctx)
             End If
         Else
             If IsScript Then
-                RunScript(Thread)
+                RunScript(ctx)
             Else
-                m_game.PlayGame(ToRoom, Thread)
+                m_game.PlayGame(ToRoom, ctx)
             End If
         End If
     End Sub
