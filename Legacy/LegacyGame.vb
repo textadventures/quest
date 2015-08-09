@@ -82,19 +82,19 @@ Public Class LegacyGame
         dirDown = 10
     End Enum
 
-    Private Structure ItemType
-        Dim itemname As String
-        Dim gotitem As Boolean
-    End Structure
+    Private Class ItemType
+        Public itemname As String
+        Public gotitem As Boolean
+    End Class
 
-    Private Structure Collectable
-        Dim collectablename As String
-        Dim collectabletype As String
-        Dim collectablenumber As Double
-        Dim collectabledisplay As String
-        Dim collectablemax As Double
-        Dim DisplayWhenZero As Boolean
-    End Structure
+    Private Class Collectable
+        Public collectablename As String
+        Public collectabletype As String
+        Public collectablenumber As Double
+        Public collectabledisplay As String
+        Public collectablemax As Double
+        Public DisplayWhenZero As Boolean
+    End Class
 
     Friend Structure PropertyType
         Dim PropertyName As String
@@ -12281,6 +12281,7 @@ ErrorHandler:
                     CharPos = 1
                     Do
                         ReDim Preserve Collectables(NumCollectables)
+                        Collectables(NumCollectables) = New Collectable
                         NextComma = InStr(CharPos + 1, PossItems, ",")
                         If NextComma = 0 Then
                             NextComma = InStr(CharPos + 1, PossItems, ";")
@@ -12357,6 +12358,7 @@ ErrorHandler:
                     CharPos = 1
                     Do
                         ReDim Preserve Items(NumberItems)
+                        Items(NumberItems) = New ItemType
                         NextComma = InStr(CharPos + 1, PossItems, ",")
                         If NextComma = 0 Then
                             NextComma = InStr(CharPos + 1, PossItems, ";")
