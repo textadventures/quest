@@ -132,15 +132,15 @@ Public Class LegacyGame
         Public DisplayObjectType As String
     End Class
 
-    Private Structure VariableType
-        Dim VariableName As String
-        Dim VariableContents() As String
-        Dim VariableUBound As Integer
-        Dim DisplayString As String
-        Dim OnChangeScript As String
-        Dim NoZeroDisplay As Boolean
-        Dim Scope As Integer
-    End Structure
+    Private Class VariableType
+        Public VariableName As String
+        Public VariableContents() As String
+        Public VariableUBound As Integer
+        Public DisplayString As String
+        Public OnChangeScript As String
+        Public NoZeroDisplay As Boolean
+        Public Scope As Integer
+    End Class
 
     Private Structure SynonymType
         Dim OriginalWord As String
@@ -7229,6 +7229,7 @@ errhandle:
             NumberNumericVariables = NumberNumericVariables + 1
             iNumNumber = NumberNumericVariables
             ReDim Preserve NumericVariable(iNumNumber)
+            NumericVariable(iNumNumber) = New VariableType
 
             For i = 0 To ArrayIndex
                 NumTitle = NumName
@@ -7436,6 +7437,7 @@ errhandle:
             If BeginsWith(Lines(i), "define variable ") Then
                 DisplayStatus = True
 
+                ThisVariable = New VariableType
                 ReDim ThisVariable.VariableContents(0)
 
                 With ThisVariable
@@ -7478,12 +7480,6 @@ errhandle:
                     NumberStringVariables = NumberStringVariables + 1
                     iStringNumber = NumberStringVariables
                     ReDim Preserve StringVariable(iStringNumber)
-
-                    StringVariable(iStringNumber).VariableName = ThisVariable.VariableName
-
-                    StringVariable(iStringNumber).VariableUBound = 0
-                    ReDim StringVariable(iStringNumber).VariableContents(0)
-
                     StringVariable(iStringNumber) = ThisVariable
 
                     NumDisplayStrings = NumDisplayStrings + 1
@@ -7495,10 +7491,6 @@ errhandle:
                     NumberNumericVariables = NumberNumericVariables + 1
                     iNumNumber = NumberNumericVariables
                     ReDim Preserve NumericVariable(iNumNumber)
-                    ReDim NumericVariable(iNumNumber).VariableContents(0)
-                    NumericVariable(iNumNumber).VariableUBound = 0
-
-                    NumericVariable(iNumNumber).VariableName = ThisVariable.VariableName
                     NumericVariable(iNumNumber) = ThisVariable
 
                     NumDisplayNumerics = NumDisplayNumerics + 1
@@ -9389,6 +9381,7 @@ errhandle:
             NumberStringVariables = NumberStringVariables + 1
             iStringNumber = NumberStringVariables
             ReDim Preserve StringVariable(iStringNumber)
+            StringVariable(iStringNumber) = New VariableType
 
             For i = 0 To ArrayIndex
                 StringTitle = StringName
