@@ -268,28 +268,17 @@ Public Class LegacyGame
         Public Change As String
     End Class
 
-    Private Structure GameChangeDataType
-        Dim NumberChanges As Integer
-        Dim ChangeData() As ChangeType
-    End Structure
+    Private Class GameChangeDataType
+        Public NumberChanges As Integer
+        Public ChangeData() As ChangeType
+    End Class
 
-    Private Structure ResourceType
-        Dim ResourceName As String
-        Dim ResourceStart As Integer
-        Dim ResourceLength As Integer
-        Dim Extracted As Boolean
-    End Structure
-
-    Private Structure MenuItemType
-        Dim Text As String
-        Dim MenuCommand As String
-    End Structure
-
-    Private Structure MenuType
-        Dim NumberItems As Integer
-        Dim Items() As MenuItemType
-        Dim MenuName As String
-    End Structure
+    Private Class ResourceType
+        Public ResourceName As String
+        Public ResourceStart As Integer
+        Public ResourceLength As Integer
+        Public Extracted As Boolean
+    End Class
 
     Private Structure ExpressionResult
         Dim Result As String
@@ -353,7 +342,7 @@ Public Class LegacyGame
     Private DisplayNumericIDs() As Integer
     Private NumDisplayNumerics As Integer
     Private GameFullyLoaded As Boolean
-    Private GameChangeData As GameChangeDataType
+    Private GameChangeData As New GameChangeDataType
     Private MidiIsLooping As Boolean
     Private CurForeground As Integer
     Private CurBackground As Integer
@@ -12421,6 +12410,7 @@ ErrorHandler:
         Chr0Pos = InStr(CatData, Chr(0))
         NumResources = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
         ReDim Preserve Resources(NumResources)
+        Resources(NumResources) = New ResourceType
 
         CatData = Mid(CatData, Chr0Pos + 1)
 
