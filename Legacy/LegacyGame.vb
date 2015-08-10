@@ -33,7 +33,7 @@ Public Class LegacyGame
         Public StackCounter As Integer
     End Class
 
-    Private Function CopyThread(ctx As Context) As Context
+    Private Function CopyContext(ctx As Context) As Context
         Dim result As Context = New Context
         result.CallingObjectID = ctx.CallingObjectID
         result.NumParameters = ctx.NumParameters
@@ -4554,7 +4554,7 @@ ErrorHandler:
 
         End With
 
-        Dim NewThread As Context = CopyThread(ctx)
+        Dim NewThread As Context = CopyContext(ctx)
         NewThread.CallingObjectID = ObjID
 
         ExecuteScript(ActionScript, NewThread, ObjID)
@@ -5251,7 +5251,7 @@ ErrorHandler:
         Dim i, BracketPos As Integer
         Dim CloseBracketPos As Integer
         Dim ParameterData As String
-        Dim NewThread As Context = CopyThread(ctx)
+        Dim NewThread As Context = CopyContext(ctx)
         Dim iNumParameters As Integer
         Dim RunInNewThread As Boolean
         Dim iCurPos, SCP As Integer
@@ -6195,7 +6195,7 @@ ErrorHandler:
         If bIntFuncExecuted Then
             Return sIntFuncResult
         Else
-            Dim NewThread As Context = CopyThread(ctx)
+            Dim NewThread As Context = CopyContext(ctx)
 
             iNumParameters = 0 : iCurPos = 1
 
@@ -8547,7 +8547,7 @@ errhandle:
 
         ExecLine = RetrieveParameter(ScriptLine, ctx)
 
-        Dim NewThread As Context = CopyThread(ctx)
+        Dim NewThread As Context = CopyContext(ctx)
 
         NewThread.StackCounter = NewThread.StackCounter + 1
 
@@ -10146,7 +10146,7 @@ errhandle:
 
         ' Execute any "beforeturn" script:
 
-        Dim NewThread As Context = CopyThread(ctx)
+        Dim NewThread As Context = CopyContext(ctx)
         GlobalOverride = False
 
         ' RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
