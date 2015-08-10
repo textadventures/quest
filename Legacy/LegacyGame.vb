@@ -183,36 +183,36 @@ Public Class LegacyGame
         Dim Script As String
     End Structure
 
-    Friend Structure RoomType
-        Dim RoomName As String
-        Dim RoomAlias As String
-        Dim Commands() As UserDefinedCommandType
-        Dim NumberCommands As Integer
-        Dim Description As TextAction
-        Dim out As ScriptText
-        Dim East As TextAction
-        Dim West As TextAction
-        Dim North As TextAction
-        Dim South As TextAction
-        Dim NorthEast As TextAction
-        Dim NorthWest As TextAction
-        Dim SouthEast As TextAction
-        Dim SouthWest As TextAction
-        Dim Up As TextAction
-        Dim Down As TextAction
-        Dim InDescription As String
-        Dim Look As String
-        Dim Places() As PlaceType
-        Dim NumberPlaces As Integer
-        Dim Prefix As String
-        Dim Script As String
-        Dim use() As ScriptText
-        Dim NumberUse As Integer
-        Dim ObjID As Integer
-        Dim BeforeTurnScript As String
-        Dim AfterTurnScript As String
-        Dim Exits As RoomExits
-    End Structure
+    Friend Class RoomType
+        Public RoomName As String
+        Public RoomAlias As String
+        Public Commands() As UserDefinedCommandType
+        Public NumberCommands As Integer
+        Public Description As TextAction
+        Public out As ScriptText
+        Public East As TextAction
+        Public West As TextAction
+        Public North As TextAction
+        Public South As TextAction
+        Public NorthEast As TextAction
+        Public NorthWest As TextAction
+        Public SouthEast As TextAction
+        Public SouthWest As TextAction
+        Public Up As TextAction
+        Public Down As TextAction
+        Public InDescription As String
+        Public Look As String
+        Public Places() As PlaceType
+        Public NumberPlaces As Integer
+        Public Prefix As String
+        Public Script As String
+        Public use() As ScriptText
+        Public NumberUse As Integer
+        Public ObjID As Integer
+        Public BeforeTurnScript As String
+        Public AfterTurnScript As String
+        Public Exits As RoomExits
+    End Class
 
     Friend Structure ObjectType
         Dim ObjectName As String
@@ -361,8 +361,6 @@ Public Class LegacyGame
     Private ThisTurnIt, ThisTurnItMode As Integer
     Private BadCmdBefore, BadCmdAfter As String
     Private CurCol As Integer
-    Private DefaultObject As ObjectType
-    Private DefaultRoom As RoomType
     Private NumResources As Integer
     Private Resources() As ResourceType
     Private ResourceFile As String
@@ -4074,6 +4072,7 @@ ErrorHandler:
 
             NumberRooms = NumberRooms + 1
             ReDim Preserve Rooms(NumberRooms)
+            Rooms(NumberRooms) = New RoomType
             Rooms(NumberRooms) = Rooms(Objs(ObjID).CorresRoomID)
             Rooms(NumberRooms).RoomName = NewObjName
             Rooms(NumberRooms).ObjID = NumberObjs
@@ -4818,6 +4817,7 @@ ErrorHandler:
             NewName = RetrieveParameter(CreateData, ctx)
             NumberRooms = NumberRooms + 1
             ReDim Preserve Rooms(NumberRooms)
+            Rooms(NumberRooms) = New RoomType
             Rooms(NumberRooms).RoomName = NewName
 
             NumberObjs = NumberObjs + 1
@@ -7630,6 +7630,7 @@ errhandle:
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define room ") Then
                 NumberRooms = NumberRooms + 1
                 ReDim Preserve Rooms(NumberRooms)
+                Rooms(NumberRooms) = New RoomType
 
                 NumberObjs = NumberObjs + 1
                 ReDim Preserve Objs(NumberObjs)
