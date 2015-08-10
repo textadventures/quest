@@ -161,10 +161,10 @@ Public Class LegacyGame
         Public CommandScript As String
     End Class
 
-    Friend Structure TextAction
-        Dim Data As String
-        Dim Type As Integer
-    End Structure
+    Friend Class TextAction
+        Public Data As String
+        Public Type As Integer
+    End Class
 
     Public Const TA_TEXT As Integer = 1
     Public Const TA_SCRIPT As Integer = 2
@@ -188,18 +188,18 @@ Public Class LegacyGame
         Public RoomAlias As String
         Public Commands() As UserDefinedCommandType
         Public NumberCommands As Integer
-        Public Description As TextAction
+        Public Description As New TextAction
         Public out As ScriptText
-        Public East As TextAction
-        Public West As TextAction
-        Public North As TextAction
-        Public South As TextAction
-        Public NorthEast As TextAction
-        Public NorthWest As TextAction
-        Public SouthEast As TextAction
-        Public SouthWest As TextAction
-        Public Up As TextAction
-        Public Down As TextAction
+        Public East As New TextAction
+        Public West As New TextAction
+        Public North As New TextAction
+        Public South As New TextAction
+        Public NorthEast As New TextAction
+        Public NorthWest As New TextAction
+        Public SouthEast As New TextAction
+        Public SouthWest As New TextAction
+        Public Up As New TextAction
+        Public Down As New TextAction
         Public InDescription As String
         Public Look As String
         Public Places() As PlaceType
@@ -234,8 +234,8 @@ Public Class LegacyGame
         Public LoseScript As String
         Public NumberProperties As Integer
         Public Properties() As PropertyType
-        Public Speak As TextAction
-        Public take As TextAction
+        Public Speak As New TextAction
+        Public take As New TextAction
         Public IsRoom As Boolean
         Public IsExit As Boolean
         Public CorresRoom As String
@@ -257,10 +257,10 @@ Public Class LegacyGame
         Public TypesIncluded() As String
         Public NumberAltNames As Integer
         Public AltNames() As String
-        Public AddScript As TextAction
-        Public RemoveScript As TextAction
-        Public OpenScript As TextAction
-        Public CloseScript As TextAction
+        Public AddScript As New TextAction
+        Public RemoveScript As New TextAction
+        Public OpenScript As New TextAction
+        Public CloseScript As New TextAction
     End Class
 
     Private Structure ChangeType
@@ -5827,6 +5827,7 @@ ErrorHandler:
     End Function
 
     Private Function GetTextOrScript(TextScript As String) As TextAction
+        GetTextOrScript = New TextAction
         TextScript = Trim(TextScript)
 
         If Left(TextScript, 1) = "<" Then
