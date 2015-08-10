@@ -171,17 +171,17 @@ Public Class LegacyGame
     Public Const TA_NOTHING As Integer = 0
     Public Const TA_DEFAULT As Integer = 3
 
-    Friend Structure ScriptText
-        Dim Text As String
-        Dim Script As String
-    End Structure
+    Friend Class ScriptText
+        Public Text As String
+        Public Script As String
+    End Class
 
-    Friend Structure PlaceType
-        Dim PlaceName As String
-        Dim Prefix As String
-        Dim PlaceAlias As String
-        Dim Script As String
-    End Structure
+    Friend Class PlaceType
+        Public PlaceName As String
+        Public Prefix As String
+        Public PlaceAlias As String
+        Public Script As String
+    End Class
 
     Friend Class RoomType
         Public RoomName As String
@@ -189,7 +189,7 @@ Public Class LegacyGame
         Public Commands() As UserDefinedCommandType
         Public NumberCommands As Integer
         Public Description As New TextAction
-        Public out As ScriptText
+        Public out As New ScriptText
         Public East As New TextAction
         Public West As New TextAction
         Public North As New TextAction
@@ -5004,6 +5004,7 @@ ErrorHandler:
                 ElseIf BeginsWith(ExitData, "<") Then
                     .NumberPlaces = .NumberPlaces + 1
                     ReDim Preserve .Places(.NumberPlaces)
+                    .Places(.NumberPlaces) = New PlaceType
                     .Places(.NumberPlaces).PlaceName = DestRoom
                 Else
                     LogASLError("Invalid direction in 'create exit " & ExitData & "'", LOGTYPE_WARNINGERROR)
@@ -7817,6 +7818,7 @@ errhandle:
                         ElseIf BeginsWith(Lines(j), "place ") Then
                             .NumberPlaces = .NumberPlaces + 1
                             ReDim Preserve .Places(.NumberPlaces)
+                            .Places(.NumberPlaces) = New PlaceType
                             PlaceData = RetrieveParameter(Lines(j), _nullContext)
                             SCP = InStr(PlaceData, ";")
                             If SCP = 0 Then
@@ -7829,6 +7831,7 @@ errhandle:
                         ElseIf BeginsWith(Lines(j), "use ") Then
                             .NumberUse = .NumberUse + 1
                             ReDim Preserve .use(.NumberUse)
+                            .use(.NumberUse) = New ScriptText
                             .use(.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
                             .use(.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                         ElseIf BeginsWith(Lines(j), "properties ") Then
