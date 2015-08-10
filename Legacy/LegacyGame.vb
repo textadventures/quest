@@ -263,10 +263,10 @@ Public Class LegacyGame
         Public CloseScript As New TextAction
     End Class
 
-    Private Structure ChangeType
-        Dim AppliesTo As String
-        Dim Change As String
-    End Structure
+    Private Class ChangeType
+        Public AppliesTo As String
+        Public Change As String
+    End Class
 
     Private Structure GameChangeDataType
         Dim NumberChanges As Integer
@@ -3624,6 +3624,7 @@ ErrorHandler:
         With GameChangeData
             .NumberChanges = .NumberChanges + 1
             ReDim Preserve .ChangeData(.NumberChanges)
+            .ChangeData(.NumberChanges) = New ChangeType
             .ChangeData(.NumberChanges).AppliesTo = AppliesTo
             .ChangeData(.NumberChanges).Change = ChangeData
         End With
@@ -3789,6 +3790,8 @@ ErrorHandler:
     End Sub
 
     Friend Sub AddToObjectProperties(PropertyInfo As String, ObjID As Integer, ctx As Context)
+        If ObjID = 0 Then Return
+
         Dim CurInfo As String
         Dim SCP, EP As Integer
         Dim CurName, CurValue As String
@@ -5940,10 +5943,12 @@ ErrorHandler:
                 If BeginsWith(.ChangeData(i).AppliesTo, "object ") Then
                     NumObjectData = NumObjectData + 1
                     ReDim Preserve ObjectData(NumObjectData)
+                    ObjectData(NumObjectData) = New ChangeType
                     ObjectData(NumObjectData) = .ChangeData(i)
                 ElseIf BeginsWith(.ChangeData(i).AppliesTo, "room ") Then
                     NumRoomData = NumRoomData + 1
                     ReDim Preserve RoomData(NumRoomData)
+                    RoomData(NumRoomData) = New ChangeType
                     RoomData(NumRoomData) = .ChangeData(i)
                 End If
             Next i
@@ -7002,6 +7007,7 @@ errhandle:
             If BeginsWith(data, "properties ") Or BeginsWith(data, "action ") Then
                 NumStoredData = NumStoredData + 1
                 ReDim Preserve StoredData(NumStoredData)
+                StoredData(NumStoredData) = New ChangeType
                 StoredData(NumStoredData).AppliesTo = AppliesTo
                 StoredData(NumStoredData).Change = data
             ElseIf BeginsWith(data, "create ") Then
