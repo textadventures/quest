@@ -280,11 +280,11 @@ Public Class LegacyGame
         Public Extracted As Boolean
     End Class
 
-    Private Structure ExpressionResult
-        Dim Result As String
-        Dim success As Integer
-        Dim Message As String
-    End Structure
+    Private Class ExpressionResult
+        Public Result As String
+        Public success As Integer
+        Public Message As String
+    End Class
 
     Private m_oChangeLogRooms As ChangeLog
     Private m_oChangeLogObjects As ChangeLog
