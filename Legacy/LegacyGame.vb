@@ -118,19 +118,19 @@ Public Class LegacyGame
         Public GiveScript As String
     End Class
 
-    Private Structure PropertiesActions
-        Dim Properties As String
-        Dim NumberActions As Integer
-        Dim Actions() As ActionType
-        Dim NumberTypesIncluded As Integer
-        Dim TypesIncluded() As String
-    End Structure
+    Private Class PropertiesActions
+        Public Properties As String
+        Public NumberActions As Integer
+        Public Actions() As ActionType
+        Public NumberTypesIncluded As Integer
+        Public TypesIncluded() As String
+    End Class
 
-    Private Structure ObjectListType
-        Dim ObjectName As String
-        Dim ObjectType As Integer
-        Dim DisplayObjectType As String
-    End Structure
+    Private Class ObjectListType
+        Public ObjectName As String
+        Public ObjectType As Integer
+        Public DisplayObjectType As String
+    End Class
 
     Private Structure VariableType
         Dim VariableName As String
@@ -8506,6 +8506,7 @@ errhandle:
 
         NumInObjList = NumInObjList + 1
         ReDim Preserve ObjectList(NumInObjList)
+        ObjectList(NumInObjList) = New ObjectListType
 
         ObjName = CapFirst(ObjName)
 
