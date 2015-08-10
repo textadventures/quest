@@ -453,7 +453,7 @@ Public Class LegacyGame
     Public Sub New(filename As String, originalFilename As String)
         QuestVersion = My.Application.Info.Version.ToString()
         m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
-        InitialiseQuest()
+        LoadCASKeywords()
         GameLoadMethod = "normal"
         m_filename = filename
         m_originalFilename = originalFilename
@@ -2176,10 +2176,6 @@ ErrorHandler:
         End If
     End Sub
 
-    Public Sub CreatePath(sPath As String)
-        System.IO.Directory.CreateDirectory(sPath)
-    End Sub
-
     Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, ctx As Context)
 
         If DoAdd Then
@@ -3134,13 +3130,6 @@ ErrorHandler:
         Return res
 
     End Function
-
-    Private Sub InitialiseQuest()
-        ' Initialise variables
-        LoadCASKeywords()
-        SaveGameFile = ""
-        NumberStringVariables = 0
-    End Sub
 
     Private Function ListContents(ObjID As Integer, ctx As Context) As String
 
@@ -6900,14 +6889,6 @@ errhandle:
             End If
 
         End If
-    End Sub
-
-    Private Sub PlayMidi(MidiFileName As String)
-        PlayMedia(MidiFileName)
-    End Sub
-
-    Private Sub PlayMP3(MP3File As String)
-        PlayMedia(MP3File)
     End Sub
 
     Private Sub PlayWav(parameter As String)
@@ -11312,9 +11293,9 @@ errhandle:
         ElseIf BeginsWith(ScriptLine, "playwav ") Then
             PlayWav(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "playmidi ") Then
-            PlayMidi(RetrieveParameter(ScriptLine, ctx))
+            PlayMedia(RetrieveParameter(ScriptLine, ctx))
         ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
-            PlayMP3(RetrieveParameter(ScriptLine, ctx))
+            PlayMedia(RetrieveParameter(ScriptLine, ctx))
         ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
             ' This command does nothing in the Quest 5 player, as there is no separate picture window
         ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (GameASLVersion >= 282 And GameASLVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (GameASLVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
