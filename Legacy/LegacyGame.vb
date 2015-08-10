@@ -63,8 +63,6 @@ Public Class LegacyGame
     Public Const LOGTYPE_USERERROR As Integer = 6
     Public Const LOGTYPE_INTERNALERROR As Integer = 7
 
-    Private m_CurrentDirectory As String
-
     Private m_oDefineBlockParams As Dictionary(Of String, Dictionary(Of String, String))
 
     Friend Enum eDirection
@@ -310,14 +308,7 @@ Public Class LegacyGame
     Private NumCollectables As Integer
     Private GamePath As String
     Private GameFileName As String
-    Private optOutputFile As Boolean
-    Private OutputFileName As String
-    Private optDefaultFontName As String
-    Private optDefaultFontSize As Double
-    Private optEnableSpeech As Boolean
-    Private optSpeakEverything As Boolean
     Private SaveGameFile As String
-    Private OutputFileHandle As Integer
     Private ObjectList() As ObjectListType
     Private NumInObjList As Integer
     Private DefaultFontName As String
@@ -336,20 +327,14 @@ Public Class LegacyGame
     Private CurFont As String
     Private CurFontSize As Double
     Private NumberScriptData As Integer
-    Private DisplayStatus As Boolean
-    Private DisplayStringIDs() As Integer
     Private NumDisplayStrings As Integer
     Private DisplayNumericIDs() As Integer
     Private NumDisplayNumerics As Integer
     Private GameFullyLoaded As Boolean
     Private GameChangeData As New GameChangeDataType
-    Private MidiIsLooping As Boolean
-    Private CurForeground As Integer
-    Private CurBackground As Integer
     Private LastIt, LastItMode As Integer
     Private ThisTurnIt, ThisTurnItMode As Integer
     Private BadCmdBefore, BadCmdAfter As String
-    Private CurCol As Integer
     Private NumResources As Integer
     Private Resources() As ResourceType
     Private ResourceFile As String
@@ -468,7 +453,6 @@ Public Class LegacyGame
         QuestVersion = My.Application.Info.Version.ToString()
         m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         InitialiseQuest()
-        GetQuestSettings()
         GameLoadMethod = "normal"
         m_filename = filename
         m_originalFilename = originalFilename
@@ -3160,7 +3144,6 @@ ErrorHandler:
         ' Initialise variables
         LoadCASKeywords()
         SaveGameFile = ""
-        OutputFileHandle = -1
         NumberStringVariables = 0
     End Sub
 
@@ -6469,11 +6452,7 @@ ErrorHandler:
         ElseIf FunctionName = "thisobjectname" Then
             Return Objs(ctx.CallingObjectID).ObjectAlias
         ElseIf FunctionName = "speechenabled" Then
-            If optEnableSpeech Then
-                Return "1"
-            Else
-                Return "0"
-            End If
+            Return "1"
         ElseIf FunctionName = "removeformatting" Then
             Return StripCodes(FunctionParameter)
         ElseIf FunctionName = "findexit" And GameASLVersion >= 410 Then
@@ -7402,8 +7381,8 @@ errhandle:
         Dim gameblock As DefineBlock
         gameblock = GetDefineBlock("game")
 
-        DefaultFontName = optDefaultFontName
-        DefaultFontSize = optDefaultFontSize
+        DefaultFontName = "Arial"
+        DefaultFontSize = 9
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(Lines(i), "default fontname ") Then
@@ -7430,7 +7409,6 @@ errhandle:
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(i), "define variable ") Then
-                DisplayStatus = True
 
                 ThisVariable = New VariableType
                 ReDim ThisVariable.VariableContents(0)
@@ -7478,8 +7456,6 @@ errhandle:
                     StringVariable(iStringNumber) = ThisVariable
 
                     NumDisplayStrings = NumDisplayStrings + 1
-                    ReDim Preserve DisplayStringIDs(NumDisplayStrings)
-                    DisplayStringIDs(NumDisplayStrings) = iStringNumber
 
                 ElseIf ThisType = "numeric" Then
                     If ThisVariable.VariableContents(0) = "" Then ThisVariable.VariableContents(0) = CStr(0)
@@ -9202,18 +9178,6 @@ errhandle:
 
     End Function
 
-    Private Sub GetQuestSettings()
-
-        ' TO DO: Implement options
-
-        optDefaultFontName = "Arial"
-        optDefaultFontSize = 9
-
-        optEnableSpeech = True
-        optSpeakEverything = False
-
-    End Sub
-
     Private Function SaveGame(theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
         Dim NewThread As Context = New Context()
         Dim saveData As String
@@ -10117,8 +10081,6 @@ errhandle:
 
         If EchoCommand = True Then
             Print("> " & thecommand, ctx, , True)
-
-            If optSpeakEverything Then Speak(thecommand)
         End If
 
         thecommand = LCase(thecommand)
@@ -12222,7 +12184,6 @@ ErrorHandler:
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(a), "collectables ") Then
-                DisplayStatus = True
                 PossItems = Trim(RetrieveParameter(Lines(a), _nullContext, False))
 
                 ' if collectables is a null string, there are no
