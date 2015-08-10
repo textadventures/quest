@@ -101,10 +101,10 @@ Public Class LegacyGame
         Public PropertyValue As String
     End Class
 
-    Friend Structure ActionType
-        Dim ActionName As String
-        Dim Script As String
-    End Structure
+    Friend Class ActionType
+        Public ActionName As String
+        Public Script As String
+    End Class
 
     Friend Structure UseDataType
         Dim UseObject As String
@@ -3614,6 +3614,7 @@ ErrorHandler:
             If Not FoundExisting Then
                 .NumberActions = .NumberActions + 1
                 ReDim Preserve .Actions(.NumberActions)
+                .Actions(.NumberActions) = New ActionType
                 ActionNum = .NumberActions
             End If
 
@@ -3758,6 +3759,7 @@ ErrorHandler:
             If Not FoundExisting Then
                 .NumberActions = .NumberActions + 1
                 ReDim Preserve .Actions(.NumberActions)
+                .Actions(.NumberActions) = New ActionType
                 ActionNum = .NumberActions
             End If
 
@@ -4694,6 +4696,7 @@ ErrorHandler:
             If Not FoundExisting Then
                 .NumberActions = .NumberActions + 1
                 ReDim Preserve .Actions(.NumberActions)
+                .Actions(.NumberActions) = New ActionType
                 ActionNum = .NumberActions
             End If
 
@@ -5635,9 +5638,10 @@ ErrorHandler:
 
         ActionScript = Trim(Mid(ActionInfo, EP + 1))
 
-        GetObjectActions.ActionName = ActionName
-        GetObjectActions.Script = ActionScript
-
+        Dim result As ActionType = New ActionType
+        result.ActionName = ActionName
+        result.Script = ActionScript
+        Return result
     End Function
 
     Private Function GetObjectID(ObjectName As String, ctx As Context, Optional ObjectRoom As String = "") As Integer
@@ -5765,7 +5769,9 @@ ErrorHandler:
                     .Properties = .Properties & NewProperties.Properties
                     ReDim Preserve .Actions(.NumberActions + NewProperties.NumberActions)
                     For j = .NumberActions + 1 To .NumberActions + NewProperties.NumberActions
-                        .Actions(j) = NewProperties.Actions(j - .NumberActions)
+                        .Actions(j) = New ActionType
+                        .Actions(j).ActionName = NewProperties.Actions(j - .NumberActions).ActionName
+                        .Actions(j).Script = NewProperties.Actions(j - .NumberActions).Script
                     Next j
                     .NumberActions = .NumberActions + NewProperties.NumberActions
 
