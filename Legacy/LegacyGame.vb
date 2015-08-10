@@ -142,33 +142,28 @@ Public Class LegacyGame
         Public Scope As Integer
     End Class
 
-    Private Structure SynonymType
-        Dim OriginalWord As String
-        Dim ConvertTo As String
-    End Structure
+    Private Class SynonymType
+        Public OriginalWord As String
+        Public ConvertTo As String
+    End Class
 
-    Private Structure TimerType
-        Dim TimerName As String
-        Dim TimerInterval As Integer
-        Dim TimerActive As Boolean
-        Dim TimerAction As String
-        Dim TimerTicks As Integer
-        Dim BypassThisTurn As Boolean
-    End Structure
+    Private Class TimerType
+        Public TimerName As String
+        Public TimerInterval As Integer
+        Public TimerActive As Boolean
+        Public TimerAction As String
+        Public TimerTicks As Integer
+        Public BypassThisTurn As Boolean
+    End Class
 
-    Friend Structure UserDefinedCommandType
-        Dim CommandText As String
-        Dim CommandScript As String
-    End Structure
+    Friend Class UserDefinedCommandType
+        Public CommandText As String
+        Public CommandScript As String
+    End Class
 
     Friend Structure TextAction
         Dim Data As String
         Dim Type As Integer
-    End Structure
-
-    Private Structure InterfaceStringType
-        Dim StringName As String
-        Dim StringText As String
     End Structure
 
     Public Const TA_TEXT As Integer = 1
@@ -7809,6 +7804,7 @@ errhandle:
                         ElseIf BeginsWith(Lines(j), "command ") Then
                             .NumberCommands = .NumberCommands + 1
                             ReDim Preserve .Commands(.NumberCommands)
+                            .Commands(.NumberCommands) = New UserDefinedCommandType
                             .Commands(.NumberCommands).CommandText = RetrieveParameter(Lines(j), _nullContext, False)
                             .Commands(.NumberCommands).CommandScript = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                         ElseIf BeginsWith(Lines(j), "place ") Then
@@ -7892,6 +7888,7 @@ errhandle:
                     Else
                         NumberSynonyms = NumberSynonyms + 1
                         ReDim Preserve Synonyms(NumberSynonyms)
+                        Synonyms(NumberSynonyms) = New SynonymType
                         Synonyms(NumberSynonyms).OriginalWord = ThisWord
                         Synonyms(NumberSynonyms).ConvertTo = ConvertWord
                     End If
@@ -7910,6 +7907,7 @@ errhandle:
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define timer ") Then
                 NumberTimers = NumberTimers + 1
                 ReDim Preserve Timers(NumberTimers)
+                Timers(NumberTimers) = New TimerType
                 Timers(NumberTimers).TimerName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
                 Timers(NumberTimers).TimerActive = False
 
