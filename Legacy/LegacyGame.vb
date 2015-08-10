@@ -106,17 +106,17 @@ Public Class LegacyGame
         Public Script As String
     End Class
 
-    Friend Structure UseDataType
-        Dim UseObject As String
-        Dim UseType As Integer
-        Dim UseScript As String
-    End Structure
+    Friend Class UseDataType
+        Public UseObject As String
+        Public UseType As Integer
+        Public UseScript As String
+    End Class
 
-    Friend Structure GiveDataType
-        Dim GiveObject As String
-        Dim GiveType As Integer
-        Dim GiveScript As String
-    End Structure
+    Friend Class GiveDataType
+        Public GiveObject As String
+        Public GiveType As Integer
+        Public GiveScript As String
+    End Class
 
     Private Structure PropertiesActions
         Dim Properties As String
@@ -3712,6 +3712,7 @@ ErrorHandler:
                 If Not Found Then
                     .NumberGiveData = .NumberGiveData + 1
                     ReDim Preserve .GiveData(.NumberGiveData)
+                    .GiveData(.NumberGiveData) = New GiveDataType
                     DataID = .NumberGiveData
                 End If
 
@@ -3978,6 +3979,7 @@ ErrorHandler:
                 If Not Found Then
                     .NumberUseData = .NumberUseData + 1
                     ReDim Preserve .UseData(.NumberUseData)
+                    .UseData(.NumberUseData) = New UseDataType
                     DataID = .NumberUseData
                 End If
 
