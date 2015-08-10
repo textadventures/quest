@@ -1,5 +1,6 @@
 Option Strict On
 Option Explicit On
+Option Infer On
 
 Imports System.Collections.Generic
 Imports System.Linq
@@ -2220,45 +2221,44 @@ ErrorHandler:
         ' section:
 
         Dim sLookLine As String
-        With Objs(ObjID)
+        Dim o = Objs(ObjID)
 
-            For i = 1 To .NumberActions
-                If .Actions(i).ActionName = "look" Then
+        For i = 1 To o.NumberActions
+            If o.Actions(i).ActionName = "look" Then
+                FoundLook = True
+                ExecuteScript(o.Actions(i).Script, ctx)
+                Exit For
+            End If
+        Next i
+
+        If Not FoundLook Then
+            For i = 1 To o.NumberProperties
+                If o.Properties(i).PropertyName = "look" Then
+                    ' do this odd RetrieveParameter stuff to convert any variables
+                    Print(RetrieveParameter("<" & o.Properties(i).PropertyValue & ">", ctx), ctx)
                     FoundLook = True
-                    ExecuteScript(.Actions(i).Script, ctx)
                     Exit For
                 End If
             Next i
+        End If
 
-            If Not FoundLook Then
-                For i = 1 To .NumberProperties
-                    If .Properties(i).PropertyName = "look" Then
-                        ' do this odd RetrieveParameter stuff to convert any variables
-                        Print(RetrieveParameter("<" & .Properties(i).PropertyValue & ">", ctx), ctx)
-                        FoundLook = True
-                        Exit For
+        If Not FoundLook Then
+            For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
+                If BeginsWith(Lines(i), "look ") Then
+
+                    sLookLine = Trim(GetEverythingAfter(Lines(i), "look "))
+
+                    If Left(sLookLine, 1) = "<" Then
+                        Print(RetrieveParameter(Lines(i), ctx), ctx)
+                    Else
+                        ExecuteScript(sLookLine, ctx, ObjID)
                     End If
-                Next i
-            End If
 
-            If Not FoundLook Then
-                For i = .DefinitionSectionStart To .DefinitionSectionEnd
-                    If BeginsWith(Lines(i), "look ") Then
+                    FoundLook = True
+                End If
+            Next i
+        End If
 
-                        sLookLine = Trim(GetEverythingAfter(Lines(i), "look "))
-
-                        If Left(sLookLine, 1) = "<" Then
-                            Print(RetrieveParameter(Lines(i), ctx), ctx)
-                        Else
-                            ExecuteScript(sLookLine, ctx, ObjID)
-                        End If
-
-                        FoundLook = True
-                    End If
-                Next i
-            End If
-
-        End With
 
         If GameASLVersion >= 391 Then
             ObjectContents = ListContents(ObjID, ctx)
@@ -2555,15 +2555,14 @@ ErrorHandler:
         ' Now check if it can be added to (or removed from)
 
         ' First check for an action
-        With Objs(ParentObjID)
-            For i = 1 To .NumberActions
-                If LCase(.Actions(i).ActionName) = Action Then
-                    FoundAction = True
-                    ActionScript = .Actions(i).Script
-                    Exit For
-                End If
-            Next i
-        End With
+        Dim o = Objs(ParentObjID)
+        For i = 1 To o.NumberActions
+            If LCase(o.Actions(i).ActionName) = Action Then
+                FoundAction = True
+                ActionScript = o.Actions(i).Script
+                Exit For
+            End If
+        Next i
 
         If FoundAction Then
             SetStringContents("quest." & LCase(Action) & ".object.name", Objs(ChildObjID).ObjectName, ctx)
@@ -2722,15 +2721,14 @@ ErrorHandler:
         ' Now check if it can be opened (or closed)
 
         ' First check for an action
-        With Objs(ObjID)
-            For i = 1 To .NumberActions
-                If LCase(.Actions(i).ActionName) = Action Then
-                    FoundAction = True
-                    ActionScript = .Actions(i).Script
-                    Exit For
-                End If
-            Next i
-        End With
+        Dim o = Objs(ObjID)
+        For i = 1 To o.NumberActions
+            If LCase(o.Actions(i).ActionName) = Action Then
+                FoundAction = True
+                ActionScript = o.Actions(i).Script
+                Exit For
+            End If
+        Next i
 
         If FoundAction Then
             ExecuteScript(ActionScript, ctx, ObjID)
@@ -2925,38 +2923,35 @@ ErrorHandler:
                 SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
 
                 ' Now see if this object has the relevant action or property
-                With Objs(ObjID)
-                    For i = 1 To .NumberActions
-                        If LCase(.Actions(i).ActionName) = VerbProperty Then
-                            FoundAction = True
-                            ThisScript = .Actions(i).Script
-                            Exit For
-                        End If
-                    Next i
-                End With
+                Dim o = Objs(ObjID)
+                For i = 1 To o.NumberActions
+                    If LCase(o.Actions(i).ActionName) = VerbProperty Then
+                        FoundAction = True
+                        ThisScript = o.Actions(i).Script
+                        Exit For
+                    End If
+                Next i
 
                 If ThisScript <> "" Then
                     ' Avoid an RTE "this array is fixed or temporarily locked"
                     ExecuteScript(ThisScript, ctx, ObjID)
                 End If
 
-                With Objs(ObjID)
-                    If Not FoundAction Then
-                        ' Check properties for a message
-                        For i = 1 To .NumberProperties
-                            If LCase(.Properties(i).PropertyName) = VerbProperty Then
-                                FoundAction = True
-                                Print(.Properties(i).PropertyValue, ctx)
-                                Exit For
-                            End If
-                        Next i
-                    End If
+                If Not FoundAction Then
+                    ' Check properties for a message
+                    For i = 1 To o.NumberProperties
+                        If LCase(o.Properties(i).PropertyName) = VerbProperty Then
+                            FoundAction = True
+                            Print(o.Properties(i).PropertyValue, ctx)
+                            Exit For
+                        End If
+                    Next i
+                End If
 
-                    If Not FoundAction Then
-                        ' Execute the default script from the verb definition
-                        ExecuteScript(Script, ctx)
-                    End If
-                End With
+                If Not FoundAction Then
+                    ' Execute the default script from the verb definition
+                    ExecuteScript(Script, ctx)
+                End If
             End If
         End If
 
@@ -3226,15 +3221,14 @@ ErrorHandler:
                                     End If
                                 End If
 
-                                With Objs(ContentsIDs(i))
-                                    If .Prefix <> "" Then Contents = Contents & .Prefix
-                                    If .ObjectAlias <> "" Then
-                                        Contents = Contents & "|b" & .ObjectAlias & "|xb"
-                                    Else
-                                        Contents = Contents & "|b" & .ObjectName & "|xb"
-                                    End If
-                                    If .Suffix <> "" Then Contents = Contents & " " & .Suffix
-                                End With
+                                Dim o = Objs(ContentsIDs(i))
+                                If o.Prefix <> "" Then Contents = Contents & o.Prefix
+                                If o.ObjectAlias <> "" Then
+                                    Contents = Contents & "|b" & o.ObjectAlias & "|xb"
+                                Else
+                                    Contents = Contents & "|b" & o.ObjectName & "|xb"
+                                End If
+                                If o.Suffix <> "" Then Contents = Contents & " " & o.Suffix
                             Next i
                         End If
 
