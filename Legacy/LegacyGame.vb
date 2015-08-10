@@ -214,54 +214,54 @@ Public Class LegacyGame
         Public Exits As RoomExits
     End Class
 
-    Friend Structure ObjectType
-        Dim ObjectName As String
-        Dim ObjectAlias As String
-        Dim Detail As String
-        Dim ContainerRoom As String
-        Dim Exists As Boolean
-        Dim IsGlobal As Boolean
-        Dim Prefix As String
-        Dim Suffix As String
-        Dim Gender As String
-        Dim Article As String
-        Dim DefinitionSectionStart As Integer
-        Dim DefinitionSectionEnd As Integer
-        Dim Visible As Boolean
-        Dim UnallocatedPlayer As Boolean
-        Dim IsNetPlayer As Boolean
-        Dim GainScript As String
-        Dim LoseScript As String
-        Dim NumberProperties As Integer
-        Dim Properties() As PropertyType
-        Dim Speak As TextAction
-        Dim take As TextAction
-        Dim IsRoom As Boolean
-        Dim IsExit As Boolean
-        Dim CorresRoom As String
-        Dim CorresRoomID As Integer
-        Dim Loaded As Boolean
-        Dim NumberActions As Integer
-        Dim Actions() As ActionType
-        Dim NumberUseData As Integer
-        Dim UseData() As UseDataType
-        Dim UseAnything As String
-        Dim UseOnAnything As String
-        Dim use As String
-        Dim NumberGiveData As Integer
-        Dim GiveData() As GiveDataType
-        Dim GiveAnything As String
-        Dim GiveToAnything As String
-        Dim DisplayType As String
-        Dim NumberTypesIncluded As Integer
-        Dim TypesIncluded() As String
-        Dim NumberAltNames As Integer
-        Dim AltNames() As String
-        Dim AddScript As TextAction
-        Dim RemoveScript As TextAction
-        Dim OpenScript As TextAction
-        Dim CloseScript As TextAction
-    End Structure
+    Friend Class ObjectType
+        Public ObjectName As String
+        Public ObjectAlias As String
+        Public Detail As String
+        Public ContainerRoom As String
+        Public Exists As Boolean
+        Public IsGlobal As Boolean
+        Public Prefix As String
+        Public Suffix As String
+        Public Gender As String
+        Public Article As String
+        Public DefinitionSectionStart As Integer
+        Public DefinitionSectionEnd As Integer
+        Public Visible As Boolean
+        Public UnallocatedPlayer As Boolean
+        Public IsNetPlayer As Boolean
+        Public GainScript As String
+        Public LoseScript As String
+        Public NumberProperties As Integer
+        Public Properties() As PropertyType
+        Public Speak As TextAction
+        Public take As TextAction
+        Public IsRoom As Boolean
+        Public IsExit As Boolean
+        Public CorresRoom As String
+        Public CorresRoomID As Integer
+        Public Loaded As Boolean
+        Public NumberActions As Integer
+        Public Actions() As ActionType
+        Public NumberUseData As Integer
+        Public UseData() As UseDataType
+        Public UseAnything As String
+        Public UseOnAnything As String
+        Public use As String
+        Public NumberGiveData As Integer
+        Public GiveData() As GiveDataType
+        Public GiveAnything As String
+        Public GiveToAnything As String
+        Public DisplayType As String
+        Public NumberTypesIncluded As Integer
+        Public TypesIncluded() As String
+        Public NumberAltNames As Integer
+        Public AltNames() As String
+        Public AddScript As TextAction
+        Public RemoveScript As TextAction
+        Public OpenScript As TextAction
+        Public CloseScript As TextAction
+    End Class
 
     Private Structure ChangeType
         Dim AppliesTo As String
@@ -4063,6 +4063,7 @@ ErrorHandler:
 
         NumberObjs = NumberObjs + 1
         ReDim Preserve Objs(NumberObjs)
+        Objs(NumberObjs) = New ObjectType
         Objs(NumberObjs) = Objs(ObjID)
         Objs(NumberObjs).ContainerRoom = CloneTo
         Objs(NumberObjs).ObjectName = NewObjName
@@ -4822,6 +4823,7 @@ ErrorHandler:
 
             NumberObjs = NumberObjs + 1
             ReDim Preserve Objs(NumberObjs)
+            Objs(NumberObjs) = New ObjectType
             Objs(NumberObjs).ObjectName = NewName
             Objs(NumberObjs).IsRoom = True
             Objs(NumberObjs).CorresRoom = NewName
@@ -4854,6 +4856,7 @@ ErrorHandler:
 
             NumberObjs = NumberObjs + 1
             ReDim Preserve Objs(NumberObjs)
+            Objs(NumberObjs) = New ObjectType
 
             With Objs(NumberObjs)
                 .ObjectName = NewName
@@ -7505,6 +7508,7 @@ errhandle:
 
         NumberObjs = 1
         ReDim Objs(1)
+        Objs(1) = New ObjectType
         With Objs(1)
             .ObjectName = "game"
             .ObjectAlias = ""
@@ -7634,6 +7638,7 @@ errhandle:
 
                 NumberObjs = NumberObjs + 1
                 ReDim Preserve Objs(NumberObjs)
+                Objs(NumberObjs) = New ObjectType
 
                 With Rooms(NumberRooms)
                     .RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
@@ -9458,6 +9463,7 @@ errhandle:
 
                         NumberObjs = NumberObjs + 1
                         ReDim Preserve Objs(NumberObjs)
+                        Objs(NumberObjs) = New ObjectType
 
                         With Objs(NumberObjs)
                             .ObjectName = RetrieveParameter(Lines(j), _nullContext)
@@ -9647,6 +9653,7 @@ errhandle:
                         CRoomName = OrigCRoomName
                         NumberChars = NumberChars + 1
                         ReDim Preserve Chars(NumberChars)
+                        Chars(NumberChars) = New ObjectType
                         Chars(NumberChars).ObjectName = RetrieveParameter(Lines(j), _nullContext)
                         Chars(NumberChars).DefinitionSectionStart = j
                         Chars(NumberChars).ContainerRoom = ""

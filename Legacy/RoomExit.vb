@@ -19,6 +19,7 @@ Friend Class RoomExit
         m_game = game
         game.NumberObjs = game.NumberObjs + 1
         ReDim Preserve game.Objs(game.NumberObjs)
+        game.Objs(game.NumberObjs) = New ObjectType
         m_lObjID = game.NumberObjs
         With game.Objs(m_lObjID)
             .IsExit = True
