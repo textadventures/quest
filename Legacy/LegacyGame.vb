@@ -536,7 +536,7 @@ Public Class LegacyGame
 
         Loop Until FCodePos = 0
 
-        StripCodes = InputString
+        Return InputString
 
     End Function
 
@@ -589,8 +589,7 @@ Public Class LegacyGame
                         ' character
                         LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
                         OpenErrorReport = OpenErrorReport & "Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'." & vbCrLf
-                        CheckSections = False
-                        Exit Function
+                        Return False
                     End If
                 End If
 
@@ -618,20 +617,13 @@ Public Class LegacyGame
             End If
         Next i
 
-        CheckSections = True
-
         If Defines > 0 Then
             LogASLError("Missing 'end define'", LOGTYPE_FATALERROR)
             OpenErrorReport = OpenErrorReport & "Missing 'end define'." & vbCrLf
             HasErrors = True
         End If
 
-        If HasErrors Then
-            CheckSections = False
-        Else
-            CheckSections = True
-        End If
-
+        Return Not HasErrors
     End Function
 
     Private Function ConvertFriendlyIfs() As Boolean
@@ -679,8 +671,7 @@ Public Class LegacyGame
                     ' by prefixing line with '<ERROR;*; where * is the mismatched
                     ' character
                     LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
-                    ConvertFriendlyIfs = True
-                    Exit Function
+                    Return True
                 End If
                 StartParamPos = InStr(ConvPos, Lines(i), "(")
 
@@ -701,8 +692,7 @@ Public Class LegacyGame
                 'EndParamPos = InStr(ConvPos, VarObscureLine, ")")
                 If EndParamPos = 0 Then
                     LogASLError("Expected ) in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
-                    ConvertFriendlyIfs = True
-                    Exit Function
+                    Return True
                 End If
 
                 ParamData = Mid(Lines(i), StartParamPos + 1, (EndParamPos - StartParamPos) - 1)
@@ -722,8 +712,7 @@ Public Class LegacyGame
                                         SymbPos = InStr(ParamData, "=")
                                         If SymbPos = 0 Then
                                             LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
-                                            ConvertFriendlyIfs = True
-                                            Exit Function
+                                            Return True
                                         Else
                                             Symbol = "="
                                         End If
@@ -776,7 +765,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        ConvertFriendlyIfs = False
+        Return False
     End Function
 
     Private Sub ConvertMultiLineSections()
@@ -987,10 +976,8 @@ Public Class LegacyGame
 
         'Exit if errors found
         If bHasErrors = True Then
-            ErrorCheck = True
-            Exit Function
+            Return True
         End If
-
 
         ' Checks that define sections have parameters:
         For i = 1 To NumberSections
@@ -1000,8 +987,7 @@ Public Class LegacyGame
             If BeginsWith(Lines(iCurBegin), "define game") Then
                 If InStr(Lines(iCurBegin), "<") = 0 Then
                     LogASLError("'define game' has no parameter - game has no name", LOGTYPE_FATALERROR)
-                    ErrorCheck = True
-                    Exit Function
+                    Return True
                 End If
             Else
                 If Not BeginsWith(Lines(iCurBegin), "define synonyms") And Not BeginsWith(Lines(iCurBegin), "define options") Then
@@ -1013,12 +999,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        'Exit if errors found
-        If bHasErrors = True Then
-            ErrorCheck = True
-            Exit Function
-        End If
-
+        Return bHasErrors
     End Function
 
     Private Function GetAfterParameter(InputLine As String) As String
@@ -1029,9 +1010,9 @@ Public Class LegacyGame
         EOP = InStr(InputLine, ">")
 
         If EOP = 0 Or EOP + 1 > Len(InputLine) Then
-            GetAfterParameter = ""
+            Return ""
         Else
-            GetAfterParameter = Trim(Mid(InputLine, EOP + 1))
+            Return Trim(Mid(InputLine, EOP + 1))
         End If
 
     End Function
@@ -1104,9 +1085,9 @@ Public Class LegacyGame
         Next i
 
         If bInParameter Then
-            ObliterateParameters = "'<ERROR;" & ExitCharacter & ";" & OutputLine
+            Return "'<ERROR;" & ExitCharacter & ";" & OutputLine
         Else
-            ObliterateParameters = OutputLine
+            Return OutputLine
         End If
 
     End Function
@@ -1157,7 +1138,7 @@ Public Class LegacyGame
             OutputLine = "'<ERROR;" & ExitCharacter & ";" & OutputLine
         End If
 
-        ObliterateVariableNames = OutputLine
+        Return OutputLine
 
     End Function
 
@@ -1228,21 +1209,11 @@ Public Class LegacyGame
             OutputLine = InputLine
         End If
 
-        ReportErrorLine = OutputLine
+        Return OutputLine
     End Function
 
     Private Function YesNo(yn As Boolean) As String
-        If yn = True Then YesNo = "Yes" Else YesNo = "No"
-    End Function
-
-    Private Function OneZero(theValue As Boolean) As Integer
-        ' Used for check boxes where 1=true, 0=false
-        If theValue = True Then OneZero = 1 Else OneZero = 0
-    End Function
-
-    Private Function IsOne(theValue As Integer) As Boolean
-        ' Used for checkboxes
-        If theValue = 1 Then IsOne = True Else IsOne = False
+        If yn = True Then Return "Yes" Else Return "No"
     End Function
 
     Private Function IsYes(yn As String) As Boolean
