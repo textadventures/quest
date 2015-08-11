@@ -3887,52 +3887,50 @@ ErrorHandler:
         Dim EP As Integer
         Dim CurUseType, i As Integer
 
-        With Objs(ObjID)
+        Dim o = Objs(ObjID)
 
-            If BeginsWith(UseData, "on ") Then
-                UseData = GetEverythingAfter(UseData, "on ")
-                If BeginsWith(UseData, "anything ") Then
-                    .UseOnAnything = GetEverythingAfter(UseData, "anything ")
-                    Exit Sub
-                Else
-                    CurUseType = USE_ON_SOMETHING
-                End If
+        If BeginsWith(UseData, "on ") Then
+            UseData = GetEverythingAfter(UseData, "on ")
+            If BeginsWith(UseData, "anything ") Then
+                o.UseOnAnything = GetEverythingAfter(UseData, "anything ")
+                Exit Sub
             Else
-                If BeginsWith(UseData, "anything ") Then
-                    .UseAnything = GetEverythingAfter(UseData, "anything ")
-                    Exit Sub
-                Else
-                    CurUseType = USE_SOMETHING_ON
+                CurUseType = USE_ON_SOMETHING
+            End If
+        Else
+            If BeginsWith(UseData, "anything ") Then
+                o.UseAnything = GetEverythingAfter(UseData, "anything ")
+                Exit Sub
+            Else
+                CurUseType = USE_SOMETHING_ON
+            End If
+        End If
+
+        If Left(Trim(UseData), 1) = "<" Then
+            ObjectName = RetrieveParameter(UseData, _nullContext)
+            Found = False
+            For i = 1 To o.NumberUseData
+                If o.UseData(i).UseType = CurUseType And LCase(o.UseData(i).UseObject) = LCase(ObjectName) Then
+                    DataID = i
+                    i = o.NumberUseData
+                    Found = True
                 End If
+            Next i
+
+            If Not Found Then
+                o.NumberUseData = o.NumberUseData + 1
+                ReDim Preserve o.UseData(o.NumberUseData)
+                o.UseData(o.NumberUseData) = New UseDataType
+                DataID = o.NumberUseData
             End If
 
-            If Left(Trim(UseData), 1) = "<" Then
-                ObjectName = RetrieveParameter(UseData, _nullContext)
-                Found = False
-                For i = 1 To .NumberUseData
-                    If .UseData(i).UseType = CurUseType And LCase(.UseData(i).UseObject) = LCase(ObjectName) Then
-                        DataID = i
-                        i = .NumberUseData
-                        Found = True
-                    End If
-                Next i
-
-                If Not Found Then
-                    .NumberUseData = .NumberUseData + 1
-                    ReDim Preserve .UseData(.NumberUseData)
-                    .UseData(.NumberUseData) = New UseDataType
-                    DataID = .NumberUseData
-                End If
-
-                EP = InStr(UseData, ">")
-                .UseData(DataID).UseType = CurUseType
-                .UseData(DataID).UseObject = ObjectName
-                .UseData(DataID).UseScript = Mid(UseData, EP + 2)
-            Else
-                .use = Trim(UseData)
-            End If
-
-        End With
+            EP = InStr(UseData, ">")
+            o.UseData(DataID).UseType = CurUseType
+            o.UseData(DataID).UseObject = ObjectName
+            o.UseData(DataID).UseScript = Mid(UseData, EP + 2)
+        Else
+            o.use = Trim(UseData)
+        End If
 
     End Sub
 
@@ -4081,25 +4079,25 @@ ErrorHandler:
             Exit Sub
         End If
 
-        With Objs(ObjID)
-            .NumberTypesIncluded = .NumberTypesIncluded + 1
-            ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-            .TypesIncluded(.NumberTypesIncluded) = TypeName
+        Dim o = Objs(ObjID)
 
-            PropertyData = GetPropertiesInType(TypeName)
-            AddToObjectProperties(PropertyData.Properties, ObjID, ctx)
-            For i = 1 To PropertyData.NumberActions
-                AddObjectAction(ObjID, PropertyData.Actions(i).ActionName, PropertyData.Actions(i).Script)
-            Next i
+        o.NumberTypesIncluded = o.NumberTypesIncluded + 1
+        ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
+        o.TypesIncluded(o.NumberTypesIncluded) = TypeName
 
-            ' New as of Quest 4.0. Fixes bug that "if type" would fail for any
-            ' parent types included by the "type" command.
-            For i = 1 To PropertyData.NumberTypesIncluded
-                .NumberTypesIncluded = .NumberTypesIncluded + 1
-                ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                .TypesIncluded(.NumberTypesIncluded) = PropertyData.TypesIncluded(i)
-            Next i
-        End With
+        PropertyData = GetPropertiesInType(TypeName)
+        AddToObjectProperties(PropertyData.Properties, ObjID, ctx)
+        For i = 1 To PropertyData.NumberActions
+            AddObjectAction(ObjID, PropertyData.Actions(i).ActionName, PropertyData.Actions(i).Script)
+        Next i
+
+        ' New as of Quest 4.0. Fixes bug that "if type" would fail for any
+        ' parent types included by the "type" command.
+        For i = 1 To PropertyData.NumberTypesIncluded
+            o.NumberTypesIncluded = o.NumberTypesIncluded + 1
+            ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
+            o.TypesIncluded(o.NumberTypesIncluded) = PropertyData.TypesIncluded(i)
+        Next i
     End Sub
 
     Private Function ExecuteIfAction(ActionData As String) As Boolean
@@ -4139,14 +4137,14 @@ ErrorHandler:
 
         Result = False
 
-        With Objs(ObjID)
-            For i = 1 To .NumberActions
-                If LCase(.Actions(i).ActionName) = LCase(ActionName) Then
-                    i = .NumberActions
-                    Result = True
-                End If
-            Next i
-        End With
+        Dim o = Objs(ObjID)
+
+        For i = 1 To o.NumberActions
+            If LCase(o.Actions(i).ActionName) = LCase(ActionName) Then
+                i = o.NumberActions
+                Result = True
+            End If
+        Next i
 
         ExecuteIfAction = Result
 
@@ -4189,14 +4187,14 @@ ErrorHandler:
 
         Result = False
 
-        With Objs(ObjID)
-            For i = 1 To .NumberTypesIncluded
-                If LCase(.TypesIncluded(i)) = LCase(TypeName) Then
-                    i = .NumberTypesIncluded
-                    Result = True
-                End If
-            Next i
-        End With
+        Dim o = Objs(ObjID)
+
+        For i = 1 To o.NumberTypesIncluded
+            If LCase(o.TypesIncluded(i)) = LCase(TypeName) Then
+                i = o.NumberTypesIncluded
+                Result = True
+            End If
+        Next i
 
         ExecuteIfType = Result
 
@@ -4492,23 +4490,21 @@ ErrorHandler:
         Dim ActionScript As String = ""
         Dim i As Integer
 
-        With Objs(ObjID)
+        Dim o = Objs(ObjID)
 
-            For i = 1 To .NumberActions
-                If .Actions(i).ActionName = LCase(ActionName) Then
-                    FoundAction = True
-                    ActionScript = .Actions(i).Script
-                    Exit For
-                End If
-            Next i
-
-            If Not FoundAction Then
-                If LogError Then LogASLError("No such action '" & ActionName & "' defined for object '" & .ObjectName & "'")
-                DoAction = False
-                Exit Function
+        For i = 1 To o.NumberActions
+            If o.Actions(i).ActionName = LCase(ActionName) Then
+                FoundAction = True
+                ActionScript = o.Actions(i).Script
+                Exit For
             End If
+        Next i
 
-        End With
+        If Not FoundAction Then
+            If LogError Then LogASLError("No such action '" & ActionName & "' defined for object '" & o.ObjectName & "'")
+            DoAction = False
+            Exit Function
+        End If
 
         Dim NewThread As Context = CopyContext(ctx)
         NewThread.CallingObjectID = ObjID
@@ -4522,14 +4518,14 @@ ErrorHandler:
     Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
         Dim i As Integer
 
-        With Objs(ObjID)
-            For i = 1 To .NumberActions
-                If .Actions(i).ActionName = LCase(ActionName) Then
-                    HasAction = True
-                    Exit Function
-                End If
-            Next i
-        End With
+        Dim o = Objs(ObjID)
+
+        For i = 1 To o.NumberActions
+            If o.Actions(i).ActionName = LCase(ActionName) Then
+                HasAction = True
+                Exit Function
+            End If
+        Next i
     End Function
 
     Private Sub ExecForEach(ScriptLine As String, ctx As Context)
@@ -4628,29 +4624,27 @@ ErrorHandler:
             Exit Sub
         End If
 
-        With Objs(ObjID)
+        Dim o = Objs(ObjID)
 
-            For i = 1 To .NumberActions
-                If .Actions(i).ActionName = ActionName Then
-                    FoundExisting = True
-                    ActionNum = i
-                    i = .NumberActions
-                End If
-            Next i
-
-            If Not FoundExisting Then
-                .NumberActions = .NumberActions + 1
-                ReDim Preserve .Actions(.NumberActions)
-                .Actions(.NumberActions) = New ActionType
-                ActionNum = .NumberActions
+        For i = 1 To o.NumberActions
+            If o.Actions(i).ActionName = ActionName Then
+                FoundExisting = True
+                ActionNum = i
+                i = o.NumberActions
             End If
+        Next i
 
-            .Actions(ActionNum).ActionName = ActionName
-            .Actions(ActionNum).Script = ActionScript
+        If Not FoundExisting Then
+            o.NumberActions = o.NumberActions + 1
+            ReDim Preserve o.Actions(o.NumberActions)
+            o.Actions(o.NumberActions) = New ActionType
+            ActionNum = o.NumberActions
+        End If
 
-            ObjectActionUpdate(ObjID, ActionName, ActionScript)
+        o.Actions(ActionNum).ActionName = ActionName
+        o.Actions(ActionNum).Script = ActionScript
 
-        End With
+        ObjectActionUpdate(ObjID, ActionName, ActionScript)
 
     End Sub
 
@@ -4806,15 +4800,14 @@ ErrorHandler:
             ReDim Preserve Objs(NumberObjs)
             Objs(NumberObjs) = New ObjectType
 
-            With Objs(NumberObjs)
-                .ObjectName = NewName
-                .ObjectAlias = NewName
-                .ContainerRoom = ContainerRoom
-                .Exists = True
-                .Visible = True
-                .Gender = "it"
-                .Article = "it"
-            End With
+            Dim o = Objs(NumberObjs)
+            o.ObjectName = NewName
+            o.ObjectAlias = NewName
+            o.ContainerRoom = ContainerRoom
+            o.Exists = True
+            o.Visible = True
+            o.Gender = "it"
+            o.Article = "it"
 
             AddToChangeLog("object " & NewName, "create " & Objs(NumberObjs).ContainerRoom)
 
@@ -4912,53 +4905,52 @@ ErrorHandler:
         End If
         AddToChangeLog("room " & Rooms(SrcID).RoomName, "exit " & SaveData)
 
-        With Rooms(SrcID)
+        Dim r = Rooms(SrcID)
 
-            If GameASLVersion >= 410 Then
-                .Exits.AddExitFromCreateScript(ExitData, ctx)
+        If GameASLVersion >= 410 Then
+            r.Exits.AddExitFromCreateScript(ExitData, ctx)
+        Else
+            If BeginsWith(ExitData, "north ") Then
+                r.North.Data = DestRoom
+                r.North.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "south ") Then
+                r.South.Data = DestRoom
+                r.South.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "east ") Then
+                r.East.Data = DestRoom
+                r.East.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "west ") Then
+                r.West.Data = DestRoom
+                r.West.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "northeast ") Then
+                r.NorthEast.Data = DestRoom
+                r.NorthEast.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "northwest ") Then
+                r.NorthWest.Data = DestRoom
+                r.NorthWest.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "southeast ") Then
+                r.SouthEast.Data = DestRoom
+                r.SouthEast.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "southwest ") Then
+                r.SouthWest.Data = DestRoom
+                r.SouthWest.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "up ") Then
+                r.Up.Data = DestRoom
+                r.Up.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "down ") Then
+                r.Down.Data = DestRoom
+                r.Down.Type = TA_TEXT
+            ElseIf BeginsWith(ExitData, "out ") Then
+                r.out.Text = DestRoom
+            ElseIf BeginsWith(ExitData, "<") Then
+                r.NumberPlaces = r.NumberPlaces + 1
+                ReDim Preserve r.Places(r.NumberPlaces)
+                r.Places(r.NumberPlaces) = New PlaceType
+                r.Places(r.NumberPlaces).PlaceName = DestRoom
             Else
-                If BeginsWith(ExitData, "north ") Then
-                    .North.Data = DestRoom
-                    .North.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "south ") Then
-                    .South.Data = DestRoom
-                    .South.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "east ") Then
-                    .East.Data = DestRoom
-                    .East.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "west ") Then
-                    .West.Data = DestRoom
-                    .West.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "northeast ") Then
-                    .NorthEast.Data = DestRoom
-                    .NorthEast.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "northwest ") Then
-                    .NorthWest.Data = DestRoom
-                    .NorthWest.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "southeast ") Then
-                    .SouthEast.Data = DestRoom
-                    .SouthEast.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "southwest ") Then
-                    .SouthWest.Data = DestRoom
-                    .SouthWest.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "up ") Then
-                    .Up.Data = DestRoom
-                    .Up.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "down ") Then
-                    .Down.Data = DestRoom
-                    .Down.Type = TA_TEXT
-                ElseIf BeginsWith(ExitData, "out ") Then
-                    .out.Text = DestRoom
-                ElseIf BeginsWith(ExitData, "<") Then
-                    .NumberPlaces = .NumberPlaces + 1
-                    ReDim Preserve .Places(.NumberPlaces)
-                    .Places(.NumberPlaces) = New PlaceType
-                    .Places(.NumberPlaces).PlaceName = DestRoom
-                Else
-                    LogASLError("Invalid direction in 'create exit " & ExitData & "'", LOGTYPE_WARNINGERROR)
-                End If
+                LogASLError("Invalid direction in 'create exit " & ExitData & "'", LOGTYPE_WARNINGERROR)
             End If
-        End With
+        End If
 
         If Not m_gameLoading Then
             ' Update quest.doorways variables
@@ -5106,48 +5098,47 @@ ErrorHandler:
         End If
 
         If FoundItem Then
-            With Objs(ObjID)
+            Dim o = Objs(ObjID)
 
-                ' Find "examine" action:
-                For i = 1 To .NumberActions
-                    If .Actions(i).ActionName = "examine" Then
-                        ExecuteScript(.Actions(i).Script, ctx, ObjID)
+            ' Find "examine" action:
+            For i = 1 To o.NumberActions
+                If o.Actions(i).ActionName = "examine" Then
+                    ExecuteScript(o.Actions(i).Script, ctx, ObjID)
+                    FoundExamineAction = True
+                    i = o.NumberActions
+                End If
+            Next i
+
+            ' Find "examine" property:
+            If Not FoundExamineAction Then
+                For i = 1 To o.NumberProperties
+                    If o.Properties(i).PropertyName = "examine" Then
+                        Print(o.Properties(i).PropertyValue, ctx)
                         FoundExamineAction = True
-                        i = .NumberActions
+                        i = o.NumberProperties
                     End If
                 Next i
+            End If
 
-                ' Find "examine" property:
-                If Not FoundExamineAction Then
-                    For i = 1 To .NumberProperties
-                        If .Properties(i).PropertyName = "examine" Then
-                            Print(.Properties(i).PropertyValue, ctx)
-                            FoundExamineAction = True
-                            i = .NumberProperties
+            ' Find "examine" tag:
+            If Not FoundExamineAction Then
+                For j = o.DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
+                    If BeginsWith(Lines(j), "examine ") Then
+                        ExamineAction = Trim(GetEverythingAfter(Lines(j), "examine "))
+                        If Left(ExamineAction, 1) = "<" Then
+                            Print(RetrieveParameter(Lines(j), ctx), ctx)
+                        Else
+                            ExecuteScript(ExamineAction, ctx, ObjID)
                         End If
-                    Next i
-                End If
+                        FoundExamineAction = True
+                    End If
+                Next j
+            End If
 
-                ' Find "examine" tag:
-                If Not FoundExamineAction Then
-                    For j = .DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
-                        If BeginsWith(Lines(j), "examine ") Then
-                            ExamineAction = Trim(GetEverythingAfter(Lines(j), "examine "))
-                            If Left(ExamineAction, 1) = "<" Then
-                                Print(RetrieveParameter(Lines(j), ctx), ctx)
-                            Else
-                                ExecuteScript(ExamineAction, ctx, ObjID)
-                            End If
-                            FoundExamineAction = True
-                        End If
-                    Next j
-                End If
+            If Not FoundExamineAction Then
+                DoLook(ObjID, ctx, True)
+            End If
 
-                If Not FoundExamineAction Then
-                    DoLook(ObjID, ctx, True)
-                End If
-
-            End With
         End If
 
         If Not FoundItem Then
@@ -5652,35 +5643,34 @@ ErrorHandler:
         Dim i As Integer
         bFound = False
 
-        With Objs(ObjID)
-            For i = 1 To .NumberProperties
-                If LCase(.Properties(i).PropertyName) = LCase(PropertyName) Then
-                    bFound = True
-                    sResult = .Properties(i).PropertyValue
-                    i = .NumberProperties
-                End If
-            Next i
+        Dim o = Objs(ObjID)
 
-            If ReturnExistsOnly Then
-                If bFound Then
-                    GetObjectProperty = "yes"
-                Else
-                    GetObjectProperty = "no"
-                End If
+        For i = 1 To o.NumberProperties
+            If LCase(o.Properties(i).PropertyName) = LCase(PropertyName) Then
+                bFound = True
+                sResult = o.Properties(i).PropertyValue
+                i = o.NumberProperties
+            End If
+        Next i
+
+        If ReturnExistsOnly Then
+            If bFound Then
+                GetObjectProperty = "yes"
             Else
-                If bFound Then
-                    GetObjectProperty = sResult
+                GetObjectProperty = "no"
+            End If
+        Else
+            If bFound Then
+                GetObjectProperty = sResult
+            Else
+                If LogError Then
+                    LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LOGTYPE_WARNINGERROR)
+                    GetObjectProperty = "!"
                 Else
-                    If LogError Then
-                        LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LOGTYPE_WARNINGERROR)
-                        GetObjectProperty = "!"
-                    Else
-                        GetObjectProperty = ""
-                    End If
+                    GetObjectProperty = ""
                 End If
             End If
-
-        End With
+        End If
 
     End Function
 
@@ -5714,35 +5704,31 @@ ErrorHandler:
             If BeginsWith(Lines(i), "type ") Then
                 IncTypeName = LCase(RetrieveParameter(Lines(i), _nullContext))
                 NewProperties = GetPropertiesInType(IncTypeName)
-                With PropertyList
-                    .Properties = .Properties & NewProperties.Properties
-                    ReDim Preserve .Actions(.NumberActions + NewProperties.NumberActions)
-                    For j = .NumberActions + 1 To .NumberActions + NewProperties.NumberActions
-                        .Actions(j) = New ActionType
-                        .Actions(j).ActionName = NewProperties.Actions(j - .NumberActions).ActionName
-                        .Actions(j).Script = NewProperties.Actions(j - .NumberActions).Script
-                    Next j
-                    .NumberActions = .NumberActions + NewProperties.NumberActions
+                PropertyList.Properties = PropertyList.Properties & NewProperties.Properties
+                ReDim Preserve PropertyList.Actions(PropertyList.NumberActions + NewProperties.NumberActions)
+                For j = PropertyList.NumberActions + 1 To PropertyList.NumberActions + NewProperties.NumberActions
+                    PropertyList.Actions(j) = New ActionType
+                    PropertyList.Actions(j).ActionName = NewProperties.Actions(j - PropertyList.NumberActions).ActionName
+                    PropertyList.Actions(j).Script = NewProperties.Actions(j - PropertyList.NumberActions).Script
+                Next j
+                PropertyList.NumberActions = PropertyList.NumberActions + NewProperties.NumberActions
 
-                    ' Add this type name to the TypesIncluded list...
-                    .NumberTypesIncluded = .NumberTypesIncluded + 1
-                    ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                    .TypesIncluded(.NumberTypesIncluded) = IncTypeName
+                ' Add this type name to the TypesIncluded list...
+                PropertyList.NumberTypesIncluded = PropertyList.NumberTypesIncluded + 1
+                ReDim Preserve PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded)
+                PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded) = IncTypeName
 
-                    ' and add the names of the types included by it...
+                ' and add the names of the types included by it...
 
-                    ReDim Preserve .TypesIncluded(.NumberTypesIncluded + NewProperties.NumberTypesIncluded)
-                    For j = .NumberTypesIncluded + 1 To .NumberTypesIncluded + NewProperties.NumberTypesIncluded
-                        .TypesIncluded(j) = NewProperties.TypesIncluded(j - .NumberTypesIncluded)
-                    Next j
-                    .NumberTypesIncluded = .NumberTypesIncluded + NewProperties.NumberTypesIncluded
-                End With
+                ReDim Preserve PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded)
+                For j = PropertyList.NumberTypesIncluded + 1 To PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded
+                    PropertyList.TypesIncluded(j) = NewProperties.TypesIncluded(j - PropertyList.NumberTypesIncluded)
+                Next j
+                PropertyList.NumberTypesIncluded = PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded
             ElseIf BeginsWith(Lines(i), "action ") Then
-                With PropertyList
-                    .NumberActions = .NumberActions + 1
-                    ReDim Preserve .Actions(.NumberActions)
-                    .Actions(.NumberActions) = GetObjectActions(GetEverythingAfter(Lines(i), "action "))
-                End With
+                PropertyList.NumberActions = PropertyList.NumberActions + 1
+                ReDim Preserve PropertyList.Actions(PropertyList.NumberActions)
+                PropertyList.Actions(PropertyList.NumberActions) = GetObjectActions(GetEverythingAfter(Lines(i), "action "))
             ElseIf BeginsWith(Lines(i), "properties ") Then
                 PropertyList.Properties = PropertyList.Properties & RetrieveParameter(Lines(i), _nullContext) & ";"
             ElseIf Trim(Lines(i)) <> "" Then
@@ -5882,22 +5868,19 @@ ErrorHandler:
 
         ' Organise Change Log
 
-        With GameChangeData
-            For i = 1 To .NumberChanges
-
-                If BeginsWith(.ChangeData(i).AppliesTo, "object ") Then
-                    NumObjectData = NumObjectData + 1
-                    ReDim Preserve ObjectData(NumObjectData)
-                    ObjectData(NumObjectData) = New ChangeType
-                    ObjectData(NumObjectData) = .ChangeData(i)
-                ElseIf BeginsWith(.ChangeData(i).AppliesTo, "room ") Then
-                    NumRoomData = NumRoomData + 1
-                    ReDim Preserve RoomData(NumRoomData)
-                    RoomData(NumRoomData) = New ChangeType
-                    RoomData(NumRoomData) = .ChangeData(i)
-                End If
-            Next i
-        End With
+        For i = 1 To GameChangeData.NumberChanges
+            If BeginsWith(GameChangeData.ChangeData(i).AppliesTo, "object ") Then
+                NumObjectData = NumObjectData + 1
+                ReDim Preserve ObjectData(NumObjectData)
+                ObjectData(NumObjectData) = New ChangeType
+                ObjectData(NumObjectData) = GameChangeData.ChangeData(i)
+            ElseIf BeginsWith(GameChangeData.ChangeData(i).AppliesTo, "room ") Then
+                NumRoomData = NumRoomData + 1
+                ReDim Preserve RoomData(NumRoomData)
+                RoomData(NumRoomData) = New ChangeType
+                RoomData(NumRoomData) = GameChangeData.ChangeData(i)
+            End If
+        Next i
 
         ' <<< OBJECT CREATE/CHANGE DATA >>>
 
@@ -5947,18 +5930,17 @@ ErrorHandler:
         FileData.Append(Trim(Str(NumberTimers)) & Chr(0))
 
         For i = 1 To NumberTimers
-            With Timers(i)
-                FileData.Append(.TimerName & Chr(0))
+            Dim t = Timers(i)
+            FileData.Append(t.TimerName & Chr(0))
 
-                If .TimerActive Then
-                    FileData.Append(Chr(1))
-                Else
-                    FileData.Append(Chr(0))
-                End If
+            If t.TimerActive Then
+                FileData.Append(Chr(1))
+            Else
+                FileData.Append(Chr(0))
+            End If
 
-                FileData.Append(Trim(Str(.TimerInterval)) & Chr(0))
-                FileData.Append(Trim(Str(.TimerTicks)) & Chr(0))
-            End With
+            FileData.Append(Trim(Str(t.TimerInterval)) & Chr(0))
+            FileData.Append(Trim(Str(t.TimerTicks)) & Chr(0))
         Next i
 
         ' <<< STRING VARIABLE DATA >>>
@@ -5966,13 +5948,12 @@ ErrorHandler:
         FileData.Append(Trim(Str(NumberStringVariables)) & Chr(0))
 
         For i = 1 To NumberStringVariables
-            With StringVariable(i)
-                FileData.Append(.VariableName & Chr(0) & Trim(Str(.VariableUBound)) & Chr(0))
+            Dim s = StringVariable(i)
+            FileData.Append(s.VariableName & Chr(0) & Trim(Str(s.VariableUBound)) & Chr(0))
 
-                For j = 0 To .VariableUBound
-                    FileData.Append(.VariableContents(j) & Chr(0))
-                Next j
-            End With
+            For j = 0 To s.VariableUBound
+                FileData.Append(s.VariableContents(j) & Chr(0))
+            Next j
         Next i
 
         ' <<< NUMERIC VARIABLE DATA >>>
@@ -5980,13 +5961,12 @@ ErrorHandler:
         FileData.Append(Trim(Str(NumberNumericVariables)) & Chr(0))
 
         For i = 1 To NumberNumericVariables
-            With NumericVariable(i)
-                FileData.Append(.VariableName & Chr(0) & Trim(Str(.VariableUBound)) & Chr(0))
+            Dim n = NumericVariable(i)
+            FileData.Append(n.VariableName & Chr(0) & Trim(Str(n.VariableUBound)) & Chr(0))
 
-                For j = 0 To .VariableUBound
-                    FileData.Append(.VariableContents(j) & Chr(0))
-                Next j
-            End With
+            For j = 0 To n.VariableUBound
+                FileData.Append(n.VariableContents(j) & Chr(0))
+            Next j
         Next i
 
         ' Now encrypt data
@@ -6997,13 +6977,12 @@ errhandle:
         ' Now go through and apply object properties and actions
 
         For i = 1 To NumStoredData
-            With StoredData(i)
-                If BeginsWith(.Change, "properties ") Then
-                    AddToObjectProperties(GetEverythingAfter(.Change, "properties "), GetObjectIDNoAlias(.AppliesTo), _nullContext)
-                ElseIf BeginsWith(.Change, "action ") Then
-                    AddToObjectActions(GetEverythingAfter(.Change, "action "), GetObjectIDNoAlias(.AppliesTo), _nullContext)
-                End If
-            End With
+            Dim d = StoredData(i)
+            If BeginsWith(d.Change, "properties ") Then
+                AddToObjectProperties(GetEverythingAfter(d.Change, "properties "), GetObjectIDNoAlias(d.AppliesTo), _nullContext)
+            ElseIf BeginsWith(d.Change, "action ") Then
+                AddToObjectActions(GetEverythingAfter(d.Change, "action "), GetObjectIDNoAlias(d.AppliesTo), _nullContext)
+            End If
         Next i
 
         ' TIMERS
@@ -7021,19 +7000,17 @@ errhandle:
             Next j
 
             If Found Then
-                With Timers(TimerNum)
+                Dim t = Timers(TimerNum)
+                Dim thisChar As String = GetFileDataChars(1)
 
-                    Dim thisChar As String = GetFileDataChars(1)
+                If thisChar = Chr(1) Then
+                    t.TimerActive = True
+                Else
+                    t.TimerActive = False
+                End If
 
-                    If thisChar = Chr(1) Then
-                        .TimerActive = True
-                    Else
-                        .TimerActive = False
-                    End If
-
-                    .TimerInterval = CInt(GetNextChunk())
-                    .TimerTicks = CInt(GetNextChunk())
-                End With
+                t.TimerInterval = CInt(GetNextChunk())
+                t.TimerTicks = CInt(GetNextChunk())
             End If
         Next i
 
@@ -7378,14 +7355,12 @@ errhandle:
                 ThisVariable = New VariableType
                 ReDim ThisVariable.VariableContents(0)
 
-                With ThisVariable
-                    .VariableName = RetrieveParameter(Lines(i), _nullContext)
-                    .DisplayString = ""
-                    .NoZeroDisplay = False
-                    .OnChangeScript = ""
-                    .VariableContents(0) = ""
-                    .VariableUBound = 0
-                End With
+                ThisVariable.VariableName = RetrieveParameter(Lines(i), _nullContext)
+                ThisVariable.DisplayString = ""
+                ThisVariable.NoZeroDisplay = False
+                ThisVariable.OnChangeScript = ""
+                ThisVariable.VariableContents(0) = ""
+                ThisVariable.VariableUBound = 0
 
                 ThisType = "numeric"
 
@@ -7447,40 +7422,38 @@ errhandle:
         NumberObjs = 1
         ReDim Objs(1)
         Objs(1) = New ObjectType
-        With Objs(1)
-            .ObjectName = "game"
-            .ObjectAlias = ""
-            .Visible = False
-            .Exists = True
+        Dim o = Objs(1)
+        o.ObjectName = "game"
+        o.ObjectAlias = ""
+        o.Visible = False
+        o.Exists = True
 
-            NestBlock = 0
-            For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-                If NestBlock = 0 Then
-                    If BeginsWith(Lines(i), "define ") Then
-                        NestBlock = NestBlock + 1
-                    ElseIf BeginsWith(Lines(i), "properties ") Then
-                        AddToObjectProperties(RetrieveParameter(Lines(i), _nullContext), NumberObjs, _nullContext)
-                    ElseIf BeginsWith(Lines(i), "type ") Then
-                        .NumberTypesIncluded = .NumberTypesIncluded + 1
-                        ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                        .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(i), _nullContext)
+        NestBlock = 0
+        For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
+            If NestBlock = 0 Then
+                If BeginsWith(Lines(i), "define ") Then
+                    NestBlock = NestBlock + 1
+                ElseIf BeginsWith(Lines(i), "properties ") Then
+                    AddToObjectProperties(RetrieveParameter(Lines(i), _nullContext), NumberObjs, _nullContext)
+                ElseIf BeginsWith(Lines(i), "type ") Then
+                    o.NumberTypesIncluded = o.NumberTypesIncluded + 1
+                    ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
+                    o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(Lines(i), _nullContext)
 
-                        PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), _nullContext))
-                        AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
-                        For k = 1 To PropertyData.NumberActions
-                            AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
-                        Next k
-                    ElseIf BeginsWith(Lines(i), "action ") Then
-                        AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, _nullContext)
-                    End If
-                Else
-                    If Trim(Lines(i)) = "end define" Then
-                        NestBlock = NestBlock - 1
-                    End If
+                    PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), _nullContext))
+                    AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                    For k = 1 To PropertyData.NumberActions
+                        AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                    Next k
+                ElseIf BeginsWith(Lines(i), "action ") Then
+                    AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, _nullContext)
                 End If
-            Next i
-
-        End With
+            Else
+                If Trim(Lines(i)) = "end define" Then
+                    NestBlock = NestBlock - 1
+                End If
+            End If
+        Next i
 
     End Sub
 
@@ -7578,219 +7551,219 @@ errhandle:
                 ReDim Preserve Objs(NumberObjs)
                 Objs(NumberObjs) = New ObjectType
 
-                With Rooms(NumberRooms)
-                    .RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
-                    Objs(NumberObjs).ObjectName = .RoomName
-                    Objs(NumberObjs).IsRoom = True
-                    Objs(NumberObjs).CorresRoom = .RoomName
-                    Objs(NumberObjs).CorresRoomID = NumberRooms
+                Dim r = Rooms(NumberRooms)
 
-                    .ObjID = NumberObjs
+                r.RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+                Objs(NumberObjs).ObjectName = r.RoomName
+                Objs(NumberObjs).IsRoom = True
+                Objs(NumberObjs).CorresRoom = r.RoomName
+                Objs(NumberObjs).CorresRoomID = NumberRooms
 
-                    If GameASLVersion >= 410 Then
-                        .Exits = New RoomExits(Me)
-                        .Exits.ObjID = .ObjID
+                r.ObjID = NumberObjs
+
+                If GameASLVersion >= 410 Then
+                    r.Exits = New RoomExits(Me)
+                    r.Exits.ObjID = r.ObjID
+                End If
+
+                ' *******************************************************************************
+                ' IF FURTHER CHANGES ARE MADE HERE, A NEW CREATEROOM SUB SHOULD BE CREATED, WHICH
+                ' WE CAN THEN CALL FROM EXECUTECREATE ALSO.
+                ' *******************************************************************************
+
+                NestedBlock = 0
+
+                If DefaultExists Then
+                    AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
+                    For k = 1 To DefaultProperties.NumberActions
+                        AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                    Next k
+                End If
+
+                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
+                    If BeginsWith(Lines(j), "define ") Then
+                        'skip nested blocks
+                        NestedBlock = 1
+                        Do
+                            j = j + 1
+                            If BeginsWith(Lines(j), "define ") Then
+                                NestedBlock = NestedBlock + 1
+                            ElseIf Trim(Lines(j)) = "end define" Then
+                                NestedBlock = NestedBlock - 1
+                            End If
+                        Loop Until NestedBlock = 0
                     End If
 
-                    ' *******************************************************************************
-                    ' IF FURTHER CHANGES ARE MADE HERE, A NEW CREATEROOM SUB SHOULD BE CREATED, WHICH
-                    ' WE CAN THEN CALL FROM EXECUTECREATE ALSO.
-                    ' *******************************************************************************
-
-                    NestedBlock = 0
-
-                    If DefaultExists Then
-                        AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
-                        For k = 1 To DefaultProperties.NumberActions
-                            AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
-                        Next k
-                    End If
-
-                    For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                        If BeginsWith(Lines(j), "define ") Then
-                            'skip nested blocks
-                            NestedBlock = 1
-                            Do
-                                j = j + 1
-                                If BeginsWith(Lines(j), "define ") Then
-                                    NestedBlock = NestedBlock + 1
-                                ElseIf Trim(Lines(j)) = "end define" Then
-                                    NestedBlock = NestedBlock - 1
-                                End If
-                            Loop Until NestedBlock = 0
-                        End If
-
-                        If GameASLVersion >= 280 And BeginsWith(Lines(j), "alias ") Then
-                            .RoomAlias = RetrieveParameter(Lines(j), _nullContext)
-                            Objs(NumberObjs).ObjectAlias = .RoomAlias
-                            If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & .RoomAlias, NumberObjs, _nullContext)
-                        ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "description ") Then
-                            .Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
-                            If GameASLVersion >= 350 Then
-                                If .Description.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "description", .Description.Data)
-                                Else
-                                    AddToObjectProperties("description=" & .Description.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "out ") Then
-                            .out.Text = RetrieveParameter(Lines(j), _nullContext)
-                            .out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                            If GameASLVersion >= 350 Then
-                                If .out.Script <> "" Then
-                                    AddObjectAction(NumberObjs, "out", .out.Script)
-                                End If
-
-                                AddToObjectProperties("out=" & .out.Text, NumberObjs, _nullContext)
-                            End If
-                        ElseIf BeginsWith(Lines(j), "east ") Then
-                            .East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
-                            If GameASLVersion >= 350 Then
-                                If .East.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "east", .East.Data)
-                                Else
-                                    AddToObjectProperties("east=" & .East.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "west ") Then
-                            .West = GetTextOrScript(GetEverythingAfter(Lines(j), "west "))
-                            If GameASLVersion >= 350 Then
-                                If .West.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "west", .West.Data)
-                                Else
-                                    AddToObjectProperties("west=" & .West.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "north ") Then
-                            .North = GetTextOrScript(GetEverythingAfter(Lines(j), "north "))
-                            If GameASLVersion >= 350 Then
-                                If .North.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "north", .North.Data)
-                                Else
-                                    AddToObjectProperties("north=" & .North.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "south ") Then
-                            .South = GetTextOrScript(GetEverythingAfter(Lines(j), "south "))
-                            If GameASLVersion >= 350 Then
-                                If .South.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "south", .South.Data)
-                                Else
-                                    AddToObjectProperties("south=" & .South.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "northeast ") Then
-                            .NorthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "northeast "))
-                            If GameASLVersion >= 350 Then
-                                If .NorthEast.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "northeast", .NorthEast.Data)
-                                Else
-                                    AddToObjectProperties("northeast=" & .NorthEast.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "northwest ") Then
-                            .NorthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "northwest "))
-                            If GameASLVersion >= 350 Then
-                                If .NorthWest.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "northwest", .NorthWest.Data)
-                                Else
-                                    AddToObjectProperties("northwest=" & .NorthWest.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "southeast ") Then
-                            .SouthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "southeast "))
-                            If GameASLVersion >= 350 Then
-                                If .SouthEast.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "southeast", .SouthEast.Data)
-                                Else
-                                    AddToObjectProperties("southeast=" & .SouthEast.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "southwest ") Then
-                            .SouthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "southwest "))
-                            If GameASLVersion >= 350 Then
-                                If .SouthWest.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "southwest", .SouthWest.Data)
-                                Else
-                                    AddToObjectProperties("southwest=" & .SouthWest.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "up ") Then
-                            .Up = GetTextOrScript(GetEverythingAfter(Lines(j), "up "))
-                            If GameASLVersion >= 350 Then
-                                If .Up.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "up", .Up.Data)
-                                Else
-                                    AddToObjectProperties("up=" & .Up.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf BeginsWith(Lines(j), "down ") Then
-                            .Down = GetTextOrScript(GetEverythingAfter(Lines(j), "down "))
-                            If GameASLVersion >= 350 Then
-                                If .Down.Type = TA_SCRIPT Then
-                                    AddObjectAction(NumberObjs, "down", .Down.Data)
-                                Else
-                                    AddToObjectProperties("down=" & .Down.Data, NumberObjs, _nullContext)
-                                End If
-                            End If
-                        ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "indescription ") Then
-                            .InDescription = RetrieveParameter(Lines(j), _nullContext)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & .InDescription, NumberObjs, _nullContext)
-                        ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "look ") Then
-                            .Look = RetrieveParameter(Lines(j), _nullContext)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("look=" & .Look, NumberObjs, _nullContext)
-                        ElseIf BeginsWith(Lines(j), "prefix ") Then
-                            .Prefix = RetrieveParameter(Lines(j), _nullContext)
-                            If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, _nullContext)
-                        ElseIf BeginsWith(Lines(j), "script ") Then
-                            .Script = GetEverythingAfter(Lines(j), "script ")
-                            AddObjectAction(NumberObjs, "script", .Script)
-                        ElseIf BeginsWith(Lines(j), "command ") Then
-                            .NumberCommands = .NumberCommands + 1
-                            ReDim Preserve .Commands(.NumberCommands)
-                            .Commands(.NumberCommands) = New UserDefinedCommandType
-                            .Commands(.NumberCommands).CommandText = RetrieveParameter(Lines(j), _nullContext, False)
-                            .Commands(.NumberCommands).CommandScript = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                        ElseIf BeginsWith(Lines(j), "place ") Then
-                            .NumberPlaces = .NumberPlaces + 1
-                            ReDim Preserve .Places(.NumberPlaces)
-                            .Places(.NumberPlaces) = New PlaceType
-                            PlaceData = RetrieveParameter(Lines(j), _nullContext)
-                            SCP = InStr(PlaceData, ";")
-                            If SCP = 0 Then
-                                .Places(.NumberPlaces).PlaceName = PlaceData
+                    If GameASLVersion >= 280 And BeginsWith(Lines(j), "alias ") Then
+                        r.RoomAlias = RetrieveParameter(Lines(j), _nullContext)
+                        Objs(NumberObjs).ObjectAlias = r.RoomAlias
+                        If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, NumberObjs, _nullContext)
+                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "description ") Then
+                        r.Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
+                        If GameASLVersion >= 350 Then
+                            If r.Description.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "description", r.Description.Data)
                             Else
-                                .Places(.NumberPlaces).PlaceName = Trim(Mid(PlaceData, SCP + 1))
-                                .Places(.NumberPlaces).Prefix = Trim(Left(PlaceData, SCP - 1))
+                                AddToObjectProperties("description=" & r.Description.Data, NumberObjs, _nullContext)
                             End If
-                            .Places(.NumberPlaces).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                        ElseIf BeginsWith(Lines(j), "use ") Then
-                            .NumberUse = .NumberUse + 1
-                            ReDim Preserve .use(.NumberUse)
-                            .use(.NumberUse) = New ScriptText
-                            .use(.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
-                            .use(.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                        ElseIf BeginsWith(Lines(j), "properties ") Then
-                            AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                        ElseIf BeginsWith(Lines(j), "type ") Then
-                            Objs(NumberObjs).NumberTypesIncluded = Objs(NumberObjs).NumberTypesIncluded + 1
-                            ReDim Preserve Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded)
-                            Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
-
-                            PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
-                            AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
-                            For k = 1 To PropertyData.NumberActions
-                                AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
-                            Next k
-                        ElseIf BeginsWith(Lines(j), "action ") Then
-                            AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
-                        ElseIf BeginsWith(Lines(j), "beforeturn ") Then
-                            .BeforeTurnScript = .BeforeTurnScript & GetEverythingAfter(Lines(j), "beforeturn ") & vbCrLf
-                        ElseIf BeginsWith(Lines(j), "afterturn ") Then
-                            .AfterTurnScript = .AfterTurnScript & GetEverythingAfter(Lines(j), "afterturn ") & vbCrLf
                         End If
-                    Next j
-                End With
+                    ElseIf BeginsWith(Lines(j), "out ") Then
+                        r.out.Text = RetrieveParameter(Lines(j), _nullContext)
+                        r.out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                        If GameASLVersion >= 350 Then
+                            If r.out.Script <> "" Then
+                                AddObjectAction(NumberObjs, "out", r.out.Script)
+                            End If
+
+                            AddToObjectProperties("out=" & r.out.Text, NumberObjs, _nullContext)
+                        End If
+                    ElseIf BeginsWith(Lines(j), "east ") Then
+                        r.East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
+                        If GameASLVersion >= 350 Then
+                            If r.East.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "east", r.East.Data)
+                            Else
+                                AddToObjectProperties("east=" & r.East.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "west ") Then
+                        r.West = GetTextOrScript(GetEverythingAfter(Lines(j), "west "))
+                        If GameASLVersion >= 350 Then
+                            If r.West.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "west", r.West.Data)
+                            Else
+                                AddToObjectProperties("west=" & r.West.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "north ") Then
+                        r.North = GetTextOrScript(GetEverythingAfter(Lines(j), "north "))
+                        If GameASLVersion >= 350 Then
+                            If r.North.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "north", r.North.Data)
+                            Else
+                                AddToObjectProperties("north=" & r.North.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "south ") Then
+                        r.South = GetTextOrScript(GetEverythingAfter(Lines(j), "south "))
+                        If GameASLVersion >= 350 Then
+                            If r.South.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "south", r.South.Data)
+                            Else
+                                AddToObjectProperties("south=" & r.South.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "northeast ") Then
+                        r.NorthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "northeast "))
+                        If GameASLVersion >= 350 Then
+                            If r.NorthEast.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "northeast", r.NorthEast.Data)
+                            Else
+                                AddToObjectProperties("northeast=" & r.NorthEast.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "northwest ") Then
+                        r.NorthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "northwest "))
+                        If GameASLVersion >= 350 Then
+                            If r.NorthWest.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "northwest", r.NorthWest.Data)
+                            Else
+                                AddToObjectProperties("northwest=" & r.NorthWest.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "southeast ") Then
+                        r.SouthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "southeast "))
+                        If GameASLVersion >= 350 Then
+                            If r.SouthEast.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "southeast", r.SouthEast.Data)
+                            Else
+                                AddToObjectProperties("southeast=" & r.SouthEast.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "southwest ") Then
+                        r.SouthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "southwest "))
+                        If GameASLVersion >= 350 Then
+                            If r.SouthWest.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "southwest", r.SouthWest.Data)
+                            Else
+                                AddToObjectProperties("southwest=" & r.SouthWest.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "up ") Then
+                        r.Up = GetTextOrScript(GetEverythingAfter(Lines(j), "up "))
+                        If GameASLVersion >= 350 Then
+                            If r.Up.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "up", r.Up.Data)
+                            Else
+                                AddToObjectProperties("up=" & r.Up.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf BeginsWith(Lines(j), "down ") Then
+                        r.Down = GetTextOrScript(GetEverythingAfter(Lines(j), "down "))
+                        If GameASLVersion >= 350 Then
+                            If r.Down.Type = TA_SCRIPT Then
+                                AddObjectAction(NumberObjs, "down", r.Down.Data)
+                            Else
+                                AddToObjectProperties("down=" & r.Down.Data, NumberObjs, _nullContext)
+                            End If
+                        End If
+                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "indescription ") Then
+                        r.InDescription = RetrieveParameter(Lines(j), _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, NumberObjs, _nullContext)
+                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "look ") Then
+                        r.Look = RetrieveParameter(Lines(j), _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("look=" & r.Look, NumberObjs, _nullContext)
+                    ElseIf BeginsWith(Lines(j), "prefix ") Then
+                        r.Prefix = RetrieveParameter(Lines(j), _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, NumberObjs, _nullContext)
+                    ElseIf BeginsWith(Lines(j), "script ") Then
+                        r.Script = GetEverythingAfter(Lines(j), "script ")
+                        AddObjectAction(NumberObjs, "script", r.Script)
+                    ElseIf BeginsWith(Lines(j), "command ") Then
+                        r.NumberCommands = r.NumberCommands + 1
+                        ReDim Preserve r.Commands(r.NumberCommands)
+                        r.Commands(r.NumberCommands) = New UserDefinedCommandType
+                        r.Commands(r.NumberCommands).CommandText = RetrieveParameter(Lines(j), _nullContext, False)
+                        r.Commands(r.NumberCommands).CommandScript = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                    ElseIf BeginsWith(Lines(j), "place ") Then
+                        r.NumberPlaces = r.NumberPlaces + 1
+                        ReDim Preserve r.Places(r.NumberPlaces)
+                        r.Places(r.NumberPlaces) = New PlaceType
+                        PlaceData = RetrieveParameter(Lines(j), _nullContext)
+                        SCP = InStr(PlaceData, ";")
+                        If SCP = 0 Then
+                            r.Places(r.NumberPlaces).PlaceName = PlaceData
+                        Else
+                            r.Places(r.NumberPlaces).PlaceName = Trim(Mid(PlaceData, SCP + 1))
+                            r.Places(r.NumberPlaces).Prefix = Trim(Left(PlaceData, SCP - 1))
+                        End If
+                        r.Places(r.NumberPlaces).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                    ElseIf BeginsWith(Lines(j), "use ") Then
+                        r.NumberUse = r.NumberUse + 1
+                        ReDim Preserve r.use(r.NumberUse)
+                        r.use(r.NumberUse) = New ScriptText
+                        r.use(r.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
+                        r.use(r.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                    ElseIf BeginsWith(Lines(j), "properties ") Then
+                        AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                    ElseIf BeginsWith(Lines(j), "type ") Then
+                        Objs(NumberObjs).NumberTypesIncluded = Objs(NumberObjs).NumberTypesIncluded + 1
+                        ReDim Preserve Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded)
+                        Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
+
+                        PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                        AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                        For k = 1 To PropertyData.NumberActions
+                            AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                        Next k
+                    ElseIf BeginsWith(Lines(j), "action ") Then
+                        AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
+                    ElseIf BeginsWith(Lines(j), "beforeturn ") Then
+                        r.BeforeTurnScript = r.BeforeTurnScript & GetEverythingAfter(Lines(j), "beforeturn ") & vbCrLf
+                    ElseIf BeginsWith(Lines(j), "afterturn ") Then
+                        r.AfterTurnScript = r.AfterTurnScript & GetEverythingAfter(Lines(j), "afterturn ") & vbCrLf
+                    End If
+                Next j
             End If
         Next i
     End Sub
