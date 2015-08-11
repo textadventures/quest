@@ -8554,28 +8554,27 @@ errhandle:
 
         ' RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         If RoomID <> 0 Then
-            With Rooms(RoomID)
-                For i = 1 To .NumberCommands
-                    CommandList = .Commands(i).CommandText
-                    Do
-                        EndPos = InStr(CommandList, ";")
-                        If EndPos = 0 Then
-                            CurCmd = CommandList
-                        Else
-                            CurCmd = Trim(Left(CommandList, EndPos - 1))
-                            CommandList = Trim(Mid(CommandList, EndPos + 1))
-                        End If
+            Dim r = Rooms(RoomID)
+            For i = 1 To r.NumberCommands
+                CommandList = r.Commands(i).CommandText
+                Do
+                    EndPos = InStr(CommandList, ";")
+                    If EndPos = 0 Then
+                        CurCmd = CommandList
+                    Else
+                        CurCmd = Trim(Left(CommandList, EndPos - 1))
+                        CommandList = Trim(Mid(CommandList, EndPos + 1))
+                    End If
 
-                        If IsCompatible(LCase(thecommand), LCase(CurCmd)) Then
-                            CommandLine = CurCmd
-                            ScriptToExecute = .Commands(i).CommandScript
-                            FoundCommand = True
-                            i = .NumberCommands
-                            Exit Do
-                        End If
-                    Loop Until EndPos = 0
-                Next i
-            End With
+                    If IsCompatible(LCase(thecommand), LCase(CurCmd)) Then
+                        CommandLine = CurCmd
+                        ScriptToExecute = r.Commands(i).CommandScript
+                        FoundCommand = True
+                        i = r.NumberCommands
+                        Exit Do
+                    End If
+                Loop Until EndPos = 0
+            Next i
         End If
 
         If Not LibCommands Then
@@ -9366,190 +9365,190 @@ errhandle:
                         ReDim Preserve Objs(NumberObjs)
                         Objs(NumberObjs) = New ObjectType
 
-                        With Objs(NumberObjs)
-                            .ObjectName = RetrieveParameter(Lines(j), _nullContext)
-                            .ObjectAlias = .ObjectName
-                            .DefinitionSectionStart = j
-                            .ContainerRoom = CRoomName
-                            .Visible = True
-                            .Gender = "it"
-                            .Article = "it"
+                        Dim o = Objs(NumberObjs)
 
-                            .take.Type = TA_NOTHING
+                        o.ObjectName = RetrieveParameter(Lines(j), _nullContext)
+                        o.ObjectAlias = o.ObjectName
+                        o.DefinitionSectionStart = j
+                        o.ContainerRoom = CRoomName
+                        o.Visible = True
+                        o.Gender = "it"
+                        o.Article = "it"
 
-                            If DefaultExists Then
-                                AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
-                                For k = 1 To DefaultProperties.NumberActions
-                                    AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                        o.take.Type = TA_NOTHING
+
+                        If DefaultExists Then
+                            AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
+                            For k = 1 To DefaultProperties.NumberActions
+                                AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                            Next k
+                        End If
+
+                        If GameASLVersion >= 391 Then AddToObjectProperties("list", NumberObjs, _nullContext)
+
+                        e = 0
+                        Do
+                            j = j + 1
+                            If Trim(Lines(j)) = "hidden" Then
+                                o.Exists = False
+                                e = 1
+                                If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
+                                CRoomName = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(Lines(j), "prefix ") Then
+                                o.Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
+                                If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "suffix ") Then
+                                o.Suffix = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, NumberObjs, _nullContext)
+                            ElseIf Trim(Lines(j)) = "invisible" Then
+                                o.Visible = False
+                                If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "alias ") Then
+                                o.ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "alt ") Then
+                                AddToObjectAltNames(RetrieveParameter(Lines(j), _nullContext), NumberObjs)
+                            ElseIf BeginsWith(Lines(j), "detail ") Then
+                                o.Detail = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "gender ") Then
+                                o.Gender = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "article ") Then
+                                o.Article = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("article=" & o.Article, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "gain ") Then
+                                o.GainScript = GetEverythingAfter(Lines(j), "gain ")
+                                AddObjectAction(NumberObjs, "gain", o.GainScript)
+                            ElseIf BeginsWith(Lines(j), "lose ") Then
+                                o.LoseScript = GetEverythingAfter(Lines(j), "lose ")
+                                AddObjectAction(NumberObjs, "lose", o.LoseScript)
+                            ElseIf BeginsWith(Lines(j), "displaytype ") Then
+                                o.DisplayType = RetrieveParameter(Lines(j), _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "look ") Then
+                                If GameASLVersion >= 311 Then
+                                    RestOfLine = GetEverythingAfter(Lines(j), "look ")
+                                    If Left(RestOfLine, 1) = "<" Then
+                                        AddToObjectProperties("look=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                    Else
+                                        AddObjectAction(NumberObjs, "look", RestOfLine)
+                                    End If
+                                End If
+                            ElseIf BeginsWith(Lines(j), "examine ") Then
+                                If GameASLVersion >= 311 Then
+                                    RestOfLine = GetEverythingAfter(Lines(j), "examine ")
+                                    If Left(RestOfLine, 1) = "<" Then
+                                        AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                    Else
+                                        AddObjectAction(NumberObjs, "examine", RestOfLine)
+                                    End If
+                                End If
+                            ElseIf GameASLVersion >= 311 And BeginsWith(Lines(j), "speak ") Then
+                                RestOfLine = GetEverythingAfter(Lines(j), "speak ")
+                                If Left(RestOfLine, 1) = "<" Then
+                                    AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    AddObjectAction(NumberObjs, "speak", RestOfLine)
+                                End If
+                            ElseIf BeginsWith(Lines(j), "properties ") Then
+                                AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "type ") Then
+                                o.NumberTypesIncluded = o.NumberTypesIncluded + 1
+                                ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
+                                o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
+
+                                PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                                AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                                For k = 1 To PropertyData.NumberActions
+                                    AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                                 Next k
+
+                                ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded + PropertyData.NumberTypesIncluded)
+                                For k = 1 To PropertyData.NumberTypesIncluded
+                                    o.TypesIncluded(k + o.NumberTypesIncluded) = PropertyData.TypesIncluded(k)
+                                Next k
+                                o.NumberTypesIncluded = o.NumberTypesIncluded + PropertyData.NumberTypesIncluded
+                            ElseIf BeginsWith(Lines(j), "action ") Then
+                                AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "use ") Then
+                                AddToUseInfo(NumberObjs, GetEverythingAfter(Lines(j), "use "))
+                            ElseIf BeginsWith(Lines(j), "give ") Then
+                                AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
+                            ElseIf Trim(Lines(j)) = "take" Then
+                                o.take.Type = TA_DEFAULT
+                                AddToObjectProperties("take", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "take ") Then
+                                If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
+                                    o.take.Type = TA_TEXT
+                                    o.take.Data = RetrieveParameter(Lines(j), _nullContext)
+
+                                    AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    o.take.Type = TA_SCRIPT
+                                    RestOfLine = GetEverythingAfter(Lines(j), "take ")
+                                    o.take.Data = RestOfLine
+
+                                    AddObjectAction(NumberObjs, "take", RestOfLine)
+                                End If
+                            ElseIf Trim(Lines(j)) = "container" Then
+                                If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
+                            ElseIf Trim(Lines(j)) = "surface" Then
+                                If GameASLVersion >= 391 Then
+                                    AddToObjectProperties("container", NumberObjs, _nullContext)
+                                    AddToObjectProperties("surface", NumberObjs, _nullContext)
+                                End If
+                            ElseIf Trim(Lines(j)) = "opened" Then
+                                If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, _nullContext)
+                            ElseIf Trim(Lines(j)) = "transparent" Then
+                                If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, _nullContext)
+                            ElseIf Trim(Lines(j)) = "open" Then
+                                AddToObjectProperties("open", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "open ") Then
+                                If Left(GetEverythingAfter(Lines(j), "open "), 1) = "<" Then
+                                    AddToObjectProperties("open=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    RestOfLine = GetEverythingAfter(Lines(j), "open ")
+                                    AddObjectAction(NumberObjs, "open", RestOfLine)
+                                End If
+                            ElseIf Trim(Lines(j)) = "close" Then
+                                AddToObjectProperties("close", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "close ") Then
+                                If Left(GetEverythingAfter(Lines(j), "close "), 1) = "<" Then
+                                    AddToObjectProperties("close=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    RestOfLine = GetEverythingAfter(Lines(j), "close ")
+                                    AddObjectAction(NumberObjs, "close", RestOfLine)
+                                End If
+                            ElseIf Trim(Lines(j)) = "add" Then
+                                AddToObjectProperties("add", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "add ") Then
+                                If Left(GetEverythingAfter(Lines(j), "add "), 1) = "<" Then
+                                    AddToObjectProperties("add=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    RestOfLine = GetEverythingAfter(Lines(j), "add ")
+                                    AddObjectAction(NumberObjs, "add", RestOfLine)
+                                End If
+                            ElseIf Trim(Lines(j)) = "remove" Then
+                                AddToObjectProperties("remove", NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "remove ") Then
+                                If Left(GetEverythingAfter(Lines(j), "remove "), 1) = "<" Then
+                                    AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                Else
+                                    RestOfLine = GetEverythingAfter(Lines(j), "remove ")
+                                    AddObjectAction(NumberObjs, "remove", RestOfLine)
+                                End If
+                            ElseIf BeginsWith(Lines(j), "parent ") Then
+                                AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(Lines(j), "list") Then
+                                ProcessListInfo(Lines(j), NumberObjs)
                             End If
 
-                            If GameASLVersion >= 391 Then AddToObjectProperties("list", NumberObjs, _nullContext)
+                        Loop Until Trim(Lines(j)) = "end define"
 
-                            e = 0
-                            Do
-                                j = j + 1
-                                If Trim(Lines(j)) = "hidden" Then
-                                    .Exists = False
-                                    e = 1
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                    CRoomName = RetrieveParameter(Lines(j), _nullContext)
-                                ElseIf BeginsWith(Lines(j), "prefix ") Then
-                                    .Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "suffix ") Then
-                                    .Suffix = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & .Suffix, NumberObjs, _nullContext)
-                                ElseIf Trim(Lines(j)) = "invisible" Then
-                                    .Visible = False
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "alias ") Then
-                                    .ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & .ObjectAlias, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "alt ") Then
-                                    AddToObjectAltNames(RetrieveParameter(Lines(j), _nullContext), NumberObjs)
-                                ElseIf BeginsWith(Lines(j), "detail ") Then
-                                    .Detail = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & .Detail, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "gender ") Then
-                                    .Gender = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & .Gender, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "article ") Then
-                                    .Article = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("article=" & .Article, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "gain ") Then
-                                    .GainScript = GetEverythingAfter(Lines(j), "gain ")
-                                    AddObjectAction(NumberObjs, "gain", .GainScript)
-                                ElseIf BeginsWith(Lines(j), "lose ") Then
-                                    .LoseScript = GetEverythingAfter(Lines(j), "lose ")
-                                    AddObjectAction(NumberObjs, "lose", .LoseScript)
-                                ElseIf BeginsWith(Lines(j), "displaytype ") Then
-                                    .DisplayType = RetrieveParameter(Lines(j), _nullContext)
-                                    If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & .DisplayType, NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "look ") Then
-                                    If GameASLVersion >= 311 Then
-                                        RestOfLine = GetEverythingAfter(Lines(j), "look ")
-                                        If Left(RestOfLine, 1) = "<" Then
-                                            AddToObjectProperties("look=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                        Else
-                                            AddObjectAction(NumberObjs, "look", RestOfLine)
-                                        End If
-                                    End If
-                                ElseIf BeginsWith(Lines(j), "examine ") Then
-                                    If GameASLVersion >= 311 Then
-                                        RestOfLine = GetEverythingAfter(Lines(j), "examine ")
-                                        If Left(RestOfLine, 1) = "<" Then
-                                            AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                        Else
-                                            AddObjectAction(NumberObjs, "examine", RestOfLine)
-                                        End If
-                                    End If
-                                ElseIf GameASLVersion >= 311 And BeginsWith(Lines(j), "speak ") Then
-                                    RestOfLine = GetEverythingAfter(Lines(j), "speak ")
-                                    If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        AddObjectAction(NumberObjs, "speak", RestOfLine)
-                                    End If
-                                ElseIf BeginsWith(Lines(j), "properties ") Then
-                                    AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "type ") Then
-                                    .NumberTypesIncluded = .NumberTypesIncluded + 1
-                                    ReDim Preserve .TypesIncluded(.NumberTypesIncluded)
-                                    .TypesIncluded(.NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
-
-                                    PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
-                                    AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
-                                    For k = 1 To PropertyData.NumberActions
-                                        AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
-                                    Next k
-
-                                    ReDim Preserve .TypesIncluded(.NumberTypesIncluded + PropertyData.NumberTypesIncluded)
-                                    For k = 1 To PropertyData.NumberTypesIncluded
-                                        .TypesIncluded(k + .NumberTypesIncluded) = PropertyData.TypesIncluded(k)
-                                    Next k
-                                    .NumberTypesIncluded = .NumberTypesIncluded + PropertyData.NumberTypesIncluded
-                                ElseIf BeginsWith(Lines(j), "action ") Then
-                                    AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "use ") Then
-                                    AddToUseInfo(NumberObjs, GetEverythingAfter(Lines(j), "use "))
-                                ElseIf BeginsWith(Lines(j), "give ") Then
-                                    AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
-                                ElseIf Trim(Lines(j)) = "take" Then
-                                    .take.Type = TA_DEFAULT
-                                    AddToObjectProperties("take", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "take ") Then
-                                    If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
-                                        .take.Type = TA_TEXT
-                                        .take.Data = RetrieveParameter(Lines(j), _nullContext)
-
-                                        AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        .take.Type = TA_SCRIPT
-                                        RestOfLine = GetEverythingAfter(Lines(j), "take ")
-                                        .take.Data = RestOfLine
-
-                                        AddObjectAction(NumberObjs, "take", RestOfLine)
-                                    End If
-                                ElseIf Trim(Lines(j)) = "container" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
-                                ElseIf Trim(Lines(j)) = "surface" Then
-                                    If GameASLVersion >= 391 Then
-                                        AddToObjectProperties("container", NumberObjs, _nullContext)
-                                        AddToObjectProperties("surface", NumberObjs, _nullContext)
-                                    End If
-                                ElseIf Trim(Lines(j)) = "opened" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, _nullContext)
-                                ElseIf Trim(Lines(j)) = "transparent" Then
-                                    If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, _nullContext)
-                                ElseIf Trim(Lines(j)) = "open" Then
-                                    AddToObjectProperties("open", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "open ") Then
-                                    If Left(GetEverythingAfter(Lines(j), "open "), 1) = "<" Then
-                                        AddToObjectProperties("open=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        RestOfLine = GetEverythingAfter(Lines(j), "open ")
-                                        AddObjectAction(NumberObjs, "open", RestOfLine)
-                                    End If
-                                ElseIf Trim(Lines(j)) = "close" Then
-                                    AddToObjectProperties("close", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "close ") Then
-                                    If Left(GetEverythingAfter(Lines(j), "close "), 1) = "<" Then
-                                        AddToObjectProperties("close=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        RestOfLine = GetEverythingAfter(Lines(j), "close ")
-                                        AddObjectAction(NumberObjs, "close", RestOfLine)
-                                    End If
-                                ElseIf Trim(Lines(j)) = "add" Then
-                                    AddToObjectProperties("add", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "add ") Then
-                                    If Left(GetEverythingAfter(Lines(j), "add "), 1) = "<" Then
-                                        AddToObjectProperties("add=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        RestOfLine = GetEverythingAfter(Lines(j), "add ")
-                                        AddObjectAction(NumberObjs, "add", RestOfLine)
-                                    End If
-                                ElseIf Trim(Lines(j)) = "remove" Then
-                                    AddToObjectProperties("remove", NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "remove ") Then
-                                    If Left(GetEverythingAfter(Lines(j), "remove "), 1) = "<" Then
-                                        AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                    Else
-                                        RestOfLine = GetEverythingAfter(Lines(j), "remove ")
-                                        AddObjectAction(NumberObjs, "remove", RestOfLine)
-                                    End If
-                                ElseIf BeginsWith(Lines(j), "parent ") Then
-                                    AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                                ElseIf BeginsWith(Lines(j), "list") Then
-                                    ProcessListInfo(Lines(j), NumberObjs)
-                                End If
-
-                            Loop Until Trim(Lines(j)) = "end define"
-
-                            .DefinitionSectionEnd = j
-                            If e = 0 Then .Exists = True
-                        End With
+                        o.DefinitionSectionEnd = j
+                        If e = 0 Then o.Exists = True
                     ElseIf GameASLVersion <= 280 And BeginsWith(Lines(j), "define character") Then
                         CRoomName = OrigCRoomName
                         NumberChars = NumberChars + 1
@@ -10409,27 +10408,28 @@ errhandle:
             'now, for "give a to b", we have
             'ItemID=a and GiveToObjectID=b
 
-            With Objs(GiveToObjectID)
-                For i = 1 To .NumberGiveData
-                    If .GiveData(i).GiveType = GIVE_SOMETHING_TO And LCase(.GiveData(i).GiveObject) = LCase(Objs(ItemID).ObjectName) Then
-                        FoundGiveScript = True
-                        GiveScript = .GiveData(i).GiveScript
-                        i = .NumberGiveData
-                    End If
-                Next i
-            End With
+            Dim o = Objs(GiveToObjectID)
+
+            For i = 1 To o.NumberGiveData
+                If o.GiveData(i).GiveType = GIVE_SOMETHING_TO And LCase(o.GiveData(i).GiveObject) = LCase(Objs(ItemID).ObjectName) Then
+                    FoundGiveScript = True
+                    GiveScript = o.GiveData(i).GiveScript
+                    i = o.NumberGiveData
+                End If
+            Next i
 
             If Not FoundGiveScript Then
                 'check a for give to <b>:
-                With Objs(ItemID)
-                    For i = 1 To .NumberGiveData
-                        If .GiveData(i).GiveType = GIVE_TO_SOMETHING And LCase(.GiveData(i).GiveObject) = LCase(Objs(GiveToObjectID).ObjectName) Then
-                            FoundGiveScript = True
-                            GiveScript = .GiveData(i).GiveScript
-                            i = .NumberGiveData
-                        End If
-                    Next i
-                End With
+
+                Dim g = Objs(ItemID)
+
+                For i = 1 To g.NumberGiveData
+                    If g.GiveData(i).GiveType = GIVE_TO_SOMETHING And LCase(g.GiveData(i).GiveObject) = LCase(Objs(GiveToObjectID).ObjectName) Then
+                        FoundGiveScript = True
+                        GiveScript = g.GiveData(i).GiveScript
+                        i = g.NumberGiveData
+                    End If
+                Next i
             End If
 
             If Not FoundGiveScript Then
@@ -10648,40 +10648,38 @@ errhandle:
             ' for property, then check define
             ' section:
 
-            With Objs(ObjID)
+            Dim o = Objs(ObjID)
 
-                For i = 1 To .NumberActions
-                    If .Actions(i).ActionName = "speak" Then
-                        SpeakLine = "speak " & .Actions(i).Script
+            For i = 1 To o.NumberActions
+                If o.Actions(i).ActionName = "speak" Then
+                    SpeakLine = "speak " & o.Actions(i).Script
+                    FoundSpeak = True
+                    i = o.NumberActions
+                End If
+            Next i
+
+            If Not FoundSpeak Then
+                For i = 1 To o.NumberProperties
+                    If o.Properties(i).PropertyName = "speak" Then
+                        SpeakLine = "speak <" & o.Properties(i).PropertyValue & ">"
                         FoundSpeak = True
-                        i = .NumberActions
+                        i = o.NumberProperties
                     End If
                 Next i
+            End If
 
+            If GameASLVersion < 311 Then
+                ' For some reason ASL3 < 311 looks for a "look" tag rather than
+                ' having had this set up at initialisation.
                 If Not FoundSpeak Then
-                    For i = 1 To .NumberProperties
-                        If .Properties(i).PropertyName = "speak" Then
-                            SpeakLine = "speak <" & .Properties(i).PropertyValue & ">"
+                    For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
+                        If BeginsWith(Lines(i), "speak ") Then
+                            SpeakLine = Lines(i)
                             FoundSpeak = True
-                            i = .NumberProperties
                         End If
                     Next i
                 End If
-
-                If GameASLVersion < 311 Then
-                    ' For some reason ASL3 < 311 looks for a "look" tag rather than
-                    ' having had this set up at initialisation.
-                    If Not FoundSpeak Then
-                        For i = .DefinitionSectionStart To .DefinitionSectionEnd
-                            If BeginsWith(Lines(i), "speak ") Then
-                                SpeakLine = Lines(i)
-                                FoundSpeak = True
-                            End If
-                        Next i
-                    End If
-                End If
-
-            End With
+            End If
 
             If Not FoundSpeak Then
                 SetStringContents("quest.error.gender", UCase(Left(Objs(ObjID).Gender, 1)) & Mid(Objs(ObjID).Gender, 2), ctx)
@@ -10788,42 +10786,41 @@ errhandle:
         End If
 
         If GameASLVersion >= 280 Then
-            With Objs(ObjID).take
+            Dim t = Objs(ObjID).take
 
-                If ObjectIsInContainer And (.Type = TA_DEFAULT Or .Type = TA_TEXT) Then
-                    ' So, we want to take an object that's in a container or surface. So first
-                    ' we have to remove the object from that container.
+            If ObjectIsInContainer And (t.Type = TA_DEFAULT Or t.Type = TA_TEXT) Then
+                ' So, we want to take an object that's in a container or surface. So first
+                ' we have to remove the object from that container.
 
-                    If Objs(ParentID).ObjectAlias <> "" Then
-                        ParentDisplayName = Objs(ParentID).ObjectAlias
-                    Else
-                        ParentDisplayName = Objs(ParentID).ObjectName
-                    End If
-
-                    Print("(first removing " & Objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
-
-                    ' Try to remove the object
-                    ctx.AllowRealNamesInCommand = True
-                    ExecCommand("remove " & Objs(ObjID).ObjectName, ctx, False, , True)
-
-                    If GetObjectProperty("parent", ObjID, False, False) <> "" Then
-                        ' removing the object failed
-                        Exit Sub
-                    End If
-                End If
-
-                If .Type = TA_DEFAULT Then
-                    PlayerErrorMessage(ERROR_DEFAULTTAKE, ctx)
-                    PlayerItem(TakeItem, True, ctx, ObjID)
-                ElseIf .Type = TA_TEXT Then
-                    Print(.Data, ctx)
-                    PlayerItem(TakeItem, True, ctx, ObjID)
-                ElseIf .Type = TA_SCRIPT Then
-                    ExecuteScript(.Data, ctx, ObjID)
+                If Objs(ParentID).ObjectAlias <> "" Then
+                    ParentDisplayName = Objs(ParentID).ObjectAlias
                 Else
-                    PlayerErrorMessage(ERROR_BADTAKE, ctx)
+                    ParentDisplayName = Objs(ParentID).ObjectName
                 End If
-            End With
+
+                Print("(first removing " & Objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
+
+                ' Try to remove the object
+                ctx.AllowRealNamesInCommand = True
+                ExecCommand("remove " & Objs(ObjID).ObjectName, ctx, False, , True)
+
+                If GetObjectProperty("parent", ObjID, False, False) <> "" Then
+                    ' removing the object failed
+                    Exit Sub
+                End If
+            End If
+
+            If t.Type = TA_DEFAULT Then
+                PlayerErrorMessage(ERROR_DEFAULTTAKE, ctx)
+                PlayerItem(TakeItem, True, ctx, ObjID)
+            ElseIf t.Type = TA_TEXT Then
+                Print(t.Data, ctx)
+                PlayerItem(TakeItem, True, ctx, ObjID)
+            ElseIf t.Type = TA_SCRIPT Then
+                ExecuteScript(t.Data, ctx, ObjID)
+            Else
+                PlayerErrorMessage(ERROR_BADTAKE, ctx)
+            End If
         Else
 
             ' find 'take' line
@@ -10924,15 +10921,14 @@ errhandle:
 
             If UseOn = "" Then
                 If GameASLVersion < 410 Then
-                    With Rooms(RoomID)
-                        For i = 1 To .NumberUse
-                            If LCase(Objs(ItemID).ObjectName) = LCase(.use(i).Text) Then
-                                FoundUseScript = True
-                                UseScript = .use(i).Script
-                                i = .NumberUse
-                            End If
-                        Next i
-                    End With
+                    Dim r = Rooms(RoomID)
+                    For i = 1 To r.NumberUse
+                        If LCase(Objs(ItemID).ObjectName) = LCase(r.use(i).Text) Then
+                            FoundUseScript = True
+                            UseScript = r.use(i).Script
+                            i = r.NumberUse
+                        End If
+                    Next i
                 End If
 
                 If Not FoundUseScript Then
@@ -10962,27 +10958,27 @@ errhandle:
                 'ItemID=a and UseOnObjectID=b
 
                 'first check b for use <a>:
-                With Objs(UseOnObjectID)
-                    For i = 1 To .NumberUseData
-                        If .UseData(i).UseType = USE_SOMETHING_ON And LCase(.UseData(i).UseObject) = LCase(Objs(ItemID).ObjectName) Then
-                            FoundUseScript = True
-                            UseScript = .UseData(i).UseScript
-                            i = .NumberUseData
-                        End If
-                    Next i
-                End With
+
+                Dim o = Objs(UseOnObjectID)
+
+                For i = 1 To o.NumberUseData
+                    If o.UseData(i).UseType = USE_SOMETHING_ON And LCase(o.UseData(i).UseObject) = LCase(Objs(ItemID).ObjectName) Then
+                        FoundUseScript = True
+                        UseScript = o.UseData(i).UseScript
+                        i = o.NumberUseData
+                    End If
+                Next i
 
                 If Not FoundUseScript Then
                     'check a for use on <b>:
-                    With Objs(ItemID)
-                        For i = 1 To .NumberUseData
-                            If .UseData(i).UseType = USE_ON_SOMETHING And LCase(.UseData(i).UseObject) = LCase(Objs(UseOnObjectID).ObjectName) Then
-                                FoundUseScript = True
-                                UseScript = .UseData(i).UseScript
-                                i = .NumberUseData
-                            End If
-                        Next i
-                    End With
+                    Dim u = Objs(ItemID)
+                    For i = 1 To u.NumberUseData
+                        If u.UseData(i).UseType = USE_ON_SOMETHING And LCase(u.UseData(i).UseObject) = LCase(Objs(UseOnObjectID).ObjectName) Then
+                            FoundUseScript = True
+                            UseScript = u.UseData(i).UseScript
+                            i = u.NumberUseData
+                        End If
+                    Next i
                 End If
 
                 If Not FoundUseScript Then
