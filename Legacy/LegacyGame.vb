@@ -11570,37 +11570,37 @@ ErrorHandler:
             Exit Sub
         End If
 
-        With Rooms(RoomID)
-            If Direction = "north" Then
-                DirData = .North
-            ElseIf Direction = "south" Then
-                DirData = .South
-            ElseIf Direction = "west" Then
-                DirData = .West
-            ElseIf Direction = "east" Then
-                DirData = .East
-            ElseIf Direction = "northeast" Then
-                DirData = .NorthEast
-            ElseIf Direction = "northwest" Then
-                DirData = .NorthWest
-            ElseIf Direction = "southeast" Then
-                DirData = .SouthEast
-            ElseIf Direction = "southwest" Then
-                DirData = .SouthWest
-            ElseIf Direction = "up" Then
-                DirData = .Up
-            ElseIf Direction = "down" Then
-                DirData = .Down
-            ElseIf Direction = "out" Then
-                If .out.Script = "" Then
-                    DirData.Data = .out.Text
-                    DirData.Type = TA_TEXT
-                Else
-                    DirData.Data = .out.Script
-                    DirData.Type = TA_SCRIPT
-                End If
+        Dim r = Rooms(RoomID)
+
+        If Direction = "north" Then
+            DirData = r.North
+        ElseIf Direction = "south" Then
+            DirData = r.South
+        ElseIf Direction = "west" Then
+            DirData = r.West
+        ElseIf Direction = "east" Then
+            DirData = r.East
+        ElseIf Direction = "northeast" Then
+            DirData = r.NorthEast
+        ElseIf Direction = "northwest" Then
+            DirData = r.NorthWest
+        ElseIf Direction = "southeast" Then
+            DirData = r.SouthEast
+        ElseIf Direction = "southwest" Then
+            DirData = r.SouthWest
+        ElseIf Direction = "up" Then
+            DirData = r.Up
+        ElseIf Direction = "down" Then
+            DirData = r.Down
+        ElseIf Direction = "out" Then
+            If r.out.Script = "" Then
+                DirData.Data = r.out.Text
+                DirData.Type = TA_TEXT
+            Else
+                DirData.Data = r.out.Script
+                DirData.Type = TA_SCRIPT
             End If
-        End With
+        End If
 
         If DirData.Type = TA_SCRIPT And DirData.Data <> "" Then
             ExecuteScript(DirData.Data, ctx)
@@ -11824,39 +11824,37 @@ ErrorHandler:
         ScriptPresent = False
 
         ' check if place is available
-        With Rooms(RoomID)
+        Dim r = Rooms(RoomID)
 
-            For i = 1 To .NumberPlaces
-                CheckPlace = .Places(i).PlaceName
+        For i = 1 To r.NumberPlaces
+            CheckPlace = r.Places(i).PlaceName
 
-                'remove any prefix and semicolon
-                If InStr(CheckPlace, ";") > 0 Then
-                    CheckPlace = Trim(Right(CheckPlace, Len(CheckPlace) - (InStr(CheckPlace, ";") + 1)))
-                End If
+            'remove any prefix and semicolon
+            If InStr(CheckPlace, ";") > 0 Then
+                CheckPlace = Trim(Right(CheckPlace, Len(CheckPlace) - (InStr(CheckPlace, ";") + 1)))
+            End If
 
-                CheckPlaceName = CheckPlace
+            CheckPlaceName = CheckPlace
 
-                If GameASLVersion >= 311 And .Places(i).Script = "" Then
-                    DestRoomID = GetRoomID(CheckPlace, ctx)
-                    If DestRoomID <> 0 Then
-                        If Rooms(DestRoomID).RoomAlias <> "" Then
-                            CheckPlaceName = Rooms(DestRoomID).RoomAlias
-                        End If
+            If GameASLVersion >= 311 And r.Places(i).Script = "" Then
+                DestRoomID = GetRoomID(CheckPlace, ctx)
+                If DestRoomID <> 0 Then
+                    If Rooms(DestRoomID).RoomAlias <> "" Then
+                        CheckPlaceName = Rooms(DestRoomID).RoomAlias
                     End If
                 End If
+            End If
 
-                If LCase(CheckPlaceName) = LCase(PlaceName) Then
-                    FoundPlace = True
+            If LCase(CheckPlaceName) = LCase(PlaceName) Then
+                FoundPlace = True
 
-                    If .Places(i).Script <> "" Then
-                        Return CheckPlace & ";" & .Places(i).Script
-                    Else
-                        Return CheckPlace
-                    End If
+                If r.Places(i).Script <> "" Then
+                    Return CheckPlace & ";" & r.Places(i).Script
+                Else
+                    Return CheckPlace
                 End If
-            Next i
-
-        End With
+            End If
+        Next i
 
         Return ""
 
@@ -12312,20 +12310,19 @@ ErrorHandler:
         ResourceStart = 0
 
         For i = 1 To NumResources
-            With Resources(i)
-                Chr0Pos = InStr(CatData, Chr(0))
-                .ResourceName = DecryptString(Left(CatData, Chr0Pos - 1))
-                CatData = Mid(CatData, Chr0Pos + 1)
+            Dim r = Resources(i)
+            Chr0Pos = InStr(CatData, Chr(0))
+            r.ResourceName = DecryptString(Left(CatData, Chr0Pos - 1))
+            CatData = Mid(CatData, Chr0Pos + 1)
 
-                Chr0Pos = InStr(CatData, Chr(0))
-                .ResourceLength = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
-                CatData = Mid(CatData, Chr0Pos + 1)
+            Chr0Pos = InStr(CatData, Chr(0))
+            r.ResourceLength = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
+            CatData = Mid(CatData, Chr0Pos + 1)
 
-                .ResourceStart = ResourceStart
-                ResourceStart = ResourceStart + .ResourceLength
+            r.ResourceStart = ResourceStart
+            ResourceStart = ResourceStart + r.ResourceLength
 
-                .Extracted = False
-            End With
+            r.Extracted = False
         Next i
 
     End Sub
@@ -12677,39 +12674,37 @@ ErrorHandler:
         Dim RoomID As Integer
         RoomID = GetRoomID(CurrentRoom, ctx)
 
-        With Rooms(RoomID)
+        Dim r = Rooms(RoomID)
 
-            If GameASLVersion >= 410 Then
+        If GameASLVersion >= 410 Then
 
-                If RoomID > 0 Then
-                    For Each oExit As RoomExit In Rooms(RoomID).Exits.Places.Values
-                        AddToObjectList(objList, exitList, oExit.DisplayName, QUEST_ROOM)
-                    Next
-                End If
-
-            Else
-                For i = 1 To .NumberPlaces
-
-                    If GameASLVersion >= 311 And Rooms(RoomID).Places(i).Script = "" Then
-                        PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, ctx)
-                        If PlaceID = 0 Then
-                            ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
-                        Else
-                            If Rooms(PlaceID).RoomAlias <> "" Then
-                                ShownPlaceName = Rooms(PlaceID).RoomAlias
-                            Else
-                                ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
-                            End If
-                        End If
-                    Else
-                        ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
-                    End If
-
-                    AddToObjectList(objList, exitList, ShownPlaceName, QUEST_ROOM)
-                Next i
+            If RoomID > 0 Then
+                For Each oExit As RoomExit In Rooms(RoomID).Exits.Places.Values
+                    AddToObjectList(objList, exitList, oExit.DisplayName, QUEST_ROOM)
+                Next
             End If
 
-        End With
+        Else
+            For i = 1 To r.NumberPlaces
+
+                If GameASLVersion >= 311 And Rooms(RoomID).Places(i).Script = "" Then
+                    PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, ctx)
+                    If PlaceID = 0 Then
+                        ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
+                    Else
+                        If Rooms(PlaceID).RoomAlias <> "" Then
+                            ShownPlaceName = Rooms(PlaceID).RoomAlias
+                        Else
+                            ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
+                        End If
+                    End If
+                Else
+                    ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
+                End If
+
+                AddToObjectList(objList, exitList, ShownPlaceName, QUEST_ROOM)
+            Next i
+        End If
 
         RaiseEvent UpdateList(ListType.ObjectsList, objList)
         m_gotoExits = exitList
@@ -12983,16 +12978,15 @@ ErrorHandler:
             Return Nothing
         End If
 
-        With Rooms(lRoomID).Exits
-            lDir = .GetDirectionEnum(sExit)
-            If lDir = eDirection.dirNone Then
-                If .Places.ContainsKey(sExit) Then
-                    Return .Places.Item(sExit)
-                End If
-            Else
-                Return .GetDirectionExit(lDir)
+        Dim exits = Rooms(lRoomID).Exits
+        lDir = exits.GetDirectionEnum(sExit)
+        If lDir = eDirection.dirNone Then
+            If exits.Places.ContainsKey(sExit) Then
+                Return exits.Places.Item(sExit)
             End If
-        End With
+        Else
+            Return exits.GetDirectionExit(lDir)
+        End If
 
         Return Nothing
 
