@@ -164,13 +164,15 @@ Public Class LegacyGame
 
     Friend Class TextAction
         Public Data As String
-        Public Type As Integer
+        Public Type As TextActionType
     End Class
 
-    Public Const TA_TEXT As Integer = 1
-    Public Const TA_SCRIPT As Integer = 2
-    Public Const TA_NOTHING As Integer = 0
-    Public Const TA_DEFAULT As Integer = 3
+    Friend Enum TextActionType
+        Text
+        Script
+        [Nothing]
+        [Default]
+    End Enum
 
     Friend Class ScriptText
         Public Text As String
@@ -3189,27 +3191,27 @@ Public Class LegacyGame
         Dim PropName As String = ""
 
         If BeginsWith(ListLine, "list closed <") Then
-            ListInfo.Type = TA_TEXT
+            ListInfo.Type = TextActionType.Text
             ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list closed"
         ElseIf Trim(ListLine) = "list closed off" Then
             ' default for list closed is off anyway
             Exit Sub
         ElseIf BeginsWith(ListLine, "list closed") Then
-            ListInfo.Type = TA_SCRIPT
+            ListInfo.Type = TextActionType.Script
             ListInfo.Data = GetEverythingAfter(ListLine, "list closed")
             PropName = "list closed"
 
 
         ElseIf BeginsWith(ListLine, "list empty <") Then
-            ListInfo.Type = TA_TEXT
+            ListInfo.Type = TextActionType.Text
             ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list empty"
         ElseIf Trim(ListLine) = "list empty off" Then
             ' default for list empty is off anyway
             Exit Sub
         ElseIf BeginsWith(ListLine, "list empty") Then
-            ListInfo.Type = TA_SCRIPT
+            ListInfo.Type = TextActionType.Script
             ListInfo.Data = GetEverythingAfter(ListLine, "list empty")
             PropName = "list empty"
 
@@ -3218,17 +3220,17 @@ Public Class LegacyGame
             AddToObjectProperties("not list", ObjID, _nullContext)
             Exit Sub
         ElseIf BeginsWith(ListLine, "list <") Then
-            ListInfo.Type = TA_TEXT
+            ListInfo.Type = TextActionType.Text
             ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
             PropName = "list"
         ElseIf BeginsWith(ListLine, "list ") Then
-            ListInfo.Type = TA_SCRIPT
+            ListInfo.Type = TextActionType.Script
             ListInfo.Data = GetEverythingAfter(ListLine, "list ")
             PropName = "list"
         End If
 
         If PropName <> "" Then
-            If ListInfo.Type = TA_TEXT Then
+            If ListInfo.Type = TextActionType.Text Then
                 AddToObjectProperties(PropName & "=" & ListInfo.Data, ObjID, _nullContext)
             Else
                 AddToObjectActions("<" & PropName & "> " & ListInfo.Data, ObjID, _nullContext)
@@ -3742,7 +3744,7 @@ Public Class LegacyGame
                 Case "description"
                     If o.IsRoom Then
                         Rooms(o.CorresRoomID).Description.Data = CurValue
-                        Rooms(o.CorresRoomID).Description.Type = TA_TEXT
+                        Rooms(o.CorresRoomID).Description.Type = TextActionType.Text
                     End If
                 Case "look"
                     If o.IsRoom Then
@@ -3778,12 +3780,12 @@ Public Class LegacyGame
                 Case "take"
                     If GameASLVersion >= 392 Then
                         If FalseProperty Then
-                            o.take.Type = TA_NOTHING
+                            o.take.Type = TextActionType.Nothing
                         Else
                             If CurValue = "" Then
-                                o.take.Type = TA_DEFAULT
+                                o.take.Type = TextActionType.Default
                             Else
-                                o.take.Type = TA_TEXT
+                                o.take.Type = TextActionType.Text
                                 o.take.Data = CurValue
                             End If
                         End If
@@ -4797,34 +4799,34 @@ Public Class LegacyGame
         Else
             If BeginsWith(ExitData, "north ") Then
                 r.North.Data = DestRoom
-                r.North.Type = TA_TEXT
+                r.North.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "south ") Then
                 r.South.Data = DestRoom
-                r.South.Type = TA_TEXT
+                r.South.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "east ") Then
                 r.East.Data = DestRoom
-                r.East.Type = TA_TEXT
+                r.East.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "west ") Then
                 r.West.Data = DestRoom
-                r.West.Type = TA_TEXT
+                r.West.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "northeast ") Then
                 r.NorthEast.Data = DestRoom
-                r.NorthEast.Type = TA_TEXT
+                r.NorthEast.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "northwest ") Then
                 r.NorthWest.Data = DestRoom
-                r.NorthWest.Type = TA_TEXT
+                r.NorthWest.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "southeast ") Then
                 r.SouthEast.Data = DestRoom
-                r.SouthEast.Type = TA_TEXT
+                r.SouthEast.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "southwest ") Then
                 r.SouthWest.Data = DestRoom
-                r.SouthWest.Type = TA_TEXT
+                r.SouthWest.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "up ") Then
                 r.Up.Data = DestRoom
-                r.Up.Type = TA_TEXT
+                r.Up.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "down ") Then
                 r.Down.Data = DestRoom
-                r.Down.Type = TA_TEXT
+                r.Down.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "out ") Then
                 r.out.Text = DestRoom
             ElseIf BeginsWith(ExitData, "<") Then
@@ -5635,10 +5637,10 @@ Public Class LegacyGame
         TextScript = Trim(TextScript)
 
         If Left(TextScript, 1) = "<" Then
-            result.Type = TA_TEXT
+            result.Type = TextActionType.Text
             result.Data = RetrieveParameter(TextScript, _nullContext)
         Else
-            result.Type = TA_SCRIPT
+            result.Type = TextActionType.Script
             result.Data = TextScript
         End If
 
@@ -7404,7 +7406,7 @@ Public Class LegacyGame
                     ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "description ") Then
                         r.Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
                         If GameASLVersion >= 350 Then
-                            If r.Description.Type = TA_SCRIPT Then
+                            If r.Description.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "description", r.Description.Data)
                             Else
                                 AddToObjectProperties("description=" & r.Description.Data, NumberObjs, _nullContext)
@@ -7423,7 +7425,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "east ") Then
                         r.East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
                         If GameASLVersion >= 350 Then
-                            If r.East.Type = TA_SCRIPT Then
+                            If r.East.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "east", r.East.Data)
                             Else
                                 AddToObjectProperties("east=" & r.East.Data, NumberObjs, _nullContext)
@@ -7432,7 +7434,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "west ") Then
                         r.West = GetTextOrScript(GetEverythingAfter(Lines(j), "west "))
                         If GameASLVersion >= 350 Then
-                            If r.West.Type = TA_SCRIPT Then
+                            If r.West.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "west", r.West.Data)
                             Else
                                 AddToObjectProperties("west=" & r.West.Data, NumberObjs, _nullContext)
@@ -7441,7 +7443,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "north ") Then
                         r.North = GetTextOrScript(GetEverythingAfter(Lines(j), "north "))
                         If GameASLVersion >= 350 Then
-                            If r.North.Type = TA_SCRIPT Then
+                            If r.North.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "north", r.North.Data)
                             Else
                                 AddToObjectProperties("north=" & r.North.Data, NumberObjs, _nullContext)
@@ -7450,7 +7452,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "south ") Then
                         r.South = GetTextOrScript(GetEverythingAfter(Lines(j), "south "))
                         If GameASLVersion >= 350 Then
-                            If r.South.Type = TA_SCRIPT Then
+                            If r.South.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "south", r.South.Data)
                             Else
                                 AddToObjectProperties("south=" & r.South.Data, NumberObjs, _nullContext)
@@ -7459,7 +7461,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "northeast ") Then
                         r.NorthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "northeast "))
                         If GameASLVersion >= 350 Then
-                            If r.NorthEast.Type = TA_SCRIPT Then
+                            If r.NorthEast.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "northeast", r.NorthEast.Data)
                             Else
                                 AddToObjectProperties("northeast=" & r.NorthEast.Data, NumberObjs, _nullContext)
@@ -7468,7 +7470,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "northwest ") Then
                         r.NorthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "northwest "))
                         If GameASLVersion >= 350 Then
-                            If r.NorthWest.Type = TA_SCRIPT Then
+                            If r.NorthWest.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "northwest", r.NorthWest.Data)
                             Else
                                 AddToObjectProperties("northwest=" & r.NorthWest.Data, NumberObjs, _nullContext)
@@ -7477,7 +7479,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "southeast ") Then
                         r.SouthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "southeast "))
                         If GameASLVersion >= 350 Then
-                            If r.SouthEast.Type = TA_SCRIPT Then
+                            If r.SouthEast.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "southeast", r.SouthEast.Data)
                             Else
                                 AddToObjectProperties("southeast=" & r.SouthEast.Data, NumberObjs, _nullContext)
@@ -7486,7 +7488,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "southwest ") Then
                         r.SouthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "southwest "))
                         If GameASLVersion >= 350 Then
-                            If r.SouthWest.Type = TA_SCRIPT Then
+                            If r.SouthWest.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "southwest", r.SouthWest.Data)
                             Else
                                 AddToObjectProperties("southwest=" & r.SouthWest.Data, NumberObjs, _nullContext)
@@ -7495,7 +7497,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "up ") Then
                         r.Up = GetTextOrScript(GetEverythingAfter(Lines(j), "up "))
                         If GameASLVersion >= 350 Then
-                            If r.Up.Type = TA_SCRIPT Then
+                            If r.Up.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "up", r.Up.Data)
                             Else
                                 AddToObjectProperties("up=" & r.Up.Data, NumberObjs, _nullContext)
@@ -7504,7 +7506,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(Lines(j), "down ") Then
                         r.Down = GetTextOrScript(GetEverythingAfter(Lines(j), "down "))
                         If GameASLVersion >= 350 Then
-                            If r.Down.Type = TA_SCRIPT Then
+                            If r.Down.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "down", r.Down.Data)
                             Else
                                 AddToObjectProperties("down=" & r.Down.Data, NumberObjs, _nullContext)
@@ -9150,7 +9152,7 @@ Public Class LegacyGame
                         o.Gender = "it"
                         o.Article = "it"
 
-                        o.take.Type = TA_NOTHING
+                        o.take.Type = TextActionType.Nothing
 
                         If DefaultExists Then
                             AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
@@ -9252,16 +9254,16 @@ Public Class LegacyGame
                             ElseIf BeginsWith(Lines(j), "give ") Then
                                 AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
                             ElseIf Trim(Lines(j)) = "take" Then
-                                o.take.Type = TA_DEFAULT
+                                o.take.Type = TextActionType.Default
                                 AddToObjectProperties("take", NumberObjs, _nullContext)
                             ElseIf BeginsWith(Lines(j), "take ") Then
                                 If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
-                                    o.take.Type = TA_TEXT
+                                    o.take.Type = TextActionType.Text
                                     o.take.Data = RetrieveParameter(Lines(j), _nullContext)
 
                                     AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    o.take.Type = TA_SCRIPT
+                                    o.take.Type = TextActionType.Script
                                     RestOfLine = GetEverythingAfter(Lines(j), "take ")
                                     o.take.Data = RestOfLine
 
@@ -9602,9 +9604,9 @@ Public Class LegacyGame
                     DescTagExist = True
                     If Left(DescLine, 1) = "<" Then
                         DescLine = RetrieveParameter(DescLine, ctx)
-                        DescType = TA_TEXT
+                        DescType = TextActionType.Text
                     Else
-                        DescType = TA_SCRIPT
+                        DescType = TextActionType.Script
                     End If
                     i = gameblock.EndLine
                 End If
@@ -9626,7 +9628,7 @@ Public Class LegacyGame
                 'If no script, just print the tag's parameter.
                 'Otherwise, execute it as ASL script:
 
-                If DescType = TA_TEXT Then
+                If DescType = TextActionType.Text Then
                     Print(DescLine, ctx)
                 Else
                     ExecuteScript(DescLine, ctx)
@@ -10555,7 +10557,7 @@ Public Class LegacyGame
         If GameASLVersion >= 280 Then
             Dim t = Objs(ObjID).take
 
-            If ObjectIsInContainer And (t.Type = TA_DEFAULT Or t.Type = TA_TEXT) Then
+            If ObjectIsInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
                 ' So, we want to take an object that's in a container or surface. So first
                 ' we have to remove the object from that container.
 
@@ -10577,13 +10579,13 @@ Public Class LegacyGame
                 End If
             End If
 
-            If t.Type = TA_DEFAULT Then
+            If t.Type = TextActionType.Default Then
                 PlayerErrorMessage(PlayerError.DefaultTake, ctx)
                 PlayerItem(TakeItem, True, ctx, ObjID)
-            ElseIf t.Type = TA_TEXT Then
+            ElseIf t.Type = TextActionType.Text Then
                 Print(t.Data, ctx)
                 PlayerItem(TakeItem, True, ctx, ObjID)
-            ElseIf t.Type = TA_SCRIPT Then
+            ElseIf t.Type = TextActionType.Script Then
                 ExecuteScript(t.Data, ctx, ObjID)
             Else
                 PlayerErrorMessage(PlayerError.BadTake, ctx)
@@ -10838,7 +10840,7 @@ Public Class LegacyGame
         If Not NoUpdate Then
             If ActionName = "take" Then
                 Objs(ObjID).take.Data = ActionScript
-                Objs(ObjID).take.Type = TA_SCRIPT
+                Objs(ObjID).take.Type = TextActionType.Script
             ElseIf ActionName = "use" Then
                 AddToUseInfo(ObjID, ActionScript)
             ElseIf ActionName = "gain" Then
@@ -11341,14 +11343,14 @@ Public Class LegacyGame
         ElseIf Direction = "out" Then
             If r.out.Script = "" Then
                 DirData.Data = r.out.Text
-                DirData.Type = TA_TEXT
+                DirData.Type = TextActionType.Text
             Else
                 DirData.Data = r.out.Script
-                DirData.Type = TA_SCRIPT
+                DirData.Type = TextActionType.Script
             End If
         End If
 
-        If DirData.Type = TA_SCRIPT And DirData.Data <> "" Then
+        If DirData.Type = TextActionType.Script And DirData.Data <> "" Then
             ExecuteScript(DirData.Data, ctx)
         ElseIf DirData.Data <> "" Then
             NewRoom = DirData.Data
