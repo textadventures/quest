@@ -1570,8 +1570,6 @@ Public Class LegacyGame
 
                         LogASLError("     - Found library, opening...", LOGTYPE_INIT)
 
-                        On Error GoTo 0
-
                         LibLines = 0
 
                         If LibResourceLines Is Nothing Then
@@ -6341,55 +6339,50 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        On Error GoTo errhandle
-
-        If GameASLVersion >= 391 Then
-            ExpResult = ExpressionHandler(iVarCont)
-            If ExpResult.success = EXPRESSION_OK Then
-                iVarCont = ExpResult.Result
+        Try
+            If GameASLVersion >= 391 Then
+                ExpResult = ExpressionHandler(iVarCont)
+                If ExpResult.success = EXPRESSION_OK Then
+                    iVarCont = ExpResult.Result
+                Else
+                    iVarCont = "0"
+                    LogASLError("Error setting numeric variable <" & VarInfo & "> : " & ExpResult.Message, LOGTYPE_WARNINGERROR)
+                End If
             Else
-                iVarCont = "0"
-                LogASLError("Error setting numeric variable <" & VarInfo & "> : " & ExpResult.Message, LOGTYPE_WARNINGERROR)
+                ObscuredVarInfo = ObscureNumericExps(iVarCont)
+
+                OpPos = InStr(ObscuredVarInfo, "+")
+                If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "*")
+                If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "/")
+                If OpPos = 0 Then OpPos = InStr(2, ObscuredVarInfo, "-")
+
+                If OpPos <> 0 Then
+                    OP = Mid(iVarCont, OpPos, 1)
+                    FirstNum = Val(Left(iVarCont, OpPos - 1))
+                    SecondNum = Val(Mid(iVarCont, OpPos + 1))
+
+                    Select Case OP
+                        Case "+"
+                            iVarCont = Str(FirstNum + SecondNum)
+                        Case "-"
+                            iVarCont = Str(FirstNum - SecondNum)
+                        Case "*"
+                            iVarCont = Str(FirstNum * SecondNum)
+                        Case "/"
+                            If SecondNum <> 0 Then
+                                iVarCont = Str(FirstNum / SecondNum)
+                            Else
+                                LogASLError("Division by zero - The result of this operation has been set to zero.", LOGTYPE_WARNINGERROR)
+                                iVarCont = "0"
+                            End If
+                    End Select
+                End If
             End If
-        Else
-            ObscuredVarInfo = ObscureNumericExps(iVarCont)
 
-            OpPos = InStr(ObscuredVarInfo, "+")
-            If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "*")
-            If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "/")
-            If OpPos = 0 Then OpPos = InStr(2, ObscuredVarInfo, "-")
-
-            If OpPos <> 0 Then
-                OP = Mid(iVarCont, OpPos, 1)
-                FirstNum = Val(Left(iVarCont, OpPos - 1))
-                SecondNum = Val(Mid(iVarCont, OpPos + 1))
-
-                Select Case OP
-                    Case "+"
-                        iVarCont = Str(FirstNum + SecondNum)
-                    Case "-"
-                        iVarCont = Str(FirstNum - SecondNum)
-                    Case "*"
-                        iVarCont = Str(FirstNum * SecondNum)
-                    Case "/"
-                        If SecondNum <> 0 Then
-                            iVarCont = Str(FirstNum / SecondNum)
-                        Else
-                            LogASLError("Division by zero - The result of this operation has been set to zero.", LOGTYPE_WARNINGERROR)
-                            iVarCont = "0"
-                        End If
-                End Select
-            End If
-        End If
-
-
-        SetNumericVariableContents(sVarName, Val(iVarCont), ctx, ArrayIndex)
-
-        Exit Sub
-
-errhandle:
-        LogASLError("Error " & Trim(CStr(Err.Number)) & " (" & Err.Description & ") setting variable '" & sVarName & "' to '" & iVarCont & "'", LOGTYPE_WARNINGERROR)
-
+            SetNumericVariableContents(sVarName, Val(iVarCont), ctx, ArrayIndex)
+        Catch
+            LogASLError("Error " & Trim(CStr(Err.Number)) & " (" & Err.Description & ") setting variable '" & sVarName & "' to '" & iVarCont & "'", LOGTYPE_WARNINGERROR)
+        End Try
     End Sub
 
     Private m_questionResponse As Boolean
@@ -8280,9 +8273,12 @@ errhandle:
         End If
 
         If InStr(ExecLine, ";") = 0 Then
-            On Error GoTo errhandle
-            ExecCommand(ExecLine, NewThread, False)
-            On Error GoTo 0
+            Try
+                ExecCommand(ExecLine, NewThread, False)
+            Catch
+                LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LOGTYPE_WARNINGERROR)
+                ctx.CancelExec = True
+            End Try
         Else
             SemiColonPos = InStr(ExecLine, ";")
             EX = Trim(Left(ExecLine, SemiColonPos - 1))
@@ -8293,18 +8289,6 @@ errhandle:
                 LogASLError("Unrecognised post-command parameter in " & Trim(ScriptLine), LOGTYPE_WARNINGERROR)
             End If
         End If
-
-        Exit Sub
-
-errhandle:
-        If Err.Number = 28 Then
-            LogASLError("Out of stack space running '" & ScriptLine & "' - infinite loop?", LOGTYPE_WARNINGERROR)
-        Else
-            LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LOGTYPE_WARNINGERROR)
-        End If
-
-        ctx.CancelExec = True
-
     End Sub
 
     Private Sub ExecSetString(StringInfo As String, ctx As Context)
@@ -10951,231 +10935,221 @@ errhandle:
     End Sub
 
     Private Sub ExecuteScript(ScriptLine As String, ctx As Context, Optional NewCallingObjectID As Integer = 0)
-        On Error GoTo ErrorHandler
+        Try
+            If Trim(ScriptLine) = "" Then Exit Sub
+            If m_gameFinished Then Exit Sub
 
-        Dim TranscriptLine As String
-        Dim i As Integer
+            Dim CurPos As Integer
+            Dim bFinLoop As Boolean
+            Dim CRLFPos As Integer
+            Dim CurScriptLine As String
+            If InStr(ScriptLine, vbCrLf) > 0 Then
+                CurPos = 1
+                bFinLoop = False
+                Do
+                    CRLFPos = InStr(CurPos, ScriptLine, vbCrLf)
+                    If CRLFPos = 0 Then
+                        bFinLoop = True
+                        CRLFPos = Len(ScriptLine) + 1
+                    End If
 
-        If Trim(ScriptLine) = "" Then Exit Sub
-        If m_gameFinished Then Exit Sub
-
-        Dim CurPos As Integer
-        Dim bFinLoop As Boolean
-        Dim CRLFPos As Integer
-        Dim CurScriptLine As String
-        If InStr(ScriptLine, vbCrLf) > 0 Then
-            CurPos = 1
-            bFinLoop = False
-            Do
-                CRLFPos = InStr(CurPos, ScriptLine, vbCrLf)
-                If CRLFPos = 0 Then
-                    bFinLoop = True
-                    CRLFPos = Len(ScriptLine) + 1
-                End If
-
-                CurScriptLine = Trim(Mid(ScriptLine, CurPos, CRLFPos - CurPos))
-                If CurScriptLine <> vbCrLf Then
-                    ExecuteScript(CurScriptLine, ctx)
-                End If
-                CurPos = CRLFPos + 2
-            Loop Until bFinLoop
-            Exit Sub
-        End If
-
-        If NewCallingObjectID <> 0 Then
-            ctx.CallingObjectID = NewCallingObjectID
-        End If
-
-        Dim procblock As DefineBlock
-
-        Dim ModVol As Integer
-        If BeginsWith(ScriptLine, "if ") Then
-            ExecuteIf(ScriptLine, ctx)
-        ElseIf BeginsWith(ScriptLine, "select case ") Then
-            ExecuteSelectCase(ScriptLine, ctx)
-        ElseIf BeginsWith(ScriptLine, "choose ") Then
-            ExecuteChoose(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "set ") Then
-            ExecuteSet(GetEverythingAfter(ScriptLine, "set "), ctx)
-        ElseIf BeginsWith(ScriptLine, "inc ") Or BeginsWith(ScriptLine, "dec ") Then
-            ExecuteIncDec(ScriptLine, ctx)
-        ElseIf BeginsWith(ScriptLine, "say ") Then
-            Print(Chr(34) & RetrieveParameter(ScriptLine, ctx) & Chr(34), ctx)
-        ElseIf BeginsWith(ScriptLine, "do ") Then
-            ExecuteDo(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "doaction ") Then
-            ExecuteDoAction(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "give ") Then
-            PlayerItem(RetrieveParameter(ScriptLine, ctx), True, ctx)
-        ElseIf BeginsWith(ScriptLine, "lose ") Or BeginsWith(ScriptLine, "drop ") Then
-            PlayerItem(RetrieveParameter(ScriptLine, ctx), False, ctx)
-        ElseIf BeginsWith(ScriptLine, "msg nospeak ") Then
-            Print(RetrieveParameter(ScriptLine, ctx), ctx, , True)
-        ElseIf BeginsWith(ScriptLine, "msg ") Then
-            Print(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "speak ") Then
-            Speak(RetrieveParameter(ScriptLine, ctx))
-        ElseIf BeginsWith(ScriptLine, "helpmsg ") Then
-            Print(RetrieveParameter(ScriptLine, ctx), ctx, "help")
-        ElseIf Trim(LCase(ScriptLine)) = "helpclose" Then
-            ' This command does nothing in the Quest 5 player, as there is no separate help window
-        ElseIf BeginsWith(ScriptLine, "goto ") Then
-            PlayGame(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "playerwin") Then
-            FinishGame(STOPGAME_WIN, ctx)
-        ElseIf BeginsWith(ScriptLine, "playerlose") Then
-            FinishGame(STOPGAME_LOSE, ctx)
-        ElseIf Trim(LCase(ScriptLine)) = "stop" Then
-            FinishGame(STOPGAME_NULL, ctx)
-        ElseIf BeginsWith(ScriptLine, "playwav ") Then
-            PlayWav(RetrieveParameter(ScriptLine, ctx))
-        ElseIf BeginsWith(ScriptLine, "playmidi ") Then
-            PlayMedia(RetrieveParameter(ScriptLine, ctx))
-        ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
-            PlayMedia(RetrieveParameter(ScriptLine, ctx))
-        ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
-            ' This command does nothing in the Quest 5 player, as there is no separate picture window
-        ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (GameASLVersion >= 282 And GameASLVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (GameASLVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
-            ShowPicture(RetrieveParameter(ScriptLine, ctx))
-        ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
-            ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
-        ElseIf BeginsWith(ScriptLine, "animate persist ") Then
-            ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_PERSIST)
-        ElseIf BeginsWith(ScriptLine, "animate ") Then
-            ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_NORMAL)
-        ElseIf BeginsWith(ScriptLine, "extract ") Then
-            ExtractFile(RetrieveParameter(ScriptLine, ctx))
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx, QUEST_CHARACTER)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx, QUEST_CHARACTER)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, True, ctx)
-        ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, False, ctx)
-        ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
-        ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
-            SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
-        ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
-            ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
-        ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
-        ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
-            SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
-        ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
-            SetOpenClose(RetrieveParameter(ScriptLine, ctx), True, ctx)
-        ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
-            SetOpenClose(RetrieveParameter(ScriptLine, ctx), False, ctx)
-        ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
-            ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), True, ctx)
-        ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
-            ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), False, ctx)
-        ElseIf BeginsWith(ScriptLine, "clone ") Then
-            ExecClone(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "exec ") Then
-            ExecExec(ScriptLine, ctx)
-        ElseIf BeginsWith(ScriptLine, "setstring ") Then
-            ExecSetString(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "setvar ") Then
-            ExecSetVar(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "for ") Then
-            ExecFor(GetEverythingAfter(ScriptLine, "for "), ctx)
-        ElseIf BeginsWith(ScriptLine, "property ") Then
-            ExecProperty(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "type ") Then
-            ExecType(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "action ") Then
-            ExecuteAction(GetEverythingAfter(ScriptLine, "action "), ctx)
-        ElseIf BeginsWith(ScriptLine, "flag ") Then
-            ExecuteFlag(GetEverythingAfter(ScriptLine, "flag "), ctx)
-        ElseIf BeginsWith(ScriptLine, "create ") Then
-            ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), ctx)
-        ElseIf BeginsWith(ScriptLine, "destroy exit ") Then
-            DestroyExit(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "repeat ") Then
-            ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), ctx)
-        ElseIf BeginsWith(ScriptLine, "enter ") Then
-            ExecuteEnter(ScriptLine, ctx)
-        ElseIf BeginsWith(ScriptLine, "displaytext ") Then
-            DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "normal")
-        ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
-            DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "help")
-        ElseIf BeginsWith(ScriptLine, "font ") Then
-            SetFont(RetrieveParameter(ScriptLine, ctx), ctx)
-        ElseIf BeginsWith(ScriptLine, "pause ") Then
-            Pause(CInt(RetrieveParameter(ScriptLine, ctx)))
-        ElseIf Trim(LCase(ScriptLine)) = "clear" Then
-            DoClear()
-        ElseIf Trim(LCase(ScriptLine)) = "helpclear" Then
-            ' This command does nothing in the Quest 5 player, as there is no separate help window
-        ElseIf BeginsWith(ScriptLine, "background ") Then
-            SetBackground(RetrieveParameter(ScriptLine, ctx))
-        ElseIf BeginsWith(ScriptLine, "foreground ") Then
-            SetForeground(RetrieveParameter(ScriptLine, ctx))
-        ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
-            AutoIntro = False
-        ElseIf BeginsWith(ScriptLine, "debug ") Then
-            LogASLError(RetrieveParameter(ScriptLine, ctx), LOGTYPE_MISC)
-        ElseIf BeginsWith(ScriptLine, "mailto ") Then
-            Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
-            RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
-        ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
-            LogASLError("'shell' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
-        ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
-            LogASLError("'shellexe' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
-        ElseIf BeginsWith(ScriptLine, "wait") Then
-            ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
-        ElseIf BeginsWith(ScriptLine, "timeron ") Then
-            SetTimerState(RetrieveParameter(ScriptLine, ctx), True)
-        ElseIf BeginsWith(ScriptLine, "timeroff ") Then
-            SetTimerState(RetrieveParameter(ScriptLine, ctx), False)
-        ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
-            OutPutOn = True
-            UpdateObjectList(ctx)
-            UpdateItems(ctx)
-        ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
-            OutPutOn = False
-        ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
-            m_player.SetPanesVisible("off")
-        ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
-            m_player.SetPanesVisible("on")
-        ElseIf BeginsWith(ScriptLine, "lock ") Then
-            ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
-        ElseIf BeginsWith(ScriptLine, "unlock ") Then
-            ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
-        ElseIf BeginsWith(ScriptLine, "playmod ") And GameASLVersion < 410 Then
-            LogASLError("'playmod' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
-        ElseIf BeginsWith(ScriptLine, "modvolume") And GameASLVersion < 410 Then
-            LogASLError("'modvolume' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
-        ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
-            ctx.DontProcessCommand = True
-        ElseIf BeginsWith(ScriptLine, "return ") Then
-            ctx.FunctionReturnValue = RetrieveParameter(ScriptLine, ctx)
-        Else
-            If BeginsWith(ScriptLine, "'") = False Then
-                LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LOGTYPE_WARNINGERROR)
+                    CurScriptLine = Trim(Mid(ScriptLine, CurPos, CRLFPos - CurPos))
+                    If CurScriptLine <> vbCrLf Then
+                        ExecuteScript(CurScriptLine, ctx)
+                    End If
+                    CurPos = CRLFPos + 2
+                Loop Until bFinLoop
+                Exit Sub
             End If
-        End If
 
-        Exit Sub
+            If NewCallingObjectID <> 0 Then
+                ctx.CallingObjectID = NewCallingObjectID
+            End If
 
-ErrorHandler:
-        Print("[An internal error occurred]", ctx)
-        LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LOGTYPE_INTERNALERROR)
-
+            If BeginsWith(ScriptLine, "if ") Then
+                ExecuteIf(ScriptLine, ctx)
+            ElseIf BeginsWith(ScriptLine, "select case ") Then
+                ExecuteSelectCase(ScriptLine, ctx)
+            ElseIf BeginsWith(ScriptLine, "choose ") Then
+                ExecuteChoose(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "set ") Then
+                ExecuteSet(GetEverythingAfter(ScriptLine, "set "), ctx)
+            ElseIf BeginsWith(ScriptLine, "inc ") Or BeginsWith(ScriptLine, "dec ") Then
+                ExecuteIncDec(ScriptLine, ctx)
+            ElseIf BeginsWith(ScriptLine, "say ") Then
+                Print(Chr(34) & RetrieveParameter(ScriptLine, ctx) & Chr(34), ctx)
+            ElseIf BeginsWith(ScriptLine, "do ") Then
+                ExecuteDo(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "doaction ") Then
+                ExecuteDoAction(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "give ") Then
+                PlayerItem(RetrieveParameter(ScriptLine, ctx), True, ctx)
+            ElseIf BeginsWith(ScriptLine, "lose ") Or BeginsWith(ScriptLine, "drop ") Then
+                PlayerItem(RetrieveParameter(ScriptLine, ctx), False, ctx)
+            ElseIf BeginsWith(ScriptLine, "msg nospeak ") Then
+                Print(RetrieveParameter(ScriptLine, ctx), ctx, , True)
+            ElseIf BeginsWith(ScriptLine, "msg ") Then
+                Print(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "speak ") Then
+                Speak(RetrieveParameter(ScriptLine, ctx))
+            ElseIf BeginsWith(ScriptLine, "helpmsg ") Then
+                Print(RetrieveParameter(ScriptLine, ctx), ctx, "help")
+            ElseIf Trim(LCase(ScriptLine)) = "helpclose" Then
+                ' This command does nothing in the Quest 5 player, as there is no separate help window
+            ElseIf BeginsWith(ScriptLine, "goto ") Then
+                PlayGame(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "playerwin") Then
+                FinishGame(STOPGAME_WIN, ctx)
+            ElseIf BeginsWith(ScriptLine, "playerlose") Then
+                FinishGame(STOPGAME_LOSE, ctx)
+            ElseIf Trim(LCase(ScriptLine)) = "stop" Then
+                FinishGame(STOPGAME_NULL, ctx)
+            ElseIf BeginsWith(ScriptLine, "playwav ") Then
+                PlayWav(RetrieveParameter(ScriptLine, ctx))
+            ElseIf BeginsWith(ScriptLine, "playmidi ") Then
+                PlayMedia(RetrieveParameter(ScriptLine, ctx))
+            ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
+                PlayMedia(RetrieveParameter(ScriptLine, ctx))
+            ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
+                ' This command does nothing in the Quest 5 player, as there is no separate picture window
+            ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (GameASLVersion >= 282 And GameASLVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (GameASLVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
+                ShowPicture(RetrieveParameter(ScriptLine, ctx))
+            ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
+                ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
+            ElseIf BeginsWith(ScriptLine, "animate persist ") Then
+                ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_PERSIST)
+            ElseIf BeginsWith(ScriptLine, "animate ") Then
+                ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_NORMAL)
+            ElseIf BeginsWith(ScriptLine, "extract ") Then
+                ExtractFile(RetrieveParameter(ScriptLine, ctx))
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
+                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx, QUEST_CHARACTER)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx, QUEST_CHARACTER)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
+                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, True, ctx)
+            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_CHARACTER, False, ctx)
+            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
+            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
+                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
+            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
+                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, ctx)
+            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, True, ctx)
+            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
+                SetVisibility(RetrieveParameter(ScriptLine, ctx), QUEST_OBJECT, False, ctx)
+            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
+                SetOpenClose(RetrieveParameter(ScriptLine, ctx), True, ctx)
+            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
+                SetOpenClose(RetrieveParameter(ScriptLine, ctx), False, ctx)
+            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
+                ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), True, ctx)
+            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
+                ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), False, ctx)
+            ElseIf BeginsWith(ScriptLine, "clone ") Then
+                ExecClone(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "exec ") Then
+                ExecExec(ScriptLine, ctx)
+            ElseIf BeginsWith(ScriptLine, "setstring ") Then
+                ExecSetString(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "setvar ") Then
+                ExecSetVar(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "for ") Then
+                ExecFor(GetEverythingAfter(ScriptLine, "for "), ctx)
+            ElseIf BeginsWith(ScriptLine, "property ") Then
+                ExecProperty(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "type ") Then
+                ExecType(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "action ") Then
+                ExecuteAction(GetEverythingAfter(ScriptLine, "action "), ctx)
+            ElseIf BeginsWith(ScriptLine, "flag ") Then
+                ExecuteFlag(GetEverythingAfter(ScriptLine, "flag "), ctx)
+            ElseIf BeginsWith(ScriptLine, "create ") Then
+                ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), ctx)
+            ElseIf BeginsWith(ScriptLine, "destroy exit ") Then
+                DestroyExit(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "repeat ") Then
+                ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), ctx)
+            ElseIf BeginsWith(ScriptLine, "enter ") Then
+                ExecuteEnter(ScriptLine, ctx)
+            ElseIf BeginsWith(ScriptLine, "displaytext ") Then
+                DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "normal")
+            ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
+                DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "help")
+            ElseIf BeginsWith(ScriptLine, "font ") Then
+                SetFont(RetrieveParameter(ScriptLine, ctx), ctx)
+            ElseIf BeginsWith(ScriptLine, "pause ") Then
+                Pause(CInt(RetrieveParameter(ScriptLine, ctx)))
+            ElseIf Trim(LCase(ScriptLine)) = "clear" Then
+                DoClear()
+            ElseIf Trim(LCase(ScriptLine)) = "helpclear" Then
+                ' This command does nothing in the Quest 5 player, as there is no separate help window
+            ElseIf BeginsWith(ScriptLine, "background ") Then
+                SetBackground(RetrieveParameter(ScriptLine, ctx))
+            ElseIf BeginsWith(ScriptLine, "foreground ") Then
+                SetForeground(RetrieveParameter(ScriptLine, ctx))
+            ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
+                AutoIntro = False
+            ElseIf BeginsWith(ScriptLine, "debug ") Then
+                LogASLError(RetrieveParameter(ScriptLine, ctx), LOGTYPE_MISC)
+            ElseIf BeginsWith(ScriptLine, "mailto ") Then
+                Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
+                RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
+            ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
+                LogASLError("'shell' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+            ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
+                LogASLError("'shellexe' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+            ElseIf BeginsWith(ScriptLine, "wait") Then
+                ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
+            ElseIf BeginsWith(ScriptLine, "timeron ") Then
+                SetTimerState(RetrieveParameter(ScriptLine, ctx), True)
+            ElseIf BeginsWith(ScriptLine, "timeroff ") Then
+                SetTimerState(RetrieveParameter(ScriptLine, ctx), False)
+            ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
+                OutPutOn = True
+                UpdateObjectList(ctx)
+                UpdateItems(ctx)
+            ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
+                OutPutOn = False
+            ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
+                m_player.SetPanesVisible("off")
+            ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
+                m_player.SetPanesVisible("on")
+            ElseIf BeginsWith(ScriptLine, "lock ") Then
+                ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
+            ElseIf BeginsWith(ScriptLine, "unlock ") Then
+                ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
+            ElseIf BeginsWith(ScriptLine, "playmod ") And GameASLVersion < 410 Then
+                LogASLError("'playmod' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+            ElseIf BeginsWith(ScriptLine, "modvolume") And GameASLVersion < 410 Then
+                LogASLError("'modvolume' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+            ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
+                ctx.DontProcessCommand = True
+            ElseIf BeginsWith(ScriptLine, "return ") Then
+                ctx.FunctionReturnValue = RetrieveParameter(ScriptLine, ctx)
+            Else
+                If BeginsWith(ScriptLine, "'") = False Then
+                    LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LOGTYPE_WARNINGERROR)
+                End If
+            End If
+        Catch
+            Print("[An internal error occurred]", ctx)
+            LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LOGTYPE_INTERNALERROR)
+        End Try
     End Sub
 
     Private Sub ExecuteEnter(ScriptLine As String, ctx As Context)
