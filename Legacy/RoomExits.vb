@@ -241,7 +241,7 @@ Friend Class RoomExits
         lExitID = m_game.Disambiguate(sCommand, m_game.CurrentRoom, ctx, True)
 
         If lExitID = -1 Then
-            m_game.PlayerErrorMessage(ERROR_BADPLACE, ctx)
+            m_game.PlayerErrorMessage(PlayerError.BadPlace, ctx)
         Else
             oExit = GetExitByObjectID(lExitID)
             oExit.Go(ctx)

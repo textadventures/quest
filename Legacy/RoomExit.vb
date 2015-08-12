@@ -221,7 +221,7 @@ Friend Class RoomExit
             If ExitPropertyBool("lockmessage") Then
                 m_game.Print(ExitProperty("lockmessage"), ctx)
             Else
-                m_game.PlayerErrorMessage(ERROR_LOCKED, ctx)
+                m_game.PlayerErrorMessage(PlayerError.Locked, ctx)
             End If
         Else
             If IsScript Then

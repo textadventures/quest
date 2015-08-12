@@ -366,44 +366,46 @@ Public Class LegacyGame
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
 
-    Friend Const ERROR_BADCOMMAND As Integer = 1
-    Friend Const ERROR_BADGO As Integer = 2
-    Friend Const ERROR_BADGIVE As Integer = 3
-    Friend Const ERROR_BADCHARACTER As Integer = 4
-    Friend Const ERROR_NOITEM As Integer = 5
-    Friend Const ERROR_ITEMUNWANTED As Integer = 6
-    Friend Const ERROR_BADLOOK As Integer = 7
-    Friend Const ERROR_BADTHING As Integer = 8
-    Friend Const ERROR_DEFAULTLOOK As Integer = 9
-    Friend Const ERROR_DEFAULTSPEAK As Integer = 10
-    Friend Const ERROR_BADITEM As Integer = 11
-    Friend Const ERROR_DEFAULTTAKE As Integer = 12
-    Friend Const ERROR_BADUSE As Integer = 13
-    Friend Const ERROR_DEFAULTUSE As Integer = 14
-    Friend Const ERROR_DEFAULTOUT As Integer = 15
-    Friend Const ERROR_BADPLACE As Integer = 16
-    Friend Const ERROR_BADEXAMINE As Integer = 17
-    Friend Const ERROR_DEFAULTEXAMINE As Integer = 18
-    Friend Const ERROR_BADTAKE As Integer = 19
-    Friend Const ERROR_CANTDROP As Integer = 20
-    Friend Const ERROR_DEFAULTDROP As Integer = 21
-    Friend Const ERROR_BADDROP As Integer = 22
-    Friend Const ERROR_BADPRONOUN As Integer = 23
-    Friend Const ERROR_ALREADYOPEN As Integer = 24
-    Friend Const ERROR_ALREADYCLOSED As Integer = 25
-    Friend Const ERROR_CANTOPEN As Integer = 26
-    Friend Const ERROR_CANTCLOSE As Integer = 27
-    Friend Const ERROR_DEFAULTOPEN As Integer = 28
-    Friend Const ERROR_DEFAULTCLOSE As Integer = 29
-    Friend Const ERROR_BADPUT As Integer = 30
-    Friend Const ERROR_CANTPUT As Integer = 31
-    Friend Const ERROR_DEFAULTPUT As Integer = 32
-    Friend Const ERROR_CANTREMOVE As Integer = 33
-    Friend Const ERROR_ALREADYPUT As Integer = 34
-    Friend Const ERROR_DEFAULTREMOVE As Integer = 35
-    Friend Const ERROR_LOCKED As Integer = 36
-    Friend Const ERROR_DEFAULTWAIT As Integer = 37
-    Friend Const ERROR_ALREADYTAKEN As Integer = 38
+    Friend Enum PlayerError
+        BadCommand
+        BadGo
+        BadGive
+        BadCharacter
+        NoItem
+        ItemUnwanted
+        BadLook
+        BadThing
+        DefaultLook
+        DefaultSpeak
+        BadItem
+        DefaultTake
+        BadUse
+        DefaultUse
+        DefaultOut
+        BadPlace
+        BadExamine
+        DefaultExamine
+        BadTake
+        CantDrop
+        DefaultDrop
+        BadDrop
+        BadPronoun
+        AlreadyOpen
+        AlreadyClosed
+        CantOpen
+        CantClose
+        DefaultOpen
+        DefaultClose
+        BadPut
+        CantPut
+        DefaultPut
+        CantRemove
+        AlreadyPut
+        DefaultRemove
+        Locked
+        DefaultWait
+        AlreadyTaken
+    End Enum
 
     Private Enum ItType
         Inanimate
@@ -2131,7 +2133,7 @@ Public Class LegacyGame
     Private Sub DoLook(ObjID As Integer, ctx As Context, Optional ShowExamineError As Boolean = False, Optional ShowDefaultDescription As Boolean = True)
 
         Dim FoundLook As Boolean
-        Dim i, ErrMsgID As Integer
+        Dim i As Integer, ErrMsgID As PlayerError
         Dim ObjectContents As String
 
         FoundLook = False
@@ -2197,9 +2199,9 @@ Public Class LegacyGame
         If Not FoundLook And ShowDefaultDescription Then
 
             If ShowExamineError Then
-                ErrMsgID = ERROR_DEFAULTEXAMINE
+                ErrMsgID = PlayerError.DefaultExamine
             Else
-                ErrMsgID = ERROR_DEFAULTLOOK
+                ErrMsgID = PlayerError.DefaultLook
             End If
 
             ' Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
@@ -2346,7 +2348,7 @@ Public Class LegacyGame
         ChildLength = SepPos - (Len(Verb) + 2)
 
         If ChildLength < 0 Then
-            PlayerErrorMessage(ERROR_BADCOMMAND, ctx)
+            PlayerErrorMessage(PlayerError.BadCommand, ctx)
             BadCmdBefore = Verb
             Exit Sub
         End If
@@ -2376,7 +2378,7 @@ Public Class LegacyGame
                     Exit Sub
                 End If
             Else
-                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, ctx)
+                If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
                 BadCmdBefore = Verb
                 Exit Sub
             End If
@@ -2385,7 +2387,7 @@ Public Class LegacyGame
             ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & CurrentRoom, ctx)
 
             If ChildObjID <= 0 Then
-                If ChildObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 BadCmdBefore = Verb
                 Exit Sub
             End If
@@ -2393,7 +2395,7 @@ Public Class LegacyGame
 
         If NoParentSpecified And DoAdd Then
             SetStringContents("quest.error.article", Objs(ChildObjID).Article, ctx)
-            PlayerErrorMessage(ERROR_BADPUT, ctx)
+            PlayerErrorMessage(PlayerError.BadPut, ctx)
             Exit Sub
         End If
 
@@ -2409,7 +2411,7 @@ Public Class LegacyGame
             ParentObjID = Disambiguate(ParentObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
 
             If ParentObjID <= 0 Then
-                If ParentObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                If ParentObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 BadCmdBefore = Left(CommandLine, SepPos + SepLen)
                 Exit Sub
             End If
@@ -2418,7 +2420,7 @@ Public Class LegacyGame
             ' if it is even in an object already
 
             If Not IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
-                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
+                PlayerErrorMessage(PlayerError.CantRemove, ctx)
                 Exit Sub
             End If
 
@@ -2431,9 +2433,9 @@ Public Class LegacyGame
 
         If Not IsContainer Then
             If DoAdd Then
-                PlayerErrorMessage(ERROR_CANTPUT, ctx)
+                PlayerErrorMessage(PlayerError.CantPut, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
+                PlayerErrorMessage(PlayerError.CantRemove, ctx)
             End If
             Exit Sub
         End If
@@ -2442,24 +2444,24 @@ Public Class LegacyGame
 
         If IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
             If DoAdd And LCase(GetObjectProperty("parent", ChildObjID, False, False)) = LCase(Objs(ParentObjID).ObjectName) Then
-                PlayerErrorMessage(ERROR_ALREADYPUT, ctx)
+                PlayerErrorMessage(PlayerError.AlreadyPut, ctx)
             End If
         End If
 
         ' NEW: Check parent and child are accessible to player
         If Not PlayerCanAccessObject(ChildObjID, , ErrorMsg) Then
             If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
         If Not PlayerCanAccessObject(ParentObjID, , ErrorMsg) Then
             If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTREMOVE, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
@@ -2469,9 +2471,9 @@ Public Class LegacyGame
         If Not IsYes(GetObjectProperty("surface", ParentObjID, True, False)) And Not IsYes(GetObjectProperty("opened", ParentObjID, True, False)) Then
             ' Not a surface and not open, so can't add to this closed container.
             If DoAdd Then
-                PlayerErrorMessage(ERROR_CANTPUT, ctx)
+                PlayerErrorMessage(PlayerError.CantPut, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
+                PlayerErrorMessage(PlayerError.CantRemove, ctx)
             End If
             Exit Sub
         End If
@@ -2498,18 +2500,18 @@ Public Class LegacyGame
             If Not PropertyExists Then
                 ' Show error message
                 If DoAdd Then
-                    PlayerErrorMessage(ERROR_CANTPUT, ctx)
+                    PlayerErrorMessage(PlayerError.CantPut, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTREMOVE, ctx)
+                    PlayerErrorMessage(PlayerError.CantRemove, ctx)
                 End If
             Else
                 TextToPrint = GetObjectProperty(Action, ParentObjID, False, False)
                 If TextToPrint = "" Then
                     ' Show default message
                     If DoAdd Then
-                        PlayerErrorMessage(ERROR_DEFAULTPUT, ctx)
+                        PlayerErrorMessage(PlayerError.DefaultPut, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_DEFAULTREMOVE, ctx)
+                        PlayerErrorMessage(PlayerError.DefaultRemove, ctx)
                     End If
                 Else
                     Print(TextToPrint, ctx)
@@ -2599,7 +2601,7 @@ Public Class LegacyGame
         ObjID = Disambiguate(ObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
 
         If ObjID <= 0 Then
-            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+            If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
             BadCmdBefore = Action
             Exit Sub
         End If
@@ -2610,9 +2612,9 @@ Public Class LegacyGame
 
         If Not IsContainer Then
             If DoOpen Then
-                PlayerErrorMessage(ERROR_CANTOPEN, ctx)
+                PlayerErrorMessage(PlayerError.CantOpen, ctx)
             Else
-                PlayerErrorMessage(ERROR_CANTCLOSE, ctx)
+                PlayerErrorMessage(PlayerError.CantClose, ctx)
             End If
             Exit Sub
         End If
@@ -2623,11 +2625,11 @@ Public Class LegacyGame
 
         If DoOpen And IsOpen Then
             ' Object is already open
-            PlayerErrorMessage(ERROR_ALREADYOPEN, ctx)
+            PlayerErrorMessage(PlayerError.AlreadyOpen, ctx)
             Exit Sub
         ElseIf Not DoOpen And Not IsOpen Then
             ' Object is already closed
-            PlayerErrorMessage(ERROR_ALREADYCLOSED, ctx)
+            PlayerErrorMessage(PlayerError.AlreadyClosed, ctx)
             Exit Sub
         End If
 
@@ -2635,9 +2637,9 @@ Public Class LegacyGame
 
         If Not PlayerCanAccessObject(ObjID, , ErrorMsg) Then
             If DoOpen Then
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTOPEN, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(ERROR_CANTCLOSE, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, ErrorMsg)
             End If
             Exit Sub
         End If
@@ -2663,18 +2665,18 @@ Public Class LegacyGame
             If Not PropertyExists Then
                 ' Show error message
                 If DoOpen Then
-                    PlayerErrorMessage(ERROR_CANTOPEN, ctx)
+                    PlayerErrorMessage(PlayerError.CantOpen, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTCLOSE, ctx)
+                    PlayerErrorMessage(PlayerError.CantClose, ctx)
                 End If
             Else
                 TextToPrint = GetObjectProperty(Action, ObjID, False, False)
                 If TextToPrint = "" Then
                     ' Show default message
                     If DoOpen Then
-                        PlayerErrorMessage(ERROR_DEFAULTOPEN, ctx)
+                        PlayerErrorMessage(PlayerError.DefaultOpen, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_DEFAULTCLOSE, ctx)
+                        PlayerErrorMessage(PlayerError.DefaultClose, ctx)
                     End If
                 Else
                     Print(TextToPrint, ctx)
@@ -2841,7 +2843,7 @@ Public Class LegacyGame
             End If
 
             If FoundItem = False Then
-                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 BadCmdBefore = ThisVerb
             Else
                 SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
@@ -4188,7 +4190,7 @@ Public Class LegacyGame
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
+                PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         ElseIf ObjectName = "him" Then
@@ -4197,7 +4199,7 @@ Public Class LegacyGame
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
+                PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         ElseIf ObjectName = "her" Then
@@ -4206,7 +4208,7 @@ Public Class LegacyGame
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
-                PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
+                PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         End If
@@ -4874,9 +4876,9 @@ Public Class LegacyGame
         If Not FoundItem Then
             If ObjectID <> -2 Then
                 If GameASLVersion >= 391 Then
-                    PlayerErrorMessage(ERROR_NOITEM, ctx)
+                    PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_BADDROP, ctx)
+                    PlayerErrorMessage(PlayerError.BadDrop, ctx)
                 End If
             End If
             BadCmdBefore = "drop"
@@ -4932,7 +4934,7 @@ Public Class LegacyGame
         End If
 
         If Not DropFound Then
-            PlayerErrorMessage(ERROR_DEFAULTDROP, ctx)
+            PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
             PlayerItem(Objs(ObjectID).ObjectName, False, ctx)
         Else
             If BeginsWith(DropStatement, "everywhere") Then
@@ -4940,13 +4942,13 @@ Public Class LegacyGame
                 If InStr(DropStatement, "<") <> 0 Then
                     Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
                 Else
-                    PlayerErrorMessage(ERROR_DEFAULTDROP, ctx)
+                    PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
                 End If
             ElseIf BeginsWith(DropStatement, "nowhere") Then
                 If InStr(DropStatement, "<") <> 0 Then
                     Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
                 Else
-                    PlayerErrorMessage(ERROR_CANTDROP, ctx)
+                    PlayerErrorMessage(PlayerError.CantDrop, ctx)
                 End If
             Else
                 ExecuteScript(DropStatement, ctx)
@@ -4970,7 +4972,7 @@ Public Class LegacyGame
         ExamineItem = LCase(Trim(GetEverythingAfter(CommandInfo, "examine ")))
 
         If ExamineItem = "" Then
-            PlayerErrorMessage(ERROR_BADEXAMINE, ctx)
+            PlayerErrorMessage(PlayerError.BadExamine, ctx)
             BadCmdBefore = "examine"
             Exit Sub
         End If
@@ -5027,7 +5029,7 @@ Public Class LegacyGame
         End If
 
         If Not FoundItem Then
-            If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+            If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
             BadCmdBefore = "examine"
         End If
 
@@ -5407,7 +5409,7 @@ Public Class LegacyGame
         Else
 
             If GameASLVersion >= 410 Then
-                PlayerErrorMessage(ERROR_DEFAULTWAIT, ctx)
+                PlayerErrorMessage(PlayerError.DefaultWait, ctx)
             Else
                 Print("|nPress a key to continue...", ctx)
             End If
@@ -6645,14 +6647,14 @@ Public Class LegacyGame
         Return Val(NumericVariable(iNumNumber).VariableContents(ArrayIndex))
     End Function
 
-    Friend Sub PlayerErrorMessage(iErrorNumber As Integer, ctx As Context)
-        Print(GetErrorMessage(iErrorNumber, ctx), ctx)
+    Friend Sub PlayerErrorMessage(e As PlayerError, ctx As Context)
+        Print(GetErrorMessage(e, ctx), ctx)
     End Sub
 
-    Private Sub PlayerErrorMessage_ExtendInfo(iErrorNumber As Integer, ctx As Context, sExtraInfo As String)
+    Private Sub PlayerErrorMessage_ExtendInfo(e As PlayerError, ctx As Context, sExtraInfo As String)
         Dim sErrorMessage As String
 
-        sErrorMessage = GetErrorMessage(iErrorNumber, ctx)
+        sErrorMessage = GetErrorMessage(e, ctx)
 
         If sExtraInfo <> "" Then
             If Right(sErrorMessage, 1) = "." Then
@@ -6665,8 +6667,8 @@ Public Class LegacyGame
         Print(sErrorMessage, ctx)
     End Sub
 
-    Private Function GetErrorMessage(iErrorNumber As Integer, ctx As Context) As String
-        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
+    Private Function GetErrorMessage(e As PlayerError, ctx As Context) As String
+        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(e), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
     End Function
 
     Private Sub PlayMedia(filename As String)
@@ -6897,44 +6899,44 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetDefaultPlayerErrorMessages()
-        PlayerErrorMessageString(ERROR_BADCOMMAND) = "I don't understand your command. Type HELP for a list of valid commands."
-        PlayerErrorMessageString(ERROR_BADGO) = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place."
-        PlayerErrorMessageString(ERROR_BADGIVE) = "You didn't say who you wanted to give that to."
-        PlayerErrorMessageString(ERROR_BADCHARACTER) = "I can't see anybody of that name here."
-        PlayerErrorMessageString(ERROR_NOITEM) = "You don't have that."
-        PlayerErrorMessageString(ERROR_ITEMUNWANTED) = "#quest.error.gender# doesn't want #quest.error.article#."
-        PlayerErrorMessageString(ERROR_BADLOOK) = "You didn't say what you wanted to look at."
-        PlayerErrorMessageString(ERROR_BADTHING) = "I can't see that here."
-        PlayerErrorMessageString(ERROR_DEFAULTLOOK) = "Nothing out of the ordinary."
-        PlayerErrorMessageString(ERROR_DEFAULTSPEAK) = "#quest.error.gender# says nothing."
-        PlayerErrorMessageString(ERROR_BADITEM) = "I can't see that anywhere."
-        PlayerErrorMessageString(ERROR_DEFAULTTAKE) = "You pick #quest.error.article# up."
-        PlayerErrorMessageString(ERROR_BADUSE) = "You didn't say what you wanted to use that on."
-        PlayerErrorMessageString(ERROR_DEFAULTUSE) = "You can't use that here."
-        PlayerErrorMessageString(ERROR_DEFAULTOUT) = "There's nowhere you can go out to around here."
-        PlayerErrorMessageString(ERROR_BADPLACE) = "You can't go there."
-        PlayerErrorMessageString(ERROR_DEFAULTEXAMINE) = "Nothing out of the ordinary."
-        PlayerErrorMessageString(ERROR_BADTAKE) = "You can't take #quest.error.article#."
-        PlayerErrorMessageString(ERROR_CANTDROP) = "You can't drop that here."
-        PlayerErrorMessageString(ERROR_DEFAULTDROP) = "You drop #quest.error.article#."
-        PlayerErrorMessageString(ERROR_BADDROP) = "You are not carrying such a thing."
-        PlayerErrorMessageString(ERROR_BADPRONOUN) = "I don't know what '#quest.error.pronoun#' you are referring to."
-        PlayerErrorMessageString(ERROR_BADEXAMINE) = "You didn't say what you wanted to examine."
-        PlayerErrorMessageString(ERROR_ALREADYOPEN) = "It is already open."
-        PlayerErrorMessageString(ERROR_ALREADYCLOSED) = "It is already closed."
-        PlayerErrorMessageString(ERROR_CANTOPEN) = "You can't open that."
-        PlayerErrorMessageString(ERROR_CANTCLOSE) = "You can't close that."
-        PlayerErrorMessageString(ERROR_DEFAULTOPEN) = "You open it."
-        PlayerErrorMessageString(ERROR_DEFAULTCLOSE) = "You close it."
-        PlayerErrorMessageString(ERROR_BADPUT) = "You didn't specify what you wanted to put #quest.error.article# on or in."
-        PlayerErrorMessageString(ERROR_CANTPUT) = "You can't put that there."
-        PlayerErrorMessageString(ERROR_DEFAULTPUT) = "Done."
-        PlayerErrorMessageString(ERROR_CANTREMOVE) = "You can't remove that."
-        PlayerErrorMessageString(ERROR_ALREADYPUT) = "It is already there."
-        PlayerErrorMessageString(ERROR_DEFAULTREMOVE) = "Done."
-        PlayerErrorMessageString(ERROR_LOCKED) = "The exit is locked."
-        PlayerErrorMessageString(ERROR_DEFAULTWAIT) = "Press a key to continue..."
-        PlayerErrorMessageString(ERROR_ALREADYTAKEN) = "You already have that."
+        PlayerErrorMessageString(PlayerError.BadCommand) = "I don't understand your command. Type HELP for a list of valid commands."
+        PlayerErrorMessageString(PlayerError.BadGo) = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place."
+        PlayerErrorMessageString(PlayerError.BadGive) = "You didn't say who you wanted to give that to."
+        PlayerErrorMessageString(PlayerError.BadCharacter) = "I can't see anybody of that name here."
+        PlayerErrorMessageString(PlayerError.NoItem) = "You don't have that."
+        PlayerErrorMessageString(PlayerError.ItemUnwanted) = "#quest.error.gender# doesn't want #quest.error.article#."
+        PlayerErrorMessageString(PlayerError.BadLook) = "You didn't say what you wanted to look at."
+        PlayerErrorMessageString(PlayerError.BadThing) = "I can't see that here."
+        PlayerErrorMessageString(PlayerError.DefaultLook) = "Nothing out of the ordinary."
+        PlayerErrorMessageString(PlayerError.DefaultSpeak) = "#quest.error.gender# says nothing."
+        PlayerErrorMessageString(PlayerError.BadItem) = "I can't see that anywhere."
+        PlayerErrorMessageString(PlayerError.DefaultTake) = "You pick #quest.error.article# up."
+        PlayerErrorMessageString(PlayerError.BadUse) = "You didn't say what you wanted to use that on."
+        PlayerErrorMessageString(PlayerError.DefaultUse) = "You can't use that here."
+        PlayerErrorMessageString(PlayerError.DefaultOut) = "There's nowhere you can go out to around here."
+        PlayerErrorMessageString(PlayerError.BadPlace) = "You can't go there."
+        PlayerErrorMessageString(PlayerError.DefaultExamine) = "Nothing out of the ordinary."
+        PlayerErrorMessageString(PlayerError.BadTake) = "You can't take #quest.error.article#."
+        PlayerErrorMessageString(PlayerError.CantDrop) = "You can't drop that here."
+        PlayerErrorMessageString(PlayerError.DefaultDrop) = "You drop #quest.error.article#."
+        PlayerErrorMessageString(PlayerError.BadDrop) = "You are not carrying such a thing."
+        PlayerErrorMessageString(PlayerError.BadPronoun) = "I don't know what '#quest.error.pronoun#' you are referring to."
+        PlayerErrorMessageString(PlayerError.BadExamine) = "You didn't say what you wanted to examine."
+        PlayerErrorMessageString(PlayerError.AlreadyOpen) = "It is already open."
+        PlayerErrorMessageString(PlayerError.AlreadyClosed) = "It is already closed."
+        PlayerErrorMessageString(PlayerError.CantOpen) = "You can't open that."
+        PlayerErrorMessageString(PlayerError.CantClose) = "You can't close that."
+        PlayerErrorMessageString(PlayerError.DefaultOpen) = "You open it."
+        PlayerErrorMessageString(PlayerError.DefaultClose) = "You close it."
+        PlayerErrorMessageString(PlayerError.BadPut) = "You didn't specify what you wanted to put #quest.error.article# on or in."
+        PlayerErrorMessageString(PlayerError.CantPut) = "You can't put that there."
+        PlayerErrorMessageString(PlayerError.DefaultPut) = "Done."
+        PlayerErrorMessageString(PlayerError.CantRemove) = "You can't remove that."
+        PlayerErrorMessageString(PlayerError.AlreadyPut) = "It is already there."
+        PlayerErrorMessageString(PlayerError.DefaultRemove) = "Done."
+        PlayerErrorMessageString(PlayerError.Locked) = "The exit is locked."
+        PlayerErrorMessageString(PlayerError.DefaultWait) = "Press a key to continue..."
+        PlayerErrorMessageString(PlayerError.AlreadyTaken) = "You already have that."
     End Sub
 
     Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
@@ -7672,7 +7674,7 @@ Public Class LegacyGame
 
         Dim gameblock As DefineBlock
         Dim sErrorName, sErrorMsg As String
-        Dim iCurrentError, i As Integer
+        Dim iCurrentError As PlayerError, i As Integer
         Dim ExamineIsCustomised As Boolean
         Dim ErrorInfo As String
         Dim SemiColonPos As Integer
@@ -7692,95 +7694,95 @@ Public Class LegacyGame
                 iCurrentError = 0
                 Select Case sErrorName
                     Case "badcommand"
-                        iCurrentError = ERROR_BADCOMMAND
+                        iCurrentError = PlayerError.BadCommand
                     Case "badgo"
-                        iCurrentError = ERROR_BADGO
+                        iCurrentError = PlayerError.BadGo
                     Case "badgive"
-                        iCurrentError = ERROR_BADGIVE
+                        iCurrentError = PlayerError.BadGive
                     Case "badcharacter"
-                        iCurrentError = ERROR_BADCHARACTER
+                        iCurrentError = PlayerError.BadCharacter
                     Case "noitem"
-                        iCurrentError = ERROR_NOITEM
+                        iCurrentError = PlayerError.NoItem
                     Case "itemunwanted"
-                        iCurrentError = ERROR_ITEMUNWANTED
+                        iCurrentError = PlayerError.ItemUnwanted
                     Case "badlook"
-                        iCurrentError = ERROR_BADLOOK
+                        iCurrentError = PlayerError.BadLook
                     Case "badthing"
-                        iCurrentError = ERROR_BADTHING
+                        iCurrentError = PlayerError.BadThing
                     Case "defaultlook"
-                        iCurrentError = ERROR_DEFAULTLOOK
+                        iCurrentError = PlayerError.DefaultLook
                     Case "defaultspeak"
-                        iCurrentError = ERROR_DEFAULTSPEAK
+                        iCurrentError = PlayerError.DefaultSpeak
                     Case "baditem"
-                        iCurrentError = ERROR_BADITEM
+                        iCurrentError = PlayerError.BadItem
                     Case "baddrop"
-                        iCurrentError = ERROR_BADDROP
+                        iCurrentError = PlayerError.BadDrop
                     Case "defaultake"
                         If GameASLVersion <= 280 Then
-                            iCurrentError = ERROR_BADTAKE
+                            iCurrentError = PlayerError.BadTake
                         Else
-                            iCurrentError = ERROR_DEFAULTTAKE
+                            iCurrentError = PlayerError.DefaultTake
                         End If
                     Case "baduse"
-                        iCurrentError = ERROR_BADUSE
+                        iCurrentError = PlayerError.BadUse
                     Case "defaultuse"
-                        iCurrentError = ERROR_DEFAULTUSE
+                        iCurrentError = PlayerError.DefaultUse
                     Case "defaultout"
-                        iCurrentError = ERROR_DEFAULTOUT
+                        iCurrentError = PlayerError.DefaultOut
                     Case "badplace"
-                        iCurrentError = ERROR_BADPLACE
+                        iCurrentError = PlayerError.BadPlace
                     Case "badexamine"
                         If GameASLVersion >= 310 Then
-                            iCurrentError = ERROR_BADEXAMINE
+                            iCurrentError = PlayerError.BadExamine
                         End If
                     Case "defaultexamine"
-                        iCurrentError = ERROR_DEFAULTEXAMINE
+                        iCurrentError = PlayerError.DefaultExamine
                         ExamineIsCustomised = True
                     Case "badtake"
-                        iCurrentError = ERROR_BADTAKE
+                        iCurrentError = PlayerError.BadTake
                     Case "cantdrop"
-                        iCurrentError = ERROR_CANTDROP
+                        iCurrentError = PlayerError.CantDrop
                     Case "defaultdrop"
-                        iCurrentError = ERROR_DEFAULTDROP
+                        iCurrentError = PlayerError.DefaultDrop
                     Case "badpronoun"
-                        iCurrentError = ERROR_BADPRONOUN
+                        iCurrentError = PlayerError.BadPronoun
                     Case "alreadyopen"
-                        iCurrentError = ERROR_ALREADYOPEN
+                        iCurrentError = PlayerError.AlreadyOpen
                     Case "alreadyclosed"
-                        iCurrentError = ERROR_ALREADYCLOSED
+                        iCurrentError = PlayerError.AlreadyClosed
                     Case "cantopen"
-                        iCurrentError = ERROR_CANTOPEN
+                        iCurrentError = PlayerError.CantOpen
                     Case "cantclose"
-                        iCurrentError = ERROR_CANTCLOSE
+                        iCurrentError = PlayerError.CantClose
                     Case "defaultopen"
-                        iCurrentError = ERROR_DEFAULTOPEN
+                        iCurrentError = PlayerError.DefaultOpen
                     Case "defaultclose"
-                        iCurrentError = ERROR_DEFAULTCLOSE
+                        iCurrentError = PlayerError.DefaultClose
                     Case "badput"
-                        iCurrentError = ERROR_BADPUT
+                        iCurrentError = PlayerError.BadPut
                     Case "cantput"
-                        iCurrentError = ERROR_CANTPUT
+                        iCurrentError = PlayerError.CantPut
                     Case "defaultput"
-                        iCurrentError = ERROR_DEFAULTPUT
+                        iCurrentError = PlayerError.DefaultPut
                     Case "cantremove"
-                        iCurrentError = ERROR_CANTREMOVE
+                        iCurrentError = PlayerError.CantRemove
                     Case "alreadyput"
-                        iCurrentError = ERROR_ALREADYPUT
+                        iCurrentError = PlayerError.AlreadyPut
                     Case "defaultremove"
-                        iCurrentError = ERROR_DEFAULTREMOVE
+                        iCurrentError = PlayerError.DefaultRemove
                     Case "locked"
-                        iCurrentError = ERROR_LOCKED
+                        iCurrentError = PlayerError.Locked
                     Case "defaultwait"
-                        iCurrentError = ERROR_DEFAULTWAIT
+                        iCurrentError = PlayerError.DefaultWait
                     Case "alreadytaken"
-                        iCurrentError = ERROR_ALREADYTAKEN
+                        iCurrentError = PlayerError.AlreadyTaken
                 End Select
 
                 PlayerErrorMessageString(iCurrentError) = sErrorMsg
-                If iCurrentError = ERROR_DEFAULTLOOK And Not ExamineIsCustomised Then
+                If iCurrentError = PlayerError.DefaultLook And Not ExamineIsCustomised Then
                     ' If we're setting the default look message, and we've not already customised the
                     ' default examine message, then set the default examine message to the same thing.
-                    PlayerErrorMessageString(ERROR_DEFAULTEXAMINE) = sErrorMsg
+                    PlayerErrorMessageString(PlayerError.DefaultExamine) = sErrorMsg
                 End If
             End If
         Next i
@@ -8503,9 +8505,9 @@ Public Class LegacyGame
 
                 If ObjID = -1 Then
                     If GameASLVersion >= 391 Then
-                        PlayerErrorMessage(ERROR_BADTHING, ctx)
+                        PlayerErrorMessage(PlayerError.BadThing, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADITEM, ctx)
+                        PlayerErrorMessage(PlayerError.BadItem, ctx)
                     End If
                     ' The Mid$(...,2) and Left$(...,2) removes the initial/final "."
                     BadCmdBefore = Mid(Trim(Left(TestLine, ChunksEnd(i) - 1)), 2)
@@ -9920,7 +9922,7 @@ Public Class LegacyGame
                         P = GetEverythingAfter(D, "to ")
                         GoToPlace(P, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADGO, ctx)
+                        PlayerErrorMessage(PlayerError.BadGo, ctx)
                     End If
                 End If
                 LastIt = 0
@@ -10036,7 +10038,7 @@ Public Class LegacyGame
             ElseIf CmdStartsWith(thecommand, "the ") Then
                 ExecOops(GetEverythingAfter(thecommand, "the "), ctx)
             Else
-                PlayerErrorMessage(ERROR_BADCOMMAND, ctx)
+                PlayerErrorMessage(PlayerError.BadCommand, ctx)
             End If
         End If
 
@@ -10101,7 +10103,7 @@ Public Class LegacyGame
         If ToLoc = 0 Then
             ToLoc = InStr(GiveString, " the ")
             If ToLoc = 0 Then
-                PlayerErrorMessage(ERROR_BADGIVE, ctx)
+                PlayerErrorMessage(PlayerError.BadGive, ctx)
                 Exit Sub
             Else
                 ItemToGive = Trim(Mid(GiveString, ToLoc + 4, Len(GiveString) - (ToLoc + 2)))
@@ -10125,7 +10127,7 @@ Public Class LegacyGame
             ItemID = Disambiguate(ItemToGive, InventoryPlace, ctx)
 
             If ItemID = -1 Then
-                PlayerErrorMessage(ERROR_NOITEM, ctx)
+                PlayerErrorMessage(PlayerError.NoItem, ctx)
                 BadCmdBefore = "give"
                 BadCmdAfter = "to " & CharToGive
                 Exit Sub
@@ -10150,7 +10152,7 @@ Public Class LegacyGame
             Next i
 
             If NotGotItem = True Then
-                PlayerErrorMessage(ERROR_NOITEM, ctx)
+                PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
             Else
                 ObjArticle = Objs(ItemID).Article
@@ -10167,7 +10169,7 @@ Public Class LegacyGame
             End If
 
             If Not FoundGiveToObject Then
-                If GiveToObjectID <> -2 Then PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
+                If GiveToObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadCharacter, ctx)
                 BadCmdBefore = "give " & ItemToGive & " to"
                 Exit Sub
             End If
@@ -10228,14 +10230,14 @@ Public Class LegacyGame
                 SetStringContents("quest.error.gender", ObjGender, ctx)
 
                 SetStringContents("quest.error.article", ObjArticle, ctx)
-                PlayerErrorMessage(ERROR_ITEMUNWANTED, ctx)
+                PlayerErrorMessage(PlayerError.ItemUnwanted, ctx)
             End If
         Else
             ' ASL2:
             characterblock = GetThingBlock(CharToGive, CurrentRoom, ObjectType)
 
             If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & CurrentRoom, ObjectType, ctx) = False Then
-                PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
+                PlayerErrorMessage(PlayerError.BadCharacter, ctx)
                 Exit Sub
             End If
 
@@ -10259,7 +10261,7 @@ Public Class LegacyGame
                 SetStringContents("quest.error.charactername", RealName, ctx)
                 SetStringContents("quest.error.gender", Trim(GetGender(CharToGive, True, ctx)), ctx)
                 SetStringContents("quest.error.article", ObjArticle, ctx)
-                PlayerErrorMessage(ERROR_ITEMUNWANTED, ctx)
+                PlayerErrorMessage(PlayerError.ItemUnwanted, ctx)
                 Exit Sub
             End If
 
@@ -10312,7 +10314,7 @@ Public Class LegacyGame
                 End If
 
                 If Not FoundObject Then
-                    If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                    If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                     BadCmdBefore = "look at"
                     Exit Sub
                 End If
@@ -10346,14 +10348,14 @@ Public Class LegacyGame
                     End If
 
                     If LookLine = "<unfound>" Then
-                        PlayerErrorMessage(ERROR_BADTHING, ctx)
+                        PlayerErrorMessage(PlayerError.BadThing, ctx)
                         Exit Sub
                     ElseIf LookLine = "<undefined>" Then
-                        PlayerErrorMessage(ERROR_DEFAULTLOOK, ctx)
+                        PlayerErrorMessage(PlayerError.DefaultLook, ctx)
                         Exit Sub
                     End If
                 ElseIf LookLine = "<undefined>" Then
-                    PlayerErrorMessage(ERROR_DEFAULTLOOK, ctx)
+                    PlayerErrorMessage(PlayerError.DefaultLook, ctx)
                     Exit Sub
                 End If
 
@@ -10404,7 +10406,7 @@ Public Class LegacyGame
             End If
 
             If Not FoundObject Then
-                If ObjID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 BadCmdBefore = "speak to"
                 Exit Sub
             End If
@@ -10450,7 +10452,7 @@ Public Class LegacyGame
 
             If Not FoundSpeak Then
                 SetStringContents("quest.error.gender", UCase(Left(Objs(ObjID).Gender, 1)) & Mid(Objs(ObjID).Gender, 2), ctx)
-                PlayerErrorMessage(ERROR_DEFAULTSPEAK, ctx)
+                PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
                 Exit Sub
             End If
 
@@ -10481,11 +10483,11 @@ Public Class LegacyGame
             End If
 
             If l = "<undefined>" Then
-                PlayerErrorMessage(ERROR_BADCHARACTER, ctx)
+                PlayerErrorMessage(PlayerError.BadCharacter, ctx)
             ElseIf l = "<unfound>" Then
                 SetStringContents("quest.error.gender", Trim(GetGender(c, True, ctx)), ctx)
                 SetStringContents("quest.error.charactername", c, ctx)
-                PlayerErrorMessage(ERROR_DEFAULTSPEAK, ctx)
+                PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
             ElseIf BeginsWith(s, "<") Then
                 s = RetrieveParameter(l, ctx)
                 Print(Chr(34) & s & Chr(34), ctx)
@@ -10525,14 +10527,14 @@ Public Class LegacyGame
                     ObjID = Disambiguate(TakeItem, "inventory", ctx)
                     If ObjID >= 0 Then
                         ' Player already has this item
-                        PlayerErrorMessage(ERROR_ALREADYTAKEN, ctx)
+                        PlayerErrorMessage(PlayerError.AlreadyTaken, ctx)
                     Else
-                        PlayerErrorMessage(ERROR_BADTHING, ctx)
+                        PlayerErrorMessage(PlayerError.BadThing, ctx)
                     End If
                 ElseIf GameASLVersion >= 391 Then
-                    PlayerErrorMessage(ERROR_BADTHING, ctx)
+                    PlayerErrorMessage(PlayerError.BadThing, ctx)
                 Else
-                    PlayerErrorMessage(ERROR_BADITEM, ctx)
+                    PlayerErrorMessage(PlayerError.BadItem, ctx)
                 End If
             End If
             BadCmdBefore = "take"
@@ -10546,7 +10548,7 @@ Public Class LegacyGame
         If GameASLVersion >= 391 Then
 
             If Not PlayerCanAccessObject(ObjID, ParentID, ContainerError) Then
-                PlayerErrorMessage_ExtendInfo(ERROR_BADTAKE, ctx, ContainerError)
+                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, ContainerError)
                 Exit Sub
             End If
 
@@ -10578,7 +10580,7 @@ Public Class LegacyGame
             End If
 
             If t.Type = TA_DEFAULT Then
-                PlayerErrorMessage(ERROR_DEFAULTTAKE, ctx)
+                PlayerErrorMessage(PlayerError.DefaultTake, ctx)
                 PlayerItem(TakeItem, True, ctx, ObjID)
             ElseIf t.Type = TA_TEXT Then
                 Print(t.Data, ctx)
@@ -10586,7 +10588,7 @@ Public Class LegacyGame
             ElseIf t.Type = TA_SCRIPT Then
                 ExecuteScript(t.Data, ctx, ObjID)
             Else
-                PlayerErrorMessage(ERROR_BADTAKE, ctx)
+                PlayerErrorMessage(PlayerError.BadTake, ctx)
             End If
         Else
 
@@ -10601,7 +10603,7 @@ Public Class LegacyGame
             Next i
 
             If FoundTake = False Then
-                PlayerErrorMessage(ERROR_BADTAKE, ctx)
+                PlayerErrorMessage(PlayerError.BadTake, ctx)
             End If
         End If
 
@@ -10649,7 +10651,7 @@ Public Class LegacyGame
             If ItemID > 0 Then FoundItem = True
 
             If Not FoundItem Then
-                If ItemID <> -2 Then PlayerErrorMessage(ERROR_NOITEM, ctx)
+                If ItemID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
                 If UseOn = "" Then
                     BadCmdBefore = "use"
                 Else
@@ -10673,7 +10675,7 @@ Public Class LegacyGame
             Next i
 
             If NotGotItem = True Then
-                PlayerErrorMessage(ERROR_NOITEM, ctx)
+                PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
             End If
         End If
@@ -10716,7 +10718,7 @@ Public Class LegacyGame
                 End If
 
                 If Not FoundUseOnObject Then
-                    If UseOnObjectID <> -2 Then PlayerErrorMessage(ERROR_BADTHING, ctx)
+                    If UseOnObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                     BadCmdBefore = "use " & UseItem & " on"
                     Exit Sub
                 End If
@@ -10770,7 +10772,7 @@ Public Class LegacyGame
             If FoundUseScript Then
                 ExecuteScript(UseScript, ctx, ItemID)
             Else
-                PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
+                PlayerErrorMessage(PlayerError.DefaultUse, ctx)
             End If
         Else
             If UseOn <> "" Then
@@ -10790,7 +10792,7 @@ Public Class LegacyGame
                 End If
 
                 If Not Found And UseDeclareLine = "" Then
-                    PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
+                    PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                     Exit Sub
                 End If
             End If
@@ -10813,14 +10815,14 @@ Public Class LegacyGame
                 End If
 
                 If UseDeclareLine = "<undefined>" Then
-                    PlayerErrorMessage(ERROR_BADTHING, ctx)
+                    PlayerErrorMessage(PlayerError.BadThing, ctx)
                     Exit Sub
                 ElseIf UseDeclareLine = "<unfound>" Then
-                    PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
+                    PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                     Exit Sub
                 End If
             ElseIf UseDeclareLine = "<unfound>" Then
-                PlayerErrorMessage(ERROR_DEFAULTUSE, ctx)
+                PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                 Exit Sub
             End If
 
@@ -11359,9 +11361,9 @@ Public Class LegacyGame
             PlayGame(NewRoom, ctx)
         Else
             If Direction = "out" Then
-                PlayerErrorMessage(ERROR_DEFAULTOUT, ctx)
+                PlayerErrorMessage(PlayerError.DefaultOut, ctx)
             Else
-                PlayerErrorMessage(ERROR_BADPLACE, ctx)
+                PlayerErrorMessage(PlayerError.BadPlace, ctx)
             End If
         End If
 
@@ -11401,7 +11403,7 @@ Public Class LegacyGame
         End If
 
         If DisallowedDirection = True Then
-            PlayerErrorMessage(ERROR_BADPLACE, ctx)
+            PlayerErrorMessage(PlayerError.BadPlace, ctx)
         End If
 
     End Sub
