@@ -84,16 +84,15 @@ Public Class LegacyGame
     End Enum
 
     Private Class ItemType
-        Public itemname As String
-        Public gotitem As Boolean
+        Public Name As String
+        Public Got As Boolean
     End Class
 
     Private Class Collectable
-        Public collectablename As String
-        Public collectabletype As String
-        Public collectablenumber As Double
-        Public collectabledisplay As String
-        Public collectablemax As Double
+        Public Name As String
+        Public Type As String
+        Public Value As Double
+        Public Display As String
         Public DisplayWhenZero As Boolean
     End Class
 
@@ -192,7 +191,7 @@ Public Class LegacyGame
         Public Commands() As UserDefinedCommandType
         Public NumberCommands As Integer
         Public Description As New TextAction
-        Public out As New ScriptText
+        Public Out As New ScriptText
         Public East As New TextAction
         Public West As New TextAction
         Public North As New TextAction
@@ -209,7 +208,7 @@ Public Class LegacyGame
         Public NumberPlaces As Integer
         Public Prefix As String
         Public Script As String
-        Public use() As ScriptText
+        Public Use() As ScriptText
         Public NumberUse As Integer
         Public ObjID As Integer
         Public BeforeTurnScript As String
@@ -231,14 +230,12 @@ Public Class LegacyGame
         Public DefinitionSectionStart As Integer
         Public DefinitionSectionEnd As Integer
         Public Visible As Boolean
-        Public UnallocatedPlayer As Boolean
-        Public IsNetPlayer As Boolean
         Public GainScript As String
         Public LoseScript As String
         Public NumberProperties As Integer
         Public Properties() As PropertyType
         Public Speak As New TextAction
-        Public take As New TextAction
+        Public Take As New TextAction
         Public IsRoom As Boolean
         Public IsExit As Boolean
         Public CorresRoom As String
@@ -250,7 +247,7 @@ Public Class LegacyGame
         Public UseData() As UseDataType
         Public UseAnything As String
         Public UseOnAnything As String
-        Public use As String
+        Public Use As String
         Public NumberGiveData As Integer
         Public GiveData() As GiveDataType
         Public GiveAnything As String
@@ -285,7 +282,7 @@ Public Class LegacyGame
 
     Private Class ExpressionResult
         Public Result As String
-        Public success As ExpressionSuccess
+        Public Success As ExpressionSuccess
         Public Message As String
     End Class
 
@@ -347,7 +344,7 @@ Public Class LegacyGame
     Private ResourceFile As String
     Private ResourceOffset As Integer
     Private StartCatPos As Integer
-    Private goptAbbreviations As Boolean
+    Private UseAbbreviations As Boolean
     Private m_loadedFromQSG As Boolean
     Private BeforeSaveScript As String
     Private OnLoadScript As String
@@ -2274,7 +2271,7 @@ Public Class LegacyGame
                     Else
                         Expression = Mid(InputLine, BracePos + 1, EndBracePos - BracePos - 1)
                         ExpResult = ExpressionHandler(Expression)
-                        If ExpResult.success <> ExpressionSuccess.OK Then
+                        If ExpResult.Success <> ExpressionSuccess.OK Then
                             LogASLError("Error evaluating expression in <" & InputLine & "> - " & ExpResult.Message)
                             Return "<ERROR>"
                         End If
@@ -2934,8 +2931,8 @@ Public Class LegacyGame
 
                 If EndBracketPos <> 0 Then
                     NestedResult = ExpressionHandler(Mid(Expression, OpenBracketPos + 1, EndBracketPos - OpenBracketPos - 1))
-                    If NestedResult.success <> ExpressionSuccess.OK Then
-                        res.success = NestedResult.success
+                    If NestedResult.Success <> ExpressionSuccess.OK Then
+                        res.Success = NestedResult.Success
                         res.Message = NestedResult.Message
                         Return res
                     End If
@@ -2944,7 +2941,7 @@ Public Class LegacyGame
 
                 Else
                     res.Message = "Missing closing bracket"
-                    res.success = ExpressionSuccess.Fail
+                    res.Success = ExpressionSuccess.Fail
                     Return res
 
                 End If
@@ -3001,7 +2998,7 @@ Public Class LegacyGame
 
             If Not IsNumeric(Elements(i)) Then
                 res.Message = "Syntax error evaluating expression - non-numeric element '" & Elements(i) & "'"
-                res.success = ExpressionSuccess.Fail
+                res.Success = ExpressionSuccess.Fail
                 Return res
             End If
         Next i
@@ -3038,7 +3035,7 @@ Public Class LegacyGame
                     Case "/"
                         If Val2 = 0 Then
                             res.Message = "Division by zero"
-                            res.success = ExpressionSuccess.Fail
+                            res.Success = ExpressionSuccess.Fail
                             Return res
                         End If
                         Result = Val1 / Val2
@@ -3067,7 +3064,7 @@ Public Class LegacyGame
             End If
         Loop Until OpNum = 0 Or NumOperators = 0
 
-        res.success = ExpressionSuccess.OK
+        res.Success = ExpressionSuccess.OK
         res.Result = Elements(1)
         Return res
 
@@ -3793,13 +3790,13 @@ Public Class LegacyGame
                 Case "take"
                     If GameASLVersion >= 392 Then
                         If FalseProperty Then
-                            o.take.Type = TextActionType.Nothing
+                            o.Take.Type = TextActionType.Nothing
                         Else
                             If CurValue = "" Then
-                                o.take.Type = TextActionType.Default
+                                o.Take.Type = TextActionType.Default
                             Else
-                                o.take.Type = TextActionType.Text
-                                o.take.Data = CurValue
+                                o.Take.Type = TextActionType.Text
+                                o.Take.Data = CurValue
                             End If
                         End If
                     End If
@@ -3857,7 +3854,7 @@ Public Class LegacyGame
             o.UseData(DataID).UseObject = ObjectName
             o.UseData(DataID).UseScript = Mid(UseData, EP + 2)
         Else
-            o.use = Trim(UseData)
+            o.Use = Trim(UseData)
         End If
 
     End Sub
@@ -4255,7 +4252,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        If GameASLVersion >= 391 And NumberCorresIDs = 0 And goptAbbreviations And Len(ObjectName) > 0 Then
+        If GameASLVersion >= 391 And NumberCorresIDs = 0 And UseAbbreviations And Len(ObjectName) > 0 Then
             ' Check for abbreviated object names
 
             For i = 1 To NumberObjs
@@ -4841,7 +4838,7 @@ Public Class LegacyGame
                 r.Down.Data = DestRoom
                 r.Down.Type = TextActionType.Text
             ElseIf BeginsWith(ExitData, "out ") Then
-                r.out.Text = DestRoom
+                r.Out.Text = DestRoom
             ElseIf BeginsWith(ExitData, "<") Then
                 r.NumberPlaces = r.NumberPlaces + 1
                 ReDim Preserve r.Places(r.NumberPlaces)
@@ -5383,7 +5380,7 @@ Public Class LegacyGame
         FoundCollectable = False
 
         For i = 1 To NumCollectables
-            If Collectables(i).collectablename = CName Then
+            If Collectables(i).Name = CName Then
                 ColNum = i
                 i = NumCollectables
                 FoundCollectable = True
@@ -5404,11 +5401,11 @@ Public Class LegacyGame
         End If
 
         If OP = "+" Then
-            Collectables(ColNum).collectablenumber = Collectables(ColNum).collectablenumber + NewVal
+            Collectables(ColNum).Value = Collectables(ColNum).Value + NewVal
         ElseIf OP = "-" Then
-            Collectables(ColNum).collectablenumber = Collectables(ColNum).collectablenumber - NewVal
+            Collectables(ColNum).Value = Collectables(ColNum).Value - NewVal
         ElseIf OP = "=" Then
-            Collectables(ColNum).collectablenumber = NewVal
+            Collectables(ColNum).Value = NewVal
         End If
 
         CheckCollectable(ColNum)
@@ -6361,7 +6358,7 @@ Public Class LegacyGame
         Try
             If GameASLVersion >= 391 Then
                 ExpResult = ExpressionHandler(iVarCont)
-                If ExpResult.success = ExpressionSuccess.OK Then
+                If ExpResult.Success = ExpressionSuccess.OK Then
                     iVarCont = ExpResult.Result
                 Else
                     iVarCont = "0"
@@ -6463,8 +6460,8 @@ Public Class LegacyGame
         valid = False
 
         For i = 1 To NumberItems
-            If LCase(Items(i).itemname) = LCase(theitem) Then
-                result = Items(i).gotitem
+            If LCase(Items(i).Name) = LCase(theitem) Then
+                result = Items(i).Got
                 i = NumberItems
                 valid = True
             End If
@@ -6494,7 +6491,7 @@ Public Class LegacyGame
         i = -1
 
         For i = 1 To NumCollectables
-            If Collectables(i).collectablename = CName Then
+            If Collectables(i).Name = CName Then
                 ColNum = i
                 i = NumCollectables
             End If
@@ -6514,11 +6511,11 @@ Public Class LegacyGame
         End If
 
         If OP = "+" Then
-            If Collectables(ColNum).collectablenumber > checkval Then condresult = True Else condresult = False
+            If Collectables(ColNum).Value > checkval Then condresult = True Else condresult = False
         ElseIf OP = "-" Then
-            If Collectables(ColNum).collectablenumber < checkval Then condresult = True Else condresult = False
+            If Collectables(ColNum).Value < checkval Then condresult = True Else condresult = False
         ElseIf OP = "=" Then
-            If Collectables(ColNum).collectablenumber = checkval Then condresult = True Else condresult = False
+            If Collectables(ColNum).Value = checkval Then condresult = True Else condresult = False
         End If
 
         Return condresult
@@ -6554,13 +6551,13 @@ Public Class LegacyGame
             ' Evaluate expressions in Value1 and Value2
             ExpResult = ExpressionHandler(Value1)
 
-            If ExpResult.success = ExpressionSuccess.OK Then
+            If ExpResult.Success = ExpressionSuccess.OK Then
                 Value1 = ExpResult.Result
             End If
 
             ExpResult = ExpressionHandler(Value2)
 
-            If ExpResult.success = ExpressionSuccess.OK Then
+            If ExpResult.Success = ExpressionSuccess.OK Then
                 Value2 = ExpResult.Result
             End If
         End If
@@ -7101,7 +7098,7 @@ Public Class LegacyGame
         Next i
 
         For i = 1 To NumCollectables
-            If LCase(Collectables(i).collectablename) = LCase(VariableName) Then
+            If LCase(Collectables(i).Name) = LCase(VariableName) Then
                 ExecuteSetCollectable(VariableData, ctx)
                 Return SetResult.Found
             End If
@@ -7334,7 +7331,7 @@ Public Class LegacyGame
                 m_player.SetPanesVisible(CurOpt)
             ElseIf BeginsWith(Lines(i), "abbreviations ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(Lines(i), "abbreviations ")))
-                If CurOpt = "off" Then goptAbbreviations = False Else goptAbbreviations = True
+                If CurOpt = "off" Then UseAbbreviations = False Else UseAbbreviations = True
             End If
         Next i
     End Sub
@@ -7426,14 +7423,14 @@ Public Class LegacyGame
                             End If
                         End If
                     ElseIf BeginsWith(Lines(j), "out ") Then
-                        r.out.Text = RetrieveParameter(Lines(j), _nullContext)
-                        r.out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                        r.Out.Text = RetrieveParameter(Lines(j), _nullContext)
+                        r.Out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                         If GameASLVersion >= 350 Then
-                            If r.out.Script <> "" Then
-                                AddObjectAction(NumberObjs, "out", r.out.Script)
+                            If r.Out.Script <> "" Then
+                                AddObjectAction(NumberObjs, "out", r.Out.Script)
                             End If
 
-                            AddToObjectProperties("out=" & r.out.Text, NumberObjs, _nullContext)
+                            AddToObjectProperties("out=" & r.Out.Text, NumberObjs, _nullContext)
                         End If
                     ElseIf BeginsWith(Lines(j), "east ") Then
                         r.East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
@@ -7558,10 +7555,10 @@ Public Class LegacyGame
                         r.Places(r.NumberPlaces).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                     ElseIf BeginsWith(Lines(j), "use ") Then
                         r.NumberUse = r.NumberUse + 1
-                        ReDim Preserve r.use(r.NumberUse)
-                        r.use(r.NumberUse) = New ScriptText
-                        r.use(r.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
-                        r.use(r.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                        ReDim Preserve r.Use(r.NumberUse)
+                        r.Use(r.NumberUse) = New ScriptText
+                        r.Use(r.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
+                        r.Use(r.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                     ElseIf BeginsWith(Lines(j), "properties ") Then
                         AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                     ElseIf BeginsWith(Lines(j), "type ") Then
@@ -8803,8 +8800,8 @@ Public Class LegacyGame
                     CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
 
                     For i = 1 To NumCollectables
-                        If Collectables(i).collectablename = CName Then
-                            Collectables(i).collectablenumber = CDat
+                        If Collectables(i).Name = CName Then
+                            Collectables(i).Value = CDat
                             i = NumCollectables
                         End If
                     Next i
@@ -8820,8 +8817,8 @@ Public Class LegacyGame
                     cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
 
                     For i = 1 To NumberItems
-                        If Items(i).itemname = CName Then
-                            Items(i).gotitem = cdatb
+                        If Items(i).Name = CName Then
+                            Items(i).Got = cdatb
                             i = NumberItems
                         End If
                     Next i
@@ -8940,12 +8937,12 @@ Public Class LegacyGame
 
         lines.Add("!c")
         For i = 1 To NumCollectables
-            lines.Add(Collectables(i).collectablename & ";" & Str(Collectables(i).collectablenumber))
+            lines.Add(Collectables(i).Name & ";" & Str(Collectables(i).Value))
         Next i
 
         lines.Add("!i")
         For i = 1 To NumberItems
-            lines.Add(Items(i).itemname & ";" & YesNo(Items(i).gotitem))
+            lines.Add(Items(i).Name & ";" & YesNo(Items(i).Got))
         Next i
 
         lines.Add("!o")
@@ -9165,7 +9162,7 @@ Public Class LegacyGame
                         o.Gender = "it"
                         o.Article = "it"
 
-                        o.take.Type = TextActionType.Nothing
+                        o.Take.Type = TextActionType.Nothing
 
                         If DefaultExists Then
                             AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
@@ -9267,18 +9264,18 @@ Public Class LegacyGame
                             ElseIf BeginsWith(Lines(j), "give ") Then
                                 AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
                             ElseIf Trim(Lines(j)) = "take" Then
-                                o.take.Type = TextActionType.Default
+                                o.Take.Type = TextActionType.Default
                                 AddToObjectProperties("take", NumberObjs, _nullContext)
                             ElseIf BeginsWith(Lines(j), "take ") Then
                                 If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
-                                    o.take.Type = TextActionType.Text
-                                    o.take.Data = RetrieveParameter(Lines(j), _nullContext)
+                                    o.Take.Type = TextActionType.Text
+                                    o.Take.Data = RetrieveParameter(Lines(j), _nullContext)
 
                                     AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    o.take.Type = TextActionType.Script
+                                    o.Take.Type = TextActionType.Script
                                     RestOfLine = GetEverythingAfter(Lines(j), "take ")
-                                    o.take.Data = RestOfLine
+                                    o.Take.Data = RestOfLine
 
                                     AddObjectAction(NumberObjs, "take", RestOfLine)
                                 End If
@@ -9671,8 +9668,8 @@ Public Class LegacyGame
         Dim M As Integer
         Dim T As String
 
-        T = Collectables(ColNum).collectabletype
-        n = Collectables(ColNum).collectablenumber
+        T = Collectables(ColNum).Type
+        n = Collectables(ColNum).Value
 
         If T = "%" And n > 100 Then n = 100
         If (T = "%" Or T = "p") And n < 0 Then n = 0
@@ -9693,7 +9690,7 @@ Public Class LegacyGame
             If (M = 2 Or M = 3) And n < minn Then n = minn
         End If
 
-        Collectables(ColNum).collectablenumber = n
+        Collectables(ColNum).Value = n
 
     End Sub
 
@@ -9703,18 +9700,18 @@ Public Class LegacyGame
         Dim FirstStarPos, SecondStarPos As Integer
         Dim AfterStar, BeforeStar, BetweenStar As String
 
-        If Collectables(ColNum).collectabledisplay = "<def>" Then
-            D = "You have " & Trim(Str(Collectables(ColNum).collectablenumber)) & " " & Collectables(ColNum).collectablename
-        ElseIf Collectables(ColNum).collectabledisplay = "" Then
+        If Collectables(ColNum).Display = "<def>" Then
+            D = "You have " & Trim(Str(Collectables(ColNum).Value)) & " " & Collectables(ColNum).Name
+        ElseIf Collectables(ColNum).Display = "" Then
             D = "<null>"
         Else
-            ExcPos = InStr(Collectables(ColNum).collectabledisplay, "!")
+            ExcPos = InStr(Collectables(ColNum).Display, "!")
             If ExcPos = 0 Then
-                D = Collectables(ColNum).collectabledisplay
+                D = Collectables(ColNum).Display
             Else
-                FirstBit = Left(Collectables(ColNum).collectabledisplay, ExcPos - 1)
-                NextBit = Right(Collectables(ColNum).collectabledisplay, Len(Collectables(ColNum).collectabledisplay) - ExcPos)
-                D = FirstBit & Trim(Str(Collectables(ColNum).collectablenumber)) & NextBit
+                FirstBit = Left(Collectables(ColNum).Display, ExcPos - 1)
+                NextBit = Right(Collectables(ColNum).Display, Len(Collectables(ColNum).Display) - ExcPos)
+                D = FirstBit & Trim(Str(Collectables(ColNum).Value)) & NextBit
             End If
 
             If InStr(D, "*") > 0 Then
@@ -9724,7 +9721,7 @@ Public Class LegacyGame
                 AfterStar = Mid(D, SecondStarPos + 1)
                 BetweenStar = Mid(D, FirstStarPos + 1, (SecondStarPos - FirstStarPos) - 1)
 
-                If Collectables(ColNum).collectablenumber <> 1 Then
+                If Collectables(ColNum).Value <> 1 Then
                     D = BeforeStar & BetweenStar & AfterStar
                 Else
                     D = BeforeStar & AfterStar
@@ -9732,7 +9729,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If Collectables(ColNum).collectablenumber = 0 And Collectables(ColNum).DisplayWhenZero = False Then
+        If Collectables(ColNum).Value = 0 And Collectables(ColNum).DisplayWhenZero = False Then
             D = "<null>"
         End If
 
@@ -10019,8 +10016,8 @@ Public Class LegacyGame
                     Next i
                 Else
                     For j = 1 To NumberItems
-                        If Items(j).gotitem = True Then
-                            InvList = InvList & Items(j).itemname & ", "
+                        If Items(j).Got = True Then
+                            InvList = InvList & Items(j).Name & ", "
                         End If
                     Next j
                 End If
@@ -10150,8 +10147,8 @@ Public Class LegacyGame
             NotGotItem = True
 
             For i = 1 To NumberItems
-                If LCase(Items(i).itemname) = LCase(ItemToGive) Then
-                    If Items(i).gotitem = False Then
+                If LCase(Items(i).Name) = LCase(ItemToGive) Then
+                    If Items(i).Got = False Then
                         NotGotItem = True
                         i = NumberItems
                     Else
@@ -10328,11 +10325,7 @@ Public Class LegacyGame
                     Exit Sub
                 End If
 
-                If Objs(ObjID).IsNetPlayer Then
-                    Print(Objs(ObjID).ObjectAlias & " is another player.", ctx)
-                Else
-                    DoLook(ObjID, ctx)
-                End If
+                DoLook(ObjID, ctx)
             Else
                 If BeginsWith(LookItem, "the ") Then
                     LookItem = GetEverythingAfter(LookItem, "the ")
@@ -10564,7 +10557,7 @@ Public Class LegacyGame
         End If
 
         If GameASLVersion >= 280 Then
-            Dim t = Objs(ObjID).take
+            Dim t = Objs(ObjID).Take
 
             If ObjectIsInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
                 ' So, we want to take an object that's in a container or surface. So first
@@ -10673,8 +10666,8 @@ Public Class LegacyGame
             NotGotItem = True
 
             For i = 1 To NumberItems
-                If LCase(Items(i).itemname) = LCase(UseItem) Then
-                    If Items(i).gotitem = False Then
+                If LCase(Items(i).Name) = LCase(UseItem) Then
+                    If Items(i).Got = False Then
                         NotGotItem = True
                         i = NumberItems
                     Else
@@ -10701,16 +10694,16 @@ Public Class LegacyGame
                 If GameASLVersion < 410 Then
                     Dim r = Rooms(RoomID)
                     For i = 1 To r.NumberUse
-                        If LCase(Objs(ItemID).ObjectName) = LCase(r.use(i).Text) Then
+                        If LCase(Objs(ItemID).ObjectName) = LCase(r.Use(i).Text) Then
                             FoundUseScript = True
-                            UseScript = r.use(i).Script
+                            UseScript = r.Use(i).Script
                             i = r.NumberUse
                         End If
                     Next i
                 End If
 
                 If Not FoundUseScript Then
-                    UseScript = Objs(ItemID).use
+                    UseScript = Objs(ItemID).Use
                     If UseScript <> "" Then FoundUseScript = True
                 End If
             Else
@@ -10789,8 +10782,8 @@ Public Class LegacyGame
             Else
                 Found = False
                 For i = 1 To Rooms(RoomID).NumberUse
-                    If LCase(Rooms(RoomID).use(i).Text) = LCase(UseItem) Then
-                        UseDeclareLine = "use <> " & Rooms(RoomID).use(i).Script
+                    If LCase(Rooms(RoomID).Use(i).Text) = LCase(UseItem) Then
+                        UseDeclareLine = "use <> " & Rooms(RoomID).Use(i).Script
                         Found = True
                         i = Rooms(RoomID).NumberUse
                     End If
@@ -10848,8 +10841,8 @@ Public Class LegacyGame
 
         If Not NoUpdate Then
             If ActionName = "take" Then
-                Objs(ObjID).take.Data = ActionScript
-                Objs(ObjID).take.Type = TextActionType.Script
+                Objs(ObjID).Take.Data = ActionScript
+                Objs(ObjID).Take.Type = TextActionType.Script
             ElseIf ActionName = "use" Then
                 AddToUseInfo(ObjID, ActionScript)
             ElseIf ActionName = "gain" Then
@@ -11289,8 +11282,8 @@ Public Class LegacyGame
         Dim i As Integer
 
         For i = 1 To NumCollectables
-            If Collectables(i).collectablename = colname Then
-                Return Collectables(i).collectablenumber
+            If Collectables(i).Name = colname Then
+                Return Collectables(i).Value
             End If
         Next i
 
@@ -11349,11 +11342,11 @@ Public Class LegacyGame
         ElseIf Direction = "down" Then
             DirData = r.Down
         ElseIf Direction = "out" Then
-            If r.out.Script = "" Then
-                DirData.Data = r.out.Text
+            If r.Out.Script = "" Then
+                DirData.Data = r.Out.Text
                 DirData.Type = TextActionType.Text
             Else
-                DirData.Data = r.out.Script
+                DirData.Data = r.Out.Script
                 DirData.Type = TextActionType.Script
             End If
         End If
@@ -11429,7 +11422,7 @@ Public Class LegacyGame
         m_oChangeLogObjects.AppliesToType = ChangeLog.eAppliesToType.atObject
 
         OutPutOn = True
-        goptAbbreviations = True
+        UseAbbreviations = True
 
         GamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
 
@@ -11666,8 +11659,8 @@ Public Class LegacyGame
             End If
         Else
             For i = 1 To NumberItems
-                If Items(i).itemname = anitem Then
-                    Items(i).gotitem = gotit
+                If Items(i).Name = anitem Then
+                    Items(i).Got = gotit
                     i = NumberItems
                 End If
             Next i
@@ -11863,7 +11856,7 @@ Public Class LegacyGame
 
                         'Get item info
                         CInfo = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
-                        Collectables(NumCollectables).collectablename = Trim(Left(CInfo, InStr(CInfo, " ")))
+                        Collectables(NumCollectables).Name = Trim(Left(CInfo, InStr(CInfo, " ")))
 
                         EqualsPos = InStr(CInfo, "=")
                         SpacePos = InStr(CInfo, " ")
@@ -11879,17 +11872,17 @@ Public Class LegacyGame
                             Collectables(NumCollectables).DisplayWhenZero = True
                         End If
 
-                        Collectables(NumCollectables).collectabletype = T
-                        Collectables(NumCollectables).collectablenumber = Val(i)
+                        Collectables(NumCollectables).Type = T
+                        Collectables(NumCollectables).Value = Val(i)
 
                         ' Get display string between square brackets
                         Bpos1 = InStr(CInfo, "[")
                         BPos2 = InStr(CInfo, "]")
                         If Bpos1 = 0 Then
-                            Collectables(NumCollectables).collectabledisplay = "<def>"
+                            Collectables(NumCollectables).Display = "<def>"
                         Else
                             b = Mid(CInfo, Bpos1 + 1, (BPos2 - 1) - Bpos1)
-                            Collectables(NumCollectables).collectabledisplay = Trim(b)
+                            Collectables(NumCollectables).Display = Trim(b)
                         End If
 
                         CharPos = NextComma + 1
@@ -11938,8 +11931,8 @@ Public Class LegacyGame
                         End If
 
                         'Get item name
-                        Items(NumberItems).itemname = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
-                        Items(NumberItems).gotitem = False
+                        Items(NumberItems).Name = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
+                        Items(NumberItems).Got = False
 
                         CharPos = NextComma + 1
                         NumberItems = NumberItems + 1
@@ -11984,8 +11977,8 @@ Public Class LegacyGame
 
                         'Find which item this is, and set it
                         For i = 1 To NumberItems
-                            If Items(i).itemname = TheItemName Then
-                                Items(i).gotitem = True
+                            If Items(i).Name = TheItemName Then
+                                Items(i).Got = True
                                 i = NumberItems
                             End If
                         Next i
@@ -12127,8 +12120,8 @@ Public Class LegacyGame
             Rooms(RoomID).Exits.GetAvailableDirectionsDescription(RoomDisplayText, Directions)
         Else
 
-            If Rooms(RoomID).out.Text <> "" Then
-                OutPlace = Rooms(RoomID).out.Text
+            If Rooms(RoomID).Out.Text <> "" Then
+                OutPlace = Rooms(RoomID).Out.Text
 
                 'remove any prefix semicolon from printed text
                 SCP = InStr(OutPlace, ";")
@@ -12266,8 +12259,8 @@ Public Class LegacyGame
             Next i
         Else
             For j = 1 To NumberItems
-                If Items(j).gotitem = True Then
-                    invList.Add(New ListData(CapFirst(Items(j).itemname), m_listVerbs(ListType.InventoryList)))
+                If Items(j).Got = True Then
+                    invList.Add(New ListData(CapFirst(Items(j).Name), m_listVerbs(ListType.InventoryList)))
                 End If
             Next j
         End If
