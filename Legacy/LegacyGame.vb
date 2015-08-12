@@ -285,7 +285,7 @@ Public Class LegacyGame
 
     Private Class ExpressionResult
         Public Result As String
-        Public success As Integer
+        Public success As ExpressionSuccess
         Public Message As String
     End Class
 
@@ -422,12 +422,6 @@ Public Class LegacyGame
         Unfound
     End Enum
 
-    Private QuestVersion As String
-    Private QuestName As String
-    Private Const QSGVersion As String = "QUEST300"
-    Private Const ASLVersionNumber As String = "410"
-    Private Const RecognisedVersions As String = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/"
-
     Private Enum Thing
         Character
         [Object]
@@ -451,16 +445,21 @@ Public Class LegacyGame
         GiveSomethingTo
     End Enum
 
-    Private Const VARTYPE_STRING As Integer = 1
-    Private Const VARTYPE_NUMERIC As Integer = 2
-    Private Const STOPGAME_WIN As Integer = 1
-    Private Const STOPGAME_LOSE As Integer = 2
-    Private Const STOPGAME_NULL As Integer = 0
-    Private Const CONTAINER_NONE As Integer = 0
-    Private Const CONTAINER_NORMAL As Integer = 1
-    Private Const CONTAINER_SURFACE As Integer = 2
-    Private Const EXPRESSION_OK As Integer = 1
-    Private Const EXPRESSION_FAIL As Integer = 2
+    Private Enum VarType
+        [String]
+        Numeric
+    End Enum
+
+    Private Enum StopType
+        Win
+        Lose
+        Null
+    End Enum
+
+    Private Enum ExpressionSuccess
+        OK
+        Fail
+    End Enum
 
     Private m_listVerbs As New Dictionary(Of ListType, List(Of String))
     Private m_filename As String
@@ -472,7 +471,6 @@ Public Class LegacyGame
     Private m_useStaticFrameForPictures As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
-        QuestVersion = My.Application.Info.Version.ToString()
         m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
         GameLoadMethod = "normal"
@@ -2276,7 +2274,7 @@ Public Class LegacyGame
                     Else
                         Expression = Mid(InputLine, BracePos + 1, EndBracePos - BracePos - 1)
                         ExpResult = ExpressionHandler(Expression)
-                        If ExpResult.success <> EXPRESSION_OK Then
+                        If ExpResult.success <> ExpressionSuccess.OK Then
                             LogASLError("Error evaluating expression in <" & InputLine & "> - " & ExpResult.Message)
                             Return "<ERROR>"
                         End If
@@ -2936,7 +2934,7 @@ Public Class LegacyGame
 
                 If EndBracketPos <> 0 Then
                     NestedResult = ExpressionHandler(Mid(Expression, OpenBracketPos + 1, EndBracketPos - OpenBracketPos - 1))
-                    If NestedResult.success <> EXPRESSION_OK Then
+                    If NestedResult.success <> ExpressionSuccess.OK Then
                         res.success = NestedResult.success
                         res.Message = NestedResult.Message
                         Return res
@@ -2946,7 +2944,7 @@ Public Class LegacyGame
 
                 Else
                     res.Message = "Missing closing bracket"
-                    res.success = EXPRESSION_FAIL
+                    res.success = ExpressionSuccess.Fail
                     Return res
 
                 End If
@@ -3003,7 +3001,7 @@ Public Class LegacyGame
 
             If Not IsNumeric(Elements(i)) Then
                 res.Message = "Syntax error evaluating expression - non-numeric element '" & Elements(i) & "'"
-                res.success = EXPRESSION_FAIL
+                res.success = ExpressionSuccess.Fail
                 Return res
             End If
         Next i
@@ -3040,7 +3038,7 @@ Public Class LegacyGame
                     Case "/"
                         If Val2 = 0 Then
                             res.Message = "Division by zero"
-                            res.success = EXPRESSION_FAIL
+                            res.success = ExpressionSuccess.Fail
                             Return res
                         End If
                         Result = Val1 / Val2
@@ -3069,7 +3067,7 @@ Public Class LegacyGame
             End If
         Loop Until OpNum = 0 Or NumOperators = 0
 
-        res.success = EXPRESSION_OK
+        res.success = ExpressionSuccess.OK
         res.Result = Elements(1)
         Return res
 
@@ -4341,7 +4339,7 @@ Public Class LegacyGame
         Return -1
     End Function
 
-    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As Integer, ctx As Context) As String
+    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As VarType, ctx As Context) As String
         Dim DisplayData As String = ""
         Dim ExcPos As Integer
         Dim FirstStar, SecondStar As Integer
@@ -4351,14 +4349,14 @@ Public Class LegacyGame
 
         ArrayIndex = 0
 
-        If VariableType = VARTYPE_STRING Then
+        If VariableType = VarType.String Then
             DisplayData = ConvertVarsIn(StringVariable(VarNum).DisplayString, ctx)
             ExcPos = InStr(DisplayData, "!")
 
             If ExcPos <> 0 Then
                 DisplayData = Left(DisplayData, ExcPos - 1) & StringVariable(VarNum).VariableContents(ArrayIndex) & Mid(DisplayData, ExcPos + 1)
             End If
-        ElseIf VariableType = VARTYPE_NUMERIC Then
+        ElseIf VariableType = VarType.Numeric Then
             If NumericVariable(VarNum).NoZeroDisplay And Val(NumericVariable(VarNum).VariableContents(ArrayIndex)) = 0 Then
                 Return ""
             End If
@@ -5729,7 +5727,7 @@ Public Class LegacyGame
 
         ' <<< FILE HEADER DATA >>>
 
-        FileData.Append(QSGVersion & Chr(0) & GetOriginalFilenameForQSG() & Chr(0))
+        FileData.Append("QUEST300" & Chr(0) & GetOriginalFilenameForQSG() & Chr(0))
 
         ' The start point for encrypted data is after the filename
         StartPoint = FileData.Length + 1
@@ -6363,7 +6361,7 @@ Public Class LegacyGame
         Try
             If GameASLVersion >= 391 Then
                 ExpResult = ExpressionHandler(iVarCont)
-                If ExpResult.success = EXPRESSION_OK Then
+                If ExpResult.success = ExpressionSuccess.OK Then
                     iVarCont = ExpResult.Result
                 Else
                     iVarCont = "0"
@@ -6556,13 +6554,13 @@ Public Class LegacyGame
             ' Evaluate expressions in Value1 and Value2
             ExpResult = ExpressionHandler(Value1)
 
-            If ExpResult.success = EXPRESSION_OK Then
+            If ExpResult.success = ExpressionSuccess.OK Then
                 Value1 = ExpResult.Result
             End If
 
             ExpResult = ExpressionHandler(Value2)
 
-            If ExpResult.success = EXPRESSION_OK Then
+            If ExpResult.success = ExpressionSuccess.OK Then
                 Value2 = ExpResult.Result
             End If
         End If
@@ -8753,7 +8751,7 @@ Public Class LegacyGame
 
         If BeginsWith(SavedQSGVersion, "QUEST200.1") Then
             PrevQSGVersion = True
-        ElseIf Not BeginsWith(SavedQSGVersion, QSGVersion) Then
+        ElseIf Not BeginsWith(SavedQSGVersion, "QUEST300") Then
             Return False
         End If
 
@@ -9993,10 +9991,6 @@ Public Class LegacyGame
                 ShowGameAbout(ctx)
             ElseIf cmd = "clear" Then
                 DoClear()
-            ElseIf cmd = "ver" Then
-                Print("Quest ASL4 Interpreter " & QuestVersion, ctx)
-                Print("Highest supported ASL version: " & ASLVersionNumber, ctx)
-                Print("Current file uses ASL version: " & Trim(Str(GameASLVersion)), ctx)
             ElseIf cmd = "debug" Then
                 ' TO DO: This is temporary, would be better to have a log viewer built in to Player
                 For Each logEntry As String In m_log
@@ -11020,11 +11014,11 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "goto ") Then
                 PlayGame(RetrieveParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "playerwin") Then
-                FinishGame(STOPGAME_WIN, ctx)
+                FinishGame(StopType.Win, ctx)
             ElseIf BeginsWith(ScriptLine, "playerlose") Then
-                FinishGame(STOPGAME_LOSE, ctx)
+                FinishGame(StopType.Lose, ctx)
             ElseIf Trim(LCase(ScriptLine)) = "stop" Then
-                FinishGame(STOPGAME_NULL, ctx)
+                FinishGame(StopType.Null, ctx)
             ElseIf BeginsWith(ScriptLine, "playwav ") Then
                 PlayWav(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "playmidi ") Then
@@ -11439,8 +11433,6 @@ Public Class LegacyGame
 
         GamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
 
-        LogASLError("Quest ASL4 Interpreter " & QuestVersion, LogType.Init)
-
         Dim LogMsg As String
         LogMsg = "Opening file " & afilename & " on " & Date.Now.ToString()
         LogASLError(LogMsg, LogType.Init)
@@ -11479,6 +11471,8 @@ Public Class LegacyGame
             LogASLError("File contains no version header.", LogType.WarningError)
         Else
             GameASLVersion = CInt(ASLVersion)
+
+            Const RecognisedVersions As String = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/"
 
             If InStr(RecognisedVersions, "/" & ASLVersion & "/") = 0 Then
                 LogASLError("Unrecognised ASL version number.", LogType.WarningError)
@@ -12301,10 +12295,10 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub FinishGame(wingame As Integer, ctx As Context)
-        If wingame = STOPGAME_WIN Then
+    Private Sub FinishGame(wingame As StopType, ctx As Context)
+        If wingame = StopType.Win Then
             DisplayTextSection("win", ctx)
-        ElseIf wingame = STOPGAME_LOSE Then
+        ElseIf wingame = StopType.Lose Then
             DisplayTextSection("lose", ctx)
         End If
 
@@ -12449,7 +12443,7 @@ Public Class LegacyGame
 
         If NumDisplayStrings > 0 Then
             For i = 1 To NumDisplayStrings
-                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_STRING, ctx)
+                DisplayData = DisplayStatusVariableInfo(i, VarType.String, ctx)
 
                 If DisplayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
@@ -12460,7 +12454,7 @@ Public Class LegacyGame
 
         If NumDisplayNumerics > 0 Then
             For i = 1 To NumDisplayNumerics
-                DisplayData = DisplayStatusVariableInfo(i, VARTYPE_NUMERIC, ctx)
+                DisplayData = DisplayStatusVariableInfo(i, VarType.Numeric, ctx)
                 If DisplayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
                     status += DisplayData
