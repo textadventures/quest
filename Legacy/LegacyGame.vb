@@ -3846,11 +3846,11 @@ Public Class LegacyGame
     End Sub
 
     Private Function CapFirst(InputString As String) As String
-        CapFirst = UCase(Left(InputString, 1)) & Mid(InputString, 2)
+        Return UCase(Left(InputString, 1)) & Mid(InputString, 2)
     End Function
 
     Private Function ConvertVarsIn(InputString As String, ctx As Context) As String
-        ConvertVarsIn = RetrieveParameter("<" & InputString & ">", ctx)
+        Return RetrieveParameter("<" & InputString & ">", ctx)
     End Function
 
     Private Function DisambObjHere(ctx As Context, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
@@ -3887,13 +3887,12 @@ Public Class LegacyGame
 
         If ((TwoPlaces = False And (LCase(Objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or FirstPlace = "")) Or (TwoPlaces = True And (LCase(Objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or LCase(Objs(ObjID).ContainerRoom) = LCase(SecondPlace)))) And Objs(ObjID).Exists = True And Objs(ObjID).IsExit = bExit Then
             If Not OnlySeen Then
-                DisambObjHere = True
-            Else
-                If ObjIsSeen Then DisambObjHere = True Else DisambObjHere = False
+                Return True
             End If
-        Else
-            DisambObjHere = False
+            Return ObjIsSeen
         End If
+
+        Return False
     End Function
 
     Private Sub ExecClone(CloneString As String, ctx As Context)
@@ -4023,8 +4022,7 @@ Public Class LegacyGame
 
         If SCP = 0 Then
             LogASLError("No action name given in condition 'action <" & ActionData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfAction = False
-            Exit Function
+            Return False
         End If
 
         ObjName = Trim(Left(ActionData, SCP - 1))
@@ -4042,8 +4040,7 @@ Public Class LegacyGame
 
         If Not FoundObj Then
             LogASLError("No such object '" & ObjName & "' in condition 'action <" & ActionData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfAction = False
-            Exit Function
+            Return False
         End If
 
         Result = False
@@ -4057,7 +4054,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        ExecuteIfAction = Result
+        Return Result
 
     End Function
 
@@ -4073,8 +4070,7 @@ Public Class LegacyGame
 
         If SCP = 0 Then
             LogASLError("No type name given in condition 'type <" & TypeData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfType = False
-            Exit Function
+            Return False
         End If
 
         ObjName = Trim(Left(TypeData, SCP - 1))
@@ -4092,8 +4088,7 @@ Public Class LegacyGame
 
         If Not FoundObj Then
             LogASLError("No such object '" & ObjName & "' in condition 'type <" & TypeData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfType = False
-            Exit Function
+            Return False
         End If
 
         Result = False
@@ -4107,7 +4102,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        ExecuteIfType = Result
+        Return Result
 
     End Function
 
@@ -4128,7 +4123,7 @@ Public Class LegacyGame
             sVarName = Left(sVarName, BeginPos - 1)
         End If
 
-        GetArrayIndex = ArrayIndex
+        Return ArrayIndex
 
     End Function
 
@@ -4149,8 +4144,6 @@ Public Class LegacyGame
         Dim NumberCorresIDs As Integer
         NumberCorresIDs = 0
         Dim IDNumbers(0) As Integer
-        Dim FoundItem As Boolean
-        FoundItem = False
         Dim FirstPlace As String
         Dim SecondPlace As String = ""
         Dim TwoPlaces As Boolean
@@ -4179,53 +4172,40 @@ Public Class LegacyGame
             For i = 1 To NumberObjs
                 If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace) Then
                     If LCase(Objs(i).ObjectName) = LCase(ObjectName) Then
-                        FoundItem = True
-                        Disambiguate = i
                         SetStringContents("quest.lastobject", Objs(i).ObjectName, ctx)
-                        Exit For
+                        Return i
                     End If
                 End If
             Next i
-
-            If FoundItem Then Exit Function
         End If
 
         ' If player uses "it", "them" etc. as name:
         If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = IT_INANIMATE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                FoundItem = True
-                Disambiguate = LastIt
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
-                Exit Function
+                Return LastIt
             Else
                 PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
-                Disambiguate = -2
-                Exit Function
+                Return -2
             End If
         ElseIf ObjectName = "him" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = IT_MALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                FoundItem = True
-                Disambiguate = LastIt
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
-                Exit Function
+                Return LastIt
             Else
                 PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
-                Disambiguate = -2
-                Exit Function
+                Return -2
             End If
         ElseIf ObjectName = "her" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = IT_FEMALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                FoundItem = True
-                Disambiguate = LastIt
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
-                Exit Function
+                Return LastIt
             Else
                 PlayerErrorMessage(ERROR_BADPRONOUN, ctx)
-                Disambiguate = -2
-                Exit Function
+                Return -2
             End If
         End If
 
@@ -4279,9 +4259,7 @@ Public Class LegacyGame
 
         Dim Question As String
         If NumberCorresIDs = 1 Then
-            FoundItem = True
             SetStringContents("quest.lastobject", Objs(IDNumbers(1)).ObjectName, ctx)
-            Disambiguate = IDNumbers(1)
             ThisTurnIt = IDNumbers(1)
 
             Select Case Objs(IDNumbers(1)).Article
@@ -4293,10 +4271,9 @@ Public Class LegacyGame
                     ThisTurnItMode = IT_INANIMATE
             End Select
 
-            Exit Function
+            Return IDNumbers(1)
         ElseIf NumberCorresIDs > 1 Then
             ReDim DescriptionText(NumberCorresIDs)
-            FoundItem = True
 
             Question = "Please select which " & ObjectName & " you mean:"
             Print("- |i" & Question & "|xi", ctx)
@@ -4324,7 +4301,6 @@ Public Class LegacyGame
 
             SetStringContents("quest.lastobject", Objs(IDNumbers(ChoiceNumber)).ObjectName, ctx)
 
-            Disambiguate = IDNumbers(ChoiceNumber)
             ThisTurnIt = IDNumbers(ChoiceNumber)
 
             Select Case Objs(IDNumbers(ChoiceNumber)).Article
@@ -4338,14 +4314,12 @@ Public Class LegacyGame
 
             Print("- " & DescriptionText(ChoiceNumber) & "|n", ctx)
 
+            Return IDNumbers(ChoiceNumber)
         End If
 
-        If Not FoundItem Then
-            Disambiguate = -1
-            ThisTurnIt = LastIt
-            SetStringContents("quest.error.object", ObjectName, ctx)
-        End If
-
+        ThisTurnIt = LastIt
+        SetStringContents("quest.error.object", ObjectName, ctx)
+        Return -1
     End Function
 
     Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As Integer, ctx As Context) As String
@@ -4391,8 +4365,7 @@ Public Class LegacyGame
             End If
         End If
 
-        DisplayStatusVariableInfo = DisplayData
-
+        Return DisplayData
     End Function
 
     Friend Function DoAction(ObjID As Integer, ActionName As String, ctx As Context, Optional LogError As Boolean = True) As Boolean
@@ -4413,8 +4386,7 @@ Public Class LegacyGame
 
         If Not FoundAction Then
             If LogError Then LogASLError("No such action '" & ActionName & "' defined for object '" & o.ObjectName & "'")
-            DoAction = False
-            Exit Function
+            Return False
         End If
 
         Dim NewThread As Context = CopyContext(ctx)
@@ -4422,8 +4394,7 @@ Public Class LegacyGame
 
         ExecuteScript(ActionScript, NewThread, ObjID)
 
-        DoAction = True
-
+        Return True
     End Function
 
     Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
@@ -4433,10 +4404,11 @@ Public Class LegacyGame
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = LCase(ActionName) Then
-                HasAction = True
-                Exit Function
+                Return True
             End If
         Next i
+
+        Return False
     End Function
 
     Private Sub ExecForEach(ScriptLine As String, ctx As Context)
@@ -4595,7 +4567,7 @@ Public Class LegacyGame
 
         If bThisNot Then bThisResult = Not bThisResult
 
-        ExecuteCondition = bThisResult
+        Return bThisResult
     End Function
 
     Private Function ExecuteConditions(ConditionList As String, ctx As Context) As Boolean
@@ -4656,7 +4628,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        ExecuteConditions = bConditionResult
+        Return bConditionResult
 
     End Function
 
@@ -5232,8 +5204,7 @@ Public Class LegacyGame
             bResult = False
         End If
 
-        ExecuteIfHere = bResult
-
+        Return bResult
     End Function
 
     Private Function ExecuteIfExists(ExistsThing As String, RealCheckOnly As Boolean) As Boolean
@@ -5291,11 +5262,10 @@ Public Class LegacyGame
         If bFound = False Then bResult = False
 
         If RealCheckOnly Then
-            ExecuteIfExists = bFound
-        Else
-            ExecuteIfExists = bResult
+            Return bFound
         End If
 
+        Return bResult
     End Function
 
     Private Function ExecuteIfProperty(PropertyData As String) As Boolean
@@ -5309,8 +5279,7 @@ Public Class LegacyGame
 
         If SCP = 0 Then
             LogASLError("No property name given in condition 'property <" & PropertyData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfProperty = False
-            Exit Function
+            Return False
         End If
 
         ObjName = Trim(Left(PropertyData, SCP - 1))
@@ -5328,15 +5297,10 @@ Public Class LegacyGame
 
         If Not FoundObj Then
             LogASLError("No such object '" & ObjName & "' in condition 'property <" & PropertyData & ">' ...", LOGTYPE_WARNINGERROR)
-            ExecuteIfProperty = False
-            Exit Function
+            Return False
         End If
 
-        If GetObjectProperty(PropertyName, ObjID, True) = "yes" Then
-            ExecuteIfProperty = True
-        Else
-            ExecuteIfProperty = False
-        End If
+        Return GetObjectProperty(PropertyName, ObjID, True) = "yes"
     End Function
 
     Private Sub ExecuteRepeat(RepeatData As String, ctx As Context)
@@ -5436,7 +5400,6 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ExecuteWait(WaitLine As String, ctx As Context)
-
         If WaitLine <> "" Then
             Print(RetrieveParameter(WaitLine, ctx), ctx)
         Else
@@ -5463,16 +5426,19 @@ Public Class LegacyGame
         Dim NullPos As Integer
         NullPos = InStr(m_lIndex, m_sFileData, Chr(0))
 
-        GetNextChunk = Mid(m_sFileData, m_lIndex, NullPos - m_lIndex)
+        Dim result = Mid(m_sFileData, m_lIndex, NullPos - m_lIndex)
 
         If NullPos < Len(m_sFileData) Then
             m_lIndex = NullPos + 1
         End If
+
+        Return result
     End Function
 
     Function GetFileDataChars(count As Integer) As String
-        GetFileDataChars = Mid(m_sFileData, m_lIndex, count)
+        Dim result = Mid(m_sFileData, m_lIndex, count)
         m_lIndex = m_lIndex + count
+        Return result
     End Function
 
     Private Function GetObjectActions(ActionInfo As String) As ActionType
@@ -5496,7 +5462,6 @@ Public Class LegacyGame
     End Function
 
     Private Function GetObjectID(ObjectName As String, ctx As Context, Optional ObjectRoom As String = "") As Integer
-
         Dim CurID, i As Integer
         Dim FoundItem As Boolean
         FoundItem = False
@@ -5519,11 +5484,10 @@ Public Class LegacyGame
         End If
 
         If FoundItem Then
-            GetObjectID = CurID
-        Else
-            GetObjectID = -1
+            Return CurID
         End If
 
+        Return -1
     End Function
 
     Private Function GetObjectIDNoAlias(ObjectName As String) As Integer
@@ -5544,8 +5508,7 @@ Public Class LegacyGame
             ID = 0
         End If
 
-        GetObjectIDNoAlias = ID
-
+        Return ID
     End Function
 
     Friend Function GetObjectProperty(PropertyName As String, ObjID As Integer, Optional ReturnExistsOnly As Boolean = False, Optional LogError As Boolean = True) As String
@@ -5566,23 +5529,21 @@ Public Class LegacyGame
 
         If ReturnExistsOnly Then
             If bFound Then
-                GetObjectProperty = "yes"
-            Else
-                GetObjectProperty = "no"
+                Return "yes"
             End If
-        Else
-            If bFound Then
-                GetObjectProperty = sResult
-            Else
-                If LogError Then
-                    LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LOGTYPE_WARNINGERROR)
-                    GetObjectProperty = "!"
-                Else
-                    GetObjectProperty = ""
-                End If
-            End If
+            Return "no"
         End If
 
+        If bFound Then
+            Return sResult
+        End If
+
+        If LogError Then
+            LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LOGTYPE_WARNINGERROR)
+            Return "!"
+        End If
+
+        Return ""
     End Function
 
     Private Function GetPropertiesInType(TypeName As String, Optional bError As Boolean = True) As PropertiesActions
@@ -5647,13 +5608,11 @@ Public Class LegacyGame
             End If
         Next i
 
-        GetPropertiesInType = PropertyList
+        Return PropertyList
     End Function
 
     Friend Function GetRoomID(RoomName As String, ctx As Context) As Integer
-        Dim Found As Boolean
         Dim ArrayIndex, i As Integer
-        Found = False
 
         If InStr(RoomName, "[") > 0 Then
             ArrayIndex = GetArrayIndex(RoomName, ctx)
@@ -5662,96 +5621,77 @@ Public Class LegacyGame
 
         For i = 1 To NumberRooms
             If LCase(Rooms(i).RoomName) = LCase(RoomName) Then
-                Found = True
-                GetRoomID = i
-                i = NumberRooms
+                Return i
             End If
         Next i
 
-        If Not Found Then GetRoomID = 0
-
+        Return 0
     End Function
 
     Private Function GetTextOrScript(TextScript As String) As TextAction
-        GetTextOrScript = New TextAction
+        Dim result = New TextAction
         TextScript = Trim(TextScript)
 
         If Left(TextScript, 1) = "<" Then
-            GetTextOrScript.Type = TA_TEXT
-            GetTextOrScript.Data = RetrieveParameter(TextScript, _nullContext)
+            result.Type = TA_TEXT
+            result.Data = RetrieveParameter(TextScript, _nullContext)
         Else
-            GetTextOrScript.Type = TA_SCRIPT
-            GetTextOrScript.Data = TextScript
+            result.Type = TA_SCRIPT
+            result.Data = TextScript
         End If
 
+        Return result
     End Function
 
     Private Function GetThingNumber(ThingName As String, ThingRoom As String, ThingType As Integer) As Integer
-        ' Returns the number in the Chars() or Objs() array
-        ' of the specified char/obj
+        ' Returns the number in the Chars() or Objs() array of the specified char/obj
 
-        Dim f, i As Integer
-
-        f = 0
+        Dim i As Integer
 
         If ThingType = QUEST_CHARACTER Then
             For i = 1 To NumberChars
                 If (ThingRoom <> "" And LCase(Chars(i).ObjectName) = LCase(ThingName) And LCase(Chars(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(Chars(i).ObjectName) = LCase(ThingName)) Then
-                    GetThingNumber = i
-                    i = NumberChars
-                    f = 1
+                    Return i
                 End If
             Next i
         ElseIf ThingType = QUEST_OBJECT Then
             For i = 1 To NumberObjs
                 If (ThingRoom <> "" And LCase(Objs(i).ObjectName) = LCase(ThingName) And LCase(Objs(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(Objs(i).ObjectName) = LCase(ThingName)) Then
-                    GetThingNumber = i
-                    i = NumberObjs
-                    f = 1
+                    Return i
                 End If
             Next i
         End If
 
-        If f = 0 Then
-            GetThingNumber = -1
-        End If
-
+        Return -1
     End Function
 
     Private Function GetThingBlock(ThingName As String, ThingRoom As String, ThingType As Integer) As DefineBlock
-        ' Returns position where specified char/obj is defined
-        ' in ASL code
+        ' Returns position where specified char/obj is defined in ASL code
 
-        Dim f, i As Integer
-
-        f = 0
-        GetThingBlock = New DefineBlock
+        Dim i As Integer
+        Dim result = New DefineBlock
 
         If ThingType = QUEST_CHARACTER Then
             For i = 1 To NumberChars
                 If LCase(Chars(i).ObjectName) = LCase(ThingName) And LCase(Chars(i).ContainerRoom) = LCase(ThingRoom) Then
-                    GetThingBlock.StartLine = Chars(i).DefinitionSectionStart
-                    GetThingBlock.EndLine = Chars(i).DefinitionSectionEnd
-                    i = NumberChars
-                    f = 1
+                    result.StartLine = Chars(i).DefinitionSectionStart
+                    result.EndLine = Chars(i).DefinitionSectionEnd
+                    Return result
                 End If
             Next i
         ElseIf ThingType = QUEST_OBJECT Then
             For i = 1 To NumberObjs
                 If LCase(Objs(i).ObjectName) = LCase(ThingName) And LCase(Objs(i).ContainerRoom) = LCase(ThingRoom) Then
-                    GetThingBlock.StartLine = Objs(i).DefinitionSectionStart
-                    GetThingBlock.EndLine = Objs(i).DefinitionSectionEnd
-                    i = NumberObjs
-                    f = 1
+                    result.StartLine = Objs(i).DefinitionSectionStart
+                    result.EndLine = Objs(i).DefinitionSectionEnd
+                    Return result
                 End If
             Next i
         End If
 
-        If f = 0 Then
-            GetThingBlock.StartLine = 0
-            GetThingBlock.EndLine = 0
-        End If
-
+        result.StartLine = 0
+        result.EndLine = 0
+        Return result
     End Function
 
     Private Function MakeRestoreData() As String
@@ -5892,8 +5832,7 @@ Public Class LegacyGame
             NewFileData.Append(Chr(255 - Asc(Mid(sFileData, i, 1))))
         Next i
 
-        MakeRestoreData = NewFileData.ToString()
-
+        Return NewFileData.ToString()
     End Function
 
     Private Sub MoveThing(sThingName As String, sThingRoom As String, iThingType As Integer, ctx As Context)
@@ -5970,8 +5909,7 @@ Public Class LegacyGame
 
                 If iNextPos = 0 Then
                     LogASLError("Line parameter <" & sParameter & "> has missing " & sConvertChar, LOGTYPE_WARNINGERROR)
-                    ConvertParameter = "<ERROR>"
-                    Exit Function
+                    Return "<ERROR>"
                 End If
 
                 sVarName = Mid(sParameter, iVarPos + 1, (iNextPos - 1) - iVarPos)
@@ -5996,8 +5934,7 @@ Public Class LegacyGame
             End If
         Loop Until bFinishLoop
 
-        ConvertParameter = NewParam
-
+        Return NewParam
     End Function
 
     Private Function DoFunction(FunctionData As String, ctx As Context) As String
@@ -6484,57 +6421,49 @@ errhandle:
     End Sub
 
     Private Function ExecuteIfGot(theitem As String) As Boolean
-
         Dim i As Integer
 
         Dim FoundObject As Boolean
-        Dim Result As Boolean
+        Dim result As Boolean
         Dim InventoryPlace As String
-        Dim bResult As Boolean
-        Dim iValidItemFlag As Integer
+        Dim valid As Boolean
+
         If GameASLVersion >= 280 Then
             FoundObject = False
-            Result = False
+            result = False
             InventoryPlace = "inventory"
 
             For i = 1 To NumberObjs
                 If LCase(Objs(i).ObjectName) = LCase(theitem) Then
                     FoundObject = True
-                    If Objs(i).ContainerRoom = InventoryPlace And Objs(i).Exists Then
-                        Result = True
-                    Else
-                        Result = False
-                    End If
+                    result = Objs(i).ContainerRoom = InventoryPlace And Objs(i).Exists
                 End If
             Next i
 
             If Not FoundObject Then
-                Result = False
+                result = False
                 LogASLError("No object '" & theitem & "' defined.", LOGTYPE_WARNINGERROR)
             End If
 
-            ExecuteIfGot = Result
-
-        Else
-
-            iValidItemFlag = 0
-
-            For i = 1 To NumberItems
-                If LCase(Items(i).itemname) = LCase(theitem) Then
-                    bResult = Items(i).gotitem
-                    i = NumberItems
-                    iValidItemFlag = 1
-                End If
-            Next i
-
-            If iValidItemFlag = 0 Then
-                LogASLError("Item '" & theitem & "' not defined.", LOGTYPE_WARNINGERROR)
-                bResult = False
-            End If
-
-            ExecuteIfGot = bResult
+            Return result
         End If
 
+        valid = False
+
+        For i = 1 To NumberItems
+            If LCase(Items(i).itemname) = LCase(theitem) Then
+                result = Items(i).gotitem
+                i = NumberItems
+                valid = True
+            End If
+        Next i
+
+        If Not valid Then
+            LogASLError("Item '" & theitem & "' not defined.", LOGTYPE_WARNINGERROR)
+            result = False
+        End If
+
+        Return result
     End Function
 
     Private Function ExecuteIfHas(hascond As String) As Boolean
@@ -6580,8 +6509,7 @@ errhandle:
             If Collectables(ColNum).collectablenumber = checkval Then condresult = True Else condresult = False
         End If
 
-        ExecuteIfHas = condresult
-
+        Return condresult
     End Function
 
     Private Function ExecuteIfIs(IsCondition As String) As Boolean
@@ -6595,8 +6523,7 @@ errhandle:
         SCPos = InStr(IsCondition, ";")
         If SCPos = 0 Then
             LogASLError("Expected second parameter in 'is " & IsCondition & "'", LOGTYPE_WARNINGERROR)
-            ExecuteIfIs = False
-            Exit Function
+            Return False
         End If
 
         SC2Pos = InStr(SCPos + 1, IsCondition, ";")
@@ -6669,7 +6596,7 @@ errhandle:
             End If
         End If
 
-        ExecuteIfIs = Satisfied
+        Return Satisfied
     End Function
 
     Private Function GetNumericContents(NumericName As String, ctx As Context, Optional NOERROR As Boolean = False) As Double
@@ -6709,18 +6636,16 @@ errhandle:
 
         If bNumExists = False Then
             If Not NOERROR Then LogASLError("No numeric variable '" & NumericName & "' defined.", LOGTYPE_WARNINGERROR)
-            GetNumericContents = -32767
-            Exit Function
+            Return -32767
         End If
 
         If ArrayIndex > NumericVariable(iNumNumber).VariableUBound Then
             If Not NOERROR Then LogASLError("Array index of '" & NumericName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LOGTYPE_WARNINGERROR)
-            GetNumericContents = -32766
-            Exit Function
+            Return -32766
         End If
 
         ' Now, set the contents
-        GetNumericContents = Val(NumericVariable(iNumNumber).VariableContents(ArrayIndex))
+        Return Val(NumericVariable(iNumNumber).VariableContents(ArrayIndex))
     End Function
 
     Friend Sub PlayerErrorMessage(iErrorNumber As Integer, ctx As Context)
@@ -6744,7 +6669,7 @@ errhandle:
     End Sub
 
     Private Function GetErrorMessage(iErrorNumber As Integer, ctx As Context) As String
-        GetErrorMessage = ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
+        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
     End Function
 
     Private Sub PlayMedia(filename As String)
@@ -6793,8 +6718,7 @@ errhandle:
         PlayMedia(filename, sync, looped)
     End Sub
 
-    Private Function RestoreGameData(InputFileData As String) As Boolean
-        ' Return true if successful
+    Private Sub RestoreGameData(InputFileData As String)
         Dim i, NumData, j As Integer
         Dim AppliesTo As String
         Dim data As String = ""
@@ -6965,8 +6889,7 @@ errhandle:
         Next i
 
         m_gameIsRestoring = False
-        RestoreGameData = True
-    End Function
+    End Sub
 
     Private Sub SetBackground(Colour As String)
         m_player.SetBackground("#" + GetHTMLColour(Colour, "white"))
@@ -8900,9 +8823,8 @@ errhandle:
         If Not PrevQSGVersion Then
             ' Open Quest 3.0 saved game file
             m_gameLoading = True
-            Dim result As Boolean = RestoreGameData(FileData)
+            RestoreGameData(FileData)
             m_gameLoading = False
-            If Not result Then Return False
         Else
             ' Open Quest 2.x saved game file
 
