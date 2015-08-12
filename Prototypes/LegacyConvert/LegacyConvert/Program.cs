@@ -51,7 +51,7 @@ namespace LegacyConvert
                     return null;
                 case SyntaxKind.EnumBlock:
                     var enumName = ((EnumStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var values = node.ChildNodes().OfType<EnumMemberDeclarationSyntax>().Select(n => n.Initializer == null ? n.Identifier.Text : n.Identifier.Text + " = " + n.Initializer.Value);
+                    var values = node.ChildNodes().OfType<EnumMemberDeclarationSyntax>().Select(n => n.Initializer == null ? SafeName(n.Identifier.Text) : SafeName(n.Identifier.Text) + " = " + n.Initializer.Value);
                     prepend.Append(string.Format("enum {0} {{{1}}};\n", enumName, string.Join(", ", values)));
                     return null;
                 case SyntaxKind.EnumMemberDeclaration:
@@ -61,6 +61,13 @@ namespace LegacyConvert
             }
 
             return null;
+        }
+
+        private static string SafeName(string name)
+        {
+            // remove [ and ] from around name if necessary
+            if (name.StartsWith("[")) name = name.Substring(1, name.Length - 2);
+            return name;
         }
 
         static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend)
