@@ -328,9 +328,7 @@ Public Class LegacyGame
     Private NumberTimers As Integer
     Private CurFont As String
     Private CurFontSize As Double
-    Private NumberScriptData As Integer
     Private NumDisplayStrings As Integer
-    Private DisplayNumericIDs() As Integer
     Private NumDisplayNumerics As Integer
     Private GameFullyLoaded As Boolean
     Private GameChangeData As New GameChangeDataType
@@ -7224,8 +7222,6 @@ Public Class LegacyGame
                     NumericVariable(iNumNumber) = ThisVariable
 
                     NumDisplayNumerics = NumDisplayNumerics + 1
-                    ReDim Preserve DisplayNumericIDs(NumDisplayNumerics)
-                    DisplayNumericIDs(NumDisplayNumerics) = iNumNumber
 
                 End If
             End If
