@@ -1230,12 +1230,7 @@ Public Class LegacyGame
 
         TT = Len(T)
 
-        If Left(LTrim(LCase(s)), TT) = LCase(T) Then
-            BeginsWith = True
-        Else
-            BeginsWith = False
-        End If
-
+        Return Left(LTrim(LCase(s)), TT) = LCase(T)
     End Function
 
     Private Function ConvertCASKeyword(CASchar As String) As String
@@ -1247,7 +1242,7 @@ Public Class LegacyGame
             CK = vbCrLf
         End If
 
-        ConvertCASKeyword = CK
+        Return CK
 
     End Function
 
@@ -1289,9 +1284,9 @@ Public Class LegacyGame
         Dim i As Integer
         Dim l, BlockType As String
 
-        GetDefineBlock = New DefineBlock
-        GetDefineBlock.StartLine = 0
-        GetDefineBlock.EndLine = 0
+        Dim result = New DefineBlock
+        result.StartLine = 0
+        result.EndLine = 0
 
         For i = 1 To NumberSections
             ' Get the first line of the define section:
@@ -1307,12 +1302,13 @@ Public Class LegacyGame
 
             If BlockType = blockname Then
                 ' Return the start and end points
-                GetDefineBlock.StartLine = DefineBlocks(i).StartLine
-                GetDefineBlock.EndLine = DefineBlocks(i).EndLine
+                result.StartLine = DefineBlocks(i).StartLine
+                result.EndLine = DefineBlocks(i).EndLine
                 i = NumberSections
             End If
         Next i
 
+        Return result
     End Function
 
     Private Function DefineBlockParam(blockname As String, Param As String) As DefineBlock
@@ -1326,7 +1322,7 @@ Public Class LegacyGame
         Dim sBlockName As String
         Dim asBlock() As String
 
-        DefineBlockParam = New DefineBlock
+        Dim result = New DefineBlock
 
         Param = "k" & Param ' protect against numeric block names
 
@@ -1362,9 +1358,11 @@ Public Class LegacyGame
 
         If oCache.ContainsKey(Param) Then
             asBlock = Split(oCache.Item(Param), ",")
-            DefineBlockParam.StartLine = CInt(asBlock(0))
-            DefineBlockParam.EndLine = CInt(asBlock(1))
+            result.StartLine = CInt(asBlock(0))
+            result.EndLine = CInt(asBlock(1))
         End If
+
+        Return result
 
     End Function
 
@@ -1373,11 +1371,10 @@ Public Class LegacyGame
         Dim l As Integer
 
         If Len(thetext) > Len(TheString) Then
-            GetEverythingAfter = ""
-            Exit Function
+            Return ""
         End If
         l = Len(thetext)
-        GetEverythingAfter = Right(TheString, Len(TheString) - l)
+        Return Right(TheString, Len(TheString) - l)
     End Function
 
     Private Function Keyword2CAS(KWord As String) As String
@@ -1386,8 +1383,7 @@ Public Class LegacyGame
         Dim i As Integer
 
         If KWord = "" Then
-            Keyword2CAS = ""
-            Exit Function
+            Return ""
         End If
         k = ""
 
@@ -1399,9 +1395,9 @@ Public Class LegacyGame
         Next i
 
         If k = "" Then
-            Keyword2CAS = Keyword2CAS("!unknown") & KWord & Keyword2CAS("!unknown")
+            Return Keyword2CAS("!unknown") & KWord & Keyword2CAS("!unknown")
         Else
-            Keyword2CAS = k
+            Return k
         End If
 
     End Function
@@ -1498,7 +1494,7 @@ Public Class LegacyGame
 
             For l = 1 To aslLines.Length
                 Lines(l) = aslLines(l - 1)
-                RemoveTabs(Lines(l))
+                Lines(l) = RemoveTabs(Lines(l))
                 Lines(l) = Lines(l).Trim(" "c, Chr(10), Chr(13))
             Next
 
@@ -1506,11 +1502,7 @@ Public Class LegacyGame
 
         ElseIf LCase(Right(Filename, 4)) = ".cas" Then
             LogASLError("Loading CAS")
-            If LoadCASFile(Filename) = False Then
-                OpenErrorReport = OpenErrorReport & "Unable to open CAS file." & vbCrLf
-                ParseFile = False
-                Exit Function
-            End If
+            LoadCASFile(Filename)
             l = UBound(Lines)
 
         Else
@@ -1572,8 +1564,7 @@ Public Class LegacyGame
                             If LibResourceLines Is Nothing Then
                                 LogASLError("Library not found.", LOGTYPE_FATALERROR)
                                 OpenErrorReport = OpenErrorReport & "Library '" & LibraryList(NumLibraries) & "' not found." & vbCrLf
-                                ParseFile = False
-                                Exit Function
+                                Return False
                             End If
                         End If
 
@@ -1587,7 +1578,7 @@ Public Class LegacyGame
                             Do Until EOF(LibFileHandle)
                                 LibLines = LibLines + 1
                                 LibLine = LineInput(LibFileHandle)
-                                RemoveTabs(LibLine)
+                                LibLine = RemoveTabs(LibLine)
                                 ReDim Preserve LibCode(LibLines)
                                 LibCode(LibLines) = Trim(LibLine)
                             Loop
@@ -1597,7 +1588,7 @@ Public Class LegacyGame
                                 LibLines = LibLines + 1
                                 ReDim Preserve LibCode(LibLines)
                                 LibLine = ResLibLine
-                                RemoveTabs(LibLine)
+                                LibLine = RemoveTabs(LibLine)
                                 LibCode(LibLines) = Trim(LibLine)
                             Next
                         End If
@@ -1799,8 +1790,7 @@ Public Class LegacyGame
 
         If Not SkipCheck Then
             If Not CheckSections() Then
-                ParseFile = False
-                Exit Function
+                Return False
             End If
         End If
 
@@ -1855,8 +1845,7 @@ Public Class LegacyGame
 
         If Not GotGameBlock Then
             OpenErrorReport = OpenErrorReport & "No 'define game' block." & vbCrLf
-            ParseFile = False
-            Exit Function
+            Return False
         End If
 
         ConvertMultiLineSections()
@@ -1871,34 +1860,10 @@ Public Class LegacyGame
 
         SaveGameFile = ""
 
-        ParseFile = bResult
-        Exit Function
-
-ErrorHandler:
-        If Err.Number = 53 Then
-            OpenErrorReport = OpenErrorReport & "File not found." & vbCrLf
-            ParseFile = False
-            Exit Function
-
-        ElseIf Err.Number = 76 Then
-            OpenErrorReport = OpenErrorReport & "Path not found." & vbCrLf
-            ParseFile = False
-            Exit Function
-
-        ElseIf Err.Number = 71 Then
-            OpenErrorReport = OpenErrorReport & "Unable to open file." & vbCrLf
-            ParseFile = False
-            Exit Function
-        Else
-            Err.Raise(Err.Number)
-        End If
-
+        Return bResult
     End Function
 
     Friend Sub LogASLError(TheError As String, Optional MessageType As Integer = LOGTYPE_MISC)
-
-        ' TO DO: This should raise an event so we can access logs from Player
-
         If MessageType = LOGTYPE_FATALERROR Then
             TheError = "FATAL ERROR: " & TheError
         ElseIf MessageType = LOGTYPE_WARNINGERROR Then
@@ -1916,11 +1881,9 @@ ErrorHandler:
         End If
 
         m_log.Add(TheError)
-
     End Sub
 
     Friend Function RetrieveParameter(InputString As String, ctx As Context, Optional bConvertStringVariables As Boolean = True) As String
-
         ' Returns the parameters between < and > in a string
         Dim RetrParam As String
         Dim NewParam As String
@@ -1951,10 +1914,7 @@ ErrorHandler:
             NewParam = RetrParam
         End If
 
-        NewParam = EvaluateInlineExpressions(NewParam)
-
-        RetrieveParameter = NewParam
-
+        Return EvaluateInlineExpressions(NewParam)
     End Function
 
     Private Sub AddLine(theline As String)
@@ -1966,7 +1926,7 @@ ErrorHandler:
         Lines(NumLines) = theline
     End Sub
 
-    Private Function LoadCASFile(thefilename As String) As Boolean
+    Private Sub LoadCASFile(thefilename As String)
         Dim EndLineReached, ExitTheLoop As Boolean
         Dim TextMode, FinTheLoop As Boolean
         Dim CasVersion As Integer
@@ -2107,10 +2067,7 @@ ErrorHandler:
                 i = j - 1
             End If
         Next i
-
-        LoadCASFile = True
-
-    End Function
+    End Sub
 
     Private Function DecryptString(sString As String) As String
         Dim OS As String
@@ -2122,10 +2079,10 @@ ErrorHandler:
             OS = OS & Chr(v Xor 255)
         Next Z
 
-        DecryptString = OS
+        Return OS
     End Function
 
-    Private Sub RemoveTabs(ByRef ConvertLine As String)
+    Private Function RemoveTabs(ConvertLine As String) As String
         Dim foundalltabs As Boolean
         Dim CPos, TabChar As Integer
 
@@ -2145,7 +2102,9 @@ ErrorHandler:
                 End If
             Loop Until foundalltabs
         End If
-    End Sub
+
+        Return ConvertLine
+    End Function
 
     Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, ctx As Context)
 
@@ -2269,8 +2228,7 @@ ErrorHandler:
         ' Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
         If GameASLVersion < 391 Then
-            EvaluateInlineExpressions = InputLine
-            Exit Function
+            Return InputLine
         End If
 
         Dim EndBracePos, BracePos, CurPos As Integer
@@ -2295,15 +2253,13 @@ ErrorHandler:
                     EndBracePos = InStr(BracePos + 1, InputLine, "}")
                     If EndBracePos = 0 Then
                         LogASLError("Expected } in '" & InputLine & "'", LOGTYPE_WARNINGERROR)
-                        EvaluateInlineExpressions = "<ERROR>"
-                        Exit Function
+                        Return "<ERROR>"
                     Else
                         Expression = Mid(InputLine, BracePos + 1, EndBracePos - BracePos - 1)
                         ExpResult = ExpressionHandler(Expression)
                         If ExpResult.success <> EXPRESSION_OK Then
                             LogASLError("Error evaluating expression in <" & InputLine & "> - " & ExpResult.Message)
-                            EvaluateInlineExpressions = "<ERROR>"
-                            Exit Function
+                            Return "<ERROR>"
                         End If
 
                         ResultLine = ResultLine & ExpResult.Result
@@ -2325,8 +2281,7 @@ ErrorHandler:
             End If
         Loop Until BracePos = 0 Or CurPos > Len(ResultLine)
 
-        EvaluateInlineExpressions = ResultLine
-
+        Return ResultLine
     End Function
 
     Private Sub ExecAddRemove(CommandLine As String, ctx As Context)
@@ -2922,8 +2877,7 @@ ErrorHandler:
             End If
         End If
 
-        ExecVerb = FoundVerb
-
+        Return FoundVerb
     End Function
 
     Private Function ExpressionHandler(Expression As String) As ExpressionResult
@@ -3115,99 +3069,93 @@ ErrorHandler:
         Dim DisplayList As Boolean
 
         If Not IsYes(GetObjectProperty("container", ObjID, True, False)) Then
-            ListContents = ""
-            Exit Function
+            Return ""
         End If
 
         If Not IsYes(GetObjectProperty("opened", ObjID, True, False)) And Not IsYes(GetObjectProperty("transparent", ObjID, True, False)) And Not IsYes(GetObjectProperty("surface", ObjID, True, False)) Then
             ' Container is closed, so return "list closed" property if there is one.
 
             If DoAction(ObjID, "list closed", ctx, False) Then
-                ListContents = "<script>"
+                Return "<script>"
             Else
-                ListContents = GetObjectProperty("list closed", ObjID, False, False)
+                Return GetObjectProperty("list closed", ObjID, False, False)
             End If
-        Else
+        End If
 
-            ' populate contents string
+        ' populate contents string
 
-            NumContents = 0
+        NumContents = 0
 
-            For i = 1 To NumberObjs
-                If Objs(i).Exists And Objs(i).Visible Then
-                    If LCase(GetObjectProperty("parent", i, False, False)) = LCase(Objs(ObjID).ObjectName) Then
-                        NumContents = NumContents + 1
-                        ReDim Preserve ContentsIDs(NumContents)
-                        ContentsIDs(NumContents) = i
-                    End If
+        For i = 1 To NumberObjs
+            If Objs(i).Exists And Objs(i).Visible Then
+                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(Objs(ObjID).ObjectName) Then
+                    NumContents = NumContents + 1
+                    ReDim Preserve ContentsIDs(NumContents)
+                    ContentsIDs(NumContents) = i
                 End If
-            Next i
+            End If
+        Next i
 
-            Contents = ""
+        Contents = ""
 
-            If NumContents > 0 Then
+        If NumContents > 0 Then
+            ' Check if list property is set.
 
-                ' Check if list property is set.
+            If DoAction(ObjID, "list", ctx, False) Then
+                Return "<script>"
+            End If
 
-                If DoAction(ObjID, "list", ctx, False) Then
-                    ListContents = "<script>"
-                Else
+            If IsYes(GetObjectProperty("list", ObjID, True, False)) Then
+                ' Read header, if any
+                ListString = GetObjectProperty("list", ObjID, False, False)
 
-                    If IsYes(GetObjectProperty("list", ObjID, True, False)) Then
-                        ' Read header, if any
-                        ListString = GetObjectProperty("list", ObjID, False, False)
+                DisplayList = True
 
-                        DisplayList = True
-
-                        If ListString <> "" Then
-                            If Right(ListString, 1) = ":" Then
-                                Contents = Left(ListString, Len(ListString) - 1) & " "
-                            Else
-                                ' If header doesn't end in a colon, then the header is the only text to print
-                                Contents = ListString
-                                DisplayList = False
-                            End If
-                        Else
-                            Contents = UCase(Left(Objs(ObjID).Article, 1)) & Mid(Objs(ObjID).Article, 2) & " contains "
-                        End If
-
-                        If DisplayList Then
-                            For i = 1 To NumContents
-                                If i > 1 Then
-                                    If i < NumContents Then
-                                        Contents = Contents & ", "
-                                    Else
-                                        Contents = Contents & " and "
-                                    End If
-                                End If
-
-                                Dim o = Objs(ContentsIDs(i))
-                                If o.Prefix <> "" Then Contents = Contents & o.Prefix
-                                If o.ObjectAlias <> "" Then
-                                    Contents = Contents & "|b" & o.ObjectAlias & "|xb"
-                                Else
-                                    Contents = Contents & "|b" & o.ObjectName & "|xb"
-                                End If
-                                If o.Suffix <> "" Then Contents = Contents & " " & o.Suffix
-                            Next i
-                        End If
-
-                        ListContents = Contents & "."
+                If ListString <> "" Then
+                    If Right(ListString, 1) = ":" Then
+                        Contents = Left(ListString, Len(ListString) - 1) & " "
                     Else
-                        ' The "list" property is not set, so do not list contents.
-                        ListContents = ""
+                        ' If header doesn't end in a colon, then the header is the only text to print
+                        Contents = ListString
+                        DisplayList = False
                     End If
-                End If
-            Else
-                ' Container is empty, so return "list empty" property if there is one.
-
-                If DoAction(ObjID, "list empty", ctx, False) Then
-                    ListContents = "<script>"
                 Else
-                    ListContents = GetObjectProperty("list empty", ObjID, False, False)
+                    Contents = UCase(Left(Objs(ObjID).Article, 1)) & Mid(Objs(ObjID).Article, 2) & " contains "
                 End If
 
+                If DisplayList Then
+                    For i = 1 To NumContents
+                        If i > 1 Then
+                            If i < NumContents Then
+                                Contents = Contents & ", "
+                            Else
+                                Contents = Contents & " and "
+                            End If
+                        End If
+
+                        Dim o = Objs(ContentsIDs(i))
+                        If o.Prefix <> "" Then Contents = Contents & o.Prefix
+                        If o.ObjectAlias <> "" Then
+                            Contents = Contents & "|b" & o.ObjectAlias & "|xb"
+                        Else
+                            Contents = Contents & "|b" & o.ObjectName & "|xb"
+                        End If
+                        If o.Suffix <> "" Then Contents = Contents & " " & o.Suffix
+                    Next i
+                End If
+
+                Return Contents & "."
             End If
+            ' The "list" property is not set, so do not list contents.
+            Return ""
+        End If
+
+        ' Container is empty, so return "list empty" property if there is one.
+
+        If DoAction(ObjID, "list empty", ctx, False) Then
+            Return "<script>"
+        Else
+            Return GetObjectProperty("list empty", ObjID, False, False)
         End If
 
     End Function
@@ -3231,7 +3179,7 @@ ErrorHandler:
             End If
         Loop Until EPos = 0
 
-        ObscureNumericExps = OutputString
+        Return OutputString
     End Function
 
     Private Sub ProcessListInfo(ListLine As String, ObjID As Integer)
@@ -3287,7 +3235,6 @@ ErrorHandler:
     End Sub
 
     Private Function GetHTMLColour(Colour As String, DefaultColour As String) As String
-
         ' Converts a Quest foreground or background colour setting into an HTML colour
 
         Colour = LCase(Colour)
@@ -3296,21 +3243,22 @@ ErrorHandler:
 
         Select Case Colour
             Case "white"
-                GetHTMLColour = "FFFFFF"
+                Return "FFFFFF"
             Case "black"
-                GetHTMLColour = "000000"
+                Return "000000"
             Case "blue"
-                GetHTMLColour = "0000FF"
+                Return "0000FF"
             Case "yellow"
-                GetHTMLColour = "FFFF00"
+                Return "FFFF00"
             Case "red"
-                GetHTMLColour = "FF0000"
+                Return "FF0000"
             Case "green"
-                GetHTMLColour = "00FF00"
+                Return "00FF00"
             Case Else
-                GetHTMLColour = Colour
+                Return Colour
         End Select
 
+        Return ""
     End Function
 
     Private Sub DoPrint(OutputText As String)
@@ -3420,15 +3368,8 @@ ErrorHandler:
     End Sub
 
     Private Function ExecuteIfFlag(flag As String) As Boolean
-
-        ' Game ObjID is set to 1
-
-        If GetObjectProperty(flag, 1, True) = "yes" Then
-            ExecuteIfFlag = True
-        Else
-            ExecuteIfFlag = False
-        End If
-
+        ' Game ObjID is 1
+        Return GetObjectProperty(flag, 1, True) = "yes"
     End Function
 
     Private Sub ExecuteIncDec(InputLine As String, ctx As Context)
@@ -3490,8 +3431,7 @@ ErrorHandler:
 
         If Not FoundRes Then
             LogASLError("Unable to extract '" & FileToExtract & "' - not present in resources.", LOGTYPE_WARNINGERROR)
-            ExtractFile = CStr(False)
-            Exit Function
+            Return Nothing
         End If
 
         sFileName = System.IO.Path.Combine(m_tempFolder, FileToExtract)
@@ -3507,7 +3447,7 @@ ErrorHandler:
             Resources(ResID).Extracted = True
         End If
 
-        ExtractFile = sFileName
+        Return sFileName
 
     End Function
 
