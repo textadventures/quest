@@ -109,13 +109,13 @@ Public Class LegacyGame
 
     Friend Class UseDataType
         Public UseObject As String
-        Public UseType As Integer
+        Public UseType As UseType
         Public UseScript As String
     End Class
 
     Friend Class GiveDataType
         Public GiveObject As String
-        Public GiveType As Integer
+        Public GiveType As GiveType
         Public GiveScript As String
     End Class
 
@@ -434,14 +434,23 @@ Public Class LegacyGame
         Room
     End Enum
 
-    Private Const CONVERT_STRINGS As Integer = 1
-    Private Const CONVERT_FUNCTIONS As Integer = 2
-    Private Const CONVERT_NUMERIC As Integer = 3
-    Private Const CONVERT_COLLECTABLES As Integer = 4
-    Private Const USE_ON_SOMETHING As Integer = 1
-    Private Const USE_SOMETHING_ON As Integer = 2
-    Private Const GIVE_TO_SOMETHING As Integer = 1
-    Private Const GIVE_SOMETHING_TO As Integer = 2
+    Private Enum ConvertType
+        Strings
+        Functions
+        Numeric
+        Collectables
+    End Enum
+
+    Friend Enum UseType
+        UseOnSomething
+        UseSomethingOn
+    End Enum
+
+    Friend Enum GiveType
+        GiveToSomething
+        GiveSomethingTo
+    End Enum
+
     Private Const VARTYPE_STRING As Integer = 1
     Private Const VARTYPE_NUMERIC As Integer = 2
     Private Const STOPGAME_WIN As Integer = 1
@@ -1912,10 +1921,10 @@ Public Class LegacyGame
 
         If bConvertStringVariables Then
             If GameASLVersion >= 320 Then
-                NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, ctx), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx)
+                NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx)
             Else
                 If Not Left(RetrParam, 9) = "~Internal" Then
-                    NewParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", CONVERT_STRINGS, ctx), "%", CONVERT_NUMERIC, ctx), "~", CONVERT_COLLECTABLES, ctx), "$", CONVERT_FUNCTIONS, ctx)
+                    NewParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx)
                 Else
                     NewParam = RetrParam
                 End If
@@ -3531,7 +3540,7 @@ Public Class LegacyGame
         Dim DataID As Integer
         Dim Found As Boolean
         Dim EP As Integer
-        Dim CurGiveType, i As Integer
+        Dim CurGiveType As GiveType, i As Integer
         Dim actionName As String
         Dim actionScript As String
 
@@ -3545,7 +3554,7 @@ Public Class LegacyGame
                 AddObjectAction(ObjID, "give to anything", o.GiveToAnything, True)
                 Exit Sub
             Else
-                CurGiveType = GIVE_TO_SOMETHING
+                CurGiveType = GiveType.GiveToSomething
 
                 actionName = "give to "
             End If
@@ -3556,7 +3565,7 @@ Public Class LegacyGame
                 AddObjectAction(ObjID, "give anything", o.GiveAnything, True)
                 Exit Sub
             Else
-                CurGiveType = GIVE_SOMETHING_TO
+                CurGiveType = GiveType.GiveSomethingTo
                 actionName = "give "
             End If
         End If
@@ -3806,7 +3815,7 @@ Public Class LegacyGame
         Dim DataID As Integer
         Dim Found As Boolean
         Dim EP As Integer
-        Dim CurUseType, i As Integer
+        Dim CurUseType As UseType, i As Integer
 
         Dim o = Objs(ObjID)
 
@@ -3816,14 +3825,14 @@ Public Class LegacyGame
                 o.UseOnAnything = GetEverythingAfter(UseData, "anything ")
                 Exit Sub
             Else
-                CurUseType = USE_ON_SOMETHING
+                CurUseType = UseType.UseOnSomething
             End If
         Else
             If BeginsWith(UseData, "anything ") Then
                 o.UseAnything = GetEverythingAfter(UseData, "anything ")
                 Exit Sub
             Else
-                CurUseType = USE_SOMETHING_ON
+                CurUseType = UseType.UseSomethingOn
             End If
         End If
 
@@ -5889,7 +5898,7 @@ Public Class LegacyGame
         End SyncLock
     End Sub
 
-    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As Integer, ctx As Context) As String
+    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As ConvertType, ctx As Context) As String
         ' Returns a string with functions, string and
         ' numeric variables executed or converted as
         ' appropriate, read for display/etc.
@@ -5928,14 +5937,14 @@ Public Class LegacyGame
                     NewParam = NewParam & sConvertChar
                 Else
 
-                    If ConvertAction = CONVERT_STRINGS Then
+                    If ConvertAction = ConvertType.Strings Then
                         NewParam = NewParam & GetStringContents(sVarName, ctx)
-                    ElseIf ConvertAction = CONVERT_FUNCTIONS Then
+                    ElseIf ConvertAction = ConvertType.Functions Then
                         sVarName = EvaluateInlineExpressions(sVarName)
                         NewParam = NewParam & DoFunction(sVarName, ctx)
-                    ElseIf ConvertAction = CONVERT_NUMERIC Then
+                    ElseIf ConvertAction = ConvertType.Numeric Then
                         NewParam = NewParam & Trim(Str(GetNumericContents(sVarName, ctx)))
-                    ElseIf ConvertAction = CONVERT_COLLECTABLES Then
+                    ElseIf ConvertAction = ConvertType.Collectables Then
                         NewParam = NewParam & Trim(Str(GetCollectableAmount(sVarName)))
                     End If
                 End If
@@ -6674,7 +6683,7 @@ Public Class LegacyGame
     End Sub
 
     Private Function GetErrorMessage(e As PlayerError, ctx As Context) As String
-        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(e), "%", CONVERT_NUMERIC, ctx), "$", CONVERT_FUNCTIONS, ctx), "#", CONVERT_STRINGS, ctx)
+        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(e), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx)
     End Function
 
     Private Sub PlayMedia(filename As String)
@@ -10187,7 +10196,7 @@ Public Class LegacyGame
             Dim o = Objs(GiveToObjectID)
 
             For i = 1 To o.NumberGiveData
-                If o.GiveData(i).GiveType = GIVE_SOMETHING_TO And LCase(o.GiveData(i).GiveObject) = LCase(Objs(ItemID).ObjectName) Then
+                If o.GiveData(i).GiveType = GiveType.GiveSomethingTo And LCase(o.GiveData(i).GiveObject) = LCase(Objs(ItemID).ObjectName) Then
                     FoundGiveScript = True
                     GiveScript = o.GiveData(i).GiveScript
                     i = o.NumberGiveData
@@ -10200,7 +10209,7 @@ Public Class LegacyGame
                 Dim g = Objs(ItemID)
 
                 For i = 1 To g.NumberGiveData
-                    If g.GiveData(i).GiveType = GIVE_TO_SOMETHING And LCase(g.GiveData(i).GiveObject) = LCase(Objs(GiveToObjectID).ObjectName) Then
+                    If g.GiveData(i).GiveType = GiveType.GiveToSomething And LCase(g.GiveData(i).GiveObject) = LCase(Objs(GiveToObjectID).ObjectName) Then
                         FoundGiveScript = True
                         GiveScript = g.GiveData(i).GiveScript
                         i = g.NumberGiveData
@@ -10737,7 +10746,7 @@ Public Class LegacyGame
                 Dim o = Objs(UseOnObjectID)
 
                 For i = 1 To o.NumberUseData
-                    If o.UseData(i).UseType = USE_SOMETHING_ON And LCase(o.UseData(i).UseObject) = LCase(Objs(ItemID).ObjectName) Then
+                    If o.UseData(i).UseType = UseType.UseSomethingOn And LCase(o.UseData(i).UseObject) = LCase(Objs(ItemID).ObjectName) Then
                         FoundUseScript = True
                         UseScript = o.UseData(i).UseScript
                         i = o.NumberUseData
@@ -10748,7 +10757,7 @@ Public Class LegacyGame
                     'check a for use on <b>:
                     Dim u = Objs(ItemID)
                     For i = 1 To u.NumberUseData
-                        If u.UseData(i).UseType = USE_ON_SOMETHING And LCase(u.UseData(i).UseObject) = LCase(Objs(UseOnObjectID).ObjectName) Then
+                        If u.UseData(i).UseType = UseType.UseOnSomething And LCase(u.UseData(i).UseObject) = LCase(Objs(UseOnObjectID).ObjectName) Then
                             FoundUseScript = True
                             UseScript = u.UseData(i).UseScript
                             i = u.NumberUseData
