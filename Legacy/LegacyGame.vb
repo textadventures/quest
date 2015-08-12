@@ -363,8 +363,7 @@ Public Class LegacyGame
     Private m_random As New Random()
     Private m_tempFolder As String
 
-    Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
-    Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
+    Private PlayerErrorMessageString(38) As String
 
     Friend Enum PlayerError
         BadCommand
@@ -438,9 +437,6 @@ Public Class LegacyGame
     Private Const STOPGAME_WIN As Integer = 1
     Private Const STOPGAME_LOSE As Integer = 2
     Private Const STOPGAME_NULL As Integer = 0
-    Private Const ANIMATION_NONE As Integer = 0
-    Private Const ANIMATION_NORMAL As Integer = 1
-    Private Const ANIMATION_PERSIST As Integer = 2
     Private Const CONTAINER_NONE As Integer = 0
     Private Const CONTAINER_NORMAL As Integer = 1
     Private Const CONTAINER_SURFACE As Integer = 2
@@ -9389,7 +9385,7 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub ShowPicture(sFileName As String, Optional Animated As Integer = ANIMATION_NONE)
+    Private Sub ShowPicture(sFileName As String)
         ' In Quest 4.x this function would be used for showing a picture in a popup window, but
         ' this is no longer supported - ALL images are displayed in-line with the game text. Any
         ' image caption is displayed as text, and any image size specified is ignored.
@@ -11023,9 +11019,9 @@ Public Class LegacyGame
             ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
                 ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "animate persist ") Then
-                ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_PERSIST)
+                ShowPicture(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "animate ") Then
-                ShowPicture(RetrieveParameter(ScriptLine, ctx), ANIMATION_NORMAL)
+                ShowPicture(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "extract ") Then
                 ExtractFile(RetrieveParameter(ScriptLine, ctx))
             ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
