@@ -7058,14 +7058,11 @@ errhandle:
         Dim SCP As Integer
         Dim VariableName As String
         Dim VariableContents As String
-        Dim FoundVariable As Boolean
         Dim i As Integer
-        FoundVariable = False
 
         SCP = InStr(VariableData, ";")
         If SCP = 0 Then
-            SetUnknownVariableType = SET_ERROR
-            Exit Function
+            Return SET_ERROR
         End If
 
         VariableName = Trim(Left(VariableData, SCP - 1))
@@ -7080,44 +7077,25 @@ errhandle:
         For i = 1 To NumberStringVariables
             If LCase(StringVariable(i).VariableName) = LCase(VariableName) Then
                 ExecSetString(VariableData, ctx)
-                i = NumberStringVariables
-                FoundVariable = True
+                Return SET_FOUND
             End If
         Next i
-
-        If FoundVariable Then
-            SetUnknownVariableType = SET_FOUND
-            Exit Function
-        End If
 
         For i = 1 To NumberNumericVariables
             If LCase(NumericVariable(i).VariableName) = LCase(VariableName) Then
                 ExecSetVar(VariableData, ctx)
-                i = NumberNumericVariables
-                FoundVariable = True
+                Return SET_FOUND
             End If
         Next i
-
-        If FoundVariable Then
-            SetUnknownVariableType = SET_FOUND
-            Exit Function
-        End If
 
         For i = 1 To NumCollectables
             If LCase(Collectables(i).collectablename) = LCase(VariableName) Then
                 ExecuteSetCollectable(VariableData, ctx)
-                i = NumCollectables
-                FoundVariable = True
+                Return SET_FOUND
             End If
         Next i
 
-        If FoundVariable Then
-            SetUnknownVariableType = SET_FOUND
-            Exit Function
-        End If
-
-        SetUnknownVariableType = SET_UNFOUND
-
+        Return SET_UNFOUND
     End Function
 
     Private Function SetUpChoiceForm(choicesection As String, ctx As Context) As String
@@ -7145,8 +7123,7 @@ errhandle:
         Dim choice As String = ShowMenu(mnu)
 
         Print("- " & menuOptions(choice) & "|n", ctx)
-        SetUpChoiceForm = menuScript(choice)
-
+        Return menuScript(choice)
     End Function
 
     Private Sub SetUpDefaultFonts()
@@ -7173,7 +7150,6 @@ errhandle:
                 End If
             End If
         Next i
-
     End Sub
 
     Private Sub SetUpDisplayVariables()
@@ -7292,7 +7268,6 @@ errhandle:
     End Sub
 
     Private Sub SetUpMenus()
-
         Dim j, i, SCP As Integer
         Dim MenuExists As Boolean = False
 
@@ -7334,11 +7309,9 @@ errhandle:
             Dim windowMenu As New MenuData(menuTitle, menuOptions, False)
             m_player.SetWindowMenu(windowMenu)
         End If
-
     End Sub
 
     Private Sub SetUpOptions()
-
         Dim i As Integer
         Dim CurOpt As String
 
@@ -7352,7 +7325,6 @@ errhandle:
                 If CurOpt = "off" Then goptAbbreviations = False Else goptAbbreviations = True
             End If
         Next i
-
     End Sub
 
     Private Sub SetUpRoomData()
@@ -8273,18 +8245,16 @@ errhandle:
     End Sub
 
     Private Function ConvertObjectType(ObjectType As Integer) As String
-
         Select Case ObjectType
             Case QUEST_OBJECT
-                ConvertObjectType = "object"
+                Return "object"
             Case QUEST_CHARACTER
-                ConvertObjectType = "character"
+                Return "character"
             Case QUEST_ROOM
-                ConvertObjectType = "place"
+                Return "place"
         End Select
 
         Return ""
-
     End Function
 
     Private Sub ExecExec(ScriptLine As String, ctx As Context)
@@ -8452,7 +8422,7 @@ errhandle:
             End If
         End If
 
-        ExecUserCommand = FoundCommand
+        Return FoundCommand
     End Function
 
     Private Sub ExecuteChoose(choicesection As String, ctx As Context)
@@ -8566,8 +8536,7 @@ errhandle:
             End If
         Next i
 
-        GetCommandParameters = success
-
+        Return success
     End Function
 
     Private Function GetGender(CharacterName As String, Capitalise As Boolean, ctx As Context) As String
@@ -8586,12 +8555,10 @@ errhandle:
         End If
 
         If Capitalise = True Then G = UCase(Left(G, 1)) & Right(G, Len(G) - 1)
-        GetGender = G
-
+        Return G
     End Function
 
     Private Function GetStringContents(StringName As String, ctx As Context) As String
-
         Dim bStringExists As Boolean
         Dim iStringNumber As Integer
         bStringExists = False
@@ -8620,61 +8587,57 @@ errhandle:
                 End If
             End If
 
-            GetStringContents = GetObjectProperty(PropName, GetObjectIDNoAlias(ObjName))
-        Else
-            If Left(StringName, 1) = "@" Then
-                ReturnAlias = True
-                StringName = Mid(StringName, 2)
-            End If
+            Return GetObjectProperty(PropName, GetObjectIDNoAlias(ObjName))
+        End If
+        If Left(StringName, 1) = "@" Then
+            ReturnAlias = True
+            StringName = Mid(StringName, 2)
+        End If
 
-            If InStr(StringName, "[") <> 0 And InStr(StringName, "]") <> 0 Then
-                BeginPos = InStr(StringName, "[")
-                EndPos = InStr(StringName, "]")
-                ArrayIndexData = Mid(StringName, BeginPos + 1, (EndPos - BeginPos) - 1)
-                If IsNumeric(ArrayIndexData) Then
-                    ArrayIndex = CInt(ArrayIndexData)
-                Else
-                    ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
-                    If ArrayIndex = -32767 Then
-                        GetStringContents = ""
-                        LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LOGTYPE_WARNINGERROR)
-                        Exit Function
-                    End If
-                End If
-                StringName = Left(StringName, BeginPos - 1)
-            End If
-
-            ' First, see if the string already exists. If it does,
-            ' get its contents. If not, generate an error.
-
-            If NumberStringVariables > 0 Then
-                For i = 1 To NumberStringVariables
-                    If LCase(StringVariable(i).VariableName) = LCase(StringName) Then
-                        iStringNumber = i
-                        bStringExists = True
-                        i = NumberStringVariables
-                    End If
-                Next i
-            End If
-
-            If bStringExists = False Then
-                LogASLError("No string variable '" & StringName & "' defined.", LOGTYPE_WARNINGERROR)
-                GetStringContents = ""
-                Exit Function
-            End If
-
-            If ArrayIndex > StringVariable(iStringNumber).VariableUBound Then
-                LogASLError("Array index of '" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LOGTYPE_WARNINGERROR)
-                GetStringContents = ""
-                Exit Function
-            End If
-
-            ' Now, set the contents
-            If Not ReturnAlias Then
-                GetStringContents = StringVariable(iStringNumber).VariableContents(ArrayIndex)
+        If InStr(StringName, "[") <> 0 And InStr(StringName, "]") <> 0 Then
+            BeginPos = InStr(StringName, "[")
+            EndPos = InStr(StringName, "]")
+            ArrayIndexData = Mid(StringName, BeginPos + 1, (EndPos - BeginPos) - 1)
+            If IsNumeric(ArrayIndexData) Then
+                ArrayIndex = CInt(ArrayIndexData)
             Else
-                GetStringContents = Objs(GetObjectIDNoAlias(StringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
+                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
+                If ArrayIndex = -32767 Then
+                    LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LOGTYPE_WARNINGERROR)
+                    Return ""
+                End If
             End If
+            StringName = Left(StringName, BeginPos - 1)
+        End If
+
+        ' First, see if the string already exists. If it does,
+        ' get its contents. If not, generate an error.
+
+        If NumberStringVariables > 0 Then
+            For i = 1 To NumberStringVariables
+                If LCase(StringVariable(i).VariableName) = LCase(StringName) Then
+                    iStringNumber = i
+                    bStringExists = True
+                    i = NumberStringVariables
+                End If
+            Next i
+        End If
+
+        If bStringExists = False Then
+            LogASLError("No string variable '" & StringName & "' defined.", LOGTYPE_WARNINGERROR)
+            Return ""
+        End If
+
+        If ArrayIndex > StringVariable(iStringNumber).VariableUBound Then
+            LogASLError("Array index of '" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LOGTYPE_WARNINGERROR)
+            Return ""
+        End If
+
+        ' Now, set the contents
+        If Not ReturnAlias Then
+            Return StringVariable(iStringNumber).VariableContents(ArrayIndex)
+        Else
+            Return Objs(GetObjectIDNoAlias(StringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
         End If
     End Function
 
@@ -8701,19 +8664,16 @@ errhandle:
         If ThingType = QUEST_CHARACTER Then
             For i = 1 To NumberChars
                 If LCase(Chars(i).ContainerRoom) = LCase(CRoom) And LCase(Chars(i).ObjectName) = LCase(CName) Then
-                    IsAvailable = Chars(i).Exists
-                    i = NumberChars
+                    Return Chars(i).Exists
                 End If
             Next i
         ElseIf ThingType = QUEST_OBJECT Then
             For i = 1 To NumberObjs
                 If LCase(Objs(i).ContainerRoom) = LCase(CRoom) And LCase(Objs(i).ObjectName) = LCase(CName) Then
-                    IsAvailable = Objs(i).Exists
-                    i = NumberObjs
+                    Return Objs(i).Exists
                 End If
             Next i
         End If
-
     End Function
 
     Private Function IsCompatible(TestLine As String, RequiredLine As String) As Boolean
@@ -8748,19 +8708,17 @@ errhandle:
             If InStr(CurrentTestLinePos, TestLine, CheckChunk) <> 0 Then
                 CurrentTestLinePos = InStr(CurrentTestLinePos, TestLine, CheckChunk) + Len(CheckChunk)
             Else
-                IsCompatible = False
-                Exit Function
+                Return False
             End If
 
             'Skip to end of variable
             CurrentReqLinePos = Var2Pos + 1
         Loop Until FinishedProcessing
 
-        IsCompatible = True
+        Return True
     End Function
 
     Private Function OpenGame(theGameFileName As String) As Boolean
-
         Dim cdatb, bResult As Boolean
         Dim CurObjVisible As Boolean
         Dim CurObjRoom As String
@@ -8945,7 +8903,6 @@ errhandle:
         SaveGameFile = theGameFileName
 
         Return True
-
     End Function
 
     Private Function SaveGame(theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
@@ -8967,7 +8924,6 @@ errhandle:
         SaveGameFile = theGameFileName
 
         Return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData)
-
     End Function
 
     Private Function MakeRestoreDataV2() As String
@@ -9071,9 +9027,7 @@ errhandle:
         End If
 
         UpdateItems(ctx)
-
         UpdateObjectList(ctx)
-
     End Sub
 
     Friend Sub SetStringContents(StringName As String, StringContents As String, ctx As Context, Optional ArrayIndex As Integer = 0)
@@ -9423,7 +9377,6 @@ errhandle:
         Next i
 
         UpdateVisibilityInContainers(_nullContext)
-
     End Sub
 
     Private Sub ShowGameAbout(ctx As Context)
@@ -9444,11 +9397,9 @@ errhandle:
             Print("", ctx)
             Print(GameInfo, ctx)
         End If
-
     End Sub
 
     Private Sub ShowPicture(sFileName As String, Optional Animated As Integer = ANIMATION_NONE)
-
         ' In Quest 4.x this function would be used for showing a picture in a popup window, but
         ' this is no longer supported - ALL images are displayed in-line with the game text. Any
         ' image caption is displayed as text, and any image size specified is ignored.
@@ -9469,7 +9420,6 @@ errhandle:
         If Caption.Length > 0 Then Print(Caption, _nullContext)
 
         ShowPictureInText(sFileName)
-
     End Sub
 
     Private Sub ShowRoomInfo(Room As String, ctx As Context, Optional NoPrint As Boolean = False)
@@ -9745,7 +9695,6 @@ errhandle:
     End Sub
 
     Private Function DisplayCollectableInfo(ColNum As Integer) As String
-
         Dim FirstBit, D, NextBit As String
         Dim ExcPos As Integer
         Dim FirstStarPos, SecondStarPos As Integer
@@ -9784,8 +9733,7 @@ errhandle:
             D = "<null>"
         End If
 
-        DisplayCollectableInfo = D
-
+        Return D
     End Function
 
     Private Sub DisplayTextSection(sectionname As String, ctx As Context, Optional OutputTo As String = "normal")
@@ -9805,7 +9753,6 @@ errhandle:
 
             Print("", ctx)
         End If
-
     End Sub
 
     ' Returns true if the system is ready to process a new command after completion - so it will be
@@ -10143,7 +10090,7 @@ errhandle:
         ' though, otherwise they might just type "put " and then we would try disambiguating an object
         ' called "".
 
-        CmdStartsWith = BeginsWith(Trim(sCommand), sCheck)
+        Return BeginsWith(Trim(sCommand), sCheck)
     End Function
 
     Private Sub ExecGive(GiveString As String, ctx As Context)
@@ -10335,7 +10282,6 @@ errhandle:
     End Sub
 
     Private Sub ExecLook(LookLine As String, ctx As Context)
-
         Dim AtPos As Integer
         Dim LookStuff, LookItem, LookText As String
 
@@ -11005,7 +10951,6 @@ errhandle:
     End Sub
 
     Private Sub ExecuteScript(ScriptLine As String, ctx As Context, Optional NewCallingObjectID As Integer = 0)
-
         On Error GoTo ErrorHandler
 
         Dim TranscriptLine As String
@@ -11250,11 +11195,9 @@ ErrorHandler:
 
         ' State will have been changed to Working when the user typed their response,
         ' and will be set back to Ready when the call to ExecCommand has finished
-
     End Sub
 
     Private Sub ExecuteSet(SetInstruction As String, ctx As Context)
-
         Dim i As Integer
 
         Dim TimerInterval As String
@@ -11328,7 +11271,6 @@ ErrorHandler:
         Next i
 
         Return ""
-
     End Function
 
     Private Function FindLine(searchblock As DefineBlock, statement As String, statementparam As String) As String
@@ -11353,25 +11295,18 @@ ErrorHandler:
         Next i
 
         Return ""
-
     End Function
 
     Private Function GetCollectableAmount(colname As String) As Double
-        Dim n As Double
         Dim i As Integer
-        Dim foundval As Boolean
-        foundval = False
 
         For i = 1 To NumCollectables
             If Collectables(i).collectablename = colname Then
-                n = Collectables(i).collectablenumber
-                foundval = True
-                i = NumCollectables
+                Return Collectables(i).collectablenumber
             End If
         Next i
 
-        GetCollectableAmount = n
-
+        Return 0
     End Function
 
     Private Function GetSecondChunk(l As String) As String
@@ -11382,7 +11317,7 @@ ErrorHandler:
         LengthOfKeyword = (Len(l) - EndOfFirstBit) + 1
         SecondChunk = Trim(Mid(l, EndOfFirstBit, LengthOfKeyword))
 
-        GetSecondChunk = SecondChunk
+        Return SecondChunk
     End Function
 
     Private Sub GoDirection(Direction As String, ctx As Context)
@@ -11529,9 +11464,7 @@ ErrorHandler:
 
             Print("Error: " & ErrorString, _nullContext)
 
-            InitialiseGame = False
-
-            Exit Function
+            Return False
         End If
 
         ' Check version
@@ -11630,8 +11563,7 @@ ErrorHandler:
         m_oDefaultRoomProperties = GetPropertiesInType("defaultroom", False)
         m_oDefaultProperties = GetPropertiesInType("default", False)
 
-        InitialiseGame = True
-
+        Return True
     End Function
 
     Private Sub LeaveRoom(ctx As Context)
@@ -11640,7 +11572,6 @@ ErrorHandler:
     End Sub
 
     Private Function PlaceExist(PlaceName As String, ctx As Context) As String
-
         ' Returns actual name of an available "place" exit, and if
         ' script is executed on going in that direction, that script
         ' is returned after a ";"
@@ -11690,7 +11621,6 @@ ErrorHandler:
         Next i
 
         Return ""
-
     End Function
 
     Private Sub PlayerItem(anitem As String, gotit As Boolean, ctx As Context, Optional ObjID As Integer = 0)
@@ -11757,10 +11687,9 @@ ErrorHandler:
             UpdateItems(ctx)
 
         End If
-
     End Sub
 
-    Friend Function PlayGame(Room As String, ctx As Context) As Boolean
+    Friend Sub PlayGame(Room As String, ctx As Context)
         'plays the specified room
 
         Dim RoomID As Integer
@@ -11769,7 +11698,7 @@ ErrorHandler:
 
         If RoomID = 0 Then
             LogASLError("No such room '" & Room & "'", LOGTYPE_WARNINGERROR)
-            Exit Function
+            Exit Sub
         End If
 
         Dim LastRoom As String
@@ -11797,8 +11726,7 @@ ErrorHandler:
         If GameASLVersion >= 410 Then
             AddToObjectProperties("visited", Rooms(RoomID).ObjID, ctx)
         End If
-
-    End Function
+    End Sub
 
     Friend Sub Print(txt As String, ctx As Context, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
         Dim i As Integer
@@ -11852,20 +11780,8 @@ ErrorHandler:
         'retrieves the line lineret in the block of type blocktype
         'with parameter blockparam in the current room/game block
 
-        Dim roomblock As DefineBlock
         Dim i As Integer
-        roomblock = DefineBlockParam("room", CurrentRoom)
-        Dim nonefound As Boolean
         Dim searchblock As DefineBlock
-        Dim NothingSaid As Boolean
-        Dim DefLine As String
-
-        nonefound = True
-        NothingSaid = False
-
-        RetrLine = "<unfound>"
-
-        DefLine = "define " & BlockType
 
         If BlockType = "object" Then
             searchblock = GetThingBlock(blockparam, CurrentRoom, QUEST_OBJECT)
@@ -11873,19 +11789,17 @@ ErrorHandler:
             searchblock = GetThingBlock(blockparam, CurrentRoom, QUEST_CHARACTER)
         End If
 
-        If searchblock.StartLine <> 0 And searchblock.EndLine <> 0 Then
-            For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-                If BeginsWith(Lines(i), lineret) Then
-                    RetrLine = Trim(Lines(i))
-                End If
-            Next i
-        End If
-
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
-            RetrLine = "<undefined>"
+            Return "<undefined>"
         End If
 
+        For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
+            If BeginsWith(Lines(i), lineret) Then
+                Return Trim(Lines(i))
+            End If
+        Next i
 
+        Return "<unfound>"
     End Function
 
     Private Function RetrLineParam(BlockType As String, blockparam As String, lineret As String, lineparam As String, ctx As Context) As String
@@ -11893,17 +11807,8 @@ ErrorHandler:
         'in the block of type blocktype with parameter blockparam
         'in the current room - of course.
 
-        Dim roomblock, searchblock As DefineBlock
         Dim i As Integer
-        roomblock = DefineBlockParam("room", CurrentRoom)
-        Dim nonefound, FinishLoop, NothingSaid As Boolean
-        Dim DefLine As String
-
-        RetrLineParam = ""
-        nonefound = True
-        NothingSaid = False
-
-        DefLine = "define " & BlockType
+        Dim searchblock As DefineBlock
 
         If BlockType = "object" Then
             searchblock = GetThingBlock(blockparam, CurrentRoom, QUEST_OBJECT)
@@ -11911,24 +11816,17 @@ ErrorHandler:
             searchblock = GetThingBlock(blockparam, CurrentRoom, QUEST_CHARACTER)
         End If
 
-        If searchblock.StartLine <> 0 And searchblock.EndLine <> 0 Then
-            For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-                If BeginsWith(LCase(Lines(i)), LCase(lineret)) Then
-                    If LCase(RetrieveParameter(Lines(i), ctx)) = LCase(lineparam) Then
-                        RetrLineParam = Trim(Lines(i))
-                        FinishLoop = True
-                        nonefound = False
-                    End If
-                End If
-            Next i
-        End If
-
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
-            RetrLineParam = "<undefined>"
-        ElseIf nonefound = True Then
-            RetrLineParam = "<unfound>"
+            Return "<undefined>"
         End If
 
+        For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
+            If BeginsWith(Lines(i), lineret) AndAlso LCase(RetrieveParameter(Lines(i), ctx)) = LCase(lineparam) Then
+                Return Trim(Lines(i))
+            End If
+        Next i
+
+        Return "<unfound>"
     End Function
 
     Private Sub SetUpCollectables()
@@ -12018,7 +11916,6 @@ ErrorHandler:
     End Sub
 
     Private Sub SetUpItemArrays()
-
         Dim LastItem As Boolean
         Dim CharPos, a, NextComma As Integer
         Dim PossItems As String
@@ -12065,11 +11962,9 @@ ErrorHandler:
                 End If
             End If
         Next a
-
     End Sub
 
     Private Sub SetUpStartItems()
-
         Dim CharPos, a, NextComma As Integer
         Dim StartItems As String
         Dim LastItem As Boolean
@@ -12157,11 +12052,9 @@ ErrorHandler:
 
             r.Extracted = False
         Next i
-
     End Sub
 
     Private Sub UpdateDirButtons(AvailableDirs As String, ctx As Context)
-
         Dim compassExits As New List(Of ListData)
 
         If InStr(AvailableDirs, "n") > 0 Then
@@ -12210,7 +12103,6 @@ ErrorHandler:
 
         m_compassExits = compassExits
         UpdateExitsList()
-
     End Sub
 
     Private Sub AddCompassExit(exitList As List(Of ListData), name As String)
@@ -12358,12 +12250,10 @@ ErrorHandler:
 
         UpdateDirButtons(Directions, ctx)
 
-        UpdateDoorways = RoomDisplayText
-
+        Return RoomDisplayText
     End Function
 
     Private Sub UpdateItems(ctx As Context)
-
         ' displays the items a player has
         Dim i, j As Integer
         Dim k As String
@@ -12415,11 +12305,9 @@ ErrorHandler:
 
             End If
         End If
-
     End Sub
 
     Private Sub FinishGame(wingame As Integer, ctx As Context)
-
         If wingame = STOPGAME_WIN Then
             DisplayTextSection("win", ctx)
         ElseIf wingame = STOPGAME_LOSE Then
@@ -12427,11 +12315,9 @@ ErrorHandler:
         End If
 
         GameFinished()
-
     End Sub
 
     Private Sub UpdateObjectList(ctx As Context)
-
         ' Updates object list
         Dim i, PlaceID As Integer
         Dim ShownPlaceName As String
@@ -12542,7 +12428,6 @@ ErrorHandler:
         RaiseEvent UpdateList(ListType.ObjectsList, objList)
         m_gotoExits = exitList
         UpdateExitsList()
-
     End Sub
 
     Private Sub UpdateExitsList()
@@ -12590,9 +12475,7 @@ ErrorHandler:
         End If
 
         m_player.SetStatusText(status)
-
     End Sub
-
 
     Private Sub UpdateVisibilityInContainers(ctx As Context, Optional OnlyParent As String = "")
         ' Use OnlyParent to only update objects that are contained by a specific parent
@@ -12668,7 +12551,6 @@ ErrorHandler:
             If Not IsYes(GetObjectProperty("surface", ParentID, True, False)) And Not IsYes(GetObjectProperty("opened", ParentID, True, False)) Then
                 ' Parent has no "opened" property, so it's closed. Hence
                 ' object can't be accessed
-                PlayerCanAccessObject = False
 
                 If Objs(ParentID).ObjectAlias <> "" Then
                     ParentDisplayName = Objs(ParentID).ObjectAlias
@@ -12678,7 +12560,7 @@ ErrorHandler:
 
                 ErrorMsg = "inside closed " & ParentDisplayName
 
-                Exit Function
+                Return False
             End If
 
             ' Is the parent itself accessible?
@@ -12694,26 +12576,22 @@ ErrorHandler:
                 Next
                 sHierarchy = sHierarchy & Objs(ParentID).ObjectName
                 LogASLError("Looped object parents detected: " & sHierarchy)
-                PlayerCanAccessObject = False
-                Exit Function
+                Return False
             End If
 
             colObjects.Add(ParentID)
 
             If Not PlayerCanAccessObject(ParentID, , ErrorMsg, colObjects) Then
-                PlayerCanAccessObject = False
-                Exit Function
+                Return False
             End If
 
-            PlayerCanAccessObject = True
-        Else
-            PlayerCanAccessObject = True
+            Return True
         End If
 
+        Return True
     End Function
 
     Private Function GetGoToExits(RoomID As Integer, ctx As Context) As String
-
         Dim i As Integer
         Dim PlaceID As Integer
         Dim PlaceList As String = ""
@@ -12743,10 +12621,7 @@ ErrorHandler:
             PlaceList = PlaceList & ShownPrefix & "|b" & ShownPlaceName & "|xb, "
         Next i
 
-        GetGoToExits = PlaceList
-
-        Exit Function
-
+        Return PlaceList
     End Function
 
     Private Sub SetUpExits()
@@ -12822,7 +12697,6 @@ ErrorHandler:
         End If
 
         Return Nothing
-
     End Function
 
     Private Sub ExecuteLock(sTag As String, bLock As Boolean)
@@ -12836,9 +12710,6 @@ ErrorHandler:
         End If
 
         oExit.IsLocked = bLock
-
-        Exit Sub
-
     End Sub
 
     Public Sub Begin() Implements IASL.Begin
@@ -13172,7 +13043,6 @@ ErrorHandler:
     End Sub
 
     Private Sub RaiseNextTimerTickRequest()
-
         Dim anyTimerActive As Boolean = False
         Dim nextTrigger As Integer = 60
 
@@ -13193,7 +13063,6 @@ ErrorHandler:
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString)
 
         RaiseEvent RequestNextTimerTick(nextTrigger)
-
     End Sub
 
     Private Sub ChangeState(newState As State)
