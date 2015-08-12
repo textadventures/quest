@@ -333,8 +333,10 @@ Public Class LegacyGame
     Private NumDisplayNumerics As Integer
     Private GameFullyLoaded As Boolean
     Private GameChangeData As New GameChangeDataType
-    Private LastIt, LastItMode As Integer
-    Private ThisTurnIt, ThisTurnItMode As Integer
+    Private LastIt As Integer
+    Private LastItMode As ItType
+    Private ThisTurnIt As Integer
+    Private ThisTurnItMode As ItType
     Private BadCmdBefore, BadCmdAfter As String
     Private NumResources As Integer
     Private Resources() As ResourceType
@@ -403,9 +405,11 @@ Public Class LegacyGame
     Friend Const ERROR_DEFAULTWAIT As Integer = 37
     Friend Const ERROR_ALREADYTAKEN As Integer = 38
 
-    Private Const IT_INANIMATE As Integer = 1
-    Private Const IT_MALE As Integer = 2
-    Private Const IT_FEMALE As Integer = 3
+    Private Enum ItType
+        Inanimate
+        Male
+        Female
+    End Enum
 
     Private Const SET_ERROR As Integer = 0
     Private Const SET_FOUND As Integer = 1
@@ -4180,7 +4184,7 @@ Public Class LegacyGame
         ' If player uses "it", "them" etc. as name:
         If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = IT_INANIMATE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            If LastIt <> 0 And LastItMode = ItType.Inanimate And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
@@ -4189,7 +4193,7 @@ Public Class LegacyGame
             End If
         ElseIf ObjectName = "him" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = IT_MALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            If LastIt <> 0 And LastItMode = ItType.Male And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
@@ -4198,7 +4202,7 @@ Public Class LegacyGame
             End If
         ElseIf ObjectName = "her" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = IT_FEMALE And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+            If LastIt <> 0 And LastItMode = ItType.Female And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
                 SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
@@ -4262,11 +4266,11 @@ Public Class LegacyGame
 
             Select Case Objs(IDNumbers(1)).Article
                 Case "him"
-                    ThisTurnItMode = IT_MALE
+                    ThisTurnItMode = ItType.Male
                 Case "her"
-                    ThisTurnItMode = IT_FEMALE
+                    ThisTurnItMode = ItType.Female
                 Case Else
-                    ThisTurnItMode = IT_INANIMATE
+                    ThisTurnItMode = ItType.Inanimate
             End Select
 
             Return IDNumbers(1)
@@ -4303,11 +4307,11 @@ Public Class LegacyGame
 
             Select Case Objs(IDNumbers(ChoiceNumber)).Article
                 Case "him"
-                    ThisTurnItMode = IT_MALE
+                    ThisTurnItMode = ItType.Male
                 Case "her"
-                    ThisTurnItMode = IT_FEMALE
+                    ThisTurnItMode = ItType.Female
                 Case Else
-                    ThisTurnItMode = IT_INANIMATE
+                    ThisTurnItMode = ItType.Inanimate
             End Select
 
             Print("- " & DescriptionText(ChoiceNumber) & "|n", ctx)
