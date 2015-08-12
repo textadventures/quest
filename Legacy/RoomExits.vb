@@ -200,7 +200,7 @@ Friend Class RoomExits
             End If
         Else
             If UBound(asParam) < 1 Then
-                m_game.LogASLError("No exit destination given in 'create exit " & sScript & "'", LOGTYPE_WARNINGERROR)
+                m_game.LogASLError("No exit destination given in 'create exit " & sScript & "'", LogType.WarningError)
                 Exit Function
             End If
 

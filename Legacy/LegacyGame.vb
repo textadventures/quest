@@ -55,14 +55,16 @@ Public Class LegacyGame
     Private GameName As String 'The name of the game
     Friend _nullContext As New Context
 
-    Public Const LOGTYPE_MISC As Integer = 0
-    Public Const LOGTYPE_FATALERROR As Integer = 1
-    Public Const LOGTYPE_WARNINGERROR As Integer = 2
-    Public Const LOGTYPE_INIT As Integer = 3
-    Public Const LOGTYPE_LIBRARYWARNINGERROR As Integer = 4
-    Public Const LOGTYPE_WARNING As Integer = 5
-    Public Const LOGTYPE_USERERROR As Integer = 6
-    Public Const LOGTYPE_INTERNALERROR As Integer = 7
+    Friend Enum LogType
+        Misc
+        FatalError
+        WarningError
+        Init
+        LibraryWarningError
+        Warning
+        UserError
+        InternalError
+    End Enum
 
     Private m_oDefineBlockParams As Dictionary(Of String, Dictionary(Of String, String))
 
@@ -566,18 +568,18 @@ Public Class LegacyGame
                     Defines = Defines - 1
 
                     If Defines < 0 Then
-                        LogASLError("Extra 'end define' after block '" & ThisSection & "'", LOGTYPE_FATALERROR)
+                        LogASLError("Extra 'end define' after block '" & ThisSection & "'", LogType.FatalError)
                         OpenErrorReport = OpenErrorReport & "Extra 'end define' after block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                         Defines = 0
                     End If
 
                     If Braces > 0 Then
-                        LogASLError("Missing } in block '" & ThisSection & "'", LOGTYPE_FATALERROR)
+                        LogASLError("Missing } in block '" & ThisSection & "'", LogType.FatalError)
                         OpenErrorReport = OpenErrorReport & "Missing } in block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                     ElseIf Braces < 0 Then
-                        LogASLError("Too many } in block '" & ThisSection & "'", LOGTYPE_FATALERROR)
+                        LogASLError("Too many } in block '" & ThisSection & "'", LogType.FatalError)
                         OpenErrorReport = OpenErrorReport & "Too many } in block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                     End If
@@ -589,7 +591,7 @@ Public Class LegacyGame
                         ' ObliterateParameters denotes a mismatched $, ( etc.
                         ' by prefixing line with '<ERROR;*; where * is the mismatched
                         ' character
-                        LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
+                        LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
                         OpenErrorReport = OpenErrorReport & "Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'." & vbCrLf
                         Return False
                     End If
@@ -620,7 +622,7 @@ Public Class LegacyGame
         Next i
 
         If Defines > 0 Then
-            LogASLError("Missing 'end define'", LOGTYPE_FATALERROR)
+            LogASLError("Missing 'end define'", LogType.FatalError)
             OpenErrorReport = OpenErrorReport & "Missing 'end define'." & vbCrLf
             HasErrors = True
         End If
@@ -672,7 +674,7 @@ Public Class LegacyGame
                     ' ObliterateVariableNames denotes a mismatched #, % or $
                     ' by prefixing line with '<ERROR;*; where * is the mismatched
                     ' character
-                    LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
+                    LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
                 StartParamPos = InStr(ConvPos, Lines(i), "(")
@@ -693,7 +695,7 @@ Public Class LegacyGame
 
                 'EndParamPos = InStr(ConvPos, VarObscureLine, ")")
                 If EndParamPos = 0 Then
-                    LogASLError("Expected ) in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
+                    LogASLError("Expected ) in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
 
@@ -713,7 +715,7 @@ Public Class LegacyGame
                                     If SymbPos = 0 Then
                                         SymbPos = InStr(ParamData, "=")
                                         If SymbPos = 0 Then
-                                            LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(Lines(i)) & "'", LOGTYPE_FATALERROR)
+                                            LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
                                             Return True
                                         Else
                                             Symbol = "="
@@ -967,10 +969,10 @@ Public Class LegacyGame
                 Loop Until bFinLoop
 
                 If iNumParamStart > iNumParamEnd Then
-                    LogASLError("Expected > in " & ReportErrorLine(Lines(i)), LOGTYPE_FATALERROR)
+                    LogASLError("Expected > in " & ReportErrorLine(Lines(i)), LogType.FatalError)
                     bHasErrors = True
                 ElseIf iNumParamStart < iNumParamEnd Then
-                    LogASLError("Too many > in " & ReportErrorLine(Lines(i)), LOGTYPE_FATALERROR)
+                    LogASLError("Too many > in " & ReportErrorLine(Lines(i)), LogType.FatalError)
                     bHasErrors = True
                 End If
             End If
@@ -988,13 +990,13 @@ Public Class LegacyGame
 
             If BeginsWith(Lines(iCurBegin), "define game") Then
                 If InStr(Lines(iCurBegin), "<") = 0 Then
-                    LogASLError("'define game' has no parameter - game has no name", LOGTYPE_FATALERROR)
+                    LogASLError("'define game' has no parameter - game has no name", LogType.FatalError)
                     Return True
                 End If
             Else
                 If Not BeginsWith(Lines(iCurBegin), "define synonyms") And Not BeginsWith(Lines(iCurBegin), "define options") Then
                     If InStr(Lines(iCurBegin), "<") = 0 Then
-                        LogASLError(Lines(iCurBegin) & " has no parameter", LOGTYPE_FATALERROR)
+                        LogASLError(Lines(iCurBegin) & " has no parameter", LogType.FatalError)
                         bHasErrors = True
                     End If
                 End If
@@ -1531,7 +1533,7 @@ Public Class LegacyGame
                     'Clear !include statement
                     Lines(i) = ""
                     LibraryAlreadyIncluded = False
-                    LogASLError("Including library '" & LibFileName & "'...", LOGTYPE_INIT)
+                    LogASLError("Including library '" & LibFileName & "'...", LogType.Init)
 
                     For j = 1 To NumLibraries
                         If LCase(LibFileName) = LCase(LibraryList(j)) Then
@@ -1541,7 +1543,7 @@ Public Class LegacyGame
                     Next j
 
                     If LibraryAlreadyIncluded Then
-                        LogASLError("     - Library already included.", LOGTYPE_INIT)
+                        LogASLError("     - Library already included.", LogType.Init)
                     Else
                         NumLibraries = NumLibraries + 1
                         ReDim Preserve LibraryList(NumLibraries)
@@ -1551,7 +1553,7 @@ Public Class LegacyGame
                         LibResourceLines = Nothing
 
                         LibFile = GamePath & LibFileName
-                        LogASLError(" - Searching for " & LibFile & " (game path)", LOGTYPE_INIT)
+                        LogASLError(" - Searching for " & LibFile & " (game path)", LogType.Init)
                         LibFileHandle = FreeFile()
 
                         If System.IO.File.Exists(LibFile) Then
@@ -1559,18 +1561,18 @@ Public Class LegacyGame
                         Else
                             ' File was not found; try standard Quest libraries (stored here as resources)
 
-                            LogASLError("     - Library not found in game path.", LOGTYPE_INIT)
-                            LogASLError(" - Searching for " & LibFile & " (standard libraries)", LOGTYPE_INIT)
+                            LogASLError("     - Library not found in game path.", LogType.Init)
+                            LogASLError(" - Searching for " & LibFile & " (standard libraries)", LogType.Init)
                             LibResourceLines = GetLibraryLines(LibFileName)
 
                             If LibResourceLines Is Nothing Then
-                                LogASLError("Library not found.", LOGTYPE_FATALERROR)
+                                LogASLError("Library not found.", LogType.FatalError)
                                 OpenErrorReport = OpenErrorReport & "Library '" & LibraryList(NumLibraries) & "' not found." & vbCrLf
                                 Return False
                             End If
                         End If
 
-                        LogASLError("     - Found library, opening...", LOGTYPE_INIT)
+                        LogASLError("     - Found library, opening...", LogType.Init)
 
                         LibLines = 0
 
@@ -1608,7 +1610,7 @@ Public Class LegacyGame
                         End If
 
                         If LibVer = -1 Then
-                            LogASLError(" - Library has no asl-version information.", LOGTYPE_LIBRARYWARNINGERROR)
+                            LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError)
                             LibVer = 200
                         End If
 
@@ -1863,20 +1865,20 @@ Public Class LegacyGame
         Return bResult
     End Function
 
-    Friend Sub LogASLError(TheError As String, Optional MessageType As Integer = LOGTYPE_MISC)
-        If MessageType = LOGTYPE_FATALERROR Then
+    Friend Sub LogASLError(TheError As String, Optional MessageType As LogType = LogType.Misc)
+        If MessageType = LogType.FatalError Then
             TheError = "FATAL ERROR: " & TheError
-        ElseIf MessageType = LOGTYPE_WARNINGERROR Then
+        ElseIf MessageType = LogType.WarningError Then
             TheError = "ERROR: " & TheError
-        ElseIf MessageType = LOGTYPE_LIBRARYWARNINGERROR Then
+        ElseIf MessageType = LogType.LibraryWarningError Then
             TheError = "WARNING ERROR (LIBRARY): " & TheError
-        ElseIf MessageType = LOGTYPE_INIT Then
+        ElseIf MessageType = LogType.Init Then
             TheError = "INIT: " & TheError
-        ElseIf MessageType = LOGTYPE_WARNING Then
+        ElseIf MessageType = LogType.Warning Then
             TheError = "WARNING: " & TheError
-        ElseIf MessageType = LOGTYPE_USERERROR Then
+        ElseIf MessageType = LogType.UserError Then
             TheError = "ERROR (REQUESTED): " & TheError
-        ElseIf MessageType = LOGTYPE_INTERNALERROR Then
+        ElseIf MessageType = LogType.InternalError Then
             TheError = "INTERNAL ERROR: " & TheError
         End If
 
@@ -1894,7 +1896,7 @@ Public Class LegacyGame
         EndPos = InStr(InputString, ">")
 
         If StartPos = 0 Or EndPos = 0 Then
-            LogASLError("Expected parameter in '" & ReportErrorLine(InputString) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Expected parameter in '" & ReportErrorLine(InputString) & "'", LogType.WarningError)
             Return ""
         End If
 
@@ -2252,7 +2254,7 @@ Public Class LegacyGame
                 Else
                     EndBracePos = InStr(BracePos + 1, InputLine, "}")
                     If EndBracePos = 0 Then
-                        LogASLError("Expected } in '" & InputLine & "'", LOGTYPE_WARNINGERROR)
+                        LogASLError("Expected } in '" & InputLine & "'", LogType.WarningError)
                         Return "<ERROR>"
                     Else
                         Expression = Mid(InputLine, BracePos + 1, EndBracePos - BracePos - 1)
@@ -2536,7 +2538,7 @@ Public Class LegacyGame
 
         SCP = InStr(Parameter, ";")
         If SCP = 0 And DoAdd Then
-            LogASLError("No parent specified in '" & CommandName & " <" & Parameter & ">", LOGTYPE_WARNINGERROR)
+            LogASLError("No parent specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
             Exit Sub
         End If
 
@@ -2549,14 +2551,14 @@ Public Class LegacyGame
 
         ChildObjID = GetObjectIDNoAlias(ChildName)
         If ChildObjID = 0 Then
-            LogASLError("Invalid child object name specified in '" & CommandName & " <" & Parameter & ">", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid child object name specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
             Exit Sub
         End If
 
         If SCP <> 0 Then
             ParentObjID = GetObjectIDNoAlias(ParentName)
             If ParentObjID = 0 Then
-                LogASLError("Invalid parent object name specified in '" & CommandName & " <" & Parameter & ">", LOGTYPE_WARNINGERROR)
+                LogASLError("Invalid parent object name specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
                 Exit Sub
             End If
 
@@ -2703,7 +2705,7 @@ Public Class LegacyGame
         AfterLine = GetAfterParameter(ScriptLine)
 
         If Not BeginsWith(AfterLine, "do <!intproc") Then
-            LogASLError("No case block specified for '" & ScriptLine & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No case block specified for '" & ScriptLine & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -2717,7 +2719,7 @@ Public Class LegacyGame
 
             If Lines(i) <> "" Then
                 If Not BeginsWith(Lines(i), "case ") Then
-                    LogASLError("Invalid line in 'select case' block: '" & Lines(i) & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Invalid line in 'select case' block: '" & Lines(i) & "'", LogType.WarningError)
                 Else
 
                     If BeginsWith(Lines(i), "case else ") Then
@@ -3430,7 +3432,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundRes Then
-            LogASLError("Unable to extract '" & FileToExtract & "' - not present in resources.", LOGTYPE_WARNINGERROR)
+            LogASLError("Unable to extract '" & FileToExtract & "' - not present in resources.", LogType.WarningError)
             Return Nothing
         End If
 
@@ -3595,7 +3597,7 @@ Public Class LegacyGame
         ActionName = LCase(RetrieveParameter(ActionInfo, ctx))
         EP = InStr(ActionInfo, ">")
         If EP = Len(ActionInfo) Then
-            LogASLError("No script given for '" & ActionName & "' action data", LOGTYPE_WARNINGERROR)
+            LogASLError("No script given for '" & ActionName & "' action data", LogType.WarningError)
             Exit Sub
         End If
 
@@ -3901,7 +3903,7 @@ Public Class LegacyGame
 
         SC = InStr(CloneString, ";")
         If SC = 0 Then
-            LogASLError("No new object name specified in 'clone <" & CloneString & ">", LOGTYPE_WARNINGERROR)
+            LogASLError("No new object name specified in 'clone <" & CloneString & ">", LogType.WarningError)
             Exit Sub
         Else
             ObjToClone = Trim(Left(CloneString, SC - 1))
@@ -4021,7 +4023,7 @@ Public Class LegacyGame
         SCP = InStr(ActionData, ";")
 
         If SCP = 0 Then
-            LogASLError("No action name given in condition 'action <" & ActionData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No action name given in condition 'action <" & ActionData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -4039,7 +4041,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'action <" & ActionData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No such object '" & ObjName & "' in condition 'action <" & ActionData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -4069,7 +4071,7 @@ Public Class LegacyGame
         SCP = InStr(TypeData, ";")
 
         If SCP = 0 Then
-            LogASLError("No type name given in condition 'type <" & TypeData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No type name given in condition 'type <" & TypeData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -4087,7 +4089,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'type <" & TypeData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No such object '" & ObjName & "' in condition 'type <" & TypeData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -4420,25 +4422,25 @@ Public Class LegacyGame
         If BeginsWith(ScriptLine, "object ") Then
             ScriptLine = GetEverythingAfter(ScriptLine, "object ")
             If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each object " & ReportErrorLine(ScriptLine) & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Expected 'in' in 'for each object " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
         ElseIf BeginsWith(ScriptLine, "exit ") Then
             ScriptLine = GetEverythingAfter(ScriptLine, "exit ")
             If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each exit " & ReportErrorLine(ScriptLine) & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Expected 'in' in 'for each exit " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
             bExit = True
         ElseIf BeginsWith(ScriptLine, "room ") Then
             ScriptLine = GetEverythingAfter(ScriptLine, "room ")
             If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each room " & ReportErrorLine(ScriptLine) & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Expected 'in' in 'for each room " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
             bRoom = True
         Else
-            LogASLError("Unknown type in 'for each " & ReportErrorLine(ScriptLine) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Unknown type in 'for each " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -4480,7 +4482,7 @@ Public Class LegacyGame
         ActionParam = RetrieveParameter(ActionData, ctx)
         SCP = InStr(ActionParam, ";")
         If SCP = 0 Then
-            LogASLError("No action name specified in 'action " & ActionData & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No action name specified in 'action " & ActionData & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -4503,7 +4505,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundObject Then
-            LogASLError("No such object '" & ObjName & "' in 'action " & ActionData & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such object '" & ObjName & "' in 'action " & ActionData & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -4725,7 +4727,7 @@ Public Class LegacyGame
         SCP = InStr(NewName, ";")
         If GameASLVersion < 410 Then
             If SCP = 0 Then
-                LogASLError("No exit destination given in 'create exit " & ExitData & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No exit destination given in 'create exit " & ExitData & "'", LogType.WarningError)
                 Exit Sub
             End If
         End If
@@ -4738,7 +4740,7 @@ Public Class LegacyGame
         SrcID = GetRoomID(SrcRoom, ctx)
 
         If SrcID = 0 Then
-            LogASLError("No such room '" & SrcRoom & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such room '" & SrcRoom & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -4751,7 +4753,7 @@ Public Class LegacyGame
                 DestID = GetRoomID(DestRoom, ctx)
 
                 If DestID = 0 Then
-                    LogASLError("No such room '" & DestRoom & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("No such room '" & DestRoom & "'", LogType.WarningError)
                     Exit Sub
                 End If
             End If
@@ -4773,7 +4775,7 @@ Public Class LegacyGame
             End If
 
             If ExitExists Then
-                LogASLError("Exit from '" & SrcRoom & "' to '" & DestRoom & "' already exists", LOGTYPE_WARNINGERROR)
+                LogASLError("Exit from '" & SrcRoom & "' to '" & DestRoom & "' already exists", LogType.WarningError)
                 Exit Sub
             End If
         End If
@@ -4831,7 +4833,7 @@ Public Class LegacyGame
                 r.Places(r.NumberPlaces) = New PlaceType
                 r.Places(r.NumberPlaces).PlaceName = DestRoom
             Else
-                LogASLError("Invalid direction in 'create exit " & ExitData & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Invalid direction in 'create exit " & ExitData & "'", LogType.WarningError)
             End If
         End If
 
@@ -5052,7 +5054,7 @@ Public Class LegacyGame
         SCP = InStr(PropertyData, ";")
 
         If SCP = 0 Then
-            LogASLError("No property data given in 'property <" & PropertyData & ">'", LOGTYPE_WARNINGERROR)
+            LogASLError("No property data given in 'property <" & PropertyData & ">'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -5068,7 +5070,7 @@ Public Class LegacyGame
         Next i
 
         If Not Found Then
-            LogASLError("No such object in 'property <" & PropertyData & ">'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such object in 'property <" & PropertyData & ">'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -5122,7 +5124,7 @@ Public Class LegacyGame
 
         ProcedureBlock = DefineBlockParam("procedure", ProcedureName)
         If ProcedureBlock.StartLine = 0 And ProcedureBlock.EndLine = 0 Then
-            LogASLError("No such procedure " & ProcedureName, LOGTYPE_WARNINGERROR)
+            LogASLError("No such procedure " & ProcedureName, LogType.WarningError)
         Else
             For i = ProcedureBlock.StartLine + 1 To ProcedureBlock.EndLine - 1
                 If Not RunInNewThread Then
@@ -5256,7 +5258,7 @@ Public Class LegacyGame
         End If
 
         If bFound = False And bErrorReport Then
-            LogASLError("No such character/object '" & ExistsThing & "'.", LOGTYPE_USERERROR)
+            LogASLError("No such character/object '" & ExistsThing & "'.", LogType.UserError)
         End If
 
         If bFound = False Then bResult = False
@@ -5278,7 +5280,7 @@ Public Class LegacyGame
         SCP = InStr(PropertyData, ";")
 
         If SCP = 0 Then
-            LogASLError("No property name given in condition 'property <" & PropertyData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No property name given in condition 'property <" & PropertyData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -5296,7 +5298,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'property <" & PropertyData & ">' ...", LOGTYPE_WARNINGERROR)
+            LogASLError("No such object '" & ObjName & "' in condition 'property <" & PropertyData & ">' ...", LogType.WarningError)
             Return False
         End If
 
@@ -5321,7 +5323,7 @@ Public Class LegacyGame
             RepeatWhileTrue = False
             RepeatData = GetEverythingAfter(RepeatData, "until ")
         Else
-            LogASLError("Expected 'until' or 'while' in 'repeat " & ReportErrorLine(RepeatData) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Expected 'until' or 'while' in 'repeat " & ReportErrorLine(RepeatData) & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -5374,7 +5376,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundCollectable Then
-            LogASLError("No such collectable '" & setparam & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such collectable '" & setparam & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -5449,7 +5451,7 @@ Public Class LegacyGame
         ActionName = LCase(RetrieveParameter(ActionInfo, _nullContext))
         EP = InStr(ActionInfo, ">")
         If EP = Len(ActionInfo) Then
-            LogASLError("No script given for '" & ActionName & "' action data", LOGTYPE_WARNINGERROR)
+            LogASLError("No script given for '" & ActionName & "' action data", LogType.WarningError)
             Return New ActionType
         End If
 
@@ -5539,7 +5541,7 @@ Public Class LegacyGame
         End If
 
         If LogError Then
-            LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LogType.WarningError)
             Return "!"
         End If
 
@@ -5567,7 +5569,7 @@ Public Class LegacyGame
 
         If Not Found Then
             If bError Then
-                LogASLError("No such type '" & TypeName & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No such type '" & TypeName & "'", LogType.WarningError)
             End If
             Return New PropertiesActions
         End If
@@ -5908,7 +5910,7 @@ Public Class LegacyGame
                 iNextPos = InStr(iVarPos + 1, sParameter, sConvertChar)
 
                 If iNextPos = 0 Then
-                    LogASLError("Line parameter <" & sParameter & "> has missing " & sConvertChar, LOGTYPE_WARNINGERROR)
+                    LogASLError("Line parameter <" & sParameter & "> has missing " & sConvertChar, LogType.WarningError)
                     Return "<ERROR>"
                 End If
 
@@ -5952,7 +5954,7 @@ Public Class LegacyGame
             FunctionName = Trim(Left(FunctionData, ParamPos - 1))
             EndParamPos = InStrRev(FunctionData, ")")
             If EndParamPos = 0 Then
-                LogASLError("Expected ) in $" & FunctionData & "$", LOGTYPE_WARNINGERROR)
+                LogASLError("Expected ) in $" & FunctionData & "$", LogType.WarningError)
                 Return ""
             End If
             FunctionParameter = Mid(FunctionData, ParamPos + 1, (EndParamPos - ParamPos) - 1)
@@ -5968,7 +5970,7 @@ Public Class LegacyGame
             'Function does not exist; try an internal function.
             sIntFuncResult = DoInternalFunction(FunctionName, FunctionParameter, ctx)
             If sIntFuncResult = "__NOTDEFINED" Then
-                LogASLError("No such function '" & FunctionName & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No such function '" & FunctionName & "'", LogType.WarningError)
                 Return "[ERROR]"
             Else
                 bIntFuncExecuted = True
@@ -6056,7 +6058,7 @@ Public Class LegacyGame
         If FunctionName = "displayname" Then
             ObjID = GetObjectID(Parameter(1), ctx)
             If ObjID = -1 Then
-                LogASLError("Object '" & Parameter(1) & "' does not exist", LOGTYPE_WARNINGERROR)
+                LogASLError("Object '" & Parameter(1) & "' does not exist", LogType.WarningError)
                 Return "!"
             Else
                 Return Objs(GetObjectID(Parameter(1), ctx)).ObjectAlias
@@ -6065,11 +6067,11 @@ Public Class LegacyGame
             Return Trim(Str(ctx.NumParameters))
         ElseIf FunctionName = "parameter" Then
             If iNumParameters = 0 Then
-                LogASLError("No parameter number specified for $parameter$ function", LOGTYPE_WARNINGERROR)
+                LogASLError("No parameter number specified for $parameter$ function", LogType.WarningError)
                 Return ""
             Else
                 If Val(Parameter(1)) > ctx.NumParameters Then
-                    LogASLError("No parameter number " & Parameter(1) & " sent to this function", LOGTYPE_WARNINGERROR)
+                    LogASLError("No parameter number " & Parameter(1) & " sent to this function", LogType.WarningError)
                     Return ""
                 Else
                     Return Trim(ctx.Parameters(CInt(Parameter(1))))
@@ -6096,14 +6098,14 @@ Public Class LegacyGame
             Return Str(Len(UntrimmedParameter(1)))
         ElseIf FunctionName = "left" Then
             If Val(Parameter(2)) < 0 Then
-                LogASLError("Invalid function call in '$Left$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LOGTYPE_WARNINGERROR)
+                LogASLError("Invalid function call in '$Left$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
                 Return "!"
             Else
                 Return Left(Parameter(1), CInt(Parameter(2)))
             End If
         ElseIf FunctionName = "right" Then
             If Val(Parameter(2)) < 0 Then
-                LogASLError("Invalid function call in '$Right$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LOGTYPE_WARNINGERROR)
+                LogASLError("Invalid function call in '$Right$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
                 Return "!"
             Else
                 Return Right(Parameter(1), CInt(Parameter(2)))
@@ -6111,20 +6113,20 @@ Public Class LegacyGame
         ElseIf FunctionName = "mid" Then
             If iNumParameters = 3 Then
                 If Val(Parameter(2)) < 0 Then
-                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
                     Return Mid(Parameter(1), CInt(Parameter(2)), CInt(Parameter(3)))
                 End If
             ElseIf iNumParameters = 2 Then
                 If Val(Parameter(2)) < 0 Then
-                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
                     Return Mid(Parameter(1), CInt(Parameter(2)))
                 End If
             End If
-            LogASLError("Invalid function call to '$Mid$(...)$'", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError)
             Return ""
         ElseIf FunctionName = "rand" Then
             Return Str(Int(m_random.NextDouble() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
@@ -6143,7 +6145,7 @@ Public Class LegacyGame
                     Param3 = Parameter(3)
                 End If
                 If Val(Parameter(1)) <= 0 Then
-                    LogASLError("Invalid function call in '$instr(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Invalid function call in '$instr(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
                     Return Trim(Str(InStr(CInt(Parameter(1)), Parameter(2), Param3)))
@@ -6163,7 +6165,7 @@ Public Class LegacyGame
                 End If
                 Return Trim(Str(InStr(Parameter(1), Param2)))
             End If
-            LogASLError("Invalid function call to '$Instr$(...)$'", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid function call to '$Instr$(...)$'", LogType.WarningError)
             Return ""
         ElseIf FunctionName = "ucase" Then
             Return UCase(Parameter(1))
@@ -6191,7 +6193,7 @@ Public Class LegacyGame
                     End If
                 End If
             Next i
-            LogASLError("No such timer '" & Parameter(1) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
             Return "!"
         ElseIf FunctionName = "timerinterval" Then
             For i = 1 To NumberTimers
@@ -6199,7 +6201,7 @@ Public Class LegacyGame
                     Return Str(Timers(i).TimerInterval)
                 End If
             Next i
-            LogASLError("No such timer '" & Parameter(1) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
             Return "!"
         ElseIf FunctionName = "ubound" Then
             For i = 1 To NumberNumericVariables
@@ -6214,7 +6216,7 @@ Public Class LegacyGame
                 End If
             Next i
 
-            LogASLError("No such variable '" & Parameter(1) & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such variable '" & Parameter(1) & "'", LogType.WarningError)
             Return "!"
         ElseIf FunctionName = "objectproperty" Then
             FoundObj = False
@@ -6227,7 +6229,7 @@ Public Class LegacyGame
             Next i
 
             If Not FoundObj Then
-                LogASLError("No such object '" & Parameter(1) & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No such object '" & Parameter(1) & "'", LogType.WarningError)
                 Return "!"
             Else
                 Return GetObjectProperty(Parameter(2), ObjID)
@@ -6243,7 +6245,7 @@ Public Class LegacyGame
             End If
 
             If ObjID <= -1 Then
-                LogASLError("No object found with display name '" & Parameter(1) & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No object found with display name '" & Parameter(1) & "'", LogType.WarningError)
                 Return "!"
             Else
                 Return Objs(ObjID).ObjectName
@@ -6337,7 +6339,7 @@ Public Class LegacyGame
         ArrayIndex = GetArrayIndex(sVarName, ctx)
 
         If IsNumeric(sVarName) Then
-            LogASLError("Invalid numeric variable name '" & sVarName & "' - variable names cannot be numeric", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid numeric variable name '" & sVarName & "' - variable names cannot be numeric", LogType.WarningError)
             Exit Sub
         End If
 
@@ -6348,7 +6350,7 @@ Public Class LegacyGame
                     iVarCont = ExpResult.Result
                 Else
                     iVarCont = "0"
-                    LogASLError("Error setting numeric variable <" & VarInfo & "> : " & ExpResult.Message, LOGTYPE_WARNINGERROR)
+                    LogASLError("Error setting numeric variable <" & VarInfo & "> : " & ExpResult.Message, LogType.WarningError)
                 End If
             Else
                 ObscuredVarInfo = ObscureNumericExps(iVarCont)
@@ -6374,7 +6376,7 @@ Public Class LegacyGame
                             If SecondNum <> 0 Then
                                 iVarCont = Str(FirstNum / SecondNum)
                             Else
-                                LogASLError("Division by zero - The result of this operation has been set to zero.", LOGTYPE_WARNINGERROR)
+                                LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError)
                                 iVarCont = "0"
                             End If
                     End Select
@@ -6383,7 +6385,7 @@ Public Class LegacyGame
 
             SetNumericVariableContents(sVarName, Val(iVarCont), ctx, ArrayIndex)
         Catch
-            LogASLError("Error " & Trim(CStr(Err.Number)) & " (" & Err.Description & ") setting variable '" & sVarName & "' to '" & iVarCont & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Error " & Trim(CStr(Err.Number)) & " (" & Err.Description & ") setting variable '" & sVarName & "' to '" & iVarCont & "'", LogType.WarningError)
         End Try
     End Sub
 
@@ -6437,7 +6439,7 @@ Public Class LegacyGame
 
             If Not FoundObject Then
                 result = False
-                LogASLError("No object '" & theitem & "' defined.", LOGTYPE_WARNINGERROR)
+                LogASLError("No object '" & theitem & "' defined.", LogType.WarningError)
             End If
 
             Return result
@@ -6454,7 +6456,7 @@ Public Class LegacyGame
         Next i
 
         If Not valid Then
-            LogASLError("Item '" & theitem & "' not defined.", LOGTYPE_WARNINGERROR)
+            LogASLError("Item '" & theitem & "' not defined.", LogType.WarningError)
             result = False
         End If
 
@@ -6484,7 +6486,7 @@ Public Class LegacyGame
         Next i
 
         If i = -1 Then
-            LogASLError("No such collectable in " & hascond, LOGTYPE_WARNINGERROR)
+            LogASLError("No such collectable in " & hascond, LogType.WarningError)
             Exit Function
         End If
 
@@ -6517,7 +6519,7 @@ Public Class LegacyGame
 
         SCPos = InStr(IsCondition, ";")
         If SCPos = 0 Then
-            LogASLError("Expected second parameter in 'is " & IsCondition & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Expected second parameter in 'is " & IsCondition & "'", LogType.WarningError)
             Return False
         End If
 
@@ -6582,12 +6584,12 @@ Public Class LegacyGame
                 End If
                 ExpectNumerics = True
             Case Else
-                LogASLError("Unrecognised comparison condition in 'is " & IsCondition & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Unrecognised comparison condition in 'is " & IsCondition & "'", LogType.WarningError)
         End Select
 
         If ExpectNumerics Then
             If Not (IsNumeric(Value1) And IsNumeric(Value2)) Then
-                LogASLError("Expected numeric comparison comparing '" & Value1 & "' and '" & Value2 & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Expected numeric comparison comparing '" & Value1 & "' and '" & Value2 & "'", LogType.WarningError)
             End If
         End If
 
@@ -6630,12 +6632,12 @@ Public Class LegacyGame
         End If
 
         If bNumExists = False Then
-            If Not NOERROR Then LogASLError("No numeric variable '" & NumericName & "' defined.", LOGTYPE_WARNINGERROR)
+            If Not NOERROR Then LogASLError("No numeric variable '" & NumericName & "' defined.", LogType.WarningError)
             Return -32767
         End If
 
         If ArrayIndex > NumericVariable(iNumNumber).VariableUBound Then
-            If Not NOERROR Then LogASLError("Array index of '" & NumericName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LOGTYPE_WARNINGERROR)
+            If Not NOERROR Then LogASLError("Array index of '" & NumericName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LogType.WarningError)
             Return -32766
         End If
 
@@ -6761,7 +6763,7 @@ Public Class LegacyGame
                     createdObjects.Add(createData)
                 End If
             Else
-                LogASLError("QSG Error: Unrecognised item '" & AppliesTo & "; " & data & "'", LOGTYPE_INTERNALERROR)
+                LogASLError("QSG Error: Unrecognised item '" & AppliesTo & "; " & data & "'", LogType.InternalError)
             End If
         Next i
 
@@ -6953,7 +6955,7 @@ Public Class LegacyGame
         bNumExists = False
 
         If IsNumeric(NumName) Then
-            LogASLError("Illegal numeric variable name '" & NumName & "' - check you didn't put % around the variable name in the ASL code", LOGTYPE_WARNINGERROR)
+            LogASLError("Illegal numeric variable name '" & NumName & "' - check you didn't put % around the variable name in the ASL code", LogType.WarningError)
             Exit Sub
         End If
 
@@ -7021,7 +7023,7 @@ Public Class LegacyGame
 
         ObjID = GetObjectIDNoAlias(ObjectName)
         If ObjID = 0 Then
-            LogASLError("Invalid object name specified in '" & CommandName & " <" & ObjectName & ">", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid object name specified in '" & CommandName & " <" & ObjectName & ">", LogType.WarningError)
             Exit Sub
         End If
 
@@ -7043,7 +7045,7 @@ Public Class LegacyGame
         Next i
 
         If Not FoundTimer Then
-            LogASLError("No such timer '" & TimerName & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such timer '" & TimerName & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -7175,7 +7177,7 @@ Public Class LegacyGame
                     If BeginsWith(Lines(i), "type ") Then
                         ThisType = GetEverythingAfter(Lines(i), "type ")
                         If ThisType <> "string" And ThisType <> "numeric" Then
-                            LogASLError("Unrecognised variable type in variable '" & ThisVariable.VariableName & "' - type '" & ThisType & "'", LOGTYPE_WARNINGERROR)
+                            LogASLError("Unrecognised variable type in variable '" & ThisVariable.VariableName & "' - type '" & ThisType & "'", LogType.WarningError)
                             Exit Do
                         End If
                     ElseIf BeginsWith(Lines(i), "onchange ") Then
@@ -7273,7 +7275,7 @@ Public Class LegacyGame
             If BeginsWith(Lines(DefineBlocks(i).StartLine), "define menu ") Then
 
                 If MenuExists Then
-                    LogASLError("Can't load menu '" & RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LOGTYPE_WARNINGERROR)
+                    LogASLError("Can't load menu '" & RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
                 Else
                     menuTitle = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
 
@@ -7281,7 +7283,7 @@ Public Class LegacyGame
                         If Trim(Lines(j)) <> "" Then
                             SCP = InStr(Lines(j), ":")
                             If SCP = 0 And Lines(j) <> "-" Then
-                                LogASLError("No menu command specified in menu '" & menuTitle & "', item '" & Lines(j), LOGTYPE_WARNINGERROR)
+                                LogASLError("No menu command specified in menu '" & menuTitle & "', item '" & Lines(j), LogType.WarningError)
                             Else
                                 If Lines(j) = "-" Then
                                     menuOptions.Add("k" & CStr(j), "-")
@@ -7604,7 +7606,7 @@ Public Class LegacyGame
 
                     If InStr(" " & ConvertWord & " ", " " & ThisWord & " ") > 0 Then
                         ' Recursive synonym
-                        LogASLError("Recursive synonym detected: '" & ThisWord & "' converting to '" & ConvertWord & "'", LOGTYPE_WARNINGERROR)
+                        LogASLError("Recursive synonym detected: '" & ThisWord & "' converting to '" & ConvertWord & "'", LogType.WarningError)
                     Else
                         NumberSynonyms = NumberSynonyms + 1
                         ReDim Preserve Synonyms(NumberSynonyms)
@@ -7810,7 +7812,7 @@ Public Class LegacyGame
             Next i
 
             If Not FoundObject Then
-                LogASLError("Not found object '" & ThingString & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Not found object '" & ThingString & "'", LogType.WarningError)
             End If
         Else
             ' split ThingString into character name and room
@@ -8265,7 +8267,7 @@ Public Class LegacyGame
         NewThread.StackCounter = NewThread.StackCounter + 1
 
         If NewThread.StackCounter > 500 Then
-            LogASLError("Out of stack space running '" & ScriptLine & "' - infinite loop?", LOGTYPE_WARNINGERROR)
+            LogASLError("Out of stack space running '" & ScriptLine & "' - infinite loop?", LogType.WarningError)
             ctx.CancelExec = True
             Exit Sub
         End If
@@ -8278,7 +8280,7 @@ Public Class LegacyGame
             Try
                 ExecCommand(ExecLine, NewThread, False)
             Catch
-                LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LogType.WarningError)
                 ctx.CancelExec = True
             End Try
         Else
@@ -8288,7 +8290,7 @@ Public Class LegacyGame
             If R = "normal" Then
                 ExecCommand(EX, NewThread, False, False)
             Else
-                LogASLError("Unrecognised post-command parameter in " & Trim(ScriptLine), LOGTYPE_WARNINGERROR)
+                LogASLError("Unrecognised post-command parameter in " & Trim(ScriptLine), LogType.WarningError)
             End If
         End If
     End Sub
@@ -8308,7 +8310,7 @@ Public Class LegacyGame
         sVarCont = Mid(StringInfo, iSemiColonPos + 1)
 
         If IsNumeric(sVarName) Then
-            LogASLError("Invalid string name '" & sVarName & "' - string names cannot be numeric", LOGTYPE_WARNINGERROR)
+            LogASLError("Invalid string name '" & sVarName & "' - string names cannot be numeric", LogType.WarningError)
             Exit Sub
         End If
 
@@ -8589,7 +8591,7 @@ Public Class LegacyGame
             Else
                 ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
                 If ArrayIndex = -32767 Then
-                    LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LOGTYPE_WARNINGERROR)
+                    LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LogType.WarningError)
                     Return ""
                 End If
             End If
@@ -8610,12 +8612,12 @@ Public Class LegacyGame
         End If
 
         If bStringExists = False Then
-            LogASLError("No string variable '" & StringName & "' defined.", LOGTYPE_WARNINGERROR)
+            LogASLError("No string variable '" & StringName & "' defined.", LogType.WarningError)
             Return ""
         End If
 
         If ArrayIndex > StringVariable(iStringNumber).VariableUBound Then
-            LogASLError("Array index of '" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LOGTYPE_WARNINGERROR)
+            LogASLError("Array index of '" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LogType.WarningError)
             Return ""
         End If
 
@@ -8980,7 +8982,7 @@ Public Class LegacyGame
             Next i
 
             If Not FoundObject Then
-                LogASLError("Not found object '" & ThingString & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("Not found object '" & ThingString & "'", LogType.WarningError)
             End If
         Else
             ' split ThingString into character name and room
@@ -9024,7 +9026,7 @@ Public Class LegacyGame
         bStringExists = False
 
         If StringName = "" Then
-            LogASLError("Internal error - tried to set empty string name to '" & StringContents & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Internal error - tried to set empty string name to '" & StringContents & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -9037,7 +9039,7 @@ Public Class LegacyGame
         End If
 
         If ArrayIndex < 0 Then
-            LogASLError("'" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' is invalid - did not assign to array", LOGTYPE_WARNINGERROR)
+            LogASLError("'" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' is invalid - did not assign to array", LogType.WarningError)
             Exit Sub
         End If
 
@@ -10898,7 +10900,7 @@ Public Class LegacyGame
         Dim ErrMsg As String
         If ThenPos = 0 Then
             ErrMsg = "Expected 'then' missing from script statement '" & ReportErrorLine(ScriptLine) & "' - statement bypassed."
-            LogASLError(ErrMsg, LOGTYPE_WARNINGERROR)
+            LogASLError(ErrMsg, LogType.WarningError)
             Exit Sub
         End If
 
@@ -11107,14 +11109,14 @@ Public Class LegacyGame
             ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
                 AutoIntro = False
             ElseIf BeginsWith(ScriptLine, "debug ") Then
-                LogASLError(RetrieveParameter(ScriptLine, ctx), LOGTYPE_MISC)
+                LogASLError(RetrieveParameter(ScriptLine, ctx), LogType.Misc)
             ElseIf BeginsWith(ScriptLine, "mailto ") Then
                 Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
             ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
-                LogASLError("'shell' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+                LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
-                LogASLError("'shellexe' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+                LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(ScriptLine, "wait") Then
                 ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
             ElseIf BeginsWith(ScriptLine, "timeron ") Then
@@ -11136,21 +11138,21 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "unlock ") Then
                 ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
             ElseIf BeginsWith(ScriptLine, "playmod ") And GameASLVersion < 410 Then
-                LogASLError("'playmod' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+                LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(ScriptLine, "modvolume") And GameASLVersion < 410 Then
-                LogASLError("'modvolume' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+                LogASLError("'modvolume' is not supported in this version of Quest", LogType.WarningError)
             ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
                 ctx.DontProcessCommand = True
             ElseIf BeginsWith(ScriptLine, "return ") Then
                 ctx.FunctionReturnValue = RetrieveParameter(ScriptLine, ctx)
             Else
                 If BeginsWith(ScriptLine, "'") = False Then
-                    LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LogType.WarningError)
                 End If
             End If
         Catch
             Print("[An internal error occurred]", ctx)
-            LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LOGTYPE_INTERNALERROR)
+            LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LogType.InternalError)
         End Try
     End Sub
 
@@ -11186,7 +11188,7 @@ Public Class LegacyGame
                 TimerInterval = RetrieveParameter(SetInstruction, ctx)
                 SCPos = InStr(TimerInterval, ";")
                 If SCPos = 0 Then
-                    LogASLError("Too few parameters in 'set " & SetInstruction & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Too few parameters in 'set " & SetInstruction & "'", LogType.WarningError)
                     Exit Sub
                 End If
 
@@ -11202,7 +11204,7 @@ Public Class LegacyGame
                 Next i
 
                 If Not FoundTimer Then
-                    LogASLError("No such timer '" & TimerName & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("No such timer '" & TimerName & "'", LogType.WarningError)
                     Exit Sub
                 End If
             ElseIf BeginsWith(SetInstruction, "string ") Then
@@ -11214,9 +11216,9 @@ Public Class LegacyGame
             Else
                 Result = SetUnknownVariableType(RetrieveParameter(SetInstruction, ctx), ctx)
                 If Result = SET_ERROR Then
-                    LogASLError("Error on setting 'set " & SetInstruction & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Error on setting 'set " & SetInstruction & "'", LogType.WarningError)
                 ElseIf Result = SET_UNFOUND Then
-                    LogASLError("Variable type not specified in 'set " & SetInstruction & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("Variable type not specified in 'set " & SetInstruction & "'", LogType.WarningError)
                 End If
             End If
         Else
@@ -11421,15 +11423,15 @@ Public Class LegacyGame
 
         GamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
 
-        LogASLError("Quest ASL4 Interpreter " & QuestVersion, LOGTYPE_INIT)
+        LogASLError("Quest ASL4 Interpreter " & QuestVersion, LogType.Init)
 
         Dim LogMsg As String
         LogMsg = "Opening file " & afilename & " on " & Date.Now.ToString()
-        LogASLError(LogMsg, LOGTYPE_INIT)
+        LogASLError(LogMsg, LogType.Init)
 
         ' Parse file and find where the 'define' blocks are:
         If ParseFile(afilename) = False Then
-            LogASLError("Unable to open file", LOGTYPE_INIT)
+            LogASLError("Unable to open file", LogType.Init)
             ErrorString = "Unable to open " & afilename
 
             If OpenErrorReport <> "" Then
@@ -11458,12 +11460,12 @@ Public Class LegacyGame
         Next i
 
         If ASLVersion = "//" Then
-            LogASLError("File contains no version header.", LOGTYPE_WARNINGERROR)
+            LogASLError("File contains no version header.", LogType.WarningError)
         Else
             GameASLVersion = CInt(ASLVersion)
 
             If InStr(RecognisedVersions, "/" & ASLVersion & "/") = 0 Then
-                LogASLError("Unrecognised ASL version number.", LOGTYPE_WARNINGERROR)
+                LogASLError("Unrecognised ASL version number.", LogType.WarningError)
             End If
         End If
 
@@ -11534,7 +11536,7 @@ Public Class LegacyGame
 
         GameFileName = afilename
 
-        LogASLError("Finished loading file.", LOGTYPE_INIT)
+        LogASLError("Finished loading file.", LogType.Init)
 
         m_oDefaultRoomProperties = GetPropertiesInType("defaultroom", False)
         m_oDefaultProperties = GetPropertiesInType("default", False)
@@ -11647,7 +11649,7 @@ Public Class LegacyGame
             End If
 
             If Not FoundObjectName Then
-                LogASLError("No such object '" & anitem & "'", LOGTYPE_WARNINGERROR)
+                LogASLError("No such object '" & anitem & "'", LogType.WarningError)
             Else
                 UpdateItems(ctx)
                 UpdateObjectList(ctx)
@@ -11673,7 +11675,7 @@ Public Class LegacyGame
         RoomID = GetRoomID(Room, ctx)
 
         If RoomID = 0 Then
-            LogASLError("No such room '" & Room & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No such room '" & Room & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -12578,7 +12580,7 @@ Public Class LegacyGame
             If GameASLVersion >= 311 And Rooms(RoomID).Places(i).Script = "" Then
                 PlaceID = GetRoomID(Rooms(RoomID).Places(i).PlaceName, ctx)
                 If PlaceID = 0 Then
-                    LogASLError("No such room '" & Rooms(RoomID).Places(i).PlaceName & "'", LOGTYPE_WARNINGERROR)
+                    LogASLError("No such room '" & Rooms(RoomID).Places(i).PlaceName & "'", LogType.WarningError)
                     ShownPlaceName = Rooms(RoomID).Places(i).PlaceName
                 Else
                     If Rooms(PlaceID).RoomAlias <> "" Then
@@ -12648,7 +12650,7 @@ Public Class LegacyGame
 
         asParams = Split(sTag, ";")
         If UBound(asParams) < 1 Then
-            LogASLError("No exit specified in '" & sTag & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("No exit specified in '" & sTag & "'", LogType.WarningError)
             Return New RoomExit(Me)
         End If
 
@@ -12658,7 +12660,7 @@ Public Class LegacyGame
         lRoomID = GetRoomID(sRoom, _nullContext)
 
         If lRoomID = 0 Then
-            LogASLError("Can't find room '" & sRoom & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Can't find room '" & sRoom & "'", LogType.WarningError)
             Return Nothing
         End If
 
@@ -12681,7 +12683,7 @@ Public Class LegacyGame
         oExit = FindExit(sTag)
 
         If oExit Is Nothing Then
-            LogASLError("Can't find exit '" & sTag & "'", LOGTYPE_WARNINGERROR)
+            LogASLError("Can't find exit '" & sTag & "'", LogType.WarningError)
             Exit Sub
         End If
 
