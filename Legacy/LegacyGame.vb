@@ -47,14 +47,6 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private _openErrorReport As String
-    Private _casKeywords(255) As String 'Tokenised CAS keywords
-    Private _lines() As String 'Stores the lines of the ASL script/definitions
-    Private _defineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
-    Private _numberSections As Integer 'Number of define sections
-    Private _gameName As String 'The name of the game
-    Friend _nullContext As New Context
-
     Friend Enum LogType
         Misc
         FatalError
@@ -279,80 +271,6 @@ Public Class LegacyGame
         Public Message As String
     End Class
 
-    Private _changeLogRooms As ChangeLog
-    Private _changeLogObjects As ChangeLog
-    Private _defaultProperties As PropertiesActions
-    Private _defaultRoomProperties As PropertiesActions
-
-    Friend _rooms() As RoomType
-    Friend _numberRooms As Integer
-    Private _numericVariable() As VariableType
-    Private _numberNumericVariables As Integer
-    Private _stringVariable() As VariableType
-    Private _numberStringVariables As Integer
-    Private _synonyms() As SynonymType
-    Private _numberSynonyms As Integer
-    Private _items() As ItemType
-    Private _chars() As ObjectType
-    Friend _objs() As ObjectType
-    Private _numberChars As Integer
-    Friend _numberObjs As Integer
-    Private _numberItems As Integer
-    Friend _currentRoom As String
-    Private _collectables() As Collectable
-    Private _numCollectables As Integer
-    Private _gamePath As String
-    Private _gameFileName As String
-    Private _saveGameFile As String
-    Private _defaultFontName As String
-    Private _defaultFontSize As Double
-    Private _autoIntro As Boolean
-    Private _commandOverrideModeOn As Boolean
-    Private _commandOverrideVariable As String
-    Private _afterTurnScript As String
-    Private _beforeTurnScript As String
-    Private _outPutOn As Boolean
-    Private _gameAslVersion As Integer
-    Private _choiceNumber As Integer
-    Private _gameLoadMethod As String    ' TODO: Make enum
-    Private _timers() As TimerType
-    Private _numberTimers As Integer
-    Private _numDisplayStrings As Integer
-    Private _numDisplayNumerics As Integer
-    Private _gameFullyLoaded As Boolean
-    Private _gameChangeData As New GameChangeDataType
-    Private _lastIt As Integer
-    Private _lastItMode As ItType
-    Private _thisTurnIt As Integer
-    Private _thisTurnItMode As ItType
-    Private _badCmdBefore As String
-    Private _badCmdAfter As String
-    Private _numResources As Integer
-    Private _resources() As ResourceType
-    Private _resourceFile As String
-    Private _resourceOffset As Integer
-    Private _startCatPos As Integer
-    Private _useAbbreviations As Boolean
-    Private _loadedFromQsg As Boolean  ' TODO: Same as _gameLoadMethod
-    Private _beforeSaveScript As String
-    Private _onLoadScript As String
-    Private _numSkipCheckFiles As Integer
-    Private _skipCheckFile() As String
-    Private _compassExits As New List(Of ListData)
-    Private _gotoExits As New List(Of ListData)
-    Private _textFormatter As New TextFormatter
-    Private _log As New List(Of String)
-    Private _fileData As String
-    Private _commandLock As Object = New Object
-    Private _stateLock As Object = New Object
-    Private _state As State = State.Ready
-    Private _waitLock As Object = New Object
-    Private _readyForCommand As Boolean = True
-    Private _gameLoading As Boolean
-    Private _random As New Random()
-    Private _tempFolder As String
-    Private _playerErrorMessageString(38) As String
-
     Friend Enum PlayerError
         BadCommand
         BadGo
@@ -445,21 +363,100 @@ Public Class LegacyGame
         Fail
     End Enum
 
-    Private m_listVerbs As New Dictionary(Of ListType, List(Of String))
-    Private m_filename As String
-    Private m_originalFilename As String
-    Private m_data As InitGameData
-    Private m_player As IPlayer
-    Private m_gameFinished As Boolean
-    Private m_gameIsRestoring As Boolean
-    Private m_useStaticFrameForPictures As Boolean
+    Private _openErrorReport As String
+    Private _casKeywords(255) As String 'Tokenised CAS keywords
+    Private _lines() As String 'Stores the lines of the ASL script/definitions
+    Private _defineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
+    Private _numberSections As Integer 'Number of define sections
+    Private _gameName As String 'The name of the game
+    Friend _nullContext As New Context
+    Private _changeLogRooms As ChangeLog
+    Private _changeLogObjects As ChangeLog
+    Private _defaultProperties As PropertiesActions
+    Private _defaultRoomProperties As PropertiesActions
+    Friend _rooms() As RoomType
+    Friend _numberRooms As Integer
+    Private _numericVariable() As VariableType
+    Private _numberNumericVariables As Integer
+    Private _stringVariable() As VariableType
+    Private _numberStringVariables As Integer
+    Private _synonyms() As SynonymType
+    Private _numberSynonyms As Integer
+    Private _items() As ItemType
+    Private _chars() As ObjectType
+    Friend _objs() As ObjectType
+    Private _numberChars As Integer
+    Friend _numberObjs As Integer
+    Private _numberItems As Integer
+    Friend _currentRoom As String
+    Private _collectables() As Collectable
+    Private _numCollectables As Integer
+    Private _gamePath As String
+    Private _gameFileName As String
+    Private _saveGameFile As String
+    Private _defaultFontName As String
+    Private _defaultFontSize As Double
+    Private _autoIntro As Boolean
+    Private _commandOverrideModeOn As Boolean
+    Private _commandOverrideVariable As String
+    Private _afterTurnScript As String
+    Private _beforeTurnScript As String
+    Private _outPutOn As Boolean
+    Private _gameAslVersion As Integer
+    Private _choiceNumber As Integer
+    Private _gameLoadMethod As String    ' TODO: Make enum
+    Private _timers() As TimerType
+    Private _numberTimers As Integer
+    Private _numDisplayStrings As Integer
+    Private _numDisplayNumerics As Integer
+    Private _gameFullyLoaded As Boolean
+    Private _gameChangeData As New GameChangeDataType
+    Private _lastIt As Integer
+    Private _lastItMode As ItType
+    Private _thisTurnIt As Integer
+    Private _thisTurnItMode As ItType
+    Private _badCmdBefore As String
+    Private _badCmdAfter As String
+    Private _numResources As Integer
+    Private _resources() As ResourceType
+    Private _resourceFile As String
+    Private _resourceOffset As Integer
+    Private _startCatPos As Integer
+    Private _useAbbreviations As Boolean
+    Private _loadedFromQsg As Boolean  ' TODO: Same as _gameLoadMethod
+    Private _beforeSaveScript As String
+    Private _onLoadScript As String
+    Private _numSkipCheckFiles As Integer
+    Private _skipCheckFile() As String
+    Private _compassExits As New List(Of ListData)
+    Private _gotoExits As New List(Of ListData)
+    Private _textFormatter As New TextFormatter
+    Private _log As New List(Of String)
+    Private _fileData As String
+    Private _commandLock As Object = New Object
+    Private _stateLock As Object = New Object
+    Private _state As State = State.Ready
+    Private _waitLock As Object = New Object
+    Private _readyForCommand As Boolean = True
+    Private _gameLoading As Boolean
+    Private _random As New Random()
+    Private _tempFolder As String
+    Private _playerErrorMessageString(38) As String
+    Private _listVerbs As New Dictionary(Of ListType, List(Of String))
+    Private _filename As String
+    Private _originalFilename As String
+    Private _data As InitGameData
+    Private _player As IPlayer
+    Private _gameFinished As Boolean
+    Private _gameIsRestoring As Boolean
+    Private _useStaticFrameForPictures As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
         _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
         _gameLoadMethod = "normal"
-        m_filename = filename
-        m_originalFilename = originalFilename
+        _filename = filename
+        _originalFilename = originalFilename
 
         ' Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         ' for compatibility with games which have non-fatal errors in them.
@@ -477,7 +474,7 @@ Public Class LegacyGame
 
     Public Sub New(data As InitGameData)
         Me.New(Nothing, Nothing)
-        m_data = data
+        _data = data
     End Sub
 
     Private Function StripCodes(InputString As String) As String
@@ -1471,7 +1468,7 @@ Public Class LegacyGame
         ' 'define' block. Supports nested defines.
 
         If LCase(Right(Filename, 4)) = ".zip" Then
-            m_originalFilename = Filename
+            _originalFilename = Filename
             Filename = GetUnzippedFile(Filename)
             _gamePath = System.IO.Path.GetDirectoryName(Filename)
         End If
@@ -1783,7 +1780,7 @@ Public Class LegacyGame
         Next i
 
         If FilenameNoPath = "musicvf1.cas" Then
-            m_useStaticFrameForPictures = True
+            _useStaticFrameForPictures = True
         End If
 
         'RemoveComments called within ConvertMultiLines
@@ -3340,12 +3337,12 @@ Public Class LegacyGame
     End Sub
 
     Private Sub DoClear()
-        m_player.ClearScreen()
+        _player.ClearScreen()
     End Sub
 
     Private Sub DoWait()
 
-        m_player.DoWait()
+        _player.DoWait()
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
@@ -5343,7 +5340,7 @@ Public Class LegacyGame
             Else
                 FinishedLoop = True
             End If
-        Loop Until FinishedLoop Or m_gameFinished
+        Loop Until FinishedLoop Or _gameFinished
     End Sub
 
     Private Sub ExecuteSetCollectable(setparam As String, ctx As Context)
@@ -5867,7 +5864,7 @@ Public Class LegacyGame
     End Sub
 
     Public Sub Pause(Duration As Integer)
-        m_player.DoPause(Duration)
+        _player.DoPause(Duration)
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
@@ -6386,7 +6383,7 @@ Public Class LegacyGame
     Private m_questionResponse As Boolean
 
     Private Function ExecuteIfAsk(askq As String) As Boolean
-        m_player.ShowQuestion(askq)
+        _player.ShowQuestion(askq)
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
@@ -6669,11 +6666,11 @@ Public Class LegacyGame
 
     Private Sub PlayMedia(filename As String, sync As Boolean, looped As Boolean)
         If filename.Length = 0 Then
-            m_player.StopSound()
+            _player.StopSound()
         Else
             If looped And sync Then sync = False ' Can't loop and sync at the same time, that would just hang!
 
-            m_player.PlaySound(filename, sync, looped)
+            _player.PlaySound(filename, sync, looped)
 
             If sync Then
                 ChangeState(State.Waiting)
@@ -6843,7 +6840,7 @@ Public Class LegacyGame
         ' STRING VARIABLES
 
         ' Set this flag so we don't run any status variable onchange scripts while restoring
-        m_gameIsRestoring = True
+        _gameIsRestoring = True
 
         NumData = CInt(GetNextChunk())
         For i = 1 To NumData
@@ -6879,15 +6876,15 @@ Public Class LegacyGame
             End If
         Next i
 
-        m_gameIsRestoring = False
+        _gameIsRestoring = False
     End Sub
 
     Private Sub SetBackground(Colour As String)
-        m_player.SetBackground("#" + GetHTMLColour(Colour, "white"))
+        _player.SetBackground("#" + GetHTMLColour(Colour, "white"))
     End Sub
 
     Private Sub SetForeground(Colour As String)
-        m_player.SetForeground("#" + GetHTMLColour(Colour, "black"))
+        _player.SetForeground("#" + GetHTMLColour(Colour, "black"))
     End Sub
 
     Private Sub SetDefaultPlayerErrorMessages()
@@ -6933,12 +6930,12 @@ Public Class LegacyGame
 
     Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
         If FontName = "" Then FontName = _defaultFontName
-        m_player.SetFont(FontName)
+        _player.SetFont(FontName)
     End Sub
 
     Private Sub SetFontSize(FontSize As Double, ctx As Context, Optional OutputTo As String = "normal")
         If FontSize = 0 Then FontSize = _defaultFontSize
-        m_player.SetFontSize(CStr(FontSize))
+        _player.SetFontSize(CStr(FontSize))
     End Sub
 
     Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, ctx As Context, Optional ArrayIndex As Integer = 0)
@@ -6994,7 +6991,7 @@ Public Class LegacyGame
         ReDim Preserve _numericVariable(iNumNumber).VariableContents(_numericVariable(iNumNumber).VariableUBound)
         _numericVariable(iNumNumber).VariableContents(ArrayIndex) = CStr(NumContent)
 
-        If _numericVariable(iNumNumber).OnChangeScript <> "" And Not m_gameIsRestoring Then
+        If _numericVariable(iNumNumber).OnChangeScript <> "" And Not _gameIsRestoring Then
             OnChangeScript = _numericVariable(iNumNumber).OnChangeScript
             ExecuteScript(OnChangeScript, ctx)
         End If
@@ -7296,7 +7293,7 @@ Public Class LegacyGame
 
         If MenuExists Then
             Dim windowMenu As New MenuData(menuTitle, menuOptions, False)
-            m_player.SetWindowMenu(windowMenu)
+            _player.SetWindowMenu(windowMenu)
         End If
     End Sub
 
@@ -7308,7 +7305,7 @@ Public Class LegacyGame
 
             If BeginsWith(_lines(i), "panes ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "panes ")))
-                m_player.SetPanesVisible(CurOpt)
+                _player.SetPanesVisible(CurOpt)
             ElseIf BeginsWith(_lines(i), "abbreviations ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "abbreviations ")))
                 If CurOpt = "off" Then _useAbbreviations = False Else _useAbbreviations = True
@@ -7354,11 +7351,11 @@ Public Class LegacyGame
                 _objs(_numberObjs).CorresRoom = r.RoomName
                 _objs(_numberObjs).CorresRoomId = _numberRooms
 
-                r.ObjID = _numberObjs
+                r.ObjId = _numberObjs
 
                 If _gameAslVersion >= 410 Then
                     r.Exits = New RoomExits(Me)
-                    r.Exits.ObjID = r.ObjID
+                    r.Exits.ObjID = r.ObjId
                 End If
 
                 ' *******************************************************************************
@@ -7842,12 +7839,12 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ShowPictureInText(sFileName As String)
-        If Not m_useStaticFrameForPictures Then
-            m_player.ShowPicture(sFileName)
+        If Not _useStaticFrameForPictures Then
+            _player.ShowPicture(sFileName)
         Else
             ' Workaround for a particular game which expects pictures to be in a popup window -
             ' use the static picture frame feature so that image is not cleared
-            m_player.SetPanelContents("<img src=""" + m_player.GetURL(sFileName) + """ onload=""setPanelHeight()""/>")
+            _player.SetPanelContents("<img src=""" + _player.GetURL(sFileName) + """ onload=""setPanelHeight()""/>")
         End If
     End Sub
 
@@ -7930,7 +7927,7 @@ Public Class LegacyGame
             RoomDisplayText = RoomDisplayText & "You are in " & PA & "." & vbCrLf
         End If
 
-        m_player.LocationUpdated(PANF)
+        _player.LocationUpdated(PANF)
 
         SetStringContents("quest.formatroom", PANF, _nullContext)
 
@@ -8201,18 +8198,18 @@ Public Class LegacyGame
     End Sub
 
     Private Sub Speak(Text As String)
-        m_player.Speak(Text)
+        _player.Speak(Text)
     End Sub
 
     Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ObjType As Thing)
         ObjName = CapFirst(ObjName)
 
         If ObjType = Thing.Room Then
-            objList.Add(New ListData(ObjName, m_listVerbs(ListType.ExitsList)))
-            exitList.Add(New ListData(ObjName, m_listVerbs(ListType.ExitsList)))
+            objList.Add(New ListData(ObjName, _listVerbs(ListType.ExitsList)))
+            exitList.Add(New ListData(ObjName, _listVerbs(ListType.ExitsList)))
         Else
             ' TO DO: DisplayType is not supported, should it be...?
-            objList.Add(New ListData(ObjName, m_listVerbs(ListType.ObjectsList)))
+            objList.Add(New ListData(ObjName, _listVerbs(ListType.ObjectsList)))
         End If
 
     End Sub
@@ -8688,10 +8685,10 @@ Public Class LegacyGame
 
         PrevQSGVersion = False
 
-        If m_data Is Nothing Then
+        If _data Is Nothing Then
             FileData = System.IO.File.ReadAllText(theGameFileName, System.Text.Encoding.GetEncoding(1252))
         Else
-            FileData = System.Text.Encoding.GetEncoding(1252).GetString(m_data.Data)
+            FileData = System.Text.Encoding.GetEncoding(1252).GetString(_data.Data)
         End If
 
         ' Check version
@@ -8710,16 +8707,16 @@ Public Class LegacyGame
             InitFileData(FileData)
             NullData = GetNextChunk()
 
-            If m_data Is Nothing Then
+            If _data Is Nothing Then
                 _gameFileName = GetNextChunk()
             Else
                 GetNextChunk()
-                _gameFileName = m_data.SourceFile
+                _gameFileName = _data.SourceFile
             End If
         End If
 
-        If m_data Is Nothing And Not System.IO.File.Exists(_gameFileName) Then
-            _gameFileName = m_player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip")
+        If _data Is Nothing And Not System.IO.File.Exists(_gameFileName) Then
+            _gameFileName = _player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip")
             If _gameFileName = "" Then Exit Function
         End If
 
@@ -9437,7 +9434,7 @@ Public Class LegacyGame
             RoomDisplayText = RoomDisplayText & "You are in " & RoomDisplayName & "." & vbCrLf
         End If
 
-        m_player.LocationUpdated(UCase(Left(RoomAlias, 1)) & Mid(RoomAlias, 2))
+        _player.LocationUpdated(UCase(Left(RoomAlias, 1)) & Mid(RoomAlias, 2))
 
         SetStringContents("quest.formatroom", RoomDisplayNameNoFormat, ctx)
 
@@ -9929,7 +9926,7 @@ Public Class LegacyGame
             ElseIf CmdStartsWith(thecommand, "remove ") And _gameAslVersion >= 391 Then
                 ExecAddRemove(thecommand, ctx)
             ElseIf cmd = "save" Then
-                m_player.RequestSave(Nothing)
+                _player.RequestSave(Nothing)
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then
@@ -10896,7 +10893,7 @@ Public Class LegacyGame
     Private Sub ExecuteScript(ScriptLine As String, ctx As Context, Optional NewCallingObjectID As Integer = 0)
         Try
             If Trim(ScriptLine) = "" Then Exit Sub
-            If m_gameFinished Then Exit Sub
+            If _gameFinished Then Exit Sub
 
             Dim CurPos As Integer
             Dim bFinLoop As Boolean
@@ -11085,9 +11082,9 @@ Public Class LegacyGame
             ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
                 _outPutOn = False
             ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
-                m_player.SetPanesVisible("off")
+                _player.SetPanesVisible("off")
             ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
-                m_player.SetPanesVisible("on")
+                _player.SetPanesVisible("on")
             ElseIf BeginsWith(ScriptLine, "lock ") Then
                 ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
             ElseIf BeginsWith(ScriptLine, "unlock ") Then
@@ -11423,23 +11420,23 @@ Public Class LegacyGame
             End If
         End If
 
-        m_listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
+        _listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
 
         If _gameAslVersion >= 280 And _gameAslVersion < 390 Then
-            m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Examine", "Take", "Speak to"}))
-            m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Examine", "Use", "Drop"}))
+            _listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Examine", "Take", "Speak to"}))
+            _listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Examine", "Use", "Drop"}))
         Else
-            m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Take", "Speak to"}))
-            m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Use", "Drop"}))
+            _listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Take", "Speak to"}))
+            _listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Use", "Drop"}))
         End If
 
         ' Get the name of the game:
         _gameName = RetrieveParameter(_lines(GetDefineBlock("game").StartLine), _nullContext)
 
-        m_player.UpdateGameName(_gameName)
-        m_player.Show("Panes")
-        m_player.Show("Location")
-        m_player.Show("Command")
+        _player.UpdateGameName(_gameName)
+        _player.Show("Panes")
+        _player.Show("Location")
+        _player.Show("Command")
 
         SetUpGameObject()
         SetUpOptions()
@@ -12038,7 +12035,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub AddCompassExit(exitList As List(Of ListData), name As String)
-        exitList.Add(New ListData(name, m_listVerbs(ListType.ExitsList)))
+        exitList.Add(New ListData(name, _listVerbs(ListType.ExitsList)))
     End Sub
 
     Private Function UpdateDoorways(RoomID As Integer, ctx As Context) As String
@@ -12204,14 +12201,14 @@ Public Class LegacyGame
                         CurObjName = _objs(i).ObjectAlias
                     End If
 
-                    invList.Add(New ListData(CapFirst(CurObjName), m_listVerbs(ListType.InventoryList)))
+                    invList.Add(New ListData(CapFirst(CurObjName), _listVerbs(ListType.InventoryList)))
 
                 End If
             Next i
         Else
             For j = 1 To _numberItems
                 If _items(j).Got = True Then
-                    invList.Add(New ListData(CapFirst(_items(j).Name), m_listVerbs(ListType.InventoryList)))
+                    invList.Add(New ListData(CapFirst(_items(j).Name), _listVerbs(ListType.InventoryList)))
                 End If
             Next j
         End If
@@ -12233,7 +12230,7 @@ Public Class LegacyGame
                     End If
                 Next j
 
-                m_player.SetStatusText(status)
+                _player.SetStatusText(status)
 
             End If
         End If
@@ -12403,7 +12400,7 @@ Public Class LegacyGame
             Next i
         End If
 
-        m_player.SetStatusText(status)
+        _player.SetStatusText(status)
     End Sub
 
     Private Sub UpdateVisibilityInContainers(ctx As Context, Optional OnlyParent As String = "")
@@ -12647,7 +12644,7 @@ Public Class LegacyGame
         runnerThread.Start()
 
         SyncLock _stateLock
-            While _state = State.Working And Not m_gameFinished
+            While _state = State.Working And Not _gameFinished
                 System.Threading.Monitor.Wait(_stateLock)
             End While
         End SyncLock
@@ -12753,7 +12750,7 @@ Public Class LegacyGame
 
     Public ReadOnly Property Filename As String Implements IASL.Filename
         Get
-            Return m_filename
+            Return _filename
         End Get
     End Property
 
@@ -12814,7 +12811,7 @@ Public Class LegacyGame
 
     Private Sub WaitForStateChange(changedFromState As State)
         SyncLock _stateLock
-            While _state = changedFromState And Not m_gameFinished
+            While _state = changedFromState And Not _gameFinished
                 System.Threading.Monitor.Wait(_stateLock)
             End While
         End SyncLock
@@ -12841,16 +12838,16 @@ Public Class LegacyGame
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
 
     Public Function Initialise(player As IPlayer) As Boolean Implements IASL.Initialise
-        m_player = player
-        If LCase(Right(m_filename, 4)) = ".qsg" Or m_data IsNot Nothing Then
-            Return OpenGame(m_filename)
+        _player = player
+        If LCase(Right(_filename, 4)) = ".qsg" Or _data IsNot Nothing Then
+            Return OpenGame(_filename)
         Else
-            Return InitialiseGame(m_filename)
+            Return InitialiseGame(_filename)
         End If
     End Function
 
     Private Sub GameFinished()
-        m_gameFinished = True
+        _gameFinished = True
         RaiseEvent Finished()
         ChangeState(State.Finished)
 
@@ -12987,7 +12984,7 @@ Public Class LegacyGame
         Next i
 
         If Not anyTimerActive Then nextTrigger = 0
-        If m_gameFinished Then nextTrigger = 0
+        If _gameFinished Then nextTrigger = 0
 
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString)
 
@@ -13028,7 +13025,7 @@ Public Class LegacyGame
     Private m_menuResponse As String
 
     Private Function ShowMenu(menuData As MenuData) As String
-        m_player.ShowMenu(menuData)
+        _player.ShowMenu(menuData)
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
@@ -13069,12 +13066,12 @@ Public Class LegacyGame
 
     Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename
         Get
-            Return m_originalFilename
+            Return _originalFilename
         End Get
     End Property
 
     Private Function GetOriginalFilenameForQSG() As String
-        If m_originalFilename IsNot Nothing Then Return m_originalFilename
+        If _originalFilename IsNot Nothing Then Return _originalFilename
         Return _gameFileName
     End Function
 
