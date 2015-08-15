@@ -2461,94 +2461,90 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Sub ExecAddRemoveScript(Parameter As String, DoAdd As Boolean, ctx As Context)
+    Private Sub ExecAddRemoveScript(parameter As String, add As Boolean, ctx As Context)
 
-        Dim ChildObjID, ParentObjID As Integer
-        Dim CommandName As String
-        Dim ChildName As String
-        Dim ParentName As String = ""
-        Dim SCP As Integer
+        Dim childId, parentId As Integer
+        Dim commandName As String
+        Dim childName As String
+        Dim parentName As String = ""
+        Dim scp As Integer
 
-        If DoAdd Then
-            CommandName = "add"
+        If add Then
+            commandName = "add"
         Else
-            CommandName = "remove"
+            commandName = "remove"
         End If
 
-        SCP = InStr(Parameter, ";")
-        If SCP = 0 And DoAdd Then
-            LogASLError("No parent specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
+        scp = InStr(parameter, ";")
+        If scp = 0 And add Then
+            LogASLError("No parent specified in '" & commandName & " <" & parameter & ">", LogType.WarningError)
             Exit Sub
         End If
 
-        If SCP <> 0 Then
-            ChildName = LCase(Trim(Left(Parameter, SCP - 1)))
-            ParentName = LCase(Trim(Mid(Parameter, SCP + 1)))
+        If scp <> 0 Then
+            childName = LCase(Trim(Left(parameter, scp - 1)))
+            parentName = LCase(Trim(Mid(parameter, scp + 1)))
         Else
-            ChildName = LCase(Trim(Parameter))
+            childName = LCase(Trim(parameter))
         End If
 
-        ChildObjID = GetObjectIDNoAlias(ChildName)
-        If ChildObjID = 0 Then
-            LogASLError("Invalid child object name specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
+        childId = GetObjectIDNoAlias(childName)
+        If childId = 0 Then
+            LogASLError("Invalid child object name specified in '" & commandName & " <" & parameter & ">", LogType.WarningError)
             Exit Sub
         End If
 
-        If SCP <> 0 Then
-            ParentObjID = GetObjectIDNoAlias(ParentName)
-            If ParentObjID = 0 Then
-                LogASLError("Invalid parent object name specified in '" & CommandName & " <" & Parameter & ">", LogType.WarningError)
+        If scp <> 0 Then
+            parentId = GetObjectIDNoAlias(parentName)
+            If parentId = 0 Then
+                LogASLError("Invalid parent object name specified in '" & commandName & " <" & parameter & ">", LogType.WarningError)
                 Exit Sub
             End If
 
-            DoAddRemove(ChildObjID, ParentObjID, DoAdd, ctx)
+            DoAddRemove(childId, parentId, add, ctx)
         Else
-            AddToObjectProperties("not parent", ChildObjID, ctx)
-            UpdateVisibilityInContainers(ctx, _objs(ParentObjID).ObjectName)
+            AddToObjectProperties("not parent", childId, ctx)
+            UpdateVisibilityInContainers(ctx, _objs(parentId).ObjectName)
         End If
-
     End Sub
 
-    Private Sub ExecOpenClose(CommandLine As String, ctx As Context)
-        Dim ObjID As Integer
-        Dim ObjectName As String
-        Dim DoOpen As Boolean
-        Dim IsOpen, FoundAction As Boolean
+    Private Sub ExecOpenClose(cmd As String, ctx As Context)
+        Dim id As Integer
+        Dim name As String
+        Dim doOpen As Boolean
+        Dim isOpen, foundAction As Boolean
         Dim i As Integer
-        Dim Action As String = ""
-        Dim ActionScript As String = ""
-        Dim PropertyExists As Boolean
-        Dim TextToPrint As String
-        Dim IsContainer As Boolean
-        Dim InventoryPlace As String
-        Dim ErrorMsg As String = ""
+        Dim action As String = ""
+        Dim actionScript As String = ""
+        Dim propertyExists As Boolean
+        Dim textToPrint As String
+        Dim isContainer As Boolean
+        Dim errorMsg As String = ""
 
-        InventoryPlace = "inventory"
-
-        If BeginsWith(CommandLine, "open ") Then
-            Action = "open"
-            DoOpen = True
-        ElseIf BeginsWith(CommandLine, "close ") Then
-            Action = "close"
-            DoOpen = False
+        If BeginsWith(cmd, "open ") Then
+            action = "open"
+            doOpen = True
+        ElseIf BeginsWith(cmd, "close ") Then
+            action = "close"
+            doOpen = False
         End If
 
-        ObjectName = GetEverythingAfter(CommandLine, Action & " ")
+        name = GetEverythingAfter(cmd, action & " ")
 
-        ObjID = Disambiguate(ObjectName, _currentRoom & ";" & InventoryPlace, ctx)
+        id = Disambiguate(name, _currentRoom & ";inventory", ctx)
 
-        If ObjID <= 0 Then
-            If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-            _badCmdBefore = Action
+        If id <= 0 Then
+            If id <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+            _badCmdBefore = action
             Exit Sub
         End If
 
         ' Check if it's even a container
 
-        IsContainer = IsYes(GetObjectProperty("container", ObjID, True, False))
+        isContainer = IsYes(GetObjectProperty("container", id, True, False))
 
-        If Not IsContainer Then
-            If DoOpen Then
+        If Not isContainer Then
+            If doOpen Then
                 PlayerErrorMessage(PlayerError.CantOpen, ctx)
             Else
                 PlayerErrorMessage(PlayerError.CantClose, ctx)
@@ -2558,13 +2554,13 @@ Public Class LegacyGame
 
         ' Check if it's already open (or closed)
 
-        IsOpen = IsYes(GetObjectProperty("opened", ObjID, True, False))
+        isOpen = IsYes(GetObjectProperty("opened", id, True, False))
 
-        If DoOpen And IsOpen Then
+        If doOpen And isOpen Then
             ' Object is already open
             PlayerErrorMessage(PlayerError.AlreadyOpen, ctx)
             Exit Sub
-        ElseIf Not DoOpen And Not IsOpen Then
+        ElseIf Not doOpen And Not isOpen Then
             ' Object is already closed
             PlayerErrorMessage(PlayerError.AlreadyClosed, ctx)
             Exit Sub
@@ -2572,11 +2568,11 @@ Public Class LegacyGame
 
         ' NEW: Check if it's accessible, i.e. check it's not itself inside another closed container
 
-        If Not PlayerCanAccessObject(ObjID, , ErrorMsg) Then
-            If DoOpen Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, ErrorMsg)
+        If Not PlayerCanAccessObject(id, , errorMsg) Then
+            If doOpen Then
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, errorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, errorMsg)
             End If
             Exit Sub
         End If
@@ -2584,112 +2580,104 @@ Public Class LegacyGame
         ' Now check if it can be opened (or closed)
 
         ' First check for an action
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
         For i = 1 To o.NumberActions
-            If LCase(o.Actions(i).ActionName) = Action Then
-                FoundAction = True
-                ActionScript = o.Actions(i).Script
+            If LCase(o.Actions(i).ActionName) = action Then
+                foundAction = True
+                actionScript = o.Actions(i).Script
                 Exit For
             End If
         Next i
 
-        If FoundAction Then
-            ExecuteScript(ActionScript, ctx, ObjID)
+        If foundAction Then
+            ExecuteScript(actionScript, ctx, id)
         Else
             ' Now check for a property
-            PropertyExists = IsYes(GetObjectProperty(Action, ObjID, True, False))
+            propertyExists = IsYes(GetObjectProperty(action, id, True, False))
 
-            If Not PropertyExists Then
+            If Not propertyExists Then
                 ' Show error message
-                If DoOpen Then
+                If doOpen Then
                     PlayerErrorMessage(PlayerError.CantOpen, ctx)
                 Else
                     PlayerErrorMessage(PlayerError.CantClose, ctx)
                 End If
             Else
-                TextToPrint = GetObjectProperty(Action, ObjID, False, False)
-                If TextToPrint = "" Then
+                textToPrint = GetObjectProperty(action, id, False, False)
+                If textToPrint = "" Then
                     ' Show default message
-                    If DoOpen Then
+                    If doOpen Then
                         PlayerErrorMessage(PlayerError.DefaultOpen, ctx)
                     Else
                         PlayerErrorMessage(PlayerError.DefaultClose, ctx)
                     End If
                 Else
-                    Print(TextToPrint, ctx)
+                    Print(textToPrint, ctx)
                 End If
 
-                DoOpenClose(ObjID, DoOpen, True, ctx)
+                DoOpenClose(id, doOpen, True, ctx)
 
             End If
         End If
 
     End Sub
 
-    Private Sub ExecuteSelectCase(ScriptLine As String, ctx As Context)
-        Dim CaseBlockName As String
+    Private Sub ExecuteSelectCase(script As String, ctx As Context)
         Dim i As Integer
-        Dim CaseBlock As DefineBlock
-        Dim AfterLine, ThisCase As String
-        Dim SCP As Integer
-        Dim CaseMatch As Boolean
-        Dim FinLoop As Boolean
-        Dim ThisCondition, CheckValue As String
-        Dim CaseScript As String = ""
 
         ' ScriptLine passed will look like this:
         '   select case <whatever> do <!intprocX>
         ' with all the case statements in the intproc.
 
-        AfterLine = GetAfterParameter(ScriptLine)
+        Dim afterLine = GetAfterParameter(script)
 
-        If Not BeginsWith(AfterLine, "do <!intproc") Then
-            LogASLError("No case block specified for '" & ScriptLine & "'", LogType.WarningError)
+        If Not BeginsWith(afterLine, "do <!intproc") Then
+            LogASLError("No case block specified for '" & script & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        CaseBlockName = RetrieveParameter(AfterLine, ctx)
-        CaseBlock = DefineBlockParam("procedure", CaseBlockName)
-        CheckValue = RetrieveParameter(ScriptLine, ctx)
-        CaseMatch = False
+        Dim blockName = RetrieveParameter(afterLine, ctx)
+        Dim block = DefineBlockParam("procedure", blockName)
+        Dim checkValue = RetrieveParameter(script, ctx)
+        Dim caseMatch = False
 
-        For i = CaseBlock.StartLine + 1 To CaseBlock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
             ' Go through all the cases until we find the one that matches
 
             If _lines(i) <> "" Then
                 If Not BeginsWith(_lines(i), "case ") Then
                     LogASLError("Invalid line in 'select case' block: '" & _lines(i) & "'", LogType.WarningError)
                 Else
+                    Dim caseScript = ""
 
                     If BeginsWith(_lines(i), "case else ") Then
-                        CaseMatch = True
-                        CaseScript = GetEverythingAfter(_lines(i), "case else ")
+                        caseMatch = True
+                        caseScript = GetEverythingAfter(_lines(i), "case else ")
                     Else
-                        ThisCase = RetrieveParameter(_lines(i), ctx)
-
-                        FinLoop = False
+                        Dim thisCase = RetrieveParameter(_lines(i), ctx)
+                        Dim finished = False
 
                         Do
-                            SCP = InStr(ThisCase, ";")
+                            Dim SCP = InStr(thisCase, ";")
                             If SCP = 0 Then
-                                SCP = Len(ThisCase) + 1
-                                FinLoop = True
+                                SCP = Len(thisCase) + 1
+                                finished = True
                             End If
 
-                            ThisCondition = Trim(Left(ThisCase, SCP - 1))
-                            If ThisCondition = CheckValue Then
-                                CaseScript = GetAfterParameter(_lines(i))
-                                CaseMatch = True
-                                FinLoop = True
+                            Dim condition = Trim(Left(thisCase, SCP - 1))
+                            If condition = checkValue Then
+                                caseScript = GetAfterParameter(_lines(i))
+                                caseMatch = True
+                                finished = True
                             Else
-                                ThisCase = Mid(ThisCase, SCP + 1)
+                                thisCase = Mid(thisCase, SCP + 1)
                             End If
-                        Loop Until FinLoop
+                        Loop Until finished
                     End If
 
-                    If CaseMatch Then
-                        ExecuteScript(CaseScript, ctx)
-                        Exit For
+                    If caseMatch Then
+                        ExecuteScript(caseScript, ctx)
+                        Exit Sub
                     End If
                 End If
             End If
@@ -2697,174 +2685,154 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Function ExecVerb(CommandString As String, ctx As Context, Optional LibCommands As Boolean = False) As Boolean
-        Dim gameblock As DefineBlock
-        Dim FoundVerb As Boolean
-        Dim VerbProperty As String = ""
-        Dim Script As String = ""
-        Dim VerbsList As String
-        Dim ThisVerb As String = ""
-        Dim SCP, ColonPos As Integer
-        Dim ObjID, i As Integer
-        Dim FoundItem, FoundAction As Boolean
-        Dim VerbObject As String = ""
-        Dim InventoryPlace, VerbTag As String
-        Dim ThisScript As String = ""
+    Private Function ExecVerb(cmd As String, ctx As Context, Optional libCommands As Boolean = False) As Boolean
+        Dim gameBlock As DefineBlock
+        Dim foundVerb = False
+        Dim verbProperty As String = ""
+        Dim script As String = ""
+        Dim verbsList As String
+        Dim thisVerb As String = ""
+        Dim scp As Integer
+        Dim id, i As Integer
+        Dim verbObject As String = ""
+        Dim verbTag As String
+        Dim thisScript As String = ""
 
-        FoundVerb = False
-        FoundAction = False
-
-        If Not LibCommands Then
-            VerbTag = "verb "
+        If Not libCommands Then
+            verbTag = "verb "
         Else
-            VerbTag = "lib verb "
+            verbTag = "lib verb "
         End If
 
-        gameblock = GetDefineBlock("game")
-        For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(_lines(i), VerbTag) Then
-                VerbsList = RetrieveParameter(_lines(i), ctx)
+        gameBlock = GetDefineBlock("game")
+        For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
+            If BeginsWith(_lines(i), verbTag) Then
+                verbsList = RetrieveParameter(_lines(i), ctx)
 
                 ' The property or action the verb uses is either after a colon,
                 ' or it's the first (or only) verb on the line.
 
-                ColonPos = InStr(VerbsList, ":")
-                If ColonPos <> 0 Then
-                    VerbProperty = LCase(Trim(Mid(VerbsList, ColonPos + 1)))
-                    VerbsList = Trim(Left(VerbsList, ColonPos - 1))
+                Dim colonPos = InStr(verbsList, ":")
+                If colonPos <> 0 Then
+                    verbProperty = LCase(Trim(Mid(verbsList, colonPos + 1)))
+                    verbsList = Trim(Left(verbsList, colonPos - 1))
                 Else
-                    SCP = InStr(VerbsList, ";")
-                    If SCP = 0 Then
-                        VerbProperty = LCase(VerbsList)
+                    scp = InStr(verbsList, ";")
+                    If scp = 0 Then
+                        verbProperty = LCase(verbsList)
                     Else
-                        VerbProperty = LCase(Trim(Left(VerbsList, SCP - 1)))
+                        verbProperty = LCase(Trim(Left(verbsList, scp - 1)))
                     End If
                 End If
 
                 ' Now let's see if this matches:
 
                 Do
-                    SCP = InStr(VerbsList, ";")
-                    If SCP = 0 Then
-                        ThisVerb = LCase(VerbsList)
+                    scp = InStr(verbsList, ";")
+                    If scp = 0 Then
+                        thisVerb = LCase(verbsList)
                     Else
-                        ThisVerb = LCase(Trim(Left(VerbsList, SCP - 1)))
+                        thisVerb = LCase(Trim(Left(verbsList, scp - 1)))
                     End If
 
-                    If BeginsWith(CommandString, ThisVerb & " ") Then
-                        FoundVerb = True
-                        VerbObject = GetEverythingAfter(CommandString, ThisVerb & " ")
-                        Script = Trim(Mid(_lines(i), InStr(_lines(i), ">") + 1))
+                    If BeginsWith(cmd, thisVerb & " ") Then
+                        foundVerb = True
+                        verbObject = GetEverythingAfter(cmd, thisVerb & " ")
+                        script = Trim(Mid(_lines(i), InStr(_lines(i), ">") + 1))
                     End If
 
-                    If SCP <> 0 Then
-                        VerbsList = Trim(Mid(VerbsList, SCP + 1))
+                    If scp <> 0 Then
+                        verbsList = Trim(Mid(verbsList, scp + 1))
                     End If
-                Loop Until SCP = 0 Or Trim(VerbsList) = "" Or FoundVerb
+                Loop Until scp = 0 Or Trim(verbsList) = "" Or foundVerb
 
-                If FoundVerb Then Exit For
+                If foundVerb Then Exit For
 
             End If
         Next i
 
-        If FoundVerb Then
+        If foundVerb Then
 
-            InventoryPlace = "inventory"
+            id = Disambiguate(verbObject, "inventory;" & _currentRoom, ctx)
 
-            ObjID = Disambiguate(VerbObject, InventoryPlace & ";" & _currentRoom, ctx)
-
-            If ObjID < 0 Then
-                FoundItem = False
+            If id < 0 Then
+                If id <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+                _badCmdBefore = thisVerb
             Else
-                FoundItem = True
-            End If
+                SetStringContents("quest.error.article", _objs(id).Article, ctx)
 
-            If FoundItem = False Then
-                If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                _badCmdBefore = ThisVerb
-            Else
-                SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
+                Dim foundAction = False
 
                 ' Now see if this object has the relevant action or property
-                Dim o = _objs(ObjID)
+                Dim o = _objs(id)
                 For i = 1 To o.NumberActions
-                    If LCase(o.Actions(i).ActionName) = VerbProperty Then
-                        FoundAction = True
-                        ThisScript = o.Actions(i).Script
+                    If LCase(o.Actions(i).ActionName) = verbProperty Then
+                        foundAction = True
+                        thisScript = o.Actions(i).Script
                         Exit For
                     End If
                 Next i
 
-                If ThisScript <> "" Then
+                If thisScript <> "" Then
                     ' Avoid an RTE "this array is fixed or temporarily locked"
-                    ExecuteScript(ThisScript, ctx, ObjID)
+                    ExecuteScript(thisScript, ctx, id)
                 End If
 
-                If Not FoundAction Then
+                If Not foundAction Then
                     ' Check properties for a message
                     For i = 1 To o.NumberProperties
-                        If LCase(o.Properties(i).PropertyName) = VerbProperty Then
-                            FoundAction = True
+                        If LCase(o.Properties(i).PropertyName) = verbProperty Then
+                            foundAction = True
                             Print(o.Properties(i).PropertyValue, ctx)
                             Exit For
                         End If
                     Next i
                 End If
 
-                If Not FoundAction Then
+                If Not foundAction Then
                     ' Execute the default script from the verb definition
-                    ExecuteScript(Script, ctx)
+                    ExecuteScript(script, ctx)
                 End If
             End If
         End If
 
-        Return FoundVerb
+        Return foundVerb
     End Function
 
-    Private Function ExpressionHandler(Expression As String) As ExpressionResult
-
-        Dim ObsExp As String
+    Private Function ExpressionHandler(expr As String) As ExpressionResult
         Dim i As Integer
-        Dim Elements() As String
-        Dim NumElements As Integer
-        Dim Operators(0) As String
-        Dim NumOperators As Integer
-        Dim OpNum As Integer
-        Dim Val2, Val1, Result As Double
-        Dim BracketCount, OpenBracketPos, EndBracketPos As Integer
+        Dim openBracketPos, endBracketPos As Integer
         Dim res As New ExpressionResult
-        Dim NestedResult As ExpressionResult
-        Dim NewElement As Boolean
 
         ' Find brackets, recursively call ExpressionHandler
         Do
-            OpenBracketPos = InStr(Expression, "(")
-            If OpenBracketPos <> 0 Then
+            openBracketPos = InStr(expr, "(")
+            If openBracketPos <> 0 Then
                 ' Find equivalent closing bracket
-                BracketCount = 1
-                EndBracketPos = 0
-                For i = OpenBracketPos + 1 To Len(Expression)
-                    If Mid(Expression, i, 1) = "(" Then
+                Dim BracketCount = 1
+                endBracketPos = 0
+                For i = openBracketPos + 1 To Len(expr)
+                    If Mid(expr, i, 1) = "(" Then
                         BracketCount = BracketCount + 1
-                    ElseIf Mid(Expression, i, 1) = ")" Then
+                    ElseIf Mid(expr, i, 1) = ")" Then
                         BracketCount = BracketCount - 1
                     End If
 
                     If BracketCount = 0 Then
-                        EndBracketPos = i
+                        endBracketPos = i
                         Exit For
                     End If
                 Next i
 
-                If EndBracketPos <> 0 Then
-                    NestedResult = ExpressionHandler(Mid(Expression, OpenBracketPos + 1, EndBracketPos - OpenBracketPos - 1))
+                If endBracketPos <> 0 Then
+                    Dim NestedResult = ExpressionHandler(Mid(expr, openBracketPos + 1, endBracketPos - openBracketPos - 1))
                     If NestedResult.Success <> ExpressionSuccess.OK Then
                         res.Success = NestedResult.Success
                         res.Message = NestedResult.Message
                         Return res
                     End If
 
-                    Expression = Left(Expression, OpenBracketPos - 1) & " " & NestedResult.Result & " " & Mid(Expression, EndBracketPos + 1)
+                    expr = Left(expr, openBracketPos - 1) & " " & NestedResult.Result & " " & Mid(expr, endBracketPos + 1)
 
                 Else
                     res.Message = "Missing closing bracket"
@@ -2873,79 +2841,79 @@ Public Class LegacyGame
 
                 End If
             End If
-        Loop Until OpenBracketPos = 0
-
-
-        NumElements = 1
-        ReDim Elements(1)
-        NumOperators = 0
+        Loop Until openBracketPos = 0
 
         ' Split expression into elements, e.g.:
         '       2 + 3 * 578.2 / 36
         '       E O E O EEEEE O EE      where E=Element, O=Operator
 
-        ' Populate Elements() and Operators()
+        Dim numElements = 1
+        Dim elements() As String
+        ReDim elements(1)
+        Dim numOperators = 0
+        Dim operators(0) As String
+        Dim newElement As Boolean
 
-        ObsExp = ObscureNumericExps(Expression)
+        Dim obscuredExpr = ObscureNumericExps(expr)
 
-        For i = 1 To Len(Expression)
-            Select Case Mid(ObsExp, i, 1)
+        For i = 1 To Len(expr)
+            Select Case Mid(obscuredExpr, i, 1)
                 Case "+", "*", "/"
-                    NewElement = True
+                    newElement = True
                 Case "-"
                     ' A minus often means subtraction, so it's a new element. But sometimes
                     ' it just denotes a negative number. In this case, the current element will
                     ' be empty.
 
-                    If Trim(Elements(NumElements)) = "" Then
-                        NewElement = False
+                    If Trim(elements(numElements)) = "" Then
+                        newElement = False
                     Else
-                        NewElement = True
+                        newElement = True
                     End If
                 Case Else
-                    NewElement = False
+                    newElement = False
             End Select
 
-            If NewElement Then
-                NumElements = NumElements + 1
-                ReDim Preserve Elements(NumElements)
+            If newElement Then
+                numElements = numElements + 1
+                ReDim Preserve elements(numElements)
 
-                NumOperators = NumOperators + 1
-                ReDim Preserve Operators(NumOperators)
-                Operators(NumOperators) = Mid(Expression, i, 1)
+                numOperators = numOperators + 1
+                ReDim Preserve operators(numOperators)
+                operators(numOperators) = Mid(expr, i, 1)
             Else
-                Elements(NumElements) = Elements(NumElements) & Mid(Expression, i, 1)
+                elements(numElements) = elements(numElements) & Mid(expr, i, 1)
             End If
         Next i
 
         ' Check Elements are numeric, and trim spaces
-        For i = 1 To NumElements
+        For i = 1 To numElements
 
-            Elements(i) = Trim(Elements(i))
+            elements(i) = Trim(elements(i))
 
-            If Not IsNumeric(Elements(i)) Then
-                res.Message = "Syntax error evaluating expression - non-numeric element '" & Elements(i) & "'"
+            If Not IsNumeric(elements(i)) Then
+                res.Message = "Syntax error evaluating expression - non-numeric element '" & elements(i) & "'"
                 res.Success = ExpressionSuccess.Fail
                 Return res
             End If
         Next i
 
+        Dim opNum = 0
+
         Do
             ' Go through the Operators array to find next calculation to perform
 
-            OpNum = 0
-
-            For i = 1 To NumOperators
-                If Operators(i) = "/" Or Operators(i) = "*" Then
-                    OpNum = i
+            For i = 1 To numOperators
+                If operators(i) = "/" Or operators(i) = "*" Then
+                    opNum = i
                     Exit For
                 End If
             Next i
 
-            If OpNum = 0 Then
-                For i = 1 To NumOperators
-                    If Operators(i) = "+" Or Operators(i) = "-" Then
-                        OpNum = i
+            If opNum = 0 Then
+                For i = 1 To numOperators
+                    If operators(i) = "+" Or operators(i) = "-" Then
+                        opNum = i
                         Exit For
                     End If
                 Next i
@@ -2953,139 +2921,135 @@ Public Class LegacyGame
 
             ' If OpNum is still 0, there are no calculations left to do.
 
-            If OpNum <> 0 Then
+            If opNum <> 0 Then
 
-                Val1 = CDbl(Elements(OpNum))
-                Val2 = CDbl(Elements(OpNum + 1))
+                Dim val1 = CDbl(elements(opNum))
+                Dim val2 = CDbl(elements(opNum + 1))
+                Dim result As Double
 
-                Select Case Operators(OpNum)
+                Select Case operators(opNum)
                     Case "/"
-                        If Val2 = 0 Then
+                        If val2 = 0 Then
                             res.Message = "Division by zero"
                             res.Success = ExpressionSuccess.Fail
                             Return res
                         End If
-                        Result = Val1 / Val2
+                        result = val1 / val2
                     Case "*"
-                        Result = Val1 * Val2
+                        result = val1 * val2
                     Case "+"
-                        Result = Val1 + Val2
+                        result = val1 + val2
                     Case "-"
-                        Result = Val1 - Val2
+                        result = val1 - val2
                 End Select
 
-                Elements(OpNum) = CStr(Result)
+                elements(opNum) = CStr(result)
 
                 ' Remove this operator, and Elements(OpNum+1) from the arrays
-                For i = OpNum To NumOperators - 1
-                    Operators(i) = Operators(i + 1)
+                For i = opNum To numOperators - 1
+                    operators(i) = operators(i + 1)
                 Next i
-                For i = OpNum + 1 To NumElements - 1
-                    Elements(i) = Elements(i + 1)
+                For i = opNum + 1 To numElements - 1
+                    elements(i) = elements(i + 1)
                 Next i
-                NumOperators = NumOperators - 1
-                NumElements = NumElements - 1
-                ReDim Preserve Operators(NumOperators)
-                ReDim Preserve Elements(NumElements)
+                numOperators = numOperators - 1
+                numElements = numElements - 1
+                ReDim Preserve operators(numOperators)
+                ReDim Preserve elements(numElements)
 
             End If
-        Loop Until OpNum = 0 Or NumOperators = 0
+        Loop Until opNum = 0 Or numOperators = 0
 
         res.Success = ExpressionSuccess.OK
-        res.Result = Elements(1)
+        res.Result = elements(1)
         Return res
 
     End Function
 
-    Private Function ListContents(ObjID As Integer, ctx As Context) As String
-
+    Private Function ListContents(id As Integer, ctx As Context) As String
         ' Returns a formatted list of the contents of a container.
         ' If the list action causes a script to be run instead, ListContents
         ' returns "<script>"
 
-        Dim Contents As String
-        Dim i, NumContents As Integer
-        Dim ContentsIDs(0) As Integer
-        Dim ListString As String
-        Dim DisplayList As Boolean
+        Dim i As Integer
+        Dim contentsIDs(0) As Integer
 
-        If Not IsYes(GetObjectProperty("container", ObjID, True, False)) Then
+        If Not IsYes(GetObjectProperty("container", id, True, False)) Then
             Return ""
         End If
 
-        If Not IsYes(GetObjectProperty("opened", ObjID, True, False)) And Not IsYes(GetObjectProperty("transparent", ObjID, True, False)) And Not IsYes(GetObjectProperty("surface", ObjID, True, False)) Then
+        If Not IsYes(GetObjectProperty("opened", id, True, False)) And Not IsYes(GetObjectProperty("transparent", id, True, False)) And Not IsYes(GetObjectProperty("surface", id, True, False)) Then
             ' Container is closed, so return "list closed" property if there is one.
 
-            If DoAction(ObjID, "list closed", ctx, False) Then
+            If DoAction(id, "list closed", ctx, False) Then
                 Return "<script>"
             Else
-                Return GetObjectProperty("list closed", ObjID, False, False)
+                Return GetObjectProperty("list closed", id, False, False)
             End If
         End If
 
         ' populate contents string
 
-        NumContents = 0
+        Dim numContents = 0
 
         For i = 1 To _numberObjs
             If _objs(i).Exists And _objs(i).Visible Then
-                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(_objs(ObjID).ObjectName) Then
-                    NumContents = NumContents + 1
-                    ReDim Preserve ContentsIDs(NumContents)
-                    ContentsIDs(NumContents) = i
+                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(_objs(id).ObjectName) Then
+                    numContents = numContents + 1
+                    ReDim Preserve contentsIDs(numContents)
+                    contentsIDs(numContents) = i
                 End If
             End If
         Next i
 
-        Contents = ""
+        Dim contents = ""
 
-        If NumContents > 0 Then
+        If numContents > 0 Then
             ' Check if list property is set.
 
-            If DoAction(ObjID, "list", ctx, False) Then
+            If DoAction(id, "list", ctx, False) Then
                 Return "<script>"
             End If
 
-            If IsYes(GetObjectProperty("list", ObjID, True, False)) Then
+            If IsYes(GetObjectProperty("list", id, True, False)) Then
                 ' Read header, if any
-                ListString = GetObjectProperty("list", ObjID, False, False)
+                Dim listString = GetObjectProperty("list", id, False, False)
+                Dim displayList = True
 
-                DisplayList = True
-
-                If ListString <> "" Then
-                    If Right(ListString, 1) = ":" Then
-                        Contents = Left(ListString, Len(ListString) - 1) & " "
+                If listString <> "" Then
+                    If Right(listString, 1) = ":" Then
+                        contents = Left(listString, Len(listString) - 1) & " "
                     Else
                         ' If header doesn't end in a colon, then the header is the only text to print
-                        Contents = ListString
-                        DisplayList = False
+                        contents = listString
+                        displayList = False
                     End If
                 Else
-                    Contents = UCase(Left(_objs(ObjID).Article, 1)) & Mid(_objs(ObjID).Article, 2) & " contains "
+                    contents = UCase(Left(_objs(id).Article, 1)) & Mid(_objs(id).Article, 2) & " contains "
                 End If
 
-                If DisplayList Then
-                    For i = 1 To NumContents
+                If displayList Then
+                    For i = 1 To numContents
                         If i > 1 Then
-                            If i < NumContents Then
-                                Contents = Contents & ", "
+                            If i < numContents Then
+                                contents = contents & ", "
                             Else
-                                Contents = Contents & " and "
+                                contents = contents & " and "
                             End If
                         End If
 
-                        Dim o = _objs(ContentsIDs(i))
-                        If o.Prefix <> "" Then Contents = Contents & o.Prefix
+                        Dim o = _objs(contentsIDs(i))
+                        If o.Prefix <> "" Then contents = contents & o.Prefix
                         If o.ObjectAlias <> "" Then
-                            Contents = Contents & "|b" & o.ObjectAlias & "|xb"
+                            contents = contents & "|b" & o.ObjectAlias & "|xb"
                         Else
-                            Contents = Contents & "|b" & o.ObjectName & "|xb"
+                            contents = contents & "|b" & o.ObjectName & "|xb"
                         End If
-                        If o.Suffix <> "" Then Contents = Contents & " " & o.Suffix
+                        If o.Suffix <> "" Then contents = contents & " " & o.Suffix
                     Next i
                 End If
 
-                Return Contents & "."
+                Return contents & "."
             End If
             ' The "list" property is not set, so do not list contents.
             Return ""
@@ -3093,23 +3057,22 @@ Public Class LegacyGame
 
         ' Container is empty, so return "list empty" property if there is one.
 
-        If DoAction(ObjID, "list empty", ctx, False) Then
+        If DoAction(id, "list empty", ctx, False) Then
             Return "<script>"
         Else
-            Return GetObjectProperty("list empty", ObjID, False, False)
+            Return GetObjectProperty("list empty", id, False, False)
         End If
 
     End Function
 
-    Private Function ObscureNumericExps(InputString As String) As String
-
+    Private Function ObscureNumericExps(s As String) As String
         ' Obscures + or - next to E in Double-type variables with exponents
         '   e.g. 2.345E+20 becomes 2.345EX20
         ' This stops huge numbers breaking parsing of maths functions
 
         Dim EPos, CurPos As Integer
         Dim OutputString As String
-        OutputString = InputString
+        OutputString = s
 
         CurPos = 1
         Do
@@ -3123,54 +3086,54 @@ Public Class LegacyGame
         Return OutputString
     End Function
 
-    Private Sub ProcessListInfo(ListLine As String, ObjID As Integer)
-        Dim ListInfo As New TextAction
-        Dim PropName As String = ""
+    Private Sub ProcessListInfo(line As String, id As Integer)
+        Dim listInfo As New TextAction
+        Dim propName As String = ""
 
-        If BeginsWith(ListLine, "list closed <") Then
-            ListInfo.Type = TextActionType.Text
-            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
-            PropName = "list closed"
-        ElseIf Trim(ListLine) = "list closed off" Then
+        If BeginsWith(line, "list closed <") Then
+            listInfo.Type = TextActionType.Text
+            listInfo.Data = RetrieveParameter(line, _nullContext)
+            propName = "list closed"
+        ElseIf Trim(line) = "list closed off" Then
             ' default for list closed is off anyway
             Exit Sub
-        ElseIf BeginsWith(ListLine, "list closed") Then
-            ListInfo.Type = TextActionType.Script
-            ListInfo.Data = GetEverythingAfter(ListLine, "list closed")
-            PropName = "list closed"
+        ElseIf BeginsWith(line, "list closed") Then
+            listInfo.Type = TextActionType.Script
+            listInfo.Data = GetEverythingAfter(line, "list closed")
+            propName = "list closed"
 
 
-        ElseIf BeginsWith(ListLine, "list empty <") Then
-            ListInfo.Type = TextActionType.Text
-            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
-            PropName = "list empty"
-        ElseIf Trim(ListLine) = "list empty off" Then
+        ElseIf BeginsWith(line, "list empty <") Then
+            listInfo.Type = TextActionType.Text
+            listInfo.Data = RetrieveParameter(line, _nullContext)
+            propName = "list empty"
+        ElseIf Trim(line) = "list empty off" Then
             ' default for list empty is off anyway
             Exit Sub
-        ElseIf BeginsWith(ListLine, "list empty") Then
-            ListInfo.Type = TextActionType.Script
-            ListInfo.Data = GetEverythingAfter(ListLine, "list empty")
-            PropName = "list empty"
+        ElseIf BeginsWith(line, "list empty") Then
+            listInfo.Type = TextActionType.Script
+            listInfo.Data = GetEverythingAfter(line, "list empty")
+            propName = "list empty"
 
 
-        ElseIf Trim(ListLine) = "list off" Then
-            AddToObjectProperties("not list", ObjID, _nullContext)
+        ElseIf Trim(line) = "list off" Then
+            AddToObjectProperties("not list", id, _nullContext)
             Exit Sub
-        ElseIf BeginsWith(ListLine, "list <") Then
-            ListInfo.Type = TextActionType.Text
-            ListInfo.Data = RetrieveParameter(ListLine, _nullContext)
-            PropName = "list"
-        ElseIf BeginsWith(ListLine, "list ") Then
-            ListInfo.Type = TextActionType.Script
-            ListInfo.Data = GetEverythingAfter(ListLine, "list ")
-            PropName = "list"
+        ElseIf BeginsWith(line, "list <") Then
+            listInfo.Type = TextActionType.Text
+            listInfo.Data = RetrieveParameter(line, _nullContext)
+            propName = "list"
+        ElseIf BeginsWith(line, "list ") Then
+            listInfo.Type = TextActionType.Script
+            listInfo.Data = GetEverythingAfter(line, "list ")
+            propName = "list"
         End If
 
-        If PropName <> "" Then
-            If ListInfo.Type = TextActionType.Text Then
-                AddToObjectProperties(PropName & "=" & ListInfo.Data, ObjID, _nullContext)
+        If propName <> "" Then
+            If listInfo.Type = TextActionType.Text Then
+                AddToObjectProperties(propName & "=" & listInfo.Data, id, _nullContext)
             Else
-                AddToObjectActions("<" & PropName & "> " & ListInfo.Data, ObjID, _nullContext)
+                AddToObjectActions("<" & propName & "> " & listInfo.Data, id, _nullContext)
             End If
         End If
     End Sub
