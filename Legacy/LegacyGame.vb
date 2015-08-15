@@ -317,43 +317,41 @@ Public Class LegacyGame
     Private _gameLoadMethod As String    ' TODO: Make enum
     Private _timers() As TimerType
     Private _numberTimers As Integer
-    Private CurFont As String
-    Private CurFontSize As Double
-    Private NumDisplayStrings As Integer
-    Private NumDisplayNumerics As Integer
-    Private GameFullyLoaded As Boolean
-    Private GameChangeData As New GameChangeDataType
-    Private LastIt As Integer
-    Private LastItMode As ItType
-    Private ThisTurnIt As Integer
-    Private ThisTurnItMode As ItType
-    Private BadCmdBefore, BadCmdAfter As String
-    Private NumResources As Integer
-    Private Resources() As ResourceType
-    Private ResourceFile As String
-    Private ResourceOffset As Integer
-    Private StartCatPos As Integer
-    Private UseAbbreviations As Boolean
-    Private m_loadedFromQSG As Boolean
-    Private BeforeSaveScript As String
-    Private OnLoadScript As String
-    Private NumSkipCheckFiles As Integer
-    Private SkipCheckFile() As String
-    Private m_compassExits As New List(Of ListData)
-    Private m_gotoExits As New List(Of ListData)
-    Private m_textFormatter As New TextFormatter
-    Private m_log As New List(Of String)
-    Private m_fileData As String
-    Private m_commandLock As Object = New Object
-    Private m_stateLock As Object = New Object
-    Private m_state As State = State.Ready
-    Private m_waitLock As Object = New Object
-    Private m_readyForCommand As Boolean = True
-    Private m_gameLoading As Boolean
-    Private m_random As New Random()
-    Private m_tempFolder As String
-
-    Private PlayerErrorMessageString(38) As String
+    Private _numDisplayStrings As Integer
+    Private _numDisplayNumerics As Integer
+    Private _gameFullyLoaded As Boolean
+    Private _gameChangeData As New GameChangeDataType
+    Private _lastIt As Integer
+    Private _lastItMode As ItType
+    Private _thisTurnIt As Integer
+    Private _thisTurnItMode As ItType
+    Private _badCmdBefore As String
+    Private _badCmdAfter As String
+    Private _numResources As Integer
+    Private _resources() As ResourceType
+    Private _resourceFile As String
+    Private _resourceOffset As Integer
+    Private _startCatPos As Integer
+    Private _useAbbreviations As Boolean
+    Private _loadedFromQsg As Boolean  ' TODO: Same as _gameLoadMethod
+    Private _beforeSaveScript As String
+    Private _onLoadScript As String
+    Private _numSkipCheckFiles As Integer
+    Private _skipCheckFile() As String
+    Private _compassExits As New List(Of ListData)
+    Private _gotoExits As New List(Of ListData)
+    Private _textFormatter As New TextFormatter
+    Private _log As New List(Of String)
+    Private _fileData As String
+    Private _commandLock As Object = New Object
+    Private _stateLock As Object = New Object
+    Private _state As State = State.Ready
+    Private _waitLock As Object = New Object
+    Private _readyForCommand As Boolean = True
+    Private _gameLoading As Boolean
+    Private _random As New Random()
+    Private _tempFolder As String
+    Private _playerErrorMessageString(38) As String
 
     Friend Enum PlayerError
         BadCommand
@@ -457,7 +455,7 @@ Public Class LegacyGame
     Private m_useStaticFrameForPictures As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
-        m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
+        _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
         _gameLoadMethod = "normal"
         m_filename = filename
@@ -465,11 +463,11 @@ Public Class LegacyGame
 
         ' Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         ' for compatibility with games which have non-fatal errors in them.
-        NumSkipCheckFiles = 3
-        ReDim SkipCheckFile(3)
-        SkipCheckFile(1) = "bargain.cas"
-        SkipCheckFile(2) = "easymoney.asl"
-        SkipCheckFile(3) = "musicvf1.cas"
+        _numSkipCheckFiles = 3
+        ReDim _skipCheckFile(3)
+        _skipCheckFile(1) = "bargain.cas"
+        _skipCheckFile(2) = "easymoney.asl"
+        _skipCheckFile(3) = "musicvf1.cas"
     End Sub
 
     Public Class InitGameData
@@ -1777,10 +1775,10 @@ Public Class LegacyGame
         Loop Until SlashPos = 0
         FilenameNoPath = LCase(Mid(Filename, LastSlashPos + 1))
 
-        For i = 1 To NumSkipCheckFiles
-            If FilenameNoPath = SkipCheckFile(i) Then
+        For i = 1 To _numSkipCheckFiles
+            If FilenameNoPath = _skipCheckFile(i) Then
                 SkipCheck = True
-                i = NumSkipCheckFiles
+                i = _numSkipCheckFiles
             End If
         Next i
 
@@ -1883,7 +1881,7 @@ Public Class LegacyGame
             TheError = "INTERNAL ERROR: " & TheError
         End If
 
-        m_log.Add(TheError)
+        _log.Add(TheError)
     End Sub
 
     Friend Function RetrieveParameter(InputString As String, ctx As Context, Optional bConvertStringVariables As Boolean = True) As String
@@ -1982,13 +1980,13 @@ Public Class LegacyGame
         For i As Integer = 9 To Len(FileData)
             If CasVersion = 3 And Mid(FileData, i, 1) = StartCat Then
                 ' Read catalog
-                StartCatPos = i
+                _startCatPos = i
                 EndCatPos = InStr(j, FileData, Keyword2CAS("!endcat"))
                 ReadCatalog(Mid(FileData, j + 1, EndCatPos - j - 1))
-                ResourceFile = thefilename
-                ResourceOffset = EndCatPos + 1
+                _resourceFile = thefilename
+                _resourceOffset = EndCatPos + 1
                 i = Len(FileData)
-                m_fileData = FileData
+                _fileData = FileData
             Else
 
                 CurLin = ""
@@ -2348,7 +2346,7 @@ Public Class LegacyGame
 
         If ChildLength < 0 Then
             PlayerErrorMessage(PlayerError.BadCommand, ctx)
-            BadCmdBefore = Verb
+            _badCmdBefore = Verb
             Exit Sub
         End If
 
@@ -2373,12 +2371,12 @@ Public Class LegacyGame
                 End If
 
                 If Not GotObject Then
-                    BadCmdBefore = Verb
+                    _badCmdBefore = Verb
                     Exit Sub
                 End If
             Else
                 If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
-                BadCmdBefore = Verb
+                _badCmdBefore = Verb
                 Exit Sub
             End If
 
@@ -2387,7 +2385,7 @@ Public Class LegacyGame
 
             If ChildObjID <= 0 Then
                 If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                BadCmdBefore = Verb
+                _badCmdBefore = Verb
                 Exit Sub
             End If
         End If
@@ -2411,7 +2409,7 @@ Public Class LegacyGame
 
             If ParentObjID <= 0 Then
                 If ParentObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                BadCmdBefore = Left(CommandLine, SepPos + SepLen)
+                _badCmdBefore = Left(CommandLine, SepPos + SepLen)
                 Exit Sub
             End If
         Else
@@ -2601,7 +2599,7 @@ Public Class LegacyGame
 
         If ObjID <= 0 Then
             If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-            BadCmdBefore = Action
+            _badCmdBefore = Action
             Exit Sub
         End If
 
@@ -2843,7 +2841,7 @@ Public Class LegacyGame
 
             If FoundItem = False Then
                 If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                BadCmdBefore = ThisVerb
+                _badCmdBefore = ThisVerb
             Else
                 SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
 
@@ -3265,7 +3263,7 @@ Public Class LegacyGame
     End Function
 
     Private Sub DoPrint(OutputText As String)
-        RaiseEvent PrintText(m_textFormatter.OutputHTML(OutputText))
+        RaiseEvent PrintText(_textFormatter.OutputHTML(OutputText))
     End Sub
 
     Private Sub DestroyExit(ExitData As String, ctx As Context)
@@ -3350,8 +3348,8 @@ Public Class LegacyGame
         m_player.DoWait()
         ChangeState(State.Waiting)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.Wait(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
 
     End Sub
@@ -3415,18 +3413,18 @@ Public Class LegacyGame
         Dim ResID As Integer
         Dim sFileName As String
 
-        If ResourceFile = "" Then Return ""
+        If _resourceFile = "" Then Return ""
 
         ' Find file in catalog
 
         FoundRes = False
 
-        For i = 1 To NumResources
-            If LCase(FileToExtract) = LCase(Resources(i).ResourceName) Then
+        For i = 1 To _numResources
+            If LCase(FileToExtract) = LCase(_resources(i).ResourceName) Then
                 FoundRes = True
-                StartPos = Resources(i).ResourceStart + ResourceOffset
-                Length = Resources(i).ResourceLength
-                Extracted = Resources(i).Extracted
+                StartPos = _resources(i).ResourceStart + _resourceOffset
+                Length = _resources(i).ResourceLength
+                Extracted = _resources(i).Extracted
                 ResID = i
                 Exit For
             End If
@@ -3437,17 +3435,17 @@ Public Class LegacyGame
             Return Nothing
         End If
 
-        sFileName = System.IO.Path.Combine(m_tempFolder, FileToExtract)
+        sFileName = System.IO.Path.Combine(_tempFolder, FileToExtract)
         System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(sFileName))
 
         If Not Extracted Then
             ' Extract file from cached CAS data
-            FileData = Mid(m_fileData, StartPos, Length)
+            FileData = Mid(_fileData, StartPos, Length)
 
             ' Write file to temp dir
             System.IO.File.WriteAllText(sFileName, FileData, System.Text.Encoding.GetEncoding(1252))
 
-            Resources(ResID).Extracted = True
+            _resources(ResID).Extracted = True
         End If
 
         Return sFileName
@@ -3488,11 +3486,11 @@ Public Class LegacyGame
     End Sub
 
     Private Sub AddToChangeLog(AppliesTo As String, ChangeData As String)
-        GameChangeData.NumberChanges = GameChangeData.NumberChanges + 1
-        ReDim Preserve GameChangeData.ChangeData(GameChangeData.NumberChanges)
-        GameChangeData.ChangeData(GameChangeData.NumberChanges) = New ChangeType
-        GameChangeData.ChangeData(GameChangeData.NumberChanges).AppliesTo = AppliesTo
-        GameChangeData.ChangeData(GameChangeData.NumberChanges).Change = ChangeData
+        _gameChangeData.NumberChanges = _gameChangeData.NumberChanges + 1
+        ReDim Preserve _gameChangeData.ChangeData(_gameChangeData.NumberChanges)
+        _gameChangeData.ChangeData(_gameChangeData.NumberChanges) = New ChangeType
+        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).AppliesTo = AppliesTo
+        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).Change = ChangeData
     End Sub
 
     Private Sub AddToOOChangeLog(lAppliesToType As ChangeLog.eAppliesToType, sAppliesTo As String, sElement As String, sChangeData As String)
@@ -3719,7 +3717,7 @@ Public Class LegacyGame
                     Else
                         o.ObjectAlias = CurValue
                     End If
-                    If GameFullyLoaded Then
+                    If _gameFullyLoaded Then
                         UpdateObjectList(ctx)
                         UpdateItems(ctx)
                     End If
@@ -3748,7 +3746,7 @@ Public Class LegacyGame
                     o.Suffix = CurValue
                 Case "displaytype"
                     o.DisplayType = CurValue
-                    If GameFullyLoaded Then UpdateObjectList(ctx)
+                    If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "gender"
                     o.Gender = CurValue
                 Case "article"
@@ -3762,7 +3760,7 @@ Public Class LegacyGame
                         o.Exists = False
                     End If
 
-                    If GameFullyLoaded Then UpdateObjectList(ctx)
+                    If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "invisible"
                     If FalseProperty Then
                         o.Visible = True
@@ -3770,7 +3768,7 @@ Public Class LegacyGame
                         o.Visible = False
                     End If
 
-                    If GameFullyLoaded Then UpdateObjectList(ctx)
+                    If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "take"
                     If _gameAslVersion >= 392 Then
                         If FalseProperty Then
@@ -3947,11 +3945,11 @@ Public Class LegacyGame
 
     Private Sub ExecOops(Correction As String, ctx As Context)
 
-        If BadCmdBefore <> "" Then
-            If BadCmdAfter = "" Then
-                ExecCommand(BadCmdBefore & " " & Correction, ctx, False)
+        If _badCmdBefore <> "" Then
+            If _badCmdAfter = "" Then
+                ExecCommand(_badCmdBefore & " " & Correction, ctx, False)
             Else
-                ExecCommand(BadCmdBefore & " " & Correction & " " & BadCmdAfter, ctx, False)
+                ExecCommand(_badCmdBefore & " " & Correction & " " & _badCmdAfter, ctx, False)
             End If
         End If
 
@@ -4180,34 +4178,34 @@ Public Class LegacyGame
         ' If player uses "it", "them" etc. as name:
         If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = ItType.Inanimate And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
-                Return LastIt
+            If _lastIt <> 0 And _lastItMode = ItType.Inanimate And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+                SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
+                Return _lastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         ElseIf ObjectName = "him" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = ItType.Male And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
-                Return LastIt
+            If _lastIt <> 0 And _lastItMode = ItType.Male And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+                SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
+                Return _lastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         ElseIf ObjectName = "her" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If LastIt <> 0 And LastItMode = ItType.Female And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
-                Return LastIt
+            If _lastIt <> 0 And _lastItMode = ItType.Female And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+                SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
+                Return _lastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
         End If
 
-        ThisTurnIt = 0
+        _thisTurnIt = 0
 
         If BeginsWith(ObjectName, "the ") Then
             ObjectName = GetEverythingAfter(ObjectName, "the ")
@@ -4236,7 +4234,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        If _gameAslVersion >= 391 And NumberCorresIDs = 0 And UseAbbreviations And Len(ObjectName) > 0 Then
+        If _gameAslVersion >= 391 And NumberCorresIDs = 0 And _useAbbreviations And Len(ObjectName) > 0 Then
             ' Check for abbreviated object names
 
             For i = 1 To _numberObjs
@@ -4258,15 +4256,15 @@ Public Class LegacyGame
         Dim Question As String
         If NumberCorresIDs = 1 Then
             SetStringContents("quest.lastobject", _objs(IDNumbers(1)).ObjectName, ctx)
-            ThisTurnIt = IDNumbers(1)
+            _thisTurnIt = IDNumbers(1)
 
             Select Case _objs(IDNumbers(1)).Article
                 Case "him"
-                    ThisTurnItMode = ItType.Male
+                    _thisTurnItMode = ItType.Male
                 Case "her"
-                    ThisTurnItMode = ItType.Female
+                    _thisTurnItMode = ItType.Female
                 Case Else
-                    ThisTurnItMode = ItType.Inanimate
+                    _thisTurnItMode = ItType.Inanimate
             End Select
 
             Return IDNumbers(1)
@@ -4299,15 +4297,15 @@ Public Class LegacyGame
 
             SetStringContents("quest.lastobject", _objs(IDNumbers(_choiceNumber)).ObjectName, ctx)
 
-            ThisTurnIt = IDNumbers(_choiceNumber)
+            _thisTurnIt = IDNumbers(_choiceNumber)
 
             Select Case _objs(IDNumbers(_choiceNumber)).Article
                 Case "him"
-                    ThisTurnItMode = ItType.Male
+                    _thisTurnItMode = ItType.Male
                 Case "her"
-                    ThisTurnItMode = ItType.Female
+                    _thisTurnItMode = ItType.Female
                 Case Else
-                    ThisTurnItMode = ItType.Inanimate
+                    _thisTurnItMode = ItType.Inanimate
             End Select
 
             Print("- " & DescriptionText(_choiceNumber) & "|n", ctx)
@@ -4315,7 +4313,7 @@ Public Class LegacyGame
             Return IDNumbers(_choiceNumber)
         End If
 
-        ThisTurnIt = LastIt
+        _thisTurnIt = _lastIt
         SetStringContents("quest.error.object", ObjectName, ctx)
         Return -1
     End Function
@@ -4699,7 +4697,7 @@ Public Class LegacyGame
                 Next j
             End If
 
-            If Not m_gameLoading Then UpdateObjectList(ctx)
+            If Not _gameLoading Then UpdateObjectList(ctx)
 
         ElseIf BeginsWith(CreateData, "exit ") Then
             ExecuteCreateExit(CreateData, ctx)
@@ -4833,7 +4831,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If Not m_gameLoading Then
+        If Not _gameLoading Then
             ' Update quest.doorways variables
             ShowRoomInfo(_currentRoom, ctx, True)
 
@@ -4875,7 +4873,7 @@ Public Class LegacyGame
                     PlayerErrorMessage(PlayerError.BadDrop, ctx)
                 End If
             End If
-            BadCmdBefore = "drop"
+            _badCmdBefore = "drop"
             Exit Sub
         End If
 
@@ -4967,7 +4965,7 @@ Public Class LegacyGame
 
         If ExamineItem = "" Then
             PlayerErrorMessage(PlayerError.BadExamine, ctx)
-            BadCmdBefore = "examine"
+            _badCmdBefore = "examine"
             Exit Sub
         End If
 
@@ -5024,7 +5022,7 @@ Public Class LegacyGame
 
         If Not FoundItem Then
             If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-            BadCmdBefore = "examine"
+            _badCmdBefore = "examine"
         End If
 
     End Sub
@@ -5717,17 +5715,17 @@ Public Class LegacyGame
 
         ' Organise Change Log
 
-        For i = 1 To GameChangeData.NumberChanges
-            If BeginsWith(GameChangeData.ChangeData(i).AppliesTo, "object ") Then
+        For i = 1 To _gameChangeData.NumberChanges
+            If BeginsWith(_gameChangeData.ChangeData(i).AppliesTo, "object ") Then
                 NumObjectData = NumObjectData + 1
                 ReDim Preserve ObjectData(NumObjectData)
                 ObjectData(NumObjectData) = New ChangeType
-                ObjectData(NumObjectData) = GameChangeData.ChangeData(i)
-            ElseIf BeginsWith(GameChangeData.ChangeData(i).AppliesTo, "room ") Then
+                ObjectData(NumObjectData) = _gameChangeData.ChangeData(i)
+            ElseIf BeginsWith(_gameChangeData.ChangeData(i).AppliesTo, "room ") Then
                 NumRoomData = NumRoomData + 1
                 ReDim Preserve RoomData(NumRoomData)
                 RoomData(NumRoomData) = New ChangeType
-                RoomData(NumRoomData) = GameChangeData.ChangeData(i)
+                RoomData(NumRoomData) = _gameChangeData.ChangeData(i)
             End If
         Next i
 
@@ -5872,8 +5870,8 @@ Public Class LegacyGame
         m_player.DoPause(Duration)
         ChangeState(State.Waiting)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.Wait(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
     End Sub
 
@@ -6125,7 +6123,7 @@ Public Class LegacyGame
             LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError)
             Return ""
         ElseIf FunctionName = "rand" Then
-            Return Str(Int(m_random.NextDouble() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
+            Return Str(Int(_random.NextDouble() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
         ElseIf FunctionName = "instr" Then
             If iNumParameters = 3 Then
                 Param3 = ""
@@ -6391,8 +6389,8 @@ Public Class LegacyGame
         m_player.ShowQuestion(askq)
         ChangeState(State.Waiting)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.Wait(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
 
         Return m_questionResponse
@@ -6408,8 +6406,8 @@ Public Class LegacyGame
     Private Sub SetQuestionResponseInNewThread(response As Object)
         m_questionResponse = DirectCast(response, Boolean)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.PulseAll(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.PulseAll(_waitLock)
         End SyncLock
     End Sub
 
@@ -6662,7 +6660,7 @@ Public Class LegacyGame
     End Sub
 
     Private Function GetErrorMessage(e As PlayerError, ctx As Context) As String
-        Return ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(e), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx)
+        Return ConvertParameter(ConvertParameter(ConvertParameter(_playerErrorMessageString(e), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx)
     End Function
 
     Private Sub PlayMedia(filename As String)
@@ -6682,8 +6680,8 @@ Public Class LegacyGame
             End If
 
             If sync Then
-                SyncLock (m_waitLock)
-                    System.Threading.Monitor.Wait(m_waitLock)
+                SyncLock (_waitLock)
+                    System.Threading.Monitor.Wait(_waitLock)
                 End SyncLock
             End If
 
@@ -6893,44 +6891,44 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetDefaultPlayerErrorMessages()
-        PlayerErrorMessageString(PlayerError.BadCommand) = "I don't understand your command. Type HELP for a list of valid commands."
-        PlayerErrorMessageString(PlayerError.BadGo) = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place."
-        PlayerErrorMessageString(PlayerError.BadGive) = "You didn't say who you wanted to give that to."
-        PlayerErrorMessageString(PlayerError.BadCharacter) = "I can't see anybody of that name here."
-        PlayerErrorMessageString(PlayerError.NoItem) = "You don't have that."
-        PlayerErrorMessageString(PlayerError.ItemUnwanted) = "#quest.error.gender# doesn't want #quest.error.article#."
-        PlayerErrorMessageString(PlayerError.BadLook) = "You didn't say what you wanted to look at."
-        PlayerErrorMessageString(PlayerError.BadThing) = "I can't see that here."
-        PlayerErrorMessageString(PlayerError.DefaultLook) = "Nothing out of the ordinary."
-        PlayerErrorMessageString(PlayerError.DefaultSpeak) = "#quest.error.gender# says nothing."
-        PlayerErrorMessageString(PlayerError.BadItem) = "I can't see that anywhere."
-        PlayerErrorMessageString(PlayerError.DefaultTake) = "You pick #quest.error.article# up."
-        PlayerErrorMessageString(PlayerError.BadUse) = "You didn't say what you wanted to use that on."
-        PlayerErrorMessageString(PlayerError.DefaultUse) = "You can't use that here."
-        PlayerErrorMessageString(PlayerError.DefaultOut) = "There's nowhere you can go out to around here."
-        PlayerErrorMessageString(PlayerError.BadPlace) = "You can't go there."
-        PlayerErrorMessageString(PlayerError.DefaultExamine) = "Nothing out of the ordinary."
-        PlayerErrorMessageString(PlayerError.BadTake) = "You can't take #quest.error.article#."
-        PlayerErrorMessageString(PlayerError.CantDrop) = "You can't drop that here."
-        PlayerErrorMessageString(PlayerError.DefaultDrop) = "You drop #quest.error.article#."
-        PlayerErrorMessageString(PlayerError.BadDrop) = "You are not carrying such a thing."
-        PlayerErrorMessageString(PlayerError.BadPronoun) = "I don't know what '#quest.error.pronoun#' you are referring to."
-        PlayerErrorMessageString(PlayerError.BadExamine) = "You didn't say what you wanted to examine."
-        PlayerErrorMessageString(PlayerError.AlreadyOpen) = "It is already open."
-        PlayerErrorMessageString(PlayerError.AlreadyClosed) = "It is already closed."
-        PlayerErrorMessageString(PlayerError.CantOpen) = "You can't open that."
-        PlayerErrorMessageString(PlayerError.CantClose) = "You can't close that."
-        PlayerErrorMessageString(PlayerError.DefaultOpen) = "You open it."
-        PlayerErrorMessageString(PlayerError.DefaultClose) = "You close it."
-        PlayerErrorMessageString(PlayerError.BadPut) = "You didn't specify what you wanted to put #quest.error.article# on or in."
-        PlayerErrorMessageString(PlayerError.CantPut) = "You can't put that there."
-        PlayerErrorMessageString(PlayerError.DefaultPut) = "Done."
-        PlayerErrorMessageString(PlayerError.CantRemove) = "You can't remove that."
-        PlayerErrorMessageString(PlayerError.AlreadyPut) = "It is already there."
-        PlayerErrorMessageString(PlayerError.DefaultRemove) = "Done."
-        PlayerErrorMessageString(PlayerError.Locked) = "The exit is locked."
-        PlayerErrorMessageString(PlayerError.DefaultWait) = "Press a key to continue..."
-        PlayerErrorMessageString(PlayerError.AlreadyTaken) = "You already have that."
+        _playerErrorMessageString(PlayerError.BadCommand) = "I don't understand your command. Type HELP for a list of valid commands."
+        _playerErrorMessageString(PlayerError.BadGo) = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place."
+        _playerErrorMessageString(PlayerError.BadGive) = "You didn't say who you wanted to give that to."
+        _playerErrorMessageString(PlayerError.BadCharacter) = "I can't see anybody of that name here."
+        _playerErrorMessageString(PlayerError.NoItem) = "You don't have that."
+        _playerErrorMessageString(PlayerError.ItemUnwanted) = "#quest.error.gender# doesn't want #quest.error.article#."
+        _playerErrorMessageString(PlayerError.BadLook) = "You didn't say what you wanted to look at."
+        _playerErrorMessageString(PlayerError.BadThing) = "I can't see that here."
+        _playerErrorMessageString(PlayerError.DefaultLook) = "Nothing out of the ordinary."
+        _playerErrorMessageString(PlayerError.DefaultSpeak) = "#quest.error.gender# says nothing."
+        _playerErrorMessageString(PlayerError.BadItem) = "I can't see that anywhere."
+        _playerErrorMessageString(PlayerError.DefaultTake) = "You pick #quest.error.article# up."
+        _playerErrorMessageString(PlayerError.BadUse) = "You didn't say what you wanted to use that on."
+        _playerErrorMessageString(PlayerError.DefaultUse) = "You can't use that here."
+        _playerErrorMessageString(PlayerError.DefaultOut) = "There's nowhere you can go out to around here."
+        _playerErrorMessageString(PlayerError.BadPlace) = "You can't go there."
+        _playerErrorMessageString(PlayerError.DefaultExamine) = "Nothing out of the ordinary."
+        _playerErrorMessageString(PlayerError.BadTake) = "You can't take #quest.error.article#."
+        _playerErrorMessageString(PlayerError.CantDrop) = "You can't drop that here."
+        _playerErrorMessageString(PlayerError.DefaultDrop) = "You drop #quest.error.article#."
+        _playerErrorMessageString(PlayerError.BadDrop) = "You are not carrying such a thing."
+        _playerErrorMessageString(PlayerError.BadPronoun) = "I don't know what '#quest.error.pronoun#' you are referring to."
+        _playerErrorMessageString(PlayerError.BadExamine) = "You didn't say what you wanted to examine."
+        _playerErrorMessageString(PlayerError.AlreadyOpen) = "It is already open."
+        _playerErrorMessageString(PlayerError.AlreadyClosed) = "It is already closed."
+        _playerErrorMessageString(PlayerError.CantOpen) = "You can't open that."
+        _playerErrorMessageString(PlayerError.CantClose) = "You can't close that."
+        _playerErrorMessageString(PlayerError.DefaultOpen) = "You open it."
+        _playerErrorMessageString(PlayerError.DefaultClose) = "You close it."
+        _playerErrorMessageString(PlayerError.BadPut) = "You didn't specify what you wanted to put #quest.error.article# on or in."
+        _playerErrorMessageString(PlayerError.CantPut) = "You can't put that there."
+        _playerErrorMessageString(PlayerError.DefaultPut) = "Done."
+        _playerErrorMessageString(PlayerError.CantRemove) = "You can't remove that."
+        _playerErrorMessageString(PlayerError.AlreadyPut) = "It is already there."
+        _playerErrorMessageString(PlayerError.DefaultRemove) = "Done."
+        _playerErrorMessageString(PlayerError.Locked) = "The exit is locked."
+        _playerErrorMessageString(PlayerError.DefaultWait) = "Press a key to continue..."
+        _playerErrorMessageString(PlayerError.AlreadyTaken) = "You already have that."
     End Sub
 
     Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
@@ -7198,7 +7196,7 @@ Public Class LegacyGame
                     ReDim Preserve _stringVariable(iStringNumber)
                     _stringVariable(iStringNumber) = ThisVariable
 
-                    NumDisplayStrings = NumDisplayStrings + 1
+                    _numDisplayStrings = _numDisplayStrings + 1
 
                 ElseIf ThisType = "numeric" Then
                     If ThisVariable.VariableContents(0) = "" Then ThisVariable.VariableContents(0) = CStr(0)
@@ -7207,7 +7205,7 @@ Public Class LegacyGame
                     ReDim Preserve _numericVariable(iNumNumber)
                     _numericVariable(iNumNumber) = ThisVariable
 
-                    NumDisplayNumerics = NumDisplayNumerics + 1
+                    _numDisplayNumerics = _numDisplayNumerics + 1
 
                 End If
             End If
@@ -7313,7 +7311,7 @@ Public Class LegacyGame
                 m_player.SetPanesVisible(CurOpt)
             ElseIf BeginsWith(_lines(i), "abbreviations ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "abbreviations ")))
-                If CurOpt = "off" Then UseAbbreviations = False Else UseAbbreviations = True
+                If CurOpt = "off" Then _useAbbreviations = False Else _useAbbreviations = True
             End If
         Next i
     End Sub
@@ -7770,11 +7768,11 @@ Public Class LegacyGame
                         iCurrentError = PlayerError.AlreadyTaken
                 End Select
 
-                PlayerErrorMessageString(iCurrentError) = sErrorMsg
+                _playerErrorMessageString(iCurrentError) = sErrorMsg
                 If iCurrentError = PlayerError.DefaultLook And Not ExamineIsCustomised Then
                     ' If we're setting the default look message, and we've not already customised the
                     ' default examine message, then set the default examine message to the same thing.
-                    PlayerErrorMessageString(PlayerError.DefaultExamine) = sErrorMsg
+                    _playerErrorMessageString(PlayerError.DefaultExamine) = sErrorMsg
                 End If
             End If
         Next i
@@ -8473,13 +8471,13 @@ Public Class LegacyGame
                         PlayerErrorMessage(PlayerError.BadItem, ctx)
                     End If
                     ' The Mid$(...,2) and Left$(...,2) removes the initial/final "."
-                    BadCmdBefore = Mid(Trim(Left(TestLine, ChunksEnd(i) - 1)), 2)
-                    BadCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
-                    BadCmdAfter = Left(BadCmdAfter, Len(BadCmdAfter) - 1)
+                    _badCmdBefore = Mid(Trim(Left(TestLine, ChunksEnd(i) - 1)), 2)
+                    _badCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
+                    _badCmdAfter = Left(_badCmdAfter, Len(_badCmdAfter) - 1)
                     success = False
                 ElseIf ObjID = -2 Then
-                    BadCmdBefore = Trim(Left(TestLine, ChunksEnd(i) - 1))
-                    BadCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
+                    _badCmdBefore = Trim(Left(TestLine, ChunksEnd(i) - 1))
+                    _badCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
                     success = False
                 Else
                     SetStringContents(VarName(i), _objs(ObjID).ObjectName, ctx, ArrayIndex)
@@ -8733,9 +8731,9 @@ Public Class LegacyGame
 
         If Not PrevQSGVersion Then
             ' Open Quest 3.0 saved game file
-            m_gameLoading = True
+            _gameLoading = True
             RestoreGameData(FileData)
-            m_gameLoading = False
+            _gameLoading = False
         Else
             ' Open Quest 2.x saved game file
 
@@ -8862,7 +8860,7 @@ Public Class LegacyGame
         Dim NewThread As Context = New Context()
         Dim saveData As String
 
-        If _gameAslVersion >= 391 Then ExecuteScript(BeforeSaveScript, NewThread)
+        If _gameAslVersion >= 391 Then ExecuteScript(_beforeSaveScript, NewThread)
 
         If _gameAslVersion >= 280 Then
             saveData = MakeRestoreData()
@@ -9725,7 +9723,7 @@ Public Class LegacyGame
         SkipAfterTurn = False
         thecommand = StripCodes(thecommand)
 
-        OldBadCmdBefore = BadCmdBefore
+        OldBadCmdBefore = _badCmdBefore
 
         RoomID = GetRoomID(_currentRoom, ctx)
         EnteredHelpCommand = False
@@ -9734,14 +9732,14 @@ Public Class LegacyGame
 
         cmd = LCase(thecommand)
 
-        SyncLock m_commandLock
+        SyncLock _commandLock
             If _commandOverrideModeOn Then
                 ' Commands have been overridden for this command,
                 ' so put input into previously specified variable
                 ' and exit:
 
                 SetStringContents(_commandOverrideVariable, thecommand, ctx)
-                System.Threading.Monitor.PulseAll(m_commandLock)
+                System.Threading.Monitor.PulseAll(_commandLock)
                 Return False
             End If
         End SyncLock
@@ -9838,10 +9836,10 @@ Public Class LegacyGame
                 ExecSpeak(c, ctx)
             ElseIf cmd = "exit" Or cmd = "out" Or cmd = "leave" Then
                 LeaveRoom(ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "north" Or cmd = "south" Or cmd = "east" Or cmd = "west" Then
                 GoDirection(thecommand, ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "n" Or cmd = "s" Or cmd = "w" Or cmd = "e" Then
                 Select Case InStr("nswe", cmd)
                     Case 1
@@ -9853,25 +9851,25 @@ Public Class LegacyGame
                     Case 4
                         GoDirection("east", ctx)
                 End Select
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "ne" Or cmd = "northeast" Or cmd = "north-east" Or cmd = "north east" Or cmd = "go ne" Or cmd = "go northeast" Or cmd = "go north-east" Or cmd = "go north east" Then
                 GoDirection("northeast", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "nw" Or cmd = "northwest" Or cmd = "north-west" Or cmd = "north west" Or cmd = "go nw" Or cmd = "go northwest" Or cmd = "go north-west" Or cmd = "go north west" Then
                 GoDirection("northwest", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "se" Or cmd = "southeast" Or cmd = "south-east" Or cmd = "south east" Or cmd = "go se" Or cmd = "go southeast" Or cmd = "go south-east" Or cmd = "go south east" Then
                 GoDirection("southeast", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "sw" Or cmd = "southwest" Or cmd = "south-west" Or cmd = "south west" Or cmd = "go sw" Or cmd = "go southwest" Or cmd = "go south-west" Or cmd = "go south west" Then
                 GoDirection("southwest", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "up" Or cmd = "u" Then
                 GoDirection("up", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf cmd = "down" Or cmd = "d" Then
                 GoDirection("down", ctx)
-                LastIt = 0
+                _lastIt = 0
             ElseIf CmdStartsWith(thecommand, "go ") Then
                 If _gameAslVersion >= 410 Then
                     _rooms(GetRoomID(_currentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
@@ -9888,7 +9886,7 @@ Public Class LegacyGame
                         PlayerErrorMessage(PlayerError.BadGo, ctx)
                     End If
                 End If
-                LastIt = 0
+                _lastIt = 0
             ElseIf CmdStartsWith(thecommand, "give ") Then
                 G = GetEverythingAfter(thecommand, "give ")
                 ExecGive(G, ctx)
@@ -9943,7 +9941,7 @@ Public Class LegacyGame
                 DoClear()
             ElseIf cmd = "debug" Then
                 ' TO DO: This is temporary, would be better to have a log viewer built in to Player
-                For Each logEntry As String In m_log
+                For Each logEntry As String In _log
                     Print(logEntry, ctx)
                 Next
             ElseIf cmd = "inventory" Or cmd = "inv" Or cmd = "i" Then
@@ -10025,10 +10023,10 @@ Public Class LegacyGame
         If Not DontSetIt Then
             ' Use "DontSetIt" when we don't want "it" etc. to refer to the object used in this turn.
             ' This is used for e.g. auto-remove object from container when taking.
-            LastIt = ThisTurnIt
-            LastItMode = ThisTurnItMode
+            _lastIt = _thisTurnIt
+            _lastItMode = _thisTurnItMode
         End If
-        If BadCmdBefore = OldBadCmdBefore Then BadCmdBefore = ""
+        If _badCmdBefore = OldBadCmdBefore Then _badCmdBefore = ""
 
         Return True
     End Function
@@ -10087,8 +10085,8 @@ Public Class LegacyGame
 
             If ItemID = -1 Then
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
-                BadCmdBefore = "give"
-                BadCmdAfter = "to " & CharToGive
+                _badCmdBefore = "give"
+                _badCmdAfter = "to " & CharToGive
                 Exit Sub
             ElseIf ItemID = -2 Then
                 Exit Sub
@@ -10129,7 +10127,7 @@ Public Class LegacyGame
 
             If Not FoundGiveToObject Then
                 If GiveToObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadCharacter, ctx)
-                BadCmdBefore = "give " & ItemToGive & " to"
+                _badCmdBefore = "give " & ItemToGive & " to"
                 Exit Sub
             End If
 
@@ -10274,7 +10272,7 @@ Public Class LegacyGame
 
                 If Not FoundObject Then
                     If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                    BadCmdBefore = "look at"
+                    _badCmdBefore = "look at"
                     Exit Sub
                 End If
 
@@ -10362,7 +10360,7 @@ Public Class LegacyGame
 
             If Not FoundObject Then
                 If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                BadCmdBefore = "speak to"
+                _badCmdBefore = "speak to"
                 Exit Sub
             End If
 
@@ -10492,7 +10490,7 @@ Public Class LegacyGame
                     PlayerErrorMessage(PlayerError.BadItem, ctx)
                 End If
             End If
-            BadCmdBefore = "take"
+            _badCmdBefore = "take"
             Exit Sub
         Else
             SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
@@ -10608,10 +10606,10 @@ Public Class LegacyGame
             If Not FoundItem Then
                 If ItemID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
                 If UseOn = "" Then
-                    BadCmdBefore = "use"
+                    _badCmdBefore = "use"
                 Else
-                    BadCmdBefore = "use"
-                    BadCmdAfter = "on " & UseOn
+                    _badCmdBefore = "use"
+                    _badCmdAfter = "on " & UseOn
                 End If
                 Exit Sub
             End If
@@ -10674,7 +10672,7 @@ Public Class LegacyGame
 
                 If Not FoundUseOnObject Then
                     If UseOnObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                    BadCmdBefore = "use " & UseItem & " on"
+                    _badCmdBefore = "use " & UseItem & " on"
                     Exit Sub
                 End If
 
@@ -10838,7 +10836,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If GameFullyLoaded Then
+        If _gameFullyLoaded Then
             AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, _objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
         End If
 
@@ -11122,8 +11120,8 @@ Public Class LegacyGame
 
         ChangeState(State.Waiting, True)
 
-        SyncLock m_commandLock
-            System.Threading.Monitor.Wait(m_commandLock)
+        SyncLock _commandLock
+            System.Threading.Monitor.Wait(_commandLock)
         End SyncLock
 
         _commandOverrideModeOn = False
@@ -11367,7 +11365,7 @@ Public Class LegacyGame
         Dim i As Integer
         Dim ASLVersion As String
 
-        m_loadedFromQSG = LoadedFromQSG
+        _loadedFromQsg = LoadedFromQSG
 
         _changeLogRooms = New ChangeLog
         _changeLogObjects = New ChangeLog
@@ -11375,7 +11373,7 @@ Public Class LegacyGame
         _changeLogObjects.AppliesToType = ChangeLog.eAppliesToType.atObject
 
         _outPutOn = True
-        UseAbbreviations = True
+        _useAbbreviations = True
 
         _gamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
 
@@ -11448,9 +11446,9 @@ Public Class LegacyGame
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(i), "beforesave ") Then
-                BeforeSaveScript = GetEverythingAfter(_lines(i), "beforesave ")
+                _beforeSaveScript = GetEverythingAfter(_lines(i), "beforesave ")
             ElseIf BeginsWith(_lines(i), "onload ") Then
-                OnLoadScript = GetEverythingAfter(_lines(i), "onload ")
+                _onLoadScript = GetEverythingAfter(_lines(i), "onload ")
 
             End If
         Next i
@@ -11963,16 +11961,16 @@ Public Class LegacyGame
         Dim i, Chr0Pos, ResourceStart As Integer
 
         Chr0Pos = InStr(CatData, Chr(0))
-        NumResources = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
-        ReDim Preserve Resources(NumResources)
-        Resources(NumResources) = New ResourceType
+        _numResources = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
+        ReDim Preserve _resources(_numResources)
+        _resources(_numResources) = New ResourceType
 
         CatData = Mid(CatData, Chr0Pos + 1)
 
         ResourceStart = 0
 
-        For i = 1 To NumResources
-            Dim r = Resources(i)
+        For i = 1 To _numResources
+            Dim r = _resources(i)
             Chr0Pos = InStr(CatData, Chr(0))
             r.ResourceName = DecryptString(Left(CatData, Chr0Pos - 1))
             CatData = Mid(CatData, Chr0Pos + 1)
@@ -12035,7 +12033,7 @@ Public Class LegacyGame
             AddCompassExit(compassExits, "down")
         End If
 
-        m_compassExits = compassExits
+        _compassExits = compassExits
         UpdateExitsList()
     End Sub
 
@@ -12357,7 +12355,7 @@ Public Class LegacyGame
         End If
 
         RaiseEvent UpdateList(ListType.ObjectsList, objList)
-        m_gotoExits = exitList
+        _gotoExits = exitList
         UpdateExitsList()
     End Sub
 
@@ -12368,11 +12366,11 @@ Public Class LegacyGame
 
         Dim mergedList As New List(Of ListData)
 
-        For Each listItem As ListData In m_compassExits
+        For Each listItem As ListData In _compassExits
             mergedList.Add(listItem)
         Next
 
-        For Each listItem As ListData In m_gotoExits
+        For Each listItem As ListData In _gotoExits
             mergedList.Add(listItem)
         Next
 
@@ -12384,8 +12382,8 @@ Public Class LegacyGame
         Dim i As Integer
         Dim status As String = ""
 
-        If NumDisplayStrings > 0 Then
-            For i = 1 To NumDisplayStrings
+        If _numDisplayStrings > 0 Then
+            For i = 1 To _numDisplayStrings
                 DisplayData = DisplayStatusVariableInfo(i, VarType.String, ctx)
 
                 If DisplayData <> "" Then
@@ -12395,8 +12393,8 @@ Public Class LegacyGame
             Next i
         End If
 
-        If NumDisplayNumerics > 0 Then
-            For i = 1 To NumDisplayNumerics
+        If _numDisplayNumerics > 0 Then
+            For i = 1 To _numDisplayNumerics
                 DisplayData = DisplayStatusVariableInfo(i, VarType.Numeric, ctx)
                 If DisplayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
@@ -12648,9 +12646,9 @@ Public Class LegacyGame
         ChangeState(State.Working)
         runnerThread.Start()
 
-        SyncLock m_stateLock
-            While m_state = State.Working And Not m_gameFinished
-                System.Threading.Monitor.Wait(m_stateLock)
+        SyncLock _stateLock
+            While _state = State.Working And Not m_gameFinished
+                System.Threading.Monitor.Wait(_stateLock)
             End While
         End SyncLock
     End Sub
@@ -12709,7 +12707,7 @@ Public Class LegacyGame
 
         End If
 
-        GameFullyLoaded = True
+        _gameFullyLoaded = True
 
         ' Display intro text
         If _autoIntro And _gameLoadMethod = "normal" Then DisplayTextSection("intro", _nullContext)
@@ -12722,7 +12720,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        If Not m_loadedFromQSG Then
+        If Not _loadedFromQsg Then
             NewThread = _nullContext
             PlayGame(StartRoom, NewThread)
             Print("", _nullContext)
@@ -12737,7 +12735,7 @@ Public Class LegacyGame
             If _gameAslVersion >= 391 Then
                 ' For ASL>=391, OnLoad is now run for all games.
                 NewThread = _nullContext
-                ExecuteScript(OnLoadScript, NewThread)
+                ExecuteScript(_onLoadScript, NewThread)
             End If
 
         End If
@@ -12798,7 +12796,7 @@ Public Class LegacyGame
         ' finished processing, or perhaps a prompt has been printed and now the game is waiting for further
         ' user input after hitting an "enter" script command.
 
-        If Not m_readyForCommand Then Exit Sub
+        If Not _readyForCommand Then Exit Sub
 
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf ProcessCommandInNewThread))
         ChangeState(State.Working)
@@ -12815,9 +12813,9 @@ Public Class LegacyGame
     End Sub
 
     Private Sub WaitForStateChange(changedFromState As State)
-        SyncLock m_stateLock
-            While m_state = changedFromState And Not m_gameFinished
-                System.Threading.Monitor.Wait(m_stateLock)
+        SyncLock _stateLock
+            While _state = changedFromState And Not m_gameFinished
+                System.Threading.Monitor.Wait(_stateLock)
             End While
         End SyncLock
 
@@ -12857,23 +12855,23 @@ Public Class LegacyGame
         ChangeState(State.Finished)
 
         ' In case we're in the middle of processing an "enter" command, nudge the thread along
-        SyncLock m_commandLock
-            System.Threading.Monitor.PulseAll(m_commandLock)
+        SyncLock _commandLock
+            System.Threading.Monitor.PulseAll(_commandLock)
         End SyncLock
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.PulseAll(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.PulseAll(_waitLock)
         End SyncLock
 
-        SyncLock m_stateLock
-            System.Threading.Monitor.PulseAll(m_stateLock)
+        SyncLock _stateLock
+            System.Threading.Monitor.PulseAll(_stateLock)
         End SyncLock
 
         Cleanup()
     End Sub
 
     Private Function GetResourcePath(filename As String) As String Implements IASL.GetResourcePath
-        If Not ResourceFile Is Nothing AndAlso ResourceFile.Length > 0 Then
+        If Not _resourceFile Is Nothing AndAlso _resourceFile.Length > 0 Then
             Dim extractResult As String = ExtractFile(filename)
             Return extractResult
         End If
@@ -12881,7 +12879,7 @@ Public Class LegacyGame
     End Function
 
     Private Sub Cleanup()
-        DeleteDirectory(m_tempFolder)
+        DeleteDirectory(_tempFolder)
     End Sub
 
     Private Sub DeleteDirectory(dir As String)
@@ -13002,15 +13000,15 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ChangeState(newState As State, acceptCommands As Boolean)
-        m_readyForCommand = acceptCommands
-        SyncLock m_stateLock
-            m_state = newState
-            System.Threading.Monitor.PulseAll(m_stateLock)
+        _readyForCommand = acceptCommands
+        SyncLock _stateLock
+            _state = newState
+            System.Threading.Monitor.PulseAll(_stateLock)
         End SyncLock
     End Sub
 
     Public Sub FinishWait() Implements IASL.FinishWait
-        If (m_state <> State.Waiting) Then Exit Sub
+        If (_state <> State.Waiting) Then Exit Sub
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf FinishWaitInNewThread))
         ChangeState(State.Working)
         runnerThread.Start()
@@ -13018,8 +13016,8 @@ Public Class LegacyGame
     End Sub
 
     Private Sub FinishWaitInNewThread()
-        SyncLock m_waitLock
-            System.Threading.Monitor.PulseAll(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.PulseAll(_waitLock)
         End SyncLock
     End Sub
 
@@ -13033,8 +13031,8 @@ Public Class LegacyGame
         m_player.ShowMenu(menuData)
         ChangeState(State.Waiting)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.Wait(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
 
         Return m_menuResponse
@@ -13050,8 +13048,8 @@ Public Class LegacyGame
     Private Sub SetMenuResponseInNewThread(response As Object)
         m_menuResponse = DirectCast(response, String)
 
-        SyncLock m_waitLock
-            System.Threading.Monitor.PulseAll(m_waitLock)
+        SyncLock _waitLock
+            System.Threading.Monitor.PulseAll(_waitLock)
         End SyncLock
     End Sub
 
@@ -13090,16 +13088,16 @@ Public Class LegacyGame
     Private Function GetUnzippedFile(filename As String) As String
         Dim tempDir As String = Nothing
         Dim result As String = m_unzipFunction.Invoke(filename, tempDir)
-        m_tempFolder = tempDir
+        _tempFolder = tempDir
         Return result
     End Function
 
     Public Property TempFolder As String Implements IASL.TempFolder
         Get
-            Return m_tempFolder
+            Return _tempFolder
         End Get
         Set
-            m_tempFolder = Value
+            _tempFolder = Value
         End Set
     End Property
 
@@ -13131,17 +13129,17 @@ Public Class LegacyGame
     End Property
 
     Public Iterator Function GetResources() As IEnumerable(Of String)
-        For i As Integer = 1 To NumResources
-            Yield Resources(i).ResourceName
+        For i As Integer = 1 To _numResources
+            Yield _resources(i).ResourceName
         Next
-        If NumResources > 0 Then
+        If _numResources > 0 Then
             Yield "_game.cas"
         End If
     End Function
 
     Private Function GetResourcelessCAS() As Byte()
-        Dim FileData As String = System.IO.File.ReadAllText(ResourceFile, System.Text.Encoding.GetEncoding(1252))
-        Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(FileData, StartCatPos - 1))
+        Dim FileData As String = System.IO.File.ReadAllText(_resourceFile, System.Text.Encoding.GetEncoding(1252))
+        Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(FileData, _startCatPos - 1))
     End Function
 
 End Class
