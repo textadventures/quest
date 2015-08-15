@@ -3706,31 +3706,27 @@ Public Class LegacyGame
         Return GetParameter("<" & s & ">", ctx)
     End Function
 
-    Private Function DisambObjHere(ctx As Context, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
+    Private Function DisambObjHere(ctx As Context, id As Integer, firstPlace As String, Optional twoPlaces As Boolean = False, Optional secondPlace As String = "", Optional isExit As Boolean = False) As Boolean
 
-        Dim OnlySeen, ObjIsSeen As Boolean
-        Dim RoomObjID As Integer
-        Dim InventoryPlace As String
-        OnlySeen = False
+        Dim isSeen As Boolean
+        Dim onlySeen = False
 
-        If FirstPlace = "game" Then
-            FirstPlace = ""
-            If SecondPlace = "seen" Then
-                TwoPlaces = False
-                SecondPlace = ""
-                OnlySeen = True
-                RoomObjID = _rooms(GetRoomID(_objs(ObjID).ContainerRoom, ctx)).ObjId
+        If firstPlace = "game" Then
+            firstPlace = ""
+            If secondPlace = "seen" Then
+                twoPlaces = False
+                secondPlace = ""
+                onlySeen = True
+                Dim roomObjId = _rooms(GetRoomID(_objs(id).ContainerRoom, ctx)).ObjId
 
-                InventoryPlace = "inventory"
-
-                If _objs(ObjID).ContainerRoom = InventoryPlace Then
-                    ObjIsSeen = True
+                If _objs(id).ContainerRoom = "inventory" Then
+                    isSeen = True
                 Else
-                    If IsYes(GetObjectProperty("visited", RoomObjID, True, False)) Then
-                        ObjIsSeen = True
+                    If IsYes(GetObjectProperty("visited", roomObjId, True, False)) Then
+                        isSeen = True
                     Else
-                        If IsYes(GetObjectProperty("seen", ObjID, True, False)) Then
-                            ObjIsSeen = True
+                        If IsYes(GetObjectProperty("seen", id, True, False)) Then
+                            isSeen = True
                         End If
                     End If
                 End If
@@ -3738,248 +3734,221 @@ Public Class LegacyGame
             End If
         End If
 
-        If ((TwoPlaces = False And (LCase(_objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or FirstPlace = "")) Or (TwoPlaces = True And (LCase(_objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or LCase(_objs(ObjID).ContainerRoom) = LCase(SecondPlace)))) And _objs(ObjID).Exists = True And _objs(ObjID).IsExit = bExit Then
-            If Not OnlySeen Then
+        If ((twoPlaces = False And (LCase(_objs(id).ContainerRoom) = LCase(firstPlace) Or firstPlace = "")) Or (twoPlaces = True And (LCase(_objs(id).ContainerRoom) = LCase(firstPlace) Or LCase(_objs(id).ContainerRoom) = LCase(secondPlace)))) And _objs(id).Exists = True And _objs(id).IsExit = isExit Then
+            If Not onlySeen Then
                 Return True
             End If
-            Return ObjIsSeen
+            Return isSeen
         End If
 
         Return False
     End Function
 
-    Private Sub ExecClone(CloneString As String, ctx As Context)
-        Dim SC2, SC, ObjID As Integer
-        Dim NewObjName, ObjToClone, CloneTo As String
+    Private Sub ExecClone(cloneString As String, ctx As Context)
+        Dim id As Integer
+        Dim newName, cloneTo As String
 
-        SC = InStr(CloneString, ";")
+        Dim SC = InStr(cloneString, ";")
         If SC = 0 Then
-            LogASLError("No new object name specified in 'clone <" & CloneString & ">", LogType.WarningError)
+            LogASLError("No new object name specified in 'clone <" & cloneString & ">", LogType.WarningError)
             Exit Sub
         Else
-            ObjToClone = Trim(Left(CloneString, SC - 1))
-            ObjID = GetObjectIDNoAlias(ObjToClone)
+            Dim objectToClone = Trim(Left(cloneString, SC - 1))
+            id = GetObjectIDNoAlias(objectToClone)
 
-            SC2 = InStr(SC + 1, CloneString, ";")
+            Dim SC2 = InStr(SC + 1, cloneString, ";")
             If SC2 = 0 Then
-                CloneTo = _objs(ObjID).ContainerRoom
-                NewObjName = Trim(Mid(CloneString, SC + 1))
+                cloneTo = _objs(id).ContainerRoom
+                newName = Trim(Mid(cloneString, SC + 1))
             Else
-                CloneTo = Trim(Mid(CloneString, SC2 + 1))
-                NewObjName = Trim(Mid(CloneString, SC + 1, (SC2 - SC) - 1))
+                cloneTo = Trim(Mid(cloneString, SC2 + 1))
+                newName = Trim(Mid(cloneString, SC + 1, (SC2 - SC) - 1))
             End If
         End If
 
         _numberObjs = _numberObjs + 1
         ReDim Preserve _objs(_numberObjs)
         _objs(_numberObjs) = New ObjectType
-        _objs(_numberObjs) = _objs(ObjID)
-        _objs(_numberObjs).ContainerRoom = CloneTo
-        _objs(_numberObjs).ObjectName = NewObjName
+        _objs(_numberObjs) = _objs(id)
+        _objs(_numberObjs).ContainerRoom = cloneTo
+        _objs(_numberObjs).ObjectName = newName
 
-        If _objs(ObjID).IsRoom Then
+        If _objs(id).IsRoom Then
             ' This is a room so create the corresponding room as well
 
             _numberRooms = _numberRooms + 1
             ReDim Preserve _rooms(_numberRooms)
             _rooms(_numberRooms) = New RoomType
-            _rooms(_numberRooms) = _rooms(_objs(ObjID).CorresRoomId)
-            _rooms(_numberRooms).RoomName = NewObjName
+            _rooms(_numberRooms) = _rooms(_objs(id).CorresRoomId)
+            _rooms(_numberRooms).RoomName = newName
             _rooms(_numberRooms).ObjId = _numberObjs
 
-            _objs(_numberObjs).CorresRoom = NewObjName
+            _objs(_numberObjs).CorresRoom = newName
             _objs(_numberObjs).CorresRoomId = _numberRooms
 
-            AddToChangeLog("room " & NewObjName, "create")
+            AddToChangeLog("room " & newName, "create")
         Else
-            AddToChangeLog("object " & NewObjName, "create " & _objs(_numberObjs).ContainerRoom)
+            AddToChangeLog("object " & newName, "create " & _objs(_numberObjs).ContainerRoom)
         End If
 
         UpdateObjectList(ctx)
-
-
     End Sub
 
-    Private Sub ExecOops(Correction As String, ctx As Context)
+    Private Sub ExecOops(correction As String, ctx As Context)
         If _badCmdBefore <> "" Then
             If _badCmdAfter = "" Then
-                ExecCommand(_badCmdBefore & " " & Correction, ctx, False)
+                ExecCommand(_badCmdBefore & " " & correction, ctx, False)
             Else
-                ExecCommand(_badCmdBefore & " " & Correction & " " & _badCmdAfter, ctx, False)
+                ExecCommand(_badCmdBefore & " " & correction & " " & _badCmdAfter, ctx, False)
             End If
         End If
     End Sub
 
-    Private Sub ExecType(TypeData As String, ctx As Context)
-        Dim SCP As Integer
-        Dim ObjName, TypeName As String
-        Dim ObjID As Integer
-        Dim Found As Boolean
-        Dim PropertyData As PropertiesActions
+    Private Sub ExecType(typeData As String, ctx As Context)
+        Dim id As Integer
+        Dim found As Boolean
         Dim i As Integer
-        SCP = InStr(TypeData, ";")
+        Dim scp = InStr(typeData, ";")
 
-        If SCP = 0 Then
-            LogASLError("No type name given in 'type <" & TypeData & ">'")
+        If scp = 0 Then
+            LogASLError("No type name given in 'type <" & typeData & ">'")
             Exit Sub
         End If
 
-        ObjName = Trim(Left(TypeData, SCP - 1))
-        TypeName = Trim(Mid(TypeData, SCP + 1))
+        Dim objName = Trim(Left(typeData, scp - 1))
+        Dim typeName = Trim(Mid(typeData, scp + 1))
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                Found = True
-                ObjID = i
+            If LCase(_objs(i).ObjectName) = LCase(objName) Then
+                found = True
+                id = i
                 i = _numberObjs
             End If
         Next i
 
-        If Not Found Then
-            LogASLError("No such object in 'type <" & TypeData & ">'")
+        If Not found Then
+            LogASLError("No such object in 'type <" & typeData & ">'")
             Exit Sub
         End If
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         o.NumberTypesIncluded = o.NumberTypesIncluded + 1
         ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-        o.TypesIncluded(o.NumberTypesIncluded) = TypeName
+        o.TypesIncluded(o.NumberTypesIncluded) = typeName
 
-        PropertyData = GetPropertiesInType(TypeName)
-        AddToObjectProperties(PropertyData.Properties, ObjID, ctx)
-        For i = 1 To PropertyData.NumberActions
-            AddObjectAction(ObjID, PropertyData.Actions(i).ActionName, PropertyData.Actions(i).Script)
+        Dim propertyData = GetPropertiesInType(typeName)
+        AddToObjectProperties(propertyData.Properties, id, ctx)
+        For i = 1 To propertyData.NumberActions
+            AddObjectAction(id, propertyData.Actions(i).ActionName, propertyData.Actions(i).Script)
         Next i
 
         ' New as of Quest 4.0. Fixes bug that "if type" would fail for any
         ' parent types included by the "type" command.
-        For i = 1 To PropertyData.NumberTypesIncluded
+        For i = 1 To propertyData.NumberTypesIncluded
             o.NumberTypesIncluded = o.NumberTypesIncluded + 1
             ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-            o.TypesIncluded(o.NumberTypesIncluded) = PropertyData.TypesIncluded(i)
+            o.TypesIncluded(o.NumberTypesIncluded) = propertyData.TypesIncluded(i)
         Next i
     End Sub
 
-    Private Function ExecuteIfAction(ActionData As String) As Boolean
-        Dim SCP, ObjID As Integer
-        Dim ObjName As String
-        Dim ActionName As String
-        Dim FoundObj As Boolean
-        Dim Result As Boolean
-        Dim i As Integer
+    Private Function ExecuteIfAction(actionData As String) As Boolean
+        Dim id As Integer
 
-        SCP = InStr(ActionData, ";")
+        Dim scp = InStr(actionData, ";")
 
-        If SCP = 0 Then
-            LogASLError("No action name given in condition 'action <" & ActionData & ">' ...", LogType.WarningError)
+        If scp = 0 Then
+            LogASLError("No action name given in condition 'action <" & actionData & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        ObjName = Trim(Left(ActionData, SCP - 1))
-        ActionName = Trim(Mid(ActionData, SCP + 1))
-
-        FoundObj = False
+        Dim objName = Trim(Left(actionData, scp - 1))
+        Dim actionName = Trim(Mid(actionData, scp + 1))
+        Dim found = False
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                FoundObj = True
-                ObjID = i
+            If LCase(_objs(i).ObjectName) = LCase(objName) Then
+                found = True
+                id = i
                 i = _numberObjs
             End If
         Next i
 
-        If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'action <" & ActionData & ">' ...", LogType.WarningError)
+        If Not found Then
+            LogASLError("No such object '" & objName & "' in condition 'action <" & actionData & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        Result = False
-
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
-            If LCase(o.Actions(i).ActionName) = LCase(ActionName) Then
-                i = o.NumberActions
-                Result = True
+            If LCase(o.Actions(i).ActionName) = LCase(actionName) Then
+                Return True
             End If
         Next i
 
-        Return Result
-
+        Return False
     End Function
 
-    Private Function ExecuteIfType(TypeData As String) As Boolean
-        Dim SCP, ObjID As Integer
-        Dim ObjName As String
-        Dim TypeName As String
-        Dim FoundObj As Boolean
-        Dim Result As Boolean
-        Dim i As Integer
+    Private Function ExecuteIfType(typeData As String) As Boolean
+        Dim id As Integer
 
-        SCP = InStr(TypeData, ";")
+        Dim scp = InStr(typeData, ";")
 
-        If SCP = 0 Then
-            LogASLError("No type name given in condition 'type <" & TypeData & ">' ...", LogType.WarningError)
+        If scp = 0 Then
+            LogASLError("No type name given in condition 'type <" & typeData & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        ObjName = Trim(Left(TypeData, SCP - 1))
-        TypeName = Trim(Mid(TypeData, SCP + 1))
+        Dim objName = Trim(Left(typeData, scp - 1))
+        Dim typeName = Trim(Mid(typeData, scp + 1))
 
-        FoundObj = False
+        Dim found = False
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                FoundObj = True
-                ObjID = i
+            If LCase(_objs(i).ObjectName) = LCase(objName) Then
+                found = True
+                id = i
                 i = _numberObjs
             End If
         Next i
 
-        If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'type <" & TypeData & ">' ...", LogType.WarningError)
+        If Not found Then
+            LogASLError("No such object '" & objName & "' in condition 'type <" & typeData & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        Result = False
-
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberTypesIncluded
-            If LCase(o.TypesIncluded(i)) = LCase(TypeName) Then
-                i = o.NumberTypesIncluded
-                Result = True
+            If LCase(o.TypesIncluded(i)) = LCase(typeName) Then
+                Return True
             End If
         Next i
 
-        Return Result
-
+        Return False
     End Function
 
-    ' TODO: sVarName was ByRef
-    Private Function GetArrayIndex(sVarName As String, ctx As Context) As Integer
-        Dim BeginPos, EndPos As Integer
-        Dim ArrayIndexData As String
-        Dim ArrayIndex As Integer
+    ' TODO: varName was ByRef
+    Private Function GetArrayIndex(varName As String, ctx As Context) As Integer
+        Dim index As Integer
 
-        If InStr(sVarName, "[") <> 0 And InStr(sVarName, "]") <> 0 Then
-            BeginPos = InStr(sVarName, "[")
-            EndPos = InStr(sVarName, "]")
-            ArrayIndexData = Mid(sVarName, BeginPos + 1, (EndPos - BeginPos) - 1)
-            If IsNumeric(ArrayIndexData) Then
-                ArrayIndex = CInt(ArrayIndexData)
+        If InStr(varName, "[") <> 0 And InStr(varName, "]") <> 0 Then
+            Dim beginPos = InStr(varName, "[")
+            Dim endPos = InStr(varName, "]")
+            Dim data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1)
+            If IsNumeric(data) Then
+                index = CInt(data)
             Else
-                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
+                index = CInt(GetNumericContents(data, ctx))
             End If
-            sVarName = Left(sVarName, BeginPos - 1)
+            varName = Left(varName, beginPos - 1)
         End If
 
-        Return ArrayIndex
-
+        Return index
     End Function
 
-    Friend Function Disambiguate(ObjectName As String, ContainedIn As String, ctx As Context, Optional bExit As Boolean = False) As Integer
+    Friend Function Disambiguate(name As String, containedIn As String, ctx As Context, Optional isExit As Boolean = False) As Integer
         ' Returns object ID being referred to by player.
         ' Returns -1 if object doesn't exist, calling function
         '   then expected to print relevant error.
@@ -3991,39 +3960,33 @@ Public Class LegacyGame
         ' Disambiguate has been called after an "exec" command to prevent the
         ' player having to choose an object from the disambiguation menu twice
 
-        Dim OrigBeginsWithThe As Boolean
-        OrigBeginsWithThe = False
-        Dim NumberCorresIDs As Integer
-        NumberCorresIDs = 0
-        Dim IDNumbers(0) As Integer
-        Dim FirstPlace As String
-        Dim SecondPlace As String = ""
-        Dim TwoPlaces As Boolean
-        Dim DescriptionText() As String
-        Dim ValidNames() As String
-        Dim NumValidNames As Integer
-        Dim i, j As Integer
-        Dim ThisName As String
+        Dim numberCorresIds = 0
+        Dim idNumbers(0) As Integer
+        Dim firstPlace As String
+        Dim secondPlace As String = ""
+        Dim twoPlaces As Boolean
+        Dim descriptionText() As String
+        Dim validNames() As String
+        Dim numValidNames As Integer
 
-        ObjectName = Trim(ObjectName)
+        name = Trim(name)
 
         SetStringContents("quest.lastobject", "", ctx)
 
-        Dim SCP As Integer
-        If InStr(ContainedIn, ";") <> 0 Then
-            SCP = InStr(ContainedIn, ";")
-            TwoPlaces = True
-            FirstPlace = Trim(Left(ContainedIn, SCP - 1))
-            SecondPlace = Trim(Mid(ContainedIn, SCP + 1))
+        If InStr(containedIn, ";") <> 0 Then
+            Dim scp = InStr(containedIn, ";")
+            twoPlaces = True
+            firstPlace = Trim(Left(containedIn, scp - 1))
+            secondPlace = Trim(Mid(containedIn, scp + 1))
         Else
-            TwoPlaces = False
-            FirstPlace = ContainedIn
+            twoPlaces = False
+            firstPlace = containedIn
         End If
 
         If ctx.AllowRealNamesInCommand Then
             For i = 1 To _numberObjs
-                If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace) Then
-                    If LCase(_objs(i).ObjectName) = LCase(ObjectName) Then
+                If DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace) Then
+                    If LCase(_objs(i).ObjectName) = LCase(name) Then
                         SetStringContents("quest.lastobject", _objs(i).ObjectName, ctx)
                         Return i
                     End If
@@ -4032,27 +3995,27 @@ Public Class LegacyGame
         End If
 
         ' If player uses "it", "them" etc. as name:
-        If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
-            SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If _lastIt <> 0 And _lastItMode = ItType.Inanimate And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+        If name = "it" Or name = "them" Or name = "this" Or name = "those" Or name = "these" Or name = "that" Then
+            SetStringContents("quest.error.pronoun", name, ctx)
+            If _lastIt <> 0 And _lastItMode = ItType.Inanimate And DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace) Then
                 SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
                 Return _lastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
-        ElseIf ObjectName = "him" Then
-            SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If _lastIt <> 0 And _lastItMode = ItType.Male And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+        ElseIf name = "him" Then
+            SetStringContents("quest.error.pronoun", name, ctx)
+            If _lastIt <> 0 And _lastItMode = ItType.Male And DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace) Then
                 SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
                 Return _lastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
                 Return -2
             End If
-        ElseIf ObjectName = "her" Then
-            SetStringContents("quest.error.pronoun", ObjectName, ctx)
-            If _lastIt <> 0 And _lastItMode = ItType.Female And DisambObjHere(ctx, _lastIt, FirstPlace, TwoPlaces, SecondPlace) Then
+        ElseIf name = "her" Then
+            SetStringContents("quest.error.pronoun", name, ctx)
+            If _lastIt <> 0 And _lastItMode = ItType.Female And DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace) Then
                 SetStringContents("quest.lastobject", _objs(_lastIt).ObjectName, ctx)
                 Return _lastIt
             Else
@@ -4063,58 +4026,55 @@ Public Class LegacyGame
 
         _thisTurnIt = 0
 
-        If BeginsWith(ObjectName, "the ") Then
-            ObjectName = GetEverythingAfter(ObjectName, "the ")
+        If BeginsWith(name, "the ") Then
+            name = GetEverythingAfter(name, "the ")
         End If
 
         For i = 1 To _numberObjs
-
-            If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
-
-                NumValidNames = _objs(i).NumberAltNames + 1
-                ReDim ValidNames(NumValidNames)
-                ValidNames(1) = _objs(i).ObjectAlias
+            If DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit) Then
+                numValidNames = _objs(i).NumberAltNames + 1
+                ReDim validNames(numValidNames)
+                validNames(1) = _objs(i).ObjectAlias
                 For j = 1 To _objs(i).NumberAltNames
-                    ValidNames(j + 1) = _objs(i).AltNames(j)
+                    validNames(j + 1) = _objs(i).AltNames(j)
                 Next j
 
-                For j = 1 To NumValidNames
-                    If ((LCase(ValidNames(j)) = LCase(ObjectName)) Or ("the " & LCase(ObjectName) = LCase(ValidNames(j)))) Then
-                        NumberCorresIDs = NumberCorresIDs + 1
-                        ReDim Preserve IDNumbers(NumberCorresIDs)
-                        IDNumbers(NumberCorresIDs) = i
-
-                        j = NumValidNames
+                For j = 1 To numValidNames
+                    If ((LCase(validNames(j)) = LCase(name)) Or ("the " & LCase(name) = LCase(validNames(j)))) Then
+                        numberCorresIds = numberCorresIds + 1
+                        ReDim Preserve idNumbers(numberCorresIds)
+                        idNumbers(numberCorresIds) = i
+                        j = numValidNames
                     End If
                 Next j
             End If
         Next i
 
-        If _gameAslVersion >= 391 And NumberCorresIDs = 0 And _useAbbreviations And Len(ObjectName) > 0 Then
+        If _gameAslVersion >= 391 And numberCorresIds = 0 And _useAbbreviations And Len(name) > 0 Then
             ' Check for abbreviated object names
 
             For i = 1 To _numberObjs
-                If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
-                    If _objs(i).ObjectAlias <> "" Then ThisName = LCase(_objs(i).ObjectAlias) Else ThisName = LCase(_objs(i).ObjectName)
+                If DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit) Then
+                    Dim thisName As String
+                    If _objs(i).ObjectAlias <> "" Then thisName = LCase(_objs(i).ObjectAlias) Else thisName = LCase(_objs(i).ObjectName)
                     If _gameAslVersion >= 410 Then
-                        If _objs(i).Prefix <> "" Then ThisName = Trim(LCase(_objs(i).Prefix)) & " " & ThisName
-                        If _objs(i).Suffix <> "" Then ThisName = ThisName & " " & Trim(LCase(_objs(i).Suffix))
+                        If _objs(i).Prefix <> "" Then thisName = Trim(LCase(_objs(i).Prefix)) & " " & thisName
+                        If _objs(i).Suffix <> "" Then thisName = thisName & " " & Trim(LCase(_objs(i).Suffix))
                     End If
-                    If InStr(" " & ThisName, " " & LCase(ObjectName)) <> 0 Then
-                        NumberCorresIDs = NumberCorresIDs + 1
-                        ReDim Preserve IDNumbers(NumberCorresIDs)
-                        IDNumbers(NumberCorresIDs) = i
+                    If InStr(" " & thisName, " " & LCase(name)) <> 0 Then
+                        numberCorresIds = numberCorresIds + 1
+                        ReDim Preserve idNumbers(numberCorresIds)
+                        idNumbers(numberCorresIds) = i
                     End If
                 End If
             Next i
         End If
 
-        Dim Question As String
-        If NumberCorresIDs = 1 Then
-            SetStringContents("quest.lastobject", _objs(IDNumbers(1)).ObjectName, ctx)
-            _thisTurnIt = IDNumbers(1)
+        If numberCorresIds = 1 Then
+            SetStringContents("quest.lastobject", _objs(idNumbers(1)).ObjectName, ctx)
+            _thisTurnIt = idNumbers(1)
 
-            Select Case _objs(IDNumbers(1)).Article
+            Select Case _objs(idNumbers(1)).Article
                 Case "him"
                     _thisTurnItMode = ItType.Male
                 Case "her"
@@ -4123,39 +4083,39 @@ Public Class LegacyGame
                     _thisTurnItMode = ItType.Inanimate
             End Select
 
-            Return IDNumbers(1)
-        ElseIf NumberCorresIDs > 1 Then
-            ReDim DescriptionText(NumberCorresIDs)
+            Return idNumbers(1)
+        ElseIf numberCorresIds > 1 Then
+            ReDim descriptionText(numberCorresIds)
 
-            Question = "Please select which " & ObjectName & " you mean:"
-            Print("- |i" & Question & "|xi", ctx)
+            Dim question = "Please select which " & name & " you mean:"
+            Print("- |i" & question & "|xi", ctx)
 
             Dim menuItems As New Dictionary(Of String, String)
 
-            For i = 1 To NumberCorresIDs
-                DescriptionText(i) = _objs(IDNumbers(i)).Detail
-                If DescriptionText(i) = "" Then
-                    If _objs(IDNumbers(i)).Prefix = "" Then
-                        DescriptionText(i) = _objs(IDNumbers(i)).ObjectAlias
+            For i = 1 To numberCorresIds
+                descriptionText(i) = _objs(idNumbers(i)).Detail
+                If descriptionText(i) = "" Then
+                    If _objs(idNumbers(i)).Prefix = "" Then
+                        descriptionText(i) = _objs(idNumbers(i)).ObjectAlias
                     Else
-                        DescriptionText(i) = _objs(IDNumbers(i)).Prefix & _objs(IDNumbers(i)).ObjectAlias
+                        descriptionText(i) = _objs(idNumbers(i)).Prefix & _objs(idNumbers(i)).ObjectAlias
                     End If
                 End If
 
-                menuItems.Add(CStr(i), DescriptionText(i))
+                menuItems.Add(CStr(i), descriptionText(i))
 
             Next i
 
-            Dim mnu As New MenuData(Question, menuItems, False)
+            Dim mnu As New MenuData(question, menuItems, False)
             Dim response As String = ShowMenu(mnu)
 
             _choiceNumber = CInt(response)
 
-            SetStringContents("quest.lastobject", _objs(IDNumbers(_choiceNumber)).ObjectName, ctx)
+            SetStringContents("quest.lastobject", _objs(idNumbers(_choiceNumber)).ObjectName, ctx)
 
-            _thisTurnIt = IDNumbers(_choiceNumber)
+            _thisTurnIt = idNumbers(_choiceNumber)
 
-            Select Case _objs(IDNumbers(_choiceNumber)).Article
+            Select Case _objs(idNumbers(_choiceNumber)).Article
                 Case "him"
                     _thisTurnItMode = ItType.Male
                 Case "her"
@@ -4164,60 +4124,54 @@ Public Class LegacyGame
                     _thisTurnItMode = ItType.Inanimate
             End Select
 
-            Print("- " & DescriptionText(_choiceNumber) & "|n", ctx)
+            Print("- " & descriptionText(_choiceNumber) & "|n", ctx)
 
-            Return IDNumbers(_choiceNumber)
+            Return idNumbers(_choiceNumber)
         End If
 
         _thisTurnIt = _lastIt
-        SetStringContents("quest.error.object", ObjectName, ctx)
+        SetStringContents("quest.error.object", name, ctx)
         Return -1
     End Function
 
-    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As VarType, ctx As Context) As String
-        Dim DisplayData As String = ""
-        Dim ExcPos As Integer
-        Dim FirstStar, SecondStar As Integer
-        Dim BeforeStar, AfterStar As String
-        Dim BetweenStar As String
-        Dim ArrayIndex As Integer
+    Private Function DisplayStatusVariableInfo(id As Integer, type As VarType, ctx As Context) As String
+        Dim displayData As String = ""
+        Dim ep As Integer
 
-        ArrayIndex = 0
+        If type = VarType.String Then
+            displayData = ConvertVarsIn(_stringVariable(id).DisplayString, ctx)
+            ep = InStr(displayData, "!")
 
-        If VariableType = VarType.String Then
-            DisplayData = ConvertVarsIn(_stringVariable(VarNum).DisplayString, ctx)
-            ExcPos = InStr(DisplayData, "!")
-
-            If ExcPos <> 0 Then
-                DisplayData = Left(DisplayData, ExcPos - 1) & _stringVariable(VarNum).VariableContents(ArrayIndex) & Mid(DisplayData, ExcPos + 1)
+            If ep <> 0 Then
+                displayData = Left(displayData, ep - 1) & _stringVariable(id).VariableContents(0) & Mid(displayData, ep + 1)
             End If
-        ElseIf VariableType = VarType.Numeric Then
-            If _numericVariable(VarNum).NoZeroDisplay And Val(_numericVariable(VarNum).VariableContents(ArrayIndex)) = 0 Then
+        ElseIf type = VarType.Numeric Then
+            If _numericVariable(id).NoZeroDisplay And Val(_numericVariable(id).VariableContents(0)) = 0 Then
                 Return ""
             End If
-            DisplayData = ConvertVarsIn(_numericVariable(VarNum).DisplayString, ctx)
-            ExcPos = InStr(DisplayData, "!")
+            displayData = ConvertVarsIn(_numericVariable(id).DisplayString, ctx)
+            ep = InStr(displayData, "!")
 
-            If ExcPos <> 0 Then
-                DisplayData = Left(DisplayData, ExcPos - 1) & _numericVariable(VarNum).VariableContents(ArrayIndex) & Mid(DisplayData, ExcPos + 1)
+            If ep <> 0 Then
+                displayData = Left(displayData, ep - 1) & _numericVariable(id).VariableContents(0) & Mid(displayData, ep + 1)
             End If
 
-            If InStr(DisplayData, "*") > 0 Then
-                FirstStar = InStr(DisplayData, "*")
-                SecondStar = InStr(FirstStar + 1, DisplayData, "*")
-                BeforeStar = Left(DisplayData, FirstStar - 1)
-                AfterStar = Mid(DisplayData, SecondStar + 1)
-                BetweenStar = Mid(DisplayData, FirstStar + 1, (SecondStar - FirstStar) - 1)
+            If InStr(displayData, "*") > 0 Then
+                Dim firstStar = InStr(displayData, "*")
+                Dim secondStar = InStr(firstStar + 1, displayData, "*")
+                Dim beforeStar = Left(displayData, firstStar - 1)
+                Dim afterStar = Mid(displayData, secondStar + 1)
+                Dim betweenStar = Mid(displayData, firstStar + 1, (secondStar - firstStar) - 1)
 
-                If CDbl(_numericVariable(VarNum).VariableContents(ArrayIndex)) <> 1 Then
-                    DisplayData = BeforeStar & BetweenStar & AfterStar
+                If CDbl(_numericVariable(id).VariableContents(0)) <> 1 Then
+                    displayData = beforeStar & betweenStar & afterStar
                 Else
-                    DisplayData = BeforeStar & AfterStar
+                    displayData = beforeStar & afterStar
                 End If
             End If
         End If
 
-        Return DisplayData
+        Return displayData
     End Function
 
     Friend Function DoAction(ObjID As Integer, ActionName As String, ctx As Context, Optional LogError As Boolean = True) As Boolean
