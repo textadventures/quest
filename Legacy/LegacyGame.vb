@@ -477,153 +477,152 @@ Public Class LegacyGame
         _data = data
     End Sub
 
-    Private Function StripCodes(InputString As String) As String
-        Dim FCodeDat As String
-        Dim FCodePos, FCodeLen As Integer
+    Private Function RemoveFormatting(s As String) As String
+        Dim code As String
+        Dim pos, len As Integer
 
         Do
-            FCodePos = InStr(InputString, "|")
-            If FCodePos <> 0 Then
-                FCodeDat = Mid(InputString, FCodePos + 1, 3)
+            pos = InStr(s, "|")
+            If pos <> 0 Then
+                code = Mid(s, pos + 1, 3)
 
-                If Left(FCodeDat, 1) = "b" Then
-                    FCodeLen = 1
-                ElseIf Left(FCodeDat, 2) = "xb" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 1) = "u" Then
-                    FCodeLen = 1
-                ElseIf Left(FCodeDat, 2) = "xu" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 1) = "i" Then
-                    FCodeLen = 1
-                ElseIf Left(FCodeDat, 2) = "xi" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "cr" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "cb" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "cl" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "cy" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "cg" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 1) = "n" Then
-                    FCodeLen = 1
-                ElseIf Left(FCodeDat, 2) = "xn" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 1) = "s" Then
-                    FCodeLen = 3
-                ElseIf Left(FCodeDat, 2) = "jc" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "jl" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 2) = "jr" Then
-                    FCodeLen = 2
-                ElseIf Left(FCodeDat, 1) = "w" Then
-                    FCodeLen = 1
-                ElseIf Left(FCodeDat, 1) = "c" Then
-                    FCodeLen = 1
+                If Left(code, 1) = "b" Then
+                    len = 1
+                ElseIf Left(code, 2) = "xb" Then
+                    len = 2
+                ElseIf Left(code, 1) = "u" Then
+                    len = 1
+                ElseIf Left(code, 2) = "xu" Then
+                    len = 2
+                ElseIf Left(code, 1) = "i" Then
+                    len = 1
+                ElseIf Left(code, 2) = "xi" Then
+                    len = 2
+                ElseIf Left(code, 2) = "cr" Then
+                    len = 2
+                ElseIf Left(code, 2) = "cb" Then
+                    len = 2
+                ElseIf Left(code, 2) = "cl" Then
+                    len = 2
+                ElseIf Left(code, 2) = "cy" Then
+                    len = 2
+                ElseIf Left(code, 2) = "cg" Then
+                    len = 2
+                ElseIf Left(code, 1) = "n" Then
+                    len = 1
+                ElseIf Left(code, 2) = "xn" Then
+                    len = 2
+                ElseIf Left(code, 1) = "s" Then
+                    len = 3
+                ElseIf Left(code, 2) = "jc" Then
+                    len = 2
+                ElseIf Left(code, 2) = "jl" Then
+                    len = 2
+                ElseIf Left(code, 2) = "jr" Then
+                    len = 2
+                ElseIf Left(code, 1) = "w" Then
+                    len = 1
+                ElseIf Left(code, 1) = "c" Then
+                    len = 1
                 End If
 
-                If FCodeLen = 0 Then
+                If len = 0 Then
                     ' unknown code
-                    FCodeLen = 1
+                    len = 1
                 End If
 
-                InputString = Left(InputString, FCodePos - 1) & Mid(InputString, FCodePos + FCodeLen + 1)
+                s = Left(s, pos - 1) & Mid(s, pos + len + 1)
             End If
 
-        Loop Until FCodePos = 0
+        Loop Until pos = 0
 
-        Return InputString
-
+        Return s
     End Function
 
     Private Function CheckSections() As Boolean
-        Dim Defines, i, Braces As Integer
-        Dim CheckLine As String = ""
-        Dim BracePos As Integer
-        Dim CurPos As Integer
-        Dim ThisSection As String = ""
-        Dim HasErrors As Boolean
-        Dim bSkipBlock As Boolean
+        Dim defines, i, braces As Integer
+        Dim checkLine As String = ""
+        Dim bracePos As Integer
+        Dim pos As Integer
+        Dim section As String = ""
+        Dim hasErrors As Boolean
+        Dim skipBlock As Boolean
         _openErrorReport = ""
-        HasErrors = False
-        Defines = 0
-        Braces = 0
+        hasErrors = False
+        defines = 0
+        braces = 0
 
         For i = 1 To UBound(_lines)
             If Not BeginsWith(_lines(i), "#!qdk-note: ") Then
                 If BeginsWith(_lines(i), "define ") Then
-                    ThisSection = _lines(i)
-                    Braces = 0
-                    Defines = Defines + 1
-                    bSkipBlock = BeginsWith(_lines(i), "define text") Or BeginsWith(_lines(i), "define synonyms")
+                    section = _lines(i)
+                    braces = 0
+                    defines = defines + 1
+                    skipBlock = BeginsWith(_lines(i), "define text") Or BeginsWith(_lines(i), "define synonyms")
                 ElseIf Trim(_lines(i)) = "end define" Then
-                    Defines = Defines - 1
+                    defines = defines - 1
 
-                    If Defines < 0 Then
-                        LogASLError("Extra 'end define' after block '" & ThisSection & "'", LogType.FatalError)
-                        _openErrorReport = _openErrorReport & "Extra 'end define' after block '" & ThisSection & "'" & vbCrLf
-                        HasErrors = True
-                        Defines = 0
+                    If defines < 0 Then
+                        LogASLError("Extra 'end define' after block '" & section & "'", LogType.FatalError)
+                        _openErrorReport = _openErrorReport & "Extra 'end define' after block '" & section & "'" & vbCrLf
+                        hasErrors = True
+                        defines = 0
                     End If
 
-                    If Braces > 0 Then
-                        LogASLError("Missing } in block '" & ThisSection & "'", LogType.FatalError)
-                        _openErrorReport = _openErrorReport & "Missing } in block '" & ThisSection & "'" & vbCrLf
-                        HasErrors = True
-                    ElseIf Braces < 0 Then
-                        LogASLError("Too many } in block '" & ThisSection & "'", LogType.FatalError)
-                        _openErrorReport = _openErrorReport & "Too many } in block '" & ThisSection & "'" & vbCrLf
-                        HasErrors = True
+                    If braces > 0 Then
+                        LogASLError("Missing } in block '" & section & "'", LogType.FatalError)
+                        _openErrorReport = _openErrorReport & "Missing } in block '" & section & "'" & vbCrLf
+                        hasErrors = True
+                    ElseIf braces < 0 Then
+                        LogASLError("Too many } in block '" & section & "'", LogType.FatalError)
+                        _openErrorReport = _openErrorReport & "Too many } in block '" & section & "'" & vbCrLf
+                        hasErrors = True
                     End If
                 End If
 
-                If Left(_lines(i), 1) <> "'" And Not bSkipBlock Then
-                    CheckLine = ObliterateParameters(_lines(i))
-                    If BeginsWith(CheckLine, "'<ERROR;") Then
+                If Left(_lines(i), 1) <> "'" And Not skipBlock Then
+                    checkLine = ObliterateParameters(_lines(i))
+                    If BeginsWith(checkLine, "'<ERROR;") Then
                         ' ObliterateParameters denotes a mismatched $, ( etc.
                         ' by prefixing line with '<ERROR;*; where * is the mismatched
                         ' character
-                        LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
-                        _openErrorReport = _openErrorReport & "Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'." & vbCrLf
+                        LogASLError("Expected closing " & Mid(checkLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
+                        _openErrorReport = _openErrorReport & "Expected closing " & Mid(checkLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'." & vbCrLf
                         Return False
                     End If
                 End If
 
-                If Left(Trim(CheckLine), 1) <> "'" Then
+                If Left(Trim(checkLine), 1) <> "'" Then
                     ' Now check {
-                    CurPos = 1
+                    pos = 1
                     Do
-                        BracePos = InStr(CurPos, CheckLine, "{")
-                        If BracePos <> 0 Then
-                            CurPos = BracePos + 1
-                            Braces = Braces + 1
+                        bracePos = InStr(pos, checkLine, "{")
+                        If bracePos <> 0 Then
+                            pos = bracePos + 1
+                            braces = braces + 1
                         End If
-                    Loop Until BracePos = 0 Or CurPos > Len(CheckLine)
+                    Loop Until bracePos = 0 Or pos > Len(checkLine)
 
                     ' Now check }
-                    CurPos = 1
+                    pos = 1
                     Do
-                        BracePos = InStr(CurPos, CheckLine, "}")
-                        If BracePos <> 0 Then
-                            CurPos = BracePos + 1
-                            Braces = Braces - 1
+                        bracePos = InStr(pos, checkLine, "}")
+                        If bracePos <> 0 Then
+                            pos = bracePos + 1
+                            braces = braces - 1
                         End If
-                    Loop Until BracePos = 0 Or CurPos > Len(CheckLine)
+                    Loop Until bracePos = 0 Or pos > Len(checkLine)
                 End If
             End If
         Next i
 
-        If Defines > 0 Then
+        If defines > 0 Then
             LogASLError("Missing 'end define'", LogType.FatalError)
             _openErrorReport = _openErrorReport & "Missing 'end define'." & vbCrLf
-            HasErrors = True
+            hasErrors = True
         End If
 
-        Return Not HasErrors
+        Return Not hasErrors
     End Function
 
     Private Function ConvertFriendlyIfs() As Boolean
@@ -635,129 +634,128 @@ Public Class LegacyGame
 
         ' Returns False if successful
 
-        Dim ConvPos, i, SymbPos As Integer
-        Dim Symbol As String
-        Dim EndParamPos, j As Integer
-        Dim ParamData As String
-        Dim StartParamPos As Integer
-        Dim FirstData, SecondData As String
-        Dim ObscureLine, NewParam, VarObscureLine As String
-        Dim BracketCount As Integer
+        Dim convPos, i, symbPos As Integer
+        Dim symbol As String
+        Dim endParamPos, j As Integer
+        Dim paramData As String
+        Dim startParamPos As Integer
+        Dim firstData, secondData As String
+        Dim obscureLine, newParam, varObscureLine As String
+        Dim bracketCount As Integer
 
         For i = 1 To UBound(_lines)
-            ObscureLine = ObliterateParameters(_lines(i))
-            ConvPos = InStr(ObscureLine, "if (")
-            If ConvPos = 0 Then
-                ConvPos = InStr(ObscureLine, "until (")
+            obscureLine = ObliterateParameters(_lines(i))
+            convPos = InStr(obscureLine, "if (")
+            If convPos = 0 Then
+                convPos = InStr(obscureLine, "until (")
             End If
-            If ConvPos = 0 Then
-                ConvPos = InStr(ObscureLine, "while (")
+            If convPos = 0 Then
+                convPos = InStr(obscureLine, "while (")
             End If
-            If ConvPos = 0 Then
-                ConvPos = InStr(ObscureLine, "not (")
+            If convPos = 0 Then
+                convPos = InStr(obscureLine, "not (")
             End If
-            If ConvPos = 0 Then
-                ConvPos = InStr(ObscureLine, "and (")
+            If convPos = 0 Then
+                convPos = InStr(obscureLine, "and (")
             End If
-            If ConvPos = 0 Then
-                ConvPos = InStr(ObscureLine, "or (")
+            If convPos = 0 Then
+                convPos = InStr(obscureLine, "or (")
             End If
 
 
-            If ConvPos <> 0 Then
-                VarObscureLine = ObliterateVariableNames(_lines(i))
-                If BeginsWith(VarObscureLine, "'<ERROR;") Then
+            If convPos <> 0 Then
+                varObscureLine = ObliterateVariableNames(_lines(i))
+                If BeginsWith(varObscureLine, "'<ERROR;") Then
                     ' ObliterateVariableNames denotes a mismatched #, % or $
                     ' by prefixing line with '<ERROR;*; where * is the mismatched
                     ' character
-                    LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
+                    LogASLError("Expected closing " & Mid(varObscureLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
-                StartParamPos = InStr(ConvPos, _lines(i), "(")
+                startParamPos = InStr(convPos, _lines(i), "(")
 
-                EndParamPos = 0
-                BracketCount = 1
-                For j = StartParamPos + 1 To Len(_lines(i))
+                endParamPos = 0
+                bracketCount = 1
+                For j = startParamPos + 1 To Len(_lines(i))
                     If Mid(_lines(i), j, 1) = "(" Then
-                        BracketCount = BracketCount + 1
+                        bracketCount = bracketCount + 1
                     ElseIf Mid(_lines(i), j, 1) = ")" Then
-                        BracketCount = BracketCount - 1
+                        bracketCount = bracketCount - 1
                     End If
-                    If BracketCount = 0 Then
-                        EndParamPos = j
+                    If bracketCount = 0 Then
+                        endParamPos = j
                         Exit For
                     End If
                 Next j
 
-                'EndParamPos = InStr(ConvPos, VarObscureLine, ")")
-                If EndParamPos = 0 Then
+                If endParamPos = 0 Then
                     LogASLError("Expected ) in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
 
-                ParamData = Mid(_lines(i), StartParamPos + 1, (EndParamPos - StartParamPos) - 1)
+                paramData = Mid(_lines(i), startParamPos + 1, (endParamPos - startParamPos) - 1)
 
-                SymbPos = InStr(ParamData, "!=")
-                If SymbPos = 0 Then
-                    SymbPos = InStr(ParamData, "<>")
-                    If SymbPos = 0 Then
-                        SymbPos = InStr(ParamData, "<=")
-                        If SymbPos = 0 Then
-                            SymbPos = InStr(ParamData, ">=")
-                            If SymbPos = 0 Then
-                                SymbPos = InStr(ParamData, "<")
-                                If SymbPos = 0 Then
-                                    SymbPos = InStr(ParamData, ">")
-                                    If SymbPos = 0 Then
-                                        SymbPos = InStr(ParamData, "=")
-                                        If SymbPos = 0 Then
+                symbPos = InStr(paramData, "!=")
+                If symbPos = 0 Then
+                    symbPos = InStr(paramData, "<>")
+                    If symbPos = 0 Then
+                        symbPos = InStr(paramData, "<=")
+                        If symbPos = 0 Then
+                            symbPos = InStr(paramData, ">=")
+                            If symbPos = 0 Then
+                                symbPos = InStr(paramData, "<")
+                                If symbPos = 0 Then
+                                    symbPos = InStr(paramData, ">")
+                                    If symbPos = 0 Then
+                                        symbPos = InStr(paramData, "=")
+                                        If symbPos = 0 Then
                                             LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                                             Return True
                                         Else
-                                            Symbol = "="
+                                            symbol = "="
                                         End If
                                     Else
-                                        Symbol = ">"
+                                        symbol = ">"
                                     End If
                                 Else
-                                    Symbol = "<"
+                                    symbol = "<"
                                 End If
                             Else
-                                Symbol = ">="
+                                symbol = ">="
                             End If
                         Else
-                            Symbol = "<="
+                            symbol = "<="
                         End If
                     Else
-                        Symbol = "<>"
+                        symbol = "<>"
                     End If
                 Else
-                    Symbol = "<>"
+                    symbol = "<>"
                 End If
 
 
-                FirstData = Trim(Left(ParamData, SymbPos - 1))
-                SecondData = Trim(Mid(ParamData, SymbPos + Len(Symbol)))
+                firstData = Trim(Left(paramData, symbPos - 1))
+                secondData = Trim(Mid(paramData, symbPos + Len(symbol)))
 
-                If Symbol = "=" Then
-                    NewParam = "is <" & FirstData & ";" & SecondData & ">"
+                If symbol = "=" Then
+                    newParam = "is <" & firstData & ";" & secondData & ">"
                 Else
-                    NewParam = "is <" & FirstData & ";"
-                    If Symbol = "<" Then
-                        NewParam = NewParam & "lt"
-                    ElseIf Symbol = ">" Then
-                        NewParam = NewParam & "gt"
-                    ElseIf Symbol = ">=" Then
-                        NewParam = NewParam & "gt="
-                    ElseIf Symbol = "<=" Then
-                        NewParam = NewParam & "lt="
-                    ElseIf Symbol = "<>" Then
-                        NewParam = NewParam & "!="
+                    newParam = "is <" & firstData & ";"
+                    If symbol = "<" Then
+                        newParam = newParam & "lt"
+                    ElseIf symbol = ">" Then
+                        newParam = newParam & "gt"
+                    ElseIf symbol = ">=" Then
+                        newParam = newParam & "gt="
+                    ElseIf symbol = "<=" Then
+                        newParam = newParam & "lt="
+                    ElseIf symbol = "<>" Then
+                        newParam = newParam & "!="
                     End If
-                    NewParam = NewParam & ";" & SecondData & ">"
+                    newParam = newParam & ";" & secondData & ">"
                 End If
 
-                _lines(i) = Left(_lines(i), StartParamPos - 1) & NewParam & Mid(_lines(i), EndParamPos + 1)
+                _lines(i) = Left(_lines(i), startParamPos - 1) & newParam & Mid(_lines(i), endParamPos + 1)
 
                 ' Repeat processing this line, in case there are
                 ' further changes to be made.
@@ -769,114 +767,112 @@ Public Class LegacyGame
     End Function
 
     Private Sub ConvertMultiLineSections()
-
-        Dim StartLine, BraceCount As Integer
-        Dim ThisLine, LineToAdd As String
-        Dim LastBrace As Integer
-        Dim k, i, j, M As Integer
-        Dim RestOfLine, ProcName As String
-        Dim EndLineNum As Integer
-        Dim AfterLastBrace, Z As String
-        Dim StartOfOrig As String
-
-        Dim TestLine As String
-        Dim TestBraceCount As Integer
-        Dim OBP, CBP As Integer
-        Dim CurProc As Integer
+        Dim startLine, braceCount As Integer
+        Dim thisLine, lineToAdd As String
+        Dim lastBrace As Integer
+        Dim k, i, j, m As Integer
+        Dim restOfLine, procName As String
+        Dim endLineNum As Integer
+        Dim afterLastBrace, z As String
+        Dim startOfOrig As String
+        Dim testLine As String
+        Dim testBraceCount As Integer
+        Dim obp, cbp As Integer
+        Dim curProc As Integer
 
         i = 1
         Do
-            Z = _lines(_defineBlocks(i).StartLine)
-            If ((Not BeginsWith(Z, "define text ")) And (Not BeginsWith(Z, "define menu ")) And Z <> "define synonyms") Then
+            z = _lines(_defineBlocks(i).StartLine)
+            If ((Not BeginsWith(z, "define text ")) And (Not BeginsWith(z, "define menu ")) And z <> "define synonyms") Then
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If InStr(_lines(j), "{") > 0 Then
 
-                        AfterLastBrace = ""
-                        ThisLine = Trim(_lines(j))
+                        afterLastBrace = ""
+                        thisLine = Trim(_lines(j))
 
-                        ProcName = "<!intproc" & Trim(Str(CurProc)) & ">"
+                        procName = "<!intproc" & curProc & ">"
 
                         ' see if this brace's corresponding closing
                         ' brace is on same line:
 
-                        TestLine = Mid(_lines(j), InStr(_lines(j), "{") + 1)
-                        TestBraceCount = 1
+                        testLine = Mid(_lines(j), InStr(_lines(j), "{") + 1)
+                        testBraceCount = 1
                         Do
-                            OBP = InStr(TestLine, "{")
-                            CBP = InStr(TestLine, "}")
-                            If OBP = 0 Then OBP = Len(TestLine) + 1
-                            If CBP = 0 Then CBP = Len(TestLine) + 1
-                            If OBP < CBP Then
-                                TestBraceCount = TestBraceCount + 1
-                                TestLine = Mid(TestLine, OBP + 1)
-                            ElseIf CBP < OBP Then
-                                TestBraceCount = TestBraceCount - 1
-                                TestLine = Mid(TestLine, CBP + 1)
+                            obp = InStr(testLine, "{")
+                            cbp = InStr(testLine, "}")
+                            If obp = 0 Then obp = Len(testLine) + 1
+                            If cbp = 0 Then cbp = Len(testLine) + 1
+                            If obp < cbp Then
+                                testBraceCount = testBraceCount + 1
+                                testLine = Mid(testLine, obp + 1)
+                            ElseIf cbp < obp Then
+                                testBraceCount = testBraceCount - 1
+                                testLine = Mid(testLine, cbp + 1)
                             End If
-                        Loop Until OBP = CBP Or TestBraceCount = 0
+                        Loop Until obp = cbp Or testBraceCount = 0
 
-                        If TestBraceCount <> 0 Then
-                            AddLine("define procedure " & ProcName)
-                            StartLine = UBound(_lines)
-                            RestOfLine = Trim(Right(ThisLine, Len(ThisLine) - InStr(ThisLine, "{")))
-                            BraceCount = 1
-                            If RestOfLine <> "" Then AddLine(RestOfLine)
+                        If testBraceCount <> 0 Then
+                            AddLine("define procedure " & procName)
+                            startLine = UBound(_lines)
+                            restOfLine = Trim(Right(thisLine, Len(thisLine) - InStr(thisLine, "{")))
+                            braceCount = 1
+                            If restOfLine <> "" Then AddLine(restOfLine)
 
-                            For M = 1 To Len(RestOfLine)
-                                If Mid(RestOfLine, M, 1) = "{" Then
-                                    BraceCount = BraceCount + 1
-                                ElseIf Mid(RestOfLine, M, 1) = "}" Then
-                                    BraceCount = BraceCount - 1
+                            For m = 1 To Len(restOfLine)
+                                If Mid(restOfLine, m, 1) = "{" Then
+                                    braceCount = braceCount + 1
+                                ElseIf Mid(restOfLine, m, 1) = "}" Then
+                                    braceCount = braceCount - 1
                                 End If
-                            Next M
+                            Next m
 
-                            If BraceCount <> 0 Then
+                            If braceCount <> 0 Then
                                 k = j + 1
                                 Do
-                                    For M = 1 To Len(_lines(k))
-                                        If Mid(_lines(k), M, 1) = "{" Then
-                                            BraceCount = BraceCount + 1
-                                        ElseIf Mid(_lines(k), M, 1) = "}" Then
-                                            BraceCount = BraceCount - 1
+                                    For m = 1 To Len(_lines(k))
+                                        If Mid(_lines(k), m, 1) = "{" Then
+                                            braceCount = braceCount + 1
+                                        ElseIf Mid(_lines(k), m, 1) = "}" Then
+                                            braceCount = braceCount - 1
                                         End If
 
-                                        If BraceCount = 0 Then
-                                            LastBrace = M
+                                        If braceCount = 0 Then
+                                            lastBrace = m
                                             Exit For
                                         End If
-                                    Next M
+                                    Next m
 
-                                    If BraceCount <> 0 Then
+                                    If braceCount <> 0 Then
                                         'put Lines(k) into another variable, as
                                         'AddLine ReDims Lines, which it can't do if
                                         'passed Lines(x) as a parameter.
-                                        LineToAdd = _lines(k)
-                                        AddLine(LineToAdd)
+                                        lineToAdd = _lines(k)
+                                        AddLine(lineToAdd)
                                     Else
-                                        AddLine(Left(_lines(k), LastBrace - 1))
-                                        AfterLastBrace = Trim(Mid(_lines(k), LastBrace + 1))
+                                        AddLine(Left(_lines(k), lastBrace - 1))
+                                        afterLastBrace = Trim(Mid(_lines(k), lastBrace + 1))
                                     End If
 
                                     'Clear original line
                                     _lines(k) = ""
                                     k = k + 1
-                                Loop While BraceCount <> 0
+                                Loop While braceCount <> 0
                             End If
 
                             AddLine("end define")
-                            EndLineNum = UBound(_lines)
+                            endLineNum = UBound(_lines)
 
                             _numberSections = _numberSections + 1
                             ReDim Preserve _defineBlocks(_numberSections)
                             _defineBlocks(_numberSections) = New DefineBlock
-                            _defineBlocks(_numberSections).StartLine = StartLine
-                            _defineBlocks(_numberSections).EndLine = EndLineNum
+                            _defineBlocks(_numberSections).StartLine = startLine
+                            _defineBlocks(_numberSections).EndLine = endLineNum
 
                             'Change original line where the { section
                             'started to call the new procedure.
-                            StartOfOrig = Trim(Left(ThisLine, InStr(ThisLine, "{") - 1))
-                            _lines(j) = StartOfOrig & " do " & ProcName & " " & AfterLastBrace
-                            CurProc = CurProc + 1
+                            startOfOrig = Trim(Left(thisLine, InStr(thisLine, "{") - 1))
+                            _lines(j) = startOfOrig & " do " & procName & " " & afterLastBrace
+                            curProc = curProc + 1
 
                             ' Process this line again in case there was stuff after the last brace that included
                             ' more braces. e.g. } else {
@@ -891,8 +887,8 @@ Public Class LegacyGame
         ' Join next-line "else"s to corresponding "if"s
 
         For i = 1 To _numberSections
-            Z = _lines(_defineBlocks(i).StartLine)
-            If ((Not BeginsWith(Z, "define text ")) And (Not BeginsWith(Z, "define menu ")) And Z <> "define synonyms") Then
+            z = _lines(_defineBlocks(i).StartLine)
+            If ((Not BeginsWith(z, "define text ")) And (Not BeginsWith(z, "define menu ")) And z <> "define synonyms") Then
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If BeginsWith(_lines(j), "else ") Then
 
@@ -917,89 +913,89 @@ Public Class LegacyGame
     Private Function ErrorCheck() As Boolean
         ' Parses ASL script for errors. Returns TRUE if OK;
         ' False if a critical error is encountered.
-        Dim iCurBegin, iCurEnd As Integer
-        Dim bHasErrors As Boolean
-        Dim iCurPos As Integer
-        Dim iNumParamStart, iNumParamEnd As Integer
-        Dim bFinLoop, bInText As Boolean
+        Dim curBegin, curEnd As Integer
+        Dim hasErrors As Boolean
+        Dim curPos As Integer
+        Dim numParamStart, numParamEnd As Integer
+        Dim finLoop, inText As Boolean
         Dim i As Integer
 
-        bHasErrors = False
-        bInText = False
+        hasErrors = False
+        inText = False
 
         ' Checks for incorrect number of < and > :
         For i = 1 To UBound(_lines)
-            iNumParamStart = 0
-            iNumParamEnd = 0
+            numParamStart = 0
+            numParamEnd = 0
 
             If BeginsWith(_lines(i), "define text ") Then
-                bInText = True
+                inText = True
             End If
-            If bInText And Trim(LCase(_lines(i))) = "end define" Then
-                bInText = False
+            If inText And Trim(LCase(_lines(i))) = "end define" Then
+                inText = False
             End If
 
-            If Not bInText Then
+            If Not inText Then
                 'Find number of <'s:
-                iCurPos = 1
-                bFinLoop = False
+                curPos = 1
+                finLoop = False
                 Do
-                    If InStr(iCurPos, _lines(i), "<") <> 0 Then
-                        iNumParamStart = iNumParamStart + 1
-                        iCurPos = InStr(iCurPos, _lines(i), "<") + 1
+                    If InStr(curPos, _lines(i), "<") <> 0 Then
+                        numParamStart = numParamStart + 1
+                        curPos = InStr(curPos, _lines(i), "<") + 1
                     Else
-                        bFinLoop = True
+                        finLoop = True
                     End If
-                Loop Until bFinLoop
+                Loop Until finLoop
 
                 'Find number of >'s:
-                iCurPos = 1
-                bFinLoop = False
+                curPos = 1
+                finLoop = False
                 Do
-                    If InStr(iCurPos, _lines(i), ">") <> 0 Then
-                        iNumParamEnd = iNumParamEnd + 1
-                        iCurPos = InStr(iCurPos, _lines(i), ">") + 1
+                    If InStr(curPos, _lines(i), ">") <> 0 Then
+                        numParamEnd = numParamEnd + 1
+                        curPos = InStr(curPos, _lines(i), ">") + 1
                     Else
-                        bFinLoop = True
+                        finLoop = True
                     End If
-                Loop Until bFinLoop
+                Loop Until finLoop
 
-                If iNumParamStart > iNumParamEnd Then
+                If numParamStart > numParamEnd Then
                     LogASLError("Expected > in " & ReportErrorLine(_lines(i)), LogType.FatalError)
-                    bHasErrors = True
-                ElseIf iNumParamStart < iNumParamEnd Then
+                    hasErrors = True
+                ElseIf numParamStart < numParamEnd Then
                     LogASLError("Too many > in " & ReportErrorLine(_lines(i)), LogType.FatalError)
-                    bHasErrors = True
+                    hasErrors = True
                 End If
             End If
         Next i
 
         'Exit if errors found
-        If bHasErrors = True Then
+        If hasErrors = True Then
             Return True
         End If
 
         ' Checks that define sections have parameters:
         For i = 1 To _numberSections
-            iCurBegin = _defineBlocks(i).StartLine
-            iCurEnd = _defineBlocks(i).EndLine
+            curBegin = _defineBlocks(i).StartLine
+            curEnd = _defineBlocks(i).EndLine
 
-            If BeginsWith(_lines(iCurBegin), "define game") Then
-                If InStr(_lines(iCurBegin), "<") = 0 Then
+            If BeginsWith(_lines(curBegin), "define game") Then
+                If InStr(_lines(curBegin), "<") = 0 Then
                     LogASLError("'define game' has no parameter - game has no name", LogType.FatalError)
                     Return True
                 End If
             Else
-                If Not BeginsWith(_lines(iCurBegin), "define synonyms") And Not BeginsWith(_lines(iCurBegin), "define options") Then
-                    If InStr(_lines(iCurBegin), "<") = 0 Then
-                        LogASLError(_lines(iCurBegin) & " has no parameter", LogType.FatalError)
-                        bHasErrors = True
+                If Not BeginsWith(_lines(curBegin), "define synonyms") And Not BeginsWith(_lines(curBegin), "define options") Then
+                    If InStr(_lines(curBegin), "<") = 0 Then
+                        LogASLError(_lines(curBegin) & " has no parameter", LogType.FatalError)
+                        hasErrors = True
                     End If
                 End If
             End If
         Next i
 
-        Return bHasErrors
+        Return hasErrors
     End Function
 
     Private Function GetAfterParameter(InputLine As String) As String
@@ -6248,7 +6244,7 @@ Public Class LegacyGame
         ElseIf FunctionName = "speechenabled" Then
             Return "1"
         ElseIf FunctionName = "removeformatting" Then
-            Return StripCodes(FunctionParameter)
+            Return RemoveFormatting(FunctionParameter)
         ElseIf FunctionName = "findexit" And _gameAslVersion >= 410 Then
             oExit = FindExit(FunctionParameter)
             If oExit Is Nothing Then
@@ -9718,7 +9714,7 @@ Public Class LegacyGame
         Dim j As Integer
 
         SkipAfterTurn = False
-        thecommand = StripCodes(thecommand)
+        thecommand = RemoveFormatting(thecommand)
 
         OldBadCmdBefore = _badCmdBefore
 
@@ -11672,8 +11668,6 @@ Public Class LegacyGame
                 PrintThis = True
 
                 If Mid(txt, i, 2) = "|w" Then
-                    'CodesList = CodesList & "w"
-                    'InputString = Left$(InputString, i - 1) & Mid$(InputString, i + 2)
                     DoPrint(PrintString)
                     PrintString = ""
                     PrintThis = False
@@ -11686,8 +11680,6 @@ Public Class LegacyGame
                         Case "|cb", "|cr", "|cl", "|cy", "|cg"
                             ' Do nothing - we don't want to remove the colour formatting codes.
                         Case Else
-                            'CodesList = CodesList & "c"
-                            'InputString = Left$(InputString, i - 1) & Mid$(InputString, i + 2)
                             DoPrint(PrintString)
                             PrintString = ""
                             PrintThis = False
