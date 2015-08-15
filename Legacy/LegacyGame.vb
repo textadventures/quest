@@ -1834,7 +1834,6 @@ Public Class LegacyGame
 
         If bHasErrors Then
             Throw New InvalidOperationException("Errors found in game file.")
-            bResult = False
         End If
 
         _saveGameFile = ""
@@ -2279,7 +2278,7 @@ Public Class LegacyGame
         Dim TextToPrint As String
         Dim IsContainer As Boolean
         Dim InventoryPlace As String
-        Dim ErrorMsg As String = ""
+        Dim ErrorMsg As String = ""     ' TODO: This was passed ByRef - needs fixing
         Dim GotObject As Boolean
         Dim ChildLength As Integer
 
@@ -3236,8 +3235,6 @@ Public Class LegacyGame
             Case Else
                 Return Colour
         End Select
-
-        Return ""
     End Function
 
     Private Sub DoPrint(OutputText As String)
@@ -3922,7 +3919,6 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ExecOops(Correction As String, ctx As Context)
-
         If _badCmdBefore <> "" Then
             If _badCmdAfter = "" Then
                 ExecCommand(_badCmdBefore & " " & Correction, ctx, False)
@@ -3930,7 +3926,6 @@ Public Class LegacyGame
                 ExecCommand(_badCmdBefore & " " & Correction & " " & _badCmdAfter, ctx, False)
             End If
         End If
-
     End Sub
 
     Private Sub ExecType(TypeData As String, ctx As Context)
@@ -4080,6 +4075,7 @@ Public Class LegacyGame
 
     End Function
 
+    ' TODO: sVarName was ByRef
     Private Function GetArrayIndex(sVarName As String, ctx As Context) As Integer
         Dim BeginPos, EndPos As Integer
         Dim ArrayIndexData As String
@@ -4935,7 +4931,6 @@ Public Class LegacyGame
         Dim InventoryPlace As String
 
         FoundExamineAction = False
-        FoundItem = False
 
         InventoryPlace = "inventory"
 
@@ -6621,6 +6616,7 @@ Public Class LegacyGame
         Print(GetErrorMessage(e, ctx), ctx)
     End Sub
 
+
     Private Sub PlayerErrorMessage_ExtendInfo(e As PlayerError, ctx As Context, sExtraInfo As String)
         Dim sErrorMessage As String
 
@@ -6909,12 +6905,12 @@ Public Class LegacyGame
         _playerErrorMessageString(PlayerError.AlreadyTaken) = "You already have that."
     End Sub
 
-    Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
+    Private Sub SetFont(FontName As String)
         If FontName = "" Then FontName = _defaultFontName
         _player.SetFont(FontName)
     End Sub
 
-    Private Sub SetFontSize(FontSize As Double, ctx As Context, Optional OutputTo As String = "normal")
+    Private Sub SetFontSize(FontSize As Double)
         If FontSize = 0 Then FontSize = _defaultFontSize
         _player.SetFontSize(CStr(FontSize))
     End Sub
@@ -6922,7 +6918,7 @@ Public Class LegacyGame
     Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, ctx As Context, Optional ArrayIndex As Integer = 0)
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
-        Dim NumTitle, OnChangeScript As String
+        Dim OnChangeScript As String
         Dim i As Integer
         bNumExists = False
 
@@ -6949,22 +6945,12 @@ Public Class LegacyGame
             iNumNumber = _numberNumericVariables
             ReDim Preserve _numericVariable(iNumNumber)
             _numericVariable(iNumNumber) = New VariableType
-
-            For i = 0 To ArrayIndex
-                NumTitle = NumName
-                If ArrayIndex <> 0 Then NumTitle = NumTitle & "[" & Trim(Str(i)) & "]"
-            Next i
             _numericVariable(iNumNumber).VariableUBound = ArrayIndex
         End If
 
         If ArrayIndex > _numericVariable(iNumNumber).VariableUBound Then
             ReDim Preserve _numericVariable(iNumNumber).VariableContents(ArrayIndex)
-            For i = _numericVariable(iNumNumber).VariableUBound + 1 To ArrayIndex
-                NumTitle = NumName
-                If ArrayIndex <> 0 Then NumTitle = NumTitle & "[" & Trim(Str(i)) & "]"
-            Next i
             _numericVariable(iNumNumber).VariableUBound = ArrayIndex
-
         End If
 
         ' Now, set the contents
@@ -7020,7 +7006,6 @@ Public Class LegacyGame
             LogASLError("No such timer '" & TimerName & "'", LogType.WarningError)
             Exit Sub
         End If
-
     End Sub
 
     Private Function SetUnknownVariableType(VariableData As String, ctx As Context) As SetResult
@@ -7158,7 +7143,6 @@ Public Class LegacyGame
                         DisplayString = GetEverythingAfter(_lines(i), "display ")
                         If BeginsWith(DisplayString, "nozero ") Then
                             ThisVariable.NoZeroDisplay = True
-                            DisplayString = GetEverythingAfter(DisplayString, "nozero ")
                         End If
                         ThisVariable.DisplayString = RetrieveParameter(_lines(i), _nullContext, False)
                     ElseIf BeginsWith(_lines(i), "value ") Then
@@ -7173,18 +7157,14 @@ Public Class LegacyGame
                     iStringNumber = _numberStringVariables
                     ReDim Preserve _stringVariable(iStringNumber)
                     _stringVariable(iStringNumber) = ThisVariable
-
                     _numDisplayStrings = _numDisplayStrings + 1
-
                 ElseIf ThisType = "numeric" Then
                     If ThisVariable.VariableContents(0) = "" Then ThisVariable.VariableContents(0) = CStr(0)
                     _numberNumericVariables = _numberNumericVariables + 1
                     iNumNumber = _numberNumericVariables
                     ReDim Preserve _numericVariable(iNumNumber)
                     _numericVariable(iNumNumber) = ThisVariable
-
                     _numDisplayNumerics = _numDisplayNumerics + 1
-
                 End If
             End If
         Next i
@@ -7343,8 +7323,6 @@ Public Class LegacyGame
                 ' IF FURTHER CHANGES ARE MADE HERE, A NEW CREATEROOM SUB SHOULD BE CREATED, WHICH
                 ' WE CAN THEN CALL FROM EXECUTECREATE ALSO.
                 ' *******************************************************************************
-
-                NestedBlock = 0
 
                 If DefaultExists Then
                     AddToObjectProperties(DefaultProperties.Properties, _numberObjs, _nullContext)
@@ -8395,7 +8373,6 @@ Public Class LegacyGame
         CurrentReqLinePos = 1
         CurrentTestLinePos = 1
         FinishedProcessing = False
-        ChunkEnd = 0
         NumberChunks = 0
         Do
             NextVarPos = InStr(CurrentReqLinePos, RequiredLine, "#")
@@ -8962,7 +8939,7 @@ Public Class LegacyGame
     Friend Sub SetStringContents(StringName As String, StringContents As String, ctx As Context, Optional ArrayIndex As Integer = 0)
         Dim bStringExists As Boolean
         Dim iStringNumber, i As Integer
-        Dim StringTitle, OnChangeScript As String
+        Dim OnChangeScript As String
         Dim BracketPos As Integer
         bStringExists = False
 
@@ -9002,20 +8979,11 @@ Public Class LegacyGame
             iStringNumber = _numberStringVariables
             ReDim Preserve _stringVariable(iStringNumber)
             _stringVariable(iStringNumber) = New VariableType
-
-            For i = 0 To ArrayIndex
-                StringTitle = StringName
-                If ArrayIndex <> 0 Then StringTitle = StringTitle & "[" & Trim(Str(i)) & "]"
-            Next i
             _stringVariable(iStringNumber).VariableUBound = ArrayIndex
         End If
 
         If ArrayIndex > _stringVariable(iStringNumber).VariableUBound Then
             ReDim Preserve _stringVariable(iStringNumber).VariableContents(ArrayIndex)
-            For i = _stringVariable(iStringNumber).VariableUBound + 1 To ArrayIndex
-                StringTitle = StringName
-                If ArrayIndex <> 0 Then StringTitle = StringTitle & "[" & Trim(Str(i)) & "]"
-            Next i
             _stringVariable(iStringNumber).VariableUBound = ArrayIndex
         End If
 
@@ -11028,7 +10996,7 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
                 DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "help")
             ElseIf BeginsWith(ScriptLine, "font ") Then
-                SetFont(RetrieveParameter(ScriptLine, ctx), ctx)
+                SetFont(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "pause ") Then
                 Pause(CInt(RetrieveParameter(ScriptLine, ctx)))
             ElseIf Trim(LCase(ScriptLine)) = "clear" Then
@@ -12433,6 +12401,7 @@ Public Class LegacyGame
 
     End Sub
 
+    ' TODO: Fix - ErrorMsg was ByRef
     Private Function PlayerCanAccessObject(ObjID As Integer, Optional ParentID As Integer = 0, Optional ErrorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
@@ -12632,8 +12601,8 @@ Public Class LegacyGame
         Dim NewThread As New Context
         Dim i As Integer
 
-        SetFont("", _nullContext)
-        SetFontSize(0, _nullContext)
+        SetFont("")
+        SetFontSize(0)
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(i), "background ") Then
