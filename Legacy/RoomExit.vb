@@ -17,11 +17,11 @@ Friend Class RoomExit
 
     Public Sub New(game As LegacyGame)
         m_game = game
-        game.NumberObjs = game.NumberObjs + 1
-        ReDim Preserve game.Objs(game.NumberObjs)
-        game.Objs(game.NumberObjs) = New ObjectType
-        m_lObjID = game.NumberObjs
-        With game.Objs(m_lObjID)
+        game._numberObjs = game._numberObjs + 1
+        ReDim Preserve game._objs(game._numberObjs)
+        game._objs(game._numberObjs) = New ObjectType
+        m_lObjID = game._numberObjs
+        With game._objs(m_lObjID)
             .IsExit = True
             .Visible = True
             .Exists = True
@@ -175,13 +175,13 @@ Friend Class RoomExit
         If Len(m_sObjName) > 0 Then Exit Sub
         If m_oParent Is Nothing Then Exit Sub
 
-        sParentRoom = m_game.Objs(m_oParent.ObjID).ObjectName
+        sParentRoom = m_game._objs(m_oParent.ObjID).ObjectName
 
         sObjName = sParentRoom
 
         If m_lDirection <> LegacyGame.Direction.None Then
             sObjName = sObjName & "." & m_oParent.GetDirectionName(m_lDirection)
-            m_game.Objs(m_lObjID).ObjectAlias = m_oParent.GetDirectionName(m_lDirection)
+            m_game._objs(m_lObjID).ObjectAlias = m_oParent.GetDirectionName(m_lDirection)
         Else
             Dim lastExitID As String = m_game.GetObjectProperty("quest.lastexitid", (m_oParent.ObjID), , False)
             If lastExitID.Length = 0 Then
@@ -204,13 +204,13 @@ Friend Class RoomExit
                 End If
             End If
 
-            m_game.Objs(m_lObjID).ObjectAlias = m_sDisplayName
+            m_game._objs(m_lObjID).ObjectAlias = m_sDisplayName
             Prefix = m_game._rooms(RooMid).Prefix
 
         End If
 
-        m_game.Objs(m_lObjID).ObjectName = sObjName
-        m_game.Objs(m_lObjID).ContainerRoom = sParentRoom
+        m_game._objs(m_lObjID).ObjectName = sObjName
+        m_game._objs(m_lObjID).ContainerRoom = sParentRoom
 
         m_sObjName = sObjName
 

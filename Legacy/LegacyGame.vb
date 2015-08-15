@@ -294,16 +294,16 @@ Public Class LegacyGame
     Private _numberSynonyms As Integer
     Private _items() As ItemType
     Private _chars() As ObjectType
-    Friend Objs() As ObjectType
-    Private NumberChars As Integer
-    Friend NumberObjs As Integer
-    Private NumberItems As Integer
-    Friend CurrentRoom As String
-    Private Collectables() As Collectable
-    Private NumCollectables As Integer
-    Private GamePath As String
-    Private GameFileName As String
-    Private SaveGameFile As String
+    Friend _objs() As ObjectType
+    Private _numberChars As Integer
+    Friend _numberObjs As Integer
+    Private _numberItems As Integer
+    Friend _currentRoom As String
+    Private _collectables() As Collectable
+    Private _numCollectables As Integer
+    Private _gamePath As String
+    Private _gameFileName As String
+    Private _saveGameFile As String
     Private DefaultFontName As String
     Private DefaultFontSize As Double
     Private AutoIntro As Boolean
@@ -1475,7 +1475,7 @@ Public Class LegacyGame
         If LCase(Right(Filename, 4)) = ".zip" Then
             m_originalFilename = Filename
             Filename = GetUnzippedFile(Filename)
-            GamePath = System.IO.Path.GetDirectoryName(Filename)
+            _gamePath = System.IO.Path.GetDirectoryName(Filename)
         End If
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
@@ -1553,7 +1553,7 @@ Public Class LegacyGame
                         LibFoundThisSweep = True
                         LibResourceLines = Nothing
 
-                        LibFile = GamePath & LibFileName
+                        LibFile = _gamePath & LibFileName
                         LogASLError(" - Searching for " & LibFile & " (game path)", LogType.Init)
                         LibFileHandle = FreeFile()
 
@@ -1861,7 +1861,7 @@ Public Class LegacyGame
             bResult = False
         End If
 
-        SaveGameFile = ""
+        _saveGameFile = ""
 
         Return bResult
     End Function
@@ -2112,8 +2112,8 @@ Public Class LegacyGame
     Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, ctx As Context)
 
         If DoAdd Then
-            AddToObjectProperties("parent=" & Objs(ParentObjID).ObjectName, ChildObjID, ctx)
-            Objs(ChildObjID).ContainerRoom = Objs(ParentObjID).ContainerRoom
+            AddToObjectProperties("parent=" & _objs(ParentObjID).ObjectName, ChildObjID, ctx)
+            _objs(ChildObjID).ContainerRoom = _objs(ParentObjID).ContainerRoom
         Else
             AddToObjectProperties("not parent", ChildObjID, ctx)
         End If
@@ -2125,7 +2125,7 @@ Public Class LegacyGame
             AddToObjectProperties("seen", ParentObjID, ctx)
         End If
 
-        UpdateVisibilityInContainers(ctx, Objs(ParentObjID).ObjectName)
+        UpdateVisibilityInContainers(ctx, _objs(ParentObjID).ObjectName)
 
     End Sub
 
@@ -2142,7 +2142,7 @@ Public Class LegacyGame
 
         If GameASLVersion >= 391 Then
             AddToObjectProperties("seen", ObjID, ctx)
-            UpdateVisibilityInContainers(ctx, Objs(ObjID).ObjectName)
+            UpdateVisibilityInContainers(ctx, _objs(ObjID).ObjectName)
         End If
 
         ' First look for action, then look
@@ -2150,7 +2150,7 @@ Public Class LegacyGame
         ' section:
 
         Dim sLookLine As String
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = "look" Then
@@ -2222,7 +2222,7 @@ Public Class LegacyGame
             AddToObjectProperties("not opened", ObjID, ctx)
         End If
 
-        UpdateVisibilityInContainers(ctx, Objs(ObjID).ObjectName)
+        UpdateVisibilityInContainers(ctx, _objs(ObjID).ObjectName)
 
     End Sub
 
@@ -2357,19 +2357,19 @@ Public Class LegacyGame
         GotObject = False
 
         If GameASLVersion >= 392 And DoAdd Then
-            ChildObjID = Disambiguate(ChildObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
+            ChildObjID = Disambiguate(ChildObjectName, _currentRoom & ";" & InventoryPlace, ctx)
 
             If ChildObjID > 0 Then
-                If Objs(ChildObjID).ContainerRoom = InventoryPlace Then
+                If _objs(ChildObjID).ContainerRoom = InventoryPlace Then
                     GotObject = True
                 Else
                     ' Player is not carrying the object they referred to. So, first take the object.
-                    Print("(first taking " & Objs(ChildObjID).Article & ")", ctx)
+                    Print("(first taking " & _objs(ChildObjID).Article & ")", ctx)
                     ' Try to take the object
                     ctx.AllowRealNamesInCommand = True
-                    ExecCommand("take " & Objs(ChildObjID).ObjectName, ctx, False, , True)
+                    ExecCommand("take " & _objs(ChildObjID).ObjectName, ctx, False, , True)
 
-                    If Objs(ChildObjID).ContainerRoom = InventoryPlace Then GotObject = True
+                    If _objs(ChildObjID).ContainerRoom = InventoryPlace Then GotObject = True
                 End If
 
                 If Not GotObject Then
@@ -2383,7 +2383,7 @@ Public Class LegacyGame
             End If
 
         Else
-            ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & CurrentRoom, ctx)
+            ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & _currentRoom, ctx)
 
             If ChildObjID <= 0 Then
                 If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
@@ -2393,7 +2393,7 @@ Public Class LegacyGame
         End If
 
         If NoParentSpecified And DoAdd Then
-            SetStringContents("quest.error.article", Objs(ChildObjID).Article, ctx)
+            SetStringContents("quest.error.article", _objs(ChildObjID).Article, ctx)
             PlayerErrorMessage(PlayerError.BadPut, ctx)
             Exit Sub
         End If
@@ -2407,7 +2407,7 @@ Public Class LegacyGame
         If Not NoParentSpecified Then
             ParentObjectName = Trim(Mid(CommandLine, SepPos + SepLen))
 
-            ParentObjID = Disambiguate(ParentObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
+            ParentObjID = Disambiguate(ParentObjectName, _currentRoom & ";" & InventoryPlace, ctx)
 
             If ParentObjID <= 0 Then
                 If ParentObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
@@ -2442,7 +2442,7 @@ Public Class LegacyGame
         ' Check object is already held by that parent
 
         If IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
-            If DoAdd And LCase(GetObjectProperty("parent", ChildObjID, False, False)) = LCase(Objs(ParentObjID).ObjectName) Then
+            If DoAdd And LCase(GetObjectProperty("parent", ChildObjID, False, False)) = LCase(_objs(ParentObjID).ObjectName) Then
                 PlayerErrorMessage(PlayerError.AlreadyPut, ctx)
             End If
         End If
@@ -2480,7 +2480,7 @@ Public Class LegacyGame
         ' Now check if it can be added to (or removed from)
 
         ' First check for an action
-        Dim o = Objs(ParentObjID)
+        Dim o = _objs(ParentObjID)
         For i = 1 To o.NumberActions
             If LCase(o.Actions(i).ActionName) = Action Then
                 FoundAction = True
@@ -2490,7 +2490,7 @@ Public Class LegacyGame
         Next i
 
         If FoundAction Then
-            SetStringContents("quest." & LCase(Action) & ".object.name", Objs(ChildObjID).ObjectName, ctx)
+            SetStringContents("quest." & LCase(Action) & ".object.name", _objs(ChildObjID).ObjectName, ctx)
             ExecuteScript(ActionScript, ctx, ParentObjID)
         Else
             ' Now check for a property
@@ -2566,7 +2566,7 @@ Public Class LegacyGame
             DoAddRemove(ChildObjID, ParentObjID, DoAdd, ctx)
         Else
             AddToObjectProperties("not parent", ChildObjID, ctx)
-            UpdateVisibilityInContainers(ctx, Objs(ParentObjID).ObjectName)
+            UpdateVisibilityInContainers(ctx, _objs(ParentObjID).ObjectName)
         End If
 
     End Sub
@@ -2597,7 +2597,7 @@ Public Class LegacyGame
 
         ObjectName = GetEverythingAfter(CommandLine, Action & " ")
 
-        ObjID = Disambiguate(ObjectName, CurrentRoom & ";" & InventoryPlace, ctx)
+        ObjID = Disambiguate(ObjectName, _currentRoom & ";" & InventoryPlace, ctx)
 
         If ObjID <= 0 Then
             If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
@@ -2646,7 +2646,7 @@ Public Class LegacyGame
         ' Now check if it can be opened (or closed)
 
         ' First check for an action
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
         For i = 1 To o.NumberActions
             If LCase(o.Actions(i).ActionName) = Action Then
                 FoundAction = True
@@ -2833,7 +2833,7 @@ Public Class LegacyGame
 
             InventoryPlace = "inventory"
 
-            ObjID = Disambiguate(VerbObject, InventoryPlace & ";" & CurrentRoom, ctx)
+            ObjID = Disambiguate(VerbObject, InventoryPlace & ";" & _currentRoom, ctx)
 
             If ObjID < 0 Then
                 FoundItem = False
@@ -2845,10 +2845,10 @@ Public Class LegacyGame
                 If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 BadCmdBefore = ThisVerb
             Else
-                SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
+                SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
 
                 ' Now see if this object has the relevant action or property
-                Dim o = Objs(ObjID)
+                Dim o = _objs(ObjID)
                 For i = 1 To o.NumberActions
                     If LCase(o.Actions(i).ActionName) = VerbProperty Then
                         FoundAction = True
@@ -3089,9 +3089,9 @@ Public Class LegacyGame
 
         NumContents = 0
 
-        For i = 1 To NumberObjs
-            If Objs(i).Exists And Objs(i).Visible Then
-                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(Objs(ObjID).ObjectName) Then
+        For i = 1 To _numberObjs
+            If _objs(i).Exists And _objs(i).Visible Then
+                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(_objs(ObjID).ObjectName) Then
                     NumContents = NumContents + 1
                     ReDim Preserve ContentsIDs(NumContents)
                     ContentsIDs(NumContents) = i
@@ -3123,7 +3123,7 @@ Public Class LegacyGame
                         DisplayList = False
                     End If
                 Else
-                    Contents = UCase(Left(Objs(ObjID).Article, 1)) & Mid(Objs(ObjID).Article, 2) & " contains "
+                    Contents = UCase(Left(_objs(ObjID).Article, 1)) & Mid(_objs(ObjID).Article, 2) & " contains "
                 End If
 
                 If DisplayList Then
@@ -3136,7 +3136,7 @@ Public Class LegacyGame
                             End If
                         End If
 
-                        Dim o = Objs(ContentsIDs(i))
+                        Dim o = _objs(ContentsIDs(i))
                         If o.Prefix <> "" Then Contents = Contents & o.Prefix
                         If o.ObjectAlias <> "" Then
                             Contents = Contents & "|b" & o.ObjectAlias & "|xb"
@@ -3334,7 +3334,7 @@ Public Class LegacyGame
         End If
 
         ' Update quest.* vars and obj list
-        ShowRoomInfo(CurrentRoom, ctx, True)
+        ShowRoomInfo(_currentRoom, ctx, True)
         UpdateObjectList(ctx)
 
         AddToChangeLog("room " & FromRoom, "destroy exit " & ToRoom)
@@ -3463,7 +3463,7 @@ Public Class LegacyGame
         Dim ActionNum, i As Integer
         FoundExisting = False
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = name Then
@@ -3528,7 +3528,7 @@ Public Class LegacyGame
         Dim actionName As String
         Dim actionScript As String
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         If BeginsWith(GiveData, "to ") Then
             GiveData = GetEverythingAfter(GiveData, "to ")
@@ -3604,7 +3604,7 @@ Public Class LegacyGame
 
         ActionScript = Trim(Mid(ActionInfo, EP + 1))
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = ActionName Then
@@ -3631,7 +3631,7 @@ Public Class LegacyGame
         Dim EndPos As Integer
         Dim CurName As String
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         Do
             EndPos = InStr(AltNames, ";")
@@ -3659,11 +3659,6 @@ Public Class LegacyGame
         Dim FalseProperty As Boolean
         Dim i As Integer
 
-        ' this block was from old changelog, we use "new" changelog now for properties and actions
-        'If GameFullyLoaded Then
-        '    AddToChangeLog "object " & Objs(ObjID).ItsName, "properties " & PropertyInfo
-        'End If
-
         If Right(PropertyInfo, 1) <> ";" Then
             PropertyInfo = PropertyInfo & ";"
         End If
@@ -3690,7 +3685,7 @@ Public Class LegacyGame
                 CurName = GetEverythingAfter(CurName, "not ")
             End If
 
-            Dim o = Objs(ObjID)
+            Dim o = _objs(ObjID)
 
             Found = False
             For i = 1 To o.NumberProperties
@@ -3715,7 +3710,7 @@ Public Class LegacyGame
                 o.Properties(CurNum).PropertyValue = CurValue
             End If
 
-            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, Objs(ObjID).ObjectName, CurName, "properties " & CurInfo)
+            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, _objs(ObjID).ObjectName, CurName, "properties " & CurInfo)
 
             Select Case CurName
                 Case "alias"
@@ -3801,7 +3796,7 @@ Public Class LegacyGame
         Dim EP As Integer
         Dim CurUseType As UseType, i As Integer
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         If BeginsWith(UseData, "on ") Then
             UseData = GetEverythingAfter(UseData, "on ")
@@ -3869,11 +3864,11 @@ Public Class LegacyGame
                 TwoPlaces = False
                 SecondPlace = ""
                 OnlySeen = True
-                RoomObjID = _rooms(GetRoomID(Objs(ObjID).ContainerRoom, ctx)).ObjId
+                RoomObjID = _rooms(GetRoomID(_objs(ObjID).ContainerRoom, ctx)).ObjId
 
                 InventoryPlace = "inventory"
 
-                If Objs(ObjID).ContainerRoom = InventoryPlace Then
+                If _objs(ObjID).ContainerRoom = InventoryPlace Then
                     ObjIsSeen = True
                 Else
                     If IsYes(GetObjectProperty("visited", RoomObjID, True, False)) Then
@@ -3888,7 +3883,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If ((TwoPlaces = False And (LCase(Objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or FirstPlace = "")) Or (TwoPlaces = True And (LCase(Objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or LCase(Objs(ObjID).ContainerRoom) = LCase(SecondPlace)))) And Objs(ObjID).Exists = True And Objs(ObjID).IsExit = bExit Then
+        If ((TwoPlaces = False And (LCase(_objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or FirstPlace = "")) Or (TwoPlaces = True And (LCase(_objs(ObjID).ContainerRoom) = LCase(FirstPlace) Or LCase(_objs(ObjID).ContainerRoom) = LCase(SecondPlace)))) And _objs(ObjID).Exists = True And _objs(ObjID).IsExit = bExit Then
             If Not OnlySeen Then
                 Return True
             End If
@@ -3912,7 +3907,7 @@ Public Class LegacyGame
 
             SC2 = InStr(SC + 1, CloneString, ";")
             If SC2 = 0 Then
-                CloneTo = Objs(ObjID).ContainerRoom
+                CloneTo = _objs(ObjID).ContainerRoom
                 NewObjName = Trim(Mid(CloneString, SC + 1))
             Else
                 CloneTo = Trim(Mid(CloneString, SC2 + 1))
@@ -3920,29 +3915,29 @@ Public Class LegacyGame
             End If
         End If
 
-        NumberObjs = NumberObjs + 1
-        ReDim Preserve Objs(NumberObjs)
-        Objs(NumberObjs) = New ObjectType
-        Objs(NumberObjs) = Objs(ObjID)
-        Objs(NumberObjs).ContainerRoom = CloneTo
-        Objs(NumberObjs).ObjectName = NewObjName
+        _numberObjs = _numberObjs + 1
+        ReDim Preserve _objs(_numberObjs)
+        _objs(_numberObjs) = New ObjectType
+        _objs(_numberObjs) = _objs(ObjID)
+        _objs(_numberObjs).ContainerRoom = CloneTo
+        _objs(_numberObjs).ObjectName = NewObjName
 
-        If Objs(ObjID).IsRoom Then
+        If _objs(ObjID).IsRoom Then
             ' This is a room so create the corresponding room as well
 
             _numberRooms = _numberRooms + 1
             ReDim Preserve _rooms(_numberRooms)
             _rooms(_numberRooms) = New RoomType
-            _rooms(_numberRooms) = _rooms(Objs(ObjID).CorresRoomId)
+            _rooms(_numberRooms) = _rooms(_objs(ObjID).CorresRoomId)
             _rooms(_numberRooms).RoomName = NewObjName
-            _rooms(_numberRooms).ObjID = NumberObjs
+            _rooms(_numberRooms).ObjID = _numberObjs
 
-            Objs(NumberObjs).CorresRoom = NewObjName
-            Objs(NumberObjs).CorresRoomId = _numberRooms
+            _objs(_numberObjs).CorresRoom = NewObjName
+            _objs(_numberObjs).CorresRoomId = _numberRooms
 
             AddToChangeLog("room " & NewObjName, "create")
         Else
-            AddToChangeLog("object " & NewObjName, "create " & Objs(NumberObjs).ContainerRoom)
+            AddToChangeLog("object " & NewObjName, "create " & _objs(_numberObjs).ContainerRoom)
         End If
 
         UpdateObjectList(ctx)
@@ -3979,11 +3974,11 @@ Public Class LegacyGame
         ObjName = Trim(Left(TypeData, SCP - 1))
         TypeName = Trim(Mid(TypeData, SCP + 1))
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 Found = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -3992,7 +3987,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         o.NumberTypesIncluded = o.NumberTypesIncluded + 1
         ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
@@ -4033,11 +4028,11 @@ Public Class LegacyGame
 
         FoundObj = False
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 FoundObj = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -4048,7 +4043,7 @@ Public Class LegacyGame
 
         Result = False
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If LCase(o.Actions(i).ActionName) = LCase(ActionName) Then
@@ -4081,11 +4076,11 @@ Public Class LegacyGame
 
         FoundObj = False
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 FoundObj = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -4096,7 +4091,7 @@ Public Class LegacyGame
 
         Result = False
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberTypesIncluded
             If LCase(o.TypesIncluded(i)) = LCase(TypeName) Then
@@ -4172,10 +4167,10 @@ Public Class LegacyGame
         End If
 
         If ctx.AllowRealNamesInCommand Then
-            For i = 1 To NumberObjs
+            For i = 1 To _numberObjs
                 If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace) Then
-                    If LCase(Objs(i).ObjectName) = LCase(ObjectName) Then
-                        SetStringContents("quest.lastobject", Objs(i).ObjectName, ctx)
+                    If LCase(_objs(i).ObjectName) = LCase(ObjectName) Then
+                        SetStringContents("quest.lastobject", _objs(i).ObjectName, ctx)
                         Return i
                     End If
                 End If
@@ -4186,7 +4181,7 @@ Public Class LegacyGame
         If ObjectName = "it" Or ObjectName = "them" Or ObjectName = "this" Or ObjectName = "those" Or ObjectName = "these" Or ObjectName = "that" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = ItType.Inanimate And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
+                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
@@ -4195,7 +4190,7 @@ Public Class LegacyGame
         ElseIf ObjectName = "him" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = ItType.Male And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
+                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
@@ -4204,7 +4199,7 @@ Public Class LegacyGame
         ElseIf ObjectName = "her" Then
             SetStringContents("quest.error.pronoun", ObjectName, ctx)
             If LastIt <> 0 And LastItMode = ItType.Female And DisambObjHere(ctx, LastIt, FirstPlace, TwoPlaces, SecondPlace) Then
-                SetStringContents("quest.lastobject", Objs(LastIt).ObjectName, ctx)
+                SetStringContents("quest.lastobject", _objs(LastIt).ObjectName, ctx)
                 Return LastIt
             Else
                 PlayerErrorMessage(PlayerError.BadPronoun, ctx)
@@ -4218,15 +4213,15 @@ Public Class LegacyGame
             ObjectName = GetEverythingAfter(ObjectName, "the ")
         End If
 
-        For i = 1 To NumberObjs
+        For i = 1 To _numberObjs
 
             If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
 
-                NumValidNames = Objs(i).NumberAltNames + 1
+                NumValidNames = _objs(i).NumberAltNames + 1
                 ReDim ValidNames(NumValidNames)
-                ValidNames(1) = Objs(i).ObjectAlias
-                For j = 1 To Objs(i).NumberAltNames
-                    ValidNames(j + 1) = Objs(i).AltNames(j)
+                ValidNames(1) = _objs(i).ObjectAlias
+                For j = 1 To _objs(i).NumberAltNames
+                    ValidNames(j + 1) = _objs(i).AltNames(j)
                 Next j
 
                 For j = 1 To NumValidNames
@@ -4244,12 +4239,12 @@ Public Class LegacyGame
         If GameASLVersion >= 391 And NumberCorresIDs = 0 And UseAbbreviations And Len(ObjectName) > 0 Then
             ' Check for abbreviated object names
 
-            For i = 1 To NumberObjs
+            For i = 1 To _numberObjs
                 If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
-                    If Objs(i).ObjectAlias <> "" Then ThisName = LCase(Objs(i).ObjectAlias) Else ThisName = LCase(Objs(i).ObjectName)
+                    If _objs(i).ObjectAlias <> "" Then ThisName = LCase(_objs(i).ObjectAlias) Else ThisName = LCase(_objs(i).ObjectName)
                     If GameASLVersion >= 410 Then
-                        If Objs(i).Prefix <> "" Then ThisName = Trim(LCase(Objs(i).Prefix)) & " " & ThisName
-                        If Objs(i).Suffix <> "" Then ThisName = ThisName & " " & Trim(LCase(Objs(i).Suffix))
+                        If _objs(i).Prefix <> "" Then ThisName = Trim(LCase(_objs(i).Prefix)) & " " & ThisName
+                        If _objs(i).Suffix <> "" Then ThisName = ThisName & " " & Trim(LCase(_objs(i).Suffix))
                     End If
                     If InStr(" " & ThisName, " " & LCase(ObjectName)) <> 0 Then
                         NumberCorresIDs = NumberCorresIDs + 1
@@ -4262,10 +4257,10 @@ Public Class LegacyGame
 
         Dim Question As String
         If NumberCorresIDs = 1 Then
-            SetStringContents("quest.lastobject", Objs(IDNumbers(1)).ObjectName, ctx)
+            SetStringContents("quest.lastobject", _objs(IDNumbers(1)).ObjectName, ctx)
             ThisTurnIt = IDNumbers(1)
 
-            Select Case Objs(IDNumbers(1)).Article
+            Select Case _objs(IDNumbers(1)).Article
                 Case "him"
                     ThisTurnItMode = ItType.Male
                 Case "her"
@@ -4284,12 +4279,12 @@ Public Class LegacyGame
             Dim menuItems As New Dictionary(Of String, String)
 
             For i = 1 To NumberCorresIDs
-                DescriptionText(i) = Objs(IDNumbers(i)).Detail
+                DescriptionText(i) = _objs(IDNumbers(i)).Detail
                 If DescriptionText(i) = "" Then
-                    If Objs(IDNumbers(i)).Prefix = "" Then
-                        DescriptionText(i) = Objs(IDNumbers(i)).ObjectAlias
+                    If _objs(IDNumbers(i)).Prefix = "" Then
+                        DescriptionText(i) = _objs(IDNumbers(i)).ObjectAlias
                     Else
-                        DescriptionText(i) = Objs(IDNumbers(i)).Prefix & Objs(IDNumbers(i)).ObjectAlias
+                        DescriptionText(i) = _objs(IDNumbers(i)).Prefix & _objs(IDNumbers(i)).ObjectAlias
                     End If
                 End If
 
@@ -4302,11 +4297,11 @@ Public Class LegacyGame
 
             ChoiceNumber = CInt(response)
 
-            SetStringContents("quest.lastobject", Objs(IDNumbers(ChoiceNumber)).ObjectName, ctx)
+            SetStringContents("quest.lastobject", _objs(IDNumbers(ChoiceNumber)).ObjectName, ctx)
 
             ThisTurnIt = IDNumbers(ChoiceNumber)
 
-            Select Case Objs(IDNumbers(ChoiceNumber)).Article
+            Select Case _objs(IDNumbers(ChoiceNumber)).Article
                 Case "him"
                     ThisTurnItMode = ItType.Male
                 Case "her"
@@ -4377,7 +4372,7 @@ Public Class LegacyGame
         Dim ActionScript As String = ""
         Dim i As Integer
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = LCase(ActionName) Then
@@ -4403,7 +4398,7 @@ Public Class LegacyGame
     Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
         Dim i As Integer
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = LCase(ActionName) Then
@@ -4456,10 +4451,10 @@ Public Class LegacyGame
             ScriptToExecute = Trim(Mid(ScriptLine, BracketPos + 1))
         End If
 
-        For i = 1 To NumberObjs
-            If InLocation = "" Or LCase(Objs(i).ContainerRoom) = InLocation Then
-                If Objs(i).IsRoom = bRoom And Objs(i).IsExit = bExit Then
-                    SetStringContents("quest.thing", Objs(i).ObjectName, ctx)
+        For i = 1 To _numberObjs
+            If InLocation = "" Or LCase(_objs(i).ContainerRoom) = InLocation Then
+                If _objs(i).IsRoom = bRoom And _objs(i).IsExit = bExit Then
+                    SetStringContents("quest.thing", _objs(i).ObjectName, ctx)
                     ExecuteScript(ScriptToExecute, ctx)
                 End If
             End If
@@ -4497,11 +4492,11 @@ Public Class LegacyGame
             ActionScript = Trim(Mid(ActionData, EP + 1))
         End If
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 FoundObject = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -4510,7 +4505,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = ActionName Then
@@ -4649,22 +4644,22 @@ Public Class LegacyGame
             _rooms(_numberRooms) = New RoomType
             _rooms(_numberRooms).RoomName = NewName
 
-            NumberObjs = NumberObjs + 1
-            ReDim Preserve Objs(NumberObjs)
-            Objs(NumberObjs) = New ObjectType
-            Objs(NumberObjs).ObjectName = NewName
-            Objs(NumberObjs).IsRoom = True
-            Objs(NumberObjs).CorresRoom = NewName
-            Objs(NumberObjs).CorresRoomId = _numberRooms
+            _numberObjs = _numberObjs + 1
+            ReDim Preserve _objs(_numberObjs)
+            _objs(_numberObjs) = New ObjectType
+            _objs(_numberObjs).ObjectName = NewName
+            _objs(_numberObjs).IsRoom = True
+            _objs(_numberObjs).CorresRoom = NewName
+            _objs(_numberObjs).CorresRoomId = _numberRooms
 
-            _rooms(_numberRooms).ObjID = NumberObjs
+            _rooms(_numberRooms).ObjID = _numberObjs
 
             AddToChangeLog("room " & NewName, "create")
 
             If GameASLVersion >= 410 Then
-                AddToObjectProperties(_defaultRoomProperties.Properties, NumberObjs, ctx)
+                AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx)
                 For j = 1 To _defaultRoomProperties.NumberActions
-                    AddObjectAction(NumberObjs, _defaultRoomProperties.Actions(j).ActionName, _defaultRoomProperties.Actions(j).Script)
+                    AddObjectAction(_numberObjs, _defaultRoomProperties.Actions(j).ActionName, _defaultRoomProperties.Actions(j).Script)
                 Next j
 
                 _rooms(_numberRooms).Exits = New RoomExits(Me)
@@ -4682,11 +4677,11 @@ Public Class LegacyGame
                 ContainerRoom = Trim(Mid(ParamData, SCP + 1))
             End If
 
-            NumberObjs = NumberObjs + 1
-            ReDim Preserve Objs(NumberObjs)
-            Objs(NumberObjs) = New ObjectType
+            _numberObjs = _numberObjs + 1
+            ReDim Preserve _objs(_numberObjs)
+            _objs(_numberObjs) = New ObjectType
 
-            Dim o = Objs(NumberObjs)
+            Dim o = _objs(_numberObjs)
             o.ObjectName = NewName
             o.ObjectAlias = NewName
             o.ContainerRoom = ContainerRoom
@@ -4695,12 +4690,12 @@ Public Class LegacyGame
             o.Gender = "it"
             o.Article = "it"
 
-            AddToChangeLog("object " & NewName, "create " & Objs(NumberObjs).ContainerRoom)
+            AddToChangeLog("object " & NewName, "create " & _objs(_numberObjs).ContainerRoom)
 
             If GameASLVersion >= 410 Then
-                AddToObjectProperties(_defaultProperties.Properties, NumberObjs, ctx)
+                AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx)
                 For j = 1 To _defaultProperties.NumberActions
-                    AddObjectAction(NumberObjs, _defaultProperties.Actions(j).ActionName, _defaultProperties.Actions(j).Script)
+                    AddObjectAction(_numberObjs, _defaultProperties.Actions(j).ActionName, _defaultProperties.Actions(j).Script)
                 Next j
             End If
 
@@ -4840,20 +4835,20 @@ Public Class LegacyGame
 
         If Not m_gameLoading Then
             ' Update quest.doorways variables
-            ShowRoomInfo(CurrentRoom, ctx, True)
+            ShowRoomInfo(_currentRoom, ctx, True)
 
             UpdateObjectList(ctx)
 
             If GameASLVersion < 410 Then
-                If CurrentRoom = _rooms(SrcID).RoomName Then
+                If _currentRoom = _rooms(SrcID).RoomName Then
                     UpdateDoorways(SrcID, ctx)
-                ElseIf CurrentRoom = _rooms(DestID).RoomName Then
+                ElseIf _currentRoom = _rooms(DestID).RoomName Then
                     UpdateDoorways(DestID, ctx)
                 End If
             Else
                 ' Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 ' for current room anyway.
-                UpdateDoorways(GetRoomID(CurrentRoom, ctx), ctx)
+                UpdateDoorways(GetRoomID(_currentRoom, ctx), ctx)
             End If
         End If
     End Sub
@@ -4898,32 +4893,32 @@ Public Class LegacyGame
         Dim DropStatement As String = ""
         DropFound = False
 
-        For i = Objs(ObjectID).DefinitionSectionStart To Objs(ObjectID).DefinitionSectionEnd
+        For i = _objs(ObjectID).DefinitionSectionStart To _objs(ObjectID).DefinitionSectionEnd
             If BeginsWith(_lines(i), "drop ") Then
                 DropStatement = GetEverythingAfter(_lines(i), "drop ")
                 DropFound = True
-                i = Objs(ObjectID).DefinitionSectionEnd
+                i = _objs(ObjectID).DefinitionSectionEnd
             End If
         Next i
 
-        SetStringContents("quest.error.article", Objs(ObjectID).Article, ctx)
+        SetStringContents("quest.error.article", _objs(ObjectID).Article, ctx)
 
         If Not DropFound Or BeginsWith(DropStatement, "everywhere") Then
             If ObjectIsInContainer Then
                 ' So, we want to drop an object that's in a container or surface. So first
                 ' we have to remove the object from that container.
 
-                If Objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = Objs(ParentID).ObjectAlias
+                If _objs(ParentID).ObjectAlias <> "" Then
+                    ParentDisplayName = _objs(ParentID).ObjectAlias
                 Else
-                    ParentDisplayName = Objs(ParentID).ObjectName
+                    ParentDisplayName = _objs(ParentID).ObjectName
                 End If
 
-                Print("(first removing " & Objs(ObjectID).Article & " from " & ParentDisplayName & ")", ctx)
+                Print("(first removing " & _objs(ObjectID).Article & " from " & ParentDisplayName & ")", ctx)
 
                 ' Try to remove the object
                 ctx.AllowRealNamesInCommand = True
-                ExecCommand("remove " & Objs(ObjectID).ObjectName, ctx, False, , True)
+                ExecCommand("remove " & _objs(ObjectID).ObjectName, ctx, False, , True)
 
                 If GetObjectProperty("parent", ObjectID, False, False) <> "" Then
                     ' removing the object failed
@@ -4934,10 +4929,10 @@ Public Class LegacyGame
 
         If Not DropFound Then
             PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
-            PlayerItem(Objs(ObjectID).ObjectName, False, ctx)
+            PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
         Else
             If BeginsWith(DropStatement, "everywhere") Then
-                PlayerItem(Objs(ObjectID).ObjectName, False, ctx)
+                PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
                 If InStr(DropStatement, "<") <> 0 Then
                     Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
                 Else
@@ -4976,7 +4971,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        ObjID = Disambiguate(ExamineItem, CurrentRoom & ";" & InventoryPlace, ctx)
+        ObjID = Disambiguate(ExamineItem, _currentRoom & ";" & InventoryPlace, ctx)
         If ObjID > 0 Then
             FoundItem = True
         Else
@@ -4984,7 +4979,7 @@ Public Class LegacyGame
         End If
 
         If FoundItem Then
-            Dim o = Objs(ObjID)
+            Dim o = _objs(ObjID)
 
             ' Find "examine" action:
             For i = 1 To o.NumberActions
@@ -5008,7 +5003,7 @@ Public Class LegacyGame
 
             ' Find "examine" tag:
             If Not FoundExamineAction Then
-                For j = o.DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
+                For j = o.DefinitionSectionStart + 1 To _objs(ObjID).DefinitionSectionEnd - 1
                     If BeginsWith(_lines(j), "examine ") Then
                         ExamineAction = Trim(GetEverythingAfter(_lines(j), "examine "))
                         If Left(ExamineAction, 1) = "<" Then
@@ -5062,11 +5057,11 @@ Public Class LegacyGame
         ObjName = Trim(Left(PropertyData, SCP - 1))
         Properties = Trim(Mid(PropertyData, SCP + 1))
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 Found = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -5155,11 +5150,11 @@ Public Class LegacyGame
 
         FoundID = False
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = ObjName Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = ObjName Then
                 FoundID = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -5180,24 +5175,24 @@ Public Class LegacyGame
         bResult = False
 
         If GameASLVersion <= 281 Then
-            For i = 1 To NumberChars
-                If _chars(i).ContainerRoom = CurrentRoom And _chars(i).Exists Then
+            For i = 1 To _numberChars
+                If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists Then
                     If LCase(HereThing) = LCase(_chars(i).ObjectName) Then
                         bResult = True
                         bFound = True
-                        i = NumberChars
+                        i = _numberChars
                     End If
                 End If
             Next i
         End If
 
         If Not bFound Then
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ContainerRoom) = LCase(CurrentRoom) And Objs(i).Exists Then
-                    If LCase(HereThing) = LCase(Objs(i).ObjectName) Then
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ContainerRoom) = LCase(_currentRoom) And _objs(i).Exists Then
+                    If LCase(HereThing) = LCase(_objs(i).ObjectName) Then
                         bResult = True
                         bFound = True
-                        i = NumberObjs
+                        i = _numberObjs
                     End If
                 End If
             Next i
@@ -5229,7 +5224,7 @@ Public Class LegacyGame
         bFound = False
 
         If GameASLVersion < 281 Then
-            For i = 1 To NumberChars
+            For i = 1 To _numberChars
                 If LCase(ExistsThing) = LCase(_chars(i).ObjectName) Then
                     If _chars(i).Exists Then
                         bResult = True
@@ -5238,22 +5233,22 @@ Public Class LegacyGame
                     End If
 
                     bFound = True
-                    i = NumberChars
+                    i = _numberChars
                 End If
             Next i
         End If
 
         If Not bFound Then
-            For i = 1 To NumberObjs
-                If LCase(ExistsThing) = LCase(Objs(i).ObjectName) Then
-                    If Objs(i).Exists Then
+            For i = 1 To _numberObjs
+                If LCase(ExistsThing) = LCase(_objs(i).ObjectName) Then
+                    If _objs(i).Exists Then
                         bResult = True
                     Else
                         bResult = False
                     End If
 
                     bFound = True
-                    i = NumberObjs
+                    i = _numberObjs
                 End If
             Next i
         End If
@@ -5290,11 +5285,11 @@ Public Class LegacyGame
 
         FoundObj = False
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
                 FoundObj = True
                 ObjID = i
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -5368,10 +5363,10 @@ Public Class LegacyGame
 
         FoundCollectable = False
 
-        For i = 1 To NumCollectables
-            If Collectables(i).Name = CName Then
+        For i = 1 To _numCollectables
+            If _collectables(i).Name = CName Then
                 ColNum = i
-                i = NumCollectables
+                i = _numCollectables
                 FoundCollectable = True
             End If
         Next i
@@ -5390,11 +5385,11 @@ Public Class LegacyGame
         End If
 
         If OP = "+" Then
-            Collectables(ColNum).Value = Collectables(ColNum).Value + NewVal
+            _collectables(ColNum).Value = _collectables(ColNum).Value + NewVal
         ElseIf OP = "-" Then
-            Collectables(ColNum).Value = Collectables(ColNum).Value - NewVal
+            _collectables(ColNum).Value = _collectables(ColNum).Value - NewVal
         ElseIf OP = "=" Then
-            Collectables(ColNum).Value = NewVal
+            _collectables(ColNum).Value = NewVal
         End If
 
         CheckCollectable(ColNum)
@@ -5473,11 +5468,11 @@ Public Class LegacyGame
             ObjectName = GetEverythingAfter(ObjectName, "the ")
         End If
 
-        For i = 1 To NumberObjs
-            If (LCase(Objs(i).ObjectName) = LCase(ObjectName) Or LCase(Objs(i).ObjectName) = "the " & LCase(ObjectName)) And (LCase(Objs(i).ContainerRoom) = LCase(ObjectRoom) Or ObjectRoom = "") And Objs(i).Exists = True Then
+        For i = 1 To _numberObjs
+            If (LCase(_objs(i).ObjectName) = LCase(ObjectName) Or LCase(_objs(i).ObjectName) = "the " & LCase(ObjectName)) And (LCase(_objs(i).ContainerRoom) = LCase(ObjectRoom) Or ObjectRoom = "") And _objs(i).Exists = True Then
                 CurID = i
                 FoundItem = True
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -5499,11 +5494,11 @@ Public Class LegacyGame
 
         Found = False
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ObjectName) = LCase(ObjectName) Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(ObjectName) Then
                 ID = i
                 Found = True
-                i = NumberObjs
+                i = _numberObjs
             End If
         Next i
 
@@ -5520,7 +5515,7 @@ Public Class LegacyGame
         Dim i As Integer
         bFound = False
 
-        Dim o = Objs(ObjID)
+        Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberProperties
             If LCase(o.Properties(i).PropertyName) = LCase(PropertyName) Then
@@ -5542,7 +5537,7 @@ Public Class LegacyGame
         End If
 
         If LogError Then
-            LogASLError("Object '" & Objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LogType.WarningError)
+            LogASLError("Object '" & _objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LogType.WarningError)
             Return "!"
         End If
 
@@ -5647,19 +5642,19 @@ Public Class LegacyGame
     End Function
 
     Private Function GetThingNumber(ThingName As String, ThingRoom As String, ThingType As Thing) As Integer
-        ' Returns the number in the Chars() or Objs() array of the specified char/obj
+        ' Returns the number in the Chars() or _objs() array of the specified char/obj
 
         Dim i As Integer
 
         If ThingType = Thing.Character Then
-            For i = 1 To NumberChars
+            For i = 1 To _numberChars
                 If (ThingRoom <> "" And LCase(_chars(i).ObjectName) = LCase(ThingName) And LCase(_chars(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(_chars(i).ObjectName) = LCase(ThingName)) Then
                     Return i
                 End If
             Next i
         ElseIf ThingType = Thing.Object Then
-            For i = 1 To NumberObjs
-                If (ThingRoom <> "" And LCase(Objs(i).ObjectName) = LCase(ThingName) And LCase(Objs(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(Objs(i).ObjectName) = LCase(ThingName)) Then
+            For i = 1 To _numberObjs
+                If (ThingRoom <> "" And LCase(_objs(i).ObjectName) = LCase(ThingName) And LCase(_objs(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(_objs(i).ObjectName) = LCase(ThingName)) Then
                     Return i
                 End If
             Next i
@@ -5675,7 +5670,7 @@ Public Class LegacyGame
         Dim result = New DefineBlock
 
         If ThingType = Thing.Character Then
-            For i = 1 To NumberChars
+            For i = 1 To _numberChars
                 If LCase(_chars(i).ObjectName) = LCase(ThingName) And LCase(_chars(i).ContainerRoom) = LCase(ThingRoom) Then
                     result.StartLine = _chars(i).DefinitionSectionStart
                     result.EndLine = _chars(i).DefinitionSectionEnd
@@ -5683,10 +5678,10 @@ Public Class LegacyGame
                 End If
             Next i
         ElseIf ThingType = Thing.Object Then
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(ThingName) And LCase(Objs(i).ContainerRoom) = LCase(ThingRoom) Then
-                    result.StartLine = Objs(i).DefinitionSectionStart
-                    result.EndLine = Objs(i).DefinitionSectionEnd
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(ThingName) And LCase(_objs(i).ContainerRoom) = LCase(ThingRoom) Then
+                    result.StartLine = _objs(i).DefinitionSectionStart
+                    result.EndLine = _objs(i).DefinitionSectionEnd
                     Return result
                 End If
             Next i
@@ -5718,7 +5713,7 @@ Public Class LegacyGame
         ' The start point for encrypted data is after the filename
         StartPoint = FileData.Length + 1
 
-        FileData.Append(CurrentRoom & Chr(0))
+        FileData.Append(_currentRoom & Chr(0))
 
         ' Organise Change Log
 
@@ -5753,22 +5748,22 @@ Public Class LegacyGame
 
         ' <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
 
-        FileData.Append(Trim(Str(NumberObjs)) & Chr(0))
+        FileData.Append(Trim(Str(_numberObjs)) & Chr(0))
 
-        For i = 1 To NumberObjs
-            If Objs(i).Exists Then
+        For i = 1 To _numberObjs
+            If _objs(i).Exists Then
                 ObjExists = Chr(1)
             Else
                 ObjExists = Chr(0)
             End If
 
-            If Objs(i).Visible Then
+            If _objs(i).Visible Then
                 ObjVisible = Chr(1)
             Else
                 ObjVisible = Chr(0)
             End If
 
-            FileData.Append(Objs(i).ObjectName & Chr(0) & ObjExists & ObjVisible & Objs(i).ContainerRoom & Chr(0))
+            FileData.Append(_objs(i).ObjectName & Chr(0) & ObjExists & ObjVisible & _objs(i).ContainerRoom & Chr(0))
         Next i
 
         ' <<< ROOM CREATE/CHANGE DATA >>>
@@ -5852,15 +5847,15 @@ Public Class LegacyGame
         If iThingType = Thing.Character Then
             _chars(iThingNum).ContainerRoom = sThingRoom
         ElseIf iThingType = Thing.Object Then
-            OldRoom = Objs(iThingNum).ContainerRoom
-            Objs(iThingNum).ContainerRoom = sThingRoom
+            OldRoom = _objs(iThingNum).ContainerRoom
+            _objs(iThingNum).ContainerRoom = sThingRoom
         End If
 
         If GameASLVersion >= 391 Then
             ' If this object contains other objects, move them too
-            For i = 1 To NumberObjs
+            For i = 1 To _numberObjs
                 If LCase(GetObjectProperty("parent", i, False, False)) = LCase(sThingName) Then
-                    MoveThing(Objs(i).ObjectName, sThingRoom, iThingType, ctx)
+                    MoveThing(_objs(i).ObjectName, sThingRoom, iThingType, ctx)
                 End If
             Next i
         End If
@@ -6062,7 +6057,7 @@ Public Class LegacyGame
                 LogASLError("Object '" & Parameter(1) & "' does not exist", LogType.WarningError)
                 Return "!"
             Else
-                Return Objs(GetObjectID(Parameter(1), ctx)).ObjectAlias
+                Return _objs(GetObjectID(Parameter(1), ctx)).ObjectAlias
             End If
         ElseIf FunctionName = "numberparameters" Then
             Return Trim(Str(ctx.NumParameters))
@@ -6082,17 +6077,17 @@ Public Class LegacyGame
             ' Deprecated
             Return FindStatement(DefineBlockParam("room", Parameter(1)), Parameter(2))
         ElseIf FunctionName = "objectname" Then
-            Return Objs(ctx.CallingObjectId).ObjectName
+            Return _objs(ctx.CallingObjectId).ObjectName
         ElseIf FunctionName = "locationof" Then
-            For i = 1 To NumberChars
+            For i = 1 To _numberChars
                 If LCase(_chars(i).ObjectName) = LCase(Parameter(1)) Then
                     Return _chars(i).ContainerRoom
                 End If
             Next i
 
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(Parameter(1)) Then
-                    Return Objs(i).ContainerRoom
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(Parameter(1)) Then
+                    Return _objs(i).ContainerRoom
                 End If
             Next i
         ElseIf FunctionName = "lengthof" Then
@@ -6221,11 +6216,11 @@ Public Class LegacyGame
             Return "!"
         ElseIf FunctionName = "objectproperty" Then
             FoundObj = False
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(Parameter(1)) Then
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(Parameter(1)) Then
                     FoundObj = True
                     ObjID = i
-                    i = NumberObjs
+                    i = _numberObjs
                 End If
             Next i
 
@@ -6242,19 +6237,19 @@ Public Class LegacyGame
                 ObjID = Disambiguate(Parameter(1), Parameter(2), ctx)
             Else
 
-                ObjID = Disambiguate(Parameter(1), CurrentRoom & ";inventory", ctx)
+                ObjID = Disambiguate(Parameter(1), _currentRoom & ";inventory", ctx)
             End If
 
             If ObjID <= -1 Then
                 LogASLError("No object found with display name '" & Parameter(1) & "'", LogType.WarningError)
                 Return "!"
             Else
-                Return Objs(ObjID).ObjectName
+                Return _objs(ObjID).ObjectName
             End If
         ElseIf FunctionName = "thisobject" Then
-            Return Objs(ctx.CallingObjectId).ObjectName
+            Return _objs(ctx.CallingObjectId).ObjectName
         ElseIf FunctionName = "thisobjectname" Then
-            Return Objs(ctx.CallingObjectId).ObjectAlias
+            Return _objs(ctx.CallingObjectId).ObjectAlias
         ElseIf FunctionName = "speechenabled" Then
             Return "1"
         ElseIf FunctionName = "removeformatting" Then
@@ -6264,7 +6259,7 @@ Public Class LegacyGame
             If oExit Is Nothing Then
                 Return ""
             Else
-                Return Objs(oExit.ObjID).ObjectName
+                Return _objs(oExit.ObjID).ObjectName
             End If
         End If
 
@@ -6431,10 +6426,10 @@ Public Class LegacyGame
             result = False
             InventoryPlace = "inventory"
 
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(theitem) Then
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(theitem) Then
                     FoundObject = True
-                    result = Objs(i).ContainerRoom = InventoryPlace And Objs(i).Exists
+                    result = _objs(i).ContainerRoom = InventoryPlace And _objs(i).Exists
                 End If
             Next i
 
@@ -6448,10 +6443,10 @@ Public Class LegacyGame
 
         valid = False
 
-        For i = 1 To NumberItems
+        For i = 1 To _numberItems
             If LCase(_items(i).Name) = LCase(theitem) Then
                 result = _items(i).Got
-                i = NumberItems
+                i = _numberItems
                 valid = True
             End If
         Next i
@@ -6479,10 +6474,10 @@ Public Class LegacyGame
 
         i = -1
 
-        For i = 1 To NumCollectables
-            If Collectables(i).Name = CName Then
+        For i = 1 To _numCollectables
+            If _collectables(i).Name = CName Then
                 ColNum = i
-                i = NumCollectables
+                i = _numCollectables
             End If
         Next i
 
@@ -6500,11 +6495,11 @@ Public Class LegacyGame
         End If
 
         If OP = "+" Then
-            If Collectables(ColNum).Value > checkval Then condresult = True Else condresult = False
+            If _collectables(ColNum).Value > checkval Then condresult = True Else condresult = False
         ElseIf OP = "-" Then
-            If Collectables(ColNum).Value < checkval Then condresult = True Else condresult = False
+            If _collectables(ColNum).Value < checkval Then condresult = True Else condresult = False
         ElseIf OP = "=" Then
-            If Collectables(ColNum).Value = checkval Then condresult = True Else condresult = False
+            If _collectables(ColNum).Value = checkval Then condresult = True Else condresult = False
         End If
 
         Return condresult
@@ -6734,7 +6729,7 @@ Public Class LegacyGame
 
         m_sFileData = DecryptedFile.ToString()
 
-        CurrentRoom = GetNextChunk()
+        _currentRoom = GetNextChunk()
 
         ' OBJECTS
 
@@ -6776,18 +6771,18 @@ Public Class LegacyGame
             ObjID = GetObjectIDNoAlias(AppliesTo)
 
             If Left(data, 1) = Chr(1) Then
-                Objs(ObjID).Exists = True
+                _objs(ObjID).Exists = True
             Else
-                Objs(ObjID).Exists = False
+                _objs(ObjID).Exists = False
             End If
 
             If Right(data, 1) = Chr(1) Then
-                Objs(ObjID).Visible = True
+                _objs(ObjID).Visible = True
             Else
-                Objs(ObjID).Visible = False
+                _objs(ObjID).Visible = False
             End If
 
-            Objs(ObjID).ContainerRoom = GetNextChunk()
+            _objs(ObjID).ContainerRoom = GetNextChunk()
         Next i
 
         ' ROOMS
@@ -7086,8 +7081,8 @@ Public Class LegacyGame
             End If
         Next i
 
-        For i = 1 To NumCollectables
-            If LCase(Collectables(i).Name) = LCase(VariableName) Then
+        For i = 1 To _numCollectables
+            If LCase(_collectables(i).Name) = LCase(VariableName) Then
                 ExecuteSetCollectable(VariableData, ctx)
                 Return SetResult.Found
             End If
@@ -7225,10 +7220,10 @@ Public Class LegacyGame
         Dim PropertyData As PropertiesActions
         Dim NestBlock, k As Integer
 
-        NumberObjs = 1
-        ReDim Objs(1)
-        Objs(1) = New ObjectType
-        Dim o = Objs(1)
+        _numberObjs = 1
+        ReDim _objs(1)
+        _objs(1) = New ObjectType
+        Dim o = _objs(1)
         o.ObjectName = "game"
         o.ObjectAlias = ""
         o.Visible = False
@@ -7240,19 +7235,19 @@ Public Class LegacyGame
                 If BeginsWith(_lines(i), "define ") Then
                     NestBlock = NestBlock + 1
                 ElseIf BeginsWith(_lines(i), "properties ") Then
-                    AddToObjectProperties(RetrieveParameter(_lines(i), _nullContext), NumberObjs, _nullContext)
+                    AddToObjectProperties(RetrieveParameter(_lines(i), _nullContext), _numberObjs, _nullContext)
                 ElseIf BeginsWith(_lines(i), "type ") Then
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                     ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
                     o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(i), _nullContext)
 
                     PropertyData = GetPropertiesInType(RetrieveParameter(_lines(i), _nullContext))
-                    AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                    AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                     For k = 1 To PropertyData.NumberActions
-                        AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                        AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                     Next k
                 ElseIf BeginsWith(_lines(i), "action ") Then
-                    AddToObjectActions(GetEverythingAfter(_lines(i), "action "), NumberObjs, _nullContext)
+                    AddToObjectActions(GetEverythingAfter(_lines(i), "action "), _numberObjs, _nullContext)
                 End If
             Else
                 If Trim(_lines(i)) = "end define" Then
@@ -7349,19 +7344,19 @@ Public Class LegacyGame
                 ReDim Preserve _rooms(_numberRooms)
                 _rooms(_numberRooms) = New RoomType
 
-                NumberObjs = NumberObjs + 1
-                ReDim Preserve Objs(NumberObjs)
-                Objs(NumberObjs) = New ObjectType
+                _numberObjs = _numberObjs + 1
+                ReDim Preserve _objs(_numberObjs)
+                _objs(_numberObjs) = New ObjectType
 
                 Dim r = _rooms(_numberRooms)
 
                 r.RoomName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
-                Objs(NumberObjs).ObjectName = r.RoomName
-                Objs(NumberObjs).IsRoom = True
-                Objs(NumberObjs).CorresRoom = r.RoomName
-                Objs(NumberObjs).CorresRoomId = _numberRooms
+                _objs(_numberObjs).ObjectName = r.RoomName
+                _objs(_numberObjs).IsRoom = True
+                _objs(_numberObjs).CorresRoom = r.RoomName
+                _objs(_numberObjs).CorresRoomId = _numberRooms
 
-                r.ObjID = NumberObjs
+                r.ObjID = _numberObjs
 
                 If GameASLVersion >= 410 Then
                     r.Exits = New RoomExits(Me)
@@ -7376,9 +7371,9 @@ Public Class LegacyGame
                 NestedBlock = 0
 
                 If DefaultExists Then
-                    AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
+                    AddToObjectProperties(DefaultProperties.Properties, _numberObjs, _nullContext)
                     For k = 1 To DefaultProperties.NumberActions
-                        AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                        AddObjectAction(_numberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
                     Next k
                 End If
 
@@ -7398,15 +7393,15 @@ Public Class LegacyGame
 
                     If GameASLVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
                         r.RoomAlias = RetrieveParameter(_lines(j), _nullContext)
-                        Objs(NumberObjs).ObjectAlias = r.RoomAlias
-                        If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, NumberObjs, _nullContext)
+                        _objs(_numberObjs).ObjectAlias = r.RoomAlias
+                        If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, _numberObjs, _nullContext)
                     ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "description ") Then
                         r.Description = GetTextOrScript(GetEverythingAfter(_lines(j), "description "))
                         If GameASLVersion >= 350 Then
                             If r.Description.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "description", r.Description.Data)
+                                AddObjectAction(_numberObjs, "description", r.Description.Data)
                             Else
-                                AddToObjectProperties("description=" & r.Description.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("description=" & r.Description.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "out ") Then
@@ -7414,113 +7409,113 @@ Public Class LegacyGame
                         r.Out.Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                         If GameASLVersion >= 350 Then
                             If r.Out.Script <> "" Then
-                                AddObjectAction(NumberObjs, "out", r.Out.Script)
+                                AddObjectAction(_numberObjs, "out", r.Out.Script)
                             End If
 
-                            AddToObjectProperties("out=" & r.Out.Text, NumberObjs, _nullContext)
+                            AddToObjectProperties("out=" & r.Out.Text, _numberObjs, _nullContext)
                         End If
                     ElseIf BeginsWith(_lines(j), "east ") Then
                         r.East = GetTextOrScript(GetEverythingAfter(_lines(j), "east "))
                         If GameASLVersion >= 350 Then
                             If r.East.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "east", r.East.Data)
+                                AddObjectAction(_numberObjs, "east", r.East.Data)
                             Else
-                                AddToObjectProperties("east=" & r.East.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("east=" & r.East.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "west ") Then
                         r.West = GetTextOrScript(GetEverythingAfter(_lines(j), "west "))
                         If GameASLVersion >= 350 Then
                             If r.West.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "west", r.West.Data)
+                                AddObjectAction(_numberObjs, "west", r.West.Data)
                             Else
-                                AddToObjectProperties("west=" & r.West.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("west=" & r.West.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "north ") Then
                         r.North = GetTextOrScript(GetEverythingAfter(_lines(j), "north "))
                         If GameASLVersion >= 350 Then
                             If r.North.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "north", r.North.Data)
+                                AddObjectAction(_numberObjs, "north", r.North.Data)
                             Else
-                                AddToObjectProperties("north=" & r.North.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("north=" & r.North.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "south ") Then
                         r.South = GetTextOrScript(GetEverythingAfter(_lines(j), "south "))
                         If GameASLVersion >= 350 Then
                             If r.South.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "south", r.South.Data)
+                                AddObjectAction(_numberObjs, "south", r.South.Data)
                             Else
-                                AddToObjectProperties("south=" & r.South.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("south=" & r.South.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "northeast ") Then
                         r.NorthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "northeast "))
                         If GameASLVersion >= 350 Then
                             If r.NorthEast.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "northeast", r.NorthEast.Data)
+                                AddObjectAction(_numberObjs, "northeast", r.NorthEast.Data)
                             Else
-                                AddToObjectProperties("northeast=" & r.NorthEast.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("northeast=" & r.NorthEast.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "northwest ") Then
                         r.NorthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "northwest "))
                         If GameASLVersion >= 350 Then
                             If r.NorthWest.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "northwest", r.NorthWest.Data)
+                                AddObjectAction(_numberObjs, "northwest", r.NorthWest.Data)
                             Else
-                                AddToObjectProperties("northwest=" & r.NorthWest.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("northwest=" & r.NorthWest.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "southeast ") Then
                         r.SouthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "southeast "))
                         If GameASLVersion >= 350 Then
                             If r.SouthEast.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "southeast", r.SouthEast.Data)
+                                AddObjectAction(_numberObjs, "southeast", r.SouthEast.Data)
                             Else
-                                AddToObjectProperties("southeast=" & r.SouthEast.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("southeast=" & r.SouthEast.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "southwest ") Then
                         r.SouthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "southwest "))
                         If GameASLVersion >= 350 Then
                             If r.SouthWest.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "southwest", r.SouthWest.Data)
+                                AddObjectAction(_numberObjs, "southwest", r.SouthWest.Data)
                             Else
-                                AddToObjectProperties("southwest=" & r.SouthWest.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("southwest=" & r.SouthWest.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "up ") Then
                         r.Up = GetTextOrScript(GetEverythingAfter(_lines(j), "up "))
                         If GameASLVersion >= 350 Then
                             If r.Up.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "up", r.Up.Data)
+                                AddObjectAction(_numberObjs, "up", r.Up.Data)
                             Else
-                                AddToObjectProperties("up=" & r.Up.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("up=" & r.Up.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "down ") Then
                         r.Down = GetTextOrScript(GetEverythingAfter(_lines(j), "down "))
                         If GameASLVersion >= 350 Then
                             If r.Down.Type = TextActionType.Script Then
-                                AddObjectAction(NumberObjs, "down", r.Down.Data)
+                                AddObjectAction(_numberObjs, "down", r.Down.Data)
                             Else
-                                AddToObjectProperties("down=" & r.Down.Data, NumberObjs, _nullContext)
+                                AddToObjectProperties("down=" & r.Down.Data, _numberObjs, _nullContext)
                             End If
                         End If
                     ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "indescription ") Then
                         r.InDescription = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, NumberObjs, _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, _numberObjs, _nullContext)
                     ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "look ") Then
                         r.Look = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("look=" & r.Look, NumberObjs, _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("look=" & r.Look, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "prefix ") Then
                         r.Prefix = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, NumberObjs, _nullContext)
+                        If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "script ") Then
                         r.Script = GetEverythingAfter(_lines(j), "script ")
-                        AddObjectAction(NumberObjs, "script", r.Script)
+                        AddObjectAction(_numberObjs, "script", r.Script)
                     ElseIf BeginsWith(_lines(j), "command ") Then
                         r.NumberCommands = r.NumberCommands + 1
                         ReDim Preserve r.Commands(r.NumberCommands)
@@ -7547,19 +7542,19 @@ Public Class LegacyGame
                         r.Use(r.NumberUse).Text = RetrieveParameter(_lines(j), _nullContext)
                         r.Use(r.NumberUse).Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                     ElseIf BeginsWith(_lines(j), "properties ") Then
-                        AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                        AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "type ") Then
-                        Objs(NumberObjs).NumberTypesIncluded = Objs(NumberObjs).NumberTypesIncluded + 1
-                        ReDim Preserve Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded)
-                        Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
+                        _objs(_numberObjs).NumberTypesIncluded = _objs(_numberObjs).NumberTypesIncluded + 1
+                        ReDim Preserve _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded)
+                        _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
 
                         PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
-                        AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                        AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                         For k = 1 To PropertyData.NumberActions
-                            AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                            AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                         Next k
                     ElseIf BeginsWith(_lines(j), "action ") Then
-                        AddToObjectActions(GetEverythingAfter(_lines(j), "action "), NumberObjs, _nullContext)
+                        AddToObjectActions(GetEverythingAfter(_lines(j), "action "), _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "beforeturn ") Then
                         r.BeforeTurnScript = r.BeforeTurnScript & GetEverythingAfter(_lines(j), "beforeturn ") & vbCrLf
                     ElseIf BeginsWith(_lines(j), "afterturn ") Then
@@ -7796,16 +7791,16 @@ Public Class LegacyGame
         If GameASLVersion >= 280 Then
             FoundObject = False
 
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(ThingString) Then
-                    Objs(i).Visible = ThingVisible
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(ThingString) Then
+                    _objs(i).Visible = ThingVisible
                     If ThingVisible Then
                         AddToObjectProperties("not invisible", i, ctx)
                     Else
                         AddToObjectProperties("invisible", i, ctx)
                     End If
 
-                    i = NumberObjs + 1
+                    i = _numberObjs + 1
                     FoundObject = True
                 End If
             Next i
@@ -7821,7 +7816,7 @@ Public Class LegacyGame
 
             ' If no room specified, current room presumed
             If AtPos = 0 Then
-                CRoom = CurrentRoom
+                CRoom = _currentRoom
                 CName = ThingString
             Else
                 CName = Trim(Left(ThingString, AtPos - 1))
@@ -7829,17 +7824,17 @@ Public Class LegacyGame
             End If
 
             If ThingType = Thing.Character Then
-                For i = 1 To NumberChars
+                For i = 1 To _numberChars
                     If LCase(_chars(i).ContainerRoom) = LCase(CRoom) And LCase(_chars(i).ObjectName) = LCase(CName) Then
                         _chars(i).Visible = ThingVisible
-                        i = NumberChars + 1
+                        i = _numberChars + 1
                     End If
                 Next i
             ElseIf ThingType = Thing.Object Then
-                For i = 1 To NumberObjs
-                    If LCase(Objs(i).ContainerRoom) = LCase(CRoom) And LCase(Objs(i).ObjectName) = LCase(CName) Then
-                        Objs(i).Visible = ThingVisible
-                        i = NumberObjs + 1
+                For i = 1 To _numberObjs
+                    If LCase(_objs(i).ContainerRoom) = LCase(CRoom) And LCase(_objs(i).ObjectName) = LCase(CName) Then
+                        _objs(i).Visible = ThingVisible
+                        i = _numberObjs + 1
                     End If
                 Next i
             End If
@@ -7884,7 +7879,7 @@ Public Class LegacyGame
         Dim LookString As String = ""
 
         gameblock = GetDefineBlock("game")
-        CurrentRoom = Room
+        _currentRoom = Room
 
         'find the room
         Dim roomblock As DefineBlock
@@ -7944,7 +7939,7 @@ Public Class LegacyGame
         'FIND CHARACTERS ===
 
         ' go through Chars() array
-        For i = 1 To NumberChars
+        For i = 1 To _numberChars
             If _chars(i).ContainerRoom = Room And _chars(i).Exists And _chars(i).Visible Then
                 CharsViewable = CharsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
                 CharsFound = CharsFound + 1
@@ -7985,10 +7980,10 @@ Public Class LegacyGame
 
         NoFormatObjsViewable = ""
 
-        For i = 1 To NumberObjs
-            If Objs(i).ContainerRoom = Room And Objs(i).Exists And Objs(i).Visible Then
-                ObjsViewable = ObjsViewable & Objs(i).Prefix & "|b" & Objs(i).ObjectName & "|xb" & Objs(i).Suffix & ", "
-                NoFormatObjsViewable = NoFormatObjsViewable & Objs(i).Prefix & Objs(i).ObjectName & ", "
+        For i = 1 To _numberObjs
+            If _objs(i).ContainerRoom = Room And _objs(i).Exists And _objs(i).Visible Then
+                ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & _objs(i).Suffix & ", "
+                NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
 
                 ObjsFound = ObjsFound + 1
             End If
@@ -8312,7 +8307,7 @@ Public Class LegacyGame
         FoundCommand = False
 
         'First, check for a command in the current room block
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
 
         ' RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         If RoomID <> 0 Then
@@ -8469,7 +8464,7 @@ Public Class LegacyGame
 
             If BeginsWith(VarName(i), "@") Then
                 VarName(i) = GetEverythingAfter(VarName(i), "@")
-                ObjID = Disambiguate(CurChunk, CurrentRoom & ";" & "inventory", ctx)
+                ObjID = Disambiguate(CurChunk, _currentRoom & ";" & "inventory", ctx)
 
                 If ObjID = -1 Then
                     If GameASLVersion >= 391 Then
@@ -8487,7 +8482,7 @@ Public Class LegacyGame
                     BadCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
                     success = False
                 Else
-                    SetStringContents(VarName(i), Objs(ObjID).ObjectName, ctx, ArrayIndex)
+                    SetStringContents(VarName(i), _objs(ObjID).ObjectName, ctx, ArrayIndex)
                 End If
             Else
                 SetStringContents(VarName(i), CurChunk, ctx, ArrayIndex)
@@ -8501,7 +8496,7 @@ Public Class LegacyGame
         Dim G, GL As String
 
         If GameASLVersion >= 281 Then
-            G = Objs(GetObjectIDNoAlias(CharacterName)).Gender
+            G = _objs(GetObjectIDNoAlias(CharacterName)).Gender
         Else
             GL = RetrLine("character", CharacterName, "gender", ctx)
 
@@ -8595,7 +8590,7 @@ Public Class LegacyGame
         If Not ReturnAlias Then
             Return _stringVariable(iStringNumber).VariableContents(ArrayIndex)
         Else
-            Return Objs(GetObjectIDNoAlias(_stringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
+            Return _objs(GetObjectIDNoAlias(_stringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
         End If
     End Function
 
@@ -8612,7 +8607,7 @@ Public Class LegacyGame
 
         ' If no room specified, current room presumed
         If AtPos = 0 Then
-            CRoom = CurrentRoom
+            CRoom = _currentRoom
             CName = ThingString
         Else
             CName = Trim(Left(ThingString, AtPos - 1))
@@ -8620,15 +8615,15 @@ Public Class LegacyGame
         End If
 
         If ThingType = Thing.Character Then
-            For i = 1 To NumberChars
+            For i = 1 To _numberChars
                 If LCase(_chars(i).ContainerRoom) = LCase(CRoom) And LCase(_chars(i).ObjectName) = LCase(CName) Then
                     Return _chars(i).Exists
                 End If
             Next i
         ElseIf ThingType = Thing.Object Then
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ContainerRoom) = LCase(CRoom) And LCase(Objs(i).ObjectName) = LCase(CName) Then
-                    Return Objs(i).Exists
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ContainerRoom) = LCase(CRoom) And LCase(_objs(i).ObjectName) = LCase(CName) Then
+                    Return _objs(i).Exists
                 End If
             Next i
         End If
@@ -8712,25 +8707,25 @@ Public Class LegacyGame
 
         If PrevQSGVersion Then
             lines = FileData.Split({vbCrLf, vbLf}, StringSplitOptions.None)
-            GameFileName = lines(1)
+            _gameFileName = lines(1)
         Else
             InitFileData(FileData)
             NullData = GetNextChunk()
 
             If m_data Is Nothing Then
-                GameFileName = GetNextChunk()
+                _gameFileName = GetNextChunk()
             Else
                 GetNextChunk()
-                GameFileName = m_data.SourceFile
+                _gameFileName = m_data.SourceFile
             End If
         End If
 
-        If m_data Is Nothing And Not System.IO.File.Exists(GameFileName) Then
-            GameFileName = m_player.GetNewGameFile(GameFileName, "*.asl;*.cas;*.zip")
-            If GameFileName = "" Then Exit Function
+        If m_data Is Nothing And Not System.IO.File.Exists(_gameFileName) Then
+            _gameFileName = m_player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip")
+            If _gameFileName = "" Then Exit Function
         End If
 
-        bResult = InitialiseGame(GameFileName, True)
+        bResult = InitialiseGame(_gameFileName, True)
 
         If bResult = False Then
             Return False
@@ -8744,7 +8739,7 @@ Public Class LegacyGame
         Else
             ' Open Quest 2.x saved game file
 
-            CurrentRoom = lines(3)
+            _currentRoom = lines(3)
 
             ' Start at line 5 as line 4 is always "!c"
             Dim lineNumber As Integer = 5
@@ -8757,10 +8752,10 @@ Public Class LegacyGame
                     CName = Trim(Left(CData, SemiColonPos - 1))
                     CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
 
-                    For i = 1 To NumCollectables
-                        If Collectables(i).Name = CName Then
-                            Collectables(i).Value = CDat
-                            i = NumCollectables
+                    For i = 1 To _numCollectables
+                        If _collectables(i).Name = CName Then
+                            _collectables(i).Value = CDat
+                            i = _numCollectables
                         End If
                     Next i
                 End If
@@ -8774,10 +8769,10 @@ Public Class LegacyGame
                     CName = Trim(Left(CData, SemiColonPos - 1))
                     cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
 
-                    For i = 1 To NumberItems
+                    For i = 1 To _numberItems
                         If _items(i).Name = CName Then
                             _items(i).Got = cdatb
-                            i = NumberItems
+                            i = _numberItems
                         End If
                     Next i
                 End If
@@ -8796,13 +8791,13 @@ Public Class LegacyGame
                     CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
                     CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                    For i = 1 To NumberObjs
-                        If Objs(i).ObjectName = CName And Not Objs(i).Loaded Then
-                            Objs(i).Exists = cdatb
-                            Objs(i).Visible = CurObjVisible
-                            Objs(i).ContainerRoom = CurObjRoom
-                            Objs(i).Loaded = True
-                            i = NumberObjs
+                    For i = 1 To _numberObjs
+                        If _objs(i).ObjectName = CName And Not _objs(i).Loaded Then
+                            _objs(i).Exists = cdatb
+                            _objs(i).Visible = CurObjVisible
+                            _objs(i).ContainerRoom = CurObjRoom
+                            _objs(i).Loaded = True
+                            i = _numberObjs
                         End If
                     Next i
                 End If
@@ -8821,12 +8816,12 @@ Public Class LegacyGame
                     CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
                     CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                    For i = 1 To NumberChars
+                    For i = 1 To _numberChars
                         If _chars(i).ObjectName = CName Then
                             _chars(i).Exists = cdatb
                             _chars(i).Visible = CurObjVisible
                             _chars(i).ContainerRoom = CurObjRoom
-                            i = NumberChars
+                            i = _numberChars
                         End If
                     Next i
                 End If
@@ -8858,7 +8853,7 @@ Public Class LegacyGame
 
         End If
 
-        SaveGameFile = theGameFileName
+        _saveGameFile = theGameFileName
 
         Return True
     End Function
@@ -8879,7 +8874,7 @@ Public Class LegacyGame
             System.IO.File.WriteAllText(theGameFileName, saveData, System.Text.Encoding.GetEncoding(1252))
         End If
 
-        SaveGameFile = theGameFileName
+        _saveGameFile = theGameFileName
 
         Return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData)
     End Function
@@ -8891,25 +8886,25 @@ Public Class LegacyGame
         lines.Add("QUEST200.1")
         lines.Add(GetOriginalFilenameForQSG)
         lines.Add(_gameName)
-        lines.Add(CurrentRoom)
+        lines.Add(_currentRoom)
 
         lines.Add("!c")
-        For i = 1 To NumCollectables
-            lines.Add(Collectables(i).Name & ";" & Str(Collectables(i).Value))
+        For i = 1 To _numCollectables
+            lines.Add(_collectables(i).Name & ";" & Str(_collectables(i).Value))
         Next i
 
         lines.Add("!i")
-        For i = 1 To NumberItems
+        For i = 1 To _numberItems
             lines.Add(_items(i).Name & ";" & YesNo(_items(i).Got))
         Next i
 
         lines.Add("!o")
-        For i = 1 To NumberObjs
-            lines.Add(Objs(i).ObjectName & ";" & YesNo(Objs(i).Exists) & ";" & YesNo(Objs(i).Visible) & ";" & Objs(i).ContainerRoom)
+        For i = 1 To _numberObjs
+            lines.Add(_objs(i).ObjectName & ";" & YesNo(_objs(i).Exists) & ";" & YesNo(_objs(i).Visible) & ";" & _objs(i).ContainerRoom)
         Next i
 
         lines.Add("!p")
-        For i = 1 To NumberChars
+        For i = 1 To _numberChars
             lines.Add(_chars(i).ObjectName & ";" & YesNo(_chars(i).Exists) & ";" & YesNo(_chars(i).Visible) & ";" & _chars(i).ContainerRoom)
         Next i
 
@@ -8937,9 +8932,9 @@ Public Class LegacyGame
         Dim FoundObject As Boolean
         If GameASLVersion >= 281 Then
             FoundObject = False
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(ThingString) Then
-                    Objs(i).Exists = ThingExist
+            For i = 1 To _numberObjs
+                If LCase(_objs(i).ObjectName) = LCase(ThingString) Then
+                    _objs(i).Exists = ThingExist
                     If ThingExist Then
                         AddToObjectProperties("not hidden", i, ctx)
                     Else
@@ -8947,7 +8942,7 @@ Public Class LegacyGame
                     End If
                     ObjID = i
                     FoundObject = True
-                    i = NumberObjs
+                    i = _numberObjs
                 End If
             Next i
 
@@ -8961,24 +8956,24 @@ Public Class LegacyGame
             AtPos = InStr(ThingString, "@")
             ' If no room specified, currentroom presumed
             If AtPos = 0 Then
-                CRoom = CurrentRoom
+                CRoom = _currentRoom
                 CName = ThingString
             Else
                 CName = Trim(Left(ThingString, AtPos - 1))
                 CRoom = Trim(Right(ThingString, Len(ThingString) - AtPos))
             End If
             If ThingType = Thing.Character Then
-                For i = 1 To NumberChars
+                For i = 1 To _numberChars
                     If LCase(_chars(i).ContainerRoom) = LCase(CRoom) And LCase(_chars(i).ObjectName) = LCase(CName) Then
                         _chars(i).Exists = ThingExist
-                        i = NumberChars + 1
+                        i = _numberChars + 1
                     End If
                 Next i
             ElseIf ThingType = Thing.Object Then
-                For i = 1 To NumberObjs
-                    If LCase(Objs(i).ContainerRoom) = LCase(CRoom) And LCase(Objs(i).ObjectName) = LCase(CName) Then
-                        Objs(i).Exists = ThingExist
-                        i = NumberObjs + 1
+                For i = 1 To _numberObjs
+                    If LCase(_objs(i).ContainerRoom) = LCase(CRoom) And LCase(_objs(i).ObjectName) = LCase(CName) Then
+                        _objs(i).Exists = ThingExist
+                        i = _numberObjs + 1
                     End If
                 Next i
             End If
@@ -9073,7 +9068,7 @@ Public Class LegacyGame
         Dim OrigCRoomName, CRoomName As String
         Dim k, j, e As Integer
 
-        NumberChars = 0
+        _numberChars = 0
 
         ' see if define type <default> exists:
         DefaultExists = False
@@ -9106,11 +9101,11 @@ Public Class LegacyGame
                     If BeginsWith(_lines(j), "define object") Then
                         CRoomName = OrigCRoomName
 
-                        NumberObjs = NumberObjs + 1
-                        ReDim Preserve Objs(NumberObjs)
-                        Objs(NumberObjs) = New ObjectType
+                        _numberObjs = _numberObjs + 1
+                        ReDim Preserve _objs(_numberObjs)
+                        _objs(_numberObjs) = New ObjectType
 
-                        Dim o = Objs(NumberObjs)
+                        Dim o = _objs(_numberObjs)
 
                         o.ObjectName = RetrieveParameter(_lines(j), _nullContext)
                         o.ObjectAlias = o.ObjectName
@@ -9123,13 +9118,13 @@ Public Class LegacyGame
                         o.Take.Type = TextActionType.Nothing
 
                         If DefaultExists Then
-                            AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
+                            AddToObjectProperties(DefaultProperties.Properties, _numberObjs, _nullContext)
                             For k = 1 To DefaultProperties.NumberActions
-                                AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                                AddObjectAction(_numberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
                             Next k
                         End If
 
-                        If GameASLVersion >= 391 Then AddToObjectProperties("list", NumberObjs, _nullContext)
+                        If GameASLVersion >= 391 Then AddToObjectProperties("list", _numberObjs, _nullContext)
 
                         e = 0
                         Do
@@ -9137,77 +9132,77 @@ Public Class LegacyGame
                             If Trim(_lines(j)) = "hidden" Then
                                 o.Exists = False
                                 e = 1
-                                If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("hidden", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
                                 CRoomName = RetrieveParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "prefix ") Then
                                 o.Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
-                                If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "suffix ") Then
                                 o.Suffix = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "invisible" Then
                                 o.Visible = False
-                                If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("invisible", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alias ") Then
                                 o.ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alt ") Then
-                                AddToObjectAltNames(RetrieveParameter(_lines(j), _nullContext), NumberObjs)
+                                AddToObjectAltNames(RetrieveParameter(_lines(j), _nullContext), _numberObjs)
                             ElseIf BeginsWith(_lines(j), "detail ") Then
                                 o.Detail = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gender ") Then
                                 o.Gender = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "article ") Then
                                 o.Article = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("article=" & o.Article, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("article=" & o.Article, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gain ") Then
                                 o.GainScript = GetEverythingAfter(_lines(j), "gain ")
-                                AddObjectAction(NumberObjs, "gain", o.GainScript)
+                                AddObjectAction(_numberObjs, "gain", o.GainScript)
                             ElseIf BeginsWith(_lines(j), "lose ") Then
                                 o.LoseScript = GetEverythingAfter(_lines(j), "lose ")
-                                AddObjectAction(NumberObjs, "lose", o.LoseScript)
+                                AddObjectAction(_numberObjs, "lose", o.LoseScript)
                             ElseIf BeginsWith(_lines(j), "displaytype ") Then
                                 o.DisplayType = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, NumberObjs, _nullContext)
+                                If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "look ") Then
                                 If GameASLVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "look ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("look=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                        AddToObjectProperties("look=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                     Else
-                                        AddObjectAction(NumberObjs, "look", RestOfLine)
+                                        AddObjectAction(_numberObjs, "look", RestOfLine)
                                     End If
                                 End If
                             ElseIf BeginsWith(_lines(j), "examine ") Then
                                 If GameASLVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "examine ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("examine=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                        AddToObjectProperties("examine=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                     Else
-                                        AddObjectAction(NumberObjs, "examine", RestOfLine)
+                                        AddObjectAction(_numberObjs, "examine", RestOfLine)
                                     End If
                                 End If
                             ElseIf GameASLVersion >= 311 And BeginsWith(_lines(j), "speak ") Then
                                 RestOfLine = GetEverythingAfter(_lines(j), "speak ")
                                 If Left(RestOfLine, 1) = "<" Then
-                                    AddToObjectProperties("speak=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("speak=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
-                                    AddObjectAction(NumberObjs, "speak", RestOfLine)
+                                    AddObjectAction(_numberObjs, "speak", RestOfLine)
                                 End If
                             ElseIf BeginsWith(_lines(j), "properties ") Then
-                                AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "type ") Then
                                 o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                                 ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
                                 o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
 
                                 PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
-                                AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
+                                AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                                 For k = 1 To PropertyData.NumberActions
-                                    AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                                    AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                                 Next k
 
                                 ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded + PropertyData.NumberTypesIncluded)
@@ -9216,78 +9211,78 @@ Public Class LegacyGame
                                 Next k
                                 o.NumberTypesIncluded = o.NumberTypesIncluded + PropertyData.NumberTypesIncluded
                             ElseIf BeginsWith(_lines(j), "action ") Then
-                                AddToObjectActions(GetEverythingAfter(_lines(j), "action "), NumberObjs, _nullContext)
+                                AddToObjectActions(GetEverythingAfter(_lines(j), "action "), _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "use ") Then
-                                AddToUseInfo(NumberObjs, GetEverythingAfter(_lines(j), "use "))
+                                AddToUseInfo(_numberObjs, GetEverythingAfter(_lines(j), "use "))
                             ElseIf BeginsWith(_lines(j), "give ") Then
-                                AddToGiveInfo(NumberObjs, GetEverythingAfter(_lines(j), "give "))
+                                AddToGiveInfo(_numberObjs, GetEverythingAfter(_lines(j), "give "))
                             ElseIf Trim(_lines(j)) = "take" Then
                                 o.Take.Type = TextActionType.Default
-                                AddToObjectProperties("take", NumberObjs, _nullContext)
+                                AddToObjectProperties("take", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "take ") Then
                                 If Left(GetEverythingAfter(_lines(j), "take "), 1) = "<" Then
                                     o.Take.Type = TextActionType.Text
                                     o.Take.Data = RetrieveParameter(_lines(j), _nullContext)
 
-                                    AddToObjectProperties("take=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("take=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     o.Take.Type = TextActionType.Script
                                     RestOfLine = GetEverythingAfter(_lines(j), "take ")
                                     o.Take.Data = RestOfLine
 
-                                    AddObjectAction(NumberObjs, "take", RestOfLine)
+                                    AddObjectAction(_numberObjs, "take", RestOfLine)
                                 End If
                             ElseIf Trim(_lines(j)) = "container" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
+                                If GameASLVersion >= 391 Then AddToObjectProperties("container", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "surface" Then
                                 If GameASLVersion >= 391 Then
-                                    AddToObjectProperties("container", NumberObjs, _nullContext)
-                                    AddToObjectProperties("surface", NumberObjs, _nullContext)
+                                    AddToObjectProperties("container", _numberObjs, _nullContext)
+                                    AddToObjectProperties("surface", _numberObjs, _nullContext)
                                 End If
                             ElseIf Trim(_lines(j)) = "opened" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, _nullContext)
+                                If GameASLVersion >= 391 Then AddToObjectProperties("opened", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "transparent" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, _nullContext)
+                                If GameASLVersion >= 391 Then AddToObjectProperties("transparent", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "open" Then
-                                AddToObjectProperties("open", NumberObjs, _nullContext)
+                                AddToObjectProperties("open", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "open ") Then
                                 If Left(GetEverythingAfter(_lines(j), "open "), 1) = "<" Then
-                                    AddToObjectProperties("open=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("open=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "open ")
-                                    AddObjectAction(NumberObjs, "open", RestOfLine)
+                                    AddObjectAction(_numberObjs, "open", RestOfLine)
                                 End If
                             ElseIf Trim(_lines(j)) = "close" Then
-                                AddToObjectProperties("close", NumberObjs, _nullContext)
+                                AddToObjectProperties("close", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "close ") Then
                                 If Left(GetEverythingAfter(_lines(j), "close "), 1) = "<" Then
-                                    AddToObjectProperties("close=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("close=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "close ")
-                                    AddObjectAction(NumberObjs, "close", RestOfLine)
+                                    AddObjectAction(_numberObjs, "close", RestOfLine)
                                 End If
                             ElseIf Trim(_lines(j)) = "add" Then
-                                AddToObjectProperties("add", NumberObjs, _nullContext)
+                                AddToObjectProperties("add", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "add ") Then
                                 If Left(GetEverythingAfter(_lines(j), "add "), 1) = "<" Then
-                                    AddToObjectProperties("add=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("add=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "add ")
-                                    AddObjectAction(NumberObjs, "add", RestOfLine)
+                                    AddObjectAction(_numberObjs, "add", RestOfLine)
                                 End If
                             ElseIf Trim(_lines(j)) = "remove" Then
-                                AddToObjectProperties("remove", NumberObjs, _nullContext)
+                                AddToObjectProperties("remove", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "remove ") Then
                                 If Left(GetEverythingAfter(_lines(j), "remove "), 1) = "<" Then
-                                    AddToObjectProperties("remove=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("remove=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "remove ")
-                                    AddObjectAction(NumberObjs, "remove", RestOfLine)
+                                    AddObjectAction(_numberObjs, "remove", RestOfLine)
                                 End If
                             ElseIf BeginsWith(_lines(j), "parent ") Then
-                                AddToObjectProperties("parent=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                                AddToObjectProperties("parent=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "list") Then
-                                ProcessListInfo(_lines(j), NumberObjs)
+                                ProcessListInfo(_lines(j), _numberObjs)
                             End If
 
                         Loop Until Trim(_lines(j)) = "end define"
@@ -9296,39 +9291,39 @@ Public Class LegacyGame
                         If e = 0 Then o.Exists = True
                     ElseIf GameASLVersion <= 280 And BeginsWith(_lines(j), "define character") Then
                         CRoomName = OrigCRoomName
-                        NumberChars = NumberChars + 1
-                        ReDim Preserve _chars(NumberChars)
-                        _chars(NumberChars) = New ObjectType
-                        _chars(NumberChars).ObjectName = RetrieveParameter(_lines(j), _nullContext)
-                        _chars(NumberChars).DefinitionSectionStart = j
-                        _chars(NumberChars).ContainerRoom = ""
-                        _chars(NumberChars).Visible = True
+                        _numberChars = _numberChars + 1
+                        ReDim Preserve _chars(_numberChars)
+                        _chars(_numberChars) = New ObjectType
+                        _chars(_numberChars).ObjectName = RetrieveParameter(_lines(j), _nullContext)
+                        _chars(_numberChars).DefinitionSectionStart = j
+                        _chars(_numberChars).ContainerRoom = ""
+                        _chars(_numberChars).Visible = True
                         e = 0
                         Do
                             j = j + 1
                             If Trim(_lines(j)) = "hidden" Then
-                                _chars(NumberChars).Exists = False
+                                _chars(_numberChars).Exists = False
                                 e = 1
                             ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
                                 CRoomName = RetrieveParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "prefix ") Then
-                                _chars(NumberChars).Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
+                                _chars(_numberChars).Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
                             ElseIf BeginsWith(_lines(j), "suffix ") Then
-                                _chars(NumberChars).Suffix = " " & RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).Suffix = " " & RetrieveParameter(_lines(j), _nullContext)
                             ElseIf Trim(_lines(j)) = "invisible" Then
-                                _chars(NumberChars).Visible = False
+                                _chars(_numberChars).Visible = False
                             ElseIf BeginsWith(_lines(j), "alias ") Then
-                                _chars(NumberChars).ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "detail ") Then
-                                _chars(NumberChars).Detail = RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).Detail = RetrieveParameter(_lines(j), _nullContext)
                             End If
 
-                            _chars(NumberChars).ContainerRoom = CRoomName
+                            _chars(_numberChars).ContainerRoom = CRoomName
 
                         Loop Until Trim(_lines(j)) = "end define"
 
-                        _chars(NumberChars).DefinitionSectionEnd = j
-                        If e = 0 Then _chars(NumberChars).Exists = True
+                        _chars(_numberChars).DefinitionSectionEnd = j
+                        If e = 0 Then _chars(_numberChars).Exists = True
                     End If
                 Next j
             End If
@@ -9408,8 +9403,8 @@ Public Class LegacyGame
 
         gameblock = GetDefineBlock("game")
 
-        CurrentRoom = Room
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        _currentRoom = Room
+        RoomID = GetRoomID(_currentRoom, ctx)
 
         If RoomID = 0 Then Exit Sub
 
@@ -9455,22 +9450,22 @@ Public Class LegacyGame
         Dim colVisibleObjects As New List(Of Integer) ' of object IDs
         Dim lCount As Integer
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ContainerRoom) = LCase(Room) And Objs(i).Exists And Objs(i).Visible And Not Objs(i).IsExit Then
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ContainerRoom) = LCase(Room) And _objs(i).Exists And _objs(i).Visible And Not _objs(i).IsExit Then
                 colVisibleObjects.Add(i)
             End If
         Next i
 
         For Each objId As Integer In colVisibleObjects
-            ObjSuffix = Objs(objId).Suffix
+            ObjSuffix = _objs(objId).Suffix
             If ObjSuffix <> "" Then ObjSuffix = " " & ObjSuffix
 
-            If Objs(objId).ObjectAlias = "" Then
-                VisibleObjects = VisibleObjects & Objs(objId).Prefix & "|b" & Objs(objId).ObjectName & "|xb" & ObjSuffix
-                VisibleObjectsNoFormat = VisibleObjectsNoFormat & Objs(objId).Prefix & Objs(objId).ObjectName
+            If _objs(objId).ObjectAlias = "" Then
+                VisibleObjects = VisibleObjects & _objs(objId).Prefix & "|b" & _objs(objId).ObjectName & "|xb" & ObjSuffix
+                VisibleObjectsNoFormat = VisibleObjectsNoFormat & _objs(objId).Prefix & _objs(objId).ObjectName
             Else
-                VisibleObjects = VisibleObjects & Objs(objId).Prefix & "|b" & Objs(objId).ObjectAlias & "|xb" & ObjSuffix
-                VisibleObjectsNoFormat = VisibleObjectsNoFormat & Objs(objId).Prefix & Objs(objId).ObjectAlias
+                VisibleObjects = VisibleObjects & _objs(objId).Prefix & "|b" & _objs(objId).ObjectAlias & "|xb" & ObjSuffix
+                VisibleObjectsNoFormat = VisibleObjectsNoFormat & _objs(objId).Prefix & _objs(objId).ObjectAlias
             End If
 
             lCount = lCount + 1
@@ -9626,8 +9621,8 @@ Public Class LegacyGame
         Dim M As Integer
         Dim T As String
 
-        T = Collectables(ColNum).Type
-        n = Collectables(ColNum).Value
+        T = _collectables(ColNum).Type
+        n = _collectables(ColNum).Value
 
         If T = "%" And n > 100 Then n = 100
         If (T = "%" Or T = "p") And n < 0 Then n = 0
@@ -9648,7 +9643,7 @@ Public Class LegacyGame
             If (M = 2 Or M = 3) And n < minn Then n = minn
         End If
 
-        Collectables(ColNum).Value = n
+        _collectables(ColNum).Value = n
 
     End Sub
 
@@ -9658,18 +9653,18 @@ Public Class LegacyGame
         Dim FirstStarPos, SecondStarPos As Integer
         Dim AfterStar, BeforeStar, BetweenStar As String
 
-        If Collectables(ColNum).Display = "<def>" Then
-            D = "You have " & Trim(Str(Collectables(ColNum).Value)) & " " & Collectables(ColNum).Name
-        ElseIf Collectables(ColNum).Display = "" Then
+        If _collectables(ColNum).Display = "<def>" Then
+            D = "You have " & Trim(Str(_collectables(ColNum).Value)) & " " & _collectables(ColNum).Name
+        ElseIf _collectables(ColNum).Display = "" Then
             D = "<null>"
         Else
-            ExcPos = InStr(Collectables(ColNum).Display, "!")
+            ExcPos = InStr(_collectables(ColNum).Display, "!")
             If ExcPos = 0 Then
-                D = Collectables(ColNum).Display
+                D = _collectables(ColNum).Display
             Else
-                FirstBit = Left(Collectables(ColNum).Display, ExcPos - 1)
-                NextBit = Right(Collectables(ColNum).Display, Len(Collectables(ColNum).Display) - ExcPos)
-                D = FirstBit & Trim(Str(Collectables(ColNum).Value)) & NextBit
+                FirstBit = Left(_collectables(ColNum).Display, ExcPos - 1)
+                NextBit = Right(_collectables(ColNum).Display, Len(_collectables(ColNum).Display) - ExcPos)
+                D = FirstBit & Trim(Str(_collectables(ColNum).Value)) & NextBit
             End If
 
             If InStr(D, "*") > 0 Then
@@ -9679,7 +9674,7 @@ Public Class LegacyGame
                 AfterStar = Mid(D, SecondStarPos + 1)
                 BetweenStar = Mid(D, FirstStarPos + 1, (SecondStarPos - FirstStarPos) - 1)
 
-                If Collectables(ColNum).Value <> 1 Then
+                If _collectables(ColNum).Value <> 1 Then
                     D = BeforeStar & BetweenStar & AfterStar
                 Else
                     D = BeforeStar & AfterStar
@@ -9687,7 +9682,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If Collectables(ColNum).Value = 0 And Collectables(ColNum).DisplayWhenZero = False Then
+        If _collectables(ColNum).Value = 0 And _collectables(ColNum).DisplayWhenZero = False Then
             D = "<null>"
         End If
 
@@ -9732,7 +9727,7 @@ Public Class LegacyGame
 
         OldBadCmdBefore = BadCmdBefore
 
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
         EnteredHelpCommand = False
 
         If thecommand = "" Then Return True
@@ -9879,7 +9874,7 @@ Public Class LegacyGame
                 LastIt = 0
             ElseIf CmdStartsWith(thecommand, "go ") Then
                 If GameASLVersion >= 410 Then
-                    _rooms(GetRoomID(CurrentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
+                    _rooms(GetRoomID(_currentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
                 Else
                     D = GetEverythingAfter(thecommand, "go ")
                     If D = "out" Then
@@ -9955,25 +9950,25 @@ Public Class LegacyGame
                 InventoryPlace = "inventory"
 
                 If GameASLVersion >= 280 Then
-                    For i = 1 To NumberObjs
-                        If Objs(i).ContainerRoom = InventoryPlace And Objs(i).Exists And Objs(i).Visible Then
-                            InvList = InvList & Objs(i).Prefix
+                    For i = 1 To _numberObjs
+                        If _objs(i).ContainerRoom = InventoryPlace And _objs(i).Exists And _objs(i).Visible Then
+                            InvList = InvList & _objs(i).Prefix
 
-                            If Objs(i).ObjectAlias = "" Then
-                                InvList = InvList & "|b" & Objs(i).ObjectName & "|xb"
+                            If _objs(i).ObjectAlias = "" Then
+                                InvList = InvList & "|b" & _objs(i).ObjectName & "|xb"
                             Else
-                                InvList = InvList & "|b" & Objs(i).ObjectAlias & "|xb"
+                                InvList = InvList & "|b" & _objs(i).ObjectAlias & "|xb"
                             End If
 
-                            If Objs(i).Suffix <> "" Then
-                                InvList = InvList & " " & Objs(i).Suffix
+                            If _objs(i).Suffix <> "" Then
+                                InvList = InvList & " " & _objs(i).Suffix
                             End If
 
                             InvList = InvList & ", "
                         End If
                     Next i
                 Else
-                    For j = 1 To NumberItems
+                    For j = 1 To _numberItems
                         If _items(j).Got = True Then
                             InvList = InvList & _items(j).Name & ", "
                         End If
@@ -10098,17 +10093,17 @@ Public Class LegacyGame
             ElseIf ItemID = -2 Then
                 Exit Sub
             Else
-                ObjArticle = Objs(ItemID).Article
+                ObjArticle = _objs(ItemID).Article
             End If
         Else
             ' ASL2:
             NotGotItem = True
 
-            For i = 1 To NumberItems
+            For i = 1 To _numberItems
                 If LCase(_items(i).Name) = LCase(ItemToGive) Then
                     If _items(i).Got = False Then
                         NotGotItem = True
-                        i = NumberItems
+                        i = _numberItems
                     Else
                         NotGotItem = False
                     End If
@@ -10119,7 +10114,7 @@ Public Class LegacyGame
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
             Else
-                ObjArticle = Objs(ItemID).Article
+                ObjArticle = _objs(ItemID).Article
             End If
         End If
 
@@ -10127,7 +10122,7 @@ Public Class LegacyGame
             FoundGiveScript = False
             FoundGiveToObject = False
 
-            GiveToObjectID = Disambiguate(CharToGive, CurrentRoom, ctx)
+            GiveToObjectID = Disambiguate(CharToGive, _currentRoom, ctx)
             If GiveToObjectID > 0 Then
                 FoundGiveToObject = True
             End If
@@ -10142,10 +10137,10 @@ Public Class LegacyGame
             'now, for "give a to b", we have
             'ItemID=a and GiveToObjectID=b
 
-            Dim o = Objs(GiveToObjectID)
+            Dim o = _objs(GiveToObjectID)
 
             For i = 1 To o.NumberGiveData
-                If o.GiveData(i).GiveType = GiveType.GiveSomethingTo And LCase(o.GiveData(i).GiveObject) = LCase(Objs(ItemID).ObjectName) Then
+                If o.GiveData(i).GiveType = GiveType.GiveSomethingTo And LCase(o.GiveData(i).GiveObject) = LCase(_objs(ItemID).ObjectName) Then
                     FoundGiveScript = True
                     GiveScript = o.GiveData(i).GiveScript
                     i = o.NumberGiveData
@@ -10155,10 +10150,10 @@ Public Class LegacyGame
             If Not FoundGiveScript Then
                 'check a for give to <b>:
 
-                Dim g = Objs(ItemID)
+                Dim g = _objs(ItemID)
 
                 For i = 1 To g.NumberGiveData
-                    If g.GiveData(i).GiveType = GiveType.GiveToSomething And LCase(g.GiveData(i).GiveObject) = LCase(Objs(GiveToObjectID).ObjectName) Then
+                    If g.GiveData(i).GiveType = GiveType.GiveToSomething And LCase(g.GiveData(i).GiveObject) = LCase(_objs(GiveToObjectID).ObjectName) Then
                         FoundGiveScript = True
                         GiveScript = g.GiveData(i).GiveScript
                         i = g.NumberGiveData
@@ -10168,28 +10163,28 @@ Public Class LegacyGame
 
             If Not FoundGiveScript Then
                 'check b for give anything:
-                GiveScript = Objs(GiveToObjectID).GiveAnything
+                GiveScript = _objs(GiveToObjectID).GiveAnything
                 If GiveScript <> "" Then
                     FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", Objs(ItemID).ObjectName, ctx)
+                    SetStringContents("quest.give.object.name", _objs(ItemID).ObjectName, ctx)
                 End If
             End If
 
             If Not FoundGiveScript Then
                 'check a for give to anything:
-                GiveScript = Objs(ItemID).GiveToAnything
+                GiveScript = _objs(ItemID).GiveToAnything
                 If GiveScript <> "" Then
                     FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", Objs(GiveToObjectID).ObjectName, ctx)
+                    SetStringContents("quest.give.object.name", _objs(GiveToObjectID).ObjectName, ctx)
                 End If
             End If
 
             If FoundGiveScript Then
                 ExecuteScript(GiveScript, ctx, ItemID)
             Else
-                SetStringContents("quest.error.charactername", Objs(GiveToObjectID).ObjectName, ctx)
+                SetStringContents("quest.error.charactername", _objs(GiveToObjectID).ObjectName, ctx)
 
-                ObjGender = Trim(Objs(GiveToObjectID).Gender)
+                ObjGender = Trim(_objs(GiveToObjectID).Gender)
                 ObjGender = UCase(Left(ObjGender, 1)) & Mid(ObjGender, 2)
                 SetStringContents("quest.error.gender", ObjGender, ctx)
 
@@ -10198,14 +10193,14 @@ Public Class LegacyGame
             End If
         Else
             ' ASL2:
-            characterblock = GetThingBlock(CharToGive, CurrentRoom, ObjectType)
+            characterblock = GetThingBlock(CharToGive, _currentRoom, ObjectType)
 
-            If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & CurrentRoom, ObjectType, ctx) = False Then
+            If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & _currentRoom, ObjectType, ctx) = False Then
                 PlayerErrorMessage(PlayerError.BadCharacter, ctx)
                 Exit Sub
             End If
 
-            RealName = _chars(GetThingNumber(CharToGive, CurrentRoom, ObjectType)).ObjectName
+            RealName = _chars(GetThingNumber(CharToGive, _currentRoom, ObjectType)).ObjectName
 
             ' now, see if there's a give statement for this item in
             ' this characters definition:
@@ -10243,7 +10238,7 @@ Public Class LegacyGame
         Dim FoundObject As Boolean
         Dim ObjID As Integer
         If Trim(LookLine) = "look" Then
-            ShowRoomInfo((CurrentRoom), ctx)
+            ShowRoomInfo((_currentRoom), ctx)
         Else
             If GameASLVersion < 391 Then
                 AtPos = InStr(LookLine, " at ")
@@ -10272,7 +10267,7 @@ Public Class LegacyGame
 
                 InventoryPlace = "inventory"
 
-                ObjID = Disambiguate(LookItem, InventoryPlace & ";" & CurrentRoom, ctx)
+                ObjID = Disambiguate(LookItem, InventoryPlace & ";" & _currentRoom, ctx)
                 If ObjID > 0 Then
                     FoundObject = True
                 End If
@@ -10360,7 +10355,7 @@ Public Class LegacyGame
 
             InventoryPlace = "inventory"
 
-            ObjID = Disambiguate(ObjectName, InventoryPlace & ";" & CurrentRoom, ctx)
+            ObjID = Disambiguate(ObjectName, InventoryPlace & ";" & _currentRoom, ctx)
             If ObjID > 0 Then
                 FoundObject = True
             End If
@@ -10377,7 +10372,7 @@ Public Class LegacyGame
             ' for property, then check define
             ' section:
 
-            Dim o = Objs(ObjID)
+            Dim o = _objs(ObjID)
 
             For i = 1 To o.NumberActions
                 If o.Actions(i).ActionName = "speak" Then
@@ -10411,7 +10406,7 @@ Public Class LegacyGame
             End If
 
             If Not FoundSpeak Then
-                SetStringContents("quest.error.gender", UCase(Left(Objs(ObjID).Gender, 1)) & Mid(Objs(ObjID).Gender, 2), ctx)
+                SetStringContents("quest.error.gender", UCase(Left(_objs(ObjID).Gender, 1)) & Mid(_objs(ObjID).Gender, 2), ctx)
                 PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
                 Exit Sub
             End If
@@ -10437,7 +10432,7 @@ Public Class LegacyGame
 
             If l <> "<unfound>" And l <> "<undefined>" Then
                 ' Character exists; but is it available??
-                If IsAvailable(c & "@" & CurrentRoom, ObjectType, ctx) = False Then
+                If IsAvailable(c & "@" & _currentRoom, ObjectType, ctx) = False Then
                     l = "<undefined>"
                 End If
             End If
@@ -10473,7 +10468,7 @@ Public Class LegacyGame
         FoundTake = False
         OriginalTakeItem = TakeItem
 
-        ObjID = Disambiguate(TakeItem, CurrentRoom, ctx)
+        ObjID = Disambiguate(TakeItem, _currentRoom, ctx)
 
         If ObjID < 0 Then
             FoundItem = False
@@ -10500,7 +10495,7 @@ Public Class LegacyGame
             BadCmdBefore = "take"
             Exit Sub
         Else
-            SetStringContents("quest.error.article", Objs(ObjID).Article, ctx)
+            SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
         End If
 
         ObjectIsInContainer = False
@@ -10515,23 +10510,23 @@ Public Class LegacyGame
         End If
 
         If GameASLVersion >= 280 Then
-            Dim t = Objs(ObjID).Take
+            Dim t = _objs(ObjID).Take
 
             If ObjectIsInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
                 ' So, we want to take an object that's in a container or surface. So first
                 ' we have to remove the object from that container.
 
-                If Objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = Objs(ParentID).ObjectAlias
+                If _objs(ParentID).ObjectAlias <> "" Then
+                    ParentDisplayName = _objs(ParentID).ObjectAlias
                 Else
-                    ParentDisplayName = Objs(ParentID).ObjectName
+                    ParentDisplayName = _objs(ParentID).ObjectName
                 End If
 
-                Print("(first removing " & Objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
+                Print("(first removing " & _objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
 
                 ' Try to remove the object
                 ctx.AllowRealNamesInCommand = True
-                ExecCommand("remove " & Objs(ObjID).ObjectName, ctx, False, , True)
+                ExecCommand("remove " & _objs(ObjID).ObjectName, ctx, False, , True)
 
                 If GetObjectProperty("parent", ObjID, False, False) <> "" Then
                     ' removing the object failed
@@ -10553,12 +10548,12 @@ Public Class LegacyGame
         Else
 
             ' find 'take' line
-            For i = Objs(ObjID).DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
+            For i = _objs(ObjID).DefinitionSectionStart + 1 To _objs(ObjID).DefinitionSectionEnd - 1
                 If BeginsWith(_lines(i), "take") Then
                     ScriptLine = Trim(GetEverythingAfter(Trim(_lines(i)), "take"))
                     ExecuteScript(ScriptLine, ctx, ObjID)
                     FoundTake = True
-                    i = Objs(ObjID).DefinitionSectionEnd
+                    i = _objs(ObjID).DefinitionSectionEnd
                 End If
             Next i
 
@@ -10577,7 +10572,7 @@ Public Class LegacyGame
         UseLine = Trim(GetEverythingAfter(tuseline, "use "))
 
         Dim RoomID As Integer
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
 
         OnWithPos = InStr(UseLine, " on ")
         If OnWithPos = 0 Then
@@ -10623,11 +10618,11 @@ Public Class LegacyGame
         Else
             NotGotItem = True
 
-            For i = 1 To NumberItems
+            For i = 1 To _numberItems
                 If LCase(_items(i).Name) = LCase(UseItem) Then
                     If _items(i).Got = False Then
                         NotGotItem = True
-                        i = NumberItems
+                        i = _numberItems
                     Else
                         NotGotItem = False
                     End If
@@ -10652,7 +10647,7 @@ Public Class LegacyGame
                 If GameASLVersion < 410 Then
                     Dim r = _rooms(RoomID)
                     For i = 1 To r.NumberUse
-                        If LCase(Objs(ItemID).ObjectName) = LCase(r.Use(i).Text) Then
+                        If LCase(_objs(ItemID).ObjectName) = LCase(r.Use(i).Text) Then
                             FoundUseScript = True
                             UseScript = r.Use(i).Script
                             i = r.NumberUse
@@ -10661,13 +10656,13 @@ Public Class LegacyGame
                 End If
 
                 If Not FoundUseScript Then
-                    UseScript = Objs(ItemID).Use
+                    UseScript = _objs(ItemID).Use
                     If UseScript <> "" Then FoundUseScript = True
                 End If
             Else
                 FoundUseOnObject = False
 
-                UseOnObjectID = Disambiguate(UseOn, CurrentRoom, ctx)
+                UseOnObjectID = Disambiguate(UseOn, _currentRoom, ctx)
                 If UseOnObjectID > 0 Then
                     FoundUseOnObject = True
                 Else
@@ -10688,10 +10683,10 @@ Public Class LegacyGame
 
                 'first check b for use <a>:
 
-                Dim o = Objs(UseOnObjectID)
+                Dim o = _objs(UseOnObjectID)
 
                 For i = 1 To o.NumberUseData
-                    If o.UseData(i).UseType = UseType.UseSomethingOn And LCase(o.UseData(i).UseObject) = LCase(Objs(ItemID).ObjectName) Then
+                    If o.UseData(i).UseType = UseType.UseSomethingOn And LCase(o.UseData(i).UseObject) = LCase(_objs(ItemID).ObjectName) Then
                         FoundUseScript = True
                         UseScript = o.UseData(i).UseScript
                         i = o.NumberUseData
@@ -10700,9 +10695,9 @@ Public Class LegacyGame
 
                 If Not FoundUseScript Then
                     'check a for use on <b>:
-                    Dim u = Objs(ItemID)
+                    Dim u = _objs(ItemID)
                     For i = 1 To u.NumberUseData
-                        If u.UseData(i).UseType = UseType.UseOnSomething And LCase(u.UseData(i).UseObject) = LCase(Objs(UseOnObjectID).ObjectName) Then
+                        If u.UseData(i).UseType = UseType.UseOnSomething And LCase(u.UseData(i).UseObject) = LCase(_objs(UseOnObjectID).ObjectName) Then
                             FoundUseScript = True
                             UseScript = u.UseData(i).UseScript
                             i = u.NumberUseData
@@ -10712,19 +10707,19 @@ Public Class LegacyGame
 
                 If Not FoundUseScript Then
                     'check b for use anything:
-                    UseScript = Objs(UseOnObjectID).UseAnything
+                    UseScript = _objs(UseOnObjectID).UseAnything
                     If UseScript <> "" Then
                         FoundUseScript = True
-                        SetStringContents("quest.use.object.name", Objs(ItemID).ObjectName, ctx)
+                        SetStringContents("quest.use.object.name", _objs(ItemID).ObjectName, ctx)
                     End If
                 End If
 
                 If Not FoundUseScript Then
                     'check a for use on anything:
-                    UseScript = Objs(ItemID).UseOnAnything
+                    UseScript = _objs(ItemID).UseOnAnything
                     If UseScript <> "" Then
                         FoundUseScript = True
-                        SetStringContents("quest.use.object.name", Objs(UseOnObjectID).ObjectName, ctx)
+                        SetStringContents("quest.use.object.name", _objs(UseOnObjectID).ObjectName, ctx)
                     End If
                 End If
             End If
@@ -10799,14 +10794,14 @@ Public Class LegacyGame
 
         If Not NoUpdate Then
             If ActionName = "take" Then
-                Objs(ObjID).Take.Data = ActionScript
-                Objs(ObjID).Take.Type = TextActionType.Script
+                _objs(ObjID).Take.Data = ActionScript
+                _objs(ObjID).Take.Type = TextActionType.Script
             ElseIf ActionName = "use" Then
                 AddToUseInfo(ObjID, ActionScript)
             ElseIf ActionName = "gain" Then
-                Objs(ObjID).GainScript = ActionScript
+                _objs(ObjID).GainScript = ActionScript
             ElseIf ActionName = "lose" Then
-                Objs(ObjID).LoseScript = ActionScript
+                _objs(ObjID).LoseScript = ActionScript
             ElseIf BeginsWith(ActionName, "use ") Then
                 ActionName = GetEverythingAfter(ActionName, "use ")
                 If InStr(ActionName, "'") > 0 Then
@@ -10844,7 +10839,7 @@ Public Class LegacyGame
         End If
 
         If GameFullyLoaded Then
-            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, Objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
+            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, _objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
         End If
 
     End Sub
@@ -11239,9 +11234,9 @@ Public Class LegacyGame
     Private Function GetCollectableAmount(colname As String) As Double
         Dim i As Integer
 
-        For i = 1 To NumCollectables
-            If Collectables(i).Name = colname Then
-                Return Collectables(i).Value
+        For i = 1 To _numCollectables
+            If _collectables(i).Name = colname Then
+                Return _collectables(i).Value
             End If
         Next i
 
@@ -11268,7 +11263,7 @@ Public Class LegacyGame
 
         Dim RoomID As Integer
         Dim DirData As New TextAction
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
 
         If RoomID = 0 Then Exit Sub
 
@@ -11382,7 +11377,7 @@ Public Class LegacyGame
         OutPutOn = True
         UseAbbreviations = True
 
-        GamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
+        _gamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
 
         Dim LogMsg As String
         LogMsg = "Opening file " & afilename & " on " & Date.Now.ToString()
@@ -11495,7 +11490,7 @@ Public Class LegacyGame
         SetUpTimers()
         SetUpMenus()
 
-        GameFileName = afilename
+        _gameFileName = afilename
 
         LogASLError("Finished loading file.", LogType.Init)
 
@@ -11522,7 +11517,7 @@ Public Class LegacyGame
         Dim FoundPlace, ScriptPresent As Boolean
         Dim i As Integer
 
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
         FoundPlace = False
         ScriptPresent = False
 
@@ -11577,31 +11572,31 @@ Public Class LegacyGame
 
         If GameASLVersion >= 280 Then
             If ObjID = 0 Then
-                For i = 1 To NumberObjs
-                    If LCase(Objs(i).ObjectName) = LCase(anitem) Then
+                For i = 1 To _numberObjs
+                    If LCase(_objs(i).ObjectName) = LCase(anitem) Then
                         ObjID = i
-                        i = NumberObjs
+                        i = _numberObjs
                     End If
                 Next i
             End If
 
             If ObjID <> 0 Then
-                OldRoom = LCase(Objs(ObjID).ContainerRoom)
+                OldRoom = LCase(_objs(ObjID).ContainerRoom)
                 If gotit Then
                     If GameASLVersion >= 391 Then
                         ' Unset parent information, if any
                         AddToObjectProperties("not parent", ObjID, ctx)
                     End If
-                    MoveThing(Objs(ObjID).ObjectName, "inventory", Thing.Object, ctx)
+                    MoveThing(_objs(ObjID).ObjectName, "inventory", Thing.Object, ctx)
 
-                    If Objs(ObjID).GainScript <> "" Then
-                        ExecuteScript(Objs(ObjID).GainScript, ctx)
+                    If _objs(ObjID).GainScript <> "" Then
+                        ExecuteScript(_objs(ObjID).GainScript, ctx)
                     End If
                 Else
-                    MoveThing(Objs(ObjID).ObjectName, CurrentRoom, Thing.Object, ctx)
+                    MoveThing(_objs(ObjID).ObjectName, _currentRoom, Thing.Object, ctx)
 
-                    If Objs(ObjID).LoseScript <> "" Then
-                        ExecuteScript(Objs(ObjID).LoseScript, ctx)
+                    If _objs(ObjID).LoseScript <> "" Then
+                        ExecuteScript(_objs(ObjID).LoseScript, ctx)
                     End If
 
                 End If
@@ -11616,10 +11611,10 @@ Public Class LegacyGame
                 UpdateObjectList(ctx)
             End If
         Else
-            For i = 1 To NumberItems
+            For i = 1 To _numberItems
                 If _items(i).Name = anitem Then
                     _items(i).Got = gotit
-                    i = NumberItems
+                    i = _numberItems
                 End If
             Next i
 
@@ -11641,9 +11636,9 @@ Public Class LegacyGame
         End If
 
         Dim LastRoom As String
-        LastRoom = CurrentRoom
+        LastRoom = _currentRoom
 
-        CurrentRoom = Room
+        _currentRoom = Room
 
         SetStringContents("quest.currentroom", Room, ctx)
 
@@ -11723,9 +11718,9 @@ Public Class LegacyGame
         Dim searchblock As DefineBlock
 
         If BlockType = "object" Then
-            searchblock = GetThingBlock(blockparam, CurrentRoom, Thing.Object)
+            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Object)
         Else
-            searchblock = GetThingBlock(blockparam, CurrentRoom, Thing.Character)
+            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Character)
         End If
 
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
@@ -11750,9 +11745,9 @@ Public Class LegacyGame
         Dim searchblock As DefineBlock
 
         If BlockType = "object" Then
-            searchblock = GetThingBlock(blockparam, CurrentRoom, Thing.Object)
+            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Object)
         Else
-            searchblock = GetThingBlock(blockparam, CurrentRoom, Thing.Character)
+            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Character)
         End If
 
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
@@ -11778,7 +11773,7 @@ Public Class LegacyGame
         Dim Bpos1, BPos2 As Integer
         LastItem = False
 
-        NumCollectables = 0
+        _numCollectables = 0
 
         ' Initialise collectables:
         ' First, find the collectables section within the define
@@ -11794,11 +11789,11 @@ Public Class LegacyGame
                 ' no objects:
 
                 If PossItems <> "" Then
-                    NumCollectables = 1
+                    _numCollectables = 1
                     CharPos = 1
                     Do
-                        ReDim Preserve Collectables(NumCollectables)
-                        Collectables(NumCollectables) = New Collectable
+                        ReDim Preserve _collectables(_numCollectables)
+                        _collectables(_numCollectables) = New Collectable
                         NextComma = InStr(CharPos + 1, PossItems, ",")
                         If NextComma = 0 Then
                             NextComma = InStr(CharPos + 1, PossItems, ";")
@@ -11814,7 +11809,7 @@ Public Class LegacyGame
 
                         'Get item info
                         CInfo = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
-                        Collectables(NumCollectables).Name = Trim(Left(CInfo, InStr(CInfo, " ")))
+                        _collectables(_numCollectables).Name = Trim(Left(CInfo, InStr(CInfo, " ")))
 
                         EqualsPos = InStr(CInfo, "=")
                         SpacePos = InStr(CInfo, " ")
@@ -11825,30 +11820,30 @@ Public Class LegacyGame
 
                         If Left(T, 1) = "d" Then
                             T = Mid(T, 2)
-                            Collectables(NumCollectables).DisplayWhenZero = False
+                            _collectables(_numCollectables).DisplayWhenZero = False
                         Else
-                            Collectables(NumCollectables).DisplayWhenZero = True
+                            _collectables(_numCollectables).DisplayWhenZero = True
                         End If
 
-                        Collectables(NumCollectables).Type = T
-                        Collectables(NumCollectables).Value = Val(i)
+                        _collectables(_numCollectables).Type = T
+                        _collectables(_numCollectables).Value = Val(i)
 
                         ' Get display string between square brackets
                         Bpos1 = InStr(CInfo, "[")
                         BPos2 = InStr(CInfo, "]")
                         If Bpos1 = 0 Then
-                            Collectables(NumCollectables).Display = "<def>"
+                            _collectables(_numCollectables).Display = "<def>"
                         Else
                             b = Mid(CInfo, Bpos1 + 1, (BPos2 - 1) - Bpos1)
-                            Collectables(NumCollectables).Display = Trim(b)
+                            _collectables(_numCollectables).Display = Trim(b)
                         End If
 
                         CharPos = NextComma + 1
-                        NumCollectables = NumCollectables + 1
+                        _numCollectables = _numCollectables + 1
 
                         'lastitem set when nextcomma=0, above.
                     Loop Until LastItem = True
-                    NumCollectables = NumCollectables - 1
+                    _numCollectables = _numCollectables - 1
                 End If
             End If
         Next a
@@ -11860,7 +11855,7 @@ Public Class LegacyGame
         Dim PossItems As String
         LastItem = False
 
-        NumberItems = 0
+        _numberItems = 0
 
         ' Initialise items:
         ' First, find the possitems section within the define game
@@ -11870,11 +11865,11 @@ Public Class LegacyGame
                 PossItems = RetrieveParameter(_lines(a), _nullContext)
 
                 If PossItems <> "" Then
-                    NumberItems = NumberItems + 1
+                    _numberItems = _numberItems + 1
                     CharPos = 1
                     Do
-                        ReDim Preserve _items(NumberItems)
-                        _items(NumberItems) = New ItemType
+                        ReDim Preserve _items(_numberItems)
+                        _items(_numberItems) = New ItemType
                         NextComma = InStr(CharPos + 1, PossItems, ",")
                         If NextComma = 0 Then
                             NextComma = InStr(CharPos + 1, PossItems, ";")
@@ -11889,15 +11884,15 @@ Public Class LegacyGame
                         End If
 
                         'Get item name
-                        _items(NumberItems).Name = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
-                        _items(NumberItems).Got = False
+                        _items(_numberItems).Name = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
+                        _items(_numberItems).Got = False
 
                         CharPos = NextComma + 1
-                        NumberItems = NumberItems + 1
+                        _numberItems = _numberItems + 1
 
                         'lastitem set when nextcomma=0, above.
                     Loop Until LastItem = True
-                    NumberItems = NumberItems - 1
+                    _numberItems = _numberItems - 1
                 End If
             End If
         Next a
@@ -11934,10 +11929,10 @@ Public Class LegacyGame
                         TheItemName = Trim(Mid(StartItems, CharPos, NextComma - CharPos))
 
                         'Find which item this is, and set it
-                        For i = 1 To NumberItems
+                        For i = 1 To _numberItems
                             If _items(i).Name = TheItemName Then
                                 _items(i).Got = True
-                                i = NumberItems
+                                i = _numberItems
                             End If
                         Next i
 
@@ -12203,12 +12198,12 @@ Public Class LegacyGame
         Dim CurObjName As String
 
         If GameASLVersion >= 280 Then
-            For i = 1 To NumberObjs
-                If Objs(i).ContainerRoom = "inventory" And Objs(i).Exists And Objs(i).Visible Then
-                    If Objs(i).ObjectAlias = "" Then
-                        CurObjName = Objs(i).ObjectName
+            For i = 1 To _numberObjs
+                If _objs(i).ContainerRoom = "inventory" And _objs(i).Exists And _objs(i).Visible Then
+                    If _objs(i).ObjectAlias = "" Then
+                        CurObjName = _objs(i).ObjectName
                     Else
-                        CurObjName = Objs(i).ObjectAlias
+                        CurObjName = _objs(i).ObjectAlias
                     End If
 
                     invList.Add(New ListData(CapFirst(CurObjName), m_listVerbs(ListType.InventoryList)))
@@ -12216,7 +12211,7 @@ Public Class LegacyGame
                 End If
             Next i
         Else
-            For j = 1 To NumberItems
+            For j = 1 To _numberItems
                 If _items(j).Got = True Then
                     invList.Add(New ListData(CapFirst(_items(j).Name), m_listVerbs(ListType.InventoryList)))
                 End If
@@ -12228,11 +12223,11 @@ Public Class LegacyGame
         If GameASLVersion >= 284 Then
             UpdateStatusVars(ctx)
         Else
-            If NumCollectables > 0 Then
+            If _numCollectables > 0 Then
 
                 Dim status As String = ""
 
-                For j = 1 To NumCollectables
+                For j = 1 To _numCollectables
                     k = DisplayCollectableInfo(j)
                     If k <> "<null>" Then
                         If status.Length > 0 Then status += Environment.NewLine
@@ -12273,13 +12268,13 @@ Public Class LegacyGame
 
         'find the room
         Dim roomblock As DefineBlock
-        roomblock = DefineBlockParam("room", CurrentRoom)
+        roomblock = DefineBlockParam("room", _currentRoom)
 
         'FIND CHARACTERS ===
         If GameASLVersion < 281 Then
             ' go through Chars() array
-            For i = 1 To NumberChars
-                If _chars(i).ContainerRoom = CurrentRoom And _chars(i).Exists And _chars(i).Visible Then
+            For i = 1 To _numberChars
+                If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists And _chars(i).Visible Then
                     AddToObjectList(objList, exitList, _chars(i).ObjectName, Thing.Character)
                     CharsViewable = CharsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
                     CharsFound = CharsFound + 1
@@ -12298,18 +12293,18 @@ Public Class LegacyGame
         'FIND OBJECTS
         NoFormatObjsViewable = ""
 
-        For i = 1 To NumberObjs
-            If LCase(Objs(i).ContainerRoom) = LCase(CurrentRoom) And Objs(i).Exists And Objs(i).Visible And Not Objs(i).IsExit Then
-                ObjSuffix = Objs(i).Suffix
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ContainerRoom) = LCase(_currentRoom) And _objs(i).Exists And _objs(i).Visible And Not _objs(i).IsExit Then
+                ObjSuffix = _objs(i).Suffix
                 If ObjSuffix <> "" Then ObjSuffix = " " & ObjSuffix
-                If Objs(i).ObjectAlias = "" Then
-                    AddToObjectList(objList, exitList, Objs(i).ObjectName, Thing.Object)
-                    ObjsViewable = ObjsViewable & Objs(i).Prefix & "|b" & Objs(i).ObjectName & "|xb" & ObjSuffix & ", "
-                    NoFormatObjsViewable = NoFormatObjsViewable & Objs(i).Prefix & Objs(i).ObjectName & ", "
+                If _objs(i).ObjectAlias = "" Then
+                    AddToObjectList(objList, exitList, _objs(i).ObjectName, Thing.Object)
+                    ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & ObjSuffix & ", "
+                    NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
                 Else
-                    AddToObjectList(objList, exitList, Objs(i).ObjectAlias, Thing.Object)
-                    ObjsViewable = ObjsViewable & Objs(i).Prefix & "|b" & Objs(i).ObjectAlias & "|xb" & ObjSuffix & ", "
-                    NoFormatObjsViewable = NoFormatObjsViewable & Objs(i).Prefix & Objs(i).ObjectAlias & ", "
+                    AddToObjectList(objList, exitList, _objs(i).ObjectAlias, Thing.Object)
+                    ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectAlias & "|xb" & ObjSuffix & ", "
+                    NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectAlias & ", "
                 End If
                 ObjsFound = ObjsFound + 1
             End If
@@ -12327,7 +12322,7 @@ Public Class LegacyGame
 
         'FIND DOORWAYS
         Dim RoomID As Integer
-        RoomID = GetRoomID(CurrentRoom, ctx)
+        RoomID = GetRoomID(_currentRoom, ctx)
 
         Dim r = _rooms(RoomID)
 
@@ -12433,7 +12428,7 @@ Public Class LegacyGame
             ParentIsSurface = IsYes(GetObjectProperty("surface", ParentID, True, False))
         End If
 
-        For i = 1 To NumberObjs
+        For i = 1 To _numberObjs
             ' If object has a parent object
             Parent = GetObjectProperty("parent", i, False, False)
 
@@ -12455,9 +12450,9 @@ Public Class LegacyGame
                         ' Otherwise, only if the parent has been seen, AND is either open or transparent,
                         ' then the contents are available.
 
-                        SetAvailability(Objs(i).ObjectName, True, ctx)
+                        SetAvailability(_objs(i).ObjectName, True, ctx)
                     Else
-                        SetAvailability(Objs(i).ObjectName, False, ctx)
+                        SetAvailability(_objs(i).ObjectName, False, ctx)
                     End If
 
                 End If
@@ -12488,10 +12483,10 @@ Public Class LegacyGame
                 ' Parent has no "opened" property, so it's closed. Hence
                 ' object can't be accessed
 
-                If Objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = Objs(ParentID).ObjectAlias
+                If _objs(ParentID).ObjectAlias <> "" Then
+                    ParentDisplayName = _objs(ParentID).ObjectAlias
                 Else
-                    ParentDisplayName = Objs(ParentID).ObjectName
+                    ParentDisplayName = _objs(ParentID).ObjectName
                 End If
 
                 ErrorMsg = "inside closed " & ParentDisplayName
@@ -12508,9 +12503,9 @@ Public Class LegacyGame
                 ' We've already encountered this parent while recursively calling
                 ' this function - we're in a loop of parents!
                 For Each id As Integer In colObjects
-                    sHierarchy = sHierarchy & Objs(id).ObjectName & " -> "
+                    sHierarchy = sHierarchy & _objs(id).ObjectName & " -> "
                 Next
-                sHierarchy = sHierarchy & Objs(ParentID).ObjectName
+                sHierarchy = sHierarchy & _objs(ParentID).ObjectName
                 LogASLError("Looped object parents detected: " & sHierarchy)
                 Return False
             End If
@@ -12736,7 +12731,7 @@ Public Class LegacyGame
 
             Print("Restored saved game", _nullContext)
             Print("", _nullContext)
-            PlayGame(CurrentRoom, _nullContext)
+            PlayGame(_currentRoom, _nullContext)
             Print("", _nullContext)
 
             If GameASLVersion >= 391 Then
@@ -12784,7 +12779,7 @@ Public Class LegacyGame
 
     Public ReadOnly Property SaveFilename As String Implements IASL.SaveFilename
         Get
-            Return SaveGameFile
+            Return _saveGameFile
         End Get
     End Property
 
@@ -12882,7 +12877,7 @@ Public Class LegacyGame
             Dim extractResult As String = ExtractFile(filename)
             Return extractResult
         End If
-        Return System.IO.Path.Combine(GamePath, filename)
+        Return System.IO.Path.Combine(_gamePath, filename)
     End Function
 
     Private Sub Cleanup()
@@ -13082,7 +13077,7 @@ Public Class LegacyGame
 
     Private Function GetOriginalFilenameForQSG() As String
         If m_originalFilename IsNot Nothing Then Return m_originalFilename
-        Return GameFileName
+        Return _gameFileName
     End Function
 
     Public Delegate Function UnzipFunctionDelegate(filename As String, <Runtime.InteropServices.Out()> ByRef tempDir As String) As String
@@ -13127,11 +13122,11 @@ Public Class LegacyGame
 
     Public ReadOnly Property GameID() As String Implements IASL.GameID
         Get
-            If String.IsNullOrEmpty(GameFileName) Then Return Nothing
+            If String.IsNullOrEmpty(_gameFileName) Then Return Nothing
             If Config.ReadGameFileFromAzureBlob Then
                 Return m_gameId
             End If
-            Return TextAdventures.Utility.Utility.FileMD5Hash(GameFileName)
+            Return TextAdventures.Utility.Utility.FileMD5Hash(_gameFileName)
         End Get
     End Property
 

@@ -22,7 +22,7 @@ Friend Class RoomExits
 
         If m_oDirections.ContainsKey(Direction) Then
             oExit = m_oDirections.Item(Direction)
-            m_game.Objs(oExit.ObjID).Exists = True
+            m_game._objs(oExit.ObjID).Exists = True
         Else
             oExit = New RoomExit(m_game)
             m_oDirections.Add(Direction, oExit)
@@ -238,7 +238,7 @@ Friend Class RoomExits
             sCommand = m_game.GetEverythingAfter(sCommand, "go ")
         End If
 
-        lExitID = m_game.Disambiguate(sCommand, m_game.CurrentRoom, ctx, True)
+        lExitID = m_game.Disambiguate(sCommand, m_game._currentRoom, ctx, True)
 
         If lExitID = -1 Then
             m_game.PlayerErrorMessage(PlayerError.BadPlace, ctx)
@@ -424,14 +424,14 @@ Friend Class RoomExits
 
         For Each dir As Direction In m_oDirections.Keys
             oExit = m_oDirections.Item(dir)
-            If m_game.Objs(oExit.ObjID).Exists Then
+            If m_game._objs(oExit.ObjID).Exists Then
                 oAllExits.Add(dir, m_oDirections.Item(dir))
             End If
         Next
 
         For Each dir As String In m_oPlaces.Keys
             oExit = m_oPlaces.Item(dir)
-            If m_game.Objs(oExit.ObjID).Exists Then
+            If m_game._objs(oExit.ObjID).Exists Then
                 oAllExits.Add(dir, m_oPlaces.Item(dir))
             End If
         Next
@@ -455,7 +455,7 @@ Friend Class RoomExits
             End If
         End If
 
-        m_game.Objs(oExit.ObjID).Exists = False
+        m_game._objs(oExit.ObjID).Exists = False
 
         m_bRegenerateAllExits = True
 
