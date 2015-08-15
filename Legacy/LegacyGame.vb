@@ -3138,14 +3138,14 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Function GetHTMLColour(Colour As String, DefaultColour As String) As String
+    Private Function GetHTMLColour(colour As String, defaultColour As String) As String
         ' Converts a Quest foreground or background colour setting into an HTML colour
 
-        Colour = LCase(Colour)
+        colour = LCase(colour)
 
-        If Colour = "" Or Colour = "0" Then Colour = DefaultColour
+        If colour = "" Or colour = "0" Then colour = defaultColour
 
-        Select Case Colour
+        Select Case colour
             Case "white"
                 Return "FFFFFF"
             Case "black"
@@ -3159,72 +3159,69 @@ Public Class LegacyGame
             Case "green"
                 Return "00FF00"
             Case Else
-                Return Colour
+                Return colour
         End Select
     End Function
 
-    Private Sub DoPrint(OutputText As String)
-        RaiseEvent PrintText(_textFormatter.OutputHTML(OutputText))
+    Private Sub DoPrint(text As String)
+        RaiseEvent PrintText(_textFormatter.OutputHTML(text))
     End Sub
 
-    Private Sub DestroyExit(ExitData As String, ctx As Context)
-        Dim SCP As Integer
-        Dim FoundID As Boolean
-        Dim FromRoom As String = ""
-        Dim ToRoom As String = ""
-        Dim RoomID, i, ExitID As Integer
-        Dim FoundExit As Boolean
+    Private Sub DestroyExit(exitData As String, ctx As Context)
+        Dim fromRoom As String = ""
+        Dim toRoom As String = ""
+        Dim roomId, i, exitId As Integer
 
-        SCP = InStr(ExitData, ";")
-        If SCP = 0 Then
-            LogASLError("No exit name specified in 'destroy exit <" & ExitData & ">'")
+        Dim scp = InStr(exitData, ";")
+        If scp = 0 Then
+            LogASLError("No exit name specified in 'destroy exit <" & exitData & ">'")
             Exit Sub
         End If
 
-        Dim oExit As RoomExit
+        Dim roomExit As RoomExit
         If _gameAslVersion >= 410 Then
-            oExit = FindExit(ExitData)
-            If oExit Is Nothing Then
-                LogASLError("Can't find exit in 'destroy exit <" & ExitData & ">'")
+            roomExit = FindExit(exitData)
+            If roomExit Is Nothing Then
+                LogASLError("Can't find exit in 'destroy exit <" & exitData & ">'")
                 Exit Sub
             End If
 
-            oExit.Parent.RemoveExit(oExit)
+            roomExit.Parent.RemoveExit(roomExit)
 
         Else
 
-            FromRoom = LCase(Trim(Left(ExitData, SCP - 1)))
-            ToRoom = Trim(Mid(ExitData, SCP + 1))
+            fromRoom = LCase(Trim(Left(exitData, scp - 1)))
+            toRoom = Trim(Mid(exitData, scp + 1))
 
             ' Find From Room:
-            FoundID = False
+            Dim found = False
 
             For i = 1 To _numberRooms
-                If LCase(_rooms(i).RoomName) = FromRoom Then
-                    FoundID = True
-                    RoomID = i
+                If LCase(_rooms(i).RoomName) = fromRoom Then
+                    found = True
+                    roomId = i
                     i = _numberRooms
                 End If
             Next i
 
-            If Not FoundID Then
-                LogASLError("No such room '" & FromRoom & "'")
+            If Not found Then
+                LogASLError("No such room '" & fromRoom & "'")
                 Exit Sub
             End If
 
-            FoundExit = False
-            Dim r = _rooms(RoomID)
+            found = False
+            Dim r = _rooms(roomId)
 
             For i = 1 To r.NumberPlaces
-                If r.Places(i).PlaceName = ToRoom Then
-                    ExitID = i
-                    FoundExit = True
+                If r.Places(i).PlaceName = toRoom Then
+                    exitId = i
+                    found = True
                     i = r.NumberPlaces
                 End If
             Next i
 
-            If FoundExit Then
-                For i = ExitID To r.NumberPlaces - 1
+            If found Then
+                For i = exitId To r.NumberPlaces - 1
                     r.Places(i) = r.Places(i + 1)
                 Next i
                 ReDim Preserve r.Places(r.NumberPlaces - 1)
@@ -3236,8 +3233,7 @@ Public Class LegacyGame
         ShowRoomInfo(_currentRoom, ctx, True)
         UpdateObjectList(ctx)
 
-        AddToChangeLog("room " & FromRoom, "destroy exit " & ToRoom)
-
+        AddToChangeLog("room " & fromRoom, "destroy exit " & toRoom)
     End Sub
 
     Private Sub DoClear()
@@ -3245,28 +3241,25 @@ Public Class LegacyGame
     End Sub
 
     Private Sub DoWait()
-
         _player.DoWait()
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
             System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
-
     End Sub
 
-    Private Sub ExecuteFlag(InputLine As String, ctx As Context)
-        Dim PropertyString As String = ""
+    Private Sub ExecuteFlag(line As String, ctx As Context)
+        Dim propertyString As String = ""
 
-        If BeginsWith(InputLine, "on ") Then
-            PropertyString = RetrieveParameter(InputLine, ctx)
-        ElseIf BeginsWith(InputLine, "off ") Then
-            PropertyString = "not " & RetrieveParameter(InputLine, ctx)
+        If BeginsWith(line, "on ") Then
+            propertyString = RetrieveParameter(line, ctx)
+        ElseIf BeginsWith(line, "off ") Then
+            propertyString = "not " & RetrieveParameter(line, ctx)
         End If
 
         ' Game object always has ObjID 1
-        AddToObjectProperties(PropertyString, 1, ctx)
-
+        AddToObjectProperties(propertyString, 1, ctx)
     End Sub
 
     Private Function ExecuteIfFlag(flag As String) As Boolean
@@ -3274,148 +3267,133 @@ Public Class LegacyGame
         Return GetObjectProperty(flag, 1, True) = "yes"
     End Function
 
-    Private Sub ExecuteIncDec(InputLine As String, ctx As Context)
-        Dim SC As Integer
-        Dim Param, Var As String
-        Dim Change As Double
-        Dim Value As Double
-        Dim ArrayIndex As Integer
-        Param = RetrieveParameter(InputLine, ctx)
+    Private Sub ExecuteIncDec(line As String, ctx As Context)
+        Dim var As String
+        Dim change As Double
+        Dim param = RetrieveParameter(line, ctx)
 
-        SC = InStr(Param, ";")
-        If SC = 0 Then
-            Change = 1
-            Var = Param
+        Dim sc = InStr(param, ";")
+        If sc = 0 Then
+            change = 1
+            var = param
         Else
-            Change = Val(Mid(Param, SC + 1))
-            Var = Trim(Left(Param, SC - 1))
+            change = Val(Mid(param, sc + 1))
+            var = Trim(Left(param, sc - 1))
         End If
 
-        Value = GetNumericContents(Var, ctx, True)
-        If Value <= -32766 Then Value = 0
+        Dim value = GetNumericContents(var, ctx, True)
+        If value <= -32766 Then value = 0
 
-        If BeginsWith(InputLine, "inc ") Then
-            Value = Value + Change
-        ElseIf BeginsWith(InputLine, "dec ") Then
-            Value = Value - Change
+        If BeginsWith(line, "inc ") Then
+            value = value + change
+        ElseIf BeginsWith(line, "dec ") Then
+            value = value - change
         End If
 
-        ArrayIndex = GetArrayIndex(Var, ctx)
-
-        SetNumericVariableContents(Var, Value, ctx, ArrayIndex)
-
+        Dim arrayIndex = GetArrayIndex(var, ctx)
+        SetNumericVariableContents(var, value, ctx, arrayIndex)
     End Sub
 
-    Private Function ExtractFile(FileToExtract As String) As String
-        Dim Length, StartPos, i As Integer
-        Dim FoundRes As Boolean
-        Dim FileData As String
-        Dim Extracted As Boolean
-        Dim ResID As Integer
-        Dim sFileName As String
+    Private Function ExtractFile(file As String) As String
+        Dim length, startPos, i As Integer
+        Dim extracted As Boolean
+        Dim resId As Integer
 
         If _resourceFile = "" Then Return ""
 
         ' Find file in catalog
 
-        FoundRes = False
+        Dim found = False
 
         For i = 1 To _numResources
-            If LCase(FileToExtract) = LCase(_resources(i).ResourceName) Then
-                FoundRes = True
-                StartPos = _resources(i).ResourceStart + _resourceOffset
-                Length = _resources(i).ResourceLength
-                Extracted = _resources(i).Extracted
-                ResID = i
+            If LCase(file) = LCase(_resources(i).ResourceName) Then
+                found = True
+                startPos = _resources(i).ResourceStart + _resourceOffset
+                length = _resources(i).ResourceLength
+                extracted = _resources(i).Extracted
+                resId = i
                 Exit For
             End If
         Next i
 
-        If Not FoundRes Then
-            LogASLError("Unable to extract '" & FileToExtract & "' - not present in resources.", LogType.WarningError)
+        If Not found Then
+            LogASLError("Unable to extract '" & file & "' - not present in resources.", LogType.WarningError)
             Return Nothing
         End If
 
-        sFileName = System.IO.Path.Combine(_tempFolder, FileToExtract)
-        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(sFileName))
+        Dim fileName = System.IO.Path.Combine(_tempFolder, file)
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName))
 
-        If Not Extracted Then
+        If Not extracted Then
             ' Extract file from cached CAS data
-            FileData = Mid(_fileData, StartPos, Length)
+            Dim fileData = Mid(_fileData, startPos, length)
 
             ' Write file to temp dir
-            System.IO.File.WriteAllText(sFileName, FileData, System.Text.Encoding.GetEncoding(1252))
+            System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252))
 
-            _resources(ResID).Extracted = True
+            _resources(resId).Extracted = True
         End If
 
-        Return sFileName
+        Return fileName
 
     End Function
 
-    Private Sub AddObjectAction(ObjID As Integer, name As String, script As String, Optional NoUpdate As Boolean = False)
+    Private Sub AddObjectAction(id As Integer, name As String, script As String, Optional noUpdate As Boolean = False)
 
         ' Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         ' AddToGiveInfo again leading to a big loop
 
-        Dim FoundExisting As Boolean
-        Dim ActionNum, i As Integer
-        FoundExisting = False
+        Dim actionNum, i As Integer
+        Dim foundExisting = False
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = name Then
-                FoundExisting = True
-                ActionNum = i
+                foundExisting = True
+                actionNum = i
                 i = o.NumberActions
             End If
         Next i
 
-        If Not FoundExisting Then
+        If Not foundExisting Then
             o.NumberActions = o.NumberActions + 1
             ReDim Preserve o.Actions(o.NumberActions)
             o.Actions(o.NumberActions) = New ActionType
-            ActionNum = o.NumberActions
+            actionNum = o.NumberActions
         End If
 
-        o.Actions(ActionNum).ActionName = name
-        o.Actions(ActionNum).Script = script
+        o.Actions(actionNum).ActionName = name
+        o.Actions(actionNum).Script = script
 
-        ObjectActionUpdate(ObjID, name, script, NoUpdate)
-
+        ObjectActionUpdate(id, name, script, noUpdate)
     End Sub
 
-    Private Sub AddToChangeLog(AppliesTo As String, ChangeData As String)
+    Private Sub AddToChangeLog(appliesTo As String, changeData As String)
         _gameChangeData.NumberChanges = _gameChangeData.NumberChanges + 1
         ReDim Preserve _gameChangeData.ChangeData(_gameChangeData.NumberChanges)
         _gameChangeData.ChangeData(_gameChangeData.NumberChanges) = New ChangeType
-        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).AppliesTo = AppliesTo
-        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).Change = ChangeData
+        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).AppliesTo = appliesTo
+        _gameChangeData.ChangeData(_gameChangeData.NumberChanges).Change = changeData
     End Sub
 
-    Private Sub AddToOOChangeLog(lAppliesToType As ChangeLog.eAppliesToType, sAppliesTo As String, sElement As String, sChangeData As String)
+    Private Sub AddToObjectChangeLog(appliesToType As ChangeLog.AppliesTo, appliesTo As String, element As String, changeData As String)
+        Dim changeLog As ChangeLog
 
-        Dim oChangeLog As ChangeLog
-
-        ' NOTE: We're only actually ever using the object changelog at the moment.
+        ' NOTE: We're only actually ever using the object changelog.
         ' Rooms only get logged for creating rooms and creating/destroying exits, so we don't
-        ' need the refactored ChangeLog component for those - although at some point the
-        ' QSG code should be refactored so we don't have two different types of change logs.
+        ' need the refactored ChangeLog component for those.
 
-        Select Case lAppliesToType
-            Case ChangeLog.eAppliesToType.atObject
-                oChangeLog = _changeLogObjects
-            Case ChangeLog.eAppliesToType.atRoom
-                oChangeLog = _changeLogRooms
+        Select Case appliesToType
+            Case ChangeLog.AppliesTo.Object
+                changeLog = _changeLogObjects
+            Case ChangeLog.AppliesTo.Room
+                changeLog = _changeLogRooms
             Case Else
                 Throw New ArgumentOutOfRangeException()
         End Select
 
-        oChangeLog.AddItem(sAppliesTo, sElement, sChangeData)
-
-        Exit Sub
-
+        changeLog.AddItem(appliesTo, element, changeData)
     End Sub
 
     Private Sub AddToGiveInfo(ObjID As Integer, GiveData As String)
@@ -3609,7 +3587,7 @@ Public Class LegacyGame
                 o.Properties(CurNum).PropertyValue = CurValue
             End If
 
-            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, _objs(ObjID).ObjectName, CurName, "properties " & CurInfo)
+            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(ObjID).ObjectName, CurName, "properties " & CurInfo)
 
             Select Case CurName
                 Case "alias"
@@ -10709,7 +10687,7 @@ Public Class LegacyGame
         End If
 
         If _gameFullyLoaded Then
-            AddToOOChangeLog(ChangeLog.eAppliesToType.atObject, _objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
+            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
         End If
 
     End Sub
@@ -11241,8 +11219,8 @@ Public Class LegacyGame
 
         _changeLogRooms = New ChangeLog
         _changeLogObjects = New ChangeLog
-        _changeLogRooms.AppliesToType = ChangeLog.eAppliesToType.atRoom
-        _changeLogObjects.AppliesToType = ChangeLog.eAppliesToType.atObject
+        _changeLogRooms.AppliesToType = ChangeLog.AppliesTo.Room
+        _changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object
 
         _outPutOn = True
         _useAbbreviations = True
