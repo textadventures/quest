@@ -1825,203 +1825,202 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Friend Sub LogASLError(TheError As String, Optional MessageType As LogType = LogType.Misc)
-        If MessageType = LogType.FatalError Then
-            TheError = "FATAL ERROR: " & TheError
-        ElseIf MessageType = LogType.WarningError Then
-            TheError = "ERROR: " & TheError
-        ElseIf MessageType = LogType.LibraryWarningError Then
-            TheError = "WARNING ERROR (LIBRARY): " & TheError
-        ElseIf MessageType = LogType.Init Then
-            TheError = "INIT: " & TheError
-        ElseIf MessageType = LogType.Warning Then
-            TheError = "WARNING: " & TheError
-        ElseIf MessageType = LogType.UserError Then
-            TheError = "ERROR (REQUESTED): " & TheError
-        ElseIf MessageType = LogType.InternalError Then
-            TheError = "INTERNAL ERROR: " & TheError
+    Friend Sub LogASLError(err As String, Optional type As LogType = LogType.Misc)
+        If type = LogType.FatalError Then
+            err = "FATAL ERROR: " & err
+        ElseIf type = LogType.WarningError Then
+            err = "ERROR: " & err
+        ElseIf type = LogType.LibraryWarningError Then
+            err = "WARNING ERROR (LIBRARY): " & err
+        ElseIf type = LogType.Init Then
+            err = "INIT: " & err
+        ElseIf type = LogType.Warning Then
+            err = "WARNING: " & err
+        ElseIf type = LogType.UserError Then
+            err = "ERROR (REQUESTED): " & err
+        ElseIf type = LogType.InternalError Then
+            err = "INTERNAL ERROR: " & err
         End If
 
-        _log.Add(TheError)
+        _log.Add(err)
     End Sub
 
-    Friend Function RetrieveParameter(InputString As String, ctx As Context, Optional bConvertStringVariables As Boolean = True) As String
+    Friend Function RetrieveParameter(s As String, ctx As Context, Optional convertStringVariables As Boolean = True) As String
         ' Returns the parameters between < and > in a string
-        Dim RetrParam As String
-        Dim NewParam As String
-        Dim StartPos As Integer
-        Dim EndPos As Integer
+        Dim newParam As String
+        Dim startPos As Integer
+        Dim endPos As Integer
 
-        StartPos = InStr(InputString, "<")
-        EndPos = InStr(InputString, ">")
+        startPos = InStr(s, "<")
+        endPos = InStr(s, ">")
 
-        If StartPos = 0 Or EndPos = 0 Then
-            LogASLError("Expected parameter in '" & ReportErrorLine(InputString) & "'", LogType.WarningError)
+        If startPos = 0 Or endPos = 0 Then
+            LogASLError("Expected parameter in '" & ReportErrorLine(s) & "'", LogType.WarningError)
             Return ""
         End If
 
-        RetrParam = Mid(InputString, StartPos + 1, (EndPos - StartPos) - 1)
+        Dim retrParam = Mid(s, startPos + 1, (endPos - startPos) - 1)
 
-        If bConvertStringVariables Then
+        If convertStringVariables Then
             If _gameAslVersion >= 320 Then
-                NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx)
+                newParam = ConvertParameter(ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx)
             Else
-                If Not Left(RetrParam, 9) = "~Internal" Then
-                    NewParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx)
+                If Not Left(retrParam, 9) = "~Internal" Then
+                    newParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx)
                 Else
-                    NewParam = RetrParam
+                    newParam = retrParam
                 End If
             End If
         Else
-            NewParam = RetrParam
+            newParam = retrParam
         End If
 
-        Return EvaluateInlineExpressions(NewParam)
+        Return EvaluateInlineExpressions(newParam)
     End Function
 
-    Private Sub AddLine(theline As String)
+    Private Sub AddLine(line As String)
         'Adds a line to the game script
-        Dim NumLines As Integer
+        Dim numLines As Integer
 
-        NumLines = UBound(_lines) + 1
-        ReDim Preserve _lines(NumLines)
-        _lines(NumLines) = theline
+        numLines = UBound(_lines) + 1
+        ReDim Preserve _lines(numLines)
+        _lines(numLines) = line
     End Sub
 
-    Private Sub LoadCASFile(thefilename As String)
-        Dim EndLineReached, ExitTheLoop As Boolean
-        Dim TextMode, FinTheLoop As Boolean
-        Dim CasVersion As Integer
-        Dim StartCat As String = ""
-        Dim EndCatPos As Integer
-        Dim FileData As String = ""
-        Dim ChkVer As String
+    Private Sub LoadCASFile(filename As String)
+        Dim endLineReached, exitTheLoop As Boolean
+        Dim textMode As Boolean
+        Dim casVersion As Integer
+        Dim startCat As String = ""
+        Dim endCatPos As Integer
+        Dim fileData As String = ""
+        Dim chkVer As String
         Dim j As Integer
-        Dim CurLin, TextData As String
-        Dim CPos, NextLinePos As Integer
-        Dim c, TL, CKW, D As String
+        Dim curLin, textData As String
+        Dim cpos, nextLinePos As Integer
+        Dim c, tl, ckw, d As String
 
         ReDim _lines(0)
 
         If Config.ReadGameFileFromAzureBlob Then
             Using client As New WebClient
-                Dim url As String = thefilename
+                Dim url As String = filename
                 Dim baseAddress As Uri = New Uri(url)
                 Dim directory As Uri = New Uri(baseAddress, ".")
 
                 Try
-                    FileData = client.DownloadString(url)
+                    fileData = client.DownloadString(url)
                 Catch ex As WebException
                     url = directory.OriginalString + "_game.cas"
-                    FileData = client.DownloadString(url)
+                    fileData = client.DownloadString(url)
                 End Try
 
                 Dim parts As String() = directory.OriginalString.Split("/"c)
                 m_gameId = parts(parts.Length - 2)
             End Using
         Else
-            FileData = System.IO.File.ReadAllText(thefilename, System.Text.Encoding.GetEncoding(1252))
+            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
         End If
 
-        ChkVer = Left(FileData, 7)
-        If ChkVer = "QCGF001" Then
-            CasVersion = 1
-        ElseIf ChkVer = "QCGF002" Then
-            CasVersion = 2
-        ElseIf ChkVer = "QCGF003" Then
-            CasVersion = 3
+        chkVer = Left(fileData, 7)
+        If chkVer = "QCGF001" Then
+            casVersion = 1
+        ElseIf chkVer = "QCGF002" Then
+            casVersion = 2
+        ElseIf chkVer = "QCGF003" Then
+            casVersion = 3
         Else
             Throw New InvalidOperationException("Invalid or corrupted CAS file.")
         End If
 
-        If CasVersion = 3 Then
-            StartCat = Keyword2CAS("!startcat")
+        If casVersion = 3 Then
+            startCat = Keyword2CAS("!startcat")
         End If
 
-        For i As Integer = 9 To Len(FileData)
-            If CasVersion = 3 And Mid(FileData, i, 1) = StartCat Then
+        For i As Integer = 9 To Len(fileData)
+            If casVersion = 3 And Mid(fileData, i, 1) = startCat Then
                 ' Read catalog
                 _startCatPos = i
-                EndCatPos = InStr(j, FileData, Keyword2CAS("!endcat"))
-                ReadCatalog(Mid(FileData, j + 1, EndCatPos - j - 1))
-                _resourceFile = thefilename
-                _resourceOffset = EndCatPos + 1
-                i = Len(FileData)
-                _fileData = FileData
+                endCatPos = InStr(j, fileData, Keyword2CAS("!endcat"))
+                ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1))
+                _resourceFile = filename
+                _resourceOffset = endCatPos + 1
+                i = Len(fileData)
+                _fileData = fileData
             Else
 
-                CurLin = ""
-                EndLineReached = False
-                If TextMode = True Then
-                    TextData = Mid(FileData, i, InStr(i, FileData, Chr(253)) - (i - 1))
-                    TextData = Left(TextData, Len(TextData) - 1)
-                    CPos = 1
-                    FinTheLoop = False
+                curLin = ""
+                endLineReached = False
+                If textMode = True Then
+                    textData = Mid(fileData, i, InStr(i, fileData, Chr(253)) - (i - 1))
+                    textData = Left(textData, Len(textData) - 1)
+                    cpos = 1
+                    Dim finished = False
 
-                    If TextData <> "" Then
+                    If textData <> "" Then
 
                         Do
-                            NextLinePos = InStr(CPos, TextData, Chr(0))
-                            If NextLinePos = 0 Then
-                                NextLinePos = Len(TextData) + 1
-                                FinTheLoop = True
+                            nextLinePos = InStr(cpos, textData, Chr(0))
+                            If nextLinePos = 0 Then
+                                nextLinePos = Len(textData) + 1
+                                finished = True
                             End If
-                            TL = DecryptString(Mid(TextData, CPos, NextLinePos - CPos))
-                            AddLine(TL)
-                            CPos = NextLinePos + 1
-                        Loop Until FinTheLoop
+                            tl = DecryptString(Mid(textData, cpos, nextLinePos - cpos))
+                            AddLine(tl)
+                            cpos = nextLinePos + 1
+                        Loop Until finished
 
                     End If
 
-                    TextMode = False
-                    i = InStr(i, FileData, Chr(253))
+                    textMode = False
+                    i = InStr(i, fileData, Chr(253))
                 End If
 
                 j = i
                 Do
-                    CKW = Mid(FileData, j, 1)
-                    c = ConvertCasKeyword(CKW)
+                    ckw = Mid(fileData, j, 1)
+                    c = ConvertCasKeyword(ckw)
 
                     If c = vbCrLf Then
-                        EndLineReached = True
+                        endLineReached = True
                     Else
                         If Left(c, 1) <> "!" Then
-                            CurLin = CurLin & c & " "
+                            curLin = curLin & c & " "
                         Else
                             If c = "!quote" Then
-                                ExitTheLoop = False
-                                CurLin = CurLin & "<"
+                                exitTheLoop = False
+                                curLin = curLin & "<"
                                 Do
                                     j = j + 1
-                                    D = Mid(FileData, j, 1)
-                                    If D <> Chr(0) Then
-                                        CurLin = CurLin & DecryptString(D)
+                                    d = Mid(fileData, j, 1)
+                                    If d <> Chr(0) Then
+                                        curLin = curLin & DecryptString(d)
                                     Else
-                                        CurLin = CurLin & "> "
-                                        ExitTheLoop = True
+                                        curLin = curLin & "> "
+                                        exitTheLoop = True
                                     End If
-                                Loop Until ExitTheLoop
+                                Loop Until exitTheLoop
                             ElseIf c = "!unknown" Then
-                                ExitTheLoop = False
+                                exitTheLoop = False
                                 Do
                                     j = j + 1
-                                    D = Mid(FileData, j, 1)
-                                    If D <> Chr(254) Then
-                                        CurLin = CurLin & D
+                                    d = Mid(fileData, j, 1)
+                                    If d <> Chr(254) Then
+                                        curLin = curLin & d
                                     Else
-                                        ExitTheLoop = True
+                                        exitTheLoop = True
                                     End If
-                                Loop Until ExitTheLoop
-                                CurLin = CurLin & " "
+                                Loop Until exitTheLoop
+                                curLin = curLin & " "
                             End If
                         End If
                     End If
 
                     j = j + 1
-                Loop Until EndLineReached
-                AddLine(Trim(CurLin))
-                If BeginsWith(CurLin, "define text") Or (CasVersion >= 2 And (BeginsWith(CurLin, "define synonyms") Or BeginsWith(CurLin, "define type") Or BeginsWith(CurLin, "define menu"))) Then
-                    TextMode = True
+                Loop Until endLineReached
+                AddLine(Trim(curLin))
+                If BeginsWith(curLin, "define text") Or (casVersion >= 2 And (BeginsWith(curLin, "define synonyms") Or BeginsWith(curLin, "define type") Or BeginsWith(curLin, "define menu"))) Then
+                    textMode = True
                 End If
                 'j is already at correct place, but i will be
                 'incremented - so put j back one or we will miss a
@@ -2031,366 +2030,346 @@ Public Class LegacyGame
         Next i
     End Sub
 
-    Private Function DecryptString(sString As String) As String
-        Dim OS As String
-        Dim Z As Integer
+    Private Function DecryptString(s As String) As String
+        Dim i As Integer
 
-        OS = ""
-        For Z = 1 To Len(sString)
-            Dim v As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(Mid(sString, Z, 1))(0)
-            OS = OS & Chr(v Xor 255)
-        Next Z
+        Dim output = ""
+        For i = 1 To Len(s)
+            Dim v As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(Mid(s, i, 1))(0)
+            output = output & Chr(v Xor 255)
+        Next i
 
-        Return OS
+        Return output
     End Function
 
-    Private Function RemoveTabs(ConvertLine As String) As String
-        Dim foundalltabs As Boolean
-        Dim CPos, TabChar As Integer
-
-        If InStr(ConvertLine, Chr(9)) > 0 Then
+    Private Function RemoveTabs(s As String) As String
+        If InStr(s, Chr(9)) > 0 Then
             'Remove tab characters and change them into
             'spaces; otherwise they bugger up the Trim
             'commands.
-            CPos = 1
-            foundalltabs = False
+            Dim cpos = 1
+            Dim finished = False
             Do
-                TabChar = InStr(CPos, ConvertLine, Chr(9))
-                If TabChar <> 0 Then
-                    ConvertLine = Left(ConvertLine, TabChar - 1) & Space(4) & Mid(ConvertLine, TabChar + 1)
-                    CPos = TabChar + 1
+                Dim tabChar = InStr(cpos, s, Chr(9))
+                If tabChar <> 0 Then
+                    s = Left(s, tabChar - 1) & Space(4) & Mid(s, tabChar + 1)
+                    cpos = tabChar + 1
                 Else
-                    foundalltabs = True
+                    finished = True
                 End If
-            Loop Until foundalltabs
+            Loop Until finished
         End If
 
-        Return ConvertLine
+        Return s
     End Function
 
-    Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, ctx As Context)
+    Private Sub DoAddRemove(childId As Integer, parentId As Integer, add As Boolean, ctx As Context)
 
-        If DoAdd Then
-            AddToObjectProperties("parent=" & _objs(ParentObjID).ObjectName, ChildObjID, ctx)
-            _objs(ChildObjID).ContainerRoom = _objs(ParentObjID).ContainerRoom
+        If add Then
+            AddToObjectProperties("parent=" & _objs(parentId).ObjectName, childId, ctx)
+            _objs(childId).ContainerRoom = _objs(parentId).ContainerRoom
         Else
-            AddToObjectProperties("not parent", ChildObjID, ctx)
+            AddToObjectProperties("not parent", childId, ctx)
         End If
 
         If _gameAslVersion >= 410 Then
             ' Putting something in a container implicitly makes that
             ' container "seen". Otherwise we could try to "look at" the
             ' object we just put in the container and have disambigution fail!
-            AddToObjectProperties("seen", ParentObjID, ctx)
+            AddToObjectProperties("seen", parentId, ctx)
         End If
 
-        UpdateVisibilityInContainers(ctx, _objs(ParentObjID).ObjectName)
-
+        UpdateVisibilityInContainers(ctx, _objs(parentId).ObjectName)
     End Sub
 
-    Private Sub DoLook(ObjID As Integer, ctx As Context, Optional ShowExamineError As Boolean = False, Optional ShowDefaultDescription As Boolean = True)
-
-        Dim FoundLook As Boolean
-        Dim i As Integer, ErrMsgID As PlayerError
+    Private Sub DoLook(id As Integer, ctx As Context, Optional showExamineError As Boolean = False, Optional showDefaultDescription As Boolean = True)
+        Dim i As Integer
         Dim ObjectContents As String
 
-        FoundLook = False
+        Dim foundLook = False
 
         ' First, set the "seen" property, and for ASL >= 391, update visibility for any
         ' object that is contained by this object.
 
         If _gameAslVersion >= 391 Then
-            AddToObjectProperties("seen", ObjID, ctx)
-            UpdateVisibilityInContainers(ctx, _objs(ObjID).ObjectName)
+            AddToObjectProperties("seen", id, ctx)
+            UpdateVisibilityInContainers(ctx, _objs(id).ObjectName)
         End If
 
         ' First look for action, then look
         ' for property, then check define
         ' section:
 
-        Dim sLookLine As String
-        Dim o = _objs(ObjID)
+        Dim lookLine As String
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
             If o.Actions(i).ActionName = "look" Then
-                FoundLook = True
+                foundLook = True
                 ExecuteScript(o.Actions(i).Script, ctx)
                 Exit For
             End If
         Next i
 
-        If Not FoundLook Then
+        If Not foundLook Then
             For i = 1 To o.NumberProperties
                 If o.Properties(i).PropertyName = "look" Then
                     ' do this odd RetrieveParameter stuff to convert any variables
                     Print(RetrieveParameter("<" & o.Properties(i).PropertyValue & ">", ctx), ctx)
-                    FoundLook = True
+                    foundLook = True
                     Exit For
                 End If
             Next i
         End If
 
-        If Not FoundLook Then
+        If Not foundLook Then
             For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
                 If BeginsWith(_lines(i), "look ") Then
 
-                    sLookLine = Trim(GetEverythingAfter(_lines(i), "look "))
+                    lookLine = Trim(GetEverythingAfter(_lines(i), "look "))
 
-                    If Left(sLookLine, 1) = "<" Then
+                    If Left(lookLine, 1) = "<" Then
                         Print(RetrieveParameter(_lines(i), ctx), ctx)
                     Else
-                        ExecuteScript(sLookLine, ctx, ObjID)
+                        ExecuteScript(lookLine, ctx, id)
                     End If
 
-                    FoundLook = True
+                    foundLook = True
                 End If
             Next i
         End If
 
-
         If _gameAslVersion >= 391 Then
-            ObjectContents = ListContents(ObjID, ctx)
+            ObjectContents = ListContents(id, ctx)
         Else
             ObjectContents = ""
         End If
 
-        If Not FoundLook And ShowDefaultDescription Then
+        If Not foundLook And showDefaultDescription Then
 
-            If ShowExamineError Then
-                ErrMsgID = PlayerError.DefaultExamine
+            Dim err As PlayerError
+
+            If showExamineError Then
+                err = PlayerError.DefaultExamine
             Else
-                ErrMsgID = PlayerError.DefaultLook
+                err = PlayerError.DefaultLook
             End If
 
             ' Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
             ' any contents.
 
-            If ObjectContents = "" Then PlayerErrorMessage(ErrMsgID, ctx)
+            If ObjectContents = "" Then PlayerErrorMessage(err, ctx)
         End If
 
         If ObjectContents <> "" And ObjectContents <> "<script>" Then Print(ObjectContents, ctx)
 
     End Sub
 
-    Private Sub DoOpenClose(ObjID As Integer, DoOpen As Boolean, ShowLook As Boolean, ctx As Context)
-
-        If DoOpen Then
-            AddToObjectProperties("opened", ObjID, ctx)
-            If ShowLook Then DoLook(ObjID, ctx, , False)
+    Private Sub DoOpenClose(id As Integer, open As Boolean, showLook As Boolean, ctx As Context)
+        If open Then
+            AddToObjectProperties("opened", id, ctx)
+            If showLook Then DoLook(id, ctx, , False)
         Else
-            AddToObjectProperties("not opened", ObjID, ctx)
+            AddToObjectProperties("not opened", id, ctx)
         End If
 
-        UpdateVisibilityInContainers(ctx, _objs(ObjID).ObjectName)
-
+        UpdateVisibilityInContainers(ctx, _objs(id).ObjectName)
     End Sub
 
-    Private Function EvaluateInlineExpressions(InputLine As String) As String
-
+    Private Function EvaluateInlineExpressions(s As String) As String
         ' Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
         If _gameAslVersion < 391 Then
-            Return InputLine
+            Return s
         End If
 
-        Dim EndBracePos, BracePos, CurPos As Integer
-        Dim ExpResult As ExpressionResult
-        Dim Expression, ResultLine As String
-
-        CurPos = 1
-        ResultLine = ""
+        Dim bracePos As Integer
+        Dim curPos = 1
+        Dim resultLine = ""
 
         Do
-            BracePos = InStr(CurPos, InputLine, "{")
+            bracePos = InStr(curPos, s, "{")
 
-            If BracePos <> 0 Then
+            If bracePos <> 0 Then
 
-                ResultLine = ResultLine & Mid(InputLine, CurPos, BracePos - CurPos)
+                resultLine = resultLine & Mid(s, curPos, bracePos - curPos)
 
-                If Mid(InputLine, BracePos, 2) = "{{" Then
+                If Mid(s, bracePos, 2) = "{{" Then
                     ' {{ = {
-                    CurPos = BracePos + 2
-                    ResultLine = ResultLine & "{"
+                    curPos = bracePos + 2
+                    resultLine = resultLine & "{"
                 Else
-                    EndBracePos = InStr(BracePos + 1, InputLine, "}")
+                    Dim EndBracePos = InStr(bracePos + 1, s, "}")
                     If EndBracePos = 0 Then
-                        LogASLError("Expected } in '" & InputLine & "'", LogType.WarningError)
+                        LogASLError("Expected } in '" & s & "'", LogType.WarningError)
                         Return "<ERROR>"
                     Else
-                        Expression = Mid(InputLine, BracePos + 1, EndBracePos - BracePos - 1)
-                        ExpResult = ExpressionHandler(Expression)
-                        If ExpResult.Success <> ExpressionSuccess.OK Then
-                            LogASLError("Error evaluating expression in <" & InputLine & "> - " & ExpResult.Message)
+                        Dim expression = Mid(s, bracePos + 1, EndBracePos - bracePos - 1)
+                        Dim expResult = ExpressionHandler(expression)
+                        If expResult.Success <> ExpressionSuccess.OK Then
+                            LogASLError("Error evaluating expression in <" & s & "> - " & expResult.Message)
                             Return "<ERROR>"
                         End If
 
-                        ResultLine = ResultLine & ExpResult.Result
-                        CurPos = EndBracePos + 1
+                        resultLine = resultLine & expResult.Result
+                        curPos = EndBracePos + 1
                     End If
                 End If
             Else
-                ResultLine = ResultLine & Mid(InputLine, CurPos)
+                resultLine = resultLine & Mid(s, curPos)
             End If
-        Loop Until BracePos = 0 Or CurPos > Len(InputLine)
+        Loop Until bracePos = 0 Or curPos > Len(s)
 
         ' Above, we only bothered checking for {{. But for consistency, also }} = }. So let's do that:
-        CurPos = 1
+        curPos = 1
         Do
-            BracePos = InStr(CurPos, ResultLine, "}}")
-            If BracePos <> 0 Then
-                ResultLine = Left(ResultLine, BracePos) & Mid(ResultLine, BracePos + 2)
-                CurPos = BracePos + 1
+            bracePos = InStr(curPos, resultLine, "}}")
+            If bracePos <> 0 Then
+                resultLine = Left(resultLine, bracePos) & Mid(resultLine, bracePos + 2)
+                curPos = bracePos + 1
             End If
-        Loop Until BracePos = 0 Or CurPos > Len(ResultLine)
+        Loop Until bracePos = 0 Or curPos > Len(resultLine)
 
-        Return ResultLine
+        Return resultLine
     End Function
 
-    Private Sub ExecAddRemove(CommandLine As String, ctx As Context)
-        Dim ChildObjID As Integer
-        Dim ChildObjectName As String
-        Dim DoAdd As Boolean
-        Dim SepPos, ParentObjID, SepLen As Integer
-        Dim ParentObjectName As String
-        Dim NoParentSpecified As Boolean
-        Dim Verb As String = ""
+    Private Sub ExecAddRemove(cmd As String, ctx As Context)
+        Dim childId As Integer
+        Dim childName As String
+        Dim doAdd As Boolean
+        Dim sepPos, parentId, sepLen As Integer
+        Dim parentName As String
+        Dim verb As String = ""
         Dim i As Integer
-        Dim Action As String
-        Dim FoundAction As Boolean
-        Dim ActionScript As String = ""
-        Dim PropertyExists As Boolean
-        Dim TextToPrint As String
-        Dim IsContainer As Boolean
-        Dim InventoryPlace As String
-        Dim ErrorMsg As String = ""     ' TODO: This was passed ByRef - needs fixing
-        Dim GotObject As Boolean
-        Dim ChildLength As Integer
+        Dim action As String
+        Dim foundAction As Boolean
+        Dim actionScript As String = ""
+        Dim propertyExists As Boolean
+        Dim textToPrint As String
+        Dim isContainer As Boolean
+        Dim errorMsg As String = ""     ' TODO: This was passed ByRef - needs fixing
+        Dim gotObject As Boolean
+        Dim childLength As Integer
+        Dim noParentSpecified = False
 
-        ' handles e.g. PUT CLOCK ON MANTLEPIECE
-        '                  ^ child  ^ parent
-
-        InventoryPlace = "inventory"
-
-        NoParentSpecified = False
-
-        If BeginsWith(CommandLine, "put ") Then
-            Verb = "put"
-            DoAdd = True
-            SepPos = InStr(CommandLine, " on ")
-            SepLen = 4
-            If SepPos = 0 Then
-                SepPos = InStr(CommandLine, " in ")
-                SepLen = 4
+        If BeginsWith(cmd, "put ") Then
+            verb = "put"
+            doAdd = True
+            sepPos = InStr(cmd, " on ")
+            sepLen = 4
+            If sepPos = 0 Then
+                sepPos = InStr(cmd, " in ")
+                sepLen = 4
             End If
-            If SepPos = 0 Then
-                SepPos = InStr(CommandLine, " onto ")
-                SepLen = 6
+            If sepPos = 0 Then
+                sepPos = InStr(cmd, " onto ")
+                sepLen = 6
             End If
-        ElseIf BeginsWith(CommandLine, "add ") Then
-            Verb = "add"
-            DoAdd = True
-            SepPos = InStr(CommandLine, " to ")
-            SepLen = 4
-        ElseIf BeginsWith(CommandLine, "remove ") Then
-            Verb = "remove"
-            DoAdd = False
-            SepPos = InStr(CommandLine, " from ")
-            SepLen = 6
+        ElseIf BeginsWith(cmd, "add ") Then
+            verb = "add"
+            doAdd = True
+            sepPos = InStr(cmd, " to ")
+            sepLen = 4
+        ElseIf BeginsWith(cmd, "remove ") Then
+            verb = "remove"
+            doAdd = False
+            sepPos = InStr(cmd, " from ")
+            sepLen = 6
         End If
 
-        If SepPos = 0 Then
-            NoParentSpecified = True
-            SepPos = Len(CommandLine) + 1
+        If sepPos = 0 Then
+            noParentSpecified = True
+            sepPos = Len(cmd) + 1
         End If
 
-        ChildLength = SepPos - (Len(Verb) + 2)
+        childLength = sepPos - (Len(verb) + 2)
 
-        If ChildLength < 0 Then
+        If childLength < 0 Then
             PlayerErrorMessage(PlayerError.BadCommand, ctx)
-            _badCmdBefore = Verb
+            _badCmdBefore = verb
             Exit Sub
         End If
 
-        ChildObjectName = Trim(Mid(CommandLine, Len(Verb) + 2, ChildLength))
+        childName = Trim(Mid(cmd, Len(verb) + 2, childLength))
 
-        GotObject = False
+        gotObject = False
 
-        If _gameAslVersion >= 392 And DoAdd Then
-            ChildObjID = Disambiguate(ChildObjectName, _currentRoom & ";" & InventoryPlace, ctx)
+        If _gameAslVersion >= 392 And doAdd Then
+            childId = Disambiguate(childName, _currentRoom & ";inventory", ctx)
 
-            If ChildObjID > 0 Then
-                If _objs(ChildObjID).ContainerRoom = InventoryPlace Then
-                    GotObject = True
+            If childId > 0 Then
+                If _objs(childId).ContainerRoom = "inventory" Then
+                    gotObject = True
                 Else
                     ' Player is not carrying the object they referred to. So, first take the object.
-                    Print("(first taking " & _objs(ChildObjID).Article & ")", ctx)
+                    Print("(first taking " & _objs(childId).Article & ")", ctx)
                     ' Try to take the object
                     ctx.AllowRealNamesInCommand = True
-                    ExecCommand("take " & _objs(ChildObjID).ObjectName, ctx, False, , True)
+                    ExecCommand("take " & _objs(childId).ObjectName, ctx, False, , True)
 
-                    If _objs(ChildObjID).ContainerRoom = InventoryPlace Then GotObject = True
+                    If _objs(childId).ContainerRoom = "inventory" Then gotObject = True
                 End If
 
-                If Not GotObject Then
-                    _badCmdBefore = Verb
+                If Not gotObject Then
+                    _badCmdBefore = verb
                     Exit Sub
                 End If
             Else
-                If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
-                _badCmdBefore = Verb
+                If childId <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
+                _badCmdBefore = verb
                 Exit Sub
             End If
 
         Else
-            ChildObjID = Disambiguate(ChildObjectName, InventoryPlace & ";" & _currentRoom, ctx)
+            childId = Disambiguate(childName, "inventory;" & _currentRoom, ctx)
 
-            If ChildObjID <= 0 Then
-                If ChildObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                _badCmdBefore = Verb
+            If childId <= 0 Then
+                If childId <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+                _badCmdBefore = verb
                 Exit Sub
             End If
         End If
 
-        If NoParentSpecified And DoAdd Then
-            SetStringContents("quest.error.article", _objs(ChildObjID).Article, ctx)
+        If noParentSpecified And doAdd Then
+            SetStringContents("quest.error.article", _objs(childId).Article, ctx)
             PlayerErrorMessage(PlayerError.BadPut, ctx)
             Exit Sub
         End If
 
-        If DoAdd Then
-            Action = "add"
+        If doAdd Then
+            action = "add"
         Else
-            Action = "remove"
+            action = "remove"
         End If
 
-        If Not NoParentSpecified Then
-            ParentObjectName = Trim(Mid(CommandLine, SepPos + SepLen))
+        If Not noParentSpecified Then
+            parentName = Trim(Mid(cmd, sepPos + sepLen))
 
-            ParentObjID = Disambiguate(ParentObjectName, _currentRoom & ";" & InventoryPlace, ctx)
+            parentId = Disambiguate(parentName, _currentRoom & ";inventory", ctx)
 
-            If ParentObjID <= 0 Then
-                If ParentObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                _badCmdBefore = Left(CommandLine, SepPos + SepLen)
+            If parentId <= 0 Then
+                If parentId <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+                _badCmdBefore = Left(cmd, sepPos + sepLen)
                 Exit Sub
             End If
         Else
             ' Assume the player was referring to the parent that the object is already in,
             ' if it is even in an object already
 
-            If Not IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
+            If Not IsYes(GetObjectProperty("parent", childId, True, False)) Then
                 PlayerErrorMessage(PlayerError.CantRemove, ctx)
                 Exit Sub
             End If
 
-            ParentObjID = GetObjectIDNoAlias(GetObjectProperty("parent", ChildObjID, False, True))
+            parentId = GetObjectIDNoAlias(GetObjectProperty("parent", childId, False, True))
         End If
 
         ' Check if parent is a container
 
-        IsContainer = IsYes(GetObjectProperty("container", ParentObjID, True, False))
+        isContainer = IsYes(GetObjectProperty("container", parentId, True, False))
 
-        If Not IsContainer Then
-            If DoAdd Then
+        If Not isContainer Then
+            If doAdd Then
                 PlayerErrorMessage(PlayerError.CantPut, ctx)
             Else
                 PlayerErrorMessage(PlayerError.CantRemove, ctx)
@@ -2400,35 +2379,35 @@ Public Class LegacyGame
 
         ' Check object is already held by that parent
 
-        If IsYes(GetObjectProperty("parent", ChildObjID, True, False)) Then
-            If DoAdd And LCase(GetObjectProperty("parent", ChildObjID, False, False)) = LCase(_objs(ParentObjID).ObjectName) Then
+        If IsYes(GetObjectProperty("parent", childId, True, False)) Then
+            If doAdd And LCase(GetObjectProperty("parent", childId, False, False)) = LCase(_objs(parentId).ObjectName) Then
                 PlayerErrorMessage(PlayerError.AlreadyPut, ctx)
             End If
         End If
 
         ' NEW: Check parent and child are accessible to player
-        If Not PlayerCanAccessObject(ChildObjID, , ErrorMsg) Then
-            If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, ErrorMsg)
+        If Not PlayerCanAccessObject(childId, , errorMsg) Then
+            If doAdd Then
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, errorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, errorMsg)
             End If
             Exit Sub
         End If
-        If Not PlayerCanAccessObject(ParentObjID, , ErrorMsg) Then
-            If DoAdd Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, ErrorMsg)
+        If Not PlayerCanAccessObject(parentId, , errorMsg) Then
+            If doAdd Then
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, errorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, ErrorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, errorMsg)
             End If
             Exit Sub
         End If
 
         ' Check if parent is a closed container
 
-        If Not IsYes(GetObjectProperty("surface", ParentObjID, True, False)) And Not IsYes(GetObjectProperty("opened", ParentObjID, True, False)) Then
+        If Not IsYes(GetObjectProperty("surface", parentId, True, False)) And Not IsYes(GetObjectProperty("opened", parentId, True, False)) Then
             ' Not a surface and not open, so can't add to this closed container.
-            If DoAdd Then
+            If doAdd Then
                 PlayerErrorMessage(PlayerError.CantPut, ctx)
             Else
                 PlayerErrorMessage(PlayerError.CantRemove, ctx)
@@ -2439,43 +2418,43 @@ Public Class LegacyGame
         ' Now check if it can be added to (or removed from)
 
         ' First check for an action
-        Dim o = _objs(ParentObjID)
+        Dim o = _objs(parentId)
         For i = 1 To o.NumberActions
-            If LCase(o.Actions(i).ActionName) = Action Then
-                FoundAction = True
-                ActionScript = o.Actions(i).Script
+            If LCase(o.Actions(i).ActionName) = action Then
+                foundAction = True
+                actionScript = o.Actions(i).Script
                 Exit For
             End If
         Next i
 
-        If FoundAction Then
-            SetStringContents("quest." & LCase(Action) & ".object.name", _objs(ChildObjID).ObjectName, ctx)
-            ExecuteScript(ActionScript, ctx, ParentObjID)
+        If foundAction Then
+            SetStringContents("quest." & LCase(action) & ".object.name", _objs(childId).ObjectName, ctx)
+            ExecuteScript(actionScript, ctx, parentId)
         Else
             ' Now check for a property
-            PropertyExists = IsYes(GetObjectProperty(Action, ParentObjID, True, False))
+            propertyExists = IsYes(GetObjectProperty(action, parentId, True, False))
 
-            If Not PropertyExists Then
+            If Not propertyExists Then
                 ' Show error message
-                If DoAdd Then
+                If doAdd Then
                     PlayerErrorMessage(PlayerError.CantPut, ctx)
                 Else
                     PlayerErrorMessage(PlayerError.CantRemove, ctx)
                 End If
             Else
-                TextToPrint = GetObjectProperty(Action, ParentObjID, False, False)
-                If TextToPrint = "" Then
+                textToPrint = GetObjectProperty(action, parentId, False, False)
+                If textToPrint = "" Then
                     ' Show default message
-                    If DoAdd Then
+                    If doAdd Then
                         PlayerErrorMessage(PlayerError.DefaultPut, ctx)
                     Else
                         PlayerErrorMessage(PlayerError.DefaultRemove, ctx)
                     End If
                 Else
-                    Print(TextToPrint, ctx)
+                    Print(textToPrint, ctx)
                 End If
 
-                DoAddRemove(ChildObjID, ParentObjID, DoAdd, ctx)
+                DoAddRemove(childId, parentId, doAdd, ctx)
 
             End If
         End If
@@ -4890,13 +4869,13 @@ Public Class LegacyGame
             If BeginsWith(DropStatement, "everywhere") Then
                 PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
+                    Print(RetrieveParameter(s:=DropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
                 End If
             ElseIf BeginsWith(DropStatement, "nowhere") Then
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(InputString:=DropStatement, ctx:=ctx), ctx)
+                    Print(RetrieveParameter(s:=DropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.CantDrop, ctx)
                 End If
