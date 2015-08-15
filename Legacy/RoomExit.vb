@@ -197,15 +197,15 @@ Friend Class RoomExit
                 ' the room we're pointing at might not exist, especially if this is a script exit
                 m_sDisplayName = ToRoom
             Else
-                If Len(m_game.Rooms(RooMid).RoomAlias) > 0 Then
-                    m_sDisplayName = m_game.Rooms(RooMid).RoomAlias
+                If Len(m_game._rooms(RooMid).RoomAlias) > 0 Then
+                    m_sDisplayName = m_game._rooms(RooMid).RoomAlias
                 Else
                     m_sDisplayName = ToRoom
                 End If
             End If
 
             m_game.Objs(m_lObjID).ObjectAlias = m_sDisplayName
-            Prefix = m_game.Rooms(RooMid).Prefix
+            Prefix = m_game._rooms(RooMid).Prefix
 
         End If
 
