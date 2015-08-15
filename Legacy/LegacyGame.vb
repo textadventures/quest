@@ -3396,205 +3396,186 @@ Public Class LegacyGame
         changeLog.AddItem(appliesTo, element, changeData)
     End Sub
 
-    Private Sub AddToGiveInfo(ObjID As Integer, GiveData As String)
-        Dim ObjectName As String
-        Dim DataID As Integer
-        Dim Found As Boolean
-        Dim EP As Integer
-        Dim CurGiveType As GiveType, i As Integer
+    Private Sub AddToGiveInfo(id As Integer, giveData As String)
+        Dim giveType As GiveType, i As Integer
         Dim actionName As String
         Dim actionScript As String
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
-        If BeginsWith(GiveData, "to ") Then
-            GiveData = GetEverythingAfter(GiveData, "to ")
-            If BeginsWith(GiveData, "anything ") Then
-                o.GiveToAnything = GetEverythingAfter(GiveData, "anything ")
-
-                AddObjectAction(ObjID, "give to anything", o.GiveToAnything, True)
+        If BeginsWith(giveData, "to ") Then
+            giveData = GetEverythingAfter(giveData, "to ")
+            If BeginsWith(giveData, "anything ") Then
+                o.GiveToAnything = GetEverythingAfter(giveData, "anything ")
+                AddObjectAction(id, "give to anything", o.GiveToAnything, True)
                 Exit Sub
             Else
-                CurGiveType = GiveType.GiveToSomething
-
+                giveType = GiveType.GiveToSomething
                 actionName = "give to "
             End If
         Else
-            If BeginsWith(GiveData, "anything ") Then
-                o.GiveAnything = GetEverythingAfter(GiveData, "anything ")
+            If BeginsWith(giveData, "anything ") Then
+                o.GiveAnything = GetEverythingAfter(giveData, "anything ")
 
-                AddObjectAction(ObjID, "give anything", o.GiveAnything, True)
+                AddObjectAction(id, "give anything", o.GiveAnything, True)
                 Exit Sub
             Else
-                CurGiveType = GiveType.GiveSomethingTo
+                giveType = GiveType.GiveSomethingTo
                 actionName = "give "
             End If
         End If
 
-        If Left(Trim(GiveData), 1) = "<" Then
-            ObjectName = RetrieveParameter(GiveData, _nullContext)
+        If Left(Trim(giveData), 1) = "<" Then
+            Dim name = RetrieveParameter(giveData, _nullContext)
+            Dim dataId As Integer
 
-            actionName = actionName & "'" & ObjectName & "'"
+            actionName = actionName & "'" & name & "'"
 
-            Found = False
+            Dim found = False
             For i = 1 To o.NumberGiveData
-                If o.GiveData(i).GiveType = CurGiveType And LCase(o.GiveData(i).GiveObject) = LCase(ObjectName) Then
-                    DataID = i
+                If o.GiveData(i).GiveType = giveType And LCase(o.GiveData(i).GiveObject) = LCase(name) Then
+                    dataId = i
                     i = o.NumberGiveData
-                    Found = True
+                    found = True
                 End If
             Next i
 
-            If Not Found Then
+            If Not found Then
                 o.NumberGiveData = o.NumberGiveData + 1
                 ReDim Preserve o.GiveData(o.NumberGiveData)
                 o.GiveData(o.NumberGiveData) = New GiveDataType
-                DataID = o.NumberGiveData
+                dataId = o.NumberGiveData
             End If
 
-            EP = InStr(GiveData, ">")
-            o.GiveData(DataID).GiveType = CurGiveType
-            o.GiveData(DataID).GiveObject = ObjectName
-            o.GiveData(DataID).GiveScript = Mid(GiveData, EP + 2)
+            Dim EP = InStr(giveData, ">")
+            o.GiveData(dataId).GiveType = giveType
+            o.GiveData(dataId).GiveObject = name
+            o.GiveData(dataId).GiveScript = Mid(giveData, EP + 2)
 
-            actionScript = o.GiveData(DataID).GiveScript
-            AddObjectAction(ObjID, actionName, actionScript, True)
-
+            actionScript = o.GiveData(dataId).GiveScript
+            AddObjectAction(id, actionName, actionScript, True)
         End If
-
     End Sub
 
-    Friend Sub AddToObjectActions(ActionInfo As String, ObjID As Integer, ctx As Context)
-        Dim FoundExisting As Boolean
-        Dim ActionName As String
-        Dim ActionScript As String
-        Dim EP As Integer
-        Dim ActionNum, i As Integer
-        FoundExisting = False
+    Friend Sub AddToObjectActions(actionInfo As String, id As Integer, ctx As Context)
+        Dim actionNum, i As Integer
+        Dim foundExisting = False
 
-        ActionName = LCase(RetrieveParameter(ActionInfo, ctx))
-        EP = InStr(ActionInfo, ">")
-        If EP = Len(ActionInfo) Then
-            LogASLError("No script given for '" & ActionName & "' action data", LogType.WarningError)
+        Dim name = LCase(RetrieveParameter(actionInfo, ctx))
+        Dim ep = InStr(actionInfo, ">")
+        If ep = Len(actionInfo) Then
+            LogASLError("No script given for '" & name & "' action data", LogType.WarningError)
             Exit Sub
         End If
 
-        ActionScript = Trim(Mid(ActionInfo, EP + 1))
+        Dim script = Trim(Mid(actionInfo, ep + 1))
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
-            If o.Actions(i).ActionName = ActionName Then
-                FoundExisting = True
-                ActionNum = i
+            If o.Actions(i).ActionName = name Then
+                foundExisting = True
+                actionNum = i
                 i = o.NumberActions
             End If
         Next i
 
-        If Not FoundExisting Then
+        If Not foundExisting Then
             o.NumberActions = o.NumberActions + 1
             ReDim Preserve o.Actions(o.NumberActions)
             o.Actions(o.NumberActions) = New ActionType
-            ActionNum = o.NumberActions
+            actionNum = o.NumberActions
         End If
 
-        o.Actions(ActionNum).ActionName = ActionName
-        o.Actions(ActionNum).Script = ActionScript
+        o.Actions(actionNum).ActionName = name
+        o.Actions(actionNum).Script = script
 
-        ObjectActionUpdate(ObjID, ActionName, ActionScript)
+        ObjectActionUpdate(id, name, script)
     End Sub
 
-    Private Sub AddToObjectAltNames(AltNames As String, ObjID As Integer)
-        Dim EndPos As Integer
-        Dim CurName As String
-
-        Dim o = _objs(ObjID)
+    Private Sub AddToObjectAltNames(altNames As String, id As Integer)
+        Dim o = _objs(id)
 
         Do
-            EndPos = InStr(AltNames, ";")
-            If EndPos = 0 Then EndPos = Len(AltNames) + 1
-            CurName = Trim(Left(AltNames, EndPos - 1))
+            Dim endPos = InStr(altNames, ";")
+            If endPos = 0 Then endPos = Len(altNames) + 1
+            Dim curName = Trim(Left(altNames, endPos - 1))
 
-            If CurName <> "" Then
+            If curName <> "" Then
                 o.NumberAltNames = o.NumberAltNames + 1
                 ReDim Preserve o.AltNames(o.NumberAltNames)
-                o.AltNames(o.NumberAltNames) = CurName
+                o.AltNames(o.NumberAltNames) = curName
             End If
 
-            AltNames = Mid(AltNames, EndPos + 1)
-        Loop Until Trim(AltNames) = ""
+            altNames = Mid(altNames, endPos + 1)
+        Loop Until Trim(altNames) = ""
     End Sub
 
-    Friend Sub AddToObjectProperties(PropertyInfo As String, ObjID As Integer, ctx As Context)
-        If ObjID = 0 Then Return
+    Friend Sub AddToObjectProperties(propertyInfo As String, id As Integer, ctx As Context)
+        If id = 0 Then Return
 
-        Dim CurInfo As String
-        Dim SCP, EP As Integer
-        Dim CurName, CurValue As String
-        Dim CurNum As Integer
-        Dim Found As Boolean
-        Dim FalseProperty As Boolean
-        Dim i As Integer
-
-        If Right(PropertyInfo, 1) <> ";" Then
-            PropertyInfo = PropertyInfo & ";"
+        If Right(propertyInfo, 1) <> ";" Then
+            propertyInfo = propertyInfo & ";"
         End If
 
         Do
-            SCP = InStr(PropertyInfo, ";")
-            CurInfo = Left(PropertyInfo, SCP - 1)
-            PropertyInfo = Trim(Mid(PropertyInfo, SCP + 1))
+            Dim scp = InStr(propertyInfo, ";")
+            Dim info = Left(propertyInfo, scp - 1)
+            propertyInfo = Trim(Mid(propertyInfo, scp + 1))
 
-            If CurInfo = "" Then Exit Do
+            Dim name, value As String
+            Dim num As Integer
 
-            EP = InStr(CurInfo, "=")
-            If EP <> 0 Then
-                CurName = Trim(Left(CurInfo, EP - 1))
-                CurValue = Trim(Mid(CurInfo, EP + 1))
+            If info = "" Then Exit Do
+
+            Dim ep = InStr(info, "=")
+            If ep <> 0 Then
+                name = Trim(Left(info, ep - 1))
+                value = Trim(Mid(info, ep + 1))
             Else
-                CurName = CurInfo
-                CurValue = ""
+                name = info
+                value = ""
             End If
 
-            FalseProperty = False
-            If BeginsWith(CurName, "not ") And CurValue = "" Then
-                FalseProperty = True
-                CurName = GetEverythingAfter(CurName, "not ")
+            Dim falseProperty = False
+            If BeginsWith(name, "not ") And value = "" Then
+                falseProperty = True
+                name = GetEverythingAfter(name, "not ")
             End If
 
-            Dim o = _objs(ObjID)
+            Dim o = _objs(id)
 
-            Found = False
-            For i = 1 To o.NumberProperties
-                If LCase(o.Properties(i).PropertyName) = LCase(CurName) Then
-                    Found = True
-                    CurNum = i
+            Dim found = False
+            For i As Integer = 1 To o.NumberProperties
+                If LCase(o.Properties(i).PropertyName) = LCase(name) Then
+                    found = True
+                    num = i
                     i = o.NumberProperties
                 End If
             Next i
 
-            If Not Found Then
+            If Not found Then
                 o.NumberProperties = o.NumberProperties + 1
                 ReDim Preserve o.Properties(o.NumberProperties)
                 o.Properties(o.NumberProperties) = New PropertyType
-                CurNum = o.NumberProperties
+                num = o.NumberProperties
             End If
 
-            If FalseProperty Then
-                o.Properties(CurNum).PropertyName = ""
+            If falseProperty Then
+                o.Properties(num).PropertyName = ""
             Else
-                o.Properties(CurNum).PropertyName = CurName
-                o.Properties(CurNum).PropertyValue = CurValue
+                o.Properties(num).PropertyName = name
+                o.Properties(num).PropertyValue = value
             End If
 
-            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(ObjID).ObjectName, CurName, "properties " & CurInfo)
+            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(id).ObjectName, name, "properties " & info)
 
-            Select Case CurName
+            Select Case name
                 Case "alias"
                     If o.IsRoom Then
-                        _rooms(o.CorresRoomId).RoomAlias = CurValue
+                        _rooms(o.CorresRoomId).RoomAlias = value
                     Else
-                        o.ObjectAlias = CurValue
+                        o.ObjectAlias = value
                     End If
                     If _gameFullyLoaded Then
                         UpdateObjectList(ctx)
@@ -3602,38 +3583,38 @@ Public Class LegacyGame
                     End If
                 Case "prefix"
                     If o.IsRoom Then
-                        _rooms(o.CorresRoomId).Prefix = CurValue
+                        _rooms(o.CorresRoomId).Prefix = value
                     Else
-                        If CurValue <> "" Then
-                            o.Prefix = CurValue & " "
+                        If value <> "" Then
+                            o.Prefix = value & " "
                         Else
                             o.Prefix = ""
                         End If
                     End If
                 Case "indescription"
-                    If o.IsRoom Then _rooms(o.CorresRoomId).InDescription = CurValue
+                    If o.IsRoom Then _rooms(o.CorresRoomId).InDescription = value
                 Case "description"
                     If o.IsRoom Then
-                        _rooms(o.CorresRoomId).Description.Data = CurValue
+                        _rooms(o.CorresRoomId).Description.Data = value
                         _rooms(o.CorresRoomId).Description.Type = TextActionType.Text
                     End If
                 Case "look"
                     If o.IsRoom Then
-                        _rooms(o.CorresRoomId).Look = CurValue
+                        _rooms(o.CorresRoomId).Look = value
                     End If
                 Case "suffix"
-                    o.Suffix = CurValue
+                    o.Suffix = value
                 Case "displaytype"
-                    o.DisplayType = CurValue
+                    o.DisplayType = value
                     If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "gender"
-                    o.Gender = CurValue
+                    o.Gender = value
                 Case "article"
-                    o.Article = CurValue
+                    o.Article = value
                 Case "detail"
-                    o.Detail = CurValue
+                    o.Detail = value
                 Case "hidden"
-                    If FalseProperty Then
+                    If falseProperty Then
                         o.Exists = True
                     Else
                         o.Exists = False
@@ -3641,7 +3622,7 @@ Public Class LegacyGame
 
                     If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "invisible"
-                    If FalseProperty Then
+                    If falseProperty Then
                         o.Visible = True
                     Else
                         o.Visible = False
@@ -3650,20 +3631,19 @@ Public Class LegacyGame
                     If _gameFullyLoaded Then UpdateObjectList(ctx)
                 Case "take"
                     If _gameAslVersion >= 392 Then
-                        If FalseProperty Then
+                        If falseProperty Then
                             o.Take.Type = TextActionType.Nothing
                         Else
-                            If CurValue = "" Then
+                            If value = "" Then
                                 o.Take.Type = TextActionType.Default
                             Else
                                 o.Take.Type = TextActionType.Text
-                                o.Take.Data = CurValue
+                                o.Take.Data = value
                             End If
                         End If
                     End If
             End Select
-        Loop Until Len(Trim(PropertyInfo)) = 0
-
+        Loop Until Len(Trim(propertyInfo)) = 0
     End Sub
 
     Private Sub AddToUseInfo(ObjID As Integer, UseData As String)
