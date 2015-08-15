@@ -126,12 +126,6 @@ Public Class LegacyGame
         Public TypesIncluded() As String
     End Class
 
-    Private Class ObjectListType
-        Public ObjectName As String
-        Public ObjectType As Integer
-        Public DisplayObjectType As String
-    End Class
-
     Private Class VariableType
         Public VariableName As String
         Public VariableContents() As String
@@ -311,8 +305,6 @@ Public Class LegacyGame
     Private GamePath As String
     Private GameFileName As String
     Private SaveGameFile As String
-    Private ObjectList() As ObjectListType
-    Private NumInObjList As Integer
     Private DefaultFontName As String
     Private DefaultFontSize As Double
     Private AutoIntro As Boolean
@@ -8220,24 +8212,8 @@ Public Class LegacyGame
         m_player.Speak(Text)
     End Sub
 
-    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ObjType As Thing, Optional DisplayType As String = "")
-        ' Adds object, characters and places to the list on the
-        ' main Quest window.
-
-        NumInObjList = NumInObjList + 1
-        ReDim Preserve ObjectList(NumInObjList)
-        ObjectList(NumInObjList) = New ObjectListType
-
+    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ObjType As Thing)
         ObjName = CapFirst(ObjName)
-
-        ObjectList(NumInObjList).ObjectName = ObjName
-        ObjectList(NumInObjList).ObjectType = ObjType
-
-        If DisplayType = "" Then
-            DisplayType = ConvertObjectType(ObjType)
-        End If
-
-        ObjectList(NumInObjList).DisplayObjectType = DisplayType
 
         If ObjType = Thing.Room Then
             objList.Add(New ListData(ObjName, m_listVerbs(ListType.ExitsList)))
@@ -8248,19 +8224,6 @@ Public Class LegacyGame
         End If
 
     End Sub
-
-    Private Function ConvertObjectType(ObjectType As Thing) As String
-        Select Case ObjectType
-            Case Thing.Object
-                Return "object"
-            Case Thing.Character
-                Return "character"
-            Case Thing.Room
-                Return "place"
-        End Select
-
-        Return ""
-    End Function
 
     Private Sub ExecExec(ScriptLine As String, ctx As Context)
         Dim EX, ExecLine, R As String
@@ -12335,19 +12298,17 @@ Public Class LegacyGame
 
         'FIND OBJECTS
         NoFormatObjsViewable = ""
-        Dim DisplayType As String
 
         For i = 1 To NumberObjs
             If LCase(Objs(i).ContainerRoom) = LCase(CurrentRoom) And Objs(i).Exists And Objs(i).Visible And Not Objs(i).IsExit Then
                 ObjSuffix = Objs(i).Suffix
                 If ObjSuffix <> "" Then ObjSuffix = " " & ObjSuffix
-                DisplayType = Objs(i).DisplayType
                 If Objs(i).ObjectAlias = "" Then
-                    AddToObjectList(objList, exitList, Objs(i).ObjectName, Thing.Object, DisplayType)
+                    AddToObjectList(objList, exitList, Objs(i).ObjectName, Thing.Object)
                     ObjsViewable = ObjsViewable & Objs(i).Prefix & "|b" & Objs(i).ObjectName & "|xb" & ObjSuffix & ", "
                     NoFormatObjsViewable = NoFormatObjsViewable & Objs(i).Prefix & Objs(i).ObjectName & ", "
                 Else
-                    AddToObjectList(objList, exitList, Objs(i).ObjectAlias, Thing.Object, DisplayType)
+                    AddToObjectList(objList, exitList, Objs(i).ObjectAlias, Thing.Object)
                     ObjsViewable = ObjsViewable & Objs(i).Prefix & "|b" & Objs(i).ObjectAlias & "|xb" & ObjSuffix & ", "
                     NoFormatObjsViewable = NoFormatObjsViewable & Objs(i).Prefix & Objs(i).ObjectAlias & ", "
                 End If
@@ -12358,7 +12319,6 @@ Public Class LegacyGame
         If ObjsFound <> 0 Then
             ObjListString = Left(ObjsViewable, Len(ObjsViewable) - 2)
             NFObjListString = Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2)
-            ObjsViewable = "There is " & ObjListString & "."
             SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), ctx)
             SetStringContents("quest.formatobjects", ObjListString, ctx)
         Else
