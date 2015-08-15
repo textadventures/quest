@@ -540,7 +540,7 @@ Public Class LegacyGame
     End Function
 
     Private Function CheckSections() As Boolean
-        Dim defines, i, braces As Integer
+        Dim defines, braces As Integer
         Dim checkLine As String = ""
         Dim bracePos As Integer
         Dim pos As Integer
@@ -634,9 +634,9 @@ Public Class LegacyGame
 
         ' Returns False if successful
 
-        Dim convPos, i, symbPos As Integer
+        Dim convPos, symbPos As Integer
         Dim symbol As String
-        Dim endParamPos, j As Integer
+        Dim endParamPos As Integer
         Dim paramData As String
         Dim startParamPos As Integer
         Dim firstData, secondData As String
@@ -770,7 +770,7 @@ Public Class LegacyGame
         Dim startLine, braceCount As Integer
         Dim thisLine, lineToAdd As String
         Dim lastBrace As Integer
-        Dim k, i, j, m As Integer
+        Dim i As Integer
         Dim restOfLine, procName As String
         Dim endLineNum As Integer
         Dim afterLastBrace, z As String
@@ -827,7 +827,7 @@ Public Class LegacyGame
                             Next m
 
                             If braceCount <> 0 Then
-                                k = j + 1
+                                Dim k = j + 1
                                 Do
                                     For m = 1 To Len(_lines(k))
                                         If Mid(_lines(k), m, 1) = "{" Then
@@ -918,7 +918,6 @@ Public Class LegacyGame
         Dim curPos As Integer
         Dim numParamStart, numParamEnd As Integer
         Dim finLoop, inText As Boolean
-        Dim i As Integer
 
         hasErrors = False
         inText = False
@@ -1020,7 +1019,6 @@ Public Class LegacyGame
         Dim curChar As String
         Dim outputLine As String = ""
         Dim obscuringFunctionName As Boolean
-        Dim i As Integer
 
         inParameter = False
 
@@ -1093,7 +1091,6 @@ Public Class LegacyGame
         Dim exitCharacter As String = ""
         Dim outputLine As String = ""
         Dim curChar As String
-        Dim i As Integer
 
         inParameter = False
 
@@ -1139,7 +1136,7 @@ Public Class LegacyGame
     End Function
 
     Private Sub RemoveComments()
-        Dim i, aposPos As Integer
+        Dim aposPos As Integer
         Dim inTextBlock As Boolean
         Dim inSynonymsBlock As Boolean
         Dim oblitLine As String
@@ -1243,8 +1240,6 @@ Public Class LegacyGame
         'with "'" as part of a multi-line parameter are not destroyed,
         'before looking for braces.
 
-        Dim i As Integer
-
         For i = UBound(_lines) To 1 Step -1
             If Right(_lines(i), 2) = "__" Then
                 _lines(i) = Left(_lines(i), Len(_lines(i)) - 2) & LTrim(_lines(i + 1))
@@ -1267,7 +1262,6 @@ Public Class LegacyGame
         ' Returns the start and end points of a named block.
         ' Returns 0 if block not found.
 
-        Dim i As Integer
         Dim l, blockType As String
 
         Dim result = New DefineBlock
@@ -1290,7 +1284,7 @@ Public Class LegacyGame
                 ' Return the start and end points
                 result.StartLine = _defineBlocks(i).StartLine
                 result.EndLine = _defineBlocks(i).EndLine
-                i = _numberSections
+                Return result
             End If
         Next i
 
@@ -1300,9 +1294,7 @@ Public Class LegacyGame
     Private Function DefineBlockParam(blockname As String, param As String) As DefineBlock
         ' Returns the start and end points of a named block
 
-        Dim i As Integer
         Dim cache As Dictionary(Of String, String)
-
         Dim result = New DefineBlock
 
         param = "k" & param ' protect against numeric block names
@@ -1347,48 +1339,35 @@ Public Class LegacyGame
 
     End Function
 
-    Friend Function GetEverythingAfter(TheString As String, thetext As String) As String
-
-        Dim l As Integer
-
-        If Len(thetext) > Len(TheString) Then
+    Friend Function GetEverythingAfter(s As String, text As String) As String
+        If Len(text) > Len(s) Then
             Return ""
         End If
-        l = Len(thetext)
-        Return Right(TheString, Len(TheString) - l)
+        Return Right(s, Len(s) - Len(text))
     End Function
 
     Private Function Keyword2CAS(KWord As String) As String
-
-        Dim k As String
-        Dim i As Integer
+        Dim k = ""
 
         If KWord = "" Then
             Return ""
         End If
-        k = ""
 
         For i = 0 To 255
             If LCase(KWord) = LCase(_casKeywords(i)) Then
-                k = Chr(i)
-                i = 255
+                Return Chr(i)
             End If
         Next i
 
-        If k = "" Then
-            Return Keyword2CAS("!unknown") & KWord & Keyword2CAS("!unknown")
-        Else
-            Return k
-        End If
-
+        Return Keyword2CAS("!unknown") & KWord & Keyword2CAS("!unknown")
     End Function
 
     Private Sub LoadCASKeywords()
         'Loads data required for conversion of CAS files
 
-        Dim QuestDatLines As String() = GetResourceLines(My.Resources.QuestDAT)
+        Dim questDatLines As String() = GetResourceLines(My.Resources.QuestDAT)
 
-        For Each line As String In QuestDatLines
+        For Each line In questDatLines
             If Left(line, 1) <> "#" Then
                 'Lines isn't a comment - so parse it.
                 Dim scp = InStr(line, ";")
@@ -1413,7 +1392,7 @@ Public Class LegacyGame
         Dim libCode(0) As String
         Dim libLines As Integer
         Dim ignoreMode, skipCheck As Boolean
-        Dim l, c, i, d, j As Integer
+        Dim c, d, l As Integer
         Dim libFileHandle As Integer
         Dim libResourceLines As String()
         Dim libFile As String
@@ -1502,7 +1481,7 @@ Public Class LegacyGame
                     For j = 1 To numLibraries
                         If LCase(libFileName) = LCase(libraryList(j)) Then
                             libraryAlreadyIncluded = True
-                            j = numLibraries
+                            Exit For
                         End If
                     Next j
 
@@ -1565,7 +1544,7 @@ Public Class LegacyGame
                             For c = 1 To libLines
                                 If BeginsWith(libCode(c), "!asl-version ") Then
                                     libVer = CInt(GetParameter(libCode(c), _nullContext))
-                                    c = libLines
+                                    Exit For
                                 End If
                             Next c
                         Else
@@ -1741,7 +1720,7 @@ Public Class LegacyGame
         For i = 1 To _numSkipCheckFiles
             If filenameNoPath = _skipCheckFile(i) Then
                 skipCheck = True
-                i = _numSkipCheckFiles
+                Exit For
             End If
         Next i
 
@@ -1802,7 +1781,7 @@ Public Class LegacyGame
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define game ") Then
                 gotGameBlock = True
-                i = _numberSections
+                Exit For
             End If
         Next i
 
@@ -1937,7 +1916,7 @@ Public Class LegacyGame
             startCat = Keyword2CAS("!startcat")
         End If
 
-        For i As Integer = 9 To Len(fileData)
+        For i = 9 To Len(fileData)
             If casVersion = 3 And Mid(fileData, i, 1) = startCat Then
                 ' Read catalog
                 _startCatPos = i
@@ -2031,8 +2010,6 @@ Public Class LegacyGame
     End Sub
 
     Private Function DecryptString(s As String) As String
-        Dim i As Integer
-
         Dim output = ""
         For i = 1 To Len(s)
             Dim v As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(Mid(s, i, 1))(0)
@@ -2064,7 +2041,6 @@ Public Class LegacyGame
     End Function
 
     Private Sub DoAddRemove(childId As Integer, parentId As Integer, add As Boolean, ctx As Context)
-
         If add Then
             AddToObjectProperties("parent=" & _objs(parentId).ObjectName, childId, ctx)
             _objs(childId).ContainerRoom = _objs(parentId).ContainerRoom
@@ -2083,9 +2059,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub DoLook(id As Integer, ctx As Context, Optional showExamineError As Boolean = False, Optional showDefaultDescription As Boolean = True)
-        Dim i As Integer
-        Dim ObjectContents As String
-
+        Dim objectContents As String
         Dim foundLook = False
 
         ' First, set the "seen" property, and for ASL >= 391, update visibility for any
@@ -2140,13 +2114,12 @@ Public Class LegacyGame
         End If
 
         If _gameAslVersion >= 391 Then
-            ObjectContents = ListContents(id, ctx)
+            objectContents = ListContents(id, ctx)
         Else
-            ObjectContents = ""
+            objectContents = ""
         End If
 
         If Not foundLook And showDefaultDescription Then
-
             Dim err As PlayerError
 
             If showExamineError Then
@@ -2158,10 +2131,10 @@ Public Class LegacyGame
             ' Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
             ' any contents.
 
-            If ObjectContents = "" Then PlayerErrorMessage(err, ctx)
+            If objectContents = "" Then PlayerErrorMessage(err, ctx)
         End If
 
-        If ObjectContents <> "" And ObjectContents <> "<script>" Then Print(ObjectContents, ctx)
+        If objectContents <> "" And objectContents <> "<script>" Then Print(objectContents, ctx)
 
     End Sub
 
@@ -2240,7 +2213,6 @@ Public Class LegacyGame
         Dim sepPos, parentId, sepLen As Integer
         Dim parentName As String
         Dim verb As String = ""
-        Dim i As Integer
         Dim action As String
         Dim foundAction As Boolean
         Dim actionScript As String = ""
@@ -2462,7 +2434,6 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ExecAddRemoveScript(parameter As String, add As Boolean, ctx As Context)
-
         Dim childId, parentId As Integer
         Dim commandName As String
         Dim childName As String
@@ -2513,7 +2484,6 @@ Public Class LegacyGame
         Dim name As String
         Dim doOpen As Boolean
         Dim isOpen, foundAction As Boolean
-        Dim i As Integer
         Dim action As String = ""
         Dim actionScript As String = ""
         Dim propertyExists As Boolean
@@ -2623,8 +2593,6 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ExecuteSelectCase(script As String, ctx As Context)
-        Dim i As Integer
-
         ' ScriptLine passed will look like this:
         '   select case <whatever> do <!intprocX>
         ' with all the case statements in the intproc.
@@ -2693,7 +2661,7 @@ Public Class LegacyGame
         Dim verbsList As String
         Dim thisVerb As String = ""
         Dim scp As Integer
-        Dim id, i As Integer
+        Dim id As Integer
         Dim verbObject As String = ""
         Dim verbTag As String
         Dim thisScript As String = ""
@@ -2800,7 +2768,6 @@ Public Class LegacyGame
     End Function
 
     Private Function ExpressionHandler(expr As String) As ExpressionResult
-        Dim i As Integer
         Dim openBracketPos, endBracketPos As Integer
         Dim res As New ExpressionResult
 
@@ -2888,7 +2855,6 @@ Public Class LegacyGame
 
         ' Check Elements are numeric, and trim spaces
         For i = 1 To numElements
-
             elements(i) = Trim(elements(i))
 
             If Not IsNumeric(elements(i)) Then
@@ -2971,7 +2937,6 @@ Public Class LegacyGame
         ' If the list action causes a script to be run instead, ListContents
         ' returns "<script>"
 
-        Dim i As Integer
         Dim contentsIDs(0) As Integer
 
         If Not IsYes(GetObjectProperty("container", id, True, False)) Then
@@ -3170,7 +3135,7 @@ Public Class LegacyGame
     Private Sub DestroyExit(exitData As String, ctx As Context)
         Dim fromRoom As String = ""
         Dim toRoom As String = ""
-        Dim roomId, i, exitId As Integer
+        Dim roomId, exitId As Integer
 
         Dim scp = InStr(exitData, ";")
         If scp = 0 Then
@@ -3200,7 +3165,7 @@ Public Class LegacyGame
                 If LCase(_rooms(i).RoomName) = fromRoom Then
                     found = True
                     roomId = i
-                    i = _numberRooms
+                    Exit For
                 End If
             Next i
 
@@ -3216,7 +3181,7 @@ Public Class LegacyGame
                 If r.Places(i).PlaceName = toRoom Then
                     exitId = i
                     found = True
-                    i = r.NumberPlaces
+                    Exit For
                 End If
             Next i
 
@@ -3295,7 +3260,7 @@ Public Class LegacyGame
     End Sub
 
     Private Function ExtractFile(file As String) As String
-        Dim length, startPos, i As Integer
+        Dim length, startPos As Integer
         Dim extracted As Boolean
         Dim resId As Integer
 
@@ -3335,7 +3300,6 @@ Public Class LegacyGame
         End If
 
         Return fileName
-
     End Function
 
     Private Sub AddObjectAction(id As Integer, name As String, script As String, Optional noUpdate As Boolean = False)
@@ -3343,7 +3307,7 @@ Public Class LegacyGame
         ' Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         ' AddToGiveInfo again leading to a big loop
 
-        Dim actionNum, i As Integer
+        Dim actionNum As Integer
         Dim foundExisting = False
 
         Dim o = _objs(id)
@@ -3352,7 +3316,7 @@ Public Class LegacyGame
             If o.Actions(i).ActionName = name Then
                 foundExisting = True
                 actionNum = i
-                i = o.NumberActions
+                Exit For
             End If
         Next i
 
@@ -3397,7 +3361,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub AddToGiveInfo(id As Integer, giveData As String)
-        Dim giveType As GiveType, i As Integer
+        Dim giveType As GiveType
         Dim actionName As String
         Dim actionScript As String
 
@@ -3435,8 +3399,8 @@ Public Class LegacyGame
             For i = 1 To o.NumberGiveData
                 If o.GiveData(i).GiveType = giveType And LCase(o.GiveData(i).GiveObject) = LCase(name) Then
                     dataId = i
-                    i = o.NumberGiveData
                     found = True
+                    Exit For
                 End If
             Next i
 
@@ -3458,7 +3422,7 @@ Public Class LegacyGame
     End Sub
 
     Friend Sub AddToObjectActions(actionInfo As String, id As Integer, ctx As Context)
-        Dim actionNum, i As Integer
+        Dim actionNum As Integer
         Dim foundExisting = False
 
         Dim name = LCase(GetParameter(actionInfo, ctx))
@@ -3476,7 +3440,7 @@ Public Class LegacyGame
             If o.Actions(i).ActionName = name Then
                 foundExisting = True
                 actionNum = i
-                i = o.NumberActions
+                Exit For
             End If
         Next i
 
@@ -3546,7 +3510,7 @@ Public Class LegacyGame
             Dim o = _objs(id)
 
             Dim found = False
-            For i As Integer = 1 To o.NumberProperties
+            For i = 1 To o.NumberProperties
                 If LCase(o.Properties(i).PropertyName) = LCase(name) Then
                     found = True
                     num = i
@@ -3673,11 +3637,11 @@ Public Class LegacyGame
             Dim dataId As Integer
             Dim found = False
 
-            For i As Integer = 1 To o.NumberUseData
+            For i = 1 To o.NumberUseData
                 If o.UseData(i).UseType = useType And LCase(o.UseData(i).UseObject) = LCase(objectName) Then
                     dataId = i
-                    i = o.NumberUseData
                     found = True
+                    Exit For
                 End If
             Next i
 
@@ -3807,7 +3771,6 @@ Public Class LegacyGame
     Private Sub ExecType(typeData As String, ctx As Context)
         Dim id As Integer
         Dim found As Boolean
-        Dim i As Integer
         Dim scp = InStr(typeData, ";")
 
         If scp = 0 Then
@@ -3822,7 +3785,7 @@ Public Class LegacyGame
             If LCase(_objs(i).ObjectName) = LCase(objName) Then
                 found = True
                 id = i
-                i = _numberObjs
+                Exit For
             End If
         Next i
 
@@ -3870,7 +3833,7 @@ Public Class LegacyGame
             If LCase(_objs(i).ObjectName) = LCase(objName) Then
                 found = True
                 id = i
-                i = _numberObjs
+                Exit For
             End If
         Next i
 
@@ -3909,7 +3872,7 @@ Public Class LegacyGame
             If LCase(_objs(i).ObjectName) = LCase(objName) Then
                 found = True
                 id = i
-                i = _numberObjs
+                Exit For
             End If
         Next i
 
@@ -4175,10 +4138,8 @@ Public Class LegacyGame
     End Function
 
     Friend Function DoAction(ObjID As Integer, ActionName As String, ctx As Context, Optional LogError As Boolean = True) As Boolean
-
         Dim FoundAction As Boolean
         Dim ActionScript As String = ""
-        Dim i As Integer
 
         Dim o = _objs(ObjID)
 
@@ -4204,8 +4165,6 @@ Public Class LegacyGame
     End Function
 
     Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
-        Dim i As Integer
-
         Dim o = _objs(ObjID)
 
         For i = 1 To o.NumberActions
@@ -4219,7 +4178,7 @@ Public Class LegacyGame
 
     Private Sub ExecForEach(ScriptLine As String, ctx As Context)
         Dim InLocation, ScriptToExecute As String
-        Dim i, BracketPos As Integer
+        Dim BracketPos As Integer
         Dim bExit As Boolean
         Dim bRoom As Boolean
 
