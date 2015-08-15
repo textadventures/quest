@@ -304,19 +304,19 @@ Public Class LegacyGame
     Private _gamePath As String
     Private _gameFileName As String
     Private _saveGameFile As String
-    Private DefaultFontName As String
-    Private DefaultFontSize As Double
-    Private AutoIntro As Boolean
-    Private CommandOverrideModeOn As Boolean
-    Private CommandOverrideVariable As String
-    Private AfterTurnScript As String
-    Private BeforeTurnScript As String
-    Private OutPutOn As Boolean
-    Private GameASLVersion As Integer
-    Private ChoiceNumber As Integer
-    Private GameLoadMethod As String
-    Private Timers() As TimerType
-    Private NumberTimers As Integer
+    Private _defaultFontName As String
+    Private _defaultFontSize As Double
+    Private _autoIntro As Boolean
+    Private _commandOverrideModeOn As Boolean
+    Private _commandOverrideVariable As String
+    Private _afterTurnScript As String
+    Private _beforeTurnScript As String
+    Private _outPutOn As Boolean
+    Private _gameAslVersion As Integer
+    Private _choiceNumber As Integer
+    Private _gameLoadMethod As String    ' TODO: Make enum
+    Private _timers() As TimerType
+    Private _numberTimers As Integer
     Private CurFont As String
     Private CurFontSize As Double
     Private NumDisplayStrings As Integer
@@ -459,7 +459,7 @@ Public Class LegacyGame
     Public Sub New(filename As String, originalFilename As String)
         m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
-        GameLoadMethod = "normal"
+        _gameLoadMethod = "normal"
         m_filename = filename
         m_originalFilename = originalFilename
 
@@ -1125,7 +1125,7 @@ Public Class LegacyGame
                 ' The ~ was for collectables, and this syntax only
                 ' exists in Quest 2.x. The ~ was only finally
                 ' allowed to be present on its own in ASL 320.
-                If CurChar = "~" And GameASLVersion < 320 Then
+                If CurChar = "~" And _gameAslVersion < 320 Then
                     bInParameter = True
                     ExitCharacter = "~"
                 End If
@@ -1904,7 +1904,7 @@ Public Class LegacyGame
         RetrParam = Mid(InputString, StartPos + 1, (EndPos - StartPos) - 1)
 
         If bConvertStringVariables Then
-            If GameASLVersion >= 320 Then
+            If _gameAslVersion >= 320 Then
                 NewParam = ConvertParameter(ConvertParameter(ConvertParameter(RetrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx)
             Else
                 If Not Left(RetrParam, 9) = "~Internal" Then
@@ -2118,7 +2118,7 @@ Public Class LegacyGame
             AddToObjectProperties("not parent", ChildObjID, ctx)
         End If
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             ' Putting something in a container implicitly makes that
             ' container "seen". Otherwise we could try to "look at" the
             ' object we just put in the container and have disambigution fail!
@@ -2140,7 +2140,7 @@ Public Class LegacyGame
         ' First, set the "seen" property, and for ASL >= 391, update visibility for any
         ' object that is contained by this object.
 
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
             AddToObjectProperties("seen", ObjID, ctx)
             UpdateVisibilityInContainers(ctx, _objs(ObjID).ObjectName)
         End If
@@ -2189,7 +2189,7 @@ Public Class LegacyGame
         End If
 
 
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
             ObjectContents = ListContents(ObjID, ctx)
         Else
             ObjectContents = ""
@@ -2230,7 +2230,7 @@ Public Class LegacyGame
 
         ' Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
-        If GameASLVersion < 391 Then
+        If _gameAslVersion < 391 Then
             Return InputLine
         End If
 
@@ -2356,7 +2356,7 @@ Public Class LegacyGame
 
         GotObject = False
 
-        If GameASLVersion >= 392 And DoAdd Then
+        If _gameAslVersion >= 392 And DoAdd Then
             ChildObjID = Disambiguate(ChildObjectName, _currentRoom & ";" & InventoryPlace, ctx)
 
             If ChildObjID > 0 Then
@@ -3283,7 +3283,7 @@ Public Class LegacyGame
         End If
 
         Dim oExit As RoomExit
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             oExit = FindExit(ExitData)
             If oExit Is Nothing Then
                 LogASLError("Can't find exit in 'destroy exit <" & ExitData & ">'")
@@ -3772,7 +3772,7 @@ Public Class LegacyGame
 
                     If GameFullyLoaded Then UpdateObjectList(ctx)
                 Case "take"
-                    If GameASLVersion >= 392 Then
+                    If _gameAslVersion >= 392 Then
                         If FalseProperty Then
                             o.Take.Type = TextActionType.Nothing
                         Else
@@ -3930,7 +3930,7 @@ Public Class LegacyGame
             _rooms(_numberRooms) = New RoomType
             _rooms(_numberRooms) = _rooms(_objs(ObjID).CorresRoomId)
             _rooms(_numberRooms).RoomName = NewObjName
-            _rooms(_numberRooms).ObjID = _numberObjs
+            _rooms(_numberRooms).ObjId = _numberObjs
 
             _objs(_numberObjs).CorresRoom = NewObjName
             _objs(_numberObjs).CorresRoomId = _numberRooms
@@ -4236,13 +4236,13 @@ Public Class LegacyGame
             End If
         Next i
 
-        If GameASLVersion >= 391 And NumberCorresIDs = 0 And UseAbbreviations And Len(ObjectName) > 0 Then
+        If _gameAslVersion >= 391 And NumberCorresIDs = 0 And UseAbbreviations And Len(ObjectName) > 0 Then
             ' Check for abbreviated object names
 
             For i = 1 To _numberObjs
                 If DisambObjHere(ctx, i, FirstPlace, TwoPlaces, SecondPlace, bExit) Then
                     If _objs(i).ObjectAlias <> "" Then ThisName = LCase(_objs(i).ObjectAlias) Else ThisName = LCase(_objs(i).ObjectName)
-                    If GameASLVersion >= 410 Then
+                    If _gameAslVersion >= 410 Then
                         If _objs(i).Prefix <> "" Then ThisName = Trim(LCase(_objs(i).Prefix)) & " " & ThisName
                         If _objs(i).Suffix <> "" Then ThisName = ThisName & " " & Trim(LCase(_objs(i).Suffix))
                     End If
@@ -4295,13 +4295,13 @@ Public Class LegacyGame
             Dim mnu As New MenuData(Question, menuItems, False)
             Dim response As String = ShowMenu(mnu)
 
-            ChoiceNumber = CInt(response)
+            _choiceNumber = CInt(response)
 
-            SetStringContents("quest.lastobject", _objs(IDNumbers(ChoiceNumber)).ObjectName, ctx)
+            SetStringContents("quest.lastobject", _objs(IDNumbers(_choiceNumber)).ObjectName, ctx)
 
-            ThisTurnIt = IDNumbers(ChoiceNumber)
+            ThisTurnIt = IDNumbers(_choiceNumber)
 
-            Select Case _objs(IDNumbers(ChoiceNumber)).Article
+            Select Case _objs(IDNumbers(_choiceNumber)).Article
                 Case "him"
                     ThisTurnItMode = ItType.Male
                 Case "her"
@@ -4310,9 +4310,9 @@ Public Class LegacyGame
                     ThisTurnItMode = ItType.Inanimate
             End Select
 
-            Print("- " & DescriptionText(ChoiceNumber) & "|n", ctx)
+            Print("- " & DescriptionText(_choiceNumber) & "|n", ctx)
 
-            Return IDNumbers(ChoiceNumber)
+            Return IDNumbers(_choiceNumber)
         End If
 
         ThisTurnIt = LastIt
@@ -4652,18 +4652,18 @@ Public Class LegacyGame
             _objs(_numberObjs).CorresRoom = NewName
             _objs(_numberObjs).CorresRoomId = _numberRooms
 
-            _rooms(_numberRooms).ObjID = _numberObjs
+            _rooms(_numberRooms).ObjId = _numberObjs
 
             AddToChangeLog("room " & NewName, "create")
 
-            If GameASLVersion >= 410 Then
+            If _gameAslVersion >= 410 Then
                 AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx)
                 For j = 1 To _defaultRoomProperties.NumberActions
                     AddObjectAction(_numberObjs, _defaultRoomProperties.Actions(j).ActionName, _defaultRoomProperties.Actions(j).Script)
                 Next j
 
                 _rooms(_numberRooms).Exits = New RoomExits(Me)
-                _rooms(_numberRooms).Exits.ObjID = _rooms(_numberRooms).ObjID
+                _rooms(_numberRooms).Exits.ObjID = _rooms(_numberRooms).ObjId
             End If
 
         ElseIf BeginsWith(CreateData, "object ") Then
@@ -4692,7 +4692,7 @@ Public Class LegacyGame
 
             AddToChangeLog("object " & NewName, "create " & _objs(_numberObjs).ContainerRoom)
 
-            If GameASLVersion >= 410 Then
+            If _gameAslVersion >= 410 Then
                 AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx)
                 For j = 1 To _defaultProperties.NumberActions
                     AddObjectAction(_numberObjs, _defaultProperties.Actions(j).ActionName, _defaultProperties.Actions(j).Script)
@@ -4721,7 +4721,7 @@ Public Class LegacyGame
         ExitData = GetEverythingAfter(CreateData, "exit ")
         NewName = RetrieveParameter(CreateData, ctx)
         SCP = InStr(NewName, ";")
-        If GameASLVersion < 410 Then
+        If _gameAslVersion < 410 Then
             If SCP = 0 Then
                 LogASLError("No exit destination given in 'create exit " & ExitData & "'", LogType.WarningError)
                 Exit Sub
@@ -4740,7 +4740,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        If GameASLVersion < 410 Then
+        If _gameAslVersion < 410 Then
             ' only do destination room check for ASL <410, as can now have scripts on dynamically
             ' created exits, so the destination doesn't necessarily have to exist.
 
@@ -4759,7 +4759,7 @@ Public Class LegacyGame
         ExitExists = False
         If BeginsWith(ExitData, "<") Then
 
-            If GameASLVersion >= 410 Then
+            If _gameAslVersion >= 410 Then
                 ExitExists = _rooms(SrcID).Exits.Places.ContainsKey(DestRoom)
             Else
                 For i = 1 To _rooms(SrcID).NumberPlaces
@@ -4788,7 +4788,7 @@ Public Class LegacyGame
 
         Dim r = _rooms(SrcID)
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             r.Exits.AddExitFromCreateScript(ExitData, ctx)
         Else
             If BeginsWith(ExitData, "north ") Then
@@ -4839,7 +4839,7 @@ Public Class LegacyGame
 
             UpdateObjectList(ctx)
 
-            If GameASLVersion < 410 Then
+            If _gameAslVersion < 410 Then
                 If _currentRoom = _rooms(SrcID).RoomName Then
                     UpdateDoorways(SrcID, ctx)
                 ElseIf _currentRoom = _rooms(DestID).RoomName Then
@@ -4869,7 +4869,7 @@ Public Class LegacyGame
 
         If Not FoundItem Then
             If ObjectID <> -2 Then
-                If GameASLVersion >= 391 Then
+                If _gameAslVersion >= 391 Then
                     PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Else
                     PlayerErrorMessage(PlayerError.BadDrop, ctx)
@@ -4881,7 +4881,7 @@ Public Class LegacyGame
 
         ' If object is inside a container, it must be removed before it can be dropped.
         ObjectIsInContainer = False
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
             If IsYes(GetObjectProperty("parent", ObjectID, True, False)) Then
                 ObjectIsInContainer = True
                 Parent = GetObjectProperty("parent", ObjectID, False, False)
@@ -5084,7 +5084,7 @@ Public Class LegacyGame
         Dim RunInNewThread As Boolean
         Dim iCurPos, SCP As Integer
 
-        If GameASLVersion >= 392 And Left(ProcedureName, 8) = "!intproc" Then
+        If _gameAslVersion >= 392 And Left(ProcedureName, 8) = "!intproc" Then
             ' If "do" procedure is run in a new thread, thread info is not passed to any nested
             ' script blocks in braces.
 
@@ -5093,7 +5093,7 @@ Public Class LegacyGame
             RunInNewThread = True
         End If
 
-        If GameASLVersion >= 284 Then
+        If _gameAslVersion >= 284 Then
             BracketPos = InStr(ProcedureName, "(")
             If BracketPos <> 0 Then
                 CloseBracketPos = InStr(BracketPos + 1, ProcedureName, ")")
@@ -5174,7 +5174,7 @@ Public Class LegacyGame
         bFound = False
         bResult = False
 
-        If GameASLVersion <= 281 Then
+        If _gameAslVersion <= 281 Then
             For i = 1 To _numberChars
                 If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists Then
                     If LCase(HereThing) = LCase(_chars(i).ObjectName) Then
@@ -5223,7 +5223,7 @@ Public Class LegacyGame
 
         bFound = False
 
-        If GameASLVersion < 281 Then
+        If _gameAslVersion < 281 Then
             For i = 1 To _numberChars
                 If LCase(ExistsThing) = LCase(_chars(i).ObjectName) Then
                     If _chars(i).Exists Then
@@ -5402,7 +5402,7 @@ Public Class LegacyGame
             Print(RetrieveParameter(WaitLine, ctx), ctx)
         Else
 
-            If GameASLVersion >= 410 Then
+            If _gameAslVersion >= 410 Then
                 PlayerErrorMessage(PlayerError.DefaultWait, ctx)
             Else
                 Print("|nPress a key to continue...", ctx)
@@ -5476,7 +5476,7 @@ Public Class LegacyGame
             End If
         Next i
 
-        If Not FoundItem And GameASLVersion >= 280 Then
+        If Not FoundItem And _gameAslVersion >= 280 Then
             CurID = Disambiguate(ObjectName, ObjectRoom, ctx)
             If CurID > 0 Then FoundItem = True
         End If
@@ -5776,10 +5776,10 @@ Public Class LegacyGame
 
         ' <<< TIMER STATE DATA >>>
 
-        FileData.Append(Trim(Str(NumberTimers)) & Chr(0))
+        FileData.Append(Trim(Str(_numberTimers)) & Chr(0))
 
-        For i = 1 To NumberTimers
-            Dim t = Timers(i)
+        For i = 1 To _numberTimers
+            Dim t = _timers(i)
             FileData.Append(t.TimerName & Chr(0))
 
             If t.TimerActive Then
@@ -5851,7 +5851,7 @@ Public Class LegacyGame
             _objs(iThingNum).ContainerRoom = sThingRoom
         End If
 
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
             ' If this object contains other objects, move them too
             For i = 1 To _numberObjs
                 If LCase(GetObjectProperty("parent", i, False, False)) = LCase(sThingName) Then
@@ -6178,11 +6178,11 @@ Public Class LegacyGame
                 Return "!"
             End If
         ElseIf FunctionName = "loadmethod" Then
-            Return GameLoadMethod
+            Return _gameLoadMethod
         ElseIf FunctionName = "timerstate" Then
-            For i = 1 To NumberTimers
-                If LCase(Timers(i).TimerName) = LCase(Parameter(1)) Then
-                    If Timers(i).TimerActive Then
+            For i = 1 To _numberTimers
+                If LCase(_timers(i).TimerName) = LCase(Parameter(1)) Then
+                    If _timers(i).TimerActive Then
                         Return "1"
                     Else
                         Return "0"
@@ -6192,9 +6192,9 @@ Public Class LegacyGame
             LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
             Return "!"
         ElseIf FunctionName = "timerinterval" Then
-            For i = 1 To NumberTimers
-                If LCase(Timers(i).TimerName) = LCase(Parameter(1)) Then
-                    Return Str(Timers(i).TimerInterval)
+            For i = 1 To _numberTimers
+                If LCase(_timers(i).TimerName) = LCase(Parameter(1)) Then
+                    Return Str(_timers(i).TimerInterval)
                 End If
             Next i
             LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
@@ -6254,7 +6254,7 @@ Public Class LegacyGame
             Return "1"
         ElseIf FunctionName = "removeformatting" Then
             Return StripCodes(FunctionParameter)
-        ElseIf FunctionName = "findexit" And GameASLVersion >= 410 Then
+        ElseIf FunctionName = "findexit" And _gameAslVersion >= 410 Then
             oExit = FindExit(FunctionParameter)
             If oExit Is Nothing Then
                 Return ""
@@ -6340,7 +6340,7 @@ Public Class LegacyGame
         End If
 
         Try
-            If GameASLVersion >= 391 Then
+            If _gameAslVersion >= 391 Then
                 ExpResult = ExpressionHandler(iVarCont)
                 If ExpResult.Success = ExpressionSuccess.OK Then
                     iVarCont = ExpResult.Result
@@ -6421,7 +6421,7 @@ Public Class LegacyGame
         Dim InventoryPlace As String
         Dim valid As Boolean
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             FoundObject = False
             result = False
             InventoryPlace = "inventory"
@@ -6531,7 +6531,7 @@ Public Class LegacyGame
             Value2 = Trim(Mid(IsCondition, SC2Pos + 1))
         End If
 
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
             ' Evaluate expressions in Value1 and Value2
             ExpResult = ExpressionHandler(Value1)
 
@@ -6819,16 +6819,16 @@ Public Class LegacyGame
         For i = 1 To NumData
             Found = False
             AppliesTo = GetNextChunk()
-            For j = 1 To NumberTimers
-                If Timers(j).TimerName = AppliesTo Then
+            For j = 1 To _numberTimers
+                If _timers(j).TimerName = AppliesTo Then
                     TimerNum = j
-                    j = NumberTimers
+                    j = _numberTimers
                     Found = True
                 End If
             Next j
 
             If Found Then
-                Dim t = Timers(TimerNum)
+                Dim t = _timers(TimerNum)
                 Dim thisChar As String = GetFileDataChars(1)
 
                 If thisChar = Chr(1) Then
@@ -6934,12 +6934,12 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetFont(FontName As String, ctx As Context, Optional OutputTo As String = "normal")
-        If FontName = "" Then FontName = DefaultFontName
+        If FontName = "" Then FontName = _defaultFontName
         m_player.SetFont(FontName)
     End Sub
 
     Private Sub SetFontSize(FontSize As Double, ctx As Context, Optional OutputTo As String = "normal")
-        If FontSize = 0 Then FontSize = DefaultFontSize
+        If FontSize = 0 Then FontSize = _defaultFontSize
         m_player.SetFontSize(CStr(FontSize))
     End Sub
 
@@ -7031,12 +7031,12 @@ Public Class LegacyGame
         Dim FoundTimer As Boolean
         Dim i As Integer
 
-        For i = 1 To NumberTimers
-            If LCase(TimerName) = LCase(Timers(i).TimerName) Then
+        For i = 1 To _numberTimers
+            If LCase(TimerName) = LCase(_timers(i).TimerName) Then
                 FoundTimer = True
-                Timers(i).TimerActive = TimerState
-                Timers(i).BypassThisTurn = True     ' don't trigger timer during the turn it was first enabled
-                i = NumberTimers
+                _timers(i).TimerActive = TimerState
+                _timers(i).BypassThisTurn = True     ' don't trigger timer during the turn it was first enabled
+                i = _numberTimers
             End If
         Next i
 
@@ -7127,19 +7127,19 @@ Public Class LegacyGame
         Dim gameblock As DefineBlock
         gameblock = GetDefineBlock("game")
 
-        DefaultFontName = "Arial"
-        DefaultFontSize = 9
+        _defaultFontName = "Arial"
+        _defaultFontSize = 9
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "default fontname ") Then
                 ThisFontName = RetrieveParameter(_lines(i), _nullContext)
                 If ThisFontName <> "" Then
-                    DefaultFontName = ThisFontName
+                    _defaultFontName = ThisFontName
                 End If
             ElseIf BeginsWith(_lines(i), "default fontsize ") Then
                 ThisFontSize = CInt(RetrieveParameter(_lines(i), _nullContext))
                 If ThisFontSize <> 0 Then
-                    DefaultFontSize = ThisFontSize
+                    _defaultFontSize = ThisFontSize
                 End If
             End If
         Next i
@@ -7358,7 +7358,7 @@ Public Class LegacyGame
 
                 r.ObjID = _numberObjs
 
-                If GameASLVersion >= 410 Then
+                If _gameAslVersion >= 410 Then
                     r.Exits = New RoomExits(Me)
                     r.Exits.ObjID = r.ObjID
                 End If
@@ -7391,13 +7391,13 @@ Public Class LegacyGame
                         Loop Until NestedBlock = 0
                     End If
 
-                    If GameASLVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
+                    If _gameAslVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
                         r.RoomAlias = RetrieveParameter(_lines(j), _nullContext)
                         _objs(_numberObjs).ObjectAlias = r.RoomAlias
-                        If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, _numberObjs, _nullContext)
-                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "description ") Then
+                        If _gameAslVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, _numberObjs, _nullContext)
+                    ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "description ") Then
                         r.Description = GetTextOrScript(GetEverythingAfter(_lines(j), "description "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.Description.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "description", r.Description.Data)
                             Else
@@ -7407,7 +7407,7 @@ Public Class LegacyGame
                     ElseIf BeginsWith(_lines(j), "out ") Then
                         r.Out.Text = RetrieveParameter(_lines(j), _nullContext)
                         r.Out.Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.Out.Script <> "" Then
                                 AddObjectAction(_numberObjs, "out", r.Out.Script)
                             End If
@@ -7416,7 +7416,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "east ") Then
                         r.East = GetTextOrScript(GetEverythingAfter(_lines(j), "east "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.East.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "east", r.East.Data)
                             Else
@@ -7425,7 +7425,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "west ") Then
                         r.West = GetTextOrScript(GetEverythingAfter(_lines(j), "west "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.West.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "west", r.West.Data)
                             Else
@@ -7434,7 +7434,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "north ") Then
                         r.North = GetTextOrScript(GetEverythingAfter(_lines(j), "north "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.North.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "north", r.North.Data)
                             Else
@@ -7443,7 +7443,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "south ") Then
                         r.South = GetTextOrScript(GetEverythingAfter(_lines(j), "south "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.South.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "south", r.South.Data)
                             Else
@@ -7452,7 +7452,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "northeast ") Then
                         r.NorthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "northeast "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.NorthEast.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "northeast", r.NorthEast.Data)
                             Else
@@ -7461,7 +7461,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "northwest ") Then
                         r.NorthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "northwest "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.NorthWest.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "northwest", r.NorthWest.Data)
                             Else
@@ -7470,7 +7470,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "southeast ") Then
                         r.SouthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "southeast "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.SouthEast.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "southeast", r.SouthEast.Data)
                             Else
@@ -7479,7 +7479,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "southwest ") Then
                         r.SouthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "southwest "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.SouthWest.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "southwest", r.SouthWest.Data)
                             Else
@@ -7488,7 +7488,7 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "up ") Then
                         r.Up = GetTextOrScript(GetEverythingAfter(_lines(j), "up "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.Up.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "up", r.Up.Data)
                             Else
@@ -7497,22 +7497,22 @@ Public Class LegacyGame
                         End If
                     ElseIf BeginsWith(_lines(j), "down ") Then
                         r.Down = GetTextOrScript(GetEverythingAfter(_lines(j), "down "))
-                        If GameASLVersion >= 350 Then
+                        If _gameAslVersion >= 350 Then
                             If r.Down.Type = TextActionType.Script Then
                                 AddObjectAction(_numberObjs, "down", r.Down.Data)
                             Else
                                 AddToObjectProperties("down=" & r.Down.Data, _numberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "indescription ") Then
+                    ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "indescription ") Then
                         r.InDescription = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, _numberObjs, _nullContext)
-                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "look ") Then
+                        If _gameAslVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, _numberObjs, _nullContext)
+                    ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "look ") Then
                         r.Look = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("look=" & r.Look, _numberObjs, _nullContext)
+                        If _gameAslVersion >= 350 Then AddToObjectProperties("look=" & r.Look, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "prefix ") Then
                         r.Prefix = RetrieveParameter(_lines(j), _nullContext)
-                        If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, _numberObjs, _nullContext)
+                        If _gameAslVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "script ") Then
                         r.Script = GetEverythingAfter(_lines(j), "script ")
                         AddObjectAction(_numberObjs, "script", r.Script)
@@ -7621,21 +7621,21 @@ Public Class LegacyGame
 
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define timer ") Then
-                NumberTimers = NumberTimers + 1
-                ReDim Preserve Timers(NumberTimers)
-                Timers(NumberTimers) = New TimerType
-                Timers(NumberTimers).TimerName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
-                Timers(NumberTimers).TimerActive = False
+                _numberTimers = _numberTimers + 1
+                ReDim Preserve _timers(_numberTimers)
+                _timers(_numberTimers) = New TimerType
+                _timers(_numberTimers).TimerName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                _timers(_numberTimers).TimerActive = False
 
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If BeginsWith(_lines(j), "interval ") Then
-                        Timers(NumberTimers).TimerInterval = CInt(RetrieveParameter(_lines(j), _nullContext))
+                        _timers(_numberTimers).TimerInterval = CInt(RetrieveParameter(_lines(j), _nullContext))
                     ElseIf BeginsWith(_lines(j), "action ") Then
-                        Timers(NumberTimers).TimerAction = GetEverythingAfter(_lines(j), "action ")
+                        _timers(_numberTimers).TimerAction = GetEverythingAfter(_lines(j), "action ")
                     ElseIf Trim(LCase(_lines(j))) = "enabled" Then
-                        Timers(NumberTimers).TimerActive = True
+                        _timers(_numberTimers).TimerActive = True
                     ElseIf Trim(LCase(_lines(j))) = "disabled" Then
-                        Timers(NumberTimers).TimerActive = False
+                        _timers(_numberTimers).TimerActive = False
                     End If
                 Next j
             End If
@@ -7648,14 +7648,14 @@ Public Class LegacyGame
         Dim i As Integer
         gameblock = GetDefineBlock("game")
 
-        BeforeTurnScript = ""
-        AfterTurnScript = ""
+        _beforeTurnScript = ""
+        _afterTurnScript = ""
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "beforeturn ") Then
-                BeforeTurnScript = BeforeTurnScript & GetEverythingAfter(Trim(_lines(i)), "beforeturn ") & vbCrLf
+                _beforeTurnScript = _beforeTurnScript & GetEverythingAfter(Trim(_lines(i)), "beforeturn ") & vbCrLf
             ElseIf BeginsWith(_lines(i), "afterturn ") Then
-                AfterTurnScript = AfterTurnScript & GetEverythingAfter(Trim(_lines(i)), "afterturn ") & vbCrLf
+                _afterTurnScript = _afterTurnScript & GetEverythingAfter(Trim(_lines(i)), "afterturn ") & vbCrLf
             End If
         Next i
     End Sub
@@ -7710,7 +7710,7 @@ Public Class LegacyGame
                     Case "baddrop"
                         iCurrentError = PlayerError.BadDrop
                     Case "defaultake"
-                        If GameASLVersion <= 280 Then
+                        If _gameAslVersion <= 280 Then
                             iCurrentError = PlayerError.BadTake
                         Else
                             iCurrentError = PlayerError.DefaultTake
@@ -7724,7 +7724,7 @@ Public Class LegacyGame
                     Case "badplace"
                         iCurrentError = PlayerError.BadPlace
                     Case "badexamine"
-                        If GameASLVersion >= 310 Then
+                        If _gameAslVersion >= 310 Then
                             iCurrentError = PlayerError.BadExamine
                         End If
                     Case "defaultexamine"
@@ -7788,7 +7788,7 @@ Public Class LegacyGame
         Dim CRoom, CName As String
 
         Dim FoundObject As Boolean
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             FoundObject = False
 
             For i = 1 To _numberObjs
@@ -8237,7 +8237,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        If GameASLVersion >= 310 Then
+        If _gameAslVersion >= 310 Then
             NewThread.AllowRealNamesInCommand = True
         End If
 
@@ -8279,7 +8279,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             sVarCont = Trim(sVarCont)
             If Left(sVarCont, 1) = "[" And Right(sVarCont, 1) = "]" Then
                 sVarCont = Mid(sVarCont, 2, Len(sVarCont) - 2)
@@ -8467,7 +8467,7 @@ Public Class LegacyGame
                 ObjID = Disambiguate(CurChunk, _currentRoom & ";" & "inventory", ctx)
 
                 If ObjID = -1 Then
-                    If GameASLVersion >= 391 Then
+                    If _gameAslVersion >= 391 Then
                         PlayerErrorMessage(PlayerError.BadThing, ctx)
                     Else
                         PlayerErrorMessage(PlayerError.BadItem, ctx)
@@ -8495,7 +8495,7 @@ Public Class LegacyGame
     Private Function GetGender(CharacterName As String, Capitalise As Boolean, ctx As Context) As String
         Dim G, GL As String
 
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             G = _objs(GetObjectIDNoAlias(CharacterName)).Gender
         Else
             GL = RetrLine("character", CharacterName, "gender", ctx)
@@ -8686,7 +8686,7 @@ Public Class LegacyGame
         Dim SC2Pos, SC3Pos As Integer
         Dim lines As String() = {}
 
-        GameLoadMethod = "loaded"
+        _gameLoadMethod = "loaded"
 
         PrevQSGVersion = False
 
@@ -8862,9 +8862,9 @@ Public Class LegacyGame
         Dim NewThread As Context = New Context()
         Dim saveData As String
 
-        If GameASLVersion >= 391 Then ExecuteScript(BeforeSaveScript, NewThread)
+        If _gameAslVersion >= 391 Then ExecuteScript(BeforeSaveScript, NewThread)
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             saveData = MakeRestoreData()
         Else
             saveData = MakeRestoreDataV2()
@@ -8930,7 +8930,7 @@ Public Class LegacyGame
         Dim CRoom, CName As String
 
         Dim FoundObject As Boolean
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             FoundObject = False
             For i = 1 To _numberObjs
                 If LCase(_objs(i).ObjectName) = LCase(ThingString) Then
@@ -8995,7 +8995,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             BracketPos = InStr(StringName, "[")
             If BracketPos <> 0 Then
                 ArrayIndex = GetArrayIndex(StringName, ctx)
@@ -9124,7 +9124,7 @@ Public Class LegacyGame
                             Next k
                         End If
 
-                        If GameASLVersion >= 391 Then AddToObjectProperties("list", _numberObjs, _nullContext)
+                        If _gameAslVersion >= 391 Then AddToObjectProperties("list", _numberObjs, _nullContext)
 
                         e = 0
                         Do
@@ -9132,32 +9132,32 @@ Public Class LegacyGame
                             If Trim(_lines(j)) = "hidden" Then
                                 o.Exists = False
                                 e = 1
-                                If GameASLVersion >= 311 Then AddToObjectProperties("hidden", _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("hidden", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
                                 CRoomName = RetrieveParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "prefix ") Then
                                 o.Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
-                                If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "suffix ") Then
                                 o.Suffix = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "invisible" Then
                                 o.Visible = False
-                                If GameASLVersion >= 311 Then AddToObjectProperties("invisible", _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("invisible", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alias ") Then
                                 o.ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alt ") Then
                                 AddToObjectAltNames(RetrieveParameter(_lines(j), _nullContext), _numberObjs)
                             ElseIf BeginsWith(_lines(j), "detail ") Then
                                 o.Detail = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gender ") Then
                                 o.Gender = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "article ") Then
                                 o.Article = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("article=" & o.Article, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("article=" & o.Article, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gain ") Then
                                 o.GainScript = GetEverythingAfter(_lines(j), "gain ")
                                 AddObjectAction(_numberObjs, "gain", o.GainScript)
@@ -9166,9 +9166,9 @@ Public Class LegacyGame
                                 AddObjectAction(_numberObjs, "lose", o.LoseScript)
                             ElseIf BeginsWith(_lines(j), "displaytype ") Then
                                 o.DisplayType = RetrieveParameter(_lines(j), _nullContext)
-                                If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, _numberObjs, _nullContext)
+                                If _gameAslVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "look ") Then
-                                If GameASLVersion >= 311 Then
+                                If _gameAslVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "look ")
                                     If Left(RestOfLine, 1) = "<" Then
                                         AddToObjectProperties("look=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
@@ -9177,7 +9177,7 @@ Public Class LegacyGame
                                     End If
                                 End If
                             ElseIf BeginsWith(_lines(j), "examine ") Then
-                                If GameASLVersion >= 311 Then
+                                If _gameAslVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "examine ")
                                     If Left(RestOfLine, 1) = "<" Then
                                         AddToObjectProperties("examine=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
@@ -9185,7 +9185,7 @@ Public Class LegacyGame
                                         AddObjectAction(_numberObjs, "examine", RestOfLine)
                                     End If
                                 End If
-                            ElseIf GameASLVersion >= 311 And BeginsWith(_lines(j), "speak ") Then
+                            ElseIf _gameAslVersion >= 311 And BeginsWith(_lines(j), "speak ") Then
                                 RestOfLine = GetEverythingAfter(_lines(j), "speak ")
                                 If Left(RestOfLine, 1) = "<" Then
                                     AddToObjectProperties("speak=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
@@ -9233,16 +9233,16 @@ Public Class LegacyGame
                                     AddObjectAction(_numberObjs, "take", RestOfLine)
                                 End If
                             ElseIf Trim(_lines(j)) = "container" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("container", _numberObjs, _nullContext)
+                                If _gameAslVersion >= 391 Then AddToObjectProperties("container", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "surface" Then
-                                If GameASLVersion >= 391 Then
+                                If _gameAslVersion >= 391 Then
                                     AddToObjectProperties("container", _numberObjs, _nullContext)
                                     AddToObjectProperties("surface", _numberObjs, _nullContext)
                                 End If
                             ElseIf Trim(_lines(j)) = "opened" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("opened", _numberObjs, _nullContext)
+                                If _gameAslVersion >= 391 Then AddToObjectProperties("opened", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "transparent" Then
-                                If GameASLVersion >= 391 Then AddToObjectProperties("transparent", _numberObjs, _nullContext)
+                                If _gameAslVersion >= 391 Then AddToObjectProperties("transparent", _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "open" Then
                                 AddToObjectProperties("open", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "open ") Then
@@ -9289,7 +9289,7 @@ Public Class LegacyGame
 
                         o.DefinitionSectionEnd = j
                         If e = 0 Then o.Exists = True
-                    ElseIf GameASLVersion <= 280 And BeginsWith(_lines(j), "define character") Then
+                    ElseIf _gameAslVersion <= 280 And BeginsWith(_lines(j), "define character") Then
                         CRoomName = OrigCRoomName
                         _numberChars = _numberChars + 1
                         ReDim Preserve _chars(_numberChars)
@@ -9376,7 +9376,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ShowRoomInfo(Room As String, ctx As Context, Optional NoPrint As Boolean = False)
-        If GameASLVersion < 280 Then
+        If _gameAslVersion < 280 Then
             ShowRoomInfoV2(Room)
             Exit Sub
         End If
@@ -9496,7 +9496,7 @@ Public Class LegacyGame
 
         DoorwayString = UpdateDoorways(RoomID, ctx)
 
-        If GameASLVersion < 410 Then
+        If _gameAslVersion < 410 Then
             PlaceList = GetGoToExits(RoomID, ctx)
 
             If PlaceList <> "" Then
@@ -9576,7 +9576,7 @@ Public Class LegacyGame
             Next i
         End If
 
-        If DescTagExist And GameASLVersion >= 310 Then
+        If DescTagExist And _gameAslVersion >= 310 Then
             ShowLookText = False
         End If
 
@@ -9696,7 +9696,7 @@ Public Class LegacyGame
 
         If textblock.StartLine <> 0 Then
             For i = textblock.StartLine + 1 To textblock.EndLine - 1
-                If GameASLVersion >= 392 Then
+                If _gameAslVersion >= 392 Then
                     ' Convert string variables etc.
                     Print(RetrieveParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
                 Else
@@ -9735,12 +9735,12 @@ Public Class LegacyGame
         cmd = LCase(thecommand)
 
         SyncLock m_commandLock
-            If CommandOverrideModeOn Then
+            If _commandOverrideModeOn Then
                 ' Commands have been overridden for this command,
                 ' so put input into previously specified variable
                 ' and exit:
 
-                SetStringContents(CommandOverrideVariable, thecommand, ctx)
+                SetStringContents(_commandOverrideVariable, thecommand, ctx)
                 System.Threading.Monitor.PulseAll(m_commandLock)
                 Return False
             End If
@@ -9792,7 +9792,7 @@ Public Class LegacyGame
                 End If
             End If
         End If
-        If BeforeTurnScript <> "" And GlobalOverride = False Then ExecuteScript(BeforeTurnScript, NewThread)
+        If _beforeTurnScript <> "" And GlobalOverride = False Then ExecuteScript(_beforeTurnScript, NewThread)
 
         ' In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
         ' in which case we don't process the command.
@@ -9873,7 +9873,7 @@ Public Class LegacyGame
                 GoDirection("down", ctx)
                 LastIt = 0
             ElseIf CmdStartsWith(thecommand, "go ") Then
-                If GameASLVersion >= 410 Then
+                If _gameAslVersion >= 410 Then
                     _rooms(GetRoomID(_currentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
                 Else
                     D = GetEverythingAfter(thecommand, "go ")
@@ -9895,7 +9895,7 @@ Public Class LegacyGame
             ElseIf CmdStartsWith(thecommand, "take ") Then
                 T = GetEverythingAfter(thecommand, "take ")
                 ExecTake(T, ctx)
-            ElseIf CmdStartsWith(thecommand, "drop ") And GameASLVersion >= 280 Then
+            ElseIf CmdStartsWith(thecommand, "drop ") And _gameAslVersion >= 280 Then
                 D = GetEverythingAfter(thecommand, "drop ")
                 ExecDrop(D, ctx)
             ElseIf CmdStartsWith(thecommand, "get ") Then
@@ -9910,9 +9910,9 @@ Public Class LegacyGame
                 ExecLook(thecommand, ctx)
             ElseIf CmdStartsWith(thecommand, "l ") Then
                 ExecLook("look " & GetEverythingAfter(thecommand, "l "), ctx)
-            ElseIf CmdStartsWith(thecommand, "examine ") And GameASLVersion >= 280 Then
+            ElseIf CmdStartsWith(thecommand, "examine ") And _gameAslVersion >= 280 Then
                 ExecExamine(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "x ") And GameASLVersion >= 280 Then
+            ElseIf CmdStartsWith(thecommand, "x ") And _gameAslVersion >= 280 Then
                 ExecExamine("examine " & GetEverythingAfter(thecommand, "x "), ctx)
             ElseIf cmd = "l" Or cmd = "look" Then
                 ExecLook("look", ctx)
@@ -9920,15 +9920,15 @@ Public Class LegacyGame
                 ExecExamine("examine", ctx)
             ElseIf CmdStartsWith(thecommand, "use ") Then
                 ExecUse(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "open ") And GameASLVersion >= 391 Then
+            ElseIf CmdStartsWith(thecommand, "open ") And _gameAslVersion >= 391 Then
                 ExecOpenClose(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "close ") And GameASLVersion >= 391 Then
+            ElseIf CmdStartsWith(thecommand, "close ") And _gameAslVersion >= 391 Then
                 ExecOpenClose(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "put ") And GameASLVersion >= 391 Then
+            ElseIf CmdStartsWith(thecommand, "put ") And _gameAslVersion >= 391 Then
                 ExecAddRemove(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "add ") And GameASLVersion >= 391 Then
+            ElseIf CmdStartsWith(thecommand, "add ") And _gameAslVersion >= 391 Then
                 ExecAddRemove(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "remove ") And GameASLVersion >= 391 Then
+            ElseIf CmdStartsWith(thecommand, "remove ") And _gameAslVersion >= 391 Then
                 ExecAddRemove(thecommand, ctx)
             ElseIf cmd = "save" Then
                 m_player.RequestSave(Nothing)
@@ -9949,7 +9949,7 @@ Public Class LegacyGame
             ElseIf cmd = "inventory" Or cmd = "inv" Or cmd = "i" Then
                 InventoryPlace = "inventory"
 
-                If GameASLVersion >= 280 Then
+                If _gameAslVersion >= 280 Then
                     For i = 1 To _numberObjs
                         If _objs(i).ContainerRoom = InventoryPlace And _objs(i).Exists And _objs(i).Visible Then
                             InvList = InvList & _objs(i).Prefix
@@ -10017,7 +10017,7 @@ Public Class LegacyGame
             End If
 
             ' was set to NullThread here for some reason
-            If AfterTurnScript <> "" And GlobalOverride = False Then ExecuteScript(AfterTurnScript, ctx)
+            If _afterTurnScript <> "" And GlobalOverride = False Then ExecuteScript(_afterTurnScript, ctx)
         End If
 
         Print("", ctx)
@@ -10073,14 +10073,14 @@ Public Class LegacyGame
             CharToGive = Trim(Mid(GiveString, ToLoc + 3, Len(GiveString) - (ToLoc + 2)))
         End If
 
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             ObjectType = Thing.Object
         Else
             ObjectType = Thing.Character
         End If
 
         ' First see if player has "ItemToGive":
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             InventoryPlace = "inventory"
 
             ItemID = Disambiguate(ItemToGive, InventoryPlace, ctx)
@@ -10118,7 +10118,7 @@ Public Class LegacyGame
             End If
         End If
 
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
             FoundGiveScript = False
             FoundGiveToObject = False
 
@@ -10240,7 +10240,7 @@ Public Class LegacyGame
         If Trim(LookLine) = "look" Then
             ShowRoomInfo((_currentRoom), ctx)
         Else
-            If GameASLVersion < 391 Then
+            If _gameAslVersion < 391 Then
                 AtPos = InStr(LookLine, " at ")
 
                 If AtPos = 0 Then
@@ -10262,7 +10262,7 @@ Public Class LegacyGame
                 End If
             End If
 
-            If GameASLVersion >= 280 Then
+            If _gameAslVersion >= 280 Then
                 FoundObject = False
 
                 InventoryPlace = "inventory"
@@ -10349,7 +10349,7 @@ Public Class LegacyGame
         Dim SpeakText As String
         Dim FoundObject As Boolean
         Dim ObjID As Integer
-        If GameASLVersion >= 281 Then
+        If _gameAslVersion >= 281 Then
 
             FoundObject = False
 
@@ -10392,7 +10392,7 @@ Public Class LegacyGame
                 Next i
             End If
 
-            If GameASLVersion < 311 Then
+            If _gameAslVersion < 311 Then
                 ' For some reason ASL3 < 311 looks for a "look" tag rather than
                 ' having had this set up at initialisation.
                 If Not FoundSpeak Then
@@ -10415,7 +10415,7 @@ Public Class LegacyGame
 
             If BeginsWith(SpeakLine, "<") Then
                 SpeakText = RetrieveParameter(SpeakLine, ctx)
-                If GameASLVersion >= 350 Then
+                If _gameAslVersion >= 350 Then
                     Print(SpeakText, ctx)
                 Else
                     Print(Chr(34) & SpeakText & Chr(34), ctx)
@@ -10478,7 +10478,7 @@ Public Class LegacyGame
 
         If FoundItem = False Then
             If ObjID <> -2 Then
-                If GameASLVersion >= 410 Then
+                If _gameAslVersion >= 410 Then
                     ObjID = Disambiguate(TakeItem, "inventory", ctx)
                     If ObjID >= 0 Then
                         ' Player already has this item
@@ -10486,7 +10486,7 @@ Public Class LegacyGame
                     Else
                         PlayerErrorMessage(PlayerError.BadThing, ctx)
                     End If
-                ElseIf GameASLVersion >= 391 Then
+                ElseIf _gameAslVersion >= 391 Then
                     PlayerErrorMessage(PlayerError.BadThing, ctx)
                 Else
                     PlayerErrorMessage(PlayerError.BadItem, ctx)
@@ -10500,7 +10500,7 @@ Public Class LegacyGame
 
         ObjectIsInContainer = False
 
-        If GameASLVersion >= 391 Then
+        If _gameAslVersion >= 391 Then
 
             If Not PlayerCanAccessObject(ObjID, ParentID, ContainerError) Then
                 PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, ContainerError)
@@ -10509,7 +10509,7 @@ Public Class LegacyGame
 
         End If
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             Dim t = _objs(ObjID).Take
 
             If ObjectIsInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
@@ -10597,7 +10597,7 @@ Public Class LegacyGame
         Dim ItemID As Integer
         Dim InventoryPlace As String = ""
         Dim NotGotItem As Boolean
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             InventoryPlace = "inventory"
 
             FoundItem = False
@@ -10640,11 +10640,11 @@ Public Class LegacyGame
         Dim FoundUseOnObject As Boolean
         Dim UseOnObjectID As Integer
         Dim Found As Boolean
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             FoundUseScript = False
 
             If UseOn = "" Then
-                If GameASLVersion < 410 Then
+                If _gameAslVersion < 410 Then
                     Dim r = _rooms(RoomID)
                     For i = 1 To r.NumberUse
                         If LCase(_objs(ItemID).ObjectName) = LCase(r.Use(i).Text) Then
@@ -10973,9 +10973,9 @@ Public Class LegacyGame
                 PlayMedia(RetrieveParameter(ScriptLine, ctx))
             ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate picture window
-            ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (GameASLVersion >= 282 And GameASLVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (GameASLVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
+            ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (_gameAslVersion >= 282 And _gameAslVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (_gameAslVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
                 ShowPicture(RetrieveParameter(ScriptLine, ctx))
-            ElseIf (GameASLVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
+            ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
                 ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "animate persist ") Then
                 ShowPicture(RetrieveParameter(ScriptLine, ctx))
@@ -10983,43 +10983,43 @@ Public Class LegacyGame
                 ShowPicture(RetrieveParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "extract ") Then
                 ExtractFile(RetrieveParameter(ScriptLine, ctx))
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
                 ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Object, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx, Thing.Character)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx, Thing.Character)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
                 ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Character, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, True, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, False, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Character, True, ctx)
-            ElseIf GameASLVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
+            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Character, False, ctx)
-            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
+            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
-            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
+            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
                 SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
-            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
+            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
                 ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Object, ctx)
-            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
+            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, True, ctx)
-            ElseIf GameASLVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
+            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
                 SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, False, ctx)
-            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
+            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
                 SetOpenClose(RetrieveParameter(ScriptLine, ctx), True, ctx)
-            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
+            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
                 SetOpenClose(RetrieveParameter(ScriptLine, ctx), False, ctx)
-            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
+            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
                 ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), True, ctx)
-            ElseIf GameASLVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
+            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
                 ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), False, ctx)
             ElseIf BeginsWith(ScriptLine, "clone ") Then
                 ExecClone(RetrieveParameter(ScriptLine, ctx), ctx)
@@ -11064,15 +11064,15 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "foreground ") Then
                 SetForeground(RetrieveParameter(ScriptLine, ctx))
             ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
-                AutoIntro = False
+                _autoIntro = False
             ElseIf BeginsWith(ScriptLine, "debug ") Then
                 LogASLError(RetrieveParameter(ScriptLine, ctx), LogType.Misc)
             ElseIf BeginsWith(ScriptLine, "mailto ") Then
                 Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
-            ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
+            ElseIf BeginsWith(ScriptLine, "shell ") And _gameAslVersion < 410 Then
                 LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
+            ElseIf BeginsWith(ScriptLine, "shellexe ") And _gameAslVersion < 410 Then
                 LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(ScriptLine, "wait") Then
                 ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
@@ -11081,11 +11081,11 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "timeroff ") Then
                 SetTimerState(RetrieveParameter(ScriptLine, ctx), False)
             ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
-                OutPutOn = True
+                _outPutOn = True
                 UpdateObjectList(ctx)
                 UpdateItems(ctx)
             ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
-                OutPutOn = False
+                _outPutOn = False
             ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
                 m_player.SetPanesVisible("off")
             ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
@@ -11094,9 +11094,9 @@ Public Class LegacyGame
                 ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
             ElseIf BeginsWith(ScriptLine, "unlock ") Then
                 ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
-            ElseIf BeginsWith(ScriptLine, "playmod ") And GameASLVersion < 410 Then
+            ElseIf BeginsWith(ScriptLine, "playmod ") And _gameAslVersion < 410 Then
                 LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf BeginsWith(ScriptLine, "modvolume") And GameASLVersion < 410 Then
+            ElseIf BeginsWith(ScriptLine, "modvolume") And _gameAslVersion < 410 Then
                 LogASLError("'modvolume' is not supported in this version of Quest", LogType.WarningError)
             ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
                 ctx.DontProcessCommand = True
@@ -11114,8 +11114,8 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ExecuteEnter(ScriptLine As String, ctx As Context)
-        CommandOverrideModeOn = True
-        CommandOverrideVariable = RetrieveParameter(ScriptLine, ctx)
+        _commandOverrideModeOn = True
+        _commandOverrideVariable = RetrieveParameter(ScriptLine, ctx)
 
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
@@ -11126,7 +11126,7 @@ Public Class LegacyGame
             System.Threading.Monitor.Wait(m_commandLock)
         End SyncLock
 
-        CommandOverrideModeOn = False
+        _commandOverrideModeOn = False
 
         ' State will have been changed to Working when the user typed their response,
         ' and will be set back to Ready when the call to ExecCommand has finished
@@ -11139,7 +11139,7 @@ Public Class LegacyGame
         Dim TimerName As String
         Dim FoundTimer As Boolean
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             If BeginsWith(SetInstruction, "interval ") Then
                 TimerInterval = RetrieveParameter(SetInstruction, ctx)
                 SCPos = InStr(TimerInterval, ";")
@@ -11151,11 +11151,11 @@ Public Class LegacyGame
                 TimerName = Trim(Left(TimerInterval, SCPos - 1))
                 TimerInterval = CStr(Val(Trim(Mid(TimerInterval, SCPos + 1))))
 
-                For i = 1 To NumberTimers
-                    If LCase(TimerName) = LCase(Timers(i).TimerName) Then
+                For i = 1 To _numberTimers
+                    If LCase(TimerName) = LCase(_timers(i).TimerName) Then
                         FoundTimer = True
-                        Timers(i).TimerInterval = CInt(TimerInterval)
-                        i = NumberTimers
+                        _timers(i).TimerInterval = CInt(TimerInterval)
+                        i = _numberTimers
                     End If
                 Next i
 
@@ -11267,7 +11267,7 @@ Public Class LegacyGame
 
         If RoomID = 0 Then Exit Sub
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             _rooms(RoomID).Exits.ExecuteGo(Direction, ctx)
             Exit Sub
         End If
@@ -11374,7 +11374,7 @@ Public Class LegacyGame
         _changeLogRooms.AppliesToType = ChangeLog.eAppliesToType.atRoom
         _changeLogObjects.AppliesToType = ChangeLog.eAppliesToType.atObject
 
-        OutPutOn = True
+        _outPutOn = True
         UseAbbreviations = True
 
         _gamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
@@ -11416,7 +11416,7 @@ Public Class LegacyGame
         If ASLVersion = "//" Then
             LogASLError("File contains no version header.", LogType.WarningError)
         Else
-            GameASLVersion = CInt(ASLVersion)
+            _gameAslVersion = CInt(ASLVersion)
 
             Const RecognisedVersions As String = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/"
 
@@ -11427,7 +11427,7 @@ Public Class LegacyGame
 
         m_listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
 
-        If GameASLVersion >= 280 And GameASLVersion < 390 Then
+        If _gameAslVersion >= 280 And _gameAslVersion < 390 Then
             m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Examine", "Take", "Speak to"}))
             m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Examine", "Use", "Drop"}))
         Else
@@ -11460,18 +11460,18 @@ Public Class LegacyGame
         SetUpSynonyms()
         SetUpRoomData()
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             SetUpExits()
         End If
 
-        If GameASLVersion < 280 Then
+        If _gameAslVersion < 280 Then
             ' Set up an array containing the names of all the items
             ' used in the game, based on the possitems statement
             ' of the 'define game' block.
             SetUpItemArrays()
         End If
 
-        If GameASLVersion < 280 Then
+        If _gameAslVersion < 280 Then
             ' Now, go through the 'startitems' statement and set up
             ' the items array so we start with those items mentioned.
             SetUpStartItems()
@@ -11534,7 +11534,7 @@ Public Class LegacyGame
 
             CheckPlaceName = CheckPlace
 
-            If GameASLVersion >= 311 And r.Places(i).Script = "" Then
+            If _gameAslVersion >= 311 And r.Places(i).Script = "" Then
                 DestRoomID = GetRoomID(CheckPlace, ctx)
                 If DestRoomID <> 0 Then
                     If _rooms(DestRoomID).RoomAlias <> "" Then
@@ -11570,7 +11570,7 @@ Public Class LegacyGame
         Dim OldRoom As String
         Dim i As Integer
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             If ObjID = 0 Then
                 For i = 1 To _numberObjs
                     If LCase(_objs(i).ObjectName) = LCase(anitem) Then
@@ -11583,7 +11583,7 @@ Public Class LegacyGame
             If ObjID <> 0 Then
                 OldRoom = LCase(_objs(ObjID).ContainerRoom)
                 If gotit Then
-                    If GameASLVersion >= 391 Then
+                    If _gameAslVersion >= 391 Then
                         ' Unset parent information, if any
                         AddToObjectProperties("not parent", ObjID, ctx)
                     End If
@@ -11642,7 +11642,7 @@ Public Class LegacyGame
 
         SetStringContents("quest.currentroom", Room, ctx)
 
-        If GameASLVersion >= 391 And GameASLVersion < 410 Then
+        If _gameAslVersion >= 391 And _gameAslVersion < 410 Then
             AddToObjectProperties("visited", _rooms(RoomID).ObjID, ctx)
         End If
 
@@ -11657,7 +11657,7 @@ Public Class LegacyGame
             ExecuteScript(RoomScript, ctx)
         End If
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             AddToObjectProperties("visited", _rooms(RoomID).ObjID, ctx)
         End If
     End Sub
@@ -12069,7 +12069,7 @@ Public Class LegacyGame
         D = "down"
         O = "out"
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
             _rooms(RoomID).Exits.GetAvailableDirectionsDescription(RoomDisplayText, Directions)
         Else
 
@@ -12135,7 +12135,7 @@ Public Class LegacyGame
                 If OutPlaceAlias = "" Then
                     OutPlaceAlias = OutPlace
                 Else
-                    If GameASLVersion >= 360 Then
+                    If _gameAslVersion >= 360 Then
                         If OutPlacePrefix <> "" Then
                             OutPlaceAlias = OutPlacePrefix & " " & OutPlaceAlias
                         End If
@@ -12146,7 +12146,7 @@ Public Class LegacyGame
                 If NSEW <> "" Then RoomDisplayText = RoomDisplayText & " "
 
                 Directions = Directions & "o"
-                If GameASLVersion >= 280 Then
+                If _gameAslVersion >= 280 Then
                     SetStringContents("quest.doorways.out", OutPlaceName, ctx)
                 Else
                     SetStringContents("quest.doorways.out", OutPlaceAlias, ctx)
@@ -12193,11 +12193,11 @@ Public Class LegacyGame
         Dim k As String
         Dim invList As New List(Of ListData)
 
-        If Not OutPutOn Then Exit Sub
+        If Not _outPutOn Then Exit Sub
 
         Dim CurObjName As String
 
-        If GameASLVersion >= 280 Then
+        If _gameAslVersion >= 280 Then
             For i = 1 To _numberObjs
                 If _objs(i).ContainerRoom = "inventory" And _objs(i).Exists And _objs(i).Visible Then
                     If _objs(i).ObjectAlias = "" Then
@@ -12220,7 +12220,7 @@ Public Class LegacyGame
 
         RaiseEvent UpdateList(ListType.InventoryList, invList)
 
-        If GameASLVersion >= 284 Then
+        If _gameAslVersion >= 284 Then
             UpdateStatusVars(ctx)
         Else
             If _numCollectables > 0 Then
@@ -12261,7 +12261,7 @@ Public Class LegacyGame
         Dim ObjsFound As Integer
         Dim ObjListString, NFObjListString As String
 
-        If Not OutPutOn Then Exit Sub
+        If Not _outPutOn Then Exit Sub
 
         Dim objList As New List(Of ListData)
         Dim exitList As New List(Of ListData)
@@ -12271,7 +12271,7 @@ Public Class LegacyGame
         roomblock = DefineBlockParam("room", _currentRoom)
 
         'FIND CHARACTERS ===
-        If GameASLVersion < 281 Then
+        If _gameAslVersion < 281 Then
             ' go through Chars() array
             For i = 1 To _numberChars
                 If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists And _chars(i).Visible Then
@@ -12326,7 +12326,7 @@ Public Class LegacyGame
 
         Dim r = _rooms(RoomID)
 
-        If GameASLVersion >= 410 Then
+        If _gameAslVersion >= 410 Then
 
             If RoomID > 0 Then
                 For Each oExit As RoomExit In _rooms(RoomID).Exits.Places.Values
@@ -12337,7 +12337,7 @@ Public Class LegacyGame
         Else
             For i = 1 To r.NumberPlaces
 
-                If GameASLVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
+                If _gameAslVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
                     PlaceID = GetRoomID(_rooms(RoomID).Places(i).PlaceName, ctx)
                     If PlaceID = 0 Then
                         ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
@@ -12416,7 +12416,7 @@ Public Class LegacyGame
         Dim ParentIsTransparent, ParentIsOpen, ParentIsSeen As Boolean
         Dim ParentIsSurface As Boolean
 
-        If GameASLVersion < 391 Then Exit Sub
+        If _gameAslVersion < 391 Then Exit Sub
 
         If OnlyParent <> "" Then
             OnlyParent = LCase(OnlyParent)
@@ -12530,7 +12530,7 @@ Public Class LegacyGame
         Dim ShownPlaceName As String
 
         For i = 1 To _rooms(RoomID).NumberPlaces
-            If GameASLVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
+            If _gameAslVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
                 PlaceID = GetRoomID(_rooms(RoomID).Places(i).PlaceName, ctx)
                 If PlaceID = 0 Then
                     LogASLError("No such room '" & _rooms(RoomID).Places(i).PlaceName & "'", LogType.WarningError)
@@ -12678,15 +12678,15 @@ Public Class LegacyGame
         ' Execute any startscript command that appears in the
         ' "define game" block:
 
-        AutoIntro = True
+        _autoIntro = True
 
         ' For ASL>=391, we only run startscripts if LoadMethod is normal (i.e. we haven't started
         ' from a saved QSG file)
 
-        If GameASLVersion < 391 Or (GameASLVersion >= 391 And GameLoadMethod = "normal") Then
+        If _gameAslVersion < 391 Or (_gameAslVersion >= 391 And _gameLoadMethod = "normal") Then
 
             ' for GameASLVersion 311 and later, any library startscript is executed first:
-            If GameASLVersion >= 311 Then
+            If _gameAslVersion >= 311 Then
                 ' We go through the game block executing these in reverse order, as
                 ' the statements which are included last should be executed first.
                 For i = gameblock.EndLine - 1 To gameblock.StartLine + 1 Step -1
@@ -12701,7 +12701,7 @@ Public Class LegacyGame
                 If BeginsWith(_lines(i), "startscript ") Then
                     NewThread = _nullContext
                     ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "startscript")), NewThread)
-                ElseIf BeginsWith(_lines(i), "lib startscript ") And GameASLVersion < 311 Then
+                ElseIf BeginsWith(_lines(i), "lib startscript ") And _gameAslVersion < 311 Then
                     NewThread = _nullContext
                     ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), NewThread)
                 End If
@@ -12712,7 +12712,7 @@ Public Class LegacyGame
         GameFullyLoaded = True
 
         ' Display intro text
-        If AutoIntro And GameLoadMethod = "normal" Then DisplayTextSection("intro", _nullContext)
+        If _autoIntro And _gameLoadMethod = "normal" Then DisplayTextSection("intro", _nullContext)
 
         ' Start game from room specified by "start" statement
         Dim StartRoom As String = ""
@@ -12734,7 +12734,7 @@ Public Class LegacyGame
             PlayGame(_currentRoom, _nullContext)
             Print("", _nullContext)
 
-            If GameASLVersion >= 391 Then
+            If _gameAslVersion >= 391 Then
                 ' For ASL>=391, OnLoad is now run for all games.
                 NewThread = _nullContext
                 ExecuteScript(OnLoadScript, NewThread)
@@ -12932,17 +12932,17 @@ Public Class LegacyGame
 
         Debug.Print("Tick: " + elapsedTime.ToString)
 
-        For i = 1 To NumberTimers
-            If Timers(i).TimerActive Then
-                If Timers(i).BypassThisTurn Then
+        For i = 1 To _numberTimers
+            If _timers(i).TimerActive Then
+                If _timers(i).BypassThisTurn Then
                     ' don't trigger timer during the turn it was first enabled
-                    Timers(i).BypassThisTurn = False
+                    _timers(i).BypassThisTurn = False
                 Else
-                    Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
+                    _timers(i).TimerTicks = _timers(i).TimerTicks + elapsedTime
 
-                    If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
-                        Timers(i).TimerTicks = 0
-                        TimerScripts.Add(Timers(i).TimerAction)
+                    If _timers(i).TimerTicks >= _timers(i).TimerInterval Then
+                        _timers(i).TimerTicks = 0
+                        TimerScripts.Add(_timers(i).TimerAction)
                     End If
                 End If
             End If
@@ -12977,11 +12977,11 @@ Public Class LegacyGame
         Dim anyTimerActive As Boolean = False
         Dim nextTrigger As Integer = 60
 
-        For i As Integer = 1 To NumberTimers
-            If Timers(i).TimerActive Then
+        For i As Integer = 1 To _numberTimers
+            If _timers(i).TimerActive Then
                 anyTimerActive = True
 
-                Dim thisNextTrigger As Integer = Timers(i).TimerInterval - Timers(i).TimerTicks
+                Dim thisNextTrigger As Integer = _timers(i).TimerInterval - _timers(i).TimerTicks
                 If thisNextTrigger < nextTrigger Then
                     nextTrigger = thisNextTrigger
                 End If
@@ -13105,7 +13105,7 @@ Public Class LegacyGame
 
     Public ReadOnly Property ASLVersion As Integer
         Get
-            Return GameASLVersion
+            Return _gameAslVersion
         End Get
     End Property
 
