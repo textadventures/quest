@@ -36,7 +36,7 @@ Public Class LegacyGame
 
     Private Function CopyContext(ctx As Context) As Context
         Dim result As Context = New Context
-        result.CallingObjectID = ctx.CallingObjectID
+        result.CallingObjectId = ctx.CallingObjectId
         result.NumParameters = ctx.NumParameters
         result.Parameters = ctx.Parameters
         result.FunctionReturnValue = ctx.FunctionReturnValue
@@ -1223,7 +1223,7 @@ Public Class LegacyGame
     End Function
 
     Private Function ConvertCasKeyword(casChar As String) As String
-        Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
+        Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0)
         Dim keyword As String = _casKeywords(c)
 
         If keyword = "!cr" Then
@@ -1384,28 +1384,19 @@ Public Class LegacyGame
     End Function
 
     Private Sub LoadCASKeywords()
-
         'Loads data required for conversion of CAS files
-
-        Dim SemiColonPos, FH, KNum As Integer
-        Dim KWord As String
-
-        FH = FreeFile()
 
         Dim QuestDatLines As String() = GetResourceLines(My.Resources.QuestDAT)
 
         For Each line As String In QuestDatLines
             If Left(line, 1) <> "#" Then
                 'Lines isn't a comment - so parse it.
-                SemiColonPos = InStr(line, ";")
-                KWord = Trim(Left(line, SemiColonPos - 1))
-                KNum = CInt(Right(line, Len(line) - SemiColonPos))
-                _casKeywords(KNum) = KWord
+                Dim scp = InStr(line, ";")
+                Dim keyword = Trim(Left(line, scp - 1))
+                Dim num = CInt(Right(line, Len(line) - scp))
+                _casKeywords(num) = keyword
             End If
         Next
-
-        Exit Sub
-
     End Sub
 
     Private Function GetResourceLines(res As Byte()) As String()
@@ -1414,59 +1405,57 @@ Public Class LegacyGame
         Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
-    Private Function ParseFile(ByRef Filename As String) As Boolean
+    Private Function ParseFile(ByRef filename As String) As Boolean
         'Returns FALSE if failed.
 
-        Dim FileNum As Integer
-        Dim bHasErrors As Boolean
-        Dim bResult As Boolean
-        Dim LibCode(0) As String
-        Dim LibLines As Integer
-        Dim IgnoreMode, SkipCheck As Boolean
-        Dim l, c, i, D, j As Integer
-        Dim LibFileHandle As Integer
-        Dim LibResourceLines As String()
-        Dim LibFile As String
-        Dim LibLine As String
-        Dim InDefGameBlock, GameLine As Integer
-        Dim InDefSynBlock, SynLine As Integer
-        Dim LibFoundThisSweep As Boolean
-        Dim LibFileName As String
-        Dim LibraryList(0) As String
-        Dim NumLibraries As Integer
-        Dim LibraryAlreadyIncluded As Boolean
-        Dim InDefTypeBlock As Integer
-        Dim TypeBlockName As String
-        Dim TypeLine As Integer
-        Dim DefineCount, CurLine As Integer
+        Dim hasErrors As Boolean
+        Dim result As Boolean
+        Dim libCode(0) As String
+        Dim libLines As Integer
+        Dim ignoreMode, skipCheck As Boolean
+        Dim l, c, i, d, j As Integer
+        Dim libFileHandle As Integer
+        Dim libResourceLines As String()
+        Dim libFile As String
+        Dim libLine As String
+        Dim inDefGameBlock, gameLine As Integer
+        Dim inDefSynBlock, synLine As Integer
+        Dim libFoundThisSweep As Boolean
+        Dim libFileName As String
+        Dim libraryList(0) As String
+        Dim numLibraries As Integer
+        Dim libraryAlreadyIncluded As Boolean
+        Dim inDefTypeBlock As Integer
+        Dim typeBlockName As String
+        Dim typeLine As Integer
+        Dim defineCount, curLine As Integer
 
         _defineBlockParams = New Dictionary(Of String, Dictionary(Of String, String))
 
-        bResult = True
+        result = True
 
-        FileNum = FreeFile()
         ' Parses file and returns the positions of each main
         ' 'define' block. Supports nested defines.
 
-        If LCase(Right(Filename, 4)) = ".zip" Then
-            _originalFilename = Filename
-            Filename = GetUnzippedFile(Filename)
-            _gamePath = System.IO.Path.GetDirectoryName(Filename)
+        If LCase(Right(filename, 4)) = ".zip" Then
+            _originalFilename = filename
+            filename = GetUnzippedFile(filename)
+            _gamePath = System.IO.Path.GetDirectoryName(filename)
         End If
 
-        If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
+        If LCase(Right(filename, 4)) = ".asl" Or LCase(Right(filename, 4)) = ".txt" Then
             'Read file into Lines array
             Dim fileData As String
 
             If Config.ReadGameFileFromAzureBlob Then
                 Using client As New WebClient
-                    fileData = client.DownloadString(Filename)
+                    fileData = client.DownloadString(filename)
 
-                    Dim fileBytes As Byte() = client.DownloadData(Filename)
+                    Dim fileBytes As Byte() = client.DownloadData(filename)
                     m_gameId = TextAdventures.Utility.Utility.CalculateMD5Hash(fileBytes)
                 End Using
             Else
-                fileData = System.IO.File.ReadAllText(Filename)
+                fileData = System.IO.File.ReadAllText(filename)
             End If
 
             Dim aslLines As String() = fileData.Split(Chr(13))
@@ -1481,23 +1470,21 @@ Public Class LegacyGame
 
             l = aslLines.Length
 
-        ElseIf LCase(Right(Filename, 4)) = ".cas" Then
+        ElseIf LCase(Right(filename, 4)) = ".cas" Then
             LogASLError("Loading CAS")
-            LoadCASFile(Filename)
+            LoadCASFile(filename)
             l = UBound(_lines)
 
         Else
             Throw New InvalidOperationException("Unrecognized file extension")
         End If
 
-        Dim LibVer As Integer
-
         ' Add libraries to end of code:
 
-        NumLibraries = 0
+        numLibraries = 0
 
         Do
-            LibFoundThisSweep = False
+            libFoundThisSweep = False
             For i = l To 1 Step -1
                 ' We search for includes backwards as a game might include
                 ' some-general.lib and then something-specific.lib which needs
@@ -1506,130 +1493,130 @@ Public Class LegacyGame
                 ' gets executed before something-specific's, as we execute the
                 ' lib startscripts backwards as well
                 If BeginsWith(_lines(i), "!include ") Then
-                    LibFileName = RetrieveParameter(_lines(i), _nullContext)
+                    libFileName = RetrieveParameter(_lines(i), _nullContext)
                     'Clear !include statement
                     _lines(i) = ""
-                    LibraryAlreadyIncluded = False
-                    LogASLError("Including library '" & LibFileName & "'...", LogType.Init)
+                    libraryAlreadyIncluded = False
+                    LogASLError("Including library '" & libFileName & "'...", LogType.Init)
 
-                    For j = 1 To NumLibraries
-                        If LCase(LibFileName) = LCase(LibraryList(j)) Then
-                            LibraryAlreadyIncluded = True
-                            j = NumLibraries
+                    For j = 1 To numLibraries
+                        If LCase(libFileName) = LCase(libraryList(j)) Then
+                            libraryAlreadyIncluded = True
+                            j = numLibraries
                         End If
                     Next j
 
-                    If LibraryAlreadyIncluded Then
+                    If libraryAlreadyIncluded Then
                         LogASLError("     - Library already included.", LogType.Init)
                     Else
-                        NumLibraries = NumLibraries + 1
-                        ReDim Preserve LibraryList(NumLibraries)
-                        LibraryList(NumLibraries) = LibFileName
+                        numLibraries = numLibraries + 1
+                        ReDim Preserve libraryList(numLibraries)
+                        libraryList(numLibraries) = libFileName
 
-                        LibFoundThisSweep = True
-                        LibResourceLines = Nothing
+                        libFoundThisSweep = True
+                        libResourceLines = Nothing
 
-                        LibFile = _gamePath & LibFileName
-                        LogASLError(" - Searching for " & LibFile & " (game path)", LogType.Init)
-                        LibFileHandle = FreeFile()
+                        libFile = _gamePath & libFileName
+                        LogASLError(" - Searching for " & libFile & " (game path)", LogType.Init)
+                        libFileHandle = FreeFile()
 
-                        If System.IO.File.Exists(LibFile) Then
-                            FileOpen(LibFileHandle, LibFile, OpenMode.Input)
+                        If System.IO.File.Exists(libFile) Then
+                            FileOpen(libFileHandle, libFile, OpenMode.Input)
                         Else
                             ' File was not found; try standard Quest libraries (stored here as resources)
 
                             LogASLError("     - Library not found in game path.", LogType.Init)
-                            LogASLError(" - Searching for " & LibFile & " (standard libraries)", LogType.Init)
-                            LibResourceLines = GetLibraryLines(LibFileName)
+                            LogASLError(" - Searching for " & libFile & " (standard libraries)", LogType.Init)
+                            libResourceLines = GetLibraryLines(libFileName)
 
-                            If LibResourceLines Is Nothing Then
+                            If libResourceLines Is Nothing Then
                                 LogASLError("Library not found.", LogType.FatalError)
-                                _openErrorReport = _openErrorReport & "Library '" & LibraryList(NumLibraries) & "' not found." & vbCrLf
+                                _openErrorReport = _openErrorReport & "Library '" & libraryList(numLibraries) & "' not found." & vbCrLf
                                 Return False
                             End If
                         End If
 
                         LogASLError("     - Found library, opening...", LogType.Init)
 
-                        LibLines = 0
+                        libLines = 0
 
-                        If LibResourceLines Is Nothing Then
-                            Do Until EOF(LibFileHandle)
-                                LibLines = LibLines + 1
-                                LibLine = LineInput(LibFileHandle)
-                                LibLine = RemoveTabs(LibLine)
-                                ReDim Preserve LibCode(LibLines)
-                                LibCode(LibLines) = Trim(LibLine)
+                        If libResourceLines Is Nothing Then
+                            Do Until EOF(libFileHandle)
+                                libLines = libLines + 1
+                                libLine = LineInput(libFileHandle)
+                                libLine = RemoveTabs(libLine)
+                                ReDim Preserve libCode(libLines)
+                                libCode(libLines) = Trim(libLine)
                             Loop
-                            FileClose(LibFileHandle)
+                            FileClose(libFileHandle)
                         Else
-                            For Each ResLibLine As String In LibResourceLines
-                                LibLines = LibLines + 1
-                                ReDim Preserve LibCode(LibLines)
-                                LibLine = ResLibLine
-                                LibLine = RemoveTabs(LibLine)
-                                LibCode(LibLines) = Trim(LibLine)
+                            For Each ResLibLine As String In libResourceLines
+                                libLines = libLines + 1
+                                ReDim Preserve libCode(libLines)
+                                libLine = ResLibLine
+                                libLine = RemoveTabs(libLine)
+                                libCode(libLines) = Trim(libLine)
                             Next
                         End If
 
-                        LibVer = -1
+                        Dim libVer = -1
 
-                        If LibCode(1) = "!library" Then
-                            For c = 1 To LibLines
-                                If BeginsWith(LibCode(c), "!asl-version ") Then
-                                    LibVer = CInt(RetrieveParameter(LibCode(c), _nullContext))
-                                    c = LibLines
+                        If libCode(1) = "!library" Then
+                            For c = 1 To libLines
+                                If BeginsWith(libCode(c), "!asl-version ") Then
+                                    libVer = CInt(RetrieveParameter(libCode(c), _nullContext))
+                                    c = libLines
                                 End If
                             Next c
                         Else
                             'Old library
-                            LibVer = 100
+                            libVer = 100
                         End If
 
-                        If LibVer = -1 Then
+                        If libVer = -1 Then
                             LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError)
-                            LibVer = 200
+                            libVer = 200
                         End If
 
-                        IgnoreMode = False
-                        For c = 1 To LibLines
-                            If BeginsWith(LibCode(c), "!include ") Then
+                        ignoreMode = False
+                        For c = 1 To libLines
+                            If BeginsWith(libCode(c), "!include ") Then
                                 ' Quest only honours !include in a library for asl-version
                                 ' 311 or later, as it ignored them in versions < 3.11
-                                If LibVer >= 311 Then
-                                    AddLine(LibCode(c))
+                                If libVer >= 311 Then
+                                    AddLine(libCode(c))
                                     l = l + 1
                                 End If
-                            ElseIf Left(LibCode(c), 1) <> "!" And Left(LibCode(c), 1) <> "'" And Not IgnoreMode Then
-                                AddLine(LibCode(c))
+                            ElseIf Left(libCode(c), 1) <> "!" And Left(libCode(c), 1) <> "'" And Not ignoreMode Then
+                                AddLine(libCode(c))
                                 l = l + 1
                             Else
-                                If LibCode(c) = "!addto game" Then
-                                    InDefGameBlock = 0
-                                    For D = 1 To UBound(_lines)
-                                        If BeginsWith(_lines(D), "define game ") Then
-                                            InDefGameBlock = 1
-                                        ElseIf BeginsWith(_lines(D), "define ") Then
-                                            If InDefGameBlock <> 0 Then
-                                                InDefGameBlock = InDefGameBlock + 1
+                                If libCode(c) = "!addto game" Then
+                                    inDefGameBlock = 0
+                                    For d = 1 To UBound(_lines)
+                                        If BeginsWith(_lines(d), "define game ") Then
+                                            inDefGameBlock = 1
+                                        ElseIf BeginsWith(_lines(d), "define ") Then
+                                            If inDefGameBlock <> 0 Then
+                                                inDefGameBlock = inDefGameBlock + 1
                                             End If
-                                        ElseIf _lines(D) = "end define" And InDefGameBlock = 1 Then
-                                            GameLine = D
-                                            D = UBound(_lines)
-                                        ElseIf _lines(D) = "end define" Then
-                                            If InDefGameBlock <> 0 Then
-                                                InDefGameBlock = InDefGameBlock - 1
+                                        ElseIf _lines(d) = "end define" And inDefGameBlock = 1 Then
+                                            gameLine = d
+                                            d = UBound(_lines)
+                                        ElseIf _lines(d) = "end define" Then
+                                            If inDefGameBlock <> 0 Then
+                                                inDefGameBlock = inDefGameBlock - 1
                                             End If
                                         End If
-                                    Next D
+                                    Next d
 
                                     Do
                                         c = c + 1
-                                        If Not BeginsWith(LibCode(c), "!end") Then
+                                        If Not BeginsWith(libCode(c), "!end") Then
                                             ReDim Preserve _lines(UBound(_lines) + 1)
-                                            For D = UBound(_lines) To GameLine + 1 Step -1
-                                                _lines(D) = _lines(D - 1)
-                                            Next D
+                                            For d = UBound(_lines) To gameLine + 1 Step -1
+                                                _lines(d) = _lines(d - 1)
+                                            Next d
 
                                             ' startscript lines in a library are prepended
                                             ' with "lib" internally so they are executed
@@ -1646,128 +1633,126 @@ Public Class LegacyGame
                                             ' we also need it so that lib verbs have a higher
                                             ' precedence than lib commands.
 
-                                            If LibVer >= 311 And BeginsWith(LibCode(c), "startscript ") Then
-                                                _lines(GameLine) = "lib " & LibCode(c)
-                                            ElseIf LibVer >= 392 And (BeginsWith(LibCode(c), "command ") Or BeginsWith(LibCode(c), "verb ")) Then
-                                                _lines(GameLine) = "lib " & LibCode(c)
+                                            If libVer >= 311 And BeginsWith(libCode(c), "startscript ") Then
+                                                _lines(gameLine) = "lib " & libCode(c)
+                                            ElseIf libVer >= 392 And (BeginsWith(libCode(c), "command ") Or BeginsWith(libCode(c), "verb ")) Then
+                                                _lines(gameLine) = "lib " & libCode(c)
                                             Else
-                                                _lines(GameLine) = LibCode(c)
+                                                _lines(gameLine) = libCode(c)
                                             End If
 
                                             l = l + 1
-                                            GameLine = GameLine + 1
+                                            gameLine = gameLine + 1
                                         End If
-                                    Loop Until BeginsWith(LibCode(c), "!end")
-                                ElseIf LibCode(c) = "!addto synonyms" Then
-                                    InDefSynBlock = 0
-                                    For D = 1 To UBound(_lines)
-                                        If _lines(D) = "define synonyms" Then
-                                            InDefSynBlock = 1
-                                        ElseIf _lines(D) = "end define" And InDefSynBlock = 1 Then
-                                            SynLine = D
-                                            D = UBound(_lines)
+                                    Loop Until BeginsWith(libCode(c), "!end")
+                                ElseIf libCode(c) = "!addto synonyms" Then
+                                    inDefSynBlock = 0
+                                    For d = 1 To UBound(_lines)
+                                        If _lines(d) = "define synonyms" Then
+                                            inDefSynBlock = 1
+                                        ElseIf _lines(d) = "end define" And inDefSynBlock = 1 Then
+                                            synLine = d
+                                            d = UBound(_lines)
                                         End If
-                                    Next D
+                                    Next d
 
-                                    If InDefSynBlock = 0 Then
+                                    If inDefSynBlock = 0 Then
                                         'No "define synonyms" block in game - so add it
                                         AddLine("define synonyms")
                                         AddLine("end define")
-                                        SynLine = UBound(_lines)
+                                        synLine = UBound(_lines)
                                     End If
 
                                     Do
                                         c = c + 1
-                                        If Not BeginsWith(LibCode(c), "!end") Then
+                                        If Not BeginsWith(libCode(c), "!end") Then
                                             ReDim Preserve _lines(UBound(_lines) + 1)
-                                            For D = UBound(_lines) To SynLine + 1 Step -1
-                                                _lines(D) = _lines(D - 1)
-                                            Next D
-                                            _lines(SynLine) = LibCode(c)
+                                            For d = UBound(_lines) To synLine + 1 Step -1
+                                                _lines(d) = _lines(d - 1)
+                                            Next d
+                                            _lines(synLine) = libCode(c)
                                             l = l + 1
-                                            SynLine = SynLine + 1
+                                            synLine = synLine + 1
                                         End If
-                                    Loop Until BeginsWith(LibCode(c), "!end")
-                                ElseIf BeginsWith(LibCode(c), "!addto type ") Then
-                                    InDefTypeBlock = 0
-                                    TypeBlockName = LCase(RetrieveParameter(LibCode(c), _nullContext))
-                                    For D = 1 To UBound(_lines)
-                                        If LCase(_lines(D)) = "define type <" & TypeBlockName & ">" Then
-                                            InDefTypeBlock = 1
-                                        ElseIf _lines(D) = "end define" And InDefTypeBlock = 1 Then
-                                            TypeLine = D
-                                            D = UBound(_lines)
+                                    Loop Until BeginsWith(libCode(c), "!end")
+                                ElseIf BeginsWith(libCode(c), "!addto type ") Then
+                                    inDefTypeBlock = 0
+                                    typeBlockName = LCase(RetrieveParameter(libCode(c), _nullContext))
+                                    For d = 1 To UBound(_lines)
+                                        If LCase(_lines(d)) = "define type <" & typeBlockName & ">" Then
+                                            inDefTypeBlock = 1
+                                        ElseIf _lines(d) = "end define" And inDefTypeBlock = 1 Then
+                                            typeLine = d
+                                            d = UBound(_lines)
                                         End If
-                                    Next D
+                                    Next d
 
-                                    If InDefTypeBlock = 0 Then
+                                    If inDefTypeBlock = 0 Then
                                         'No "define type (whatever)" block in game - so add it
-                                        AddLine("define type <" & TypeBlockName & ">")
+                                        AddLine("define type <" & typeBlockName & ">")
                                         AddLine("end define")
-                                        TypeLine = UBound(_lines)
+                                        typeLine = UBound(_lines)
                                     End If
 
                                     Do
                                         c = c + 1
-                                        If c > LibLines Then Exit Do
-                                        If Not BeginsWith(LibCode(c), "!end") Then
+                                        If c > libLines Then Exit Do
+                                        If Not BeginsWith(libCode(c), "!end") Then
                                             ReDim Preserve _lines(UBound(_lines) + 1)
-                                            For D = UBound(_lines) To TypeLine + 1 Step -1
-                                                _lines(D) = _lines(D - 1)
-                                            Next D
-                                            _lines(TypeLine) = LibCode(c)
+                                            For d = UBound(_lines) To typeLine + 1 Step -1
+                                                _lines(d) = _lines(d - 1)
+                                            Next d
+                                            _lines(typeLine) = libCode(c)
                                             l = l + 1
-                                            TypeLine = TypeLine + 1
+                                            typeLine = typeLine + 1
                                         End If
-                                    Loop Until BeginsWith(LibCode(c), "!end")
+                                    Loop Until BeginsWith(libCode(c), "!end")
 
 
-                                ElseIf LibCode(c) = "!library" Then
+                                ElseIf libCode(c) = "!library" Then
                                     'ignore
-                                ElseIf BeginsWith(LibCode(c), "!asl-version ") Then
+                                ElseIf BeginsWith(libCode(c), "!asl-version ") Then
                                     'ignore
-                                ElseIf BeginsWith(LibCode(c), "'") Then
+                                ElseIf BeginsWith(libCode(c), "'") Then
                                     'ignore
-                                ElseIf BeginsWith(LibCode(c), "!QDK") Then
-                                    IgnoreMode = True
-                                ElseIf BeginsWith(LibCode(c), "!end") Then
-                                    IgnoreMode = False
+                                ElseIf BeginsWith(libCode(c), "!QDK") Then
+                                    ignoreMode = True
+                                ElseIf BeginsWith(libCode(c), "!end") Then
+                                    ignoreMode = False
                                 End If
                             End If
                         Next c
                     End If
                 End If
             Next i
-        Loop Until LibFoundThisSweep = False
+        Loop Until libFoundThisSweep = False
 
-        SkipCheck = False
+        skipCheck = False
 
-        Dim FilenameNoPath As String
-        Dim LastSlashPos, SlashPos As Integer
-        Dim CurPos As Integer
-        CurPos = 1
+        Dim lastSlashPos, slashPos As Integer
+        Dim curPos = 1
         Do
-            SlashPos = InStr(CurPos, Filename, "\")
-            If SlashPos <> 0 Then LastSlashPos = SlashPos
-            CurPos = SlashPos + 1
-        Loop Until SlashPos = 0
-        FilenameNoPath = LCase(Mid(Filename, LastSlashPos + 1))
+            slashPos = InStr(curPos, filename, "\")
+            If slashPos <> 0 Then lastSlashPos = slashPos
+            curPos = slashPos + 1
+        Loop Until slashPos = 0
+        Dim filenameNoPath = LCase(Mid(filename, lastSlashPos + 1))
 
         For i = 1 To _numSkipCheckFiles
-            If FilenameNoPath = _skipCheckFile(i) Then
-                SkipCheck = True
+            If filenameNoPath = _skipCheckFile(i) Then
+                skipCheck = True
                 i = _numSkipCheckFiles
             End If
         Next i
 
-        If FilenameNoPath = "musicvf1.cas" Then
+        If filenameNoPath = "musicvf1.cas" Then
             _useStaticFrameForPictures = True
         End If
 
         'RemoveComments called within ConvertMultiLines
         ConvertMultiLines()
 
-        If Not SkipCheck Then
+        If Not skipCheck Then
             If Not CheckSections() Then
                 Return False
             End If
@@ -1784,19 +1769,19 @@ Public Class LegacyGame
                 ' 'end define' we decrement it. When definecount is zero, we have
                 ' found the end of the section.
 
-                DefineCount = 1
+                defineCount = 1
 
                 ' Don't count the current line - we know it begins with 'define'...
-                CurLine = i + 1
+                curLine = i + 1
                 Do
-                    If BeginsWith(_lines(CurLine), "define") = True Then
-                        DefineCount = DefineCount + 1
-                    ElseIf BeginsWith(_lines(CurLine), "end define") = True Then
-                        DefineCount = DefineCount - 1
+                    If BeginsWith(_lines(curLine), "define") = True Then
+                        defineCount = defineCount + 1
+                    ElseIf BeginsWith(_lines(curLine), "end define") = True Then
+                        defineCount = defineCount - 1
                     End If
-                    CurLine = CurLine + 1
-                Loop Until DefineCount = 0
-                CurLine = CurLine - 1
+                    curLine = curLine + 1
+                Loop Until defineCount = 0
+                curLine = curLine - 1
 
                 ' Now, we know that the define section begins at i and ends at
                 ' curline. Remember where the section begins and ends:
@@ -1804,41 +1789,40 @@ Public Class LegacyGame
                 ReDim Preserve _defineBlocks(_numberSections)
                 _defineBlocks(_numberSections) = New DefineBlock
                 _defineBlocks(_numberSections).StartLine = i
-                _defineBlocks(_numberSections).EndLine = CurLine
+                _defineBlocks(_numberSections).EndLine = curLine
 
                 _numberSections = _numberSections + 1
-                i = CurLine
+                i = curLine
             End If
         Next i
 
         _numberSections = _numberSections - 1
 
-        Dim GotGameBlock As Boolean
-        GotGameBlock = False
+        Dim gotGameBlock = False
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define game ") Then
-                GotGameBlock = True
+                gotGameBlock = True
                 i = _numberSections
             End If
         Next i
 
-        If Not GotGameBlock Then
+        If Not gotGameBlock Then
             _openErrorReport = _openErrorReport & "No 'define game' block." & vbCrLf
             Return False
         End If
 
         ConvertMultiLineSections()
 
-        bHasErrors = ConvertFriendlyIfs()
-        If Not bHasErrors Then bHasErrors = ErrorCheck()
+        hasErrors = ConvertFriendlyIfs()
+        If Not hasErrors Then hasErrors = ErrorCheck()
 
-        If bHasErrors Then
+        If hasErrors Then
             Throw New InvalidOperationException("Errors found in game file.")
         End If
 
         _saveGameFile = ""
 
-        Return bResult
+        Return result
     End Function
 
     Friend Sub LogASLError(TheError As String, Optional MessageType As LogType = LogType.Misc)
@@ -1996,7 +1980,7 @@ Public Class LegacyGame
                 j = i
                 Do
                     CKW = Mid(FileData, j, 1)
-                    c = ConvertCASKeyword(CKW)
+                    c = ConvertCasKeyword(CKW)
 
                     If c = vbCrLf Then
                         EndLineReached = True
@@ -9473,7 +9457,7 @@ Public Class LegacyGame
 
         ' GET "LOOK" DESCRIPTION (but don't print it yet) **************************
 
-        ObjLook = GetObjectProperty("look", _rooms(RoomID).ObjID, , False)
+        ObjLook = GetObjectProperty("look", _rooms(RoomID).ObjId, , False)
 
         If ObjLook = "" Then
             If _rooms(RoomID).Look <> "" Then
@@ -10868,7 +10852,7 @@ Public Class LegacyGame
             End If
 
             If NewCallingObjectID <> 0 Then
-                ctx.CallingObjectID = NewCallingObjectID
+                ctx.CallingObjectId = NewCallingObjectID
             End If
 
             If BeginsWith(ScriptLine, "if ") Then
@@ -11587,7 +11571,7 @@ Public Class LegacyGame
         SetStringContents("quest.currentroom", Room, ctx)
 
         If _gameAslVersion >= 391 And _gameAslVersion < 410 Then
-            AddToObjectProperties("visited", _rooms(RoomID).ObjID, ctx)
+            AddToObjectProperties("visited", _rooms(RoomID).ObjId, ctx)
         End If
 
         ShowRoomInfo((Room), ctx)
@@ -11602,7 +11586,7 @@ Public Class LegacyGame
         End If
 
         If _gameAslVersion >= 410 Then
-            AddToObjectProperties("visited", _rooms(RoomID).ObjID, ctx)
+            AddToObjectProperties("visited", _rooms(RoomID).ObjId, ctx)
         End If
     End Sub
 
