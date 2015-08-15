@@ -24,7 +24,7 @@ Public Class LegacyGame
     End Class
 
     Friend Class Context
-        Public CallingObjectID As Integer
+        Public CallingObjectId As Integer
         Public NumParameters As Integer
         Public Parameters() As String
         Public FunctionReturnValue As String
@@ -47,12 +47,12 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private OpenErrorReport As String
-    Private CASkeywords(255) As String 'Tokenised CAS keywords
-    Private Lines() As String 'Stores the lines of the ASL script/definitions
-    Private DefineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
-    Private NumberSections As Integer 'Number of define sections
-    Private GameName As String 'The name of the game
+    Private _openErrorReport As String
+    Private _casKeywords(255) As String 'Tokenised CAS keywords
+    Private _lines() As String 'Stores the lines of the ASL script/definitions
+    Private _defineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
+    Private _numberSections As Integer 'Number of define sections
+    Private _gameName As String 'The name of the game
     Friend _nullContext As New Context
 
     Friend Enum LogType
@@ -66,21 +66,21 @@ Public Class LegacyGame
         InternalError
     End Enum
 
-    Private m_oDefineBlockParams As Dictionary(Of String, Dictionary(Of String, String))
+    Private _defineBlockParams As Dictionary(Of String, Dictionary(Of String, String))
 
-    Friend Enum eDirection
-        dirNone = -1
-        dirOut = 0
-        dirNorth = 1
-        dirSouth = 2
-        dirEast = 3
-        dirWest = 4
-        dirNorthWest = 5
-        dirNorthEast = 6
-        dirSouthWest = 7
-        dirSouthEast = 8
-        dirUp = 9
-        dirDown = 10
+    Friend Enum Direction
+        None = -1
+        Out = 0
+        North = 1
+        South = 2
+        East = 3
+        West = 4
+        NorthWest = 5
+        NorthEast = 6
+        SouthWest = 7
+        SouthEast = 8
+        Up = 9
+        Down = 10
     End Enum
 
     Private Class ItemType
@@ -562,47 +562,47 @@ Public Class LegacyGame
         Dim ThisSection As String = ""
         Dim HasErrors As Boolean
         Dim bSkipBlock As Boolean
-        OpenErrorReport = ""
+        _openErrorReport = ""
         HasErrors = False
         Defines = 0
         Braces = 0
 
-        For i = 1 To UBound(Lines)
-            If Not BeginsWith(Lines(i), "#!qdk-note: ") Then
-                If BeginsWith(Lines(i), "define ") Then
-                    ThisSection = Lines(i)
+        For i = 1 To UBound(_lines)
+            If Not BeginsWith(_lines(i), "#!qdk-note: ") Then
+                If BeginsWith(_lines(i), "define ") Then
+                    ThisSection = _lines(i)
                     Braces = 0
                     Defines = Defines + 1
-                    bSkipBlock = BeginsWith(Lines(i), "define text") Or BeginsWith(Lines(i), "define synonyms")
-                ElseIf Trim(Lines(i)) = "end define" Then
+                    bSkipBlock = BeginsWith(_lines(i), "define text") Or BeginsWith(_lines(i), "define synonyms")
+                ElseIf Trim(_lines(i)) = "end define" Then
                     Defines = Defines - 1
 
                     If Defines < 0 Then
                         LogASLError("Extra 'end define' after block '" & ThisSection & "'", LogType.FatalError)
-                        OpenErrorReport = OpenErrorReport & "Extra 'end define' after block '" & ThisSection & "'" & vbCrLf
+                        _openErrorReport = _openErrorReport & "Extra 'end define' after block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                         Defines = 0
                     End If
 
                     If Braces > 0 Then
                         LogASLError("Missing } in block '" & ThisSection & "'", LogType.FatalError)
-                        OpenErrorReport = OpenErrorReport & "Missing } in block '" & ThisSection & "'" & vbCrLf
+                        _openErrorReport = _openErrorReport & "Missing } in block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                     ElseIf Braces < 0 Then
                         LogASLError("Too many } in block '" & ThisSection & "'", LogType.FatalError)
-                        OpenErrorReport = OpenErrorReport & "Too many } in block '" & ThisSection & "'" & vbCrLf
+                        _openErrorReport = _openErrorReport & "Too many } in block '" & ThisSection & "'" & vbCrLf
                         HasErrors = True
                     End If
                 End If
 
-                If Left(Lines(i), 1) <> "'" And Not bSkipBlock Then
-                    CheckLine = ObliterateParameters(Lines(i))
+                If Left(_lines(i), 1) <> "'" And Not bSkipBlock Then
+                    CheckLine = ObliterateParameters(_lines(i))
                     If BeginsWith(CheckLine, "'<ERROR;") Then
                         ' ObliterateParameters denotes a mismatched $, ( etc.
                         ' by prefixing line with '<ERROR;*; where * is the mismatched
                         ' character
-                        LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
-                        OpenErrorReport = OpenErrorReport & "Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'." & vbCrLf
+                        LogASLError("Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
+                        _openErrorReport = _openErrorReport & "Expected closing " & Mid(CheckLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'." & vbCrLf
                         Return False
                     End If
                 End If
@@ -633,7 +633,7 @@ Public Class LegacyGame
 
         If Defines > 0 Then
             LogASLError("Missing 'end define'", LogType.FatalError)
-            OpenErrorReport = OpenErrorReport & "Missing 'end define'." & vbCrLf
+            _openErrorReport = _openErrorReport & "Missing 'end define'." & vbCrLf
             HasErrors = True
         End If
 
@@ -658,8 +658,8 @@ Public Class LegacyGame
         Dim ObscureLine, NewParam, VarObscureLine As String
         Dim BracketCount As Integer
 
-        For i = 1 To UBound(Lines)
-            ObscureLine = ObliterateParameters(Lines(i))
+        For i = 1 To UBound(_lines)
+            ObscureLine = ObliterateParameters(_lines(i))
             ConvPos = InStr(ObscureLine, "if (")
             If ConvPos = 0 Then
                 ConvPos = InStr(ObscureLine, "until (")
@@ -679,22 +679,22 @@ Public Class LegacyGame
 
 
             If ConvPos <> 0 Then
-                VarObscureLine = ObliterateVariableNames(Lines(i))
+                VarObscureLine = ObliterateVariableNames(_lines(i))
                 If BeginsWith(VarObscureLine, "'<ERROR;") Then
                     ' ObliterateVariableNames denotes a mismatched #, % or $
                     ' by prefixing line with '<ERROR;*; where * is the mismatched
                     ' character
-                    LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
+                    LogASLError("Expected closing " & Mid(VarObscureLine, 9, 1) & " character in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
-                StartParamPos = InStr(ConvPos, Lines(i), "(")
+                StartParamPos = InStr(ConvPos, _lines(i), "(")
 
                 EndParamPos = 0
                 BracketCount = 1
-                For j = StartParamPos + 1 To Len(Lines(i))
-                    If Mid(Lines(i), j, 1) = "(" Then
+                For j = StartParamPos + 1 To Len(_lines(i))
+                    If Mid(_lines(i), j, 1) = "(" Then
                         BracketCount = BracketCount + 1
-                    ElseIf Mid(Lines(i), j, 1) = ")" Then
+                    ElseIf Mid(_lines(i), j, 1) = ")" Then
                         BracketCount = BracketCount - 1
                     End If
                     If BracketCount = 0 Then
@@ -705,11 +705,11 @@ Public Class LegacyGame
 
                 'EndParamPos = InStr(ConvPos, VarObscureLine, ")")
                 If EndParamPos = 0 Then
-                    LogASLError("Expected ) in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
+                    LogASLError("Expected ) in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                     Return True
                 End If
 
-                ParamData = Mid(Lines(i), StartParamPos + 1, (EndParamPos - StartParamPos) - 1)
+                ParamData = Mid(_lines(i), StartParamPos + 1, (EndParamPos - StartParamPos) - 1)
 
                 SymbPos = InStr(ParamData, "!=")
                 If SymbPos = 0 Then
@@ -725,7 +725,7 @@ Public Class LegacyGame
                                     If SymbPos = 0 Then
                                         SymbPos = InStr(ParamData, "=")
                                         If SymbPos = 0 Then
-                                            LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(Lines(i)) & "'", LogType.FatalError)
+                                            LogASLError("Unrecognised 'if' condition in '" & ReportErrorLine(_lines(i)) & "'", LogType.FatalError)
                                             Return True
                                         Else
                                             Symbol = "="
@@ -771,7 +771,7 @@ Public Class LegacyGame
                     NewParam = NewParam & ";" & SecondData & ">"
                 End If
 
-                Lines(i) = Left(Lines(i), StartParamPos - 1) & NewParam & Mid(Lines(i), EndParamPos + 1)
+                _lines(i) = Left(_lines(i), StartParamPos - 1) & NewParam & Mid(_lines(i), EndParamPos + 1)
 
                 ' Repeat processing this line, in case there are
                 ' further changes to be made.
@@ -800,20 +800,20 @@ Public Class LegacyGame
 
         i = 1
         Do
-            Z = Lines(DefineBlocks(i).StartLine)
+            Z = _lines(_defineBlocks(i).StartLine)
             If ((Not BeginsWith(Z, "define text ")) And (Not BeginsWith(Z, "define menu ")) And Z <> "define synonyms") Then
-                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                    If InStr(Lines(j), "{") > 0 Then
+                For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                    If InStr(_lines(j), "{") > 0 Then
 
                         AfterLastBrace = ""
-                        ThisLine = Trim(Lines(j))
+                        ThisLine = Trim(_lines(j))
 
                         ProcName = "<!intproc" & Trim(Str(CurProc)) & ">"
 
                         ' see if this brace's corresponding closing
                         ' brace is on same line:
 
-                        TestLine = Mid(Lines(j), InStr(Lines(j), "{") + 1)
+                        TestLine = Mid(_lines(j), InStr(_lines(j), "{") + 1)
                         TestBraceCount = 1
                         Do
                             OBP = InStr(TestLine, "{")
@@ -831,7 +831,7 @@ Public Class LegacyGame
 
                         If TestBraceCount <> 0 Then
                             AddLine("define procedure " & ProcName)
-                            StartLine = UBound(Lines)
+                            StartLine = UBound(_lines)
                             RestOfLine = Trim(Right(ThisLine, Len(ThisLine) - InStr(ThisLine, "{")))
                             BraceCount = 1
                             If RestOfLine <> "" Then AddLine(RestOfLine)
@@ -847,10 +847,10 @@ Public Class LegacyGame
                             If BraceCount <> 0 Then
                                 k = j + 1
                                 Do
-                                    For M = 1 To Len(Lines(k))
-                                        If Mid(Lines(k), M, 1) = "{" Then
+                                    For M = 1 To Len(_lines(k))
+                                        If Mid(_lines(k), M, 1) = "{" Then
                                             BraceCount = BraceCount + 1
-                                        ElseIf Mid(Lines(k), M, 1) = "}" Then
+                                        ElseIf Mid(_lines(k), M, 1) = "}" Then
                                             BraceCount = BraceCount - 1
                                         End If
 
@@ -864,32 +864,32 @@ Public Class LegacyGame
                                         'put Lines(k) into another variable, as
                                         'AddLine ReDims Lines, which it can't do if
                                         'passed Lines(x) as a parameter.
-                                        LineToAdd = Lines(k)
+                                        LineToAdd = _lines(k)
                                         AddLine(LineToAdd)
                                     Else
-                                        AddLine(Left(Lines(k), LastBrace - 1))
-                                        AfterLastBrace = Trim(Mid(Lines(k), LastBrace + 1))
+                                        AddLine(Left(_lines(k), LastBrace - 1))
+                                        AfterLastBrace = Trim(Mid(_lines(k), LastBrace + 1))
                                     End If
 
                                     'Clear original line
-                                    Lines(k) = ""
+                                    _lines(k) = ""
                                     k = k + 1
                                 Loop While BraceCount <> 0
                             End If
 
                             AddLine("end define")
-                            EndLineNum = UBound(Lines)
+                            EndLineNum = UBound(_lines)
 
-                            NumberSections = NumberSections + 1
-                            ReDim Preserve DefineBlocks(NumberSections)
-                            DefineBlocks(NumberSections) = New DefineBlock
-                            DefineBlocks(NumberSections).StartLine = StartLine
-                            DefineBlocks(NumberSections).EndLine = EndLineNum
+                            _numberSections = _numberSections + 1
+                            ReDim Preserve _defineBlocks(_numberSections)
+                            _defineBlocks(_numberSections) = New DefineBlock
+                            _defineBlocks(_numberSections).StartLine = StartLine
+                            _defineBlocks(_numberSections).EndLine = EndLineNum
 
                             'Change original line where the { section
                             'started to call the new procedure.
                             StartOfOrig = Trim(Left(ThisLine, InStr(ThisLine, "{") - 1))
-                            Lines(j) = StartOfOrig & " do " & ProcName & " " & AfterLastBrace
+                            _lines(j) = StartOfOrig & " do " & ProcName & " " & AfterLastBrace
                             CurProc = CurProc + 1
 
                             ' Process this line again in case there was stuff after the last brace that included
@@ -900,24 +900,24 @@ Public Class LegacyGame
                 Next j
             End If
             i = i + 1
-        Loop Until i > NumberSections
+        Loop Until i > _numberSections
 
         ' Join next-line "else"s to corresponding "if"s
 
-        For i = 1 To NumberSections
-            Z = Lines(DefineBlocks(i).StartLine)
+        For i = 1 To _numberSections
+            Z = _lines(_defineBlocks(i).StartLine)
             If ((Not BeginsWith(Z, "define text ")) And (Not BeginsWith(Z, "define menu ")) And Z <> "define synonyms") Then
-                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                    If BeginsWith(Lines(j), "else ") Then
+                For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                    If BeginsWith(_lines(j), "else ") Then
 
                         'Go upwards to find "if" statement that this
                         'belongs to
 
-                        For k = j To DefineBlocks(i).StartLine + 1 Step -1
-                            If BeginsWith(Lines(k), "if ") Or InStr(ObliterateParameters(Lines(k)), " if ") <> 0 Then
-                                Lines(k) = Lines(k) & " " & Trim(Lines(j))
-                                Lines(j) = ""
-                                k = DefineBlocks(i).StartLine
+                        For k = j To _defineBlocks(i).StartLine + 1 Step -1
+                            If BeginsWith(_lines(k), "if ") Or InStr(ObliterateParameters(_lines(k)), " if ") <> 0 Then
+                                _lines(k) = _lines(k) & " " & Trim(_lines(j))
+                                _lines(j) = ""
+                                k = _defineBlocks(i).StartLine
                             End If
                         Next k
                     End If
@@ -942,14 +942,14 @@ Public Class LegacyGame
         bInText = False
 
         ' Checks for incorrect number of < and > :
-        For i = 1 To UBound(Lines)
+        For i = 1 To UBound(_lines)
             iNumParamStart = 0
             iNumParamEnd = 0
 
-            If BeginsWith(Lines(i), "define text ") Then
+            If BeginsWith(_lines(i), "define text ") Then
                 bInText = True
             End If
-            If bInText And Trim(LCase(Lines(i))) = "end define" Then
+            If bInText And Trim(LCase(_lines(i))) = "end define" Then
                 bInText = False
             End If
 
@@ -958,9 +958,9 @@ Public Class LegacyGame
                 iCurPos = 1
                 bFinLoop = False
                 Do
-                    If InStr(iCurPos, Lines(i), "<") <> 0 Then
+                    If InStr(iCurPos, _lines(i), "<") <> 0 Then
                         iNumParamStart = iNumParamStart + 1
-                        iCurPos = InStr(iCurPos, Lines(i), "<") + 1
+                        iCurPos = InStr(iCurPos, _lines(i), "<") + 1
                     Else
                         bFinLoop = True
                     End If
@@ -970,19 +970,19 @@ Public Class LegacyGame
                 iCurPos = 1
                 bFinLoop = False
                 Do
-                    If InStr(iCurPos, Lines(i), ">") <> 0 Then
+                    If InStr(iCurPos, _lines(i), ">") <> 0 Then
                         iNumParamEnd = iNumParamEnd + 1
-                        iCurPos = InStr(iCurPos, Lines(i), ">") + 1
+                        iCurPos = InStr(iCurPos, _lines(i), ">") + 1
                     Else
                         bFinLoop = True
                     End If
                 Loop Until bFinLoop
 
                 If iNumParamStart > iNumParamEnd Then
-                    LogASLError("Expected > in " & ReportErrorLine(Lines(i)), LogType.FatalError)
+                    LogASLError("Expected > in " & ReportErrorLine(_lines(i)), LogType.FatalError)
                     bHasErrors = True
                 ElseIf iNumParamStart < iNumParamEnd Then
-                    LogASLError("Too many > in " & ReportErrorLine(Lines(i)), LogType.FatalError)
+                    LogASLError("Too many > in " & ReportErrorLine(_lines(i)), LogType.FatalError)
                     bHasErrors = True
                 End If
             End If
@@ -994,19 +994,19 @@ Public Class LegacyGame
         End If
 
         ' Checks that define sections have parameters:
-        For i = 1 To NumberSections
-            iCurBegin = DefineBlocks(i).StartLine
-            iCurEnd = DefineBlocks(i).EndLine
+        For i = 1 To _numberSections
+            iCurBegin = _defineBlocks(i).StartLine
+            iCurEnd = _defineBlocks(i).EndLine
 
-            If BeginsWith(Lines(iCurBegin), "define game") Then
-                If InStr(Lines(iCurBegin), "<") = 0 Then
+            If BeginsWith(_lines(iCurBegin), "define game") Then
+                If InStr(_lines(iCurBegin), "<") = 0 Then
                     LogASLError("'define game' has no parameter - game has no name", LogType.FatalError)
                     Return True
                 End If
             Else
-                If Not BeginsWith(Lines(iCurBegin), "define synonyms") And Not BeginsWith(Lines(iCurBegin), "define options") Then
-                    If InStr(Lines(iCurBegin), "<") = 0 Then
-                        LogASLError(Lines(iCurBegin) & " has no parameter", LogType.FatalError)
+                If Not BeginsWith(_lines(iCurBegin), "define synonyms") And Not BeginsWith(_lines(iCurBegin), "define options") Then
+                    If InStr(_lines(iCurBegin), "<") = 0 Then
+                        LogASLError(_lines(iCurBegin) & " has no parameter", LogType.FatalError)
                         bHasErrors = True
                     End If
                 End If
@@ -1166,41 +1166,41 @@ Public Class LegacyGame
         ' we don't want to remove synonyms that contain apostrophes, so we only
         ' get rid of lines with an "'" at the beginning or with " '" in them
 
-        For i = 1 To UBound(Lines)
+        For i = 1 To UBound(_lines)
 
-            If BeginsWith(Lines(i), "'!qdk-note:") Then
-                Lines(i) = "#!qdk-note:" & GetEverythingAfter(Lines(i), "'!qdk-note:")
+            If BeginsWith(_lines(i), "'!qdk-note:") Then
+                _lines(i) = "#!qdk-note:" & GetEverythingAfter(_lines(i), "'!qdk-note:")
             Else
-                If BeginsWith(Lines(i), "define text ") Then
+                If BeginsWith(_lines(i), "define text ") Then
                     InTextBlock = True
-                ElseIf Trim(Lines(i)) = "define synonyms" Then
+                ElseIf Trim(_lines(i)) = "define synonyms" Then
                     InSynonymsBlock = True
-                ElseIf BeginsWith(Lines(i), "define type ") Then
+                ElseIf BeginsWith(_lines(i), "define type ") Then
                     InSynonymsBlock = True
-                ElseIf Trim(Lines(i)) = "end define" Then
+                ElseIf Trim(_lines(i)) = "end define" Then
                     InTextBlock = False
                     InSynonymsBlock = False
                 End If
 
                 If Not InTextBlock And Not InSynonymsBlock Then
-                    If InStr(Lines(i), "'") > 0 Then
-                        OblitLine = ObliterateParameters(Lines(i))
+                    If InStr(_lines(i), "'") > 0 Then
+                        OblitLine = ObliterateParameters(_lines(i))
                         If Not BeginsWith(OblitLine, "'<ERROR;") Then
                             AposPos = InStr(OblitLine, "'")
 
                             If AposPos <> 0 Then
-                                Lines(i) = Trim(Left(Lines(i), AposPos - 1))
+                                _lines(i) = Trim(Left(_lines(i), AposPos - 1))
                             End If
                         End If
                     End If
                 ElseIf InSynonymsBlock Then
-                    If Left(Trim(Lines(i)), 1) = "'" Then
-                        Lines(i) = ""
+                    If Left(Trim(_lines(i)), 1) = "'" Then
+                        _lines(i) = ""
                     Else
                         ' we look for " '", not "'" in synonyms lines
-                        AposPos = InStr(ObliterateParameters(Lines(i)), " '")
+                        AposPos = InStr(ObliterateParameters(_lines(i)), " '")
                         If AposPos <> 0 Then
-                            Lines(i) = Trim(Left(Lines(i), AposPos - 1))
+                            _lines(i) = Trim(Left(_lines(i), AposPos - 1))
                         End If
                     End If
                 End If
@@ -1250,7 +1250,7 @@ Public Class LegacyGame
     Private Function ConvertCASKeyword(CASchar As String) As String
 
         Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
-        Dim CK As String = CASkeywords(c)
+        Dim CK As String = _casKeywords(c)
 
         If CK = "!cr" Then
             CK = vbCrLf
@@ -1272,15 +1272,15 @@ Public Class LegacyGame
 
         Dim i As Integer
 
-        For i = UBound(Lines) To 1 Step -1
-            If Right(Lines(i), 2) = "__" Then
-                Lines(i) = Left(Lines(i), Len(Lines(i)) - 2) & LTrim(Lines(i + 1))
-                Lines(i + 1) = ""
+        For i = UBound(_lines) To 1 Step -1
+            If Right(_lines(i), 2) = "__" Then
+                _lines(i) = Left(_lines(i), Len(_lines(i)) - 2) & LTrim(_lines(i + 1))
+                _lines(i + 1) = ""
                 'Recalculate this line again
                 i = i + 1
-            ElseIf Right(Lines(i), 1) = "_" Then
-                Lines(i) = Left(Lines(i), Len(Lines(i)) - 1) & LTrim(Lines(i + 1))
-                Lines(i + 1) = ""
+            ElseIf Right(_lines(i), 1) = "_" Then
+                _lines(i) = Left(_lines(i), Len(_lines(i)) - 1) & LTrim(_lines(i + 1))
+                _lines(i + 1) = ""
                 'Recalculate this line again
                 i = i + 1
             End If
@@ -1302,9 +1302,9 @@ Public Class LegacyGame
         result.StartLine = 0
         result.EndLine = 0
 
-        For i = 1 To NumberSections
+        For i = 1 To _numberSections
             ' Get the first line of the define section:
-            l = Lines(DefineBlocks(i).StartLine)
+            l = _lines(_defineBlocks(i).StartLine)
 
             ' Now, starting from the first word after 'define',
             ' retrieve the next word and compare it to blockname:
@@ -1316,9 +1316,9 @@ Public Class LegacyGame
 
             If BlockType = blockname Then
                 ' Return the start and end points
-                result.StartLine = DefineBlocks(i).StartLine
-                result.EndLine = DefineBlocks(i).EndLine
-                i = NumberSections
+                result.StartLine = _defineBlocks(i).StartLine
+                result.EndLine = _defineBlocks(i).EndLine
+                i = _numberSections
             End If
         Next i
 
@@ -1340,34 +1340,34 @@ Public Class LegacyGame
 
         Param = "k" & Param ' protect against numeric block names
 
-        If Not m_oDefineBlockParams.ContainsKey(blockname) Then
+        If Not _defineBlockParams.ContainsKey(blockname) Then
             ' Lazily create cache of define block params
 
             oCache = New Dictionary(Of String, String)
-            m_oDefineBlockParams.Add(blockname, oCache)
+            _defineBlockParams.Add(blockname, oCache)
 
-            For i = 1 To NumberSections
+            For i = 1 To _numberSections
                 ' get the word after "define", e.g. "procedure"
-                sBlockType = GetEverythingAfter(Lines(DefineBlocks(i).StartLine), "define ")
+                sBlockType = GetEverythingAfter(_lines(_defineBlocks(i).StartLine), "define ")
                 SP = InStr(sBlockType, " ")
                 If SP <> 0 Then
                     sBlockType = Trim(Left(sBlockType, SP - 1))
                 End If
 
                 If sBlockType = blockname Then
-                    sBlockName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext, False)
+                    sBlockName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext, False)
 
                     sBlockName = "k" & sBlockName
 
                     If Not oCache.ContainsKey(sBlockName) Then
-                        oCache.Add(sBlockName, DefineBlocks(i).StartLine & "," & DefineBlocks(i).EndLine)
+                        oCache.Add(sBlockName, _defineBlocks(i).StartLine & "," & _defineBlocks(i).EndLine)
                     Else
                         ' silently ignore duplicates
                     End If
                 End If
             Next i
         Else
-            oCache = m_oDefineBlockParams.Item(blockname)
+            oCache = _defineBlockParams.Item(blockname)
         End If
 
         If oCache.ContainsKey(Param) Then
@@ -1402,7 +1402,7 @@ Public Class LegacyGame
         k = ""
 
         For i = 0 To 255
-            If LCase(KWord) = LCase(CASkeywords(i)) Then
+            If LCase(KWord) = LCase(_casKeywords(i)) Then
                 k = Chr(i)
                 i = 255
             End If
@@ -1433,7 +1433,7 @@ Public Class LegacyGame
                 SemiColonPos = InStr(line, ";")
                 KWord = Trim(Left(line, SemiColonPos - 1))
                 KNum = CInt(Right(line, Len(line) - SemiColonPos))
-                CASkeywords(KNum) = KWord
+                _casKeywords(KNum) = KWord
             End If
         Next
 
@@ -1473,7 +1473,7 @@ Public Class LegacyGame
         Dim TypeLine As Integer
         Dim DefineCount, CurLine As Integer
 
-        m_oDefineBlockParams = New Dictionary(Of String, Dictionary(Of String, String))
+        _defineBlockParams = New Dictionary(Of String, Dictionary(Of String, String))
 
         bResult = True
 
@@ -1503,13 +1503,13 @@ Public Class LegacyGame
             End If
 
             Dim aslLines As String() = fileData.Split(Chr(13))
-            ReDim Lines(aslLines.Length)
-            Lines(0) = ""
+            ReDim _lines(aslLines.Length)
+            _lines(0) = ""
 
             For l = 1 To aslLines.Length
-                Lines(l) = aslLines(l - 1)
-                Lines(l) = RemoveTabs(Lines(l))
-                Lines(l) = Lines(l).Trim(" "c, Chr(10), Chr(13))
+                _lines(l) = aslLines(l - 1)
+                _lines(l) = RemoveTabs(_lines(l))
+                _lines(l) = _lines(l).Trim(" "c, Chr(10), Chr(13))
             Next
 
             l = aslLines.Length
@@ -1517,7 +1517,7 @@ Public Class LegacyGame
         ElseIf LCase(Right(Filename, 4)) = ".cas" Then
             LogASLError("Loading CAS")
             LoadCASFile(Filename)
-            l = UBound(Lines)
+            l = UBound(_lines)
 
         Else
             Throw New InvalidOperationException("Unrecognized file extension")
@@ -1538,10 +1538,10 @@ Public Class LegacyGame
                 ' then something-general afterwards, something-general's startscript
                 ' gets executed before something-specific's, as we execute the
                 ' lib startscripts backwards as well
-                If BeginsWith(Lines(i), "!include ") Then
-                    LibFileName = RetrieveParameter(Lines(i), _nullContext)
+                If BeginsWith(_lines(i), "!include ") Then
+                    LibFileName = RetrieveParameter(_lines(i), _nullContext)
                     'Clear !include statement
-                    Lines(i) = ""
+                    _lines(i) = ""
                     LibraryAlreadyIncluded = False
                     LogASLError("Including library '" & LibFileName & "'...", LogType.Init)
 
@@ -1577,7 +1577,7 @@ Public Class LegacyGame
 
                             If LibResourceLines Is Nothing Then
                                 LogASLError("Library not found.", LogType.FatalError)
-                                OpenErrorReport = OpenErrorReport & "Library '" & LibraryList(NumLibraries) & "' not found." & vbCrLf
+                                _openErrorReport = _openErrorReport & "Library '" & LibraryList(NumLibraries) & "' not found." & vbCrLf
                                 Return False
                             End If
                         End If
@@ -1639,17 +1639,17 @@ Public Class LegacyGame
                             Else
                                 If LibCode(c) = "!addto game" Then
                                     InDefGameBlock = 0
-                                    For D = 1 To UBound(Lines)
-                                        If BeginsWith(Lines(D), "define game ") Then
+                                    For D = 1 To UBound(_lines)
+                                        If BeginsWith(_lines(D), "define game ") Then
                                             InDefGameBlock = 1
-                                        ElseIf BeginsWith(Lines(D), "define ") Then
+                                        ElseIf BeginsWith(_lines(D), "define ") Then
                                             If InDefGameBlock <> 0 Then
                                                 InDefGameBlock = InDefGameBlock + 1
                                             End If
-                                        ElseIf Lines(D) = "end define" And InDefGameBlock = 1 Then
+                                        ElseIf _lines(D) = "end define" And InDefGameBlock = 1 Then
                                             GameLine = D
-                                            D = UBound(Lines)
-                                        ElseIf Lines(D) = "end define" Then
+                                            D = UBound(_lines)
+                                        ElseIf _lines(D) = "end define" Then
                                             If InDefGameBlock <> 0 Then
                                                 InDefGameBlock = InDefGameBlock - 1
                                             End If
@@ -1659,9 +1659,9 @@ Public Class LegacyGame
                                     Do
                                         c = c + 1
                                         If Not BeginsWith(LibCode(c), "!end") Then
-                                            ReDim Preserve Lines(UBound(Lines) + 1)
-                                            For D = UBound(Lines) To GameLine + 1 Step -1
-                                                Lines(D) = Lines(D - 1)
+                                            ReDim Preserve _lines(UBound(_lines) + 1)
+                                            For D = UBound(_lines) To GameLine + 1 Step -1
+                                                _lines(D) = _lines(D - 1)
                                             Next D
 
                                             ' startscript lines in a library are prepended
@@ -1680,11 +1680,11 @@ Public Class LegacyGame
                                             ' precedence than lib commands.
 
                                             If LibVer >= 311 And BeginsWith(LibCode(c), "startscript ") Then
-                                                Lines(GameLine) = "lib " & LibCode(c)
+                                                _lines(GameLine) = "lib " & LibCode(c)
                                             ElseIf LibVer >= 392 And (BeginsWith(LibCode(c), "command ") Or BeginsWith(LibCode(c), "verb ")) Then
-                                                Lines(GameLine) = "lib " & LibCode(c)
+                                                _lines(GameLine) = "lib " & LibCode(c)
                                             Else
-                                                Lines(GameLine) = LibCode(c)
+                                                _lines(GameLine) = LibCode(c)
                                             End If
 
                                             l = l + 1
@@ -1693,12 +1693,12 @@ Public Class LegacyGame
                                     Loop Until BeginsWith(LibCode(c), "!end")
                                 ElseIf LibCode(c) = "!addto synonyms" Then
                                     InDefSynBlock = 0
-                                    For D = 1 To UBound(Lines)
-                                        If Lines(D) = "define synonyms" Then
+                                    For D = 1 To UBound(_lines)
+                                        If _lines(D) = "define synonyms" Then
                                             InDefSynBlock = 1
-                                        ElseIf Lines(D) = "end define" And InDefSynBlock = 1 Then
+                                        ElseIf _lines(D) = "end define" And InDefSynBlock = 1 Then
                                             SynLine = D
-                                            D = UBound(Lines)
+                                            D = UBound(_lines)
                                         End If
                                     Next D
 
@@ -1706,17 +1706,17 @@ Public Class LegacyGame
                                         'No "define synonyms" block in game - so add it
                                         AddLine("define synonyms")
                                         AddLine("end define")
-                                        SynLine = UBound(Lines)
+                                        SynLine = UBound(_lines)
                                     End If
 
                                     Do
                                         c = c + 1
                                         If Not BeginsWith(LibCode(c), "!end") Then
-                                            ReDim Preserve Lines(UBound(Lines) + 1)
-                                            For D = UBound(Lines) To SynLine + 1 Step -1
-                                                Lines(D) = Lines(D - 1)
+                                            ReDim Preserve _lines(UBound(_lines) + 1)
+                                            For D = UBound(_lines) To SynLine + 1 Step -1
+                                                _lines(D) = _lines(D - 1)
                                             Next D
-                                            Lines(SynLine) = LibCode(c)
+                                            _lines(SynLine) = LibCode(c)
                                             l = l + 1
                                             SynLine = SynLine + 1
                                         End If
@@ -1724,12 +1724,12 @@ Public Class LegacyGame
                                 ElseIf BeginsWith(LibCode(c), "!addto type ") Then
                                     InDefTypeBlock = 0
                                     TypeBlockName = LCase(RetrieveParameter(LibCode(c), _nullContext))
-                                    For D = 1 To UBound(Lines)
-                                        If LCase(Lines(D)) = "define type <" & TypeBlockName & ">" Then
+                                    For D = 1 To UBound(_lines)
+                                        If LCase(_lines(D)) = "define type <" & TypeBlockName & ">" Then
                                             InDefTypeBlock = 1
-                                        ElseIf Lines(D) = "end define" And InDefTypeBlock = 1 Then
+                                        ElseIf _lines(D) = "end define" And InDefTypeBlock = 1 Then
                                             TypeLine = D
-                                            D = UBound(Lines)
+                                            D = UBound(_lines)
                                         End If
                                     Next D
 
@@ -1737,18 +1737,18 @@ Public Class LegacyGame
                                         'No "define type (whatever)" block in game - so add it
                                         AddLine("define type <" & TypeBlockName & ">")
                                         AddLine("end define")
-                                        TypeLine = UBound(Lines)
+                                        TypeLine = UBound(_lines)
                                     End If
 
                                     Do
                                         c = c + 1
                                         If c > LibLines Then Exit Do
                                         If Not BeginsWith(LibCode(c), "!end") Then
-                                            ReDim Preserve Lines(UBound(Lines) + 1)
-                                            For D = UBound(Lines) To TypeLine + 1 Step -1
-                                                Lines(D) = Lines(D - 1)
+                                            ReDim Preserve _lines(UBound(_lines) + 1)
+                                            For D = UBound(_lines) To TypeLine + 1 Step -1
+                                                _lines(D) = _lines(D - 1)
                                             Next D
-                                            Lines(TypeLine) = LibCode(c)
+                                            _lines(TypeLine) = LibCode(c)
                                             l = l + 1
                                             TypeLine = TypeLine + 1
                                         End If
@@ -1806,11 +1806,11 @@ Public Class LegacyGame
             End If
         End If
 
-        NumberSections = 1
+        _numberSections = 1
 
         For i = 1 To l
             ' find section beginning with 'define'
-            If BeginsWith(Lines(i), "define") = True Then
+            If BeginsWith(_lines(i), "define") = True Then
                 ' Now, go through until we reach an 'end define'. However, if we
                 ' encounter another 'define' there is a nested define. So, if we
                 ' encounter 'define' we increment the definecount. When we find an
@@ -1822,9 +1822,9 @@ Public Class LegacyGame
                 ' Don't count the current line - we know it begins with 'define'...
                 CurLine = i + 1
                 Do
-                    If BeginsWith(Lines(CurLine), "define") = True Then
+                    If BeginsWith(_lines(CurLine), "define") = True Then
                         DefineCount = DefineCount + 1
-                    ElseIf BeginsWith(Lines(CurLine), "end define") = True Then
+                    ElseIf BeginsWith(_lines(CurLine), "end define") = True Then
                         DefineCount = DefineCount - 1
                     End If
                     CurLine = CurLine + 1
@@ -1834,29 +1834,29 @@ Public Class LegacyGame
                 ' Now, we know that the define section begins at i and ends at
                 ' curline. Remember where the section begins and ends:
 
-                ReDim Preserve DefineBlocks(NumberSections)
-                DefineBlocks(NumberSections) = New DefineBlock
-                DefineBlocks(NumberSections).StartLine = i
-                DefineBlocks(NumberSections).EndLine = CurLine
+                ReDim Preserve _defineBlocks(_numberSections)
+                _defineBlocks(_numberSections) = New DefineBlock
+                _defineBlocks(_numberSections).StartLine = i
+                _defineBlocks(_numberSections).EndLine = CurLine
 
-                NumberSections = NumberSections + 1
+                _numberSections = _numberSections + 1
                 i = CurLine
             End If
         Next i
 
-        NumberSections = NumberSections - 1
+        _numberSections = _numberSections - 1
 
         Dim GotGameBlock As Boolean
         GotGameBlock = False
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define game ") Then
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define game ") Then
                 GotGameBlock = True
-                i = NumberSections
+                i = _numberSections
             End If
         Next i
 
         If Not GotGameBlock Then
-            OpenErrorReport = OpenErrorReport & "No 'define game' block." & vbCrLf
+            _openErrorReport = _openErrorReport & "No 'define game' block." & vbCrLf
             Return False
         End If
 
@@ -1933,9 +1933,9 @@ Public Class LegacyGame
         'Adds a line to the game script
         Dim NumLines As Integer
 
-        NumLines = UBound(Lines) + 1
-        ReDim Preserve Lines(NumLines)
-        Lines(NumLines) = theline
+        NumLines = UBound(_lines) + 1
+        ReDim Preserve _lines(NumLines)
+        _lines(NumLines) = theline
     End Sub
 
     Private Sub LoadCASFile(thefilename As String)
@@ -1951,7 +1951,7 @@ Public Class LegacyGame
         Dim CPos, NextLinePos As Integer
         Dim c, TL, CKW, D As String
 
-        ReDim Lines(0)
+        ReDim _lines(0)
 
         If Config.ReadGameFileFromAzureBlob Then
             Using client As New WebClient
@@ -2182,12 +2182,12 @@ Public Class LegacyGame
 
         If Not FoundLook Then
             For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
-                If BeginsWith(Lines(i), "look ") Then
+                If BeginsWith(_lines(i), "look ") Then
 
-                    sLookLine = Trim(GetEverythingAfter(Lines(i), "look "))
+                    sLookLine = Trim(GetEverythingAfter(_lines(i), "look "))
 
                     If Left(sLookLine, 1) = "<" Then
-                        Print(RetrieveParameter(Lines(i), ctx), ctx)
+                        Print(RetrieveParameter(_lines(i), ctx), ctx)
                     Else
                         ExecuteScript(sLookLine, ctx, ObjID)
                     End If
@@ -2727,16 +2727,16 @@ Public Class LegacyGame
         For i = CaseBlock.StartLine + 1 To CaseBlock.EndLine - 1
             ' Go through all the cases until we find the one that matches
 
-            If Lines(i) <> "" Then
-                If Not BeginsWith(Lines(i), "case ") Then
-                    LogASLError("Invalid line in 'select case' block: '" & Lines(i) & "'", LogType.WarningError)
+            If _lines(i) <> "" Then
+                If Not BeginsWith(_lines(i), "case ") Then
+                    LogASLError("Invalid line in 'select case' block: '" & _lines(i) & "'", LogType.WarningError)
                 Else
 
-                    If BeginsWith(Lines(i), "case else ") Then
+                    If BeginsWith(_lines(i), "case else ") Then
                         CaseMatch = True
-                        CaseScript = GetEverythingAfter(Lines(i), "case else ")
+                        CaseScript = GetEverythingAfter(_lines(i), "case else ")
                     Else
-                        ThisCase = RetrieveParameter(Lines(i), ctx)
+                        ThisCase = RetrieveParameter(_lines(i), ctx)
 
                         FinLoop = False
 
@@ -2749,7 +2749,7 @@ Public Class LegacyGame
 
                             ThisCondition = Trim(Left(ThisCase, SCP - 1))
                             If ThisCondition = CheckValue Then
-                                CaseScript = GetAfterParameter(Lines(i))
+                                CaseScript = GetAfterParameter(_lines(i))
                                 CaseMatch = True
                                 FinLoop = True
                             Else
@@ -2793,8 +2793,8 @@ Public Class LegacyGame
 
         gameblock = GetDefineBlock("game")
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), VerbTag) Then
-                VerbsList = RetrieveParameter(Lines(i), ctx)
+            If BeginsWith(_lines(i), VerbTag) Then
+                VerbsList = RetrieveParameter(_lines(i), ctx)
 
                 ' The property or action the verb uses is either after a colon,
                 ' or it's the first (or only) verb on the line.
@@ -2825,7 +2825,7 @@ Public Class LegacyGame
                     If BeginsWith(CommandString, ThisVerb & " ") Then
                         FoundVerb = True
                         VerbObject = GetEverythingAfter(CommandString, ThisVerb & " ")
-                        Script = Trim(Mid(Lines(i), InStr(Lines(i), ">") + 1))
+                        Script = Trim(Mid(_lines(i), InStr(_lines(i), ">") + 1))
                     End If
 
                     If SCP <> 0 Then
@@ -4908,8 +4908,8 @@ Public Class LegacyGame
         DropFound = False
 
         For i = Objs(ObjectID).DefinitionSectionStart To Objs(ObjectID).DefinitionSectionEnd
-            If BeginsWith(Lines(i), "drop ") Then
-                DropStatement = GetEverythingAfter(Lines(i), "drop ")
+            If BeginsWith(_lines(i), "drop ") Then
+                DropStatement = GetEverythingAfter(_lines(i), "drop ")
                 DropFound = True
                 i = Objs(ObjectID).DefinitionSectionEnd
             End If
@@ -5018,10 +5018,10 @@ Public Class LegacyGame
             ' Find "examine" tag:
             If Not FoundExamineAction Then
                 For j = o.DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
-                    If BeginsWith(Lines(j), "examine ") Then
-                        ExamineAction = Trim(GetEverythingAfter(Lines(j), "examine "))
+                    If BeginsWith(_lines(j), "examine ") Then
+                        ExamineAction = Trim(GetEverythingAfter(_lines(j), "examine "))
                         If Left(ExamineAction, 1) = "<" Then
-                            Print(RetrieveParameter(Lines(j), ctx), ctx)
+                            Print(RetrieveParameter(_lines(j), ctx), ctx)
                         Else
                             ExecuteScript(ExamineAction, ctx, ObjID)
                         End If
@@ -5138,9 +5138,9 @@ Public Class LegacyGame
         Else
             For i = ProcedureBlock.StartLine + 1 To ProcedureBlock.EndLine - 1
                 If Not RunInNewThread Then
-                    ExecuteScript((Lines(i)), ctx)
+                    ExecuteScript((_lines(i)), ctx)
                 Else
-                    ExecuteScript((Lines(i)), NewThread)
+                    ExecuteScript((_lines(i)), NewThread)
                     ctx.DontProcessCommand = NewThread.DontProcessCommand
                 End If
             Next i
@@ -5567,11 +5567,11 @@ Public Class LegacyGame
         Dim i, j As Integer
         Found = False
 
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define type") Then
-                If LCase(RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define type") Then
+                If LCase(RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
                     SecID = i
-                    i = NumberSections
+                    i = _numberSections
                     Found = True
                 End If
             End If
@@ -5584,9 +5584,9 @@ Public Class LegacyGame
             Return New PropertiesActions
         End If
 
-        For i = DefineBlocks(SecID).StartLine + 1 To DefineBlocks(SecID).EndLine - 1
-            If BeginsWith(Lines(i), "type ") Then
-                IncTypeName = LCase(RetrieveParameter(Lines(i), _nullContext))
+        For i = _defineBlocks(SecID).StartLine + 1 To _defineBlocks(SecID).EndLine - 1
+            If BeginsWith(_lines(i), "type ") Then
+                IncTypeName = LCase(RetrieveParameter(_lines(i), _nullContext))
                 NewProperties = GetPropertiesInType(IncTypeName)
                 PropertyList.Properties = PropertyList.Properties & NewProperties.Properties
                 ReDim Preserve PropertyList.Actions(PropertyList.NumberActions + NewProperties.NumberActions)
@@ -5609,14 +5609,14 @@ Public Class LegacyGame
                     PropertyList.TypesIncluded(j) = NewProperties.TypesIncluded(j - PropertyList.NumberTypesIncluded)
                 Next j
                 PropertyList.NumberTypesIncluded = PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded
-            ElseIf BeginsWith(Lines(i), "action ") Then
+            ElseIf BeginsWith(_lines(i), "action ") Then
                 PropertyList.NumberActions = PropertyList.NumberActions + 1
                 ReDim Preserve PropertyList.Actions(PropertyList.NumberActions)
-                PropertyList.Actions(PropertyList.NumberActions) = GetObjectActions(GetEverythingAfter(Lines(i), "action "))
-            ElseIf BeginsWith(Lines(i), "properties ") Then
-                PropertyList.Properties = PropertyList.Properties & RetrieveParameter(Lines(i), _nullContext) & ";"
-            ElseIf Trim(Lines(i)) <> "" Then
-                PropertyList.Properties = PropertyList.Properties & Lines(i) & ";"
+                PropertyList.Actions(PropertyList.NumberActions) = GetObjectActions(GetEverythingAfter(_lines(i), "action "))
+            ElseIf BeginsWith(_lines(i), "properties ") Then
+                PropertyList.Properties = PropertyList.Properties & RetrieveParameter(_lines(i), _nullContext) & ";"
+            ElseIf Trim(_lines(i)) <> "" Then
+                PropertyList.Properties = PropertyList.Properties & _lines(i) & ";"
             End If
         Next i
 
@@ -6019,7 +6019,7 @@ Public Class LegacyGame
             Dim result As String = ""
 
             For i = procblock.StartLine + 1 To procblock.EndLine - 1
-                ExecuteScript(Lines(i), NewThread)
+                ExecuteScript(_lines(i), NewThread)
                 result = NewThread.FunctionReturnValue
             Next i
 
@@ -7118,9 +7118,9 @@ Public Class LegacyGame
         Dim menuScript As New Dictionary(Of String, String)
 
         For i = choiceblock.StartLine + 1 To choiceblock.EndLine - 1
-            If BeginsWith(Lines(i), "choice ") Then
-                menuOptions.Add(CStr(i), RetrieveParameter(Lines(i), ctx))
-                menuScript.Add(CStr(i), Trim(Right(Lines(i), Len(Lines(i)) - InStr(Lines(i), ">"))))
+            If BeginsWith(_lines(i), "choice ") Then
+                menuOptions.Add(CStr(i), RetrieveParameter(_lines(i), ctx))
+                menuScript.Add(CStr(i), Trim(Right(_lines(i), Len(_lines(i)) - InStr(_lines(i), ">"))))
             End If
         Next i
 
@@ -7145,13 +7145,13 @@ Public Class LegacyGame
         DefaultFontSize = 9
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), "default fontname ") Then
-                ThisFontName = RetrieveParameter(Lines(i), _nullContext)
+            If BeginsWith(_lines(i), "default fontname ") Then
+                ThisFontName = RetrieveParameter(_lines(i), _nullContext)
                 If ThisFontName <> "" Then
                     DefaultFontName = ThisFontName
                 End If
-            ElseIf BeginsWith(Lines(i), "default fontsize ") Then
-                ThisFontSize = CInt(RetrieveParameter(Lines(i), _nullContext))
+            ElseIf BeginsWith(_lines(i), "default fontsize ") Then
+                ThisFontSize = CInt(RetrieveParameter(_lines(i), _nullContext))
                 If ThisFontSize <> 0 Then
                     DefaultFontSize = ThisFontSize
                 End If
@@ -7167,12 +7167,12 @@ Public Class LegacyGame
         Dim iNumNumber As Integer
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(i), "define variable ") Then
+            If BeginsWith(_lines(i), "define variable ") Then
 
                 ThisVariable = New VariableType
                 ReDim ThisVariable.VariableContents(0)
 
-                ThisVariable.VariableName = RetrieveParameter(Lines(i), _nullContext)
+                ThisVariable.VariableName = RetrieveParameter(_lines(i), _nullContext)
                 ThisVariable.DisplayString = ""
                 ThisVariable.NoZeroDisplay = False
                 ThisVariable.OnChangeScript = ""
@@ -7184,26 +7184,26 @@ Public Class LegacyGame
                 Do
                     i = i + 1
 
-                    If BeginsWith(Lines(i), "type ") Then
-                        ThisType = GetEverythingAfter(Lines(i), "type ")
+                    If BeginsWith(_lines(i), "type ") Then
+                        ThisType = GetEverythingAfter(_lines(i), "type ")
                         If ThisType <> "string" And ThisType <> "numeric" Then
                             LogASLError("Unrecognised variable type in variable '" & ThisVariable.VariableName & "' - type '" & ThisType & "'", LogType.WarningError)
                             Exit Do
                         End If
-                    ElseIf BeginsWith(Lines(i), "onchange ") Then
-                        ThisVariable.OnChangeScript = GetEverythingAfter(Lines(i), "onchange ")
-                    ElseIf BeginsWith(Lines(i), "display ") Then
-                        DisplayString = GetEverythingAfter(Lines(i), "display ")
+                    ElseIf BeginsWith(_lines(i), "onchange ") Then
+                        ThisVariable.OnChangeScript = GetEverythingAfter(_lines(i), "onchange ")
+                    ElseIf BeginsWith(_lines(i), "display ") Then
+                        DisplayString = GetEverythingAfter(_lines(i), "display ")
                         If BeginsWith(DisplayString, "nozero ") Then
                             ThisVariable.NoZeroDisplay = True
                             DisplayString = GetEverythingAfter(DisplayString, "nozero ")
                         End If
-                        ThisVariable.DisplayString = RetrieveParameter(Lines(i), _nullContext, False)
-                    ElseIf BeginsWith(Lines(i), "value ") Then
-                        ThisVariable.VariableContents(0) = RetrieveParameter(Lines(i), _nullContext)
+                        ThisVariable.DisplayString = RetrieveParameter(_lines(i), _nullContext, False)
+                    ElseIf BeginsWith(_lines(i), "value ") Then
+                        ThisVariable.VariableContents(0) = RetrieveParameter(_lines(i), _nullContext)
                     End If
 
-                Loop Until Trim(Lines(i)) = "end define"
+                Loop Until Trim(_lines(i)) = "end define"
 
                 If ThisType = "string" Then
                     ' Create string variable
@@ -7246,25 +7246,25 @@ Public Class LegacyGame
         NestBlock = 0
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If NestBlock = 0 Then
-                If BeginsWith(Lines(i), "define ") Then
+                If BeginsWith(_lines(i), "define ") Then
                     NestBlock = NestBlock + 1
-                ElseIf BeginsWith(Lines(i), "properties ") Then
-                    AddToObjectProperties(RetrieveParameter(Lines(i), _nullContext), NumberObjs, _nullContext)
-                ElseIf BeginsWith(Lines(i), "type ") Then
+                ElseIf BeginsWith(_lines(i), "properties ") Then
+                    AddToObjectProperties(RetrieveParameter(_lines(i), _nullContext), NumberObjs, _nullContext)
+                ElseIf BeginsWith(_lines(i), "type ") Then
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                     ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-                    o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(Lines(i), _nullContext)
+                    o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(i), _nullContext)
 
-                    PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), _nullContext))
+                    PropertyData = GetPropertiesInType(RetrieveParameter(_lines(i), _nullContext))
                     AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                     For k = 1 To PropertyData.NumberActions
                         AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                     Next k
-                ElseIf BeginsWith(Lines(i), "action ") Then
-                    AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, _nullContext)
+                ElseIf BeginsWith(_lines(i), "action ") Then
+                    AddToObjectActions(GetEverythingAfter(_lines(i), "action "), NumberObjs, _nullContext)
                 End If
             Else
-                If Trim(Lines(i)) = "end define" Then
+                If Trim(_lines(i)) = "end define" Then
                     NestBlock = NestBlock - 1
                 End If
             End If
@@ -7279,24 +7279,24 @@ Public Class LegacyGame
         Dim menuTitle As String = ""
         Dim menuOptions As New Dictionary(Of String, String)
 
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define menu ") Then
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define menu ") Then
 
                 If MenuExists Then
-                    LogASLError("Can't load menu '" & RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
+                    LogASLError("Can't load menu '" & RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
                 Else
-                    menuTitle = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+                    menuTitle = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
 
-                    For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                        If Trim(Lines(j)) <> "" Then
-                            SCP = InStr(Lines(j), ":")
-                            If SCP = 0 And Lines(j) <> "-" Then
-                                LogASLError("No menu command specified in menu '" & menuTitle & "', item '" & Lines(j), LogType.WarningError)
+                    For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                        If Trim(_lines(j)) <> "" Then
+                            SCP = InStr(_lines(j), ":")
+                            If SCP = 0 And _lines(j) <> "-" Then
+                                LogASLError("No menu command specified in menu '" & menuTitle & "', item '" & _lines(j), LogType.WarningError)
                             Else
-                                If Lines(j) = "-" Then
+                                If _lines(j) = "-" Then
                                     menuOptions.Add("k" & CStr(j), "-")
                                 Else
-                                    menuOptions.Add(Trim(Mid(Lines(j), SCP + 1)), Trim(Left(Lines(j), SCP - 1)))
+                                    menuOptions.Add(Trim(Mid(_lines(j), SCP + 1)), Trim(Left(_lines(j), SCP - 1)))
                                 End If
 
                             End If
@@ -7322,11 +7322,11 @@ Public Class LegacyGame
 
         For i = GetDefineBlock("options").StartLine + 1 To GetDefineBlock("options").EndLine - 1
 
-            If BeginsWith(Lines(i), "panes ") Then
-                CurOpt = LCase(Trim(GetEverythingAfter(Lines(i), "panes ")))
+            If BeginsWith(_lines(i), "panes ") Then
+                CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "panes ")))
                 m_player.SetPanesVisible(CurOpt)
-            ElseIf BeginsWith(Lines(i), "abbreviations ") Then
-                CurOpt = LCase(Trim(GetEverythingAfter(Lines(i), "abbreviations ")))
+            ElseIf BeginsWith(_lines(i), "abbreviations ") Then
+                CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "abbreviations ")))
                 If CurOpt = "off" Then UseAbbreviations = False Else UseAbbreviations = True
             End If
         Next i
@@ -7342,18 +7342,18 @@ Public Class LegacyGame
 
         ' see if define type <defaultroom> exists:
         DefaultExists = False
-        For i = 1 To NumberSections
-            If Trim(Lines(DefineBlocks(i).StartLine)) = "define type <defaultroom>" Then
+        For i = 1 To _numberSections
+            If Trim(_lines(_defineBlocks(i).StartLine)) = "define type <defaultroom>" Then
                 DefaultExists = True
                 DefaultProperties = GetPropertiesInType("defaultroom")
-                i = NumberSections
+                i = _numberSections
             End If
         Next i
 
         Dim PlaceData As String
         Dim SCP As Integer
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define room ") Then
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define room ") Then
                 NumberRooms = NumberRooms + 1
                 ReDim Preserve Rooms(NumberRooms)
                 Rooms(NumberRooms) = New RoomType
@@ -7364,7 +7364,7 @@ Public Class LegacyGame
 
                 Dim r = Rooms(NumberRooms)
 
-                r.RoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+                r.RoomName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 Objs(NumberObjs).ObjectName = r.RoomName
                 Objs(NumberObjs).IsRoom = True
                 Objs(NumberObjs).CorresRoom = r.RoomName
@@ -7391,26 +7391,26 @@ Public Class LegacyGame
                     Next k
                 End If
 
-                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                    If BeginsWith(Lines(j), "define ") Then
+                For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                    If BeginsWith(_lines(j), "define ") Then
                         'skip nested blocks
                         NestedBlock = 1
                         Do
                             j = j + 1
-                            If BeginsWith(Lines(j), "define ") Then
+                            If BeginsWith(_lines(j), "define ") Then
                                 NestedBlock = NestedBlock + 1
-                            ElseIf Trim(Lines(j)) = "end define" Then
+                            ElseIf Trim(_lines(j)) = "end define" Then
                                 NestedBlock = NestedBlock - 1
                             End If
                         Loop Until NestedBlock = 0
                     End If
 
-                    If GameASLVersion >= 280 And BeginsWith(Lines(j), "alias ") Then
-                        r.RoomAlias = RetrieveParameter(Lines(j), _nullContext)
+                    If GameASLVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
+                        r.RoomAlias = RetrieveParameter(_lines(j), _nullContext)
                         Objs(NumberObjs).ObjectAlias = r.RoomAlias
                         If GameASLVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, NumberObjs, _nullContext)
-                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "description ") Then
-                        r.Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
+                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "description ") Then
+                        r.Description = GetTextOrScript(GetEverythingAfter(_lines(j), "description "))
                         If GameASLVersion >= 350 Then
                             If r.Description.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "description", r.Description.Data)
@@ -7418,9 +7418,9 @@ Public Class LegacyGame
                                 AddToObjectProperties("description=" & r.Description.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "out ") Then
-                        r.Out.Text = RetrieveParameter(Lines(j), _nullContext)
-                        r.Out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
+                    ElseIf BeginsWith(_lines(j), "out ") Then
+                        r.Out.Text = RetrieveParameter(_lines(j), _nullContext)
+                        r.Out.Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                         If GameASLVersion >= 350 Then
                             If r.Out.Script <> "" Then
                                 AddObjectAction(NumberObjs, "out", r.Out.Script)
@@ -7428,8 +7428,8 @@ Public Class LegacyGame
 
                             AddToObjectProperties("out=" & r.Out.Text, NumberObjs, _nullContext)
                         End If
-                    ElseIf BeginsWith(Lines(j), "east ") Then
-                        r.East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
+                    ElseIf BeginsWith(_lines(j), "east ") Then
+                        r.East = GetTextOrScript(GetEverythingAfter(_lines(j), "east "))
                         If GameASLVersion >= 350 Then
                             If r.East.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "east", r.East.Data)
@@ -7437,8 +7437,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("east=" & r.East.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "west ") Then
-                        r.West = GetTextOrScript(GetEverythingAfter(Lines(j), "west "))
+                    ElseIf BeginsWith(_lines(j), "west ") Then
+                        r.West = GetTextOrScript(GetEverythingAfter(_lines(j), "west "))
                         If GameASLVersion >= 350 Then
                             If r.West.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "west", r.West.Data)
@@ -7446,8 +7446,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("west=" & r.West.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "north ") Then
-                        r.North = GetTextOrScript(GetEverythingAfter(Lines(j), "north "))
+                    ElseIf BeginsWith(_lines(j), "north ") Then
+                        r.North = GetTextOrScript(GetEverythingAfter(_lines(j), "north "))
                         If GameASLVersion >= 350 Then
                             If r.North.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "north", r.North.Data)
@@ -7455,8 +7455,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("north=" & r.North.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "south ") Then
-                        r.South = GetTextOrScript(GetEverythingAfter(Lines(j), "south "))
+                    ElseIf BeginsWith(_lines(j), "south ") Then
+                        r.South = GetTextOrScript(GetEverythingAfter(_lines(j), "south "))
                         If GameASLVersion >= 350 Then
                             If r.South.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "south", r.South.Data)
@@ -7464,8 +7464,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("south=" & r.South.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "northeast ") Then
-                        r.NorthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "northeast "))
+                    ElseIf BeginsWith(_lines(j), "northeast ") Then
+                        r.NorthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "northeast "))
                         If GameASLVersion >= 350 Then
                             If r.NorthEast.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "northeast", r.NorthEast.Data)
@@ -7473,8 +7473,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("northeast=" & r.NorthEast.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "northwest ") Then
-                        r.NorthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "northwest "))
+                    ElseIf BeginsWith(_lines(j), "northwest ") Then
+                        r.NorthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "northwest "))
                         If GameASLVersion >= 350 Then
                             If r.NorthWest.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "northwest", r.NorthWest.Data)
@@ -7482,8 +7482,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("northwest=" & r.NorthWest.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "southeast ") Then
-                        r.SouthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "southeast "))
+                    ElseIf BeginsWith(_lines(j), "southeast ") Then
+                        r.SouthEast = GetTextOrScript(GetEverythingAfter(_lines(j), "southeast "))
                         If GameASLVersion >= 350 Then
                             If r.SouthEast.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "southeast", r.SouthEast.Data)
@@ -7491,8 +7491,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("southeast=" & r.SouthEast.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "southwest ") Then
-                        r.SouthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "southwest "))
+                    ElseIf BeginsWith(_lines(j), "southwest ") Then
+                        r.SouthWest = GetTextOrScript(GetEverythingAfter(_lines(j), "southwest "))
                         If GameASLVersion >= 350 Then
                             If r.SouthWest.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "southwest", r.SouthWest.Data)
@@ -7500,8 +7500,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("southwest=" & r.SouthWest.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "up ") Then
-                        r.Up = GetTextOrScript(GetEverythingAfter(Lines(j), "up "))
+                    ElseIf BeginsWith(_lines(j), "up ") Then
+                        r.Up = GetTextOrScript(GetEverythingAfter(_lines(j), "up "))
                         If GameASLVersion >= 350 Then
                             If r.Up.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "up", r.Up.Data)
@@ -7509,8 +7509,8 @@ Public Class LegacyGame
                                 AddToObjectProperties("up=" & r.Up.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf BeginsWith(Lines(j), "down ") Then
-                        r.Down = GetTextOrScript(GetEverythingAfter(Lines(j), "down "))
+                    ElseIf BeginsWith(_lines(j), "down ") Then
+                        r.Down = GetTextOrScript(GetEverythingAfter(_lines(j), "down "))
                         If GameASLVersion >= 350 Then
                             If r.Down.Type = TextActionType.Script Then
                                 AddObjectAction(NumberObjs, "down", r.Down.Data)
@@ -7518,29 +7518,29 @@ Public Class LegacyGame
                                 AddToObjectProperties("down=" & r.Down.Data, NumberObjs, _nullContext)
                             End If
                         End If
-                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "indescription ") Then
-                        r.InDescription = RetrieveParameter(Lines(j), _nullContext)
+                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "indescription ") Then
+                        r.InDescription = RetrieveParameter(_lines(j), _nullContext)
                         If GameASLVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, NumberObjs, _nullContext)
-                    ElseIf GameASLVersion >= 280 And BeginsWith(Lines(j), "look ") Then
-                        r.Look = RetrieveParameter(Lines(j), _nullContext)
+                    ElseIf GameASLVersion >= 280 And BeginsWith(_lines(j), "look ") Then
+                        r.Look = RetrieveParameter(_lines(j), _nullContext)
                         If GameASLVersion >= 350 Then AddToObjectProperties("look=" & r.Look, NumberObjs, _nullContext)
-                    ElseIf BeginsWith(Lines(j), "prefix ") Then
-                        r.Prefix = RetrieveParameter(Lines(j), _nullContext)
+                    ElseIf BeginsWith(_lines(j), "prefix ") Then
+                        r.Prefix = RetrieveParameter(_lines(j), _nullContext)
                         If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, NumberObjs, _nullContext)
-                    ElseIf BeginsWith(Lines(j), "script ") Then
-                        r.Script = GetEverythingAfter(Lines(j), "script ")
+                    ElseIf BeginsWith(_lines(j), "script ") Then
+                        r.Script = GetEverythingAfter(_lines(j), "script ")
                         AddObjectAction(NumberObjs, "script", r.Script)
-                    ElseIf BeginsWith(Lines(j), "command ") Then
+                    ElseIf BeginsWith(_lines(j), "command ") Then
                         r.NumberCommands = r.NumberCommands + 1
                         ReDim Preserve r.Commands(r.NumberCommands)
                         r.Commands(r.NumberCommands) = New UserDefinedCommandType
-                        r.Commands(r.NumberCommands).CommandText = RetrieveParameter(Lines(j), _nullContext, False)
-                        r.Commands(r.NumberCommands).CommandScript = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                    ElseIf BeginsWith(Lines(j), "place ") Then
+                        r.Commands(r.NumberCommands).CommandText = RetrieveParameter(_lines(j), _nullContext, False)
+                        r.Commands(r.NumberCommands).CommandScript = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
+                    ElseIf BeginsWith(_lines(j), "place ") Then
                         r.NumberPlaces = r.NumberPlaces + 1
                         ReDim Preserve r.Places(r.NumberPlaces)
                         r.Places(r.NumberPlaces) = New PlaceType
-                        PlaceData = RetrieveParameter(Lines(j), _nullContext)
+                        PlaceData = RetrieveParameter(_lines(j), _nullContext)
                         SCP = InStr(PlaceData, ";")
                         If SCP = 0 Then
                             r.Places(r.NumberPlaces).PlaceName = PlaceData
@@ -7548,31 +7548,31 @@ Public Class LegacyGame
                             r.Places(r.NumberPlaces).PlaceName = Trim(Mid(PlaceData, SCP + 1))
                             r.Places(r.NumberPlaces).Prefix = Trim(Left(PlaceData, SCP - 1))
                         End If
-                        r.Places(r.NumberPlaces).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                    ElseIf BeginsWith(Lines(j), "use ") Then
+                        r.Places(r.NumberPlaces).Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
+                    ElseIf BeginsWith(_lines(j), "use ") Then
                         r.NumberUse = r.NumberUse + 1
                         ReDim Preserve r.Use(r.NumberUse)
                         r.Use(r.NumberUse) = New ScriptText
-                        r.Use(r.NumberUse).Text = RetrieveParameter(Lines(j), _nullContext)
-                        r.Use(r.NumberUse).Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
-                    ElseIf BeginsWith(Lines(j), "properties ") Then
-                        AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                    ElseIf BeginsWith(Lines(j), "type ") Then
+                        r.Use(r.NumberUse).Text = RetrieveParameter(_lines(j), _nullContext)
+                        r.Use(r.NumberUse).Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
+                    ElseIf BeginsWith(_lines(j), "properties ") Then
+                        AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                    ElseIf BeginsWith(_lines(j), "type ") Then
                         Objs(NumberObjs).NumberTypesIncluded = Objs(NumberObjs).NumberTypesIncluded + 1
                         ReDim Preserve Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded)
-                        Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
+                        Objs(NumberObjs).TypesIncluded(Objs(NumberObjs).NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
 
-                        PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                        PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
                         AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                         For k = 1 To PropertyData.NumberActions
                             AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                         Next k
-                    ElseIf BeginsWith(Lines(j), "action ") Then
-                        AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
-                    ElseIf BeginsWith(Lines(j), "beforeturn ") Then
-                        r.BeforeTurnScript = r.BeforeTurnScript & GetEverythingAfter(Lines(j), "beforeturn ") & vbCrLf
-                    ElseIf BeginsWith(Lines(j), "afterturn ") Then
-                        r.AfterTurnScript = r.AfterTurnScript & GetEverythingAfter(Lines(j), "afterturn ") & vbCrLf
+                    ElseIf BeginsWith(_lines(j), "action ") Then
+                        AddToObjectActions(GetEverythingAfter(_lines(j), "action "), NumberObjs, _nullContext)
+                    ElseIf BeginsWith(_lines(j), "beforeturn ") Then
+                        r.BeforeTurnScript = r.BeforeTurnScript & GetEverythingAfter(_lines(j), "beforeturn ") & vbCrLf
+                    ElseIf BeginsWith(_lines(j), "afterturn ") Then
+                        r.AfterTurnScript = r.AfterTurnScript & GetEverythingAfter(_lines(j), "afterturn ") & vbCrLf
                     End If
                 Next j
             End If
@@ -7597,10 +7597,10 @@ Public Class LegacyGame
         End If
 
         For i = SynonymBlock.StartLine + 1 To SynonymBlock.EndLine - 1
-            EqualsSignPos = InStr(Lines(i), "=")
+            EqualsSignPos = InStr(_lines(i), "=")
             If EqualsSignPos <> 0 Then
-                OriginalWordsList = Trim(Left(Lines(i), EqualsSignPos - 1))
-                ConvertWord = Trim(Mid(Lines(i), EqualsSignPos + 1))
+                OriginalWordsList = Trim(Left(_lines(i), EqualsSignPos - 1))
+                ConvertWord = Trim(Mid(_lines(i), EqualsSignPos + 1))
 
                 'Go through each word in OriginalWordsList (sep.
                 'by ";"):
@@ -7633,22 +7633,22 @@ Public Class LegacyGame
     Private Sub SetUpTimers()
         Dim i, j As Integer
 
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define timer ") Then
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define timer ") Then
                 NumberTimers = NumberTimers + 1
                 ReDim Preserve Timers(NumberTimers)
                 Timers(NumberTimers) = New TimerType
-                Timers(NumberTimers).TimerName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+                Timers(NumberTimers).TimerName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 Timers(NumberTimers).TimerActive = False
 
-                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                    If BeginsWith(Lines(j), "interval ") Then
-                        Timers(NumberTimers).TimerInterval = CInt(RetrieveParameter(Lines(j), _nullContext))
-                    ElseIf BeginsWith(Lines(j), "action ") Then
-                        Timers(NumberTimers).TimerAction = GetEverythingAfter(Lines(j), "action ")
-                    ElseIf Trim(LCase(Lines(j))) = "enabled" Then
+                For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                    If BeginsWith(_lines(j), "interval ") Then
+                        Timers(NumberTimers).TimerInterval = CInt(RetrieveParameter(_lines(j), _nullContext))
+                    ElseIf BeginsWith(_lines(j), "action ") Then
+                        Timers(NumberTimers).TimerAction = GetEverythingAfter(_lines(j), "action ")
+                    ElseIf Trim(LCase(_lines(j))) = "enabled" Then
                         Timers(NumberTimers).TimerActive = True
-                    ElseIf Trim(LCase(Lines(j))) = "disabled" Then
+                    ElseIf Trim(LCase(_lines(j))) = "disabled" Then
                         Timers(NumberTimers).TimerActive = False
                     End If
                 Next j
@@ -7666,10 +7666,10 @@ Public Class LegacyGame
         AfterTurnScript = ""
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), "beforeturn ") Then
-                BeforeTurnScript = BeforeTurnScript & GetEverythingAfter(Trim(Lines(i)), "beforeturn ") & vbCrLf
-            ElseIf BeginsWith(Lines(i), "afterturn ") Then
-                AfterTurnScript = AfterTurnScript & GetEverythingAfter(Trim(Lines(i)), "afterturn ") & vbCrLf
+            If BeginsWith(_lines(i), "beforeturn ") Then
+                BeforeTurnScript = BeforeTurnScript & GetEverythingAfter(Trim(_lines(i)), "beforeturn ") & vbCrLf
+            ElseIf BeginsWith(_lines(i), "afterturn ") Then
+                AfterTurnScript = AfterTurnScript & GetEverythingAfter(Trim(_lines(i)), "afterturn ") & vbCrLf
             End If
         Next i
     End Sub
@@ -7690,8 +7690,8 @@ Public Class LegacyGame
         ExamineIsCustomised = False
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), "error ") Then
-                ErrorInfo = RetrieveParameter(Lines(i), _nullContext, False)
+            If BeginsWith(_lines(i), "error ") Then
+                ErrorInfo = RetrieveParameter(_lines(i), _nullContext, False)
                 SemiColonPos = InStr(ErrorInfo, ";")
 
                 sErrorName = Left(ErrorInfo, SemiColonPos - 1)
@@ -7905,8 +7905,8 @@ Public Class LegacyGame
 
         'see if room has an alias
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-            If BeginsWith(Lines(i), "alias") Then
-                AliasName = RetrieveParameter(Lines(i), _nullContext)
+            If BeginsWith(_lines(i), "alias") Then
+                AliasName = RetrieveParameter(_lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
@@ -7926,8 +7926,8 @@ Public Class LegacyGame
         'find indescription line:
         InDesc = "unfound"
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-            If BeginsWith(Lines(i), "indescription") Then
-                InDesc = Trim(RetrieveParameter(Lines(i), _nullContext))
+            If BeginsWith(_lines(i), "indescription") Then
+                InDesc = Trim(RetrieveParameter(_lines(i), _nullContext))
                 i = roomblock.EndLine
             End If
         Next i
@@ -8038,39 +8038,39 @@ Public Class LegacyGame
         PossDir = ""
 
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-            If BeginsWith(Lines(i), "out") Then
-                Doorways = RetrieveParameter(Lines(i), _nullContext)
+            If BeginsWith(_lines(i), "out") Then
+                Doorways = RetrieveParameter(_lines(i), _nullContext)
             End If
 
-            If BeginsWith(Lines(i), "north ") Then
+            If BeginsWith(_lines(i), "north ") Then
                 NSEW = NSEW & "|bnorth|xb, "
                 PossDir = PossDir & "n"
-            ElseIf BeginsWith(Lines(i), "south ") Then
+            ElseIf BeginsWith(_lines(i), "south ") Then
                 NSEW = NSEW & "|bsouth|xb, "
                 PossDir = PossDir & "s"
-            ElseIf BeginsWith(Lines(i), "east ") Then
+            ElseIf BeginsWith(_lines(i), "east ") Then
                 NSEW = NSEW & "|beast|xb, "
                 PossDir = PossDir & "e"
-            ElseIf BeginsWith(Lines(i), "west ") Then
+            ElseIf BeginsWith(_lines(i), "west ") Then
                 NSEW = NSEW & "|bwest|xb, "
                 PossDir = PossDir & "w"
-            ElseIf BeginsWith(Lines(i), "northeast ") Then
+            ElseIf BeginsWith(_lines(i), "northeast ") Then
                 NSEW = NSEW & "|bnortheast|xb, "
                 PossDir = PossDir & "a"
-            ElseIf BeginsWith(Lines(i), "northwest ") Then
+            ElseIf BeginsWith(_lines(i), "northwest ") Then
                 NSEW = NSEW & "|bnorthwest|xb, "
                 PossDir = PossDir & "b"
-            ElseIf BeginsWith(Lines(i), "southeast ") Then
+            ElseIf BeginsWith(_lines(i), "southeast ") Then
                 NSEW = NSEW & "|bsoutheast|xb, "
                 PossDir = PossDir & "c"
-            ElseIf BeginsWith(Lines(i), "southwest ") Then
+            ElseIf BeginsWith(_lines(i), "southwest ") Then
                 NSEW = NSEW & "|bsouthwest|xb, "
                 PossDir = PossDir & "d"
             End If
 
-            If BeginsWith(Lines(i), "place") Then
+            If BeginsWith(_lines(i), "place") Then
                 'remove any prefix semicolon from printed text
-                PL = RetrieveParameter(Lines(i), _nullContext)
+                PL = RetrieveParameter(_lines(i), _nullContext)
                 PLNF = PL 'Used in object list - no formatting or prefix
                 If InStr(PL, ";") > 0 Then
                     PLNF = Right(PL, Len(PL) - (InStr(PL, ";") + 1))
@@ -8089,8 +8089,8 @@ Public Class LegacyGame
             'see if outside has an alias
             outside = DefineBlockParam("room", Doorways)
             For i = outside.StartLine + 1 To outside.EndLine - 1
-                If BeginsWith(Lines(i), "alias") Then
-                    AliasOut = RetrieveParameter(Lines(i), _nullContext)
+                If BeginsWith(_lines(i), "alias") Then
+                    AliasOut = RetrieveParameter(_lines(i), _nullContext)
                     i = outside.EndLine
                 End If
             Next i
@@ -8163,8 +8163,8 @@ Public Class LegacyGame
         ' First, look in the "define room" block:
         DescTagExist = False
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-            If BeginsWith(Lines(i), "description ") Then
-                DescLine = Lines(i)
+            If BeginsWith(_lines(i), "description ") Then
+                DescLine = _lines(i)
                 DescTagExist = True
                 i = roomblock.EndLine
             End If
@@ -8173,8 +8173,8 @@ Public Class LegacyGame
         If DescTagExist = False Then
             'Look in the "define game" block:
             For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-                If BeginsWith(Lines(i), "description ") Then
-                    DescLine = Lines(i)
+                If BeginsWith(_lines(i), "description ") Then
+                    DescLine = _lines(i)
                     DescTagExist = True
                     i = gameblock.EndLine
                 End If
@@ -8204,10 +8204,10 @@ Public Class LegacyGame
 
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             ' don't get the 'look' statements in nested define blocks
-            If BeginsWith(Lines(i), "define") Then DefBlk = DefBlk + 1
-            If BeginsWith(Lines(i), "end define") Then DefBlk = DefBlk - 1
-            If BeginsWith(Lines(i), "look") And DefBlk = 0 Then
-                LookString = RetrieveParameter(Lines(i), _nullContext)
+            If BeginsWith(_lines(i), "define") Then DefBlk = DefBlk + 1
+            If BeginsWith(_lines(i), "end define") Then DefBlk = DefBlk - 1
+            If BeginsWith(_lines(i), "look") And DefBlk = 0 Then
+                LookString = RetrieveParameter(_lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
@@ -8387,9 +8387,9 @@ Public Class LegacyGame
             ' Check "define game" block
             roomblock = GetDefineBlock("game")
             For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-                If BeginsWith(Lines(i), CommandTag) Then
+                If BeginsWith(_lines(i), CommandTag) Then
 
-                    CommandList = RetrieveParameter(Lines(i), ctx, False)
+                    CommandList = RetrieveParameter(_lines(i), ctx, False)
                     Do
                         EndPos = InStr(CommandList, ";")
                         If EndPos = 0 Then
@@ -8401,8 +8401,8 @@ Public Class LegacyGame
 
                         If IsCompatible(LCase(thecommand), LCase(CurCmd)) Then
                             CommandLine = CurCmd
-                            ScriptPos = InStr(Lines(i), ">") + 1
-                            ScriptToExecute = Trim(Mid(Lines(i), ScriptPos))
+                            ScriptPos = InStr(_lines(i), ">") + 1
+                            ScriptToExecute = Trim(Mid(_lines(i), ScriptPos))
                             FoundCommand = True
                             i = roomblock.EndLine
                             Exit Do
@@ -8928,7 +8928,7 @@ Public Class LegacyGame
 
         lines.Add("QUEST200.1")
         lines.Add(GetOriginalFilenameForQSG)
-        lines.Add(GameName)
+        lines.Add(_gameName)
         lines.Add(CurrentRoom)
 
         lines.Add("!c")
@@ -9115,19 +9115,19 @@ Public Class LegacyGame
 
         ' see if define type <default> exists:
         DefaultExists = False
-        For i = 1 To NumberSections
-            If Trim(Lines(DefineBlocks(i).StartLine)) = "define type <default>" Then
+        For i = 1 To _numberSections
+            If Trim(_lines(_defineBlocks(i).StartLine)) = "define type <default>" Then
                 DefaultExists = True
                 DefaultProperties = GetPropertiesInType("default")
-                i = NumberSections
+                i = _numberSections
             End If
         Next i
 
-        For i = 1 To NumberSections
-            cdf = DefineBlocks(i)
-            If BeginsWith(Lines(cdf.StartLine), "define room") Or BeginsWith(Lines(cdf.StartLine), "define game") Or BeginsWith(Lines(cdf.StartLine), "define object ") Then
-                If BeginsWith(Lines(cdf.StartLine), "define room") Then
-                    OrigCRoomName = RetrieveParameter(Lines(cdf.StartLine), _nullContext)
+        For i = 1 To _numberSections
+            cdf = _defineBlocks(i)
+            If BeginsWith(_lines(cdf.StartLine), "define room") Or BeginsWith(_lines(cdf.StartLine), "define game") Or BeginsWith(_lines(cdf.StartLine), "define object ") Then
+                If BeginsWith(_lines(cdf.StartLine), "define room") Then
+                    OrigCRoomName = RetrieveParameter(_lines(cdf.StartLine), _nullContext)
                 Else
                     OrigCRoomName = ""
                 End If
@@ -9135,13 +9135,13 @@ Public Class LegacyGame
                 Dim startLine As Integer = cdf.StartLine
                 Dim endLine As Integer = cdf.EndLine
 
-                If BeginsWith(Lines(cdf.StartLine), "define object ") Then
+                If BeginsWith(_lines(cdf.StartLine), "define object ") Then
                     startLine = startLine - 1
                     endLine = endLine + 1
                 End If
 
                 For j = startLine + 1 To endLine - 1
-                    If BeginsWith(Lines(j), "define object") Then
+                    If BeginsWith(_lines(j), "define object") Then
                         CRoomName = OrigCRoomName
 
                         NumberObjs = NumberObjs + 1
@@ -9150,7 +9150,7 @@ Public Class LegacyGame
 
                         Dim o = Objs(NumberObjs)
 
-                        o.ObjectName = RetrieveParameter(Lines(j), _nullContext)
+                        o.ObjectName = RetrieveParameter(_lines(j), _nullContext)
                         o.ObjectAlias = o.ObjectName
                         o.DefinitionSectionStart = j
                         o.ContainerRoom = CRoomName
@@ -9172,77 +9172,77 @@ Public Class LegacyGame
                         e = 0
                         Do
                             j = j + 1
-                            If Trim(Lines(j)) = "hidden" Then
+                            If Trim(_lines(j)) = "hidden" Then
                                 o.Exists = False
                                 e = 1
                                 If GameASLVersion >= 311 Then AddToObjectProperties("hidden", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                CRoomName = RetrieveParameter(Lines(j), _nullContext)
-                            ElseIf BeginsWith(Lines(j), "prefix ") Then
-                                o.Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
+                            ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
+                                CRoomName = RetrieveParameter(_lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "prefix ") Then
+                                o.Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
                                 If GameASLVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "suffix ") Then
-                                o.Suffix = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "suffix ") Then
+                                o.Suffix = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, NumberObjs, _nullContext)
-                            ElseIf Trim(Lines(j)) = "invisible" Then
+                            ElseIf Trim(_lines(j)) = "invisible" Then
                                 o.Visible = False
                                 If GameASLVersion >= 311 Then AddToObjectProperties("invisible", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "alias ") Then
-                                o.ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "alias ") Then
+                                o.ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "alt ") Then
-                                AddToObjectAltNames(RetrieveParameter(Lines(j), _nullContext), NumberObjs)
-                            ElseIf BeginsWith(Lines(j), "detail ") Then
-                                o.Detail = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "alt ") Then
+                                AddToObjectAltNames(RetrieveParameter(_lines(j), _nullContext), NumberObjs)
+                            ElseIf BeginsWith(_lines(j), "detail ") Then
+                                o.Detail = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "gender ") Then
-                                o.Gender = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "gender ") Then
+                                o.Gender = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "article ") Then
-                                o.Article = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "article ") Then
+                                o.Article = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("article=" & o.Article, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "gain ") Then
-                                o.GainScript = GetEverythingAfter(Lines(j), "gain ")
+                            ElseIf BeginsWith(_lines(j), "gain ") Then
+                                o.GainScript = GetEverythingAfter(_lines(j), "gain ")
                                 AddObjectAction(NumberObjs, "gain", o.GainScript)
-                            ElseIf BeginsWith(Lines(j), "lose ") Then
-                                o.LoseScript = GetEverythingAfter(Lines(j), "lose ")
+                            ElseIf BeginsWith(_lines(j), "lose ") Then
+                                o.LoseScript = GetEverythingAfter(_lines(j), "lose ")
                                 AddObjectAction(NumberObjs, "lose", o.LoseScript)
-                            ElseIf BeginsWith(Lines(j), "displaytype ") Then
-                                o.DisplayType = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "displaytype ") Then
+                                o.DisplayType = RetrieveParameter(_lines(j), _nullContext)
                                 If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "look ") Then
+                            ElseIf BeginsWith(_lines(j), "look ") Then
                                 If GameASLVersion >= 311 Then
-                                    RestOfLine = GetEverythingAfter(Lines(j), "look ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "look ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("look=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                        AddToObjectProperties("look=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         AddObjectAction(NumberObjs, "look", RestOfLine)
                                     End If
                                 End If
-                            ElseIf BeginsWith(Lines(j), "examine ") Then
+                            ElseIf BeginsWith(_lines(j), "examine ") Then
                                 If GameASLVersion >= 311 Then
-                                    RestOfLine = GetEverythingAfter(Lines(j), "examine ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "examine ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                        AddToObjectProperties("examine=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         AddObjectAction(NumberObjs, "examine", RestOfLine)
                                     End If
                                 End If
-                            ElseIf GameASLVersion >= 311 And BeginsWith(Lines(j), "speak ") Then
-                                RestOfLine = GetEverythingAfter(Lines(j), "speak ")
+                            ElseIf GameASLVersion >= 311 And BeginsWith(_lines(j), "speak ") Then
+                                RestOfLine = GetEverythingAfter(_lines(j), "speak ")
                                 If Left(RestOfLine, 1) = "<" Then
-                                    AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("speak=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
                                     AddObjectAction(NumberObjs, "speak", RestOfLine)
                                 End If
-                            ElseIf BeginsWith(Lines(j), "properties ") Then
-                                AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "type ") Then
+                            ElseIf BeginsWith(_lines(j), "properties ") Then
+                                AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "type ") Then
                                 o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                                 ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-                                o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(Lines(j), _nullContext)
+                                o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
 
-                                PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
+                                PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
                                 AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                                 For k = 1 To PropertyData.NumberActions
                                     AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
@@ -9253,117 +9253,117 @@ Public Class LegacyGame
                                     o.TypesIncluded(k + o.NumberTypesIncluded) = PropertyData.TypesIncluded(k)
                                 Next k
                                 o.NumberTypesIncluded = o.NumberTypesIncluded + PropertyData.NumberTypesIncluded
-                            ElseIf BeginsWith(Lines(j), "action ") Then
-                                AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "use ") Then
-                                AddToUseInfo(NumberObjs, GetEverythingAfter(Lines(j), "use "))
-                            ElseIf BeginsWith(Lines(j), "give ") Then
-                                AddToGiveInfo(NumberObjs, GetEverythingAfter(Lines(j), "give "))
-                            ElseIf Trim(Lines(j)) = "take" Then
+                            ElseIf BeginsWith(_lines(j), "action ") Then
+                                AddToObjectActions(GetEverythingAfter(_lines(j), "action "), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "use ") Then
+                                AddToUseInfo(NumberObjs, GetEverythingAfter(_lines(j), "use "))
+                            ElseIf BeginsWith(_lines(j), "give ") Then
+                                AddToGiveInfo(NumberObjs, GetEverythingAfter(_lines(j), "give "))
+                            ElseIf Trim(_lines(j)) = "take" Then
                                 o.Take.Type = TextActionType.Default
                                 AddToObjectProperties("take", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "take ") Then
-                                If Left(GetEverythingAfter(Lines(j), "take "), 1) = "<" Then
+                            ElseIf BeginsWith(_lines(j), "take ") Then
+                                If Left(GetEverythingAfter(_lines(j), "take "), 1) = "<" Then
                                     o.Take.Type = TextActionType.Text
-                                    o.Take.Data = RetrieveParameter(Lines(j), _nullContext)
+                                    o.Take.Data = RetrieveParameter(_lines(j), _nullContext)
 
-                                    AddToObjectProperties("take=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                                    AddToObjectProperties("take=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
                                     o.Take.Type = TextActionType.Script
-                                    RestOfLine = GetEverythingAfter(Lines(j), "take ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "take ")
                                     o.Take.Data = RestOfLine
 
                                     AddObjectAction(NumberObjs, "take", RestOfLine)
                                 End If
-                            ElseIf Trim(Lines(j)) = "container" Then
+                            ElseIf Trim(_lines(j)) = "container" Then
                                 If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
-                            ElseIf Trim(Lines(j)) = "surface" Then
+                            ElseIf Trim(_lines(j)) = "surface" Then
                                 If GameASLVersion >= 391 Then
                                     AddToObjectProperties("container", NumberObjs, _nullContext)
                                     AddToObjectProperties("surface", NumberObjs, _nullContext)
                                 End If
-                            ElseIf Trim(Lines(j)) = "opened" Then
+                            ElseIf Trim(_lines(j)) = "opened" Then
                                 If GameASLVersion >= 391 Then AddToObjectProperties("opened", NumberObjs, _nullContext)
-                            ElseIf Trim(Lines(j)) = "transparent" Then
+                            ElseIf Trim(_lines(j)) = "transparent" Then
                                 If GameASLVersion >= 391 Then AddToObjectProperties("transparent", NumberObjs, _nullContext)
-                            ElseIf Trim(Lines(j)) = "open" Then
+                            ElseIf Trim(_lines(j)) = "open" Then
                                 AddToObjectProperties("open", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "open ") Then
-                                If Left(GetEverythingAfter(Lines(j), "open "), 1) = "<" Then
-                                    AddToObjectProperties("open=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "open ") Then
+                                If Left(GetEverythingAfter(_lines(j), "open "), 1) = "<" Then
+                                    AddToObjectProperties("open=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    RestOfLine = GetEverythingAfter(Lines(j), "open ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "open ")
                                     AddObjectAction(NumberObjs, "open", RestOfLine)
                                 End If
-                            ElseIf Trim(Lines(j)) = "close" Then
+                            ElseIf Trim(_lines(j)) = "close" Then
                                 AddToObjectProperties("close", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "close ") Then
-                                If Left(GetEverythingAfter(Lines(j), "close "), 1) = "<" Then
-                                    AddToObjectProperties("close=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "close ") Then
+                                If Left(GetEverythingAfter(_lines(j), "close "), 1) = "<" Then
+                                    AddToObjectProperties("close=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    RestOfLine = GetEverythingAfter(Lines(j), "close ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "close ")
                                     AddObjectAction(NumberObjs, "close", RestOfLine)
                                 End If
-                            ElseIf Trim(Lines(j)) = "add" Then
+                            ElseIf Trim(_lines(j)) = "add" Then
                                 AddToObjectProperties("add", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "add ") Then
-                                If Left(GetEverythingAfter(Lines(j), "add "), 1) = "<" Then
-                                    AddToObjectProperties("add=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "add ") Then
+                                If Left(GetEverythingAfter(_lines(j), "add "), 1) = "<" Then
+                                    AddToObjectProperties("add=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    RestOfLine = GetEverythingAfter(Lines(j), "add ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "add ")
                                     AddObjectAction(NumberObjs, "add", RestOfLine)
                                 End If
-                            ElseIf Trim(Lines(j)) = "remove" Then
+                            ElseIf Trim(_lines(j)) = "remove" Then
                                 AddToObjectProperties("remove", NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "remove ") Then
-                                If Left(GetEverythingAfter(Lines(j), "remove "), 1) = "<" Then
-                                    AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "remove ") Then
+                                If Left(GetEverythingAfter(_lines(j), "remove "), 1) = "<" Then
+                                    AddToObjectProperties("remove=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
                                 Else
-                                    RestOfLine = GetEverythingAfter(Lines(j), "remove ")
+                                    RestOfLine = GetEverythingAfter(_lines(j), "remove ")
                                     AddObjectAction(NumberObjs, "remove", RestOfLine)
                                 End If
-                            ElseIf BeginsWith(Lines(j), "parent ") Then
-                                AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
-                            ElseIf BeginsWith(Lines(j), "list") Then
-                                ProcessListInfo(Lines(j), NumberObjs)
+                            ElseIf BeginsWith(_lines(j), "parent ") Then
+                                AddToObjectProperties("parent=" & RetrieveParameter(_lines(j), _nullContext), NumberObjs, _nullContext)
+                            ElseIf BeginsWith(_lines(j), "list") Then
+                                ProcessListInfo(_lines(j), NumberObjs)
                             End If
 
-                        Loop Until Trim(Lines(j)) = "end define"
+                        Loop Until Trim(_lines(j)) = "end define"
 
                         o.DefinitionSectionEnd = j
                         If e = 0 Then o.Exists = True
-                    ElseIf GameASLVersion <= 280 And BeginsWith(Lines(j), "define character") Then
+                    ElseIf GameASLVersion <= 280 And BeginsWith(_lines(j), "define character") Then
                         CRoomName = OrigCRoomName
                         NumberChars = NumberChars + 1
                         ReDim Preserve Chars(NumberChars)
                         Chars(NumberChars) = New ObjectType
-                        Chars(NumberChars).ObjectName = RetrieveParameter(Lines(j), _nullContext)
+                        Chars(NumberChars).ObjectName = RetrieveParameter(_lines(j), _nullContext)
                         Chars(NumberChars).DefinitionSectionStart = j
                         Chars(NumberChars).ContainerRoom = ""
                         Chars(NumberChars).Visible = True
                         e = 0
                         Do
                             j = j + 1
-                            If Trim(Lines(j)) = "hidden" Then
+                            If Trim(_lines(j)) = "hidden" Then
                                 Chars(NumberChars).Exists = False
                                 e = 1
-                            ElseIf BeginsWith(Lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                CRoomName = RetrieveParameter(Lines(j), _nullContext)
-                            ElseIf BeginsWith(Lines(j), "prefix ") Then
-                                Chars(NumberChars).Prefix = RetrieveParameter(Lines(j), _nullContext) & " "
-                            ElseIf BeginsWith(Lines(j), "suffix ") Then
-                                Chars(NumberChars).Suffix = " " & RetrieveParameter(Lines(j), _nullContext)
-                            ElseIf Trim(Lines(j)) = "invisible" Then
+                            ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
+                                CRoomName = RetrieveParameter(_lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "prefix ") Then
+                                Chars(NumberChars).Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
+                            ElseIf BeginsWith(_lines(j), "suffix ") Then
+                                Chars(NumberChars).Suffix = " " & RetrieveParameter(_lines(j), _nullContext)
+                            ElseIf Trim(_lines(j)) = "invisible" Then
                                 Chars(NumberChars).Visible = False
-                            ElseIf BeginsWith(Lines(j), "alias ") Then
-                                Chars(NumberChars).ObjectAlias = RetrieveParameter(Lines(j), _nullContext)
-                            ElseIf BeginsWith(Lines(j), "detail ") Then
-                                Chars(NumberChars).Detail = RetrieveParameter(Lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "alias ") Then
+                                Chars(NumberChars).ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
+                            ElseIf BeginsWith(_lines(j), "detail ") Then
+                                Chars(NumberChars).Detail = RetrieveParameter(_lines(j), _nullContext)
                             End If
 
                             Chars(NumberChars).ContainerRoom = CRoomName
 
-                        Loop Until Trim(Lines(j)) = "end define"
+                        Loop Until Trim(_lines(j)) = "end define"
 
                         Chars(NumberChars).DefinitionSectionEnd = j
                         If e = 0 Then Chars(NumberChars).Exists = True
@@ -9384,7 +9384,7 @@ Public Class LegacyGame
         GameCopy = FindStatement(GetDefineBlock("game"), "game copyright")
         GameInfo = FindStatement(GetDefineBlock("game"), "game info")
 
-        Print("|bGame name:|cl  " & GameName & "|cb|xb", ctx)
+        Print("|bGame name:|cl  " & _gameName & "|cb|xb", ctx)
         If GameVersion <> "" Then Print("|bVersion:|xb    " & GameVersion, ctx)
         If GameAuthor <> "" Then Print("|bAuthor:|xb     " & GameAuthor, ctx)
         If GameCopy <> "" Then Print("|bCopyright:|xb  " & GameCopy, ctx)
@@ -9605,8 +9605,8 @@ Public Class LegacyGame
         If DescTagExist = False Then
             'Look in the "define game" block:
             For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-                If BeginsWith(Lines(i), "description ") Then
-                    DescLine = GetEverythingAfter(Lines(i), "description ")
+                If BeginsWith(_lines(i), "description ") Then
+                    DescLine = GetEverythingAfter(_lines(i), "description ")
                     DescTagExist = True
                     If Left(DescLine, 1) = "<" Then
                         DescLine = RetrieveParameter(DescLine, ctx)
@@ -9741,9 +9741,9 @@ Public Class LegacyGame
             For i = textblock.StartLine + 1 To textblock.EndLine - 1
                 If GameASLVersion >= 392 Then
                     ' Convert string variables etc.
-                    Print(RetrieveParameter("<" & Lines(i) & ">", ctx), ctx, OutputTo)
+                    Print(RetrieveParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
                 Else
-                    Print(Lines(i), ctx, OutputTo)
+                    Print(_lines(i), ctx, OutputTo)
                 End If
             Next i
 
@@ -10250,8 +10250,8 @@ Public Class LegacyGame
 
             GiveLine = 0
             For i = characterblock.StartLine + 1 To characterblock.EndLine - 1
-                If BeginsWith(Lines(i), "give") Then
-                    ItemCheck = RetrieveParameter(Lines(i), ctx)
+                If BeginsWith(_lines(i), "give") Then
+                    ItemCheck = RetrieveParameter(_lines(i), ctx)
                     If LCase(ItemCheck) = LCase(ItemToGive) Then
                         GiveLine = i
                     End If
@@ -10268,7 +10268,7 @@ Public Class LegacyGame
             End If
 
             ' now, execute the statement on GiveLine
-            ExecuteScript(GetSecondChunk(Lines(GiveLine)), ctx)
+            ExecuteScript(GetSecondChunk(_lines(GiveLine)), ctx)
         End If
 
     End Sub
@@ -10440,8 +10440,8 @@ Public Class LegacyGame
                 ' having had this set up at initialisation.
                 If Not FoundSpeak Then
                     For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
-                        If BeginsWith(Lines(i), "speak ") Then
-                            SpeakLine = Lines(i)
+                        If BeginsWith(_lines(i), "speak ") Then
+                            SpeakLine = _lines(i)
                             FoundSpeak = True
                         End If
                     Next i
@@ -10592,8 +10592,8 @@ Public Class LegacyGame
 
             ' find 'take' line
             For i = Objs(ObjID).DefinitionSectionStart + 1 To Objs(ObjID).DefinitionSectionEnd - 1
-                If BeginsWith(Lines(i), "take") Then
-                    ScriptLine = Trim(GetEverythingAfter(Trim(Lines(i)), "take"))
+                If BeginsWith(_lines(i), "take") Then
+                    ScriptLine = Trim(GetEverythingAfter(Trim(_lines(i)), "take"))
                     ExecuteScript(ScriptLine, ctx, ObjID)
                     FoundTake = True
                     i = Objs(ObjID).DefinitionSectionEnd
@@ -11234,16 +11234,16 @@ Public Class LegacyGame
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
 
             ' Ignore sub-define blocks
-            If BeginsWith(Lines(i), "define ") Then
+            If BeginsWith(_lines(i), "define ") Then
                 Do
                     i = i + 1
-                Loop Until Trim(Lines(i)) = "end define"
+                Loop Until Trim(_lines(i)) = "end define"
             End If
             ' Check to see if the line matches the statement
             ' that is begin searched for
-            If BeginsWith(Lines(i), statement) Then
+            If BeginsWith(_lines(i), statement) Then
                 ' Return the parameters between < and > :
-                Return RetrieveParameter(Lines(i), _nullContext)
+                Return RetrieveParameter(_lines(i), _nullContext)
             End If
         Next i
 
@@ -11257,16 +11257,16 @@ Public Class LegacyGame
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
 
             ' Ignore sub-define blocks
-            If BeginsWith(Lines(i), "define ") Then
+            If BeginsWith(_lines(i), "define ") Then
                 Do
                     i = i + 1
-                Loop Until Trim(Lines(i)) = "end define"
+                Loop Until Trim(_lines(i)) = "end define"
             End If
             ' Check to see if the line matches the statement
             ' that is begin searched for
-            If BeginsWith(Lines(i), statement) Then
-                If UCase(Trim(RetrieveParameter(Lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
-                    Return Trim(Lines(i))
+            If BeginsWith(_lines(i), statement) Then
+                If UCase(Trim(RetrieveParameter(_lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
+                    Return Trim(_lines(i))
                 End If
             End If
         Next i
@@ -11431,10 +11431,10 @@ Public Class LegacyGame
             LogASLError("Unable to open file", LogType.Init)
             ErrorString = "Unable to open " & afilename
 
-            If OpenErrorReport <> "" Then
+            If _openErrorReport <> "" Then
                 ' Strip last vbcrlf
-                OpenErrorReport = Left(OpenErrorReport, Len(OpenErrorReport) - 2)
-                ErrorString = ErrorString & ":" & vbCrLf & vbCrLf & OpenErrorReport
+                _openErrorReport = Left(_openErrorReport, Len(_openErrorReport) - 2)
+                ErrorString = ErrorString & ":" & vbCrLf & vbCrLf & _openErrorReport
             End If
 
             Print("Error: " & ErrorString, _nullContext)
@@ -11449,10 +11449,10 @@ Public Class LegacyGame
         ASLVersion = "//"
         GameType = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), "asl-version ") Then
-                ASLVersion = RetrieveParameter(Lines(i), _nullContext)
-            ElseIf BeginsWith(Lines(i), "gametype ") Then
-                GameType = GetEverythingAfter(Lines(i), "gametype ")
+            If BeginsWith(_lines(i), "asl-version ") Then
+                ASLVersion = RetrieveParameter(_lines(i), _nullContext)
+            ElseIf BeginsWith(_lines(i), "gametype ") Then
+                GameType = GetEverythingAfter(_lines(i), "gametype ")
             End If
         Next i
 
@@ -11479,9 +11479,9 @@ Public Class LegacyGame
         End If
 
         ' Get the name of the game:
-        GameName = RetrieveParameter(Lines(GetDefineBlock("game").StartLine), _nullContext)
+        _gameName = RetrieveParameter(_lines(GetDefineBlock("game").StartLine), _nullContext)
 
-        m_player.UpdateGameName(GameName)
+        m_player.UpdateGameName(_gameName)
         m_player.Show("Panes")
         m_player.Show("Location")
         m_player.Show("Command")
@@ -11490,10 +11490,10 @@ Public Class LegacyGame
         SetUpOptions()
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(i), "beforesave ") Then
-                BeforeSaveScript = GetEverythingAfter(Lines(i), "beforesave ")
-            ElseIf BeginsWith(Lines(i), "onload ") Then
-                OnLoadScript = GetEverythingAfter(Lines(i), "onload ")
+            If BeginsWith(_lines(i), "beforesave ") Then
+                BeforeSaveScript = GetEverythingAfter(_lines(i), "beforesave ")
+            ElseIf BeginsWith(_lines(i), "onload ") Then
+                OnLoadScript = GetEverythingAfter(_lines(i), "onload ")
 
             End If
         Next i
@@ -11771,8 +11771,8 @@ Public Class LegacyGame
         End If
 
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-            If BeginsWith(Lines(i), lineret) Then
-                Return Trim(Lines(i))
+            If BeginsWith(_lines(i), lineret) Then
+                Return Trim(_lines(i))
             End If
         Next i
 
@@ -11798,8 +11798,8 @@ Public Class LegacyGame
         End If
 
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-            If BeginsWith(Lines(i), lineret) AndAlso LCase(RetrieveParameter(Lines(i), ctx)) = LCase(lineparam) Then
-                Return Trim(Lines(i))
+            If BeginsWith(_lines(i), lineret) AndAlso LCase(RetrieveParameter(_lines(i), ctx)) = LCase(lineparam) Then
+                Return Trim(_lines(i))
             End If
         Next i
 
@@ -11823,8 +11823,8 @@ Public Class LegacyGame
         ' game block, and get its parameters:
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(a), "collectables ") Then
-                PossItems = Trim(RetrieveParameter(Lines(a), _nullContext, False))
+            If BeginsWith(_lines(a), "collectables ") Then
+                PossItems = Trim(RetrieveParameter(_lines(a), _nullContext, False))
 
                 ' if collectables is a null string, there are no
                 ' collectables. Otherwise, there is one more object than
@@ -11904,8 +11904,8 @@ Public Class LegacyGame
         ' First, find the possitems section within the define game
         ' block, and get its parameters:
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(a), "possitems ") Or BeginsWith(Lines(a), "items ") Then
-                PossItems = RetrieveParameter(Lines(a), _nullContext)
+            If BeginsWith(_lines(a), "possitems ") Or BeginsWith(_lines(a), "items ") Then
+                PossItems = RetrieveParameter(_lines(a), _nullContext)
 
                 If PossItems <> "" Then
                     NumberItems = NumberItems + 1
@@ -11949,8 +11949,8 @@ Public Class LegacyGame
         Dim i As Integer
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(a), "startitems ") Then
-                StartItems = RetrieveParameter(Lines(a), _nullContext)
+            If BeginsWith(_lines(a), "startitems ") Then
+                StartItems = RetrieveParameter(_lines(a), _nullContext)
 
                 If StartItems <> "" Then
                     CharPos = 1
@@ -12610,26 +12610,26 @@ Public Class LegacyGame
         Dim lRoomID As Integer
         Dim NestedBlock As Integer
 
-        For i = 1 To NumberSections
-            If BeginsWith(Lines(DefineBlocks(i).StartLine), "define room ") Then
-                sRoomName = RetrieveParameter(Lines(DefineBlocks(i).StartLine), _nullContext)
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define room ") Then
+                sRoomName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 lRoomID = GetRoomID(sRoomName, _nullContext)
 
-                For j = DefineBlocks(i).StartLine + 1 To DefineBlocks(i).EndLine - 1
-                    If BeginsWith(Lines(j), "define ") Then
+                For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
+                    If BeginsWith(_lines(j), "define ") Then
                         'skip nested blocks
                         NestedBlock = 1
                         Do
                             j = j + 1
-                            If BeginsWith(Lines(j), "define ") Then
+                            If BeginsWith(_lines(j), "define ") Then
                                 NestedBlock = NestedBlock + 1
-                            ElseIf Trim(Lines(j)) = "end define" Then
+                            ElseIf Trim(_lines(j)) = "end define" Then
                                 NestedBlock = NestedBlock - 1
                             End If
                         Loop Until NestedBlock = 0
                     End If
 
-                    Rooms(lRoomID).Exits.AddExitFromTag(Lines(j))
+                    Rooms(lRoomID).Exits.AddExitFromTag(_lines(j))
                 Next j
             End If
         Next i
@@ -12645,7 +12645,7 @@ Public Class LegacyGame
         Dim sExit As String
         Dim asParams() As String
         Dim lRoomID As Integer
-        Dim lDir As eDirection
+        Dim lDir As Direction
 
         asParams = Split(sTag, ";")
         If UBound(asParams) < 1 Then
@@ -12665,7 +12665,7 @@ Public Class LegacyGame
 
         Dim exits = Rooms(lRoomID).Exits
         lDir = exits.GetDirectionEnum(sExit)
-        If lDir = eDirection.dirNone Then
+        If lDir = Direction.None Then
             If exits.Places.ContainsKey(sExit) Then
                 Return exits.Places.Item(sExit)
             End If
@@ -12710,14 +12710,14 @@ Public Class LegacyGame
         SetFontSize(0, _nullContext)
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(i), "background ") Then
-                SetBackground(RetrieveParameter(Lines(i), _nullContext))
+            If BeginsWith(_lines(i), "background ") Then
+                SetBackground(RetrieveParameter(_lines(i), _nullContext))
             End If
         Next i
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If BeginsWith(Lines(i), "foreground ") Then
-                SetForeground(RetrieveParameter(Lines(i), _nullContext))
+            If BeginsWith(_lines(i), "foreground ") Then
+                SetForeground(RetrieveParameter(_lines(i), _nullContext))
             End If
         Next i
 
@@ -12736,20 +12736,20 @@ Public Class LegacyGame
                 ' We go through the game block executing these in reverse order, as
                 ' the statements which are included last should be executed first.
                 For i = gameblock.EndLine - 1 To gameblock.StartLine + 1 Step -1
-                    If BeginsWith(Lines(i), "lib startscript ") Then
+                    If BeginsWith(_lines(i), "lib startscript ") Then
                         NewThread = _nullContext
-                        ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "lib startscript ")), NewThread)
+                        ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), NewThread)
                     End If
                 Next i
             End If
 
             For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-                If BeginsWith(Lines(i), "startscript ") Then
+                If BeginsWith(_lines(i), "startscript ") Then
                     NewThread = _nullContext
-                    ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "startscript")), NewThread)
-                ElseIf BeginsWith(Lines(i), "lib startscript ") And GameASLVersion < 311 Then
+                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "startscript")), NewThread)
+                ElseIf BeginsWith(_lines(i), "lib startscript ") And GameASLVersion < 311 Then
                     NewThread = _nullContext
-                    ExecuteScript(Trim(GetEverythingAfter(Trim(Lines(i)), "lib startscript ")), NewThread)
+                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), NewThread)
                 End If
             Next i
 
@@ -12763,8 +12763,8 @@ Public Class LegacyGame
         ' Start game from room specified by "start" statement
         Dim StartRoom As String = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
-            If BeginsWith(Lines(i), "start ") Then
-                StartRoom = RetrieveParameter(Lines(i), _nullContext)
+            If BeginsWith(_lines(i), "start ") Then
+                StartRoom = RetrieveParameter(_lines(i), _nullContext)
             End If
         Next i
 

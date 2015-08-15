@@ -9,7 +9,7 @@ Friend Class RoomExit
 
     Private m_lObjID As Integer
     Private m_lRoomID As Integer
-    Private m_lDirection As LegacyGame.eDirection
+    Private m_lDirection As LegacyGame.Direction
     Private m_oParent As RoomExits
     Private m_sObjName As String
     Private m_sDisplayName As String ' this could be a place exit's alias
@@ -93,13 +93,13 @@ Friend Class RoomExit
     End Property
 
 
-    Public Property Direction() As LegacyGame.eDirection
+    Public Property Direction() As LegacyGame.Direction
         Get
             Direction = m_lDirection
         End Get
-        Set(Value As LegacyGame.eDirection)
+        Set(Value As LegacyGame.Direction)
             m_lDirection = Value
-            If Value <> LegacyGame.eDirection.dirNone Then UpdateObjectName()
+            If Value <> LegacyGame.Direction.None Then UpdateObjectName()
         End Set
     End Property
 
@@ -179,7 +179,7 @@ Friend Class RoomExit
 
         sObjName = sParentRoom
 
-        If m_lDirection <> LegacyGame.eDirection.dirNone Then
+        If m_lDirection <> LegacyGame.Direction.None Then
             sObjName = sObjName & "." & m_oParent.GetDirectionName(m_lDirection)
             m_game.Objs(m_lObjID).ObjectAlias = m_oParent.GetDirectionName(m_lDirection)
         Else

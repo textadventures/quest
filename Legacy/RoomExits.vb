@@ -6,7 +6,7 @@ Imports System.Collections.Generic
 
 Friend Class RoomExits
 
-    Private m_oDirections As New Dictionary(Of LegacyGame.eDirection, RoomExit)
+    Private m_oDirections As New Dictionary(Of LegacyGame.Direction, RoomExit)
     Private m_oPlaces As New Dictionary(Of String, RoomExit)
     Private m_lObjID As Integer
     Private m_oAllExits As Dictionary(Of Object, RoomExit)
@@ -18,7 +18,7 @@ Friend Class RoomExits
         m_bRegenerateAllExits = True
     End Sub
 
-    Private Sub SetDirection(ByRef Direction As LegacyGame.eDirection, ByRef oExit As RoomExit)
+    Private Sub SetDirection(ByRef Direction As LegacyGame.Direction, ByRef oExit As RoomExit)
 
         If m_oDirections.ContainsKey(Direction) Then
             oExit = m_oDirections.Item(Direction)
@@ -32,7 +32,7 @@ Friend Class RoomExits
 
     End Sub
 
-    Public Function GetDirectionExit(ByRef Direction As LegacyGame.eDirection) As RoomExit
+    Public Function GetDirectionExit(ByRef Direction As LegacyGame.Direction) As RoomExit
         If m_oDirections.ContainsKey(Direction) Then
             Return m_oDirections.Item(Direction)
         End If
@@ -53,7 +53,7 @@ Friend Class RoomExits
 
     Public Function AddExitFromTag(sTag As String) As Boolean
 
-        Dim dirThis As LegacyGame.eDirection
+        Dim dirThis As LegacyGame.Direction
         Dim oExit As RoomExit = Nothing
         Dim asParams(0) As String
         Dim sAfterParam As String
@@ -61,40 +61,40 @@ Friend Class RoomExits
 
         If m_game.BeginsWith(sTag, "out ") Then
             sTag = m_game.GetEverythingAfter(sTag, "out ")
-            dirThis = LegacyGame.eDirection.dirOut
+            dirThis = LegacyGame.Direction.Out
         ElseIf m_game.BeginsWith(sTag, "east ") Then
             sTag = m_game.GetEverythingAfter(sTag, "east ")
-            dirThis = LegacyGame.eDirection.dirEast
+            dirThis = LegacyGame.Direction.East
         ElseIf m_game.BeginsWith(sTag, "west ") Then
             sTag = m_game.GetEverythingAfter(sTag, "west ")
-            dirThis = LegacyGame.eDirection.dirWest
+            dirThis = LegacyGame.Direction.West
         ElseIf m_game.BeginsWith(sTag, "north ") Then
             sTag = m_game.GetEverythingAfter(sTag, "north ")
-            dirThis = LegacyGame.eDirection.dirNorth
+            dirThis = LegacyGame.Direction.North
         ElseIf m_game.BeginsWith(sTag, "south ") Then
             sTag = m_game.GetEverythingAfter(sTag, "south ")
-            dirThis = LegacyGame.eDirection.dirSouth
+            dirThis = LegacyGame.Direction.South
         ElseIf m_game.BeginsWith(sTag, "northeast ") Then
             sTag = m_game.GetEverythingAfter(sTag, "northeast ")
-            dirThis = LegacyGame.eDirection.dirNorthEast
+            dirThis = LegacyGame.Direction.NorthEast
         ElseIf m_game.BeginsWith(sTag, "northwest ") Then
             sTag = m_game.GetEverythingAfter(sTag, "northwest ")
-            dirThis = LegacyGame.eDirection.dirNorthWest
+            dirThis = LegacyGame.Direction.NorthWest
         ElseIf m_game.BeginsWith(sTag, "southeast ") Then
             sTag = m_game.GetEverythingAfter(sTag, "southeast ")
-            dirThis = LegacyGame.eDirection.dirSouthEast
+            dirThis = LegacyGame.Direction.SouthEast
         ElseIf m_game.BeginsWith(sTag, "southwest ") Then
             sTag = m_game.GetEverythingAfter(sTag, "southwest ")
-            dirThis = LegacyGame.eDirection.dirSouthWest
+            dirThis = LegacyGame.Direction.SouthWest
         ElseIf m_game.BeginsWith(sTag, "up ") Then
             sTag = m_game.GetEverythingAfter(sTag, "up ")
-            dirThis = LegacyGame.eDirection.dirUp
+            dirThis = LegacyGame.Direction.Up
         ElseIf m_game.BeginsWith(sTag, "down ") Then
             sTag = m_game.GetEverythingAfter(sTag, "down ")
-            dirThis = LegacyGame.eDirection.dirDown
+            dirThis = LegacyGame.Direction.Down
         ElseIf m_game.BeginsWith(sTag, "place ") Then
             sTag = m_game.GetEverythingAfter(sTag, "place ")
-            dirThis = LegacyGame.eDirection.dirNone
+            dirThis = LegacyGame.Direction.None
         Else
             AddExitFromTag = False
             Exit Function
@@ -102,7 +102,7 @@ Friend Class RoomExits
 
         AddExitFromTag = True
 
-        If dirThis <> LegacyGame.eDirection.dirNone Then
+        If dirThis <> LegacyGame.Direction.None Then
             ' This will reuse an existing Exit object if we're resetting
             ' the destination of an existing directional exit.
             SetDirection(dirThis, oExit)
@@ -131,7 +131,7 @@ Friend Class RoomExits
                 ' Script exit
                 .Script = sAfterParam
 
-                If dirThis = LegacyGame.eDirection.dirNone Then
+                If dirThis = LegacyGame.Direction.None Then
                     ' A place exit with a script still has a ToRoom
                     .ToRoom = asParams(0)
 
@@ -153,7 +153,7 @@ Friend Class RoomExits
                 End If
             End If
 
-            If dirThis = LegacyGame.eDirection.dirNone Then
+            If dirThis = LegacyGame.Direction.None Then
                 AddPlaceExit(oExit)
             End If
         End With
@@ -284,93 +284,93 @@ Friend Class RoomExits
 
     End Sub
 
-    Public Function GetDirectionName(ByRef lDir As LegacyGame.eDirection) As String
+    Public Function GetDirectionName(ByRef lDir As LegacyGame.Direction) As String
 
         Dim sDir As String = ""
 
         Select Case lDir
-            Case LegacyGame.eDirection.dirOut
+            Case LegacyGame.Direction.Out
                 sDir = "out"
-            Case LegacyGame.eDirection.dirNorth
+            Case LegacyGame.Direction.North
                 sDir = "north"
-            Case LegacyGame.eDirection.dirSouth
+            Case LegacyGame.Direction.South
                 sDir = "south"
-            Case LegacyGame.eDirection.dirEast
+            Case LegacyGame.Direction.East
                 sDir = "east"
-            Case LegacyGame.eDirection.dirWest
+            Case LegacyGame.Direction.West
                 sDir = "west"
-            Case LegacyGame.eDirection.dirNorthWest
+            Case LegacyGame.Direction.NorthWest
                 sDir = "northwest"
-            Case LegacyGame.eDirection.dirNorthEast
+            Case LegacyGame.Direction.NorthEast
                 sDir = "northeast"
-            Case LegacyGame.eDirection.dirSouthWest
+            Case LegacyGame.Direction.SouthWest
                 sDir = "southwest"
-            Case LegacyGame.eDirection.dirSouthEast
+            Case LegacyGame.Direction.SouthEast
                 sDir = "southeast"
-            Case LegacyGame.eDirection.dirUp
+            Case LegacyGame.Direction.Up
                 sDir = "up"
-            Case LegacyGame.eDirection.dirDown
+            Case LegacyGame.Direction.Down
                 sDir = "down"
         End Select
 
         GetDirectionName = sDir
     End Function
 
-    Public Function GetDirectionEnum(ByRef sDir As String) As LegacyGame.eDirection
+    Public Function GetDirectionEnum(ByRef sDir As String) As LegacyGame.Direction
         Select Case sDir
             Case "out"
-                GetDirectionEnum = LegacyGame.eDirection.dirOut
+                GetDirectionEnum = LegacyGame.Direction.Out
             Case "north"
-                GetDirectionEnum = LegacyGame.eDirection.dirNorth
+                GetDirectionEnum = LegacyGame.Direction.North
             Case "south"
-                GetDirectionEnum = LegacyGame.eDirection.dirSouth
+                GetDirectionEnum = LegacyGame.Direction.South
             Case "east"
-                GetDirectionEnum = LegacyGame.eDirection.dirEast
+                GetDirectionEnum = LegacyGame.Direction.East
             Case "west"
-                GetDirectionEnum = LegacyGame.eDirection.dirWest
+                GetDirectionEnum = LegacyGame.Direction.West
             Case "northwest"
-                GetDirectionEnum = LegacyGame.eDirection.dirNorthWest
+                GetDirectionEnum = LegacyGame.Direction.NorthWest
             Case "northeast"
-                GetDirectionEnum = LegacyGame.eDirection.dirNorthEast
+                GetDirectionEnum = LegacyGame.Direction.NorthEast
             Case "southwest"
-                GetDirectionEnum = LegacyGame.eDirection.dirSouthWest
+                GetDirectionEnum = LegacyGame.Direction.SouthWest
             Case "southeast"
-                GetDirectionEnum = LegacyGame.eDirection.dirSouthEast
+                GetDirectionEnum = LegacyGame.Direction.SouthEast
             Case "up"
-                GetDirectionEnum = LegacyGame.eDirection.dirUp
+                GetDirectionEnum = LegacyGame.Direction.Up
             Case "down"
-                GetDirectionEnum = LegacyGame.eDirection.dirDown
+                GetDirectionEnum = LegacyGame.Direction.Down
             Case Else
-                GetDirectionEnum = LegacyGame.eDirection.dirNone
+                GetDirectionEnum = LegacyGame.Direction.None
         End Select
     End Function
 
-    Public Function GetDirectionToken(ByRef lDir As LegacyGame.eDirection) As String
+    Public Function GetDirectionToken(ByRef lDir As LegacyGame.Direction) As String
 
         Dim sDir As String = ""
 
         Select Case lDir
-            Case LegacyGame.eDirection.dirOut
+            Case LegacyGame.Direction.Out
                 sDir = "o"
-            Case LegacyGame.eDirection.dirNorth
+            Case LegacyGame.Direction.North
                 sDir = "n"
-            Case LegacyGame.eDirection.dirSouth
+            Case LegacyGame.Direction.South
                 sDir = "s"
-            Case LegacyGame.eDirection.dirEast
+            Case LegacyGame.Direction.East
                 sDir = "e"
-            Case LegacyGame.eDirection.dirWest
+            Case LegacyGame.Direction.West
                 sDir = "w"
-            Case LegacyGame.eDirection.dirNorthWest
+            Case LegacyGame.Direction.NorthWest
                 sDir = "b"
-            Case LegacyGame.eDirection.dirNorthEast
+            Case LegacyGame.Direction.NorthEast
                 sDir = "a"
-            Case LegacyGame.eDirection.dirSouthWest
+            Case LegacyGame.Direction.SouthWest
                 sDir = "d"
-            Case LegacyGame.eDirection.dirSouthEast
+            Case LegacyGame.Direction.SouthEast
                 sDir = "c"
-            Case LegacyGame.eDirection.dirUp
+            Case LegacyGame.Direction.Up
                 sDir = "u"
-            Case LegacyGame.eDirection.dirDown
+            Case LegacyGame.Direction.Down
                 sDir = "f"
         End Select
 
@@ -382,7 +382,7 @@ Friend Class RoomExits
         Dim sDir As String = ""
         Dim sDisplay As String
 
-        If oExit.Direction <> LegacyGame.eDirection.dirNone Then
+        If oExit.Direction <> LegacyGame.Direction.None Then
             sDir = GetDirectionName((oExit.Direction))
             GetDirectionNameDisplay = "|b" & sDir & "|xb"
         Else
@@ -422,7 +422,7 @@ Friend Class RoomExits
 
         oAllExits = New Dictionary(Of Object, RoomExit)
 
-        For Each dir As eDirection In m_oDirections.Keys
+        For Each dir As Direction In m_oDirections.Keys
             oExit = m_oDirections.Item(dir)
             If m_game.Objs(oExit.ObjID).Exists Then
                 oAllExits.Add(dir, m_oDirections.Item(dir))
@@ -449,7 +449,7 @@ Friend Class RoomExits
         ' a new object will be created which will have the same name
         ' as the old one. This is because we can't delete objects yet...
 
-        If oExit.Direction = LegacyGame.eDirection.dirNone Then
+        If oExit.Direction = LegacyGame.Direction.None Then
             If m_oPlaces.ContainsKey(oExit.ToRoom) Then
                 m_oPlaces.Remove(oExit.ToRoom)
             End If
