@@ -998,38 +998,38 @@ Public Class LegacyGame
         Return hasErrors
     End Function
 
-    Private Function GetAfterParameter(InputLine As String) As String
+    Private Function GetAfterParameter(s As String) As String
         ' Returns everything after the end of the first parameter
         ' in a string, i.e. for "use <thing> do <myproc>" it
         ' returns "do <myproc>"
-        Dim EOP As Integer
-        EOP = InStr(InputLine, ">")
+        Dim eop As Integer
+        eop = InStr(s, ">")
 
-        If EOP = 0 Or EOP + 1 > Len(InputLine) Then
+        If eop = 0 Or eop + 1 > Len(s) Then
             Return ""
         Else
-            Return Trim(Mid(InputLine, EOP + 1))
+            Return Trim(Mid(s, eop + 1))
         End If
 
     End Function
 
-    Private Function ObliterateParameters(InputLine As String) As String
+    Private Function ObliterateParameters(s As String) As String
 
-        Dim bInParameter As Boolean
-        Dim ExitCharacter As String = ""
-        Dim CurChar As String
-        Dim OutputLine As String = ""
-        Dim ObscuringFunctionName As Boolean
+        Dim inParameter As Boolean
+        Dim exitCharacter As String = ""
+        Dim curChar As String
+        Dim outputLine As String = ""
+        Dim obscuringFunctionName As Boolean
         Dim i As Integer
 
-        bInParameter = False
+        inParameter = False
 
-        For i = 1 To Len(InputLine)
-            CurChar = Mid(InputLine, i, 1)
+        For i = 1 To Len(s)
+            curChar = Mid(s, i, 1)
 
-            If bInParameter Then
-                If ExitCharacter = ")" Then
-                    If InStr("$#%", CurChar) > 0 Then
+            If inParameter Then
+                If exitCharacter = ")" Then
+                    If InStr("$#%", curChar) > 0 Then
                         ' We might be converting a line like:
                         '   if ( $rand(1;10)$ < 3 ) then {
                         ' and we don't want it to end up like this:
@@ -1039,110 +1039,110 @@ Public Class LegacyGame
                         ' in this case, and set a flag so we know what we're
                         ' doing.
 
-                        ObscuringFunctionName = True
-                        ExitCharacter = CurChar
+                        obscuringFunctionName = True
+                        exitCharacter = curChar
 
                         ' Move along please
 
-                        OutputLine = OutputLine & "~"
+                        outputLine = outputLine & "~"
                         i = i + 1
-                        CurChar = Mid(InputLine, i, 1)
+                        curChar = Mid(s, i, 1)
                     End If
                 End If
             End If
 
-            If Not bInParameter Then
-                OutputLine = OutputLine & CurChar
-                If CurChar = "<" Then
-                    bInParameter = True
-                    ExitCharacter = ">"
+            If Not inParameter Then
+                outputLine = outputLine & curChar
+                If curChar = "<" Then
+                    inParameter = True
+                    exitCharacter = ">"
                 End If
-                If CurChar = "(" Then
-                    bInParameter = True
-                    ExitCharacter = ")"
+                If curChar = "(" Then
+                    inParameter = True
+                    exitCharacter = ")"
                 End If
             Else
-                If CurChar = ExitCharacter Then
-                    If Not ObscuringFunctionName Then
-                        bInParameter = False
-                        OutputLine = OutputLine & CurChar
+                If curChar = exitCharacter Then
+                    If Not obscuringFunctionName Then
+                        inParameter = False
+                        outputLine = outputLine & curChar
                     Else
                         ' We've finished obscuring the function name,
                         ' now let's find the next ) as we were before
                         ' we found this dastardly function
-                        ObscuringFunctionName = False
-                        ExitCharacter = ")"
-                        OutputLine = OutputLine & "~"
+                        obscuringFunctionName = False
+                        exitCharacter = ")"
+                        outputLine = outputLine & "~"
                     End If
                 Else
-                    OutputLine = OutputLine & "~"
+                    outputLine = outputLine & "~"
                 End If
             End If
         Next i
 
-        If bInParameter Then
-            Return "'<ERROR;" & ExitCharacter & ";" & OutputLine
+        If inParameter Then
+            Return "'<ERROR;" & exitCharacter & ";" & outputLine
         Else
-            Return OutputLine
+            Return outputLine
         End If
 
     End Function
 
-    Private Function ObliterateVariableNames(InputLine As String) As String
-        Dim bInParameter As Boolean
-        Dim ExitCharacter As String = ""
-        Dim OutputLine As String = ""
-        Dim CurChar As String
+    Private Function ObliterateVariableNames(s As String) As String
+        Dim inParameter As Boolean
+        Dim exitCharacter As String = ""
+        Dim outputLine As String = ""
+        Dim curChar As String
         Dim i As Integer
 
-        bInParameter = False
+        inParameter = False
 
-        For i = 1 To Len(InputLine)
-            CurChar = Mid(InputLine, i, 1)
-            If Not bInParameter Then
-                OutputLine = OutputLine & CurChar
-                If CurChar = "$" Then
-                    bInParameter = True
-                    ExitCharacter = "$"
+        For i = 1 To Len(s)
+            curChar = Mid(s, i, 1)
+            If Not inParameter Then
+                outputLine = outputLine & curChar
+                If curChar = "$" Then
+                    inParameter = True
+                    exitCharacter = "$"
                 End If
-                If CurChar = "#" Then
-                    bInParameter = True
-                    ExitCharacter = "#"
+                If curChar = "#" Then
+                    inParameter = True
+                    exitCharacter = "#"
                 End If
-                If CurChar = "%" Then
-                    bInParameter = True
-                    ExitCharacter = "%"
+                If curChar = "%" Then
+                    inParameter = True
+                    exitCharacter = "%"
                 End If
                 ' The ~ was for collectables, and this syntax only
                 ' exists in Quest 2.x. The ~ was only finally
                 ' allowed to be present on its own in ASL 320.
-                If CurChar = "~" And _gameAslVersion < 320 Then
-                    bInParameter = True
-                    ExitCharacter = "~"
+                If curChar = "~" And _gameAslVersion < 320 Then
+                    inParameter = True
+                    exitCharacter = "~"
                 End If
             Else
-                If CurChar = ExitCharacter Then
-                    bInParameter = False
-                    OutputLine = OutputLine & CurChar
+                If curChar = exitCharacter Then
+                    inParameter = False
+                    outputLine = outputLine & curChar
                 Else
-                    OutputLine = OutputLine & "X"
+                    outputLine = outputLine & "X"
                 End If
             End If
         Next i
 
-        If bInParameter Then
-            OutputLine = "'<ERROR;" & ExitCharacter & ";" & OutputLine
+        If inParameter Then
+            outputLine = "'<ERROR;" & exitCharacter & ";" & outputLine
         End If
 
-        Return OutputLine
+        Return outputLine
 
     End Function
 
     Private Sub RemoveComments()
-        Dim i, AposPos As Integer
-        Dim InTextBlock As Boolean
-        Dim InSynonymsBlock As Boolean
-        Dim OblitLine As String
+        Dim i, aposPos As Integer
+        Dim inTextBlock As Boolean
+        Dim inSynonymsBlock As Boolean
+        Dim oblitLine As String
 
         ' If in a synonyms block, we want to remove lines which are comments, but
         ' we don't want to remove synonyms that contain apostrophes, so we only
@@ -1154,35 +1154,35 @@ Public Class LegacyGame
                 _lines(i) = "#!qdk-note:" & GetEverythingAfter(_lines(i), "'!qdk-note:")
             Else
                 If BeginsWith(_lines(i), "define text ") Then
-                    InTextBlock = True
+                    inTextBlock = True
                 ElseIf Trim(_lines(i)) = "define synonyms" Then
-                    InSynonymsBlock = True
+                    inSynonymsBlock = True
                 ElseIf BeginsWith(_lines(i), "define type ") Then
-                    InSynonymsBlock = True
+                    inSynonymsBlock = True
                 ElseIf Trim(_lines(i)) = "end define" Then
-                    InTextBlock = False
-                    InSynonymsBlock = False
+                    inTextBlock = False
+                    inSynonymsBlock = False
                 End If
 
-                If Not InTextBlock And Not InSynonymsBlock Then
+                If Not inTextBlock And Not inSynonymsBlock Then
                     If InStr(_lines(i), "'") > 0 Then
-                        OblitLine = ObliterateParameters(_lines(i))
-                        If Not BeginsWith(OblitLine, "'<ERROR;") Then
-                            AposPos = InStr(OblitLine, "'")
+                        oblitLine = ObliterateParameters(_lines(i))
+                        If Not BeginsWith(oblitLine, "'<ERROR;") Then
+                            aposPos = InStr(oblitLine, "'")
 
-                            If AposPos <> 0 Then
-                                _lines(i) = Trim(Left(_lines(i), AposPos - 1))
+                            If aposPos <> 0 Then
+                                _lines(i) = Trim(Left(_lines(i), aposPos - 1))
                             End If
                         End If
                     End If
-                ElseIf InSynonymsBlock Then
+                ElseIf inSynonymsBlock Then
                     If Left(Trim(_lines(i)), 1) = "'" Then
                         _lines(i) = ""
                     Else
                         ' we look for " '", not "'" in synonyms lines
-                        AposPos = InStr(ObliterateParameters(_lines(i)), " '")
-                        If AposPos <> 0 Then
-                            _lines(i) = Trim(Left(_lines(i), AposPos - 1))
+                        aposPos = InStr(ObliterateParameters(_lines(i)), " '")
+                        If aposPos <> 0 Then
+                            _lines(i) = Trim(Left(_lines(i), aposPos - 1))
                         End If
                     End If
                 End If
@@ -1191,21 +1191,18 @@ Public Class LegacyGame
         Next i
     End Sub
 
-    Private Function ReportErrorLine(InputLine As String) As String
+    Private Function ReportErrorLine(s As String) As String
         ' We don't want to see the "!intproc" in logged error reports lines.
         ' This function replaces these "do" lines with a nicer-looking "..." for error reporting.
 
-        Dim ReplaceFrom As Integer
-        Dim OutputLine As String
+        Dim replaceFrom As Integer
 
-        ReplaceFrom = InStr(InputLine, "do <!intproc")
-        If ReplaceFrom <> 0 Then
-            OutputLine = Left(InputLine, ReplaceFrom - 1) & "..."
+        replaceFrom = InStr(s, "do <!intproc")
+        If replaceFrom <> 0 Then
+            Return Left(s, replaceFrom - 1) & "..."
         Else
-            OutputLine = InputLine
+            Return s
         End If
-
-        Return OutputLine
     End Function
 
     Private Function YesNo(yn As Boolean) As String
@@ -1216,30 +1213,24 @@ Public Class LegacyGame
         If LCase(yn) = "yes" Then IsYes = True Else IsYes = False
     End Function
 
-    Friend Function BeginsWith(s As String, T As String) As Boolean
+    Friend Function BeginsWith(s As String, text As String) As Boolean
         ' Compares the beginning of the line with a given
         ' string. Case insensitive.
 
         ' Example: beginswith("Hello there","HeLlO")=TRUE
 
-        Dim TT As Integer
-
-        TT = Len(T)
-
-        Return Left(LTrim(LCase(s)), TT) = LCase(T)
+        Return Left(LTrim(LCase(s)), Len(text)) = LCase(text)
     End Function
 
-    Private Function ConvertCASKeyword(CASchar As String) As String
-
+    Private Function ConvertCasKeyword(casChar As String) As String
         Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
-        Dim CK As String = _casKeywords(c)
+        Dim keyword As String = _casKeywords(c)
 
-        If CK = "!cr" Then
-            CK = vbCrLf
+        If keyword = "!cr" Then
+            keyword = vbCrLf
         End If
 
-        Return CK
-
+        Return keyword
     End Function
 
     Private Sub ConvertMultiLines()
@@ -1269,7 +1260,6 @@ Public Class LegacyGame
         Next i
 
         RemoveComments()
-
     End Sub
 
     Private Function GetDefineBlock(blockname As String) As DefineBlock
@@ -1278,7 +1268,7 @@ Public Class LegacyGame
         ' Returns 0 if block not found.
 
         Dim i As Integer
-        Dim l, BlockType As String
+        Dim l, blockType As String
 
         Dim result = New DefineBlock
         result.StartLine = 0
@@ -1294,9 +1284,9 @@ Public Class LegacyGame
             ' Add a space for define blocks with no parameter
             If InStr(8, l, " ") = 0 Then l = l & " "
 
-            BlockType = Mid(l, 8, InStr(8, l, " ") - 8)
+            blockType = Mid(l, 8, InStr(8, l, " ") - 8)
 
-            If BlockType = blockname Then
+            If blockType = blockname Then
                 ' Return the start and end points
                 result.StartLine = _defineBlocks(i).StartLine
                 result.EndLine = _defineBlocks(i).EndLine
@@ -1307,55 +1297,50 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private Function DefineBlockParam(blockname As String, Param As String) As DefineBlock
-
+    Private Function DefineBlockParam(blockname As String, param As String) As DefineBlock
         ' Returns the start and end points of a named block
 
         Dim i As Integer
-        Dim sBlockType As String
-        Dim SP As Integer
-        Dim oCache As Dictionary(Of String, String)
-        Dim sBlockName As String
-        Dim asBlock() As String
+        Dim cache As Dictionary(Of String, String)
 
         Dim result = New DefineBlock
 
-        Param = "k" & Param ' protect against numeric block names
+        param = "k" & param ' protect against numeric block names
 
         If Not _defineBlockParams.ContainsKey(blockname) Then
             ' Lazily create cache of define block params
 
-            oCache = New Dictionary(Of String, String)
-            _defineBlockParams.Add(blockname, oCache)
+            cache = New Dictionary(Of String, String)
+            _defineBlockParams.Add(blockname, cache)
 
             For i = 1 To _numberSections
                 ' get the word after "define", e.g. "procedure"
-                sBlockType = GetEverythingAfter(_lines(_defineBlocks(i).StartLine), "define ")
-                SP = InStr(sBlockType, " ")
-                If SP <> 0 Then
-                    sBlockType = Trim(Left(sBlockType, SP - 1))
+                Dim blockType = GetEverythingAfter(_lines(_defineBlocks(i).StartLine), "define ")
+                Dim sp = InStr(blockType, " ")
+                If sp <> 0 Then
+                    blockType = Trim(Left(blockType, sp - 1))
                 End If
 
-                If sBlockType = blockname Then
-                    sBlockName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext, False)
+                If blockType = blockname Then
+                    Dim blockKey = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext, False)
 
-                    sBlockName = "k" & sBlockName
+                    blockKey = "k" & blockKey
 
-                    If Not oCache.ContainsKey(sBlockName) Then
-                        oCache.Add(sBlockName, _defineBlocks(i).StartLine & "," & _defineBlocks(i).EndLine)
+                    If Not cache.ContainsKey(blockKey) Then
+                        cache.Add(blockKey, _defineBlocks(i).StartLine & "," & _defineBlocks(i).EndLine)
                     Else
                         ' silently ignore duplicates
                     End If
                 End If
             Next i
         Else
-            oCache = _defineBlockParams.Item(blockname)
+            cache = _defineBlockParams.Item(blockname)
         End If
 
-        If oCache.ContainsKey(Param) Then
-            asBlock = Split(oCache.Item(Param), ",")
-            result.StartLine = CInt(asBlock(0))
-            result.EndLine = CInt(asBlock(1))
+        If cache.ContainsKey(param) Then
+            Dim blocks = Split(cache.Item(param), ",")
+            result.StartLine = CInt(blocks(0))
+            result.EndLine = CInt(blocks(1))
         End If
 
         Return result
