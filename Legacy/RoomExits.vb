@@ -120,7 +120,7 @@ Friend Class RoomExits
             End If
 
             If Left(Trim(sTag), 1) = "<" Then
-                asParams = Split(m_game.RetrieveParameter(sTag, m_game._nullContext), ";")
+                asParams = Split(m_game.GetParameter(sTag, m_game._nullContext), ";")
                 sAfterParam = Trim(Mid(sTag, InStr(sTag, ">") + 1))
                 bParam = True
             Else
@@ -183,7 +183,7 @@ Friend Class RoomExits
         ' to
         '   north <dest_room>
 
-        sParam = m_game.RetrieveParameter(sScript, ctx)
+        sParam = m_game.GetParameter(sScript, ctx)
         asParam = Split(sParam, ";")
 
         lParamStart = InStr(sScript, "<")

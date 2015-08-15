@@ -1322,7 +1322,7 @@ Public Class LegacyGame
                 End If
 
                 If blockType = blockname Then
-                    Dim blockKey = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext, False)
+                    Dim blockKey = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext, False)
 
                     blockKey = "k" & blockKey
 
@@ -1493,7 +1493,7 @@ Public Class LegacyGame
                 ' gets executed before something-specific's, as we execute the
                 ' lib startscripts backwards as well
                 If BeginsWith(_lines(i), "!include ") Then
-                    libFileName = RetrieveParameter(_lines(i), _nullContext)
+                    libFileName = GetParameter(_lines(i), _nullContext)
                     'Clear !include statement
                     _lines(i) = ""
                     libraryAlreadyIncluded = False
@@ -1564,7 +1564,7 @@ Public Class LegacyGame
                         If libCode(1) = "!library" Then
                             For c = 1 To libLines
                                 If BeginsWith(libCode(c), "!asl-version ") Then
-                                    libVer = CInt(RetrieveParameter(libCode(c), _nullContext))
+                                    libVer = CInt(GetParameter(libCode(c), _nullContext))
                                     c = libLines
                                 End If
                             Next c
@@ -1677,7 +1677,7 @@ Public Class LegacyGame
                                     Loop Until BeginsWith(libCode(c), "!end")
                                 ElseIf BeginsWith(libCode(c), "!addto type ") Then
                                     inDefTypeBlock = 0
-                                    typeBlockName = LCase(RetrieveParameter(libCode(c), _nullContext))
+                                    typeBlockName = LCase(GetParameter(libCode(c), _nullContext))
                                     For d = 1 To UBound(_lines)
                                         If LCase(_lines(d)) = "define type <" & typeBlockName & ">" Then
                                             inDefTypeBlock = 1
@@ -1845,7 +1845,7 @@ Public Class LegacyGame
         _log.Add(err)
     End Sub
 
-    Friend Function RetrieveParameter(s As String, ctx As Context, Optional convertStringVariables As Boolean = True) As String
+    Friend Function GetParameter(s As String, ctx As Context, Optional convertStringVariables As Boolean = True) As String
         ' Returns the parameters between < and > in a string
         Dim newParam As String
         Dim startPos As Integer
@@ -2115,7 +2115,7 @@ Public Class LegacyGame
             For i = 1 To o.NumberProperties
                 If o.Properties(i).PropertyName = "look" Then
                     ' do this odd RetrieveParameter stuff to convert any variables
-                    Print(RetrieveParameter("<" & o.Properties(i).PropertyValue & ">", ctx), ctx)
+                    Print(GetParameter("<" & o.Properties(i).PropertyValue & ">", ctx), ctx)
                     foundLook = True
                     Exit For
                 End If
@@ -2129,7 +2129,7 @@ Public Class LegacyGame
                     lookLine = Trim(GetEverythingAfter(_lines(i), "look "))
 
                     If Left(lookLine, 1) = "<" Then
-                        Print(RetrieveParameter(_lines(i), ctx), ctx)
+                        Print(GetParameter(_lines(i), ctx), ctx)
                     Else
                         ExecuteScript(lookLine, ctx, id)
                     End If
@@ -2636,9 +2636,9 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        Dim blockName = RetrieveParameter(afterLine, ctx)
+        Dim blockName = GetParameter(afterLine, ctx)
         Dim block = DefineBlockParam("procedure", blockName)
-        Dim checkValue = RetrieveParameter(script, ctx)
+        Dim checkValue = GetParameter(script, ctx)
         Dim caseMatch = False
 
         For i = block.StartLine + 1 To block.EndLine - 1
@@ -2654,7 +2654,7 @@ Public Class LegacyGame
                         caseMatch = True
                         caseScript = GetEverythingAfter(_lines(i), "case else ")
                     Else
-                        Dim thisCase = RetrieveParameter(_lines(i), ctx)
+                        Dim thisCase = GetParameter(_lines(i), ctx)
                         Dim finished = False
 
                         Do
@@ -2707,7 +2707,7 @@ Public Class LegacyGame
         gameBlock = GetDefineBlock("game")
         For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
             If BeginsWith(_lines(i), verbTag) Then
-                verbsList = RetrieveParameter(_lines(i), ctx)
+                verbsList = GetParameter(_lines(i), ctx)
 
                 ' The property or action the verb uses is either after a colon,
                 ' or it's the first (or only) verb on the line.
@@ -3092,7 +3092,7 @@ Public Class LegacyGame
 
         If BeginsWith(line, "list closed <") Then
             listInfo.Type = TextActionType.Text
-            listInfo.Data = RetrieveParameter(line, _nullContext)
+            listInfo.Data = GetParameter(line, _nullContext)
             propName = "list closed"
         ElseIf Trim(line) = "list closed off" Then
             ' default for list closed is off anyway
@@ -3105,7 +3105,7 @@ Public Class LegacyGame
 
         ElseIf BeginsWith(line, "list empty <") Then
             listInfo.Type = TextActionType.Text
-            listInfo.Data = RetrieveParameter(line, _nullContext)
+            listInfo.Data = GetParameter(line, _nullContext)
             propName = "list empty"
         ElseIf Trim(line) = "list empty off" Then
             ' default for list empty is off anyway
@@ -3121,7 +3121,7 @@ Public Class LegacyGame
             Exit Sub
         ElseIf BeginsWith(line, "list <") Then
             listInfo.Type = TextActionType.Text
-            listInfo.Data = RetrieveParameter(line, _nullContext)
+            listInfo.Data = GetParameter(line, _nullContext)
             propName = "list"
         ElseIf BeginsWith(line, "list ") Then
             listInfo.Type = TextActionType.Script
@@ -3253,9 +3253,9 @@ Public Class LegacyGame
         Dim propertyString As String = ""
 
         If BeginsWith(line, "on ") Then
-            propertyString = RetrieveParameter(line, ctx)
+            propertyString = GetParameter(line, ctx)
         ElseIf BeginsWith(line, "off ") Then
-            propertyString = "not " & RetrieveParameter(line, ctx)
+            propertyString = "not " & GetParameter(line, ctx)
         End If
 
         ' Game object always has ObjID 1
@@ -3270,7 +3270,7 @@ Public Class LegacyGame
     Private Sub ExecuteIncDec(line As String, ctx As Context)
         Dim var As String
         Dim change As Double
-        Dim param = RetrieveParameter(line, ctx)
+        Dim param = GetParameter(line, ctx)
 
         Dim sc = InStr(param, ";")
         If sc = 0 Then
@@ -3426,7 +3426,7 @@ Public Class LegacyGame
         End If
 
         If Left(Trim(giveData), 1) = "<" Then
-            Dim name = RetrieveParameter(giveData, _nullContext)
+            Dim name = GetParameter(giveData, _nullContext)
             Dim dataId As Integer
 
             actionName = actionName & "'" & name & "'"
@@ -3461,7 +3461,7 @@ Public Class LegacyGame
         Dim actionNum, i As Integer
         Dim foundExisting = False
 
-        Dim name = LCase(RetrieveParameter(actionInfo, ctx))
+        Dim name = LCase(GetParameter(actionInfo, ctx))
         Dim ep = InStr(actionInfo, ">")
         If ep = Len(actionInfo) Then
             LogASLError("No script given for '" & name & "' action data", LogType.WarningError)
@@ -3646,66 +3646,64 @@ Public Class LegacyGame
         Loop Until Len(Trim(propertyInfo)) = 0
     End Sub
 
-    Private Sub AddToUseInfo(ObjID As Integer, UseData As String)
-        Dim ObjectName As String
-        Dim DataID As Integer
-        Dim Found As Boolean
-        Dim EP As Integer
-        Dim CurUseType As UseType, i As Integer
+    Private Sub AddToUseInfo(id As Integer, useData As String)
+        Dim useType As UseType
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
-        If BeginsWith(UseData, "on ") Then
-            UseData = GetEverythingAfter(UseData, "on ")
-            If BeginsWith(UseData, "anything ") Then
-                o.UseOnAnything = GetEverythingAfter(UseData, "anything ")
+        If BeginsWith(useData, "on ") Then
+            useData = GetEverythingAfter(useData, "on ")
+            If BeginsWith(useData, "anything ") Then
+                o.UseOnAnything = GetEverythingAfter(useData, "anything ")
                 Exit Sub
             Else
-                CurUseType = UseType.UseOnSomething
+                useType = UseType.UseOnSomething
             End If
         Else
-            If BeginsWith(UseData, "anything ") Then
-                o.UseAnything = GetEverythingAfter(UseData, "anything ")
+            If BeginsWith(useData, "anything ") Then
+                o.UseAnything = GetEverythingAfter(useData, "anything ")
                 Exit Sub
             Else
-                CurUseType = UseType.UseSomethingOn
+                useType = UseType.UseSomethingOn
             End If
         End If
 
-        If Left(Trim(UseData), 1) = "<" Then
-            ObjectName = RetrieveParameter(UseData, _nullContext)
-            Found = False
-            For i = 1 To o.NumberUseData
-                If o.UseData(i).UseType = CurUseType And LCase(o.UseData(i).UseObject) = LCase(ObjectName) Then
-                    DataID = i
+        If Left(Trim(useData), 1) = "<" Then
+            Dim objectName = GetParameter(useData, _nullContext)
+            Dim dataId As Integer
+            Dim found = False
+
+            For i As Integer = 1 To o.NumberUseData
+                If o.UseData(i).UseType = useType And LCase(o.UseData(i).UseObject) = LCase(objectName) Then
+                    dataId = i
                     i = o.NumberUseData
-                    Found = True
+                    found = True
                 End If
             Next i
 
-            If Not Found Then
+            If Not found Then
                 o.NumberUseData = o.NumberUseData + 1
                 ReDim Preserve o.UseData(o.NumberUseData)
                 o.UseData(o.NumberUseData) = New UseDataType
-                DataID = o.NumberUseData
+                dataId = o.NumberUseData
             End If
 
-            EP = InStr(UseData, ">")
-            o.UseData(DataID).UseType = CurUseType
-            o.UseData(DataID).UseObject = ObjectName
-            o.UseData(DataID).UseScript = Mid(UseData, EP + 2)
+            Dim ep = InStr(useData, ">")
+            o.UseData(dataId).UseType = useType
+            o.UseData(dataId).UseObject = objectName
+            o.UseData(dataId).UseScript = Mid(useData, ep + 2)
         Else
-            o.Use = Trim(UseData)
+            o.Use = Trim(useData)
         End If
 
     End Sub
 
-    Private Function CapFirst(InputString As String) As String
-        Return UCase(Left(InputString, 1)) & Mid(InputString, 2)
+    Private Function CapFirst(s As String) As String
+        Return UCase(Left(s, 1)) & Mid(s, 2)
     End Function
 
-    Private Function ConvertVarsIn(InputString As String, ctx As Context) As String
-        Return RetrieveParameter("<" & InputString & ">", ctx)
+    Private Function ConvertVarsIn(s As String, ctx As Context) As String
+        Return GetParameter("<" & s & ">", ctx)
     End Function
 
     Private Function DisambObjHere(ctx As Context, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
@@ -4302,7 +4300,7 @@ Public Class LegacyGame
             InLocation = ""
             ScriptToExecute = GetEverythingAfter(ScriptLine, "game ")
         Else
-            InLocation = LCase(RetrieveParameter(ScriptLine, ctx))
+            InLocation = LCase(GetParameter(ScriptLine, ctx))
             BracketPos = InStr(ScriptLine, ">")
             ScriptToExecute = Trim(Mid(ScriptLine, BracketPos + 1))
         End If
@@ -4331,7 +4329,7 @@ Public Class LegacyGame
         FoundExisting = False
         FoundObject = False
 
-        ActionParam = RetrieveParameter(ActionData, ctx)
+        ActionParam = GetParameter(ActionData, ctx)
         SCP = InStr(ActionParam, ";")
         If SCP = 0 Then
             LogASLError("No action name specified in 'action " & ActionData & "'", LogType.WarningError)
@@ -4396,27 +4394,27 @@ Public Class LegacyGame
         End If
 
         If BeginsWith(Condition, "got ") Then
-            bThisResult = ExecuteIfGot(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfGot(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "has ") Then
-            bThisResult = ExecuteIfHas(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfHas(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "ask ") Then
-            bThisResult = ExecuteIfAsk(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfAsk(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "is ") Then
-            bThisResult = ExecuteIfIs(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfIs(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "here ") Then
-            bThisResult = ExecuteIfHere(RetrieveParameter(Condition, ctx), ctx)
+            bThisResult = ExecuteIfHere(GetParameter(Condition, ctx), ctx)
         ElseIf BeginsWith(Condition, "exists ") Then
-            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, ctx), False)
+            bThisResult = ExecuteIfExists(GetParameter(Condition, ctx), False)
         ElseIf BeginsWith(Condition, "real ") Then
-            bThisResult = ExecuteIfExists(RetrieveParameter(Condition, ctx), True)
+            bThisResult = ExecuteIfExists(GetParameter(Condition, ctx), True)
         ElseIf BeginsWith(Condition, "property ") Then
-            bThisResult = ExecuteIfProperty(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfProperty(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "action ") Then
-            bThisResult = ExecuteIfAction(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfAction(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "type ") Then
-            bThisResult = ExecuteIfType(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfType(GetParameter(Condition, ctx))
         ElseIf BeginsWith(Condition, "flag ") Then
-            bThisResult = ExecuteIfFlag(RetrieveParameter(Condition, ctx))
+            bThisResult = ExecuteIfFlag(GetParameter(Condition, ctx))
         End If
 
         If bThisNot Then bThisResult = Not bThisResult
@@ -4494,7 +4492,7 @@ Public Class LegacyGame
 
         Dim ContainerRoom As String
         If BeginsWith(CreateData, "room ") Then
-            NewName = RetrieveParameter(CreateData, ctx)
+            NewName = GetParameter(CreateData, ctx)
             _numberRooms = _numberRooms + 1
             ReDim Preserve _rooms(_numberRooms)
             _rooms(_numberRooms) = New RoomType
@@ -4523,7 +4521,7 @@ Public Class LegacyGame
             End If
 
         ElseIf BeginsWith(CreateData, "object ") Then
-            ParamData = RetrieveParameter(CreateData, ctx)
+            ParamData = GetParameter(CreateData, ctx)
             SCP = InStr(ParamData, ";")
             If SCP = 0 Then
                 NewName = ParamData
@@ -4575,7 +4573,7 @@ Public Class LegacyGame
         Dim SaveData As String
 
         ExitData = GetEverythingAfter(CreateData, "exit ")
-        NewName = RetrieveParameter(CreateData, ctx)
+        NewName = GetParameter(CreateData, ctx)
         SCP = InStr(NewName, ";")
         If _gameAslVersion < 410 Then
             If SCP = 0 Then
@@ -4638,7 +4636,7 @@ Public Class LegacyGame
         Else
             SaveData = Left(ExitData, ParamPos - 1)
             ' We do this so the changelog doesn't contain unconverted variable names
-            SaveData = SaveData & "<" & RetrieveParameter(ExitData, ctx) & ">"
+            SaveData = SaveData & "<" & GetParameter(ExitData, ctx) & ">"
         End If
         AddToChangeLog("room " & _rooms(SrcID).RoomName, "exit " & SaveData)
 
@@ -4790,13 +4788,13 @@ Public Class LegacyGame
             If BeginsWith(DropStatement, "everywhere") Then
                 PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(s:=DropStatement, ctx:=ctx), ctx)
+                    Print(GetParameter(s:=DropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
                 End If
             ElseIf BeginsWith(DropStatement, "nowhere") Then
                 If InStr(DropStatement, "<") <> 0 Then
-                    Print(RetrieveParameter(s:=DropStatement, ctx:=ctx), ctx)
+                    Print(GetParameter(s:=DropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.CantDrop, ctx)
                 End If
@@ -4862,7 +4860,7 @@ Public Class LegacyGame
                     If BeginsWith(_lines(j), "examine ") Then
                         ExamineAction = Trim(GetEverythingAfter(_lines(j), "examine "))
                         If Left(ExamineAction, 1) = "<" Then
-                            Print(RetrieveParameter(_lines(j), ctx), ctx)
+                            Print(GetParameter(_lines(j), ctx), ctx)
                         Else
                             ExecuteScript(ExamineAction, ctx, ObjID)
                         End If
@@ -5254,7 +5252,7 @@ Public Class LegacyGame
 
     Private Sub ExecuteWait(WaitLine As String, ctx As Context)
         If WaitLine <> "" Then
-            Print(RetrieveParameter(WaitLine, ctx), ctx)
+            Print(GetParameter(WaitLine, ctx), ctx)
         Else
 
             If _gameAslVersion >= 410 Then
@@ -5299,7 +5297,7 @@ Public Class LegacyGame
         Dim ActionScript As String
         Dim EP As Integer
 
-        ActionName = LCase(RetrieveParameter(ActionInfo, _nullContext))
+        ActionName = LCase(GetParameter(ActionInfo, _nullContext))
         EP = InStr(ActionInfo, ">")
         If EP = Len(ActionInfo) Then
             LogASLError("No script given for '" & ActionName & "' action data", LogType.WarningError)
@@ -5410,7 +5408,7 @@ Public Class LegacyGame
 
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define type") Then
-                If LCase(RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
+                If LCase(GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
                     SecID = i
                     i = _numberSections
                     Found = True
@@ -5427,7 +5425,7 @@ Public Class LegacyGame
 
         For i = _defineBlocks(SecID).StartLine + 1 To _defineBlocks(SecID).EndLine - 1
             If BeginsWith(_lines(i), "type ") Then
-                IncTypeName = LCase(RetrieveParameter(_lines(i), _nullContext))
+                IncTypeName = LCase(GetParameter(_lines(i), _nullContext))
                 NewProperties = GetPropertiesInType(IncTypeName)
                 PropertyList.Properties = PropertyList.Properties & NewProperties.Properties
                 ReDim Preserve PropertyList.Actions(PropertyList.NumberActions + NewProperties.NumberActions)
@@ -5455,7 +5453,7 @@ Public Class LegacyGame
                 ReDim Preserve PropertyList.Actions(PropertyList.NumberActions)
                 PropertyList.Actions(PropertyList.NumberActions) = GetObjectActions(GetEverythingAfter(_lines(i), "action "))
             ElseIf BeginsWith(_lines(i), "properties ") Then
-                PropertyList.Properties = PropertyList.Properties & RetrieveParameter(_lines(i), _nullContext) & ";"
+                PropertyList.Properties = PropertyList.Properties & GetParameter(_lines(i), _nullContext) & ";"
             ElseIf Trim(_lines(i)) <> "" Then
                 PropertyList.Properties = PropertyList.Properties & _lines(i) & ";"
             End If
@@ -5487,7 +5485,7 @@ Public Class LegacyGame
 
         If Left(TextScript, 1) = "<" Then
             result.Type = TextActionType.Text
-            result.Data = RetrieveParameter(TextScript, _nullContext)
+            result.Data = GetParameter(TextScript, _nullContext)
         Else
             result.Type = TextActionType.Script
             result.Data = TextScript
@@ -6140,7 +6138,7 @@ Public Class LegacyGame
         Dim SCPos2, SCPos1, SCPos3 As Integer
         Dim i As Double
 
-        ForData = RetrieveParameter(ScriptLine, ctx)
+        ForData = GetParameter(ScriptLine, ctx)
 
         ' Extract individual components:
         SCPos1 = InStr(ForData, ";")
@@ -6950,7 +6948,7 @@ Public Class LegacyGame
 
         For i = choiceblock.StartLine + 1 To choiceblock.EndLine - 1
             If BeginsWith(_lines(i), "choice ") Then
-                menuOptions.Add(CStr(i), RetrieveParameter(_lines(i), ctx))
+                menuOptions.Add(CStr(i), GetParameter(_lines(i), ctx))
                 menuScript.Add(CStr(i), Trim(Right(_lines(i), Len(_lines(i)) - InStr(_lines(i), ">"))))
             End If
         Next i
@@ -6977,12 +6975,12 @@ Public Class LegacyGame
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "default fontname ") Then
-                ThisFontName = RetrieveParameter(_lines(i), _nullContext)
+                ThisFontName = GetParameter(_lines(i), _nullContext)
                 If ThisFontName <> "" Then
                     _defaultFontName = ThisFontName
                 End If
             ElseIf BeginsWith(_lines(i), "default fontsize ") Then
-                ThisFontSize = CInt(RetrieveParameter(_lines(i), _nullContext))
+                ThisFontSize = CInt(GetParameter(_lines(i), _nullContext))
                 If ThisFontSize <> 0 Then
                     _defaultFontSize = ThisFontSize
                 End If
@@ -7003,7 +7001,7 @@ Public Class LegacyGame
                 ThisVariable = New VariableType
                 ReDim ThisVariable.VariableContents(0)
 
-                ThisVariable.VariableName = RetrieveParameter(_lines(i), _nullContext)
+                ThisVariable.VariableName = GetParameter(_lines(i), _nullContext)
                 ThisVariable.DisplayString = ""
                 ThisVariable.NoZeroDisplay = False
                 ThisVariable.OnChangeScript = ""
@@ -7028,9 +7026,9 @@ Public Class LegacyGame
                         If BeginsWith(DisplayString, "nozero ") Then
                             ThisVariable.NoZeroDisplay = True
                         End If
-                        ThisVariable.DisplayString = RetrieveParameter(_lines(i), _nullContext, False)
+                        ThisVariable.DisplayString = GetParameter(_lines(i), _nullContext, False)
                     ElseIf BeginsWith(_lines(i), "value ") Then
-                        ThisVariable.VariableContents(0) = RetrieveParameter(_lines(i), _nullContext)
+                        ThisVariable.VariableContents(0) = GetParameter(_lines(i), _nullContext)
                     End If
 
                 Loop Until Trim(_lines(i)) = "end define"
@@ -7075,13 +7073,13 @@ Public Class LegacyGame
                 If BeginsWith(_lines(i), "define ") Then
                     NestBlock = NestBlock + 1
                 ElseIf BeginsWith(_lines(i), "properties ") Then
-                    AddToObjectProperties(RetrieveParameter(_lines(i), _nullContext), _numberObjs, _nullContext)
+                    AddToObjectProperties(GetParameter(_lines(i), _nullContext), _numberObjs, _nullContext)
                 ElseIf BeginsWith(_lines(i), "type ") Then
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                     ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-                    o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(i), _nullContext)
+                    o.TypesIncluded(o.NumberTypesIncluded) = GetParameter(_lines(i), _nullContext)
 
-                    PropertyData = GetPropertiesInType(RetrieveParameter(_lines(i), _nullContext))
+                    PropertyData = GetPropertiesInType(GetParameter(_lines(i), _nullContext))
                     AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                     For k = 1 To PropertyData.NumberActions
                         AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
@@ -7109,9 +7107,9 @@ Public Class LegacyGame
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define menu ") Then
 
                 If MenuExists Then
-                    LogASLError("Can't load menu '" & RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
+                    LogASLError("Can't load menu '" & GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
                 Else
-                    menuTitle = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                    menuTitle = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
 
                     For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                         If Trim(_lines(j)) <> "" Then
@@ -7190,7 +7188,7 @@ Public Class LegacyGame
 
                 Dim r = _rooms(_numberRooms)
 
-                r.RoomName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                r.RoomName = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 _objs(_numberObjs).ObjectName = r.RoomName
                 _objs(_numberObjs).IsRoom = True
                 _objs(_numberObjs).CorresRoom = r.RoomName
@@ -7230,7 +7228,7 @@ Public Class LegacyGame
                     End If
 
                     If _gameAslVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
-                        r.RoomAlias = RetrieveParameter(_lines(j), _nullContext)
+                        r.RoomAlias = GetParameter(_lines(j), _nullContext)
                         _objs(_numberObjs).ObjectAlias = r.RoomAlias
                         If _gameAslVersion >= 350 Then AddToObjectProperties("alias=" & r.RoomAlias, _numberObjs, _nullContext)
                     ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "description ") Then
@@ -7243,7 +7241,7 @@ Public Class LegacyGame
                             End If
                         End If
                     ElseIf BeginsWith(_lines(j), "out ") Then
-                        r.Out.Text = RetrieveParameter(_lines(j), _nullContext)
+                        r.Out.Text = GetParameter(_lines(j), _nullContext)
                         r.Out.Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                         If _gameAslVersion >= 350 Then
                             If r.Out.Script <> "" Then
@@ -7343,13 +7341,13 @@ Public Class LegacyGame
                             End If
                         End If
                     ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "indescription ") Then
-                        r.InDescription = RetrieveParameter(_lines(j), _nullContext)
+                        r.InDescription = GetParameter(_lines(j), _nullContext)
                         If _gameAslVersion >= 350 Then AddToObjectProperties("indescription=" & r.InDescription, _numberObjs, _nullContext)
                     ElseIf _gameAslVersion >= 280 And BeginsWith(_lines(j), "look ") Then
-                        r.Look = RetrieveParameter(_lines(j), _nullContext)
+                        r.Look = GetParameter(_lines(j), _nullContext)
                         If _gameAslVersion >= 350 Then AddToObjectProperties("look=" & r.Look, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "prefix ") Then
-                        r.Prefix = RetrieveParameter(_lines(j), _nullContext)
+                        r.Prefix = GetParameter(_lines(j), _nullContext)
                         If _gameAslVersion >= 350 Then AddToObjectProperties("prefix=" & r.Prefix, _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "script ") Then
                         r.Script = GetEverythingAfter(_lines(j), "script ")
@@ -7358,13 +7356,13 @@ Public Class LegacyGame
                         r.NumberCommands = r.NumberCommands + 1
                         ReDim Preserve r.Commands(r.NumberCommands)
                         r.Commands(r.NumberCommands) = New UserDefinedCommandType
-                        r.Commands(r.NumberCommands).CommandText = RetrieveParameter(_lines(j), _nullContext, False)
+                        r.Commands(r.NumberCommands).CommandText = GetParameter(_lines(j), _nullContext, False)
                         r.Commands(r.NumberCommands).CommandScript = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                     ElseIf BeginsWith(_lines(j), "place ") Then
                         r.NumberPlaces = r.NumberPlaces + 1
                         ReDim Preserve r.Places(r.NumberPlaces)
                         r.Places(r.NumberPlaces) = New PlaceType
-                        PlaceData = RetrieveParameter(_lines(j), _nullContext)
+                        PlaceData = GetParameter(_lines(j), _nullContext)
                         SCP = InStr(PlaceData, ";")
                         If SCP = 0 Then
                             r.Places(r.NumberPlaces).PlaceName = PlaceData
@@ -7377,16 +7375,16 @@ Public Class LegacyGame
                         r.NumberUse = r.NumberUse + 1
                         ReDim Preserve r.Use(r.NumberUse)
                         r.Use(r.NumberUse) = New ScriptText
-                        r.Use(r.NumberUse).Text = RetrieveParameter(_lines(j), _nullContext)
+                        r.Use(r.NumberUse).Text = GetParameter(_lines(j), _nullContext)
                         r.Use(r.NumberUse).Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                     ElseIf BeginsWith(_lines(j), "properties ") Then
-                        AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                        AddToObjectProperties(GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                     ElseIf BeginsWith(_lines(j), "type ") Then
                         _objs(_numberObjs).NumberTypesIncluded = _objs(_numberObjs).NumberTypesIncluded + 1
                         ReDim Preserve _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded)
-                        _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
+                        _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded) = GetParameter(_lines(j), _nullContext)
 
-                        PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
+                        PropertyData = GetPropertiesInType(GetParameter(_lines(j), _nullContext))
                         AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                         For k = 1 To PropertyData.NumberActions
                             AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
@@ -7462,12 +7460,12 @@ Public Class LegacyGame
                 _numberTimers = _numberTimers + 1
                 ReDim Preserve _timers(_numberTimers)
                 _timers(_numberTimers) = New TimerType
-                _timers(_numberTimers).TimerName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                _timers(_numberTimers).TimerName = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 _timers(_numberTimers).TimerActive = False
 
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If BeginsWith(_lines(j), "interval ") Then
-                        _timers(_numberTimers).TimerInterval = CInt(RetrieveParameter(_lines(j), _nullContext))
+                        _timers(_numberTimers).TimerInterval = CInt(GetParameter(_lines(j), _nullContext))
                     ElseIf BeginsWith(_lines(j), "action ") Then
                         _timers(_numberTimers).TimerAction = GetEverythingAfter(_lines(j), "action ")
                     ElseIf Trim(LCase(_lines(j))) = "enabled" Then
@@ -7515,7 +7513,7 @@ Public Class LegacyGame
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "error ") Then
-                ErrorInfo = RetrieveParameter(_lines(i), _nullContext, False)
+                ErrorInfo = GetParameter(_lines(i), _nullContext, False)
                 SemiColonPos = InStr(ErrorInfo, ";")
 
                 sErrorName = Left(ErrorInfo, SemiColonPos - 1)
@@ -7730,7 +7728,7 @@ Public Class LegacyGame
         'see if room has an alias
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(_lines(i), "alias") Then
-                AliasName = RetrieveParameter(_lines(i), _nullContext)
+                AliasName = GetParameter(_lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
@@ -7751,7 +7749,7 @@ Public Class LegacyGame
         InDesc = "unfound"
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(_lines(i), "indescription") Then
-                InDesc = Trim(RetrieveParameter(_lines(i), _nullContext))
+                InDesc = Trim(GetParameter(_lines(i), _nullContext))
                 i = roomblock.EndLine
             End If
         Next i
@@ -7863,7 +7861,7 @@ Public Class LegacyGame
 
         For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
             If BeginsWith(_lines(i), "out") Then
-                Doorways = RetrieveParameter(_lines(i), _nullContext)
+                Doorways = GetParameter(_lines(i), _nullContext)
             End If
 
             If BeginsWith(_lines(i), "north ") Then
@@ -7894,7 +7892,7 @@ Public Class LegacyGame
 
             If BeginsWith(_lines(i), "place") Then
                 'remove any prefix semicolon from printed text
-                PL = RetrieveParameter(_lines(i), _nullContext)
+                PL = GetParameter(_lines(i), _nullContext)
                 PLNF = PL 'Used in object list - no formatting or prefix
                 If InStr(PL, ";") > 0 Then
                     PLNF = Right(PL, Len(PL) - (InStr(PL, ";") + 1))
@@ -7914,7 +7912,7 @@ Public Class LegacyGame
             outside = DefineBlockParam("room", Doorways)
             For i = outside.StartLine + 1 To outside.EndLine - 1
                 If BeginsWith(_lines(i), "alias") Then
-                    AliasOut = RetrieveParameter(_lines(i), _nullContext)
+                    AliasOut = GetParameter(_lines(i), _nullContext)
                     i = outside.EndLine
                 End If
             Next i
@@ -8016,7 +8014,7 @@ Public Class LegacyGame
 
             DescLine = GetEverythingAfter(Trim(DescLine), "description ")
             If Left(DescLine, 1) = "<" Then
-                Print(RetrieveParameter(DescLine, _nullContext), _nullContext)
+                Print(GetParameter(DescLine, _nullContext), _nullContext)
             Else
                 ExecuteScript(DescLine, _nullContext)
             End If
@@ -8031,7 +8029,7 @@ Public Class LegacyGame
             If BeginsWith(_lines(i), "define") Then DefBlk = DefBlk + 1
             If BeginsWith(_lines(i), "end define") Then DefBlk = DefBlk - 1
             If BeginsWith(_lines(i), "look") And DefBlk = 0 Then
-                LookString = RetrieveParameter(_lines(i), _nullContext)
+                LookString = GetParameter(_lines(i), _nullContext)
                 i = roomblock.EndLine
             End If
         Next i
@@ -8063,7 +8061,7 @@ Public Class LegacyGame
 
         If ctx.CancelExec Then Exit Sub
 
-        ExecLine = RetrieveParameter(ScriptLine, ctx)
+        ExecLine = GetParameter(ScriptLine, ctx)
 
         Dim NewThread As Context = CopyContext(ctx)
 
@@ -8184,7 +8182,7 @@ Public Class LegacyGame
             For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
                 If BeginsWith(_lines(i), CommandTag) Then
 
-                    CommandList = RetrieveParameter(_lines(i), ctx, False)
+                    CommandList = GetParameter(_lines(i), ctx, False)
                     Do
                         EndPos = InStr(CommandList, ";")
                         If EndPos = 0 Then
@@ -8340,7 +8338,7 @@ Public Class LegacyGame
             If GL = "<unfound>" Then
                 G = "it "
             Else
-                G = RetrieveParameter(GL, ctx) & " "
+                G = GetParameter(GL, ctx) & " "
             End If
         End If
 
@@ -8912,7 +8910,7 @@ Public Class LegacyGame
             cdf = _defineBlocks(i)
             If BeginsWith(_lines(cdf.StartLine), "define room") Or BeginsWith(_lines(cdf.StartLine), "define game") Or BeginsWith(_lines(cdf.StartLine), "define object ") Then
                 If BeginsWith(_lines(cdf.StartLine), "define room") Then
-                    OrigCRoomName = RetrieveParameter(_lines(cdf.StartLine), _nullContext)
+                    OrigCRoomName = GetParameter(_lines(cdf.StartLine), _nullContext)
                 Else
                     OrigCRoomName = ""
                 End If
@@ -8935,7 +8933,7 @@ Public Class LegacyGame
 
                         Dim o = _objs(_numberObjs)
 
-                        o.ObjectName = RetrieveParameter(_lines(j), _nullContext)
+                        o.ObjectName = GetParameter(_lines(j), _nullContext)
                         o.ObjectAlias = o.ObjectName
                         o.DefinitionSectionStart = j
                         o.ContainerRoom = CRoomName
@@ -8962,29 +8960,29 @@ Public Class LegacyGame
                                 e = 1
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("hidden", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                CRoomName = RetrieveParameter(_lines(j), _nullContext)
+                                CRoomName = GetParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "prefix ") Then
-                                o.Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
+                                o.Prefix = GetParameter(_lines(j), _nullContext) & " "
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("prefix=" & o.Prefix, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "suffix ") Then
-                                o.Suffix = RetrieveParameter(_lines(j), _nullContext)
+                                o.Suffix = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("suffix=" & o.Suffix, _numberObjs, _nullContext)
                             ElseIf Trim(_lines(j)) = "invisible" Then
                                 o.Visible = False
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("invisible", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alias ") Then
-                                o.ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
+                                o.ObjectAlias = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("alias=" & o.ObjectAlias, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "alt ") Then
-                                AddToObjectAltNames(RetrieveParameter(_lines(j), _nullContext), _numberObjs)
+                                AddToObjectAltNames(GetParameter(_lines(j), _nullContext), _numberObjs)
                             ElseIf BeginsWith(_lines(j), "detail ") Then
-                                o.Detail = RetrieveParameter(_lines(j), _nullContext)
+                                o.Detail = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("detail=" & o.Detail, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gender ") Then
-                                o.Gender = RetrieveParameter(_lines(j), _nullContext)
+                                o.Gender = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("gender=" & o.Gender, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "article ") Then
-                                o.Article = RetrieveParameter(_lines(j), _nullContext)
+                                o.Article = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("article=" & o.Article, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "gain ") Then
                                 o.GainScript = GetEverythingAfter(_lines(j), "gain ")
@@ -8993,13 +8991,13 @@ Public Class LegacyGame
                                 o.LoseScript = GetEverythingAfter(_lines(j), "lose ")
                                 AddObjectAction(_numberObjs, "lose", o.LoseScript)
                             ElseIf BeginsWith(_lines(j), "displaytype ") Then
-                                o.DisplayType = RetrieveParameter(_lines(j), _nullContext)
+                                o.DisplayType = GetParameter(_lines(j), _nullContext)
                                 If _gameAslVersion >= 311 Then AddToObjectProperties("displaytype=" & o.DisplayType, _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "look ") Then
                                 If _gameAslVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "look ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("look=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                        AddToObjectProperties("look=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                     Else
                                         AddObjectAction(_numberObjs, "look", RestOfLine)
                                     End If
@@ -9008,7 +9006,7 @@ Public Class LegacyGame
                                 If _gameAslVersion >= 311 Then
                                     RestOfLine = GetEverythingAfter(_lines(j), "examine ")
                                     If Left(RestOfLine, 1) = "<" Then
-                                        AddToObjectProperties("examine=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                        AddToObjectProperties("examine=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                     Else
                                         AddObjectAction(_numberObjs, "examine", RestOfLine)
                                     End If
@@ -9016,18 +9014,18 @@ Public Class LegacyGame
                             ElseIf _gameAslVersion >= 311 And BeginsWith(_lines(j), "speak ") Then
                                 RestOfLine = GetEverythingAfter(_lines(j), "speak ")
                                 If Left(RestOfLine, 1) = "<" Then
-                                    AddToObjectProperties("speak=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("speak=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     AddObjectAction(_numberObjs, "speak", RestOfLine)
                                 End If
                             ElseIf BeginsWith(_lines(j), "properties ") Then
-                                AddToObjectProperties(RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                AddToObjectProperties(GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "type ") Then
                                 o.NumberTypesIncluded = o.NumberTypesIncluded + 1
                                 ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
-                                o.TypesIncluded(o.NumberTypesIncluded) = RetrieveParameter(_lines(j), _nullContext)
+                                o.TypesIncluded(o.NumberTypesIncluded) = GetParameter(_lines(j), _nullContext)
 
-                                PropertyData = GetPropertiesInType(RetrieveParameter(_lines(j), _nullContext))
+                                PropertyData = GetPropertiesInType(GetParameter(_lines(j), _nullContext))
                                 AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
                                 For k = 1 To PropertyData.NumberActions
                                     AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
@@ -9050,9 +9048,9 @@ Public Class LegacyGame
                             ElseIf BeginsWith(_lines(j), "take ") Then
                                 If Left(GetEverythingAfter(_lines(j), "take "), 1) = "<" Then
                                     o.Take.Type = TextActionType.Text
-                                    o.Take.Data = RetrieveParameter(_lines(j), _nullContext)
+                                    o.Take.Data = GetParameter(_lines(j), _nullContext)
 
-                                    AddToObjectProperties("take=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("take=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     o.Take.Type = TextActionType.Script
                                     RestOfLine = GetEverythingAfter(_lines(j), "take ")
@@ -9075,7 +9073,7 @@ Public Class LegacyGame
                                 AddToObjectProperties("open", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "open ") Then
                                 If Left(GetEverythingAfter(_lines(j), "open "), 1) = "<" Then
-                                    AddToObjectProperties("open=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("open=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "open ")
                                     AddObjectAction(_numberObjs, "open", RestOfLine)
@@ -9084,7 +9082,7 @@ Public Class LegacyGame
                                 AddToObjectProperties("close", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "close ") Then
                                 If Left(GetEverythingAfter(_lines(j), "close "), 1) = "<" Then
-                                    AddToObjectProperties("close=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("close=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "close ")
                                     AddObjectAction(_numberObjs, "close", RestOfLine)
@@ -9093,7 +9091,7 @@ Public Class LegacyGame
                                 AddToObjectProperties("add", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "add ") Then
                                 If Left(GetEverythingAfter(_lines(j), "add "), 1) = "<" Then
-                                    AddToObjectProperties("add=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("add=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "add ")
                                     AddObjectAction(_numberObjs, "add", RestOfLine)
@@ -9102,13 +9100,13 @@ Public Class LegacyGame
                                 AddToObjectProperties("remove", _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "remove ") Then
                                 If Left(GetEverythingAfter(_lines(j), "remove "), 1) = "<" Then
-                                    AddToObjectProperties("remove=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                    AddToObjectProperties("remove=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                                 Else
                                     RestOfLine = GetEverythingAfter(_lines(j), "remove ")
                                     AddObjectAction(_numberObjs, "remove", RestOfLine)
                                 End If
                             ElseIf BeginsWith(_lines(j), "parent ") Then
-                                AddToObjectProperties("parent=" & RetrieveParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
+                                AddToObjectProperties("parent=" & GetParameter(_lines(j), _nullContext), _numberObjs, _nullContext)
                             ElseIf BeginsWith(_lines(j), "list") Then
                                 ProcessListInfo(_lines(j), _numberObjs)
                             End If
@@ -9122,7 +9120,7 @@ Public Class LegacyGame
                         _numberChars = _numberChars + 1
                         ReDim Preserve _chars(_numberChars)
                         _chars(_numberChars) = New ObjectType
-                        _chars(_numberChars).ObjectName = RetrieveParameter(_lines(j), _nullContext)
+                        _chars(_numberChars).ObjectName = GetParameter(_lines(j), _nullContext)
                         _chars(_numberChars).DefinitionSectionStart = j
                         _chars(_numberChars).ContainerRoom = ""
                         _chars(_numberChars).Visible = True
@@ -9133,17 +9131,17 @@ Public Class LegacyGame
                                 _chars(_numberChars).Exists = False
                                 e = 1
                             ElseIf BeginsWith(_lines(j), "startin ") And CRoomName = "__UNKNOWN" Then
-                                CRoomName = RetrieveParameter(_lines(j), _nullContext)
+                                CRoomName = GetParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "prefix ") Then
-                                _chars(_numberChars).Prefix = RetrieveParameter(_lines(j), _nullContext) & " "
+                                _chars(_numberChars).Prefix = GetParameter(_lines(j), _nullContext) & " "
                             ElseIf BeginsWith(_lines(j), "suffix ") Then
-                                _chars(_numberChars).Suffix = " " & RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).Suffix = " " & GetParameter(_lines(j), _nullContext)
                             ElseIf Trim(_lines(j)) = "invisible" Then
                                 _chars(_numberChars).Visible = False
                             ElseIf BeginsWith(_lines(j), "alias ") Then
-                                _chars(_numberChars).ObjectAlias = RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).ObjectAlias = GetParameter(_lines(j), _nullContext)
                             ElseIf BeginsWith(_lines(j), "detail ") Then
-                                _chars(_numberChars).Detail = RetrieveParameter(_lines(j), _nullContext)
+                                _chars(_numberChars).Detail = GetParameter(_lines(j), _nullContext)
                             End If
 
                             _chars(_numberChars).ContainerRoom = CRoomName
@@ -9394,7 +9392,7 @@ Public Class LegacyGame
                     DescLine = GetEverythingAfter(_lines(i), "description ")
                     DescTagExist = True
                     If Left(DescLine, 1) = "<" Then
-                        DescLine = RetrieveParameter(DescLine, ctx)
+                        DescLine = GetParameter(DescLine, ctx)
                         DescType = TextActionType.Text
                     Else
                         DescType = TextActionType.Script
@@ -9526,7 +9524,7 @@ Public Class LegacyGame
             For i = textblock.StartLine + 1 To textblock.EndLine - 1
                 If _gameAslVersion >= 392 Then
                     ' Convert string variables etc.
-                    Print(RetrieveParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
+                    Print(GetParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
                 Else
                     Print(_lines(i), ctx, OutputTo)
                 End If
@@ -10036,7 +10034,7 @@ Public Class LegacyGame
             GiveLine = 0
             For i = characterblock.StartLine + 1 To characterblock.EndLine - 1
                 If BeginsWith(_lines(i), "give") Then
-                    ItemCheck = RetrieveParameter(_lines(i), ctx)
+                    ItemCheck = GetParameter(_lines(i), ctx)
                     If LCase(ItemCheck) = LCase(ItemToGive) Then
                         GiveLine = i
                     End If
@@ -10144,7 +10142,7 @@ Public Class LegacyGame
 
                 LookStuff = Trim(GetEverythingAfter(Trim(LookLine), "look "))
                 If Left(LookStuff, 1) = "<" Then
-                    LookText = RetrieveParameter(LookLine, ctx)
+                    LookText = GetParameter(LookLine, ctx)
                     Print(LookText, ctx)
                 Else
                     ExecuteScript(LookStuff, ctx, ObjID)
@@ -10242,7 +10240,7 @@ Public Class LegacyGame
             SpeakLine = GetEverythingAfter(SpeakLine, "speak ")
 
             If BeginsWith(SpeakLine, "<") Then
-                SpeakText = RetrieveParameter(SpeakLine, ctx)
+                SpeakText = GetParameter(SpeakLine, ctx)
                 If _gameAslVersion >= 350 Then
                     Print(SpeakText, ctx)
                 Else
@@ -10272,7 +10270,7 @@ Public Class LegacyGame
                 SetStringContents("quest.error.charactername", c, ctx)
                 PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
             ElseIf BeginsWith(s, "<") Then
-                s = RetrieveParameter(l, ctx)
+                s = GetParameter(l, ctx)
                 Print(Chr(34) & s & Chr(34), ctx)
             Else
                 ExecuteScript(s, ctx)
@@ -10760,33 +10758,33 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "select case ") Then
                 ExecuteSelectCase(ScriptLine, ctx)
             ElseIf BeginsWith(ScriptLine, "choose ") Then
-                ExecuteChoose(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecuteChoose(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "set ") Then
                 ExecuteSet(GetEverythingAfter(ScriptLine, "set "), ctx)
             ElseIf BeginsWith(ScriptLine, "inc ") Or BeginsWith(ScriptLine, "dec ") Then
                 ExecuteIncDec(ScriptLine, ctx)
             ElseIf BeginsWith(ScriptLine, "say ") Then
-                Print(Chr(34) & RetrieveParameter(ScriptLine, ctx) & Chr(34), ctx)
+                Print(Chr(34) & GetParameter(ScriptLine, ctx) & Chr(34), ctx)
             ElseIf BeginsWith(ScriptLine, "do ") Then
-                ExecuteDo(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecuteDo(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "doaction ") Then
-                ExecuteDoAction(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecuteDoAction(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "give ") Then
-                PlayerItem(RetrieveParameter(ScriptLine, ctx), True, ctx)
+                PlayerItem(GetParameter(ScriptLine, ctx), True, ctx)
             ElseIf BeginsWith(ScriptLine, "lose ") Or BeginsWith(ScriptLine, "drop ") Then
-                PlayerItem(RetrieveParameter(ScriptLine, ctx), False, ctx)
+                PlayerItem(GetParameter(ScriptLine, ctx), False, ctx)
             ElseIf BeginsWith(ScriptLine, "msg nospeak ") Then
-                Print(RetrieveParameter(ScriptLine, ctx), ctx, , True)
+                Print(GetParameter(ScriptLine, ctx), ctx, , True)
             ElseIf BeginsWith(ScriptLine, "msg ") Then
-                Print(RetrieveParameter(ScriptLine, ctx), ctx)
+                Print(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "speak ") Then
-                Speak(RetrieveParameter(ScriptLine, ctx))
+                Speak(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "helpmsg ") Then
-                Print(RetrieveParameter(ScriptLine, ctx), ctx, "help")
+                Print(GetParameter(ScriptLine, ctx), ctx, "help")
             ElseIf Trim(LCase(ScriptLine)) = "helpclose" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate help window
             ElseIf BeginsWith(ScriptLine, "goto ") Then
-                PlayGame(RetrieveParameter(ScriptLine, ctx), ctx)
+                PlayGame(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "playerwin") Then
                 FinishGame(StopType.Win, ctx)
             ElseIf BeginsWith(ScriptLine, "playerlose") Then
@@ -10794,75 +10792,75 @@ Public Class LegacyGame
             ElseIf Trim(LCase(ScriptLine)) = "stop" Then
                 FinishGame(StopType.Null, ctx)
             ElseIf BeginsWith(ScriptLine, "playwav ") Then
-                PlayWav(RetrieveParameter(ScriptLine, ctx))
+                PlayWav(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "playmidi ") Then
-                PlayMedia(RetrieveParameter(ScriptLine, ctx))
+                PlayMedia(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
-                PlayMedia(RetrieveParameter(ScriptLine, ctx))
+                PlayMedia(GetParameter(ScriptLine, ctx))
             ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate picture window
             ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (_gameAslVersion >= 282 And _gameAslVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (_gameAslVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
-                ShowPicture(RetrieveParameter(ScriptLine, ctx))
+                ShowPicture(GetParameter(ScriptLine, ctx))
             ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
-                ShowPictureInText(RetrieveParameter(ScriptLine, ctx))
+                ShowPictureInText(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "animate persist ") Then
-                ShowPicture(RetrieveParameter(ScriptLine, ctx))
+                ShowPicture(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "animate ") Then
-                ShowPicture(RetrieveParameter(ScriptLine, ctx))
+                ShowPicture(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "extract ") Then
-                ExtractFile(RetrieveParameter(ScriptLine, ctx))
+                ExtractFile(GetParameter(ScriptLine, ctx))
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
+                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
+                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
-                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Object, ctx)
+                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Object, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx, Thing.Character)
+                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx, Thing.Character)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx, Thing.Character)
+                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx, Thing.Character)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
-                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Character, ctx)
+                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Character, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, True, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, True, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, False, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, False, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Character, True, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Character, True, ctx)
             ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Character, False, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Character, False, ctx)
             ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), False, ctx)
+                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx)
             ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
-                SetAvailability(RetrieveParameter(ScriptLine, ctx), True, ctx)
+                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx)
             ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
-                ExecMoveThing(RetrieveParameter(ScriptLine, ctx), Thing.Object, ctx)
+                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Object, ctx)
             ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, True, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, True, ctx)
             ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
-                SetVisibility(RetrieveParameter(ScriptLine, ctx), Thing.Object, False, ctx)
+                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, False, ctx)
             ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
-                SetOpenClose(RetrieveParameter(ScriptLine, ctx), True, ctx)
+                SetOpenClose(GetParameter(ScriptLine, ctx), True, ctx)
             ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
-                SetOpenClose(RetrieveParameter(ScriptLine, ctx), False, ctx)
+                SetOpenClose(GetParameter(ScriptLine, ctx), False, ctx)
             ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
-                ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), True, ctx)
+                ExecAddRemoveScript(GetParameter(ScriptLine, ctx), True, ctx)
             ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
-                ExecAddRemoveScript(RetrieveParameter(ScriptLine, ctx), False, ctx)
+                ExecAddRemoveScript(GetParameter(ScriptLine, ctx), False, ctx)
             ElseIf BeginsWith(ScriptLine, "clone ") Then
-                ExecClone(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecClone(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "exec ") Then
                 ExecExec(ScriptLine, ctx)
             ElseIf BeginsWith(ScriptLine, "setstring ") Then
-                ExecSetString(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecSetString(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "setvar ") Then
-                ExecSetVar(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecSetVar(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "for ") Then
                 ExecFor(GetEverythingAfter(ScriptLine, "for "), ctx)
             ElseIf BeginsWith(ScriptLine, "property ") Then
-                ExecProperty(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecProperty(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "type ") Then
-                ExecType(RetrieveParameter(ScriptLine, ctx), ctx)
+                ExecType(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "action ") Then
                 ExecuteAction(GetEverythingAfter(ScriptLine, "action "), ctx)
             ElseIf BeginsWith(ScriptLine, "flag ") Then
@@ -10870,33 +10868,33 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "create ") Then
                 ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), ctx)
             ElseIf BeginsWith(ScriptLine, "destroy exit ") Then
-                DestroyExit(RetrieveParameter(ScriptLine, ctx), ctx)
+                DestroyExit(GetParameter(ScriptLine, ctx), ctx)
             ElseIf BeginsWith(ScriptLine, "repeat ") Then
                 ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), ctx)
             ElseIf BeginsWith(ScriptLine, "enter ") Then
                 ExecuteEnter(ScriptLine, ctx)
             ElseIf BeginsWith(ScriptLine, "displaytext ") Then
-                DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "normal")
+                DisplayTextSection(GetParameter(ScriptLine, ctx), ctx, "normal")
             ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
-                DisplayTextSection(RetrieveParameter(ScriptLine, ctx), ctx, "help")
+                DisplayTextSection(GetParameter(ScriptLine, ctx), ctx, "help")
             ElseIf BeginsWith(ScriptLine, "font ") Then
-                SetFont(RetrieveParameter(ScriptLine, ctx))
+                SetFont(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "pause ") Then
-                Pause(CInt(RetrieveParameter(ScriptLine, ctx)))
+                Pause(CInt(GetParameter(ScriptLine, ctx)))
             ElseIf Trim(LCase(ScriptLine)) = "clear" Then
                 DoClear()
             ElseIf Trim(LCase(ScriptLine)) = "helpclear" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate help window
             ElseIf BeginsWith(ScriptLine, "background ") Then
-                SetBackground(RetrieveParameter(ScriptLine, ctx))
+                SetBackground(GetParameter(ScriptLine, ctx))
             ElseIf BeginsWith(ScriptLine, "foreground ") Then
-                SetForeground(RetrieveParameter(ScriptLine, ctx))
+                SetForeground(GetParameter(ScriptLine, ctx))
             ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
                 _autoIntro = False
             ElseIf BeginsWith(ScriptLine, "debug ") Then
-                LogASLError(RetrieveParameter(ScriptLine, ctx), LogType.Misc)
+                LogASLError(GetParameter(ScriptLine, ctx), LogType.Misc)
             ElseIf BeginsWith(ScriptLine, "mailto ") Then
-                Dim emailAddress As String = RetrieveParameter(ScriptLine, ctx)
+                Dim emailAddress As String = GetParameter(ScriptLine, ctx)
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
             ElseIf BeginsWith(ScriptLine, "shell ") And _gameAslVersion < 410 Then
                 LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
@@ -10905,9 +10903,9 @@ Public Class LegacyGame
             ElseIf BeginsWith(ScriptLine, "wait") Then
                 ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
             ElseIf BeginsWith(ScriptLine, "timeron ") Then
-                SetTimerState(RetrieveParameter(ScriptLine, ctx), True)
+                SetTimerState(GetParameter(ScriptLine, ctx), True)
             ElseIf BeginsWith(ScriptLine, "timeroff ") Then
-                SetTimerState(RetrieveParameter(ScriptLine, ctx), False)
+                SetTimerState(GetParameter(ScriptLine, ctx), False)
             ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
                 _outPutOn = True
                 UpdateObjectList(ctx)
@@ -10919,9 +10917,9 @@ Public Class LegacyGame
             ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
                 _player.SetPanesVisible("on")
             ElseIf BeginsWith(ScriptLine, "lock ") Then
-                ExecuteLock(RetrieveParameter(ScriptLine, ctx), True)
+                ExecuteLock(GetParameter(ScriptLine, ctx), True)
             ElseIf BeginsWith(ScriptLine, "unlock ") Then
-                ExecuteLock(RetrieveParameter(ScriptLine, ctx), False)
+                ExecuteLock(GetParameter(ScriptLine, ctx), False)
             ElseIf BeginsWith(ScriptLine, "playmod ") And _gameAslVersion < 410 Then
                 LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(ScriptLine, "modvolume") And _gameAslVersion < 410 Then
@@ -10929,7 +10927,7 @@ Public Class LegacyGame
             ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
                 ctx.DontProcessCommand = True
             ElseIf BeginsWith(ScriptLine, "return ") Then
-                ctx.FunctionReturnValue = RetrieveParameter(ScriptLine, ctx)
+                ctx.FunctionReturnValue = GetParameter(ScriptLine, ctx)
             Else
                 If BeginsWith(ScriptLine, "'") = False Then
                     LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LogType.WarningError)
@@ -10943,7 +10941,7 @@ Public Class LegacyGame
 
     Private Sub ExecuteEnter(ScriptLine As String, ctx As Context)
         _commandOverrideModeOn = True
-        _commandOverrideVariable = RetrieveParameter(ScriptLine, ctx)
+        _commandOverrideVariable = GetParameter(ScriptLine, ctx)
 
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
@@ -10969,7 +10967,7 @@ Public Class LegacyGame
 
         If _gameAslVersion >= 280 Then
             If BeginsWith(SetInstruction, "interval ") Then
-                TimerInterval = RetrieveParameter(SetInstruction, ctx)
+                TimerInterval = GetParameter(SetInstruction, ctx)
                 SCPos = InStr(TimerInterval, ";")
                 If SCPos = 0 Then
                     LogASLError("Too few parameters in 'set " & SetInstruction & "'", LogType.WarningError)
@@ -10992,13 +10990,13 @@ Public Class LegacyGame
                     Exit Sub
                 End If
             ElseIf BeginsWith(SetInstruction, "string ") Then
-                ExecSetString(RetrieveParameter(SetInstruction, ctx), ctx)
+                ExecSetString(GetParameter(SetInstruction, ctx), ctx)
             ElseIf BeginsWith(SetInstruction, "numeric ") Then
-                ExecSetVar(RetrieveParameter(SetInstruction, ctx), ctx)
+                ExecSetVar(GetParameter(SetInstruction, ctx), ctx)
             ElseIf BeginsWith(SetInstruction, "collectable ") Then
-                ExecuteSetCollectable(RetrieveParameter(SetInstruction, ctx), ctx)
+                ExecuteSetCollectable(GetParameter(SetInstruction, ctx), ctx)
             Else
-                Dim Result = SetUnknownVariableType(RetrieveParameter(SetInstruction, ctx), ctx)
+                Dim Result = SetUnknownVariableType(GetParameter(SetInstruction, ctx), ctx)
                 If Result = SetResult.Error Then
                     LogASLError("Error on setting 'set " & SetInstruction & "'", LogType.WarningError)
                 ElseIf Result = SetResult.Unfound Then
@@ -11006,7 +11004,7 @@ Public Class LegacyGame
                 End If
             End If
         Else
-            ExecuteSetCollectable(RetrieveParameter(SetInstruction, ctx), ctx)
+            ExecuteSetCollectable(GetParameter(SetInstruction, ctx), ctx)
         End If
 
     End Sub
@@ -11028,7 +11026,7 @@ Public Class LegacyGame
             ' that is begin searched for
             If BeginsWith(_lines(i), statement) Then
                 ' Return the parameters between < and > :
-                Return RetrieveParameter(_lines(i), _nullContext)
+                Return GetParameter(_lines(i), _nullContext)
             End If
         Next i
 
@@ -11050,7 +11048,7 @@ Public Class LegacyGame
             ' Check to see if the line matches the statement
             ' that is begin searched for
             If BeginsWith(_lines(i), statement) Then
-                If UCase(Trim(RetrieveParameter(_lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
+                If UCase(Trim(GetParameter(_lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
                     Return Trim(_lines(i))
                 End If
             End If
@@ -11235,7 +11233,7 @@ Public Class LegacyGame
         GameType = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "asl-version ") Then
-                ASLVersion = RetrieveParameter(_lines(i), _nullContext)
+                ASLVersion = GetParameter(_lines(i), _nullContext)
             ElseIf BeginsWith(_lines(i), "gametype ") Then
                 GameType = GetEverythingAfter(_lines(i), "gametype ")
             End If
@@ -11264,7 +11262,7 @@ Public Class LegacyGame
         End If
 
         ' Get the name of the game:
-        _gameName = RetrieveParameter(_lines(GetDefineBlock("game").StartLine), _nullContext)
+        _gameName = GetParameter(_lines(GetDefineBlock("game").StartLine), _nullContext)
 
         _player.UpdateGameName(_gameName)
         _player.Show("Panes")
@@ -11579,7 +11577,7 @@ Public Class LegacyGame
         End If
 
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-            If BeginsWith(_lines(i), lineret) AndAlso LCase(RetrieveParameter(_lines(i), ctx)) = LCase(lineparam) Then
+            If BeginsWith(_lines(i), lineret) AndAlso LCase(GetParameter(_lines(i), ctx)) = LCase(lineparam) Then
                 Return Trim(_lines(i))
             End If
         Next i
@@ -11605,7 +11603,7 @@ Public Class LegacyGame
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "collectables ") Then
-                PossItems = Trim(RetrieveParameter(_lines(a), _nullContext, False))
+                PossItems = Trim(GetParameter(_lines(a), _nullContext, False))
 
                 ' if collectables is a null string, there are no
                 ' collectables. Otherwise, there is one more object than
@@ -11686,7 +11684,7 @@ Public Class LegacyGame
         ' block, and get its parameters:
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "possitems ") Or BeginsWith(_lines(a), "items ") Then
-                PossItems = RetrieveParameter(_lines(a), _nullContext)
+                PossItems = GetParameter(_lines(a), _nullContext)
 
                 If PossItems <> "" Then
                     _numberItems = _numberItems + 1
@@ -11731,7 +11729,7 @@ Public Class LegacyGame
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "startitems ") Then
-                StartItems = RetrieveParameter(_lines(a), _nullContext)
+                StartItems = GetParameter(_lines(a), _nullContext)
 
                 If StartItems <> "" Then
                     CharPos = 1
@@ -12391,7 +12389,7 @@ Public Class LegacyGame
 
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define room ") Then
-                sRoomName = RetrieveParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                sRoomName = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
                 lRoomID = GetRoomID(sRoomName, _nullContext)
 
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
@@ -12490,13 +12488,13 @@ Public Class LegacyGame
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(i), "background ") Then
-                SetBackground(RetrieveParameter(_lines(i), _nullContext))
+                SetBackground(GetParameter(_lines(i), _nullContext))
             End If
         Next i
 
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(i), "foreground ") Then
-                SetForeground(RetrieveParameter(_lines(i), _nullContext))
+                SetForeground(GetParameter(_lines(i), _nullContext))
             End If
         Next i
 
@@ -12543,7 +12541,7 @@ Public Class LegacyGame
         Dim StartRoom As String = ""
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "start ") Then
-                StartRoom = RetrieveParameter(_lines(i), _nullContext)
+                StartRoom = GetParameter(_lines(i), _nullContext)
             End If
         Next i
 
