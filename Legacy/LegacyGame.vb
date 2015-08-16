@@ -6769,41 +6769,32 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetUpOptions()
-        Dim i As Integer
-        Dim CurOpt As String
+        Dim opt As String
 
         For i = GetDefineBlock("options").StartLine + 1 To GetDefineBlock("options").EndLine - 1
-
             If BeginsWith(_lines(i), "panes ") Then
-                CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "panes ")))
-                _player.SetPanesVisible(CurOpt)
+                opt = LCase(Trim(GetEverythingAfter(_lines(i), "panes ")))
+                _player.SetPanesVisible(opt)
             ElseIf BeginsWith(_lines(i), "abbreviations ") Then
-                CurOpt = LCase(Trim(GetEverythingAfter(_lines(i), "abbreviations ")))
-                If CurOpt = "off" Then _useAbbreviations = False Else _useAbbreviations = True
+                opt = LCase(Trim(GetEverythingAfter(_lines(i), "abbreviations ")))
+                If opt = "off" Then _useAbbreviations = False Else _useAbbreviations = True
             End If
         Next i
     End Sub
 
     Private Sub SetUpRoomData()
-        ' Sets up room data
-        Dim NestedBlock As Integer
-        Dim PropertyData As PropertiesActions
-        Dim DefaultProperties As New PropertiesActions
-        Dim DefaultExists As Boolean
-        Dim k, i, j As Integer
+        Dim defaultProperties As New PropertiesActions
 
         ' see if define type <defaultroom> exists:
-        DefaultExists = False
+        Dim defaultExists = False
         For i = 1 To _numberSections
             If Trim(_lines(_defineBlocks(i).StartLine)) = "define type <defaultroom>" Then
-                DefaultExists = True
-                DefaultProperties = GetPropertiesInType("defaultroom")
-                i = _numberSections
+                defaultExists = True
+                defaultProperties = GetPropertiesInType("defaultroom")
+                Exit For
             End If
         Next i
 
-        Dim PlaceData As String
-        Dim SCP As Integer
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define room ") Then
                 _numberRooms = _numberRooms + 1
@@ -6829,30 +6820,25 @@ Public Class LegacyGame
                     r.Exits.ObjID = r.ObjId
                 End If
 
-                ' *******************************************************************************
-                ' IF FURTHER CHANGES ARE MADE HERE, A NEW CREATEROOM SUB SHOULD BE CREATED, WHICH
-                ' WE CAN THEN CALL FROM EXECUTECREATE ALSO.
-                ' *******************************************************************************
-
-                If DefaultExists Then
-                    AddToObjectProperties(DefaultProperties.Properties, _numberObjs, _nullContext)
-                    For k = 1 To DefaultProperties.NumberActions
-                        AddObjectAction(_numberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
+                If defaultExists Then
+                    AddToObjectProperties(defaultProperties.Properties, _numberObjs, _nullContext)
+                    For k = 1 To defaultProperties.NumberActions
+                        AddObjectAction(_numberObjs, defaultProperties.Actions(k).ActionName, defaultProperties.Actions(k).Script)
                     Next k
                 End If
 
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If BeginsWith(_lines(j), "define ") Then
                         'skip nested blocks
-                        NestedBlock = 1
+                        Dim nestedBlock = 1
                         Do
                             j = j + 1
                             If BeginsWith(_lines(j), "define ") Then
-                                NestedBlock = NestedBlock + 1
+                                nestedBlock = nestedBlock + 1
                             ElseIf Trim(_lines(j)) = "end define" Then
-                                NestedBlock = NestedBlock - 1
+                                nestedBlock = nestedBlock - 1
                             End If
-                        Loop Until NestedBlock = 0
+                        Loop Until nestedBlock = 0
                     End If
 
                     If _gameAslVersion >= 280 And BeginsWith(_lines(j), "alias ") Then
@@ -6990,13 +6976,13 @@ Public Class LegacyGame
                         r.NumberPlaces = r.NumberPlaces + 1
                         ReDim Preserve r.Places(r.NumberPlaces)
                         r.Places(r.NumberPlaces) = New PlaceType
-                        PlaceData = GetParameter(_lines(j), _nullContext)
-                        SCP = InStr(PlaceData, ";")
-                        If SCP = 0 Then
-                            r.Places(r.NumberPlaces).PlaceName = PlaceData
+                        Dim placeData = GetParameter(_lines(j), _nullContext)
+                        Dim scp = InStr(placeData, ";")
+                        If scp = 0 Then
+                            r.Places(r.NumberPlaces).PlaceName = placeData
                         Else
-                            r.Places(r.NumberPlaces).PlaceName = Trim(Mid(PlaceData, SCP + 1))
-                            r.Places(r.NumberPlaces).Prefix = Trim(Left(PlaceData, SCP - 1))
+                            r.Places(r.NumberPlaces).PlaceName = Trim(Mid(placeData, scp + 1))
+                            r.Places(r.NumberPlaces).Prefix = Trim(Left(placeData, scp - 1))
                         End If
                         r.Places(r.NumberPlaces).Script = Trim(Mid(_lines(j), InStr(_lines(j), ">") + 1))
                     ElseIf BeginsWith(_lines(j), "use ") Then
@@ -7012,10 +6998,10 @@ Public Class LegacyGame
                         ReDim Preserve _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded)
                         _objs(_numberObjs).TypesIncluded(_objs(_numberObjs).NumberTypesIncluded) = GetParameter(_lines(j), _nullContext)
 
-                        PropertyData = GetPropertiesInType(GetParameter(_lines(j), _nullContext))
-                        AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
-                        For k = 1 To PropertyData.NumberActions
-                            AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                        Dim propertyData = GetPropertiesInType(GetParameter(_lines(j), _nullContext))
+                        AddToObjectProperties(propertyData.Properties, _numberObjs, _nullContext)
+                        For k = 1 To propertyData.NumberActions
+                            AddObjectAction(_numberObjs, propertyData.Actions(k).ActionName, propertyData.Actions(k).Script)
                         Next k
                     ElseIf BeginsWith(_lines(j), "action ") Then
                         AddToObjectActions(GetEverythingAfter(_lines(j), "action "), _numberObjs, _nullContext)
@@ -7030,59 +7016,46 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetUpSynonyms()
-        ' Sets up synonyms when game is initialised
-
-        Dim SynonymBlock As DefineBlock
-        Dim EqualsSignPos As Integer
-        Dim OriginalWordsList, ConvertWord As String
-        Dim i, iCurPos, EndOfWord As Integer
-        Dim ThisWord As String
-
-        SynonymBlock = GetDefineBlock("synonyms")
-
+        Dim block = GetDefineBlock("synonyms")
         _numberSynonyms = 0
 
-        If SynonymBlock.StartLine = 0 And SynonymBlock.EndLine = 0 Then
+        If block.StartLine = 0 And block.EndLine = 0 Then
             Exit Sub
         End If
 
-        For i = SynonymBlock.StartLine + 1 To SynonymBlock.EndLine - 1
-            EqualsSignPos = InStr(_lines(i), "=")
-            If EqualsSignPos <> 0 Then
-                OriginalWordsList = Trim(Left(_lines(i), EqualsSignPos - 1))
-                ConvertWord = Trim(Mid(_lines(i), EqualsSignPos + 1))
+        For i = block.StartLine + 1 To block.EndLine - 1
+            Dim eqp = InStr(_lines(i), "=")
+            If eqp <> 0 Then
+                Dim originalWordsList = Trim(Left(_lines(i), eqp - 1))
+                Dim convertWord = Trim(Mid(_lines(i), eqp + 1))
 
                 'Go through each word in OriginalWordsList (sep.
                 'by ";"):
 
-                OriginalWordsList = OriginalWordsList & ";"
-                iCurPos = 1
+                originalWordsList = originalWordsList & ";"
+                Dim pos = 1
 
                 Do
-                    EndOfWord = InStr(iCurPos, OriginalWordsList, ";")
-                    ThisWord = Trim(Mid(OriginalWordsList, iCurPos, EndOfWord - iCurPos))
+                    Dim endOfWord = InStr(pos, originalWordsList, ";")
+                    Dim thisWord = Trim(Mid(originalWordsList, pos, endOfWord - pos))
 
-                    If InStr(" " & ConvertWord & " ", " " & ThisWord & " ") > 0 Then
+                    If InStr(" " & convertWord & " ", " " & thisWord & " ") > 0 Then
                         ' Recursive synonym
-                        LogASLError("Recursive synonym detected: '" & ThisWord & "' converting to '" & ConvertWord & "'", LogType.WarningError)
+                        LogASLError("Recursive synonym detected: '" & thisWord & "' converting to '" & convertWord & "'", LogType.WarningError)
                     Else
                         _numberSynonyms = _numberSynonyms + 1
                         ReDim Preserve _synonyms(_numberSynonyms)
                         _synonyms(_numberSynonyms) = New SynonymType
-                        _synonyms(_numberSynonyms).OriginalWord = ThisWord
-                        _synonyms(_numberSynonyms).ConvertTo = ConvertWord
+                        _synonyms(_numberSynonyms).OriginalWord = thisWord
+                        _synonyms(_numberSynonyms).ConvertTo = convertWord
                     End If
-                    iCurPos = EndOfWord + 1
-                Loop Until iCurPos >= Len(OriginalWordsList)
+                    pos = endOfWord + 1
+                Loop Until pos >= Len(originalWordsList)
             End If
-
         Next i
-
     End Sub
 
     Private Sub SetUpTimers()
-        Dim i, j As Integer
-
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define timer ") Then
                 _numberTimers = _numberTimers + 1
@@ -7104,18 +7077,15 @@ Public Class LegacyGame
                 Next j
             End If
         Next i
-
     End Sub
 
     Private Sub SetUpTurnScript()
-        Dim gameblock As DefineBlock
-        Dim i As Integer
-        gameblock = GetDefineBlock("game")
+        Dim block = GetDefineBlock("game")
 
         _beforeTurnScript = ""
         _afterTurnScript = ""
 
-        For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
             If BeginsWith(_lines(i), "beforeturn ") Then
                 _beforeTurnScript = _beforeTurnScript & GetEverythingAfter(Trim(_lines(i)), "beforeturn ") & vbCrLf
             ElseIf BeginsWith(_lines(i), "afterturn ") Then
@@ -7128,177 +7098,164 @@ Public Class LegacyGame
         ' goes through "define game" block and sets stored error
         ' messages accordingly
 
-        Dim gameblock As DefineBlock
-        Dim sErrorName, sErrorMsg As String
-        Dim iCurrentError As PlayerError, i As Integer
-        Dim ExamineIsCustomised As Boolean
-        Dim ErrorInfo As String
-        Dim SemiColonPos As Integer
+        Dim block = GetDefineBlock("game")
+        Dim examineIsCustomised = False
 
-        gameblock = GetDefineBlock("game")
-
-        ExamineIsCustomised = False
-
-        For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
             If BeginsWith(_lines(i), "error ") Then
-                ErrorInfo = GetParameter(_lines(i), _nullContext, False)
-                SemiColonPos = InStr(ErrorInfo, ";")
+                Dim errorInfo = GetParameter(_lines(i), _nullContext, False)
+                Dim scp = InStr(errorInfo, ";")
+                Dim errorName = Left(errorInfo, scp - 1)
+                Dim errorMsg = Trim(Mid(errorInfo, scp + 1))
+                Dim currentError = 0
 
-                sErrorName = Left(ErrorInfo, SemiColonPos - 1)
-                sErrorMsg = Trim(Mid(ErrorInfo, SemiColonPos + 1))
-
-                iCurrentError = 0
-                Select Case sErrorName
+                Select Case errorName
                     Case "badcommand"
-                        iCurrentError = PlayerError.BadCommand
+                        currentError = PlayerError.BadCommand
                     Case "badgo"
-                        iCurrentError = PlayerError.BadGo
+                        currentError = PlayerError.BadGo
                     Case "badgive"
-                        iCurrentError = PlayerError.BadGive
+                        currentError = PlayerError.BadGive
                     Case "badcharacter"
-                        iCurrentError = PlayerError.BadCharacter
+                        currentError = PlayerError.BadCharacter
                     Case "noitem"
-                        iCurrentError = PlayerError.NoItem
+                        currentError = PlayerError.NoItem
                     Case "itemunwanted"
-                        iCurrentError = PlayerError.ItemUnwanted
+                        currentError = PlayerError.ItemUnwanted
                     Case "badlook"
-                        iCurrentError = PlayerError.BadLook
+                        currentError = PlayerError.BadLook
                     Case "badthing"
-                        iCurrentError = PlayerError.BadThing
+                        currentError = PlayerError.BadThing
                     Case "defaultlook"
-                        iCurrentError = PlayerError.DefaultLook
+                        currentError = PlayerError.DefaultLook
                     Case "defaultspeak"
-                        iCurrentError = PlayerError.DefaultSpeak
+                        currentError = PlayerError.DefaultSpeak
                     Case "baditem"
-                        iCurrentError = PlayerError.BadItem
+                        currentError = PlayerError.BadItem
                     Case "baddrop"
-                        iCurrentError = PlayerError.BadDrop
+                        currentError = PlayerError.BadDrop
                     Case "defaultake"
                         If _gameAslVersion <= 280 Then
-                            iCurrentError = PlayerError.BadTake
+                            currentError = PlayerError.BadTake
                         Else
-                            iCurrentError = PlayerError.DefaultTake
+                            currentError = PlayerError.DefaultTake
                         End If
                     Case "baduse"
-                        iCurrentError = PlayerError.BadUse
+                        currentError = PlayerError.BadUse
                     Case "defaultuse"
-                        iCurrentError = PlayerError.DefaultUse
+                        currentError = PlayerError.DefaultUse
                     Case "defaultout"
-                        iCurrentError = PlayerError.DefaultOut
+                        currentError = PlayerError.DefaultOut
                     Case "badplace"
-                        iCurrentError = PlayerError.BadPlace
+                        currentError = PlayerError.BadPlace
                     Case "badexamine"
                         If _gameAslVersion >= 310 Then
-                            iCurrentError = PlayerError.BadExamine
+                            currentError = PlayerError.BadExamine
                         End If
                     Case "defaultexamine"
-                        iCurrentError = PlayerError.DefaultExamine
-                        ExamineIsCustomised = True
+                        currentError = PlayerError.DefaultExamine
+                        examineIsCustomised = True
                     Case "badtake"
-                        iCurrentError = PlayerError.BadTake
+                        currentError = PlayerError.BadTake
                     Case "cantdrop"
-                        iCurrentError = PlayerError.CantDrop
+                        currentError = PlayerError.CantDrop
                     Case "defaultdrop"
-                        iCurrentError = PlayerError.DefaultDrop
+                        currentError = PlayerError.DefaultDrop
                     Case "badpronoun"
-                        iCurrentError = PlayerError.BadPronoun
+                        currentError = PlayerError.BadPronoun
                     Case "alreadyopen"
-                        iCurrentError = PlayerError.AlreadyOpen
+                        currentError = PlayerError.AlreadyOpen
                     Case "alreadyclosed"
-                        iCurrentError = PlayerError.AlreadyClosed
+                        currentError = PlayerError.AlreadyClosed
                     Case "cantopen"
-                        iCurrentError = PlayerError.CantOpen
+                        currentError = PlayerError.CantOpen
                     Case "cantclose"
-                        iCurrentError = PlayerError.CantClose
+                        currentError = PlayerError.CantClose
                     Case "defaultopen"
-                        iCurrentError = PlayerError.DefaultOpen
+                        currentError = PlayerError.DefaultOpen
                     Case "defaultclose"
-                        iCurrentError = PlayerError.DefaultClose
+                        currentError = PlayerError.DefaultClose
                     Case "badput"
-                        iCurrentError = PlayerError.BadPut
+                        currentError = PlayerError.BadPut
                     Case "cantput"
-                        iCurrentError = PlayerError.CantPut
+                        currentError = PlayerError.CantPut
                     Case "defaultput"
-                        iCurrentError = PlayerError.DefaultPut
+                        currentError = PlayerError.DefaultPut
                     Case "cantremove"
-                        iCurrentError = PlayerError.CantRemove
+                        currentError = PlayerError.CantRemove
                     Case "alreadyput"
-                        iCurrentError = PlayerError.AlreadyPut
+                        currentError = PlayerError.AlreadyPut
                     Case "defaultremove"
-                        iCurrentError = PlayerError.DefaultRemove
+                        currentError = PlayerError.DefaultRemove
                     Case "locked"
-                        iCurrentError = PlayerError.Locked
+                        currentError = PlayerError.Locked
                     Case "defaultwait"
-                        iCurrentError = PlayerError.DefaultWait
+                        currentError = PlayerError.DefaultWait
                     Case "alreadytaken"
-                        iCurrentError = PlayerError.AlreadyTaken
+                        currentError = PlayerError.AlreadyTaken
                 End Select
 
-                _playerErrorMessageString(iCurrentError) = sErrorMsg
-                If iCurrentError = PlayerError.DefaultLook And Not ExamineIsCustomised Then
+                _playerErrorMessageString(currentError) = errorMsg
+                If currentError = PlayerError.DefaultLook And Not examineIsCustomised Then
                     ' If we're setting the default look message, and we've not already customised the
                     ' default examine message, then set the default examine message to the same thing.
-                    _playerErrorMessageString(PlayerError.DefaultExamine) = sErrorMsg
+                    _playerErrorMessageString(PlayerError.DefaultExamine) = errorMsg
                 End If
             End If
         Next i
-
     End Sub
 
-    Private Sub SetVisibility(ThingString As String, ThingType As Thing, ThingVisible As Boolean, ctx As Context)
-        ' Sets visibilty of objects and characters
+    Private Sub SetVisibility(thing As String, type As Thing, visible As Boolean, ctx As Context)
+        ' Sets visibilty of objects and characters        
 
-        Dim i, AtPos As Integer
-        Dim CRoom, CName As String
-
-        Dim FoundObject As Boolean
         If _gameAslVersion >= 280 Then
-            FoundObject = False
+            Dim found = False
 
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ObjectName) = LCase(ThingString) Then
-                    _objs(i).Visible = ThingVisible
-                    If ThingVisible Then
+                If LCase(_objs(i).ObjectName) = LCase(thing) Then
+                    _objs(i).Visible = visible
+                    If visible Then
                         AddToObjectProperties("not invisible", i, ctx)
                     Else
                         AddToObjectProperties("invisible", i, ctx)
                     End If
 
-                    i = _numberObjs + 1
-                    FoundObject = True
+                    found = True
+                    Exit For
                 End If
             Next i
 
-            If Not FoundObject Then
-                LogASLError("Not found object '" & ThingString & "'", LogType.WarningError)
+            If Not found Then
+                LogASLError("Not found object '" & thing & "'", LogType.WarningError)
             End If
         Else
             ' split ThingString into character name and room
             ' (thingstring of form name@room)
 
-            AtPos = InStr(ThingString, "@")
+            Dim atPos = InStr(thing, "@")
+            Dim room, name As String
 
             ' If no room specified, current room presumed
-            If AtPos = 0 Then
-                CRoom = _currentRoom
-                CName = ThingString
+            If atPos = 0 Then
+                room = _currentRoom
+                name = thing
             Else
-                CName = Trim(Left(ThingString, AtPos - 1))
-                CRoom = Trim(Right(ThingString, Len(ThingString) - AtPos))
+                name = Trim(Left(thing, atPos - 1))
+                room = Trim(Right(thing, Len(thing) - atPos))
             End If
 
-            If ThingType = Thing.Character Then
+            If type = LegacyGame.Thing.Character Then
                 For i = 1 To _numberChars
-                    If LCase(_chars(i).ContainerRoom) = LCase(CRoom) And LCase(_chars(i).ObjectName) = LCase(CName) Then
-                        _chars(i).Visible = ThingVisible
-                        i = _numberChars + 1
+                    If LCase(_chars(i).ContainerRoom) = LCase(room) And LCase(_chars(i).ObjectName) = LCase(name) Then
+                        _chars(i).Visible = visible
+                        Exit For
                     End If
                 Next i
-            ElseIf ThingType = Thing.Object Then
+            ElseIf type = LegacyGame.Thing.Object Then
                 For i = 1 To _numberObjs
-                    If LCase(_objs(i).ContainerRoom) = LCase(CRoom) And LCase(_objs(i).ObjectName) = LCase(CName) Then
-                        _objs(i).Visible = ThingVisible
-                        i = _numberObjs + 1
+                    If LCase(_objs(i).ContainerRoom) = LCase(room) And LCase(_objs(i).ObjectName) = LCase(name) Then
+                        _objs(i).Visible = visible
+                        Exit For
                     End If
                 Next i
             End If
@@ -7307,13 +7264,13 @@ Public Class LegacyGame
         UpdateObjectList(ctx)
     End Sub
 
-    Private Sub ShowPictureInText(sFileName As String)
+    Private Sub ShowPictureInText(filename As String)
         If Not _useStaticFrameForPictures Then
-            _player.ShowPicture(sFileName)
+            _player.ShowPicture(filename)
         Else
             ' Workaround for a particular game which expects pictures to be in a popup window -
             ' use the static picture frame feature so that image is not cleared
-            _player.SetPanelContents("<img src=""" + _player.GetURL(sFileName) + """ onload=""setPanelHeight()""/>")
+            _player.SetPanelContents("<img src=""" + _player.GetURL(filename) + """ onload=""setPanelHeight()""/>")
         End If
     End Sub
 
