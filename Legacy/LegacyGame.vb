@@ -4176,225 +4176,205 @@ Public Class LegacyGame
         Return False
     End Function
 
-    Private Sub ExecForEach(ScriptLine As String, ctx As Context)
-        Dim InLocation, ScriptToExecute As String
-        Dim BracketPos As Integer
-        Dim bExit As Boolean
-        Dim bRoom As Boolean
+    Private Sub ExecForEach(scriptLine As String, ctx As Context)
+        Dim inLocation, scriptToRun As String
+        Dim isExit As Boolean
+        Dim isRoom As Boolean
 
-        If BeginsWith(ScriptLine, "object ") Then
-            ScriptLine = GetEverythingAfter(ScriptLine, "object ")
-            If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each object " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
+        If BeginsWith(scriptLine, "object ") Then
+            scriptLine = GetEverythingAfter(scriptLine, "object ")
+            If Not BeginsWith(scriptLine, "in ") Then
+                LogASLError("Expected 'in' in 'for each object " & ReportErrorLine(scriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
-        ElseIf BeginsWith(ScriptLine, "exit ") Then
-            ScriptLine = GetEverythingAfter(ScriptLine, "exit ")
-            If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each exit " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
+        ElseIf BeginsWith(scriptLine, "exit ") Then
+            scriptLine = GetEverythingAfter(scriptLine, "exit ")
+            If Not BeginsWith(scriptLine, "in ") Then
+                LogASLError("Expected 'in' in 'for each exit " & ReportErrorLine(scriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
-            bExit = True
-        ElseIf BeginsWith(ScriptLine, "room ") Then
-            ScriptLine = GetEverythingAfter(ScriptLine, "room ")
-            If Not BeginsWith(ScriptLine, "in ") Then
-                LogASLError("Expected 'in' in 'for each room " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
+            isExit = True
+        ElseIf BeginsWith(scriptLine, "room ") Then
+            scriptLine = GetEverythingAfter(scriptLine, "room ")
+            If Not BeginsWith(scriptLine, "in ") Then
+                LogASLError("Expected 'in' in 'for each room " & ReportErrorLine(scriptLine) & "'", LogType.WarningError)
                 Exit Sub
             End If
-            bRoom = True
+            isRoom = True
         Else
-            LogASLError("Unknown type in 'for each " & ReportErrorLine(ScriptLine) & "'", LogType.WarningError)
+            LogASLError("Unknown type in 'for each " & ReportErrorLine(scriptLine) & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        ScriptLine = GetEverythingAfter(ScriptLine, "in ")
+        scriptLine = GetEverythingAfter(scriptLine, "in ")
 
-        If BeginsWith(ScriptLine, "game ") Then
-            InLocation = ""
-            ScriptToExecute = GetEverythingAfter(ScriptLine, "game ")
+        If BeginsWith(scriptLine, "game ") Then
+            inLocation = ""
+            scriptToRun = GetEverythingAfter(scriptLine, "game ")
         Else
-            InLocation = LCase(GetParameter(ScriptLine, ctx))
-            BracketPos = InStr(ScriptLine, ">")
-            ScriptToExecute = Trim(Mid(ScriptLine, BracketPos + 1))
+            inLocation = LCase(GetParameter(scriptLine, ctx))
+            Dim bracketPos = InStr(scriptLine, ">")
+            scriptToRun = Trim(Mid(scriptLine, bracketPos + 1))
         End If
 
         For i = 1 To _numberObjs
-            If InLocation = "" Or LCase(_objs(i).ContainerRoom) = InLocation Then
-                If _objs(i).IsRoom = bRoom And _objs(i).IsExit = bExit Then
+            If inLocation = "" Or LCase(_objs(i).ContainerRoom) = inLocation Then
+                If _objs(i).IsRoom = isRoom And _objs(i).IsExit = isExit Then
                     SetStringContents("quest.thing", _objs(i).ObjectName, ctx)
-                    ExecuteScript(ScriptToExecute, ctx)
+                    ExecuteScript(scriptToRun, ctx)
                 End If
             End If
         Next i
     End Sub
 
-    Private Sub ExecuteAction(ActionData As String, ctx As Context)
-        Dim FoundExisting As Boolean
-        Dim ActionName As String
-        Dim ActionScript As String
-        Dim EP, SCP As Integer
-        Dim ActionNum As Integer
-        Dim ActionParam As String
-        Dim ObjName As String
-        Dim FoundObject As Boolean
-        Dim ObjID, i As Integer
+    Private Sub ExecuteAction(data As String, ctx As Context)
+        Dim actionName As String
+        Dim script As String
+        Dim actionNum As Integer
+        Dim id As Integer
+        Dim foundExisting = False
+        Dim foundObject = False
 
-        FoundExisting = False
-        FoundObject = False
-
-        ActionParam = GetParameter(ActionData, ctx)
-        SCP = InStr(ActionParam, ";")
-        If SCP = 0 Then
-            LogASLError("No action name specified in 'action " & ActionData & "'", LogType.WarningError)
+        Dim param = GetParameter(data, ctx)
+        Dim scp = InStr(param, ";")
+        If scp = 0 Then
+            LogASLError("No action name specified in 'action " & data & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        ObjName = Trim(Left(ActionParam, SCP - 1))
-        ActionName = Trim(Mid(ActionParam, SCP + 1))
+        Dim objName = Trim(Left(param, scp - 1))
+        actionName = Trim(Mid(param, scp + 1))
 
-        EP = InStr(ActionData, ">")
-        If EP = Len(Trim(ActionData)) Then
-            ActionScript = ""
+        Dim ep = InStr(data, ">")
+        If ep = Len(Trim(data)) Then
+            script = ""
         Else
-            ActionScript = Trim(Mid(ActionData, EP + 1))
+            script = Trim(Mid(data, ep + 1))
         End If
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                FoundObject = True
-                ObjID = i
-                i = _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(objName) Then
+                foundObject = True
+                id = i
+                Exit For
             End If
         Next i
 
-        If Not FoundObject Then
-            LogASLError("No such object '" & ObjName & "' in 'action " & ActionData & "'", LogType.WarningError)
+        If Not foundObject Then
+            LogASLError("No such object '" & objName & "' in 'action " & data & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
-            If o.Actions(i).ActionName = ActionName Then
-                FoundExisting = True
-                ActionNum = i
-                i = o.NumberActions
+            If o.Actions(i).ActionName = actionName Then
+                foundExisting = True
+                actionNum = i
+                Exit For
             End If
         Next i
 
-        If Not FoundExisting Then
+        If Not foundExisting Then
             o.NumberActions = o.NumberActions + 1
             ReDim Preserve o.Actions(o.NumberActions)
             o.Actions(o.NumberActions) = New ActionType
-            ActionNum = o.NumberActions
+            actionNum = o.NumberActions
         End If
 
-        o.Actions(ActionNum).ActionName = ActionName
-        o.Actions(ActionNum).Script = ActionScript
+        o.Actions(actionNum).ActionName = actionName
+        o.Actions(actionNum).Script = script
 
-        ObjectActionUpdate(ObjID, ActionName, ActionScript)
-
+        ObjectActionUpdate(id, actionName, script)
     End Sub
 
-    Private Function ExecuteCondition(Condition As String, ctx As Context) As Boolean
-        Dim bThisResult, bThisNot As Boolean
+    Private Function ExecuteCondition(condition As String, ctx As Context) As Boolean
+        Dim result, thisNot As Boolean
 
-        If BeginsWith(Condition, "not ") Then
-            bThisNot = True
-            Condition = GetEverythingAfter(Condition, "not ")
+        If BeginsWith(condition, "not ") Then
+            thisNot = True
+            condition = GetEverythingAfter(condition, "not ")
         Else
-            bThisNot = False
+            thisNot = False
         End If
 
-        If BeginsWith(Condition, "got ") Then
-            bThisResult = ExecuteIfGot(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "has ") Then
-            bThisResult = ExecuteIfHas(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "ask ") Then
-            bThisResult = ExecuteIfAsk(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "is ") Then
-            bThisResult = ExecuteIfIs(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "here ") Then
-            bThisResult = ExecuteIfHere(GetParameter(Condition, ctx), ctx)
-        ElseIf BeginsWith(Condition, "exists ") Then
-            bThisResult = ExecuteIfExists(GetParameter(Condition, ctx), False)
-        ElseIf BeginsWith(Condition, "real ") Then
-            bThisResult = ExecuteIfExists(GetParameter(Condition, ctx), True)
-        ElseIf BeginsWith(Condition, "property ") Then
-            bThisResult = ExecuteIfProperty(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "action ") Then
-            bThisResult = ExecuteIfAction(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "type ") Then
-            bThisResult = ExecuteIfType(GetParameter(Condition, ctx))
-        ElseIf BeginsWith(Condition, "flag ") Then
-            bThisResult = ExecuteIfFlag(GetParameter(Condition, ctx))
+        If BeginsWith(condition, "got ") Then
+            result = ExecuteIfGot(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "has ") Then
+            result = ExecuteIfHas(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "ask ") Then
+            result = ExecuteIfAsk(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "is ") Then
+            result = ExecuteIfIs(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "here ") Then
+            result = ExecuteIfHere(GetParameter(condition, ctx), ctx)
+        ElseIf BeginsWith(condition, "exists ") Then
+            result = ExecuteIfExists(GetParameter(condition, ctx), False)
+        ElseIf BeginsWith(condition, "real ") Then
+            result = ExecuteIfExists(GetParameter(condition, ctx), True)
+        ElseIf BeginsWith(condition, "property ") Then
+            result = ExecuteIfProperty(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "action ") Then
+            result = ExecuteIfAction(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "type ") Then
+            result = ExecuteIfType(GetParameter(condition, ctx))
+        ElseIf BeginsWith(condition, "flag ") Then
+            result = ExecuteIfFlag(GetParameter(condition, ctx))
         End If
 
-        If bThisNot Then bThisResult = Not bThisResult
+        If thisNot Then result = Not result
 
-        Return bThisResult
+        Return result
     End Function
 
-    Private Function ExecuteConditions(ConditionList As String, ctx As Context) As Boolean
-        Dim Conditions() As String
-        Dim iNumConditions As Integer
-        Dim Operations() As String
-        Dim bThisResult As Boolean
-        Dim bConditionResult As Boolean
-        Dim iCurLinePos As Integer
-        Dim bFinalCondition As Boolean
-        Dim ObscuredConditionList, NextCondition As String
-        Dim NextConditionPos As Integer
-        Dim ThisCondition As String
-        Dim i As Integer
-
-        ObscuredConditionList = ObliterateParameters(ConditionList)
-
-        iCurLinePos = 1 : bFinalCondition = False
-        iNumConditions = 0
+    Private Function ExecuteConditions(list As String, ctx As Context) As Boolean
+        Dim conditions() As String
+        Dim numConditions = 0
+        Dim operations() As String
+        Dim obscuredConditionList = ObliterateParameters(list)
+        Dim pos = 1
+        Dim isFinalCondition = False
 
         Do
-            iNumConditions = iNumConditions + 1
-            ReDim Preserve Conditions(iNumConditions)
-            ReDim Preserve Operations(iNumConditions)
+            numConditions = numConditions + 1
+            ReDim Preserve conditions(numConditions)
+            ReDim Preserve operations(numConditions)
 
-            NextCondition = "AND"
-            NextConditionPos = InStr(iCurLinePos, ObscuredConditionList, "and ")
-            If NextConditionPos = 0 Then
-                NextConditionPos = InStr(iCurLinePos, ObscuredConditionList, "or ")
-                NextCondition = "OR"
+            Dim nextCondition = "AND"
+            Dim nextConditionPos = InStr(pos, obscuredConditionList, "and ")
+            If nextConditionPos = 0 Then
+                nextConditionPos = InStr(pos, obscuredConditionList, "or ")
+                nextCondition = "OR"
             End If
 
-            If NextConditionPos = 0 Then
-                NextConditionPos = Len(ObscuredConditionList) + 2
-                bFinalCondition = True
-                NextCondition = "FINAL"
+            If nextConditionPos = 0 Then
+                nextConditionPos = Len(obscuredConditionList) + 2
+                isFinalCondition = True
+                nextCondition = "FINAL"
             End If
 
-            ThisCondition = Trim(Mid(ConditionList, iCurLinePos, NextConditionPos - iCurLinePos - 1))
-
-            Conditions(iNumConditions) = ThisCondition
-            Operations(iNumConditions) = NextCondition
+            Dim thisCondition = Trim(Mid(list, pos, nextConditionPos - pos - 1))
+            conditions(numConditions) = thisCondition
+            operations(numConditions) = nextCondition
 
             ' next condition starts from space after and/or
-            iCurLinePos = InStr(NextConditionPos, ObscuredConditionList, " ")
-        Loop Until bFinalCondition
+            pos = InStr(nextConditionPos, obscuredConditionList, " ")
+        Loop Until isFinalCondition
 
-        Operations(0) = "AND"
-        bConditionResult = True
+        operations(0) = "AND"
+        Dim result = True
 
-        For i = 1 To iNumConditions
-            bThisResult = ExecuteCondition(Conditions(i), ctx)
+        For i = 1 To numConditions
+            Dim thisResult = ExecuteCondition(conditions(i), ctx)
 
-            If Operations(i - 1) = "AND" Then
-                bConditionResult = bThisResult And bConditionResult
-            ElseIf Operations(i - 1) = "OR" Then
-                bConditionResult = bThisResult Or bConditionResult
+            If operations(i - 1) = "AND" Then
+                result = thisResult And result
+            ElseIf operations(i - 1) = "OR" Then
+                result = thisResult Or result
             End If
         Next i
 
-        Return bConditionResult
-
+        Return result
     End Function
 
     Private Sub ExecuteCreate(CreateData As String, ctx As Context)
