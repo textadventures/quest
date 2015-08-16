@@ -4377,31 +4377,27 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private Sub ExecuteCreate(CreateData As String, ctx As Context)
-        Dim NewName As String
-        Dim SCP As Integer
-        Dim ParamData As String
-        Dim j As Integer
+    Private Sub ExecuteCreate(data As String, ctx As Context)
+        Dim newName As String
 
-        Dim ContainerRoom As String
-        If BeginsWith(CreateData, "room ") Then
-            NewName = GetParameter(CreateData, ctx)
+        If BeginsWith(data, "room ") Then
+            newName = GetParameter(data, ctx)
             _numberRooms = _numberRooms + 1
             ReDim Preserve _rooms(_numberRooms)
             _rooms(_numberRooms) = New RoomType
-            _rooms(_numberRooms).RoomName = NewName
+            _rooms(_numberRooms).RoomName = newName
 
             _numberObjs = _numberObjs + 1
             ReDim Preserve _objs(_numberObjs)
             _objs(_numberObjs) = New ObjectType
-            _objs(_numberObjs).ObjectName = NewName
+            _objs(_numberObjs).ObjectName = newName
             _objs(_numberObjs).IsRoom = True
-            _objs(_numberObjs).CorresRoom = NewName
+            _objs(_numberObjs).CorresRoom = newName
             _objs(_numberObjs).CorresRoomId = _numberRooms
 
             _rooms(_numberRooms).ObjId = _numberObjs
 
-            AddToChangeLog("room " & NewName, "create")
+            AddToChangeLog("room " & newName, "create")
 
             If _gameAslVersion >= 410 Then
                 AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx)
@@ -4413,15 +4409,17 @@ Public Class LegacyGame
                 _rooms(_numberRooms).Exits.ObjID = _rooms(_numberRooms).ObjId
             End If
 
-        ElseIf BeginsWith(CreateData, "object ") Then
-            ParamData = GetParameter(CreateData, ctx)
-            SCP = InStr(ParamData, ";")
-            If SCP = 0 Then
-                NewName = ParamData
-                ContainerRoom = ""
+        ElseIf BeginsWith(data, "object ") Then
+            Dim paramData = GetParameter(data, ctx)
+            Dim scp = InStr(paramData, ";")
+            Dim containerRoom As String
+
+            If scp = 0 Then
+                newName = paramData
+                containerRoom = ""
             Else
-                NewName = Trim(Left(ParamData, SCP - 1))
-                ContainerRoom = Trim(Mid(ParamData, SCP + 1))
+                newName = Trim(Left(paramData, scp - 1))
+                containerRoom = Trim(Mid(paramData, scp + 1))
             End If
 
             _numberObjs = _numberObjs + 1
@@ -4429,15 +4427,15 @@ Public Class LegacyGame
             _objs(_numberObjs) = New ObjectType
 
             Dim o = _objs(_numberObjs)
-            o.ObjectName = NewName
-            o.ObjectAlias = NewName
-            o.ContainerRoom = ContainerRoom
+            o.ObjectName = newName
+            o.ObjectAlias = newName
+            o.ContainerRoom = containerRoom
             o.Exists = True
             o.Visible = True
             o.Gender = "it"
             o.Article = "it"
 
-            AddToChangeLog("object " & NewName, "create " & _objs(_numberObjs).ContainerRoom)
+            AddToChangeLog("object " & newName, "create " & _objs(_numberObjs).ContainerRoom)
 
             If _gameAslVersion >= 410 Then
                 AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx)
@@ -4448,42 +4446,35 @@ Public Class LegacyGame
 
             If Not _gameLoading Then UpdateObjectList(ctx)
 
-        ElseIf BeginsWith(CreateData, "exit ") Then
-            ExecuteCreateExit(CreateData, ctx)
+        ElseIf BeginsWith(data, "exit ") Then
+            ExecuteCreateExit(data, ctx)
         End If
     End Sub
 
-    Private Sub ExecuteCreateExit(CreateData As String, ctx As Context)
-        Dim ExitData As String
-        Dim SrcRoom As String
-        Dim DestRoom As String = ""
-        Dim SrcID, DestID As Integer
-        Dim NewName As String
-        Dim SCP As Integer
-        Dim ExitExists As Boolean
-        Dim i As Integer
-        Dim ParamPos As Integer
-        Dim SaveData As String
+    Private Sub ExecuteCreateExit(data As String, ctx As Context)
+        Dim scrRoom As String
+        Dim destRoom As String = ""
+        Dim destId As Integer
+        Dim exitData = GetEverythingAfter(data, "exit ")
+        Dim newName = GetParameter(data, ctx)
+        Dim scp = InStr(newName, ";")
 
-        ExitData = GetEverythingAfter(CreateData, "exit ")
-        NewName = GetParameter(CreateData, ctx)
-        SCP = InStr(NewName, ";")
         If _gameAslVersion < 410 Then
-            If SCP = 0 Then
-                LogASLError("No exit destination given in 'create exit " & ExitData & "'", LogType.WarningError)
+            If scp = 0 Then
+                LogASLError("No exit destination given in 'create exit " & exitData & "'", LogType.WarningError)
                 Exit Sub
             End If
         End If
 
-        If SCP = 0 Then
-            SrcRoom = Trim(NewName)
+        If scp = 0 Then
+            scrRoom = Trim(newName)
         Else
-            SrcRoom = Trim(Left(NewName, SCP - 1))
+            scrRoom = Trim(Left(newName, scp - 1))
         End If
-        SrcID = GetRoomID(SrcRoom, ctx)
+        Dim srcId = GetRoomID(scrRoom, ctx)
 
-        If SrcID = 0 Then
-            LogASLError("No such room '" & SrcRoom & "'", LogType.WarningError)
+        If srcId = 0 Then
+            LogASLError("No such room '" & scrRoom & "'", LogType.WarningError)
             Exit Sub
         End If
 
@@ -4491,92 +4482,92 @@ Public Class LegacyGame
             ' only do destination room check for ASL <410, as can now have scripts on dynamically
             ' created exits, so the destination doesn't necessarily have to exist.
 
-            DestRoom = Trim(Mid(NewName, SCP + 1))
-            If DestRoom <> "" Then
-                DestID = GetRoomID(DestRoom, ctx)
+            destRoom = Trim(Mid(newName, scp + 1))
+            If destRoom <> "" Then
+                destId = GetRoomID(destRoom, ctx)
 
-                If DestID = 0 Then
-                    LogASLError("No such room '" & DestRoom & "'", LogType.WarningError)
+                If destId = 0 Then
+                    LogASLError("No such room '" & destRoom & "'", LogType.WarningError)
                     Exit Sub
                 End If
             End If
         End If
 
         ' If it's a "go to" exit, check if it already exists:
-        ExitExists = False
-        If BeginsWith(ExitData, "<") Then
-
+        Dim exists = False
+        If BeginsWith(exitData, "<") Then
             If _gameAslVersion >= 410 Then
-                ExitExists = _rooms(SrcID).Exits.Places.ContainsKey(DestRoom)
+                exists = _rooms(srcId).Exits.Places.ContainsKey(destRoom)
             Else
-                For i = 1 To _rooms(SrcID).NumberPlaces
-                    If LCase(_rooms(SrcID).Places(i).PlaceName) = LCase(DestRoom) Then
-                        ExitExists = True
-                        i = _rooms(SrcID).NumberPlaces
+                For i = 1 To _rooms(srcId).NumberPlaces
+                    If LCase(_rooms(srcId).Places(i).PlaceName) = LCase(destRoom) Then
+                        exists = True
+                        Exit For
                     End If
                 Next i
             End If
 
-            If ExitExists Then
-                LogASLError("Exit from '" & SrcRoom & "' to '" & DestRoom & "' already exists", LogType.WarningError)
+            If exists Then
+                LogASLError("Exit from '" & scrRoom & "' to '" & destRoom & "' already exists", LogType.WarningError)
                 Exit Sub
             End If
         End If
 
-        ParamPos = InStr(ExitData, "<")
-        If ParamPos = 0 Then
-            SaveData = ExitData
+        Dim paramPos = InStr(exitData, "<")
+        Dim saveData As String
+        If paramPos = 0 Then
+            saveData = exitData
         Else
-            SaveData = Left(ExitData, ParamPos - 1)
+            saveData = Left(exitData, paramPos - 1)
             ' We do this so the changelog doesn't contain unconverted variable names
-            SaveData = SaveData & "<" & GetParameter(ExitData, ctx) & ">"
+            saveData = saveData & "<" & GetParameter(exitData, ctx) & ">"
         End If
-        AddToChangeLog("room " & _rooms(SrcID).RoomName, "exit " & SaveData)
+        AddToChangeLog("room " & _rooms(srcId).RoomName, "exit " & saveData)
 
-        Dim r = _rooms(SrcID)
+        Dim r = _rooms(srcId)
 
         If _gameAslVersion >= 410 Then
-            r.Exits.AddExitFromCreateScript(ExitData, ctx)
+            r.Exits.AddExitFromCreateScript(exitData, ctx)
         Else
-            If BeginsWith(ExitData, "north ") Then
-                r.North.Data = DestRoom
+            If BeginsWith(exitData, "north ") Then
+                r.North.Data = destRoom
                 r.North.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "south ") Then
-                r.South.Data = DestRoom
+            ElseIf BeginsWith(exitData, "south ") Then
+                r.South.Data = destRoom
                 r.South.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "east ") Then
-                r.East.Data = DestRoom
+            ElseIf BeginsWith(exitData, "east ") Then
+                r.East.Data = destRoom
                 r.East.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "west ") Then
-                r.West.Data = DestRoom
+            ElseIf BeginsWith(exitData, "west ") Then
+                r.West.Data = destRoom
                 r.West.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "northeast ") Then
-                r.NorthEast.Data = DestRoom
+            ElseIf BeginsWith(exitData, "northeast ") Then
+                r.NorthEast.Data = destRoom
                 r.NorthEast.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "northwest ") Then
-                r.NorthWest.Data = DestRoom
+            ElseIf BeginsWith(exitData, "northwest ") Then
+                r.NorthWest.Data = destRoom
                 r.NorthWest.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "southeast ") Then
-                r.SouthEast.Data = DestRoom
+            ElseIf BeginsWith(exitData, "southeast ") Then
+                r.SouthEast.Data = destRoom
                 r.SouthEast.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "southwest ") Then
-                r.SouthWest.Data = DestRoom
+            ElseIf BeginsWith(exitData, "southwest ") Then
+                r.SouthWest.Data = destRoom
                 r.SouthWest.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "up ") Then
-                r.Up.Data = DestRoom
+            ElseIf BeginsWith(exitData, "up ") Then
+                r.Up.Data = destRoom
                 r.Up.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "down ") Then
-                r.Down.Data = DestRoom
+            ElseIf BeginsWith(exitData, "down ") Then
+                r.Down.Data = destRoom
                 r.Down.Type = TextActionType.Text
-            ElseIf BeginsWith(ExitData, "out ") Then
-                r.Out.Text = DestRoom
-            ElseIf BeginsWith(ExitData, "<") Then
+            ElseIf BeginsWith(exitData, "out ") Then
+                r.Out.Text = destRoom
+            ElseIf BeginsWith(exitData, "<") Then
                 r.NumberPlaces = r.NumberPlaces + 1
                 ReDim Preserve r.Places(r.NumberPlaces)
                 r.Places(r.NumberPlaces) = New PlaceType
-                r.Places(r.NumberPlaces).PlaceName = DestRoom
+                r.Places(r.NumberPlaces).PlaceName = destRoom
             Else
-                LogASLError("Invalid direction in 'create exit " & ExitData & "'", LogType.WarningError)
+                LogASLError("Invalid direction in 'create exit " & exitData & "'", LogType.WarningError)
             End If
         End If
 
@@ -4587,10 +4578,10 @@ Public Class LegacyGame
             UpdateObjectList(ctx)
 
             If _gameAslVersion < 410 Then
-                If _currentRoom = _rooms(SrcID).RoomName Then
-                    UpdateDoorways(SrcID, ctx)
-                ElseIf _currentRoom = _rooms(DestID).RoomName Then
-                    UpdateDoorways(DestID, ctx)
+                If _currentRoom = _rooms(srcId).RoomName Then
+                    UpdateDoorways(srcId, ctx)
+                ElseIf _currentRoom = _rooms(destId).RoomName Then
+                    UpdateDoorways(destId, ctx)
                 End If
             Else
                 ' Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
@@ -4600,22 +4591,20 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub ExecDrop(DropItem As String, ctx As Context)
-        Dim FoundItem, ObjectIsInContainer As Boolean
-        Dim ParentID, ObjectID, i As Integer
-        Dim Parent As String
-        Dim ParentDisplayName As String
+    Private Sub ExecDrop(obj As String, ctx As Context)
+        Dim found As Boolean
+        Dim parentId, id As Integer
 
-        ObjectID = Disambiguate(DropItem, "inventory", ctx)
+        id = Disambiguate(obj, "inventory", ctx)
 
-        If ObjectID > 0 Then
-            FoundItem = True
+        If id > 0 Then
+            found = True
         Else
-            FoundItem = False
+            found = False
         End If
 
-        If Not FoundItem Then
-            If ObjectID <> -2 Then
+        If Not found Then
+            If id <> -2 Then
                 If _gameAslVersion >= 391 Then
                     PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Else
@@ -4627,253 +4616,214 @@ Public Class LegacyGame
         End If
 
         ' If object is inside a container, it must be removed before it can be dropped.
-        ObjectIsInContainer = False
+        Dim isInContainer = False
         If _gameAslVersion >= 391 Then
-            If IsYes(GetObjectProperty("parent", ObjectID, True, False)) Then
-                ObjectIsInContainer = True
-                Parent = GetObjectProperty("parent", ObjectID, False, False)
-                ParentID = GetObjectIDNoAlias(Parent)
+            If IsYes(GetObjectProperty("parent", id, True, False)) Then
+                isInContainer = True
+                Dim parent = GetObjectProperty("parent", id, False, False)
+                parentId = GetObjectIDNoAlias(parent)
             End If
         End If
 
-        Dim DropFound As Boolean
-        Dim DropStatement As String = ""
-        DropFound = False
+        Dim dropFound = False
+        Dim dropStatement As String = ""
 
-        For i = _objs(ObjectID).DefinitionSectionStart To _objs(ObjectID).DefinitionSectionEnd
+        For i = _objs(id).DefinitionSectionStart To _objs(id).DefinitionSectionEnd
             If BeginsWith(_lines(i), "drop ") Then
-                DropStatement = GetEverythingAfter(_lines(i), "drop ")
-                DropFound = True
-                i = _objs(ObjectID).DefinitionSectionEnd
+                dropStatement = GetEverythingAfter(_lines(i), "drop ")
+                dropFound = True
+                Exit For
             End If
         Next i
 
-        SetStringContents("quest.error.article", _objs(ObjectID).Article, ctx)
+        SetStringContents("quest.error.article", _objs(id).Article, ctx)
 
-        If Not DropFound Or BeginsWith(DropStatement, "everywhere") Then
-            If ObjectIsInContainer Then
+        If Not dropFound Or BeginsWith(dropStatement, "everywhere") Then
+            If isInContainer Then
                 ' So, we want to drop an object that's in a container or surface. So first
                 ' we have to remove the object from that container.
 
-                If _objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = _objs(ParentID).ObjectAlias
+                Dim parentDisplayName As String
+
+                If _objs(parentId).ObjectAlias <> "" Then
+                    parentDisplayName = _objs(parentId).ObjectAlias
                 Else
-                    ParentDisplayName = _objs(ParentID).ObjectName
+                    parentDisplayName = _objs(parentId).ObjectName
                 End If
 
-                Print("(first removing " & _objs(ObjectID).Article & " from " & ParentDisplayName & ")", ctx)
+                Print("(first removing " & _objs(id).Article & " from " & parentDisplayName & ")", ctx)
 
                 ' Try to remove the object
                 ctx.AllowRealNamesInCommand = True
-                ExecCommand("remove " & _objs(ObjectID).ObjectName, ctx, False, , True)
+                ExecCommand("remove " & _objs(id).ObjectName, ctx, False, , True)
 
-                If GetObjectProperty("parent", ObjectID, False, False) <> "" Then
+                If GetObjectProperty("parent", id, False, False) <> "" Then
                     ' removing the object failed
                     Exit Sub
                 End If
             End If
         End If
 
-        If Not DropFound Then
+        If Not dropFound Then
             PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
-            PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
+            PlayerItem(_objs(id).ObjectName, False, ctx)
         Else
-            If BeginsWith(DropStatement, "everywhere") Then
-                PlayerItem(_objs(ObjectID).ObjectName, False, ctx)
-                If InStr(DropStatement, "<") <> 0 Then
-                    Print(GetParameter(s:=DropStatement, ctx:=ctx), ctx)
+            If BeginsWith(dropStatement, "everywhere") Then
+                PlayerItem(_objs(id).ObjectName, False, ctx)
+                If InStr(dropStatement, "<") <> 0 Then
+                    Print(GetParameter(s:=dropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.DefaultDrop, ctx)
                 End If
-            ElseIf BeginsWith(DropStatement, "nowhere") Then
-                If InStr(DropStatement, "<") <> 0 Then
-                    Print(GetParameter(s:=DropStatement, ctx:=ctx), ctx)
+            ElseIf BeginsWith(dropStatement, "nowhere") Then
+                If InStr(dropStatement, "<") <> 0 Then
+                    Print(GetParameter(s:=dropStatement, ctx:=ctx), ctx)
                 Else
                     PlayerErrorMessage(PlayerError.CantDrop, ctx)
                 End If
             Else
-                ExecuteScript(DropStatement, ctx)
+                ExecuteScript(dropStatement, ctx)
             End If
         End If
-
     End Sub
 
-    Private Sub ExecExamine(CommandInfo As String, ctx As Context)
-        Dim ExamineItem, ExamineAction As String
-        Dim FoundItem As Boolean
-        Dim FoundExamineAction As Boolean
-        Dim i, ObjID, j As Integer
-        Dim InventoryPlace As String
+    Private Sub ExecExamine(command As String, ctx As Context)
+        Dim item = LCase(Trim(GetEverythingAfter(command, "examine ")))
 
-        FoundExamineAction = False
-
-        InventoryPlace = "inventory"
-
-        ExamineItem = LCase(Trim(GetEverythingAfter(CommandInfo, "examine ")))
-
-        If ExamineItem = "" Then
+        If item = "" Then
             PlayerErrorMessage(PlayerError.BadExamine, ctx)
             _badCmdBefore = "examine"
             Exit Sub
         End If
 
-        ObjID = Disambiguate(ExamineItem, _currentRoom & ";" & InventoryPlace, ctx)
-        If ObjID > 0 Then
-            FoundItem = True
-        Else
-            FoundItem = False
-        End If
+        Dim id = Disambiguate(item, _currentRoom & ";inventory", ctx)
 
-        If FoundItem Then
-            Dim o = _objs(ObjID)
-
-            ' Find "examine" action:
-            For i = 1 To o.NumberActions
-                If o.Actions(i).ActionName = "examine" Then
-                    ExecuteScript(o.Actions(i).Script, ctx, ObjID)
-                    FoundExamineAction = True
-                    i = o.NumberActions
-                End If
-            Next i
-
-            ' Find "examine" property:
-            If Not FoundExamineAction Then
-                For i = 1 To o.NumberProperties
-                    If o.Properties(i).PropertyName = "examine" Then
-                        Print(o.Properties(i).PropertyValue, ctx)
-                        FoundExamineAction = True
-                        i = o.NumberProperties
-                    End If
-                Next i
-            End If
-
-            ' Find "examine" tag:
-            If Not FoundExamineAction Then
-                For j = o.DefinitionSectionStart + 1 To _objs(ObjID).DefinitionSectionEnd - 1
-                    If BeginsWith(_lines(j), "examine ") Then
-                        ExamineAction = Trim(GetEverythingAfter(_lines(j), "examine "))
-                        If Left(ExamineAction, 1) = "<" Then
-                            Print(GetParameter(_lines(j), ctx), ctx)
-                        Else
-                            ExecuteScript(ExamineAction, ctx, ObjID)
-                        End If
-                        FoundExamineAction = True
-                    End If
-                Next j
-            End If
-
-            If Not FoundExamineAction Then
-                DoLook(ObjID, ctx, True)
-            End If
-
-        End If
-
-        If Not FoundItem Then
-            If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+        If id <= 0 Then
+            If id <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
             _badCmdBefore = "examine"
-        End If
-
-    End Sub
-
-    Private Sub ExecMoveThing(sThingData As String, sThingType As Thing, ctx As Context)
-        Dim SemiColonPos As Integer
-        Dim ThingName, MoveToPlace As String
-
-        SemiColonPos = InStr(sThingData, ";")
-
-        ThingName = Trim(Left(sThingData, SemiColonPos - 1))
-        MoveToPlace = Trim(Mid(sThingData, SemiColonPos + 1))
-
-        MoveThing(ThingName, MoveToPlace, sThingType, ctx)
-
-    End Sub
-
-    Private Sub ExecProperty(PropertyData As String, ctx As Context)
-        Dim SCP As Integer
-        Dim ObjName, Properties As String
-        Dim ObjID, i As Integer
-        Dim Found As Boolean
-        SCP = InStr(PropertyData, ";")
-
-        If SCP = 0 Then
-            LogASLError("No property data given in 'property <" & PropertyData & ">'", LogType.WarningError)
             Exit Sub
         End If
 
-        ObjName = Trim(Left(PropertyData, SCP - 1))
-        Properties = Trim(Mid(PropertyData, SCP + 1))
+        Dim o = _objs(id)
 
-        For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                Found = True
-                ObjID = i
-                i = _numberObjs
+        ' Find "examine" action:
+        For i = 1 To o.NumberActions
+            If o.Actions(i).ActionName = "examine" Then
+                ExecuteScript(o.Actions(i).Script, ctx, id)
+                Exit Sub
             End If
         Next i
 
-        If Not Found Then
-            LogASLError("No such object in 'property <" & PropertyData & ">'", LogType.WarningError)
+        ' Find "examine" property:
+        For i = 1 To o.NumberProperties
+            If o.Properties(i).PropertyName = "examine" Then
+                Print(o.Properties(i).PropertyValue, ctx)
+                Exit Sub
+            End If
+        Next i
+
+        ' Find "examine" tag:
+        For i = o.DefinitionSectionStart + 1 To _objs(id).DefinitionSectionEnd - 1
+            If BeginsWith(_lines(i), "examine ") Then
+                Dim action = Trim(GetEverythingAfter(_lines(i), "examine "))
+                If Left(action, 1) = "<" Then
+                    Print(GetParameter(_lines(i), ctx), ctx)
+                Else
+                    ExecuteScript(action, ctx, id)
+                End If
+                Exit Sub
+            End If
+        Next i
+
+        DoLook(id, ctx, True)
+    End Sub
+
+    Private Sub ExecMoveThing(data As String, type As Thing, ctx As Context)
+        Dim scp = InStr(data, ";")
+        Dim name = Trim(Left(data, scp - 1))
+        Dim place = Trim(Mid(data, scp + 1))
+        MoveThing(name, place, type, ctx)
+    End Sub
+
+    Private Sub ExecProperty(data As String, ctx As Context)
+        Dim id As Integer
+        Dim found As Boolean
+        Dim scp = InStr(data, ";")
+
+        If scp = 0 Then
+            LogASLError("No property data given in 'property <" & data & ">'", LogType.WarningError)
             Exit Sub
         End If
 
-        AddToObjectProperties(Properties, ObjID, ctx)
+        Dim name = Trim(Left(data, scp - 1))
+        Dim properties = Trim(Mid(data, scp + 1))
 
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(name) Then
+                found = True
+                id = i
+                Exit For
+            End If
+        Next i
+
+        If Not found Then
+            LogASLError("No such object in 'property <" & data & ">'", LogType.WarningError)
+            Exit Sub
+        End If
+
+        AddToObjectProperties(properties, id, ctx)
     End Sub
 
-    Private Sub ExecuteDo(ProcedureName As String, ctx As Context)
-        Dim ProcedureBlock As DefineBlock
-        Dim i, BracketPos As Integer
-        Dim CloseBracketPos As Integer
-        Dim ParameterData As String
-        Dim NewThread As Context = CopyContext(ctx)
-        Dim iNumParameters As Integer
-        Dim RunInNewThread As Boolean
-        Dim iCurPos, SCP As Integer
+    Private Sub ExecuteDo(procedureName As String, ctx As Context)
+        Dim newCtx As Context = CopyContext(ctx)
+        Dim numParameters = 0
+        Dim useNewCtx As Boolean
 
-        If _gameAslVersion >= 392 And Left(ProcedureName, 8) = "!intproc" Then
-            ' If "do" procedure is run in a new thread, thread info is not passed to any nested
+        If _gameAslVersion >= 392 And Left(procedureName, 8) = "!intproc" Then
+            ' If "do" procedure is run in a new context, context info is not passed to any nested
             ' script blocks in braces.
 
-            RunInNewThread = False
+            useNewCtx = False
         Else
-            RunInNewThread = True
+            useNewCtx = True
         End If
 
         If _gameAslVersion >= 284 Then
-            BracketPos = InStr(ProcedureName, "(")
-            If BracketPos <> 0 Then
-                CloseBracketPos = InStr(BracketPos + 1, ProcedureName, ")")
+            Dim obp = InStr(procedureName, "(")
+            Dim cbp As Integer
+            If obp <> 0 Then
+                cbp = InStr(obp + 1, procedureName, ")")
             End If
 
-            If BracketPos <> 0 And CloseBracketPos <> 0 Then
-                ParameterData = Mid(ProcedureName, BracketPos + 1, (CloseBracketPos - BracketPos) - 1)
-                ProcedureName = Left(ProcedureName, BracketPos - 1)
+            If obp <> 0 And cbp <> 0 Then
+                Dim parameters = Mid(procedureName, obp + 1, (cbp - obp) - 1)
+                procedureName = Left(procedureName, obp - 1)
 
-                ParameterData = ParameterData & ";"
-                iCurPos = 1
+                parameters = parameters & ";"
+                Dim pos = 1
                 Do
-                    iNumParameters = iNumParameters + 1
-                    SCP = InStr(iCurPos, ParameterData, ";")
+                    numParameters = numParameters + 1
+                    Dim scp = InStr(pos, parameters, ";")
 
-                    NewThread.NumParameters = iNumParameters
-                    ReDim Preserve NewThread.Parameters(iNumParameters)
-                    NewThread.Parameters(iNumParameters) = Trim(Mid(ParameterData, iCurPos, SCP - iCurPos))
+                    newCtx.NumParameters = numParameters
+                    ReDim Preserve newCtx.Parameters(numParameters)
+                    newCtx.Parameters(numParameters) = Trim(Mid(parameters, pos, scp - pos))
 
-                    iCurPos = SCP + 1
-                Loop Until iCurPos >= Len(ParameterData)
+                    pos = scp + 1
+                Loop Until pos >= Len(parameters)
             End If
         End If
 
-        ProcedureBlock = DefineBlockParam("procedure", ProcedureName)
-        If ProcedureBlock.StartLine = 0 And ProcedureBlock.EndLine = 0 Then
-            LogASLError("No such procedure " & ProcedureName, LogType.WarningError)
+        Dim block = DefineBlockParam("procedure", procedureName)
+        If block.StartLine = 0 And block.EndLine = 0 Then
+            LogASLError("No such procedure " & procedureName, LogType.WarningError)
         Else
-            For i = ProcedureBlock.StartLine + 1 To ProcedureBlock.EndLine - 1
-                If Not RunInNewThread Then
-                    ExecuteScript((_lines(i)), ctx)
+            For i = block.StartLine + 1 To block.EndLine - 1
+                If Not useNewCtx Then
+                    ExecuteScript(_lines(i), ctx)
                 Else
-                    ExecuteScript((_lines(i)), NewThread)
-                    ctx.DontProcessCommand = NewThread.DontProcessCommand
+                    ExecuteScript(_lines(i), newCtx)
+                    ctx.DontProcessCommand = newCtx.DontProcessCommand
                 End If
             Next i
         End If
