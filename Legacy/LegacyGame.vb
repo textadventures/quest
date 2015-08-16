@@ -452,6 +452,7 @@ Public Class LegacyGame
     Private _useStaticFrameForPictures As Boolean
     Private _fileData As String
     Private _fileDataPos As Integer
+    Private _questionResponse As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
         _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
@@ -5606,174 +5607,171 @@ Public Class LegacyGame
         End If
     End Function
 
-    Private Function DoInternalFunction(FunctionName As String, FunctionParameter As String, ctx As Context) As String
-        ' Split FunctionParameter into individual parameters
-        Dim iNumParameters, iCurPos As Integer
-        Dim Parameter() As String
-        Dim UntrimmedParameter() As String
-        Dim SCP, ObjID, i As Integer
-        Dim FoundObj As Boolean
+    Private Function DoInternalFunction(name As String, parameter As String, ctx As Context) As String
+        Dim parameters() As String
+        Dim untrimmedParameters() As String
+        Dim objId As Integer
+        Dim numParameters = 0
+        Dim pos = 1
 
-        iNumParameters = 0 : iCurPos = 1
-
-        If FunctionParameter <> "" Then
-            FunctionParameter = FunctionParameter & ";"
+        If parameter <> "" Then
+            parameter = parameter & ";"
             Do
-                iNumParameters = iNumParameters + 1
-                SCP = InStr(iCurPos, FunctionParameter, ";")
-                ReDim Preserve Parameter(iNumParameters)
-                ReDim Preserve UntrimmedParameter(iNumParameters)
+                numParameters = numParameters + 1
+                Dim scp = InStr(pos, parameter, ";")
+                ReDim Preserve parameters(numParameters)
+                ReDim Preserve untrimmedParameters(numParameters)
 
-                UntrimmedParameter(iNumParameters) = Mid(FunctionParameter, iCurPos, SCP - iCurPos)
-                Parameter(iNumParameters) = Trim(UntrimmedParameter(iNumParameters))
+                untrimmedParameters(numParameters) = Mid(parameter, pos, scp - pos)
+                parameters(numParameters) = Trim(untrimmedParameters(numParameters))
 
-                iCurPos = SCP + 1
-            Loop Until iCurPos >= Len(FunctionParameter)
+                pos = scp + 1
+            Loop Until pos >= Len(parameter)
 
             ' Remove final ";"
-            FunctionParameter = Left(FunctionParameter, Len(FunctionParameter) - 1)
+            parameter = Left(parameter, Len(parameter) - 1)
         Else
-            iNumParameters = 1
-            ReDim Parameter(1)
-            ReDim UntrimmedParameter(1)
-            Parameter(1) = ""
-            UntrimmedParameter(1) = ""
+            numParameters = 1
+            ReDim parameters(1)
+            ReDim untrimmedParameters(1)
+            parameters(1) = ""
+            untrimmedParameters(1) = ""
         End If
 
-        Dim Param3 As String
-        Dim Param2 As String
-        Dim oExit As RoomExit
-        If FunctionName = "displayname" Then
-            ObjID = GetObjectId(Parameter(1), ctx)
-            If ObjID = -1 Then
-                LogASLError("Object '" & Parameter(1) & "' does not exist", LogType.WarningError)
+        Dim param2 As String
+        Dim param3 As String
+
+        If name = "displayname" Then
+            objId = GetObjectId(parameters(1), ctx)
+            If objId = -1 Then
+                LogASLError("Object '" & parameters(1) & "' does not exist", LogType.WarningError)
                 Return "!"
             Else
-                Return _objs(GetObjectId(Parameter(1), ctx)).ObjectAlias
+                Return _objs(GetObjectId(parameters(1), ctx)).ObjectAlias
             End If
-        ElseIf FunctionName = "numberparameters" Then
+        ElseIf name = "numberparameters" Then
             Return Trim(Str(ctx.NumParameters))
-        ElseIf FunctionName = "parameter" Then
-            If iNumParameters = 0 Then
+        ElseIf name = "parameter" Then
+            If numParameters = 0 Then
                 LogASLError("No parameter number specified for $parameter$ function", LogType.WarningError)
                 Return ""
             Else
-                If Val(Parameter(1)) > ctx.NumParameters Then
-                    LogASLError("No parameter number " & Parameter(1) & " sent to this function", LogType.WarningError)
+                If Val(parameters(1)) > ctx.NumParameters Then
+                    LogASLError("No parameter number " & parameters(1) & " sent to this function", LogType.WarningError)
                     Return ""
                 Else
-                    Return Trim(ctx.Parameters(CInt(Parameter(1))))
+                    Return Trim(ctx.Parameters(CInt(parameters(1))))
                 End If
             End If
-        ElseIf FunctionName = "gettag" Then
+        ElseIf name = "gettag" Then
             ' Deprecated
-            Return FindStatement(DefineBlockParam("room", Parameter(1)), Parameter(2))
-        ElseIf FunctionName = "objectname" Then
+            Return FindStatement(DefineBlockParam("room", parameters(1)), parameters(2))
+        ElseIf name = "objectname" Then
             Return _objs(ctx.CallingObjectId).ObjectName
-        ElseIf FunctionName = "locationof" Then
+        ElseIf name = "locationof" Then
             For i = 1 To _numberChars
-                If LCase(_chars(i).ObjectName) = LCase(Parameter(1)) Then
+                If LCase(_chars(i).ObjectName) = LCase(parameters(1)) Then
                     Return _chars(i).ContainerRoom
                 End If
             Next i
 
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ObjectName) = LCase(Parameter(1)) Then
+                If LCase(_objs(i).ObjectName) = LCase(parameters(1)) Then
                     Return _objs(i).ContainerRoom
                 End If
             Next i
-        ElseIf FunctionName = "lengthof" Then
-            Return Str(Len(UntrimmedParameter(1)))
-        ElseIf FunctionName = "left" Then
-            If Val(Parameter(2)) < 0 Then
-                LogASLError("Invalid function call in '$Left$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
+        ElseIf name = "lengthof" Then
+            Return Str(Len(untrimmedParameters(1)))
+        ElseIf name = "left" Then
+            If Val(parameters(2)) < 0 Then
+                LogASLError("Invalid function call in '$Left$(" & parameters(1) & "; " & parameters(2) & ")$'", LogType.WarningError)
                 Return "!"
             Else
-                Return Left(Parameter(1), CInt(Parameter(2)))
+                Return Left(parameters(1), CInt(parameters(2)))
             End If
-        ElseIf FunctionName = "right" Then
-            If Val(Parameter(2)) < 0 Then
-                LogASLError("Invalid function call in '$Right$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
+        ElseIf name = "right" Then
+            If Val(parameters(2)) < 0 Then
+                LogASLError("Invalid function call in '$Right$(" & parameters(1) & "; " & parameters(2) & ")$'", LogType.WarningError)
                 Return "!"
             Else
-                Return Right(Parameter(1), CInt(Parameter(2)))
+                Return Right(parameters(1), CInt(parameters(2)))
             End If
-        ElseIf FunctionName = "mid" Then
-            If iNumParameters = 3 Then
-                If Val(Parameter(2)) < 0 Then
-                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LogType.WarningError)
+        ElseIf name = "mid" Then
+            If numParameters = 3 Then
+                If Val(parameters(2)) < 0 Then
+                    LogASLError("Invalid function call in '$Mid$(" & parameters(1) & "; " & parameters(2) & "; " & parameters(3) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
-                    Return Mid(Parameter(1), CInt(Parameter(2)), CInt(Parameter(3)))
+                    Return Mid(parameters(1), CInt(parameters(2)), CInt(parameters(3)))
                 End If
-            ElseIf iNumParameters = 2 Then
-                If Val(Parameter(2)) < 0 Then
-                    LogASLError("Invalid function call in '$Mid$(" & Parameter(1) & "; " & Parameter(2) & ")$'", LogType.WarningError)
+            ElseIf numParameters = 2 Then
+                If Val(parameters(2)) < 0 Then
+                    LogASLError("Invalid function call in '$Mid$(" & parameters(1) & "; " & parameters(2) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
-                    Return Mid(Parameter(1), CInt(Parameter(2)))
+                    Return Mid(parameters(1), CInt(parameters(2)))
                 End If
             End If
             LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError)
             Return ""
-        ElseIf FunctionName = "rand" Then
-            Return Str(Int(_random.NextDouble() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
-        ElseIf FunctionName = "instr" Then
-            If iNumParameters = 3 Then
-                Param3 = ""
-                If InStr(Parameter(3), "_") <> 0 Then
-                    For i = 1 To Len(Parameter(3))
-                        If Mid(Parameter(3), i, 1) = "_" Then
-                            Param3 = Param3 & " "
+        ElseIf name = "rand" Then
+            Return Str(Int(_random.NextDouble() * (CDbl(parameters(2)) - CDbl(parameters(1)) + 1)) + CDbl(parameters(1)))
+        ElseIf name = "instr" Then
+            If numParameters = 3 Then
+                param3 = ""
+                If InStr(parameters(3), "_") <> 0 Then
+                    For i = 1 To Len(parameters(3))
+                        If Mid(parameters(3), i, 1) = "_" Then
+                            param3 = param3 & " "
                         Else
-                            Param3 = Param3 & Mid(Parameter(3), i, 1)
+                            param3 = param3 & Mid(parameters(3), i, 1)
                         End If
                     Next i
                 Else
-                    Param3 = Parameter(3)
+                    param3 = parameters(3)
                 End If
-                If Val(Parameter(1)) <= 0 Then
-                    LogASLError("Invalid function call in '$instr(" & Parameter(1) & "; " & Parameter(2) & "; " & Parameter(3) & ")$'", LogType.WarningError)
+                If Val(parameters(1)) <= 0 Then
+                    LogASLError("Invalid function call in '$instr(" & parameters(1) & "; " & parameters(2) & "; " & parameters(3) & ")$'", LogType.WarningError)
                     Return "!"
                 Else
-                    Return Trim(Str(InStr(CInt(Parameter(1)), Parameter(2), Param3)))
+                    Return Trim(Str(InStr(CInt(parameters(1)), parameters(2), param3)))
                 End If
-            ElseIf iNumParameters = 2 Then
-                Param2 = ""
-                If InStr(Parameter(2), "_") <> 0 Then
-                    For i = 1 To Len(Parameter(2))
-                        If Mid(Parameter(2), i, 1) = "_" Then
-                            Param2 = Param2 & " "
+            ElseIf numParameters = 2 Then
+                param2 = ""
+                If InStr(parameters(2), "_") <> 0 Then
+                    For i = 1 To Len(parameters(2))
+                        If Mid(parameters(2), i, 1) = "_" Then
+                            param2 = param2 & " "
                         Else
-                            Param2 = Param2 & Mid(Parameter(2), i, 1)
+                            param2 = param2 & Mid(parameters(2), i, 1)
                         End If
                     Next i
                 Else
-                    Param2 = Parameter(2)
+                    param2 = parameters(2)
                 End If
-                Return Trim(Str(InStr(Parameter(1), Param2)))
+                Return Trim(Str(InStr(parameters(1), param2)))
             End If
             LogASLError("Invalid function call to '$Instr$(...)$'", LogType.WarningError)
             Return ""
-        ElseIf FunctionName = "ucase" Then
-            Return UCase(Parameter(1))
-        ElseIf FunctionName = "lcase" Then
-            Return LCase(Parameter(1))
-        ElseIf FunctionName = "capfirst" Then
-            Return UCase(Left(Parameter(1), 1)) & Mid(Parameter(1), 2)
-        ElseIf FunctionName = "symbol" Then
-            If Parameter(1) = "lt" Then
+        ElseIf name = "ucase" Then
+            Return UCase(parameters(1))
+        ElseIf name = "lcase" Then
+            Return LCase(parameters(1))
+        ElseIf name = "capfirst" Then
+            Return UCase(Left(parameters(1), 1)) & Mid(parameters(1), 2)
+        ElseIf name = "symbol" Then
+            If parameters(1) = "lt" Then
                 Return "<"
-            ElseIf Parameter(1) = "gt" Then
+            ElseIf parameters(1) = "gt" Then
                 Return ">"
             Else
                 Return "!"
             End If
-        ElseIf FunctionName = "loadmethod" Then
+        ElseIf name = "loadmethod" Then
             Return _gameLoadMethod
-        ElseIf FunctionName = "timerstate" Then
+        ElseIf name = "timerstate" Then
             For i = 1 To _numberTimers
-                If LCase(_timers(i).TimerName) = LCase(Parameter(1)) Then
+                If LCase(_timers(i).TimerName) = LCase(parameters(1)) Then
                     If _timers(i).TimerActive Then
                         Return "1"
                     Else
@@ -5781,213 +5779,189 @@ Public Class LegacyGame
                     End If
                 End If
             Next i
-            LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
+            LogASLError("No such timer '" & parameters(1) & "'", LogType.WarningError)
             Return "!"
-        ElseIf FunctionName = "timerinterval" Then
+        ElseIf name = "timerinterval" Then
             For i = 1 To _numberTimers
-                If LCase(_timers(i).TimerName) = LCase(Parameter(1)) Then
+                If LCase(_timers(i).TimerName) = LCase(parameters(1)) Then
                     Return Str(_timers(i).TimerInterval)
                 End If
             Next i
-            LogASLError("No such timer '" & Parameter(1) & "'", LogType.WarningError)
+            LogASLError("No such timer '" & parameters(1) & "'", LogType.WarningError)
             Return "!"
-        ElseIf FunctionName = "ubound" Then
+        ElseIf name = "ubound" Then
             For i = 1 To _numberNumericVariables
-                If LCase(_numericVariable(i).VariableName) = LCase(Parameter(1)) Then
+                If LCase(_numericVariable(i).VariableName) = LCase(parameters(1)) Then
                     Return Trim(Str(_numericVariable(i).VariableUBound))
                 End If
             Next i
 
             For i = 1 To _numberStringVariables
-                If LCase(_stringVariable(i).VariableName) = LCase(Parameter(1)) Then
+                If LCase(_stringVariable(i).VariableName) = LCase(parameters(1)) Then
                     Return Trim(Str(_stringVariable(i).VariableUBound))
                 End If
             Next i
 
-            LogASLError("No such variable '" & Parameter(1) & "'", LogType.WarningError)
+            LogASLError("No such variable '" & parameters(1) & "'", LogType.WarningError)
             Return "!"
-        ElseIf FunctionName = "objectproperty" Then
-            FoundObj = False
+        ElseIf name = "objectproperty" Then
+            Dim FoundObj = False
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ObjectName) = LCase(Parameter(1)) Then
+                If LCase(_objs(i).ObjectName) = LCase(parameters(1)) Then
                     FoundObj = True
-                    ObjID = i
+                    objId = i
                     i = _numberObjs
                 End If
             Next i
 
             If Not FoundObj Then
-                LogASLError("No such object '" & Parameter(1) & "'", LogType.WarningError)
+                LogASLError("No such object '" & parameters(1) & "'", LogType.WarningError)
                 Return "!"
             Else
-                Return GetObjectProperty(Parameter(2), ObjID)
+                Return GetObjectProperty(parameters(2), objId)
             End If
-        ElseIf FunctionName = "getobjectname" Then
-            If iNumParameters = 3 Then
-                ObjID = Disambiguate(Parameter(1), Parameter(2) & ";" & Parameter(3), ctx)
-            ElseIf iNumParameters = 2 Then
-                ObjID = Disambiguate(Parameter(1), Parameter(2), ctx)
+        ElseIf name = "getobjectname" Then
+            If numParameters = 3 Then
+                objId = Disambiguate(parameters(1), parameters(2) & ";" & parameters(3), ctx)
+            ElseIf numParameters = 2 Then
+                objId = Disambiguate(parameters(1), parameters(2), ctx)
             Else
 
-                ObjID = Disambiguate(Parameter(1), _currentRoom & ";inventory", ctx)
+                objId = Disambiguate(parameters(1), _currentRoom & ";inventory", ctx)
             End If
 
-            If ObjID <= -1 Then
-                LogASLError("No object found with display name '" & Parameter(1) & "'", LogType.WarningError)
+            If objId <= -1 Then
+                LogASLError("No object found with display name '" & parameters(1) & "'", LogType.WarningError)
                 Return "!"
             Else
-                Return _objs(ObjID).ObjectName
+                Return _objs(objId).ObjectName
             End If
-        ElseIf FunctionName = "thisobject" Then
+        ElseIf name = "thisobject" Then
             Return _objs(ctx.CallingObjectId).ObjectName
-        ElseIf FunctionName = "thisobjectname" Then
+        ElseIf name = "thisobjectname" Then
             Return _objs(ctx.CallingObjectId).ObjectAlias
-        ElseIf FunctionName = "speechenabled" Then
+        ElseIf name = "speechenabled" Then
             Return "1"
-        ElseIf FunctionName = "removeformatting" Then
-            Return RemoveFormatting(FunctionParameter)
-        ElseIf FunctionName = "findexit" And _gameAslVersion >= 410 Then
-            oExit = FindExit(FunctionParameter)
-            If oExit Is Nothing Then
+        ElseIf name = "removeformatting" Then
+            Return RemoveFormatting(parameter)
+        ElseIf name = "findexit" And _gameAslVersion >= 410 Then
+            Dim e = FindExit(parameter)
+            If e Is Nothing Then
                 Return ""
             Else
-                Return _objs(oExit.ObjID).ObjectName
+                Return _objs(e.ObjID).ObjectName
             End If
         End If
 
         Return "__NOTDEFINED"
-
     End Function
 
-    Private Sub ExecFor(ScriptLine As String, ctx As Context)
+    Private Sub ExecFor(line As String, ctx As Context)
         ' See if this is a "for each" loop:
-        If BeginsWith(ScriptLine, "each ") Then
-            ExecForEach(GetEverythingAfter(ScriptLine, "each "), ctx)
+        If BeginsWith(line, "each ") Then
+            ExecForEach(GetEverythingAfter(line, "each "), ctx)
             Exit Sub
         End If
 
         ' Executes a for loop, of form:
         '   for <variable; startvalue; endvalue> script
-        Dim CounterVariable As String
-        Dim StartValue As Integer
-        Dim EndValue As Integer
-        Dim LoopScript As String
-        Dim StepValue As Integer
-        Dim ForData As String
-        Dim SCPos2, SCPos1, SCPos3 As Integer
-        Dim i As Double
-
-        ForData = GetParameter(ScriptLine, ctx)
+        Dim endValue As Integer
+        Dim stepValue As Integer
+        Dim forData = GetParameter(line, ctx)
 
         ' Extract individual components:
-        SCPos1 = InStr(ForData, ";")
-        SCPos2 = InStr(SCPos1 + 1, ForData, ";")
-        SCPos3 = InStr(SCPos2 + 1, ForData, ";")
+        Dim scp1 = InStr(forData, ";")
+        Dim scp2 = InStr(scp1 + 1, forData, ";")
+        Dim scp3 = InStr(scp2 + 1, forData, ";")
+        Dim counterVariable = Trim(Left(forData, scp1 - 1))
+        Dim startValue = CInt(Mid(forData, scp1 + 1, (scp2 - 1) - scp1))
 
-        CounterVariable = Trim(Left(ForData, SCPos1 - 1))
-        StartValue = CInt(Mid(ForData, SCPos1 + 1, (SCPos2 - 1) - SCPos1))
-
-        If SCPos3 <> 0 Then
-            EndValue = CInt(Mid(ForData, SCPos2 + 1, (SCPos3 - 1) - SCPos2))
-            StepValue = CInt(Mid(ForData, SCPos3 + 1))
+        If scp3 <> 0 Then
+            endValue = CInt(Mid(forData, scp2 + 1, (scp3 - 1) - scp2))
+            stepValue = CInt(Mid(forData, scp3 + 1))
         Else
-            EndValue = CInt(Mid(ForData, SCPos2 + 1))
-            StepValue = 1
+            endValue = CInt(Mid(forData, scp2 + 1))
+            stepValue = 1
         End If
 
-        LoopScript = Trim(Mid(ScriptLine, InStr(ScriptLine, ">") + 1))
+        Dim loopScript = Trim(Mid(line, InStr(line, ">") + 1))
 
-        For i = StartValue To EndValue Step StepValue
-            SetNumericVariableContents(CounterVariable, i, ctx)
-            ExecuteScript(LoopScript, ctx)
-            i = GetNumericContents(CounterVariable, ctx)
+        For i As Double = startValue To endValue Step stepValue
+            SetNumericVariableContents(counterVariable, i, ctx)
+            ExecuteScript(loopScript, ctx)
+            i = GetNumericContents(counterVariable, ctx)
         Next i
-
     End Sub
 
-    Private Sub ExecSetVar(VarInfo As String, ctx As Context)
+    Private Sub ExecSetVar(varInfo As String, ctx As Context)
         ' Sets variable contents from a script parameter.
         ' Eg <var1;7> sets numeric variable var1
         ' to 7
 
-        Dim iSemiColonPos As Integer
-        Dim sVarName As String
-        Dim iVarCont As String
-        Dim ArrayIndex As Integer
-        Dim FirstNum, SecondNum As Double
-        Dim ObscuredVarInfo As String
-        Dim ExpResult As ExpressionResult
-        Dim OpPos As Integer
-        Dim OP As String
+        Dim scp = InStr(varInfo, ";")
+        Dim varName = Trim(Left(varInfo, scp - 1))
+        Dim varCont = Trim(Mid(varInfo, scp + 1))
+        Dim idx = GetArrayIndex(varName, ctx)
 
-        iSemiColonPos = InStr(VarInfo, ";")
-        sVarName = Trim(Left(VarInfo, iSemiColonPos - 1))
-        iVarCont = Trim(Mid(VarInfo, iSemiColonPos + 1))
-
-        ArrayIndex = GetArrayIndex(sVarName, ctx)
-
-        If IsNumeric(sVarName) Then
-            LogASLError("Invalid numeric variable name '" & sVarName & "' - variable names cannot be numeric", LogType.WarningError)
+        If IsNumeric(varName) Then
+            LogASLError("Invalid numeric variable name '" & varName & "' - variable names cannot be numeric", LogType.WarningError)
             Exit Sub
         End If
 
         Try
             If _gameAslVersion >= 391 Then
-                ExpResult = ExpressionHandler(iVarCont)
-                If ExpResult.Success = ExpressionSuccess.OK Then
-                    iVarCont = ExpResult.Result
+                Dim expResult = ExpressionHandler(varCont)
+                If expResult.Success = ExpressionSuccess.OK Then
+                    varCont = expResult.Result
                 Else
-                    iVarCont = "0"
-                    LogASLError("Error setting numeric variable <" & VarInfo & "> : " & ExpResult.Message, LogType.WarningError)
+                    varCont = "0"
+                    LogASLError("Error setting numeric variable <" & varInfo & "> : " & expResult.Message, LogType.WarningError)
                 End If
             Else
-                ObscuredVarInfo = ObscureNumericExps(iVarCont)
+                Dim obscuredVarInfo = ObscureNumericExps(varCont)
+                Dim opPos = InStr(obscuredVarInfo, "+")
+                If opPos = 0 Then opPos = InStr(obscuredVarInfo, "*")
+                If opPos = 0 Then opPos = InStr(obscuredVarInfo, "/")
+                If opPos = 0 Then opPos = InStr(2, obscuredVarInfo, "-")
 
-                OpPos = InStr(ObscuredVarInfo, "+")
-                If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "*")
-                If OpPos = 0 Then OpPos = InStr(ObscuredVarInfo, "/")
-                If OpPos = 0 Then OpPos = InStr(2, ObscuredVarInfo, "-")
+                If opPos <> 0 Then
+                    Dim op = Mid(varCont, opPos, 1)
+                    Dim num1 = Val(Left(varCont, opPos - 1))
+                    Dim num2 = Val(Mid(varCont, opPos + 1))
 
-                If OpPos <> 0 Then
-                    OP = Mid(iVarCont, OpPos, 1)
-                    FirstNum = Val(Left(iVarCont, OpPos - 1))
-                    SecondNum = Val(Mid(iVarCont, OpPos + 1))
-
-                    Select Case OP
+                    Select Case op
                         Case "+"
-                            iVarCont = Str(FirstNum + SecondNum)
+                            varCont = Str(num1 + num2)
                         Case "-"
-                            iVarCont = Str(FirstNum - SecondNum)
+                            varCont = Str(num1 - num2)
                         Case "*"
-                            iVarCont = Str(FirstNum * SecondNum)
+                            varCont = Str(num1 * num2)
                         Case "/"
-                            If SecondNum <> 0 Then
-                                iVarCont = Str(FirstNum / SecondNum)
+                            If num2 <> 0 Then
+                                varCont = Str(num1 / num2)
                             Else
                                 LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError)
-                                iVarCont = "0"
+                                varCont = "0"
                             End If
                     End Select
                 End If
             End If
 
-            SetNumericVariableContents(sVarName, Val(iVarCont), ctx, ArrayIndex)
+            SetNumericVariableContents(varName, Val(varCont), ctx, idx)
         Catch
-            LogASLError("Error " & Trim(CStr(Err.Number)) & " (" & Err.Description & ") setting variable '" & sVarName & "' to '" & iVarCont & "'", LogType.WarningError)
+            LogASLError("Error setting variable '" & varName & "' to '" & varCont & "'", LogType.WarningError)
         End Try
     End Sub
 
-    Private m_questionResponse As Boolean
-
-    Private Function ExecuteIfAsk(askq As String) As Boolean
-        _player.ShowQuestion(askq)
+    Private Function ExecuteIfAsk(question As String) As Boolean
+        _player.ShowQuestion(question)
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
             System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
 
-        Return m_questionResponse
+        Return _questionResponse
     End Function
 
     Private Sub SetQuestionResponse(response As Boolean) Implements IASL.SetQuestionResponse
@@ -5998,7 +5972,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetQuestionResponseInNewThread(response As Object)
-        m_questionResponse = DirectCast(response, Boolean)
+        _questionResponse = DirectCast(response, Boolean)
 
         SyncLock _waitLock
             System.Threading.Monitor.PulseAll(_waitLock)
