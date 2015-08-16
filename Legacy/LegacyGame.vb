@@ -6126,74 +6126,68 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private Function GetNumericContents(NumericName As String, ctx As Context, Optional NOERROR As Boolean = False) As Double
-        Dim bNumExists As Boolean
-        Dim iNumNumber As Integer
-        Dim ArrayIndex, i As Integer
-        Dim ArrayIndexData As String
-        bNumExists = False
+    Private Function GetNumericContents(name As String, ctx As Context, Optional noError As Boolean = False) As Double
+        Dim numNumber As Integer
+        Dim arrayIndex As Integer
+        Dim exists = False
 
         ' First, see if the variable already exists. If it
         ' does, get its contents. If not, generate an error.
 
-        Dim OpenPos, ClosePos As Integer
-        If InStr(NumericName, "[") <> 0 And InStr(NumericName, "]") <> 0 Then
-            OpenPos = InStr(NumericName, "[")
-            ClosePos = InStr(NumericName, "]")
-            ArrayIndexData = Mid(NumericName, OpenPos + 1, (ClosePos - OpenPos) - 1)
-            If IsNumeric(ArrayIndexData) Then
-                ArrayIndex = CInt(ArrayIndexData)
+        If InStr(name, "[") <> 0 And InStr(name, "]") <> 0 Then
+            Dim op = InStr(name, "[")
+            Dim cp = InStr(name, "]")
+            Dim arrayIndexData = Mid(name, op + 1, (cp - op) - 1)
+            If IsNumeric(arrayIndexData) Then
+                arrayIndex = CInt(arrayIndexData)
             Else
-                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
+                arrayIndex = CInt(GetNumericContents(arrayIndexData, ctx))
             End If
-            NumericName = Left(NumericName, OpenPos - 1)
+            name = Left(name, op - 1)
         Else
-            ArrayIndex = 0
+            arrayIndex = 0
         End If
 
         If _numberNumericVariables > 0 Then
             For i = 1 To _numberNumericVariables
-                If LCase(_numericVariable(i).VariableName) = LCase(NumericName) Then
-                    iNumNumber = i
-                    bNumExists = True
-                    i = _numberNumericVariables
+                If LCase(_numericVariable(i).VariableName) = LCase(name) Then
+                    numNumber = i
+                    exists = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If bNumExists = False Then
-            If Not NOERROR Then LogASLError("No numeric variable '" & NumericName & "' defined.", LogType.WarningError)
+        If Not exists Then
+            If Not noError Then LogASLError("No numeric variable '" & name & "' defined.", LogType.WarningError)
             Return -32767
         End If
 
-        If ArrayIndex > _numericVariable(iNumNumber).VariableUBound Then
-            If Not NOERROR Then LogASLError("Array index of '" & NumericName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LogType.WarningError)
+        If arrayIndex > _numericVariable(numNumber).VariableUBound Then
+            If Not noError Then LogASLError("Array index of '" & name & "[" & Trim(Str(arrayIndex)) & "]' too big.", LogType.WarningError)
             Return -32766
         End If
 
         ' Now, set the contents
-        Return Val(_numericVariable(iNumNumber).VariableContents(ArrayIndex))
+        Return Val(_numericVariable(numNumber).VariableContents(arrayIndex))
     End Function
 
     Friend Sub PlayerErrorMessage(e As PlayerError, ctx As Context)
         Print(GetErrorMessage(e, ctx), ctx)
     End Sub
 
+    Private Sub PlayerErrorMessage_ExtendInfo(e As PlayerError, ctx As Context, extraInfo As String)
+        Dim message = GetErrorMessage(e, ctx)
 
-    Private Sub PlayerErrorMessage_ExtendInfo(e As PlayerError, ctx As Context, sExtraInfo As String)
-        Dim sErrorMessage As String
-
-        sErrorMessage = GetErrorMessage(e, ctx)
-
-        If sExtraInfo <> "" Then
-            If Right(sErrorMessage, 1) = "." Then
-                sErrorMessage = Left(sErrorMessage, Len(sErrorMessage) - 1)
+        If extraInfo <> "" Then
+            If Right(message, 1) = "." Then
+                message = Left(message, Len(message) - 1)
             End If
 
-            sErrorMessage = sErrorMessage & " - " & sExtraInfo & "."
+            message = message & " - " & extraInfo & "."
         End If
 
-        Print(sErrorMessage, ctx)
+        Print(message, ctx)
     End Sub
 
     Private Function GetErrorMessage(e As PlayerError, ctx As Context) As String
@@ -6221,20 +6215,17 @@ Public Class LegacyGame
                     System.Threading.Monitor.Wait(_waitLock)
                 End SyncLock
             End If
-
         End If
     End Sub
 
     Private Sub PlayWav(parameter As String)
         Dim sync As Boolean = False
         Dim looped As Boolean = False
-        Dim filename As String
-
         Dim params As New List(Of String)(parameter.Split(";"c))
 
         params = New List(Of String)(params.Select(Function(p As String) Trim(p)))
 
-        filename = params(0)
+        Dim filename = params(0)
 
         If params.Contains("loop") Then looped = True
         If params.Contains("sync") Then sync = True
@@ -6246,34 +6237,31 @@ Public Class LegacyGame
         PlayMedia(filename, sync, looped)
     End Sub
 
-    Private Sub RestoreGameData(InputFileData As String)
-        Dim i, NumData, j As Integer
-        Dim AppliesTo As String
+    Private Sub RestoreGameData(fileData As String)
+        Dim appliesTo As String
         Dim data As String = ""
-        Dim ObjID, TimerNum As Integer
-        Dim VarUBound As Integer
-        Dim Found As Boolean
-        Dim NumStoredData As Integer
-        Dim StoredData(0) As ChangeType
-        Dim DecryptedFile As New System.Text.StringBuilder
+        Dim objId, timerNum As Integer
+        Dim varUbound As Integer
+        Dim found As Boolean
+        Dim numStoredData As Integer
+        Dim storedData(0) As ChangeType
+        Dim decryptedFile As New System.Text.StringBuilder
 
         ' Decrypt file
-        For i = 1 To Len(InputFileData)
-            DecryptedFile.Append(Chr(255 - Asc(Mid(InputFileData, i, 1))))
+        For i = 1 To Len(fileData)
+            decryptedFile.Append(Chr(255 - Asc(Mid(fileData, i, 1))))
         Next i
 
-        _fileData = DecryptedFile.ToString()
-
+        _fileData = decryptedFile.ToString()
         _currentRoom = GetNextChunk()
 
         ' OBJECTS
 
-        NumData = CInt(GetNextChunk())
-
+        Dim numData = CInt(GetNextChunk())
         Dim createdObjects As New List(Of String)
 
-        For i = 1 To NumData
-            AppliesTo = GetNextChunk()
+        For i = 1 To numData
+            appliesTo = GetNextChunk()
             data = GetNextChunk()
 
             ' As of Quest 4.0, properties and actions are put into StoredData while we load the file,
@@ -6281,66 +6269,65 @@ Public Class LegacyGame
             ' we try to set them before they've been created.
 
             If BeginsWith(data, "properties ") Or BeginsWith(data, "action ") Then
-                NumStoredData = NumStoredData + 1
-                ReDim Preserve StoredData(NumStoredData)
-                StoredData(NumStoredData) = New ChangeType
-                StoredData(NumStoredData).AppliesTo = AppliesTo
-                StoredData(NumStoredData).Change = data
+                numStoredData = numStoredData + 1
+                ReDim Preserve storedData(numStoredData)
+                storedData(numStoredData) = New ChangeType
+                storedData(numStoredData).AppliesTo = appliesTo
+                storedData(numStoredData).Change = data
             ElseIf BeginsWith(data, "create ") Then
-                Dim createData As String = AppliesTo & ";" & GetEverythingAfter(data, "create ")
+                Dim createData As String = appliesTo & ";" & GetEverythingAfter(data, "create ")
                 ' workaround bug where duplicate "create" entries appear in the restore data
                 If Not createdObjects.Contains(createData) Then
                     ExecuteCreate("object <" & createData & ">", _nullContext)
                     createdObjects.Add(createData)
                 End If
             Else
-                LogASLError("QSG Error: Unrecognised item '" & AppliesTo & "; " & data & "'", LogType.InternalError)
+                LogASLError("QSG Error: Unrecognised item '" & appliesTo & "; " & data & "'", LogType.InternalError)
             End If
         Next i
 
-        NumData = CInt(GetNextChunk())
-        For i = 1 To NumData
-            AppliesTo = GetNextChunk()
+        numData = CInt(GetNextChunk())
+        For i = 1 To numData
+            appliesTo = GetNextChunk()
             data = GetFileDataChars(2)
-
-            ObjID = GetObjectIdNoAlias(AppliesTo)
+            objId = GetObjectIdNoAlias(appliesTo)
 
             If Left(data, 1) = Chr(1) Then
-                _objs(ObjID).Exists = True
+                _objs(objId).Exists = True
             Else
-                _objs(ObjID).Exists = False
+                _objs(objId).Exists = False
             End If
 
             If Right(data, 1) = Chr(1) Then
-                _objs(ObjID).Visible = True
+                _objs(objId).Visible = True
             Else
-                _objs(ObjID).Visible = False
+                _objs(objId).Visible = False
             End If
 
-            _objs(ObjID).ContainerRoom = GetNextChunk()
+            _objs(objId).ContainerRoom = GetNextChunk()
         Next i
 
         ' ROOMS
 
-        NumData = CInt(GetNextChunk())
+        numData = CInt(GetNextChunk())
 
-        For i = 1 To NumData
-            AppliesTo = GetNextChunk()
+        For i = 1 To numData
+            appliesTo = GetNextChunk()
             data = GetNextChunk()
 
             If BeginsWith(data, "exit ") Then
                 ExecuteCreate(data, _nullContext)
             ElseIf data = "create" Then
-                ExecuteCreate("room <" & AppliesTo & ">", _nullContext)
+                ExecuteCreate("room <" & appliesTo & ">", _nullContext)
             ElseIf BeginsWith(data, "destroy exit ") Then
-                DestroyExit(AppliesTo & "; " & GetEverythingAfter(data, "destroy exit "), _nullContext)
+                DestroyExit(appliesTo & "; " & GetEverythingAfter(data, "destroy exit "), _nullContext)
             End If
         Next i
 
         ' Now go through and apply object properties and actions
 
-        For i = 1 To NumStoredData
-            Dim d = StoredData(i)
+        For i = 1 To numStoredData
+            Dim d = storedData(i)
             If BeginsWith(d.Change, "properties ") Then
                 AddToObjectProperties(GetEverythingAfter(d.Change, "properties "), GetObjectIdNoAlias(d.AppliesTo), _nullContext)
             ElseIf BeginsWith(d.Change, "action ") Then
@@ -6350,20 +6337,20 @@ Public Class LegacyGame
 
         ' TIMERS
 
-        NumData = CInt(GetNextChunk())
-        For i = 1 To NumData
-            Found = False
-            AppliesTo = GetNextChunk()
+        numData = CInt(GetNextChunk())
+        For i = 1 To numData
+            found = False
+            appliesTo = GetNextChunk()
             For j = 1 To _numberTimers
-                If _timers(j).TimerName = AppliesTo Then
-                    TimerNum = j
-                    j = _numberTimers
-                    Found = True
+                If _timers(j).TimerName = appliesTo Then
+                    timerNum = j
+                    found = True
+                    Exit For
                 End If
             Next j
 
-            If Found Then
-                Dim t = _timers(TimerNum)
+            If found Then
+                Dim t = _timers(timerNum)
                 Dim thisChar As String = GetFileDataChars(1)
 
                 If thisChar = Chr(1) Then
@@ -6382,36 +6369,36 @@ Public Class LegacyGame
         ' Set this flag so we don't run any status variable onchange scripts while restoring
         _gameIsRestoring = True
 
-        NumData = CInt(GetNextChunk())
-        For i = 1 To NumData
-            AppliesTo = GetNextChunk()
-            VarUBound = CInt(GetNextChunk())
+        numData = CInt(GetNextChunk())
+        For i = 1 To numData
+            appliesTo = GetNextChunk()
+            varUbound = CInt(GetNextChunk())
 
-            If VarUBound = 0 Then
+            If varUbound = 0 Then
                 data = GetNextChunk()
-                SetStringContents(AppliesTo, data, _nullContext)
+                SetStringContents(appliesTo, data, _nullContext)
             Else
-                For j = 0 To VarUBound
+                For j = 0 To varUbound
                     data = GetNextChunk()
-                    SetStringContents(AppliesTo, data, _nullContext, j)
+                    SetStringContents(appliesTo, data, _nullContext, j)
                 Next j
             End If
         Next i
 
         ' NUMERIC VARIABLES
 
-        NumData = CInt(GetNextChunk())
-        For i = 1 To NumData
-            AppliesTo = GetNextChunk()
-            VarUBound = CInt(GetNextChunk())
+        numData = CInt(GetNextChunk())
+        For i = 1 To numData
+            appliesTo = GetNextChunk()
+            varUbound = CInt(GetNextChunk())
 
-            If VarUBound = 0 Then
+            If varUbound = 0 Then
                 data = GetNextChunk()
-                SetNumericVariableContents(AppliesTo, Val(data), _nullContext)
+                SetNumericVariableContents(appliesTo, Val(data), _nullContext)
             Else
-                For j = 0 To VarUBound
+                For j = 0 To varUbound
                     data = GetNextChunk()
-                    SetNumericVariableContents(AppliesTo, Val(data), _nullContext, j)
+                    SetNumericVariableContents(appliesTo, Val(data), _nullContext, j)
                 Next j
             End If
         Next i
@@ -6419,12 +6406,12 @@ Public Class LegacyGame
         _gameIsRestoring = False
     End Sub
 
-    Private Sub SetBackground(Colour As String)
-        _player.SetBackground("#" + GetHTMLColour(Colour, "white"))
+    Private Sub SetBackground(col As String)
+        _player.SetBackground("#" + GetHTMLColour(col, "white"))
     End Sub
 
-    Private Sub SetForeground(Colour As String)
-        _player.SetForeground("#" + GetHTMLColour(Colour, "black"))
+    Private Sub SetForeground(col As String)
+        _player.SetForeground("#" + GetHTMLColour(col, "black"))
     End Sub
 
     Private Sub SetDefaultPlayerErrorMessages()
@@ -6468,25 +6455,22 @@ Public Class LegacyGame
         _playerErrorMessageString(PlayerError.AlreadyTaken) = "You already have that."
     End Sub
 
-    Private Sub SetFont(FontName As String)
-        If FontName = "" Then FontName = _defaultFontName
-        _player.SetFont(FontName)
+    Private Sub SetFont(name As String)
+        If name = "" Then name = _defaultFontName
+        _player.SetFont(name)
     End Sub
 
-    Private Sub SetFontSize(FontSize As Double)
-        If FontSize = 0 Then FontSize = _defaultFontSize
-        _player.SetFontSize(CStr(FontSize))
+    Private Sub SetFontSize(size As Double)
+        If size = 0 Then size = _defaultFontSize
+        _player.SetFontSize(CStr(size))
     End Sub
 
-    Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, ctx As Context, Optional ArrayIndex As Integer = 0)
-        Dim bNumExists As Boolean
-        Dim iNumNumber As Integer
-        Dim OnChangeScript As String
-        Dim i As Integer
-        bNumExists = False
+    Private Sub SetNumericVariableContents(name As String, content As Double, ctx As Context, Optional arrayIndex As Integer = 0)
+        Dim numNumber As Integer
+        Dim exists = False
 
-        If IsNumeric(NumName) Then
-            LogASLError("Illegal numeric variable name '" & NumName & "' - check you didn't put % around the variable name in the ASL code", LogType.WarningError)
+        If IsNumeric(name) Then
+            LogASLError("Illegal numeric variable name '" & name & "' - check you didn't put % around the variable name in the ASL code", LogType.WarningError)
             Exit Sub
         End If
 
@@ -6495,119 +6479,103 @@ Public Class LegacyGame
 
         If _numberNumericVariables > 0 Then
             For i = 1 To _numberNumericVariables
-                If LCase(_numericVariable(i).VariableName) = LCase(NumName) Then
-                    iNumNumber = i
-                    bNumExists = True
-                    i = _numberNumericVariables
+                If LCase(_numericVariable(i).VariableName) = LCase(name) Then
+                    numNumber = i
+                    exists = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If bNumExists = False Then
+        If exists = False Then
             _numberNumericVariables = _numberNumericVariables + 1
-            iNumNumber = _numberNumericVariables
-            ReDim Preserve _numericVariable(iNumNumber)
-            _numericVariable(iNumNumber) = New VariableType
-            _numericVariable(iNumNumber).VariableUBound = ArrayIndex
+            numNumber = _numberNumericVariables
+            ReDim Preserve _numericVariable(numNumber)
+            _numericVariable(numNumber) = New VariableType
+            _numericVariable(numNumber).VariableUBound = arrayIndex
         End If
 
-        If ArrayIndex > _numericVariable(iNumNumber).VariableUBound Then
-            ReDim Preserve _numericVariable(iNumNumber).VariableContents(ArrayIndex)
-            _numericVariable(iNumNumber).VariableUBound = ArrayIndex
+        If arrayIndex > _numericVariable(numNumber).VariableUBound Then
+            ReDim Preserve _numericVariable(numNumber).VariableContents(arrayIndex)
+            _numericVariable(numNumber).VariableUBound = arrayIndex
         End If
 
         ' Now, set the contents
-        _numericVariable(iNumNumber).VariableName = NumName
-        ReDim Preserve _numericVariable(iNumNumber).VariableContents(_numericVariable(iNumNumber).VariableUBound)
-        _numericVariable(iNumNumber).VariableContents(ArrayIndex) = CStr(NumContent)
+        _numericVariable(numNumber).VariableName = name
+        ReDim Preserve _numericVariable(numNumber).VariableContents(_numericVariable(numNumber).VariableUBound)
+        _numericVariable(numNumber).VariableContents(arrayIndex) = CStr(content)
 
-        If _numericVariable(iNumNumber).OnChangeScript <> "" And Not _gameIsRestoring Then
-            OnChangeScript = _numericVariable(iNumNumber).OnChangeScript
-            ExecuteScript(OnChangeScript, ctx)
+        If _numericVariable(numNumber).OnChangeScript <> "" And Not _gameIsRestoring Then
+            Dim script = _numericVariable(numNumber).OnChangeScript
+            ExecuteScript(script, ctx)
         End If
 
-        If _numericVariable(iNumNumber).DisplayString <> "" Then
+        If _numericVariable(numNumber).DisplayString <> "" Then
             UpdateStatusVars(ctx)
         End If
-
     End Sub
 
-    Private Sub SetOpenClose(ObjectName As String, DoOpen As Boolean, ctx As Context)
-        Dim ObjID As Integer
-        Dim CommandName As String
+    Private Sub SetOpenClose(name As String, open As Boolean, ctx As Context)
+        Dim cmd As String
 
-        If DoOpen Then
-            CommandName = "open"
+        If open Then
+            cmd = "open"
         Else
-            CommandName = "close"
+            cmd = "close"
         End If
 
-        ObjID = GetObjectIdNoAlias(ObjectName)
-        If ObjID = 0 Then
-            LogASLError("Invalid object name specified in '" & CommandName & " <" & ObjectName & ">", LogType.WarningError)
+        Dim id = GetObjectIdNoAlias(name)
+        If id = 0 Then
+            LogASLError("Invalid object name specified in '" & cmd & " <" & name & ">", LogType.WarningError)
             Exit Sub
         End If
 
-        DoOpenClose(ObjID, DoOpen, False, ctx)
-
+        DoOpenClose(id, open, False, ctx)
     End Sub
 
-    Private Sub SetTimerState(TimerName As String, TimerState As Boolean)
-        Dim FoundTimer As Boolean
-        Dim i As Integer
-
+    Private Sub SetTimerState(name As String, state As Boolean)
         For i = 1 To _numberTimers
-            If LCase(TimerName) = LCase(_timers(i).TimerName) Then
-                FoundTimer = True
-                _timers(i).TimerActive = TimerState
+            If LCase(name) = LCase(_timers(i).TimerName) Then
+                _timers(i).TimerActive = state
                 _timers(i).BypassThisTurn = True     ' don't trigger timer during the turn it was first enabled
-                i = _numberTimers
+                Return
             End If
         Next i
 
-        If Not FoundTimer Then
-            LogASLError("No such timer '" & TimerName & "'", LogType.WarningError)
-            Exit Sub
-        End If
+        LogASLError("No such timer '" & name & "'", LogType.WarningError)
     End Sub
 
-    Private Function SetUnknownVariableType(VariableData As String, ctx As Context) As SetResult
-        Dim SCP As Integer
-        Dim VariableName As String
-        Dim VariableContents As String
-        Dim i As Integer
-
-        SCP = InStr(VariableData, ";")
-        If SCP = 0 Then
+    Private Function SetUnknownVariableType(variableData As String, ctx As Context) As SetResult
+        Dim scp = InStr(variableData, ";")
+        If scp = 0 Then
             Return SetResult.Error
         End If
 
-        VariableName = Trim(Left(VariableData, SCP - 1))
-        Dim BeginPos As Integer
-        If InStr(VariableName, "[") <> 0 And InStr(VariableName, "]") <> 0 Then
-            BeginPos = InStr(VariableName, "[")
-            VariableName = Left(VariableName, BeginPos - 1)
+        Dim name = Trim(Left(variableData, scp - 1))
+        If InStr(name, "[") <> 0 And InStr(name, "]") <> 0 Then
+            Dim pos = InStr(name, "[")
+            name = Left(name, pos - 1)
         End If
 
-        VariableContents = Trim(Mid(VariableData, SCP + 1))
+        Dim contents = Trim(Mid(variableData, scp + 1))
 
         For i = 1 To _numberStringVariables
-            If LCase(_stringVariable(i).VariableName) = LCase(VariableName) Then
-                ExecSetString(VariableData, ctx)
+            If LCase(_stringVariable(i).VariableName) = LCase(name) Then
+                ExecSetString(variableData, ctx)
                 Return SetResult.Found
             End If
         Next i
 
         For i = 1 To _numberNumericVariables
-            If LCase(_numericVariable(i).VariableName) = LCase(VariableName) Then
-                ExecSetVar(VariableData, ctx)
+            If LCase(_numericVariable(i).VariableName) = LCase(name) Then
+                ExecSetVar(variableData, ctx)
                 Return SetResult.Found
             End If
         Next i
 
         For i = 1 To _numCollectables
-            If LCase(_collectables(i).Name) = LCase(VariableName) Then
-                ExecuteSetCollectable(VariableData, ctx)
+            If LCase(_collectables(i).Name) = LCase(name) Then
+                ExecuteSetCollectable(variableData, ctx)
                 Return SetResult.Found
             End If
         Next i
