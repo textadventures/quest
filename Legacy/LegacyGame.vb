@@ -2335,7 +2335,7 @@ Public Class LegacyGame
                 Exit Sub
             End If
 
-            parentId = GetObjectIDNoAlias(GetObjectProperty("parent", childId, False, True))
+            parentId = GetObjectIdNoAlias(GetObjectProperty("parent", childId, False, True))
         End If
 
         ' Check if parent is a container
@@ -2461,14 +2461,14 @@ Public Class LegacyGame
             childName = LCase(Trim(parameter))
         End If
 
-        childId = GetObjectIDNoAlias(childName)
+        childId = GetObjectIdNoAlias(childName)
         If childId = 0 Then
             LogASLError("Invalid child object name specified in '" & commandName & " <" & parameter & ">", LogType.WarningError)
             Exit Sub
         End If
 
         If scp <> 0 Then
-            parentId = GetObjectIDNoAlias(parentName)
+            parentId = GetObjectIdNoAlias(parentName)
             If parentId = 0 Then
                 LogASLError("Invalid parent object name specified in '" & commandName & " <" & parameter & ">", LogType.WarningError)
                 Exit Sub
@@ -3720,7 +3720,7 @@ Public Class LegacyGame
             Exit Sub
         Else
             Dim objectToClone = Trim(Left(cloneString, SC - 1))
-            id = GetObjectIDNoAlias(objectToClone)
+            id = GetObjectIdNoAlias(objectToClone)
 
             Dim SC2 = InStr(SC + 1, cloneString, ";")
             If SC2 = 0 Then
@@ -4623,7 +4623,7 @@ Public Class LegacyGame
             If IsYes(GetObjectProperty("parent", id, True, False)) Then
                 isInContainer = True
                 Dim parent = GetObjectProperty("parent", id, False, False)
-                parentId = GetObjectIDNoAlias(parent)
+                parentId = GetObjectIdNoAlias(parent)
             End If
         End If
 
@@ -5079,186 +5079,52 @@ Public Class LegacyGame
         Return result
     End Function
 
-    Private Function GetObjectActions(ActionInfo As String) As ActionType
-        Dim ActionName As String
-        Dim ActionScript As String
-        Dim EP As Integer
-
-        ActionName = LCase(GetParameter(ActionInfo, _nullContext))
-        EP = InStr(ActionInfo, ">")
-        If EP = Len(ActionInfo) Then
-            LogASLError("No script given for '" & ActionName & "' action data", LogType.WarningError)
+    Private Function GetObjectActions(actionInfo As String) As ActionType
+        Dim name = LCase(GetParameter(actionInfo, _nullContext))
+        Dim ep = InStr(actionInfo, ">")
+        If ep = Len(actionInfo) Then
+            LogASLError("No script given for '" & name & "' action data", LogType.WarningError)
             Return New ActionType
         End If
 
-        ActionScript = Trim(Mid(ActionInfo, EP + 1))
-
+        Dim script = Trim(Mid(actionInfo, ep + 1))
         Dim result As ActionType = New ActionType
-        result.ActionName = ActionName
-        result.Script = ActionScript
+        result.ActionName = name
+        result.Script = script
         Return result
     End Function
 
-    Private Function GetObjectID(ObjectName As String, ctx As Context, Optional ObjectRoom As String = "") As Integer
-        Dim CurID, i As Integer
-        Dim FoundItem As Boolean
-        FoundItem = False
+    Private Function GetObjectId(name As String, ctx As Context, Optional room As String = "") As Integer
+        Dim id As Integer
+        Dim found = False
 
-        If BeginsWith(ObjectName, "the ") Then
-            ObjectName = GetEverythingAfter(ObjectName, "the ")
+        If BeginsWith(name, "the ") Then
+            name = GetEverythingAfter(name, "the ")
         End If
 
         For i = 1 To _numberObjs
-            If (LCase(_objs(i).ObjectName) = LCase(ObjectName) Or LCase(_objs(i).ObjectName) = "the " & LCase(ObjectName)) And (LCase(_objs(i).ContainerRoom) = LCase(ObjectRoom) Or ObjectRoom = "") And _objs(i).Exists = True Then
-                CurID = i
-                FoundItem = True
-                i = _numberObjs
+            If (LCase(_objs(i).ObjectName) = LCase(name) Or LCase(_objs(i).ObjectName) = "the " & LCase(name)) And (LCase(_objs(i).ContainerRoom) = LCase(room) Or room = "") And _objs(i).Exists = True Then
+                id = i
+                found = True
+                Exit For
             End If
         Next i
 
-        If Not FoundItem And _gameAslVersion >= 280 Then
-            CurID = Disambiguate(ObjectName, ObjectRoom, ctx)
-            If CurID > 0 Then FoundItem = True
+        If Not found And _gameAslVersion >= 280 Then
+            id = Disambiguate(name, room, ctx)
+            If id > 0 Then found = True
         End If
 
-        If FoundItem Then
-            Return CurID
+        If found Then
+            Return id
         End If
 
         Return -1
     End Function
 
-    Private Function GetObjectIDNoAlias(ObjectName As String) As Integer
-        Dim i, ID As Integer
-        Dim Found As Boolean
-
-        Found = False
-
+    Private Function GetObjectIdNoAlias(name As String) As Integer
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjectName) Then
-                ID = i
-                Found = True
-                i = _numberObjs
-            End If
-        Next i
-
-        If Not Found Then
-            ID = 0
-        End If
-
-        Return ID
-    End Function
-
-    Friend Function GetObjectProperty(PropertyName As String, ObjID As Integer, Optional ReturnExistsOnly As Boolean = False, Optional LogError As Boolean = True) As String
-        Dim bFound As Boolean
-        Dim sResult As String = ""
-        Dim i As Integer
-        bFound = False
-
-        Dim o = _objs(ObjID)
-
-        For i = 1 To o.NumberProperties
-            If LCase(o.Properties(i).PropertyName) = LCase(PropertyName) Then
-                bFound = True
-                sResult = o.Properties(i).PropertyValue
-                i = o.NumberProperties
-            End If
-        Next i
-
-        If ReturnExistsOnly Then
-            If bFound Then
-                Return "yes"
-            End If
-            Return "no"
-        End If
-
-        If bFound Then
-            Return sResult
-        End If
-
-        If LogError Then
-            LogASLError("Object '" & _objs(ObjID).ObjectName & "' has no property '" & PropertyName & "'", LogType.WarningError)
-            Return "!"
-        End If
-
-        Return ""
-    End Function
-
-    Private Function GetPropertiesInType(TypeName As String, Optional bError As Boolean = True) As PropertiesActions
-        Dim Found As Boolean
-        Dim SecID As Integer
-        Dim PropertyList As New PropertiesActions
-        Dim NewProperties As PropertiesActions
-        Dim IncTypeName As String
-        Dim i, j As Integer
-        Found = False
-
-        For i = 1 To _numberSections
-            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define type") Then
-                If LCase(GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)) = LCase(TypeName) Then
-                    SecID = i
-                    i = _numberSections
-                    Found = True
-                End If
-            End If
-        Next i
-
-        If Not Found Then
-            If bError Then
-                LogASLError("No such type '" & TypeName & "'", LogType.WarningError)
-            End If
-            Return New PropertiesActions
-        End If
-
-        For i = _defineBlocks(SecID).StartLine + 1 To _defineBlocks(SecID).EndLine - 1
-            If BeginsWith(_lines(i), "type ") Then
-                IncTypeName = LCase(GetParameter(_lines(i), _nullContext))
-                NewProperties = GetPropertiesInType(IncTypeName)
-                PropertyList.Properties = PropertyList.Properties & NewProperties.Properties
-                ReDim Preserve PropertyList.Actions(PropertyList.NumberActions + NewProperties.NumberActions)
-                For j = PropertyList.NumberActions + 1 To PropertyList.NumberActions + NewProperties.NumberActions
-                    PropertyList.Actions(j) = New ActionType
-                    PropertyList.Actions(j).ActionName = NewProperties.Actions(j - PropertyList.NumberActions).ActionName
-                    PropertyList.Actions(j).Script = NewProperties.Actions(j - PropertyList.NumberActions).Script
-                Next j
-                PropertyList.NumberActions = PropertyList.NumberActions + NewProperties.NumberActions
-
-                ' Add this type name to the TypesIncluded list...
-                PropertyList.NumberTypesIncluded = PropertyList.NumberTypesIncluded + 1
-                ReDim Preserve PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded)
-                PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded) = IncTypeName
-
-                ' and add the names of the types included by it...
-
-                ReDim Preserve PropertyList.TypesIncluded(PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded)
-                For j = PropertyList.NumberTypesIncluded + 1 To PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded
-                    PropertyList.TypesIncluded(j) = NewProperties.TypesIncluded(j - PropertyList.NumberTypesIncluded)
-                Next j
-                PropertyList.NumberTypesIncluded = PropertyList.NumberTypesIncluded + NewProperties.NumberTypesIncluded
-            ElseIf BeginsWith(_lines(i), "action ") Then
-                PropertyList.NumberActions = PropertyList.NumberActions + 1
-                ReDim Preserve PropertyList.Actions(PropertyList.NumberActions)
-                PropertyList.Actions(PropertyList.NumberActions) = GetObjectActions(GetEverythingAfter(_lines(i), "action "))
-            ElseIf BeginsWith(_lines(i), "properties ") Then
-                PropertyList.Properties = PropertyList.Properties & GetParameter(_lines(i), _nullContext) & ";"
-            ElseIf Trim(_lines(i)) <> "" Then
-                PropertyList.Properties = PropertyList.Properties & _lines(i) & ";"
-            End If
-        Next i
-
-        Return PropertyList
-    End Function
-
-    Friend Function GetRoomID(RoomName As String, ctx As Context) As Integer
-        Dim ArrayIndex, i As Integer
-
-        If InStr(RoomName, "[") > 0 Then
-            ArrayIndex = GetArrayIndex(RoomName, ctx)
-            RoomName = RoomName & Trim(Str(ArrayIndex))
-        End If
-
-        For i = 1 To _numberRooms
-            If LCase(_rooms(i).RoomName) = LCase(RoomName) Then
+            If LCase(_objs(i).ObjectName) = LCase(name) Then
                 Return i
             End If
         Next i
@@ -5266,35 +5132,141 @@ Public Class LegacyGame
         Return 0
     End Function
 
-    Private Function GetTextOrScript(TextScript As String) As TextAction
-        Dim result = New TextAction
-        TextScript = Trim(TextScript)
+    Friend Function GetObjectProperty(name As String, id As Integer, Optional existsOnly As Boolean = False, Optional logError As Boolean = True) As String
+        Dim result As String = ""
+        Dim found = False
+        Dim o = _objs(id)
 
-        If Left(TextScript, 1) = "<" Then
+        For i = 1 To o.NumberProperties
+            If LCase(o.Properties(i).PropertyName) = LCase(name) Then
+                found = True
+                result = o.Properties(i).PropertyValue
+                Exit For
+            End If
+        Next i
+
+        If existsOnly Then
+            If found Then
+                Return "yes"
+            End If
+            Return "no"
+        End If
+
+        If found Then
+            Return result
+        End If
+
+        If logError Then
+            LogASLError("Object '" & _objs(id).ObjectName & "' has no property '" & name & "'", LogType.WarningError)
+            Return "!"
+        End If
+
+        Return ""
+    End Function
+
+    Private Function GetPropertiesInType(type As String, Optional err As Boolean = True) As PropertiesActions
+        Dim blockId As Integer
+        Dim propertyList As New PropertiesActions
+        Dim found = False
+
+        For i = 1 To _numberSections
+            If BeginsWith(_lines(_defineBlocks(i).StartLine), "define type") Then
+                If LCase(GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)) = LCase(type) Then
+                    blockId = i
+                    found = True
+                    Exit For
+                End If
+            End If
+        Next i
+
+        If Not found Then
+            If err Then
+                LogASLError("No such type '" & type & "'", LogType.WarningError)
+            End If
+            Return New PropertiesActions
+        End If
+
+        For i = _defineBlocks(blockId).StartLine + 1 To _defineBlocks(blockId).EndLine - 1
+            If BeginsWith(_lines(i), "type ") Then
+                Dim typeName = LCase(GetParameter(_lines(i), _nullContext))
+                Dim newProperties = GetPropertiesInType(typeName)
+                propertyList.Properties = propertyList.Properties & newProperties.Properties
+                ReDim Preserve propertyList.Actions(propertyList.NumberActions + newProperties.NumberActions)
+                For j = propertyList.NumberActions + 1 To propertyList.NumberActions + newProperties.NumberActions
+                    propertyList.Actions(j) = New ActionType
+                    propertyList.Actions(j).ActionName = newProperties.Actions(j - propertyList.NumberActions).ActionName
+                    propertyList.Actions(j).Script = newProperties.Actions(j - propertyList.NumberActions).Script
+                Next j
+                propertyList.NumberActions = propertyList.NumberActions + newProperties.NumberActions
+
+                ' Add this type name to the TypesIncluded list...
+                propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + 1
+                ReDim Preserve propertyList.TypesIncluded(propertyList.NumberTypesIncluded)
+                propertyList.TypesIncluded(propertyList.NumberTypesIncluded) = typeName
+
+                ' and add the names of the types included by it...
+
+                ReDim Preserve propertyList.TypesIncluded(propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded)
+                For j = propertyList.NumberTypesIncluded + 1 To propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded
+                    propertyList.TypesIncluded(j) = newProperties.TypesIncluded(j - propertyList.NumberTypesIncluded)
+                Next j
+                propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded
+            ElseIf BeginsWith(_lines(i), "action ") Then
+                propertyList.NumberActions = propertyList.NumberActions + 1
+                ReDim Preserve propertyList.Actions(propertyList.NumberActions)
+                propertyList.Actions(propertyList.NumberActions) = GetObjectActions(GetEverythingAfter(_lines(i), "action "))
+            ElseIf BeginsWith(_lines(i), "properties ") Then
+                propertyList.Properties = propertyList.Properties & GetParameter(_lines(i), _nullContext) & ";"
+            ElseIf Trim(_lines(i)) <> "" Then
+                propertyList.Properties = propertyList.Properties & _lines(i) & ";"
+            End If
+        Next i
+
+        Return propertyList
+    End Function
+
+    Friend Function GetRoomID(name As String, ctx As Context) As Integer
+        If InStr(name, "[") > 0 Then
+            Dim idx = GetArrayIndex(name, ctx)
+            name = name & Trim(Str(idx))
+        End If
+
+        For i = 1 To _numberRooms
+            If LCase(_rooms(i).RoomName) = LCase(name) Then
+                Return i
+            End If
+        Next i
+
+        Return 0
+    End Function
+
+    Private Function GetTextOrScript(textScript As String) As TextAction
+        Dim result = New TextAction
+        textScript = Trim(textScript)
+
+        If Left(textScript, 1) = "<" Then
             result.Type = TextActionType.Text
-            result.Data = GetParameter(TextScript, _nullContext)
+            result.Data = GetParameter(textScript, _nullContext)
         Else
             result.Type = TextActionType.Script
-            result.Data = TextScript
+            result.Data = textScript
         End If
 
         Return result
     End Function
 
-    Private Function GetThingNumber(ThingName As String, ThingRoom As String, ThingType As Thing) As Integer
+    Private Function GetThingNumber(name As String, room As String, type As Thing) As Integer
         ' Returns the number in the Chars() or _objs() array of the specified char/obj
 
-        Dim i As Integer
-
-        If ThingType = Thing.Character Then
+        If type = Thing.Character Then
             For i = 1 To _numberChars
-                If (ThingRoom <> "" And LCase(_chars(i).ObjectName) = LCase(ThingName) And LCase(_chars(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(_chars(i).ObjectName) = LCase(ThingName)) Then
+                If (room <> "" And LCase(_chars(i).ObjectName) = LCase(name) And LCase(_chars(i).ContainerRoom) = LCase(room)) Or (room = "" And LCase(_chars(i).ObjectName) = LCase(name)) Then
                     Return i
                 End If
             Next i
-        ElseIf ThingType = Thing.Object Then
+        ElseIf type = Thing.Object Then
             For i = 1 To _numberObjs
-                If (ThingRoom <> "" And LCase(_objs(i).ObjectName) = LCase(ThingName) And LCase(_objs(i).ContainerRoom) = LCase(ThingRoom)) Or (ThingRoom = "" And LCase(_objs(i).ObjectName) = LCase(ThingName)) Then
+                If (room <> "" And LCase(_objs(i).ObjectName) = LCase(name) And LCase(_objs(i).ContainerRoom) = LCase(room)) Or (room = "" And LCase(_objs(i).ObjectName) = LCase(name)) Then
                     Return i
                 End If
             Next i
@@ -5303,23 +5275,22 @@ Public Class LegacyGame
         Return -1
     End Function
 
-    Private Function GetThingBlock(ThingName As String, ThingRoom As String, ThingType As Thing) As DefineBlock
+    Private Function GetThingBlock(name As String, room As String, type As Thing) As DefineBlock
         ' Returns position where specified char/obj is defined in ASL code
 
-        Dim i As Integer
         Dim result = New DefineBlock
 
-        If ThingType = Thing.Character Then
+        If type = Thing.Character Then
             For i = 1 To _numberChars
-                If LCase(_chars(i).ObjectName) = LCase(ThingName) And LCase(_chars(i).ContainerRoom) = LCase(ThingRoom) Then
+                If LCase(_chars(i).ObjectName) = LCase(name) And LCase(_chars(i).ContainerRoom) = LCase(room) Then
                     result.StartLine = _chars(i).DefinitionSectionStart
                     result.EndLine = _chars(i).DefinitionSectionEnd
                     Return result
                 End If
             Next i
-        ElseIf ThingType = Thing.Object Then
+        ElseIf type = Thing.Object Then
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ObjectName) = LCase(ThingName) And LCase(_objs(i).ContainerRoom) = LCase(ThingRoom) Then
+                If LCase(_objs(i).ObjectName) = LCase(name) And LCase(_objs(i).ContainerRoom) = LCase(room) Then
                     result.StartLine = _objs(i).DefinitionSectionStart
                     result.EndLine = _objs(i).DefinitionSectionEnd
                     Return result
@@ -5333,183 +5304,177 @@ Public Class LegacyGame
     End Function
 
     Private Function MakeRestoreData() As String
-        Dim FileData As New System.Text.StringBuilder
-        Dim ObjectData(0) As ChangeType
-        Dim RoomData(0) As ChangeType
-        Dim NumObjectData As Integer
-        Dim NumRoomData As Integer
-        Dim i As Integer
-        Dim j As Integer
-        Dim ObjExists As String
-        Dim ObjVisible As String
-        Dim sAppliesTo As String
-        Dim sChangeData As String
-        Dim StartPoint As Integer
+        Dim data As New System.Text.StringBuilder
+        Dim objectData(0) As ChangeType
+        Dim roomData(0) As ChangeType
+        Dim numObjectData As Integer
+        Dim numRoomData As Integer
 
         ' <<< FILE HEADER DATA >>>
 
-        FileData.Append("QUEST300" & Chr(0) & GetOriginalFilenameForQSG() & Chr(0))
+        data.Append("QUEST300" & Chr(0) & GetOriginalFilenameForQSG() & Chr(0))
 
         ' The start point for encrypted data is after the filename
-        StartPoint = FileData.Length + 1
+        Dim start = data.Length + 1
 
-        FileData.Append(_currentRoom & Chr(0))
+        data.Append(_currentRoom & Chr(0))
 
         ' Organise Change Log
 
         For i = 1 To _gameChangeData.NumberChanges
             If BeginsWith(_gameChangeData.ChangeData(i).AppliesTo, "object ") Then
-                NumObjectData = NumObjectData + 1
-                ReDim Preserve ObjectData(NumObjectData)
-                ObjectData(NumObjectData) = New ChangeType
-                ObjectData(NumObjectData) = _gameChangeData.ChangeData(i)
+                numObjectData = numObjectData + 1
+                ReDim Preserve objectData(numObjectData)
+                objectData(numObjectData) = New ChangeType
+                objectData(numObjectData) = _gameChangeData.ChangeData(i)
             ElseIf BeginsWith(_gameChangeData.ChangeData(i).AppliesTo, "room ") Then
-                NumRoomData = NumRoomData + 1
-                ReDim Preserve RoomData(NumRoomData)
-                RoomData(NumRoomData) = New ChangeType
-                RoomData(NumRoomData) = _gameChangeData.ChangeData(i)
+                numRoomData = numRoomData + 1
+                ReDim Preserve roomData(numRoomData)
+                roomData(numRoomData) = New ChangeType
+                roomData(numRoomData) = _gameChangeData.ChangeData(i)
             End If
         Next i
 
         ' <<< OBJECT CREATE/CHANGE DATA >>>
 
-        FileData.Append(Trim(Str(NumObjectData + _changeLogObjects.Changes.Count)) & Chr(0))
+        data.Append(Trim(Str(numObjectData + _changeLogObjects.Changes.Count)) & Chr(0))
 
-        For i = 1 To NumObjectData
-            FileData.Append(GetEverythingAfter(ObjectData(i).AppliesTo, "object ") & Chr(0) & ObjectData(i).Change & Chr(0))
+        For i = 1 To numObjectData
+            data.Append(GetEverythingAfter(objectData(i).AppliesTo, "object ") & Chr(0) & objectData(i).Change & Chr(0))
         Next i
 
         For Each key As String In _changeLogObjects.Changes.Keys
-            sAppliesTo = Split(key, "#")(0)
-            sChangeData = _changeLogObjects.Changes.Item(key)
+            Dim appliesTo = Split(key, "#")(0)
+            Dim changeData = _changeLogObjects.Changes.Item(key)
 
-            FileData.Append(sAppliesTo & Chr(0) & sChangeData & Chr(0))
+            data.Append(appliesTo & Chr(0) & changeData & Chr(0))
         Next
 
         ' <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
 
-        FileData.Append(Trim(Str(_numberObjs)) & Chr(0))
+        data.Append(Trim(Str(_numberObjs)) & Chr(0))
 
         For i = 1 To _numberObjs
+            Dim exists As String
+            Dim visible As String
+
             If _objs(i).Exists Then
-                ObjExists = Chr(1)
+                exists = Chr(1)
             Else
-                ObjExists = Chr(0)
+                exists = Chr(0)
             End If
 
             If _objs(i).Visible Then
-                ObjVisible = Chr(1)
+                visible = Chr(1)
             Else
-                ObjVisible = Chr(0)
+                visible = Chr(0)
             End If
 
-            FileData.Append(_objs(i).ObjectName & Chr(0) & ObjExists & ObjVisible & _objs(i).ContainerRoom & Chr(0))
+            data.Append(_objs(i).ObjectName & Chr(0) & exists & visible & _objs(i).ContainerRoom & Chr(0))
         Next i
 
         ' <<< ROOM CREATE/CHANGE DATA >>>
 
-        FileData.Append(Trim(Str(NumRoomData)) & Chr(0))
+        data.Append(Trim(Str(numRoomData)) & Chr(0))
 
-        For i = 1 To NumRoomData
-            FileData.Append(GetEverythingAfter(RoomData(i).AppliesTo, "room ") & Chr(0) & RoomData(i).Change & Chr(0))
+        For i = 1 To numRoomData
+            data.Append(GetEverythingAfter(roomData(i).AppliesTo, "room ") & Chr(0) & roomData(i).Change & Chr(0))
         Next i
 
         ' <<< TIMER STATE DATA >>>
 
-        FileData.Append(Trim(Str(_numberTimers)) & Chr(0))
+        data.Append(Trim(Str(_numberTimers)) & Chr(0))
 
         For i = 1 To _numberTimers
             Dim t = _timers(i)
-            FileData.Append(t.TimerName & Chr(0))
+            data.Append(t.TimerName & Chr(0))
 
             If t.TimerActive Then
-                FileData.Append(Chr(1))
+                data.Append(Chr(1))
             Else
-                FileData.Append(Chr(0))
+                data.Append(Chr(0))
             End If
 
-            FileData.Append(Trim(Str(t.TimerInterval)) & Chr(0))
-            FileData.Append(Trim(Str(t.TimerTicks)) & Chr(0))
+            data.Append(Trim(Str(t.TimerInterval)) & Chr(0))
+            data.Append(Trim(Str(t.TimerTicks)) & Chr(0))
         Next i
 
         ' <<< STRING VARIABLE DATA >>>
 
-        FileData.Append(Trim(Str(_numberStringVariables)) & Chr(0))
+        data.Append(Trim(Str(_numberStringVariables)) & Chr(0))
 
         For i = 1 To _numberStringVariables
             Dim s = _stringVariable(i)
-            FileData.Append(s.VariableName & Chr(0) & Trim(Str(s.VariableUBound)) & Chr(0))
+            data.Append(s.VariableName & Chr(0) & Trim(Str(s.VariableUBound)) & Chr(0))
 
             For j = 0 To s.VariableUBound
-                FileData.Append(s.VariableContents(j) & Chr(0))
+                data.Append(s.VariableContents(j) & Chr(0))
             Next j
         Next i
 
         ' <<< NUMERIC VARIABLE DATA >>>
 
-        FileData.Append(Trim(Str(_numberNumericVariables)) & Chr(0))
+        data.Append(Trim(Str(_numberNumericVariables)) & Chr(0))
 
         For i = 1 To _numberNumericVariables
             Dim n = _numericVariable(i)
-            FileData.Append(n.VariableName & Chr(0) & Trim(Str(n.VariableUBound)) & Chr(0))
+            data.Append(n.VariableName & Chr(0) & Trim(Str(n.VariableUBound)) & Chr(0))
 
             For j = 0 To n.VariableUBound
-                FileData.Append(n.VariableContents(j) & Chr(0))
+                data.Append(n.VariableContents(j) & Chr(0))
             Next j
         Next i
 
         ' Now encrypt data
-        Dim sFileData As String
-        Dim NewFileData As New System.Text.StringBuilder
+        Dim dataString As String
+        Dim newFileData As New System.Text.StringBuilder
 
-        sFileData = FileData.ToString()
+        dataString = data.ToString()
 
-        NewFileData.Append(Left(sFileData, StartPoint - 1))
+        newFileData.Append(Left(dataString, start - 1))
 
-        For i = StartPoint To Len(sFileData)
-            NewFileData.Append(Chr(255 - Asc(Mid(sFileData, i, 1))))
+        For i = start To Len(dataString)
+            newFileData.Append(Chr(255 - Asc(Mid(dataString, i, 1))))
         Next i
 
-        Return NewFileData.ToString()
+        Return newFileData.ToString()
     End Function
 
-    Private Sub MoveThing(sThingName As String, sThingRoom As String, iThingType As Thing, ctx As Context)
-        Dim i, iThingNum, ArrayIndex As Integer
-        Dim OldRoom As String = ""
+    Private Sub MoveThing(name As String, room As String, type As Thing, ctx As Context)
+        Dim oldRoom As String = ""
 
-        iThingNum = GetThingNumber(sThingName, "", iThingType)
+        Dim id = GetThingNumber(name, "", type)
 
-        If InStr(sThingRoom, "[") > 0 Then
-            ArrayIndex = GetArrayIndex(sThingRoom, ctx)
-            sThingRoom = sThingRoom & Trim(Str(ArrayIndex))
+        If InStr(room, "[") > 0 Then
+            Dim idx = GetArrayIndex(room, ctx)
+            room = room & Trim(Str(idx))
         End If
 
-        If iThingType = Thing.Character Then
-            _chars(iThingNum).ContainerRoom = sThingRoom
-        ElseIf iThingType = Thing.Object Then
-            OldRoom = _objs(iThingNum).ContainerRoom
-            _objs(iThingNum).ContainerRoom = sThingRoom
+        If type = Thing.Character Then
+            _chars(id).ContainerRoom = room
+        ElseIf type = Thing.Object Then
+            oldRoom = _objs(id).ContainerRoom
+            _objs(id).ContainerRoom = room
         End If
 
         If _gameAslVersion >= 391 Then
             ' If this object contains other objects, move them too
             For i = 1 To _numberObjs
-                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(sThingName) Then
-                    MoveThing(_objs(i).ObjectName, sThingRoom, iThingType, ctx)
+                If LCase(GetObjectProperty("parent", i, False, False)) = LCase(name) Then
+                    MoveThing(_objs(i).ObjectName, room, type, ctx)
                 End If
             Next i
         End If
 
         UpdateObjectList(ctx)
 
-        If BeginsWith(LCase(sThingRoom), "inventory") Or BeginsWith(LCase(OldRoom), "inventory") Then
+        If BeginsWith(LCase(room), "inventory") Or BeginsWith(LCase(oldRoom), "inventory") Then
             UpdateItems(ctx)
         End If
-
     End Sub
 
-    Public Sub Pause(Duration As Integer)
-        _player.DoPause(Duration)
+    Public Sub Pause(duration As Integer)
+        _player.DoPause(duration)
         ChangeState(State.Waiting)
 
         SyncLock _waitLock
@@ -5517,141 +5482,128 @@ Public Class LegacyGame
         End SyncLock
     End Sub
 
-    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As ConvertType, ctx As Context) As String
+    Private Function ConvertParameter(parameter As String, convertChar As String, action As ConvertType, ctx As Context) As String
         ' Returns a string with functions, string and
         ' numeric variables executed or converted as
         ' appropriate, read for display/etc.
 
-        Dim iCurStringPos As Integer
-        Dim iVarPos As Integer
-        Dim NewParam As String = ""
-        Dim bFinishLoop As Boolean
-        Dim sCurStringBit As String
-        Dim sVarName As String
-        Dim iNextPos As Integer
+        Dim result As String = ""
+        Dim pos = 1
+        Dim finished = False
 
-        iCurStringPos = 1
-        bFinishLoop = False
         Do
-            iVarPos = InStr(iCurStringPos, sParameter, sConvertChar)
-            If iVarPos = 0 Then
-                iVarPos = Len(sParameter) + 1
-                bFinishLoop = True
+            Dim varPos = InStr(pos, parameter, convertChar)
+            If varPos = 0 Then
+                varPos = Len(parameter) + 1
+                finished = True
             End If
 
-            sCurStringBit = Mid(sParameter, iCurStringPos, iVarPos - iCurStringPos)
-            NewParam = NewParam & sCurStringBit
+            Dim currentBit = Mid(parameter, pos, varPos - pos)
+            result = result & currentBit
 
-            If bFinishLoop = False Then
-                iNextPos = InStr(iVarPos + 1, sParameter, sConvertChar)
+            If finished = False Then
+                Dim nextPos = InStr(varPos + 1, parameter, convertChar)
 
-                If iNextPos = 0 Then
-                    LogASLError("Line parameter <" & sParameter & "> has missing " & sConvertChar, LogType.WarningError)
+                If nextPos = 0 Then
+                    LogASLError("Line parameter <" & parameter & "> has missing " & convertChar, LogType.WarningError)
                     Return "<ERROR>"
                 End If
 
-                sVarName = Mid(sParameter, iVarPos + 1, (iNextPos - 1) - iVarPos)
+                Dim varName = Mid(parameter, varPos + 1, (nextPos - 1) - varPos)
 
-                If sVarName = "" Then
-                    NewParam = NewParam & sConvertChar
+                If varName = "" Then
+                    result = result & convertChar
                 Else
 
-                    If ConvertAction = ConvertType.Strings Then
-                        NewParam = NewParam & GetStringContents(sVarName, ctx)
-                    ElseIf ConvertAction = ConvertType.Functions Then
-                        sVarName = EvaluateInlineExpressions(sVarName)
-                        NewParam = NewParam & DoFunction(sVarName, ctx)
-                    ElseIf ConvertAction = ConvertType.Numeric Then
-                        NewParam = NewParam & Trim(Str(GetNumericContents(sVarName, ctx)))
-                    ElseIf ConvertAction = ConvertType.Collectables Then
-                        NewParam = NewParam & Trim(Str(GetCollectableAmount(sVarName)))
+                    If action = ConvertType.Strings Then
+                        result = result & GetStringContents(varName, ctx)
+                    ElseIf action = ConvertType.Functions Then
+                        varName = EvaluateInlineExpressions(varName)
+                        result = result & DoFunction(varName, ctx)
+                    ElseIf action = ConvertType.Numeric Then
+                        result = result & Trim(Str(GetNumericContents(varName, ctx)))
+                    ElseIf action = ConvertType.Collectables Then
+                        result = result & Trim(Str(GetCollectableAmount(varName)))
                     End If
                 End If
 
-                iCurStringPos = iNextPos + 1
+                pos = nextPos + 1
             End If
-        Loop Until bFinishLoop
+        Loop Until finished
 
-        Return NewParam
+        Return result
     End Function
 
-    Private Function DoFunction(FunctionData As String, ctx As Context) As String
-        Dim FunctionName, FunctionParameter As String
-        Dim sIntFuncResult As String = ""
-        Dim bIntFuncExecuted As Boolean
-        Dim ParameterData As String
-        Dim ParamPos, EndParamPos As Integer
-        Dim SCP, i As Integer
+    Private Function DoFunction(data As String, ctx As Context) As String
+        Dim name, parameter As String
+        Dim intFuncResult As String = ""
+        Dim intFuncExecuted = False
+        Dim paramPos = InStr(data, "(")
 
-        bIntFuncExecuted = False
-
-        ParamPos = InStr(FunctionData, "(")
-        If ParamPos <> 0 Then
-            FunctionName = Trim(Left(FunctionData, ParamPos - 1))
-            EndParamPos = InStrRev(FunctionData, ")")
-            If EndParamPos = 0 Then
-                LogASLError("Expected ) in $" & FunctionData & "$", LogType.WarningError)
+        If paramPos <> 0 Then
+            name = Trim(Left(data, paramPos - 1))
+            Dim endParamPos = InStrRev(data, ")")
+            If endParamPos = 0 Then
+                LogASLError("Expected ) in $" & data & "$", LogType.WarningError)
                 Return ""
             End If
-            FunctionParameter = Mid(FunctionData, ParamPos + 1, (EndParamPos - ParamPos) - 1)
+            parameter = Mid(data, paramPos + 1, (endParamPos - paramPos) - 1)
         Else
-            FunctionName = FunctionData
-            FunctionParameter = ""
+            name = data
+            parameter = ""
         End If
 
-        Dim procblock As DefineBlock
-        procblock = DefineBlockParam("function", FunctionName)
+        Dim block As DefineBlock
+        block = DefineBlockParam("function", name)
 
-        If procblock.StartLine = 0 And procblock.EndLine = 0 Then
+        If block.StartLine = 0 And block.EndLine = 0 Then
             'Function does not exist; try an internal function.
-            sIntFuncResult = DoInternalFunction(FunctionName, FunctionParameter, ctx)
-            If sIntFuncResult = "__NOTDEFINED" Then
-                LogASLError("No such function '" & FunctionName & "'", LogType.WarningError)
+            intFuncResult = DoInternalFunction(name, parameter, ctx)
+            If intFuncResult = "__NOTDEFINED" Then
+                LogASLError("No such function '" & name & "'", LogType.WarningError)
                 Return "[ERROR]"
             Else
-                bIntFuncExecuted = True
+                intFuncExecuted = True
             End If
         End If
 
-        Dim iNumParameters, iCurPos As Integer
-        If bIntFuncExecuted Then
-            Return sIntFuncResult
+        If intFuncExecuted Then
+            Return intFuncResult
         Else
-            Dim NewThread As Context = CopyContext(ctx)
+            Dim newCtx As Context = CopyContext(ctx)
+            Dim numParameters = 0
+            Dim pos = 1
 
-            iNumParameters = 0 : iCurPos = 1
-
-            If FunctionParameter <> "" Then
-                FunctionParameter = FunctionParameter & ";"
+            If parameter <> "" Then
+                parameter = parameter & ";"
                 Do
-                    iNumParameters = iNumParameters + 1
-                    SCP = InStr(iCurPos, FunctionParameter, ";")
+                    numParameters = numParameters + 1
+                    Dim scp = InStr(pos, parameter, ";")
 
-                    ParameterData = Trim(Mid(FunctionParameter, iCurPos, SCP - iCurPos))
-                    SetStringContents("quest.function.parameter." & Trim(Str(iNumParameters)), ParameterData, ctx)
+                    Dim parameterData = Trim(Mid(parameter, pos, scp - pos))
+                    SetStringContents("quest.function.parameter." & Trim(Str(numParameters)), parameterData, ctx)
 
-                    NewThread.NumParameters = iNumParameters
-                    ReDim Preserve NewThread.Parameters(iNumParameters)
-                    NewThread.Parameters(iNumParameters) = ParameterData
+                    newCtx.NumParameters = numParameters
+                    ReDim Preserve newCtx.Parameters(numParameters)
+                    newCtx.Parameters(numParameters) = parameterData
 
-                    iCurPos = SCP + 1
-                Loop Until iCurPos >= Len(FunctionParameter)
-                SetStringContents("quest.function.numparameters", Trim(Str(iNumParameters)), ctx)
+                    pos = scp + 1
+                Loop Until pos >= Len(parameter)
+                SetStringContents("quest.function.numparameters", Trim(Str(numParameters)), ctx)
             Else
                 SetStringContents("quest.function.numparameters", "0", ctx)
-                NewThread.NumParameters = 0
+                newCtx.NumParameters = 0
             End If
 
             Dim result As String = ""
 
-            For i = procblock.StartLine + 1 To procblock.EndLine - 1
-                ExecuteScript(_lines(i), NewThread)
-                result = NewThread.FunctionReturnValue
+            For i = block.StartLine + 1 To block.EndLine - 1
+                ExecuteScript(_lines(i), newCtx)
+                result = newCtx.FunctionReturnValue
             Next i
 
             Return result
         End If
-
     End Function
 
     Private Function DoInternalFunction(FunctionName As String, FunctionParameter As String, ctx As Context) As String
@@ -5692,12 +5644,12 @@ Public Class LegacyGame
         Dim Param2 As String
         Dim oExit As RoomExit
         If FunctionName = "displayname" Then
-            ObjID = GetObjectID(Parameter(1), ctx)
+            ObjID = GetObjectId(Parameter(1), ctx)
             If ObjID = -1 Then
                 LogASLError("Object '" & Parameter(1) & "' does not exist", LogType.WarningError)
                 Return "!"
             Else
-                Return _objs(GetObjectID(Parameter(1), ctx)).ObjectAlias
+                Return _objs(GetObjectId(Parameter(1), ctx)).ObjectAlias
             End If
         ElseIf FunctionName = "numberparameters" Then
             Return Trim(Str(ctx.NumParameters))
@@ -6409,7 +6361,7 @@ Public Class LegacyGame
             AppliesTo = GetNextChunk()
             data = GetFileDataChars(2)
 
-            ObjID = GetObjectIDNoAlias(AppliesTo)
+            ObjID = GetObjectIdNoAlias(AppliesTo)
 
             If Left(data, 1) = Chr(1) Then
                 _objs(ObjID).Exists = True
@@ -6448,9 +6400,9 @@ Public Class LegacyGame
         For i = 1 To NumStoredData
             Dim d = StoredData(i)
             If BeginsWith(d.Change, "properties ") Then
-                AddToObjectProperties(GetEverythingAfter(d.Change, "properties "), GetObjectIDNoAlias(d.AppliesTo), _nullContext)
+                AddToObjectProperties(GetEverythingAfter(d.Change, "properties "), GetObjectIdNoAlias(d.AppliesTo), _nullContext)
             ElseIf BeginsWith(d.Change, "action ") Then
-                AddToObjectActions(GetEverythingAfter(d.Change, "action "), GetObjectIDNoAlias(d.AppliesTo), _nullContext)
+                AddToObjectActions(GetEverythingAfter(d.Change, "action "), GetObjectIdNoAlias(d.AppliesTo), _nullContext)
             End If
         Next i
 
@@ -6648,7 +6600,7 @@ Public Class LegacyGame
             CommandName = "close"
         End If
 
-        ObjID = GetObjectIDNoAlias(ObjectName)
+        ObjID = GetObjectIdNoAlias(ObjectName)
         If ObjID = 0 Then
             LogASLError("Invalid object name specified in '" & CommandName & " <" & ObjectName & ">", LogType.WarningError)
             Exit Sub
@@ -8118,7 +8070,7 @@ Public Class LegacyGame
         Dim G, GL As String
 
         If _gameAslVersion >= 281 Then
-            G = _objs(GetObjectIDNoAlias(CharacterName)).Gender
+            G = _objs(GetObjectIdNoAlias(CharacterName)).Gender
         Else
             GL = RetrLine("character", CharacterName, "gender", ctx)
 
@@ -8162,7 +8114,7 @@ Public Class LegacyGame
                 End If
             End If
 
-            Return GetObjectProperty(PropName, GetObjectIDNoAlias(ObjName))
+            Return GetObjectProperty(PropName, GetObjectIdNoAlias(ObjName))
         End If
         If Left(StringName, 1) = "@" Then
             ReturnAlias = True
@@ -8212,7 +8164,7 @@ Public Class LegacyGame
         If Not ReturnAlias Then
             Return _stringVariable(iStringNumber).VariableContents(ArrayIndex)
         Else
-            Return _objs(GetObjectIDNoAlias(_stringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
+            Return _objs(GetObjectIdNoAlias(_stringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
         End If
     End Function
 
@@ -12029,7 +11981,7 @@ Public Class LegacyGame
 
         If OnlyParent <> "" Then
             OnlyParent = LCase(OnlyParent)
-            ParentID = GetObjectIDNoAlias(OnlyParent)
+            ParentID = GetObjectIdNoAlias(OnlyParent)
 
             ParentIsOpen = IsYes(GetObjectProperty("opened", ParentID, True, False))
             ParentIsTransparent = IsYes(GetObjectProperty("transparent", ParentID, True, False))
@@ -12045,7 +11997,7 @@ Public Class LegacyGame
 
                 ' Check if that parent is open, or transparent
                 If OnlyParent = "" Then
-                    ParentID = GetObjectIDNoAlias(Parent)
+                    ParentID = GetObjectIdNoAlias(Parent)
                     ParentIsOpen = IsYes(GetObjectProperty("opened", ParentID, True, False))
                     ParentIsTransparent = IsYes(GetObjectProperty("transparent", ParentID, True, False))
                     ParentIsSeen = IsYes(GetObjectProperty("seen", ParentID, True, False))
@@ -12085,7 +12037,7 @@ Public Class LegacyGame
             ' Object is in a container...
 
             Parent = GetObjectProperty("parent", ObjID, False, False)
-            ParentID = GetObjectIDNoAlias(Parent)
+            ParentID = GetObjectIdNoAlias(Parent)
 
             ' But if it's a surface then it's OK
 
