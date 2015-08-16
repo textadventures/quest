@@ -432,7 +432,7 @@ Public Class LegacyGame
     Private _gotoExits As New List(Of ListData)
     Private _textFormatter As New TextFormatter
     Private _log As New List(Of String)
-    Private _fileData As String
+    Private _casFileData As String
     Private _commandLock As Object = New Object
     Private _stateLock As Object = New Object
     Private _state As State = State.Ready
@@ -450,6 +450,8 @@ Public Class LegacyGame
     Private _gameFinished As Boolean
     Private _gameIsRestoring As Boolean
     Private _useStaticFrameForPictures As Boolean
+    Private _fileData As String
+    Private _fileDataPos As Integer
 
     Public Sub New(filename As String, originalFilename As String)
         _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
@@ -1925,7 +1927,7 @@ Public Class LegacyGame
                 _resourceFile = filename
                 _resourceOffset = endCatPos + 1
                 i = Len(fileData)
-                _fileData = fileData
+                _casFileData = fileData
             Else
 
                 curLin = ""
@@ -3291,7 +3293,7 @@ Public Class LegacyGame
 
         If Not extracted Then
             ' Extract file from cached CAS data
-            Dim fileData = Mid(_fileData, startPos, length)
+            Dim fileData = Mid(_casFileData, startPos, length)
 
             ' Write file to temp dir
             System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252))
@@ -4829,275 +4831,222 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub ExecuteDoAction(ActionData As String, ctx As Context)
-        Dim SCP As Integer
-        Dim ObjName, ActionName As String
-        Dim ObjID, i As Integer
-        Dim FoundID As Boolean
+    Private Sub ExecuteDoAction(data As String, ctx As Context)
+        Dim id As Integer
 
-        SCP = InStr(ActionData, ";")
-        If SCP = 0 Then
-            LogASLError("No action name specified in 'doaction <" & ActionData & ">'")
+        Dim scp = InStr(data, ";")
+        If scp = 0 Then
+            LogASLError("No action name specified in 'doaction <" & data & ">'")
             Exit Sub
         End If
 
-        ObjName = LCase(Trim(Left(ActionData, SCP - 1)))
-        ActionName = Trim(Mid(ActionData, SCP + 1))
-
-        FoundID = False
+        Dim objName = LCase(Trim(Left(data, scp - 1)))
+        Dim actionName = Trim(Mid(data, scp + 1))
+        Dim found = False
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = ObjName Then
-                FoundID = True
-                ObjID = i
-                i = _numberObjs
+            If LCase(_objs(i).ObjectName) = objName Then
+                found = True
+                id = i
+                Exit For
             End If
         Next i
 
-        If Not FoundID Then
-            LogASLError("No such object '" & ObjName & "'")
+        If Not found Then
+            LogASLError("No such object '" & objName & "'")
             Exit Sub
         End If
 
-        DoAction(ObjID, ActionName, ctx)
-
+        DoAction(id, actionName, ctx)
     End Sub
 
-    Private Function ExecuteIfHere(HereThing As String, ctx As Context) As Boolean
-        Dim bResult, bFound As Boolean
-        Dim i As Integer
-
-        bFound = False
-        bResult = False
-
+    Private Function ExecuteIfHere(obj As String, ctx As Context) As Boolean
         If _gameAslVersion <= 281 Then
             For i = 1 To _numberChars
                 If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists Then
-                    If LCase(HereThing) = LCase(_chars(i).ObjectName) Then
-                        bResult = True
-                        bFound = True
-                        i = _numberChars
+                    If LCase(obj) = LCase(_chars(i).ObjectName) Then
+                        Return True
                     End If
                 End If
             Next i
         End If
 
-        If Not bFound Then
-            For i = 1 To _numberObjs
-                If LCase(_objs(i).ContainerRoom) = LCase(_currentRoom) And _objs(i).Exists Then
-                    If LCase(HereThing) = LCase(_objs(i).ObjectName) Then
-                        bResult = True
-                        bFound = True
-                        i = _numberObjs
-                    End If
+        For i = 1 To _numberObjs
+            If LCase(_objs(i).ContainerRoom) = LCase(_currentRoom) And _objs(i).Exists Then
+                If LCase(obj) = LCase(_objs(i).ObjectName) Then
+                    Return True
                 End If
-            Next i
-        End If
+            End If
+        Next i
 
-        If bFound = False Then
-            bResult = False
-        End If
-
-        Return bResult
+        Return False
     End Function
 
-    Private Function ExecuteIfExists(ExistsThing As String, RealCheckOnly As Boolean) As Boolean
-        Dim bResult, bFound As Boolean
-        Dim bErrorReport As Boolean
-        Dim i As Integer
-        bErrorReport = False
+    Private Function ExecuteIfExists(obj As String, realOnly As Boolean) As Boolean
+        Dim result As Boolean
+        Dim errorReport = False
+        Dim scp As Integer
 
-        Dim SCP As Integer
-        If InStr(ExistsThing, ";") <> 0 Then
-            SCP = InStr(ExistsThing, ";")
-            If LCase(Trim(Mid(ExistsThing, SCP + 1))) = "report" Then
-                bErrorReport = True
+        If InStr(obj, ";") <> 0 Then
+            scp = InStr(obj, ";")
+            If LCase(Trim(Mid(obj, scp + 1))) = "report" Then
+                errorReport = True
             End If
 
-            ExistsThing = Left(ExistsThing, SCP - 1)
+            obj = Left(obj, scp - 1)
         End If
 
-        bFound = False
+        Dim found = False
 
         If _gameAslVersion < 281 Then
             For i = 1 To _numberChars
-                If LCase(ExistsThing) = LCase(_chars(i).ObjectName) Then
-                    If _chars(i).Exists Then
-                        bResult = True
-                    Else
-                        bResult = False
-                    End If
-
-                    bFound = True
-                    i = _numberChars
+                If LCase(obj) = LCase(_chars(i).ObjectName) Then
+                    result = _chars(i).Exists
+                    found = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If Not bFound Then
+        If Not found Then
             For i = 1 To _numberObjs
-                If LCase(ExistsThing) = LCase(_objs(i).ObjectName) Then
-                    If _objs(i).Exists Then
-                        bResult = True
-                    Else
-                        bResult = False
-                    End If
-
-                    bFound = True
-                    i = _numberObjs
+                If LCase(obj) = LCase(_objs(i).ObjectName) Then
+                    result = _objs(i).Exists
+                    found = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If bFound = False And bErrorReport Then
-            LogASLError("No such character/object '" & ExistsThing & "'.", LogType.UserError)
+        If found = False And errorReport Then
+            LogASLError("No such character/object '" & obj & "'.", LogType.UserError)
         End If
 
-        If bFound = False Then bResult = False
+        If found = False Then result = False
 
-        If RealCheckOnly Then
-            Return bFound
+        If realOnly Then
+            Return found
         End If
 
-        Return bResult
+        Return result
     End Function
 
-    Private Function ExecuteIfProperty(PropertyData As String) As Boolean
-        Dim SCP, ObjID As Integer
-        Dim ObjName As String
-        Dim PropertyName As String
-        Dim FoundObj As Boolean
-        Dim i As Integer
+    Private Function ExecuteIfProperty(data As String) As Boolean
+        Dim id As Integer
+        Dim scp = InStr(data, ";")
 
-        SCP = InStr(PropertyData, ";")
-
-        If SCP = 0 Then
-            LogASLError("No property name given in condition 'property <" & PropertyData & ">' ...", LogType.WarningError)
+        If scp = 0 Then
+            LogASLError("No property name given in condition 'property <" & data & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        ObjName = Trim(Left(PropertyData, SCP - 1))
-        PropertyName = Trim(Mid(PropertyData, SCP + 1))
-
-        FoundObj = False
+        Dim objName = Trim(Left(data, scp - 1))
+        Dim propertyName = Trim(Mid(data, scp + 1))
+        Dim found = False
 
         For i = 1 To _numberObjs
-            If LCase(_objs(i).ObjectName) = LCase(ObjName) Then
-                FoundObj = True
-                ObjID = i
-                i = _numberObjs
+            If LCase(_objs(i).ObjectName) = LCase(objName) Then
+                found = True
+                id = i
+                Exit For
             End If
         Next i
 
-        If Not FoundObj Then
-            LogASLError("No such object '" & ObjName & "' in condition 'property <" & PropertyData & ">' ...", LogType.WarningError)
+        If Not found Then
+            LogASLError("No such object '" & objName & "' in condition 'property <" & data & ">' ...", LogType.WarningError)
             Return False
         End If
 
-        Return GetObjectProperty(PropertyName, ObjID, True) = "yes"
+        Return GetObjectProperty(propertyName, id, True) = "yes"
     End Function
 
-    Private Sub ExecuteRepeat(RepeatData As String, ctx As Context)
-        Dim RepeatWhileTrue As Boolean
-        Dim RepeatScript As String = ""
-        Dim BracketPos As Integer
-        Dim Conditions As String
-        Dim FinishedLoop As Boolean
-        Dim CurPos As Integer
-        Dim AfterBracket As String
-        Dim FoundScript As Boolean
-        FoundScript = False
+    Private Sub ExecuteRepeat(data As String, ctx As Context)
+        Dim repeatWhileTrue As Boolean
+        Dim repeatScript As String = ""
+        Dim bracketPos As Integer
+        Dim afterBracket As String
+        Dim foundScript = False
 
-        If BeginsWith(RepeatData, "while ") Then
-            RepeatWhileTrue = True
-            RepeatData = GetEverythingAfter(RepeatData, "while ")
-        ElseIf BeginsWith(RepeatData, "until ") Then
-            RepeatWhileTrue = False
-            RepeatData = GetEverythingAfter(RepeatData, "until ")
+        If BeginsWith(data, "while ") Then
+            repeatWhileTrue = True
+            data = GetEverythingAfter(data, "while ")
+        ElseIf BeginsWith(data, "until ") Then
+            repeatWhileTrue = False
+            data = GetEverythingAfter(data, "until ")
         Else
-            LogASLError("Expected 'until' or 'while' in 'repeat " & ReportErrorLine(RepeatData) & "'", LogType.WarningError)
+            LogASLError("Expected 'until' or 'while' in 'repeat " & ReportErrorLine(data) & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        CurPos = 1
+        Dim pos = 1
         Do
-            BracketPos = InStr(CurPos, RepeatData, ">")
-            AfterBracket = Trim(Mid(RepeatData, BracketPos + 1))
-            If (Not BeginsWith(AfterBracket, "and ")) And (Not BeginsWith(AfterBracket, "or ")) Then
-                RepeatScript = AfterBracket
-                FoundScript = True
+            bracketPos = InStr(pos, data, ">")
+            afterBracket = Trim(Mid(data, bracketPos + 1))
+            If (Not BeginsWith(afterBracket, "and ")) And (Not BeginsWith(afterBracket, "or ")) Then
+                repeatScript = afterBracket
+                foundScript = True
             Else
-                CurPos = BracketPos + 1
+                pos = bracketPos + 1
             End If
-        Loop Until FoundScript Or AfterBracket = ""
+        Loop Until foundScript Or afterBracket = ""
 
-        Conditions = Trim(Left(RepeatData, BracketPos))
-
-        FinishedLoop = False
+        Dim conditions = Trim(Left(data, bracketPos))
+        Dim finished = False
 
         Do
-            If ExecuteConditions(Conditions, ctx) = RepeatWhileTrue Then
-                ExecuteScript(RepeatScript, ctx)
+            If ExecuteConditions(conditions, ctx) = repeatWhileTrue Then
+                ExecuteScript(repeatScript, ctx)
             Else
-                FinishedLoop = True
+                finished = True
             End If
-        Loop Until FinishedLoop Or _gameFinished
+        Loop Until finished Or _gameFinished
     End Sub
 
-    Private Sub ExecuteSetCollectable(setparam As String, ctx As Context)
-        Dim NewVal As Double
-        Dim SemiColonPos As Integer
-        Dim FoundCollectable As Boolean
-        Dim CName, TheNewVal As String
-        Dim i As Integer
-        Dim ColNum As Integer
-        Dim OP, TheNewValue As String
-
-        SemiColonPos = InStr(setparam, ";")
-        CName = Trim(Left(setparam, SemiColonPos - 1))
-        TheNewVal = Trim(Right(setparam, Len(setparam) - SemiColonPos))
-
-        FoundCollectable = False
+    Private Sub ExecuteSetCollectable(param As String, ctx As Context)
+        Dim val As Double
+        Dim id As Integer
+        Dim scp = InStr(param, ";")
+        Dim name = Trim(Left(param, scp - 1))
+        Dim newVal = Trim(Right(param, Len(param) - scp))
+        Dim found = False
 
         For i = 1 To _numCollectables
-            If _collectables(i).Name = CName Then
-                ColNum = i
-                i = _numCollectables
-                FoundCollectable = True
+            If _collectables(i).Name = name Then
+                id = i
+                found = True
+                Exit For
             End If
         Next i
 
-        If Not FoundCollectable Then
-            LogASLError("No such collectable '" & setparam & "'", LogType.WarningError)
+        If Not found Then
+            LogASLError("No such collectable '" & param & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        OP = Left(TheNewVal, 1)
-        TheNewValue = Trim(Right(TheNewVal, Len(TheNewVal) - 1))
-        If IsNumeric(TheNewValue) Then
-            NewVal = Val(TheNewValue)
+        Dim op = Left(newVal, 1)
+        Dim newValue = Trim(Right(newVal, Len(newVal) - 1))
+        If IsNumeric(newValue) Then
+            val = Conversion.Val(newValue)
         Else
-            NewVal = GetCollectableAmount(TheNewValue)
+            val = GetCollectableAmount(newValue)
         End If
 
-        If OP = "+" Then
-            _collectables(ColNum).Value = _collectables(ColNum).Value + NewVal
-        ElseIf OP = "-" Then
-            _collectables(ColNum).Value = _collectables(ColNum).Value - NewVal
-        ElseIf OP = "=" Then
-            _collectables(ColNum).Value = NewVal
+        If op = "+" Then
+            _collectables(id).Value = _collectables(id).Value + val
+        ElseIf op = "-" Then
+            _collectables(id).Value = _collectables(id).Value - val
+        ElseIf op = "=" Then
+            _collectables(id).Value = val
         End If
 
-        CheckCollectable(ColNum)
-
+        CheckCollectable(id)
         UpdateItems(ctx)
     End Sub
 
-    Private Sub ExecuteWait(WaitLine As String, ctx As Context)
-        If WaitLine <> "" Then
-            Print(GetParameter(WaitLine, ctx), ctx)
+    Private Sub ExecuteWait(waitLine As String, ctx As Context)
+        If waitLine <> "" Then
+            Print(GetParameter(waitLine, ctx), ctx)
         Else
-
             If _gameAslVersion >= 410 Then
                 PlayerErrorMessage(PlayerError.DefaultWait, ctx)
             Else
@@ -5108,30 +5057,25 @@ Public Class LegacyGame
         DoWait()
     End Sub
 
-    Private m_sFileData As String
-    Private m_lIndex As Integer
-
-    Private Sub InitFileData(FileData As String)
-        m_sFileData = FileData
-        m_lIndex = 1
+    Private Sub InitFileData(fileData As String)
+        _fileData = fileData
+        _fileDataPos = 1
     End Sub
 
     Private Function GetNextChunk() As String
-        Dim NullPos As Integer
-        NullPos = InStr(m_lIndex, m_sFileData, Chr(0))
+        Dim nullPos = InStr(_fileDataPos, _fileData, Chr(0))
+        Dim result = Mid(_fileData, _fileDataPos, nullPos - _fileDataPos)
 
-        Dim result = Mid(m_sFileData, m_lIndex, NullPos - m_lIndex)
-
-        If NullPos < Len(m_sFileData) Then
-            m_lIndex = NullPos + 1
+        If nullPos < Len(_fileData) Then
+            _fileDataPos = nullPos + 1
         End If
 
         Return result
     End Function
 
     Function GetFileDataChars(count As Integer) As String
-        Dim result = Mid(m_sFileData, m_lIndex, count)
-        m_lIndex = m_lIndex + count
+        Dim result = Mid(_fileData, _fileDataPos, count)
+        _fileDataPos = _fileDataPos + count
         Return result
     End Function
 
@@ -6424,7 +6368,7 @@ Public Class LegacyGame
             DecryptedFile.Append(Chr(255 - Asc(Mid(InputFileData, i, 1))))
         Next i
 
-        m_sFileData = DecryptedFile.ToString()
+        _fileData = DecryptedFile.ToString()
 
         _currentRoom = GetNextChunk()
 
