@@ -7276,290 +7276,288 @@ Public Class LegacyGame
 
     Private Sub ShowRoomInfoV2(Room As String)
         ' ShowRoomInfo for Quest 2.x games
-        Dim i As Integer
 
-        Dim RoomDisplayText As String = ""
-        Dim DescTagExist As Boolean
-        Dim gameblock As DefineBlock
-        Dim CharsViewable As String
-        Dim CharsFound As Integer
-        Dim PANF, Prefix, PA, InDesc As String
-        Dim AliasName As String = ""
-        Dim CharList As String
-        Dim FoundLastComma, CommaPos, NewCommaPos As Integer
-        Dim NoFormatObjsViewable As String
-        Dim ObjsViewable As String = ""
-        Dim ObjsFound As Integer
-        Dim ObjListString, NFObjListString As String
-        Dim PossDir, NSEW, Doorways, Places, PL As String
-        Dim AliasOut As String = ""
-        Dim PLNF As String
-        Dim DescLine As String = ""
-        Dim LastComma, OldLastComma As Integer
-        Dim DefBlk As Integer
-        Dim LookString As String = ""
+        Dim roomDisplayText As String = ""
+        Dim descTagExist As Boolean
+        Dim gameBlock As DefineBlock
+        Dim charsViewable As String
+        Dim charsFound As Integer
+        Dim prefixAliasNoFormat, prefix, prefixAlias, inDesc As String
+        Dim aliasName As String = ""
+        Dim charList As String
+        Dim foundLastComma, cp, ncp As Integer
+        Dim noFormatObjsViewable As String
+        Dim objsViewable As String = ""
+        Dim objsFound As Integer
+        Dim objListString, noFormatObjListString As String
+        Dim possDir, nsew, doorways, places, place As String
+        Dim aliasOut As String = ""
+        Dim placeNoFormat As String
+        Dim descLine As String = ""
+        Dim lastComma, oldLastComma As Integer
+        Dim defineBlock As Integer
+        Dim lookString As String = ""
 
-        gameblock = GetDefineBlock("game")
+        gameBlock = GetDefineBlock("game")
         _currentRoom = Room
 
         'find the room
-        Dim roomblock As DefineBlock
-        roomblock = DefineBlockParam("room", Room)
-        Dim FinishedFindingCommas As Boolean
+        Dim roomBlock As DefineBlock
+        roomBlock = DefineBlockParam("room", Room)
+        Dim finishedFindingCommas As Boolean
 
-        CharsViewable = ""
-        CharsFound = 0
+        charsViewable = ""
+        charsFound = 0
 
         'see if room has an alias
-        For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
+        For i = roomBlock.StartLine + 1 To roomBlock.EndLine - 1
             If BeginsWith(_lines(i), "alias") Then
-                AliasName = GetParameter(_lines(i), _nullContext)
-                i = roomblock.EndLine
+                aliasName = GetParameter(_lines(i), _nullContext)
+                i = roomBlock.EndLine
             End If
         Next i
-        If AliasName = "" Then AliasName = Room
+        If aliasName = "" Then aliasName = Room
 
         'see if room has a prefix
-        Prefix = FindStatement(roomblock, "prefix")
-        If Prefix = "" Then
-            PA = "|cr" & AliasName & "|cb"
-            PANF = AliasName ' No formatting version, for label
+        prefix = FindStatement(roomBlock, "prefix")
+        If prefix = "" Then
+            prefixAlias = "|cr" & aliasName & "|cb"
+            prefixAliasNoFormat = aliasName ' No formatting version, for label
         Else
-            PA = Prefix & " |cr" & AliasName & "|cb"
-            PANF = Prefix & " " & AliasName
+            prefixAlias = prefix & " |cr" & aliasName & "|cb"
+            prefixAliasNoFormat = prefix & " " & aliasName
         End If
 
         'print player's location
         'find indescription line:
-        InDesc = "unfound"
-        For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
+        inDesc = "unfound"
+        For i = roomBlock.StartLine + 1 To roomBlock.EndLine - 1
             If BeginsWith(_lines(i), "indescription") Then
-                InDesc = Trim(GetParameter(_lines(i), _nullContext))
-                i = roomblock.EndLine
+                inDesc = Trim(GetParameter(_lines(i), _nullContext))
+                i = roomBlock.EndLine
             End If
         Next i
 
-        If InDesc <> "unfound" Then
+        If inDesc <> "unfound" Then
             ' Print player's location according to indescription:
-            If Right(InDesc, 1) = ":" Then
+            If Right(inDesc, 1) = ":" Then
                 ' if line ends with a colon, add place name:
-                RoomDisplayText = RoomDisplayText & Left(InDesc, Len(InDesc) - 1) & " " & PA & "." & vbCrLf
+                roomDisplayText = roomDisplayText & Left(inDesc, Len(inDesc) - 1) & " " & prefixAlias & "." & vbCrLf
             Else
                 ' otherwise, just print the indescription line:
-                RoomDisplayText = RoomDisplayText & InDesc & vbCrLf
+                roomDisplayText = roomDisplayText & inDesc & vbCrLf
             End If
         Else
             ' if no indescription line, print the default.
-            RoomDisplayText = RoomDisplayText & "You are in " & PA & "." & vbCrLf
+            roomDisplayText = roomDisplayText & "You are in " & prefixAlias & "." & vbCrLf
         End If
 
-        _player.LocationUpdated(PANF)
+        _player.LocationUpdated(prefixAliasNoFormat)
 
-        SetStringContents("quest.formatroom", PANF, _nullContext)
+        SetStringContents("quest.formatroom", prefixAliasNoFormat, _nullContext)
 
         'FIND CHARACTERS ===
 
-        ' go through Chars() array
         For i = 1 To _numberChars
             If _chars(i).ContainerRoom = Room And _chars(i).Exists And _chars(i).Visible Then
-                CharsViewable = CharsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
-                CharsFound = CharsFound + 1
+                charsViewable = charsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
+                charsFound = charsFound + 1
             End If
         Next i
 
-        If CharsFound = 0 Then
-            CharsViewable = "There is nobody here."
+        If charsFound = 0 Then
+            charsViewable = "There is nobody here."
             SetStringContents("quest.characters", "", _nullContext)
         Else
             'chop off final comma and add full stop (.)
-            CharList = Left(CharsViewable, Len(CharsViewable) - 2)
-            SetStringContents("quest.characters", CharList, _nullContext)
+            charList = Left(charsViewable, Len(charsViewable) - 2)
+            SetStringContents("quest.characters", charList, _nullContext)
 
             'if more than one character, add "and" before
             'last one:
-            CommaPos = InStr(CharList, ",")
-            If CommaPos <> 0 Then
-                FoundLastComma = 0
+            cp = InStr(charList, ",")
+            If cp <> 0 Then
+                foundLastComma = 0
                 Do
-                    NewCommaPos = InStr(CommaPos + 1, CharList, ",")
-                    If NewCommaPos = 0 Then
-                        FoundLastComma = 1
+                    ncp = InStr(cp + 1, charList, ",")
+                    If ncp = 0 Then
+                        foundLastComma = 1
                     Else
-                        CommaPos = NewCommaPos
+                        cp = ncp
                     End If
-                Loop Until FoundLastComma = 1
+                Loop Until foundLastComma = 1
 
-                CharList = Trim(Left(CharList, CommaPos - 1)) & " and " & Trim(Mid(CharList, CommaPos + 1))
+                charList = Trim(Left(charList, cp - 1)) & " and " & Trim(Mid(charList, cp + 1))
             End If
 
-            CharsViewable = "You can see " & CharList & " here."
+            charsViewable = "You can see " & charList & " here."
         End If
 
-        RoomDisplayText = RoomDisplayText & CharsViewable & vbCrLf
+        roomDisplayText = roomDisplayText & charsViewable & vbCrLf
 
         'FIND OBJECTS
 
-        NoFormatObjsViewable = ""
+        noFormatObjsViewable = ""
 
         For i = 1 To _numberObjs
             If _objs(i).ContainerRoom = Room And _objs(i).Exists And _objs(i).Visible Then
-                ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & _objs(i).Suffix & ", "
-                NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
+                objsViewable = objsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & _objs(i).Suffix & ", "
+                noFormatObjsViewable = noFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
 
-                ObjsFound = ObjsFound + 1
+                objsFound = objsFound + 1
             End If
         Next i
 
-        Dim bFinLoop As Boolean
-        If ObjsFound <> 0 Then
-            ObjListString = Left(ObjsViewable, Len(ObjsViewable) - 2)
-            NFObjListString = Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2)
+        Dim finishedLoop As Boolean
+        If objsFound <> 0 Then
+            objListString = Left(objsViewable, Len(objsViewable) - 2)
+            noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2)
 
-            CommaPos = InStr(ObjListString, ",")
-            If CommaPos <> 0 Then
+            cp = InStr(objListString, ",")
+            If cp <> 0 Then
                 Do
-                    NewCommaPos = InStr(CommaPos + 1, ObjListString, ",")
-                    If NewCommaPos = 0 Then
-                        bFinLoop = True
+                    ncp = InStr(cp + 1, objListString, ",")
+                    If ncp = 0 Then
+                        finishedLoop = True
                     Else
-                        CommaPos = NewCommaPos
+                        cp = ncp
                     End If
-                Loop Until bFinLoop
+                Loop Until finishedLoop
 
-                ObjListString = Trim(Left(ObjListString, CommaPos - 1) & " and " & Trim(Mid(ObjListString, CommaPos + 1)))
+                objListString = Trim(Left(objListString, cp - 1) & " and " & Trim(Mid(objListString, cp + 1)))
             End If
 
-            ObjsViewable = "There is " & ObjListString & " here."
-            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), _nullContext)
-            SetStringContents("quest.formatobjects", ObjListString, _nullContext)
-            RoomDisplayText = RoomDisplayText & ObjsViewable & vbCrLf
+            objsViewable = "There is " & objListString & " here."
+            SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), _nullContext)
+            SetStringContents("quest.formatobjects", objListString, _nullContext)
+            roomDisplayText = roomDisplayText & objsViewable & vbCrLf
         Else
             SetStringContents("quest.objects", "", _nullContext)
             SetStringContents("quest.formatobjects", "", _nullContext)
         End If
 
         'FIND DOORWAYS
-        Doorways = ""
-        NSEW = ""
-        Places = ""
-        PossDir = ""
+        doorways = ""
+        nsew = ""
+        places = ""
+        possDir = ""
 
-        For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
+        For i = roomBlock.StartLine + 1 To roomBlock.EndLine - 1
             If BeginsWith(_lines(i), "out") Then
-                Doorways = GetParameter(_lines(i), _nullContext)
+                doorways = GetParameter(_lines(i), _nullContext)
             End If
 
             If BeginsWith(_lines(i), "north ") Then
-                NSEW = NSEW & "|bnorth|xb, "
-                PossDir = PossDir & "n"
+                nsew = nsew & "|bnorth|xb, "
+                possDir = possDir & "n"
             ElseIf BeginsWith(_lines(i), "south ") Then
-                NSEW = NSEW & "|bsouth|xb, "
-                PossDir = PossDir & "s"
+                nsew = nsew & "|bsouth|xb, "
+                possDir = possDir & "s"
             ElseIf BeginsWith(_lines(i), "east ") Then
-                NSEW = NSEW & "|beast|xb, "
-                PossDir = PossDir & "e"
+                nsew = nsew & "|beast|xb, "
+                possDir = possDir & "e"
             ElseIf BeginsWith(_lines(i), "west ") Then
-                NSEW = NSEW & "|bwest|xb, "
-                PossDir = PossDir & "w"
+                nsew = nsew & "|bwest|xb, "
+                possDir = possDir & "w"
             ElseIf BeginsWith(_lines(i), "northeast ") Then
-                NSEW = NSEW & "|bnortheast|xb, "
-                PossDir = PossDir & "a"
+                nsew = nsew & "|bnortheast|xb, "
+                possDir = possDir & "a"
             ElseIf BeginsWith(_lines(i), "northwest ") Then
-                NSEW = NSEW & "|bnorthwest|xb, "
-                PossDir = PossDir & "b"
+                nsew = nsew & "|bnorthwest|xb, "
+                possDir = possDir & "b"
             ElseIf BeginsWith(_lines(i), "southeast ") Then
-                NSEW = NSEW & "|bsoutheast|xb, "
-                PossDir = PossDir & "c"
+                nsew = nsew & "|bsoutheast|xb, "
+                possDir = possDir & "c"
             ElseIf BeginsWith(_lines(i), "southwest ") Then
-                NSEW = NSEW & "|bsouthwest|xb, "
-                PossDir = PossDir & "d"
+                nsew = nsew & "|bsouthwest|xb, "
+                possDir = possDir & "d"
             End If
 
             If BeginsWith(_lines(i), "place") Then
                 'remove any prefix semicolon from printed text
-                PL = GetParameter(_lines(i), _nullContext)
-                PLNF = PL 'Used in object list - no formatting or prefix
-                If InStr(PL, ";") > 0 Then
-                    PLNF = Right(PL, Len(PL) - (InStr(PL, ";") + 1))
-                    PL = Trim(Left(PL, InStr(PL, ";") - 1)) & " |b" & Right(PL, Len(PL) - (InStr(PL, ";") + 1)) & "|xb"
+                place = GetParameter(_lines(i), _nullContext)
+                placeNoFormat = place 'Used in object list - no formatting or prefix
+                If InStr(place, ";") > 0 Then
+                    placeNoFormat = Right(place, Len(place) - (InStr(place, ";") + 1))
+                    place = Trim(Left(place, InStr(place, ";") - 1)) & " |b" & Right(place, Len(place) - (InStr(place, ";") + 1)) & "|xb"
                 Else
-                    PL = "|b" & PL & "|xb"
+                    place = "|b" & place & "|xb"
                 End If
-                Places = Places & PL & ", "
+                places = places & place & ", "
 
             End If
 
         Next i
 
         Dim outside As DefineBlock
-        If Doorways <> "" Then
+        If doorways <> "" Then
             'see if outside has an alias
-            outside = DefineBlockParam("room", Doorways)
+            outside = DefineBlockParam("room", doorways)
             For i = outside.StartLine + 1 To outside.EndLine - 1
                 If BeginsWith(_lines(i), "alias") Then
-                    AliasOut = GetParameter(_lines(i), _nullContext)
+                    aliasOut = GetParameter(_lines(i), _nullContext)
                     i = outside.EndLine
                 End If
             Next i
-            If AliasOut = "" Then AliasOut = Doorways
+            If aliasOut = "" Then aliasOut = doorways
 
-            RoomDisplayText = RoomDisplayText & "You can go out to " & AliasOut & "." & vbCrLf
-            PossDir = PossDir & "o"
-            SetStringContents("quest.doorways.out", AliasOut, _nullContext)
+            roomDisplayText = roomDisplayText & "You can go out to " & aliasOut & "." & vbCrLf
+            possDir = possDir & "o"
+            SetStringContents("quest.doorways.out", aliasOut, _nullContext)
         Else
             SetStringContents("quest.doorways.out", "", _nullContext)
         End If
 
-        Dim bFinNSEW As Boolean
-        If NSEW <> "" Then
+        Dim finished As Boolean
+        If nsew <> "" Then
             'strip final comma
-            NSEW = Left(NSEW, Len(NSEW) - 2)
-            CommaPos = InStr(NSEW, ",")
-            If CommaPos <> 0 Then
-                bFinNSEW = False
+            nsew = Left(nsew, Len(nsew) - 2)
+            cp = InStr(nsew, ",")
+            If cp <> 0 Then
+                finished = False
                 Do
-                    NewCommaPos = InStr(CommaPos + 1, NSEW, ",")
-                    If NewCommaPos = 0 Then
-                        bFinNSEW = True
+                    ncp = InStr(cp + 1, nsew, ",")
+                    If ncp = 0 Then
+                        finished = True
                     Else
-                        CommaPos = NewCommaPos
+                        cp = ncp
                     End If
-                Loop Until bFinNSEW
+                Loop Until finished
 
-                NSEW = Trim(Left(NSEW, CommaPos - 1)) & " or " & Trim(Mid(NSEW, CommaPos + 1))
+                nsew = Trim(Left(nsew, cp - 1)) & " or " & Trim(Mid(nsew, cp + 1))
             End If
 
-            RoomDisplayText = RoomDisplayText & "You can go " & NSEW & "." & vbCrLf
-            SetStringContents("quest.doorways.dirs", NSEW, _nullContext)
+            roomDisplayText = roomDisplayText & "You can go " & nsew & "." & vbCrLf
+            SetStringContents("quest.doorways.dirs", nsew, _nullContext)
         Else
             SetStringContents("quest.doorways.dirs", "", _nullContext)
         End If
 
-        UpdateDirButtons(PossDir, _nullContext)
+        UpdateDirButtons(possDir, _nullContext)
 
-        If Places <> "" Then
+        If places <> "" Then
             'strip final comma
-            Places = Left(Places, Len(Places) - 2)
+            places = Left(places, Len(places) - 2)
 
             'if there is still a comma here, there is more than
             'one place, so add the word "or" before the last one.
-            If InStr(Places, ",") > 0 Then
-                LastComma = 0
-                FinishedFindingCommas = False
+            If InStr(places, ",") > 0 Then
+                lastComma = 0
+                finishedFindingCommas = False
                 Do
-                    OldLastComma = LastComma
-                    LastComma = InStr(LastComma + 1, Places, ",")
-                    If LastComma = 0 Then
-                        FinishedFindingCommas = True
-                        LastComma = OldLastComma
+                    oldLastComma = lastComma
+                    lastComma = InStr(lastComma + 1, places, ",")
+                    If lastComma = 0 Then
+                        finishedFindingCommas = True
+                        lastComma = oldLastComma
                     End If
-                Loop Until FinishedFindingCommas
+                Loop Until finishedFindingCommas
 
-                Places = Left(Places, LastComma) & " or" & Right(Places, Len(Places) - LastComma)
+                places = Left(places, lastComma) & " or" & Right(places, Len(places) - lastComma)
             End If
 
-            RoomDisplayText = RoomDisplayText & "You can go to " & Places & "." & vbCrLf
-            SetStringContents("quest.doorways.places", Places, _nullContext)
+            roomDisplayText = roomDisplayText & "You can go to " & places & "." & vbCrLf
+            SetStringContents("quest.doorways.places", places, _nullContext)
         Else
             SetStringContents("quest.doorways.places", "", _nullContext)
         End If
@@ -7568,235 +7566,217 @@ Public Class LegacyGame
         'otherwise execute the description tag information:
 
         ' First, look in the "define room" block:
-        DescTagExist = False
-        For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
+        descTagExist = False
+        For i = roomBlock.StartLine + 1 To roomBlock.EndLine - 1
             If BeginsWith(_lines(i), "description ") Then
-                DescLine = _lines(i)
-                DescTagExist = True
-                i = roomblock.EndLine
+                descLine = _lines(i)
+                descTagExist = True
+                Exit For
             End If
         Next i
 
-        If DescTagExist = False Then
+        If descTagExist = False Then
             'Look in the "define game" block:
-            For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+            For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
                 If BeginsWith(_lines(i), "description ") Then
-                    DescLine = _lines(i)
-                    DescTagExist = True
-                    i = gameblock.EndLine
+                    descLine = _lines(i)
+                    descTagExist = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If DescTagExist = False Then
-            'Remove final vbCrLf:
-            RoomDisplayText = Left(RoomDisplayText, Len(RoomDisplayText) - 2)
-            Print(RoomDisplayText, _nullContext)
+        If descTagExist = False Then
+            'Remove final newline:
+            roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2)
+            Print(roomDisplayText, _nullContext)
         Else
             'execute description tag:
             'If no script, just print the tag's parameter.
             'Otherwise, execute it as ASL script:
 
-            DescLine = GetEverythingAfter(Trim(DescLine), "description ")
-            If Left(DescLine, 1) = "<" Then
-                Print(GetParameter(DescLine, _nullContext), _nullContext)
+            descLine = GetEverythingAfter(Trim(descLine), "description ")
+            If Left(descLine, 1) = "<" Then
+                Print(GetParameter(descLine, _nullContext), _nullContext)
             Else
-                ExecuteScript(DescLine, _nullContext)
+                ExecuteScript(descLine, _nullContext)
             End If
         End If
 
         UpdateObjectList(_nullContext)
 
-        DefBlk = 0
+        defineBlock = 0
 
-        For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
+        For i = roomBlock.StartLine + 1 To roomBlock.EndLine - 1
             ' don't get the 'look' statements in nested define blocks
-            If BeginsWith(_lines(i), "define") Then DefBlk = DefBlk + 1
-            If BeginsWith(_lines(i), "end define") Then DefBlk = DefBlk - 1
-            If BeginsWith(_lines(i), "look") And DefBlk = 0 Then
-                LookString = GetParameter(_lines(i), _nullContext)
-                i = roomblock.EndLine
+            If BeginsWith(_lines(i), "define") Then defineBlock = defineBlock + 1
+            If BeginsWith(_lines(i), "end define") Then defineBlock = defineBlock - 1
+            If BeginsWith(_lines(i), "look") And defineBlock = 0 Then
+                lookString = GetParameter(_lines(i), _nullContext)
+                i = roomBlock.EndLine
             End If
         Next i
 
-        If LookString <> "" Then Print(LookString, _nullContext)
-
+        If lookString <> "" Then Print(lookString, _nullContext)
     End Sub
 
-    Private Sub Speak(Text As String)
-        _player.Speak(Text)
+    Private Sub Speak(text As String)
+        _player.Speak(text)
     End Sub
 
-    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ObjType As Thing)
-        ObjName = CapFirst(ObjName)
+    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), name As String, type As Thing)
+        name = CapFirst(name)
 
-        If ObjType = Thing.Room Then
-            objList.Add(New ListData(ObjName, _listVerbs(ListType.ExitsList)))
-            exitList.Add(New ListData(ObjName, _listVerbs(ListType.ExitsList)))
+        If type = Thing.Room Then
+            objList.Add(New ListData(name, _listVerbs(ListType.ExitsList)))
+            exitList.Add(New ListData(name, _listVerbs(ListType.ExitsList)))
         Else
-            ' TO DO: DisplayType is not supported, should it be...?
-            objList.Add(New ListData(ObjName, _listVerbs(ListType.ObjectsList)))
+            objList.Add(New ListData(name, _listVerbs(ListType.ObjectsList)))
         End If
-
     End Sub
 
-    Private Sub ExecExec(ScriptLine As String, ctx As Context)
-        Dim EX, ExecLine, R As String
-        Dim SemiColonPos As Integer
-
+    Private Sub ExecExec(scriptLine As String, ctx As Context)
         If ctx.CancelExec Then Exit Sub
 
-        ExecLine = GetParameter(ScriptLine, ctx)
+        Dim execLine = GetParameter(scriptLine, ctx)
+        Dim newCtx As Context = CopyContext(ctx)
+        newCtx.StackCounter = newCtx.StackCounter + 1
 
-        Dim NewThread As Context = CopyContext(ctx)
-
-        NewThread.StackCounter = NewThread.StackCounter + 1
-
-        If NewThread.StackCounter > 500 Then
-            LogASLError("Out of stack space running '" & ScriptLine & "' - infinite loop?", LogType.WarningError)
+        If newCtx.StackCounter > 500 Then
+            LogASLError("Out of stack space running '" & scriptLine & "' - infinite loop?", LogType.WarningError)
             ctx.CancelExec = True
             Exit Sub
         End If
 
         If _gameAslVersion >= 310 Then
-            NewThread.AllowRealNamesInCommand = True
+            newCtx.AllowRealNamesInCommand = True
         End If
 
-        If InStr(ExecLine, ";") = 0 Then
+        If InStr(execLine, ";") = 0 Then
             Try
-                ExecCommand(ExecLine, NewThread, False)
+                ExecCommand(execLine, newCtx, False)
             Catch
-                LogASLError("Internal error " & Err.Number & " running '" & ScriptLine & "'", LogType.WarningError)
+                LogASLError("Internal error " & Err.Number & " running '" & scriptLine & "'", LogType.WarningError)
                 ctx.CancelExec = True
             End Try
         Else
-            SemiColonPos = InStr(ExecLine, ";")
-            EX = Trim(Left(ExecLine, SemiColonPos - 1))
-            R = Trim(Mid(ExecLine, SemiColonPos + 1))
-            If R = "normal" Then
-                ExecCommand(EX, NewThread, False, False)
+            Dim scp = InStr(execLine, ";")
+            Dim ex = Trim(Left(execLine, scp - 1))
+            Dim r = Trim(Mid(execLine, scp + 1))
+            If r = "normal" Then
+                ExecCommand(ex, newCtx, False, False)
             Else
-                LogASLError("Unrecognised post-command parameter in " & Trim(ScriptLine), LogType.WarningError)
+                LogASLError("Unrecognised post-command parameter in " & Trim(scriptLine), LogType.WarningError)
             End If
         End If
     End Sub
 
-    Private Sub ExecSetString(StringInfo As String, ctx As Context)
+    Private Sub ExecSetString(info As String, ctx As Context)
         ' Sets string contents from a script parameter.
         ' Eg <string1;contents> sets string variable string1
         ' to "contents"
 
-        Dim iSemiColonPos As Integer
-        Dim sVarName As String
-        Dim sVarCont As String
-        Dim ArrayIndex As Integer
+        Dim scp = InStr(info, ";")
+        Dim name = Trim(Left(info, scp - 1))
+        Dim value = Mid(info, scp + 1)
 
-        iSemiColonPos = InStr(StringInfo, ";")
-        sVarName = Trim(Left(StringInfo, iSemiColonPos - 1))
-        sVarCont = Mid(StringInfo, iSemiColonPos + 1)
-
-        If IsNumeric(sVarName) Then
-            LogASLError("Invalid string name '" & sVarName & "' - string names cannot be numeric", LogType.WarningError)
+        If IsNumeric(name) Then
+            LogASLError("Invalid string name '" & name & "' - string names cannot be numeric", LogType.WarningError)
             Exit Sub
         End If
 
         If _gameAslVersion >= 281 Then
-            sVarCont = Trim(sVarCont)
-            If Left(sVarCont, 1) = "[" And Right(sVarCont, 1) = "]" Then
-                sVarCont = Mid(sVarCont, 2, Len(sVarCont) - 2)
+            value = Trim(value)
+            If Left(value, 1) = "[" And Right(value, 1) = "]" Then
+                value = Mid(value, 2, Len(value) - 2)
             End If
         End If
 
-        ArrayIndex = GetArrayIndex(sVarName, ctx)
-
-        SetStringContents(sVarName, sVarCont, ctx, ArrayIndex)
-
+        Dim idx = GetArrayIndex(name, ctx)
+        SetStringContents(name, value, ctx, idx)
     End Sub
 
-    Private Function ExecUserCommand(thecommand As String, ctx As Context, Optional LibCommands As Boolean = False) As Boolean
+    Private Function ExecUserCommand(cmd As String, ctx As Context, Optional libCommands As Boolean = False) As Boolean
         'Executes a user-defined command. If unavailable, returns
         'false.
-        Dim FoundCommand As Boolean
-        Dim RoomID As Integer
-        Dim roomblock As DefineBlock
-        Dim CurCmd, CommandList As String
-        Dim ScriptToExecute As String = ""
-        Dim EndPos, i As Integer
-        Dim CommandTag As String
-        Dim CommandLine As String = ""
-        Dim ScriptPos As Integer
-        FoundCommand = False
+        Dim curCmd, commandList As String
+        Dim script As String = ""
+        Dim commandTag As String
+        Dim commandLine As String = ""
+        Dim foundCommand = False
 
         'First, check for a command in the current room block
-        RoomID = GetRoomID(_currentRoom, ctx)
+        Dim roomId = GetRoomID(_currentRoom, ctx)
 
         ' RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
-        If RoomID <> 0 Then
-            Dim r = _rooms(RoomID)
+        If roomId <> 0 Then
+            Dim r = _rooms(roomId)
             For i = 1 To r.NumberCommands
-                CommandList = r.Commands(i).CommandText
+                commandList = r.Commands(i).CommandText
+                Dim ep As Integer
                 Do
-                    EndPos = InStr(CommandList, ";")
-                    If EndPos = 0 Then
-                        CurCmd = CommandList
+                    ep = InStr(commandList, ";")
+                    If ep = 0 Then
+                        curCmd = commandList
                     Else
-                        CurCmd = Trim(Left(CommandList, EndPos - 1))
-                        CommandList = Trim(Mid(CommandList, EndPos + 1))
+                        curCmd = Trim(Left(commandList, ep - 1))
+                        commandList = Trim(Mid(commandList, ep + 1))
                     End If
 
-                    If IsCompatible(LCase(thecommand), LCase(CurCmd)) Then
-                        CommandLine = CurCmd
-                        ScriptToExecute = r.Commands(i).CommandScript
-                        FoundCommand = True
-                        i = r.NumberCommands
-                        Exit Do
+                    If IsCompatible(LCase(cmd), LCase(curCmd)) Then
+                        commandLine = curCmd
+                        script = r.Commands(i).CommandScript
+                        foundCommand = True
+                        ep = 0
+                        Exit For
                     End If
-                Loop Until EndPos = 0
+                Loop Until ep = 0
             Next i
         End If
 
-        If Not LibCommands Then
-            CommandTag = "command"
+        If Not libCommands Then
+            commandTag = "command"
         Else
-            CommandTag = "lib command"
+            commandTag = "lib command"
         End If
 
-        If Not FoundCommand Then
+        If Not foundCommand Then
             ' Check "define game" block
-            roomblock = GetDefineBlock("game")
-            For i = roomblock.StartLine + 1 To roomblock.EndLine - 1
-                If BeginsWith(_lines(i), CommandTag) Then
+            Dim block = GetDefineBlock("game")
+            For i = block.StartLine + 1 To block.EndLine - 1
+                If BeginsWith(_lines(i), commandTag) Then
 
-                    CommandList = GetParameter(_lines(i), ctx, False)
+                    commandList = GetParameter(_lines(i), ctx, False)
+                    Dim ep As Integer
                     Do
-                        EndPos = InStr(CommandList, ";")
-                        If EndPos = 0 Then
-                            CurCmd = CommandList
+                        ep = InStr(commandList, ";")
+                        If ep = 0 Then
+                            curCmd = commandList
                         Else
-                            CurCmd = Trim(Left(CommandList, EndPos - 1))
-                            CommandList = Trim(Mid(CommandList, EndPos + 1))
+                            curCmd = Trim(Left(commandList, ep - 1))
+                            commandList = Trim(Mid(commandList, ep + 1))
                         End If
 
-                        If IsCompatible(LCase(thecommand), LCase(CurCmd)) Then
-                            CommandLine = CurCmd
-                            ScriptPos = InStr(_lines(i), ">") + 1
-                            ScriptToExecute = Trim(Mid(_lines(i), ScriptPos))
-                            FoundCommand = True
-                            i = roomblock.EndLine
-                            Exit Do
+                        If IsCompatible(LCase(cmd), LCase(curCmd)) Then
+                            commandLine = curCmd
+                            Dim ScriptPos = InStr(_lines(i), ">") + 1
+                            script = Trim(Mid(_lines(i), ScriptPos))
+                            foundCommand = True
+                            ep = 0
+                            Exit For
                         End If
-                    Loop Until EndPos = 0
+                    Loop Until ep = 0
                 End If
             Next i
         End If
 
-        If FoundCommand Then
-            If GetCommandParameters(thecommand, CommandLine, ctx) Then
-                ExecuteScript(ScriptToExecute, ctx)
+        If foundCommand Then
+            If GetCommandParameters(cmd, commandLine, ctx) Then
+                ExecuteScript(script, ctx)
             End If
         End If
 
-        Return FoundCommand
+        Return foundCommand
     End Function
 
     Private Sub ExecuteChoose(choicesection As String, ctx As Context)
