@@ -6583,28 +6583,24 @@ Public Class LegacyGame
         Return SetResult.Unfound
     End Function
 
-    Private Function SetUpChoiceForm(choicesection As String, ctx As Context) As String
+    Private Function SetUpChoiceForm(blockName As String, ctx As Context) As String
         ' Returns script to execute from choice block
-        Dim choiceblock As DefineBlock
-        Dim P As String
-        Dim i As Integer
-
-        choiceblock = DefineBlockParam("selection", choicesection)
-        P = FindStatement(choiceblock, "info")
+        Dim block = DefineBlockParam("selection", blockName)
+        Dim prompt = FindStatement(block, "info")
 
         Dim menuOptions As New Dictionary(Of String, String)
         Dim menuScript As New Dictionary(Of String, String)
 
-        For i = choiceblock.StartLine + 1 To choiceblock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
             If BeginsWith(_lines(i), "choice ") Then
                 menuOptions.Add(CStr(i), GetParameter(_lines(i), ctx))
                 menuScript.Add(CStr(i), Trim(Right(_lines(i), Len(_lines(i)) - InStr(_lines(i), ">"))))
             End If
         Next i
 
-        Print("- |i" & P & "|xi", ctx)
+        Print("- |i" & prompt & "|xi", ctx)
 
-        Dim mnu As New MenuData(P, menuOptions, False)
+        Dim mnu As New MenuData(prompt, menuOptions, False)
         Dim choice As String = ShowMenu(mnu)
 
         Print("- " & menuOptions(choice) & "|n", ctx)
@@ -6613,88 +6609,78 @@ Public Class LegacyGame
 
     Private Sub SetUpDefaultFonts()
         ' Sets up default fonts
-        Dim ThisFontName As String
-        Dim ThisFontSize, i As Integer
-
-        Dim gameblock As DefineBlock
-        gameblock = GetDefineBlock("game")
+        Dim gameblock = GetDefineBlock("game")
 
         _defaultFontName = "Arial"
         _defaultFontSize = 9
 
         For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
             If BeginsWith(_lines(i), "default fontname ") Then
-                ThisFontName = GetParameter(_lines(i), _nullContext)
-                If ThisFontName <> "" Then
-                    _defaultFontName = ThisFontName
+                Dim name = GetParameter(_lines(i), _nullContext)
+                If name <> "" Then
+                    _defaultFontName = name
                 End If
             ElseIf BeginsWith(_lines(i), "default fontsize ") Then
-                ThisFontSize = CInt(GetParameter(_lines(i), _nullContext))
-                If ThisFontSize <> 0 Then
-                    _defaultFontSize = ThisFontSize
+                Dim size = CInt(GetParameter(_lines(i), _nullContext))
+                If size <> 0 Then
+                    _defaultFontSize = size
                 End If
             End If
         Next i
     End Sub
 
     Private Sub SetUpDisplayVariables()
-        Dim i As Integer
-        Dim iStringNumber As Integer
-        Dim ThisVariable As VariableType
-        Dim ThisType, DisplayString As String
-        Dim iNumNumber As Integer
-
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(i), "define variable ") Then
 
-                ThisVariable = New VariableType
-                ReDim ThisVariable.VariableContents(0)
+                Dim variable = New VariableType
+                ReDim variable.VariableContents(0)
 
-                ThisVariable.VariableName = GetParameter(_lines(i), _nullContext)
-                ThisVariable.DisplayString = ""
-                ThisVariable.NoZeroDisplay = False
-                ThisVariable.OnChangeScript = ""
-                ThisVariable.VariableContents(0) = ""
-                ThisVariable.VariableUBound = 0
+                variable.VariableName = GetParameter(_lines(i), _nullContext)
+                variable.DisplayString = ""
+                variable.NoZeroDisplay = False
+                variable.OnChangeScript = ""
+                variable.VariableContents(0) = ""
+                variable.VariableUBound = 0
 
-                ThisType = "numeric"
+                Dim type = "numeric"
 
                 Do
                     i = i + 1
 
                     If BeginsWith(_lines(i), "type ") Then
-                        ThisType = GetEverythingAfter(_lines(i), "type ")
-                        If ThisType <> "string" And ThisType <> "numeric" Then
-                            LogASLError("Unrecognised variable type in variable '" & ThisVariable.VariableName & "' - type '" & ThisType & "'", LogType.WarningError)
+                        type = GetEverythingAfter(_lines(i), "type ")
+                        If type <> "string" And type <> "numeric" Then
+                            LogASLError("Unrecognised variable type in variable '" & variable.VariableName & "' - type '" & type & "'", LogType.WarningError)
                             Exit Do
                         End If
                     ElseIf BeginsWith(_lines(i), "onchange ") Then
-                        ThisVariable.OnChangeScript = GetEverythingAfter(_lines(i), "onchange ")
+                        variable.OnChangeScript = GetEverythingAfter(_lines(i), "onchange ")
                     ElseIf BeginsWith(_lines(i), "display ") Then
-                        DisplayString = GetEverythingAfter(_lines(i), "display ")
-                        If BeginsWith(DisplayString, "nozero ") Then
-                            ThisVariable.NoZeroDisplay = True
+                        Dim displayString = GetEverythingAfter(_lines(i), "display ")
+                        If BeginsWith(displayString, "nozero ") Then
+                            variable.NoZeroDisplay = True
                         End If
-                        ThisVariable.DisplayString = GetParameter(_lines(i), _nullContext, False)
+                        variable.DisplayString = GetParameter(_lines(i), _nullContext, False)
                     ElseIf BeginsWith(_lines(i), "value ") Then
-                        ThisVariable.VariableContents(0) = GetParameter(_lines(i), _nullContext)
+                        variable.VariableContents(0) = GetParameter(_lines(i), _nullContext)
                     End If
 
                 Loop Until Trim(_lines(i)) = "end define"
 
-                If ThisType = "string" Then
+                If type = "string" Then
                     ' Create string variable
                     _numberStringVariables = _numberStringVariables + 1
-                    iStringNumber = _numberStringVariables
-                    ReDim Preserve _stringVariable(iStringNumber)
-                    _stringVariable(iStringNumber) = ThisVariable
+                    Dim id = _numberStringVariables
+                    ReDim Preserve _stringVariable(id)
+                    _stringVariable(id) = variable
                     _numDisplayStrings = _numDisplayStrings + 1
-                ElseIf ThisType = "numeric" Then
-                    If ThisVariable.VariableContents(0) = "" Then ThisVariable.VariableContents(0) = CStr(0)
+                ElseIf type = "numeric" Then
+                    If variable.VariableContents(0) = "" Then variable.VariableContents(0) = CStr(0)
                     _numberNumericVariables = _numberNumericVariables + 1
-                    iNumNumber = _numberNumericVariables
+                    Dim iNumNumber = _numberNumericVariables
                     ReDim Preserve _numericVariable(iNumNumber)
-                    _numericVariable(iNumNumber) = ThisVariable
+                    _numericVariable(iNumNumber) = variable
                     _numDisplayNumerics = _numDisplayNumerics + 1
                 End If
             End If
@@ -6703,10 +6689,6 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetUpGameObject()
-        Dim i As Integer
-        Dim PropertyData As PropertiesActions
-        Dim NestBlock, k As Integer
-
         _numberObjs = 1
         ReDim _objs(1)
         _objs(1) = New ObjectType
@@ -6716,11 +6698,11 @@ Public Class LegacyGame
         o.Visible = False
         o.Exists = True
 
-        NestBlock = 0
+        Dim nestBlock = 0
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
-            If NestBlock = 0 Then
+            If nestBlock = 0 Then
                 If BeginsWith(_lines(i), "define ") Then
-                    NestBlock = NestBlock + 1
+                    nestBlock = nestBlock + 1
                 ElseIf BeginsWith(_lines(i), "properties ") Then
                     AddToObjectProperties(GetParameter(_lines(i), _nullContext), _numberObjs, _nullContext)
                 ElseIf BeginsWith(_lines(i), "type ") Then
@@ -6728,48 +6710,45 @@ Public Class LegacyGame
                     ReDim Preserve o.TypesIncluded(o.NumberTypesIncluded)
                     o.TypesIncluded(o.NumberTypesIncluded) = GetParameter(_lines(i), _nullContext)
 
-                    PropertyData = GetPropertiesInType(GetParameter(_lines(i), _nullContext))
-                    AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext)
-                    For k = 1 To PropertyData.NumberActions
-                        AddObjectAction(_numberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
+                    Dim propertyData = GetPropertiesInType(GetParameter(_lines(i), _nullContext))
+                    AddToObjectProperties(propertyData.Properties, _numberObjs, _nullContext)
+                    For k = 1 To propertyData.NumberActions
+                        AddObjectAction(_numberObjs, propertyData.Actions(k).ActionName, propertyData.Actions(k).Script)
                     Next k
                 ElseIf BeginsWith(_lines(i), "action ") Then
                     AddToObjectActions(GetEverythingAfter(_lines(i), "action "), _numberObjs, _nullContext)
                 End If
             Else
                 If Trim(_lines(i)) = "end define" Then
-                    NestBlock = NestBlock - 1
+                    nestBlock = nestBlock - 1
                 End If
             End If
         Next i
-
     End Sub
 
     Private Sub SetUpMenus()
-        Dim j, i, SCP As Integer
-        Dim MenuExists As Boolean = False
-
+        Dim exists As Boolean = False
         Dim menuTitle As String = ""
         Dim menuOptions As New Dictionary(Of String, String)
 
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define menu ") Then
 
-                If MenuExists Then
+                If exists Then
                     LogASLError("Can't load menu '" & GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext) & "' - only one menu can be added.", LogType.WarningError)
                 Else
                     menuTitle = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
 
                     For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                         If Trim(_lines(j)) <> "" Then
-                            SCP = InStr(_lines(j), ":")
-                            If SCP = 0 And _lines(j) <> "-" Then
+                            Dim scp = InStr(_lines(j), ":")
+                            If scp = 0 And _lines(j) <> "-" Then
                                 LogASLError("No menu command specified in menu '" & menuTitle & "', item '" & _lines(j), LogType.WarningError)
                             Else
                                 If _lines(j) = "-" Then
                                     menuOptions.Add("k" & CStr(j), "-")
                                 Else
-                                    menuOptions.Add(Trim(Mid(_lines(j), SCP + 1)), Trim(Left(_lines(j), SCP - 1)))
+                                    menuOptions.Add(Trim(Mid(_lines(j), scp + 1)), Trim(Left(_lines(j), scp - 1)))
                                 End If
 
                             End If
@@ -6777,13 +6756,13 @@ Public Class LegacyGame
                     Next j
 
                     If menuOptions.Count > 0 Then
-                        MenuExists = True
+                        exists = True
                     End If
                 End If
             End If
         Next i
 
-        If MenuExists Then
+        If exists Then
             Dim windowMenu As New MenuData(menuTitle, menuOptions, False)
             _player.SetWindowMenu(windowMenu)
         End If
