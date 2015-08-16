@@ -5979,183 +5979,151 @@ Public Class LegacyGame
         End SyncLock
     End Sub
 
-    Private Function ExecuteIfGot(theitem As String) As Boolean
-        Dim i As Integer
-
-        Dim FoundObject As Boolean
-        Dim result As Boolean
-        Dim InventoryPlace As String
-        Dim valid As Boolean
-
+    Private Function ExecuteIfGot(item As String) As Boolean
         If _gameAslVersion >= 280 Then
-            FoundObject = False
-            result = False
-            InventoryPlace = "inventory"
-
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ObjectName) = LCase(theitem) Then
-                    FoundObject = True
-                    result = _objs(i).ContainerRoom = InventoryPlace And _objs(i).Exists
+                If LCase(_objs(i).ObjectName) = LCase(item) Then
+                    Return _objs(i).ContainerRoom = "inventory" And _objs(i).Exists
                 End If
             Next i
 
-            If Not FoundObject Then
-                result = False
-                LogASLError("No object '" & theitem & "' defined.", LogType.WarningError)
-            End If
-
-            Return result
-        End If
-
-        valid = False
-
-        For i = 1 To _numberItems
-            If LCase(_items(i).Name) = LCase(theitem) Then
-                result = _items(i).Got
-                i = _numberItems
-                valid = True
-            End If
-        Next i
-
-        If Not valid Then
-            LogASLError("Item '" & theitem & "' not defined.", LogType.WarningError)
-            result = False
-        End If
-
-        Return result
-    End Function
-
-    Private Function ExecuteIfHas(hascond As String) As Boolean
-
-        Dim checkval As Double
-        Dim condresult As Boolean
-        Dim SemiColonPos As Integer
-        Dim TheNewVal, CName, OP As String
-        Dim i, ColNum As Integer
-        Dim TheNewValue As String
-
-        SemiColonPos = InStr(hascond, ";")
-        CName = Trim(Left(hascond, SemiColonPos - 1))
-        TheNewVal = Trim(Right(hascond, Len(hascond) - SemiColonPos))
-
-        i = -1
-
-        For i = 1 To _numCollectables
-            If _collectables(i).Name = CName Then
-                ColNum = i
-                i = _numCollectables
-            End If
-        Next i
-
-        If i = -1 Then
-            LogASLError("No such collectable in " & hascond, LogType.WarningError)
-            Exit Function
-        End If
-
-        OP = Left(TheNewVal, 1)
-        TheNewValue = Trim(Right(TheNewVal, Len(TheNewVal) - 1))
-        If IsNumeric(TheNewValue) Then
-            checkval = Val(TheNewValue)
-        Else
-            checkval = GetCollectableAmount(TheNewValue)
-        End If
-
-        If OP = "+" Then
-            If _collectables(ColNum).Value > checkval Then condresult = True Else condresult = False
-        ElseIf OP = "-" Then
-            If _collectables(ColNum).Value < checkval Then condresult = True Else condresult = False
-        ElseIf OP = "=" Then
-            If _collectables(ColNum).Value = checkval Then condresult = True Else condresult = False
-        End If
-
-        Return condresult
-    End Function
-
-    Private Function ExecuteIfIs(IsCondition As String) As Boolean
-        Dim SCPos, SC2Pos As Integer
-        Dim Value1, Value2 As String
-        Dim Condition As String
-        Dim Satisfied As Boolean
-        Dim ExpectNumerics As Boolean
-        Dim ExpResult As ExpressionResult
-
-        SCPos = InStr(IsCondition, ";")
-        If SCPos = 0 Then
-            LogASLError("Expected second parameter in 'is " & IsCondition & "'", LogType.WarningError)
+            LogASLError("No object '" & item & "' defined.", LogType.WarningError)
             Return False
         End If
 
-        SC2Pos = InStr(SCPos + 1, IsCondition, ";")
-        If SC2Pos = 0 Then
-            ' Only two parameters => standard "="
-            Condition = "="
-            Value1 = Trim(Left(IsCondition, SCPos - 1))
-            Value2 = Trim(Mid(IsCondition, SCPos + 1))
+        For i = 1 To _numberItems
+            If LCase(_items(i).Name) = LCase(item) Then
+                Return _items(i).Got
+            End If
+        Next i
+
+        LogASLError("Item '" & item & "' not defined.", LogType.WarningError)
+        Return False
+    End Function
+
+    Private Function ExecuteIfHas(condition As String) As Boolean
+        Dim checkValue As Double
+        Dim colNum As Integer
+        Dim scp = InStr(condition, ";")
+        Dim name = Trim(Left(condition, scp - 1))
+        Dim newVal = Trim(Right(condition, Len(condition) - scp))
+        Dim found = False
+
+        For i = 1 To _numCollectables
+            If _collectables(i).Name = name Then
+                colNum = i
+                found = True
+                Exit For
+            End If
+        Next i
+
+        If Not found Then
+            LogASLError("No such collectable in " & condition, LogType.WarningError)
+            Exit Function
+        End If
+
+        Dim op = Left(newVal, 1)
+        Dim newValue = Trim(Right(newVal, Len(newVal) - 1))
+        If IsNumeric(newValue) Then
+            checkValue = Val(newValue)
         Else
-            Value1 = Trim(Left(IsCondition, SCPos - 1))
-            Condition = Trim(Mid(IsCondition, SCPos + 1, (SC2Pos - SCPos) - 1))
-            Value2 = Trim(Mid(IsCondition, SC2Pos + 1))
+            checkValue = GetCollectableAmount(newValue)
+        End If
+
+        If op = "+" Then
+            Return _collectables(colNum).Value > checkValue
+        ElseIf op = "-" Then
+            Return _collectables(colNum).Value < checkValue
+        ElseIf op = "=" Then
+            Return _collectables(colNum).Value = checkValue
+        End If
+
+        Return False
+    End Function
+
+    Private Function ExecuteIfIs(condition As String) As Boolean
+        Dim value1, value2 As String
+        Dim op As String
+        Dim expectNumerics As Boolean
+        Dim expResult As ExpressionResult
+
+        Dim scp = InStr(condition, ";")
+        If scp = 0 Then
+            LogASLError("Expected second parameter in 'is " & condition & "'", LogType.WarningError)
+            Return False
+        End If
+
+        Dim scp2 = InStr(scp + 1, condition, ";")
+        If scp2 = 0 Then
+            ' Only two parameters => standard "="
+            op = "="
+            value1 = Trim(Left(condition, scp - 1))
+            value2 = Trim(Mid(condition, scp + 1))
+        Else
+            value1 = Trim(Left(condition, scp - 1))
+            op = Trim(Mid(condition, scp + 1, (scp2 - scp) - 1))
+            value2 = Trim(Mid(condition, scp2 + 1))
         End If
 
         If _gameAslVersion >= 391 Then
             ' Evaluate expressions in Value1 and Value2
-            ExpResult = ExpressionHandler(Value1)
+            expResult = ExpressionHandler(value1)
 
-            If ExpResult.Success = ExpressionSuccess.OK Then
-                Value1 = ExpResult.Result
+            If expResult.Success = ExpressionSuccess.OK Then
+                value1 = expResult.Result
             End If
 
-            ExpResult = ExpressionHandler(Value2)
+            expResult = ExpressionHandler(value2)
 
-            If ExpResult.Success = ExpressionSuccess.OK Then
-                Value2 = ExpResult.Result
+            If expResult.Success = ExpressionSuccess.OK Then
+                value2 = expResult.Result
             End If
         End If
 
-        Satisfied = False
+        Dim result = False
 
-        Select Case Condition
+        Select Case op
             Case "="
-                If LCase(Value1) = LCase(Value2) Then
-                    Satisfied = True
+                If LCase(value1) = LCase(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = False
+                expectNumerics = False
             Case "!="
-                If LCase(Value1) <> LCase(Value2) Then
-                    Satisfied = True
+                If LCase(value1) <> LCase(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = False
+                expectNumerics = False
             Case "gt"
-                If Val(Value1) > Val(Value2) Then
-                    Satisfied = True
+                If Val(value1) > Val(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = True
+                expectNumerics = True
             Case "lt"
-                If Val(Value1) < Val(Value2) Then
-                    Satisfied = True
+                If Val(value1) < Val(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = True
+                expectNumerics = True
             Case "gt="
-                If Val(Value1) >= Val(Value2) Then
-                    Satisfied = True
+                If Val(value1) >= Val(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = True
+                expectNumerics = True
             Case "lt="
-                If Val(Value1) <= Val(Value2) Then
-                    Satisfied = True
+                If Val(value1) <= Val(value2) Then
+                    result = True
                 End If
-                ExpectNumerics = True
+                expectNumerics = True
             Case Else
-                LogASLError("Unrecognised comparison condition in 'is " & IsCondition & "'", LogType.WarningError)
+                LogASLError("Unrecognised comparison condition in 'is " & condition & "'", LogType.WarningError)
         End Select
 
-        If ExpectNumerics Then
-            If Not (IsNumeric(Value1) And IsNumeric(Value2)) Then
-                LogASLError("Expected numeric comparison comparing '" & Value1 & "' and '" & Value2 & "'", LogType.WarningError)
+        If expectNumerics Then
+            If Not (IsNumeric(value1) And IsNumeric(value2)) Then
+                LogASLError("Expected numeric comparison comparing '" & value1 & "' and '" & value2 & "'", LogType.WarningError)
             End If
         End If
 
-        Return Satisfied
+        Return result
     End Function
 
     Private Function GetNumericContents(NumericName As String, ctx As Context, Optional NOERROR As Boolean = False) As Double
