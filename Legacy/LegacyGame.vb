@@ -7779,33 +7779,22 @@ Public Class LegacyGame
         Return foundCommand
     End Function
 
-    Private Sub ExecuteChoose(choicesection As String, ctx As Context)
-        ExecuteScript(SetUpChoiceForm(choicesection, ctx), ctx)
+    Private Sub ExecuteChoose(section As String, ctx As Context)
+        ExecuteScript(SetUpChoiceForm(section, ctx), ctx)
     End Sub
 
-    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, ctx As Context) As Boolean
-        'Gets parameters from line. For example, if RequiredLine
-        'is "read #1#" and TestLine is "read sign", #1# returns
+    Private Function GetCommandParameters(test As String, required As String, ctx As Context) As Boolean
+        'Gets parameters from line. For example, if 'required'
+        'is "read #1#" and 'test' is "read sign", #1# returns
         '"sign".
 
         ' Returns FALSE if #@object# form used and object doesn't
         ' exist.
 
-        Dim CurrentReqLinePos, NextVarPos As Integer
-        Dim CheckChunk As String
-        Dim CurrentTestLinePos As Integer
-        Dim FinishedProcessing As Boolean
-        Dim CurrentVariable As String = ""
-        Dim ChunkBegin, ChunkEnd As Integer
-        Dim ChunksBegin() As Integer
-        Dim ChunksEnd() As Integer
-        Dim NumberChunks As Integer
-        Dim VarName() As String
-        Dim Var2Pos, ArrayIndex As Integer
-        Dim CurChunk As String
-        Dim ObjID As Integer
-        Dim success As Boolean
-        Dim i As Integer
+        Dim chunksBegin() As Integer
+        Dim chunksEnd() As Integer
+        Dim varName() As String
+        Dim var2Pos As Integer
 
         ' Add dots before and after both strings. This fudge
         ' stops problems caused when variables are right at the
@@ -7813,304 +7802,292 @@ Public Class LegacyGame
         ' PostScript: well, it used to, I'm not sure if it's really
         ' required now though....
         ' As of Quest 4.0 we use the ¦ character rather than a dot.
-        TestLine = "¦" & Trim(TestLine) & "¦"
-        RequiredLine = "¦" & RequiredLine & "¦"
+        test = "¦" & Trim(test) & "¦"
+        required = "¦" & required & "¦"
 
         'Go through RequiredLine in chunks going up to variables.
-        CurrentReqLinePos = 1
-        CurrentTestLinePos = 1
-        FinishedProcessing = False
-        NumberChunks = 0
+        Dim currentReqLinePos = 1
+        Dim currentTestLinePos = 1
+        Dim finished = False
+        Dim numberChunks = 0
         Do
-            NextVarPos = InStr(CurrentReqLinePos, RequiredLine, "#")
-            If NextVarPos = 0 Then
-                FinishedProcessing = True
-                NextVarPos = Len(RequiredLine) + 1
+            Dim nextVarPos = InStr(currentReqLinePos, required, "#")
+            Dim currentVariable = ""
+
+            If nextVarPos = 0 Then
+                finished = True
+                nextVarPos = Len(required) + 1
             Else
-                Var2Pos = InStr(NextVarPos + 1, RequiredLine, "#")
-                CurrentVariable = Mid(RequiredLine, NextVarPos + 1, (Var2Pos - 1) - NextVarPos)
+                var2Pos = InStr(nextVarPos + 1, required, "#")
+                currentVariable = Mid(required, nextVarPos + 1, (var2Pos - 1) - nextVarPos)
             End If
 
-            CheckChunk = Mid(RequiredLine, CurrentReqLinePos, (NextVarPos - 1) - (CurrentReqLinePos - 1))
-            ChunkBegin = InStr(CurrentTestLinePos, LCase(TestLine), LCase(CheckChunk))
-            ChunkEnd = ChunkBegin + Len(CheckChunk)
+            Dim checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1))
+            Dim chunkBegin = InStr(currentTestLinePos, LCase(test), LCase(checkChunk))
+            Dim chunkEnd = chunkBegin + Len(checkChunk)
 
-            NumberChunks = NumberChunks + 1
-            ReDim Preserve ChunksBegin(NumberChunks)
-            ReDim Preserve ChunksEnd(NumberChunks)
-            ReDim Preserve VarName(NumberChunks)
-            ChunksBegin(NumberChunks) = ChunkBegin
-            ChunksEnd(NumberChunks) = ChunkEnd
-            VarName(NumberChunks) = CurrentVariable
+            numberChunks = numberChunks + 1
+            ReDim Preserve chunksBegin(numberChunks)
+            ReDim Preserve chunksEnd(numberChunks)
+            ReDim Preserve varName(numberChunks)
+            chunksBegin(numberChunks) = chunkBegin
+            chunksEnd(numberChunks) = chunkEnd
+            varName(numberChunks) = currentVariable
 
             'Get to end of variable name
-            CurrentReqLinePos = Var2Pos + 1
+            currentReqLinePos = var2Pos + 1
 
-            CurrentTestLinePos = ChunkEnd
-        Loop Until FinishedProcessing
+            currentTestLinePos = chunkEnd
+        Loop Until finished
 
-        success = True
+        Dim success = True
 
         'Return values to string variable
-        For i = 1 To NumberChunks - 1
+        For i = 1 To numberChunks - 1
+            Dim arrayIndex As Integer
             ' If VarName contains array name, change to index number
-            If InStr(VarName(i), "[") > 0 Then
-                ArrayIndex = GetArrayIndex(VarName(i), ctx)
+            If InStr(varName(i), "[") > 0 Then
+                arrayIndex = GetArrayIndex(varName(i), ctx)
             Else
-                ArrayIndex = 0
+                arrayIndex = 0
             End If
 
-            CurChunk = Mid(TestLine, ChunksEnd(i), ChunksBegin(i + 1) - ChunksEnd(i))
+            Dim curChunk = Mid(test, chunksEnd(i), chunksBegin(i + 1) - chunksEnd(i))
 
-            If BeginsWith(VarName(i), "@") Then
-                VarName(i) = GetEverythingAfter(VarName(i), "@")
-                ObjID = Disambiguate(CurChunk, _currentRoom & ";" & "inventory", ctx)
+            If BeginsWith(varName(i), "@") Then
+                varName(i) = GetEverythingAfter(varName(i), "@")
+                Dim id = Disambiguate(curChunk, _currentRoom & ";" & "inventory", ctx)
 
-                If ObjID = -1 Then
+                If id = -1 Then
                     If _gameAslVersion >= 391 Then
                         PlayerErrorMessage(PlayerError.BadThing, ctx)
                     Else
                         PlayerErrorMessage(PlayerError.BadItem, ctx)
                     End If
                     ' The Mid$(...,2) and Left$(...,2) removes the initial/final "."
-                    _badCmdBefore = Mid(Trim(Left(TestLine, ChunksEnd(i) - 1)), 2)
-                    _badCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
+                    _badCmdBefore = Mid(Trim(Left(test, chunksEnd(i) - 1)), 2)
+                    _badCmdAfter = Trim(Mid(test, chunksBegin(i + 1)))
                     _badCmdAfter = Left(_badCmdAfter, Len(_badCmdAfter) - 1)
                     success = False
-                ElseIf ObjID = -2 Then
-                    _badCmdBefore = Trim(Left(TestLine, ChunksEnd(i) - 1))
-                    _badCmdAfter = Trim(Mid(TestLine, ChunksBegin(i + 1)))
+                ElseIf id = -2 Then
+                    _badCmdBefore = Trim(Left(test, chunksEnd(i) - 1))
+                    _badCmdAfter = Trim(Mid(test, chunksBegin(i + 1)))
                     success = False
                 Else
-                    SetStringContents(VarName(i), _objs(ObjID).ObjectName, ctx, ArrayIndex)
+                    SetStringContents(varName(i), _objs(id).ObjectName, ctx, arrayIndex)
                 End If
             Else
-                SetStringContents(VarName(i), CurChunk, ctx, ArrayIndex)
+                SetStringContents(varName(i), curChunk, ctx, arrayIndex)
             End If
         Next i
 
         Return success
     End Function
 
-    Private Function GetGender(CharacterName As String, Capitalise As Boolean, ctx As Context) As String
-        Dim G, GL As String
+    Private Function GetGender(character As String, capitalise As Boolean, ctx As Context) As String
+        Dim result As String
 
         If _gameAslVersion >= 281 Then
-            G = _objs(GetObjectIdNoAlias(CharacterName)).Gender
+            result = _objs(GetObjectIdNoAlias(character)).Gender
         Else
-            GL = RetrLine("character", CharacterName, "gender", ctx)
+            Dim resultLine = RetrLine("character", character, "gender", ctx)
 
-            If GL = "<unfound>" Then
-                G = "it "
+            If resultLine = "<unfound>" Then
+                result = "it "
             Else
-                G = GetParameter(GL, ctx) & " "
+                result = GetParameter(resultLine, ctx) & " "
             End If
         End If
 
-        If Capitalise = True Then G = UCase(Left(G, 1)) & Right(G, Len(G) - 1)
-        Return G
+        If capitalise Then result = UCase(Left(result, 1)) & Right(result, Len(result) - 1)
+        Return result
     End Function
 
-    Private Function GetStringContents(StringName As String, ctx As Context) As String
-        Dim bStringExists As Boolean
-        Dim iStringNumber As Integer
-        bStringExists = False
-        Dim BeginPos, ArrayIndex, EndPos As Integer
-        Dim ArrayIndexData As String
-        Dim ColonPos As Integer
-        Dim B1, B2 As Integer
-        Dim ObjName As String
-        Dim PropName As String
-        Dim ReturnAlias As Boolean
-        Dim i As Integer
-        ReturnAlias = False
-        ArrayIndex = 0
+    Private Function GetStringContents(name As String, ctx As Context) As String
+        Dim returnAlias = False
+        Dim arrayIndex = 0
 
         ' Check for property shortcut
-        ColonPos = InStr(StringName, ":")
-        If ColonPos <> 0 Then
-            ObjName = Trim(Left(StringName, ColonPos - 1))
-            PropName = Trim(Mid(StringName, ColonPos + 1))
+        Dim cp = InStr(name, ":")
+        If cp <> 0 Then
+            Dim objName = Trim(Left(name, cp - 1))
+            Dim propName = Trim(Mid(name, cp + 1))
 
-            B1 = InStr(ObjName, "(")
-            If B1 <> 0 Then
-                B2 = InStr(B1, ObjName, ")")
-                If B2 <> 0 Then
-                    ObjName = GetStringContents(Mid(ObjName, B1 + 1, (B2 - B1) - 1), ctx)
+            Dim obp = InStr(objName, "(")
+            If obp <> 0 Then
+                Dim cbp = InStr(obp, objName, ")")
+                If cbp <> 0 Then
+                    objName = GetStringContents(Mid(objName, obp + 1, (cbp - obp) - 1), ctx)
                 End If
             End If
 
-            Return GetObjectProperty(PropName, GetObjectIdNoAlias(ObjName))
-        End If
-        If Left(StringName, 1) = "@" Then
-            ReturnAlias = True
-            StringName = Mid(StringName, 2)
+            Return GetObjectProperty(propName, GetObjectIdNoAlias(objName))
         End If
 
-        If InStr(StringName, "[") <> 0 And InStr(StringName, "]") <> 0 Then
-            BeginPos = InStr(StringName, "[")
-            EndPos = InStr(StringName, "]")
-            ArrayIndexData = Mid(StringName, BeginPos + 1, (EndPos - BeginPos) - 1)
-            If IsNumeric(ArrayIndexData) Then
-                ArrayIndex = CInt(ArrayIndexData)
+        If Left(name, 1) = "@" Then
+            returnAlias = True
+            name = Mid(name, 2)
+        End If
+
+        If InStr(name, "[") <> 0 And InStr(name, "]") <> 0 Then
+            Dim bp = InStr(name, "[")
+            Dim ep = InStr(name, "]")
+            Dim arrayIndexData = Mid(name, bp + 1, (ep - bp) - 1)
+            If IsNumeric(arrayIndexData) Then
+                arrayIndex = CInt(arrayIndexData)
             Else
-                ArrayIndex = CInt(GetNumericContents(ArrayIndexData, ctx))
-                If ArrayIndex = -32767 Then
-                    LogASLError("Array index in '" & StringName & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LogType.WarningError)
+                arrayIndex = CInt(GetNumericContents(arrayIndexData, ctx))
+                If arrayIndex = -32767 Then
+                    LogASLError("Array index in '" & name & "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LogType.WarningError)
                     Return ""
                 End If
             End If
-            StringName = Left(StringName, BeginPos - 1)
+            name = Left(name, bp - 1)
         End If
 
         ' First, see if the string already exists. If it does,
         ' get its contents. If not, generate an error.
 
+        Dim exists = False
+        Dim id As Integer
+
         If _numberStringVariables > 0 Then
             For i = 1 To _numberStringVariables
-                If LCase(_stringVariable(i).VariableName) = LCase(StringName) Then
-                    iStringNumber = i
-                    bStringExists = True
-                    i = _numberStringVariables
+                If LCase(_stringVariable(i).VariableName) = LCase(name) Then
+                    id = i
+                    exists = True
+                    Exit For
                 End If
             Next i
         End If
 
-        If bStringExists = False Then
-            LogASLError("No string variable '" & StringName & "' defined.", LogType.WarningError)
+        If Not exists Then
+            LogASLError("No string variable '" & name & "' defined.", LogType.WarningError)
             Return ""
         End If
 
-        If ArrayIndex > _stringVariable(iStringNumber).VariableUBound Then
-            LogASLError("Array index of '" & StringName & "[" & Trim(Str(ArrayIndex)) & "]' too big.", LogType.WarningError)
+        If arrayIndex > _stringVariable(id).VariableUBound Then
+            LogASLError("Array index of '" & name & "[" & Trim(Str(arrayIndex)) & "]' too big.", LogType.WarningError)
             Return ""
         End If
 
         ' Now, set the contents
-        If Not ReturnAlias Then
-            Return _stringVariable(iStringNumber).VariableContents(ArrayIndex)
+        If Not returnAlias Then
+            Return _stringVariable(id).VariableContents(arrayIndex)
         Else
-            Return _objs(GetObjectIdNoAlias(_stringVariable(iStringNumber).VariableContents(ArrayIndex))).ObjectAlias
+            Return _objs(GetObjectIdNoAlias(_stringVariable(id).VariableContents(arrayIndex))).ObjectAlias
         End If
     End Function
 
-    Private Function IsAvailable(ThingString As String, ThingType As Thing, ctx As Context) As Boolean
+    Private Function IsAvailable(thingName As String, type As Thing, ctx As Context) As Boolean
         ' Returns availability of object/character
 
         ' split ThingString into character name and room
         ' (thingstring of form name@room)
 
-        Dim i, AtPos As Integer
-        Dim CRoom, CName As String
+        Dim room, name As String
 
-        AtPos = InStr(ThingString, "@")
+        Dim atPos = InStr(thingName, "@")
 
         ' If no room specified, current room presumed
-        If AtPos = 0 Then
-            CRoom = _currentRoom
-            CName = ThingString
+        If atPos = 0 Then
+            room = _currentRoom
+            name = thingName
         Else
-            CName = Trim(Left(ThingString, AtPos - 1))
-            CRoom = Trim(Right(ThingString, Len(ThingString) - AtPos))
+            name = Trim(Left(thingName, atPos - 1))
+            room = Trim(Right(thingName, Len(thingName) - atPos))
         End If
 
-        If ThingType = Thing.Character Then
+        If type = Thing.Character Then
             For i = 1 To _numberChars
-                If LCase(_chars(i).ContainerRoom) = LCase(CRoom) And LCase(_chars(i).ObjectName) = LCase(CName) Then
+                If LCase(_chars(i).ContainerRoom) = LCase(room) And LCase(_chars(i).ObjectName) = LCase(name) Then
                     Return _chars(i).Exists
                 End If
             Next i
-        ElseIf ThingType = Thing.Object Then
+        ElseIf type = Thing.Object Then
             For i = 1 To _numberObjs
-                If LCase(_objs(i).ContainerRoom) = LCase(CRoom) And LCase(_objs(i).ObjectName) = LCase(CName) Then
+                If LCase(_objs(i).ContainerRoom) = LCase(room) And LCase(_objs(i).ObjectName) = LCase(name) Then
                     Return _objs(i).Exists
                 End If
             Next i
         End If
     End Function
 
-    Private Function IsCompatible(TestLine As String, RequiredLine As String) As Boolean
-        'Tests to see if TestLine "works" with RequiredLine.
-        'For example, if RequiredLine = "read #text#", then the
-        'TestLines of "read book" and "read sign" are compatible.
-        Dim CurrentReqLinePos, NextVarPos As Integer
-        Dim CheckChunk As String
-        Dim CurrentTestLinePos As Integer
-        Dim FinishedProcessing As Boolean
-        Dim Var2Pos As Integer
+    Private Function IsCompatible(test As String, required As String) As Boolean
+        'Tests to see if 'test' "works" with 'required'.
+        'For example, if 'required' = "read #text#", then the
+        'tests of "read book" and "read sign" are compatible.
+        Dim var2Pos As Integer
 
         ' This avoids "xxx123" being compatible with "xxx".
-        TestLine = "¦" & Trim(TestLine) & "¦"
-        RequiredLine = "¦" & RequiredLine & "¦"
+        test = "¦" & Trim(test) & "¦"
+        required = "¦" & required & "¦"
 
         'Go through RequiredLine in chunks going up to variables.
-        CurrentReqLinePos = 1
-        CurrentTestLinePos = 1
-        FinishedProcessing = False
+        Dim currentReqLinePos = 1
+        Dim currentTestLinePos = 1
+        Dim finished = False
         Do
-            NextVarPos = InStr(CurrentReqLinePos, RequiredLine, "#")
-            If NextVarPos = 0 Then
-                NextVarPos = Len(RequiredLine) + 1
-                FinishedProcessing = True
+            Dim nextVarPos = InStr(currentReqLinePos, required, "#")
+            If nextVarPos = 0 Then
+                nextVarPos = Len(required) + 1
+                finished = True
             Else
-                Var2Pos = InStr(NextVarPos + 1, RequiredLine, "#")
+                var2Pos = InStr(nextVarPos + 1, required, "#")
             End If
 
-            CheckChunk = Mid(RequiredLine, CurrentReqLinePos, (NextVarPos - 1) - (CurrentReqLinePos - 1))
+            Dim checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1))
 
-            If InStr(CurrentTestLinePos, TestLine, CheckChunk) <> 0 Then
-                CurrentTestLinePos = InStr(CurrentTestLinePos, TestLine, CheckChunk) + Len(CheckChunk)
+            If InStr(currentTestLinePos, test, checkChunk) <> 0 Then
+                currentTestLinePos = InStr(currentTestLinePos, test, checkChunk) + Len(checkChunk)
             Else
                 Return False
             End If
 
             'Skip to end of variable
-            CurrentReqLinePos = Var2Pos + 1
-        Loop Until FinishedProcessing
+            currentReqLinePos = var2Pos + 1
+        Loop Until finished
 
         Return True
     End Function
 
-    Private Function OpenGame(theGameFileName As String) As Boolean
-        Dim cdatb, bResult As Boolean
-        Dim CurObjVisible As Boolean
-        Dim CurObjRoom As String
-        Dim PrevQSGVersion As Boolean
-        Dim FileData As String = ""
-        Dim SavedQSGVersion As String
-        Dim i As Integer
-        Dim NullData As String = ""
-        Dim CData As String = ""
-        Dim CName As String
-        Dim SemiColonPos, CDat As Integer
-        Dim SC2Pos, SC3Pos As Integer
+    Private Function OpenGame(filename As String) As Boolean
+        Dim cdatb, result As Boolean
+        Dim visible As Boolean
+        Dim room As String
+        Dim fileData As String = ""
+        Dim savedQsgVersion As String
+        Dim data As String = ""
+        Dim name As String
+        Dim scp, cdat As Integer
+        Dim scp2, scp3 As Integer
         Dim lines As String() = {}
 
         _gameLoadMethod = "loaded"
 
-        PrevQSGVersion = False
+        Dim prevQsgVersion = False
 
         If _data Is Nothing Then
-            FileData = System.IO.File.ReadAllText(theGameFileName, System.Text.Encoding.GetEncoding(1252))
+            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
         Else
-            FileData = System.Text.Encoding.GetEncoding(1252).GetString(_data.Data)
+            fileData = System.Text.Encoding.GetEncoding(1252).GetString(_data.Data)
         End If
 
         ' Check version
-        SavedQSGVersion = Left(FileData, 10)
+        savedQsgVersion = Left(fileData, 10)
 
-        If BeginsWith(SavedQSGVersion, "QUEST200.1") Then
-            PrevQSGVersion = True
-        ElseIf Not BeginsWith(SavedQSGVersion, "QUEST300") Then
+        If BeginsWith(savedQsgVersion, "QUEST200.1") Then
+            prevQsgVersion = True
+        ElseIf Not BeginsWith(savedQsgVersion, "QUEST300") Then
             Return False
         End If
 
-        If PrevQSGVersion Then
-            lines = FileData.Split({vbCrLf, vbLf}, StringSplitOptions.None)
+        If prevQsgVersion Then
+            lines = fileData.Split({vbCrLf, vbLf}, StringSplitOptions.None)
             _gameFileName = lines(1)
         Else
-            InitFileData(FileData)
-            NullData = GetNextChunk()
+            InitFileData(fileData)
+            GetNextChunk()
 
             If _data Is Nothing Then
                 _gameFileName = GetNextChunk()
@@ -8125,16 +8102,16 @@ Public Class LegacyGame
             If _gameFileName = "" Then Exit Function
         End If
 
-        bResult = InitialiseGame(_gameFileName, True)
+        result = InitialiseGame(_gameFileName, True)
 
-        If bResult = False Then
+        If result = False Then
             Return False
         End If
 
-        If Not PrevQSGVersion Then
+        If Not prevQsgVersion Then
             ' Open Quest 3.0 saved game file
             _gameLoading = True
-            RestoreGameData(FileData)
+            RestoreGameData(fileData)
             _gameLoading = False
         Else
             ' Open Quest 2.x saved game file
@@ -8145,124 +8122,124 @@ Public Class LegacyGame
             Dim lineNumber As Integer = 5
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!i" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
+                If data <> "!i" Then
+                    scp = InStr(data, ";")
+                    name = Trim(Left(data, scp - 1))
+                    cdat = CInt(Right(data, Len(data) - scp))
 
                     For i = 1 To _numCollectables
-                        If _collectables(i).Name = CName Then
-                            _collectables(i).Value = CDat
+                        If _collectables(i).Name = name Then
+                            _collectables(i).Value = cdat
                             i = _numCollectables
                         End If
                     Next i
                 End If
-            Loop Until CData = "!i"
+            Loop Until data = "!i"
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!o" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
+                If data <> "!o" Then
+                    scp = InStr(data, ";")
+                    name = Trim(Left(data, scp - 1))
+                    cdatb = IsYes(Right(data, Len(data) - scp))
 
                     For i = 1 To _numberItems
-                        If _items(i).Name = CName Then
+                        If _items(i).Name = name Then
                             _items(i).Got = cdatb
                             i = _numberItems
                         End If
                     Next i
                 End If
-            Loop Until CData = "!o"
+            Loop Until data = "!o"
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!p" Then
-                    SemiColonPos = InStr(CData, ";")
-                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
+                If data <> "!p" Then
+                    scp = InStr(data, ";")
+                    scp2 = InStr(scp + 1, data, ";")
+                    scp3 = InStr(scp2 + 1, data, ";")
 
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                    name = Trim(Left(data, scp - 1))
+                    cdatb = IsYes(Mid(data, scp + 1, (scp2 - scp) - 1))
+                    visible = IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1))
+                    room = Trim(Mid(data, scp3 + 1))
 
                     For i = 1 To _numberObjs
-                        If _objs(i).ObjectName = CName And Not _objs(i).Loaded Then
+                        If _objs(i).ObjectName = name And Not _objs(i).Loaded Then
                             _objs(i).Exists = cdatb
-                            _objs(i).Visible = CurObjVisible
-                            _objs(i).ContainerRoom = CurObjRoom
+                            _objs(i).Visible = visible
+                            _objs(i).ContainerRoom = room
                             _objs(i).Loaded = True
                             i = _numberObjs
                         End If
                     Next i
                 End If
-            Loop Until CData = "!p"
+            Loop Until data = "!p"
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!s" Then
-                    SemiColonPos = InStr(CData, ";")
-                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
+                If data <> "!s" Then
+                    scp = InStr(data, ";")
+                    scp2 = InStr(scp + 1, data, ";")
+                    scp3 = InStr(scp2 + 1, data, ";")
 
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                    name = Trim(Left(data, scp - 1))
+                    cdatb = IsYes(Mid(data, scp + 1, (scp2 - scp) - 1))
+                    visible = IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1))
+                    room = Trim(Mid(data, scp3 + 1))
 
                     For i = 1 To _numberChars
-                        If _chars(i).ObjectName = CName Then
+                        If _chars(i).ObjectName = name Then
                             _chars(i).Exists = cdatb
-                            _chars(i).Visible = CurObjVisible
-                            _chars(i).ContainerRoom = CurObjRoom
+                            _chars(i).Visible = visible
+                            _chars(i).ContainerRoom = room
                             i = _numberChars
                         End If
                     Next i
                 End If
-            Loop Until CData = "!s"
+            Loop Until data = "!s"
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!n" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CData = Right(CData, Len(CData) - SemiColonPos)
+                If data <> "!n" Then
+                    scp = InStr(data, ";")
+                    name = Trim(Left(data, scp - 1))
+                    data = Right(data, Len(data) - scp)
 
-                    SetStringContents(CName, CData, _nullContext)
+                    SetStringContents(name, data, _nullContext)
                 End If
-            Loop Until CData = "!n"
+            Loop Until data = "!n"
 
             Do
-                CData = lines(lineNumber)
+                data = lines(lineNumber)
                 lineNumber += 1
-                If CData <> "!e" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CData = Right(CData, Len(CData) - SemiColonPos)
+                If data <> "!e" Then
+                    scp = InStr(data, ";")
+                    name = Trim(Left(data, scp - 1))
+                    data = Right(data, Len(data) - scp)
 
-                    SetNumericVariableContents(CName, Val(CData), _nullContext)
+                    SetNumericVariableContents(name, Val(data), _nullContext)
                 End If
-            Loop Until CData = "!e"
+            Loop Until data = "!e"
 
         End If
 
-        _saveGameFile = theGameFileName
+        _saveGameFile = filename
 
         Return True
     End Function
 
-    Private Function SaveGame(theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
-        Dim NewThread As Context = New Context()
+    Private Function SaveGame(filename As String, Optional saveFile As Boolean = True) As Byte()
+        Dim ctx As Context = New Context()
         Dim saveData As String
 
-        If _gameAslVersion >= 391 Then ExecuteScript(_beforeSaveScript, NewThread)
+        If _gameAslVersion >= 391 Then ExecuteScript(_beforeSaveScript, ctx)
 
         If _gameAslVersion >= 280 Then
             saveData = MakeRestoreData()
@@ -8271,10 +8248,10 @@ Public Class LegacyGame
         End If
 
         If saveFile Then
-            System.IO.File.WriteAllText(theGameFileName, saveData, System.Text.Encoding.GetEncoding(1252))
+            System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252))
         End If
 
-        _saveGameFile = theGameFileName
+        _saveGameFile = filename
 
         Return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData)
     End Function
