@@ -8960,128 +8960,115 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Sub CheckCollectable(ColNum As Integer)
+    Private Sub CheckCollectable(id As Integer)
         ' Checks to see whether a collectable item has exceeded
         ' its range - if so, it resets the number to the nearest
         ' valid number. It's a handy quick way of making sure that
         ' a player's health doesn't reach 101%, for example.
 
-        Dim maxn, n, minn As Double
-        Dim M As Integer
-        Dim T As String
+        Dim max, value, min As Double
+        Dim m As Integer
 
-        T = _collectables(ColNum).Type
-        n = _collectables(ColNum).Value
+        Dim type = _collectables(id).Type
+        value = _collectables(id).Value
 
-        If T = "%" And n > 100 Then n = 100
-        If (T = "%" Or T = "p") And n < 0 Then n = 0
-        If InStr(T, "r") > 0 Then
-            If InStr(T, "r") = 1 Then
-                maxn = Val(Mid(T, Len(T) - 1))
-                M = 1
-            ElseIf InStr(T, "r") = Len(T) Then
-                minn = Val(Left(T, Len(T) - 1))
-                M = 2
+        If type = "%" And value > 100 Then value = 100
+        If (type = "%" Or type = "p") And value < 0 Then value = 0
+        If InStr(type, "r") > 0 Then
+            If InStr(type, "r") = 1 Then
+                max = Val(Mid(type, Len(type) - 1))
+                m = 1
+            ElseIf InStr(type, "r") = Len(type) Then
+                min = Val(Left(type, Len(type) - 1))
+                m = 2
             Else
-                minn = Val(Left(T, InStr(T, "r") - 1))
-                maxn = Val(Mid(T, InStr(T, "r") + 1))
-                M = 3
+                min = Val(Left(type, InStr(type, "r") - 1))
+                max = Val(Mid(type, InStr(type, "r") + 1))
+                m = 3
             End If
 
-            If (M = 1 Or M = 3) And n > maxn Then n = maxn
-            If (M = 2 Or M = 3) And n < minn Then n = minn
+            If (m = 1 Or m = 3) And value > max Then value = max
+            If (m = 2 Or m = 3) And value < min Then value = min
         End If
 
-        _collectables(ColNum).Value = n
-
+        _collectables(id).Value = value
     End Sub
 
-    Private Function DisplayCollectableInfo(ColNum As Integer) As String
-        Dim FirstBit, D, NextBit As String
-        Dim ExcPos As Integer
-        Dim FirstStarPos, SecondStarPos As Integer
-        Dim AfterStar, BeforeStar, BetweenStar As String
+    Private Function DisplayCollectableInfo(id As Integer) As String
+        Dim display As String
 
-        If _collectables(ColNum).Display = "<def>" Then
-            D = "You have " & Trim(Str(_collectables(ColNum).Value)) & " " & _collectables(ColNum).Name
-        ElseIf _collectables(ColNum).Display = "" Then
-            D = "<null>"
+        If _collectables(id).Display = "<def>" Then
+            display = "You have " & Trim(Str(_collectables(id).Value)) & " " & _collectables(id).Name
+        ElseIf _collectables(id).Display = "" Then
+            display = "<null>"
         Else
-            ExcPos = InStr(_collectables(ColNum).Display, "!")
-            If ExcPos = 0 Then
-                D = _collectables(ColNum).Display
+            Dim ep = InStr(_collectables(id).Display, "!")
+            If ep = 0 Then
+                display = _collectables(id).Display
             Else
-                FirstBit = Left(_collectables(ColNum).Display, ExcPos - 1)
-                NextBit = Right(_collectables(ColNum).Display, Len(_collectables(ColNum).Display) - ExcPos)
-                D = FirstBit & Trim(Str(_collectables(ColNum).Value)) & NextBit
+                Dim firstBit = Left(_collectables(id).Display, ep - 1)
+                Dim nextBit = Right(_collectables(id).Display, Len(_collectables(id).Display) - ep)
+                display = firstBit & Trim(Str(_collectables(id).Value)) & nextBit
             End If
 
-            If InStr(D, "*") > 0 Then
-                FirstStarPos = InStr(D, "*")
-                SecondStarPos = InStr(FirstStarPos + 1, D, "*")
-                BeforeStar = Left(D, FirstStarPos - 1)
-                AfterStar = Mid(D, SecondStarPos + 1)
-                BetweenStar = Mid(D, FirstStarPos + 1, (SecondStarPos - FirstStarPos) - 1)
+            If InStr(display, "*") > 0 Then
+                Dim firstStarPos = InStr(display, "*")
+                Dim secondStarPos = InStr(firstStarPos + 1, display, "*")
+                Dim beforeStar = Left(display, firstStarPos - 1)
+                Dim afterStar = Mid(display, secondStarPos + 1)
+                Dim betweenStar = Mid(display, firstStarPos + 1, (secondStarPos - firstStarPos) - 1)
 
-                If _collectables(ColNum).Value <> 1 Then
-                    D = BeforeStar & BetweenStar & AfterStar
+                If _collectables(id).Value <> 1 Then
+                    display = beforeStar & betweenStar & afterStar
                 Else
-                    D = BeforeStar & AfterStar
+                    display = beforeStar & afterStar
                 End If
             End If
         End If
 
-        If _collectables(ColNum).Value = 0 And _collectables(ColNum).DisplayWhenZero = False Then
-            D = "<null>"
+        If _collectables(id).Value = 0 And _collectables(id).DisplayWhenZero = False Then
+            display = "<null>"
         End If
 
-        Return D
+        Return display
     End Function
 
-    Private Sub DisplayTextSection(sectionname As String, ctx As Context, Optional OutputTo As String = "normal")
-        Dim textblock As DefineBlock
-        textblock = DefineBlockParam("text", sectionname)
-        Dim i As Integer
+    Private Sub DisplayTextSection(section As String, ctx As Context, Optional OutputTo As String = "normal")
+        Dim block As DefineBlock
+        block = DefineBlockParam("text", section)
 
-        If textblock.StartLine <> 0 Then
-            For i = textblock.StartLine + 1 To textblock.EndLine - 1
-                If _gameAslVersion >= 392 Then
-                    ' Convert string variables etc.
-                    Print(GetParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
-                Else
-                    Print(_lines(i), ctx, OutputTo)
-                End If
-            Next i
-
-            Print("", ctx)
+        If block.StartLine = 0 Then
+            Exit Sub
         End If
+
+        For i = block.StartLine + 1 To block.EndLine - 1
+            If _gameAslVersion >= 392 Then
+                ' Convert string variables etc.
+                Print(GetParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
+            Else
+                Print(_lines(i), ctx, OutputTo)
+            End If
+        Next i
+
+        Print("", ctx)
     End Sub
 
     ' Returns true if the system is ready to process a new command after completion - so it will be
     ' in most cases, except when ExecCommand just caused an "enter" script command to complete
 
-    Private Function ExecCommand(thecommand As String, ctx As Context, Optional EchoCommand As Boolean = True, Optional RunUserCommand As Boolean = True, Optional DontSetIt As Boolean = False) As Boolean
-        Dim cmd As String
-        Dim EnteredHelpCommand As Boolean
-        Dim RoomID As Integer
-        Dim GlobalOverride As Boolean
-        Dim OldBadCmdBefore As String
-        Dim CP, i, n As Integer
-        Dim SkipAfterTurn As Boolean
-        Dim G, D, c, P, T As String
-        Dim j As Integer
+    Private Function ExecCommand(input As String, ctx As Context, Optional echo As Boolean = True, Optional runUserCommand As Boolean = True, Optional dontSetIt As Boolean = False) As Boolean
+        Dim parameter As String
+        Dim skipAfterTurn = False
+        input = RemoveFormatting(input)
 
-        SkipAfterTurn = False
-        thecommand = RemoveFormatting(thecommand)
+        Dim oldBadCmdBefore = _badCmdBefore
 
-        OldBadCmdBefore = _badCmdBefore
+        Dim roomID = GetRoomID(_currentRoom, ctx)
+        Dim enteredHelpCommand = False
 
-        RoomID = GetRoomID(_currentRoom, ctx)
-        EnteredHelpCommand = False
+        If input = "" Then Return True
 
-        If thecommand = "" Then Return True
-
-        cmd = LCase(thecommand)
+        Dim cmd = LCase(input)
 
         SyncLock _commandLock
             If _commandOverrideModeOn Then
@@ -9089,107 +9076,105 @@ Public Class LegacyGame
                 ' so put input into previously specified variable
                 ' and exit:
 
-                SetStringContents(_commandOverrideVariable, thecommand, ctx)
+                SetStringContents(_commandOverrideVariable, input, ctx)
                 System.Threading.Monitor.PulseAll(_commandLock)
                 Return False
             End If
         End SyncLock
 
-        Dim UserCommandReturn As Boolean
-        Dim newcommand As String
+        Dim userCommandReturn As Boolean
 
-        If EchoCommand = True Then
-            Print("> " & thecommand, ctx, , True)
+        If echo = True Then
+            Print("> " & input, ctx, , True)
         End If
 
-        thecommand = LCase(thecommand)
+        input = LCase(input)
 
-        SetStringContents("quest.originalcommand", thecommand, ctx)
+        SetStringContents("quest.originalcommand", input, ctx)
 
-        newcommand = " " & thecommand & " "
+        Dim newCommand = " " & input & " "
 
         ' Convert synonyms:
         For i = 1 To _numberSynonyms
-            CP = 1
+            Dim cp = 1
+            Dim n As Integer
             Do
-                n = InStr(CP, newcommand, " " & _synonyms(i).OriginalWord & " ")
+                n = InStr(cp, newCommand, " " & _synonyms(i).OriginalWord & " ")
                 If n <> 0 Then
-                    newcommand = Left(newcommand, n - 1) & " " & _synonyms(i).ConvertTo & " " & Mid(newcommand, n + Len(_synonyms(i).OriginalWord) + 2)
-                    CP = n + 1
+                    newCommand = Left(newCommand, n - 1) & " " & _synonyms(i).ConvertTo & " " & Mid(newCommand, n + Len(_synonyms(i).OriginalWord) + 2)
+                    cp = n + 1
                 End If
             Loop Until n = 0
         Next i
 
         'strip starting and ending spaces
-        thecommand = Mid(newcommand, 2, Len(newcommand) - 2)
+        input = Mid(newCommand, 2, Len(newCommand) - 2)
 
-        SetStringContents("quest.command", thecommand, ctx)
+        SetStringContents("quest.command", input, ctx)
 
         ' Execute any "beforeturn" script:
 
-        Dim NewThread As Context = CopyContext(ctx)
-        GlobalOverride = False
+        Dim newCtx As Context = CopyContext(ctx)
+        Dim globalOverride = False
 
         ' RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
-        If RoomID <> 0 Then
-            If _rooms(RoomID).BeforeTurnScript <> "" Then
-                If BeginsWith(_rooms(RoomID).BeforeTurnScript, "override") Then
-                    ExecuteScript(GetEverythingAfter(_rooms(RoomID).BeforeTurnScript, "override"), NewThread)
-                    GlobalOverride = True
+        If roomID <> 0 Then
+            If _rooms(roomID).BeforeTurnScript <> "" Then
+                If BeginsWith(_rooms(roomID).BeforeTurnScript, "override") Then
+                    ExecuteScript(GetEverythingAfter(_rooms(roomID).BeforeTurnScript, "override"), newCtx)
+                    globalOverride = True
                 Else
-                    ExecuteScript(_rooms(RoomID).BeforeTurnScript, NewThread)
+                    ExecuteScript(_rooms(roomID).BeforeTurnScript, newCtx)
                 End If
             End If
         End If
-        If _beforeTurnScript <> "" And GlobalOverride = False Then ExecuteScript(_beforeTurnScript, NewThread)
+        If _beforeTurnScript <> "" And globalOverride = False Then ExecuteScript(_beforeTurnScript, newCtx)
 
         ' In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
         ' in which case we don't process the command.
 
-        If Not NewThread.DontProcessCommand Then
+        If Not newCtx.DontProcessCommand Then
             'Try to execute user defined command, if allowed:
 
-            UserCommandReturn = False
-            If RunUserCommand = True Then
-                UserCommandReturn = ExecUserCommand(thecommand, ctx)
+            userCommandReturn = False
+            If runUserCommand = True Then
+                userCommandReturn = ExecUserCommand(input, ctx)
 
-                If Not UserCommandReturn Then
-                    UserCommandReturn = ExecVerb(thecommand, ctx)
+                If Not userCommandReturn Then
+                    userCommandReturn = ExecVerb(input, ctx)
                 End If
 
-                If Not UserCommandReturn Then
+                If Not userCommandReturn Then
                     ' Try command defined by a library
-                    UserCommandReturn = ExecUserCommand(thecommand, ctx, True)
+                    userCommandReturn = ExecUserCommand(input, ctx, True)
                 End If
 
-                If Not UserCommandReturn Then
+                If Not userCommandReturn Then
                     ' Try verb defined by a library
-                    UserCommandReturn = ExecVerb(thecommand, ctx, True)
+                    userCommandReturn = ExecVerb(input, ctx, True)
                 End If
             End If
 
-            thecommand = LCase(thecommand)
+            input = LCase(input)
         Else
             ' Set the UserCommand flag to fudge not processing any more commands
-            UserCommandReturn = True
+            userCommandReturn = True
         End If
 
-        Dim InvList As String = "", InventoryPlace As String
-        Dim LastComma As Integer
-        Dim ThisComma, CurPos As Integer
-        If UserCommandReturn = False Then
+        Dim invList = ""
 
-            If CmdStartsWith(thecommand, "speak to ") Then
-                c = GetEverythingAfter(thecommand, "speak to ")
-                ExecSpeak(c, ctx)
-            ElseIf CmdStartsWith(thecommand, "talk to ") Then
-                c = GetEverythingAfter(thecommand, "talk to ")
-                ExecSpeak(c, ctx)
+        If Not userCommandReturn Then
+            If CmdStartsWith(input, "speak to ") Then
+                parameter = GetEverythingAfter(input, "speak to ")
+                ExecSpeak(parameter, ctx)
+            ElseIf CmdStartsWith(input, "talk to ") Then
+                parameter = GetEverythingAfter(input, "talk to ")
+                ExecSpeak(parameter, ctx)
             ElseIf cmd = "exit" Or cmd = "out" Or cmd = "leave" Then
                 LeaveRoom(ctx)
                 _lastIt = 0
             ElseIf cmd = "north" Or cmd = "south" Or cmd = "east" Or cmd = "west" Then
-                GoDirection(thecommand, ctx)
+                GoDirection(input, ctx)
                 _lastIt = 0
             ElseIf cmd = "n" Or cmd = "s" Or cmd = "w" Or cmd = "e" Then
                 Select Case InStr("nswe", cmd)
@@ -9221,71 +9206,71 @@ Public Class LegacyGame
             ElseIf cmd = "down" Or cmd = "d" Then
                 GoDirection("down", ctx)
                 _lastIt = 0
-            ElseIf CmdStartsWith(thecommand, "go ") Then
+            ElseIf CmdStartsWith(input, "go ") Then
                 If _gameAslVersion >= 410 Then
-                    _rooms(GetRoomID(_currentRoom, ctx)).Exits.ExecuteGo(thecommand, ctx)
+                    _rooms(GetRoomID(_currentRoom, ctx)).Exits.ExecuteGo(input, ctx)
                 Else
-                    D = GetEverythingAfter(thecommand, "go ")
-                    If D = "out" Then
+                    parameter = GetEverythingAfter(input, "go ")
+                    If parameter = "out" Then
                         LeaveRoom(ctx)
-                    ElseIf D = "north" Or D = "south" Or D = "east" Or D = "west" Or D = "up" Or D = "down" Then
-                        GoDirection(D, ctx)
-                    ElseIf BeginsWith(D, "to ") Then
-                        P = GetEverythingAfter(D, "to ")
-                        GoToPlace(P, ctx)
+                    ElseIf parameter = "north" Or parameter = "south" Or parameter = "east" Or parameter = "west" Or parameter = "up" Or parameter = "down" Then
+                        GoDirection(parameter, ctx)
+                    ElseIf BeginsWith(parameter, "to ") Then
+                        parameter = GetEverythingAfter(parameter, "to ")
+                        GoToPlace(parameter, ctx)
                     Else
                         PlayerErrorMessage(PlayerError.BadGo, ctx)
                     End If
                 End If
                 _lastIt = 0
-            ElseIf CmdStartsWith(thecommand, "give ") Then
-                G = GetEverythingAfter(thecommand, "give ")
-                ExecGive(G, ctx)
-            ElseIf CmdStartsWith(thecommand, "take ") Then
-                T = GetEverythingAfter(thecommand, "take ")
-                ExecTake(T, ctx)
-            ElseIf CmdStartsWith(thecommand, "drop ") And _gameAslVersion >= 280 Then
-                D = GetEverythingAfter(thecommand, "drop ")
-                ExecDrop(D, ctx)
-            ElseIf CmdStartsWith(thecommand, "get ") Then
-                T = GetEverythingAfter(thecommand, "get ")
-                ExecTake(T, ctx)
-            ElseIf CmdStartsWith(thecommand, "pick up ") Then
-                T = GetEverythingAfter(thecommand, "pick up ")
-                ExecTake(T, ctx)
+            ElseIf CmdStartsWith(input, "give ") Then
+                parameter = GetEverythingAfter(input, "give ")
+                ExecGive(parameter, ctx)
+            ElseIf CmdStartsWith(input, "take ") Then
+                parameter = GetEverythingAfter(input, "take ")
+                ExecTake(parameter, ctx)
+            ElseIf CmdStartsWith(input, "drop ") And _gameAslVersion >= 280 Then
+                parameter = GetEverythingAfter(input, "drop ")
+                ExecDrop(parameter, ctx)
+            ElseIf CmdStartsWith(input, "get ") Then
+                parameter = GetEverythingAfter(input, "get ")
+                ExecTake(parameter, ctx)
+            ElseIf CmdStartsWith(input, "pick up ") Then
+                parameter = GetEverythingAfter(input, "pick up ")
+                ExecTake(parameter, ctx)
             ElseIf cmd = "pick it up" Or cmd = "pick them up" Or cmd = "pick this up" Or cmd = "pick that up" Or cmd = "pick these up" Or cmd = "pick those up" Or cmd = "pick him up" Or cmd = "pick her up" Then
                 ExecTake(Mid(cmd, 6, InStr(7, cmd, " ") - 6), ctx)
-            ElseIf CmdStartsWith(thecommand, "look ") Then
-                ExecLook(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "l ") Then
-                ExecLook("look " & GetEverythingAfter(thecommand, "l "), ctx)
-            ElseIf CmdStartsWith(thecommand, "examine ") And _gameAslVersion >= 280 Then
-                ExecExamine(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "x ") And _gameAslVersion >= 280 Then
-                ExecExamine("examine " & GetEverythingAfter(thecommand, "x "), ctx)
+            ElseIf CmdStartsWith(input, "look ") Then
+                ExecLook(input, ctx)
+            ElseIf CmdStartsWith(input, "l ") Then
+                ExecLook("look " & GetEverythingAfter(input, "l "), ctx)
+            ElseIf CmdStartsWith(input, "examine ") And _gameAslVersion >= 280 Then
+                ExecExamine(input, ctx)
+            ElseIf CmdStartsWith(input, "x ") And _gameAslVersion >= 280 Then
+                ExecExamine("examine " & GetEverythingAfter(input, "x "), ctx)
             ElseIf cmd = "l" Or cmd = "look" Then
                 ExecLook("look", ctx)
             ElseIf cmd = "x" Or cmd = "examine" Then
                 ExecExamine("examine", ctx)
-            ElseIf CmdStartsWith(thecommand, "use ") Then
-                ExecUse(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "open ") And _gameAslVersion >= 391 Then
-                ExecOpenClose(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "close ") And _gameAslVersion >= 391 Then
-                ExecOpenClose(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "put ") And _gameAslVersion >= 391 Then
-                ExecAddRemove(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "add ") And _gameAslVersion >= 391 Then
-                ExecAddRemove(thecommand, ctx)
-            ElseIf CmdStartsWith(thecommand, "remove ") And _gameAslVersion >= 391 Then
-                ExecAddRemove(thecommand, ctx)
+            ElseIf CmdStartsWith(input, "use ") Then
+                ExecUse(input, ctx)
+            ElseIf CmdStartsWith(input, "open ") And _gameAslVersion >= 391 Then
+                ExecOpenClose(input, ctx)
+            ElseIf CmdStartsWith(input, "close ") And _gameAslVersion >= 391 Then
+                ExecOpenClose(input, ctx)
+            ElseIf CmdStartsWith(input, "put ") And _gameAslVersion >= 391 Then
+                ExecAddRemove(input, ctx)
+            ElseIf CmdStartsWith(input, "add ") And _gameAslVersion >= 391 Then
+                ExecAddRemove(input, ctx)
+            ElseIf CmdStartsWith(input, "remove ") And _gameAslVersion >= 391 Then
+                ExecAddRemove(input, ctx)
             ElseIf cmd = "save" Then
                 _player.RequestSave(Nothing)
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then
                 ShowHelp(ctx)
-                EnteredHelpCommand = True
+                enteredHelpCommand = True
             ElseIf cmd = "about" Then
                 ShowGameAbout(ctx)
             ElseIf cmd = "clear" Then
@@ -9296,88 +9281,87 @@ Public Class LegacyGame
                     Print(logEntry, ctx)
                 Next
             ElseIf cmd = "inventory" Or cmd = "inv" Or cmd = "i" Then
-                InventoryPlace = "inventory"
-
                 If _gameAslVersion >= 280 Then
                     For i = 1 To _numberObjs
-                        If _objs(i).ContainerRoom = InventoryPlace And _objs(i).Exists And _objs(i).Visible Then
-                            InvList = InvList & _objs(i).Prefix
+                        If _objs(i).ContainerRoom = "inventory" And _objs(i).Exists And _objs(i).Visible Then
+                            invList = invList & _objs(i).Prefix
 
                             If _objs(i).ObjectAlias = "" Then
-                                InvList = InvList & "|b" & _objs(i).ObjectName & "|xb"
+                                invList = invList & "|b" & _objs(i).ObjectName & "|xb"
                             Else
-                                InvList = InvList & "|b" & _objs(i).ObjectAlias & "|xb"
+                                invList = invList & "|b" & _objs(i).ObjectAlias & "|xb"
                             End If
 
                             If _objs(i).Suffix <> "" Then
-                                InvList = InvList & " " & _objs(i).Suffix
+                                invList = invList & " " & _objs(i).Suffix
                             End If
 
-                            InvList = InvList & ", "
+                            invList = invList & ", "
                         End If
                     Next i
                 Else
                     For j = 1 To _numberItems
                         If _items(j).Got = True Then
-                            InvList = InvList & _items(j).Name & ", "
+                            invList = invList & _items(j).Name & ", "
                         End If
                     Next j
                 End If
-                If InvList <> "" Then
+                If invList <> "" Then
 
-                    InvList = Left(InvList, Len(InvList) - 2)
-                    InvList = UCase(Left(InvList, 1)) & Mid(InvList, 2)
+                    invList = Left(invList, Len(invList) - 2)
+                    invList = UCase(Left(invList, 1)) & Mid(invList, 2)
 
-                    CurPos = 1
+                    Dim pos = 1
+                    Dim lastComma, thisComma As Integer
                     Do
-                        ThisComma = InStr(CurPos, InvList, ",")
-                        If ThisComma <> 0 Then
-                            LastComma = ThisComma
-                            CurPos = ThisComma + 1
+                        thisComma = InStr(pos, invList, ",")
+                        If thisComma <> 0 Then
+                            lastComma = thisComma
+                            pos = thisComma + 1
                         End If
-                    Loop Until ThisComma = 0
-                    If LastComma <> 0 Then InvList = Left(InvList, LastComma - 1) & " and" & Mid(InvList, LastComma + 1)
-                    Print("You are carrying:|n" & InvList & ".", ctx)
+                    Loop Until thisComma = 0
+                    If lastComma <> 0 Then invList = Left(invList, lastComma - 1) & " and" & Mid(invList, lastComma + 1)
+                    Print("You are carrying:|n" & invList & ".", ctx)
                 Else
                     Print("You are not carrying anything.", ctx)
                 End If
-            ElseIf CmdStartsWith(thecommand, "oops ") Then
-                ExecOops(GetEverythingAfter(thecommand, "oops "), ctx)
-            ElseIf CmdStartsWith(thecommand, "the ") Then
-                ExecOops(GetEverythingAfter(thecommand, "the "), ctx)
+            ElseIf CmdStartsWith(input, "oops ") Then
+                ExecOops(GetEverythingAfter(input, "oops "), ctx)
+            ElseIf CmdStartsWith(input, "the ") Then
+                ExecOops(GetEverythingAfter(input, "the "), ctx)
             Else
                 PlayerErrorMessage(PlayerError.BadCommand, ctx)
             End If
         End If
 
-        If Not SkipAfterTurn Then
+        If Not skipAfterTurn Then
             ' Execute any "afterturn" script:
-            GlobalOverride = False
+            globalOverride = False
 
-            If RoomID <> 0 Then
-                If _rooms(RoomID).AfterTurnScript <> "" Then
-                    If BeginsWith(_rooms(RoomID).AfterTurnScript, "override") Then
-                        ExecuteScript(GetEverythingAfter(_rooms(RoomID).AfterTurnScript, "override"), ctx)
-                        GlobalOverride = True
+            If roomID <> 0 Then
+                If _rooms(roomID).AfterTurnScript <> "" Then
+                    If BeginsWith(_rooms(roomID).AfterTurnScript, "override") Then
+                        ExecuteScript(GetEverythingAfter(_rooms(roomID).AfterTurnScript, "override"), ctx)
+                        globalOverride = True
                     Else
-                        ExecuteScript(_rooms(RoomID).AfterTurnScript, ctx)
+                        ExecuteScript(_rooms(roomID).AfterTurnScript, ctx)
                     End If
                 End If
             End If
 
             ' was set to NullThread here for some reason
-            If _afterTurnScript <> "" And GlobalOverride = False Then ExecuteScript(_afterTurnScript, ctx)
+            If _afterTurnScript <> "" And globalOverride = False Then ExecuteScript(_afterTurnScript, ctx)
         End If
 
         Print("", ctx)
 
-        If Not DontSetIt Then
+        If Not dontSetIt Then
             ' Use "DontSetIt" when we don't want "it" etc. to refer to the object used in this turn.
             ' This is used for e.g. auto-remove object from container when taking.
             _lastIt = _thisTurnIt
             _lastItMode = _thisTurnItMode
         End If
-        If _badCmdBefore = OldBadCmdBefore Then _badCmdBefore = ""
+        If _badCmdBefore = oldBadCmdBefore Then _badCmdBefore = ""
 
         Return True
     End Function
