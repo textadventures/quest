@@ -9742,34 +9742,25 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Sub ExecTake(TakeItem As String, ctx As Context)
-        Dim i As Integer
-        Dim FoundItem, FoundTake As Boolean
-        Dim OriginalTakeItem As String
-        Dim ObjID As Integer
-        Dim ParentID As Integer
-        Dim ParentDisplayName As String
-        Dim ObjectIsInContainer As Boolean
-        Dim ScriptLine As String
-        Dim ContainerError As String = ""
+    Private Sub ExecTake(item As String, ctx As Context)
+        Dim parentID As Integer
+        Dim parentDisplayName As String
+        Dim containerError As String = ""
+        Dim foundItem = True
+        Dim foundTake = False
+        Dim id = Disambiguate(item, _currentRoom, ctx)
 
-        FoundItem = True
-        FoundTake = False
-        OriginalTakeItem = TakeItem
-
-        ObjID = Disambiguate(TakeItem, _currentRoom, ctx)
-
-        If ObjID < 0 Then
-            FoundItem = False
+        If id < 0 Then
+            foundItem = False
         Else
-            FoundItem = True
+            foundItem = True
         End If
 
-        If FoundItem = False Then
-            If ObjID <> -2 Then
+        If Not foundItem Then
+            If id <> -2 Then
                 If _gameAslVersion >= 410 Then
-                    ObjID = Disambiguate(TakeItem, "inventory", ctx)
-                    If ObjID >= 0 Then
+                    id = Disambiguate(item, "inventory", ctx)
+                    If id >= 0 Then
                         ' Player already has this item
                         PlayerErrorMessage(PlayerError.AlreadyTaken, ctx)
                     Else
@@ -9784,40 +9775,38 @@ Public Class LegacyGame
             _badCmdBefore = "take"
             Exit Sub
         Else
-            SetStringContents("quest.error.article", _objs(ObjID).Article, ctx)
+            SetStringContents("quest.error.article", _objs(id).Article, ctx)
         End If
 
-        ObjectIsInContainer = False
+        Dim isInContainer = False
 
         If _gameAslVersion >= 391 Then
-
-            If Not PlayerCanAccessObject(ObjID, ParentID, ContainerError) Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, ContainerError)
+            If Not PlayerCanAccessObject(id, parentID, containerError) Then
+                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, containerError)
                 Exit Sub
             End If
-
         End If
 
         If _gameAslVersion >= 280 Then
-            Dim t = _objs(ObjID).Take
+            Dim t = _objs(id).Take
 
-            If ObjectIsInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
+            If isInContainer And (t.Type = TextActionType.Default Or t.Type = TextActionType.Text) Then
                 ' So, we want to take an object that's in a container or surface. So first
                 ' we have to remove the object from that container.
 
-                If _objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = _objs(ParentID).ObjectAlias
+                If _objs(parentID).ObjectAlias <> "" Then
+                    parentDisplayName = _objs(parentID).ObjectAlias
                 Else
-                    ParentDisplayName = _objs(ParentID).ObjectName
+                    parentDisplayName = _objs(parentID).ObjectName
                 End If
 
-                Print("(first removing " & _objs(ObjID).Article & " from " & ParentDisplayName & ")", ctx)
+                Print("(first removing " & _objs(id).Article & " from " & parentDisplayName & ")", ctx)
 
                 ' Try to remove the object
                 ctx.AllowRealNamesInCommand = True
-                ExecCommand("remove " & _objs(ObjID).ObjectName, ctx, False, , True)
+                ExecCommand("remove " & _objs(id).ObjectName, ctx, False, , True)
 
-                If GetObjectProperty("parent", ObjID, False, False) <> "" Then
+                If GetObjectProperty("parent", id, False, False) <> "" Then
                     ' removing the object failed
                     Exit Sub
                 End If
@@ -9825,145 +9814,138 @@ Public Class LegacyGame
 
             If t.Type = TextActionType.Default Then
                 PlayerErrorMessage(PlayerError.DefaultTake, ctx)
-                PlayerItem(TakeItem, True, ctx, ObjID)
+                PlayerItem(item, True, ctx, id)
             ElseIf t.Type = TextActionType.Text Then
                 Print(t.Data, ctx)
-                PlayerItem(TakeItem, True, ctx, ObjID)
+                PlayerItem(item, True, ctx, id)
             ElseIf t.Type = TextActionType.Script Then
-                ExecuteScript(t.Data, ctx, ObjID)
+                ExecuteScript(t.Data, ctx, id)
             Else
                 PlayerErrorMessage(PlayerError.BadTake, ctx)
             End If
         Else
-
             ' find 'take' line
-            For i = _objs(ObjID).DefinitionSectionStart + 1 To _objs(ObjID).DefinitionSectionEnd - 1
+            For i = _objs(id).DefinitionSectionStart + 1 To _objs(id).DefinitionSectionEnd - 1
                 If BeginsWith(_lines(i), "take") Then
-                    ScriptLine = Trim(GetEverythingAfter(Trim(_lines(i)), "take"))
-                    ExecuteScript(ScriptLine, ctx, ObjID)
-                    FoundTake = True
-                    i = _objs(ObjID).DefinitionSectionEnd
+                    Dim script = Trim(GetEverythingAfter(Trim(_lines(i)), "take"))
+                    ExecuteScript(script, ctx, id)
+                    foundTake = True
+                    i = _objs(id).DefinitionSectionEnd
                 End If
             Next i
 
-            If FoundTake = False Then
+            If Not foundTake Then
                 PlayerErrorMessage(PlayerError.BadTake, ctx)
             End If
         End If
-
     End Sub
 
-    Private Sub ExecUse(tuseline As String, ctx As Context)
-        Dim OnWithPos, i, EndOnWith As Integer
-        Dim UseLine As String
-        Dim UseDeclareLine As String = "", UseOn, UseItem, ScriptLine As String
+    Private Sub ExecUse(useLine As String, ctx As Context)
+        Dim endOnWith As Integer
+        Dim useDeclareLine = ""
+        Dim useOn, useItem As String
 
-        UseLine = Trim(GetEverythingAfter(tuseline, "use "))
+        useLine = Trim(GetEverythingAfter(useLine, "use "))
 
-        Dim RoomID As Integer
-        RoomID = GetRoomID(_currentRoom, ctx)
+        Dim roomId As Integer
+        roomId = GetRoomID(_currentRoom, ctx)
 
-        OnWithPos = InStr(UseLine, " on ")
-        If OnWithPos = 0 Then
-            OnWithPos = InStr(UseLine, " with ")
-            EndOnWith = OnWithPos + 4
+        Dim onWithPos = InStr(useLine, " on ")
+        If onWithPos = 0 Then
+            onWithPos = InStr(useLine, " with ")
+            endOnWith = onWithPos + 4
         Else
-            EndOnWith = OnWithPos + 2
+            endOnWith = onWithPos + 2
         End If
 
-
-        If OnWithPos <> 0 Then
-            UseOn = Trim(Right(UseLine, Len(UseLine) - EndOnWith))
-            UseItem = Trim(Left(UseLine, OnWithPos - 1))
+        If onWithPos <> 0 Then
+            useOn = Trim(Right(useLine, Len(useLine) - endOnWith))
+            useItem = Trim(Left(useLine, onWithPos - 1))
         Else
-            UseOn = ""
-            UseItem = UseLine
+            useOn = ""
+            useItem = useLine
         End If
 
         ' see if player has this item:
 
-        Dim FoundItem As Boolean
-        Dim ItemID As Integer
-        Dim InventoryPlace As String = ""
-        Dim NotGotItem As Boolean
+        Dim id As Integer
+        Dim notGotItem As Boolean
         If _gameAslVersion >= 280 Then
-            InventoryPlace = "inventory"
+            Dim foundItem = False
 
-            FoundItem = False
+            id = Disambiguate(useItem, "inventory", ctx)
+            If id > 0 Then foundItem = True
 
-            ItemID = Disambiguate(UseItem, InventoryPlace, ctx)
-            If ItemID > 0 Then FoundItem = True
-
-            If Not FoundItem Then
-                If ItemID <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
-                If UseOn = "" Then
+            If Not foundItem Then
+                If id <> -2 Then PlayerErrorMessage(PlayerError.NoItem, ctx)
+                If useOn = "" Then
                     _badCmdBefore = "use"
                 Else
                     _badCmdBefore = "use"
-                    _badCmdAfter = "on " & UseOn
+                    _badCmdAfter = "on " & useOn
                 End If
                 Exit Sub
             End If
         Else
-            NotGotItem = True
+            notGotItem = True
 
             For i = 1 To _numberItems
-                If LCase(_items(i).Name) = LCase(UseItem) Then
+                If LCase(_items(i).Name) = LCase(useItem) Then
                     If _items(i).Got = False Then
-                        NotGotItem = True
+                        notGotItem = True
                         i = _numberItems
                     Else
-                        NotGotItem = False
+                        notGotItem = False
                     End If
                 End If
             Next i
 
-            If NotGotItem = True Then
+            If notGotItem = True Then
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
             End If
         End If
 
-        Dim UseScript As String = ""
-        Dim FoundUseScript As Boolean
-        Dim FoundUseOnObject As Boolean
-        Dim UseOnObjectID As Integer
-        Dim Found As Boolean
+        Dim useScript As String = ""
+        Dim foundUseScript As Boolean
+        Dim foundUseOnObject As Boolean
+        Dim useOnObjectId As Integer
+        Dim found As Boolean
         If _gameAslVersion >= 280 Then
-            FoundUseScript = False
+            foundUseScript = False
 
-            If UseOn = "" Then
+            If useOn = "" Then
                 If _gameAslVersion < 410 Then
-                    Dim r = _rooms(RoomID)
+                    Dim r = _rooms(roomId)
                     For i = 1 To r.NumberUse
-                        If LCase(_objs(ItemID).ObjectName) = LCase(r.Use(i).Text) Then
-                            FoundUseScript = True
-                            UseScript = r.Use(i).Script
-                            i = r.NumberUse
+                        If LCase(_objs(id).ObjectName) = LCase(r.Use(i).Text) Then
+                            foundUseScript = True
+                            useScript = r.Use(i).Script
+                            Exit For
                         End If
                     Next i
                 End If
 
-                If Not FoundUseScript Then
-                    UseScript = _objs(ItemID).Use
-                    If UseScript <> "" Then FoundUseScript = True
+                If Not foundUseScript Then
+                    useScript = _objs(id).Use
+                    If useScript <> "" Then foundUseScript = True
                 End If
             Else
-                FoundUseOnObject = False
+                foundUseOnObject = False
 
-                UseOnObjectID = Disambiguate(UseOn, _currentRoom, ctx)
-                If UseOnObjectID > 0 Then
-                    FoundUseOnObject = True
+                useOnObjectId = Disambiguate(useOn, _currentRoom, ctx)
+                If useOnObjectId > 0 Then
+                    foundUseOnObject = True
                 Else
-                    UseOnObjectID = Disambiguate(UseOn, InventoryPlace, ctx)
-                    If UseOnObjectID > 0 Then
-                        FoundUseOnObject = True
+                    useOnObjectId = Disambiguate(useOn, "inventory", ctx)
+                    If useOnObjectId > 0 Then
+                        foundUseOnObject = True
                     End If
                 End If
 
-                If Not FoundUseOnObject Then
-                    If UseOnObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
-                    _badCmdBefore = "use " & UseItem & " on"
+                If Not foundUseOnObject Then
+                    If useOnObjectId <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+                    _badCmdBefore = "use " & useItem & " on"
                     Exit Sub
                 End If
 
@@ -9972,106 +9954,106 @@ Public Class LegacyGame
 
                 'first check b for use <a>:
 
-                Dim o = _objs(UseOnObjectID)
+                Dim o = _objs(useOnObjectId)
 
                 For i = 1 To o.NumberUseData
-                    If o.UseData(i).UseType = UseType.UseSomethingOn And LCase(o.UseData(i).UseObject) = LCase(_objs(ItemID).ObjectName) Then
-                        FoundUseScript = True
-                        UseScript = o.UseData(i).UseScript
-                        i = o.NumberUseData
+                    If o.UseData(i).UseType = UseType.UseSomethingOn And LCase(o.UseData(i).UseObject) = LCase(_objs(id).ObjectName) Then
+                        foundUseScript = True
+                        useScript = o.UseData(i).UseScript
+                        Exit For
                     End If
                 Next i
 
-                If Not FoundUseScript Then
+                If Not foundUseScript Then
                     'check a for use on <b>:
-                    Dim u = _objs(ItemID)
+                    Dim u = _objs(id)
                     For i = 1 To u.NumberUseData
-                        If u.UseData(i).UseType = UseType.UseOnSomething And LCase(u.UseData(i).UseObject) = LCase(_objs(UseOnObjectID).ObjectName) Then
-                            FoundUseScript = True
-                            UseScript = u.UseData(i).UseScript
-                            i = u.NumberUseData
+                        If u.UseData(i).UseType = UseType.UseOnSomething And LCase(u.UseData(i).UseObject) = LCase(_objs(useOnObjectId).ObjectName) Then
+                            foundUseScript = True
+                            useScript = u.UseData(i).UseScript
+                            Exit For
                         End If
                     Next i
                 End If
 
-                If Not FoundUseScript Then
+                If Not foundUseScript Then
                     'check b for use anything:
-                    UseScript = _objs(UseOnObjectID).UseAnything
-                    If UseScript <> "" Then
-                        FoundUseScript = True
-                        SetStringContents("quest.use.object.name", _objs(ItemID).ObjectName, ctx)
+                    useScript = _objs(useOnObjectId).UseAnything
+                    If useScript <> "" Then
+                        foundUseScript = True
+                        SetStringContents("quest.use.object.name", _objs(id).ObjectName, ctx)
                     End If
                 End If
 
-                If Not FoundUseScript Then
+                If Not foundUseScript Then
                     'check a for use on anything:
-                    UseScript = _objs(ItemID).UseOnAnything
-                    If UseScript <> "" Then
-                        FoundUseScript = True
-                        SetStringContents("quest.use.object.name", _objs(UseOnObjectID).ObjectName, ctx)
+                    useScript = _objs(id).UseOnAnything
+                    If useScript <> "" Then
+                        foundUseScript = True
+                        SetStringContents("quest.use.object.name", _objs(useOnObjectId).ObjectName, ctx)
                     End If
                 End If
             End If
 
-            If FoundUseScript Then
-                ExecuteScript(UseScript, ctx, ItemID)
+            If foundUseScript Then
+                ExecuteScript(useScript, ctx, id)
             Else
                 PlayerErrorMessage(PlayerError.DefaultUse, ctx)
             End If
         Else
-            If UseOn <> "" Then
-                UseDeclareLine = RetrLineParam("object", UseOn, "use", UseItem, ctx)
+            If useOn <> "" Then
+                useDeclareLine = RetrLineParam("object", useOn, "use", useItem, ctx)
             Else
-                Found = False
-                For i = 1 To _rooms(RoomID).NumberUse
-                    If LCase(_rooms(RoomID).Use(i).Text) = LCase(UseItem) Then
-                        UseDeclareLine = "use <> " & _rooms(RoomID).Use(i).Script
-                        Found = True
-                        i = _rooms(RoomID).NumberUse
+                found = False
+                For i = 1 To _rooms(roomId).NumberUse
+                    If LCase(_rooms(roomId).Use(i).Text) = LCase(useItem) Then
+                        useDeclareLine = "use <> " & _rooms(roomId).Use(i).Script
+                        found = True
+                        Exit For
                     End If
                 Next i
 
-                If Not Found Then
-                    UseDeclareLine = FindLine(GetDefineBlock("game"), "use", UseItem)
+                If Not found Then
+                    useDeclareLine = FindLine(GetDefineBlock("game"), "use", useItem)
                 End If
 
-                If Not Found And UseDeclareLine = "" Then
+                If Not found And useDeclareLine = "" Then
                     PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                     Exit Sub
                 End If
             End If
 
-            If UseDeclareLine <> "<unfound>" And UseDeclareLine <> "<undefined>" And UseOn <> "" Then
+            If useDeclareLine <> "<unfound>" And useDeclareLine <> "<undefined>" And useOn <> "" Then
                 'Check for object availablity
-                If IsAvailable(UseOn, Thing.Object, ctx) = False Then
-                    UseDeclareLine = "<undefined>"
+                If IsAvailable(useOn, Thing.Object, ctx) = False Then
+                    useDeclareLine = "<undefined>"
                 End If
             End If
 
-            If UseDeclareLine = "<undefined>" Then
-                UseDeclareLine = RetrLineParam("character", UseOn, "use", UseItem, ctx)
+            If useDeclareLine = "<undefined>" Then
+                useDeclareLine = RetrLineParam("character", useOn, "use", useItem, ctx)
 
-                If UseDeclareLine <> "<undefined>" Then
+                If useDeclareLine <> "<undefined>" Then
                     'Check for character availability
-                    If IsAvailable(UseOn, Thing.Character, ctx) = False Then
-                        UseDeclareLine = "<undefined>"
+                    If IsAvailable(useOn, Thing.Character, ctx) = False Then
+                        useDeclareLine = "<undefined>"
                     End If
                 End If
 
-                If UseDeclareLine = "<undefined>" Then
+                If useDeclareLine = "<undefined>" Then
                     PlayerErrorMessage(PlayerError.BadThing, ctx)
                     Exit Sub
-                ElseIf UseDeclareLine = "<unfound>" Then
+                ElseIf useDeclareLine = "<unfound>" Then
                     PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                     Exit Sub
                 End If
-            ElseIf UseDeclareLine = "<unfound>" Then
+            ElseIf useDeclareLine = "<unfound>" Then
                 PlayerErrorMessage(PlayerError.DefaultUse, ctx)
                 Exit Sub
             End If
 
-            ScriptLine = Right(UseDeclareLine, Len(UseDeclareLine) - InStr(UseDeclareLine, ">"))
-            ExecuteScript(ScriptLine, ctx)
+            Dim script = Right(useDeclareLine, Len(useDeclareLine) - InStr(useDeclareLine, ">"))
+            ExecuteScript(script, ctx)
         End If
 
     End Sub
@@ -11746,7 +11728,7 @@ Public Class LegacyGame
 
     End Sub
 
-    ' TODO: Fix - ErrorMsg was ByRef
+    ' TODO: Fix - ErrorMsg and ParentID were ByRef
     Private Function PlayerCanAccessObject(ObjID As Integer, Optional ParentID As Integer = 0, Optional ErrorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
