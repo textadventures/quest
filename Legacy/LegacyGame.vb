@@ -9366,103 +9366,92 @@ Public Class LegacyGame
         Return True
     End Function
 
-    Private Function CmdStartsWith(sCommand As String, sCheck As String) As Boolean
+    Private Function CmdStartsWith(cmd As String, startsWith As String) As Boolean
         ' When we are checking user input in ExecCommand, we check things like whether
         ' the player entered something beginning with "put ". We need to trim what the player entered
         ' though, otherwise they might just type "put " and then we would try disambiguating an object
         ' called "".
 
-        Return BeginsWith(Trim(sCommand), sCheck)
+        Return BeginsWith(Trim(cmd), startsWith)
     End Function
 
-    Private Sub ExecGive(GiveString As String, ctx As Context)
-        Dim characterblock As DefineBlock
-        Dim ObjArticle As String
-        Dim ToLoc As Integer
-        Dim ItemToGive, CharToGive As String
-        Dim ObjectType As Thing
-        Dim ItemID As Integer
-        Dim InventoryPlace As String
-        Dim NotGotItem As Boolean
-        Dim GiveScript As String = ""
-        Dim FoundGiveScript, FoundGiveToObject As Boolean
-        Dim GiveToObjectID, i As Integer
-        Dim ObjGender As String
-        Dim RealName, ItemCheck As String
-        Dim GiveLine As Integer
+    Private Sub ExecGive(giveString As String, ctx As Context)
+        Dim article As String
+        Dim item, character As String
+        Dim type As Thing
+        Dim id As Integer
+        Dim script As String = ""
+        Dim toPos = InStr(giveString, " to ")
 
-        ToLoc = InStr(GiveString, " to ")
-        If ToLoc = 0 Then
-            ToLoc = InStr(GiveString, " the ")
-            If ToLoc = 0 Then
+        If toPos = 0 Then
+            toPos = InStr(giveString, " the ")
+            If toPos = 0 Then
                 PlayerErrorMessage(PlayerError.BadGive, ctx)
                 Exit Sub
             Else
-                ItemToGive = Trim(Mid(GiveString, ToLoc + 4, Len(GiveString) - (ToLoc + 2)))
-                CharToGive = Trim(Mid(GiveString, 1, ToLoc))
+                item = Trim(Mid(giveString, toPos + 4, Len(giveString) - (toPos + 2)))
+                character = Trim(Mid(giveString, 1, toPos))
             End If
         Else
-            ItemToGive = Trim(Mid(GiveString, 1, ToLoc))
-            CharToGive = Trim(Mid(GiveString, ToLoc + 3, Len(GiveString) - (ToLoc + 2)))
+            item = Trim(Mid(giveString, 1, toPos))
+            character = Trim(Mid(giveString, toPos + 3, Len(giveString) - (toPos + 2)))
         End If
 
         If _gameAslVersion >= 281 Then
-            ObjectType = Thing.Object
+            type = Thing.Object
         Else
-            ObjectType = Thing.Character
+            type = Thing.Character
         End If
 
         ' First see if player has "ItemToGive":
         If _gameAslVersion >= 280 Then
-            InventoryPlace = "inventory"
+            id = Disambiguate(item, "inventory", ctx)
 
-            ItemID = Disambiguate(ItemToGive, InventoryPlace, ctx)
-
-            If ItemID = -1 Then
+            If id = -1 Then
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
                 _badCmdBefore = "give"
-                _badCmdAfter = "to " & CharToGive
+                _badCmdAfter = "to " & character
                 Exit Sub
-            ElseIf ItemID = -2 Then
+            ElseIf id = -2 Then
                 Exit Sub
             Else
-                ObjArticle = _objs(ItemID).Article
+                article = _objs(id).Article
             End If
         Else
             ' ASL2:
-            NotGotItem = True
+            Dim notGot = True
 
             For i = 1 To _numberItems
-                If LCase(_items(i).Name) = LCase(ItemToGive) Then
+                If LCase(_items(i).Name) = LCase(item) Then
                     If _items(i).Got = False Then
-                        NotGotItem = True
+                        notGot = True
                         i = _numberItems
                     Else
-                        NotGotItem = False
+                        notGot = False
                     End If
                 End If
             Next i
 
-            If NotGotItem = True Then
+            If notGot = True Then
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
             Else
-                ObjArticle = _objs(ItemID).Article
+                article = _objs(id).Article
             End If
         End If
 
         If _gameAslVersion >= 281 Then
-            FoundGiveScript = False
-            FoundGiveToObject = False
+            Dim foundScript = False
+            Dim foundObject = False
 
-            GiveToObjectID = Disambiguate(CharToGive, _currentRoom, ctx)
-            If GiveToObjectID > 0 Then
-                FoundGiveToObject = True
+            Dim giveToId = Disambiguate(character, _currentRoom, ctx)
+            If giveToId > 0 Then
+                foundObject = True
             End If
 
-            If Not FoundGiveToObject Then
-                If GiveToObjectID <> -2 Then PlayerErrorMessage(PlayerError.BadCharacter, ctx)
-                _badCmdBefore = "give " & ItemToGive & " to"
+            If Not foundObject Then
+                If giveToId <> -2 Then PlayerErrorMessage(PlayerError.BadCharacter, ctx)
+                _badCmdBefore = "give " & item & " to"
                 Exit Sub
             End If
 
@@ -9470,236 +9459,205 @@ Public Class LegacyGame
             'now, for "give a to b", we have
             'ItemID=a and GiveToObjectID=b
 
-            Dim o = _objs(GiveToObjectID)
+            Dim o = _objs(giveToId)
 
             For i = 1 To o.NumberGiveData
-                If o.GiveData(i).GiveType = GiveType.GiveSomethingTo And LCase(o.GiveData(i).GiveObject) = LCase(_objs(ItemID).ObjectName) Then
-                    FoundGiveScript = True
-                    GiveScript = o.GiveData(i).GiveScript
-                    i = o.NumberGiveData
+                If o.GiveData(i).GiveType = GiveType.GiveSomethingTo And LCase(o.GiveData(i).GiveObject) = LCase(_objs(id).ObjectName) Then
+                    foundScript = True
+                    script = o.GiveData(i).GiveScript
+                    Exit For
                 End If
             Next i
 
-            If Not FoundGiveScript Then
+            If Not foundScript Then
                 'check a for give to <b>:
 
-                Dim g = _objs(ItemID)
+                Dim g = _objs(id)
 
                 For i = 1 To g.NumberGiveData
-                    If g.GiveData(i).GiveType = GiveType.GiveToSomething And LCase(g.GiveData(i).GiveObject) = LCase(_objs(GiveToObjectID).ObjectName) Then
-                        FoundGiveScript = True
-                        GiveScript = g.GiveData(i).GiveScript
-                        i = g.NumberGiveData
+                    If g.GiveData(i).GiveType = GiveType.GiveToSomething And LCase(g.GiveData(i).GiveObject) = LCase(_objs(giveToId).ObjectName) Then
+                        foundScript = True
+                        script = g.GiveData(i).GiveScript
+                        Exit For
                     End If
                 Next i
             End If
 
-            If Not FoundGiveScript Then
+            If Not foundScript Then
                 'check b for give anything:
-                GiveScript = _objs(GiveToObjectID).GiveAnything
-                If GiveScript <> "" Then
-                    FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", _objs(ItemID).ObjectName, ctx)
+                script = _objs(giveToId).GiveAnything
+                If script <> "" Then
+                    foundScript = True
+                    SetStringContents("quest.give.object.name", _objs(id).ObjectName, ctx)
                 End If
             End If
 
-            If Not FoundGiveScript Then
+            If Not foundScript Then
                 'check a for give to anything:
-                GiveScript = _objs(ItemID).GiveToAnything
-                If GiveScript <> "" Then
-                    FoundGiveScript = True
-                    SetStringContents("quest.give.object.name", _objs(GiveToObjectID).ObjectName, ctx)
+                script = _objs(id).GiveToAnything
+                If script <> "" Then
+                    foundScript = True
+                    SetStringContents("quest.give.object.name", _objs(giveToId).ObjectName, ctx)
                 End If
             End If
 
-            If FoundGiveScript Then
-                ExecuteScript(GiveScript, ctx, ItemID)
+            If foundScript Then
+                ExecuteScript(script, ctx, id)
             Else
-                SetStringContents("quest.error.charactername", _objs(GiveToObjectID).ObjectName, ctx)
+                SetStringContents("quest.error.charactername", _objs(giveToId).ObjectName, ctx)
 
-                ObjGender = Trim(_objs(GiveToObjectID).Gender)
-                ObjGender = UCase(Left(ObjGender, 1)) & Mid(ObjGender, 2)
-                SetStringContents("quest.error.gender", ObjGender, ctx)
+                Dim gender = Trim(_objs(giveToId).Gender)
+                gender = UCase(Left(gender, 1)) & Mid(gender, 2)
+                SetStringContents("quest.error.gender", gender, ctx)
 
-                SetStringContents("quest.error.article", ObjArticle, ctx)
+                SetStringContents("quest.error.article", article, ctx)
                 PlayerErrorMessage(PlayerError.ItemUnwanted, ctx)
             End If
         Else
             ' ASL2:
-            characterblock = GetThingBlock(CharToGive, _currentRoom, ObjectType)
+            Dim block = GetThingBlock(character, _currentRoom, type)
 
-            If (characterblock.StartLine = 0 And characterblock.EndLine = 0) Or IsAvailable(CharToGive & "@" & _currentRoom, ObjectType, ctx) = False Then
+            If (block.StartLine = 0 And block.EndLine = 0) Or IsAvailable(character & "@" & _currentRoom, type, ctx) = False Then
                 PlayerErrorMessage(PlayerError.BadCharacter, ctx)
                 Exit Sub
             End If
 
-            RealName = _chars(GetThingNumber(CharToGive, _currentRoom, ObjectType)).ObjectName
+            Dim realName = _chars(GetThingNumber(character, _currentRoom, type)).ObjectName
 
             ' now, see if there's a give statement for this item in
             ' this characters definition:
 
-            GiveLine = 0
-            For i = characterblock.StartLine + 1 To characterblock.EndLine - 1
+            Dim giveLine = 0
+            For i = block.StartLine + 1 To block.EndLine - 1
                 If BeginsWith(_lines(i), "give") Then
-                    ItemCheck = GetParameter(_lines(i), ctx)
-                    If LCase(ItemCheck) = LCase(ItemToGive) Then
-                        GiveLine = i
+                    Dim ItemCheck = GetParameter(_lines(i), ctx)
+                    If LCase(ItemCheck) = LCase(item) Then
+                        giveLine = i
                     End If
                 End If
             Next i
 
-            If GiveLine = 0 Then
-                If ObjArticle = "" Then ObjArticle = "it"
-                SetStringContents("quest.error.charactername", RealName, ctx)
-                SetStringContents("quest.error.gender", Trim(GetGender(CharToGive, True, ctx)), ctx)
-                SetStringContents("quest.error.article", ObjArticle, ctx)
+            If giveLine = 0 Then
+                If article = "" Then article = "it"
+                SetStringContents("quest.error.charactername", realName, ctx)
+                SetStringContents("quest.error.gender", Trim(GetGender(character, True, ctx)), ctx)
+                SetStringContents("quest.error.article", article, ctx)
                 PlayerErrorMessage(PlayerError.ItemUnwanted, ctx)
                 Exit Sub
             End If
 
             ' now, execute the statement on GiveLine
-            ExecuteScript(GetSecondChunk(_lines(GiveLine)), ctx)
+            ExecuteScript(GetSecondChunk(_lines(giveLine)), ctx)
         End If
-
     End Sub
 
-    Private Sub ExecLook(LookLine As String, ctx As Context)
-        Dim AtPos As Integer
-        Dim LookStuff, LookItem, LookText As String
+    Private Sub ExecLook(lookLine As String, ctx As Context)
+        Dim item As String
 
-        Dim InventoryPlace As String
-        Dim FoundObject As Boolean
-        Dim ObjID As Integer
-        If Trim(LookLine) = "look" Then
+        If Trim(lookLine) = "look" Then
             ShowRoomInfo((_currentRoom), ctx)
         Else
             If _gameAslVersion < 391 Then
-                AtPos = InStr(LookLine, " at ")
+                Dim atPos = InStr(lookLine, " at ")
 
-                If AtPos = 0 Then
-                    LookItem = GetEverythingAfter(LookLine, "look ")
+                If atPos = 0 Then
+                    item = GetEverythingAfter(lookLine, "look ")
                 Else
-                    LookItem = Trim(Mid(LookLine, AtPos + 4))
+                    item = Trim(Mid(lookLine, atPos + 4))
                 End If
             Else
-                If BeginsWith(LookLine, "look at ") Then
-                    LookItem = GetEverythingAfter(LookLine, "look at ")
-                ElseIf BeginsWith(LookLine, "look in ") Then
-                    LookItem = GetEverythingAfter(LookLine, "look in ")
-                ElseIf BeginsWith(LookLine, "look on ") Then
-                    LookItem = GetEverythingAfter(LookLine, "look on ")
-                ElseIf BeginsWith(LookLine, "look inside ") Then
-                    LookItem = GetEverythingAfter(LookLine, "look inside ")
+                If BeginsWith(lookLine, "look at ") Then
+                    item = GetEverythingAfter(lookLine, "look at ")
+                ElseIf BeginsWith(lookLine, "look in ") Then
+                    item = GetEverythingAfter(lookLine, "look in ")
+                ElseIf BeginsWith(lookLine, "look on ") Then
+                    item = GetEverythingAfter(lookLine, "look on ")
+                ElseIf BeginsWith(lookLine, "look inside ") Then
+                    item = GetEverythingAfter(lookLine, "look inside ")
                 Else
-                    LookItem = GetEverythingAfter(LookLine, "look ")
+                    item = GetEverythingAfter(lookLine, "look ")
                 End If
             End If
 
             If _gameAslVersion >= 280 Then
-                FoundObject = False
+                Dim id = Disambiguate(item, "inventory;" & _currentRoom, ctx)
 
-                InventoryPlace = "inventory"
-
-                ObjID = Disambiguate(LookItem, InventoryPlace & ";" & _currentRoom, ctx)
-                If ObjID > 0 Then
-                    FoundObject = True
-                End If
-
-                If Not FoundObject Then
-                    If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
+                If id <= 0 Then
+                    If id <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                     _badCmdBefore = "look at"
                     Exit Sub
                 End If
 
-                DoLook(ObjID, ctx)
+                DoLook(id, ctx)
             Else
-                If BeginsWith(LookItem, "the ") Then
-                    LookItem = GetEverythingAfter(LookItem, "the ")
+                If BeginsWith(item, "the ") Then
+                    item = GetEverythingAfter(item, "the ")
                 End If
 
-                LookLine = RetrLine("object", LookItem, "look", ctx)
+                lookLine = RetrLine("object", item, "look", ctx)
 
-                If LookLine <> "<unfound>" Then
+                If lookLine <> "<unfound>" Then
                     'Check for availability
-                    If IsAvailable(LookItem, Thing.Object, ctx) = False Then
-                        LookLine = "<unfound>"
+                    If IsAvailable(item, Thing.Object, ctx) = False Then
+                        lookLine = "<unfound>"
                     End If
                 End If
 
-                If LookLine = "<unfound>" Then
-                    LookLine = RetrLine("character", LookItem, "look", ctx)
+                If lookLine = "<unfound>" Then
+                    lookLine = RetrLine("character", item, "look", ctx)
 
-                    If LookLine <> "<unfound>" Then
-                        If IsAvailable(LookItem, Thing.Character, ctx) = False Then
-                            LookLine = "<unfound>"
+                    If lookLine <> "<unfound>" Then
+                        If IsAvailable(item, Thing.Character, ctx) = False Then
+                            lookLine = "<unfound>"
                         End If
                     End If
 
-                    If LookLine = "<unfound>" Then
+                    If lookLine = "<unfound>" Then
                         PlayerErrorMessage(PlayerError.BadThing, ctx)
                         Exit Sub
-                    ElseIf LookLine = "<undefined>" Then
+                    ElseIf lookLine = "<undefined>" Then
                         PlayerErrorMessage(PlayerError.DefaultLook, ctx)
                         Exit Sub
                     End If
-                ElseIf LookLine = "<undefined>" Then
+                ElseIf lookLine = "<undefined>" Then
                     PlayerErrorMessage(PlayerError.DefaultLook, ctx)
                     Exit Sub
                 End If
 
-                LookStuff = Trim(GetEverythingAfter(Trim(LookLine), "look "))
-                If Left(LookStuff, 1) = "<" Then
-                    LookText = GetParameter(LookLine, ctx)
+                Dim lookData = Trim(GetEverythingAfter(Trim(lookLine), "look "))
+                If Left(lookData, 1) = "<" Then
+                    Dim LookText = GetParameter(lookLine, ctx)
                     Print(LookText, ctx)
                 Else
-                    ExecuteScript(LookStuff, ctx, ObjID)
+                    ExecuteScript(lookData, ctx)
                 End If
             End If
         End If
 
     End Sub
 
-    Private Sub ExecSpeak(c As String, ctx As Context)
-        Dim i As Integer
-        Dim l, s As String
-
-        If BeginsWith(c, "the ") Then
-            c = GetEverythingAfter(c, "the ")
+    Private Sub ExecSpeak(cmd As String, ctx As Context)
+        If BeginsWith(cmd, "the ") Then
+            cmd = GetEverythingAfter(cmd, "the ")
         End If
 
-        Dim ObjectName As String
-        ObjectName = c
+        Dim name = cmd
 
         ' if the "speak" parameter of the character c$'s definition
         ' is just a parameter, say it - otherwise execute it as
         ' a script.
 
-        Dim ObjectType As Thing
-
-        Dim SpeakLine As String = ""
-        Dim InventoryPlace As String
-        Dim FoundSpeak As Boolean
-        Dim SpeakText As String
-        Dim FoundObject As Boolean
-        Dim ObjID As Integer
         If _gameAslVersion >= 281 Then
+            Dim speakLine As String = ""
 
-            FoundObject = False
-
-            InventoryPlace = "inventory"
-
-            ObjID = Disambiguate(ObjectName, InventoryPlace & ";" & _currentRoom, ctx)
-            If ObjID > 0 Then
-                FoundObject = True
-            End If
-
-            If Not FoundObject Then
+            Dim ObjID = Disambiguate(name, "inventory;" & _currentRoom, ctx)
+            If ObjID <= 0 Then
                 If ObjID <> -2 Then PlayerErrorMessage(PlayerError.BadThing, ctx)
                 _badCmdBefore = "speak to"
                 Exit Sub
             End If
 
-            FoundSpeak = False
+            Dim foundSpeak = False
 
             ' First look for action, then look
             ' for property, then check define
@@ -9709,78 +9667,76 @@ Public Class LegacyGame
 
             For i = 1 To o.NumberActions
                 If o.Actions(i).ActionName = "speak" Then
-                    SpeakLine = "speak " & o.Actions(i).Script
-                    FoundSpeak = True
-                    i = o.NumberActions
+                    speakLine = "speak " & o.Actions(i).Script
+                    foundSpeak = True
+                    Exit For
                 End If
             Next i
 
-            If Not FoundSpeak Then
+            If Not foundSpeak Then
                 For i = 1 To o.NumberProperties
                     If o.Properties(i).PropertyName = "speak" Then
-                        SpeakLine = "speak <" & o.Properties(i).PropertyValue & ">"
-                        FoundSpeak = True
-                        i = o.NumberProperties
+                        speakLine = "speak <" & o.Properties(i).PropertyValue & ">"
+                        foundSpeak = True
+                        Exit For
                     End If
                 Next i
             End If
 
-            If _gameAslVersion < 311 Then
-                ' For some reason ASL3 < 311 looks for a "look" tag rather than
-                ' having had this set up at initialisation.
-                If Not FoundSpeak Then
-                    For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
-                        If BeginsWith(_lines(i), "speak ") Then
-                            SpeakLine = _lines(i)
-                            FoundSpeak = True
-                        End If
-                    Next i
-                End If
+            ' For some reason ASL3 < 311 looks for a "look" tag rather than
+            ' having had this set up at initialisation.
+            If _gameAslVersion < 311 And Not foundSpeak Then
+                For i = o.DefinitionSectionStart To o.DefinitionSectionEnd
+                    If BeginsWith(_lines(i), "speak ") Then
+                        speakLine = _lines(i)
+                        foundSpeak = True
+                    End If
+                Next i
             End If
 
-            If Not FoundSpeak Then
+            If Not foundSpeak Then
                 SetStringContents("quest.error.gender", UCase(Left(_objs(ObjID).Gender, 1)) & Mid(_objs(ObjID).Gender, 2), ctx)
                 PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
                 Exit Sub
             End If
 
-            SpeakLine = GetEverythingAfter(SpeakLine, "speak ")
+            speakLine = GetEverythingAfter(speakLine, "speak ")
 
-            If BeginsWith(SpeakLine, "<") Then
-                SpeakText = GetParameter(SpeakLine, ctx)
+            If BeginsWith(speakLine, "<") Then
+                Dim text = GetParameter(speakLine, ctx)
                 If _gameAslVersion >= 350 Then
-                    Print(SpeakText, ctx)
+                    Print(text, ctx)
                 Else
-                    Print(Chr(34) & SpeakText & Chr(34), ctx)
+                    Print(Chr(34) & text & Chr(34), ctx)
                 End If
             Else
-                ExecuteScript(SpeakLine, ctx, ObjID)
+                ExecuteScript(speakLine, ctx, ObjID)
             End If
 
         Else
-            l = RetrLine("character", c, "speak", ctx)
-            ObjectType = Thing.Character
+            Dim line = RetrLine("character", cmd, "speak", ctx)
+            Dim type = Thing.Character
 
-            s = Trim(GetEverythingAfter(Trim(l), "speak "))
+            Dim data = Trim(GetEverythingAfter(Trim(line), "speak "))
 
-            If l <> "<unfound>" And l <> "<undefined>" Then
+            If line <> "<unfound>" And line <> "<undefined>" Then
                 ' Character exists; but is it available??
-                If IsAvailable(c & "@" & _currentRoom, ObjectType, ctx) = False Then
-                    l = "<undefined>"
+                If IsAvailable(cmd & "@" & _currentRoom, type, ctx) = False Then
+                    line = "<undefined>"
                 End If
             End If
 
-            If l = "<undefined>" Then
+            If line = "<undefined>" Then
                 PlayerErrorMessage(PlayerError.BadCharacter, ctx)
-            ElseIf l = "<unfound>" Then
-                SetStringContents("quest.error.gender", Trim(GetGender(c, True, ctx)), ctx)
-                SetStringContents("quest.error.charactername", c, ctx)
+            ElseIf line = "<unfound>" Then
+                SetStringContents("quest.error.gender", Trim(GetGender(cmd, True, ctx)), ctx)
+                SetStringContents("quest.error.charactername", cmd, ctx)
                 PlayerErrorMessage(PlayerError.DefaultSpeak, ctx)
-            ElseIf BeginsWith(s, "<") Then
-                s = GetParameter(l, ctx)
-                Print(Chr(34) & s & Chr(34), ctx)
+            ElseIf BeginsWith(data, "<") Then
+                data = GetParameter(line, ctx)
+                Print(Chr(34) & data & Chr(34), ctx)
             Else
-                ExecuteScript(s, ctx)
+                ExecuteScript(data, ctx)
             End If
         End If
 
