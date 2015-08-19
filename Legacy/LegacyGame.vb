@@ -3261,7 +3261,7 @@ Public Class LegacyGame
         End If
 
         Dim arrayIndex = GetArrayIndex(var, ctx)
-        SetNumericVariableContents(var, value, ctx, arrayIndex)
+        SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index)
     End Sub
 
     Private Function ExtractFile(file As String) As String
@@ -3897,23 +3897,31 @@ Public Class LegacyGame
         Return False
     End Function
 
-    ' TODO: varName was ByRef
-    Private Function GetArrayIndex(varName As String, ctx As Context) As Integer
-        Dim index As Integer
+    Private Class ArrayResult
+        Public Name As String
+        Public Index As Integer
+    End Class
 
-        If InStr(varName, "[") <> 0 And InStr(varName, "]") <> 0 Then
-            Dim beginPos = InStr(varName, "[")
-            Dim endPos = InStr(varName, "]")
-            Dim data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1)
-            If IsNumeric(data) Then
-                index = CInt(data)
-            Else
-                index = CInt(GetNumericContents(data, ctx))
-            End If
-            varName = Left(varName, beginPos - 1)
+    Private Function GetArrayIndex(varName As String, ctx As Context) As ArrayResult
+        Dim result As New ArrayResult
+
+        If InStr(varName, "[") = 0 Or InStr(varName, "]") = 0 Then
+            result.Name = varName
+            Return result
         End If
 
-        Return index
+        Dim beginPos = InStr(varName, "[")
+        Dim endPos = InStr(varName, "]")
+        Dim data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1)
+
+        If IsNumeric(data) Then
+            result.Index = CInt(data)
+        Else
+            result.Index = CInt(GetNumericContents(data, ctx))
+        End If
+
+        result.Name = Left(varName, beginPos - 1)
+        Return result
     End Function
 
     Friend Function Disambiguate(name As String, containedIn As String, ctx As Context, Optional isExit As Boolean = False) As Integer
@@ -5905,8 +5913,8 @@ Public Class LegacyGame
         Dim varCont = Trim(Mid(varInfo, scp + 1))
         Dim idx = GetArrayIndex(varName, ctx)
 
-        If IsNumeric(varName) Then
-            LogASLError("Invalid numeric variable name '" & varName & "' - variable names cannot be numeric", LogType.WarningError)
+        If IsNumeric(idx.Name) Then
+            LogASLError("Invalid numeric variable name '" & idx.Name & "' - variable names cannot be numeric", LogType.WarningError)
             Exit Sub
         End If
 
@@ -5949,9 +5957,9 @@ Public Class LegacyGame
                 End If
             End If
 
-            SetNumericVariableContents(varName, Val(varCont), ctx, idx)
+            SetNumericVariableContents(idx.Name, Val(varCont), ctx, idx.Index)
         Catch
-            LogASLError("Error setting variable '" & varName & "' to '" & varCont & "'", LogType.WarningError)
+            LogASLError("Error setting variable '" & idx.Name & "' to '" & varCont & "'", LogType.WarningError)
         End Try
     End Sub
 
@@ -7695,7 +7703,7 @@ Public Class LegacyGame
         End If
 
         Dim idx = GetArrayIndex(name, ctx)
-        SetStringContents(name, value, ctx, idx)
+        SetStringContents(idx.Name, value, ctx, idx.Index)
     End Sub
 
     Private Function ExecUserCommand(cmd As String, ctx As Context, Optional libCommands As Boolean = False) As Boolean
@@ -7849,7 +7857,9 @@ Public Class LegacyGame
             Dim arrayIndex As Integer
             ' If VarName contains array name, change to index number
             If InStr(varName(i), "[") > 0 Then
-                arrayIndex = GetArrayIndex(varName(i), ctx)
+                Dim indexResult = GetArrayIndex(varName(i), ctx)
+                varName(i) = indexResult.Name
+                arrayIndex = indexResult.Index
             Else
                 arrayIndex = 0
             End If
@@ -8371,7 +8381,7 @@ Public Class LegacyGame
         If _gameAslVersion >= 281 Then
             Dim bp = InStr(name, "[")
             If bp <> 0 Then
-                arrayIndex = GetArrayIndex(name, ctx)
+                arrayIndex = GetArrayIndex(name, ctx).Index
                 name = Left(name, bp - 1)
             End If
         End If
@@ -11629,7 +11639,6 @@ Public Class LegacyGame
         Public ErrorMsg As String
     End Class
 
-    ' TODO: Fix - ErrorMsg was ByRef
     Private Function PlayerCanAccessObject(id As Integer, Optional colObjects As List(Of Integer) = Nothing) As PlayerCanAccessObjectResult
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
