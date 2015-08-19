@@ -9084,8 +9084,8 @@ Public Class LegacyGame
 
         Dim userCommandReturn As Boolean
 
-        If echo = True Then
-            Print("> " & input, ctx, , True)
+        If echo Then
+            Print("> " & input, ctx)
         End If
 
         input = LCase(input)
@@ -9171,7 +9171,7 @@ Public Class LegacyGame
                 parameter = GetEverythingAfter(input, "talk to ")
                 ExecSpeak(parameter, ctx)
             ElseIf cmd = "exit" Or cmd = "out" Or cmd = "leave" Then
-                LeaveRoom(ctx)
+                GoDirection("out", ctx)
                 _lastIt = 0
             ElseIf cmd = "north" Or cmd = "south" Or cmd = "east" Or cmd = "west" Then
                 GoDirection(input, ctx)
@@ -9212,7 +9212,7 @@ Public Class LegacyGame
                 Else
                     parameter = GetEverythingAfter(input, "go ")
                     If parameter = "out" Then
-                        LeaveRoom(ctx)
+                        GoDirection("out", ctx)
                     ElseIf parameter = "north" Or parameter = "south" Or parameter = "east" Or parameter = "west" Or parameter = "up" Or parameter = "down" Then
                         GoDirection(parameter, ctx)
                     ElseIf BeginsWith(parameter, "to ") Then
@@ -10210,8 +10210,6 @@ Public Class LegacyGame
                 PlayerItem(GetParameter(scriptLine, ctx), True, ctx)
             ElseIf BeginsWith(scriptLine, "lose ") Or BeginsWith(scriptLine, "drop ") Then
                 PlayerItem(GetParameter(scriptLine, ctx), False, ctx)
-            ElseIf BeginsWith(scriptLine, "msg nospeak ") Then
-                Print(GetParameter(scriptLine, ctx), ctx, , True)
             ElseIf BeginsWith(scriptLine, "msg ") Then
                 Print(GetParameter(scriptLine, ctx), ctx)
             ElseIf BeginsWith(scriptLine, "speak ") Then
@@ -10605,12 +10603,8 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Function InitialiseGame(afilename As String, Optional LoadedFromQSG As Boolean = False) As Boolean
-        Dim GameType, ErrorString As String
-        Dim i As Integer
-        Dim ASLVersion As String
-
-        _loadedFromQsg = LoadedFromQSG
+    Private Function InitialiseGame(filename As String, Optional fromQsg As Boolean = False) As Boolean
+        _loadedFromQsg = fromQsg
 
         _changeLogRooms = New ChangeLog
         _changeLogObjects = New ChangeLog
@@ -10620,50 +10614,44 @@ Public Class LegacyGame
         _outPutOn = True
         _useAbbreviations = True
 
-        _gamePath = System.IO.Path.GetDirectoryName(afilename) + "\"
+        _gamePath = System.IO.Path.GetDirectoryName(filename) + "\"
 
-        Dim LogMsg As String
-        LogMsg = "Opening file " & afilename & " on " & Date.Now.ToString()
-        LogASLError(LogMsg, LogType.Init)
+        LogASLError("Opening file " & filename & " on " & Date.Now.ToString(), LogType.Init)
 
         ' Parse file and find where the 'define' blocks are:
-        If ParseFile(afilename) = False Then
+        If ParseFile(filename) = False Then
             LogASLError("Unable to open file", LogType.Init)
-            ErrorString = "Unable to open " & afilename
+            Dim err = "Unable to open " & filename
 
             If _openErrorReport <> "" Then
                 ' Strip last vbcrlf
                 _openErrorReport = Left(_openErrorReport, Len(_openErrorReport) - 2)
-                ErrorString = ErrorString & ":" & vbCrLf & vbCrLf & _openErrorReport
+                err = err & ":" & vbCrLf & vbCrLf & _openErrorReport
             End If
 
-            Print("Error: " & ErrorString, _nullContext)
-
+            Print("Error: " & err, _nullContext)
             Return False
         End If
 
         ' Check version
-        Dim gameblock As DefineBlock
-        gameblock = GetDefineBlock("game")
+        Dim gameBlock As DefineBlock
+        gameBlock = GetDefineBlock("game")
 
-        ASLVersion = "//"
-        GameType = ""
-        For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+        Dim aslVersion = "//"
+        For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
             If BeginsWith(_lines(i), "asl-version ") Then
-                ASLVersion = GetParameter(_lines(i), _nullContext)
-            ElseIf BeginsWith(_lines(i), "gametype ") Then
-                GameType = GetEverythingAfter(_lines(i), "gametype ")
+                aslVersion = GetParameter(_lines(i), _nullContext)
             End If
         Next i
 
-        If ASLVersion = "//" Then
+        If aslVersion = "//" Then
             LogASLError("File contains no version header.", LogType.WarningError)
         Else
-            _gameAslVersion = CInt(ASLVersion)
+            _gameAslVersion = CInt(aslVersion)
 
-            Const RecognisedVersions As String = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/"
+            Dim recognisedVersions = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/"
 
-            If InStr(RecognisedVersions, "/" & ASLVersion & "/") = 0 Then
+            If InStr(recognisedVersions, "/" & aslVersion & "/") = 0 Then
                 LogASLError("Unrecognised ASL version number.", LogType.WarningError)
             End If
         End If
@@ -10694,7 +10682,6 @@ Public Class LegacyGame
                 _beforeSaveScript = GetEverythingAfter(_lines(i), "beforesave ")
             ElseIf BeginsWith(_lines(i), "onload ") Then
                 _onLoadScript = GetEverythingAfter(_lines(i), "onload ")
-
             End If
         Next i
 
@@ -10733,7 +10720,7 @@ Public Class LegacyGame
         SetUpTimers()
         SetUpMenus()
 
-        _gameFileName = afilename
+        _gameFileName = filename
 
         LogASLError("Finished loading file.", LogType.Init)
 
@@ -10743,56 +10730,44 @@ Public Class LegacyGame
         Return True
     End Function
 
-    Private Sub LeaveRoom(ctx As Context)
-        ' leaves the current room
-        GoDirection("out", ctx)
-    End Sub
-
-    Private Function PlaceExist(PlaceName As String, ctx As Context) As String
+    Private Function PlaceExist(placeName As String, ctx As Context) As String
         ' Returns actual name of an available "place" exit, and if
         ' script is executed on going in that direction, that script
         ' is returned after a ";"
 
-        Dim RoomID As Integer
-        Dim CheckPlace As String
-        Dim DestRoomID As Integer
-        Dim CheckPlaceName As String
-        Dim FoundPlace, ScriptPresent As Boolean
-        Dim i As Integer
-
-        RoomID = GetRoomID(_currentRoom, ctx)
-        FoundPlace = False
-        ScriptPresent = False
+        Dim roomId = GetRoomID(_currentRoom, ctx)
+        Dim foundPlace = False
+        Dim scriptPresent = False
 
         ' check if place is available
-        Dim r = _rooms(RoomID)
+        Dim r = _rooms(roomId)
 
         For i = 1 To r.NumberPlaces
-            CheckPlace = r.Places(i).PlaceName
+            Dim checkPlace = r.Places(i).PlaceName
 
             'remove any prefix and semicolon
-            If InStr(CheckPlace, ";") > 0 Then
-                CheckPlace = Trim(Right(CheckPlace, Len(CheckPlace) - (InStr(CheckPlace, ";") + 1)))
+            If InStr(checkPlace, ";") > 0 Then
+                checkPlace = Trim(Right(checkPlace, Len(checkPlace) - (InStr(checkPlace, ";") + 1)))
             End If
 
-            CheckPlaceName = CheckPlace
+            Dim checkPlaceName = checkPlace
 
             If _gameAslVersion >= 311 And r.Places(i).Script = "" Then
-                DestRoomID = GetRoomID(CheckPlace, ctx)
-                If DestRoomID <> 0 Then
-                    If _rooms(DestRoomID).RoomAlias <> "" Then
-                        CheckPlaceName = _rooms(DestRoomID).RoomAlias
+                Dim destRoomId = GetRoomID(checkPlace, ctx)
+                If destRoomId <> 0 Then
+                    If _rooms(destRoomId).RoomAlias <> "" Then
+                        checkPlaceName = _rooms(destRoomId).RoomAlias
                     End If
                 End If
             End If
 
-            If LCase(CheckPlaceName) = LCase(PlaceName) Then
-                FoundPlace = True
+            If LCase(checkPlaceName) = LCase(placeName) Then
+                foundPlace = True
 
                 If r.Places(i).Script <> "" Then
-                    Return CheckPlace & ";" & r.Places(i).Script
+                    Return checkPlace & ";" & r.Places(i).Script
                 Else
-                    Return CheckPlace
+                    Return checkPlace
                 End If
             End If
         Next i
@@ -10800,131 +10775,115 @@ Public Class LegacyGame
         Return ""
     End Function
 
-    Private Sub PlayerItem(anitem As String, gotit As Boolean, ctx As Context, Optional ObjID As Integer = 0)
-        ' Gives the player an item (if gotit=True) or takes an
-        ' item away from the player (if gotit=False).
+    Private Sub PlayerItem(item As String, got As Boolean, ctx As Context, Optional objId As Integer = 0)
+        ' Gives the player an item (if got=True) or takes an
+        ' item away from the player (if got=False).
 
-        ' If ASL>280, setting gotit=TRUE moves specified
-        ' *object* to room "inventory"; setting gotit=FALSe
+        ' If ASL>280, setting got=TRUE moves specified
+        ' *object* to room "inventory"; setting got=FALSE
         ' drops object into current room.
 
-        Dim FoundObjectName As Boolean
-        FoundObjectName = False
-        Dim OldRoom As String
-        Dim i As Integer
+        Dim foundObjectName = False
 
         If _gameAslVersion >= 280 Then
-            If ObjID = 0 Then
+            If objId = 0 Then
                 For i = 1 To _numberObjs
-                    If LCase(_objs(i).ObjectName) = LCase(anitem) Then
-                        ObjID = i
-                        i = _numberObjs
+                    If LCase(_objs(i).ObjectName) = LCase(item) Then
+                        objId = i
+                        Exit For
                     End If
                 Next i
             End If
 
-            If ObjID <> 0 Then
-                OldRoom = LCase(_objs(ObjID).ContainerRoom)
-                If gotit Then
+            If objId <> 0 Then
+                If got Then
                     If _gameAslVersion >= 391 Then
                         ' Unset parent information, if any
-                        AddToObjectProperties("not parent", ObjID, ctx)
+                        AddToObjectProperties("not parent", objId, ctx)
                     End If
-                    MoveThing(_objs(ObjID).ObjectName, "inventory", Thing.Object, ctx)
+                    MoveThing(_objs(objId).ObjectName, "inventory", Thing.Object, ctx)
 
-                    If _objs(ObjID).GainScript <> "" Then
-                        ExecuteScript(_objs(ObjID).GainScript, ctx)
+                    If _objs(objId).GainScript <> "" Then
+                        ExecuteScript(_objs(objId).GainScript, ctx)
                     End If
                 Else
-                    MoveThing(_objs(ObjID).ObjectName, _currentRoom, Thing.Object, ctx)
+                    MoveThing(_objs(objId).ObjectName, _currentRoom, Thing.Object, ctx)
 
-                    If _objs(ObjID).LoseScript <> "" Then
-                        ExecuteScript(_objs(ObjID).LoseScript, ctx)
+                    If _objs(objId).LoseScript <> "" Then
+                        ExecuteScript(_objs(objId).LoseScript, ctx)
                     End If
 
                 End If
 
-                FoundObjectName = True
+                foundObjectName = True
             End If
 
-            If Not FoundObjectName Then
-                LogASLError("No such object '" & anitem & "'", LogType.WarningError)
+            If Not foundObjectName Then
+                LogASLError("No such object '" & item & "'", LogType.WarningError)
             Else
                 UpdateItems(ctx)
                 UpdateObjectList(ctx)
             End If
         Else
             For i = 1 To _numberItems
-                If _items(i).Name = anitem Then
-                    _items(i).Got = gotit
+                If _items(i).Name = item Then
+                    _items(i).Got = got
                     i = _numberItems
                 End If
             Next i
 
             UpdateItems(ctx)
-
         End If
     End Sub
 
-    Friend Sub PlayGame(Room As String, ctx As Context)
+    Friend Sub PlayGame(room As String, ctx As Context)
         'plays the specified room
 
-        Dim RoomID As Integer
-        Dim RoomScript As String
-        RoomID = GetRoomID(Room, ctx)
+        Dim id = GetRoomID(room, ctx)
 
-        If RoomID = 0 Then
-            LogASLError("No such room '" & Room & "'", LogType.WarningError)
+        If id = 0 Then
+            LogASLError("No such room '" & room & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        Dim LastRoom As String
-        LastRoom = _currentRoom
+        _currentRoom = room
 
-        _currentRoom = Room
-
-        SetStringContents("quest.currentroom", Room, ctx)
+        SetStringContents("quest.currentroom", room, ctx)
 
         If _gameAslVersion >= 391 And _gameAslVersion < 410 Then
-            AddToObjectProperties("visited", _rooms(RoomID).ObjId, ctx)
+            AddToObjectProperties("visited", _rooms(id).ObjId, ctx)
         End If
 
-        ShowRoomInfo((Room), ctx)
-
+        ShowRoomInfo(room, ctx)
         UpdateItems(ctx)
 
         ' Find script lines and execute them.
 
-        If _rooms(RoomID).Script <> "" Then
-            RoomScript = _rooms(RoomID).Script
-            ExecuteScript(RoomScript, ctx)
+        If _rooms(id).Script <> "" Then
+            Dim script = _rooms(id).Script
+            ExecuteScript(script, ctx)
         End If
 
         If _gameAslVersion >= 410 Then
-            AddToObjectProperties("visited", _rooms(RoomID).ObjId, ctx)
+            AddToObjectProperties("visited", _rooms(id).ObjId, ctx)
         End If
     End Sub
 
-    Friend Sub Print(txt As String, ctx As Context, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
-        Dim i As Integer
-        Dim PrintString As String
-        Dim PrintThis As Boolean
-
-        PrintString = ""
+    Friend Sub Print(txt As String, ctx As Context, Optional OutputTo As String = "normal")
+        Dim printString = ""
 
         If txt = "" Then
-            DoPrint(PrintString)
+            DoPrint(printString)
         Else
             For i = 1 To Len(txt)
 
-                PrintThis = True
+                Dim printThis = True
 
                 If Mid(txt, i, 2) = "|w" Then
-                    DoPrint(PrintString)
-                    PrintString = ""
-                    PrintThis = False
+                    DoPrint(printString)
+                    printString = ""
+                    printThis = False
                     i = i + 1
-
                     ExecuteScript("wait <>", ctx)
 
                 ElseIf Mid(txt, i, 2) = "|c" Then
@@ -10932,34 +10891,28 @@ Public Class LegacyGame
                         Case "|cb", "|cr", "|cl", "|cy", "|cg"
                             ' Do nothing - we don't want to remove the colour formatting codes.
                         Case Else
-                            DoPrint(PrintString)
-                            PrintString = ""
-                            PrintThis = False
+                            DoPrint(printString)
+                            printString = ""
+                            printThis = False
                             i = i + 1
-
                             ExecuteScript("clear", ctx)
                     End Select
                 End If
 
-                If PrintThis Then PrintString = PrintString & Mid(txt, i, 1)
-
+                If printThis Then printString = printString & Mid(txt, i, 1)
             Next i
 
-            If PrintString <> "" Then DoPrint(PrintString)
+            If printString <> "" Then DoPrint(printString)
         End If
     End Sub
 
-    Private Function RetrLine(BlockType As String, blockparam As String, lineret As String, ctx As Context) As String
-        'retrieves the line lineret in the block of type blocktype
-        'with parameter blockparam in the current room/game block
-
-        Dim i As Integer
+    Private Function RetrLine(blockType As String, param As String, line As String, ctx As Context) As String
         Dim searchblock As DefineBlock
 
-        If BlockType = "object" Then
-            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Object)
+        If blockType = "object" Then
+            searchblock = GetThingBlock(param, _currentRoom, Thing.Object)
         Else
-            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Character)
+            searchblock = GetThingBlock(param, _currentRoom, Thing.Character)
         End If
 
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
@@ -10967,7 +10920,7 @@ Public Class LegacyGame
         End If
 
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-            If BeginsWith(_lines(i), lineret) Then
+            If BeginsWith(_lines(i), line) Then
                 Return Trim(_lines(i))
             End If
         Next i
@@ -10975,18 +10928,13 @@ Public Class LegacyGame
         Return "<unfound>"
     End Function
 
-    Private Function RetrLineParam(BlockType As String, blockparam As String, lineret As String, lineparam As String, ctx As Context) As String
-        'retrieves the line lineret with parameter lineparam
-        'in the block of type blocktype with parameter blockparam
-        'in the current room - of course.
-
-        Dim i As Integer
+    Private Function RetrLineParam(blockType As String, param As String, line As String, lineParam As String, ctx As Context) As String
         Dim searchblock As DefineBlock
 
-        If BlockType = "object" Then
-            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Object)
+        If blockType = "object" Then
+            searchblock = GetThingBlock(param, _currentRoom, Thing.Object)
         Else
-            searchblock = GetThingBlock(blockparam, _currentRoom, Thing.Character)
+            searchblock = GetThingBlock(param, _currentRoom, Thing.Character)
         End If
 
         If searchblock.StartLine = 0 And searchblock.EndLine = 0 Then
@@ -10994,7 +10942,7 @@ Public Class LegacyGame
         End If
 
         For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
-            If BeginsWith(_lines(i), lineret) AndAlso LCase(GetParameter(_lines(i), ctx)) = LCase(lineparam) Then
+            If BeginsWith(_lines(i), line) AndAlso LCase(GetParameter(_lines(i), ctx)) = LCase(lineParam) Then
                 Return Trim(_lines(i))
             End If
         Next i
@@ -11003,14 +10951,7 @@ Public Class LegacyGame
     End Function
 
     Private Sub SetUpCollectables()
-        Dim LastItem As Boolean
-        Dim CharPos, a, NextComma As Integer
-        Dim PossItems As String
-        Dim CInfo, T As String
-        Dim SpacePos, EqualsPos, Space2Pos As Integer
-        Dim i, b As String
-        Dim Bpos1, BPos2 As Integer
-        LastItem = False
+        Dim lastItem = False
 
         _numCollectables = 0
 
@@ -11020,68 +10961,68 @@ Public Class LegacyGame
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "collectables ") Then
-                PossItems = Trim(GetParameter(_lines(a), _nullContext, False))
+                Dim collectables = Trim(GetParameter(_lines(a), _nullContext, False))
 
                 ' if collectables is a null string, there are no
                 ' collectables. Otherwise, there is one more object than
                 ' the number of commas. So, first check to see if we have
                 ' no objects:
 
-                If PossItems <> "" Then
+                If collectables <> "" Then
                     _numCollectables = 1
-                    CharPos = 1
+                    Dim pos = 1
                     Do
                         ReDim Preserve _collectables(_numCollectables)
                         _collectables(_numCollectables) = New Collectable
-                        NextComma = InStr(CharPos + 1, PossItems, ",")
-                        If NextComma = 0 Then
-                            NextComma = InStr(CharPos + 1, PossItems, ";")
+                        Dim nextComma = InStr(pos + 1, collectables, ",")
+                        If nextComma = 0 Then
+                            nextComma = InStr(pos + 1, collectables, ";")
                         End If
 
                         'If there are no more commas, we want everything
                         'up to the end of the string, and then to exit
                         'the loop:
-                        If NextComma = 0 Then
-                            NextComma = Len(PossItems) + 1
-                            LastItem = True
+                        If nextComma = 0 Then
+                            nextComma = Len(collectables) + 1
+                            lastItem = True
                         End If
 
                         'Get item info
-                        CInfo = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
-                        _collectables(_numCollectables).Name = Trim(Left(CInfo, InStr(CInfo, " ")))
+                        Dim info = Trim(Mid(collectables, pos, nextComma - pos))
+                        _collectables(_numCollectables).Name = Trim(Left(info, InStr(info, " ")))
 
-                        EqualsPos = InStr(CInfo, "=")
-                        SpacePos = InStr(CInfo, " ")
-                        Space2Pos = InStr(EqualsPos, CInfo, " ")
-                        If Space2Pos = 0 Then Space2Pos = Len(CInfo) + 1
-                        T = Trim(Mid(CInfo, SpacePos + 1, EqualsPos - SpacePos - 1))
-                        i = Trim(Mid(CInfo, EqualsPos + 1, Space2Pos - EqualsPos - 1))
+                        Dim ep = InStr(info, "=")
+                        Dim sp1 = InStr(info, " ")
+                        Dim sp2 = InStr(ep, info, " ")
+                        If sp2 = 0 Then sp2 = Len(info) + 1
+                        Dim t = Trim(Mid(info, sp1 + 1, ep - sp1 - 1))
+                        Dim i = Trim(Mid(info, ep + 1, sp2 - ep - 1))
 
-                        If Left(T, 1) = "d" Then
-                            T = Mid(T, 2)
+                        If Left(t, 1) = "d" Then
+                            t = Mid(t, 2)
                             _collectables(_numCollectables).DisplayWhenZero = False
                         Else
                             _collectables(_numCollectables).DisplayWhenZero = True
                         End If
 
-                        _collectables(_numCollectables).Type = T
+                        _collectables(_numCollectables).Type = t
                         _collectables(_numCollectables).Value = Val(i)
 
                         ' Get display string between square brackets
-                        Bpos1 = InStr(CInfo, "[")
-                        BPos2 = InStr(CInfo, "]")
-                        If Bpos1 = 0 Then
+                        Dim obp = InStr(info, "[")
+                        Dim cbp = InStr(info, "]")
+                        If obp = 0 Then
                             _collectables(_numCollectables).Display = "<def>"
                         Else
-                            b = Mid(CInfo, Bpos1 + 1, (BPos2 - 1) - Bpos1)
+                            Dim b = Mid(info, obp + 1, (cbp - 1) - obp)
                             _collectables(_numCollectables).Display = Trim(b)
                         End If
 
-                        CharPos = NextComma + 1
+                        pos = nextComma + 1
                         _numCollectables = _numCollectables + 1
 
                         'lastitem set when nextcomma=0, above.
-                    Loop Until LastItem = True
+                    Loop Until lastItem = True
                     _numCollectables = _numCollectables - 1
                 End If
             End If
@@ -11089,10 +11030,7 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetUpItemArrays()
-        Dim LastItem As Boolean
-        Dim CharPos, a, NextComma As Integer
-        Dim PossItems As String
-        LastItem = False
+        Dim lastItem = False
 
         _numberItems = 0
 
@@ -11101,36 +11039,36 @@ Public Class LegacyGame
         ' block, and get its parameters:
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "possitems ") Or BeginsWith(_lines(a), "items ") Then
-                PossItems = GetParameter(_lines(a), _nullContext)
+                Dim possItems = GetParameter(_lines(a), _nullContext)
 
-                If PossItems <> "" Then
+                If possItems <> "" Then
                     _numberItems = _numberItems + 1
-                    CharPos = 1
+                    Dim pos = 1
                     Do
                         ReDim Preserve _items(_numberItems)
                         _items(_numberItems) = New ItemType
-                        NextComma = InStr(CharPos + 1, PossItems, ",")
-                        If NextComma = 0 Then
-                            NextComma = InStr(CharPos + 1, PossItems, ";")
+                        Dim nextComma = InStr(pos + 1, possItems, ",")
+                        If nextComma = 0 Then
+                            nextComma = InStr(pos + 1, possItems, ";")
                         End If
 
                         'If there are no more commas, we want everything
                         'up to the end of the string, and then to exit
                         'the loop:
-                        If NextComma = 0 Then
-                            NextComma = Len(PossItems) + 1
-                            LastItem = True
+                        If nextComma = 0 Then
+                            nextComma = Len(possItems) + 1
+                            lastItem = True
                         End If
 
                         'Get item name
-                        _items(_numberItems).Name = Trim(Mid(PossItems, CharPos, NextComma - CharPos))
+                        _items(_numberItems).Name = Trim(Mid(possItems, pos, nextComma - pos))
                         _items(_numberItems).Got = False
 
-                        CharPos = NextComma + 1
+                        pos = nextComma + 1
                         _numberItems = _numberItems + 1
 
                         'lastitem set when nextcomma=0, above.
-                    Loop Until LastItem = True
+                    Loop Until lastItem = True
                     _numberItems = _numberItems - 1
                 End If
             End If
@@ -11138,47 +11076,43 @@ Public Class LegacyGame
     End Sub
 
     Private Sub SetUpStartItems()
-        Dim CharPos, a, NextComma As Integer
-        Dim StartItems As String
-        Dim LastItem As Boolean
-        Dim TheItemName As String
-        Dim i As Integer
+        Dim lastItem = False
 
         For a = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(_lines(a), "startitems ") Then
-                StartItems = GetParameter(_lines(a), _nullContext)
+                Dim startItems = GetParameter(_lines(a), _nullContext)
 
-                If StartItems <> "" Then
-                    CharPos = 1
+                If startItems <> "" Then
+                    Dim pos = 1
                     Do
-                        NextComma = InStr(CharPos + 1, StartItems, ",")
-                        If NextComma = 0 Then
-                            NextComma = InStr(CharPos + 1, StartItems, ";")
+                        Dim nextComma = InStr(pos + 1, startItems, ",")
+                        If nextComma = 0 Then
+                            nextComma = InStr(pos + 1, startItems, ";")
                         End If
 
                         'If there are no more commas, we want everything
                         'up to the end of the string, and then to exit
                         'the loop:
-                        If NextComma = 0 Then
-                            NextComma = Len(StartItems) + 1
-                            LastItem = True
+                        If nextComma = 0 Then
+                            nextComma = Len(startItems) + 1
+                            lastItem = True
                         End If
 
                         'Get item name
-                        TheItemName = Trim(Mid(StartItems, CharPos, NextComma - CharPos))
+                        Dim name = Trim(Mid(startItems, pos, nextComma - pos))
 
                         'Find which item this is, and set it
                         For i = 1 To _numberItems
-                            If _items(i).Name = TheItemName Then
+                            If _items(i).Name = name Then
                                 _items(i).Got = True
-                                i = _numberItems
+                                Exit For
                             End If
                         Next i
 
-                        CharPos = NextComma + 1
+                        pos = nextComma + 1
 
                         'lastitem set when nextcomma=0, above.
-                    Loop Until LastItem = True
+                    Loop Until lastItem = True
                 End If
             End If
         Next a
@@ -11198,79 +11132,77 @@ Public Class LegacyGame
         Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx, "help")
     End Sub
 
-    Private Sub ReadCatalog(CatData As String)
-        Dim i, Chr0Pos, ResourceStart As Integer
-
-        Chr0Pos = InStr(CatData, Chr(0))
-        _numResources = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
+    Private Sub ReadCatalog(data As String)
+        Dim nullPos = InStr(data, Chr(0))
+        _numResources = CInt(DecryptString(Left(data, nullPos - 1)))
         ReDim Preserve _resources(_numResources)
         _resources(_numResources) = New ResourceType
 
-        CatData = Mid(CatData, Chr0Pos + 1)
+        data = Mid(data, nullPos + 1)
 
-        ResourceStart = 0
+        Dim resourceStart = 0
 
         For i = 1 To _numResources
             Dim r = _resources(i)
-            Chr0Pos = InStr(CatData, Chr(0))
-            r.ResourceName = DecryptString(Left(CatData, Chr0Pos - 1))
-            CatData = Mid(CatData, Chr0Pos + 1)
+            nullPos = InStr(data, Chr(0))
+            r.ResourceName = DecryptString(Left(data, nullPos - 1))
+            data = Mid(data, nullPos + 1)
 
-            Chr0Pos = InStr(CatData, Chr(0))
-            r.ResourceLength = CInt(DecryptString(Left(CatData, Chr0Pos - 1)))
-            CatData = Mid(CatData, Chr0Pos + 1)
+            nullPos = InStr(data, Chr(0))
+            r.ResourceLength = CInt(DecryptString(Left(data, nullPos - 1)))
+            data = Mid(data, nullPos + 1)
 
-            r.ResourceStart = ResourceStart
-            ResourceStart = ResourceStart + r.ResourceLength
+            r.ResourceStart = resourceStart
+            resourceStart = resourceStart + r.ResourceLength
 
             r.Extracted = False
         Next i
     End Sub
 
-    Private Sub UpdateDirButtons(AvailableDirs As String, ctx As Context)
+    Private Sub UpdateDirButtons(dirs As String, ctx As Context)
         Dim compassExits As New List(Of ListData)
 
-        If InStr(AvailableDirs, "n") > 0 Then
+        If InStr(dirs, "n") > 0 Then
             AddCompassExit(compassExits, "north")
         End If
 
-        If InStr(AvailableDirs, "s") > 0 Then
+        If InStr(dirs, "s") > 0 Then
             AddCompassExit(compassExits, "south")
         End If
 
-        If InStr(AvailableDirs, "w") > 0 Then
+        If InStr(dirs, "w") > 0 Then
             AddCompassExit(compassExits, "west")
         End If
 
-        If InStr(AvailableDirs, "e") > 0 Then
+        If InStr(dirs, "e") > 0 Then
             AddCompassExit(compassExits, "east")
         End If
 
-        If InStr(AvailableDirs, "o") > 0 Then
+        If InStr(dirs, "o") > 0 Then
             AddCompassExit(compassExits, "out")
         End If
 
-        If InStr(AvailableDirs, "a") > 0 Then
+        If InStr(dirs, "a") > 0 Then
             AddCompassExit(compassExits, "northeast")
         End If
 
-        If InStr(AvailableDirs, "b") > 0 Then
+        If InStr(dirs, "b") > 0 Then
             AddCompassExit(compassExits, "northwest")
         End If
 
-        If InStr(AvailableDirs, "c") > 0 Then
+        If InStr(dirs, "c") > 0 Then
             AddCompassExit(compassExits, "southeast")
         End If
 
-        If InStr(AvailableDirs, "d") > 0 Then
+        If InStr(dirs, "d") > 0 Then
             AddCompassExit(compassExits, "southwest")
         End If
 
-        If InStr(AvailableDirs, "u") > 0 Then
+        If InStr(dirs, "u") > 0 Then
             AddCompassExit(compassExits, "up")
         End If
 
-        If InStr(AvailableDirs, "f") > 0 Then
+        If InStr(dirs, "f") > 0 Then
             AddCompassExit(compassExits, "down")
         End If
 
@@ -11282,170 +11214,159 @@ Public Class LegacyGame
         exitList.Add(New ListData(name, _listVerbs(ListType.ExitsList)))
     End Sub
 
-    Private Function UpdateDoorways(RoomID As Integer, ctx As Context) As String
-        Dim RoomDisplayText As String = "", OutPlace As String = ""
-        Dim SCP As Integer
-        Dim Directions As String = "", NSEW As String = "", OutPlaceName As String = ""
-        Dim OutPlaceAlias As String
-        Dim CommaPos As Integer
-        Dim bFinNSEW As Boolean
-        Dim NewCommaPos As Integer
-        Dim OutPlacePrefix As String = ""
+    Private Function UpdateDoorways(roomId As Integer, ctx As Context) As String
+        Dim roomDisplayText As String = "", outPlace As String = ""
+        Dim directions As String = "", nsew As String = "", outPlaceName As String = ""
+        Dim outPlacePrefix As String = ""
 
-        Dim e, n, s, W As String
-        Dim SE, NE, NW, SW As String
-        Dim D, U, O As String
-
-        n = "north"
-        s = "south"
-        e = "east"
-        W = "west"
-        NE = "northeast"
-        NW = "northwest"
-        SE = "southeast"
-        SW = "southwest"
-        U = "up"
-        D = "down"
-        O = "out"
+        Dim n = "north"
+        Dim s = "south"
+        Dim e = "east"
+        Dim w = "west"
+        Dim ne = "northeast"
+        Dim nw = "northwest"
+        Dim se = "southeast"
+        Dim sw = "southwest"
+        Dim u = "up"
+        Dim d = "down"
+        Dim o = "out"
 
         If _gameAslVersion >= 410 Then
-            _rooms(RoomID).Exits.GetAvailableDirectionsDescription(RoomDisplayText, Directions)
+            _rooms(roomId).Exits.GetAvailableDirectionsDescription(roomDisplayText, directions)
         Else
 
-            If _rooms(RoomID).Out.Text <> "" Then
-                OutPlace = _rooms(RoomID).Out.Text
+            If _rooms(roomId).Out.Text <> "" Then
+                outPlace = _rooms(roomId).Out.Text
 
                 'remove any prefix semicolon from printed text
-                SCP = InStr(OutPlace, ";")
-                If SCP = 0 Then
-                    OutPlaceName = OutPlace
+                Dim scp = InStr(outPlace, ";")
+                If scp = 0 Then
+                    outPlaceName = outPlace
                 Else
-                    OutPlaceName = Trim(Mid(OutPlace, SCP + 1))
-                    OutPlacePrefix = Trim(Left(OutPlace, SCP - 1))
-                    OutPlace = OutPlacePrefix & " " & OutPlaceName
+                    outPlaceName = Trim(Mid(outPlace, scp + 1))
+                    outPlacePrefix = Trim(Left(outPlace, scp - 1))
+                    outPlace = outPlacePrefix & " " & outPlaceName
                 End If
             End If
 
-            If _rooms(RoomID).North.Data <> "" Then
-                NSEW = NSEW & "|b" & n & "|xb, "
-                Directions = Directions & "n"
+            If _rooms(roomId).North.Data <> "" Then
+                nsew = nsew & "|b" & n & "|xb, "
+                directions = directions & "n"
             End If
-            If _rooms(RoomID).South.Data <> "" Then
-                NSEW = NSEW & "|b" & s & "|xb, "
-                Directions = Directions & "s"
+            If _rooms(roomId).South.Data <> "" Then
+                nsew = nsew & "|b" & s & "|xb, "
+                directions = directions & "s"
             End If
-            If _rooms(RoomID).East.Data <> "" Then
-                NSEW = NSEW & "|b" & e & "|xb, "
-                Directions = Directions & "e"
+            If _rooms(roomId).East.Data <> "" Then
+                nsew = nsew & "|b" & e & "|xb, "
+                directions = directions & "e"
             End If
-            If _rooms(RoomID).West.Data <> "" Then
-                NSEW = NSEW & "|b" & W & "|xb, "
-                Directions = Directions & "w"
+            If _rooms(roomId).West.Data <> "" Then
+                nsew = nsew & "|b" & w & "|xb, "
+                directions = directions & "w"
             End If
-            If _rooms(RoomID).NorthEast.Data <> "" Then
-                NSEW = NSEW & "|b" & NE & "|xb, "
-                Directions = Directions & "a"
+            If _rooms(roomId).NorthEast.Data <> "" Then
+                nsew = nsew & "|b" & ne & "|xb, "
+                directions = directions & "a"
             End If
-            If _rooms(RoomID).NorthWest.Data <> "" Then
-                NSEW = NSEW & "|b" & NW & "|xb, "
-                Directions = Directions & "b"
+            If _rooms(roomId).NorthWest.Data <> "" Then
+                nsew = nsew & "|b" & nw & "|xb, "
+                directions = directions & "b"
             End If
-            If _rooms(RoomID).SouthEast.Data <> "" Then
-                NSEW = NSEW & "|b" & SE & "|xb, "
-                Directions = Directions & "c"
+            If _rooms(roomId).SouthEast.Data <> "" Then
+                nsew = nsew & "|b" & se & "|xb, "
+                directions = directions & "c"
             End If
-            If _rooms(RoomID).SouthWest.Data <> "" Then
-                NSEW = NSEW & "|b" & SW & "|xb, "
-                Directions = Directions & "d"
+            If _rooms(roomId).SouthWest.Data <> "" Then
+                nsew = nsew & "|b" & sw & "|xb, "
+                directions = directions & "d"
             End If
-            If _rooms(RoomID).Up.Data <> "" Then
-                NSEW = NSEW & "|b" & U & "|xb, "
-                Directions = Directions & "u"
+            If _rooms(roomId).Up.Data <> "" Then
+                nsew = nsew & "|b" & u & "|xb, "
+                directions = directions & "u"
             End If
-            If _rooms(RoomID).Down.Data <> "" Then
-                NSEW = NSEW & "|b" & D & "|xb, "
-                Directions = Directions & "f"
+            If _rooms(roomId).Down.Data <> "" Then
+                nsew = nsew & "|b" & d & "|xb, "
+                directions = directions & "f"
             End If
 
-            If OutPlace <> "" Then
+            If outPlace <> "" Then
                 'see if outside has an alias
 
-                OutPlaceAlias = _rooms(GetRoomID(OutPlaceName, ctx)).RoomAlias
-                If OutPlaceAlias = "" Then
-                    OutPlaceAlias = OutPlace
+                Dim outPlaceAlias = _rooms(GetRoomID(outPlaceName, ctx)).RoomAlias
+                If outPlaceAlias = "" Then
+                    outPlaceAlias = outPlace
                 Else
                     If _gameAslVersion >= 360 Then
-                        If OutPlacePrefix <> "" Then
-                            OutPlaceAlias = OutPlacePrefix & " " & OutPlaceAlias
+                        If outPlacePrefix <> "" Then
+                            outPlaceAlias = outPlacePrefix & " " & outPlaceAlias
                         End If
                     End If
                 End If
 
-                RoomDisplayText = RoomDisplayText & "You can go |bout|xb to " & OutPlaceAlias & "."
-                If NSEW <> "" Then RoomDisplayText = RoomDisplayText & " "
+                roomDisplayText = roomDisplayText & "You can go |bout|xb to " & outPlaceAlias & "."
+                If nsew <> "" Then roomDisplayText = roomDisplayText & " "
 
-                Directions = Directions & "o"
+                directions = directions & "o"
                 If _gameAslVersion >= 280 Then
-                    SetStringContents("quest.doorways.out", OutPlaceName, ctx)
+                    SetStringContents("quest.doorways.out", outPlaceName, ctx)
                 Else
-                    SetStringContents("quest.doorways.out", OutPlaceAlias, ctx)
+                    SetStringContents("quest.doorways.out", outPlaceAlias, ctx)
                 End If
-                SetStringContents("quest.doorways.out.display", OutPlaceAlias, ctx)
+                SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx)
             Else
                 SetStringContents("quest.doorways.out", "", ctx)
                 SetStringContents("quest.doorways.out.display", "", ctx)
             End If
 
-            If NSEW <> "" Then
+            If nsew <> "" Then
                 'strip final comma
-                NSEW = Left(NSEW, Len(NSEW) - 2)
-                CommaPos = InStr(NSEW, ",")
-                If CommaPos <> 0 Then
-                    bFinNSEW = False
+                nsew = Left(nsew, Len(nsew) - 2)
+                Dim cp = InStr(nsew, ",")
+                If cp <> 0 Then
+                    Dim finished = False
                     Do
-                        NewCommaPos = InStr(CommaPos + 1, NSEW, ",")
-                        If NewCommaPos = 0 Then
-                            bFinNSEW = True
+                        Dim ncp = InStr(cp + 1, nsew, ",")
+                        If ncp = 0 Then
+                            finished = True
                         Else
-                            CommaPos = NewCommaPos
+                            cp = ncp
                         End If
-                    Loop Until bFinNSEW
+                    Loop Until finished
 
-                    NSEW = Trim(Left(NSEW, CommaPos - 1)) & " or " & Trim(Mid(NSEW, CommaPos + 1))
+                    nsew = Trim(Left(nsew, cp - 1)) & " or " & Trim(Mid(nsew, cp + 1))
                 End If
 
-                RoomDisplayText = RoomDisplayText & "You can go " & NSEW & "."
-                SetStringContents("quest.doorways.dirs", NSEW, ctx)
+                roomDisplayText = roomDisplayText & "You can go " & nsew & "."
+                SetStringContents("quest.doorways.dirs", nsew, ctx)
             Else
                 SetStringContents("quest.doorways.dirs", "", ctx)
             End If
         End If
 
-        UpdateDirButtons(Directions, ctx)
+        UpdateDirButtons(directions, ctx)
 
-        Return RoomDisplayText
+        Return roomDisplayText
     End Function
 
     Private Sub UpdateItems(ctx As Context)
         ' displays the items a player has
-        Dim i, j As Integer
-        Dim k As String
         Dim invList As New List(Of ListData)
 
         If Not _outPutOn Then Exit Sub
 
-        Dim CurObjName As String
+        Dim name As String
 
         If _gameAslVersion >= 280 Then
             For i = 1 To _numberObjs
                 If _objs(i).ContainerRoom = "inventory" And _objs(i).Exists And _objs(i).Visible Then
                     If _objs(i).ObjectAlias = "" Then
-                        CurObjName = _objs(i).ObjectName
+                        name = _objs(i).ObjectName
                     Else
-                        CurObjName = _objs(i).ObjectAlias
+                        name = _objs(i).ObjectAlias
                     End If
 
-                    invList.Add(New ListData(CapFirst(CurObjName), _listVerbs(ListType.InventoryList)))
+                    invList.Add(New ListData(CapFirst(name), _listVerbs(ListType.InventoryList)))
 
                 End If
             Next i
@@ -11467,7 +11388,7 @@ Public Class LegacyGame
                 Dim status As String = ""
 
                 For j = 1 To _numCollectables
-                    k = DisplayCollectableInfo(j)
+                    Dim k = DisplayCollectableInfo(j)
                     If k <> "<null>" Then
                         If status.Length > 0 Then status += Environment.NewLine
                         status += k
@@ -11480,10 +11401,10 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub FinishGame(wingame As StopType, ctx As Context)
-        If wingame = StopType.Win Then
+    Private Sub FinishGame(stopType As StopType, ctx As Context)
+        If stopType = StopType.Win Then
             DisplayTextSection("win", ctx)
-        ElseIf wingame = StopType.Lose Then
+        ElseIf stopType = StopType.Lose Then
             DisplayTextSection("lose", ctx)
         End If
 
@@ -11492,13 +11413,12 @@ Public Class LegacyGame
 
     Private Sub UpdateObjectList(ctx As Context)
         ' Updates object list
-        Dim i, PlaceID As Integer
-        Dim ShownPlaceName As String
-        Dim ObjSuffix As String, CharsViewable As String = ""
-        Dim CharsFound As Integer
-        Dim NoFormatObjsViewable, CharList As String, ObjsViewable As String = ""
-        Dim ObjsFound As Integer
-        Dim ObjListString, NFObjListString As String
+        Dim shownPlaceName As String
+        Dim objSuffix As String, charsViewable As String = ""
+        Dim charsFound As Integer
+        Dim noFormatObjsViewable, charList As String, objsViewable As String = ""
+        Dim objsFound As Integer
+        Dim objListString, noFormatObjListString As String
 
         If Not _outPutOn Then Exit Sub
 
@@ -11506,8 +11426,8 @@ Public Class LegacyGame
         Dim exitList As New List(Of ListData)
 
         'find the room
-        Dim roomblock As DefineBlock
-        roomblock = DefineBlockParam("room", _currentRoom)
+        Dim roomBlock As DefineBlock
+        roomBlock = DefineBlockParam("room", _currentRoom)
 
         'FIND CHARACTERS ===
         If _gameAslVersion < 281 Then
@@ -11515,60 +11435,60 @@ Public Class LegacyGame
             For i = 1 To _numberChars
                 If _chars(i).ContainerRoom = _currentRoom And _chars(i).Exists And _chars(i).Visible Then
                     AddToObjectList(objList, exitList, _chars(i).ObjectName, Thing.Character)
-                    CharsViewable = CharsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
-                    CharsFound = CharsFound + 1
+                    charsViewable = charsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
+                    charsFound = charsFound + 1
                 End If
             Next i
 
-            If CharsFound = 0 Then
+            If charsFound = 0 Then
                 SetStringContents("quest.characters", "", ctx)
             Else
                 'chop off final comma and add full stop (.)
-                CharList = Left(CharsViewable, Len(CharsViewable) - 2)
-                SetStringContents("quest.characters", CharList, ctx)
+                charList = Left(charsViewable, Len(charsViewable) - 2)
+                SetStringContents("quest.characters", charList, ctx)
             End If
         End If
 
         'FIND OBJECTS
-        NoFormatObjsViewable = ""
+        noFormatObjsViewable = ""
 
         For i = 1 To _numberObjs
             If LCase(_objs(i).ContainerRoom) = LCase(_currentRoom) And _objs(i).Exists And _objs(i).Visible And Not _objs(i).IsExit Then
-                ObjSuffix = _objs(i).Suffix
-                If ObjSuffix <> "" Then ObjSuffix = " " & ObjSuffix
+                objSuffix = _objs(i).Suffix
+                If objSuffix <> "" Then objSuffix = " " & objSuffix
                 If _objs(i).ObjectAlias = "" Then
                     AddToObjectList(objList, exitList, _objs(i).ObjectName, Thing.Object)
-                    ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & ObjSuffix & ", "
-                    NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
+                    objsViewable = objsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & objSuffix & ", "
+                    noFormatObjsViewable = noFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
                 Else
                     AddToObjectList(objList, exitList, _objs(i).ObjectAlias, Thing.Object)
-                    ObjsViewable = ObjsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectAlias & "|xb" & ObjSuffix & ", "
-                    NoFormatObjsViewable = NoFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectAlias & ", "
+                    objsViewable = objsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectAlias & "|xb" & objSuffix & ", "
+                    noFormatObjsViewable = noFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectAlias & ", "
                 End If
-                ObjsFound = ObjsFound + 1
+                objsFound = objsFound + 1
             End If
         Next i
 
-        If ObjsFound <> 0 Then
-            ObjListString = Left(ObjsViewable, Len(ObjsViewable) - 2)
-            NFObjListString = Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2)
-            SetStringContents("quest.objects", Left(NoFormatObjsViewable, Len(NoFormatObjsViewable) - 2), ctx)
-            SetStringContents("quest.formatobjects", ObjListString, ctx)
+        If objsFound <> 0 Then
+            objListString = Left(objsViewable, Len(objsViewable) - 2)
+            noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2)
+            SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), ctx)
+            SetStringContents("quest.formatobjects", objListString, ctx)
         Else
             SetStringContents("quest.objects", "", ctx)
             SetStringContents("quest.formatobjects", "", ctx)
         End If
 
         'FIND DOORWAYS
-        Dim RoomID As Integer
-        RoomID = GetRoomID(_currentRoom, ctx)
+        Dim roomId As Integer
+        roomId = GetRoomID(_currentRoom, ctx)
 
-        Dim r = _rooms(RoomID)
+        Dim r = _rooms(roomId)
 
         If _gameAslVersion >= 410 Then
 
-            If RoomID > 0 Then
-                For Each oExit As RoomExit In _rooms(RoomID).Exits.Places.Values
+            If roomId > 0 Then
+                For Each oExit As RoomExit In _rooms(roomId).Exits.Places.Values
                     AddToObjectList(objList, exitList, oExit.DisplayName, Thing.Room)
                 Next
             End If
@@ -11576,22 +11496,22 @@ Public Class LegacyGame
         Else
             For i = 1 To r.NumberPlaces
 
-                If _gameAslVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
-                    PlaceID = GetRoomID(_rooms(RoomID).Places(i).PlaceName, ctx)
+                If _gameAslVersion >= 311 And _rooms(roomId).Places(i).Script = "" Then
+                    Dim PlaceID = GetRoomID(_rooms(roomId).Places(i).PlaceName, ctx)
                     If PlaceID = 0 Then
-                        ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                        shownPlaceName = _rooms(roomId).Places(i).PlaceName
                     Else
                         If _rooms(PlaceID).RoomAlias <> "" Then
-                            ShownPlaceName = _rooms(PlaceID).RoomAlias
+                            shownPlaceName = _rooms(PlaceID).RoomAlias
                         Else
-                            ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                            shownPlaceName = _rooms(roomId).Places(i).PlaceName
                         End If
                     End If
                 Else
-                    ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                    shownPlaceName = _rooms(roomId).Places(i).PlaceName
                 End If
 
-                AddToObjectList(objList, exitList, ShownPlaceName, Thing.Room)
+                AddToObjectList(objList, exitList, shownPlaceName, Thing.Room)
             Next i
         End If
 
@@ -11619,27 +11539,26 @@ Public Class LegacyGame
     End Sub
 
     Private Sub UpdateStatusVars(ctx As Context)
-        Dim DisplayData As String
-        Dim i As Integer
+        Dim displayData As String
         Dim status As String = ""
 
         If _numDisplayStrings > 0 Then
             For i = 1 To _numDisplayStrings
-                DisplayData = DisplayStatusVariableInfo(i, VarType.String, ctx)
+                displayData = DisplayStatusVariableInfo(i, VarType.String, ctx)
 
-                If DisplayData <> "" Then
+                If displayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
-                    status += DisplayData
+                    status += displayData
                 End If
             Next i
         End If
 
         If _numDisplayNumerics > 0 Then
             For i = 1 To _numDisplayNumerics
-                DisplayData = DisplayStatusVariableInfo(i, VarType.Numeric, ctx)
-                If DisplayData <> "" Then
+                displayData = DisplayStatusVariableInfo(i, VarType.Numeric, ctx)
+                If displayData <> "" Then
                     If status.Length > 0 Then status += Environment.NewLine
-                    status += DisplayData
+                    status += displayData
                 End If
             Next i
         End If
@@ -11647,44 +11566,44 @@ Public Class LegacyGame
         _player.SetStatusText(status)
     End Sub
 
-    Private Sub UpdateVisibilityInContainers(ctx As Context, Optional OnlyParent As String = "")
+    Private Sub UpdateVisibilityInContainers(ctx As Context, Optional onlyParent As String = "")
         ' Use OnlyParent to only update objects that are contained by a specific parent
 
-        Dim i, ParentID As Integer
-        Dim Parent As String
-        Dim ParentIsTransparent, ParentIsOpen, ParentIsSeen As Boolean
-        Dim ParentIsSurface As Boolean
+        Dim parentId As Integer
+        Dim parent As String
+        Dim parentIsTransparent, parentIsOpen, parentIsSeen As Boolean
+        Dim parentIsSurface As Boolean
 
         If _gameAslVersion < 391 Then Exit Sub
 
-        If OnlyParent <> "" Then
-            OnlyParent = LCase(OnlyParent)
-            ParentID = GetObjectIdNoAlias(OnlyParent)
+        If onlyParent <> "" Then
+            onlyParent = LCase(onlyParent)
+            parentId = GetObjectIdNoAlias(onlyParent)
 
-            ParentIsOpen = IsYes(GetObjectProperty("opened", ParentID, True, False))
-            ParentIsTransparent = IsYes(GetObjectProperty("transparent", ParentID, True, False))
-            ParentIsSeen = IsYes(GetObjectProperty("seen", ParentID, True, False))
-            ParentIsSurface = IsYes(GetObjectProperty("surface", ParentID, True, False))
+            parentIsOpen = IsYes(GetObjectProperty("opened", parentId, True, False))
+            parentIsTransparent = IsYes(GetObjectProperty("transparent", parentId, True, False))
+            parentIsSeen = IsYes(GetObjectProperty("seen", parentId, True, False))
+            parentIsSurface = IsYes(GetObjectProperty("surface", parentId, True, False))
         End If
 
         For i = 1 To _numberObjs
             ' If object has a parent object
-            Parent = GetObjectProperty("parent", i, False, False)
+            parent = GetObjectProperty("parent", i, False, False)
 
-            If Parent <> "" Then
+            If parent <> "" Then
 
                 ' Check if that parent is open, or transparent
-                If OnlyParent = "" Then
-                    ParentID = GetObjectIdNoAlias(Parent)
-                    ParentIsOpen = IsYes(GetObjectProperty("opened", ParentID, True, False))
-                    ParentIsTransparent = IsYes(GetObjectProperty("transparent", ParentID, True, False))
-                    ParentIsSeen = IsYes(GetObjectProperty("seen", ParentID, True, False))
-                    ParentIsSurface = IsYes(GetObjectProperty("surface", ParentID, True, False))
+                If onlyParent = "" Then
+                    parentId = GetObjectIdNoAlias(parent)
+                    parentIsOpen = IsYes(GetObjectProperty("opened", parentId, True, False))
+                    parentIsTransparent = IsYes(GetObjectProperty("transparent", parentId, True, False))
+                    parentIsSeen = IsYes(GetObjectProperty("seen", parentId, True, False))
+                    parentIsSurface = IsYes(GetObjectProperty("surface", parentId, True, False))
                 End If
 
-                If OnlyParent = "" Or (LCase(Parent) = OnlyParent) Then
+                If onlyParent = "" Or (LCase(parent) = onlyParent) Then
 
-                    If ParentIsSurface Or ((ParentIsOpen Or ParentIsTransparent) And ParentIsSeen) Then
+                    If parentIsSurface Or ((parentIsOpen Or parentIsTransparent) And parentIsSeen) Then
                         ' If the parent is a surface, then the contents are always available.
                         ' Otherwise, only if the parent has been seen, AND is either open or transparent,
                         ' then the contents are available.
@@ -11701,35 +11620,35 @@ Public Class LegacyGame
     End Sub
 
     ' TODO: Fix - ErrorMsg and ParentID were ByRef
-    Private Function PlayerCanAccessObject(ObjID As Integer, Optional ParentID As Integer = 0, Optional ErrorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
+    Private Function PlayerCanAccessObject(id As Integer, Optional parentId As Integer = 0, Optional errorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
         ' the object cannot be accessed.
 
-        Dim Parent As String
-        Dim ParentDisplayName As String
+        Dim parent As String
+        Dim parentDisplayName As String
 
-        Dim sHierarchy As String = ""
-        If IsYes(GetObjectProperty("parent", ObjID, True, False)) Then
+        Dim hierarchy As String = ""
+        If IsYes(GetObjectProperty("parent", id, True, False)) Then
 
             ' Object is in a container...
 
-            Parent = GetObjectProperty("parent", ObjID, False, False)
-            ParentID = GetObjectIdNoAlias(Parent)
+            parent = GetObjectProperty("parent", id, False, False)
+            parentId = GetObjectIdNoAlias(parent)
 
             ' But if it's a surface then it's OK
 
-            If Not IsYes(GetObjectProperty("surface", ParentID, True, False)) And Not IsYes(GetObjectProperty("opened", ParentID, True, False)) Then
+            If Not IsYes(GetObjectProperty("surface", parentId, True, False)) And Not IsYes(GetObjectProperty("opened", parentId, True, False)) Then
                 ' Parent has no "opened" property, so it's closed. Hence
                 ' object can't be accessed
 
-                If _objs(ParentID).ObjectAlias <> "" Then
-                    ParentDisplayName = _objs(ParentID).ObjectAlias
+                If _objs(parentId).ObjectAlias <> "" Then
+                    parentDisplayName = _objs(parentId).ObjectAlias
                 Else
-                    ParentDisplayName = _objs(ParentID).ObjectName
+                    parentDisplayName = _objs(parentId).ObjectName
                 End If
 
-                ErrorMsg = "inside closed " & ParentDisplayName
+                errorMsg = "inside closed " & parentDisplayName
 
                 Return False
             End If
@@ -11739,20 +11658,20 @@ Public Class LegacyGame
                 colObjects = New List(Of Integer)
             End If
 
-            If colObjects.Contains(ParentID) Then
+            If colObjects.Contains(parentId) Then
                 ' We've already encountered this parent while recursively calling
                 ' this function - we're in a loop of parents!
-                For Each id As Integer In colObjects
-                    sHierarchy = sHierarchy & _objs(id).ObjectName & " -> "
+                For Each objId As Integer In colObjects
+                    hierarchy = hierarchy & _objs(objId).ObjectName & " -> "
                 Next
-                sHierarchy = sHierarchy & _objs(ParentID).ObjectName
-                LogASLError("Looped object parents detected: " & sHierarchy)
+                hierarchy = hierarchy & _objs(parentId).ObjectName
+                LogASLError("Looped object parents detected: " & hierarchy)
                 Return False
             End If
 
-            colObjects.Add(ParentID)
+            colObjects.Add(parentId)
 
-            If Not PlayerCanAccessObject(ParentID, , ErrorMsg, colObjects) Then
+            If Not PlayerCanAccessObject(parentId, , errorMsg, colObjects) Then
                 Return False
             End If
 
@@ -11762,68 +11681,59 @@ Public Class LegacyGame
         Return True
     End Function
 
-    Private Function GetGoToExits(RoomID As Integer, ctx As Context) As String
-        Dim i As Integer
-        Dim PlaceID As Integer
-        Dim PlaceList As String = ""
-        Dim ShownPrefix As String
-        Dim ShownPlaceName As String
+    Private Function GetGoToExits(roomId As Integer, ctx As Context) As String
+        Dim placeList As String = ""
+        Dim shownPlaceName As String
 
-        For i = 1 To _rooms(RoomID).NumberPlaces
-            If _gameAslVersion >= 311 And _rooms(RoomID).Places(i).Script = "" Then
-                PlaceID = GetRoomID(_rooms(RoomID).Places(i).PlaceName, ctx)
+        For i = 1 To _rooms(roomId).NumberPlaces
+            If _gameAslVersion >= 311 And _rooms(roomId).Places(i).Script = "" Then
+                Dim PlaceID = GetRoomID(_rooms(roomId).Places(i).PlaceName, ctx)
                 If PlaceID = 0 Then
-                    LogASLError("No such room '" & _rooms(RoomID).Places(i).PlaceName & "'", LogType.WarningError)
-                    ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                    LogASLError("No such room '" & _rooms(roomId).Places(i).PlaceName & "'", LogType.WarningError)
+                    shownPlaceName = _rooms(roomId).Places(i).PlaceName
                 Else
                     If _rooms(PlaceID).RoomAlias <> "" Then
-                        ShownPlaceName = _rooms(PlaceID).RoomAlias
+                        shownPlaceName = _rooms(PlaceID).RoomAlias
                     Else
-                        ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                        shownPlaceName = _rooms(roomId).Places(i).PlaceName
                     End If
                 End If
             Else
-                ShownPlaceName = _rooms(RoomID).Places(i).PlaceName
+                shownPlaceName = _rooms(roomId).Places(i).PlaceName
             End If
 
-            ShownPrefix = _rooms(RoomID).Places(i).Prefix
-            If ShownPrefix <> "" Then ShownPrefix = ShownPrefix & " "
+            Dim shownPrefix = _rooms(roomId).Places(i).Prefix
+            If shownPrefix <> "" Then shownPrefix = shownPrefix & " "
 
-            PlaceList = PlaceList & ShownPrefix & "|b" & ShownPlaceName & "|xb, "
+            placeList = placeList & shownPrefix & "|b" & shownPlaceName & "|xb, "
         Next i
 
-        Return PlaceList
+        Return placeList
     End Function
 
     Private Sub SetUpExits()
         ' Exits have to be set up after all the rooms have been initialised
 
-        Dim i As Integer
-        Dim j As Integer
-        Dim sRoomName As String
-        Dim lRoomID As Integer
-        Dim NestedBlock As Integer
-
         For i = 1 To _numberSections
             If BeginsWith(_lines(_defineBlocks(i).StartLine), "define room ") Then
-                sRoomName = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
-                lRoomID = GetRoomID(sRoomName, _nullContext)
+                Dim roomName = GetParameter(_lines(_defineBlocks(i).StartLine), _nullContext)
+                Dim roomId = GetRoomID(roomName, _nullContext)
 
                 For j = _defineBlocks(i).StartLine + 1 To _defineBlocks(i).EndLine - 1
                     If BeginsWith(_lines(j), "define ") Then
                         'skip nested blocks
-                        NestedBlock = 1
+                        Dim nestedBlock = 1
                         Do
                             j = j + 1
                             If BeginsWith(_lines(j), "define ") Then
-                                NestedBlock = NestedBlock + 1
+                                nestedBlock = nestedBlock + 1
                             ElseIf Trim(_lines(j)) = "end define" Then
-                                NestedBlock = NestedBlock - 1
+                                nestedBlock = nestedBlock - 1
                             End If
-                        Loop Until NestedBlock = 0
+                        Loop Until nestedBlock = 0
                     End If
 
-                    _rooms(lRoomID).Exits.AddExitFromTag(_lines(j))
+                    _rooms(roomId).Exits.AddExitFromTag(_lines(j))
                 Next j
             End If
         Next i
@@ -11832,55 +11742,49 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Function FindExit(sTag As String) As RoomExit
+    Private Function FindExit(tag As String) As RoomExit
         ' e.g. Takes a tag of the form "room; north" and return's the north exit of room.
 
-        Dim sRoom As String
-        Dim sExit As String
-        Dim asParams() As String
-        Dim lRoomID As Integer
-        Dim lDir As Direction
-
-        asParams = Split(sTag, ";")
-        If UBound(asParams) < 1 Then
-            LogASLError("No exit specified in '" & sTag & "'", LogType.WarningError)
+        Dim params = Split(tag, ";")
+        If UBound(params) < 1 Then
+            LogASLError("No exit specified in '" & tag & "'", LogType.WarningError)
             Return New RoomExit(Me)
         End If
 
-        sRoom = Trim(asParams(0))
-        sExit = Trim(asParams(1))
+        Dim room = Trim(params(0))
+        Dim exitName = Trim(params(1))
 
-        lRoomID = GetRoomID(sRoom, _nullContext)
+        Dim roomId = GetRoomID(room, _nullContext)
 
-        If lRoomID = 0 Then
-            LogASLError("Can't find room '" & sRoom & "'", LogType.WarningError)
+        If roomId = 0 Then
+            LogASLError("Can't find room '" & room & "'", LogType.WarningError)
             Return Nothing
         End If
 
-        Dim exits = _rooms(lRoomID).Exits
-        lDir = exits.GetDirectionEnum(sExit)
-        If lDir = Direction.None Then
-            If exits.Places.ContainsKey(sExit) Then
-                Return exits.Places.Item(sExit)
+        Dim exits = _rooms(roomId).Exits
+        Dim dir = exits.GetDirectionEnum(exitName)
+        If dir = Direction.None Then
+            If exits.Places.ContainsKey(exitName) Then
+                Return exits.Places.Item(exitName)
             End If
         Else
-            Return exits.GetDirectionExit(lDir)
+            Return exits.GetDirectionExit(dir)
         End If
 
         Return Nothing
     End Function
 
-    Private Sub ExecuteLock(sTag As String, bLock As Boolean)
-        Dim oExit As RoomExit
+    Private Sub ExecuteLock(tag As String, lock As Boolean)
+        Dim roomExit As RoomExit
 
-        oExit = FindExit(sTag)
+        roomExit = FindExit(tag)
 
-        If oExit Is Nothing Then
-            LogASLError("Can't find exit '" & sTag & "'", LogType.WarningError)
+        If roomExit Is Nothing Then
+            LogASLError("Can't find exit '" & tag & "'", LogType.WarningError)
             Exit Sub
         End If
 
-        oExit.IsLocked = bLock
+        roomExit.IsLocked = lock
     End Sub
 
     Public Sub Begin() Implements IASL.Begin
@@ -11896,9 +11800,8 @@ Public Class LegacyGame
     End Sub
 
     Private Sub DoBegin()
-        Dim gameblock As DefineBlock = GetDefineBlock("game")
-        Dim NewThread As New Context
-        Dim i As Integer
+        Dim gameBlock As DefineBlock = GetDefineBlock("game")
+        Dim ctx As New Context
 
         SetFont("")
         SetFontSize(0)
@@ -11929,21 +11832,21 @@ Public Class LegacyGame
             If _gameAslVersion >= 311 Then
                 ' We go through the game block executing these in reverse order, as
                 ' the statements which are included last should be executed first.
-                For i = gameblock.EndLine - 1 To gameblock.StartLine + 1 Step -1
+                For i = gameBlock.EndLine - 1 To gameBlock.StartLine + 1 Step -1
                     If BeginsWith(_lines(i), "lib startscript ") Then
-                        NewThread = _nullContext
-                        ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), NewThread)
+                        ctx = _nullContext
+                        ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), ctx)
                     End If
                 Next i
             End If
 
-            For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+            For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
                 If BeginsWith(_lines(i), "startscript ") Then
-                    NewThread = _nullContext
-                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "startscript")), NewThread)
+                    ctx = _nullContext
+                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "startscript")), ctx)
                 ElseIf BeginsWith(_lines(i), "lib startscript ") And _gameAslVersion < 311 Then
-                    NewThread = _nullContext
-                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), NewThread)
+                    ctx = _nullContext
+                    ExecuteScript(Trim(GetEverythingAfter(Trim(_lines(i)), "lib startscript ")), ctx)
                 End If
             Next i
 
@@ -11955,16 +11858,16 @@ Public Class LegacyGame
         If _autoIntro And _gameLoadMethod = "normal" Then DisplayTextSection("intro", _nullContext)
 
         ' Start game from room specified by "start" statement
-        Dim StartRoom As String = ""
-        For i = gameblock.StartLine + 1 To gameblock.EndLine - 1
+        Dim startRoom As String = ""
+        For i = gameBlock.StartLine + 1 To gameBlock.EndLine - 1
             If BeginsWith(_lines(i), "start ") Then
-                StartRoom = GetParameter(_lines(i), _nullContext)
+                startRoom = GetParameter(_lines(i), _nullContext)
             End If
         Next i
 
         If Not _loadedFromQsg Then
-            NewThread = _nullContext
-            PlayGame(StartRoom, NewThread)
+            ctx = _nullContext
+            PlayGame(startRoom, ctx)
             Print("", _nullContext)
         Else
             UpdateItems(_nullContext)
@@ -11976,8 +11879,8 @@ Public Class LegacyGame
 
             If _gameAslVersion >= 391 Then
                 ' For ASL>=391, OnLoad is now run for all games.
-                NewThread = _nullContext
-                ExecuteScript(_onLoadScript, NewThread)
+                ctx = _nullContext
+                ExecuteScript(_onLoadScript, ctx)
             End If
 
         End If
@@ -12168,7 +12071,7 @@ Public Class LegacyGame
 
     Public Sub Tick(elapsedTime As Integer) Implements IASLTimer.Tick
         Dim i As Integer
-        Dim TimerScripts As New List(Of String)
+        Dim timerScripts As New List(Of String)
 
         Debug.Print("Tick: " + elapsedTime.ToString)
 
@@ -12182,17 +12085,17 @@ Public Class LegacyGame
 
                     If _timers(i).TimerTicks >= _timers(i).TimerInterval Then
                         _timers(i).TimerTicks = 0
-                        TimerScripts.Add(_timers(i).TimerAction)
+                        timerScripts.Add(_timers(i).TimerAction)
                     End If
                 End If
             End If
         Next i
 
-        If TimerScripts.Count > 0 Then
+        If timerScripts.Count > 0 Then
             Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf RunTimersInNewThread))
 
             ChangeState(State.Working)
-            runnerThread.Start(TimerScripts)
+            runnerThread.Start(timerScripts)
             WaitForStateChange(State.Working)
         End If
 
@@ -12380,8 +12283,8 @@ Public Class LegacyGame
     End Function
 
     Private Function GetResourcelessCAS() As Byte()
-        Dim FileData As String = System.IO.File.ReadAllText(_resourceFile, System.Text.Encoding.GetEncoding(1252))
-        Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(FileData, _startCatPos - 1))
+        Dim fileData As String = System.IO.File.ReadAllText(_resourceFile, System.Text.Encoding.GetEncoding(1252))
+        Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, _startCatPos - 1))
     End Function
 
 End Class
