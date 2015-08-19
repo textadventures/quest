@@ -2222,7 +2222,6 @@ Public Class LegacyGame
         Dim propertyExists As Boolean
         Dim textToPrint As String
         Dim isContainer As Boolean
-        Dim errorMsg As String = ""     ' TODO: This was passed ByRef - needs fixing
         Dim gotObject As Boolean
         Dim childLength As Integer
         Dim noParentSpecified = False
@@ -2360,20 +2359,23 @@ Public Class LegacyGame
             End If
         End If
 
-        ' NEW: Check parent and child are accessible to player
-        If Not PlayerCanAccessObject(childId, , errorMsg) Then
+        ' Check parent and child are accessible to player
+        Dim canAccessObject = PlayerCanAccessObject(childId)
+        If Not canAccessObject.CanAccessObject Then
             If doAdd Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessObject.ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessObject.ErrorMsg)
             End If
             Exit Sub
         End If
-        If Not PlayerCanAccessObject(parentId, , errorMsg) Then
+
+        Dim canAccessParent = PlayerCanAccessObject(parentId)
+        If Not canAccessParent.CanAccessObject Then
             If doAdd Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessParent.ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessParent.ErrorMsg)
             End If
             Exit Sub
         End If
@@ -2492,7 +2494,6 @@ Public Class LegacyGame
         Dim propertyExists As Boolean
         Dim textToPrint As String
         Dim isContainer As Boolean
-        Dim errorMsg As String = ""
 
         If BeginsWith(cmd, "open ") Then
             action = "open"
@@ -2539,13 +2540,14 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        ' NEW: Check if it's accessible, i.e. check it's not itself inside another closed container
+        ' Check if it's accessible, i.e. check it's not itself inside another closed container
 
-        If Not PlayerCanAccessObject(id, , errorMsg) Then
+        Dim canAccessObject = PlayerCanAccessObject(id)
+        If Not canAccessObject.CanAccessObject Then
             If doOpen Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, canAccessObject.ErrorMsg)
             Else
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, errorMsg)
+                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, canAccessObject.ErrorMsg)
             End If
             Exit Sub
         End If
@@ -9745,7 +9747,6 @@ Public Class LegacyGame
     Private Sub ExecTake(item As String, ctx As Context)
         Dim parentID As Integer
         Dim parentDisplayName As String
-        Dim containerError As String = ""
         Dim foundItem = True
         Dim foundTake = False
         Dim id = Disambiguate(item, _currentRoom, ctx)
@@ -9781,10 +9782,14 @@ Public Class LegacyGame
         Dim isInContainer = False
 
         If _gameAslVersion >= 391 Then
-            If Not PlayerCanAccessObject(id, parentID, containerError) Then
-                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, containerError)
+            Dim canAccessObject = PlayerCanAccessObject(id)
+            If Not canAccessObject.CanAccessObject Then
+                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, canAccessObject.ErrorMsg)
                 Exit Sub
             End If
+
+            Dim parent = GetObjectProperty("parent", id, False, False)
+            parentID = GetObjectIdNoAlias(parent)
         End If
 
         If _gameAslVersion >= 280 Then
@@ -11619,14 +11624,21 @@ Public Class LegacyGame
 
     End Sub
 
-    ' TODO: Fix - ErrorMsg and ParentID were ByRef
-    Private Function PlayerCanAccessObject(id As Integer, Optional parentId As Integer = 0, Optional errorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
+    Private Class PlayerCanAccessObjectResult
+        Public CanAccessObject As Boolean
+        Public ErrorMsg As String
+    End Class
+
+    ' TODO: Fix - ErrorMsg was ByRef
+    Private Function PlayerCanAccessObject(id As Integer, Optional colObjects As List(Of Integer) = Nothing) As PlayerCanAccessObjectResult
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
         ' the object cannot be accessed.
 
         Dim parent As String
+        Dim parentId As Integer
         Dim parentDisplayName As String
+        Dim result As New PlayerCanAccessObjectResult
 
         Dim hierarchy As String = ""
         If IsYes(GetObjectProperty("parent", id, True, False)) Then
@@ -11648,9 +11660,9 @@ Public Class LegacyGame
                     parentDisplayName = _objs(parentId).ObjectName
                 End If
 
-                errorMsg = "inside closed " & parentDisplayName
-
-                Return False
+                result.CanAccessObject = False
+                result.ErrorMsg = "inside closed " & parentDisplayName
+                Return result
             End If
 
             ' Is the parent itself accessible?
@@ -11666,19 +11678,18 @@ Public Class LegacyGame
                 Next
                 hierarchy = hierarchy & _objs(parentId).ObjectName
                 LogASLError("Looped object parents detected: " & hierarchy)
-                Return False
+
+                result.CanAccessObject = False
+                Return result
             End If
 
             colObjects.Add(parentId)
 
-            If Not PlayerCanAccessObject(parentId, , errorMsg, colObjects) Then
-                Return False
-            End If
-
-            Return True
+            Return PlayerCanAccessObject(parentId, colObjects)
         End If
 
-        Return True
+        result.CanAccessObject = True
+        Return result
     End Function
 
     Private Function GetGoToExits(roomId As Integer, ctx As Context) As String
