@@ -1,4 +1,6 @@
-﻿Imports System.Collections.Generic
+﻿Option Strict On
+Option Explicit On
+Option Infer On
 
 Public Class TextFormatter
 

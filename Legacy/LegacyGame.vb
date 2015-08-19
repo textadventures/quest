@@ -404,7 +404,7 @@ Public Class LegacyGame
     Private _outPutOn As Boolean
     Private _gameAslVersion As Integer
     Private _choiceNumber As Integer
-    Private _gameLoadMethod As String    ' TODO: Make enum
+    Private _gameLoadMethod As String
     Private _timers() As TimerType
     Private _numberTimers As Integer
     Private _numDisplayStrings As Integer
@@ -423,7 +423,7 @@ Public Class LegacyGame
     Private _resourceOffset As Integer
     Private _startCatPos As Integer
     Private _useAbbreviations As Boolean
-    Private _loadedFromQsg As Boolean  ' TODO: Same as _gameLoadMethod
+    Private _loadedFromQsg As Boolean
     Private _beforeSaveScript As String
     Private _onLoadScript As String
     Private _numSkipCheckFiles As Integer

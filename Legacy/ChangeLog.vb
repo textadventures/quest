@@ -1,5 +1,6 @@
-Option Strict Off
+Option Strict On
 Option Explicit On
+Option Infer On
 
 Imports System.Collections.Generic
 
