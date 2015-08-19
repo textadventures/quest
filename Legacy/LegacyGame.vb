@@ -10058,335 +10058,327 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Sub ObjectActionUpdate(ObjID As Integer, ActionName As String, ActionScript As String, Optional NoUpdate As Boolean = False)
-        Dim ObjectName As String
-        Dim SP, EP As Integer
-        ActionName = LCase(ActionName)
+    Private Sub ObjectActionUpdate(id As Integer, name As String, script As String, Optional noUpdate As Boolean = False)
+        Dim objectName As String
+        Dim sp, ep As Integer
+        name = LCase(name)
 
-        If Not NoUpdate Then
-            If ActionName = "take" Then
-                _objs(ObjID).Take.Data = ActionScript
-                _objs(ObjID).Take.Type = TextActionType.Script
-            ElseIf ActionName = "use" Then
-                AddToUseInfo(ObjID, ActionScript)
-            ElseIf ActionName = "gain" Then
-                _objs(ObjID).GainScript = ActionScript
-            ElseIf ActionName = "lose" Then
-                _objs(ObjID).LoseScript = ActionScript
-            ElseIf BeginsWith(ActionName, "use ") Then
-                ActionName = GetEverythingAfter(ActionName, "use ")
-                If InStr(ActionName, "'") > 0 Then
-                    SP = InStr(ActionName, "'")
-                    EP = InStr(SP + 1, ActionName, "'")
-                    If EP = 0 Then
-                        LogASLError("Missing ' in 'action <use " & ActionName & "> " & ReportErrorLine(ActionScript))
+        If Not noUpdate Then
+            If name = "take" Then
+                _objs(id).Take.Data = script
+                _objs(id).Take.Type = TextActionType.Script
+            ElseIf name = "use" Then
+                AddToUseInfo(id, script)
+            ElseIf name = "gain" Then
+                _objs(id).GainScript = script
+            ElseIf name = "lose" Then
+                _objs(id).LoseScript = script
+            ElseIf BeginsWith(name, "use ") Then
+                name = GetEverythingAfter(name, "use ")
+                If InStr(name, "'") > 0 Then
+                    sp = InStr(name, "'")
+                    ep = InStr(sp + 1, name, "'")
+                    If ep = 0 Then
+                        LogASLError("Missing ' in 'action <use " & name & "> " & ReportErrorLine(script))
                         Exit Sub
                     End If
 
-                    ObjectName = Mid(ActionName, SP + 1, EP - SP - 1)
+                    objectName = Mid(name, sp + 1, ep - sp - 1)
 
-                    AddToUseInfo(ObjID, Trim(Left(ActionName, SP - 1)) & " <" & ObjectName & "> " & ActionScript)
+                    AddToUseInfo(id, Trim(Left(name, sp - 1)) & " <" & objectName & "> " & script)
                 Else
-                    AddToUseInfo(ObjID, ActionName & " " & ActionScript)
+                    AddToUseInfo(id, name & " " & script)
                 End If
-            ElseIf BeginsWith(ActionName, "give ") Then
-                ActionName = GetEverythingAfter(ActionName, "give ")
-                If InStr(ActionName, "'") > 0 Then
+            ElseIf BeginsWith(name, "give ") Then
+                name = GetEverythingAfter(name, "give ")
+                If InStr(name, "'") > 0 Then
 
-                    SP = InStr(ActionName, "'")
-                    EP = InStr(SP + 1, ActionName, "'")
-                    If EP = 0 Then
-                        LogASLError("Missing ' in 'action <give " & ActionName & "> " & ReportErrorLine(ActionScript))
+                    sp = InStr(name, "'")
+                    ep = InStr(sp + 1, name, "'")
+                    If ep = 0 Then
+                        LogASLError("Missing ' in 'action <give " & name & "> " & ReportErrorLine(script))
                         Exit Sub
                     End If
 
-                    ObjectName = Mid(ActionName, SP + 1, EP - SP - 1)
+                    objectName = Mid(name, sp + 1, ep - sp - 1)
 
-                    AddToGiveInfo(ObjID, Trim(Left(ActionName, SP - 1)) & " <" & ObjectName & "> " & ActionScript)
+                    AddToGiveInfo(id, Trim(Left(name, sp - 1)) & " <" & objectName & "> " & script)
                 Else
-                    AddToGiveInfo(ObjID, ActionName & " " & ActionScript)
+                    AddToGiveInfo(id, name & " " & script)
                 End If
             End If
         End If
 
         If _gameFullyLoaded Then
-            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(ObjID).ObjectName, ActionName, "action <" & ActionName & "> " & ActionScript)
+            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs(id).ObjectName, name, "action <" & name & "> " & script)
         End If
 
     End Sub
 
-    Private Sub ExecuteIf(ScriptLine As String, ctx As Context)
-        Dim IfLine, Conditions, ObscuredLine As String
-        Dim ElsePos, ThenPos, ThenEndPos As Integer
-        Dim ThenScript As String, ElseScript As String = ""
+    Private Sub ExecuteIf(scriptLine As String, ctx As Context)
+        Dim ifLine = Trim(GetEverythingAfter(Trim(scriptLine), "if "))
+        Dim obscuredLine = ObliterateParameters(ifLine)
+        Dim thenPos = InStr(obscuredLine, "then")
 
-        IfLine = Trim(GetEverythingAfter(Trim(ScriptLine), "if "))
-        ObscuredLine = ObliterateParameters(IfLine)
-
-        ThenPos = InStr(ObscuredLine, "then")
-
-        Dim ErrMsg As String
-        If ThenPos = 0 Then
-            ErrMsg = "Expected 'then' missing from script statement '" & ReportErrorLine(ScriptLine) & "' - statement bypassed."
-            LogASLError(ErrMsg, LogType.WarningError)
+        If thenPos = 0 Then
+            Dim errMsg = "Expected 'then' missing from script statement '" & ReportErrorLine(scriptLine) & "' - statement bypassed."
+            LogASLError(errMsg, LogType.WarningError)
             Exit Sub
         End If
 
-        Conditions = Trim(Left(IfLine, ThenPos - 1))
+        Dim conditions = Trim(Left(ifLine, thenPos - 1))
 
-        ThenPos = ThenPos + 4
-        ElsePos = InStr(ObscuredLine, "else")
+        thenPos = thenPos + 4
+        Dim elsePos = InStr(obscuredLine, "else")
+        Dim thenEndPos As Integer
 
-        If ElsePos = 0 Then
-            ThenEndPos = Len(ObscuredLine) + 1
+        If elsePos = 0 Then
+            thenEndPos = Len(obscuredLine) + 1
         Else
-            ThenEndPos = ElsePos - 1
+            thenEndPos = elsePos - 1
         End If
 
-        ThenScript = Trim(Mid(IfLine, ThenPos, ThenEndPos - ThenPos))
+        Dim thenScript = Trim(Mid(ifLine, thenPos, thenEndPos - thenPos))
+        Dim elseScript = ""
 
-        If ElsePos <> 0 Then
-            ElseScript = Trim(Right(IfLine, Len(IfLine) - (ThenEndPos + 4)))
+        If elsePos <> 0 Then
+            elseScript = Trim(Right(ifLine, Len(ifLine) - (thenEndPos + 4)))
         End If
 
         ' Remove braces from around "then" and "else" script
         ' commands, if present
-        If Left(ThenScript, 1) = "{" And Right(ThenScript, 1) = "}" Then
-            ThenScript = Mid(ThenScript, 2, Len(ThenScript) - 2)
+        If Left(thenScript, 1) = "{" And Right(thenScript, 1) = "}" Then
+            thenScript = Mid(thenScript, 2, Len(thenScript) - 2)
         End If
-        If Left(ElseScript, 1) = "{" And Right(ElseScript, 1) = "}" Then
-            ElseScript = Mid(ElseScript, 2, Len(ElseScript) - 2)
+        If Left(elseScript, 1) = "{" And Right(elseScript, 1) = "}" Then
+            elseScript = Mid(elseScript, 2, Len(elseScript) - 2)
         End If
 
-        If ExecuteConditions(Conditions, ctx) Then
-            ExecuteScript((ThenScript), ctx)
+        If ExecuteConditions(conditions, ctx) Then
+            ExecuteScript((thenScript), ctx)
         Else
-            If ElsePos <> 0 Then ExecuteScript((ElseScript), ctx)
+            If elsePos <> 0 Then ExecuteScript((elseScript), ctx)
         End If
 
     End Sub
 
-    Private Sub ExecuteScript(ScriptLine As String, ctx As Context, Optional NewCallingObjectID As Integer = 0)
+    Private Sub ExecuteScript(scriptLine As String, ctx As Context, Optional newCallingObjectId As Integer = 0)
         Try
-            If Trim(ScriptLine) = "" Then Exit Sub
+            If Trim(scriptLine) = "" Then Exit Sub
             If _gameFinished Then Exit Sub
 
-            Dim CurPos As Integer
-            Dim bFinLoop As Boolean
-            Dim CRLFPos As Integer
-            Dim CurScriptLine As String
-            If InStr(ScriptLine, vbCrLf) > 0 Then
-                CurPos = 1
-                bFinLoop = False
+            If InStr(scriptLine, vbCrLf) > 0 Then
+                Dim curPos = 1
+                Dim finished = False
                 Do
-                    CRLFPos = InStr(CurPos, ScriptLine, vbCrLf)
-                    If CRLFPos = 0 Then
-                        bFinLoop = True
-                        CRLFPos = Len(ScriptLine) + 1
+                    Dim crLfPos = InStr(curPos, scriptLine, vbCrLf)
+                    If crLfPos = 0 Then
+                        finished = True
+                        crLfPos = Len(scriptLine) + 1
                     End If
 
-                    CurScriptLine = Trim(Mid(ScriptLine, CurPos, CRLFPos - CurPos))
-                    If CurScriptLine <> vbCrLf Then
-                        ExecuteScript(CurScriptLine, ctx)
+                    Dim curScriptLine = Trim(Mid(scriptLine, curPos, crLfPos - curPos))
+                    If curScriptLine <> vbCrLf Then
+                        ExecuteScript(curScriptLine, ctx)
                     End If
-                    CurPos = CRLFPos + 2
-                Loop Until bFinLoop
+                    curPos = crLfPos + 2
+                Loop Until finished
                 Exit Sub
             End If
 
-            If NewCallingObjectID <> 0 Then
-                ctx.CallingObjectId = NewCallingObjectID
+            If newCallingObjectId <> 0 Then
+                ctx.CallingObjectId = newCallingObjectId
             End If
 
-            If BeginsWith(ScriptLine, "if ") Then
-                ExecuteIf(ScriptLine, ctx)
-            ElseIf BeginsWith(ScriptLine, "select case ") Then
-                ExecuteSelectCase(ScriptLine, ctx)
-            ElseIf BeginsWith(ScriptLine, "choose ") Then
-                ExecuteChoose(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "set ") Then
-                ExecuteSet(GetEverythingAfter(ScriptLine, "set "), ctx)
-            ElseIf BeginsWith(ScriptLine, "inc ") Or BeginsWith(ScriptLine, "dec ") Then
-                ExecuteIncDec(ScriptLine, ctx)
-            ElseIf BeginsWith(ScriptLine, "say ") Then
-                Print(Chr(34) & GetParameter(ScriptLine, ctx) & Chr(34), ctx)
-            ElseIf BeginsWith(ScriptLine, "do ") Then
-                ExecuteDo(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "doaction ") Then
-                ExecuteDoAction(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "give ") Then
-                PlayerItem(GetParameter(ScriptLine, ctx), True, ctx)
-            ElseIf BeginsWith(ScriptLine, "lose ") Or BeginsWith(ScriptLine, "drop ") Then
-                PlayerItem(GetParameter(ScriptLine, ctx), False, ctx)
-            ElseIf BeginsWith(ScriptLine, "msg nospeak ") Then
-                Print(GetParameter(ScriptLine, ctx), ctx, , True)
-            ElseIf BeginsWith(ScriptLine, "msg ") Then
-                Print(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "speak ") Then
-                Speak(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "helpmsg ") Then
-                Print(GetParameter(ScriptLine, ctx), ctx, "help")
-            ElseIf Trim(LCase(ScriptLine)) = "helpclose" Then
+            If BeginsWith(scriptLine, "if ") Then
+                ExecuteIf(scriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "select case ") Then
+                ExecuteSelectCase(scriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "choose ") Then
+                ExecuteChoose(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "set ") Then
+                ExecuteSet(GetEverythingAfter(scriptLine, "set "), ctx)
+            ElseIf BeginsWith(scriptLine, "inc ") Or BeginsWith(scriptLine, "dec ") Then
+                ExecuteIncDec(scriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "say ") Then
+                Print(Chr(34) & GetParameter(scriptLine, ctx) & Chr(34), ctx)
+            ElseIf BeginsWith(scriptLine, "do ") Then
+                ExecuteDo(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "doaction ") Then
+                ExecuteDoAction(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "give ") Then
+                PlayerItem(GetParameter(scriptLine, ctx), True, ctx)
+            ElseIf BeginsWith(scriptLine, "lose ") Or BeginsWith(scriptLine, "drop ") Then
+                PlayerItem(GetParameter(scriptLine, ctx), False, ctx)
+            ElseIf BeginsWith(scriptLine, "msg nospeak ") Then
+                Print(GetParameter(scriptLine, ctx), ctx, , True)
+            ElseIf BeginsWith(scriptLine, "msg ") Then
+                Print(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "speak ") Then
+                Speak(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "helpmsg ") Then
+                Print(GetParameter(scriptLine, ctx), ctx, "help")
+            ElseIf Trim(LCase(scriptLine)) = "helpclose" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate help window
-            ElseIf BeginsWith(ScriptLine, "goto ") Then
-                PlayGame(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "playerwin") Then
+            ElseIf BeginsWith(scriptLine, "goto ") Then
+                PlayGame(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "playerwin") Then
                 FinishGame(StopType.Win, ctx)
-            ElseIf BeginsWith(ScriptLine, "playerlose") Then
+            ElseIf BeginsWith(scriptLine, "playerlose") Then
                 FinishGame(StopType.Lose, ctx)
-            ElseIf Trim(LCase(ScriptLine)) = "stop" Then
+            ElseIf Trim(LCase(scriptLine)) = "stop" Then
                 FinishGame(StopType.Null, ctx)
-            ElseIf BeginsWith(ScriptLine, "playwav ") Then
-                PlayWav(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "playmidi ") Then
-                PlayMedia(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "playmp3 ") Then
-                PlayMedia(GetParameter(ScriptLine, ctx))
-            ElseIf Trim(LCase(ScriptLine)) = "picture close" Then
+            ElseIf BeginsWith(scriptLine, "playwav ") Then
+                PlayWav(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "playmidi ") Then
+                PlayMedia(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "playmp3 ") Then
+                PlayMedia(GetParameter(scriptLine, ctx))
+            ElseIf Trim(LCase(scriptLine)) = "picture close" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate picture window
-            ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture popup ")) Or (_gameAslVersion >= 282 And _gameAslVersion < 390 And BeginsWith(ScriptLine, "picture ")) Or (_gameAslVersion < 282 And BeginsWith(ScriptLine, "show ")) Then
-                ShowPicture(GetParameter(ScriptLine, ctx))
-            ElseIf (_gameAslVersion >= 390 And BeginsWith(ScriptLine, "picture ")) Then
-                ShowPictureInText(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "animate persist ") Then
-                ShowPicture(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "animate ") Then
-                ShowPicture(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "extract ") Then
-                ExtractFile(GetParameter(ScriptLine, ctx))
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hideobject ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showobject ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "moveobject ") Then
-                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Object, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "hidechar ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx, Thing.Character)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "showchar ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx, Thing.Character)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "movechar ") Then
-                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Character, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealobject ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, True, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealobject ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, False, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "revealchar ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Character, True, ctx)
-            ElseIf _gameAslVersion < 281 And BeginsWith(ScriptLine, "concealchar ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Character, False, ctx)
-            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "hide ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), False, ctx)
-            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "show ") Then
-                SetAvailability(GetParameter(ScriptLine, ctx), True, ctx)
-            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "move ") Then
-                ExecMoveThing(GetParameter(ScriptLine, ctx), Thing.Object, ctx)
-            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "reveal ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, True, ctx)
-            ElseIf _gameAslVersion >= 281 And BeginsWith(ScriptLine, "conceal ") Then
-                SetVisibility(GetParameter(ScriptLine, ctx), Thing.Object, False, ctx)
-            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "open ") Then
-                SetOpenClose(GetParameter(ScriptLine, ctx), True, ctx)
-            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "close ") Then
-                SetOpenClose(GetParameter(ScriptLine, ctx), False, ctx)
-            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "add ") Then
-                ExecAddRemoveScript(GetParameter(ScriptLine, ctx), True, ctx)
-            ElseIf _gameAslVersion >= 391 And BeginsWith(ScriptLine, "remove ") Then
-                ExecAddRemoveScript(GetParameter(ScriptLine, ctx), False, ctx)
-            ElseIf BeginsWith(ScriptLine, "clone ") Then
-                ExecClone(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "exec ") Then
-                ExecExec(ScriptLine, ctx)
-            ElseIf BeginsWith(ScriptLine, "setstring ") Then
-                ExecSetString(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "setvar ") Then
-                ExecSetVar(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "for ") Then
-                ExecFor(GetEverythingAfter(ScriptLine, "for "), ctx)
-            ElseIf BeginsWith(ScriptLine, "property ") Then
-                ExecProperty(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "type ") Then
-                ExecType(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "action ") Then
-                ExecuteAction(GetEverythingAfter(ScriptLine, "action "), ctx)
-            ElseIf BeginsWith(ScriptLine, "flag ") Then
-                ExecuteFlag(GetEverythingAfter(ScriptLine, "flag "), ctx)
-            ElseIf BeginsWith(ScriptLine, "create ") Then
-                ExecuteCreate(GetEverythingAfter(ScriptLine, "create "), ctx)
-            ElseIf BeginsWith(ScriptLine, "destroy exit ") Then
-                DestroyExit(GetParameter(ScriptLine, ctx), ctx)
-            ElseIf BeginsWith(ScriptLine, "repeat ") Then
-                ExecuteRepeat(GetEverythingAfter(ScriptLine, "repeat "), ctx)
-            ElseIf BeginsWith(ScriptLine, "enter ") Then
-                ExecuteEnter(ScriptLine, ctx)
-            ElseIf BeginsWith(ScriptLine, "displaytext ") Then
-                DisplayTextSection(GetParameter(ScriptLine, ctx), ctx, "normal")
-            ElseIf BeginsWith(ScriptLine, "helpdisplaytext ") Then
-                DisplayTextSection(GetParameter(ScriptLine, ctx), ctx, "help")
-            ElseIf BeginsWith(ScriptLine, "font ") Then
-                SetFont(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "pause ") Then
-                Pause(CInt(GetParameter(ScriptLine, ctx)))
-            ElseIf Trim(LCase(ScriptLine)) = "clear" Then
+            ElseIf (_gameAslVersion >= 390 And BeginsWith(scriptLine, "picture popup ")) Or (_gameAslVersion >= 282 And _gameAslVersion < 390 And BeginsWith(scriptLine, "picture ")) Or (_gameAslVersion < 282 And BeginsWith(scriptLine, "show ")) Then
+                ShowPicture(GetParameter(scriptLine, ctx))
+            ElseIf (_gameAslVersion >= 390 And BeginsWith(scriptLine, "picture ")) Then
+                ShowPictureInText(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "animate persist ") Then
+                ShowPicture(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "animate ") Then
+                ShowPicture(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "extract ") Then
+                ExtractFile(GetParameter(scriptLine, ctx))
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "hideobject ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), False, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "showobject ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), True, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "moveobject ") Then
+                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Object, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "hidechar ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), False, ctx, Thing.Character)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "showchar ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), True, ctx, Thing.Character)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "movechar ") Then
+                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Character, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "revealobject ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, True, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "concealobject ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, False, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "revealchar ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Character, True, ctx)
+            ElseIf _gameAslVersion < 281 And BeginsWith(scriptLine, "concealchar ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Character, False, ctx)
+            ElseIf _gameAslVersion >= 281 And BeginsWith(scriptLine, "hide ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), False, ctx)
+            ElseIf _gameAslVersion >= 281 And BeginsWith(scriptLine, "show ") Then
+                SetAvailability(GetParameter(scriptLine, ctx), True, ctx)
+            ElseIf _gameAslVersion >= 281 And BeginsWith(scriptLine, "move ") Then
+                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Object, ctx)
+            ElseIf _gameAslVersion >= 281 And BeginsWith(scriptLine, "reveal ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, True, ctx)
+            ElseIf _gameAslVersion >= 281 And BeginsWith(scriptLine, "conceal ") Then
+                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, False, ctx)
+            ElseIf _gameAslVersion >= 391 And BeginsWith(scriptLine, "open ") Then
+                SetOpenClose(GetParameter(scriptLine, ctx), True, ctx)
+            ElseIf _gameAslVersion >= 391 And BeginsWith(scriptLine, "close ") Then
+                SetOpenClose(GetParameter(scriptLine, ctx), False, ctx)
+            ElseIf _gameAslVersion >= 391 And BeginsWith(scriptLine, "add ") Then
+                ExecAddRemoveScript(GetParameter(scriptLine, ctx), True, ctx)
+            ElseIf _gameAslVersion >= 391 And BeginsWith(scriptLine, "remove ") Then
+                ExecAddRemoveScript(GetParameter(scriptLine, ctx), False, ctx)
+            ElseIf BeginsWith(scriptLine, "clone ") Then
+                ExecClone(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "exec ") Then
+                ExecExec(scriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "setstring ") Then
+                ExecSetString(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "setvar ") Then
+                ExecSetVar(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "for ") Then
+                ExecFor(GetEverythingAfter(scriptLine, "for "), ctx)
+            ElseIf BeginsWith(scriptLine, "property ") Then
+                ExecProperty(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "type ") Then
+                ExecType(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "action ") Then
+                ExecuteAction(GetEverythingAfter(scriptLine, "action "), ctx)
+            ElseIf BeginsWith(scriptLine, "flag ") Then
+                ExecuteFlag(GetEverythingAfter(scriptLine, "flag "), ctx)
+            ElseIf BeginsWith(scriptLine, "create ") Then
+                ExecuteCreate(GetEverythingAfter(scriptLine, "create "), ctx)
+            ElseIf BeginsWith(scriptLine, "destroy exit ") Then
+                DestroyExit(GetParameter(scriptLine, ctx), ctx)
+            ElseIf BeginsWith(scriptLine, "repeat ") Then
+                ExecuteRepeat(GetEverythingAfter(scriptLine, "repeat "), ctx)
+            ElseIf BeginsWith(scriptLine, "enter ") Then
+                ExecuteEnter(scriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "displaytext ") Then
+                DisplayTextSection(GetParameter(scriptLine, ctx), ctx, "normal")
+            ElseIf BeginsWith(scriptLine, "helpdisplaytext ") Then
+                DisplayTextSection(GetParameter(scriptLine, ctx), ctx, "help")
+            ElseIf BeginsWith(scriptLine, "font ") Then
+                SetFont(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "pause ") Then
+                Pause(CInt(GetParameter(scriptLine, ctx)))
+            ElseIf Trim(LCase(scriptLine)) = "clear" Then
                 DoClear()
-            ElseIf Trim(LCase(ScriptLine)) = "helpclear" Then
+            ElseIf Trim(LCase(scriptLine)) = "helpclear" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate help window
-            ElseIf BeginsWith(ScriptLine, "background ") Then
-                SetBackground(GetParameter(ScriptLine, ctx))
-            ElseIf BeginsWith(ScriptLine, "foreground ") Then
-                SetForeground(GetParameter(ScriptLine, ctx))
-            ElseIf Trim(LCase(ScriptLine)) = "nointro" Then
+            ElseIf BeginsWith(scriptLine, "background ") Then
+                SetBackground(GetParameter(scriptLine, ctx))
+            ElseIf BeginsWith(scriptLine, "foreground ") Then
+                SetForeground(GetParameter(scriptLine, ctx))
+            ElseIf Trim(LCase(scriptLine)) = "nointro" Then
                 _autoIntro = False
-            ElseIf BeginsWith(ScriptLine, "debug ") Then
-                LogASLError(GetParameter(ScriptLine, ctx), LogType.Misc)
-            ElseIf BeginsWith(ScriptLine, "mailto ") Then
-                Dim emailAddress As String = GetParameter(ScriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "debug ") Then
+                LogASLError(GetParameter(scriptLine, ctx), LogType.Misc)
+            ElseIf BeginsWith(scriptLine, "mailto ") Then
+                Dim emailAddress As String = GetParameter(scriptLine, ctx)
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
-            ElseIf BeginsWith(ScriptLine, "shell ") And _gameAslVersion < 410 Then
+            ElseIf BeginsWith(scriptLine, "shell ") And _gameAslVersion < 410 Then
                 LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf BeginsWith(ScriptLine, "shellexe ") And _gameAslVersion < 410 Then
+            ElseIf BeginsWith(scriptLine, "shellexe ") And _gameAslVersion < 410 Then
                 LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf BeginsWith(ScriptLine, "wait") Then
-                ExecuteWait(Trim(GetEverythingAfter(Trim(ScriptLine), "wait")), ctx)
-            ElseIf BeginsWith(ScriptLine, "timeron ") Then
-                SetTimerState(GetParameter(ScriptLine, ctx), True)
-            ElseIf BeginsWith(ScriptLine, "timeroff ") Then
-                SetTimerState(GetParameter(ScriptLine, ctx), False)
-            ElseIf Trim(LCase(ScriptLine)) = "outputon" Then
+            ElseIf BeginsWith(scriptLine, "wait") Then
+                ExecuteWait(Trim(GetEverythingAfter(Trim(scriptLine), "wait")), ctx)
+            ElseIf BeginsWith(scriptLine, "timeron ") Then
+                SetTimerState(GetParameter(scriptLine, ctx), True)
+            ElseIf BeginsWith(scriptLine, "timeroff ") Then
+                SetTimerState(GetParameter(scriptLine, ctx), False)
+            ElseIf Trim(LCase(scriptLine)) = "outputon" Then
                 _outPutOn = True
                 UpdateObjectList(ctx)
                 UpdateItems(ctx)
-            ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
+            ElseIf Trim(LCase(scriptLine)) = "outputoff" Then
                 _outPutOn = False
-            ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
+            ElseIf Trim(LCase(scriptLine)) = "panes off" Then
                 _player.SetPanesVisible("off")
-            ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
+            ElseIf Trim(LCase(scriptLine)) = "panes on" Then
                 _player.SetPanesVisible("on")
-            ElseIf BeginsWith(ScriptLine, "lock ") Then
-                ExecuteLock(GetParameter(ScriptLine, ctx), True)
-            ElseIf BeginsWith(ScriptLine, "unlock ") Then
-                ExecuteLock(GetParameter(ScriptLine, ctx), False)
-            ElseIf BeginsWith(ScriptLine, "playmod ") And _gameAslVersion < 410 Then
+            ElseIf BeginsWith(scriptLine, "lock ") Then
+                ExecuteLock(GetParameter(scriptLine, ctx), True)
+            ElseIf BeginsWith(scriptLine, "unlock ") Then
+                ExecuteLock(GetParameter(scriptLine, ctx), False)
+            ElseIf BeginsWith(scriptLine, "playmod ") And _gameAslVersion < 410 Then
                 LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf BeginsWith(ScriptLine, "modvolume") And _gameAslVersion < 410 Then
+            ElseIf BeginsWith(scriptLine, "modvolume") And _gameAslVersion < 410 Then
                 LogASLError("'modvolume' is not supported in this version of Quest", LogType.WarningError)
-            ElseIf Trim(LCase(ScriptLine)) = "dontprocess" Then
+            ElseIf Trim(LCase(scriptLine)) = "dontprocess" Then
                 ctx.DontProcessCommand = True
-            ElseIf BeginsWith(ScriptLine, "return ") Then
-                ctx.FunctionReturnValue = GetParameter(ScriptLine, ctx)
+            ElseIf BeginsWith(scriptLine, "return ") Then
+                ctx.FunctionReturnValue = GetParameter(scriptLine, ctx)
             Else
-                If BeginsWith(ScriptLine, "'") = False Then
-                    LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(ScriptLine)) & "'", LogType.WarningError)
+                If BeginsWith(scriptLine, "'") = False Then
+                    LogASLError("Unrecognized keyword. Line reads: '" & Trim(ReportErrorLine(scriptLine)) & "'", LogType.WarningError)
                 End If
             End If
         Catch
             Print("[An internal error occurred]", ctx)
-            LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & ScriptLine & "'", LogType.InternalError)
+            LogASLError(Err.Number & " - '" & Err.Description & "' occurred processing script line '" & scriptLine & "'", LogType.InternalError)
         End Try
     End Sub
 
-    Private Sub ExecuteEnter(ScriptLine As String, ctx As Context)
+    Private Sub ExecuteEnter(scriptLine As String, ctx As Context)
         _commandOverrideModeOn = True
-        _commandOverrideVariable = GetParameter(ScriptLine, ctx)
+        _commandOverrideVariable = GetParameter(scriptLine, ctx)
 
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
@@ -10403,63 +10395,56 @@ Public Class LegacyGame
         ' and will be set back to Ready when the call to ExecCommand has finished
     End Sub
 
-    Private Sub ExecuteSet(SetInstruction As String, ctx As Context)
-        Dim i As Integer
-        Dim TimerInterval As String
-        Dim SCPos As Integer
-        Dim TimerName As String
-        Dim FoundTimer As Boolean
-
+    Private Sub ExecuteSet(setInstruction As String, ctx As Context)
         If _gameAslVersion >= 280 Then
-            If BeginsWith(SetInstruction, "interval ") Then
-                TimerInterval = GetParameter(SetInstruction, ctx)
-                SCPos = InStr(TimerInterval, ";")
-                If SCPos = 0 Then
-                    LogASLError("Too few parameters in 'set " & SetInstruction & "'", LogType.WarningError)
+            If BeginsWith(setInstruction, "interval ") Then
+                Dim interval = GetParameter(setInstruction, ctx)
+                Dim scp = InStr(interval, ";")
+                If scp = 0 Then
+                    LogASLError("Too few parameters in 'set " & setInstruction & "'", LogType.WarningError)
                     Exit Sub
                 End If
 
-                TimerName = Trim(Left(TimerInterval, SCPos - 1))
-                TimerInterval = CStr(Val(Trim(Mid(TimerInterval, SCPos + 1))))
+                Dim name = Trim(Left(interval, scp - 1))
+                interval = CStr(Val(Trim(Mid(interval, scp + 1))))
+                Dim found = False
 
                 For i = 1 To _numberTimers
-                    If LCase(TimerName) = LCase(_timers(i).TimerName) Then
-                        FoundTimer = True
-                        _timers(i).TimerInterval = CInt(TimerInterval)
+                    If LCase(name) = LCase(_timers(i).TimerName) Then
+                        found = True
+                        _timers(i).TimerInterval = CInt(interval)
                         i = _numberTimers
                     End If
                 Next i
 
-                If Not FoundTimer Then
-                    LogASLError("No such timer '" & TimerName & "'", LogType.WarningError)
+                If Not found Then
+                    LogASLError("No such timer '" & name & "'", LogType.WarningError)
                     Exit Sub
                 End If
-            ElseIf BeginsWith(SetInstruction, "string ") Then
-                ExecSetString(GetParameter(SetInstruction, ctx), ctx)
-            ElseIf BeginsWith(SetInstruction, "numeric ") Then
-                ExecSetVar(GetParameter(SetInstruction, ctx), ctx)
-            ElseIf BeginsWith(SetInstruction, "collectable ") Then
-                ExecuteSetCollectable(GetParameter(SetInstruction, ctx), ctx)
+            ElseIf BeginsWith(setInstruction, "string ") Then
+                ExecSetString(GetParameter(setInstruction, ctx), ctx)
+            ElseIf BeginsWith(setInstruction, "numeric ") Then
+                ExecSetVar(GetParameter(setInstruction, ctx), ctx)
+            ElseIf BeginsWith(setInstruction, "collectable ") Then
+                ExecuteSetCollectable(GetParameter(setInstruction, ctx), ctx)
             Else
-                Dim Result = SetUnknownVariableType(GetParameter(SetInstruction, ctx), ctx)
-                If Result = SetResult.Error Then
-                    LogASLError("Error on setting 'set " & SetInstruction & "'", LogType.WarningError)
-                ElseIf Result = SetResult.Unfound Then
-                    LogASLError("Variable type not specified in 'set " & SetInstruction & "'", LogType.WarningError)
+                Dim result = SetUnknownVariableType(GetParameter(setInstruction, ctx), ctx)
+                If result = SetResult.Error Then
+                    LogASLError("Error on setting 'set " & setInstruction & "'", LogType.WarningError)
+                ElseIf result = SetResult.Unfound Then
+                    LogASLError("Variable type not specified in 'set " & setInstruction & "'", LogType.WarningError)
                 End If
             End If
         Else
-            ExecuteSetCollectable(GetParameter(SetInstruction, ctx), ctx)
+            ExecuteSetCollectable(GetParameter(setInstruction, ctx), ctx)
         End If
 
     End Sub
 
-    Private Function FindStatement(searchblock As DefineBlock, statement As String) As String
-        Dim i As Integer
-
+    Private Function FindStatement(block As DefineBlock, statement As String) As String
         ' Finds a statement within a given block of lines
 
-        For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
 
             ' Ignore sub-define blocks
             If BeginsWith(_lines(i), "define ") Then
@@ -10478,11 +10463,10 @@ Public Class LegacyGame
         Return ""
     End Function
 
-    Private Function FindLine(searchblock As DefineBlock, statement As String, statementparam As String) As String
-        Dim i As Integer
+    Private Function FindLine(block As DefineBlock, statement As String, statementParam As String) As String
         ' Finds a statement within a given block of lines
 
-        For i = searchblock.StartLine + 1 To searchblock.EndLine - 1
+        For i = block.StartLine + 1 To block.EndLine - 1
 
             ' Ignore sub-define blocks
             If BeginsWith(_lines(i), "define ") Then
@@ -10493,7 +10477,7 @@ Public Class LegacyGame
             ' Check to see if the line matches the statement
             ' that is begin searched for
             If BeginsWith(_lines(i), statement) Then
-                If UCase(Trim(GetParameter(_lines(i), _nullContext))) = UCase(Trim(statementparam)) Then
+                If UCase(Trim(GetParameter(_lines(i), _nullContext))) = UCase(Trim(statementParam)) Then
                     Return Trim(_lines(i))
                 End If
             End If
@@ -10502,11 +10486,9 @@ Public Class LegacyGame
         Return ""
     End Function
 
-    Private Function GetCollectableAmount(colname As String) As Double
-        Dim i As Integer
-
+    Private Function GetCollectableAmount(name As String) As Double
         For i = 1 To _numCollectables
-            If _collectables(i).Name = colname Then
+            If _collectables(i).Name = name Then
                 Return _collectables(i).Value
             End If
         Next i
@@ -10514,78 +10496,69 @@ Public Class LegacyGame
         Return 0
     End Function
 
-    Private Function GetSecondChunk(l As String) As String
-        Dim EndOfFirstBit, LengthOfKeyword As Integer
-        Dim SecondChunk As String
-
-        EndOfFirstBit = InStr(l, ">") + 1
-        LengthOfKeyword = (Len(l) - EndOfFirstBit) + 1
-        SecondChunk = Trim(Mid(l, EndOfFirstBit, LengthOfKeyword))
-
-        Return SecondChunk
+    Private Function GetSecondChunk(line As String) As String
+        Dim endOfFirstBit = InStr(line, ">") + 1
+        Dim lengthOfKeyword = (Len(line) - endOfFirstBit) + 1
+        Return Trim(Mid(line, endOfFirstBit, lengthOfKeyword))
     End Function
 
-    Private Sub GoDirection(Direction As String, ctx As Context)
+    Private Sub GoDirection(direction As String, ctx As Context)
         ' leaves the current room in direction specified by
         ' 'direction'
 
-        Dim NewRoom As String
-        Dim SCP As Integer
+        Dim dirData As New TextAction
+        Dim id = GetRoomID(_currentRoom, ctx)
 
-        Dim RoomID As Integer
-        Dim DirData As New TextAction
-        RoomID = GetRoomID(_currentRoom, ctx)
-
-        If RoomID = 0 Then Exit Sub
+        If id = 0 Then Exit Sub
 
         If _gameAslVersion >= 410 Then
-            _rooms(RoomID).Exits.ExecuteGo(Direction, ctx)
+            _rooms(id).Exits.ExecuteGo(direction, ctx)
             Exit Sub
         End If
 
-        Dim r = _rooms(RoomID)
+        Dim r = _rooms(id)
 
-        If Direction = "north" Then
-            DirData = r.North
-        ElseIf Direction = "south" Then
-            DirData = r.South
-        ElseIf Direction = "west" Then
-            DirData = r.West
-        ElseIf Direction = "east" Then
-            DirData = r.East
-        ElseIf Direction = "northeast" Then
-            DirData = r.NorthEast
-        ElseIf Direction = "northwest" Then
-            DirData = r.NorthWest
-        ElseIf Direction = "southeast" Then
-            DirData = r.SouthEast
-        ElseIf Direction = "southwest" Then
-            DirData = r.SouthWest
-        ElseIf Direction = "up" Then
-            DirData = r.Up
-        ElseIf Direction = "down" Then
-            DirData = r.Down
-        ElseIf Direction = "out" Then
+        If direction = "north" Then
+            dirData = r.North
+        ElseIf direction = "south" Then
+            dirData = r.South
+        ElseIf direction = "west" Then
+            dirData = r.West
+        ElseIf direction = "east" Then
+            dirData = r.East
+        ElseIf direction = "northeast" Then
+            dirData = r.NorthEast
+        ElseIf direction = "northwest" Then
+            dirData = r.NorthWest
+        ElseIf direction = "southeast" Then
+            dirData = r.SouthEast
+        ElseIf direction = "southwest" Then
+            dirData = r.SouthWest
+        ElseIf direction = "up" Then
+            dirData = r.Up
+        ElseIf direction = "down" Then
+            dirData = r.Down
+        ElseIf direction = "out" Then
             If r.Out.Script = "" Then
-                DirData.Data = r.Out.Text
-                DirData.Type = TextActionType.Text
+                dirData.Data = r.Out.Text
+                dirData.Type = TextActionType.Text
             Else
-                DirData.Data = r.Out.Script
-                DirData.Type = TextActionType.Script
+                dirData.Data = r.Out.Script
+                dirData.Type = TextActionType.Script
             End If
         End If
 
-        If DirData.Type = TextActionType.Script And DirData.Data <> "" Then
-            ExecuteScript(DirData.Data, ctx)
-        ElseIf DirData.Data <> "" Then
-            NewRoom = DirData.Data
-            SCP = InStr(NewRoom, ";")
-            If SCP <> 0 Then
-                NewRoom = Trim(Mid(NewRoom, SCP + 1))
+        If dirData.Type = TextActionType.Script And dirData.Data <> "" Then
+            ExecuteScript(dirData.Data, ctx)
+        ElseIf dirData.Data <> "" Then
+            Dim newRoom = dirData.Data
+            Dim scp = InStr(newRoom, ";")
+            If scp <> 0 Then
+                newRoom = Trim(Mid(newRoom, scp + 1))
             End If
-            PlayGame(NewRoom, ctx)
+            PlayGame(newRoom, ctx)
         Else
-            If Direction = "out" Then
+            If direction = "out" Then
                 PlayerErrorMessage(PlayerError.DefaultOut, ctx)
             Else
                 PlayerErrorMessage(PlayerError.BadPlace, ctx)
@@ -10594,43 +10567,42 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Sub GoToPlace(placecheck As String, ctx As Context)
+    Private Sub GoToPlace(place As String, ctx As Context)
         ' leaves the current room in direction specified by
         ' 'direction'
 
-        Dim DisallowedDirection As Boolean
-        Dim NP As String, Destination As String = "", P, s As String
-        DisallowedDirection = False
+        Dim destination = ""
+        Dim placeData As String
+        Dim disallowed = False
 
-        P = PlaceExist(placecheck, ctx)
+        placeData = PlaceExist(place, ctx)
 
-        If P <> "" Then
-            Destination = P
-        ElseIf BeginsWith(placecheck, "the ") Then
-            NP = GetEverythingAfter(placecheck, "the ")
-            P = PlaceExist(NP, ctx)
-            If P <> "" Then
-                Destination = P
+        If placeData <> "" Then
+            destination = placeData
+        ElseIf BeginsWith(place, "the ") Then
+            Dim np = GetEverythingAfter(place, "the ")
+            placeData = PlaceExist(np, ctx)
+            If placeData <> "" Then
+                destination = placeData
             Else
-                DisallowedDirection = True
+                disallowed = True
             End If
         Else
-            DisallowedDirection = True
+            disallowed = True
         End If
 
-        If Destination <> "" Then
-            If InStr(Destination, ";") > 0 Then
-                s = Trim(Right(Destination, Len(Destination) - InStr(Destination, ";")))
+        If destination <> "" Then
+            If InStr(destination, ";") > 0 Then
+                Dim s = Trim(Right(destination, Len(destination) - InStr(destination, ";")))
                 ExecuteScript(s, ctx)
             Else
-                PlayGame(Destination, ctx)
+                PlayGame(destination, ctx)
             End If
         End If
 
-        If DisallowedDirection = True Then
+        If disallowed = True Then
             PlayerErrorMessage(PlayerError.BadPlace, ctx)
         End If
-
     End Sub
 
     Private Function InitialiseGame(afilename As String, Optional LoadedFromQSG As Boolean = False) As Boolean
