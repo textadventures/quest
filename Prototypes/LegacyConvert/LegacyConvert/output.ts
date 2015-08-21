@@ -208,7 +208,18 @@ class PlayerCanAccessObjectResult {
 		ErrorMsg: string;
 }
 class LegacyGame {
-	// UNKNOWN FunctionBlock
+	CopyContext(): Context {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
 	_defineBlockParams: any;
 	_openErrorReport: string;
 	_casKeywords: string;
@@ -302,218 +313,1054 @@ class LegacyGame {
 	_questionResponse: boolean;
 	// UNKNOWN ConstructorBlock
 	// UNKNOWN ConstructorBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
+	RemoveFormatting(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN ReturnStatement
+	}
+	CheckSections(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	ConvertFriendlyIfs(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	ErrorCheck(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetAfterParameter(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+	}
+	ObliterateParameters(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	ObliterateVariableNames(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	ReportErrorLine(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+	}
+	YesNo(): string {
+		// UNKNOWN SingleLineIfStatement
+	}
+	IsYes(): boolean {
+		// UNKNOWN SingleLineIfStatement
+	}
+	BeginsWith(): boolean {
+		// UNKNOWN ReturnStatement
+	}
+	ConvertCasKeyword(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	GetDefineBlock(): DefineBlock {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	DefineBlockParam(): DefineBlock {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetEverythingAfter(): string {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	Keyword2CAS(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	GetResourceLines(): any {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ReturnStatement
+	}
+	ParseFile(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	GetParameter(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	DecryptString(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	RemoveTabs(): string {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	EvaluateInlineExpressions(): string {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecVerb(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	ExpressionHandler(): ExpressionResult {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ReDimStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	ListContents(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	ObscureNumericExps(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	GetHTMLColour(): string {
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SelectBlock
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteIfFlag(): boolean {
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	ExtractFile(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	CapFirst(): string {
+		// UNKNOWN ReturnStatement
+	}
+	ConvertVarsIn(): string {
+		// UNKNOWN ReturnStatement
+	}
+	DisambObjHere(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteIfAction(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteIfType(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetArrayIndex(): ArrayResult {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	Disambiguate(): number {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	DisplayStatusVariableInfo(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	DoAction(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	HasAction(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteCondition(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteConditions(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteIfHere(): boolean {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteIfExists(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteIfProperty(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	GetNextChunk(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetFileDataChars(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	GetObjectActions(): ActionType {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	GetObjectId(): number {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetObjectIdNoAlias(): number {
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetObjectProperty(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetPropertiesInType(): PropertiesActions {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetRoomID(): number {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetTextOrScript(): TextAction {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetThingNumber(): number {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetThingBlock(): DefineBlock {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	MakeRestoreData(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ForEachBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ConvertParameter(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN ReturnStatement
+	}
+	DoFunction(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	DoInternalFunction(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteIfAsk(): boolean {
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN SyncLockBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecuteIfGot(): boolean {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteIfHas(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	ExecuteIfIs(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SelectBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetNumericContents(): number {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	GetErrorMessage(): string {
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	SetUnknownVariableType(): SetResult {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	SetUpChoiceForm(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	ExecUserCommand(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	GetCommandParameters(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetGender(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
+	GetStringContents(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	IsAvailable(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	IsCompatible(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN DoLoopUntilBlock
+		// UNKNOWN ReturnStatement
+	}
+	OpenGame(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	SaveGame(): any {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	MakeRestoreDataV2(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	DisplayCollectableInfo(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	ExecCommand(): boolean {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SyncLockBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
+	CmdStartsWith(): boolean {
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	FindStatement(): string {
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	FindLine(): string {
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetCollectableAmount(): number {
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	GetSecondChunk(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	InitialiseGame(): boolean {
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	PlaceExist(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	RetrLine(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	RetrLineParam(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	UpdateDoorways(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	// UNKNOWN SubBlock
+	PlayerCanAccessObject(): PlayerCanAccessObjectResult {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
+	GetGoToExits(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ForBlock
+		// UNKNOWN ReturnStatement
+	}
+	// UNKNOWN SubBlock
+	FindExit(): RoomExit {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
@@ -524,7 +1371,9 @@ class LegacyGame {
 	// UNKNOWN EventStatement
 	// UNKNOWN EventStatement
 	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
+	Save(): any {
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
@@ -533,13 +1382,25 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN EventStatement
-	// UNKNOWN FunctionBlock
+	Initialise(): boolean {
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+	}
 	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
+	GetResourcePath(): string {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
+	GetLibraryLines(): any {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN SelectBlock
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
@@ -550,24 +1411,52 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	m_menuResponse: string;
-	// UNKNOWN FunctionBlock
+	ShowMenu(): string {
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN SyncLockBlock
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
+	GetExternalScripts(): any {
+		// UNKNOWN ReturnStatement
+	}
+	GetExternalStylesheets(): any {
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN EventStatement
 	// UNKNOWN PropertyBlock
-	// UNKNOWN FunctionBlock
+	GetOriginalFilenameForQSG(): string {
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN DelegateFunctionStatement
 	m_unzipFunction: UnzipFunctionDelegate;
 	// UNKNOWN SubBlock
-	// UNKNOWN FunctionBlock
+	GetUnzippedFile(): string {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN ReturnStatement
+	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
-	// UNKNOWN FunctionBlock
+	GetResource(): any {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN ReturnStatement
+	}
 	m_gameId: string;
 	// UNKNOWN PropertyBlock
-	// UNKNOWN FunctionBlock
-	// UNKNOWN FunctionBlock
+	GetResources(): any {
+		// UNKNOWN ForBlock
+		// UNKNOWN MultiLineIfBlock
+	}
+	GetResourcelessCAS(): any {
+		// UNKNOWN LocalDeclarationStatement
+		// UNKNOWN ReturnStatement
+	}
 }

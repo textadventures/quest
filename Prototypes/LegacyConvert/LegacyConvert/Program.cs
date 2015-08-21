@@ -47,6 +47,8 @@ namespace LegacyConvert
                 case SyntaxKind.ImplementsStatement:
                 case SyntaxKind.EnumStatement:
                 case SyntaxKind.EndEnumStatement:
+                case SyntaxKind.FunctionStatement:
+                case SyntaxKind.EndFunctionStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -68,8 +70,14 @@ namespace LegacyConvert
                     var asType = variables.AsClause.ChildNodes().First();
                     var varType = GetVarType(asType);
                     
-                    //variables.Initializer
+                    // TODO: variables.Initializer
                     return Tabs(depth) + string.Join("", names.Select(n => string.Format("{2}{0}: {1};\n", n, varType, !inClass ? "var " : "")));
+                case SyntaxKind.FunctionBlock:
+                    var block = (MethodBlockSyntax)node;
+                    var name = block.SubOrFunctionStatement.Identifier.Text;
+                    var type = GetVarType(block.SubOrFunctionStatement.AsClause.Type);
+                    // TODO: Need the parameters
+                    return string.Format("{0}{1}(): {2} {{\n{3}{0}}}\n", Tabs(depth), name, type, ProcessChildNodes(node, depth, prepend));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -108,6 +116,13 @@ namespace LegacyConvert
             if (arrayTypeSyntax != null)
             {
                 // TODO
+                return "any";
+            }
+
+            var qualifiedNameSyntax = asType as QualifiedNameSyntax;
+            if (qualifiedNameSyntax != null)
+            {
+                // this is things like System.IO.Stream which will need to be removed
                 return "any";
             }
 

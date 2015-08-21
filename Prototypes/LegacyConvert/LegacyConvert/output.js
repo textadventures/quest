@@ -272,5 +272,1194 @@ var PlayerCanAccessObjectResult = (function () {
 var LegacyGame = (function () {
     function LegacyGame() {
     }
+    LegacyGame.prototype.CopyContext = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN ConstructorBlock
+    // UNKNOWN ConstructorBlock
+    LegacyGame.prototype.RemoveFormatting = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.CheckSections = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ConvertFriendlyIfs = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ErrorCheck = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetAfterParameter = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.ObliterateParameters = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.ObliterateVariableNames = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ReportErrorLine = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.YesNo = function () {
+        // UNKNOWN SingleLineIfStatement
+    };
+    LegacyGame.prototype.IsYes = function () {
+        // UNKNOWN SingleLineIfStatement
+    };
+    LegacyGame.prototype.BeginsWith = function () {
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ConvertCasKeyword = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetDefineBlock = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.DefineBlockParam = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetEverythingAfter = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.Keyword2CAS = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetResourceLines = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ParseFile = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetParameter = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.DecryptString = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.RemoveTabs = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.EvaluateInlineExpressions = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecVerb = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExpressionHandler = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ReDimStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ListContents = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.ObscureNumericExps = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetHTMLColour = function () {
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SelectBlock
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteIfFlag = function () {
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExtractFile = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.CapFirst = function () {
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ConvertVarsIn = function () {
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.DisambObjHere = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteIfAction = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteIfType = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetArrayIndex = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.Disambiguate = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.DisplayStatusVariableInfo = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.DoAction = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.HasAction = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteCondition = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteConditions = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteIfHere = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteIfExists = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteIfProperty = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetNextChunk = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetFileDataChars = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetObjectActions = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetObjectId = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetObjectIdNoAlias = function () {
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetObjectProperty = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetPropertiesInType = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetRoomID = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetTextOrScript = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetThingNumber = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetThingBlock = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.MakeRestoreData = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ForEachBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ConvertParameter = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.DoFunction = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.DoInternalFunction = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteIfAsk = function () {
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN SyncLockBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecuteIfGot = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteIfHas = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.ExecuteIfIs = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SelectBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetNumericContents = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetErrorMessage = function () {
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.SetUnknownVariableType = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.SetUpChoiceForm = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecUserCommand = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetCommandParameters = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetGender = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetStringContents = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.IsAvailable = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.IsCompatible = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN DoLoopUntilBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.OpenGame = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.SaveGame = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.MakeRestoreDataV2 = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.DisplayCollectableInfo = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.ExecCommand = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SyncLockBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.CmdStartsWith = function () {
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.FindStatement = function () {
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.FindLine = function () {
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetCollectableAmount = function () {
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetSecondChunk = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.InitialiseGame = function () {
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.PlaceExist = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.RetrLine = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.RetrLineParam = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.UpdateDoorways = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.PlayerCanAccessObject = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetGoToExits = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ForBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.FindExit = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN EventStatement
+    // UNKNOWN EventStatement
+    // UNKNOWN EventStatement
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.Save = function () {
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN PropertyBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN EventStatement
+    LegacyGame.prototype.Initialise = function () {
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN MultiLineIfBlock
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetResourcePath = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetLibraryLines = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN SelectBlock
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    LegacyGame.prototype.ShowMenu = function () {
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN SyncLockBlock
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetExternalScripts = function () {
+        // UNKNOWN ReturnStatement
+    };
+    LegacyGame.prototype.GetExternalStylesheets = function () {
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN EventStatement
+    // UNKNOWN PropertyBlock
+    LegacyGame.prototype.GetOriginalFilenameForQSG = function () {
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN SubBlock
+    LegacyGame.prototype.GetUnzippedFile = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SimpleAssignmentStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    LegacyGame.prototype.GetResource = function () {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN ReturnStatement
+    };
+
+    // UNKNOWN PropertyBlock
+    LegacyGame.prototype.GetResources = function () {
+        // UNKNOWN ForBlock
+        // UNKNOWN MultiLineIfBlock
+    };
+    LegacyGame.prototype.GetResourcelessCAS = function () {
+        // UNKNOWN LocalDeclarationStatement
+        // UNKNOWN ReturnStatement
+    };
     return LegacyGame;
 })();
