@@ -22,7 +22,13 @@ namespace LegacyConvert
             var result = ProcessNode(root, -1, prepend);
             result = prepend.ToString() + result;
 
-            System.IO.File.WriteAllText("output.ts", result);
+            System.IO.File.WriteAllText(@"..\..\output.ts", result);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "tsc.exe",
+                UseShellExecute = false,
+                Arguments = @"..\..\output.ts",
+            });
 
             Console.WriteLine("Done " + result.Length);
             Console.ReadKey();
