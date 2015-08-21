@@ -60,12 +60,7 @@ namespace LegacyConvert
                     var variables = (VariableDeclaratorSyntax)node.ChildNodes().First();
                     var names = variables.Names.Select(n => n.Identifier.Text);
                     var asType = variables.AsClause.ChildNodes().First();
-                    var predefinedType = asType as PredefinedTypeSyntax;
-                    if (predefinedType == null)
-                    {
-                        return Tabs(depth) + "// TODO: " + string.Join(", ", names) + "\n";
-                    }
-                    var varType = ConvertType(((PredefinedTypeSyntax)asType).Keyword.Text);
+                    var varType = GetVarType(asType);
                     
                     //variables.Initializer
                     return Tabs(depth) + string.Join("", names.Select(n => string.Format("{2}{0}: {1};\n", n, varType, !inClass ? "var " : "")));
@@ -74,6 +69,43 @@ namespace LegacyConvert
             }
 
             return null;
+        }
+
+        private static string GetVarType(SyntaxNode asType)
+        {
+            var predefinedType = asType as PredefinedTypeSyntax;
+            if (predefinedType != null)
+            {
+                return ConvertType(predefinedType.Keyword.Text);
+            }
+
+            var genericName = asType as GenericNameSyntax;
+            if (genericName != null)
+            {
+                return "any";
+            }
+
+            var identifierName = asType as IdentifierNameSyntax;
+            if (identifierName != null)
+            {
+                return identifierName.Identifier.Text;
+            }
+
+            var objectCreationExpressionSyntax = asType as ObjectCreationExpressionSyntax;
+            if (objectCreationExpressionSyntax != null)
+            {
+                // TODO - need to get type and instantiate it
+                return "any";
+            }
+
+            var arrayTypeSyntax = asType as ArrayTypeSyntax;
+            if (arrayTypeSyntax != null)
+            {
+                // TODO
+                return "any";
+            }
+
+            throw new InvalidOperationException();
         }
 
         private static string ConvertType(string type)
