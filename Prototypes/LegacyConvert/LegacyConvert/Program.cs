@@ -140,6 +140,11 @@ namespace LegacyConvert
 
         static string ProcessExpression(ExpressionSyntax expr, List<string> classFields)
         {
+            if (expr == null)
+            {
+                return "null";
+            }
+
             var objectCreation = expr as ObjectCreationExpressionSyntax;
             if (objectCreation != null)
             {
@@ -174,13 +179,23 @@ namespace LegacyConvert
                 if (identifier != null)
                 {
                     var typeInfo = Model.GetTypeInfo(identifier);
-                    if (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType)
+                    var isArray = (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType);
+                    if (!isArray)
+                    {
+                        // hmm, the above doesn't catch local variables which are arrays. Fudge it by checking for lowercase first letter.
+                        var firstLetter = identifier.Identifier.ValueText.Substring(0, 1);
+                        if (firstLetter.ToLower() == firstLetter) isArray = true;
+                    }
+
+                    if (isArray)
                     {
                         var arg = ProcessExpression(invocation.ArgumentList.Arguments[0].GetExpression(), classFields);
                         var name = identifier.Identifier.ValueText;
                         if (classFields.Contains(name)) name = "this." + name;
                         return name + "[" + arg + "]";
                     }
+
+                    return string.Format("{0}({1})", identifier.Identifier.Text, string.Join(", ", invocation.ArgumentList.Arguments.Select(a => ProcessExpression(a.GetExpression(), classFields))));
                 }
 
                 return "'expr'";

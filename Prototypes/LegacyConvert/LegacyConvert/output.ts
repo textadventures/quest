@@ -393,7 +393,7 @@ class LegacyGame {
 	}
 	GetAfterParameter(s: string): string {
 		var eop: number;
-		eop = 'expr';
+		eop = InStr(s, ">");
 		// UNKNOWN MultiLineIfBlock
 	}
 	ObliterateParameters(s: string): string {
@@ -425,7 +425,7 @@ class LegacyGame {
 	}
 	ReportErrorLine(s: string): string {
 		var replaceFrom: number;
-		replaceFrom = 'expr';
+		replaceFrom = InStr(s, "do <!intproc");
 		// UNKNOWN MultiLineIfBlock
 	}
 	YesNo(yn: boolean): string {
@@ -435,7 +435,7 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 	}
 	BeginsWith(s: string, text: string): boolean {
-		return 'expr' == 'expr';
+		return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
 	}
 	ConvertCasKeyword(casChar: string): string {
 		var c: Byte = 'expr';
@@ -466,22 +466,22 @@ class LegacyGame {
 	}
 	GetEverythingAfter(s: string, text: string): string {
 		// UNKNOWN MultiLineIfBlock
-		return 'expr';
+		return Right(s, Len(s) - Len(text));
 	}
 	Keyword2CAS(KWord: string): string {
 		var k = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		return 'expr' + KWord + 'expr';
+		return Keyword2CAS("!unknown") + KWord + Keyword2CAS("!unknown");
 	}
 	LoadCASKeywords(): void {
-		var questDatLines: string[] = 'expr';
+		var questDatLines: string[] = GetResourceLines(My.Resources.QuestDAT);
 		// UNKNOWN ForEachBlock
 	}
 	GetResourceLines(res: Byte[]): string[] {
 		var enc: any = {};
 		var resFile: string = 'expr';
-		return 'expr';
+		return Split(resFile, Chr(13) + Chr(10));
 	}
 	ParseFile(filename: string): boolean {
 		var hasErrors: boolean;
@@ -522,7 +522,7 @@ class LegacyGame {
 		var slashPos: number;
 		var curPos = 1;
 		// UNKNOWN DoLoopUntilBlock
-		var filenameNoPath = 'expr';
+		var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -534,7 +534,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		hasErrors = 'expr';
+		hasErrors = ConvertFriendlyIfs();
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = "";
@@ -548,16 +548,16 @@ class LegacyGame {
 		var newParam: string;
 		var startPos: number;
 		var endPos: number;
-		startPos = 'expr';
-		endPos = 'expr';
+		startPos = InStr(s, "<");
+		endPos = InStr(s, ">");
 		// UNKNOWN MultiLineIfBlock
-		var retrParam = 'expr';
+		var retrParam = Mid(s, startPos + 1, 'expr' - 1);
 		// UNKNOWN MultiLineIfBlock
-		return 'expr';
+		return EvaluateInlineExpressions(newParam);
 	}
 	AddLine(line: string): void {
 		var numLines: number;
-		numLines = 'expr' + 1;
+		numLines = UBound(this._lines) + 1;
 		// UNKNOWN ReDimPreserveStatement
 		this._lines[numLines] = line;
 	}
@@ -581,7 +581,7 @@ class LegacyGame {
 		var d: string;
 		// UNKNOWN ReDimStatement
 		// UNKNOWN MultiLineIfBlock
-		chkVer = 'expr';
+		chkVer = Left(fileData, 7);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -649,18 +649,18 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		childLength = sepPos - 'expr';
 		// UNKNOWN MultiLineIfBlock
-		childName = 'expr';
+		childName = Trim(Mid(cmd, Len(verb) + 2, childLength));
 		gotObject = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		isContainer = 'expr';
+		isContainer = IsYes(GetObjectProperty("container", parentId, true, false));
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var canAccessObject = 'expr';
+		var canAccessObject = PlayerCanAccessObject(childId);
 		// UNKNOWN MultiLineIfBlock
-		var canAccessParent = 'expr';
+		var canAccessParent = PlayerCanAccessObject(parentId);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[parentId];
@@ -675,10 +675,10 @@ class LegacyGame {
 		var parentName: string = "";
 		var scp: number;
 		// UNKNOWN MultiLineIfBlock
-		scp = 'expr';
+		scp = InStr(parameter, ";");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		childId = 'expr';
+		childId = GetObjectIdNoAlias(childName);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -694,25 +694,25 @@ class LegacyGame {
 		var textToPrint: string;
 		var isContainer: boolean;
 		// UNKNOWN MultiLineIfBlock
-		name = 'expr';
-		id = 'expr';
+		name = GetEverythingAfter(cmd, action + " ");
+		id = Disambiguate(name, this._currentRoom + ";inventory", ctx);
 		// UNKNOWN MultiLineIfBlock
-		isContainer = 'expr';
+		isContainer = IsYes(GetObjectProperty("container", id, true, false));
 		// UNKNOWN MultiLineIfBlock
-		isOpen = 'expr';
+		isOpen = IsYes(GetObjectProperty("opened", id, true, false));
 		// UNKNOWN MultiLineIfBlock
-		var canAccessObject = 'expr';
+		var canAccessObject = PlayerCanAccessObject(id);
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecuteSelectCase(script: string, ctx: Context): void {
-		var afterLine = 'expr';
+		var afterLine = GetAfterParameter(script);
 		// UNKNOWN MultiLineIfBlock
-		var blockName = 'expr';
-		var block = 'expr';
-		var checkValue = 'expr';
+		var blockName = GetParameter(afterLine, ctx);
+		var block = DefineBlockParam("procedure", blockName);
+		var checkValue = GetParameter(script, ctx);
 		var caseMatch = false;
 		// UNKNOWN ForBlock
 	}
@@ -729,7 +729,7 @@ class LegacyGame {
 		var verbTag: string;
 		var thisScript: string = "";
 		// UNKNOWN MultiLineIfBlock
-		gameBlock = 'expr';
+		gameBlock = GetDefineBlock("game");
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		return foundVerb;
@@ -745,7 +745,7 @@ class LegacyGame {
 		var numOperators = 0;
 		var operators: string[] = [];
 		var newElement: boolean;
-		var obscuredExpr = 'expr';
+		var obscuredExpr = ObscureNumericExps(expr);
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		var opNum = 0;
@@ -780,7 +780,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	GetHTMLColour(colour: string, defaultColour: string): string {
-		colour = 'expr';
+		colour = LCase(colour);
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SelectBlock
 	}
@@ -792,7 +792,7 @@ class LegacyGame {
 		var toRoom: string = "";
 		var roomId: number;
 		var exitId: number;
-		var scp = 'expr';
+		var scp = InStr(exitData, ";");
 		// UNKNOWN MultiLineIfBlock
 		var roomExit: RoomExit;
 		// UNKNOWN MultiLineIfBlock
@@ -814,18 +814,18 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ExecuteIfFlag(flag: string): boolean {
-		return 'expr' == "yes";
+		return GetObjectProperty(flag, 1, true) == "yes";
 	}
 	ExecuteIncDec(line: string, ctx: Context): void {
 		var variable: string;
 		var change: number;
-		var param = 'expr';
-		var sc = 'expr';
+		var param = GetParameter(line, ctx);
+		var sc = InStr(param, ";");
 		// UNKNOWN MultiLineIfBlock
-		var value = 'expr';
+		var value = GetNumericContents(variable, ctx, true);
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		var arrayIndex = 'expr';
+		var arrayIndex = GetArrayIndex(variable, ctx);
 		// UNKNOWN ExpressionStatement
 	}
 	ExtractFile(file: string): string {
@@ -875,10 +875,10 @@ class LegacyGame {
 	AddToObjectActions(actionInfo: string, id: number, ctx: Context): void {
 		var actionNum: number;
 		var foundExisting = false;
-		var name = 'expr';
-		var ep = 'expr';
+		var name = LCase(GetParameter(actionInfo, ctx));
+		var ep = InStr(actionInfo, ">");
 		// UNKNOWN MultiLineIfBlock
-		var script = 'expr';
+		var script = Trim(Mid(actionInfo, ep + 1));
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -902,10 +902,10 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	CapFirst(s: string): string {
-		return 'expr' + 'expr';
+		return UCase(Left(s, 1)) + Mid(s, 2);
 	}
 	ConvertVarsIn(s: string, ctx: Context): string {
-		return 'expr';
+		return GetParameter("<" + s + ">", ctx);
 	}
 	DisambObjHere(ctx: Context, id: number, firstPlace: string, twoPlaces: boolean, secondPlace: string, isExit: boolean): boolean {
 		var isSeen: boolean;
@@ -918,7 +918,7 @@ class LegacyGame {
 		var id: number;
 		var newName: string;
 		var cloneTo: string;
-		var SC = 'expr';
+		var SC = InStr(cloneString, ";");
 		// UNKNOWN MultiLineIfBlock
 		this._numberObjs = this._numberObjs + 1;
 		// UNKNOWN ReDimPreserveStatement
@@ -935,27 +935,27 @@ class LegacyGame {
 	ExecType(typeData: string, ctx: Context): void {
 		var id: number;
 		var found: boolean;
-		var scp = 'expr';
+		var scp = InStr(typeData, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		var typeName = 'expr';
+		var objName = Trim(Left(typeData, scp - 1));
+		var typeName = Trim(Mid(typeData, scp + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
 		o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
 		// UNKNOWN ReDimPreserveStatement
 		'expr' = typeName;
-		var propertyData = 'expr';
+		var propertyData = GetPropertiesInType(typeName);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 	}
 	ExecuteIfAction(actionData: string): boolean {
 		var id: number;
-		var scp = 'expr';
+		var scp = InStr(actionData, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		var actionName = 'expr';
+		var objName = Trim(Left(actionData, scp - 1));
+		var actionName = Trim(Mid(actionData, scp + 1));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -965,10 +965,10 @@ class LegacyGame {
 	}
 	ExecuteIfType(typeData: string): boolean {
 		var id: number;
-		var scp = 'expr';
+		var scp = InStr(typeData, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		var typeName = 'expr';
+		var objName = Trim(Left(typeData, scp - 1));
+		var typeName = Trim(Mid(typeData, scp + 1));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -979,11 +979,11 @@ class LegacyGame {
 	GetArrayIndex(varName: string, ctx: Context): ArrayResult {
 		var result: ArrayResult = new ArrayResult();
 		// UNKNOWN MultiLineIfBlock
-		var beginPos = 'expr';
-		var endPos = 'expr';
-		var data = 'expr';
+		var beginPos = InStr(varName, "[");
+		var endPos = InStr(varName, "]");
+		var data = Mid(varName, beginPos + 1, 'expr' - 1);
 		// UNKNOWN MultiLineIfBlock
-		result.Name = 'expr';
+		result.Name = Left(varName, beginPos - 1);
 		return result;
 	}
 	Disambiguate(name: string, containedIn: string, ctx: Context, isExit: boolean): number {
@@ -995,7 +995,7 @@ class LegacyGame {
 		var descriptionText: string[];
 		var validNames: string[];
 		var numValidNames: number;
-		name = 'expr';
+		name = Trim(name);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1021,7 +1021,7 @@ class LegacyGame {
 		var o = this._objs[ObjID];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var NewThread: Context = 'expr';
+		var NewThread: Context = CopyContext(ctx);
 		NewThread.CallingObjectId = ObjID;
 		// UNKNOWN ExpressionStatement
 		return true;
@@ -1037,7 +1037,7 @@ class LegacyGame {
 		var isExit: boolean;
 		var isRoom: boolean;
 		// UNKNOWN MultiLineIfBlock
-		scriptLine = 'expr';
+		scriptLine = GetEverythingAfter(scriptLine, "in ");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 	}
@@ -1048,12 +1048,12 @@ class LegacyGame {
 		var id: number;
 		var foundExisting = false;
 		var foundObject = false;
-		var param = 'expr';
-		var scp = 'expr';
+		var param = GetParameter(data, ctx);
+		var scp = InStr(param, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		actionName = 'expr';
-		var ep = 'expr';
+		var objName = Trim(Left(param, scp - 1));
+		actionName = Trim(Mid(param, scp + 1));
+		var ep = InStr(data, ">");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1076,7 +1076,7 @@ class LegacyGame {
 		var conditions: string[];
 		var numConditions = 0;
 		var operations: string[];
-		var obscuredConditionList = 'expr';
+		var obscuredConditionList = ObliterateParameters(list);
 		var pos = 1;
 		var isFinalCondition = false;
 		// UNKNOWN DoLoopUntilBlock
@@ -1093,17 +1093,17 @@ class LegacyGame {
 		var scrRoom: string;
 		var destRoom: string = "";
 		var destId: number;
-		var exitData = 'expr';
-		var newName = 'expr';
-		var scp = 'expr';
+		var exitData = GetEverythingAfter(data, "exit ");
+		var newName = GetParameter(data, ctx);
+		var scp = InStr(newName, ";");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var srcId = 'expr';
+		var srcId = GetRoomID(scrRoom, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var exists = false;
 		// UNKNOWN MultiLineIfBlock
-		var paramPos = 'expr';
+		var paramPos = InStr(exitData, "<");
 		var saveData: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1115,7 +1115,7 @@ class LegacyGame {
 		var found: boolean;
 		var parentId: number;
 		var id: number;
-		id = 'expr';
+		id = Disambiguate(obj, "inventory", ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var isInContainer = false;
@@ -1128,9 +1128,9 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecExamine(command: string, ctx: Context): void {
-		var item = 'expr';
+		var item = LCase(Trim(GetEverythingAfter(command, "examine ")));
 		// UNKNOWN MultiLineIfBlock
-		var id = 'expr';
+		var id = Disambiguate(item, this._currentRoom + ";inventory", ctx);
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
@@ -1139,37 +1139,37 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ExecMoveThing(data: string, type: Thing, ctx: Context): void {
-		var scp = 'expr';
-		var name = 'expr';
-		var place = 'expr';
+		var scp = InStr(data, ";");
+		var name = Trim(Left(data, scp - 1));
+		var place = Trim(Mid(data, scp + 1));
 		// UNKNOWN ExpressionStatement
 	}
 	ExecProperty(data: string, ctx: Context): void {
 		var id: number;
 		var found: boolean;
-		var scp = 'expr';
+		var scp = InStr(data, ";");
 		// UNKNOWN MultiLineIfBlock
-		var name = 'expr';
-		var properties = 'expr';
+		var name = Trim(Left(data, scp - 1));
+		var properties = Trim(Mid(data, scp + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 	}
 	ExecuteDo(procedureName: string, ctx: Context): void {
-		var newCtx: Context = 'expr';
+		var newCtx: Context = CopyContext(ctx);
 		var numParameters = 0;
 		var useNewCtx: boolean;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var block = 'expr';
+		var block = DefineBlockParam("procedure", procedureName);
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecuteDoAction(data: string, ctx: Context): void {
 		var id: number;
-		var scp = 'expr';
+		var scp = InStr(data, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		var actionName = 'expr';
+		var objName = LCase(Trim(Left(data, scp - 1)));
+		var actionName = Trim(Mid(data, scp + 1));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1195,14 +1195,14 @@ class LegacyGame {
 	}
 	ExecuteIfProperty(data: string): boolean {
 		var id: number;
-		var scp = 'expr';
+		var scp = InStr(data, ";");
 		// UNKNOWN MultiLineIfBlock
-		var objName = 'expr';
-		var propertyName = 'expr';
+		var objName = Trim(Left(data, scp - 1));
+		var propertyName = Trim(Mid(data, scp + 1));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		return 'expr' == "yes";
+		return GetObjectProperty(propertyName, id, true) == "yes";
 	}
 	ExecuteRepeat(data: string, ctx: Context): void {
 		var repeatWhileTrue: boolean;
@@ -1213,21 +1213,21 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var pos = 1;
 		// UNKNOWN DoLoopUntilBlock
-		var conditions = 'expr';
+		var conditions = Trim(Left(data, bracketPos));
 		var finished = false;
 		// UNKNOWN DoLoopUntilBlock
 	}
 	ExecuteSetCollectable(param: string, ctx: Context): void {
 		var val: number;
 		var id: number;
-		var scp = 'expr';
-		var name = 'expr';
-		var newVal = 'expr';
+		var scp = InStr(param, ";");
+		var name = Trim(Left(param, scp - 1));
+		var newVal = Trim(Right(param, Len(param) - scp));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var op = 'expr';
-		var newValue = 'expr';
+		var op = Left(newVal, 1);
+		var newValue = Trim(Right(newVal, Len(newVal) - 1));
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1242,21 +1242,21 @@ class LegacyGame {
 		this._fileDataPos = 1;
 	}
 	GetNextChunk(): string {
-		var nullPos = 'expr';
-		var result = 'expr';
+		var nullPos = InStr(this._fileDataPos, this._fileData, Chr(0));
+		var result = Mid(this._fileData, this._fileDataPos, nullPos - this._fileDataPos);
 		// UNKNOWN MultiLineIfBlock
 		return result;
 	}
 	GetFileDataChars(count: number): string {
-		var result = 'expr';
+		var result = Mid(this._fileData, this._fileDataPos, count);
 		this._fileDataPos = this._fileDataPos + count;
 		return result;
 	}
 	GetObjectActions(actionInfo: string): ActionType {
-		var name = 'expr';
-		var ep = 'expr';
+		var name = LCase(GetParameter(actionInfo, this._nullContext));
+		var ep = InStr(actionInfo, ">");
 		// UNKNOWN MultiLineIfBlock
-		var script = 'expr';
+		var script = Trim(Mid(actionInfo, ep + 1));
 		var result: ActionType = new ActionType();
 		result.ActionName = name;
 		result.Script = script;
@@ -1301,7 +1301,7 @@ class LegacyGame {
 	}
 	GetTextOrScript(textScript: string): TextAction {
 		var result = new TextAction();
-		textScript = 'expr';
+		textScript = Trim(textScript);
 		// UNKNOWN MultiLineIfBlock
 		return result;
 	}
@@ -1348,7 +1348,7 @@ class LegacyGame {
 	}
 	MoveThing(name: string, room: string, type: Thing, ctx: Context): void {
 		var oldRoom: string = "";
-		var id = 'expr';
+		var id = GetThingNumber(name, "", type);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1372,10 +1372,10 @@ class LegacyGame {
 		var parameter: string;
 		var intFuncResult: string = "";
 		var intFuncExecuted = false;
-		var paramPos = 'expr';
+		var paramPos = InStr(data, "(");
 		// UNKNOWN MultiLineIfBlock
 		var block: DefineBlock;
-		block = 'expr';
+		block = DefineBlockParam("function", name);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1395,21 +1395,21 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var endValue: number;
 		var stepValue: number;
-		var forData = 'expr';
-		var scp1 = 'expr';
-		var scp2 = 'expr';
-		var scp3 = 'expr';
-		var counterVariable = 'expr';
+		var forData = GetParameter(line, ctx);
+		var scp1 = InStr(forData, ";");
+		var scp2 = InStr(scp1 + 1, forData, ";");
+		var scp3 = InStr(scp2 + 1, forData, ";");
+		var counterVariable = Trim(Left(forData, scp1 - 1));
 		var startValue = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		var loopScript = 'expr';
+		var loopScript = Trim(Mid(line, InStr(line, ">") + 1));
 		// UNKNOWN ForBlock
 	}
 	ExecSetVar(varInfo: string, ctx: Context): void {
-		var scp = 'expr';
-		var varName = 'expr';
-		var varCont = 'expr';
-		var idx = 'expr';
+		var scp = InStr(varInfo, ";");
+		var varName = Trim(Left(varInfo, scp - 1));
+		var varCont = Trim(Mid(varInfo, scp + 1));
+		var idx = GetArrayIndex(varName, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN TryBlock
 	}
@@ -1438,14 +1438,14 @@ class LegacyGame {
 	ExecuteIfHas(condition: string): boolean {
 		var checkValue: number;
 		var colNum: number;
-		var scp = 'expr';
-		var name = 'expr';
-		var newVal = 'expr';
+		var scp = InStr(condition, ";");
+		var name = Trim(Left(condition, scp - 1));
+		var newVal = Trim(Right(condition, Len(condition) - scp));
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var op = 'expr';
-		var newValue = 'expr';
+		var op = Left(newVal, 1);
+		var newValue = Trim(Right(newVal, Len(newVal) - 1));
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		return false;
@@ -1456,9 +1456,9 @@ class LegacyGame {
 		var op: string;
 		var expectNumerics: boolean;
 		var expResult: ExpressionResult;
-		var scp = 'expr';
+		var scp = InStr(condition, ";");
 		// UNKNOWN MultiLineIfBlock
-		var scp2 = 'expr';
+		var scp2 = InStr(scp + 1, condition, ";");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var result = false;
@@ -1474,18 +1474,18 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		return 'expr';
+		return Val('expr');
 	}
 	PlayerErrorMessage(e: PlayerError, ctx: Context): void {
 		// UNKNOWN ExpressionStatement
 	}
 	PlayerErrorMessage_ExtendInfo(e: PlayerError, ctx: Context, extraInfo: string): void {
-		var message = 'expr';
+		var message = GetErrorMessage(e, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 	}
 	GetErrorMessage(e: PlayerError, ctx: Context): string {
-		return 'expr';
+		return ConvertParameter(ConvertParameter(ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
 	}
 	PlayMedia(filename: string): void {
 		// UNKNOWN ExpressionStatement
@@ -1498,7 +1498,7 @@ class LegacyGame {
 		var looped: boolean = false;
 		var params: any = {};
 		params = new any();
-		var filename = 'expr';
+		var filename = params[0];
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
@@ -1516,7 +1516,7 @@ class LegacyGame {
 		var decryptedFile: any = {};
 		// UNKNOWN ForBlock
 		this._fileData = 'expr';
-		this._currentRoom = 'expr';
+		this._currentRoom = GetNextChunk();
 		var numData = 'expr';
 		var createdObjects: any = {};
 		// UNKNOWN ForBlock
@@ -1604,7 +1604,7 @@ class LegacyGame {
 	SetOpenClose(name: string, open: boolean, ctx: Context): void {
 		var cmd: string;
 		// UNKNOWN MultiLineIfBlock
-		var id = 'expr';
+		var id = GetObjectIdNoAlias(name);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 	}
@@ -1613,30 +1613,30 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetUnknownVariableType(variableData: string, ctx: Context): SetResult {
-		var scp = 'expr';
+		var scp = InStr(variableData, ";");
 		// UNKNOWN MultiLineIfBlock
-		var name = 'expr';
+		var name = Trim(Left(variableData, scp - 1));
 		// UNKNOWN MultiLineIfBlock
-		var contents = 'expr';
+		var contents = Trim(Mid(variableData, scp + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		return SetResult.Unfound;
 	}
 	SetUpChoiceForm(blockName: string, ctx: Context): string {
-		var block = 'expr';
-		var prompt = 'expr';
+		var block = DefineBlockParam("selection", blockName);
+		var prompt = FindStatement(block, "info");
 		var menuOptions: any = {};
 		var menuScript: any = {};
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
 		var mnu: MenuData = new MenuData();
-		var choice: string = 'expr';
+		var choice: string = ShowMenu(mnu);
 		// UNKNOWN ExpressionStatement
-		return 'expr';
+		return menuScript[choice];
 	}
 	SetUpDefaultFonts(): void {
-		var gameblock = 'expr';
+		var gameblock = GetDefineBlock("game");
 		this._defaultFontName = "Arial";
 		this._defaultFontSize = 9;
 		// UNKNOWN ForBlock
@@ -1674,7 +1674,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 	}
 	SetUpSynonyms(): void {
-		var block = 'expr';
+		var block = GetDefineBlock("synonyms");
 		this._numberSynonyms = 0;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -1683,13 +1683,13 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 	}
 	SetUpTurnScript(): void {
-		var block = 'expr';
+		var block = GetDefineBlock("game");
 		this._beforeTurnScript = "";
 		this._afterTurnScript = "";
 		// UNKNOWN ForBlock
 	}
 	SetUpUserDefinedPlayerErrors(): void {
-		var block = 'expr';
+		var block = GetDefineBlock("game");
 		var examineIsCustomised = false;
 		// UNKNOWN ForBlock
 	}
@@ -1732,16 +1732,16 @@ class LegacyGame {
 		var oldLastComma: number;
 		var defineBlock: number;
 		var lookString: string = "";
-		gameBlock = 'expr';
+		gameBlock = GetDefineBlock("game");
 		this._currentRoom = Room;
 		var roomBlock: DefineBlock;
-		roomBlock = 'expr';
+		roomBlock = DefineBlockParam("room", Room);
 		var finishedFindingCommas: boolean;
 		charsViewable = "";
 		charsFound = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN SingleLineIfStatement
-		prefix = 'expr';
+		prefix = FindStatement(roomBlock, "prefix");
 		// UNKNOWN MultiLineIfBlock
 		inDesc = "unfound";
 		// UNKNOWN ForBlock
@@ -1779,25 +1779,25 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	AddToObjectList(objList: any, exitList: any, name: string, type: Thing): void {
-		name = 'expr';
+		name = CapFirst(name);
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecExec(scriptLine: string, ctx: Context): void {
 		// UNKNOWN SingleLineIfStatement
-		var execLine = 'expr';
-		var newCtx: Context = 'expr';
+		var execLine = GetParameter(scriptLine, ctx);
+		var newCtx: Context = CopyContext(ctx);
 		newCtx.StackCounter = newCtx.StackCounter + 1;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecSetString(info: string, ctx: Context): void {
-		var scp = 'expr';
-		var name = 'expr';
-		var value = 'expr';
+		var scp = InStr(info, ";");
+		var name = Trim(Left(info, scp - 1));
+		var value = Mid(info, scp + 1);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var idx = 'expr';
+		var idx = GetArrayIndex(name, ctx);
 		// UNKNOWN ExpressionStatement
 	}
 	ExecUserCommand(cmd: string, ctx: Context, libCommands: boolean): boolean {
@@ -1807,7 +1807,7 @@ class LegacyGame {
 		var commandTag: string;
 		var commandLine: string = "";
 		var foundCommand = false;
-		var roomId = 'expr';
+		var roomId = GetRoomID(this._currentRoom, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1822,7 +1822,7 @@ class LegacyGame {
 		var chunksEnd: number[];
 		var varName: string[];
 		var var2Pos: number;
-		test = "�" + 'expr' + "�";
+		test = "�" + Trim(test) + "�";
 		required = "�" + required + "�";
 		var currentReqLinePos = 1;
 		var currentTestLinePos = 1;
@@ -1842,7 +1842,7 @@ class LegacyGame {
 	GetStringContents(name: string, ctx: Context): string {
 		var returnAlias = false;
 		var arrayIndex = 0;
-		var cp = 'expr';
+		var cp = InStr(name, ":");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1856,13 +1856,13 @@ class LegacyGame {
 	IsAvailable(thingName: string, type: Thing, ctx: Context): boolean {
 		var room: string;
 		var name: string;
-		var atPos = 'expr';
+		var atPos = InStr(thingName, "@");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	IsCompatible(test: string, required: string): boolean {
 		var var2Pos: number;
-		test = "�" + 'expr' + "�";
+		test = "�" + Trim(test) + "�";
 		required = "�" + required + "�";
 		var currentReqLinePos = 1;
 		var currentTestLinePos = 1;
@@ -1887,11 +1887,11 @@ class LegacyGame {
 		this._gameLoadMethod = "loaded";
 		var prevQsgVersion = false;
 		// UNKNOWN MultiLineIfBlock
-		savedQsgVersion = 'expr';
+		savedQsgVersion = Left(fileData, 10);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		result = 'expr';
+		result = InitialiseGame(this._gameFileName, true);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = filename;
@@ -1957,10 +1957,10 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ShowGameAbout(ctx: Context): void {
-		var version = 'expr';
-		var author = 'expr';
-		var copyright = 'expr';
-		var info = 'expr';
+		var version = FindStatement(GetDefineBlock("game"), "game version");
+		var author = FindStatement(GetDefineBlock("game"), "game author");
+		var copyright = FindStatement(GetDefineBlock("game"), "game copyright");
+		var info = FindStatement(GetDefineBlock("game"), "game info");
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
@@ -1996,9 +1996,9 @@ class LegacyGame {
 		var lookDesc: string = "";
 		var objLook: string;
 		var objSuffix: string;
-		var gameBlock = 'expr';
+		var gameBlock = GetDefineBlock("game");
 		this._currentRoom = room;
-		var id = 'expr';
+		var id = GetRoomID(this._currentRoom, ctx);
 		// UNKNOWN SingleLineIfStatement
 		roomAlias = this._rooms[id].RoomAlias;
 		// UNKNOWN SingleLineIfStatement
@@ -2014,9 +2014,9 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN ForEachBlock
 		// UNKNOWN MultiLineIfBlock
-		doorwayString = 'expr';
+		doorwayString = UpdateDoorways(id, ctx);
 		// UNKNOWN MultiLineIfBlock
-		objLook = 'expr';
+		objLook = GetObjectProperty("look", this._rooms[id].ObjId, null, false);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		showLookText = true;
@@ -2045,7 +2045,7 @@ class LegacyGame {
 	}
 	DisplayTextSection(section: string, ctx: Context, OutputTo: string): void {
 		var block: DefineBlock;
-		block = 'expr';
+		block = DefineBlockParam("text", section);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
@@ -2053,22 +2053,22 @@ class LegacyGame {
 	ExecCommand(input: string, ctx: Context, echo: boolean, runUserCommand: boolean, dontSetIt: boolean): boolean {
 		var parameter: string;
 		var skipAfterTurn = false;
-		input = 'expr';
+		input = RemoveFormatting(input);
 		var oldBadCmdBefore = this._badCmdBefore;
-		var roomID = 'expr';
+		var roomID = GetRoomID(this._currentRoom, ctx);
 		var enteredHelpCommand = false;
 		// UNKNOWN SingleLineIfStatement
-		var cmd = 'expr';
+		var cmd = LCase(input);
 		// UNKNOWN SyncLockBlock
 		var userCommandReturn: boolean;
 		// UNKNOWN MultiLineIfBlock
-		input = 'expr';
+		input = LCase(input);
 		// UNKNOWN ExpressionStatement
 		var newCommand = " " + input + " ";
 		// UNKNOWN ForBlock
-		input = 'expr';
+		input = Mid(newCommand, 2, Len(newCommand) - 2);
 		// UNKNOWN ExpressionStatement
-		var newCtx: Context = 'expr';
+		var newCtx: Context = CopyContext(ctx);
 		var globalOverride = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
@@ -2082,7 +2082,7 @@ class LegacyGame {
 		return true;
 	}
 	CmdStartsWith(cmd: string, startsWith: string): boolean {
-		return 'expr';
+		return BeginsWith(Trim(cmd), startsWith);
 	}
 	ExecGive(giveString: string, ctx: Context): void {
 		var article: string;
@@ -2091,7 +2091,7 @@ class LegacyGame {
 		var type: Thing;
 		var id: number;
 		var script: string = "";
-		var toPos = 'expr';
+		var toPos = InStr(giveString, " to ");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2111,7 +2111,7 @@ class LegacyGame {
 		var parentDisplayName: string;
 		var foundItem = true;
 		var foundTake = false;
-		var id = 'expr';
+		var id = Disambiguate(item, this._currentRoom, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var isInContainer = false;
@@ -2123,10 +2123,10 @@ class LegacyGame {
 		var useDeclareLine = "";
 		var useOn: string;
 		var useItem: string;
-		useLine = 'expr';
+		useLine = Trim(GetEverythingAfter(useLine, "use "));
 		var roomId: number;
-		roomId = 'expr';
-		var onWithPos = 'expr';
+		roomId = GetRoomID(this._currentRoom, ctx);
+		var onWithPos = InStr(useLine, " on ");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var id: number;
@@ -2143,21 +2143,21 @@ class LegacyGame {
 		var objectName: string;
 		var sp: number;
 		var ep: number;
-		name = 'expr';
+		name = LCase(name);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecuteIf(scriptLine: string, ctx: Context): void {
-		var ifLine = 'expr';
-		var obscuredLine = 'expr';
-		var thenPos = 'expr';
+		var ifLine = Trim(GetEverythingAfter(Trim(scriptLine), "if "));
+		var obscuredLine = ObliterateParameters(ifLine);
+		var thenPos = InStr(obscuredLine, "then");
 		// UNKNOWN MultiLineIfBlock
-		var conditions = 'expr';
+		var conditions = Trim(Left(ifLine, thenPos - 1));
 		thenPos = thenPos + 4;
-		var elsePos = 'expr';
+		var elsePos = InStr(obscuredLine, "else");
 		var thenEndPos: number;
 		// UNKNOWN MultiLineIfBlock
-		var thenScript = 'expr';
+		var thenScript = Trim(Mid(ifLine, thenPos, thenEndPos - thenPos));
 		var elseScript = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2169,7 +2169,7 @@ class LegacyGame {
 	}
 	ExecuteEnter(scriptLine: string, ctx: Context): void {
 		this._commandOverrideModeOn = true;
-		this._commandOverrideVariable = 'expr';
+		this._commandOverrideVariable = GetParameter(scriptLine, ctx);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SyncLockBlock
 		this._commandOverrideModeOn = false;
@@ -2190,13 +2190,13 @@ class LegacyGame {
 		return 0;
 	}
 	GetSecondChunk(line: string): string {
-		var endOfFirstBit = 'expr' + 1;
+		var endOfFirstBit = InStr(line, ">") + 1;
 		var lengthOfKeyword = 'expr' + 1;
-		return 'expr';
+		return Trim(Mid(line, endOfFirstBit, lengthOfKeyword));
 	}
 	GoDirection(direction: string, ctx: Context): void {
 		var dirData: TextAction = new TextAction();
-		var id = 'expr';
+		var id = GetRoomID(this._currentRoom, ctx);
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		var r = this._rooms[id];
@@ -2207,7 +2207,7 @@ class LegacyGame {
 		var destination = "";
 		var placeData: string;
 		var disallowed = false;
-		placeData = 'expr';
+		placeData = PlaceExist(place, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2224,13 +2224,13 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		var gameBlock: DefineBlock;
-		gameBlock = 'expr';
+		gameBlock = GetDefineBlock("game");
 		var aslVersion = "//";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		this._gameName = 'expr';
+		this._gameName = GetParameter(this._lines[GetDefineBlock("game").StartLine], this._nullContext);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
@@ -2254,12 +2254,12 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		this._gameFileName = filename;
 		// UNKNOWN ExpressionStatement
-		this._defaultRoomProperties = 'expr';
-		this._defaultProperties = 'expr';
+		this._defaultRoomProperties = GetPropertiesInType("defaultroom", false);
+		this._defaultProperties = GetPropertiesInType("default", false);
 		return true;
 	}
 	PlaceExist(placeName: string, ctx: Context): string {
-		var roomId = 'expr';
+		var roomId = GetRoomID(this._currentRoom, ctx);
 		var foundPlace = false;
 		var scriptPresent = false;
 		var r = this._rooms[roomId];
@@ -2271,7 +2271,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	PlayGame(room: string, ctx: Context): void {
-		var id = 'expr';
+		var id = GetRoomID(room, ctx);
 		// UNKNOWN MultiLineIfBlock
 		this._currentRoom = room;
 		// UNKNOWN ExpressionStatement
@@ -2325,11 +2325,11 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ReadCatalog(data: string): void {
-		var nullPos = 'expr';
+		var nullPos = InStr(data, Chr(0));
 		this._numResources = 'expr';
 		// UNKNOWN ReDimPreserveStatement
 		this._resources[this._numResources] = new ResourceType();
-		data = 'expr';
+		data = Mid(data, nullPos + 1);
 		var resourceStart = 0;
 		// UNKNOWN ForBlock
 	}
@@ -2396,13 +2396,13 @@ class LegacyGame {
 		var objList: any = {};
 		var exitList: any = {};
 		var roomBlock: DefineBlock;
-		roomBlock = 'expr';
+		roomBlock = DefineBlockParam("room", this._currentRoom);
 		// UNKNOWN MultiLineIfBlock
 		noFormatObjsViewable = "";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var roomId: number;
-		roomId = 'expr';
+		roomId = GetRoomID(this._currentRoom, ctx);
 		var r = this._rooms[roomId];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN RaiseEventStatement
@@ -2454,11 +2454,11 @@ class LegacyGame {
 		// UNKNOWN ExitSubStatement
 	}
 	FindExit(tag: string): RoomExit {
-		var params = 'expr';
+		var params = Split(tag, ";");
 		// UNKNOWN MultiLineIfBlock
-		var room = 'expr';
-		var exitName = 'expr';
-		var roomId = 'expr';
+		var room = Trim(params[0]);
+		var exitName = Trim(params[1]);
+		var roomId = GetRoomID(room, this._nullContext);
 		// UNKNOWN MultiLineIfBlock
 		var exits = this._rooms[roomId].Exits;
 		var dir = 'expr';
@@ -2467,7 +2467,7 @@ class LegacyGame {
 	}
 	ExecuteLock(tag: string, lock: boolean): void {
 		var roomExit: RoomExit;
-		roomExit = 'expr';
+		roomExit = FindExit(tag);
 		// UNKNOWN MultiLineIfBlock
 		roomExit.IsLocked = lock;
 	}
@@ -2478,7 +2478,7 @@ class LegacyGame {
 		// UNKNOWN SyncLockBlock
 	}
 	DoBegin(): void {
-		var gameBlock: DefineBlock = 'expr';
+		var gameBlock: DefineBlock = GetDefineBlock("game");
 		var ctx: Context = new Context();
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
@@ -2506,7 +2506,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	Save(html: string): Byte[] {
-		return 'expr';
+		return SaveGame(Filename, false);
 	}
 	// UNKNOWN PropertyBlock
 	SendCommand(command: string): void {
@@ -2561,10 +2561,10 @@ class LegacyGame {
 	}
 	GetLibraryLines(libName: string): string[] {
 		var libCode: Byte[] = null;
-		libName = 'expr';
+		libName = LCase(libName);
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
-		return 'expr';
+		return GetResourceLines(libCode);
 	}
 	// UNKNOWN PropertyBlock
 	Tick(elapsedTime: number): void {
@@ -2657,7 +2657,7 @@ class LegacyGame {
 	// UNKNOWN PropertyBlock
 	GetResource(file: string): any {
 		// UNKNOWN MultiLineIfBlock
-		var path: string = 'expr';
+		var path: string = GetResourcePath(file);
 		// UNKNOWN SingleLineIfStatement
 		return new any();
 	}
