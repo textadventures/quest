@@ -102,6 +102,7 @@ namespace LegacyConvert
                 case SyntaxKind.SubBlock:
                     var block = (MethodBlockSyntax)node;
                     var name = block.SubOrFunctionStatement.Identifier.Text;
+
                     string type = "void";
                     if (block.SubOrFunctionStatement.AsClause != null)
                     {
@@ -188,15 +189,16 @@ namespace LegacyConvert
                         if (firstLetter.ToLower() == firstLetter) isArray = true;
                     }
 
+                    var name = identifier.Identifier.ValueText;
+                    if (classFields.Contains(name)) name = "this." + name;
+
                     if (isArray)
                     {
                         var arg = ProcessExpression(invocation.ArgumentList.Arguments[0].GetExpression(), classFields);
-                        var name = identifier.Identifier.ValueText;
-                        if (classFields.Contains(name)) name = "this." + name;
                         return name + "[" + arg + "]";
                     }
 
-                    return string.Format("{0}({1})", identifier.Identifier.Text, args);
+                    return string.Format("{0}({1})", name, args);
                 }
 
                 if (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType)
@@ -330,6 +332,20 @@ namespace LegacyConvert
 
         static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields)
         {
+            if (classFields != null && classFields.Count == 0)
+            {
+                foreach (var childNode in node.ChildNodes())
+                {
+                    var kind = childNode.Kind();
+                    if (kind == SyntaxKind.FunctionBlock || kind == SyntaxKind.SubBlock)
+                    {
+                        var block = (MethodBlockSyntax)childNode;
+                        var name = block.SubOrFunctionStatement.Identifier.Text;
+                        classFields.Add(name);
+                    }
+                }
+            }
+            
             var sb = new StringBuilder();
             foreach (var childNode in node.ChildNodes())
             {
