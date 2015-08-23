@@ -304,7 +304,7 @@ var LegacyGame = (function () {
         this._random = new Random();
         this._listVerbs = {};
     }
-    LegacyGame.prototype.CopyContext = function () {
+    LegacyGame.prototype.CopyContext = function (ctx) {
         var result = new Context();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
@@ -319,7 +319,7 @@ var LegacyGame = (function () {
 
     // UNKNOWN ConstructorBlock
     // UNKNOWN ConstructorBlock
-    LegacyGame.prototype.RemoveFormatting = function () {
+    LegacyGame.prototype.RemoveFormatting = function (s) {
         var code;
         var pos;
         var len;
@@ -397,12 +397,12 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetAfterParameter = function () {
+    LegacyGame.prototype.GetAfterParameter = function (s) {
         var eop;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ObliterateParameters = function () {
+    LegacyGame.prototype.ObliterateParameters = function (s) {
         var inParameter;
         var exitCharacter = "";
         var curChar;
@@ -412,7 +412,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ObliterateVariableNames = function () {
+    LegacyGame.prototype.ObliterateVariableNames = function (s) {
         var inParameter;
         var exitCharacter = "";
         var outputLine = "";
@@ -429,21 +429,21 @@ var LegacyGame = (function () {
         var oblitLine;
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ReportErrorLine = function () {
+    LegacyGame.prototype.ReportErrorLine = function (s) {
         var replaceFrom;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.YesNo = function () {
+    LegacyGame.prototype.YesNo = function (yn) {
         // UNKNOWN SingleLineIfStatement
     };
-    LegacyGame.prototype.IsYes = function () {
+    LegacyGame.prototype.IsYes = function (yn) {
         // UNKNOWN SingleLineIfStatement
     };
-    LegacyGame.prototype.BeginsWith = function () {
+    LegacyGame.prototype.BeginsWith = function (s, text) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ConvertCasKeyword = function () {
+    LegacyGame.prototype.ConvertCasKeyword = function (casChar) {
         var c = 'expr';
         var keyword = this._casKeywords[c];
         // UNKNOWN MultiLineIfBlock
@@ -453,7 +453,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetDefineBlock = function () {
+    LegacyGame.prototype.GetDefineBlock = function (blockname) {
         var l;
         var blockType;
         var result = new DefineBlock();
@@ -462,7 +462,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DefineBlockParam = function () {
+    LegacyGame.prototype.DefineBlockParam = function (blockname, param) {
         var cache;
         var result = new DefineBlock();
         // UNKNOWN SimpleAssignmentStatement
@@ -470,11 +470,11 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetEverythingAfter = function () {
+    LegacyGame.prototype.GetEverythingAfter = function (s, text) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.Keyword2CAS = function () {
+    LegacyGame.prototype.Keyword2CAS = function (KWord) {
         var k = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
@@ -484,12 +484,12 @@ var LegacyGame = (function () {
         var questDatLines = 'expr';
         // UNKNOWN ForEachBlock
     };
-    LegacyGame.prototype.GetResourceLines = function () {
+    LegacyGame.prototype.GetResourceLines = function (res) {
         var enc = {};
         var resFile = 'expr';
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ParseFile = function () {
+    LegacyGame.prototype.ParseFile = function (filename) {
         var hasErrors;
         var result;
         var libCode = [];
@@ -549,11 +549,11 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.LogASLError = function () {
+    LegacyGame.prototype.LogASLError = function (err, type) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetParameter = function () {
+    LegacyGame.prototype.GetParameter = function (s, ctx, convertStringVariables) {
         var newParam;
         var startPos;
         var endPos;
@@ -565,13 +565,13 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.AddLine = function () {
+    LegacyGame.prototype.AddLine = function (line) {
         var numLines;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReDimPreserveStatement
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.LoadCASFile = function () {
+    LegacyGame.prototype.LoadCASFile = function (filename) {
         var endLineReached;
         var exitTheLoop;
         var textMode;
@@ -596,21 +596,21 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.DecryptString = function () {
+    LegacyGame.prototype.DecryptString = function (s) {
         var output = "";
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.RemoveTabs = function () {
+    LegacyGame.prototype.RemoveTabs = function (s) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DoAddRemove = function () {
+    LegacyGame.prototype.DoAddRemove = function (childId, parentId, add, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.DoLook = function () {
+    LegacyGame.prototype.DoLook = function (id, ctx, showExamineError, showDefaultDescription) {
         var objectContents;
         var foundLook = false;
 
@@ -624,11 +624,11 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SingleLineIfStatement
     };
-    LegacyGame.prototype.DoOpenClose = function () {
+    LegacyGame.prototype.DoOpenClose = function (id, open, showLook, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.EvaluateInlineExpressions = function () {
+    LegacyGame.prototype.EvaluateInlineExpressions = function (s) {
         // UNKNOWN MultiLineIfBlock
         var bracePos;
         var curPos = 1;
@@ -638,7 +638,7 @@ var LegacyGame = (function () {
         // UNKNOWN DoLoopUntilBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecAddRemove = function () {
+    LegacyGame.prototype.ExecAddRemove = function (cmd, ctx) {
         var childId;
         var childName;
         var doAdd;
@@ -681,7 +681,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecAddRemoveScript = function () {
+    LegacyGame.prototype.ExecAddRemoveScript = function (parameter, add, ctx) {
         var childId;
         var parentId;
         var commandName;
@@ -696,7 +696,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecOpenClose = function () {
+    LegacyGame.prototype.ExecOpenClose = function (cmd, ctx) {
         var id;
         var name;
         var doOpen;
@@ -723,7 +723,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecuteSelectCase = function () {
+    LegacyGame.prototype.ExecuteSelectCase = function (script, ctx) {
         var afterLine = 'expr';
 
         // UNKNOWN MultiLineIfBlock
@@ -733,7 +733,7 @@ var LegacyGame = (function () {
         var caseMatch = false;
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ExecVerb = function () {
+    LegacyGame.prototype.ExecVerb = function (cmd, ctx, libCommands) {
         var gameBlock;
         var foundVerb = false;
         var verbProperty = "";
@@ -751,7 +751,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExpressionHandler = function () {
+    LegacyGame.prototype.ExpressionHandler = function (expr) {
         var openBracketPos;
         var endBracketPos;
         var res = new ExpressionResult();
@@ -774,7 +774,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ListContents = function () {
+    LegacyGame.prototype.ListContents = function (id, ctx) {
         var contentsIDs = [];
 
         // UNKNOWN MultiLineIfBlock
@@ -786,7 +786,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ObscureNumericExps = function () {
+    LegacyGame.prototype.ObscureNumericExps = function (s) {
         var EPos;
         var CurPos;
         var OutputString;
@@ -795,21 +795,21 @@ var LegacyGame = (function () {
         // UNKNOWN DoLoopUntilBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ProcessListInfo = function () {
+    LegacyGame.prototype.ProcessListInfo = function (line, id) {
         var listInfo = new TextAction();
         var propName = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.GetHTMLColour = function () {
+    LegacyGame.prototype.GetHTMLColour = function (colour, defaultColour) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN SelectBlock
     };
-    LegacyGame.prototype.DoPrint = function () {
+    LegacyGame.prototype.DoPrint = function (text) {
         // UNKNOWN RaiseEventStatement
     };
-    LegacyGame.prototype.DestroyExit = function () {
+    LegacyGame.prototype.DestroyExit = function (exitData, ctx) {
         var fromRoom = "";
         var toRoom = "";
         var roomId;
@@ -831,15 +831,15 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN SyncLockBlock
     };
-    LegacyGame.prototype.ExecuteFlag = function () {
+    LegacyGame.prototype.ExecuteFlag = function (line, ctx) {
         var propertyString = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecuteIfFlag = function () {
+    LegacyGame.prototype.ExecuteIfFlag = function (flag) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIncDec = function () {
+    LegacyGame.prototype.ExecuteIncDec = function (line, ctx) {
         var variable;
         var change;
         var param = 'expr';
@@ -853,7 +853,7 @@ var LegacyGame = (function () {
         var arrayIndex = 'expr';
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExtractFile = function () {
+    LegacyGame.prototype.ExtractFile = function (file) {
         var length;
         var startPos;
         var extracted;
@@ -869,7 +869,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.AddObjectAction = function () {
+    LegacyGame.prototype.AddObjectAction = function (id, name, script, noUpdate) {
         var actionNum;
         var foundExisting = false;
         var o = this._objs[id];
@@ -879,19 +879,19 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.AddToChangeLog = function () {
+    LegacyGame.prototype.AddToChangeLog = function (appliesTo, changeData) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReDimPreserveStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.AddToObjectChangeLog = function () {
+    LegacyGame.prototype.AddToObjectChangeLog = function (appliesToType, appliesTo, element, changeData) {
         var changeLog;
         // UNKNOWN SelectBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.AddToGiveInfo = function () {
+    LegacyGame.prototype.AddToGiveInfo = function (id, giveData) {
         var giveType;
         var actionName;
         var actionScript;
@@ -899,7 +899,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.AddToObjectActions = function () {
+    LegacyGame.prototype.AddToObjectActions = function (actionInfo, id, ctx) {
         var actionNum;
         var foundExisting = false;
         var name = 'expr';
@@ -914,35 +914,35 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.AddToObjectAltNames = function () {
+    LegacyGame.prototype.AddToObjectAltNames = function (altNames, id) {
         var o = this._objs[id];
         // UNKNOWN DoLoopUntilBlock
     };
-    LegacyGame.prototype.AddToObjectProperties = function () {
+    LegacyGame.prototype.AddToObjectProperties = function (propertyInfo, id, ctx) {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN DoLoopUntilBlock
     };
-    LegacyGame.prototype.AddToUseInfo = function () {
+    LegacyGame.prototype.AddToUseInfo = function (id, useData) {
         var useType;
         var o = this._objs[id];
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.CapFirst = function () {
+    LegacyGame.prototype.CapFirst = function (s) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ConvertVarsIn = function () {
+    LegacyGame.prototype.ConvertVarsIn = function (s, ctx) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DisambObjHere = function () {
+    LegacyGame.prototype.DisambObjHere = function (ctx, id, firstPlace, twoPlaces, secondPlace, isExit) {
         var isSeen;
         var onlySeen = false;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecClone = function () {
+    LegacyGame.prototype.ExecClone = function (cloneString, ctx) {
         var id;
         var newName;
         var cloneTo;
@@ -957,10 +957,10 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecOops = function () {
+    LegacyGame.prototype.ExecOops = function (correction, ctx) {
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecType = function () {
+    LegacyGame.prototype.ExecType = function (typeData, ctx) {
         var id;
         var found;
         var scp = 'expr';
@@ -981,7 +981,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ExecuteIfAction = function () {
+    LegacyGame.prototype.ExecuteIfAction = function (actionData) {
         var id;
         var scp = 'expr';
 
@@ -996,7 +996,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIfType = function () {
+    LegacyGame.prototype.ExecuteIfType = function (typeData) {
         var id;
         var scp = 'expr';
 
@@ -1011,7 +1011,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetArrayIndex = function () {
+    LegacyGame.prototype.GetArrayIndex = function (varName, ctx) {
         var result = new ArrayResult();
 
         // UNKNOWN MultiLineIfBlock
@@ -1022,7 +1022,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.Disambiguate = function () {
+    LegacyGame.prototype.Disambiguate = function (name, containedIn, ctx, isExit) {
         var numberCorresIds = 0;
         var idNumbers = [];
         var firstPlace;
@@ -1045,13 +1045,13 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DisplayStatusVariableInfo = function () {
+    LegacyGame.prototype.DisplayStatusVariableInfo = function (id, type, ctx) {
         var displayData = "";
         var ep;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DoAction = function () {
+    LegacyGame.prototype.DoAction = function (ObjID, ActionName, ctx, LogError) {
         var FoundAction;
         var ActionScript = "";
         var o = this._objs[ObjID];
@@ -1063,12 +1063,12 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.HasAction = function () {
+    LegacyGame.prototype.HasAction = function (ObjID, ActionName) {
         var o = this._objs[ObjID];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecForEach = function () {
+    LegacyGame.prototype.ExecForEach = function (scriptLine, ctx) {
         var inLocation;
         var scriptToRun;
         var isExit;
@@ -1078,7 +1078,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ExecuteAction = function () {
+    LegacyGame.prototype.ExecuteAction = function (data, ctx) {
         var actionName;
         var script;
         var actionNum;
@@ -1104,7 +1104,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecuteCondition = function () {
+    LegacyGame.prototype.ExecuteCondition = function (condition, ctx) {
         var result;
         var thisNot;
         // UNKNOWN MultiLineIfBlock
@@ -1112,7 +1112,7 @@ var LegacyGame = (function () {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteConditions = function () {
+    LegacyGame.prototype.ExecuteConditions = function (list, ctx) {
         var conditions;
         var numConditions = 0;
         var operations;
@@ -1126,11 +1126,11 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteCreate = function () {
+    LegacyGame.prototype.ExecuteCreate = function (data, ctx) {
         var newName;
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecuteCreateExit = function () {
+    LegacyGame.prototype.ExecuteCreateExit = function (data, ctx) {
         var scrRoom;
         var destRoom = "";
         var destId;
@@ -1156,7 +1156,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecDrop = function () {
+    LegacyGame.prototype.ExecDrop = function (obj, ctx) {
         var found;
         var parentId;
         var id;
@@ -1174,7 +1174,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecExamine = function () {
+    LegacyGame.prototype.ExecExamine = function (command, ctx) {
         var item = 'expr';
 
         // UNKNOWN MultiLineIfBlock
@@ -1187,13 +1187,13 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecMoveThing = function () {
+    LegacyGame.prototype.ExecMoveThing = function (data, type, ctx) {
         var scp = 'expr';
         var name = 'expr';
         var place = 'expr';
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecProperty = function () {
+    LegacyGame.prototype.ExecProperty = function (data, ctx) {
         var id;
         var found;
         var scp = 'expr';
@@ -1205,7 +1205,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecuteDo = function () {
+    LegacyGame.prototype.ExecuteDo = function (procedureName, ctx) {
         var newCtx = 'expr';
         var numParameters = 0;
         var useNewCtx;
@@ -1215,7 +1215,7 @@ var LegacyGame = (function () {
         var block = 'expr';
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecuteDoAction = function () {
+    LegacyGame.prototype.ExecuteDoAction = function (data, ctx) {
         var id;
         var scp = 'expr';
 
@@ -1227,12 +1227,12 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecuteIfHere = function () {
+    LegacyGame.prototype.ExecuteIfHere = function (obj, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIfExists = function () {
+    LegacyGame.prototype.ExecuteIfExists = function (obj, realOnly) {
         var result;
         var errorReport = false;
         var scp;
@@ -1246,7 +1246,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIfProperty = function () {
+    LegacyGame.prototype.ExecuteIfProperty = function (data) {
         var id;
         var scp = 'expr';
 
@@ -1258,7 +1258,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteRepeat = function () {
+    LegacyGame.prototype.ExecuteRepeat = function (data, ctx) {
         var repeatWhileTrue;
         var repeatScript = "";
         var bracketPos;
@@ -1273,7 +1273,7 @@ var LegacyGame = (function () {
         var finished = false;
         // UNKNOWN DoLoopUntilBlock
     };
-    LegacyGame.prototype.ExecuteSetCollectable = function () {
+    LegacyGame.prototype.ExecuteSetCollectable = function (param, ctx) {
         var val;
         var id;
         var scp = 'expr';
@@ -1290,11 +1290,11 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecuteWait = function () {
+    LegacyGame.prototype.ExecuteWait = function (waitLine, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.InitFileData = function () {
+    LegacyGame.prototype.InitFileData = function (fileData) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
     };
@@ -1304,12 +1304,12 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetFileDataChars = function () {
+    LegacyGame.prototype.GetFileDataChars = function (count) {
         var result = 'expr';
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetObjectActions = function () {
+    LegacyGame.prototype.GetObjectActions = function (actionInfo) {
         var name = 'expr';
         var ep = 'expr';
 
@@ -1320,7 +1320,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetObjectId = function () {
+    LegacyGame.prototype.GetObjectId = function (name, ctx, room) {
         var id;
         var found = false;
         // UNKNOWN MultiLineIfBlock
@@ -1329,11 +1329,11 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetObjectIdNoAlias = function () {
+    LegacyGame.prototype.GetObjectIdNoAlias = function (name) {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetObjectProperty = function () {
+    LegacyGame.prototype.GetObjectProperty = function (name, id, existsOnly, logError) {
         var result = "";
         var found = false;
         var o = this._objs[id];
@@ -1343,7 +1343,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetPropertiesInType = function () {
+    LegacyGame.prototype.GetPropertiesInType = function (type, err) {
         var blockId;
         var propertyList = new PropertiesActions();
         var found = false;
@@ -1352,22 +1352,22 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetRoomID = function () {
+    LegacyGame.prototype.GetRoomID = function (name, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetTextOrScript = function () {
+    LegacyGame.prototype.GetTextOrScript = function (textScript) {
         var result = new TextAction();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetThingNumber = function () {
+    LegacyGame.prototype.GetThingNumber = function (name, room, type) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetThingBlock = function () {
+    LegacyGame.prototype.GetThingBlock = function (name, room, type) {
         var result = new DefineBlock();
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement
@@ -1406,7 +1406,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.MoveThing = function () {
+    LegacyGame.prototype.MoveThing = function (name, room, type, ctx) {
         var oldRoom = "";
         var id = 'expr';
         // UNKNOWN MultiLineIfBlock
@@ -1415,19 +1415,19 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.Pause = function () {
+    LegacyGame.prototype.Pause = function (duration) {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN SyncLockBlock
     };
-    LegacyGame.prototype.ConvertParameter = function () {
+    LegacyGame.prototype.ConvertParameter = function (parameter, convertChar, action, ctx) {
         var result = "";
         var pos = 1;
         var finished = false;
         // UNKNOWN DoLoopUntilBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DoFunction = function () {
+    LegacyGame.prototype.DoFunction = function (data, ctx) {
         var name;
         var parameter;
         var intFuncResult = "";
@@ -1440,7 +1440,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.DoInternalFunction = function () {
+    LegacyGame.prototype.DoInternalFunction = function (name, parameter, ctx) {
         var parameters;
         var untrimmedParameters;
         var objId;
@@ -1453,7 +1453,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecFor = function () {
+    LegacyGame.prototype.ExecFor = function (line, ctx) {
         // UNKNOWN MultiLineIfBlock
         var endValue;
         var stepValue;
@@ -1468,7 +1468,7 @@ var LegacyGame = (function () {
         var loopScript = 'expr';
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ExecSetVar = function () {
+    LegacyGame.prototype.ExecSetVar = function (varInfo, ctx) {
         var scp = 'expr';
         var varName = 'expr';
         var varCont = 'expr';
@@ -1476,29 +1476,29 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN TryBlock
     };
-    LegacyGame.prototype.ExecuteIfAsk = function () {
+    LegacyGame.prototype.ExecuteIfAsk = function (question) {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN SyncLockBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.SetQuestionResponse = function () {
+    LegacyGame.prototype.SetQuestionResponse = function (response) {
         var runnerThread = {};
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetQuestionResponseInNewThread = function () {
+    LegacyGame.prototype.SetQuestionResponseInNewThread = function (response) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SyncLockBlock
     };
-    LegacyGame.prototype.ExecuteIfGot = function () {
+    LegacyGame.prototype.ExecuteIfGot = function (item) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIfHas = function () {
+    LegacyGame.prototype.ExecuteIfHas = function (condition) {
         var checkValue;
         var colNum;
         var scp = 'expr';
@@ -1514,7 +1514,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteIfIs = function () {
+    LegacyGame.prototype.ExecuteIfIs = function (condition) {
         var value1;
         var value2;
         var op;
@@ -1532,7 +1532,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetNumericContents = function () {
+    LegacyGame.prototype.GetNumericContents = function (name, ctx, noError) {
         var numNumber;
         var arrayIndex;
         var exists = false;
@@ -1542,24 +1542,24 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.PlayerErrorMessage = function () {
+    LegacyGame.prototype.PlayerErrorMessage = function (e, ctx) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.PlayerErrorMessage_ExtendInfo = function () {
+    LegacyGame.prototype.PlayerErrorMessage_ExtendInfo = function (e, ctx, extraInfo) {
         var message = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetErrorMessage = function () {
+    LegacyGame.prototype.GetErrorMessage = function (e, ctx) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.PlayMedia = function () {
+    LegacyGame.prototype.PlayMedia = function (filename) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.PlayMedia = function () {
+    LegacyGame.prototype.PlayMedia = function (filename, sync, looped) {
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.PlayWav = function () {
+    LegacyGame.prototype.PlayWav = function (parameter) {
         var sync = false;
         var looped = false;
         var params = {};
@@ -1571,7 +1571,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.RestoreGameData = function () {
+    LegacyGame.prototype.RestoreGameData = function (fileData) {
         var appliesTo;
         var data = "";
         var objId;
@@ -1602,10 +1602,10 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.SetBackground = function () {
+    LegacyGame.prototype.SetBackground = function (col) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetForeground = function () {
+    LegacyGame.prototype.SetForeground = function (col) {
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.SetDefaultPlayerErrorMessages = function () {
@@ -1648,15 +1648,15 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.SetFont = function () {
+    LegacyGame.prototype.SetFont = function (name) {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetFontSize = function () {
+    LegacyGame.prototype.SetFontSize = function (size) {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetNumericVariableContents = function () {
+    LegacyGame.prototype.SetNumericVariableContents = function (name, content, ctx, arrayIndex) {
         var numNumber;
         var exists = false;
         // UNKNOWN MultiLineIfBlock
@@ -1669,7 +1669,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.SetOpenClose = function () {
+    LegacyGame.prototype.SetOpenClose = function (name, open, ctx) {
         var cmd;
 
         // UNKNOWN MultiLineIfBlock
@@ -1677,11 +1677,11 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetTimerState = function () {
+    LegacyGame.prototype.SetTimerState = function (name, state) {
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetUnknownVariableType = function () {
+    LegacyGame.prototype.SetUnknownVariableType = function (variableData, ctx) {
         var scp = 'expr';
 
         // UNKNOWN MultiLineIfBlock
@@ -1694,7 +1694,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.SetUpChoiceForm = function () {
+    LegacyGame.prototype.SetUpChoiceForm = function (blockName, ctx) {
         var block = 'expr';
         var prompt = 'expr';
         var menuOptions = {};
@@ -1766,14 +1766,14 @@ var LegacyGame = (function () {
         var examineIsCustomised = false;
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.SetVisibility = function () {
+    LegacyGame.prototype.SetVisibility = function (thing, type, visible, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ShowPictureInText = function () {
+    LegacyGame.prototype.ShowPictureInText = function (filename) {
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ShowRoomInfoV2 = function () {
+    LegacyGame.prototype.ShowRoomInfoV2 = function (Room) {
         var roomDisplayText = "";
         var descTagExist;
         var gameBlock;
@@ -1853,14 +1853,14 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN SingleLineIfStatement
     };
-    LegacyGame.prototype.Speak = function () {
+    LegacyGame.prototype.Speak = function (text) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.AddToObjectList = function () {
+    LegacyGame.prototype.AddToObjectList = function (objList, exitList, name, type) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecExec = function () {
+    LegacyGame.prototype.ExecExec = function (scriptLine, ctx) {
         // UNKNOWN SingleLineIfStatement
         var execLine = 'expr';
         var newCtx = 'expr';
@@ -1869,7 +1869,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecSetString = function () {
+    LegacyGame.prototype.ExecSetString = function (info, ctx) {
         var scp = 'expr';
         var name = 'expr';
         var value = 'expr';
@@ -1879,7 +1879,7 @@ var LegacyGame = (function () {
         var idx = 'expr';
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecUserCommand = function () {
+    LegacyGame.prototype.ExecUserCommand = function (cmd, ctx, libCommands) {
         var curCmd;
         var commandList;
         var script = "";
@@ -1893,10 +1893,10 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteChoose = function () {
+    LegacyGame.prototype.ExecuteChoose = function (section, ctx) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetCommandParameters = function () {
+    LegacyGame.prototype.GetCommandParameters = function (test, required, ctx) {
         var chunksBegin;
         var chunksEnd;
         var varName;
@@ -1914,13 +1914,13 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetGender = function () {
+    LegacyGame.prototype.GetGender = function (character, capitalise, ctx) {
         var result;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetStringContents = function () {
+    LegacyGame.prototype.GetStringContents = function (name, ctx) {
         var returnAlias = false;
         var arrayIndex = 0;
         var cp = 'expr';
@@ -1935,14 +1935,14 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.IsAvailable = function () {
+    LegacyGame.prototype.IsAvailable = function (thingName, type, ctx) {
         var room;
         var name;
         var atPos = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.IsCompatible = function () {
+    LegacyGame.prototype.IsCompatible = function (test, required) {
         var var2Pos;
 
         // UNKNOWN SimpleAssignmentStatement
@@ -1953,7 +1953,7 @@ var LegacyGame = (function () {
         // UNKNOWN DoLoopUntilBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.OpenGame = function () {
+    LegacyGame.prototype.OpenGame = function (filename) {
         var cdatb;
         var result;
         var visible;
@@ -1981,7 +1981,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.SaveGame = function () {
+    LegacyGame.prototype.SaveGame = function (filename, saveFile) {
         var ctx = new Context();
         var saveData;
         // UNKNOWN SingleLineIfStatement
@@ -2012,12 +2012,12 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.SetAvailability = function () {
+    LegacyGame.prototype.SetAvailability = function (thingString, exists, ctx, type) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetStringContents = function () {
+    LegacyGame.prototype.SetStringContents = function (name, value, ctx, arrayIndex) {
         var id;
         var exists = false;
         // UNKNOWN MultiLineIfBlock
@@ -2041,7 +2041,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ShowGameAbout = function () {
+    LegacyGame.prototype.ShowGameAbout = function (ctx) {
         var version = 'expr';
         var author = 'expr';
         var copyright = 'expr';
@@ -2052,14 +2052,14 @@ var LegacyGame = (function () {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ShowPicture = function () {
+    LegacyGame.prototype.ShowPicture = function (filename) {
         var caption = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ShowRoomInfo = function () {
+    LegacyGame.prototype.ShowRoomInfo = function (room, ctx, noPrint) {
         // UNKNOWN MultiLineIfBlock
         var roomDisplayText = "";
         var descTagExist;
@@ -2112,7 +2112,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.CheckCollectable = function () {
+    LegacyGame.prototype.CheckCollectable = function (id) {
         var max;
         var value;
         var min;
@@ -2124,20 +2124,20 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.DisplayCollectableInfo = function () {
+    LegacyGame.prototype.DisplayCollectableInfo = function (id) {
         var display;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.DisplayTextSection = function () {
+    LegacyGame.prototype.DisplayTextSection = function (section, ctx, OutputTo) {
         var block;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ExecCommand = function () {
+    LegacyGame.prototype.ExecCommand = function (input, ctx, echo, runUserCommand, dontSetIt) {
         var parameter;
         var skipAfterTurn = false;
 
@@ -2174,10 +2174,10 @@ var LegacyGame = (function () {
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.CmdStartsWith = function () {
+    LegacyGame.prototype.CmdStartsWith = function (cmd, startsWith) {
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecGive = function () {
+    LegacyGame.prototype.ExecGive = function (giveString, ctx) {
         var article;
         var item;
         var character;
@@ -2190,16 +2190,16 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecLook = function () {
+    LegacyGame.prototype.ExecLook = function (lookLine, ctx) {
         var item;
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecSpeak = function () {
+    LegacyGame.prototype.ExecSpeak = function (cmd, ctx) {
         // UNKNOWN MultiLineIfBlock
         var name = cmd;
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecTake = function () {
+    LegacyGame.prototype.ExecTake = function (item, ctx) {
         var parentID;
         var parentDisplayName;
         var foundItem = true;
@@ -2212,7 +2212,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecUse = function () {
+    LegacyGame.prototype.ExecUse = function (useLine, ctx) {
         var endOnWith;
         var useDeclareLine = "";
         var useOn;
@@ -2237,7 +2237,7 @@ var LegacyGame = (function () {
         var found;
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ObjectActionUpdate = function () {
+    LegacyGame.prototype.ObjectActionUpdate = function (id, name, script, noUpdate) {
         var objectName;
         var sp;
         var ep;
@@ -2245,7 +2245,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecuteIf = function () {
+    LegacyGame.prototype.ExecuteIf = function (scriptLine, ctx) {
         var ifLine = 'expr';
         var obscuredLine = 'expr';
         var thenPos = 'expr';
@@ -2265,37 +2265,37 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ExecuteScript = function () {
+    LegacyGame.prototype.ExecuteScript = function (scriptLine, ctx, newCallingObjectId) {
         // UNKNOWN TryBlock
     };
-    LegacyGame.prototype.ExecuteEnter = function () {
+    LegacyGame.prototype.ExecuteEnter = function (scriptLine, ctx) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN SyncLockBlock
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.ExecuteSet = function () {
+    LegacyGame.prototype.ExecuteSet = function (setInstruction, ctx) {
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.FindStatement = function () {
+    LegacyGame.prototype.FindStatement = function (block, statement) {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.FindLine = function () {
+    LegacyGame.prototype.FindLine = function (block, statement, statementParam) {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetCollectableAmount = function () {
+    LegacyGame.prototype.GetCollectableAmount = function (name) {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetSecondChunk = function () {
+    LegacyGame.prototype.GetSecondChunk = function (line) {
         var endOfFirstBit = 'expr' + 1;
         var lengthOfKeyword = 'expr' + 1;
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GoDirection = function () {
+    LegacyGame.prototype.GoDirection = function (direction, ctx) {
         var dirData = new TextAction();
         var id = 'expr';
 
@@ -2305,7 +2305,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.GoToPlace = function () {
+    LegacyGame.prototype.GoToPlace = function (place, ctx) {
         var destination = "";
         var placeData;
         var disallowed = false;
@@ -2314,7 +2314,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.InitialiseGame = function () {
+    LegacyGame.prototype.InitialiseGame = function (filename, fromQsg) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
@@ -2361,7 +2361,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.PlaceExist = function () {
+    LegacyGame.prototype.PlaceExist = function (placeName, ctx) {
         var roomId = 'expr';
         var foundPlace = false;
         var scriptPresent = false;
@@ -2369,11 +2369,11 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.PlayerItem = function () {
+    LegacyGame.prototype.PlayerItem = function (item, got, ctx, objId) {
         var foundObjectName = false;
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.PlayGame = function () {
+    LegacyGame.prototype.PlayGame = function (room, ctx) {
         var id = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement
@@ -2384,18 +2384,18 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.Print = function () {
+    LegacyGame.prototype.Print = function (txt, ctx, OutputTo) {
         var printString = "";
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.RetrLine = function () {
+    LegacyGame.prototype.RetrLine = function (blockType, param, line, ctx) {
         var searchblock;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.RetrLineParam = function () {
+    LegacyGame.prototype.RetrLineParam = function (blockType, param, line, lineParam, ctx) {
         var searchblock;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -2416,7 +2416,7 @@ var LegacyGame = (function () {
         var lastItem = false;
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.ShowHelp = function () {
+    LegacyGame.prototype.ShowHelp = function (ctx) {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
@@ -2427,7 +2427,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ReadCatalog = function () {
+    LegacyGame.prototype.ReadCatalog = function (data) {
         var nullPos = 'expr';
 
         // UNKNOWN SimpleAssignmentStatement
@@ -2437,7 +2437,7 @@ var LegacyGame = (function () {
         var resourceStart = 0;
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.UpdateDirButtons = function () {
+    LegacyGame.prototype.UpdateDirButtons = function (dirs, ctx) {
         var compassExits = {};
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -2453,10 +2453,10 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.AddCompassExit = function () {
+    LegacyGame.prototype.AddCompassExit = function (exitList, name) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.UpdateDoorways = function () {
+    LegacyGame.prototype.UpdateDoorways = function (roomId, ctx) {
         var roomDisplayText = "";
         var directions = "";
         var outPlacePrefix = "";
@@ -2475,7 +2475,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.UpdateItems = function () {
+    LegacyGame.prototype.UpdateItems = function (ctx) {
         var invList = {};
 
         // UNKNOWN SingleLineIfStatement
@@ -2484,11 +2484,11 @@ var LegacyGame = (function () {
         // UNKNOWN RaiseEventStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.FinishGame = function () {
+    LegacyGame.prototype.FinishGame = function (stopType, ctx) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.UpdateObjectList = function () {
+    LegacyGame.prototype.UpdateObjectList = function (ctx) {
         var shownPlaceName;
         var objSuffix;
         var charsFound;
@@ -2523,14 +2523,14 @@ var LegacyGame = (function () {
         // UNKNOWN ForEachBlock
         // UNKNOWN RaiseEventStatement
     };
-    LegacyGame.prototype.UpdateStatusVars = function () {
+    LegacyGame.prototype.UpdateStatusVars = function (ctx) {
         var displayData;
         var status = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.UpdateVisibilityInContainers = function () {
+    LegacyGame.prototype.UpdateVisibilityInContainers = function (ctx, onlyParent) {
         var parentId;
         var parent;
         var parentIsTransparent;
@@ -2541,7 +2541,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ForBlock
     };
-    LegacyGame.prototype.PlayerCanAccessObject = function () {
+    LegacyGame.prototype.PlayerCanAccessObject = function (id, colObjects) {
         var parent;
         var parentId;
         var parentDisplayName;
@@ -2551,7 +2551,7 @@ var LegacyGame = (function () {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.GetGoToExits = function () {
+    LegacyGame.prototype.GetGoToExits = function (roomId, ctx) {
         var placeList = "";
         var shownPlaceName;
         // UNKNOWN ForBlock
@@ -2561,7 +2561,7 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ExitSubStatement
     };
-    LegacyGame.prototype.FindExit = function () {
+    LegacyGame.prototype.FindExit = function (tag) {
         var params = 'expr';
 
         // UNKNOWN MultiLineIfBlock
@@ -2575,7 +2575,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.ExecuteLock = function () {
+    LegacyGame.prototype.ExecuteLock = function (tag, lock) {
         var roomExit;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
@@ -2615,21 +2615,21 @@ var LegacyGame = (function () {
     // UNKNOWN EventStatement
     // UNKNOWN EventStatement
     // UNKNOWN EventStatement
-    LegacyGame.prototype.Save = function () {
+    LegacyGame.prototype.Save = function (filename, html) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.Save = function () {
+    LegacyGame.prototype.Save = function (html) {
         // UNKNOWN ReturnStatement
     };
 
     // UNKNOWN PropertyBlock
-    LegacyGame.prototype.SendCommand = function () {
+    LegacyGame.prototype.SendCommand = function (command) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SendCommand = function () {
+    LegacyGame.prototype.SendCommand = function (command, metadata) {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SendCommand = function () {
+    LegacyGame.prototype.SendCommand = function (command, elapsedTime, metadata) {
         // UNKNOWN SingleLineIfStatement
         var runnerThread = {};
         // UNKNOWN ExpressionStatement
@@ -2637,17 +2637,17 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.WaitForStateChange = function () {
+    LegacyGame.prototype.WaitForStateChange = function (changedFromState) {
         // UNKNOWN SyncLockBlock
     };
-    LegacyGame.prototype.ProcessCommandInNewThread = function () {
+    LegacyGame.prototype.ProcessCommandInNewThread = function (command) {
         // UNKNOWN TryBlock
     };
-    LegacyGame.prototype.SendEvent = function () {
+    LegacyGame.prototype.SendEvent = function (eventName, param) {
     };
 
     // UNKNOWN EventStatement
-    LegacyGame.prototype.Initialise = function () {
+    LegacyGame.prototype.Initialise = function (player) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
     };
@@ -2660,21 +2660,21 @@ var LegacyGame = (function () {
         // UNKNOWN SyncLockBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetResourcePath = function () {
+    LegacyGame.prototype.GetResourcePath = function (filename) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.Cleanup = function () {
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.DeleteDirectory = function () {
+    LegacyGame.prototype.DeleteDirectory = function (dir) {
         // UNKNOWN MultiLineIfBlock
     };
     LegacyGame.prototype.Finalize = function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.GetLibraryLines = function () {
+    LegacyGame.prototype.GetLibraryLines = function (libName) {
         var libCode = null;
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SelectBlock
@@ -2683,7 +2683,7 @@ var LegacyGame = (function () {
     };
 
     // UNKNOWN PropertyBlock
-    LegacyGame.prototype.Tick = function () {
+    LegacyGame.prototype.Tick = function (elapsedTime) {
         var i;
         var timerScripts = {};
         // UNKNOWN ExpressionStatement
@@ -2691,7 +2691,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.RunTimersInNewThread = function () {
+    LegacyGame.prototype.RunTimersInNewThread = function (scripts) {
         var scriptList = 'expr';
         // UNKNOWN ForEachBlock
         // UNKNOWN ExpressionStatement
@@ -2705,11 +2705,11 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN RaiseEventStatement
     };
-    LegacyGame.prototype.ChangeState = function () {
+    LegacyGame.prototype.ChangeState = function (newState) {
         var acceptCommands = 'expr';
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.ChangeState = function () {
+    LegacyGame.prototype.ChangeState = function (newState, acceptCommands) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SyncLockBlock
     };
@@ -2727,23 +2727,23 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
     };
 
-    LegacyGame.prototype.ShowMenu = function () {
+    LegacyGame.prototype.ShowMenu = function (menuData) {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN SyncLockBlock
         // UNKNOWN ReturnStatement
     };
-    LegacyGame.prototype.SetMenuResponse = function () {
+    LegacyGame.prototype.SetMenuResponse = function (response) {
         var runnerThread = {};
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
     };
-    LegacyGame.prototype.SetMenuResponseInNewThread = function () {
+    LegacyGame.prototype.SetMenuResponseInNewThread = function (response) {
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SyncLockBlock
     };
-    LegacyGame.prototype.LogException = function () {
+    LegacyGame.prototype.LogException = function (ex) {
         // UNKNOWN RaiseEventStatement
     };
     LegacyGame.prototype.GetExternalScripts = function () {
@@ -2760,10 +2760,10 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
 
-    LegacyGame.prototype.SetUnzipFunction = function () {
+    LegacyGame.prototype.SetUnzipFunction = function (unzipFunction) {
         // UNKNOWN SimpleAssignmentStatement
     };
-    LegacyGame.prototype.GetUnzippedFile = function () {
+    LegacyGame.prototype.GetUnzippedFile = function (filename) {
         var tempDir = null;
         var result = 'expr';
         // UNKNOWN SimpleAssignmentStatement
@@ -2772,7 +2772,7 @@ var LegacyGame = (function () {
 
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
-    LegacyGame.prototype.GetResource = function () {
+    LegacyGame.prototype.GetResource = function (file) {
         // UNKNOWN MultiLineIfBlock
         var path = 'expr';
         // UNKNOWN SingleLineIfStatement

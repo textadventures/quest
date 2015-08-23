@@ -107,13 +107,27 @@ namespace LegacyConvert
                     {
                         type = GetVarType(block.SubOrFunctionStatement.AsClause.Type);
                     }
-                    // TODO: Need the parameters
-                    return string.Format("{0}{1}(): {2} {{\n{3}{0}}}\n", Tabs(depth), name, type, ProcessChildNodes(node, depth, prepend, false, classFields));
+
+                    var parameters = block.SubOrFunctionStatement.ParameterList.Parameters.Select(p => ProcessParameter(p));
+
+                    return string.Format("{0}{1}({4}): {2} {{\n{3}{0}}}\n",
+                        Tabs(depth),
+                        name,
+                        type,
+                        ProcessChildNodes(node, depth, prepend, false, classFields),
+                        string.Join(", ", parameters));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
 
             return null;
+        }
+
+        static string ProcessParameter(ParameterSyntax parameter)
+        {
+            var asType = parameter.AsClause.ChildNodes().First();
+            var varType = GetVarType(asType);
+            return parameter.Identifier.Identifier.ValueText + ": " + varType;
         }
 
         static string ProcessExpression(ExpressionSyntax expr, List<string> classFields)
