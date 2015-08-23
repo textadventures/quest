@@ -151,6 +151,9 @@ namespace LegacyConvert
                     return string.Format("{0}return {1};\n", Tabs(depth), ProcessExpression(returnStatement.Expression, classFields));
                 case SyntaxKind.ExpressionStatement:
                     return Tabs(depth) + ProcessExpression(((ExpressionStatementSyntax)node).Expression, classFields) + ";\n";
+                case SyntaxKind.ReDimStatement:
+                    var redim = ProcessExpression(((ReDimStatementSyntax)node).Clauses.First().Expression, classFields);
+                    return string.Format("{0}{1} = [];\n", Tabs(depth), redim);
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }

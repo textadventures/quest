@@ -394,7 +394,7 @@ class LegacyGame {
 		this._filename = filename;
 		this._originalFilename = originalFilename;
 		this._numSkipCheckFiles = 3;
-		// UNKNOWN ReDimStatement
+		this._skipCheckFile = [];
 		this._skipCheckFile[1] = "bargain.cas";
 		this._skipCheckFile[2] = "easymoney.asl";
 		this._skipCheckFile[3] = "musicvf1.cas";
@@ -669,7 +669,7 @@ class LegacyGame {
 		var tl: string;
 		var ckw: string;
 		var d: string;
-		// UNKNOWN ReDimStatement
+		this._lines = [];
 		// UNKNOWN MultiLineIfBlock
 		chkVer = Left(fileData, 7);
 		// UNKNOWN MultiLineIfBlock
@@ -831,7 +831,7 @@ class LegacyGame {
 		// UNKNOWN DoLoopUntilBlock
 		var numElements = 1;
 		var elements: string[];
-		// UNKNOWN ReDimStatement
+		elements = [];
 		var numOperators = 0;
 		var operators: string[] = [];
 		var newElement: boolean;
@@ -1736,7 +1736,7 @@ class LegacyGame {
 	}
 	SetUpGameObject(): void {
 		this._numberObjs = 1;
-		// UNKNOWN ReDimStatement
+		this._objs = [];
 		this._objs[1] = new ObjectType();
 		var o = this._objs[1];
 		o.ObjectName = "game";

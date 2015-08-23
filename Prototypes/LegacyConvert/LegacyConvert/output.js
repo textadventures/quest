@@ -689,8 +689,8 @@ var LegacyGame = (function () {
         var tl;
         var ckw;
         var d;
+        this._lines = [];
 
-        // UNKNOWN ReDimStatement
         // UNKNOWN MultiLineIfBlock
         chkVer = Left(fileData, 7);
         // UNKNOWN MultiLineIfBlock
@@ -876,8 +876,7 @@ var LegacyGame = (function () {
         // UNKNOWN DoLoopUntilBlock
         var numElements = 1;
         var elements;
-
-        // UNKNOWN ReDimStatement
+        elements = [];
         var numOperators = 0;
         var operators = [];
         var newElement;
@@ -1907,8 +1906,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.SetUpGameObject = function () {
         this._numberObjs = 1;
-
-        // UNKNOWN ReDimStatement
+        this._objs = [];
         this._objs[1] = new ObjectType();
         var o = this._objs[1];
         o.ObjectName = "game";
