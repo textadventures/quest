@@ -627,7 +627,7 @@ class LegacyGame {
 		startPos = InStr(s, "<");
 		endPos = InStr(s, ">");
 		// UNKNOWN MultiLineIfBlock
-		var retrParam = Mid(s, startPos + 1, 'expr' - 1);
+		var retrParam = Mid(s, startPos + 1, (endPos - startPos) - 1);
 		// UNKNOWN MultiLineIfBlock
 		return this.EvaluateInlineExpressions(newParam);
 	}
@@ -723,7 +723,7 @@ class LegacyGame {
 		var noParentSpecified = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		childLength = sepPos - 'expr';
+		childLength = sepPos - (Len(verb) + 2);
 		// UNKNOWN MultiLineIfBlock
 		childName = Trim(Mid(cmd, Len(verb) + 2, childLength));
 		gotObject = false;
@@ -1057,7 +1057,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var beginPos = InStr(varName, "[");
 		var endPos = InStr(varName, "]");
-		var data = Mid(varName, beginPos + 1, 'expr' - 1);
+		var data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1);
 		// UNKNOWN MultiLineIfBlock
 		result.Name = Left(varName, beginPos - 1);
 		return result;
@@ -1476,7 +1476,7 @@ class LegacyGame {
 		var scp2 = InStr(scp1 + 1, forData, ";");
 		var scp3 = InStr(scp2 + 1, forData, ";");
 		var counterVariable = Trim(Left(forData, scp1 - 1));
-		var startValue = 'expr';
+		var startValue = parseInt(Mid(forData, scp1 + 1, (scp2 - 1) - scp1));
 		// UNKNOWN MultiLineIfBlock
 		var loopScript = Trim(Mid(line, InStr(line, ">") + 1));
 		// UNKNOWN ForBlock
@@ -1593,20 +1593,20 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		this._fileData = decryptedFile.ToString();
 		this._currentRoom = this.GetNextChunk();
-		var numData = 'expr';
+		var numData = parseInt(this.GetNextChunk());
 		var createdObjects: any = {};
 		// UNKNOWN ForBlock
-		numData = 'expr';
+		numData = parseInt(this.GetNextChunk());
 		// UNKNOWN ForBlock
-		numData = 'expr';
+		numData = parseInt(this.GetNextChunk());
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		numData = 'expr';
+		numData = parseInt(this.GetNextChunk());
 		// UNKNOWN ForBlock
 		this._gameIsRestoring = true;
-		numData = 'expr';
+		numData = parseInt(this.GetNextChunk());
 		// UNKNOWN ForBlock
-		numData = 'expr';
+		numData = parseInt(this.GetNextChunk());
 		// UNKNOWN ForBlock
 		this._gameIsRestoring = false;
 	}
@@ -1673,7 +1673,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		this._numericVariable[numNumber].VariableName = name;
 		// UNKNOWN ReDimPreserveStatement
-		this._numericVariable[numNumber].VariableContents[arrayIndex] = 'expr';
+		this._numericVariable[numNumber].VariableContents[arrayIndex] = (content).toString();
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1959,7 +1959,7 @@ class LegacyGame {
 		var cdat: number;
 		var scp2: number;
 		var scp3: number;
-		var lines: string[] = 'expr';
+		var lines: string[] = null;
 		this._gameLoadMethod = "loaded";
 		var prevQsgVersion = false;
 		// UNKNOWN MultiLineIfBlock
@@ -2267,7 +2267,7 @@ class LegacyGame {
 	}
 	GetSecondChunk(line: string): string {
 		var endOfFirstBit = InStr(line, ">") + 1;
-		var lengthOfKeyword = 'expr' + 1;
+		var lengthOfKeyword = (Len(line) - endOfFirstBit) + 1;
 		return Trim(Mid(line, endOfFirstBit, lengthOfKeyword));
 	}
 	GoDirection(direction: string, ctx: Context): void {
@@ -2402,7 +2402,7 @@ class LegacyGame {
 	}
 	ReadCatalog(data: string): void {
 		var nullPos = InStr(data, Chr(0));
-		this._numResources = 'expr';
+		this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
 		// UNKNOWN ReDimPreserveStatement
 		this._resources[this._numResources] = new ResourceType();
 		data = Mid(data, nullPos + 1);
@@ -2666,7 +2666,7 @@ class LegacyGame {
 		// UNKNOWN RaiseEventStatement
 	}
 	ChangeState(newState: State): void {
-		var acceptCommands: boolean = 'expr';
+		var acceptCommands: boolean = (newState == State.Ready);
 		// UNKNOWN ExpressionStatement
 	}
 	ChangeState(newState: State, acceptCommands: boolean): void {

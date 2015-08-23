@@ -244,16 +244,10 @@ namespace LegacyConvert
                 throw new InvalidOperationException();
             }
 
-            var collectionInitializer = expr as CollectionInitializerSyntax;
-            if (collectionInitializer != null)
-            {
-                return "'expr'";
-            }
-
             var paranthesized = expr as ParenthesizedExpressionSyntax;
             if (paranthesized != null)
             {
-                return "'expr'";
+                return string.Format("({0})", ProcessExpression(paranthesized.Expression, classFields));
             }
 
             var arrayCreation = expr as ArrayCreationExpressionSyntax;
@@ -265,7 +259,15 @@ namespace LegacyConvert
             var cast = expr as PredefinedCastExpressionSyntax;
             if (cast != null)
             {
-                return "'expr'";
+                if (cast.Keyword.Text == "CInt")
+                {
+                    return string.Format("parseInt({0})", ProcessExpression(cast.Expression, classFields));
+                }
+                if (cast.Keyword.Text == "CStr")
+                {
+                    return string.Format("({0}).toString()", ProcessExpression(cast.Expression, classFields));
+                }
+                throw new InvalidOperationException();
             }
 
             var directCast = expr as DirectCastExpressionSyntax;

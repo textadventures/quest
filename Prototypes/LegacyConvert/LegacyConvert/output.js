@@ -656,7 +656,7 @@ var LegacyGame = (function () {
         endPos = InStr(s, ">");
 
         // UNKNOWN MultiLineIfBlock
-        var retrParam = Mid(s, startPos + 1, 'expr' - 1);
+        var retrParam = Mid(s, startPos + 1, (endPos - startPos) - 1);
 
         // UNKNOWN MultiLineIfBlock
         return this.EvaluateInlineExpressions(newParam);
@@ -760,7 +760,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
-        childLength = sepPos - 'expr';
+        childLength = sepPos - (Len(verb) + 2);
 
         // UNKNOWN MultiLineIfBlock
         childName = Trim(Mid(cmd, Len(verb) + 2, childLength));
@@ -1139,7 +1139,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         var beginPos = InStr(varName, "[");
         var endPos = InStr(varName, "]");
-        var data = Mid(varName, beginPos + 1, 'expr' - 1);
+        var data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1);
 
         // UNKNOWN MultiLineIfBlock
         result.Name = Left(varName, beginPos - 1);
@@ -1605,7 +1605,7 @@ var LegacyGame = (function () {
         var scp2 = InStr(scp1 + 1, forData, ";");
         var scp3 = InStr(scp2 + 1, forData, ";");
         var counterVariable = Trim(Left(forData, scp1 - 1));
-        var startValue = 'expr';
+        var startValue = parseInt(Mid(forData, scp1 + 1, (scp2 - 1) - scp1));
 
         // UNKNOWN MultiLineIfBlock
         var loopScript = Trim(Mid(line, InStr(line, ">") + 1));
@@ -1730,25 +1730,25 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         this._fileData = decryptedFile.ToString();
         this._currentRoom = this.GetNextChunk();
-        var numData = 'expr';
+        var numData = parseInt(this.GetNextChunk());
         var createdObjects = {};
 
         // UNKNOWN ForBlock
-        numData = 'expr';
+        numData = parseInt(this.GetNextChunk());
 
         // UNKNOWN ForBlock
-        numData = 'expr';
+        numData = parseInt(this.GetNextChunk());
 
         // UNKNOWN ForBlock
         // UNKNOWN ForBlock
-        numData = 'expr';
+        numData = parseInt(this.GetNextChunk());
 
         // UNKNOWN ForBlock
         this._gameIsRestoring = true;
-        numData = 'expr';
+        numData = parseInt(this.GetNextChunk());
 
         // UNKNOWN ForBlock
-        numData = 'expr';
+        numData = parseInt(this.GetNextChunk());
 
         // UNKNOWN ForBlock
         this._gameIsRestoring = false;
@@ -1818,7 +1818,7 @@ var LegacyGame = (function () {
         this._numericVariable[numNumber].VariableName = name;
 
         // UNKNOWN ReDimPreserveStatement
-        this._numericVariable[numNumber].VariableContents[arrayIndex] = 'expr';
+        this._numericVariable[numNumber].VariableContents[arrayIndex] = (content).toString();
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
@@ -2127,7 +2127,7 @@ var LegacyGame = (function () {
         var cdat;
         var scp2;
         var scp3;
-        var lines = 'expr';
+        var lines = null;
         this._gameLoadMethod = "loaded";
         var prevQsgVersion = false;
 
@@ -2465,7 +2465,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetSecondChunk = function (line) {
         var endOfFirstBit = InStr(line, ">") + 1;
-        var lengthOfKeyword = 'expr' + 1;
+        var lengthOfKeyword = (Len(line) - endOfFirstBit) + 1;
         return Trim(Mid(line, endOfFirstBit, lengthOfKeyword));
     };
     LegacyGame.prototype.GoDirection = function (direction, ctx) {
@@ -2609,7 +2609,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ReadCatalog = function (data) {
         var nullPos = InStr(data, Chr(0));
-        this._numResources = 'expr';
+        this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
 
         // UNKNOWN ReDimPreserveStatement
         this._resources[this._numResources] = new ResourceType();
@@ -2896,7 +2896,7 @@ var LegacyGame = (function () {
         // UNKNOWN RaiseEventStatement
     };
     LegacyGame.prototype.ChangeState = function (newState) {
-        var acceptCommands = 'expr';
+        var acceptCommands = (newState == 0 /* Ready */);
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.ChangeState = function (newState, acceptCommands) {

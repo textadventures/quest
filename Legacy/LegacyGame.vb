@@ -8073,7 +8073,7 @@ Public Class LegacyGame
         Dim name As String
         Dim scp, cdat As Integer
         Dim scp2, scp3 As Integer
-        Dim lines As String() = {}
+        Dim lines As String() = Nothing
 
         _gameLoadMethod = "loaded"
 
