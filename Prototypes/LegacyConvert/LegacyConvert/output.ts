@@ -387,8 +387,22 @@ class LegacyGame {
 	_fileData: string;
 	_fileDataPos: number;
 	_questionResponse: boolean;
-	// UNKNOWN ConstructorBlock
-	// UNKNOWN ConstructorBlock
+	constructor(filename: string, originalFilename: string) {
+		this._tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString());
+		// UNKNOWN ExpressionStatement
+		this._gameLoadMethod = "normal";
+		this._filename = filename;
+		this._originalFilename = originalFilename;
+		this._numSkipCheckFiles = 3;
+		// UNKNOWN ReDimStatement
+		this._skipCheckFile[1] = "bargain.cas";
+		this._skipCheckFile[2] = "easymoney.asl";
+		this._skipCheckFile[3] = "musicvf1.cas";
+	}
+	constructor(data: InitGameData) {
+		// UNKNOWN ExpressionStatement
+		this._data = data;
+	}
 	RemoveFormatting(s: string): string {
 		var code: string;
 		var pos: number;
@@ -2771,7 +2785,14 @@ class RoomExit {
 	_objName: string;
 	_displayName: string;
 	_game: LegacyGame;
-	// UNKNOWN ConstructorBlock
+	constructor(game: LegacyGame) {
+		this._game = game;
+		game._numberObjs = game._numberObjs + 1;
+		// UNKNOWN ReDimPreserveStatement
+		game._objs[game._numberObjs] = new ObjectType();
+		this._objId = game._numberObjs;
+		// UNKNOWN WithBlock
+	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
@@ -2817,7 +2838,10 @@ class RoomExits {
 	_allExits: any;
 	_regenerateAllExits: boolean;
 	_game: LegacyGame;
-	// UNKNOWN ConstructorBlock
+	constructor(game: LegacyGame) {
+		this._game = game;
+		this._regenerateAllExits = true;
+	}
 	SetDirection(direction: Direction, roomExit: RoomExit): void {
 		// UNKNOWN MultiLineIfBlock
 		this._regenerateAllExits = true;

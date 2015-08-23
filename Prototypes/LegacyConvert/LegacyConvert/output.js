@@ -370,7 +370,7 @@ var AppliesTo;
 })(AppliesTo || (AppliesTo = {}));
 ;
 var LegacyGame = (function () {
-    function LegacyGame() {
+    function LegacyGame(data) {
         this._casKeywords = [];
         this._nullContext = new Context();
         this._gameChangeData = new GameChangeDataType();
@@ -385,6 +385,8 @@ var LegacyGame = (function () {
         this._readyForCommand = true;
         this._random = new Random();
         this._listVerbs = {};
+        // UNKNOWN ExpressionStatement
+        this._data = data;
     }
     LegacyGame.prototype.CopyContext = function (ctx) {
         var result = new Context();
@@ -399,8 +401,6 @@ var LegacyGame = (function () {
         return result;
     };
 
-    // UNKNOWN ConstructorBlock
-    // UNKNOWN ConstructorBlock
     LegacyGame.prototype.RemoveFormatting = function (s) {
         var code;
         var pos;
@@ -3031,9 +3031,15 @@ var Config = (function () {
     return Config;
 })();
 var RoomExit = (function () {
-    function RoomExit() {
+    function RoomExit(game) {
+        this._game = game;
+        game._numberObjs = game._numberObjs + 1;
+
+        // UNKNOWN ReDimPreserveStatement
+        game._objs[game._numberObjs] = new ObjectType();
+        this._objId = game._numberObjs;
+        // UNKNOWN WithBlock
     }
-    // UNKNOWN ConstructorBlock
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
@@ -3076,11 +3082,12 @@ var RoomExit = (function () {
     return RoomExit;
 })();
 var RoomExits = (function () {
-    function RoomExits() {
+    function RoomExits(game) {
         this._directions = {};
         this._places = {};
+        this._game = game;
+        this._regenerateAllExits = true;
     }
-    // UNKNOWN ConstructorBlock
     RoomExits.prototype.SetDirection = function (direction, roomExit) {
         // UNKNOWN MultiLineIfBlock
         this._regenerateAllExits = true;

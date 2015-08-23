@@ -68,6 +68,7 @@ namespace LegacyConvert
                 case SyntaxKind.EndFunctionStatement:
                 case SyntaxKind.SubStatement:
                 case SyntaxKind.EndSubStatement:
+                case SyntaxKind.SubNewStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -129,6 +130,13 @@ namespace LegacyConvert
                         type,
                         ProcessChildNodes(node, depth, prepend, false, classFields),
                         string.Join(", ", parameters));
+                case SyntaxKind.ConstructorBlock:
+                    var ctor = (ConstructorBlockSyntax)node;
+                    var ctorParams = ((SubNewStatementSyntax)ctor.ChildNodes().First()).ParameterList.Parameters.Select(p => ProcessParameter(p));
+                    return string.Format("{0}constructor({1}) {{\n{2}{0}}}\n",
+                        Tabs(depth),
+                        string.Join(", ", ctorParams),
+                        ProcessChildNodes(node, depth, prepend, false, classFields));
                 case SyntaxKind.SimpleAssignmentStatement:
                     var assign = (AssignmentStatementSyntax)node;
                     var left = ProcessExpression(assign.Left, classFields);
