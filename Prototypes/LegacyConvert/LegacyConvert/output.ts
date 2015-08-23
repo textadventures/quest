@@ -407,7 +407,11 @@ class LegacyGame {
 		var code: string;
 		var pos: number;
 		var len: number;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			pos = InStr(s, "|");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(pos == 0));
 		return s;
 	}
 	CheckSections(): boolean {
@@ -462,7 +466,12 @@ class LegacyGame {
 		var cbp: number;
 		var curProc: number;
 		i = 1;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			z = this._lines[this._defineBlocks[i].StartLine];
+			// UNKNOWN MultiLineIfBlock
+			i = i + 1;
+			// UNKNOWN LoopUntilStatement
+		} while (!(i > this._numberSections));
 		// UNKNOWN ForBlock
 	}
 	ErrorCheck(): boolean {
@@ -606,12 +615,21 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		numLibraries = 0;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			libFoundThisSweep = false;
+			// UNKNOWN ForBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(libFoundThisSweep == false));
 		skipCheck = false;
 		var lastSlashPos: number;
 		var slashPos: number;
 		var curPos = 1;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			slashPos = InStr(curPos, filename, "\\");
+			// UNKNOWN SingleLineIfStatement
+			curPos = slashPos + 1;
+			// UNKNOWN LoopUntilStatement
+		} while (!(slashPos == 0));
 		var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -712,9 +730,17 @@ class LegacyGame {
 		var bracePos: number;
 		var curPos = 1;
 		var resultLine = "";
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			bracePos = InStr(curPos, s, "{");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(bracePos == 0 || curPos > Len(s)));
 		curPos = 1;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			bracePos = InStr(curPos, resultLine, "}}");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(bracePos == 0 || curPos > Len(resultLine)));
 		return resultLine;
 	}
 	ExecAddRemove(cmd: string, ctx: Context): void {
@@ -828,7 +854,11 @@ class LegacyGame {
 		var openBracketPos: number;
 		var endBracketPos: number;
 		var res: ExpressionResult = new ExpressionResult();
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			openBracketPos = InStr(expr, "(");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(openBracketPos == 0));
 		var numElements = 1;
 		var elements: string[];
 		elements = [];
@@ -839,7 +869,12 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		var opNum = 0;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			// UNKNOWN ForBlock
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(opNum == 0 || numOperators == 0));
 		res.Success = ExpressionSuccess.OK;
 		res.Result = elements[1];
 		return res;
@@ -860,7 +895,11 @@ class LegacyGame {
 		var OutputString: string;
 		OutputString = s;
 		CurPos = 1;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			EPos = InStr(CurPos, OutputString, "E");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(EPos == 0));
 		return OutputString;
 	}
 	ProcessListInfo(line: string, id: number): void {
@@ -978,12 +1017,39 @@ class LegacyGame {
 	}
 	AddToObjectAltNames(altNames: string, id: number): void {
 		var o = this._objs[id];
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			var endPos = InStr(altNames, ";");
+			// UNKNOWN SingleLineIfStatement
+			var curName = Trim(Left(altNames, endPos - 1));
+			// UNKNOWN MultiLineIfBlock
+			altNames = Mid(altNames, endPos + 1);
+			// UNKNOWN LoopUntilStatement
+		} while (!(Trim(altNames) == ""));
 	}
 	AddToObjectProperties(propertyInfo: string, id: number, ctx: Context): void {
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			var scp = InStr(propertyInfo, ";");
+			var info = Left(propertyInfo, scp - 1);
+			propertyInfo = Trim(Mid(propertyInfo, scp + 1));
+			var name: string;
+			var value: string;
+			var num: number;
+			// UNKNOWN SingleLineIfStatement
+			var ep = InStr(info, "=");
+			// UNKNOWN MultiLineIfBlock
+			var falseProperty = false;
+			// UNKNOWN MultiLineIfBlock
+			var o = this._objs[id];
+			var found = false;
+			// UNKNOWN ForBlock
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN MultiLineIfBlock
+			this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
+			// UNKNOWN SelectBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(Len(Trim(propertyInfo)) == 0));
 	}
 	AddToUseInfo(id: number, useData: string): void {
 		var useType: UseType;
@@ -1169,7 +1235,20 @@ class LegacyGame {
 		var obscuredConditionList = this.ObliterateParameters(list);
 		var pos = 1;
 		var isFinalCondition = false;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			numConditions = numConditions + 1;
+			// UNKNOWN ReDimPreserveStatement
+			// UNKNOWN ReDimPreserveStatement
+			var nextCondition = "AND";
+			var nextConditionPos = InStr(pos, obscuredConditionList, "and ");
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN MultiLineIfBlock
+			var thisCondition = Trim(Mid(list, pos, nextConditionPos - pos - 1));
+			conditions[numConditions] = thisCondition;
+			operations[numConditions] = nextCondition;
+			pos = InStr(nextConditionPos, obscuredConditionList, " ");
+			// UNKNOWN LoopUntilStatement
+		} while (!(isFinalCondition));
 		operations[0] = "AND";
 		var result = true;
 		// UNKNOWN ForBlock
@@ -1302,10 +1381,18 @@ class LegacyGame {
 		var foundScript = false;
 		// UNKNOWN MultiLineIfBlock
 		var pos = 1;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			bracketPos = InStr(pos, data, ">");
+			afterBracket = Trim(Mid(data, bracketPos + 1));
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(foundScript || afterBracket == ""));
 		var conditions = Trim(Left(data, bracketPos));
 		var finished = false;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(finished || this._gameFinished));
 	}
 	ExecuteSetCollectable(param: string, ctx: Context): void {
 		var val: number;
@@ -1454,7 +1541,14 @@ class LegacyGame {
 		var result: string = "";
 		var pos = 1;
 		var finished = false;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			var varPos = InStr(pos, parameter, convertChar);
+			// UNKNOWN MultiLineIfBlock
+			var currentBit = Mid(parameter, pos, varPos - pos);
+			result = result + currentBit;
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(finished));
 		return result;
 	}
 	DoFunction(data: string, ctx: Context): string {
@@ -1918,7 +2012,24 @@ class LegacyGame {
 		var currentTestLinePos = 1;
 		var finished = false;
 		var numberChunks = 0;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			var nextVarPos = InStr(currentReqLinePos, required, "#");
+			var currentVariable = "";
+			// UNKNOWN MultiLineIfBlock
+			var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
+			var chunkBegin = InStr(currentTestLinePos, LCase(test), LCase(checkChunk));
+			var chunkEnd = chunkBegin + Len(checkChunk);
+			numberChunks = numberChunks + 1;
+			// UNKNOWN ReDimPreserveStatement
+			// UNKNOWN ReDimPreserveStatement
+			// UNKNOWN ReDimPreserveStatement
+			chunksBegin[numberChunks] = chunkBegin;
+			chunksEnd[numberChunks] = chunkEnd;
+			varName[numberChunks] = currentVariable;
+			currentReqLinePos = var2Pos + 1;
+			currentTestLinePos = chunkEnd;
+			// UNKNOWN LoopUntilStatement
+		} while (!(finished));
 		var success = true;
 		// UNKNOWN ForBlock
 		return success;
@@ -1957,7 +2068,14 @@ class LegacyGame {
 		var currentReqLinePos = 1;
 		var currentTestLinePos = 1;
 		var finished = false;
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			var nextVarPos = InStr(currentReqLinePos, required, "#");
+			// UNKNOWN MultiLineIfBlock
+			var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
+			// UNKNOWN MultiLineIfBlock
+			currentReqLinePos = var2Pos + 1;
+			// UNKNOWN LoopUntilStatement
+		} while (!(finished));
 		return true;
 	}
 	OpenGame(filename: string): boolean {
@@ -2949,7 +3067,11 @@ class TextFormatter {
 		var nobr: boolean = false;
 		input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN DoLoopUntilBlock
+		do {
+			codePosition = input.IndexOf("|", position);
+			// UNKNOWN MultiLineIfBlock
+			// UNKNOWN LoopUntilStatement
+		} while (!(finished || position >= input.Length));
 		return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
 	}
 	FormatText(input: string): string {

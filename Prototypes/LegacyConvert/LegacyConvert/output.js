@@ -405,8 +405,11 @@ var LegacyGame = (function () {
         var code;
         var pos;
         var len;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            pos = InStr(s, "|");
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(pos == 0));
         return s;
     };
     LegacyGame.prototype.CheckSections = function () {
@@ -463,7 +466,13 @@ var LegacyGame = (function () {
         var cbp;
         var curProc;
         i = 1;
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            z = this._lines[this._defineBlocks[i].StartLine];
+
+            // UNKNOWN MultiLineIfBlock
+            i = i + 1;
+            // UNKNOWN LoopUntilStatement
+        } while(!(i > this._numberSections));
         // UNKNOWN ForBlock
     };
     LegacyGame.prototype.ErrorCheck = function () {
@@ -614,14 +623,22 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         numLibraries = 0;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            libFoundThisSweep = false;
+            // UNKNOWN ForBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(libFoundThisSweep == false));
         skipCheck = false;
         var lastSlashPos;
         var slashPos;
         var curPos = 1;
+        do {
+            slashPos = InStr(curPos, filename, "\\");
 
-        // UNKNOWN DoLoopUntilBlock
+            // UNKNOWN SingleLineIfStatement
+            curPos = slashPos + 1;
+            // UNKNOWN LoopUntilStatement
+        } while(!(slashPos == 0));
         var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
 
         // UNKNOWN ForBlock
@@ -737,11 +754,17 @@ var LegacyGame = (function () {
         var bracePos;
         var curPos = 1;
         var resultLine = "";
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            bracePos = InStr(curPos, s, "{");
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(bracePos == 0 || curPos > Len(s)));
         curPos = 1;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            bracePos = InStr(curPos, resultLine, "}}");
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(bracePos == 0 || curPos > Len(resultLine)));
         return resultLine;
     };
     LegacyGame.prototype.ExecAddRemove = function (cmd, ctx) {
@@ -872,8 +895,11 @@ var LegacyGame = (function () {
         var openBracketPos;
         var endBracketPos;
         var res = new ExpressionResult();
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            openBracketPos = InStr(expr, "(");
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(openBracketPos == 0));
         var numElements = 1;
         var elements;
         elements = [];
@@ -885,8 +911,12 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         // UNKNOWN ForBlock
         var opNum = 0;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            // UNKNOWN ForBlock
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(opNum == 0 || numOperators == 0));
         res.Success = 0 /* OK */;
         res.Result = elements[1];
         return res;
@@ -909,8 +939,11 @@ var LegacyGame = (function () {
         var OutputString;
         OutputString = s;
         CurPos = 1;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            EPos = InStr(CurPos, OutputString, "E");
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(EPos == 0));
         return OutputString;
     };
     LegacyGame.prototype.ProcessListInfo = function (line, id) {
@@ -1042,12 +1075,43 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.AddToObjectAltNames = function (altNames, id) {
         var o = this._objs[id];
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            var endPos = InStr(altNames, ";");
+
+            // UNKNOWN SingleLineIfStatement
+            var curName = Trim(Left(altNames, endPos - 1));
+
+            // UNKNOWN MultiLineIfBlock
+            altNames = Mid(altNames, endPos + 1);
+            // UNKNOWN LoopUntilStatement
+        } while(!(Trim(altNames) == ""));
     };
     LegacyGame.prototype.AddToObjectProperties = function (propertyInfo, id, ctx) {
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN MultiLineIfBlock
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            var scp = InStr(propertyInfo, ";");
+            var info = Left(propertyInfo, scp - 1);
+            propertyInfo = Trim(Mid(propertyInfo, scp + 1));
+            var name;
+            var value;
+            var num;
+
+            // UNKNOWN SingleLineIfStatement
+            var ep = InStr(info, "=");
+
+            // UNKNOWN MultiLineIfBlock
+            var falseProperty = false;
+
+            // UNKNOWN MultiLineIfBlock
+            var o = this._objs[id];
+            var found = false;
+
+            // UNKNOWN ForBlock
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN MultiLineIfBlock
+            this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
+            // UNKNOWN SelectBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(Len(Trim(propertyInfo)) == 0));
     };
     LegacyGame.prototype.AddToUseInfo = function (id, useData) {
         var useType;
@@ -1263,8 +1327,22 @@ var LegacyGame = (function () {
         var obscuredConditionList = this.ObliterateParameters(list);
         var pos = 1;
         var isFinalCondition = false;
+        do {
+            numConditions = numConditions + 1;
 
-        // UNKNOWN DoLoopUntilBlock
+            // UNKNOWN ReDimPreserveStatement
+            // UNKNOWN ReDimPreserveStatement
+            var nextCondition = "AND";
+            var nextConditionPos = InStr(pos, obscuredConditionList, "and ");
+
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN MultiLineIfBlock
+            var thisCondition = Trim(Mid(list, pos, nextConditionPos - pos - 1));
+            conditions[numConditions] = thisCondition;
+            operations[numConditions] = nextCondition;
+            pos = InStr(nextConditionPos, obscuredConditionList, " ");
+            // UNKNOWN LoopUntilStatement
+        } while(!(isFinalCondition));
         operations[0] = "AND";
         var result = true;
 
@@ -1418,11 +1496,18 @@ var LegacyGame = (function () {
 
         // UNKNOWN MultiLineIfBlock
         var pos = 1;
-
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            bracketPos = InStr(pos, data, ">");
+            afterBracket = Trim(Mid(data, bracketPos + 1));
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(foundScript || afterBracket == ""));
         var conditions = Trim(Left(data, bracketPos));
         var finished = false;
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(finished || this._gameFinished));
     };
     LegacyGame.prototype.ExecuteSetCollectable = function (param, ctx) {
         var val;
@@ -1593,8 +1678,15 @@ var LegacyGame = (function () {
         var result = "";
         var pos = 1;
         var finished = false;
+        do {
+            var varPos = InStr(pos, parameter, convertChar);
 
-        // UNKNOWN DoLoopUntilBlock
+            // UNKNOWN MultiLineIfBlock
+            var currentBit = Mid(parameter, pos, varPos - pos);
+            result = result + currentBit;
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(finished));
         return result;
     };
     LegacyGame.prototype.DoFunction = function (data, ctx) {
@@ -2102,8 +2194,26 @@ var LegacyGame = (function () {
         var currentTestLinePos = 1;
         var finished = false;
         var numberChunks = 0;
+        do {
+            var nextVarPos = InStr(currentReqLinePos, required, "#");
+            var currentVariable = "";
 
-        // UNKNOWN DoLoopUntilBlock
+            // UNKNOWN MultiLineIfBlock
+            var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
+            var chunkBegin = InStr(currentTestLinePos, LCase(test), LCase(checkChunk));
+            var chunkEnd = chunkBegin + Len(checkChunk);
+            numberChunks = numberChunks + 1;
+
+            // UNKNOWN ReDimPreserveStatement
+            // UNKNOWN ReDimPreserveStatement
+            // UNKNOWN ReDimPreserveStatement
+            chunksBegin[numberChunks] = chunkBegin;
+            chunksEnd[numberChunks] = chunkEnd;
+            varName[numberChunks] = currentVariable;
+            currentReqLinePos = var2Pos + 1;
+            currentTestLinePos = chunkEnd;
+            // UNKNOWN LoopUntilStatement
+        } while(!(finished));
         var success = true;
 
         // UNKNOWN ForBlock
@@ -2145,8 +2255,16 @@ var LegacyGame = (function () {
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
         var finished = false;
+        do {
+            var nextVarPos = InStr(currentReqLinePos, required, "#");
 
-        // UNKNOWN DoLoopUntilBlock
+            // UNKNOWN MultiLineIfBlock
+            var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
+
+            // UNKNOWN MultiLineIfBlock
+            currentReqLinePos = var2Pos + 1;
+            // UNKNOWN LoopUntilStatement
+        } while(!(finished));
         return true;
     };
     LegacyGame.prototype.OpenGame = function (filename) {
@@ -3236,8 +3354,11 @@ var TextFormatter = (function () {
         var nobr = false;
         input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
 
-        // UNKNOWN MultiLineIfBlock
-        // UNKNOWN DoLoopUntilBlock
+        do {
+            codePosition = input.IndexOf("|", position);
+            // UNKNOWN MultiLineIfBlock
+            // UNKNOWN LoopUntilStatement
+        } while(!(finished || position >= input.Length));
         return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
     };
     TextFormatter.prototype.FormatText = function (input) {

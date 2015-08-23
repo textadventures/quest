@@ -73,6 +73,7 @@ namespace LegacyConvert
                 case SyntaxKind.SubStatement:
                 case SyntaxKind.EndSubStatement:
                 case SyntaxKind.SubNewStatement:
+                case SyntaxKind.SimpleDoStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -154,6 +155,14 @@ namespace LegacyConvert
                 case SyntaxKind.ReDimStatement:
                     var redim = ProcessExpression(((ReDimStatementSyntax)node).Clauses.First().Expression, classFields);
                     return string.Format("{0}{1} = [];\n", Tabs(depth), redim);
+                case SyntaxKind.DoLoopUntilBlock:
+                    var doLoop = (DoLoopBlockSyntax)node;
+                    var condition = ProcessExpression(doLoop.LoopStatement.WhileOrUntilClause.Condition, classFields);
+                    if (doLoop.LoopStatement.WhileOrUntilClause.Kind() == SyntaxKind.UntilClause)
+                    {
+                        condition = "!(" + condition + ")";
+                    }
+                    return string.Format("{0}do {{\n{1}{0}}} while ({2});\n", Tabs(depth), ProcessChildNodes(node, depth, prepend, false, classFields), condition);
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -249,6 +258,8 @@ namespace LegacyConvert
                 var op = binary.OperatorToken.ValueText;
                 if (op == "&") op = "+";
                 if (op == "=") op = "==";
+                if (op == "And" || op == "AndAlso") op = "&&";
+                if (op == "Or" || op == "OrElse") op = "||";
                 return ProcessExpression(binary.Left, classFields) + " " + op + " " + ProcessExpression(binary.Right, classFields);
             }
 
