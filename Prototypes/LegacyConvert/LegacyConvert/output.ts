@@ -95,18 +95,18 @@ class RoomType {
 		RoomAlias: string;
 		Commands: UserDefinedCommandType[];
 		NumberCommands: number;
-		Description: any;
-		Out: any;
-		East: any;
-		West: any;
-		North: any;
-		South: any;
-		NorthEast: any;
-		NorthWest: any;
-		SouthEast: any;
-		SouthWest: any;
-		Up: any;
-		Down: any;
+		Description: TextAction = new TextAction();
+		Out: ScriptText = new ScriptText();
+		East: TextAction = new TextAction();
+		West: TextAction = new TextAction();
+		North: TextAction = new TextAction();
+		South: TextAction = new TextAction();
+		NorthEast: TextAction = new TextAction();
+		NorthWest: TextAction = new TextAction();
+		SouthEast: TextAction = new TextAction();
+		SouthWest: TextAction = new TextAction();
+		Up: TextAction = new TextAction();
+		Down: TextAction = new TextAction();
 		InDescription: string;
 		Look: string;
 		Places: PlaceType[];
@@ -138,8 +138,8 @@ class ObjectType {
 		LoseScript: string;
 		NumberProperties: number;
 		Properties: PropertyType[];
-		Speak: any;
-		Take: any;
+		Speak: TextAction = new TextAction();
+		Take: TextAction = new TextAction();
 		IsRoom: boolean;
 		IsExit: boolean;
 		CorresRoom: string;
@@ -161,10 +161,10 @@ class ObjectType {
 		TypesIncluded: string[];
 		NumberAltNames: number;
 		AltNames: string[];
-		AddScript: any;
-		RemoveScript: any;
-		OpenScript: any;
-		CloseScript: any;
+		AddScript: TextAction = new TextAction();
+		RemoveScript: TextAction = new TextAction();
+		OpenScript: TextAction = new TextAction();
+		CloseScript: TextAction = new TextAction();
 }
 class ChangeType {
 		AppliesTo: string;
@@ -227,7 +227,7 @@ class LegacyGame {
 	_defineBlocks: DefineBlock[];
 	_numberSections: number;
 	_gameName: string;
-	_nullContext: any;
+	_nullContext: Context = new Context();
 	_changeLogRooms: ChangeLog;
 	_changeLogObjects: ChangeLog;
 	_defaultProperties: PropertiesActions;
@@ -268,7 +268,7 @@ class LegacyGame {
 	_numDisplayStrings: number;
 	_numDisplayNumerics: number;
 	_gameFullyLoaded: boolean;
-	_gameChangeData: any;
+	_gameChangeData: GameChangeDataType = new GameChangeDataType();
 	_lastIt: number;
 	_lastItMode: ItType;
 	_thisTurnIt: number;
@@ -286,10 +286,10 @@ class LegacyGame {
 	_onLoadScript: string;
 	_numSkipCheckFiles: number;
 	_skipCheckFile: string[];
-	_compassExits: any;
-	_gotoExits: any;
-	_textFormatter: any;
-	_log: any;
+	_compassExits: any = {};
+	_gotoExits: any = {};
+	_textFormatter: TextFormatter = new TextFormatter();
+	_log: any = {};
 	_casFileData: string;
 	_commandLock: Object = new Object();
 	_stateLock: Object = new Object();
@@ -297,10 +297,10 @@ class LegacyGame {
 	_waitLock: Object = new Object();
 	_readyForCommand: boolean = true;
 	_gameLoading: boolean;
-	_random: any;
+	_random: Random = new Random();
 	_tempFolder: string;
 	_playerErrorMessageString: string;
-	_listVerbs: any;
+	_listVerbs: any = {};
 	_filename: string;
 	_originalFilename: string;
 	_data: InitGameData;
@@ -446,7 +446,7 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	GetResourceLines(): string[] {
-		var enc: any;
+		var enc: any = {};
 		var resFile: string = 'expr';
 		// UNKNOWN ReturnStatement
 	}
@@ -568,7 +568,7 @@ class LegacyGame {
 	ExpressionHandler(): ExpressionResult {
 		var openBracketPos: number;
 		var endBracketPos: number;
-		var res: any;
+		var res: ExpressionResult = new ExpressionResult();
 		// UNKNOWN DoLoopUntilBlock
 		var numElements = 1;
 		var elements: string[];
@@ -684,7 +684,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetArrayIndex(): ArrayResult {
-		var result: any;
+		var result: ArrayResult = new ArrayResult();
 		// UNKNOWN MultiLineIfBlock
 		var beginPos = 'expr';
 		var endPos = 'expr';
@@ -848,7 +848,7 @@ class LegacyGame {
 	}
 	GetPropertiesInType(): PropertiesActions {
 		var blockId: number;
-		var propertyList: any;
+		var propertyList: PropertiesActions = new PropertiesActions();
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -878,7 +878,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreData(): string {
-		var data: any;
+		var data: any = {};
 		var objectData: ChangeType[] = [];
 		var roomData: ChangeType[] = [];
 		var numObjectData: number;
@@ -901,7 +901,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		var dataString: string;
-		var newFileData: any;
+		var newFileData: any = {};
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
@@ -1028,11 +1028,11 @@ class LegacyGame {
 	SetUpChoiceForm(): string {
 		var block = 'expr';
 		var prompt = 'expr';
-		var menuOptions: any;
-		var menuScript: any;
+		var menuOptions: any = {};
+		var menuScript: any = {};
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
-		var mnu: any;
+		var mnu: MenuData = new MenuData();
 		var choice: string = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
@@ -1159,7 +1159,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreDataV2(): string {
-		var lines: any;
+		var lines: any = {};
 		var i: number;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
@@ -1364,7 +1364,7 @@ class LegacyGame {
 		var parent: string;
 		var parentId: number;
 		var parentDisplayName: string;
-		var result: any;
+		var result: PlayerCanAccessObjectResult = new PlayerCanAccessObjectResult();
 		var hierarchy: string = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement

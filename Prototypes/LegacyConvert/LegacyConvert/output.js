@@ -124,11 +124,29 @@ var PlaceType = (function () {
 })();
 var RoomType = (function () {
     function RoomType() {
+        this.Description = new TextAction();
+        this.Out = new ScriptText();
+        this.East = new TextAction();
+        this.West = new TextAction();
+        this.North = new TextAction();
+        this.South = new TextAction();
+        this.NorthEast = new TextAction();
+        this.NorthWest = new TextAction();
+        this.SouthEast = new TextAction();
+        this.SouthWest = new TextAction();
+        this.Up = new TextAction();
+        this.Down = new TextAction();
     }
     return RoomType;
 })();
 var ObjectType = (function () {
     function ObjectType() {
+        this.Speak = new TextAction();
+        this.Take = new TextAction();
+        this.AddScript = new TextAction();
+        this.RemoveScript = new TextAction();
+        this.OpenScript = new TextAction();
+        this.CloseScript = new TextAction();
     }
     return ObjectType;
 })();
@@ -272,11 +290,19 @@ var PlayerCanAccessObjectResult = (function () {
 var LegacyGame = (function () {
     function LegacyGame() {
         this._casKeywords = [];
+        this._nullContext = new Context();
+        this._gameChangeData = new GameChangeDataType();
+        this._compassExits = {};
+        this._gotoExits = {};
+        this._textFormatter = new TextFormatter();
+        this._log = {};
         this._commandLock = new Object();
         this._stateLock = new Object();
         this._state = 0 /* Ready */;
         this._waitLock = new Object();
         this._readyForCommand = true;
+        this._random = new Random();
+        this._listVerbs = {};
     }
     LegacyGame.prototype.CopyContext = function () {
         var result = new Context();
@@ -430,7 +456,7 @@ var LegacyGame = (function () {
 
     // UNKNOWN SubBlock
     LegacyGame.prototype.GetResourceLines = function () {
-        var enc;
+        var enc = {};
         var resFile = 'expr';
         // UNKNOWN ReturnStatement
     };
@@ -560,7 +586,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExpressionHandler = function () {
         var openBracketPos;
         var endBracketPos;
-        var res;
+        var res = new ExpressionResult();
 
         // UNKNOWN DoLoopUntilBlock
         var numElements = 1;
@@ -692,7 +718,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.GetArrayIndex = function () {
-        var result;
+        var result = new ArrayResult();
 
         // UNKNOWN MultiLineIfBlock
         var beginPos = 'expr';
@@ -865,7 +891,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetPropertiesInType = function () {
         var blockId;
-        var propertyList;
+        var propertyList = new PropertiesActions();
         var found = false;
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
@@ -895,7 +921,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.MakeRestoreData = function () {
-        var data;
+        var data = {};
         var objectData = [];
         var roomData = [];
         var numObjectData;
@@ -920,7 +946,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
         var dataString;
-        var newFileData;
+        var newFileData = {};
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
@@ -1059,12 +1085,12 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpChoiceForm = function () {
         var block = 'expr';
         var prompt = 'expr';
-        var menuOptions;
-        var menuScript;
+        var menuOptions = {};
+        var menuScript = {};
 
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
-        var mnu;
+        var mnu = new MenuData();
         var choice = 'expr';
         // UNKNOWN ExpressionStatement
         // UNKNOWN ReturnStatement
@@ -1198,7 +1224,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.MakeRestoreDataV2 = function () {
-        var lines;
+        var lines = {};
         var i;
         // UNKNOWN ExpressionStatement
         // UNKNOWN ExpressionStatement
@@ -1417,7 +1443,7 @@ var LegacyGame = (function () {
         var parent;
         var parentId;
         var parentDisplayName;
-        var result;
+        var result = new PlayerCanAccessObjectResult();
         var hierarchy = "";
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement

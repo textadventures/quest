@@ -209,8 +209,8 @@ namespace LegacyConvert
             var objectCreationExpressionSyntax = asType as ObjectCreationExpressionSyntax;
             if (objectCreationExpressionSyntax != null)
             {
-                // TODO - need to get type and instantiate it
-                return "any";
+                var type = GetVarType(objectCreationExpressionSyntax.Type);
+                return type + " = " + (type == "any" ? "{}" : "new " + type + "()");
             }
 
             var arrayTypeSyntax = asType as ArrayTypeSyntax;
