@@ -449,7 +449,7 @@ var LegacyGame = (function () {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     };
     LegacyGame.prototype.ConvertCasKeyword = function (casChar) {
-        var c = 'expr';
+        var c = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
         var keyword = this._casKeywords[c];
 
         // UNKNOWN MultiLineIfBlock
@@ -495,7 +495,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetResourceLines = function (res) {
         var enc = {};
-        var resFile = 'expr';
+        var resFile = enc.GetString(res);
         return Split(resFile, Chr(13) + Chr(10));
     };
     LegacyGame.prototype.ParseFile = function (filename) {
@@ -895,7 +895,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var fileName = 'expr';
+        var fileName = System.IO.Path.Combine(this._tempFolder, file);
 
         // UNKNOWN ExpressionStatement
         // UNKNOWN MultiLineIfBlock
@@ -908,17 +908,17 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        'expr'.ActionName = name;
-        'expr'.Script = script;
+        o.Actions[actionNum].ActionName = name;
+        o.Actions[actionNum].Script = script;
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.AddToChangeLog = function (appliesTo, changeData) {
         this._gameChangeData.NumberChanges = this._gameChangeData.NumberChanges + 1;
 
         // UNKNOWN ReDimPreserveStatement
-        'expr' = new ChangeType();
-        'expr'.AppliesTo = appliesTo;
-        'expr'.Change = changeData;
+        this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges] = new ChangeType();
+        this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].AppliesTo = appliesTo;
+        this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].Change = changeData;
     };
     LegacyGame.prototype.AddToObjectChangeLog = function (appliesToType, appliesTo, element, changeData) {
         var changeLog;
@@ -945,8 +945,8 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        'expr'.ActionName = name;
-        'expr'.Script = script;
+        o.Actions[actionNum].ActionName = name;
+        o.Actions[actionNum].Script = script;
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.AddToObjectAltNames = function (altNames, id) {
@@ -1013,7 +1013,7 @@ var LegacyGame = (function () {
         o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
 
         // UNKNOWN ReDimPreserveStatement
-        'expr' = typeName;
+        o.TypesIncluded[o.NumberTypesIncluded] = typeName;
         var propertyData = GetPropertiesInType(typeName);
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
@@ -1148,8 +1148,8 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        'expr'.ActionName = actionName;
-        'expr'.Script = script;
+        o.Actions[actionNum].ActionName = actionName;
+        o.Actions[actionNum].Script = script;
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.ExecuteCondition = function (condition, ctx) {
@@ -1459,11 +1459,11 @@ var LegacyGame = (function () {
         // UNKNOWN ForBlock
         var dataString;
         var newFileData = {};
-        dataString = 'expr';
+        dataString = data.ToString();
 
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
-        return 'expr';
+        return newFileData.ToString();
     };
     LegacyGame.prototype.MoveThing = function (name, room, type, ctx) {
         var oldRoom = "";
@@ -1604,7 +1604,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
-        return Val('expr');
+        return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
     };
     LegacyGame.prototype.PlayerErrorMessage = function (e, ctx) {
         // UNKNOWN ExpressionStatement
@@ -1646,7 +1646,7 @@ var LegacyGame = (function () {
         var decryptedFile = {};
 
         // UNKNOWN ForBlock
-        this._fileData = 'expr';
+        this._fileData = decryptedFile.ToString();
         this._currentRoom = GetNextChunk();
         var numData = 'expr';
         var createdObjects = {};
@@ -1736,7 +1736,7 @@ var LegacyGame = (function () {
         this._numericVariable[numNumber].VariableName = name;
 
         // UNKNOWN ReDimPreserveStatement
-        'expr' = 'expr';
+        this._numericVariable[numNumber].VariableContents[arrayIndex] = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
@@ -2070,7 +2070,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
         this._saveGameFile = filename;
-        return 'expr';
+        return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
     };
     LegacyGame.prototype.MakeRestoreDataV2 = function () {
         var lines = {};
@@ -2093,7 +2093,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
         // UNKNOWN ExpressionStatement
-        return 'expr';
+        return String.Join(vbCrLf, lines);
     };
     LegacyGame.prototype.SetAvailability = function (thingString, exists, ctx, type) {
         // UNKNOWN MultiLineIfBlock
@@ -2113,7 +2113,7 @@ var LegacyGame = (function () {
         this._stringVariable[id].VariableName = name;
 
         // UNKNOWN ReDimPreserveStatement
-        'expr' = value;
+        this._stringVariable[id].VariableContents[arrayIndex] = value;
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
     };
@@ -2413,7 +2413,7 @@ var LegacyGame = (function () {
         this._changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object;
         this._outPutOn = true;
         this._useAbbreviations = true;
-        this._gamePath = 'expr' + "\\";
+        this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
 
         // UNKNOWN ExpressionStatement
         // UNKNOWN MultiLineIfBlock
@@ -2674,7 +2674,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN MultiLineIfBlock
         var exits = this._rooms[roomId].Exits;
-        var dir = 'expr';
+        var dir = exits.GetDirectionEnum(exitName);
 
         // UNKNOWN MultiLineIfBlock
         return null;
@@ -2769,7 +2769,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetResourcePath = function (filename) {
         // UNKNOWN MultiLineIfBlock
-        return 'expr';
+        return System.IO.Path.Combine(this._gamePath, filename);
     };
     LegacyGame.prototype.Cleanup = function () {
         // UNKNOWN ExpressionStatement
@@ -2873,7 +2873,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetUnzippedFile = function (filename) {
         var tempDir = null;
-        var result = 'expr';
+        var result = this.m_unzipFunction.Invoke(filename, tempDir);
         this._tempFolder = tempDir;
         return result;
     };
@@ -2894,8 +2894,8 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
     };
     LegacyGame.prototype.GetResourcelessCAS = function () {
-        var fileData = 'expr';
-        return 'expr';
+        var fileData = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
+        return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     };
     return LegacyGame;
 })();

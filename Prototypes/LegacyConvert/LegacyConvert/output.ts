@@ -438,7 +438,7 @@ class LegacyGame {
 		return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
 	}
 	ConvertCasKeyword(casChar: string): string {
-		var c: Byte = 'expr';
+		var c: Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
 		var keyword: string = this._casKeywords[c];
 		// UNKNOWN MultiLineIfBlock
 		return keyword;
@@ -480,7 +480,7 @@ class LegacyGame {
 	}
 	GetResourceLines(res: Byte[]): string[] {
 		var enc: any = {};
-		var resFile: string = 'expr';
+		var resFile: string = enc.GetString(res);
 		return Split(resFile, Chr(13) + Chr(10));
 	}
 	ParseFile(filename: string): boolean {
@@ -837,7 +837,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var fileName = 'expr';
+		var fileName = System.IO.Path.Combine(this._tempFolder, file);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		return fileName;
@@ -848,16 +848,16 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		'expr'.ActionName = name;
-		'expr'.Script = script;
+		o.Actions[actionNum].ActionName = name;
+		o.Actions[actionNum].Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	AddToChangeLog(appliesTo: string, changeData: string): void {
 		this._gameChangeData.NumberChanges = this._gameChangeData.NumberChanges + 1;
 		// UNKNOWN ReDimPreserveStatement
-		'expr' = new ChangeType();
-		'expr'.AppliesTo = appliesTo;
-		'expr'.Change = changeData;
+		this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges] = new ChangeType();
+		this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].AppliesTo = appliesTo;
+		this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].Change = changeData;
 	}
 	AddToObjectChangeLog(appliesToType: any, appliesTo: string, element: string, changeData: string): void {
 		var changeLog: ChangeLog;
@@ -882,8 +882,8 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		'expr'.ActionName = name;
-		'expr'.Script = script;
+		o.Actions[actionNum].ActionName = name;
+		o.Actions[actionNum].Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	AddToObjectAltNames(altNames: string, id: number): void {
@@ -944,7 +944,7 @@ class LegacyGame {
 		var o = this._objs[id];
 		o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
 		// UNKNOWN ReDimPreserveStatement
-		'expr' = typeName;
+		o.TypesIncluded[o.NumberTypesIncluded] = typeName;
 		var propertyData = GetPropertiesInType(typeName);
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
@@ -1060,8 +1060,8 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		'expr'.ActionName = actionName;
-		'expr'.Script = script;
+		o.Actions[actionNum].ActionName = actionName;
+		o.Actions[actionNum].Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	ExecuteCondition(condition: string, ctx: Context): boolean {
@@ -1341,10 +1341,10 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		var dataString: string;
 		var newFileData: any = {};
-		dataString = 'expr';
+		dataString = data.ToString();
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
-		return 'expr';
+		return newFileData.ToString();
 	}
 	MoveThing(name: string, room: string, type: Thing, ctx: Context): void {
 		var oldRoom: string = "";
@@ -1474,7 +1474,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		return Val('expr');
+		return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
 	}
 	PlayerErrorMessage(e: PlayerError, ctx: Context): void {
 		// UNKNOWN ExpressionStatement
@@ -1515,7 +1515,7 @@ class LegacyGame {
 		var storedData: ChangeType[] = [];
 		var decryptedFile: any = {};
 		// UNKNOWN ForBlock
-		this._fileData = 'expr';
+		this._fileData = decryptedFile.ToString();
 		this._currentRoom = GetNextChunk();
 		var numData = 'expr';
 		var createdObjects: any = {};
@@ -1597,7 +1597,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		this._numericVariable[numNumber].VariableName = name;
 		// UNKNOWN ReDimPreserveStatement
-		'expr' = 'expr';
+		this._numericVariable[numNumber].VariableContents[arrayIndex] = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1904,7 +1904,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = filename;
-		return 'expr';
+		return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
 	}
 	MakeRestoreDataV2(): string {
 		var lines: any = {};
@@ -1926,7 +1926,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
-		return 'expr';
+		return String.Join(vbCrLf, lines);
 	}
 	SetAvailability(thingString: string, exists: boolean, ctx: Context, type: Thing): void {
 		// UNKNOWN MultiLineIfBlock
@@ -1944,7 +1944,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		this._stringVariable[id].VariableName = name;
 		// UNKNOWN ReDimPreserveStatement
-		'expr' = value;
+		this._stringVariable[id].VariableContents[arrayIndex] = value;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -2220,7 +2220,7 @@ class LegacyGame {
 		this._changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object;
 		this._outPutOn = true;
 		this._useAbbreviations = true;
-		this._gamePath = 'expr' + "\\";
+		this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		var gameBlock: DefineBlock;
@@ -2461,7 +2461,7 @@ class LegacyGame {
 		var roomId = GetRoomID(room, this._nullContext);
 		// UNKNOWN MultiLineIfBlock
 		var exits = this._rooms[roomId].Exits;
-		var dir = 'expr';
+		var dir = exits.GetDirectionEnum(exitName);
 		// UNKNOWN MultiLineIfBlock
 		return null;
 	}
@@ -2547,7 +2547,7 @@ class LegacyGame {
 	}
 	GetResourcePath(filename: string): string {
 		// UNKNOWN MultiLineIfBlock
-		return 'expr';
+		return System.IO.Path.Combine(this._gamePath, filename);
 	}
 	Cleanup(): void {
 		// UNKNOWN ExpressionStatement
@@ -2649,7 +2649,7 @@ class LegacyGame {
 	}
 	GetUnzippedFile(filename: string): string {
 		var tempDir: string = null;
-		var result: string = 'expr';
+		var result: string = this.m_unzipFunction.Invoke(filename, tempDir);
 		this._tempFolder = tempDir;
 		return result;
 	}
@@ -2668,7 +2668,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	GetResourcelessCAS(): Byte[] {
-		var fileData: string = 'expr';
-		return 'expr';
+		var fileData: string = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
+		return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
 	}
 }

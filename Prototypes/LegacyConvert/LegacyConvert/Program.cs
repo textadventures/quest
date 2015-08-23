@@ -175,10 +175,11 @@ namespace LegacyConvert
             var invocation = expr as InvocationExpressionSyntax;
             if (invocation != null)
             {
+                var args = string.Join(", ", invocation.ArgumentList.Arguments.Select(a => ProcessExpression(a.GetExpression(), classFields)));
+                var typeInfo = Model.GetTypeInfo(invocation.Expression);
                 var identifier = invocation.Expression as IdentifierNameSyntax;
                 if (identifier != null)
                 {
-                    var typeInfo = Model.GetTypeInfo(identifier);
                     var isArray = (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType);
                     if (!isArray)
                     {
@@ -195,10 +196,15 @@ namespace LegacyConvert
                         return name + "[" + arg + "]";
                     }
 
-                    return string.Format("{0}({1})", identifier.Identifier.Text, string.Join(", ", invocation.ArgumentList.Arguments.Select(a => ProcessExpression(a.GetExpression(), classFields))));
+                    return string.Format("{0}({1})", identifier.Identifier.Text, args);
                 }
 
-                return "'expr'";
+                if (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType)
+                {
+                    return string.Format("{0}[{1}]", ProcessExpression(invocation.Expression, classFields), args);
+                }
+
+                return string.Format("{0}({1})", ProcessExpression(invocation.Expression, classFields), args);
             }
 
             var binary = expr as BinaryExpressionSyntax;
@@ -252,6 +258,12 @@ namespace LegacyConvert
             if (directCast != null)
             {
                 return "'expr'";
+            }
+
+            var predefinedType = expr as PredefinedTypeSyntax;
+            if (predefinedType != null)
+            {
+                return predefinedType.Keyword.Text;
             }
 
             throw new InvalidOperationException();
