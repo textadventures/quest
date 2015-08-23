@@ -24,7 +24,7 @@ namespace LegacyConvert
 
             var prepend = new StringBuilder();
 
-            var result = ProcessNode(root, -1, prepend);
+            var result = ProcessNode(root, -1, prepend, false);
             result = prepend.ToString() + result;
 
             System.IO.File.WriteAllText(@"..\..\output.ts", result);
@@ -39,12 +39,12 @@ namespace LegacyConvert
             Console.ReadKey();
         }
 
-        static string ProcessNode(SyntaxNode node, int depth, StringBuilder prepend, bool inClass = false)
+        static string ProcessNode(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields = null)
         {
             switch (node.Kind())
             {
                 case SyntaxKind.CompilationUnit:
-                    return ProcessChildNodes(node, depth, prepend);
+                    return ProcessChildNodes(node, depth, prepend, false, classFields);
                 case SyntaxKind.OptionStatement:
                 case SyntaxKind.ImportsStatement:
                 case SyntaxKind.ClassStatement:
@@ -58,7 +58,7 @@ namespace LegacyConvert
                     break;
                 case SyntaxKind.ClassBlock:
                     var className = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, depth, prepend, true));
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, depth, prepend, true, new List<string>()));
                     if (depth == 0) return classResult;
                     prepend.Append(classResult);
                     return null;
@@ -73,12 +73,15 @@ namespace LegacyConvert
                 case SyntaxKind.LocalDeclarationStatement:
                     var variables = (VariableDeclaratorSyntax)node.ChildNodes().First();
                     var names = variables.Names.Select(n => n.Identifier.Text);
+
+                    if (inClass) classFields.AddRange(names);
+
                     string initializer = null;
 
                     if (variables.Initializer != null)
                     {
                         var eq = variables.Initializer as EqualsValueSyntax;
-                        initializer = " = " + ProcessExpression(eq.Value);
+                        initializer = " = " + ProcessExpression(eq.Value, classFields);
                     }
 
                     if (variables.AsClause == null)
@@ -98,7 +101,7 @@ namespace LegacyConvert
                     var name = block.SubOrFunctionStatement.Identifier.Text;
                     var type = GetVarType(block.SubOrFunctionStatement.AsClause.Type);
                     // TODO: Need the parameters
-                    return string.Format("{0}{1}(): {2} {{\n{3}{0}}}\n", Tabs(depth), name, type, ProcessChildNodes(node, depth, prepend));
+                    return string.Format("{0}{1}(): {2} {{\n{3}{0}}}\n", Tabs(depth), name, type, ProcessChildNodes(node, depth, prepend, false, classFields));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -106,7 +109,7 @@ namespace LegacyConvert
             return null;
         }
 
-        static string ProcessExpression(ExpressionSyntax expr)
+        static string ProcessExpression(ExpressionSyntax expr, List<string> classFields)
         {
             var objectCreation = expr as ObjectCreationExpressionSyntax;
             if (objectCreation != null)
@@ -118,13 +121,15 @@ namespace LegacyConvert
             var memberAccess = expr as MemberAccessExpressionSyntax;
             if (memberAccess != null)
             {
-                return ProcessExpression(memberAccess.Expression) + "." + memberAccess.Name.Identifier.Text;
+                return ProcessExpression(memberAccess.Expression, classFields) + "." + memberAccess.Name.Identifier.Text;
             }
 
             var identifierName = expr as IdentifierNameSyntax;
             if (identifierName != null)
             {
-                return identifierName.Identifier.Text;
+                var name = identifierName.Identifier.Text;
+                if (classFields.Contains(name)) return "this." + name;
+                return name;
             }
 
             var literal = expr as LiteralExpressionSyntax;
@@ -142,8 +147,10 @@ namespace LegacyConvert
                     var typeInfo = Model.GetTypeInfo(identifier);
                     if (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType)
                     {
-                        var arg = ProcessExpression(invocation.ArgumentList.Arguments[0].GetExpression());
-                        return identifier.Identifier.ValueText + "[" + arg + "]";
+                        var arg = ProcessExpression(invocation.ArgumentList.Arguments[0].GetExpression(), classFields);
+                        var name = identifier.Identifier.ValueText;
+                        if (classFields.Contains(name)) name = "this." + name;
+                        return name + "[" + arg + "]";
                     }
                 }
 
@@ -155,7 +162,7 @@ namespace LegacyConvert
             {
                 var op = binary.OperatorToken.ValueText;
                 if (op == "&") op = "+";
-                return ProcessExpression(binary.Left) + " " + op + " " + ProcessExpression(binary.Right);
+                return ProcessExpression(binary.Left, classFields) + " " + op + " " + ProcessExpression(binary.Right, classFields);
             }
 
             var collectionInitializer = expr as CollectionInitializerSyntax;
@@ -233,12 +240,12 @@ namespace LegacyConvert
             return name;
         }
 
-        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass = false)
+        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields)
         {
             var sb = new StringBuilder();
             foreach (var childNode in node.ChildNodes())
             {
-                sb.Append(ProcessNode(childNode, depth + 1, prepend, inClass));
+                sb.Append(ProcessNode(childNode, depth + 1, prepend, inClass, classFields));
             }
             return sb.ToString();
         }

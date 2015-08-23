@@ -393,7 +393,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ConvertCasKeyword = function () {
         var c = 'expr';
-        var keyword = _casKeywords[c];
+        var keyword = this._casKeywords[c];
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
@@ -671,7 +671,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var o = _objs[id];
+        var o = this._objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -686,7 +686,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var o = _objs[id];
+        var o = this._objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -733,7 +733,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.DoAction = function () {
         var FoundAction;
         var ActionScript = "";
-        var o = _objs[ObjID];
+        var o = this._objs[ObjID];
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
@@ -743,7 +743,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.HasAction = function () {
-        var o = _objs[ObjID];
+        var o = this._objs[ObjID];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -855,7 +855,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetObjectProperty = function () {
         var result = "";
         var found = false;
-        var o = _objs[id];
+        var o = this._objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -1239,7 +1239,7 @@ var LegacyGame = (function () {
         var skipAfterTurn = false;
 
         // UNKNOWN SimpleAssignmentStatement
-        var oldBadCmdBefore = _badCmdBefore;
+        var oldBadCmdBefore = this._badCmdBefore;
         var roomID = 'expr';
         var enteredHelpCommand = false;
 
@@ -1356,7 +1356,7 @@ var LegacyGame = (function () {
         var roomId = 'expr';
         var foundPlace = false;
         var scriptPresent = false;
-        var r = _rooms[roomId];
+        var r = this._rooms[roomId];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -1439,7 +1439,7 @@ var LegacyGame = (function () {
         var roomId = 'expr';
 
         // UNKNOWN MultiLineIfBlock
-        var exits = _rooms[roomId].Exits;
+        var exits = this._rooms[roomId].Exits;
         var dir = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement

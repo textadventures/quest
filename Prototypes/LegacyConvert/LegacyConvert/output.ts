@@ -412,7 +412,7 @@ class LegacyGame {
 	}
 	ConvertCasKeyword(): string {
 		var c: Byte = 'expr';
-		var keyword: string = _casKeywords[c];
+		var keyword: string = this._casKeywords[c];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -666,7 +666,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var o = _objs[id];
+		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -679,7 +679,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var o = _objs[id];
+		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -725,7 +725,7 @@ class LegacyGame {
 	DoAction(): boolean {
 		var FoundAction: boolean;
 		var ActionScript: string = "";
-		var o = _objs[ObjID];
+		var o = this._objs[ObjID];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var NewThread: Context = 'expr';
@@ -734,7 +734,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	HasAction(): boolean {
-		var o = _objs[ObjID];
+		var o = this._objs[ObjID];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -839,7 +839,7 @@ class LegacyGame {
 	GetObjectProperty(): string {
 		var result: string = "";
 		var found = false;
-		var o = _objs[id];
+		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1198,7 +1198,7 @@ class LegacyGame {
 		var parameter: string;
 		var skipAfterTurn = false;
 		// UNKNOWN SimpleAssignmentStatement
-		var oldBadCmdBefore = _badCmdBefore;
+		var oldBadCmdBefore = this._badCmdBefore;
 		var roomID = 'expr';
 		var enteredHelpCommand = false;
 		// UNKNOWN SingleLineIfStatement
@@ -1307,7 +1307,7 @@ class LegacyGame {
 		var roomId = 'expr';
 		var foundPlace = false;
 		var scriptPresent = false;
-		var r = _rooms[roomId];
+		var r = this._rooms[roomId];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1384,7 +1384,7 @@ class LegacyGame {
 		var exitName = 'expr';
 		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		var exits = _rooms[roomId].Exits;
+		var exits = this._rooms[roomId].Exits;
 		var dir = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
