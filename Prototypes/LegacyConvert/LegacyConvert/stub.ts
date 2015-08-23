@@ -6,7 +6,7 @@ function Right(input: string, length: number): string {
     return input.substring(input.length - length - 1);
 }
 
-function Mid(input: string, start: number, length: number): string {
+function Mid(input: string, start: number, length?: number): string {
     if (typeof length === 'undefined') {
         return input.substr(start - 1);
     }
@@ -21,7 +21,7 @@ function LCase(input: string): string {
     return input.toLowerCase();
 }
 
-function InStr(arg1, arg2, arg3): number {
+function InStr(arg1, arg2, arg3?): number {
     var input, search;
     if (typeof arg3 === 'undefined') {
         input = arg1;
