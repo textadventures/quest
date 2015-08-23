@@ -1502,7 +1502,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetQuestionResponseInNewThread(response: Object): void {
-		this._questionResponse = 'expr';
+		this._questionResponse = response;
 		// UNKNOWN SyncLockBlock
 	}
 	ExecuteIfGot(item: string): boolean {
@@ -2652,7 +2652,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	RunTimersInNewThread(scripts: Object): void {
-		var scriptList: any = 'expr';
+		var scriptList: any = scripts;
 		// UNKNOWN ForEachBlock
 		// UNKNOWN ExpressionStatement
 	}
@@ -2700,7 +2700,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetMenuResponseInNewThread(response: Object): void {
-		this.m_menuResponse = 'expr';
+		this.m_menuResponse = response;
 		// UNKNOWN SyncLockBlock
 	}
 	LogException(ex: Exception): void {
@@ -2930,7 +2930,7 @@ class TextFormatter {
 		input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN DoLoopUntilBlock
-		return String.Format("<output{0}>{1}</output>", 'expr', output);
+		return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
 	}
 	FormatText(input: string): string {
 		// UNKNOWN SingleLineIfStatement

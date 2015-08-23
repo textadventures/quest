@@ -1647,7 +1647,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.SetQuestionResponseInNewThread = function (response) {
-        this._questionResponse = 'expr';
+        this._questionResponse = response;
         // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.ExecuteIfGot = function (item) {
@@ -2913,7 +2913,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.RunTimersInNewThread = function (scripts) {
-        var scriptList = 'expr';
+        var scriptList = scripts;
         // UNKNOWN ForEachBlock
         // UNKNOWN ExpressionStatement
     };
@@ -2961,7 +2961,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExpressionStatement
     };
     LegacyGame.prototype.SetMenuResponseInNewThread = function (response) {
-        this.m_menuResponse = 'expr';
+        this.m_menuResponse = response;
         // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.LogException = function (ex) {
@@ -3199,7 +3199,7 @@ var TextFormatter = (function () {
 
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN DoLoopUntilBlock
-        return String.Format("<output{0}>{1}</output>", 'expr', output);
+        return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
     };
     TextFormatter.prototype.FormatText = function (input) {
         // UNKNOWN SingleLineIfStatement

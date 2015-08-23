@@ -278,7 +278,7 @@ namespace LegacyConvert
             var directCast = expr as DirectCastExpressionSyntax;
             if (directCast != null)
             {
-                return "'expr'";
+                return ProcessExpression(directCast.Expression, classFields);
             }
 
             var predefinedType = expr as PredefinedTypeSyntax;
@@ -290,7 +290,7 @@ namespace LegacyConvert
             var ternary = expr as TernaryConditionalExpressionSyntax;
             if (ternary != null)
             {
-                return "'expr'";
+                return string.Format("{0} ? {1} : {2}", ProcessExpression(ternary.Condition, classFields), ProcessExpression(ternary.WhenTrue, classFields), ProcessExpression(ternary.WhenFalse, classFields));
             }
 
             var me = expr as MeExpressionSyntax;
