@@ -26,7 +26,7 @@ Public Class LegacyGame
     Friend Class Context
         Public CallingObjectId As Integer
         Public NumParameters As Integer
-        Public Parameters() As String
+        Public Parameters As String()
         Public FunctionReturnValue As String
         Public AllowRealNamesInCommand As Boolean
         Public DontProcessCommand As Boolean
@@ -113,14 +113,14 @@ Public Class LegacyGame
     Private Class PropertiesActions
         Public Properties As String
         Public NumberActions As Integer
-        Public Actions() As ActionType
+        Public Actions As ActionType()
         Public NumberTypesIncluded As Integer
-        Public TypesIncluded() As String
+        Public TypesIncluded As String()
     End Class
 
     Private Class VariableType
         Public VariableName As String
-        Public VariableContents() As String
+        Public VariableContents As String()
         Public VariableUBound As Integer
         Public DisplayString As String
         Public OnChangeScript As String
@@ -173,7 +173,7 @@ Public Class LegacyGame
     Friend Class RoomType
         Public RoomName As String
         Public RoomAlias As String
-        Public Commands() As UserDefinedCommandType
+        Public Commands As UserDefinedCommandType()
         Public NumberCommands As Integer
         Public Description As New TextAction
         Public Out As New ScriptText
@@ -189,11 +189,11 @@ Public Class LegacyGame
         Public Down As New TextAction
         Public InDescription As String
         Public Look As String
-        Public Places() As PlaceType
+        Public Places As PlaceType()
         Public NumberPlaces As Integer
         Public Prefix As String
         Public Script As String
-        Public Use() As ScriptText
+        Public Use As ScriptText()
         Public NumberUse As Integer
         Public ObjId As Integer
         Public BeforeTurnScript As String
@@ -218,7 +218,7 @@ Public Class LegacyGame
         Public GainScript As String
         Public LoseScript As String
         Public NumberProperties As Integer
-        Public Properties() As PropertyType
+        Public Properties As PropertyType()
         Public Speak As New TextAction
         Public Take As New TextAction
         Public IsRoom As Boolean
@@ -227,21 +227,21 @@ Public Class LegacyGame
         Public CorresRoomId As Integer
         Public Loaded As Boolean
         Public NumberActions As Integer
-        Public Actions() As ActionType
+        Public Actions As ActionType()
         Public NumberUseData As Integer
-        Public UseData() As UseDataType
+        Public UseData As UseDataType()
         Public UseAnything As String
         Public UseOnAnything As String
         Public Use As String
         Public NumberGiveData As Integer
-        Public GiveData() As GiveDataType
+        Public GiveData As GiveDataType()
         Public GiveAnything As String
         Public GiveToAnything As String
         Public DisplayType As String
         Public NumberTypesIncluded As Integer
-        Public TypesIncluded() As String
+        Public TypesIncluded As String()
         Public NumberAltNames As Integer
-        Public AltNames() As String
+        Public AltNames As String()
         Public AddScript As New TextAction
         Public RemoveScript As New TextAction
         Public OpenScript As New TextAction
@@ -255,7 +255,7 @@ Public Class LegacyGame
 
     Private Class GameChangeDataType
         Public NumberChanges As Integer
-        Public ChangeData() As ChangeType
+        Public ChangeData As ChangeType()
     End Class
 
     Private Class ResourceType
@@ -364,9 +364,9 @@ Public Class LegacyGame
     End Enum
 
     Private _openErrorReport As String
-    Private _casKeywords(255) As String 'Tokenised CAS keywords
-    Private _lines() As String 'Stores the lines of the ASL script/definitions
-    Private _defineBlocks() As DefineBlock 'Stores the start and end lines of each 'define' section
+    Private _casKeywords As String() = New String(255) {} 'Tokenised CAS keywords
+    Private _lines As String() 'Stores the lines of the ASL script/definitions
+    Private _defineBlocks As DefineBlock() 'Stores the start and end lines of each 'define' section
     Private _numberSections As Integer 'Number of define sections
     Private _gameName As String 'The name of the game
     Friend _nullContext As New Context
@@ -374,22 +374,22 @@ Public Class LegacyGame
     Private _changeLogObjects As ChangeLog
     Private _defaultProperties As PropertiesActions
     Private _defaultRoomProperties As PropertiesActions
-    Friend _rooms() As RoomType
+    Friend _rooms As RoomType()
     Friend _numberRooms As Integer
-    Private _numericVariable() As VariableType
+    Private _numericVariable As VariableType()
     Private _numberNumericVariables As Integer
-    Private _stringVariable() As VariableType
+    Private _stringVariable As VariableType()
     Private _numberStringVariables As Integer
-    Private _synonyms() As SynonymType
+    Private _synonyms As SynonymType()
     Private _numberSynonyms As Integer
-    Private _items() As ItemType
-    Private _chars() As ObjectType
-    Friend _objs() As ObjectType
+    Private _items As ItemType()
+    Private _chars As ObjectType()
+    Friend _objs As ObjectType()
     Private _numberChars As Integer
     Friend _numberObjs As Integer
     Private _numberItems As Integer
     Friend _currentRoom As String
-    Private _collectables() As Collectable
+    Private _collectables As Collectable()
     Private _numCollectables As Integer
     Private _gamePath As String
     Private _gameFileName As String
@@ -405,7 +405,7 @@ Public Class LegacyGame
     Private _gameAslVersion As Integer
     Private _choiceNumber As Integer
     Private _gameLoadMethod As String
-    Private _timers() As TimerType
+    Private _timers As TimerType()
     Private _numberTimers As Integer
     Private _numDisplayStrings As Integer
     Private _numDisplayNumerics As Integer
@@ -418,7 +418,7 @@ Public Class LegacyGame
     Private _badCmdBefore As String
     Private _badCmdAfter As String
     Private _numResources As Integer
-    Private _resources() As ResourceType
+    Private _resources As ResourceType()
     Private _resourceFile As String
     Private _resourceOffset As Integer
     Private _startCatPos As Integer
@@ -427,7 +427,7 @@ Public Class LegacyGame
     Private _beforeSaveScript As String
     Private _onLoadScript As String
     Private _numSkipCheckFiles As Integer
-    Private _skipCheckFile() As String
+    Private _skipCheckFile As String()
     Private _compassExits As New List(Of ListData)
     Private _gotoExits As New List(Of ListData)
     Private _textFormatter As New TextFormatter
@@ -1392,7 +1392,7 @@ Public Class LegacyGame
 
         Dim hasErrors As Boolean
         Dim result As Boolean
-        Dim libCode(0) As String
+        Dim libCode As String() = New String(0) {}
         Dim libLines As Integer
         Dim ignoreMode, skipCheck As Boolean
         Dim c, d, l As Integer
@@ -1404,7 +1404,7 @@ Public Class LegacyGame
         Dim inDefSynBlock, synLine As Integer
         Dim libFoundThisSweep As Boolean
         Dim libFileName As String
-        Dim libraryList(0) As String
+        Dim libraryList As String() = New String(0) {}
         Dim numLibraries As Integer
         Dim libraryAlreadyIncluded As Boolean
         Dim inDefTypeBlock As Integer
@@ -2820,10 +2820,10 @@ Public Class LegacyGame
         '       E O E O EEEEE O EE      where E=Element, O=Operator
 
         Dim numElements = 1
-        Dim elements() As String
+        Dim elements As String()
         ReDim elements(1)
         Dim numOperators = 0
-        Dim operators(0) As String
+        Dim operators As String() = New String(0) {}
         Dim newElement As Boolean
 
         Dim obscuredExpr = ObscureNumericExps(expr)
@@ -2942,7 +2942,7 @@ Public Class LegacyGame
         ' If the list action causes a script to be run instead, ListContents
         ' returns "<script>"
 
-        Dim contentsIDs(0) As Integer
+        Dim contentsIDs As Integer() = New Integer(0) {}
 
         If Not IsYes(GetObjectProperty("container", id, True, False)) Then
             Return ""
@@ -3937,12 +3937,12 @@ Public Class LegacyGame
         ' player having to choose an object from the disambiguation menu twice
 
         Dim numberCorresIds = 0
-        Dim idNumbers(0) As Integer
+        Dim idNumbers As Integer() = New Integer(0) {}
         Dim firstPlace As String
         Dim secondPlace As String = ""
         Dim twoPlaces As Boolean
-        Dim descriptionText() As String
-        Dim validNames() As String
+        Dim descriptionText As String()
+        Dim validNames As String()
         Dim numValidNames As Integer
 
         name = Trim(name)
@@ -4341,9 +4341,9 @@ Public Class LegacyGame
     End Function
 
     Private Function ExecuteConditions(list As String, ctx As Context) As Boolean
-        Dim conditions() As String
+        Dim conditions As String()
         Dim numConditions = 0
-        Dim operations() As String
+        Dim operations As String()
         Dim obscuredConditionList = ObliterateParameters(list)
         Dim pos = 1
         Dim isFinalCondition = False
@@ -5316,8 +5316,8 @@ Public Class LegacyGame
 
     Private Function MakeRestoreData() As String
         Dim data As New System.Text.StringBuilder
-        Dim objectData(0) As ChangeType
-        Dim roomData(0) As ChangeType
+        Dim objectData As ChangeType() = New ChangeType(0) {}
+        Dim roomData As ChangeType() = New ChangeType(0) {}
         Dim numObjectData As Integer
         Dim numRoomData As Integer
 
@@ -5618,8 +5618,8 @@ Public Class LegacyGame
     End Function
 
     Private Function DoInternalFunction(name As String, parameter As String, ctx As Context) As String
-        Dim parameters() As String
-        Dim untrimmedParameters() As String
+        Dim parameters As String()
+        Dim untrimmedParameters As String()
         Dim objId As Integer
         Dim numParameters = 0
         Dim pos = 1
@@ -6254,7 +6254,7 @@ Public Class LegacyGame
         Dim varUbound As Integer
         Dim found As Boolean
         Dim numStoredData As Integer
-        Dim storedData(0) As ChangeType
+        Dim storedData As ChangeType() = New ChangeType(0) {}
         Dim decryptedFile As New System.Text.StringBuilder
 
         ' Decrypt file
@@ -7801,9 +7801,9 @@ Public Class LegacyGame
         ' Returns FALSE if #@object# form used and object doesn't
         ' exist.
 
-        Dim chunksBegin() As Integer
-        Dim chunksEnd() As Integer
-        Dim varName() As String
+        Dim chunksBegin As Integer()
+        Dim chunksEnd As Integer()
+        Dim varName As String()
         Dim var2Pos As Integer
 
         ' Add dots before and after both strings. This fudge

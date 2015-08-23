@@ -6,7 +6,7 @@ class DefineBlock {
 class Context {
 		CallingObjectId: number;
 		NumParameters: number;
-		Parameters: string;
+		Parameters: string[];
 		FunctionReturnValue: string;
 		AllowRealNamesInCommand: boolean;
 		DontProcessCommand: boolean;
@@ -47,13 +47,13 @@ class GiveDataType {
 class PropertiesActions {
 		Properties: string;
 		NumberActions: number;
-		Actions: ActionType;
+		Actions: ActionType[];
 		NumberTypesIncluded: number;
-		TypesIncluded: string;
+		TypesIncluded: string[];
 }
 class VariableType {
 		VariableName: string;
-		VariableContents: string;
+		VariableContents: string[];
 		VariableUBound: number;
 		DisplayString: string;
 		OnChangeScript: string;
@@ -93,7 +93,7 @@ class PlaceType {
 class RoomType {
 		RoomName: string;
 		RoomAlias: string;
-		Commands: UserDefinedCommandType;
+		Commands: UserDefinedCommandType[];
 		NumberCommands: number;
 		Description: any;
 		Out: any;
@@ -109,11 +109,11 @@ class RoomType {
 		Down: any;
 		InDescription: string;
 		Look: string;
-		Places: PlaceType;
+		Places: PlaceType[];
 		NumberPlaces: number;
 		Prefix: string;
 		Script: string;
-		Use: ScriptText;
+		Use: ScriptText[];
 		NumberUse: number;
 		ObjId: number;
 		BeforeTurnScript: string;
@@ -137,7 +137,7 @@ class ObjectType {
 		GainScript: string;
 		LoseScript: string;
 		NumberProperties: number;
-		Properties: PropertyType;
+		Properties: PropertyType[];
 		Speak: any;
 		Take: any;
 		IsRoom: boolean;
@@ -146,21 +146,21 @@ class ObjectType {
 		CorresRoomId: number;
 		Loaded: boolean;
 		NumberActions: number;
-		Actions: ActionType;
+		Actions: ActionType[];
 		NumberUseData: number;
-		UseData: UseDataType;
+		UseData: UseDataType[];
 		UseAnything: string;
 		UseOnAnything: string;
 		Use: string;
 		NumberGiveData: number;
-		GiveData: GiveDataType;
+		GiveData: GiveDataType[];
 		GiveAnything: string;
 		GiveToAnything: string;
 		DisplayType: string;
 		NumberTypesIncluded: number;
-		TypesIncluded: string;
+		TypesIncluded: string[];
 		NumberAltNames: number;
-		AltNames: string;
+		AltNames: string[];
 		AddScript: any;
 		RemoveScript: any;
 		OpenScript: any;
@@ -172,7 +172,7 @@ class ChangeType {
 }
 class GameChangeDataType {
 		NumberChanges: number;
-		ChangeData: ChangeType;
+		ChangeData: ChangeType[];
 }
 class ResourceType {
 		ResourceName: string;
@@ -196,7 +196,7 @@ enum VarType {String, Numeric};
 enum StopType {Win, Lose, Null};
 enum ExpressionSuccess {OK, Fail};
 class InitGameData {
-		Data: any;
+		Data: Byte[];
 		SourceFile: string;
 }
 class ArrayResult {
@@ -222,9 +222,9 @@ class LegacyGame {
 	}
 	_defineBlockParams: any;
 	_openErrorReport: string;
-	_casKeywords: string;
-	_lines: string;
-	_defineBlocks: DefineBlock;
+	_casKeywords: string[] = [];
+	_lines: string[];
+	_defineBlocks: DefineBlock[];
 	_numberSections: number;
 	_gameName: string;
 	_nullContext: any;
@@ -232,22 +232,22 @@ class LegacyGame {
 	_changeLogObjects: ChangeLog;
 	_defaultProperties: PropertiesActions;
 	_defaultRoomProperties: PropertiesActions;
-	_rooms: RoomType;
+	_rooms: RoomType[];
 	_numberRooms: number;
-	_numericVariable: VariableType;
+	_numericVariable: VariableType[];
 	_numberNumericVariables: number;
-	_stringVariable: VariableType;
+	_stringVariable: VariableType[];
 	_numberStringVariables: number;
-	_synonyms: SynonymType;
+	_synonyms: SynonymType[];
 	_numberSynonyms: number;
-	_items: ItemType;
-	_chars: ObjectType;
-	_objs: ObjectType;
+	_items: ItemType[];
+	_chars: ObjectType[];
+	_objs: ObjectType[];
 	_numberChars: number;
 	_numberObjs: number;
 	_numberItems: number;
 	_currentRoom: string;
-	_collectables: Collectable;
+	_collectables: Collectable[];
 	_numCollectables: number;
 	_gamePath: string;
 	_gameFileName: string;
@@ -263,7 +263,7 @@ class LegacyGame {
 	_gameAslVersion: number;
 	_choiceNumber: number;
 	_gameLoadMethod: string;
-	_timers: TimerType;
+	_timers: TimerType[];
 	_numberTimers: number;
 	_numDisplayStrings: number;
 	_numDisplayNumerics: number;
@@ -276,7 +276,7 @@ class LegacyGame {
 	_badCmdBefore: string;
 	_badCmdAfter: string;
 	_numResources: number;
-	_resources: ResourceType;
+	_resources: ResourceType[];
 	_resourceFile: string;
 	_resourceOffset: number;
 	_startCatPos: number;
@@ -285,7 +285,7 @@ class LegacyGame {
 	_beforeSaveScript: string;
 	_onLoadScript: string;
 	_numSkipCheckFiles: number;
-	_skipCheckFile: string;
+	_skipCheckFile: string[];
 	_compassExits: any;
 	_gotoExits: any;
 	_textFormatter: any;
@@ -445,7 +445,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
-	GetResourceLines(): any {
+	GetResourceLines(): string[] {
 		var enc: any;
 		var resFile: string = 'expr';
 		// UNKNOWN ReturnStatement
@@ -453,7 +453,7 @@ class LegacyGame {
 	ParseFile(): boolean {
 		var hasErrors: boolean;
 		var result: boolean;
-		var libCode: string;
+		var libCode: string[] = [];
 		var libLines: number;
 		var ignoreMode: boolean;
 		var skipCheck: boolean;
@@ -461,7 +461,7 @@ class LegacyGame {
 		var d: number;
 		var l: number;
 		var libFileHandle: number;
-		var libResourceLines: any;
+		var libResourceLines: string[];
 		var libFile: string;
 		var libLine: string;
 		var inDefGameBlock: number;
@@ -470,7 +470,7 @@ class LegacyGame {
 		var synLine: number;
 		var libFoundThisSweep: boolean;
 		var libFileName: string;
-		var libraryList: string;
+		var libraryList: string[] = [];
 		var numLibraries: number;
 		var libraryAlreadyIncluded: boolean;
 		var inDefTypeBlock: number;
@@ -571,10 +571,10 @@ class LegacyGame {
 		var res: any;
 		// UNKNOWN DoLoopUntilBlock
 		var numElements = 1;
-		var elements: string;
+		var elements: string[];
 		// UNKNOWN ReDimStatement
 		var numOperators = 0;
-		var operators: string;
+		var operators: string[] = [];
 		var newElement: boolean;
 		var obscuredExpr = 'expr';
 		// UNKNOWN ForBlock
@@ -586,7 +586,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ListContents(): string {
-		var contentsIDs: number;
+		var contentsIDs: number[] = [];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var numContents = 0;
@@ -695,12 +695,12 @@ class LegacyGame {
 	}
 	Disambiguate(): number {
 		var numberCorresIds = 0;
-		var idNumbers: number;
+		var idNumbers: number[] = [];
 		var firstPlace: string;
 		var secondPlace: string = "";
 		var twoPlaces: boolean;
-		var descriptionText: string;
-		var validNames: string;
+		var descriptionText: string[];
+		var validNames: string[];
 		var numValidNames: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
@@ -749,9 +749,9 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteConditions(): boolean {
-		var conditions: string;
+		var conditions: string[];
 		var numConditions = 0;
-		var operations: string;
+		var operations: string[];
 		var obscuredConditionList = 'expr';
 		var pos = 1;
 		var isFinalCondition = false;
@@ -879,8 +879,8 @@ class LegacyGame {
 	}
 	MakeRestoreData(): string {
 		var data: any;
-		var objectData: ChangeType;
-		var roomData: ChangeType;
+		var objectData: ChangeType[] = [];
+		var roomData: ChangeType[] = [];
 		var numObjectData: number;
 		var numRoomData: number;
 		// UNKNOWN ExpressionStatement
@@ -929,8 +929,8 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	DoInternalFunction(): string {
-		var parameters: string;
-		var untrimmedParameters: string;
+		var parameters: string[];
+		var untrimmedParameters: string[];
 		var objId: number;
 		var numParameters = 0;
 		var pos = 1;
@@ -1070,9 +1070,9 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	GetCommandParameters(): boolean {
-		var chunksBegin: number;
-		var chunksEnd: number;
-		var varName: string;
+		var chunksBegin: number[];
+		var chunksEnd: number[];
+		var varName: string[];
 		var var2Pos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -1135,7 +1135,7 @@ class LegacyGame {
 		var cdat: number;
 		var scp2: number;
 		var scp3: number;
-		var lines: any = 'expr';
+		var lines: string[] = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		var prevQsgVersion = false;
 		// UNKNOWN MultiLineIfBlock
@@ -1149,7 +1149,7 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
-	SaveGame(): any {
+	SaveGame(): Byte[] {
 		var ctx: Context = new Context();
 		var saveData: string;
 		// UNKNOWN SingleLineIfStatement
@@ -1399,7 +1399,7 @@ class LegacyGame {
 	// UNKNOWN EventStatement
 	// UNKNOWN EventStatement
 	// UNKNOWN SubBlock
-	Save(): any {
+	Save(): Byte[] {
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN PropertyBlock
@@ -1422,8 +1422,8 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
-	GetLibraryLines(): any {
-		var libCode: any = null;
+	GetLibraryLines(): string[] {
+		var libCode: Byte[] = null;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
@@ -1483,7 +1483,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 	}
-	GetResourcelessCAS(): any {
+	GetResourcelessCAS(): Byte[] {
 		var fileData: string = 'expr';
 		// UNKNOWN ReturnStatement
 	}

@@ -177,6 +177,12 @@ namespace LegacyConvert
                 return "'expr'";
             }
 
+            var arrayCreation = expr as ArrayCreationExpressionSyntax;
+            if (arrayCreation != null)
+            {
+                return "[]";
+            }
+
             throw new InvalidOperationException();
         }
 
@@ -210,8 +216,7 @@ namespace LegacyConvert
             var arrayTypeSyntax = asType as ArrayTypeSyntax;
             if (arrayTypeSyntax != null)
             {
-                // TODO
-                return "any";
+                return GetVarType(arrayTypeSyntax.ElementType) + "[]";
             }
 
             var qualifiedNameSyntax = asType as QualifiedNameSyntax;

@@ -271,6 +271,7 @@ var PlayerCanAccessObjectResult = (function () {
 })();
 var LegacyGame = (function () {
     function LegacyGame() {
+        this._casKeywords = [];
         this._commandLock = new Object();
         this._stateLock = new Object();
         this._state = 0 /* Ready */;
@@ -436,7 +437,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ParseFile = function () {
         var hasErrors;
         var result;
-        var libCode;
+        var libCode = [];
         var libLines;
         var ignoreMode;
         var skipCheck;
@@ -453,7 +454,7 @@ var LegacyGame = (function () {
         var synLine;
         var libFoundThisSweep;
         var libFileName;
-        var libraryList;
+        var libraryList = [];
         var numLibraries;
         var libraryAlreadyIncluded;
         var inDefTypeBlock;
@@ -567,7 +568,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ReDimStatement
         var numOperators = 0;
-        var operators;
+        var operators = [];
         var newElement;
         var obscuredExpr = 'expr';
 
@@ -580,7 +581,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.ListContents = function () {
-        var contentsIDs;
+        var contentsIDs = [];
 
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -703,7 +704,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.Disambiguate = function () {
         var numberCorresIds = 0;
-        var idNumbers;
+        var idNumbers = [];
         var firstPlace;
         var secondPlace = "";
         var twoPlaces;
@@ -895,8 +896,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.MakeRestoreData = function () {
         var data;
-        var objectData;
-        var roomData;
+        var objectData = [];
+        var roomData = [];
         var numObjectData;
         var numRoomData;
 
