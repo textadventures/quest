@@ -110,8 +110,43 @@ namespace LegacyConvert
                 return "new " + type + "()";
             }
 
+            var memberAccess = expr as MemberAccessExpressionSyntax;
+            if (memberAccess != null)
+            {
+                return ProcessExpression(memberAccess.Expression) + "." + memberAccess.Name.Identifier.Text;
+            }
 
-            return "'expr'";
+            var identifierName = expr as IdentifierNameSyntax;
+            if (identifierName != null)
+            {
+                return identifierName.Identifier.Text;
+            }
+
+            var literal = expr as LiteralExpressionSyntax;
+            if (literal != null)
+            {
+                return "'expr'";
+            }
+
+            var invocation = expr as InvocationExpressionSyntax;
+            if (invocation != null)
+            {
+                return "'expr'";
+            }
+
+            var binary = expr as BinaryExpressionSyntax;
+            if (binary != null)
+            {
+                return "'expr'";
+            }
+
+            var collectionInitializer = expr as CollectionInitializerSyntax;
+            if (collectionInitializer != null)
+            {
+                return "'expr'";
+            }
+
+            throw new InvalidOperationException();
         }
 
         private static string GetVarType(SyntaxNode asType)

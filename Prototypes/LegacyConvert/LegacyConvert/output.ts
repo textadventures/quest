@@ -293,7 +293,7 @@ class LegacyGame {
 	_casFileData: string;
 	_commandLock: Object = new Object();
 	_stateLock: Object = new Object();
-	_state: State = 'expr';
+	_state: State = State.Ready;
 	_waitLock: Object = new Object();
 	_readyForCommand: boolean = 'expr';
 	_gameLoading: boolean;
@@ -1198,7 +1198,7 @@ class LegacyGame {
 		var parameter: string;
 		var skipAfterTurn = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
-		var oldBadCmdBefore = 'expr';
+		var oldBadCmdBefore = _badCmdBefore;
 		var roomID = 'expr';
 		var enteredHelpCommand = 'expr';
 		// UNKNOWN SingleLineIfStatement
@@ -1384,7 +1384,7 @@ class LegacyGame {
 		var exitName = 'expr';
 		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		var exits = 'expr';
+		var exits = 'expr'.Exits;
 		var dir = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement

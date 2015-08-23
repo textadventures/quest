@@ -273,7 +273,7 @@ var LegacyGame = (function () {
     function LegacyGame() {
         this._commandLock = new Object();
         this._stateLock = new Object();
-        this._state = 'expr';
+        this._state = 0 /* Ready */;
         this._waitLock = new Object();
         this._readyForCommand = 'expr';
     }
@@ -1239,7 +1239,7 @@ var LegacyGame = (function () {
         var skipAfterTurn = 'expr';
 
         // UNKNOWN SimpleAssignmentStatement
-        var oldBadCmdBefore = 'expr';
+        var oldBadCmdBefore = _badCmdBefore;
         var roomID = 'expr';
         var enteredHelpCommand = 'expr';
 
@@ -1439,7 +1439,7 @@ var LegacyGame = (function () {
         var roomId = 'expr';
 
         // UNKNOWN MultiLineIfBlock
-        var exits = 'expr';
+        var exits = 'expr'.Exits;
         var dir = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
