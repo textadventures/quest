@@ -65,13 +65,29 @@ namespace LegacyConvert
                 case SyntaxKind.EnumMemberDeclaration:
                     return ((EnumMemberDeclarationSyntax)node).Identifier.Text;
                 case SyntaxKind.FieldDeclaration:
+                case SyntaxKind.LocalDeclarationStatement:
                     var variables = (VariableDeclaratorSyntax)node.ChildNodes().First();
                     var names = variables.Names.Select(n => n.Identifier.Text);
-                    var asType = variables.AsClause.ChildNodes().First();
-                    var varType = GetVarType(asType);
-                    
-                    // TODO: variables.Initializer
-                    return Tabs(depth) + string.Join("", names.Select(n => string.Format("{2}{0}: {1};\n", n, varType, !inClass ? "var " : "")));
+                    string initializer = null;
+
+                    if (variables.Initializer != null)
+                    {
+                        var eq = variables.Initializer as EqualsValueSyntax;
+                        initializer = " = " + ProcessExpression(eq.Value);
+                    }
+
+                    if (variables.AsClause == null)
+                    {
+                        return Tabs(depth) + "var " + string.Join(", ", names) + initializer + ";\n";
+                    }
+                    else
+                    {
+                        var asType = variables.AsClause.ChildNodes().First();
+                        var varType = GetVarType(asType);
+
+                        var lines = names.Select(n => string.Format("{2}{0}: {1}{3};", n, varType, !inClass ? "var " : "", initializer));
+                        return string.Join("\n", lines.Select(l => Tabs(depth) + l)) + "\n";
+                    }
                 case SyntaxKind.FunctionBlock:
                     var block = (MethodBlockSyntax)node;
                     var name = block.SubOrFunctionStatement.Identifier.Text;
@@ -83,6 +99,11 @@ namespace LegacyConvert
             }
 
             return null;
+        }
+
+        static string ProcessExpression(ExpressionSyntax expr)
+        {
+            return "'expr'";
         }
 
         private static string GetVarType(SyntaxNode asType)

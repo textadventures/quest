@@ -209,7 +209,7 @@ class PlayerCanAccessObjectResult {
 }
 class LegacyGame {
 	CopyContext(): Context {
-		// UNKNOWN LocalDeclarationStatement
+		var result: Context = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -291,11 +291,11 @@ class LegacyGame {
 	_textFormatter: any;
 	_log: any;
 	_casFileData: string;
-	_commandLock: Object;
-	_stateLock: Object;
-	_state: State;
-	_waitLock: Object;
-	_readyForCommand: boolean;
+	_commandLock: Object = 'expr';
+	_stateLock: Object = 'expr';
+	_state: State = 'expr';
+	_waitLock: Object = 'expr';
+	_readyForCommand: boolean = 'expr';
 	_gameLoading: boolean;
 	_random: any;
 	_tempFolder: string;
@@ -314,19 +314,21 @@ class LegacyGame {
 	// UNKNOWN ConstructorBlock
 	// UNKNOWN ConstructorBlock
 	RemoveFormatting(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var code: string;
+		var pos: number;
+		var len: number;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
 	CheckSections(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var defines: number;
+		var braces: number;
+		var checkLine: string = 'expr';
+		var bracePos: number;
+		var pos: number;
+		var section: string = 'expr';
+		var hasErrors: boolean;
+		var skipBlock: boolean;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -336,24 +338,31 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ConvertFriendlyIfs(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var convPos: number;
+		var symbPos: number;
+		var symbol: string;
+		var endParamPos: number;
+		var paramData: string;
+		var startParamPos: number;
+		var firstData: string;
+		var secondData: string;
+		var obscureLine: string;
+		var newParam: string;
+		var varObscureLine: string;
+		var bracketCount: number;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	ErrorCheck(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var curBegin: number;
+		var curEnd: number;
+		var hasErrors: boolean;
+		var curPos: number;
+		var numParamStart: number;
+		var numParamEnd: number;
+		var finLoop: boolean;
+		var inText: boolean;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -362,25 +371,25 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetAfterParameter(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var eop: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 	}
 	ObliterateParameters(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var inParameter: boolean;
+		var exitCharacter: string = 'expr';
+		var curChar: string;
+		var outputLine: string = 'expr';
+		var obscuringFunctionName: boolean;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	ObliterateVariableNames(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var inParameter: boolean;
+		var exitCharacter: string = 'expr';
+		var outputLine: string = 'expr';
+		var curChar: string;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -388,7 +397,7 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	ReportErrorLine(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var replaceFrom: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -402,23 +411,24 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ConvertCasKeyword(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var c: Byte = 'expr';
+		var keyword: string = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	GetDefineBlock(): DefineBlock {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var l: string;
+		var blockType: string;
+		var result = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	DefineBlockParam(): DefineBlock {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var cache: any;
+		var result = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -429,39 +439,45 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	Keyword2CAS(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var k = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	GetResourceLines(): any {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var enc: any;
+		var resFile: string = 'expr';
 		// UNKNOWN ReturnStatement
 	}
 	ParseFile(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var hasErrors: boolean;
+		var result: boolean;
+		var libCode: string;
+		var libLines: number;
+		var ignoreMode: boolean;
+		var skipCheck: boolean;
+		var c: number;
+		var d: number;
+		var l: number;
+		var libFileHandle: number;
+		var libResourceLines: any;
+		var libFile: string;
+		var libLine: string;
+		var inDefGameBlock: number;
+		var gameLine: number;
+		var inDefSynBlock: number;
+		var synLine: number;
+		var libFoundThisSweep: boolean;
+		var libFileName: string;
+		var libraryList: string;
+		var numLibraries: number;
+		var libraryAlreadyIncluded: boolean;
+		var inDefTypeBlock: number;
+		var typeBlockName: string;
+		var typeLine: number;
+		var defineCount: number;
+		var curLine: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
@@ -469,10 +485,11 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var lastSlashPos: number;
+		var slashPos: number;
+		var curPos = 'expr';
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN LocalDeclarationStatement
+		var filenameNoPath = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -480,7 +497,7 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
+		var gotGameBlock = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -492,20 +509,20 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	GetParameter(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var newParam: string;
+		var startPos: number;
+		var endPos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var retrParam = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	DecryptString(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var output = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -518,9 +535,9 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	EvaluateInlineExpressions(): string {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var bracePos: number;
+		var curPos = 'expr';
+		var resultLine = 'expr';
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN DoLoopUntilBlock
@@ -531,17 +548,17 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ExecVerb(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var gameBlock: DefineBlock;
+		var foundVerb = 'expr';
+		var verbProperty: string = 'expr';
+		var script: string = 'expr';
+		var verbsList: string;
+		var thisVerb: string = 'expr';
+		var scp: number;
+		var id: number;
+		var verbObject: string = 'expr';
+		var verbTag: string;
+		var thisScript: string = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -549,37 +566,39 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ExpressionHandler(): ExpressionResult {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var openBracketPos: number;
+		var endBracketPos: number;
+		var res: any;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var numElements = 'expr';
+		var elements: string;
 		// UNKNOWN ReDimStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var numOperators = 'expr';
+		var operators: string;
+		var newElement: boolean;
+		var obscuredExpr = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN LocalDeclarationStatement
+		var opNum = 'expr';
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	ListContents(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var contentsIDs: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var numContents = 'expr';
 		// UNKNOWN ForBlock
-		// UNKNOWN LocalDeclarationStatement
+		var contents = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	ObscureNumericExps(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var EPos: number;
+		var CurPos: number;
+		var OutputString: string;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN DoLoopUntilBlock
@@ -601,14 +620,15 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	ExtractFile(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var length: number;
+		var startPos: number;
+		var extracted: boolean;
+		var resId: number;
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN LocalDeclarationStatement
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var fileName = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -628,8 +648,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	DisambObjHere(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var isSeen: boolean;
+		var onlySeen = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -638,50 +658,50 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ExecuteIfAction(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var id: number;
+		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var objName = 'expr';
+		var actionName = 'expr';
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteIfType(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var id: number;
+		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var objName = 'expr';
+		var typeName = 'expr';
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	GetArrayIndex(): ArrayResult {
-		// UNKNOWN LocalDeclarationStatement
+		var result: any;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var beginPos = 'expr';
+		var endPos = 'expr';
+		var data = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	Disambiguate(): number {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var numberCorresIds = 'expr';
+		var idNumbers: number;
+		var firstPlace: string;
+		var secondPlace: string = 'expr';
+		var twoPlaces: boolean;
+		var descriptionText: string;
+		var validNames: string;
+		var numValidNames: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
@@ -697,46 +717,47 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	DisplayStatusVariableInfo(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var displayData: string = 'expr';
+		var ep: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	DoAction(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var FoundAction: boolean;
+		var ActionScript: string = 'expr';
+		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var NewThread: Context = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
 	}
 	HasAction(): boolean {
-		// UNKNOWN LocalDeclarationStatement
+		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ExecuteCondition(): boolean {
-		// UNKNOWN LocalDeclarationStatement
+		var result: boolean;
+		var thisNot: boolean;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteConditions(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var conditions: string;
+		var numConditions = 'expr';
+		var operations: string;
+		var obscuredConditionList = 'expr';
+		var pos = 'expr';
+		var isFinalCondition = 'expr';
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
+		var result = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -754,11 +775,11 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteIfExists(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var result: boolean;
+		var errorReport = 'expr';
+		var scp: number;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var found = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -767,12 +788,12 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteIfProperty(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var id: number;
+		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var objName = 'expr';
+		var propertyName = 'expr';
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -782,29 +803,29 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	GetNextChunk(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var nullPos = 'expr';
+		var result = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	GetFileDataChars(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var result = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectActions(): ActionType {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var name = 'expr';
+		var ep = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var script = 'expr';
+		var result: ActionType = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectId(): number {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var id: number;
+		var found = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -816,9 +837,9 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectProperty(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var result: string = 'expr';
+		var found = 'expr';
+		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -826,9 +847,9 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetPropertiesInType(): PropertiesActions {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var blockId: number;
+		var propertyList: any;
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -840,7 +861,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetTextOrScript(): TextAction {
-		// UNKNOWN LocalDeclarationStatement
+		var result = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -850,20 +871,20 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetThingBlock(): DefineBlock {
-		// UNKNOWN LocalDeclarationStatement
+		var result = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreData(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var data: any;
+		var objectData: ChangeType;
+		var roomData: ChangeType;
+		var numObjectData: number;
+		var numRoomData: number;
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN LocalDeclarationStatement
+		var start = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
@@ -879,8 +900,8 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var dataString: string;
+		var newFileData: any;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
@@ -889,32 +910,33 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ConvertParameter(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var result: string = 'expr';
+		var pos = 'expr';
+		var finished = 'expr';
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
 	DoFunction(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var name: string;
+		var parameter: string;
+		var intFuncResult: string = 'expr';
+		var intFuncExecuted = 'expr';
+		var paramPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var block: DefineBlock;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	DoInternalFunction(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var parameters: string;
+		var untrimmedParameters: string;
+		var objId: number;
+		var numParameters = 'expr';
+		var pos = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var param2: string;
+		var param3: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -935,39 +957,40 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteIfHas(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var checkValue: number;
+		var colNum: number;
+		var scp = 'expr';
+		var name = 'expr';
+		var newVal = 'expr';
+		var found = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var op = 'expr';
+		var newValue = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	ExecuteIfIs(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var value1: string;
+		var value2: string;
+		var op: string;
+		var expectNumerics: boolean;
+		var expResult: ExpressionResult;
+		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var scp2 = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var result = 'expr';
 		// UNKNOWN SelectBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	GetNumericContents(): number {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var numNumber: number;
+		var arrayIndex: number;
+		var exists = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -992,25 +1015,25 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	SetUnknownVariableType(): SetResult {
-		// UNKNOWN LocalDeclarationStatement
+		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var name = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var contents = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	SetUpChoiceForm(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var block = 'expr';
+		var prompt = 'expr';
+		var menuOptions: any;
+		var menuScript: any;
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var mnu: any;
+		var choice: string = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
 	}
@@ -1032,12 +1055,13 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ExecUserCommand(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var curCmd: string;
+		var commandList: string;
+		var script: string = 'expr';
+		var commandTag: string;
+		var commandLine: string = 'expr';
+		var foundCommand = 'expr';
+		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1046,70 +1070,74 @@ class LegacyGame {
 	}
 	// UNKNOWN SubBlock
 	GetCommandParameters(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var chunksBegin: number;
+		var chunksEnd: number;
+		var varName: string;
+		var var2Pos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var currentReqLinePos = 'expr';
+		var currentTestLinePos = 'expr';
+		var finished = 'expr';
+		var numberChunks = 'expr';
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN LocalDeclarationStatement
+		var success = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	GetGender(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var result: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN ReturnStatement
 	}
 	GetStringContents(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var returnAlias = 'expr';
+		var arrayIndex = 'expr';
+		var cp = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var exists = 'expr';
+		var id: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	IsAvailable(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var room: string;
+		var name: string;
+		var atPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	IsCompatible(): boolean {
-		// UNKNOWN LocalDeclarationStatement
+		var var2Pos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var currentReqLinePos = 'expr';
+		var currentTestLinePos = 'expr';
+		var finished = 'expr';
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
 	OpenGame(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var cdatb: boolean;
+		var result: boolean;
+		var visible: boolean;
+		var room: string;
+		var fileData: string = 'expr';
+		var savedQsgVersion: string;
+		var data: string = 'expr';
+		var name: string;
+		var scp: number;
+		var cdat: number;
+		var scp2: number;
+		var scp3: number;
+		var lines: any = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
+		var prevQsgVersion = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
@@ -1122,8 +1150,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	SaveGame(): any {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var ctx: Context = 'expr';
+		var saveData: string;
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1131,8 +1159,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreDataV2(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var lines: any;
+		var i: number;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
@@ -1160,36 +1188,36 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	DisplayCollectableInfo(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var display: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	ExecCommand(): boolean {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var parameter: string;
+		var skipAfterTurn = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var oldBadCmdBefore = 'expr';
+		var roomID = 'expr';
+		var enteredHelpCommand = 'expr';
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN LocalDeclarationStatement
+		var cmd = 'expr';
 		// UNKNOWN SyncLockBlock
-		// UNKNOWN LocalDeclarationStatement
+		var userCommandReturn: boolean;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN LocalDeclarationStatement
+		var newCommand = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var newCtx: Context = 'expr';
+		var globalOverride = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var invList = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1223,8 +1251,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetSecondChunk(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var endOfFirstBit = 'expr';
+		var lengthOfKeyword = 'expr';
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
@@ -1240,9 +1268,9 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var gameBlock: DefineBlock;
 		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN LocalDeclarationStatement
+		var aslVersion = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1276,10 +1304,10 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	PlaceExist(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var roomId = 'expr';
+		var foundPlace = 'expr';
+		var scriptPresent = 'expr';
+		var r = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1287,14 +1315,14 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	RetrLine(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var searchblock: DefineBlock;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	RetrLineParam(): string {
-		// UNKNOWN LocalDeclarationStatement
+		var searchblock: DefineBlock;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -1308,20 +1336,20 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	UpdateDoorways(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var roomDisplayText: string = 'expr';
+		var directions: string = 'expr';
+		var outPlacePrefix: string = 'expr';
+		var n = 'expr';
+		var s = 'expr';
+		var e = 'expr';
+		var w = 'expr';
+		var ne = 'expr';
+		var nw = 'expr';
+		var se = 'expr';
+		var sw = 'expr';
+		var u = 'expr';
+		var d = 'expr';
+		var o = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
@@ -1333,31 +1361,31 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	PlayerCanAccessObject(): PlayerCanAccessObjectResult {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var parent: string;
+		var parentId: number;
+		var parentDisplayName: string;
+		var result: any;
+		var hierarchy: string = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	GetGoToExits(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var placeList: string = 'expr';
+		var shownPlaceName: string;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
 	FindExit(): RoomExit {
-		// UNKNOWN LocalDeclarationStatement
+		var params = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var room = 'expr';
+		var exitName = 'expr';
+		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var exits = 'expr';
+		var dir = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1395,7 +1423,7 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	GetLibraryLines(): any {
-		// UNKNOWN LocalDeclarationStatement
+		var libCode: any = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
@@ -1436,8 +1464,8 @@ class LegacyGame {
 	m_unzipFunction: UnzipFunctionDelegate;
 	// UNKNOWN SubBlock
 	GetUnzippedFile(): string {
-		// UNKNOWN LocalDeclarationStatement
-		// UNKNOWN LocalDeclarationStatement
+		var tempDir: string = 'expr';
+		var result: string = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
@@ -1445,7 +1473,7 @@ class LegacyGame {
 	// UNKNOWN PropertyBlock
 	GetResource(): any {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN LocalDeclarationStatement
+		var path: string = 'expr';
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN ReturnStatement
 	}
@@ -1456,7 +1484,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	GetResourcelessCAS(): any {
-		// UNKNOWN LocalDeclarationStatement
+		var fileData: string = 'expr';
 		// UNKNOWN ReturnStatement
 	}
 }
