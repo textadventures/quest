@@ -1,3 +1,79 @@
+function Left(input, length) {
+    return input.substring(0, length);
+}
+
+function Right(input, length) {
+    return input.substring(input.length - length - 1);
+}
+
+function Mid(input, start, length) {
+    if (typeof length === 'undefined') {
+        return input.substr(start - 1);
+    }
+    return input.substr(start - 1, length);
+}
+
+function UCase(input) {
+    return input.toUpperCase();
+}
+
+function LCase(input) {
+    return input.toLowerCase();
+}
+
+function InStr(arg1, arg2, arg3) {
+    var input, search;
+    if (typeof arg3 === 'undefined') {
+        input = arg1;
+        search = arg2;
+        return input.indexOf(search) + 1;
+    }
+
+    var start = arg1;
+    input = arg2;
+    search = arg3;
+    return input.indexOf(search, start - 1) + 1;
+}
+
+function Split(input, splitChar) {
+    return input.split(splitChar);
+}
+
+function Join(input, joinChar) {
+    return input.join(joinChar);
+}
+
+function IsNumeric(input) {
+    return !isNaN(parseFloat(input)) && isFinite(input);
+}
+
+function Replace(input, oldString, newString) {
+    return input.split(oldString).join(newString);
+}
+
+function Trim(input) {
+    return input.trim();
+}
+
+function LTrim(input) {
+    return input.replace(/^\s+/, "");
+}
+
+function Asc(input) {
+    return input.charCodeAt(0);
+}
+
+function Chr(input) {
+    return String.fromCharCode(input);
+}
+
+function Len(input) {
+    return input.length;
+}
+
+function UBound(array) {
+    return array.length - 1;
+}
 var State;
 (function (State) {
     State[State["Ready"] = 0] = "Ready";

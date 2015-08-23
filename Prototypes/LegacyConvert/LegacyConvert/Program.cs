@@ -23,6 +23,7 @@ namespace LegacyConvert
             Model = compilation.GetSemanticModel(tree);
 
             var prepend = new StringBuilder();
+            prepend.Append(System.IO.File.ReadAllText(@"..\..\stub.ts"));
 
             var result = ProcessNode(root, -1, prepend, false);
             result = prepend.ToString() + result;
