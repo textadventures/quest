@@ -4419,7 +4419,7 @@ Public Class LegacyGame
                 Next j
 
                 _rooms(_numberRooms).Exits = New RoomExits(Me)
-                _rooms(_numberRooms).Exits.ObjID = _rooms(_numberRooms).ObjId
+                _rooms(_numberRooms).Exits.ObjId = _rooms(_numberRooms).ObjId
             End If
 
         ElseIf BeginsWith(data, "object ") Then
@@ -5859,7 +5859,7 @@ Public Class LegacyGame
             If e Is Nothing Then
                 Return ""
             Else
-                Return _objs(e.ObjID).ObjectName
+                Return _objs(e.ObjId).ObjectName
             End If
         End If
 
@@ -6827,7 +6827,7 @@ Public Class LegacyGame
 
                 If _gameAslVersion >= 410 Then
                     r.Exits = New RoomExits(Me)
-                    r.Exits.ObjID = r.ObjId
+                    r.Exits.ObjId = r.ObjId
                 End If
 
                 If defaultExists Then

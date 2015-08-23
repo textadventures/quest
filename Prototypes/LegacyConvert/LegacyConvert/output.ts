@@ -2763,14 +2763,14 @@ class Config {
 	// UNKNOWN PropertyBlock
 }
 class RoomExit {
-	ID: string;
-	m_lObjID: number;
-	m_lRoomID: number;
-	m_lDirection: any;
-	m_oParent: RoomExits;
-	m_sObjName: string;
-	m_sDisplayName: string;
-	m_game: LegacyGame;
+	Id: string;
+	_objId: number;
+	_roomId: number;
+	_direction: any;
+	_parent: RoomExits;
+	_objName: string;
+	_displayName: string;
+	_game: LegacyGame;
 	// UNKNOWN ConstructorBlock
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
@@ -2787,132 +2787,131 @@ class RoomExit {
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
-	RunAction(ActionName: string, ctx: Context): void {
+	RunAction(actionName: string, ctx: Context): void {
 		// UNKNOWN ExpressionStatement
 	}
 	RunScript(ctx: Context): void {
 		// UNKNOWN ExpressionStatement
 	}
 	UpdateObjectName(): void {
-		var sObjName: string;
-		var lLastExitID: number;
-		var sParentRoom: string;
+		var objName: string;
+		var lastExitId: number;
+		var parentRoom: string;
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
-		sParentRoom = this.m_game._objs[this.m_oParent.ObjID].ObjectName;
-		sObjName = sParentRoom;
+		parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
+		objName = parentRoom;
 		// UNKNOWN MultiLineIfBlock
-		this.m_game._objs[this.m_lObjID].ObjectName = sObjName;
-		this.m_game._objs[this.m_lObjID].ContainerRoom = sParentRoom;
-		this.m_sObjName = sObjName;
+		this._game._objs[this._objId].ObjectName = objName;
+		this._game._objs[this._objId].ContainerRoom = parentRoom;
+		this._objName = objName;
 	}
 	Go(ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
 	}
 }
 class RoomExits {
-	m_oDirections: any = {};
-	m_oPlaces: any = {};
-	m_lObjID: number;
-	m_oAllExits: any;
-	m_bRegenerateAllExits: boolean;
-	m_game: LegacyGame;
+	_directions: any = {};
+	_places: any = {};
+	_objId: number;
+	_allExits: any;
+	_regenerateAllExits: boolean;
+	_game: LegacyGame;
 	// UNKNOWN ConstructorBlock
-	SetDirection(Direction: any, oExit: RoomExit): void {
+	SetDirection(direction: Direction, roomExit: RoomExit): void {
 		// UNKNOWN MultiLineIfBlock
-		this.m_bRegenerateAllExits = true;
+		this._regenerateAllExits = true;
 	}
-	GetDirectionExit(Direction: any): RoomExit {
+	GetDirectionExit(direction: Direction): RoomExit {
 		// UNKNOWN MultiLineIfBlock
 		return null;
 	}
-	AddPlaceExit(oExit: RoomExit): void {
+	AddPlaceExit(roomExit: RoomExit): void {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		this.m_bRegenerateAllExits = true;
+		this._regenerateAllExits = true;
 	}
-	AddExitFromTag(sTag: string): boolean {
-		var dirThis: any;
-		var oExit: RoomExit = null;
-		var asParams: string;
-		var sAfterParam: string;
-		var bParam: boolean;
+	AddExitFromTag(tag: string): void {
+		var thisDir: Direction;
+		var roomExit: RoomExit = null;
+		var params: string[] = [];
+		var afterParam: string;
+		var param: boolean;
 		// UNKNOWN MultiLineIfBlock
-		this.AddExitFromTag = true;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN WithBlock
+		roomExit.Parent = this;
+		roomExit.Direction = thisDir;
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
 	}
-	AddExitFromCreateScript(sScript: string, ctx: Context): boolean {
-		var sParam: string;
-		var asParam: string;
-		var lParamStart: number;
-		var lParamEnd: number;
-		sParam = this.m_game.GetParameter(sScript, ctx);
-		asParam = Split(sParam, ";");
-		lParamStart = InStr(sScript, "<");
-		lParamEnd = InStr(lParamStart, sScript, ">");
+	AddExitFromCreateScript(script: string, ctx: Context): void {
+		var param: string;
+		var params: string[];
+		var paramStart: number;
+		var paramEnd: number;
+		param = this._game.GetParameter(script, ctx);
+		params = Split(param, ";");
+		paramStart = InStr(script, "<");
+		paramEnd = InStr(paramStart, script, ">");
 		// UNKNOWN MultiLineIfBlock
 	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
-	ExecuteGo(sCommand: string, ctx: Context): void {
+	ExecuteGo(cmd: string, ctx: Context): void {
 		var lExitID: number;
 		var oExit: RoomExit;
 		// UNKNOWN MultiLineIfBlock
-		lExitID = this.m_game.Disambiguate(sCommand, this.m_game._currentRoom, ctx, true);
+		lExitID = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
 		// UNKNOWN MultiLineIfBlock
 	}
-	GetAvailableDirectionsDescription(sDescription: string, sList: string): void {
-		var oExit: RoomExit;
-		var lCount: number;
-		var sDescPrefix: string;
-		var sOr: string;
-		sDescPrefix = "You can go";
-		sOr = "or";
-		sList = "";
-		lCount = 0;
+	GetAvailableDirectionsDescription(description: string, list: string): void {
+		var roomExit: RoomExit;
+		var count: number;
+		var descPrefix: string;
+		var orString: string;
+		descPrefix = "You can go";
+		orString = "or";
+		list = "";
+		count = 0;
 		// UNKNOWN ForEachBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 	}
-	GetDirectionName(lDir: any): string {
-		var sDir: string = "";
+	GetDirectionName(dir: Direction): string {
 		// UNKNOWN SelectBlock
-		this.GetDirectionName = sDir;
+		return null;
 	}
-	GetDirectionEnum(sDir: string): any {
+	GetDirectionEnum(dir: string): Direction {
 		// UNKNOWN SelectBlock
+		return Direction.None;
 	}
-	GetDirectionToken(lDir: any): string {
-		var sDir: string = "";
+	GetDirectionToken(dir: Direction): string {
 		// UNKNOWN SelectBlock
-		this.GetDirectionToken = sDir;
+		return null;
 	}
-	GetDirectionNameDisplay(oExit: RoomExit): string {
-		var sDir: string = "";
-		var sDisplay: string;
+	GetDirectionNameDisplay(roomExit: RoomExit): string {
 		// UNKNOWN MultiLineIfBlock
+		var sDisplay = "|b" + roomExit.DisplayName + "|xb";
+		// UNKNOWN MultiLineIfBlock
+		return "to " + sDisplay;
 	}
-	GetExitByObjectID(lID: number): RoomExit {
-		var oExit: RoomExit;
+	GetExitByObjectId(id: number): RoomExit {
 		// UNKNOWN ForEachBlock
 		return null;
 	}
 	AllExits(): any {
-		var oAllExits: any;
-		var oExit: RoomExit;
 		// UNKNOWN MultiLineIfBlock
-		oAllExits = new any();
+		this._allExits = new any();
 		// UNKNOWN ForEachBlock
 		// UNKNOWN ForEachBlock
-		this.m_oAllExits = oAllExits;
-		this.AllExits = oAllExits;
-		this.m_bRegenerateAllExits = false;
+		return this._allExits;
 	}
-	RemoveExit(oExit: RoomExit): void {
+	RemoveExit(roomExit: RoomExit): void {
 		// UNKNOWN MultiLineIfBlock
-		this.m_game._objs[oExit.ObjID].Exists = false;
-		this.m_bRegenerateAllExits = true;
+		this._game._objs[roomExit.ObjId].Exists = false;
+		this._regenerateAllExits = true;
 	}
 }
 class TextFormatter {

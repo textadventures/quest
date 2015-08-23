@@ -293,6 +293,12 @@ namespace LegacyConvert
                 return "'expr'";
             }
 
+            var me = expr as MeExpressionSyntax;
+            if (me != null)
+            {
+                return "this";
+            }
+
             throw new InvalidOperationException();
         }
 

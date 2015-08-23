@@ -3049,26 +3049,26 @@ var RoomExit = (function () {
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
-    RoomExit.prototype.RunAction = function (ActionName, ctx) {
+    RoomExit.prototype.RunAction = function (actionName, ctx) {
         // UNKNOWN ExpressionStatement
     };
     RoomExit.prototype.RunScript = function (ctx) {
         // UNKNOWN ExpressionStatement
     };
     RoomExit.prototype.UpdateObjectName = function () {
-        var sObjName;
-        var lLastExitID;
-        var sParentRoom;
+        var objName;
+        var lastExitId;
+        var parentRoom;
 
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN SingleLineIfStatement
-        sParentRoom = this.m_game._objs[this.m_oParent.ObjID].ObjectName;
-        sObjName = sParentRoom;
+        parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
+        objName = parentRoom;
 
         // UNKNOWN MultiLineIfBlock
-        this.m_game._objs[this.m_lObjID].ObjectName = sObjName;
-        this.m_game._objs[this.m_lObjID].ContainerRoom = sParentRoom;
-        this.m_sObjName = sObjName;
+        this._game._objs[this._objId].ObjectName = objName;
+        this._game._objs[this._objId].ContainerRoom = parentRoom;
+        this._objName = objName;
     };
     RoomExit.prototype.Go = function (ctx) {
         // UNKNOWN MultiLineIfBlock
@@ -3077,113 +3077,109 @@ var RoomExit = (function () {
 })();
 var RoomExits = (function () {
     function RoomExits() {
-        this.m_oDirections = {};
-        this.m_oPlaces = {};
+        this._directions = {};
+        this._places = {};
     }
     // UNKNOWN ConstructorBlock
-    RoomExits.prototype.SetDirection = function (Direction, oExit) {
+    RoomExits.prototype.SetDirection = function (direction, roomExit) {
         // UNKNOWN MultiLineIfBlock
-        this.m_bRegenerateAllExits = true;
+        this._regenerateAllExits = true;
     };
-    RoomExits.prototype.GetDirectionExit = function (Direction) {
+    RoomExits.prototype.GetDirectionExit = function (direction) {
         // UNKNOWN MultiLineIfBlock
         return null;
     };
-    RoomExits.prototype.AddPlaceExit = function (oExit) {
+    RoomExits.prototype.AddPlaceExit = function (roomExit) {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ExpressionStatement
-        this.m_bRegenerateAllExits = true;
+        this._regenerateAllExits = true;
     };
-    RoomExits.prototype.AddExitFromTag = function (sTag) {
-        var dirThis;
-        var oExit = null;
-        var asParams;
-        var sAfterParam;
-        var bParam;
+    RoomExits.prototype.AddExitFromTag = function (tag) {
+        var thisDir;
+        var roomExit = null;
+        var params = [];
+        var afterParam;
+        var param;
 
         // UNKNOWN MultiLineIfBlock
-        this.AddExitFromTag = true;
         // UNKNOWN MultiLineIfBlock
-        // UNKNOWN WithBlock
+        roomExit.Parent = this;
+        roomExit.Direction = thisDir;
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN MultiLineIfBlock
     };
-    RoomExits.prototype.AddExitFromCreateScript = function (sScript, ctx) {
-        var sParam;
-        var asParam;
-        var lParamStart;
-        var lParamEnd;
-        sParam = this.m_game.GetParameter(sScript, ctx);
-        asParam = Split(sParam, ";");
-        lParamStart = InStr(sScript, "<");
-        lParamEnd = InStr(lParamStart, sScript, ">");
+    RoomExits.prototype.AddExitFromCreateScript = function (script, ctx) {
+        var param;
+        var params;
+        var paramStart;
+        var paramEnd;
+        param = this._game.GetParameter(script, ctx);
+        params = Split(param, ";");
+        paramStart = InStr(script, "<");
+        paramEnd = InStr(paramStart, script, ">");
         // UNKNOWN MultiLineIfBlock
     };
 
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
-    RoomExits.prototype.ExecuteGo = function (sCommand, ctx) {
+    RoomExits.prototype.ExecuteGo = function (cmd, ctx) {
         var lExitID;
         var oExit;
 
         // UNKNOWN MultiLineIfBlock
-        lExitID = this.m_game.Disambiguate(sCommand, this.m_game._currentRoom, ctx, true);
+        lExitID = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
         // UNKNOWN MultiLineIfBlock
     };
-    RoomExits.prototype.GetAvailableDirectionsDescription = function (sDescription, sList) {
-        var oExit;
-        var lCount;
-        var sDescPrefix;
-        var sOr;
-        sDescPrefix = "You can go";
-        sOr = "or";
-        sList = "";
-        lCount = 0;
+    RoomExits.prototype.GetAvailableDirectionsDescription = function (description, list) {
+        var roomExit;
+        var count;
+        var descPrefix;
+        var orString;
+        descPrefix = "You can go";
+        orString = "or";
+        list = "";
+        count = 0;
         // UNKNOWN ForEachBlock
         // UNKNOWN ExpressionStatement
         // UNKNOWN MultiLineIfBlock
     };
-    RoomExits.prototype.GetDirectionName = function (lDir) {
-        var sDir = "";
-
+    RoomExits.prototype.GetDirectionName = function (dir) {
         // UNKNOWN SelectBlock
-        this.GetDirectionName = sDir;
+        return null;
     };
-    RoomExits.prototype.GetDirectionEnum = function (sDir) {
+    RoomExits.prototype.GetDirectionEnum = function (dir) {
         // UNKNOWN SelectBlock
+        return -1 /* None */;
     };
-    RoomExits.prototype.GetDirectionToken = function (lDir) {
-        var sDir = "";
-
+    RoomExits.prototype.GetDirectionToken = function (dir) {
         // UNKNOWN SelectBlock
-        this.GetDirectionToken = sDir;
+        return null;
     };
-    RoomExits.prototype.GetDirectionNameDisplay = function (oExit) {
-        var sDir = "";
-        var sDisplay;
+    RoomExits.prototype.GetDirectionNameDisplay = function (roomExit) {
         // UNKNOWN MultiLineIfBlock
-    };
-    RoomExits.prototype.GetExitByObjectID = function (lID) {
-        var oExit;
+        var sDisplay = "|b" + roomExit.DisplayName + "|xb";
 
+        // UNKNOWN MultiLineIfBlock
+        return "to " + sDisplay;
+    };
+    RoomExits.prototype.GetExitByObjectId = function (id) {
         // UNKNOWN ForEachBlock
         return null;
     };
     RoomExits.prototype.AllExits = function () {
-        var oAllExits;
-        var oExit;
-
         // UNKNOWN MultiLineIfBlock
-        oAllExits = new any();
+        this._allExits = new any();
 
         // UNKNOWN ForEachBlock
         // UNKNOWN ForEachBlock
-        this.m_oAllExits = oAllExits;
-        this.AllExits = oAllExits;
-        this.m_bRegenerateAllExits = false;
+        return this._allExits;
     };
-    RoomExits.prototype.RemoveExit = function (oExit) {
+    RoomExits.prototype.RemoveExit = function (roomExit) {
         // UNKNOWN MultiLineIfBlock
-        this.m_game._objs[oExit.ObjID].Exists = false;
-        this.m_bRegenerateAllExits = true;
+        this._game._objs[roomExit.ObjId].Exists = false;
+        this._regenerateAllExits = true;
     };
     return RoomExits;
 })();
