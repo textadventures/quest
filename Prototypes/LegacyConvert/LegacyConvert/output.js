@@ -271,14 +271,14 @@ var PlayerCanAccessObjectResult = (function () {
 })();
 var LegacyGame = (function () {
     function LegacyGame() {
-        this._commandLock = 'expr';
-        this._stateLock = 'expr';
+        this._commandLock = new Object();
+        this._stateLock = new Object();
         this._state = 'expr';
-        this._waitLock = 'expr';
+        this._waitLock = new Object();
         this._readyForCommand = 'expr';
     }
     LegacyGame.prototype.CopyContext = function () {
-        var result = 'expr';
+        var result = new Context();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
@@ -402,7 +402,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetDefineBlock = function () {
         var l;
         var blockType;
-        var result = 'expr';
+        var result = new DefineBlock();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ForBlock
@@ -410,7 +410,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.DefineBlockParam = function () {
         var cache;
-        var result = 'expr';
+        var result = new DefineBlock();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -834,7 +834,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN MultiLineIfBlock
         var script = 'expr';
-        var result = 'expr';
+        var result = new ActionType();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ReturnStatement
@@ -877,7 +877,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.GetTextOrScript = function () {
-        var result = 'expr';
+        var result = new TextAction();
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
@@ -887,7 +887,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.GetThingBlock = function () {
-        var result = 'expr';
+        var result = new DefineBlock();
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN SimpleAssignmentStatement
@@ -1188,7 +1188,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.SaveGame = function () {
-        var ctx = 'expr';
+        var ctx = new Context();
         var saveData;
         // UNKNOWN SingleLineIfStatement
         // UNKNOWN MultiLineIfBlock

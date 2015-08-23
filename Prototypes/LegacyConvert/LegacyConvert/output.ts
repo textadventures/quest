@@ -209,7 +209,7 @@ class PlayerCanAccessObjectResult {
 }
 class LegacyGame {
 	CopyContext(): Context {
-		var result: Context = 'expr';
+		var result: Context = new Context();
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -291,10 +291,10 @@ class LegacyGame {
 	_textFormatter: any;
 	_log: any;
 	_casFileData: string;
-	_commandLock: Object = 'expr';
-	_stateLock: Object = 'expr';
+	_commandLock: Object = new Object();
+	_stateLock: Object = new Object();
 	_state: State = 'expr';
-	_waitLock: Object = 'expr';
+	_waitLock: Object = new Object();
 	_readyForCommand: boolean = 'expr';
 	_gameLoading: boolean;
 	_random: any;
@@ -420,7 +420,7 @@ class LegacyGame {
 	GetDefineBlock(): DefineBlock {
 		var l: string;
 		var blockType: string;
-		var result = 'expr';
+		var result = new DefineBlock();
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -428,7 +428,7 @@ class LegacyGame {
 	}
 	DefineBlockParam(): DefineBlock {
 		var cache: any;
-		var result = 'expr';
+		var result = new DefineBlock();
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -818,7 +818,7 @@ class LegacyGame {
 		var ep = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var script = 'expr';
-		var result: ActionType = 'expr';
+		var result: ActionType = new ActionType();
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
@@ -861,7 +861,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetTextOrScript(): TextAction {
-		var result = 'expr';
+		var result = new TextAction();
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -871,7 +871,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetThingBlock(): DefineBlock {
-		var result = 'expr';
+		var result = new DefineBlock();
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -1150,7 +1150,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	SaveGame(): any {
-		var ctx: Context = 'expr';
+		var ctx: Context = new Context();
 		var saveData: string;
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock

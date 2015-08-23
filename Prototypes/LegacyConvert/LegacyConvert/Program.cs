@@ -103,6 +103,14 @@ namespace LegacyConvert
 
         static string ProcessExpression(ExpressionSyntax expr)
         {
+            var objectCreation = expr as ObjectCreationExpressionSyntax;
+            if (objectCreation != null)
+            {
+                var type = GetVarType(objectCreation.Type);
+                return "new " + type + "()";
+            }
+
+
             return "'expr'";
         }
 
