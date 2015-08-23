@@ -393,7 +393,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ConvertCasKeyword = function () {
         var c = 'expr';
-        var keyword = 'expr';
+        var keyword = _casKeywords[c];
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement
     };
@@ -671,7 +671,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var o = 'expr';
+        var o = _objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -686,7 +686,7 @@ var LegacyGame = (function () {
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var o = 'expr';
+        var o = _objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -733,7 +733,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.DoAction = function () {
         var FoundAction;
         var ActionScript = "";
-        var o = 'expr';
+        var o = _objs[ObjID];
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
@@ -743,7 +743,7 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.HasAction = function () {
-        var o = 'expr';
+        var o = _objs[ObjID];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -855,7 +855,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetObjectProperty = function () {
         var result = "";
         var found = false;
-        var o = 'expr';
+        var o = _objs[id];
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN MultiLineIfBlock
@@ -1356,7 +1356,7 @@ var LegacyGame = (function () {
         var roomId = 'expr';
         var foundPlace = false;
         var scriptPresent = false;
-        var r = 'expr';
+        var r = _rooms[roomId];
         // UNKNOWN ForBlock
         // UNKNOWN ReturnStatement
     };
@@ -1439,7 +1439,7 @@ var LegacyGame = (function () {
         var roomId = 'expr';
 
         // UNKNOWN MultiLineIfBlock
-        var exits = 'expr'.Exits;
+        var exits = _rooms[roomId].Exits;
         var dir = 'expr';
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN ReturnStatement

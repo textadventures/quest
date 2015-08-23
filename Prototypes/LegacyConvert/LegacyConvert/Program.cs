@@ -11,11 +11,16 @@ namespace LegacyConvert
 {
     class Program
     {
+        static SemanticModel Model;
+
         static void Main(string[] args)
         {
             var text = System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\LegacyGame.vb");
             var tree = VisualBasicSyntaxTree.ParseText(text);
             var root = (CompilationUnitSyntax)tree.GetRoot();
+
+            var compilation = VisualBasicCompilation.Create("Legacy").AddSyntaxTrees(tree);
+            Model = compilation.GetSemanticModel(tree);
 
             var prepend = new StringBuilder();
 
@@ -131,6 +136,17 @@ namespace LegacyConvert
             var invocation = expr as InvocationExpressionSyntax;
             if (invocation != null)
             {
+                var identifier = invocation.Expression as IdentifierNameSyntax;
+                if (identifier != null)
+                {
+                    var typeInfo = Model.GetTypeInfo(identifier);
+                    if (typeInfo.Type != null && typeInfo.Type.Kind == SymbolKind.ArrayType)
+                    {
+                        var arg = ProcessExpression(invocation.ArgumentList.Arguments[0].GetExpression());
+                        return identifier.Identifier.ValueText + "[" + arg + "]";
+                    }
+                }
+
                 return "'expr'";
             }
 

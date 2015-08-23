@@ -412,7 +412,7 @@ class LegacyGame {
 	}
 	ConvertCasKeyword(): string {
 		var c: Byte = 'expr';
-		var keyword: string = 'expr';
+		var keyword: string = _casKeywords[c];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -666,7 +666,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var o = 'expr';
+		var o = _objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -679,7 +679,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		var o = 'expr';
+		var o = _objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -725,7 +725,7 @@ class LegacyGame {
 	DoAction(): boolean {
 		var FoundAction: boolean;
 		var ActionScript: string = "";
-		var o = 'expr';
+		var o = _objs[ObjID];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var NewThread: Context = 'expr';
@@ -734,7 +734,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	HasAction(): boolean {
-		var o = 'expr';
+		var o = _objs[ObjID];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -839,7 +839,7 @@ class LegacyGame {
 	GetObjectProperty(): string {
 		var result: string = "";
 		var found = false;
-		var o = 'expr';
+		var o = _objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1307,7 +1307,7 @@ class LegacyGame {
 		var roomId = 'expr';
 		var foundPlace = false;
 		var scriptPresent = false;
-		var r = 'expr';
+		var r = _rooms[roomId];
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1384,7 +1384,7 @@ class LegacyGame {
 		var exitName = 'expr';
 		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		var exits = 'expr'.Exits;
+		var exits = _rooms[roomId].Exits;
 		var dir = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
