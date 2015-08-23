@@ -54,6 +54,8 @@ namespace LegacyConvert
                 case SyntaxKind.EndEnumStatement:
                 case SyntaxKind.FunctionStatement:
                 case SyntaxKind.EndFunctionStatement:
+                case SyntaxKind.SubStatement:
+                case SyntaxKind.EndSubStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -97,9 +99,14 @@ namespace LegacyConvert
                         return string.Join("\n", lines.Select(l => Tabs(depth) + l)) + "\n";
                     }
                 case SyntaxKind.FunctionBlock:
+                case SyntaxKind.SubBlock:
                     var block = (MethodBlockSyntax)node;
                     var name = block.SubOrFunctionStatement.Identifier.Text;
-                    var type = GetVarType(block.SubOrFunctionStatement.AsClause.Type);
+                    string type = "void";
+                    if (block.SubOrFunctionStatement.AsClause != null)
+                    {
+                        type = GetVarType(block.SubOrFunctionStatement.AsClause.Type);
+                    }
                     // TODO: Need the parameters
                     return string.Format("{0}{1}(): {2} {{\n{3}{0}}}\n", Tabs(depth), name, type, ProcessChildNodes(node, depth, prepend, false, classFields));
                 default:
@@ -181,6 +188,18 @@ namespace LegacyConvert
             if (arrayCreation != null)
             {
                 return "[]";
+            }
+
+            var cast = expr as PredefinedCastExpressionSyntax;
+            if (cast != null)
+            {
+                return "'expr'";
+            }
+
+            var directCast = expr as DirectCastExpressionSyntax;
+            if (directCast != null)
+            {
+                return "'expr'";
             }
 
             throw new InvalidOperationException();

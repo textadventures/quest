@@ -3238,20 +3238,20 @@ Public Class LegacyGame
     End Function
 
     Private Sub ExecuteIncDec(line As String, ctx As Context)
-        Dim var As String
+        Dim variable As String
         Dim change As Double
         Dim param = GetParameter(line, ctx)
 
         Dim sc = InStr(param, ";")
         If sc = 0 Then
             change = 1
-            var = param
+            variable = param
         Else
             change = Val(Mid(param, sc + 1))
-            var = Trim(Left(param, sc - 1))
+            variable = Trim(Left(param, sc - 1))
         End If
 
-        Dim value = GetNumericContents(var, ctx, True)
+        Dim value = GetNumericContents(variable, ctx, True)
         If value <= -32766 Then value = 0
 
         If BeginsWith(line, "inc ") Then
@@ -3260,7 +3260,7 @@ Public Class LegacyGame
             value = value - change
         End If
 
-        Dim arrayIndex = GetArrayIndex(var, ctx)
+        Dim arrayIndex = GetArrayIndex(variable, ctx)
         SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index)
     End Sub
 
