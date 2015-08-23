@@ -137,11 +137,19 @@ namespace LegacyConvert
             var binary = expr as BinaryExpressionSyntax;
             if (binary != null)
             {
-                return "'expr'";
+                var op = binary.OperatorToken.ValueText;
+                if (op == "&") op = "+";
+                return ProcessExpression(binary.Left) + " " + op + " " + ProcessExpression(binary.Right);
             }
 
             var collectionInitializer = expr as CollectionInitializerSyntax;
             if (collectionInitializer != null)
+            {
+                return "'expr'";
+            }
+
+            var paranthesized = expr as ParenthesizedExpressionSyntax;
+            if (paranthesized != null)
             {
                 return "'expr'";
             }

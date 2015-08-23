@@ -901,7 +901,7 @@ var LegacyGame = (function () {
         var numRoomData;
 
         // UNKNOWN ExpressionStatement
-        var start = 'expr';
+        var start = data.Length + 1;
 
         // UNKNOWN ExpressionStatement
         // UNKNOWN ForBlock
@@ -1252,7 +1252,7 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         // UNKNOWN SimpleAssignmentStatement
         // UNKNOWN ExpressionStatement
-        var newCommand = 'expr';
+        var newCommand = " " + input + " ";
 
         // UNKNOWN ForBlock
         // UNKNOWN SimpleAssignmentStatement
@@ -1298,8 +1298,8 @@ var LegacyGame = (function () {
         // UNKNOWN ReturnStatement
     };
     LegacyGame.prototype.GetSecondChunk = function () {
-        var endOfFirstBit = 'expr';
-        var lengthOfKeyword = 'expr';
+        var endOfFirstBit = 'expr' + 1;
+        var lengthOfKeyword = 'expr' + 1;
         // UNKNOWN ReturnStatement
     };
 

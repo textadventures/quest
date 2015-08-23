@@ -884,7 +884,7 @@ class LegacyGame {
 		var numObjectData: number;
 		var numRoomData: number;
 		// UNKNOWN ExpressionStatement
-		var start = 'expr';
+		var start = data.Length + 1;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
@@ -1208,7 +1208,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
-		var newCommand = 'expr';
+		var newCommand = " " + input + " ";
 		// UNKNOWN ForBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
@@ -1251,8 +1251,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetSecondChunk(): string {
-		var endOfFirstBit = 'expr';
-		var lengthOfKeyword = 'expr';
+		var endOfFirstBit = 'expr' + 1;
+		var lengthOfKeyword = 'expr' + 1;
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN SubBlock
