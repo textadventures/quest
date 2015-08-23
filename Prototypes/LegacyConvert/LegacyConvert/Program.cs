@@ -148,6 +148,11 @@ namespace LegacyConvert
         {
             var asType = parameter.AsClause.ChildNodes().First();
             var varType = GetVarType(asType);
+            if (parameter.Default != null)
+            {
+                var defaultValue = ProcessExpression(parameter.Default.Value, null);
+                return parameter.Identifier.Identifier.ValueText + ": " + varType + " = " + defaultValue;
+            }
             return parameter.Identifier.Identifier.ValueText + ": " + varType;
         }
 
@@ -175,7 +180,7 @@ namespace LegacyConvert
             if (identifierName != null)
             {
                 var name = identifierName.Identifier.Text;
-                if (classFields.Contains(name)) return "this." + name;
+                if (classFields != null && classFields.Contains(name)) return "this." + name;
                 return name;
             }
 

@@ -9045,7 +9045,7 @@ Public Class LegacyGame
         Return display
     End Function
 
-    Private Sub DisplayTextSection(section As String, ctx As Context, Optional OutputTo As String = "normal")
+    Private Sub DisplayTextSection(section As String, ctx As Context)
         Dim block As DefineBlock
         block = DefineBlockParam("text", section)
 
@@ -9056,9 +9056,9 @@ Public Class LegacyGame
         For i = block.StartLine + 1 To block.EndLine - 1
             If _gameAslVersion >= 392 Then
                 ' Convert string variables etc.
-                Print(GetParameter("<" & _lines(i) & ">", ctx), ctx, OutputTo)
+                Print(GetParameter("<" & _lines(i) & ">", ctx), ctx)
             Else
-                Print(_lines(i), ctx, OutputTo)
+                Print(_lines(i), ctx)
             End If
         Next i
 
@@ -10230,7 +10230,7 @@ Public Class LegacyGame
             ElseIf BeginsWith(scriptLine, "speak ") Then
                 Speak(GetParameter(scriptLine, ctx))
             ElseIf BeginsWith(scriptLine, "helpmsg ") Then
-                Print(GetParameter(scriptLine, ctx), ctx, "help")
+                Print(GetParameter(scriptLine, ctx), ctx)
             ElseIf Trim(LCase(scriptLine)) = "helpclose" Then
                 ' This command does nothing in the Quest 5 player, as there is no separate help window
             ElseIf BeginsWith(scriptLine, "goto ") Then
@@ -10324,9 +10324,9 @@ Public Class LegacyGame
             ElseIf BeginsWith(scriptLine, "enter ") Then
                 ExecuteEnter(scriptLine, ctx)
             ElseIf BeginsWith(scriptLine, "displaytext ") Then
-                DisplayTextSection(GetParameter(scriptLine, ctx), ctx, "normal")
+                DisplayTextSection(GetParameter(scriptLine, ctx), ctx)
             ElseIf BeginsWith(scriptLine, "helpdisplaytext ") Then
-                DisplayTextSection(GetParameter(scriptLine, ctx), ctx, "help")
+                DisplayTextSection(GetParameter(scriptLine, ctx), ctx)
             ElseIf BeginsWith(scriptLine, "font ") Then
                 SetFont(GetParameter(scriptLine, ctx))
             ElseIf BeginsWith(scriptLine, "pause ") Then
@@ -10884,7 +10884,7 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Friend Sub Print(txt As String, ctx As Context, Optional OutputTo As String = "normal")
+    Friend Sub Print(txt As String, ctx As Context)
         Dim printString = ""
 
         If txt = "" Then
@@ -11136,15 +11136,15 @@ Public Class LegacyGame
     Private Sub ShowHelp(ctx As Context)
         ' In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
         ' in the same window as the game text.
-        Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx, "help")
-        Print("", ctx, "help")
-        Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx, "help")
-        Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx, "help")
-        Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx, "help")
-        Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx, "help")
-        Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx, "help")
-        Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n", ctx, "help")
-        Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx, "help")
+        Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx)
+        Print("", ctx)
+        Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx)
+        Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx)
+        Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx)
+        Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx)
+        Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx)
+        Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n", ctx)
+        Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx)
     End Sub
 
     Private Sub ReadCatalog(data As String)
