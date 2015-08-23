@@ -27,7 +27,11 @@ namespace LegacyConvert
             input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\RoomExits.vb"));
             input.Append("\n");
             input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\TextFormatter.vb"));
-            var tree = VisualBasicSyntaxTree.ParseText(input.ToString());
+
+            var source = input.ToString();
+            source = System.Text.RegularExpressions.Regex.Replace(source, @"\'\<NOCONVERT.*?NOCONVERT\>", "", System.Text.RegularExpressions.RegexOptions.Singleline);
+
+            var tree = VisualBasicSyntaxTree.ParseText(source);
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
             var compilation = VisualBasicCompilation.Create("Legacy").AddSyntaxTrees(tree);
@@ -145,6 +149,8 @@ namespace LegacyConvert
                 case SyntaxKind.ReturnStatement:
                     var returnStatement = (ReturnStatementSyntax)node;
                     return string.Format("{0}return {1};\n", Tabs(depth), ProcessExpression(returnStatement.Expression, classFields));
+                case SyntaxKind.ExpressionStatement:
+                    return Tabs(depth) + ProcessExpression(((ExpressionStatementSyntax)node).Expression, classFields) + ";\n";
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }

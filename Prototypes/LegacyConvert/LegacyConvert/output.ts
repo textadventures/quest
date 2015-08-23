@@ -389,7 +389,7 @@ class LegacyGame {
 	_questionResponse: boolean;
 	constructor(filename: string, originalFilename: string) {
 		this._tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString());
-		// UNKNOWN ExpressionStatement
+		this.LoadCASKeywords();
 		this._gameLoadMethod = "normal";
 		this._filename = filename;
 		this._originalFilename = originalFilename;
@@ -400,7 +400,7 @@ class LegacyGame {
 		this._skipCheckFile[3] = "musicvf1.cas";
 	}
 	constructor(data: InitGameData) {
-		// UNKNOWN ExpressionStatement
+		this.New(null, null);
 		this._data = data;
 	}
 	RemoveFormatting(s: string): string {
@@ -535,7 +535,7 @@ class LegacyGame {
 	}
 	ConvertMultiLines(): void {
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.RemoveComments();
 	}
 	GetDefineBlock(blockname: string): DefineBlock {
 		var l: string;
@@ -615,7 +615,7 @@ class LegacyGame {
 		var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.ConvertMultiLines();
 		// UNKNOWN MultiLineIfBlock
 		this._numberSections = 1;
 		// UNKNOWN ForBlock
@@ -623,7 +623,7 @@ class LegacyGame {
 		var gotGameBlock = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.ConvertMultiLineSections();
 		hasErrors = this.ConvertFriendlyIfs();
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
@@ -632,7 +632,7 @@ class LegacyGame {
 	}
 	LogASLError(err: string, type: LogType = LogType.Misc): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this._log.Add(err);
 	}
 	GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): string {
 		var newParam: string;
@@ -688,7 +688,7 @@ class LegacyGame {
 	DoAddRemove(childId: number, parentId: number, add: boolean, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
 	}
 	DoLook(id: number, ctx: Context, showExamineError: boolean = false, showDefaultDescription: boolean = true): void {
 		var objectContents: string;
@@ -705,7 +705,7 @@ class LegacyGame {
 	}
 	DoOpenClose(id: number, open: boolean, showLook: boolean, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateVisibilityInContainers(ctx, this._objs[id].ObjectName);
 	}
 	EvaluateInlineExpressions(s: string): string {
 		// UNKNOWN MultiLineIfBlock
@@ -886,22 +886,22 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var roomExit: RoomExit;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ShowRoomInfo(this._currentRoom, ctx, true);
+		this.UpdateObjectList(ctx);
+		this.AddToChangeLog("room " + fromRoom, "destroy exit " + toRoom);
 	}
 	DoClear(): void {
-		// UNKNOWN ExpressionStatement
+		this._player.ClearScreen();
 	}
 	DoWait(): void {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.DoWait();
+		this.ChangeState(State.Waiting);
 		// UNKNOWN SyncLockBlock
 	}
 	ExecuteFlag(line: string, ctx: Context): void {
 		var propertyString: string = "";
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.AddToObjectProperties(propertyString, 1, ctx);
 	}
 	ExecuteIfFlag(flag: string): boolean {
 		return this.GetObjectProperty(flag, 1, true) == "yes";
@@ -916,7 +916,7 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		var arrayIndex = this.GetArrayIndex(variable, ctx);
-		// UNKNOWN ExpressionStatement
+		this.SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
 	}
 	ExtractFile(file: string): string {
 		var length: number;
@@ -928,7 +928,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var fileName = System.IO.Path.Combine(this._tempFolder, file);
-		// UNKNOWN ExpressionStatement
+		System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
 		// UNKNOWN MultiLineIfBlock
 		return fileName;
 	}
@@ -940,7 +940,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		o.Actions[actionNum].ActionName = name;
 		o.Actions[actionNum].Script = script;
-		// UNKNOWN ExpressionStatement
+		this.ObjectActionUpdate(id, name, script, noUpdate);
 	}
 	AddToChangeLog(appliesTo: string, changeData: string): void {
 		this._gameChangeData.NumberChanges = this._gameChangeData.NumberChanges + 1;
@@ -952,7 +952,7 @@ class LegacyGame {
 	AddToObjectChangeLog(appliesToType: any, appliesTo: string, element: string, changeData: string): void {
 		var changeLog: ChangeLog;
 		// UNKNOWN SelectBlock
-		// UNKNOWN ExpressionStatement
+		changeLog.AddItem(appliesTo, element, changeData);
 	}
 	AddToGiveInfo(id: number, giveData: string): void {
 		var giveType: GiveType;
@@ -974,7 +974,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		o.Actions[actionNum].ActionName = name;
 		o.Actions[actionNum].Script = script;
-		// UNKNOWN ExpressionStatement
+		this.ObjectActionUpdate(id, name, script);
 	}
 	AddToObjectAltNames(altNames: string, id: number): void {
 		var o = this._objs[id];
@@ -1017,7 +1017,7 @@ class LegacyGame {
 		this._objs[this._numberObjs].ContainerRoom = cloneTo;
 		this._objs[this._numberObjs].ObjectName = newName;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateObjectList(ctx);
 	}
 	ExecOops(correction: string, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
@@ -1036,7 +1036,7 @@ class LegacyGame {
 		// UNKNOWN ReDimPreserveStatement
 		o.TypesIncluded[o.NumberTypesIncluded] = typeName;
 		var propertyData = this.GetPropertiesInType(typeName);
-		// UNKNOWN ExpressionStatement
+		this.AddToObjectProperties(propertyData.Properties, id, ctx);
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 	}
@@ -1086,7 +1086,7 @@ class LegacyGame {
 		var validNames: string[];
 		var numValidNames: number;
 		name = Trim(name);
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.lastobject", "", ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1096,7 +1096,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._thisTurnIt = this._lastIt;
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.error.object", name, ctx);
 		return -1;
 	}
 	DisplayStatusVariableInfo(id: number, type: VarType, ctx: Context): string {
@@ -1113,7 +1113,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var NewThread: Context = this.CopyContext(ctx);
 		NewThread.CallingObjectId = ObjID;
-		// UNKNOWN ExpressionStatement
+		this.ExecuteScript(ActionScript, NewThread, ObjID);
 		return true;
 	}
 	HasAction(ObjID: number, ActionName: string): boolean {
@@ -1152,7 +1152,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		o.Actions[actionNum].ActionName = actionName;
 		o.Actions[actionNum].Script = script;
-		// UNKNOWN ExpressionStatement
+		this.ObjectActionUpdate(id, actionName, script);
 	}
 	ExecuteCondition(condition: string, ctx: Context): boolean {
 		var result: boolean;
@@ -1196,7 +1196,7 @@ class LegacyGame {
 		var paramPos = InStr(exitData, "<");
 		var saveData: string;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.AddToChangeLog("room " + this._rooms[srcId].RoomName, "exit " + saveData);
 		var r = this._rooms[srcId];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1213,7 +1213,7 @@ class LegacyGame {
 		var dropFound = false;
 		var dropStatement: string = "";
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1226,13 +1226,13 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.DoLook(id, ctx, true);
 	}
 	ExecMoveThing(data: string, type: Thing, ctx: Context): void {
 		var scp = InStr(data, ";");
 		var name = Trim(Left(data, scp - 1));
 		var place = Trim(Mid(data, scp + 1));
-		// UNKNOWN ExpressionStatement
+		this.MoveThing(name, place, type, ctx);
 	}
 	ExecProperty(data: string, ctx: Context): void {
 		var id: number;
@@ -1243,7 +1243,7 @@ class LegacyGame {
 		var properties = Trim(Mid(data, scp + 1));
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.AddToObjectProperties(properties, id, ctx);
 	}
 	ExecuteDo(procedureName: string, ctx: Context): void {
 		var newCtx: Context = this.CopyContext(ctx);
@@ -1263,7 +1263,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.DoAction(id, actionName, ctx);
 	}
 	ExecuteIfHere(obj: string, ctx: Context): boolean {
 		// UNKNOWN MultiLineIfBlock
@@ -1320,12 +1320,12 @@ class LegacyGame {
 		var newValue = Trim(Right(newVal, Len(newVal) - 1));
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.CheckCollectable(id);
+		this.UpdateItems(ctx);
 	}
 	ExecuteWait(waitLine: string, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.DoWait();
 	}
 	InitFileData(fileData: string): void {
 		this._fileData = fileData;
@@ -1412,27 +1412,27 @@ class LegacyGame {
 		var roomData: ChangeType[] = [];
 		var numObjectData: number;
 		var numRoomData: number;
-		// UNKNOWN ExpressionStatement
+		data.Append("QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0));
 		var start = data.Length + 1;
-		// UNKNOWN ExpressionStatement
+		data.Append(this._currentRoom + Chr(0));
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
 		// UNKNOWN ForBlock
 		// UNKNOWN ForEachBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(this._numberObjs)) + Chr(0));
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(numRoomData)) + Chr(0));
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(this._numberTimers)) + Chr(0));
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(this._numberStringVariables)) + Chr(0));
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		data.Append(Trim(Str(this._numberNumericVariables)) + Chr(0));
 		// UNKNOWN ForBlock
 		var dataString: string;
 		var newFileData: any = {};
 		dataString = data.ToString();
-		// UNKNOWN ExpressionStatement
+		newFileData.Append(Left(dataString, start - 1));
 		// UNKNOWN ForBlock
 		return newFileData.ToString();
 	}
@@ -1442,12 +1442,12 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateObjectList(ctx);
 		// UNKNOWN MultiLineIfBlock
 	}
 	Pause(duration: number): void {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.DoPause(duration);
+		this.ChangeState(State.Waiting);
 		// UNKNOWN SyncLockBlock
 	}
 	ConvertParameter(parameter: string, convertChar: string, action: ConvertType, ctx: Context): string {
@@ -1504,16 +1504,16 @@ class LegacyGame {
 		// UNKNOWN TryBlock
 	}
 	ExecuteIfAsk(question: string): boolean {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.ShowQuestion(question);
+		this.ChangeState(State.Waiting);
 		// UNKNOWN SyncLockBlock
 		return this._questionResponse;
 	}
 	SetQuestionResponse(response: boolean): void {
 		var runnerThread: any = {};
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Working);
+		runnerThread.Start(response);
+		this.WaitForStateChange(State.Working);
 	}
 	SetQuestionResponseInNewThread(response: Object): void {
 		this._questionResponse = response;
@@ -1522,7 +1522,7 @@ class LegacyGame {
 	ExecuteIfGot(item: string): boolean {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.LogASLError("Item '" + item + "' not defined.", LogType.WarningError);
 		return false;
 	}
 	ExecuteIfHas(condition: string): boolean {
@@ -1567,18 +1567,18 @@ class LegacyGame {
 		return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
 	}
 	PlayerErrorMessage(e: PlayerError, ctx: Context): void {
-		// UNKNOWN ExpressionStatement
+		this.Print(this.GetErrorMessage(e, ctx), ctx);
 	}
 	PlayerErrorMessage_ExtendInfo(e: PlayerError, ctx: Context, extraInfo: string): void {
 		var message = this.GetErrorMessage(e, ctx);
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.Print(message, ctx);
 	}
 	GetErrorMessage(e: PlayerError, ctx: Context): string {
 		return this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
 	}
 	PlayMedia(filename: string): void {
-		// UNKNOWN ExpressionStatement
+		this.PlayMedia(filename, false, false);
 	}
 	PlayMedia(filename: string, sync: boolean, looped: boolean): void {
 		// UNKNOWN MultiLineIfBlock
@@ -1592,7 +1592,7 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.PlayMedia(filename, sync, looped);
 	}
 	RestoreGameData(fileData: string): void {
 		var appliesTo: string;
@@ -1625,10 +1625,10 @@ class LegacyGame {
 		this._gameIsRestoring = false;
 	}
 	SetBackground(col: string): void {
-		// UNKNOWN ExpressionStatement
+		this._player.SetBackground("#" + this.GetHTMLColour(col, "white"));
 	}
 	SetForeground(col: string): void {
-		// UNKNOWN ExpressionStatement
+		this._player.SetForeground("#" + this.GetHTMLColour(col, "black"));
 	}
 	SetDefaultPlayerErrorMessages(): void {
 		this._playerErrorMessageString[PlayerError.BadCommand] = "I don't understand your command. Type HELP for a list of valid commands.";
@@ -1672,11 +1672,11 @@ class LegacyGame {
 	}
 	SetFont(name: string): void {
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ExpressionStatement
+		this._player.SetFont(name);
 	}
 	SetFontSize(size: number): void {
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ExpressionStatement
+		this._player.SetFontSize((size).toString());
 	}
 	SetNumericVariableContents(name: string, content: number, ctx: Context, arrayIndex: number = 0): void {
 		var numNumber: number;
@@ -1696,11 +1696,11 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var id = this.GetObjectIdNoAlias(name);
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.DoOpenClose(id, open, false, ctx);
 	}
 	SetTimerState(name: string, state: boolean): void {
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.LogASLError("No such timer '" + name + "'", LogType.WarningError);
 	}
 	SetUnknownVariableType(variableData: string, ctx: Context): SetResult {
 		var scp = InStr(variableData, ";");
@@ -1719,10 +1719,10 @@ class LegacyGame {
 		var menuOptions: any = {};
 		var menuScript: any = {};
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.Print("- |i" + prompt + "|xi", ctx);
 		var mnu: MenuData = new MenuData();
 		var choice: string = this.ShowMenu(mnu);
-		// UNKNOWN ExpressionStatement
+		this.Print("- " + menuOptions[choice] + "|n", ctx);
 		return menuScript[choice];
 	}
 	SetUpDefaultFonts(): void {
@@ -1785,7 +1785,7 @@ class LegacyGame {
 	}
 	SetVisibility(thing: string, type: Thing, visible: boolean, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateObjectList(ctx);
 	}
 	ShowPictureInText(filename: string): void {
 		// UNKNOWN MultiLineIfBlock
@@ -1836,8 +1836,8 @@ class LegacyGame {
 		inDesc = "unfound";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.LocationUpdated(prefixAliasNoFormat);
+		this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		roomDisplayText = roomDisplayText + charsViewable + vbCrLf;
@@ -1854,19 +1854,19 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var finished: boolean;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateDirButtons(possDir, this._nullContext);
 		// UNKNOWN MultiLineIfBlock
 		descTagExist = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateObjectList(this._nullContext);
 		defineBlock = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN SingleLineIfStatement
 	}
 	Speak(text: string): void {
-		// UNKNOWN ExpressionStatement
+		this._player.Speak(text);
 	}
 	AddToObjectList(objList: any, exitList: any, name: string, type: Thing): void {
 		name = this.CapFirst(name);
@@ -1888,7 +1888,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var idx = this.GetArrayIndex(name, ctx);
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents(idx.Name, value, ctx, idx.Index);
 	}
 	ExecUserCommand(cmd: string, ctx: Context, libCommands: boolean = false): boolean {
 		var curCmd: string;
@@ -1905,7 +1905,7 @@ class LegacyGame {
 		return foundCommand;
 	}
 	ExecuteChoose(section: string, ctx: Context): void {
-		// UNKNOWN ExpressionStatement
+		this.ExecuteScript(this.SetUpChoiceForm(section, ctx), ctx);
 	}
 	GetCommandParameters(test: string, required: string, ctx: Context): boolean {
 		var chunksBegin: number[];
@@ -1999,29 +1999,29 @@ class LegacyGame {
 	MakeRestoreDataV2(): string {
 		var lines: any = {};
 		var i: number;
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		lines.Add("QUEST200.1");
+		lines.Add(this.GetOriginalFilenameForQSG);
+		lines.Add(this._gameName);
+		lines.Add(this._currentRoom);
+		lines.Add("!c");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!i");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!o");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!p");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!s");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!n");
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		lines.Add("!e");
 		return String.Join(vbCrLf, lines);
 	}
 	SetAvailability(thingString: string, exists: boolean, ctx: Context, type: Thing = Thing.Object): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.UpdateItems(ctx);
+		this.UpdateObjectList(ctx);
 	}
 	SetStringContents(name: string, value: string, ctx: Context, arrayIndex: number = 0): void {
 		var id: number;
@@ -2044,14 +2044,14 @@ class LegacyGame {
 		var defaultExists = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateVisibilityInContainers(this._nullContext);
 	}
 	ShowGameAbout(ctx: Context): void {
 		var version = this.FindStatement(this.GetDefineBlock("game"), "game version");
 		var author = this.FindStatement(this.GetDefineBlock("game"), "game author");
 		var copyright = this.FindStatement(this.GetDefineBlock("game"), "game copyright");
 		var info = this.FindStatement(this.GetDefineBlock("game"), "game info");
-		// UNKNOWN ExpressionStatement
+		this.Print("|bGame name:|cl  " + this._gameName + "|cb|xb", ctx);
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
@@ -2062,7 +2062,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ExpressionStatement
+		this.ShowPictureInText(filename);
 	}
 	ShowRoomInfo(room: string, ctx: Context, noPrint: boolean = false): void {
 		// UNKNOWN MultiLineIfBlock
@@ -2096,8 +2096,8 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		inDescription = this._rooms[id].InDescription;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.LocationUpdated(UCase(Left(roomAlias, 1)) + Mid(roomAlias, 2));
+		this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
 		visibleObjectsNoFormat = "";
 		var visibleObjectsList: any = {};
 		var count: number;
@@ -2108,7 +2108,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		objLook = this.GetObjectProperty("look", this._rooms[id].ObjId, null, false);
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.lookdesc", lookDesc, ctx);
 		showLookText = true;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2138,7 +2138,7 @@ class LegacyGame {
 		block = this.DefineBlockParam("text", section);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
+		this.Print("", ctx);
 	}
 	ExecCommand(input: string, ctx: Context, echo: boolean = true, runUserCommand: boolean = true, dontSetIt: boolean = false): boolean {
 		var parameter: string;
@@ -2153,11 +2153,11 @@ class LegacyGame {
 		var userCommandReturn: boolean;
 		// UNKNOWN MultiLineIfBlock
 		input = LCase(input);
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.originalcommand", input, ctx);
 		var newCommand = " " + input + " ";
 		// UNKNOWN ForBlock
 		input = Mid(newCommand, 2, Len(newCommand) - 2);
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.command", input, ctx);
 		var newCtx: Context = this.CopyContext(ctx);
 		var globalOverride = false;
 		// UNKNOWN MultiLineIfBlock
@@ -2166,7 +2166,7 @@ class LegacyGame {
 		var invList = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.Print("", ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		return true;
@@ -2260,7 +2260,7 @@ class LegacyGame {
 	ExecuteEnter(scriptLine: string, ctx: Context): void {
 		this._commandOverrideModeOn = true;
 		this._commandOverrideVariable = this.GetParameter(scriptLine, ctx);
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Waiting, true);
 		// UNKNOWN SyncLockBlock
 		this._commandOverrideModeOn = false;
 	}
@@ -2311,39 +2311,39 @@ class LegacyGame {
 		this._outPutOn = true;
 		this._useAbbreviations = true;
 		this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
-		// UNKNOWN ExpressionStatement
+		this.LogASLError("Opening file " + filename + " on " + Date.Now.ToString(), LogType.Init);
 		// UNKNOWN MultiLineIfBlock
 		var gameBlock: DefineBlock;
 		gameBlock = this.GetDefineBlock("game");
 		var aslVersion = "//";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this._listVerbs.Add(ListType.ExitsList, new any());
 		// UNKNOWN MultiLineIfBlock
 		this._gameName = this.GetParameter(this._lines[this.GetDefineBlock("game").StartLine], this._nullContext);
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.UpdateGameName(this._gameName);
+		this._player.Show("Panes");
+		this._player.Show("Location");
+		this._player.Show("Command");
+		this.SetUpGameObject();
+		this.SetUpOptions();
 		// UNKNOWN ForBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.SetDefaultPlayerErrorMessages();
+		this.SetUpSynonyms();
+		this.SetUpRoomData();
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.SetUpCollectables();
+		this.SetUpDisplayVariables();
+		this.SetUpCharObjectInfo();
+		this.SetUpUserDefinedPlayerErrors();
+		this.SetUpDefaultFonts();
+		this.SetUpTurnScript();
+		this.SetUpTimers();
+		this.SetUpMenus();
 		this._gameFileName = filename;
-		// UNKNOWN ExpressionStatement
+		this.LogASLError("Finished loading file.", LogType.Init);
 		this._defaultRoomProperties = this.GetPropertiesInType("defaultroom", false);
 		this._defaultProperties = this.GetPropertiesInType("default", false);
 		return true;
@@ -2364,10 +2364,10 @@ class LegacyGame {
 		var id = this.GetRoomID(room, ctx);
 		// UNKNOWN MultiLineIfBlock
 		this._currentRoom = room;
-		// UNKNOWN ExpressionStatement
+		this.SetStringContents("quest.currentroom", room, ctx);
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ShowRoomInfo(room, ctx);
+		this.UpdateItems(ctx);
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -2404,15 +2404,15 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 	}
 	ShowHelp(ctx: Context): void {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
+		this.Print("", ctx);
+		this.Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx);
+		this.Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx);
+		this.Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx);
+		this.Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx);
+		this.Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx);
+		this.Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n", ctx);
+		this.Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx);
 	}
 	ReadCatalog(data: string): void {
 		var nullPos = InStr(data, Chr(0));
@@ -2437,10 +2437,10 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._compassExits = compassExits;
-		// UNKNOWN ExpressionStatement
+		this.UpdateExitsList();
 	}
 	AddCompassExit(exitList: any, name: string): void {
-		// UNKNOWN ExpressionStatement
+		exitList.Add(new ListData());
 	}
 	UpdateDoorways(roomId: number, ctx: Context): string {
 		var roomDisplayText: string = "";
@@ -2458,7 +2458,7 @@ class LegacyGame {
 		var d = "down";
 		var o = "out";
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.UpdateDirButtons(directions, ctx);
 		return roomDisplayText;
 	}
 	UpdateItems(ctx: Context): void {
@@ -2471,7 +2471,7 @@ class LegacyGame {
 	}
 	FinishGame(stopType: StopType, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.GameFinished();
 	}
 	UpdateObjectList(ctx: Context): void {
 		var shownPlaceName: string;
@@ -2497,7 +2497,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN RaiseEventStatement
 		this._gotoExits = exitList;
-		// UNKNOWN ExpressionStatement
+		this.UpdateExitsList();
 	}
 	UpdateExitsList(): void {
 		var mergedList: any = {};
@@ -2510,7 +2510,7 @@ class LegacyGame {
 		var status: string = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this._player.SetStatusText(status);
 	}
 	UpdateVisibilityInContainers(ctx: Context, onlyParent: string = ""): void {
 		var parentId: number;
@@ -2563,15 +2563,15 @@ class LegacyGame {
 	}
 	Begin(): void {
 		var runnerThread: any = {};
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Working);
+		runnerThread.Start();
 		// UNKNOWN SyncLockBlock
 	}
 	DoBegin(): void {
 		var gameBlock: DefineBlock = this.GetDefineBlock("game");
 		var ctx: Context = new Context();
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.SetFont("");
+		this.SetFontSize(0);
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		this._autoIntro = true;
@@ -2581,36 +2581,36 @@ class LegacyGame {
 		var startRoom: string = "";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.RaiseNextTimerTickRequest();
+		this.ChangeState(State.Ready);
 	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
 	Finish(): void {
-		// UNKNOWN ExpressionStatement
+		this.GameFinished();
 	}
 	// UNKNOWN EventStatement
 	// UNKNOWN EventStatement
 	// UNKNOWN EventStatement
 	Save(filename: string, html: string): void {
-		// UNKNOWN ExpressionStatement
+		this.SaveGame(filename);
 	}
 	Save(html: string): number[] {
 		return this.SaveGame(Filename, false);
 	}
 	// UNKNOWN PropertyBlock
 	SendCommand(command: string): void {
-		// UNKNOWN ExpressionStatement
+		this.SendCommand(command, 0, null);
 	}
 	SendCommand(command: string, metadata: any): void {
-		// UNKNOWN ExpressionStatement
+		this.SendCommand(command, 0, metadata);
 	}
 	SendCommand(command: string, elapsedTime: number, metadata: any): void {
 		// UNKNOWN SingleLineIfStatement
 		var runnerThread: any = {};
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Working);
+		runnerThread.Start(command);
+		this.WaitForStateChange(State.Working);
 		// UNKNOWN MultiLineIfBlock
 	}
 	WaitForStateChange(changedFromState: State): void {
@@ -2629,25 +2629,21 @@ class LegacyGame {
 	GameFinished(): void {
 		this._gameFinished = true;
 		// UNKNOWN RaiseEventStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Finished);
 		// UNKNOWN SyncLockBlock
 		// UNKNOWN SyncLockBlock
 		// UNKNOWN SyncLockBlock
-		// UNKNOWN ExpressionStatement
+		this.Cleanup();
 	}
 	GetResourcePath(filename: string): string {
 		// UNKNOWN MultiLineIfBlock
 		return System.IO.Path.Combine(this._gamePath, filename);
 	}
 	Cleanup(): void {
-		// UNKNOWN ExpressionStatement
+		this.DeleteDirectory(this._tempFolder);
 	}
 	DeleteDirectory(dir: string): void {
 		// UNKNOWN MultiLineIfBlock
-	}
-	Finalize(): void {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
 	}
 	GetLibraryLines(libName: string): string[] {
 		var libCode: number[] = null;
@@ -2660,15 +2656,15 @@ class LegacyGame {
 	Tick(elapsedTime: number): void {
 		var i: number;
 		var timerScripts: any = {};
-		// UNKNOWN ExpressionStatement
+		Debug.Print("Tick: " + elapsedTime.ToString);
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this.RaiseNextTimerTickRequest();
 	}
 	RunTimersInNewThread(scripts: Object): void {
 		var scriptList: any = scripts;
 		// UNKNOWN ForEachBlock
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Ready);
 	}
 	RaiseNextTimerTickRequest(): void {
 		var anyTimerActive: boolean = false;
@@ -2676,12 +2672,12 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ExpressionStatement
+		Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
 		// UNKNOWN RaiseEventStatement
 	}
 	ChangeState(newState: State): void {
 		var acceptCommands: boolean = (newState == State.Ready);
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(newState, acceptCommands);
 	}
 	ChangeState(newState: State, acceptCommands: boolean): void {
 		this._readyForCommand = acceptCommands;
@@ -2690,28 +2686,28 @@ class LegacyGame {
 	FinishWait(): void {
 		// UNKNOWN SingleLineIfStatement
 		var runnerThread: any = {};
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Working);
+		runnerThread.Start();
+		this.WaitForStateChange(State.Working);
 	}
 	FinishWaitInNewThread(): void {
 		// UNKNOWN SyncLockBlock
 	}
 	FinishPause(): void {
-		// UNKNOWN ExpressionStatement
+		this.FinishWait();
 	}
 	m_menuResponse: string;
 	ShowMenu(menuData: MenuData): string {
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this._player.ShowMenu(menuData);
+		this.ChangeState(State.Waiting);
 		// UNKNOWN SyncLockBlock
 		return this.m_menuResponse;
 	}
 	SetMenuResponse(response: string): void {
 		var runnerThread: any = {};
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
-		// UNKNOWN ExpressionStatement
+		this.ChangeState(State.Working);
+		runnerThread.Start(response);
+		this.WaitForStateChange(State.Working);
 	}
 	SetMenuResponseInNewThread(response: Object): void {
 		this.m_menuResponse = response;
@@ -2770,7 +2766,7 @@ class ChangeLog {
 	AddItem(appliesTo: string, element: string, changeData: string): void {
 		var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this._changes.Add(key, changeData);
 	}
 }
 class Config {
@@ -2809,10 +2805,10 @@ class RoomExit {
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
 	RunAction(actionName: string, ctx: Context): void {
-		// UNKNOWN ExpressionStatement
+		this._game.DoAction(this._objId, actionName, ctx);
 	}
 	RunScript(ctx: Context): void {
-		// UNKNOWN ExpressionStatement
+		this.RunAction("script", ctx);
 	}
 	UpdateObjectName(): void {
 		var objName: string;
@@ -2852,7 +2848,7 @@ class RoomExits {
 	}
 	AddPlaceExit(roomExit: RoomExit): void {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ExpressionStatement
+		this._places.Add(roomExit.ToRoom, roomExit);
 		this._regenerateAllExits = true;
 	}
 	AddExitFromTag(tag: string): void {
@@ -2900,7 +2896,7 @@ class RoomExits {
 		list = "";
 		count = 0;
 		// UNKNOWN ForEachBlock
-		// UNKNOWN ExpressionStatement
+		this._game.SetStringContents("quest.doorways", description, this._game._nullContext);
 		// UNKNOWN MultiLineIfBlock
 	}
 	GetDirectionName(dir: Direction): string {

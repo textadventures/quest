@@ -12056,10 +12056,12 @@ Public Class LegacyGame
         End If
     End Sub
 
+    '<NOCONVERT
     Protected Overrides Sub Finalize()
         Cleanup()
         MyBase.Finalize()
     End Sub
+    'NOCONVERT>
 
     Private Function GetLibraryLines(libName As String) As String()
         Dim libCode As Byte() = Nothing
