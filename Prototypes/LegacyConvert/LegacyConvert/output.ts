@@ -218,7 +218,7 @@ class LegacyGame {
 		result.DontProcessCommand = ctx.DontProcessCommand;
 		result.CancelExec = ctx.CancelExec;
 		result.StackCounter = ctx.StackCounter;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	_defineBlockParams: any;
 	_openErrorReport: string;
@@ -318,7 +318,7 @@ class LegacyGame {
 		var pos: number;
 		var len: number;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN ReturnStatement
+		return s;
 	}
 	CheckSections(): boolean {
 		var defines: number;
@@ -335,7 +335,7 @@ class LegacyGame {
 		braces = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return !hasErrors;
 	}
 	ConvertFriendlyIfs(): boolean {
 		var convPos: number;
@@ -351,7 +351,7 @@ class LegacyGame {
 		var varObscureLine: string;
 		var bracketCount: number;
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ConvertMultiLineSections(): void {
 		var startLine: number;
@@ -389,7 +389,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return hasErrors;
 	}
 	GetAfterParameter(s: string): string {
 		var eop: number;
@@ -414,7 +414,7 @@ class LegacyGame {
 		inParameter = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return outputLine;
 	}
 	RemoveComments(): void {
 		var aposPos: number;
@@ -435,13 +435,13 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 	}
 	BeginsWith(s: string, text: string): boolean {
-		// UNKNOWN ReturnStatement
+		return 'expr' == 'expr';
 	}
 	ConvertCasKeyword(casChar: string): string {
 		var c: Byte = 'expr';
 		var keyword: string = this._casKeywords[c];
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return keyword;
 	}
 	ConvertMultiLines(): void {
 		// UNKNOWN ForBlock
@@ -454,7 +454,7 @@ class LegacyGame {
 		result.StartLine = 0;
 		result.EndLine = 0;
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	DefineBlockParam(blockname: string, param: string): DefineBlock {
 		var cache: any;
@@ -462,17 +462,17 @@ class LegacyGame {
 		param = "k" + param;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetEverythingAfter(s: string, text: string): string {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	Keyword2CAS(KWord: string): string {
 		var k = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return 'expr' + KWord + 'expr';
 	}
 	LoadCASKeywords(): void {
 		var questDatLines: string[] = 'expr';
@@ -481,7 +481,7 @@ class LegacyGame {
 	GetResourceLines(res: Byte[]): string[] {
 		var enc: any = {};
 		var resFile: string = 'expr';
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	ParseFile(filename: string): boolean {
 		var hasErrors: boolean;
@@ -538,7 +538,7 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = "";
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	LogASLError(err: string, type: LogType): void {
 		// UNKNOWN MultiLineIfBlock
@@ -553,7 +553,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var retrParam = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	AddLine(line: string): void {
 		var numLines: number;
@@ -589,11 +589,11 @@ class LegacyGame {
 	DecryptString(s: string): string {
 		var output = "";
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return output;
 	}
 	RemoveTabs(s: string): string {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return s;
 	}
 	DoAddRemove(childId: number, parentId: number, add: boolean, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
@@ -625,7 +625,7 @@ class LegacyGame {
 		// UNKNOWN DoLoopUntilBlock
 		curPos = 1;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN ReturnStatement
+		return resultLine;
 	}
 	ExecAddRemove(cmd: string, ctx: Context): void {
 		var childId: number;
@@ -732,7 +732,7 @@ class LegacyGame {
 		gameBlock = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return foundVerb;
 	}
 	ExpressionHandler(expr: string): ExpressionResult {
 		var openBracketPos: number;
@@ -752,7 +752,7 @@ class LegacyGame {
 		// UNKNOWN DoLoopUntilBlock
 		res.Success = ExpressionSuccess.OK;
 		res.Result = elements[1];
-		// UNKNOWN ReturnStatement
+		return res;
 	}
 	ListContents(id: number, ctx: Context): string {
 		var contentsIDs: number[] = [];
@@ -771,7 +771,7 @@ class LegacyGame {
 		OutputString = s;
 		CurPos = 1;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN ReturnStatement
+		return OutputString;
 	}
 	ProcessListInfo(line: string, id: number): void {
 		var listInfo: TextAction = new TextAction();
@@ -814,7 +814,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ExecuteIfFlag(flag: string): boolean {
-		// UNKNOWN ReturnStatement
+		return 'expr' == "yes";
 	}
 	ExecuteIncDec(line: string, ctx: Context): void {
 		var variable: string;
@@ -840,7 +840,7 @@ class LegacyGame {
 		var fileName = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return fileName;
 	}
 	AddObjectAction(id: number, name: string, script: string, noUpdate: boolean): void {
 		var actionNum: number;
@@ -902,17 +902,17 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	CapFirst(s: string): string {
-		// UNKNOWN ReturnStatement
+		return 'expr' + 'expr';
 	}
 	ConvertVarsIn(s: string, ctx: Context): string {
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	DisambObjHere(ctx: Context, id: number, firstPlace: string, twoPlaces: boolean, secondPlace: string, isExit: boolean): boolean {
 		var isSeen: boolean;
 		var onlySeen = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecClone(cloneString: string, ctx: Context): void {
 		var id: number;
@@ -961,7 +961,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecuteIfType(typeData: string): boolean {
 		var id: number;
@@ -974,7 +974,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	GetArrayIndex(varName: string, ctx: Context): ArrayResult {
 		var result: ArrayResult = new ArrayResult();
@@ -984,7 +984,7 @@ class LegacyGame {
 		var data = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		result.Name = 'expr';
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	Disambiguate(name: string, containedIn: string, ctx: Context, isExit: boolean): number {
 		var numberCorresIds = 0;
@@ -1007,13 +1007,13 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		this._thisTurnIt = this._lastIt;
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return -1;
 	}
 	DisplayStatusVariableInfo(id: number, type: VarType, ctx: Context): string {
 		var displayData: string = "";
 		var ep: number;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return displayData;
 	}
 	DoAction(ObjID: number, ActionName: string, ctx: Context, LogError: boolean): boolean {
 		var FoundAction: boolean;
@@ -1024,12 +1024,12 @@ class LegacyGame {
 		var NewThread: Context = 'expr';
 		NewThread.CallingObjectId = ObjID;
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return true;
 	}
 	HasAction(ObjID: number, ActionName: string): boolean {
 		var o = this._objs[ObjID];
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecForEach(scriptLine: string, ctx: Context): void {
 		var inLocation: string;
@@ -1070,7 +1070,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	ExecuteConditions(list: string, ctx: Context): boolean {
 		var conditions: string[];
@@ -1083,7 +1083,7 @@ class LegacyGame {
 		operations[0] = "AND";
 		var result = true;
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	ExecuteCreate(data: string, ctx: Context): void {
 		var newName: string;
@@ -1178,7 +1178,7 @@ class LegacyGame {
 	ExecuteIfHere(obj: string, ctx: Context): boolean {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecuteIfExists(obj: string, realOnly: boolean): boolean {
 		var result: boolean;
@@ -1191,7 +1191,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	ExecuteIfProperty(data: string): boolean {
 		var id: number;
@@ -1202,7 +1202,7 @@ class LegacyGame {
 		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return 'expr' == "yes";
 	}
 	ExecuteRepeat(data: string, ctx: Context): void {
 		var repeatWhileTrue: boolean;
@@ -1245,12 +1245,12 @@ class LegacyGame {
 		var nullPos = 'expr';
 		var result = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetFileDataChars(count: number): string {
 		var result = 'expr';
 		this._fileDataPos = this._fileDataPos + count;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetObjectActions(actionInfo: string): ActionType {
 		var name = 'expr';
@@ -1260,7 +1260,7 @@ class LegacyGame {
 		var result: ActionType = new ActionType();
 		result.ActionName = name;
 		result.Script = script;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetObjectId(name: string, ctx: Context, room: string): number {
 		var id: number;
@@ -1269,11 +1269,11 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return -1;
 	}
 	GetObjectIdNoAlias(name: string): number {
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return 0;
 	}
 	GetObjectProperty(name: string, id: number, existsOnly: boolean, logError: boolean): string {
 		var result: string = "";
@@ -1283,7 +1283,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return "";
 	}
 	GetPropertiesInType(type: string, err: boolean): PropertiesActions {
 		var blockId: number;
@@ -1292,29 +1292,29 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return propertyList;
 	}
 	GetRoomID(name: string, ctx: Context): number {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return 0;
 	}
 	GetTextOrScript(textScript: string): TextAction {
 		var result = new TextAction();
 		textScript = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetThingNumber(name: string, room: string, type: Thing): number {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return -1;
 	}
 	GetThingBlock(name: string, room: string, type: Thing): DefineBlock {
 		var result = new DefineBlock();
 		// UNKNOWN MultiLineIfBlock
 		result.StartLine = 0;
 		result.EndLine = 0;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	MakeRestoreData(): string {
 		var data: any = {};
@@ -1344,7 +1344,7 @@ class LegacyGame {
 		dataString = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	MoveThing(name: string, room: string, type: Thing, ctx: Context): void {
 		var oldRoom: string = "";
@@ -1365,7 +1365,7 @@ class LegacyGame {
 		var pos = 1;
 		var finished = false;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	DoFunction(data: string, ctx: Context): string {
 		var name: string;
@@ -1389,7 +1389,7 @@ class LegacyGame {
 		var param2: string;
 		var param3: string;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return "__NOTDEFINED";
 	}
 	ExecFor(line: string, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
@@ -1417,7 +1417,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SyncLockBlock
-		// UNKNOWN ReturnStatement
+		return this._questionResponse;
 	}
 	SetQuestionResponse(response: boolean): void {
 		var runnerThread: any = {};
@@ -1433,7 +1433,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecuteIfHas(condition: string): boolean {
 		var checkValue: number;
@@ -1448,7 +1448,7 @@ class LegacyGame {
 		var newValue = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return false;
 	}
 	ExecuteIfIs(condition: string): boolean {
 		var value1: string;
@@ -1464,7 +1464,7 @@ class LegacyGame {
 		var result = false;
 		// UNKNOWN SelectBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetNumericContents(name: string, ctx: Context, noError: boolean): number {
 		var numNumber: number;
@@ -1474,7 +1474,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	PlayerErrorMessage(e: PlayerError, ctx: Context): void {
 		// UNKNOWN ExpressionStatement
@@ -1485,7 +1485,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	GetErrorMessage(e: PlayerError, ctx: Context): string {
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	PlayMedia(filename: string): void {
 		// UNKNOWN ExpressionStatement
@@ -1621,7 +1621,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return SetResult.Unfound;
 	}
 	SetUpChoiceForm(blockName: string, ctx: Context): string {
 		var block = 'expr';
@@ -1633,7 +1633,7 @@ class LegacyGame {
 		var mnu: MenuData = new MenuData();
 		var choice: string = 'expr';
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	SetUpDefaultFonts(): void {
 		var gameblock = 'expr';
@@ -1812,7 +1812,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return foundCommand;
 	}
 	ExecuteChoose(section: string, ctx: Context): void {
 		// UNKNOWN ExpressionStatement
@@ -1831,13 +1831,13 @@ class LegacyGame {
 		// UNKNOWN DoLoopUntilBlock
 		var success = true;
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return success;
 	}
 	GetGender(character: string, capitalise: boolean, ctx: Context): string {
 		var result: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetStringContents(name: string, ctx: Context): string {
 		var returnAlias = false;
@@ -1868,7 +1868,7 @@ class LegacyGame {
 		var currentTestLinePos = 1;
 		var finished = false;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN ReturnStatement
+		return true;
 	}
 	OpenGame(filename: string): boolean {
 		var cdatb: boolean;
@@ -1895,7 +1895,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = filename;
-		// UNKNOWN ReturnStatement
+		return true;
 	}
 	SaveGame(filename: string, saveFile: boolean): Byte[] {
 		var ctx: Context = new Context();
@@ -1904,7 +1904,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		this._saveGameFile = filename;
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	MakeRestoreDataV2(): string {
 		var lines: any = {};
@@ -1926,7 +1926,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	SetAvailability(thingString: string, exists: boolean, ctx: Context, type: Thing): void {
 		// UNKNOWN MultiLineIfBlock
@@ -2041,7 +2041,7 @@ class LegacyGame {
 		var display: string;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return display;
 	}
 	DisplayTextSection(section: string, ctx: Context, OutputTo: string): void {
 		var block: DefineBlock;
@@ -2079,10 +2079,10 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return true;
 	}
 	CmdStartsWith(cmd: string, startsWith: string): boolean {
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	ExecGive(giveString: string, ctx: Context): void {
 		var article: string;
@@ -2179,20 +2179,20 @@ class LegacyGame {
 	}
 	FindStatement(block: DefineBlock, statement: string): string {
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return "";
 	}
 	FindLine(block: DefineBlock, statement: string, statementParam: string): string {
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return "";
 	}
 	GetCollectableAmount(name: string): number {
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return 0;
 	}
 	GetSecondChunk(line: string): string {
 		var endOfFirstBit = 'expr' + 1;
 		var lengthOfKeyword = 'expr' + 1;
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	GoDirection(direction: string, ctx: Context): void {
 		var dirData: TextAction = new TextAction();
@@ -2256,7 +2256,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		this._defaultRoomProperties = 'expr';
 		this._defaultProperties = 'expr';
-		// UNKNOWN ReturnStatement
+		return true;
 	}
 	PlaceExist(placeName: string, ctx: Context): string {
 		var roomId = 'expr';
@@ -2264,7 +2264,7 @@ class LegacyGame {
 		var scriptPresent = false;
 		var r = this._rooms[roomId];
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return "";
 	}
 	PlayerItem(item: string, got: boolean, ctx: Context, objId: number): void {
 		var foundObjectName = false;
@@ -2290,14 +2290,14 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return "<unfound>";
 	}
 	RetrLineParam(blockType: string, param: string, line: string, lineParam: string, ctx: Context): string {
 		var searchblock: DefineBlock;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return "<unfound>";
 	}
 	SetUpCollectables(): void {
 		var lastItem = false;
@@ -2369,7 +2369,7 @@ class LegacyGame {
 		var o = "out";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN ReturnStatement
+		return roomDisplayText;
 	}
 	UpdateItems(ctx: Context): void {
 		var invList: any = {};
@@ -2441,13 +2441,13 @@ class LegacyGame {
 		var hierarchy: string = "";
 		// UNKNOWN MultiLineIfBlock
 		result.CanAccessObject = true;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	GetGoToExits(roomId: number, ctx: Context): string {
 		var placeList: string = "";
 		var shownPlaceName: string;
 		// UNKNOWN ForBlock
-		// UNKNOWN ReturnStatement
+		return placeList;
 	}
 	SetUpExits(): void {
 		// UNKNOWN ForBlock
@@ -2463,7 +2463,7 @@ class LegacyGame {
 		var exits = this._rooms[roomId].Exits;
 		var dir = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return null;
 	}
 	ExecuteLock(tag: string, lock: boolean): void {
 		var roomExit: RoomExit;
@@ -2506,7 +2506,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	Save(html: string): Byte[] {
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	// UNKNOWN PropertyBlock
 	SendCommand(command: string): void {
@@ -2547,7 +2547,7 @@ class LegacyGame {
 	}
 	GetResourcePath(filename: string): string {
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	Cleanup(): void {
 		// UNKNOWN ExpressionStatement
@@ -2564,7 +2564,7 @@ class LegacyGame {
 		libName = 'expr';
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 	// UNKNOWN PropertyBlock
 	Tick(elapsedTime: number): void {
@@ -2615,7 +2615,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SyncLockBlock
-		// UNKNOWN ReturnStatement
+		return this.m_menuResponse;
 	}
 	SetMenuResponse(response: string): void {
 		var runnerThread: any = {};
@@ -2631,16 +2631,16 @@ class LegacyGame {
 		// UNKNOWN RaiseEventStatement
 	}
 	GetExternalScripts(): any {
-		// UNKNOWN ReturnStatement
+		return null;
 	}
 	GetExternalStylesheets(): any {
-		// UNKNOWN ReturnStatement
+		return null;
 	}
 	// UNKNOWN EventStatement
 	// UNKNOWN PropertyBlock
 	GetOriginalFilenameForQSG(): string {
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return this._gameFileName;
 	}
 	// UNKNOWN DelegateFunctionStatement
 	m_unzipFunction: UnzipFunctionDelegate;
@@ -2651,7 +2651,7 @@ class LegacyGame {
 		var tempDir: string = null;
 		var result: string = 'expr';
 		this._tempFolder = tempDir;
-		// UNKNOWN ReturnStatement
+		return result;
 	}
 	// UNKNOWN PropertyBlock
 	// UNKNOWN PropertyBlock
@@ -2659,7 +2659,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var path: string = 'expr';
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN ReturnStatement
+		return new any();
 	}
 	m_gameId: string;
 	// UNKNOWN PropertyBlock
@@ -2669,6 +2669,6 @@ class LegacyGame {
 	}
 	GetResourcelessCAS(): Byte[] {
 		var fileData: string = 'expr';
-		// UNKNOWN ReturnStatement
+		return 'expr';
 	}
 }

@@ -121,6 +121,9 @@ namespace LegacyConvert
                     var left = ProcessExpression(assign.Left, classFields);
                     var right = ProcessExpression(assign.Right, classFields);
                     return string.Format("{0}{1} = {2};\n", Tabs(depth), left, right);
+                case SyntaxKind.ReturnStatement:
+                    var returnStatement = (ReturnStatementSyntax)node;
+                    return string.Format("{0}return {1};\n", Tabs(depth), ProcessExpression(returnStatement.Expression, classFields));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -188,7 +191,22 @@ namespace LegacyConvert
             {
                 var op = binary.OperatorToken.ValueText;
                 if (op == "&") op = "+";
+                if (op == "=") op = "==";
                 return ProcessExpression(binary.Left, classFields) + " " + op + " " + ProcessExpression(binary.Right, classFields);
+            }
+
+            var unary = expr as UnaryExpressionSyntax;
+            if (unary != null)
+            {
+                if (unary.OperatorToken.Text == "Not")
+                {
+                    return "!" + ProcessExpression(unary.Operand, classFields);
+                }
+                if (unary.OperatorToken.Text == "-")
+                {
+                    return "-" + ProcessExpression(unary.Operand, classFields);
+                }
+                throw new InvalidOperationException();
             }
 
             var collectionInitializer = expr as CollectionInitializerSyntax;
