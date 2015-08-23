@@ -363,6 +363,12 @@ var PlayerCanAccessObjectResult = (function () {
     }
     return PlayerCanAccessObjectResult;
 })();
+var AppliesTo;
+(function (AppliesTo) {
+    AppliesTo[AppliesTo["Object"] = 0] = "Object";
+    AppliesTo[AppliesTo["Room"] = 1] = "Room";
+})(AppliesTo || (AppliesTo = {}));
+;
 var LegacyGame = (function () {
     function LegacyGame() {
         this._casKeywords = [];
@@ -2974,4 +2980,218 @@ var LegacyGame = (function () {
         return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     };
     return LegacyGame;
+})();
+var ChangeLog = (function () {
+    function ChangeLog() {
+        this._changes = {};
+    }
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    ChangeLog.prototype.AddItem = function (appliesTo, element, changeData) {
+        var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+    };
+    return ChangeLog;
+})();
+var Config = (function () {
+    function Config() {
+    }
+    return Config;
+})();
+var RoomExit = (function () {
+    function RoomExit() {
+    }
+    // UNKNOWN ConstructorBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    RoomExit.prototype.RunAction = function (ActionName, ctx) {
+        // UNKNOWN ExpressionStatement
+    };
+    RoomExit.prototype.RunScript = function (ctx) {
+        // UNKNOWN ExpressionStatement
+    };
+    RoomExit.prototype.UpdateObjectName = function () {
+        var sObjName;
+        var lLastExitID;
+        var sParentRoom;
+
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        sParentRoom = this.m_game._objs[this.m_oParent.ObjID].ObjectName;
+        sObjName = sParentRoom;
+
+        // UNKNOWN MultiLineIfBlock
+        this.m_game._objs[this.m_lObjID].ObjectName = sObjName;
+        this.m_game._objs[this.m_lObjID].ContainerRoom = sParentRoom;
+        this.m_sObjName = sObjName;
+    };
+    RoomExit.prototype.Go = function (ctx) {
+        // UNKNOWN MultiLineIfBlock
+    };
+    return RoomExit;
+})();
+var RoomExits = (function () {
+    function RoomExits() {
+        this.m_oDirections = {};
+        this.m_oPlaces = {};
+    }
+    // UNKNOWN ConstructorBlock
+    RoomExits.prototype.SetDirection = function (Direction, oExit) {
+        // UNKNOWN MultiLineIfBlock
+        this.m_bRegenerateAllExits = true;
+    };
+    RoomExits.prototype.GetDirectionExit = function (Direction) {
+        // UNKNOWN MultiLineIfBlock
+        return null;
+    };
+    RoomExits.prototype.AddPlaceExit = function (oExit) {
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN ExpressionStatement
+        this.m_bRegenerateAllExits = true;
+    };
+    RoomExits.prototype.AddExitFromTag = function (sTag) {
+        var dirThis;
+        var oExit = null;
+        var asParams;
+        var sAfterParam;
+        var bParam;
+
+        // UNKNOWN MultiLineIfBlock
+        this.AddExitFromTag = true;
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN WithBlock
+    };
+    RoomExits.prototype.AddExitFromCreateScript = function (sScript, ctx) {
+        var sParam;
+        var asParam;
+        var lParamStart;
+        var lParamEnd;
+        sParam = this.m_game.GetParameter(sScript, ctx);
+        asParam = Split(sParam, ";");
+        lParamStart = InStr(sScript, "<");
+        lParamEnd = InStr(lParamStart, sScript, ">");
+        // UNKNOWN MultiLineIfBlock
+    };
+
+    // UNKNOWN PropertyBlock
+    // UNKNOWN PropertyBlock
+    RoomExits.prototype.ExecuteGo = function (sCommand, ctx) {
+        var lExitID;
+        var oExit;
+
+        // UNKNOWN MultiLineIfBlock
+        lExitID = this.m_game.Disambiguate(sCommand, this.m_game._currentRoom, ctx, true);
+        // UNKNOWN MultiLineIfBlock
+    };
+    RoomExits.prototype.GetAvailableDirectionsDescription = function (sDescription, sList) {
+        var oExit;
+        var lCount;
+        var sDescPrefix;
+        var sOr;
+        sDescPrefix = "You can go";
+        sOr = "or";
+        sList = "";
+        lCount = 0;
+        // UNKNOWN ForEachBlock
+        // UNKNOWN ExpressionStatement
+        // UNKNOWN MultiLineIfBlock
+    };
+    RoomExits.prototype.GetDirectionName = function (lDir) {
+        var sDir = "";
+
+        // UNKNOWN SelectBlock
+        this.GetDirectionName = sDir;
+    };
+    RoomExits.prototype.GetDirectionEnum = function (sDir) {
+        // UNKNOWN SelectBlock
+    };
+    RoomExits.prototype.GetDirectionToken = function (lDir) {
+        var sDir = "";
+
+        // UNKNOWN SelectBlock
+        this.GetDirectionToken = sDir;
+    };
+    RoomExits.prototype.GetDirectionNameDisplay = function (oExit) {
+        var sDir = "";
+        var sDisplay;
+        // UNKNOWN MultiLineIfBlock
+    };
+    RoomExits.prototype.GetExitByObjectID = function (lID) {
+        var oExit;
+
+        // UNKNOWN ForEachBlock
+        return null;
+    };
+    RoomExits.prototype.AllExits = function () {
+        var oAllExits;
+        var oExit;
+
+        // UNKNOWN MultiLineIfBlock
+        oAllExits = new any();
+
+        // UNKNOWN ForEachBlock
+        // UNKNOWN ForEachBlock
+        this.m_oAllExits = oAllExits;
+        this.AllExits = oAllExits;
+        this.m_bRegenerateAllExits = false;
+    };
+    RoomExits.prototype.RemoveExit = function (oExit) {
+        // UNKNOWN MultiLineIfBlock
+        this.m_game._objs[oExit.ObjID].Exists = false;
+        this.m_bRegenerateAllExits = true;
+    };
+    return RoomExits;
+})();
+var TextFormatter = (function () {
+    function TextFormatter() {
+        this.colour = "";
+        this.fontSize = 0;
+        this.align = "";
+    }
+    TextFormatter.prototype.OutputHTML = function (input) {
+        var output = "";
+        var position = 0;
+        var codePosition;
+        var finished = false;
+        var nobr = false;
+        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
+
+        // UNKNOWN MultiLineIfBlock
+        // UNKNOWN DoLoopUntilBlock
+        return String.Format("<output{0}>{1}</output>", 'expr', output);
+    };
+    TextFormatter.prototype.FormatText = function (input) {
+        // UNKNOWN SingleLineIfStatement
+        var output = "";
+
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN AddAssignmentStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        // UNKNOWN SingleLineIfStatement
+        return output;
+    };
+    return TextFormatter;
 })();

@@ -271,7 +271,7 @@ enum VarType {String, Numeric};
 enum StopType {Win, Lose, Null};
 enum ExpressionSuccess {OK, Fail};
 class InitGameData {
-		Data: Byte[];
+		Data: number[];
 		SourceFile: string;
 }
 class ArrayResult {
@@ -282,6 +282,7 @@ class PlayerCanAccessObjectResult {
 		CanAccessObject: boolean;
 		ErrorMsg: string;
 }
+enum AppliesTo {Object, Room};
 class LegacyGame {
 	CopyContext(ctx: Context): Context {
 		var result: Context = new Context();
@@ -513,7 +514,7 @@ class LegacyGame {
 		return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
 	}
 	ConvertCasKeyword(casChar: string): string {
-		var c: Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
+		var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
 		var keyword: string = this._casKeywords[c];
 		// UNKNOWN MultiLineIfBlock
 		return keyword;
@@ -553,7 +554,7 @@ class LegacyGame {
 		var questDatLines: string[] = this.GetResourceLines(My.Resources.QuestDAT);
 		// UNKNOWN ForEachBlock
 	}
-	GetResourceLines(res: Byte[]): string[] {
+	GetResourceLines(res: number[]): string[] {
 		var enc: any = {};
 		var resFile: string = enc.GetString(res);
 		return Split(resFile, Chr(13) + Chr(10));
@@ -1972,7 +1973,7 @@ class LegacyGame {
 		this._saveGameFile = filename;
 		return true;
 	}
-	SaveGame(filename: string, saveFile: boolean): Byte[] {
+	SaveGame(filename: string, saveFile: boolean): number[] {
 		var ctx: Context = new Context();
 		var saveData: string;
 		// UNKNOWN SingleLineIfStatement
@@ -2580,7 +2581,7 @@ class LegacyGame {
 	Save(filename: string, html: string): void {
 		// UNKNOWN ExpressionStatement
 	}
-	Save(html: string): Byte[] {
+	Save(html: string): number[] {
 		return this.SaveGame(Filename, false);
 	}
 	// UNKNOWN PropertyBlock
@@ -2635,7 +2636,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	GetLibraryLines(libName: string): string[] {
-		var libCode: Byte[] = null;
+		var libCode: number[] = null;
 		libName = LCase(libName);
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
@@ -2742,8 +2743,212 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 	}
-	GetResourcelessCAS(): Byte[] {
+	GetResourcelessCAS(): number[] {
 		var fileData: string = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
 		return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
+	}
+}
+class ChangeLog {
+	_appliesToType: AppliesTo;
+	_changes: any = {};
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	AddItem(appliesTo: string, element: string, changeData: string): void {
+		var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+	}
+}
+class Config {
+	// UNKNOWN PropertyBlock
+}
+class RoomExit {
+	ID: string;
+	m_lObjID: number;
+	m_lRoomID: number;
+	m_lDirection: any;
+	m_oParent: RoomExits;
+	m_sObjName: string;
+	m_sDisplayName: string;
+	m_game: LegacyGame;
+	// UNKNOWN ConstructorBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	RunAction(ActionName: string, ctx: Context): void {
+		// UNKNOWN ExpressionStatement
+	}
+	RunScript(ctx: Context): void {
+		// UNKNOWN ExpressionStatement
+	}
+	UpdateObjectName(): void {
+		var sObjName: string;
+		var lLastExitID: number;
+		var sParentRoom: string;
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		sParentRoom = this.m_game._objs[this.m_oParent.ObjID].ObjectName;
+		sObjName = sParentRoom;
+		// UNKNOWN MultiLineIfBlock
+		this.m_game._objs[this.m_lObjID].ObjectName = sObjName;
+		this.m_game._objs[this.m_lObjID].ContainerRoom = sParentRoom;
+		this.m_sObjName = sObjName;
+	}
+	Go(ctx: Context): void {
+		// UNKNOWN MultiLineIfBlock
+	}
+}
+class RoomExits {
+	m_oDirections: any = {};
+	m_oPlaces: any = {};
+	m_lObjID: number;
+	m_oAllExits: any;
+	m_bRegenerateAllExits: boolean;
+	m_game: LegacyGame;
+	// UNKNOWN ConstructorBlock
+	SetDirection(Direction: any, oExit: RoomExit): void {
+		// UNKNOWN MultiLineIfBlock
+		this.m_bRegenerateAllExits = true;
+	}
+	GetDirectionExit(Direction: any): RoomExit {
+		// UNKNOWN MultiLineIfBlock
+		return null;
+	}
+	AddPlaceExit(oExit: RoomExit): void {
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN ExpressionStatement
+		this.m_bRegenerateAllExits = true;
+	}
+	AddExitFromTag(sTag: string): boolean {
+		var dirThis: any;
+		var oExit: RoomExit = null;
+		var asParams: string;
+		var sAfterParam: string;
+		var bParam: boolean;
+		// UNKNOWN MultiLineIfBlock
+		this.AddExitFromTag = true;
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN WithBlock
+	}
+	AddExitFromCreateScript(sScript: string, ctx: Context): boolean {
+		var sParam: string;
+		var asParam: string;
+		var lParamStart: number;
+		var lParamEnd: number;
+		sParam = this.m_game.GetParameter(sScript, ctx);
+		asParam = Split(sParam, ";");
+		lParamStart = InStr(sScript, "<");
+		lParamEnd = InStr(lParamStart, sScript, ">");
+		// UNKNOWN MultiLineIfBlock
+	}
+	// UNKNOWN PropertyBlock
+	// UNKNOWN PropertyBlock
+	ExecuteGo(sCommand: string, ctx: Context): void {
+		var lExitID: number;
+		var oExit: RoomExit;
+		// UNKNOWN MultiLineIfBlock
+		lExitID = this.m_game.Disambiguate(sCommand, this.m_game._currentRoom, ctx, true);
+		// UNKNOWN MultiLineIfBlock
+	}
+	GetAvailableDirectionsDescription(sDescription: string, sList: string): void {
+		var oExit: RoomExit;
+		var lCount: number;
+		var sDescPrefix: string;
+		var sOr: string;
+		sDescPrefix = "You can go";
+		sOr = "or";
+		sList = "";
+		lCount = 0;
+		// UNKNOWN ForEachBlock
+		// UNKNOWN ExpressionStatement
+		// UNKNOWN MultiLineIfBlock
+	}
+	GetDirectionName(lDir: any): string {
+		var sDir: string = "";
+		// UNKNOWN SelectBlock
+		this.GetDirectionName = sDir;
+	}
+	GetDirectionEnum(sDir: string): any {
+		// UNKNOWN SelectBlock
+	}
+	GetDirectionToken(lDir: any): string {
+		var sDir: string = "";
+		// UNKNOWN SelectBlock
+		this.GetDirectionToken = sDir;
+	}
+	GetDirectionNameDisplay(oExit: RoomExit): string {
+		var sDir: string = "";
+		var sDisplay: string;
+		// UNKNOWN MultiLineIfBlock
+	}
+	GetExitByObjectID(lID: number): RoomExit {
+		var oExit: RoomExit;
+		// UNKNOWN ForEachBlock
+		return null;
+	}
+	AllExits(): any {
+		var oAllExits: any;
+		var oExit: RoomExit;
+		// UNKNOWN MultiLineIfBlock
+		oAllExits = new any();
+		// UNKNOWN ForEachBlock
+		// UNKNOWN ForEachBlock
+		this.m_oAllExits = oAllExits;
+		this.AllExits = oAllExits;
+		this.m_bRegenerateAllExits = false;
+	}
+	RemoveExit(oExit: RoomExit): void {
+		// UNKNOWN MultiLineIfBlock
+		this.m_game._objs[oExit.ObjID].Exists = false;
+		this.m_bRegenerateAllExits = true;
+	}
+}
+class TextFormatter {
+	bold: boolean;
+	italic: boolean;
+	underline: boolean;
+	colour: string = "";
+	fontSize: number = 0;
+	align: string = "";
+	OutputHTML(input: string): string {
+		var output: string = "";
+		var position: number = 0;
+		var codePosition: number;
+		var finished: boolean = false;
+		var nobr: boolean = false;
+		input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN DoLoopUntilBlock
+		return String.Format("<output{0}>{1}</output>", 'expr', output);
+	}
+	FormatText(input: string): string {
+		// UNKNOWN SingleLineIfStatement
+		var output: string = "";
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN AddAssignmentStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		// UNKNOWN SingleLineIfStatement
+		return output;
 	}
 }

@@ -15,8 +15,19 @@ namespace LegacyConvert
 
         static void Main(string[] args)
         {
-            var text = System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\LegacyGame.vb");
-            var tree = VisualBasicSyntaxTree.ParseText(text);
+            var input = new StringBuilder();
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\LegacyGame.vb"));
+            input.Append("\n");
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\ChangeLog.vb"));
+            input.Append("\n");
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\Config.vb"));
+            input.Append("\n");
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\RoomExit.vb"));
+            input.Append("\n");
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\RoomExits.vb"));
+            input.Append("\n");
+            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\TextFormatter.vb"));
+            var tree = VisualBasicSyntaxTree.ParseText(input.ToString());
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
             var compilation = VisualBasicCompilation.Create("Legacy").AddSyntaxTrees(tree);
@@ -269,6 +280,12 @@ namespace LegacyConvert
                 return predefinedType.Keyword.Text;
             }
 
+            var ternary = expr as TernaryConditionalExpressionSyntax;
+            if (ternary != null)
+            {
+                return "'expr'";
+            }
+
             throw new InvalidOperationException();
         }
 
@@ -319,6 +336,7 @@ namespace LegacyConvert
         {
             if (type == "Integer") return "number";
             if (type == "Double") return "number";
+            if (type == "Byte") return "number";
             if (type == "String") return "string";
             if (type == "Boolean") return "boolean";
             return type;
