@@ -125,7 +125,7 @@ namespace LegacyConvert
             var literal = expr as LiteralExpressionSyntax;
             if (literal != null)
             {
-                return "'expr'";
+                return Newtonsoft.Json.JsonConvert.SerializeObject(literal.Token.Value);
             }
 
             var invocation = expr as InvocationExpressionSyntax;

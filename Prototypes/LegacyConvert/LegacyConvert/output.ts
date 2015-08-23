@@ -295,7 +295,7 @@ class LegacyGame {
 	_stateLock: Object = new Object();
 	_state: State = State.Ready;
 	_waitLock: Object = new Object();
-	_readyForCommand: boolean = 'expr';
+	_readyForCommand: boolean = true;
 	_gameLoading: boolean;
 	_random: any;
 	_tempFolder: string;
@@ -323,10 +323,10 @@ class LegacyGame {
 	CheckSections(): boolean {
 		var defines: number;
 		var braces: number;
-		var checkLine: string = 'expr';
+		var checkLine: string = "";
 		var bracePos: number;
 		var pos: number;
-		var section: string = 'expr';
+		var section: string = "";
 		var hasErrors: boolean;
 		var skipBlock: boolean;
 		// UNKNOWN SimpleAssignmentStatement
@@ -377,9 +377,9 @@ class LegacyGame {
 	}
 	ObliterateParameters(): string {
 		var inParameter: boolean;
-		var exitCharacter: string = 'expr';
+		var exitCharacter: string = "";
 		var curChar: string;
-		var outputLine: string = 'expr';
+		var outputLine: string = "";
 		var obscuringFunctionName: boolean;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -387,8 +387,8 @@ class LegacyGame {
 	}
 	ObliterateVariableNames(): string {
 		var inParameter: boolean;
-		var exitCharacter: string = 'expr';
-		var outputLine: string = 'expr';
+		var exitCharacter: string = "";
+		var outputLine: string = "";
 		var curChar: string;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -439,7 +439,7 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	Keyword2CAS(): string {
-		var k = 'expr';
+		var k = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
@@ -487,7 +487,7 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		var lastSlashPos: number;
 		var slashPos: number;
-		var curPos = 'expr';
+		var curPos = 1;
 		// UNKNOWN DoLoopUntilBlock
 		var filenameNoPath = 'expr';
 		// UNKNOWN ForBlock
@@ -497,7 +497,7 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN SimpleAssignmentStatement
-		var gotGameBlock = 'expr';
+		var gotGameBlock = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -522,7 +522,7 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	DecryptString(): string {
-		var output = 'expr';
+		var output = "";
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -536,8 +536,8 @@ class LegacyGame {
 	EvaluateInlineExpressions(): string {
 		// UNKNOWN MultiLineIfBlock
 		var bracePos: number;
-		var curPos = 'expr';
-		var resultLine = 'expr';
+		var curPos = 1;
+		var resultLine = "";
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN DoLoopUntilBlock
@@ -549,16 +549,16 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	ExecVerb(): boolean {
 		var gameBlock: DefineBlock;
-		var foundVerb = 'expr';
-		var verbProperty: string = 'expr';
-		var script: string = 'expr';
+		var foundVerb = false;
+		var verbProperty: string = "";
+		var script: string = "";
 		var verbsList: string;
-		var thisVerb: string = 'expr';
+		var thisVerb: string = "";
 		var scp: number;
 		var id: number;
-		var verbObject: string = 'expr';
+		var verbObject: string = "";
 		var verbTag: string;
-		var thisScript: string = 'expr';
+		var thisScript: string = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ForBlock
@@ -570,16 +570,16 @@ class LegacyGame {
 		var endBracketPos: number;
 		var res: any;
 		// UNKNOWN DoLoopUntilBlock
-		var numElements = 'expr';
+		var numElements = 1;
 		var elements: string;
 		// UNKNOWN ReDimStatement
-		var numOperators = 'expr';
+		var numOperators = 0;
 		var operators: string;
 		var newElement: boolean;
 		var obscuredExpr = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		var opNum = 'expr';
+		var opNum = 0;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
@@ -589,9 +589,9 @@ class LegacyGame {
 		var contentsIDs: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var numContents = 'expr';
+		var numContents = 0;
 		// UNKNOWN ForBlock
-		var contents = 'expr';
+		var contents = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -625,7 +625,7 @@ class LegacyGame {
 		var extracted: boolean;
 		var resId: number;
 		// UNKNOWN SingleLineIfStatement
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var fileName = 'expr';
@@ -649,7 +649,7 @@ class LegacyGame {
 	}
 	DisambObjHere(): boolean {
 		var isSeen: boolean;
-		var onlySeen = 'expr';
+		var onlySeen = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -663,7 +663,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var objName = 'expr';
 		var actionName = 'expr';
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var o = 'expr';
@@ -676,7 +676,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var objName = 'expr';
 		var typeName = 'expr';
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var o = 'expr';
@@ -694,10 +694,10 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	Disambiguate(): number {
-		var numberCorresIds = 'expr';
+		var numberCorresIds = 0;
 		var idNumbers: number;
 		var firstPlace: string;
-		var secondPlace: string = 'expr';
+		var secondPlace: string = "";
 		var twoPlaces: boolean;
 		var descriptionText: string;
 		var validNames: string;
@@ -717,14 +717,14 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	DisplayStatusVariableInfo(): string {
-		var displayData: string = 'expr';
+		var displayData: string = "";
 		var ep: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
 	DoAction(): boolean {
 		var FoundAction: boolean;
-		var ActionScript: string = 'expr';
+		var ActionScript: string = "";
 		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -750,14 +750,14 @@ class LegacyGame {
 	}
 	ExecuteConditions(): boolean {
 		var conditions: string;
-		var numConditions = 'expr';
+		var numConditions = 0;
 		var operations: string;
 		var obscuredConditionList = 'expr';
-		var pos = 'expr';
-		var isFinalCondition = 'expr';
+		var pos = 1;
+		var isFinalCondition = false;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN SimpleAssignmentStatement
-		var result = 'expr';
+		var result = true;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -776,10 +776,10 @@ class LegacyGame {
 	}
 	ExecuteIfExists(): boolean {
 		var result: boolean;
-		var errorReport = 'expr';
+		var errorReport = false;
 		var scp: number;
 		// UNKNOWN MultiLineIfBlock
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -793,7 +793,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var objName = 'expr';
 		var propertyName = 'expr';
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -825,7 +825,7 @@ class LegacyGame {
 	}
 	GetObjectId(): number {
 		var id: number;
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -837,8 +837,8 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectProperty(): string {
-		var result: string = 'expr';
-		var found = 'expr';
+		var result: string = "";
+		var found = false;
 		var o = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
@@ -849,7 +849,7 @@ class LegacyGame {
 	GetPropertiesInType(): PropertiesActions {
 		var blockId: number;
 		var propertyList: any;
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -910,17 +910,17 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	ConvertParameter(): string {
-		var result: string = 'expr';
-		var pos = 'expr';
-		var finished = 'expr';
+		var result: string = "";
+		var pos = 1;
+		var finished = false;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
 	DoFunction(): string {
 		var name: string;
 		var parameter: string;
-		var intFuncResult: string = 'expr';
-		var intFuncExecuted = 'expr';
+		var intFuncResult: string = "";
+		var intFuncExecuted = false;
 		var paramPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var block: DefineBlock;
@@ -932,8 +932,8 @@ class LegacyGame {
 		var parameters: string;
 		var untrimmedParameters: string;
 		var objId: number;
-		var numParameters = 'expr';
-		var pos = 'expr';
+		var numParameters = 0;
+		var pos = 1;
 		// UNKNOWN MultiLineIfBlock
 		var param2: string;
 		var param3: string;
@@ -962,7 +962,7 @@ class LegacyGame {
 		var scp = 'expr';
 		var name = 'expr';
 		var newVal = 'expr';
-		var found = 'expr';
+		var found = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var op = 'expr';
@@ -982,7 +982,7 @@ class LegacyGame {
 		var scp2 = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var result = 'expr';
+		var result = false;
 		// UNKNOWN SelectBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -990,7 +990,7 @@ class LegacyGame {
 	GetNumericContents(): number {
 		var numNumber: number;
 		var arrayIndex: number;
-		var exists = 'expr';
+		var exists = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1057,10 +1057,10 @@ class LegacyGame {
 	ExecUserCommand(): boolean {
 		var curCmd: string;
 		var commandList: string;
-		var script: string = 'expr';
+		var script: string = "";
 		var commandTag: string;
-		var commandLine: string = 'expr';
-		var foundCommand = 'expr';
+		var commandLine: string = "";
+		var foundCommand = false;
 		var roomId = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1076,12 +1076,12 @@ class LegacyGame {
 		var var2Pos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
-		var currentReqLinePos = 'expr';
-		var currentTestLinePos = 'expr';
-		var finished = 'expr';
-		var numberChunks = 'expr';
+		var currentReqLinePos = 1;
+		var currentTestLinePos = 1;
+		var finished = false;
+		var numberChunks = 0;
 		// UNKNOWN DoLoopUntilBlock
-		var success = 'expr';
+		var success = true;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1092,13 +1092,13 @@ class LegacyGame {
 		// UNKNOWN ReturnStatement
 	}
 	GetStringContents(): string {
-		var returnAlias = 'expr';
-		var arrayIndex = 'expr';
+		var returnAlias = false;
+		var arrayIndex = 0;
 		var cp = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		var exists = 'expr';
+		var exists = false;
 		var id: number;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1116,9 +1116,9 @@ class LegacyGame {
 		var var2Pos: number;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SimpleAssignmentStatement
-		var currentReqLinePos = 'expr';
-		var currentTestLinePos = 'expr';
-		var finished = 'expr';
+		var currentReqLinePos = 1;
+		var currentTestLinePos = 1;
+		var finished = false;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1127,9 +1127,9 @@ class LegacyGame {
 		var result: boolean;
 		var visible: boolean;
 		var room: string;
-		var fileData: string = 'expr';
+		var fileData: string = "";
 		var savedQsgVersion: string;
-		var data: string = 'expr';
+		var data: string = "";
 		var name: string;
 		var scp: number;
 		var cdat: number;
@@ -1137,7 +1137,7 @@ class LegacyGame {
 		var scp3: number;
 		var lines: any = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
-		var prevQsgVersion = 'expr';
+		var prevQsgVersion = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN MultiLineIfBlock
@@ -1196,11 +1196,11 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	ExecCommand(): boolean {
 		var parameter: string;
-		var skipAfterTurn = 'expr';
+		var skipAfterTurn = false;
 		// UNKNOWN SimpleAssignmentStatement
 		var oldBadCmdBefore = _badCmdBefore;
 		var roomID = 'expr';
-		var enteredHelpCommand = 'expr';
+		var enteredHelpCommand = false;
 		// UNKNOWN SingleLineIfStatement
 		var cmd = 'expr';
 		// UNKNOWN SyncLockBlock
@@ -1213,11 +1213,11 @@ class LegacyGame {
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ExpressionStatement
 		var newCtx: Context = 'expr';
-		var globalOverride = 'expr';
+		var globalOverride = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		var invList = 'expr';
+		var invList = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1270,7 +1270,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var gameBlock: DefineBlock;
 		// UNKNOWN SimpleAssignmentStatement
-		var aslVersion = 'expr';
+		var aslVersion = "//";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -1305,8 +1305,8 @@ class LegacyGame {
 	}
 	PlaceExist(): string {
 		var roomId = 'expr';
-		var foundPlace = 'expr';
-		var scriptPresent = 'expr';
+		var foundPlace = false;
+		var scriptPresent = false;
 		var r = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
@@ -1336,20 +1336,20 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	UpdateDoorways(): string {
-		var roomDisplayText: string = 'expr';
-		var directions: string = 'expr';
-		var outPlacePrefix: string = 'expr';
-		var n = 'expr';
-		var s = 'expr';
-		var e = 'expr';
-		var w = 'expr';
-		var ne = 'expr';
-		var nw = 'expr';
-		var se = 'expr';
-		var sw = 'expr';
-		var u = 'expr';
-		var d = 'expr';
-		var o = 'expr';
+		var roomDisplayText: string = "";
+		var directions: string = "";
+		var outPlacePrefix: string = "";
+		var n = "north";
+		var s = "south";
+		var e = "east";
+		var w = "west";
+		var ne = "northeast";
+		var nw = "northwest";
+		var se = "southeast";
+		var sw = "southwest";
+		var u = "up";
+		var d = "down";
+		var o = "out";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
@@ -1365,13 +1365,13 @@ class LegacyGame {
 		var parentId: number;
 		var parentDisplayName: string;
 		var result: any;
-		var hierarchy: string = 'expr';
+		var hierarchy: string = "";
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
 	}
 	GetGoToExits(): string {
-		var placeList: string = 'expr';
+		var placeList: string = "";
 		var shownPlaceName: string;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
@@ -1423,7 +1423,7 @@ class LegacyGame {
 	// UNKNOWN SubBlock
 	// UNKNOWN SubBlock
 	GetLibraryLines(): any {
-		var libCode: any = 'expr';
+		var libCode: any = null;
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
@@ -1464,7 +1464,7 @@ class LegacyGame {
 	m_unzipFunction: UnzipFunctionDelegate;
 	// UNKNOWN SubBlock
 	GetUnzippedFile(): string {
-		var tempDir: string = 'expr';
+		var tempDir: string = null;
 		var result: string = 'expr';
 		// UNKNOWN SimpleAssignmentStatement
 		// UNKNOWN ReturnStatement
