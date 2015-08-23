@@ -210,14 +210,14 @@ class PlayerCanAccessObjectResult {
 class LegacyGame {
 	CopyContext(ctx: Context): Context {
 		var result: Context = new Context();
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		result.CallingObjectId = ctx.CallingObjectId;
+		result.NumParameters = ctx.NumParameters;
+		result.Parameters = ctx.Parameters;
+		result.FunctionReturnValue = ctx.FunctionReturnValue;
+		result.AllowRealNamesInCommand = ctx.AllowRealNamesInCommand;
+		result.DontProcessCommand = ctx.DontProcessCommand;
+		result.CancelExec = ctx.CancelExec;
+		result.StackCounter = ctx.StackCounter;
 		// UNKNOWN ReturnStatement
 	}
 	_defineBlockParams: any;
@@ -329,10 +329,10 @@ class LegacyGame {
 		var section: string = "";
 		var hasErrors: boolean;
 		var skipBlock: boolean;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._openErrorReport = "";
+		hasErrors = false;
+		defines = 0;
+		braces = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -371,7 +371,7 @@ class LegacyGame {
 		var obp: number;
 		var cbp: number;
 		var curProc: number;
-		// UNKNOWN SimpleAssignmentStatement
+		i = 1;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ForBlock
 	}
@@ -384,8 +384,8 @@ class LegacyGame {
 		var numParamEnd: number;
 		var finLoop: boolean;
 		var inText: boolean;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		hasErrors = false;
+		inText = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -393,7 +393,7 @@ class LegacyGame {
 	}
 	GetAfterParameter(s: string): string {
 		var eop: number;
-		// UNKNOWN SimpleAssignmentStatement
+		eop = 'expr';
 		// UNKNOWN MultiLineIfBlock
 	}
 	ObliterateParameters(s: string): string {
@@ -402,7 +402,7 @@ class LegacyGame {
 		var curChar: string;
 		var outputLine: string = "";
 		var obscuringFunctionName: boolean;
-		// UNKNOWN SimpleAssignmentStatement
+		inParameter = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -411,7 +411,7 @@ class LegacyGame {
 		var exitCharacter: string = "";
 		var outputLine: string = "";
 		var curChar: string;
-		// UNKNOWN SimpleAssignmentStatement
+		inParameter = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -425,7 +425,7 @@ class LegacyGame {
 	}
 	ReportErrorLine(s: string): string {
 		var replaceFrom: number;
-		// UNKNOWN SimpleAssignmentStatement
+		replaceFrom = 'expr';
 		// UNKNOWN MultiLineIfBlock
 	}
 	YesNo(yn: boolean): string {
@@ -451,15 +451,15 @@ class LegacyGame {
 		var l: string;
 		var blockType: string;
 		var result = new DefineBlock();
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		result.StartLine = 0;
+		result.EndLine = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
 	}
 	DefineBlockParam(blockname: string, param: string): DefineBlock {
 		var cache: any;
 		var result = new DefineBlock();
-		// UNKNOWN SimpleAssignmentStatement
+		param = "k" + param;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -511,13 +511,13 @@ class LegacyGame {
 		var typeLine: number;
 		var defineCount: number;
 		var curLine: number;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._defineBlockParams = new any();
+		result = true;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		numLibraries = 0;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN SimpleAssignmentStatement
+		skipCheck = false;
 		var lastSlashPos: number;
 		var slashPos: number;
 		var curPos = 1;
@@ -527,17 +527,17 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberSections = 1;
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberSections = this._numberSections - 1;
 		var gotGameBlock = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
+		hasErrors = 'expr';
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._saveGameFile = "";
 		// UNKNOWN ReturnStatement
 	}
 	LogASLError(err: string, type: LogType): void {
@@ -548,8 +548,8 @@ class LegacyGame {
 		var newParam: string;
 		var startPos: number;
 		var endPos: number;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		startPos = 'expr';
+		endPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var retrParam = 'expr';
 		// UNKNOWN MultiLineIfBlock
@@ -557,9 +557,9 @@ class LegacyGame {
 	}
 	AddLine(line: string): void {
 		var numLines: number;
-		// UNKNOWN SimpleAssignmentStatement
+		numLines = 'expr' + 1;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._lines[numLines] = line;
 	}
 	LoadCASFile(filename: string): void {
 		var endLineReached: boolean;
@@ -581,7 +581,7 @@ class LegacyGame {
 		var d: string;
 		// UNKNOWN ReDimStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		chkVer = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -623,7 +623,7 @@ class LegacyGame {
 		var curPos = 1;
 		var resultLine = "";
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN SimpleAssignmentStatement
+		curPos = 1;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -647,15 +647,15 @@ class LegacyGame {
 		var noParentSpecified = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		childLength = sepPos - 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN MultiLineIfBlock
+		childName = 'expr';
+		gotObject = false;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		// UNKNOWN MultiLineIfBlock
+		// UNKNOWN MultiLineIfBlock
+		isContainer = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var canAccessObject = 'expr';
@@ -675,10 +675,10 @@ class LegacyGame {
 		var parentName: string = "";
 		var scp: number;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		childId = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -694,12 +694,12 @@ class LegacyGame {
 		var textToPrint: string;
 		var isContainer: boolean;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		name = 'expr';
+		id = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		isContainer = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		isOpen = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var canAccessObject = 'expr';
 		// UNKNOWN MultiLineIfBlock
@@ -729,7 +729,7 @@ class LegacyGame {
 		var verbTag: string;
 		var thisScript: string = "";
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		gameBlock = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
@@ -750,8 +750,8 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		var opNum = 0;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		res.Success = ExpressionSuccess.OK;
+		res.Result = elements[1];
 		// UNKNOWN ReturnStatement
 	}
 	ListContents(id: number, ctx: Context): string {
@@ -768,8 +768,8 @@ class LegacyGame {
 		var EPos: number;
 		var CurPos: number;
 		var OutputString: string;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		OutputString = s;
+		CurPos = 1;
 		// UNKNOWN DoLoopUntilBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -780,7 +780,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 	}
 	GetHTMLColour(colour: string, defaultColour: string): string {
-		// UNKNOWN SimpleAssignmentStatement
+		colour = 'expr';
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SelectBlock
 	}
@@ -848,16 +848,16 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr'.ActionName = name;
+		'expr'.Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	AddToChangeLog(appliesTo: string, changeData: string): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameChangeData.NumberChanges = this._gameChangeData.NumberChanges + 1;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr' = new ChangeType();
+		'expr'.AppliesTo = appliesTo;
+		'expr'.Change = changeData;
 	}
 	AddToObjectChangeLog(appliesToType: any, appliesTo: string, element: string, changeData: string): void {
 		var changeLog: ChangeLog;
@@ -882,8 +882,8 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr'.ActionName = name;
+		'expr'.Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	AddToObjectAltNames(altNames: string, id: number): void {
@@ -920,12 +920,12 @@ class LegacyGame {
 		var cloneTo: string;
 		var SC = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberObjs = this._numberObjs + 1;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._objs[this._numberObjs] = new ObjectType();
+		this._objs[this._numberObjs] = this._objs[id];
+		this._objs[this._numberObjs].ContainerRoom = cloneTo;
+		this._objs[this._numberObjs].ObjectName = newName;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 	}
@@ -942,9 +942,9 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var o = this._objs[id];
-		// UNKNOWN SimpleAssignmentStatement
+		o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr' = typeName;
 		var propertyData = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
@@ -983,7 +983,7 @@ class LegacyGame {
 		var endPos = 'expr';
 		var data = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		result.Name = 'expr';
 		// UNKNOWN ReturnStatement
 	}
 	Disambiguate(name: string, containedIn: string, ctx: Context, isExit: boolean): number {
@@ -995,17 +995,17 @@ class LegacyGame {
 		var descriptionText: string[];
 		var validNames: string[];
 		var numValidNames: number;
-		// UNKNOWN SimpleAssignmentStatement
+		name = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._thisTurnIt = 0;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._thisTurnIt = this._lastIt;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
 	}
@@ -1022,7 +1022,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var NewThread: Context = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		NewThread.CallingObjectId = ObjID;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ReturnStatement
 	}
@@ -1037,7 +1037,7 @@ class LegacyGame {
 		var isExit: boolean;
 		var isRoom: boolean;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		scriptLine = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 	}
@@ -1052,7 +1052,7 @@ class LegacyGame {
 		var scp = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var objName = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		actionName = 'expr';
 		var ep = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
@@ -1060,8 +1060,8 @@ class LegacyGame {
 		var o = this._objs[id];
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr'.ActionName = actionName;
+		'expr'.Script = script;
 		// UNKNOWN ExpressionStatement
 	}
 	ExecuteCondition(condition: string, ctx: Context): boolean {
@@ -1080,7 +1080,7 @@ class LegacyGame {
 		var pos = 1;
 		var isFinalCondition = false;
 		// UNKNOWN DoLoopUntilBlock
-		// UNKNOWN SimpleAssignmentStatement
+		operations[0] = "AND";
 		var result = true;
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
@@ -1115,7 +1115,7 @@ class LegacyGame {
 		var found: boolean;
 		var parentId: number;
 		var id: number;
-		// UNKNOWN SimpleAssignmentStatement
+		id = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		var isInContainer = false;
@@ -1238,8 +1238,8 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	InitFileData(fileData: string): void {
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._fileData = fileData;
+		this._fileDataPos = 1;
 	}
 	GetNextChunk(): string {
 		var nullPos = 'expr';
@@ -1249,7 +1249,7 @@ class LegacyGame {
 	}
 	GetFileDataChars(count: number): string {
 		var result = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._fileDataPos = this._fileDataPos + count;
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectActions(actionInfo: string): ActionType {
@@ -1258,8 +1258,8 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		var script = 'expr';
 		var result: ActionType = new ActionType();
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		result.ActionName = name;
+		result.Script = script;
 		// UNKNOWN ReturnStatement
 	}
 	GetObjectId(name: string, ctx: Context, room: string): number {
@@ -1301,7 +1301,7 @@ class LegacyGame {
 	}
 	GetTextOrScript(textScript: string): TextAction {
 		var result = new TextAction();
-		// UNKNOWN SimpleAssignmentStatement
+		textScript = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ReturnStatement
 	}
@@ -1312,8 +1312,8 @@ class LegacyGame {
 	GetThingBlock(name: string, room: string, type: Thing): DefineBlock {
 		var result = new DefineBlock();
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		result.StartLine = 0;
+		result.EndLine = 0;
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreData(): string {
@@ -1341,7 +1341,7 @@ class LegacyGame {
 		// UNKNOWN ForBlock
 		var dataString: string;
 		var newFileData: any = {};
-		// UNKNOWN SimpleAssignmentStatement
+		dataString = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ReturnStatement
@@ -1375,7 +1375,7 @@ class LegacyGame {
 		var paramPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var block: DefineBlock;
-		// UNKNOWN SimpleAssignmentStatement
+		block = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1426,7 +1426,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetQuestionResponseInNewThread(response: Object): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this._questionResponse = 'expr';
 		// UNKNOWN SyncLockBlock
 	}
 	ExecuteIfGot(item: string): boolean {
@@ -1497,7 +1497,7 @@ class LegacyGame {
 		var sync: boolean = false;
 		var looped: boolean = false;
 		var params: any = {};
-		// UNKNOWN SimpleAssignmentStatement
+		params = new any();
 		var filename = 'expr';
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
@@ -1515,24 +1515,24 @@ class LegacyGame {
 		var storedData: ChangeType[] = [];
 		var decryptedFile: any = {};
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._fileData = 'expr';
+		this._currentRoom = 'expr';
 		var numData = 'expr';
 		var createdObjects: any = {};
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		numData = 'expr';
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		numData = 'expr';
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		numData = 'expr';
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameIsRestoring = true;
+		numData = 'expr';
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		numData = 'expr';
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameIsRestoring = false;
 	}
 	SetBackground(col: string): void {
 		// UNKNOWN ExpressionStatement
@@ -1541,44 +1541,44 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetDefaultPlayerErrorMessages(): void {
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._playerErrorMessageString[PlayerError.BadCommand] = "I don't understand your command. Type HELP for a list of valid commands.";
+		this._playerErrorMessageString[PlayerError.BadGo] = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place.";
+		this._playerErrorMessageString[PlayerError.BadGive] = "You didn't say who you wanted to give that to.";
+		this._playerErrorMessageString[PlayerError.BadCharacter] = "I can't see anybody of that name here.";
+		this._playerErrorMessageString[PlayerError.NoItem] = "You don't have that.";
+		this._playerErrorMessageString[PlayerError.ItemUnwanted] = "#quest.error.gender# doesn't want #quest.error.article#.";
+		this._playerErrorMessageString[PlayerError.BadLook] = "You didn't say what you wanted to look at.";
+		this._playerErrorMessageString[PlayerError.BadThing] = "I can't see that here.";
+		this._playerErrorMessageString[PlayerError.DefaultLook] = "Nothing out of the ordinary.";
+		this._playerErrorMessageString[PlayerError.DefaultSpeak] = "#quest.error.gender# says nothing.";
+		this._playerErrorMessageString[PlayerError.BadItem] = "I can't see that anywhere.";
+		this._playerErrorMessageString[PlayerError.DefaultTake] = "You pick #quest.error.article# up.";
+		this._playerErrorMessageString[PlayerError.BadUse] = "You didn't say what you wanted to use that on.";
+		this._playerErrorMessageString[PlayerError.DefaultUse] = "You can't use that here.";
+		this._playerErrorMessageString[PlayerError.DefaultOut] = "There's nowhere you can go out to around here.";
+		this._playerErrorMessageString[PlayerError.BadPlace] = "You can't go there.";
+		this._playerErrorMessageString[PlayerError.DefaultExamine] = "Nothing out of the ordinary.";
+		this._playerErrorMessageString[PlayerError.BadTake] = "You can't take #quest.error.article#.";
+		this._playerErrorMessageString[PlayerError.CantDrop] = "You can't drop that here.";
+		this._playerErrorMessageString[PlayerError.DefaultDrop] = "You drop #quest.error.article#.";
+		this._playerErrorMessageString[PlayerError.BadDrop] = "You are not carrying such a thing.";
+		this._playerErrorMessageString[PlayerError.BadPronoun] = "I don't know what '#quest.error.pronoun#' you are referring to.";
+		this._playerErrorMessageString[PlayerError.BadExamine] = "You didn't say what you wanted to examine.";
+		this._playerErrorMessageString[PlayerError.AlreadyOpen] = "It is already open.";
+		this._playerErrorMessageString[PlayerError.AlreadyClosed] = "It is already closed.";
+		this._playerErrorMessageString[PlayerError.CantOpen] = "You can't open that.";
+		this._playerErrorMessageString[PlayerError.CantClose] = "You can't close that.";
+		this._playerErrorMessageString[PlayerError.DefaultOpen] = "You open it.";
+		this._playerErrorMessageString[PlayerError.DefaultClose] = "You close it.";
+		this._playerErrorMessageString[PlayerError.BadPut] = "You didn't specify what you wanted to put #quest.error.article# on or in.";
+		this._playerErrorMessageString[PlayerError.CantPut] = "You can't put that there.";
+		this._playerErrorMessageString[PlayerError.DefaultPut] = "Done.";
+		this._playerErrorMessageString[PlayerError.CantRemove] = "You can't remove that.";
+		this._playerErrorMessageString[PlayerError.AlreadyPut] = "It is already there.";
+		this._playerErrorMessageString[PlayerError.DefaultRemove] = "Done.";
+		this._playerErrorMessageString[PlayerError.Locked] = "The exit is locked.";
+		this._playerErrorMessageString[PlayerError.DefaultWait] = "Press a key to continue...";
+		this._playerErrorMessageString[PlayerError.AlreadyTaken] = "You already have that.";
 	}
 	SetFont(name: string): void {
 		// UNKNOWN SingleLineIfStatement
@@ -1595,9 +1595,9 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._numericVariable[numNumber].VariableName = name;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr' = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -1637,22 +1637,22 @@ class LegacyGame {
 	}
 	SetUpDefaultFonts(): void {
 		var gameblock = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._defaultFontName = "Arial";
+		this._defaultFontSize = 9;
 		// UNKNOWN ForBlock
 	}
 	SetUpDisplayVariables(): void {
 		// UNKNOWN ForBlock
 	}
 	SetUpGameObject(): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberObjs = 1;
 		// UNKNOWN ReDimStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._objs[1] = new ObjectType();
 		var o = this._objs[1];
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		o.ObjectName = "game";
+		o.ObjectAlias = "";
+		o.Visible = false;
+		o.Exists = true;
 		var nestBlock = 0;
 		// UNKNOWN ForBlock
 	}
@@ -1675,7 +1675,7 @@ class LegacyGame {
 	}
 	SetUpSynonyms(): void {
 		var block = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberSynonyms = 0;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 	}
@@ -1684,8 +1684,8 @@ class LegacyGame {
 	}
 	SetUpTurnScript(): void {
 		var block = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._beforeTurnScript = "";
+		this._afterTurnScript = "";
 		// UNKNOWN ForBlock
 	}
 	SetUpUserDefinedPlayerErrors(): void {
@@ -1732,33 +1732,33 @@ class LegacyGame {
 		var oldLastComma: number;
 		var defineBlock: number;
 		var lookString: string = "";
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		gameBlock = 'expr';
+		this._currentRoom = Room;
 		var roomBlock: DefineBlock;
-		// UNKNOWN SimpleAssignmentStatement
+		roomBlock = 'expr';
 		var finishedFindingCommas: boolean;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		charsViewable = "";
+		charsFound = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN SimpleAssignmentStatement
+		prefix = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		inDesc = "unfound";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		roomDisplayText = roomDisplayText + charsViewable + vbCrLf;
+		noFormatObjsViewable = "";
 		// UNKNOWN ForBlock
 		var finishedLoop: boolean;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		doorways = "";
+		nsew = "";
+		places = "";
+		possDir = "";
 		// UNKNOWN ForBlock
 		var outside: DefineBlock;
 		// UNKNOWN MultiLineIfBlock
@@ -1766,12 +1766,12 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		descTagExist = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
+		defineBlock = 0;
 		// UNKNOWN ForBlock
 		// UNKNOWN SingleLineIfStatement
 	}
@@ -1779,14 +1779,14 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	AddToObjectList(objList: any, exitList: any, name: string, type: Thing): void {
-		// UNKNOWN SimpleAssignmentStatement
+		name = 'expr';
 		// UNKNOWN MultiLineIfBlock
 	}
 	ExecExec(scriptLine: string, ctx: Context): void {
 		// UNKNOWN SingleLineIfStatement
 		var execLine = 'expr';
 		var newCtx: Context = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		newCtx.StackCounter = newCtx.StackCounter + 1;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -1822,8 +1822,8 @@ class LegacyGame {
 		var chunksEnd: number[];
 		var varName: string[];
 		var var2Pos: number;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		test = "�" + 'expr' + "�";
+		required = "�" + required + "�";
 		var currentReqLinePos = 1;
 		var currentTestLinePos = 1;
 		var finished = false;
@@ -1862,8 +1862,8 @@ class LegacyGame {
 	}
 	IsCompatible(test: string, required: string): boolean {
 		var var2Pos: number;
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		test = "�" + 'expr' + "�";
+		required = "�" + required + "�";
 		var currentReqLinePos = 1;
 		var currentTestLinePos = 1;
 		var finished = false;
@@ -1884,17 +1884,17 @@ class LegacyGame {
 		var scp2: number;
 		var scp3: number;
 		var lines: string[] = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameLoadMethod = "loaded";
 		var prevQsgVersion = false;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		savedQsgVersion = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		result = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._saveGameFile = filename;
 		// UNKNOWN ReturnStatement
 	}
 	SaveGame(filename: string, saveFile: boolean): Byte[] {
@@ -1903,7 +1903,7 @@ class LegacyGame {
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._saveGameFile = filename;
 		// UNKNOWN ReturnStatement
 	}
 	MakeRestoreDataV2(): string {
@@ -1942,15 +1942,15 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._stringVariable[id].VariableName = name;
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
+		'expr' = value;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	SetUpCharObjectInfo(): void {
 		var defaultProperties: PropertiesActions = new PropertiesActions();
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberChars = 0;
 		var defaultExists = false;
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
@@ -1997,29 +1997,29 @@ class LegacyGame {
 		var objLook: string;
 		var objSuffix: string;
 		var gameBlock = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._currentRoom = room;
 		var id = 'expr';
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN SimpleAssignmentStatement
+		roomAlias = this._rooms[id].RoomAlias;
 		// UNKNOWN SingleLineIfStatement
-		// UNKNOWN SimpleAssignmentStatement
+		prefix = this._rooms[id].Prefix;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		inDescription = this._rooms[id].InDescription;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
+		visibleObjectsNoFormat = "";
 		var visibleObjectsList: any = {};
 		var count: number;
 		// UNKNOWN ForBlock
 		// UNKNOWN ForEachBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		doorwayString = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		objLook = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
+		showLookText = true;
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2031,11 +2031,11 @@ class LegacyGame {
 		var min: number;
 		var m: number;
 		var type = this._collectables[id].Type;
-		// UNKNOWN SimpleAssignmentStatement
+		value = this._collectables[id].Value;
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._collectables[id].Value = value;
 	}
 	DisplayCollectableInfo(id: number): string {
 		var display: string;
@@ -2045,7 +2045,7 @@ class LegacyGame {
 	}
 	DisplayTextSection(section: string, ctx: Context, OutputTo: string): void {
 		var block: DefineBlock;
-		// UNKNOWN SimpleAssignmentStatement
+		block = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ForBlock
 		// UNKNOWN ExpressionStatement
@@ -2053,7 +2053,7 @@ class LegacyGame {
 	ExecCommand(input: string, ctx: Context, echo: boolean, runUserCommand: boolean, dontSetIt: boolean): boolean {
 		var parameter: string;
 		var skipAfterTurn = false;
-		// UNKNOWN SimpleAssignmentStatement
+		input = 'expr';
 		var oldBadCmdBefore = this._badCmdBefore;
 		var roomID = 'expr';
 		var enteredHelpCommand = false;
@@ -2062,11 +2062,11 @@ class LegacyGame {
 		// UNKNOWN SyncLockBlock
 		var userCommandReturn: boolean;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		input = 'expr';
 		// UNKNOWN ExpressionStatement
 		var newCommand = " " + input + " ";
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		input = 'expr';
 		// UNKNOWN ExpressionStatement
 		var newCtx: Context = 'expr';
 		var globalOverride = false;
@@ -2123,9 +2123,9 @@ class LegacyGame {
 		var useDeclareLine = "";
 		var useOn: string;
 		var useItem: string;
-		// UNKNOWN SimpleAssignmentStatement
+		useLine = 'expr';
 		var roomId: number;
-		// UNKNOWN SimpleAssignmentStatement
+		roomId = 'expr';
 		var onWithPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
@@ -2143,7 +2143,7 @@ class LegacyGame {
 		var objectName: string;
 		var sp: number;
 		var ep: number;
-		// UNKNOWN SimpleAssignmentStatement
+		name = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
@@ -2153,7 +2153,7 @@ class LegacyGame {
 		var thenPos = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		var conditions = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		thenPos = thenPos + 4;
 		var elsePos = 'expr';
 		var thenEndPos: number;
 		// UNKNOWN MultiLineIfBlock
@@ -2168,11 +2168,11 @@ class LegacyGame {
 		// UNKNOWN TryBlock
 	}
 	ExecuteEnter(scriptLine: string, ctx: Context): void {
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._commandOverrideModeOn = true;
+		this._commandOverrideVariable = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SyncLockBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._commandOverrideModeOn = false;
 	}
 	ExecuteSet(setInstruction: string, ctx: Context): void {
 		// UNKNOWN MultiLineIfBlock
@@ -2207,30 +2207,30 @@ class LegacyGame {
 		var destination = "";
 		var placeData: string;
 		var disallowed = false;
-		// UNKNOWN SimpleAssignmentStatement
+		placeData = 'expr';
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 	}
 	InitialiseGame(filename: string, fromQsg: boolean): boolean {
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._loadedFromQsg = fromQsg;
+		this._changeLogRooms = new ChangeLog();
+		this._changeLogObjects = new ChangeLog();
+		this._changeLogRooms.AppliesToType = ChangeLog.AppliesTo.Room;
+		this._changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object;
+		this._outPutOn = true;
+		this._useAbbreviations = true;
+		this._gamePath = 'expr' + "\\";
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		var gameBlock: DefineBlock;
-		// UNKNOWN SimpleAssignmentStatement
+		gameBlock = 'expr';
 		var aslVersion = "//";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameName = 'expr';
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
@@ -2252,10 +2252,10 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameFileName = filename;
 		// UNKNOWN ExpressionStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._defaultRoomProperties = 'expr';
+		this._defaultProperties = 'expr';
 		// UNKNOWN ReturnStatement
 	}
 	PlaceExist(placeName: string, ctx: Context): string {
@@ -2273,7 +2273,7 @@ class LegacyGame {
 	PlayGame(room: string, ctx: Context): void {
 		var id = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._currentRoom = room;
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN ExpressionStatement
@@ -2301,12 +2301,12 @@ class LegacyGame {
 	}
 	SetUpCollectables(): void {
 		var lastItem = false;
-		// UNKNOWN SimpleAssignmentStatement
+		this._numCollectables = 0;
 		// UNKNOWN ForBlock
 	}
 	SetUpItemArrays(): void {
 		var lastItem = false;
-		// UNKNOWN SimpleAssignmentStatement
+		this._numberItems = 0;
 		// UNKNOWN ForBlock
 	}
 	SetUpStartItems(): void {
@@ -2326,10 +2326,10 @@ class LegacyGame {
 	}
 	ReadCatalog(data: string): void {
 		var nullPos = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._numResources = 'expr';
 		// UNKNOWN ReDimPreserveStatement
-		// UNKNOWN SimpleAssignmentStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._resources[this._numResources] = new ResourceType();
+		data = 'expr';
 		var resourceStart = 0;
 		// UNKNOWN ForBlock
 	}
@@ -2346,7 +2346,7 @@ class LegacyGame {
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._compassExits = compassExits;
 		// UNKNOWN ExpressionStatement
 	}
 	AddCompassExit(exitList: any, name: string): void {
@@ -2396,17 +2396,17 @@ class LegacyGame {
 		var objList: any = {};
 		var exitList: any = {};
 		var roomBlock: DefineBlock;
-		// UNKNOWN SimpleAssignmentStatement
+		roomBlock = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		noFormatObjsViewable = "";
 		// UNKNOWN ForBlock
 		// UNKNOWN MultiLineIfBlock
 		var roomId: number;
-		// UNKNOWN SimpleAssignmentStatement
+		roomId = 'expr';
 		var r = this._rooms[roomId];
 		// UNKNOWN MultiLineIfBlock
 		// UNKNOWN RaiseEventStatement
-		// UNKNOWN SimpleAssignmentStatement
+		this._gotoExits = exitList;
 		// UNKNOWN ExpressionStatement
 	}
 	UpdateExitsList(): void {
@@ -2440,7 +2440,7 @@ class LegacyGame {
 		var result: PlayerCanAccessObjectResult = new PlayerCanAccessObjectResult();
 		var hierarchy: string = "";
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		result.CanAccessObject = true;
 		// UNKNOWN ReturnStatement
 	}
 	GetGoToExits(roomId: number, ctx: Context): string {
@@ -2467,9 +2467,9 @@ class LegacyGame {
 	}
 	ExecuteLock(tag: string, lock: boolean): void {
 		var roomExit: RoomExit;
-		// UNKNOWN SimpleAssignmentStatement
+		roomExit = 'expr';
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		roomExit.IsLocked = lock;
 	}
 	Begin(): void {
 		var runnerThread: any = {};
@@ -2484,9 +2484,9 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN ForBlock
 		// UNKNOWN ForBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._autoIntro = true;
 		// UNKNOWN MultiLineIfBlock
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameFullyLoaded = true;
 		// UNKNOWN SingleLineIfStatement
 		var startRoom: string = "";
 		// UNKNOWN ForBlock
@@ -2533,11 +2533,11 @@ class LegacyGame {
 	}
 	// UNKNOWN EventStatement
 	Initialise(player: IPlayer): boolean {
-		// UNKNOWN SimpleAssignmentStatement
+		this._player = player;
 		// UNKNOWN MultiLineIfBlock
 	}
 	GameFinished(): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this._gameFinished = true;
 		// UNKNOWN RaiseEventStatement
 		// UNKNOWN ExpressionStatement
 		// UNKNOWN SyncLockBlock
@@ -2561,7 +2561,7 @@ class LegacyGame {
 	}
 	GetLibraryLines(libName: string): string[] {
 		var libCode: Byte[] = null;
-		// UNKNOWN SimpleAssignmentStatement
+		libName = 'expr';
 		// UNKNOWN SelectBlock
 		// UNKNOWN SingleLineIfStatement
 		// UNKNOWN ReturnStatement
@@ -2594,7 +2594,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	ChangeState(newState: State, acceptCommands: boolean): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this._readyForCommand = acceptCommands;
 		// UNKNOWN SyncLockBlock
 	}
 	FinishWait(): void {
@@ -2624,7 +2624,7 @@ class LegacyGame {
 		// UNKNOWN ExpressionStatement
 	}
 	SetMenuResponseInNewThread(response: Object): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this.m_menuResponse = 'expr';
 		// UNKNOWN SyncLockBlock
 	}
 	LogException(ex: Exception): void {
@@ -2645,12 +2645,12 @@ class LegacyGame {
 	// UNKNOWN DelegateFunctionStatement
 	m_unzipFunction: UnzipFunctionDelegate;
 	SetUnzipFunction(unzipFunction: UnzipFunctionDelegate): void {
-		// UNKNOWN SimpleAssignmentStatement
+		this.m_unzipFunction = unzipFunction;
 	}
 	GetUnzippedFile(filename: string): string {
 		var tempDir: string = null;
 		var result: string = 'expr';
-		// UNKNOWN SimpleAssignmentStatement
+		this._tempFolder = tempDir;
 		// UNKNOWN ReturnStatement
 	}
 	// UNKNOWN PropertyBlock

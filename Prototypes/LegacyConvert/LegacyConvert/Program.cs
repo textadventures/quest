@@ -116,6 +116,11 @@ namespace LegacyConvert
                         type,
                         ProcessChildNodes(node, depth, prepend, false, classFields),
                         string.Join(", ", parameters));
+                case SyntaxKind.SimpleAssignmentStatement:
+                    var assign = (AssignmentStatementSyntax)node;
+                    var left = ProcessExpression(assign.Left, classFields);
+                    var right = ProcessExpression(assign.Right, classFields);
+                    return string.Format("{0}{1} = {2};\n", Tabs(depth), left, right);
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
