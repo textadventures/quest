@@ -81,6 +81,8 @@ namespace LegacyConvert
                 case SyntaxKind.ElseStatement:
                 case SyntaxKind.ElseBlock:
                 case SyntaxKind.EndIfStatement:
+                case SyntaxKind.ForStatement:
+                case SyntaxKind.NextStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -189,6 +191,49 @@ namespace LegacyConvert
                     }
                     ifResult.Append("\n");
                     return ifResult.ToString();
+                case SyntaxKind.ForBlock:
+                    var forBlock = (ForBlockSyntax)node;
+                    string forVariable;
+                    var forVariableIdentifier = forBlock.ForStatement.ControlVariable as IdentifierNameSyntax;
+                    if (forVariableIdentifier != null)
+                    {
+                        forVariable = forVariableIdentifier.Identifier.Text;
+                    }
+                    else
+                    {
+                        var forVariableDeclarator = forBlock.ForStatement.ControlVariable as VariableDeclaratorSyntax;
+                        if (forVariableDeclarator != null)
+                        {
+                            forVariable = forVariableDeclarator.Names.First().Identifier.Text;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException();
+                        }
+                    }
+                    var from = ProcessExpression(forBlock.ForStatement.FromValue, classFields);
+                    var to = ProcessExpression(forBlock.ForStatement.ToValue, classFields);
+                    var toExpr = string.Format("{0} <= {1}", forVariable, to);
+                    string step;
+                    if (forBlock.ForStatement.StepClause != null)
+                    {
+                        var stepValue = ProcessExpression(forBlock.ForStatement.StepClause.StepValue, classFields);
+                        if (stepValue == "-1")
+                        {
+                            step = forVariable + "--";
+                            toExpr = string.Format("{0} >= {1}", forVariable, to);
+                        }
+                        else
+                        {
+                            step = string.Format("{0} = {0} + {1}", forVariable, stepValue);
+                            toExpr = string.Format("{0} > 0 ? {1} <= {2} : {1} >= {2}", stepValue, forVariable, to);
+                        }
+                    }
+                    else
+                    {
+                        step = forVariable + "++";
+                    }
+                    return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }

@@ -2012,6 +2012,7 @@ Public Class LegacyGame
         Next i
     End Sub
 
+    '<NOCONVERT
     Private Function DecryptString(s As String) As String
         Dim output = ""
         For i = 1 To Len(s)
@@ -2021,6 +2022,7 @@ Public Class LegacyGame
 
         Return output
     End Function
+    'NOCONVERT>
 
     Private Function RemoveTabs(s As String) As String
         If InStr(s, Chr(9)) > 0 Then
