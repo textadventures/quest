@@ -165,6 +165,9 @@ namespace LegacyConvert
                 case SyntaxKind.ReDimStatement:
                     var redim = ProcessExpression(((ReDimStatementSyntax)node).Clauses.First().Expression, classFields);
                     return string.Format("{0}{1} = [];\n", Tabs(depth), redim);
+                case SyntaxKind.ReDimPreserveStatement:
+                    var redimPreserve = ProcessExpression(((ReDimStatementSyntax)node).Clauses.First().Expression, classFields);
+                    return string.Format("{0}if (!{1}) {1} = [];\n", Tabs(depth), redimPreserve);
                 case SyntaxKind.DoLoopUntilBlock:
                 case SyntaxKind.DoLoopWhileBlock:
                     var doLoop = (DoLoopBlockSyntax)node;

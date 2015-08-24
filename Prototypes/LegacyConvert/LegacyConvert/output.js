@@ -736,8 +736,8 @@ var LegacyGame = (function () {
                             this.AddLine("end define");
                             endLineNum = UBound(this._lines);
                             this._numberSections = this._numberSections + 1;
-
-                            // UNKNOWN ReDimPreserveStatement
+                            if (!this._defineBlocks)
+                                this._defineBlocks = [];
                             this._defineBlocks[this._numberSections] = new DefineBlock();
                             this._defineBlocks[this._numberSections].StartLine = startLine;
                             this._defineBlocks[this._numberSections].EndLine = endLineNum;
@@ -1186,8 +1186,8 @@ var LegacyGame = (function () {
                         this.LogASLError("     - Library already included.", 3 /* Init */);
                     } else {
                         numLibraries = numLibraries + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!libraryList)
+                            libraryList = [];
                         libraryList[numLibraries] = libFileName;
                         libFoundThisSweep = true;
                         libResourceLines = null;
@@ -1261,6 +1261,8 @@ var LegacyGame = (function () {
                                     do {
                                         c = c + 1;
                                         if (!this.BeginsWith(libCode[c], "!end")) {
+                                            if (!this._lines)
+                                                this._lines = [];
                                             for (var d = UBound(this._lines); d >= gameLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
                                             }
@@ -1293,6 +1295,8 @@ var LegacyGame = (function () {
                                     do {
                                         c = c + 1;
                                         if (!this.BeginsWith(libCode[c], "!end")) {
+                                            if (!this._lines)
+                                                this._lines = [];
                                             for (var d = UBound(this._lines); d >= synLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
                                             }
@@ -1323,6 +1327,8 @@ var LegacyGame = (function () {
                                             // UNKNOWN ExitDoStatement
                                         }
                                         if (!this.BeginsWith(libCode[c], "!end")) {
+                                            if (!this._lines)
+                                                this._lines = [];
                                             for (var d = UBound(this._lines); d >= typeLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
                                             }
@@ -1386,8 +1392,8 @@ var LegacyGame = (function () {
                     curLine = curLine + 1;
                 } while(!(defineCount == 0));
                 curLine = curLine - 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!this._defineBlocks)
+                    this._defineBlocks = [];
                 this._defineBlocks[this._numberSections] = new DefineBlock();
                 this._defineBlocks[this._numberSections].StartLine = i;
                 this._defineBlocks[this._numberSections].EndLine = curLine;
@@ -1467,8 +1473,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.AddLine = function (line) {
         var numLines;
         numLines = UBound(this._lines) + 1;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._lines)
+            this._lines = [];
         this._lines[numLines] = line;
     };
     LegacyGame.prototype.LoadCASFile = function (filename) {
@@ -2230,11 +2236,11 @@ var LegacyGame = (function () {
             // UNKNOWN SelectBlock
             if (newElement) {
                 numElements = numElements + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!elements)
+                    elements = [];
                 numOperators = numOperators + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!operators)
+                    operators = [];
                 operators[numOperators] = Mid(expr, i, 1);
             } else {
                 elements[numElements] = elements[numElements] + Mid(expr, i, 1);
@@ -2279,8 +2285,10 @@ var LegacyGame = (function () {
                 }
                 numOperators = numOperators - 1;
                 numElements = numElements - 1;
-                // UNKNOWN ReDimPreserveStatement
-                // UNKNOWN ReDimPreserveStatement
+                if (!operators)
+                    operators = [];
+                if (!elements)
+                    elements = [];
             }
         } while(!(opNum == 0 || numOperators == 0));
         res.Success = 0 /* OK */;
@@ -2304,8 +2312,8 @@ var LegacyGame = (function () {
             if (this._objs[i].Exists && this._objs[i].Visible) {
                 if (LCase(this.GetObjectProperty("parent", i, false, false)) == LCase(this._objs[id].ObjectName)) {
                     numContents = numContents + 1;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!contentsIDs)
+                        contentsIDs = [];
                     contentsIDs[numContents] = i;
                 }
             }
@@ -2473,8 +2481,8 @@ var LegacyGame = (function () {
                 for (var i = exitId; i <= r.NumberPlaces - 1; i++) {
                     r.Places[i] = r.Places[i + 1];
                 }
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!r.Places)
+                    r.Places = [];
                 r.NumberPlaces = r.NumberPlaces - 1;
             }
         }
@@ -2572,8 +2580,8 @@ var LegacyGame = (function () {
         }
         if (!foundExisting) {
             o.NumberActions = o.NumberActions + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!o.Actions)
+                o.Actions = [];
             o.Actions[o.NumberActions] = new ActionType();
             actionNum = o.NumberActions;
         }
@@ -2583,8 +2591,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.AddToChangeLog = function (appliesTo, changeData) {
         this._gameChangeData.NumberChanges = this._gameChangeData.NumberChanges + 1;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._gameChangeData.ChangeData)
+            this._gameChangeData.ChangeData = [];
         this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges] = new ChangeType();
         this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].AppliesTo = appliesTo;
         this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].Change = changeData;
@@ -2634,8 +2642,8 @@ var LegacyGame = (function () {
             }
             if (!found) {
                 o.NumberGiveData = o.NumberGiveData + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!o.GiveData)
+                    o.GiveData = [];
                 o.GiveData[o.NumberGiveData] = new GiveDataType();
                 dataId = o.NumberGiveData;
             }
@@ -2667,8 +2675,8 @@ var LegacyGame = (function () {
         }
         if (!foundExisting) {
             o.NumberActions = o.NumberActions + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!o.Actions)
+                o.Actions = [];
             o.Actions[o.NumberActions] = new ActionType();
             actionNum = o.NumberActions;
         }
@@ -2686,8 +2694,8 @@ var LegacyGame = (function () {
             var curName = Trim(Left(altNames, endPos - 1));
             if (curName != "") {
                 o.NumberAltNames = o.NumberAltNames + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!o.AltNames)
+                    o.AltNames = [];
                 o.AltNames[o.NumberAltNames] = curName;
             }
             altNames = Mid(altNames, endPos + 1);
@@ -2734,8 +2742,8 @@ var LegacyGame = (function () {
             }
             if (!found) {
                 o.NumberProperties = o.NumberProperties + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!o.Properties)
+                    o.Properties = [];
                 o.Properties[o.NumberProperties] = new PropertyType();
                 num = o.NumberProperties;
             }
@@ -2781,8 +2789,8 @@ var LegacyGame = (function () {
             }
             if (!found) {
                 o.NumberUseData = o.NumberUseData + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!o.UseData)
+                    o.UseData = [];
                 o.UseData[o.NumberUseData] = new UseDataType();
                 dataId = o.NumberUseData;
             }
@@ -2855,16 +2863,16 @@ var LegacyGame = (function () {
             }
         }
         this._numberObjs = this._numberObjs + 1;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._objs)
+            this._objs = [];
         this._objs[this._numberObjs] = new ObjectType();
         this._objs[this._numberObjs] = this._objs[id];
         this._objs[this._numberObjs].ContainerRoom = cloneTo;
         this._objs[this._numberObjs].ObjectName = newName;
         if (this._objs[id].IsRoom) {
             this._numberRooms = this._numberRooms + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._rooms)
+                this._rooms = [];
             this._rooms[this._numberRooms] = new RoomType();
             this._rooms[this._numberRooms] = this._rooms[this._objs[id].CorresRoomId];
             this._rooms[this._numberRooms].RoomName = newName;
@@ -2909,8 +2917,8 @@ var LegacyGame = (function () {
         }
         var o = this._objs[id];
         o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!o.TypesIncluded)
+            o.TypesIncluded = [];
         o.TypesIncluded[o.NumberTypesIncluded] = typeName;
         var propertyData = this.GetPropertiesInType(typeName);
         this.AddToObjectProperties(propertyData.Properties, id, ctx);
@@ -2919,8 +2927,8 @@ var LegacyGame = (function () {
         }
         for (var i = 1; i <= propertyData.NumberTypesIncluded; i++) {
             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!o.TypesIncluded)
+                o.TypesIncluded = [];
             o.TypesIncluded[o.NumberTypesIncluded] = propertyData.TypesIncluded[i];
         }
     };
@@ -3073,8 +3081,8 @@ var LegacyGame = (function () {
                 for (var j = 1; j <= numValidNames; j++) {
                     if (((LCase(validNames[j]) == LCase(name)) || ("the " + LCase(name) == LCase(validNames[j])))) {
                         numberCorresIds = numberCorresIds + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!idNumbers)
+                            idNumbers = [];
                         idNumbers[numberCorresIds] = i;
                         j = numValidNames;
                     }
@@ -3100,8 +3108,8 @@ var LegacyGame = (function () {
                     }
                     if (InStr(" " + thisName, " " + LCase(name)) != 0) {
                         numberCorresIds = numberCorresIds + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!idNumbers)
+                            idNumbers = [];
                         idNumbers[numberCorresIds] = i;
                     }
                 }
@@ -3297,8 +3305,8 @@ var LegacyGame = (function () {
         }
         if (!foundExisting) {
             o.NumberActions = o.NumberActions + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!o.Actions)
+                o.Actions = [];
             o.Actions[o.NumberActions] = new ActionType();
             actionNum = o.NumberActions;
         }
@@ -3352,9 +3360,10 @@ var LegacyGame = (function () {
         var isFinalCondition = false;
         do {
             numConditions = numConditions + 1;
-
-            // UNKNOWN ReDimPreserveStatement
-            // UNKNOWN ReDimPreserveStatement
+            if (!conditions)
+                conditions = [];
+            if (!operations)
+                operations = [];
             var nextCondition = "AND";
             var nextConditionPos = InStr(pos, obscuredConditionList, "and ");
             if (nextConditionPos == 0) {
@@ -3388,13 +3397,13 @@ var LegacyGame = (function () {
         if (this.BeginsWith(data, "room ")) {
             newName = this.GetParameter(data, ctx);
             this._numberRooms = this._numberRooms + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._rooms)
+                this._rooms = [];
             this._rooms[this._numberRooms] = new RoomType();
             this._rooms[this._numberRooms].RoomName = newName;
             this._numberObjs = this._numberObjs + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._objs)
+                this._objs = [];
             this._objs[this._numberObjs] = new ObjectType();
             this._objs[this._numberObjs].ObjectName = newName;
             this._objs[this._numberObjs].IsRoom = true;
@@ -3422,8 +3431,8 @@ var LegacyGame = (function () {
                 containerRoom = Trim(Mid(paramData, scp + 1));
             }
             this._numberObjs = this._numberObjs + 1;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._objs)
+                this._objs = [];
             this._objs[this._numberObjs] = new ObjectType();
             var o = this._objs[this._numberObjs];
             o.ObjectName = newName;
@@ -3544,8 +3553,8 @@ var LegacyGame = (function () {
                 r.Out.Text = destRoom;
             } else if (this.BeginsWith(exitData, "<")) {
                 r.NumberPlaces = r.NumberPlaces + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!r.Places)
+                    r.Places = [];
                 r.Places[r.NumberPlaces] = new PlaceType();
                 r.Places[r.NumberPlaces].PlaceName = destRoom;
             } else {
@@ -3737,8 +3746,8 @@ var LegacyGame = (function () {
                     numParameters = numParameters + 1;
                     var scp = InStr(pos, parameters, ";");
                     newCtx.NumParameters = numParameters;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!newCtx.Parameters)
+                        newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = Trim(Mid(parameters, pos, scp - pos));
                     pos = scp + 1;
                 } while(!(pos >= Len(parameters)));
@@ -4064,7 +4073,8 @@ var LegacyGame = (function () {
                 var typeName = LCase(this.GetParameter(this._lines[i], this._nullContext));
                 var newProperties = this.GetPropertiesInType(typeName);
                 propertyList.Properties = propertyList.Properties + newProperties.Properties;
-
+                if (!propertyList.Actions)
+                    propertyList.Actions = [];
                 for (var j = propertyList.NumberActions + 1; j <= propertyList.NumberActions + newProperties.NumberActions; j++) {
                     propertyList.Actions[j] = new ActionType();
                     propertyList.Actions[j].ActionName = newProperties.Actions[j - propertyList.NumberActions].ActionName;
@@ -4072,18 +4082,19 @@ var LegacyGame = (function () {
                 }
                 propertyList.NumberActions = propertyList.NumberActions + newProperties.NumberActions;
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!propertyList.TypesIncluded)
+                    propertyList.TypesIncluded = [];
                 propertyList.TypesIncluded[propertyList.NumberTypesIncluded] = typeName;
-
+                if (!propertyList.TypesIncluded)
+                    propertyList.TypesIncluded = [];
                 for (var j = propertyList.NumberTypesIncluded + 1; j <= propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded; j++) {
                     propertyList.TypesIncluded[j] = newProperties.TypesIncluded[j - propertyList.NumberTypesIncluded];
                 }
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded;
             } else if (this.BeginsWith(this._lines[i], "action ")) {
                 propertyList.NumberActions = propertyList.NumberActions + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!propertyList.Actions)
+                    propertyList.Actions = [];
                 propertyList.Actions[propertyList.NumberActions] = this.GetObjectActions(this.GetEverythingAfter(this._lines[i], "action "));
             } else if (this.BeginsWith(this._lines[i], "properties ")) {
                 propertyList.Properties = propertyList.Properties + this.GetParameter(this._lines[i], this._nullContext) + ";";
@@ -4168,14 +4179,14 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._gameChangeData.NumberChanges; i++) {
             if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "object ")) {
                 numObjectData = numObjectData + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!objectData)
+                    objectData = [];
                 objectData[numObjectData] = new ChangeType();
                 objectData[numObjectData] = this._gameChangeData.ChangeData[i];
             } else if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "room ")) {
                 numRoomData = numRoomData + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!roomData)
+                    roomData = [];
                 roomData[numRoomData] = new ChangeType();
                 roomData[numRoomData] = this._gameChangeData.ChangeData[i];
             }
@@ -4354,8 +4365,8 @@ var LegacyGame = (function () {
                     var parameterData = Trim(Mid(parameter, pos, scp - pos));
                     this.SetStringContents("quest.function.parameter." + Trim(Str(numParameters)), parameterData, ctx);
                     newCtx.NumParameters = numParameters;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!newCtx.Parameters)
+                        newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = parameterData;
                     pos = scp + 1;
                 } while(!(pos >= Len(parameter)));
@@ -4383,9 +4394,10 @@ var LegacyGame = (function () {
             do {
                 numParameters = numParameters + 1;
                 var scp = InStr(pos, parameter, ";");
-
-                // UNKNOWN ReDimPreserveStatement
-                // UNKNOWN ReDimPreserveStatement
+                if (!parameters)
+                    parameters = [];
+                if (!untrimmedParameters)
+                    untrimmedParameters = [];
                 untrimmedParameters[numParameters] = Mid(parameter, pos, scp - pos);
                 parameters[numParameters] = Trim(untrimmedParameters[numParameters]);
                 pos = scp + 1;
@@ -4869,8 +4881,8 @@ var LegacyGame = (function () {
             data = this.GetNextChunk();
             if (this.BeginsWith(data, "properties ") || this.BeginsWith(data, "action ")) {
                 numStoredData = numStoredData + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!storedData)
+                    storedData = [];
                 storedData[numStoredData] = new ChangeType();
                 storedData[numStoredData].AppliesTo = appliesTo;
                 storedData[numStoredData].Change = data;
@@ -5053,18 +5065,19 @@ var LegacyGame = (function () {
         if (exists == false) {
             this._numberNumericVariables = this._numberNumericVariables + 1;
             numNumber = this._numberNumericVariables;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._numericVariable)
+                this._numericVariable = [];
             this._numericVariable[numNumber] = new VariableType();
             this._numericVariable[numNumber].VariableUBound = arrayIndex;
         }
         if (arrayIndex > this._numericVariable[numNumber].VariableUBound) {
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._numericVariable[numNumber].VariableContents)
+                this._numericVariable[numNumber].VariableContents = [];
             this._numericVariable[numNumber].VariableUBound = arrayIndex;
         }
         this._numericVariable[numNumber].VariableName = name;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._numericVariable[numNumber].VariableContents)
+            this._numericVariable[numNumber].VariableContents = [];
         this._numericVariable[numNumber].VariableContents[arrayIndex] = (content).toString();
         if (this._numericVariable[numNumber].OnChangeScript != "" && !this._gameIsRestoring) {
             var script = this._numericVariable[numNumber].OnChangeScript;
@@ -5199,8 +5212,8 @@ var LegacyGame = (function () {
                 if (type == "string") {
                     this._numberStringVariables = this._numberStringVariables + 1;
                     var id = this._numberStringVariables;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!this._stringVariable)
+                        this._stringVariable = [];
                     this._stringVariable[id] = variable;
                     this._numDisplayStrings = this._numDisplayStrings + 1;
                 } else if (type == "numeric") {
@@ -5209,8 +5222,8 @@ var LegacyGame = (function () {
                     }
                     this._numberNumericVariables = this._numberNumericVariables + 1;
                     var iNumNumber = this._numberNumericVariables;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!this._numericVariable)
+                        this._numericVariable = [];
                     this._numericVariable[iNumNumber] = variable;
                     this._numDisplayNumerics = this._numDisplayNumerics + 1;
                 }
@@ -5235,8 +5248,8 @@ var LegacyGame = (function () {
                     this.AddToObjectProperties(this.GetParameter(this._lines[i], this._nullContext), this._numberObjs, this._nullContext);
                 } else if (this.BeginsWith(this._lines[i], "type ")) {
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!o.TypesIncluded)
+                        o.TypesIncluded = [];
                     o.TypesIncluded[o.NumberTypesIncluded] = this.GetParameter(this._lines[i], this._nullContext);
                     var propertyData = this.GetPropertiesInType(this.GetParameter(this._lines[i], this._nullContext));
                     this.AddToObjectProperties(propertyData.Properties, this._numberObjs, this._nullContext);
@@ -5317,12 +5330,12 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define room ")) {
                 this._numberRooms = this._numberRooms + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!this._rooms)
+                    this._rooms = [];
                 this._rooms[this._numberRooms] = new RoomType();
                 this._numberObjs = this._numberObjs + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!this._objs)
+                    this._objs = [];
                 this._objs[this._numberObjs] = new ObjectType();
                 var r = this._rooms[this._numberRooms];
                 r.RoomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
@@ -5487,15 +5500,15 @@ var LegacyGame = (function () {
                         this.AddObjectAction(this._numberObjs, "script", r.Script);
                     } else if (this.BeginsWith(this._lines[j], "command ")) {
                         r.NumberCommands = r.NumberCommands + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!r.Commands)
+                            r.Commands = [];
                         r.Commands[r.NumberCommands] = new UserDefinedCommandType();
                         r.Commands[r.NumberCommands].CommandText = this.GetParameter(this._lines[j], this._nullContext, false);
                         r.Commands[r.NumberCommands].CommandScript = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                     } else if (this.BeginsWith(this._lines[j], "place ")) {
                         r.NumberPlaces = r.NumberPlaces + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!r.Places)
+                            r.Places = [];
                         r.Places[r.NumberPlaces] = new PlaceType();
                         var placeData = this.GetParameter(this._lines[j], this._nullContext);
                         var scp = InStr(placeData, ";");
@@ -5508,8 +5521,8 @@ var LegacyGame = (function () {
                         r.Places[r.NumberPlaces].Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                     } else if (this.BeginsWith(this._lines[j], "use ")) {
                         r.NumberUse = r.NumberUse + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!r.Use)
+                            r.Use = [];
                         r.Use[r.NumberUse] = new ScriptText();
                         r.Use[r.NumberUse].Text = this.GetParameter(this._lines[j], this._nullContext);
                         r.Use[r.NumberUse].Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
@@ -5517,8 +5530,8 @@ var LegacyGame = (function () {
                         this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
                     } else if (this.BeginsWith(this._lines[j], "type ")) {
                         this._objs[this._numberObjs].NumberTypesIncluded = this._objs[this._numberObjs].NumberTypesIncluded + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!this._objs[this._numberObjs].TypesIncluded)
+                            this._objs[this._numberObjs].TypesIncluded = [];
                         this._objs[this._numberObjs].TypesIncluded[this._objs[this._numberObjs].NumberTypesIncluded] = this.GetParameter(this._lines[j], this._nullContext);
                         var propertyData = this.GetPropertiesInType(this.GetParameter(this._lines[j], this._nullContext));
                         this.AddToObjectProperties(propertyData.Properties, this._numberObjs, this._nullContext);
@@ -5556,8 +5569,8 @@ var LegacyGame = (function () {
                         this.LogASLError("Recursive synonym detected: '" + thisWord + "' converting to '" + convertWord + "'", 2 /* WarningError */);
                     } else {
                         this._numberSynonyms = this._numberSynonyms + 1;
-
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!this._synonyms)
+                            this._synonyms = [];
                         this._synonyms[this._numberSynonyms] = new SynonymType();
                         this._synonyms[this._numberSynonyms].OriginalWord = thisWord;
                         this._synonyms[this._numberSynonyms].ConvertTo = convertWord;
@@ -5571,8 +5584,8 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define timer ")) {
                 this._numberTimers = this._numberTimers + 1;
-
-                // UNKNOWN ReDimPreserveStatement
+                if (!this._timers)
+                    this._timers = [];
                 this._timers[this._numberTimers] = new TimerType();
                 this._timers[this._numberTimers].TimerName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
                 this._timers[this._numberTimers].TimerActive = false;
@@ -6115,10 +6128,12 @@ var LegacyGame = (function () {
             var chunkBegin = InStr(currentTestLinePos, LCase(test), LCase(checkChunk));
             var chunkEnd = chunkBegin + Len(checkChunk);
             numberChunks = numberChunks + 1;
-
-            // UNKNOWN ReDimPreserveStatement
-            // UNKNOWN ReDimPreserveStatement
-            // UNKNOWN ReDimPreserveStatement
+            if (!chunksBegin)
+                chunksBegin = [];
+            if (!chunksEnd)
+                chunksEnd = [];
+            if (!varName)
+                varName = [];
             chunksBegin[numberChunks] = chunkBegin;
             chunksEnd[numberChunks] = chunkEnd;
             varName[numberChunks] = currentVariable;
@@ -6581,18 +6596,19 @@ var LegacyGame = (function () {
         if (!exists) {
             this._numberStringVariables = this._numberStringVariables + 1;
             id = this._numberStringVariables;
-
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._stringVariable)
+                this._stringVariable = [];
             this._stringVariable[id] = new VariableType();
             this._stringVariable[id].VariableUBound = arrayIndex;
         }
         if (arrayIndex > this._stringVariable[id].VariableUBound) {
-            // UNKNOWN ReDimPreserveStatement
+            if (!this._stringVariable[id].VariableContents)
+                this._stringVariable[id].VariableContents = [];
             this._stringVariable[id].VariableUBound = arrayIndex;
         }
         this._stringVariable[id].VariableName = name;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._stringVariable[id].VariableContents)
+            this._stringVariable[id].VariableContents = [];
         this._stringVariable[id].VariableContents[arrayIndex] = value;
         if (this._stringVariable[id].OnChangeScript != "") {
             var script = this._stringVariable[id].OnChangeScript;
@@ -6636,8 +6652,8 @@ var LegacyGame = (function () {
                 if (this.BeginsWith(this._lines[j], "define object")) {
                     containerRoomName = origContainerRoomName;
                     this._numberObjs = this._numberObjs + 1;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!this._objs)
+                        this._objs = [];
                     this._objs[this._numberObjs] = new ObjectType();
                     var o = this._objs[this._numberObjs];
                     o.ObjectName = this.GetParameter(this._lines[j], this._nullContext);
@@ -6745,15 +6761,16 @@ var LegacyGame = (function () {
                             this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "type ")) {
                             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
-
-                            // UNKNOWN ReDimPreserveStatement
+                            if (!o.TypesIncluded)
+                                o.TypesIncluded = [];
                             o.TypesIncluded[o.NumberTypesIncluded] = this.GetParameter(this._lines[j], this._nullContext);
                             var PropertyData = this.GetPropertiesInType(this.GetParameter(this._lines[j], this._nullContext));
                             this.AddToObjectProperties(PropertyData.Properties, this._numberObjs, this._nullContext);
                             for (var k = 1; k <= PropertyData.NumberActions; k++) {
                                 this.AddObjectAction(this._numberObjs, PropertyData.Actions[k].ActionName, PropertyData.Actions[k].Script);
                             }
-
+                            if (!o.TypesIncluded)
+                                o.TypesIncluded = [];
                             for (var k = 1; k <= PropertyData.NumberTypesIncluded; k++) {
                                 o.TypesIncluded[k + o.NumberTypesIncluded] = PropertyData.TypesIncluded[k];
                             }
@@ -6844,8 +6861,8 @@ var LegacyGame = (function () {
                 } else if (this._gameAslVersion <= 280 && this.BeginsWith(this._lines[j], "define character")) {
                     containerRoomName = origContainerRoomName;
                     this._numberChars = this._numberChars + 1;
-
-                    // UNKNOWN ReDimPreserveStatement
+                    if (!this._chars)
+                        this._chars = [];
                     this._chars[this._numberChars] = new ObjectType();
                     this._chars[this._numberChars].ObjectName = this.GetParameter(this._lines[j], this._nullContext);
                     this._chars[this._numberChars].DefinitionSectionStart = j;
@@ -8489,7 +8506,8 @@ var LegacyGame = (function () {
                     this._numCollectables = 1;
                     var pos = 1;
                     do {
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!this._collectables)
+                            this._collectables = [];
                         this._collectables[this._numCollectables] = new Collectable();
                         var nextComma = InStr(pos + 1, collectables, ",");
                         if (nextComma == 0) {
@@ -8543,7 +8561,8 @@ var LegacyGame = (function () {
                     this._numberItems = this._numberItems + 1;
                     var pos = 1;
                     do {
-                        // UNKNOWN ReDimPreserveStatement
+                        if (!this._items)
+                            this._items = [];
                         this._items[this._numberItems] = new ItemType();
                         var nextComma = InStr(pos + 1, possItems, ",");
                         if (nextComma == 0) {
@@ -8606,8 +8625,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ReadCatalog = function (data) {
         var nullPos = InStr(data, Chr(0));
         this._numResources = parseInt(DecryptString(Left(data, nullPos - 1)));
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!this._resources)
+            this._resources = [];
         this._resources[this._numResources] = new ResourceType();
         data = Mid(data, nullPos + 1);
         var resourceStart = 0;
@@ -9454,8 +9473,8 @@ var RoomExit = (function () {
     function RoomExit(game) {
         this._game = game;
         game._numberObjs = game._numberObjs + 1;
-
-        // UNKNOWN ReDimPreserveStatement
+        if (!game._objs)
+            game._objs = [];
         game._objs[game._numberObjs] = new ObjectType();
         this._objId = game._numberObjs;
         // UNKNOWN WithBlock
