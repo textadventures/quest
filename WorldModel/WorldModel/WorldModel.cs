@@ -1394,8 +1394,17 @@ namespace TextAdventures.Quest
 
         private void DoInNewThreadAndWait(Action routine)
         {
+            Action wrappedRoutine = () =>
+            {
+                try
+                {
+                    routine();
+                }
+                catch { }
+            };
+
             ChangeThreadState(ThreadState.Working);
-            Thread newThread = new Thread(new ThreadStart(routine));
+            Thread newThread = new Thread(new ThreadStart(wrappedRoutine));
             newThread.Start();
             WaitUntilFinishedWorking();
         }
