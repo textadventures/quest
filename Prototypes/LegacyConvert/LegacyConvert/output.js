@@ -679,9 +679,12 @@ var LegacyGame = (function () {
                         do {
                             obp = InStr(testLine, "{");
                             cbp = InStr(testLine, "}");
-
-                            // UNKNOWN SingleLineIfStatement
-                            // UNKNOWN SingleLineIfStatement
+                            if (obp == 0) {
+                                obp = Len(testLine) + 1;
+                            }
+                            if (cbp == 0) {
+                                cbp = Len(testLine) + 1;
+                            }
                             if (obp < cbp) {
                                 testBraceCount = testBraceCount + 1;
                                 testLine = Mid(testLine, obp + 1);
@@ -695,7 +698,9 @@ var LegacyGame = (function () {
                             startLine = UBound(this._lines);
                             restOfLine = Trim(Right(thisLine, Len(thisLine) - InStr(thisLine, "{")));
                             braceCount = 1;
-
+                            if (restOfLine != "") {
+                                this.AddLine(restOfLine);
+                            }
                             for (var m = 1; m <= Len(restOfLine); m++) {
                                 if (Mid(restOfLine, m, 1) == "{") {
                                     braceCount = braceCount + 1;
@@ -966,10 +971,18 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.YesNo = function (yn) {
-        // UNKNOWN SingleLineIfStatement
+        if (yn == true) {
+            return "Yes";
+        } else {
+            return "No";
+        }
     };
     LegacyGame.prototype.IsYes = function (yn) {
-        // UNKNOWN SingleLineIfStatement
+        if (LCase(yn) == "yes") {
+            return true;
+        } else {
+            return false;
+        }
     };
     LegacyGame.prototype.BeginsWith = function (s, text) {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
@@ -1004,8 +1017,9 @@ var LegacyGame = (function () {
         result.EndLine = 0;
         for (var i = 1; i <= this._numberSections; i++) {
             l = this._lines[this._defineBlocks[i].StartLine];
-
-            // UNKNOWN SingleLineIfStatement
+            if (InStr(8, l, " ") == 0) {
+                l = l + " ";
+            }
             blockType = Mid(l, 8, InStr(8, l, " ") - 8);
             if (blockType == blockname) {
                 result.StartLine = this._defineBlocks[i].StartLine;
@@ -1284,8 +1298,9 @@ var LegacyGame = (function () {
                                     }
                                     do {
                                         c = c + 1;
-
-                                        // UNKNOWN SingleLineIfStatement
+                                        if (c > libLines) {
+                                            // UNKNOWN ExitDoStatement
+                                        }
                                         if (!this.BeginsWith(libCode[c], "!end")) {
                                             for (var d = UBound(this._lines); d >= typeLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
@@ -1315,8 +1330,9 @@ var LegacyGame = (function () {
         var curPos = 1;
         do {
             slashPos = InStr(curPos, filename, "\\");
-
-            // UNKNOWN SingleLineIfStatement
+            if (slashPos != 0) {
+                lastSlashPos = slashPos;
+            }
             curPos = slashPos + 1;
         } while(!(slashPos == 0));
         var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
@@ -1372,8 +1388,9 @@ var LegacyGame = (function () {
         }
         this.ConvertMultiLineSections();
         hasErrors = this.ConvertFriendlyIfs();
-
-        // UNKNOWN SingleLineIfStatement
+        if (!hasErrors) {
+            hasErrors = this.ErrorCheck();
+        }
         if (hasErrors) {
             // UNKNOWN ThrowStatement
         }
@@ -1630,14 +1647,20 @@ var LegacyGame = (function () {
             } else {
                 err = 8 /* DefaultLook */;
             }
-            // UNKNOWN SingleLineIfStatement
+            if (objectContents == "") {
+                this.PlayerErrorMessage(err, ctx);
+            }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (objectContents != "" && objectContents != "<script>") {
+            this.Print(objectContents, ctx);
+        }
     };
     LegacyGame.prototype.DoOpenClose = function (id, open, showLook, ctx) {
         if (open) {
             this.AddToObjectProperties("opened", id, ctx);
-            // UNKNOWN SingleLineIfStatement
+            if (showLook) {
+                this.DoLook(id, ctx, null, false);
+            }
         } else {
             this.AddToObjectProperties("not opened", id, ctx);
         }
@@ -1750,21 +1773,27 @@ var LegacyGame = (function () {
                     this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
                     ctx.AllowRealNamesInCommand = true;
                     this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._objs[childId].ContainerRoom == "inventory") {
+                        gotObject = true;
+                    }
                 }
                 if (!gotObject) {
                     this._badCmdBefore = verb;
                     // UNKNOWN ExitSubStatement
                 }
             } else {
-                // UNKNOWN SingleLineIfStatement
+                if (childId != -2) {
+                    this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                }
                 this._badCmdBefore = verb;
                 // UNKNOWN ExitSubStatement
             }
         } else {
             childId = this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
             if (childId <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (childId != -2) {
+                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                }
                 this._badCmdBefore = verb;
                 // UNKNOWN ExitSubStatement
             }
@@ -1783,7 +1812,9 @@ var LegacyGame = (function () {
             parentName = Trim(Mid(cmd, sepPos + sepLen));
             parentId = this.Disambiguate(parentName, this._currentRoom + ";inventory", ctx);
             if (parentId <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (parentId != -2) {
+                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                }
                 this._badCmdBefore = Left(cmd, sepPos + sepLen);
                 // UNKNOWN ExitSubStatement
             }
@@ -1929,7 +1960,9 @@ var LegacyGame = (function () {
         name = this.GetEverythingAfter(cmd, action + " ");
         id = this.Disambiguate(name, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
-            // UNKNOWN SingleLineIfStatement
+            if (id != -2) {
+                this.PlayerErrorMessage(7 /* BadThing */, ctx);
+            }
             this._badCmdBefore = action;
             // UNKNOWN ExitSubStatement
         }
@@ -2088,13 +2121,17 @@ var LegacyGame = (function () {
                         verbsList = Trim(Mid(verbsList, scp + 1));
                     }
                 } while(!(scp == 0 || Trim(verbsList) == "" || foundVerb));
-                // UNKNOWN SingleLineIfStatement
+                if (foundVerb) {
+                    continue;
+                }
             }
         }
         if (foundVerb) {
             id = this.Disambiguate(verbObject, "inventory;" + this._currentRoom, ctx);
             if (id < 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (id != -2) {
+                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                }
                 this._badCmdBefore = thisVerb;
             } else {
                 this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
@@ -2280,14 +2317,17 @@ var LegacyGame = (function () {
                             }
                         }
                         var o = this._objs[contentsIDs[i]];
-
-                        // UNKNOWN SingleLineIfStatement
+                        if (o.Prefix != "") {
+                            contents = contents + o.Prefix;
+                        }
                         if (o.ObjectAlias != "") {
                             contents = contents + "|b" + o.ObjectAlias + "|xb";
                         } else {
                             contents = contents + "|b" + o.ObjectName + "|xb";
                         }
-                        // UNKNOWN SingleLineIfStatement
+                        if (o.Suffix != "") {
+                            contents = contents + " " + o.Suffix;
+                        }
                     }
                 }
                 return contents + ".";
@@ -2358,7 +2398,9 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetHTMLColour = function (colour, defaultColour) {
         colour = LCase(colour);
-        // UNKNOWN SingleLineIfStatement
+        if (colour == "" || colour == "0") {
+            colour = defaultColour;
+        }
         // UNKNOWN SelectBlock
     };
     LegacyGame.prototype.DoPrint = function (text) {
@@ -2452,8 +2494,9 @@ var LegacyGame = (function () {
             variable = Trim(Left(param, sc - 1));
         }
         var value = this.GetNumericContents(variable, ctx, true);
-
-        // UNKNOWN SingleLineIfStatement
+        if (value <= -32766) {
+            value = 0;
+        }
         if (this.BeginsWith(line, "inc ")) {
             value = value + change;
         } else if (this.BeginsWith(line, "dec ")) {
@@ -2467,8 +2510,9 @@ var LegacyGame = (function () {
         var startPos;
         var extracted;
         var resId;
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._resourceFile == "") {
+            return "";
+        }
         var found = false;
         for (var i = 1; i <= this._numResources; i++) {
             if (LCase(file) == LCase(this._resources[i].ResourceName)) {
@@ -2615,8 +2659,9 @@ var LegacyGame = (function () {
         var o = this._objs[id];
         do {
             var endPos = InStr(altNames, ";");
-
-            // UNKNOWN SingleLineIfStatement
+            if (endPos == 0) {
+                endPos = Len(altNames) + 1;
+            }
             var curName = Trim(Left(altNames, endPos - 1));
             if (curName != "") {
                 o.NumberAltNames = o.NumberAltNames + 1;
@@ -2628,7 +2673,9 @@ var LegacyGame = (function () {
         } while(!(Trim(altNames) == ""));
     };
     LegacyGame.prototype.AddToObjectProperties = function (propertyInfo, id, ctx) {
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            return null;
+        }
         if (Right(propertyInfo, 1) != ";") {
             propertyInfo = propertyInfo + ";";
         }
@@ -2639,8 +2686,9 @@ var LegacyGame = (function () {
             var name;
             var value;
             var num;
-
-            // UNKNOWN SingleLineIfStatement
+            if (info == "") {
+                // UNKNOWN ExitDoStatement
+            }
             var ep = InStr(info, "=");
             if (ep != 0) {
                 name = Trim(Left(info, ep - 1));
@@ -3016,11 +3064,18 @@ var LegacyGame = (function () {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (this.DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit)) {
                     var thisName;
-
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._objs[i].ObjectAlias != "") {
+                        thisName = LCase(this._objs[i].ObjectAlias);
+                    } else {
+                        thisName = LCase(this._objs[i].ObjectName);
+                    }
                     if (this._gameAslVersion >= 410) {
-                        // UNKNOWN SingleLineIfStatement
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._objs[i].Prefix != "") {
+                            thisName = Trim(LCase(this._objs[i].Prefix)) + " " + thisName;
+                        }
+                        if (this._objs[i].Suffix != "") {
+                            thisName = thisName + " " + Trim(LCase(this._objs[i].Suffix));
+                        }
                     }
                     if (InStr(" " + thisName, " " + LCase(name)) != 0) {
                         numberCorresIds = numberCorresIds + 1;
@@ -3113,7 +3168,9 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            // UNKNOWN SingleLineIfStatement
+            if (logError) {
+                this.LogASLError("No such action '" + action + "' defined for object '" + o.ObjectName + "'");
+            }
             return false;
         }
         var newCtx = this.CopyContext(ctx);
@@ -3260,8 +3317,9 @@ var LegacyGame = (function () {
         } else if (this.BeginsWith(condition, "flag ")) {
             result = this.ExecuteIfFlag(this.GetParameter(condition, ctx));
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (thisNot) {
+            result = !result;
+        }
         return result;
     };
     LegacyGame.prototype.ExecuteConditions = function (list, ctx) {
@@ -3361,7 +3419,9 @@ var LegacyGame = (function () {
                     this.AddObjectAction(this._numberObjs, this._defaultProperties.Actions[j].ActionName, this._defaultProperties.Actions[j].Script);
                 }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (!this._gameLoading) {
+                this.UpdateObjectList(ctx);
+            }
         } else if (this.BeginsWith(data, "exit ")) {
             this.ExecuteCreateExit(data, ctx);
         }
@@ -3571,7 +3631,9 @@ var LegacyGame = (function () {
         }
         var id = this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
-            // UNKNOWN SingleLineIfStatement
+            if (id != -2) {
+                this.PlayerErrorMessage(7 /* BadThing */, ctx);
+            }
             this._badCmdBefore = "examine";
             // UNKNOWN ExitSubStatement
         }
@@ -3750,8 +3812,9 @@ var LegacyGame = (function () {
         if (found == false && errorReport) {
             this.LogASLError("No such character/object '" + obj + "'.", 6 /* UserError */);
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (found == false) {
+            result = false;
+        }
         if (realOnly) {
             return found;
         }
@@ -3910,7 +3973,9 @@ var LegacyGame = (function () {
         }
         if (!found && this._gameAslVersion >= 280) {
             id = this.Disambiguate(name, room, ctx);
-            // UNKNOWN SingleLineIfStatement
+            if (id > 0) {
+                found = true;
+            }
         }
         if (found) {
             return id;
@@ -4696,11 +4761,15 @@ var LegacyGame = (function () {
             }
         }
         if (!exists) {
-            // UNKNOWN SingleLineIfStatement
+            if (!noError) {
+                this.LogASLError("No numeric variable '" + name + "' defined.", 2 /* WarningError */);
+            }
             return -32767;
         }
         if (arrayIndex > this._numericVariable[numNumber].VariableUBound) {
-            // UNKNOWN SingleLineIfStatement
+            if (!noError) {
+                this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", 2 /* WarningError */);
+            }
             return -32766;
         }
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
@@ -4728,7 +4797,9 @@ var LegacyGame = (function () {
         if (filename.Length == 0) {
             this._player.StopSound();
         } else {
-            // UNKNOWN SingleLineIfStatement
+            if (looped && sync) {
+                sync = false;
+            }
             this._player.PlaySound(filename, sync, looped);
             if (sync) {
                 this.ChangeState(2 /* Waiting */);
@@ -4744,9 +4815,12 @@ var LegacyGame = (function () {
         var params = {};
         params = new any();
         var filename = params[0];
-
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (params.Contains("loop")) {
+            looped = true;
+        }
+        if (params.Contains("sync")) {
+            sync = true;
+        }
         if (filename.Length > 0 && InStr(filename, ".") == 0) {
             filename = filename + ".wav";
         }
@@ -4927,11 +5001,15 @@ var LegacyGame = (function () {
         this._playerErrorMessageString[37 /* AlreadyTaken */] = "You already have that.";
     };
     LegacyGame.prototype.SetFont = function (name) {
-        // UNKNOWN SingleLineIfStatement
+        if (name == "") {
+            name = this._defaultFontName;
+        }
         this._player.SetFont(name);
     };
     LegacyGame.prototype.SetFontSize = function (size) {
-        // UNKNOWN SingleLineIfStatement
+        if (size == 0) {
+            size = this._defaultFontSize;
+        }
         this._player.SetFontSize((size).toString());
     };
     LegacyGame.prototype.SetNumericVariableContents = function (name, content, ctx, arrayIndex) {
@@ -5105,7 +5183,9 @@ var LegacyGame = (function () {
                     this._stringVariable[id] = variable;
                     this._numDisplayStrings = this._numDisplayStrings + 1;
                 } else if (type == "numeric") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (variable.VariableContents[0] == "") {
+                        variable.VariableContents[0] = (0).toString();
+                    }
                     this._numberNumericVariables = this._numberNumericVariables + 1;
                     var iNumNumber = this._numberNumericVariables;
 
@@ -5195,7 +5275,11 @@ var LegacyGame = (function () {
                 this._player.SetPanesVisible(opt);
             } else if (this.BeginsWith(this._lines[i], "abbreviations ")) {
                 opt = LCase(Trim(this.GetEverythingAfter(this._lines[i], "abbreviations ")));
-                // UNKNOWN SingleLineIfStatement
+                if (opt == "off") {
+                    this._useAbbreviations = false;
+                } else {
+                    this._useAbbreviations = true;
+                }
             }
         }
     };
@@ -5251,7 +5335,9 @@ var LegacyGame = (function () {
                     if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "alias ")) {
                         r.RoomAlias = this.GetParameter(this._lines[j], this._nullContext);
                         this._objs[this._numberObjs].ObjectAlias = r.RoomAlias;
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("alias=" + r.RoomAlias, this._numberObjs, this._nullContext);
+                        }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "description ")) {
                         r.Description = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "description "));
                         if (this._gameAslVersion >= 350) {
@@ -5362,13 +5448,19 @@ var LegacyGame = (function () {
                         }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "indescription ")) {
                         r.InDescription = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("indescription=" + r.InDescription, this._numberObjs, this._nullContext);
+                        }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "look ")) {
                         r.Look = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("look=" + r.Look, this._numberObjs, this._nullContext);
+                        }
                     } else if (this.BeginsWith(this._lines[j], "prefix ")) {
                         r.Prefix = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("prefix=" + r.Prefix, this._numberObjs, this._nullContext);
+                        }
                     } else if (this.BeginsWith(this._lines[j], "script ")) {
                         r.Script = this.GetEverythingAfter(this._lines[j], "script ");
                         this.AddObjectAction(this._numberObjs, "script", r.Script);
@@ -5607,8 +5699,9 @@ var LegacyGame = (function () {
                 i = roomBlock.EndLine;
             }
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (aliasName == "") {
+            aliasName = room;
+        }
         prefix = this.FindStatement(roomBlock, "prefix");
         if (prefix == "") {
             prefixAlias = "|cr" + aliasName + "|cb";
@@ -5749,8 +5842,9 @@ var LegacyGame = (function () {
                     i = outside.EndLine;
                 }
             }
-
-            // UNKNOWN SingleLineIfStatement
+            if (aliasOut == "") {
+                aliasOut = doorways;
+            }
             roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + "." + vbCrLf;
             possDir = possDir + "o";
             this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
@@ -5830,14 +5924,20 @@ var LegacyGame = (function () {
         this.UpdateObjectList(this._nullContext);
         defineBlock = 0;
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
-            // UNKNOWN SingleLineIfStatement
-            // UNKNOWN SingleLineIfStatement
+            if (this.BeginsWith(this._lines[i], "define")) {
+                defineBlock = defineBlock + 1;
+            }
+            if (this.BeginsWith(this._lines[i], "end define")) {
+                defineBlock = defineBlock - 1;
+            }
             if (this.BeginsWith(this._lines[i], "look") && defineBlock == 0) {
                 lookString = this.GetParameter(this._lines[i], this._nullContext);
                 i = roomBlock.EndLine;
             }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (lookString != "") {
+            this.Print(lookString, this._nullContext);
+        }
     };
     LegacyGame.prototype.Speak = function (text) {
         this._player.Speak(text);
@@ -5852,7 +5952,9 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecExec = function (scriptLine, ctx) {
-        // UNKNOWN SingleLineIfStatement
+        if (ctx.CancelExec) {
+            // UNKNOWN ExitSubStatement
+        }
         var execLine = this.GetParameter(scriptLine, ctx);
         var newCtx = this.CopyContext(ctx);
         newCtx.StackCounter = newCtx.StackCounter + 1;
@@ -6051,8 +6153,9 @@ var LegacyGame = (function () {
                 result = this.GetParameter(resultLine, ctx) + " ";
             }
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (capitalise) {
+            result = UCase(Left(result, 1)) + Right(result, Len(result) - 1);
+        }
         return result;
     };
     LegacyGame.prototype.GetStringContents = function (name, ctx) {
@@ -6207,7 +6310,9 @@ var LegacyGame = (function () {
         }
         if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
             this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
-            // UNKNOWN SingleLineIfStatement
+            if (this._gameFileName == "") {
+                // UNKNOWN ExitFunctionStatement
+            }
         }
         result = this.InitialiseGame(this._gameFileName, true);
         if (result == false) {
@@ -6327,8 +6432,9 @@ var LegacyGame = (function () {
         if (typeof saveFile === "undefined") { saveFile = true; }
         var ctx = new Context();
         var saveData;
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._gameAslVersion >= 391) {
+            this.ExecuteScript(this._beforeSaveScript, ctx);
+        }
         if (this._gameAslVersion >= 280) {
             saveData = this.MakeRestoreData();
         } else {
@@ -6527,40 +6633,57 @@ var LegacyGame = (function () {
                             this.AddObjectAction(this._numberObjs, defaultProperties.Actions[k].ActionName, defaultProperties.Actions[k].Script);
                         }
                     }
-
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._gameAslVersion >= 391) {
+                        this.AddToObjectProperties("list", this._numberObjs, this._nullContext);
+                    }
                     var hidden = false;
                     do {
                         j = j + 1;
                         if (Trim(this._lines[j]) == "hidden") {
                             o.Exists = false;
                             hidden = true;
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("hidden", this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
                             containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "prefix ")) {
                             o.Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("prefix=" + o.Prefix, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "suffix ")) {
                             o.Suffix = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("suffix=" + o.Suffix, this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "invisible") {
                             o.Visible = false;
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("invisible", this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "alias ")) {
                             o.ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("alias=" + o.ObjectAlias, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "alt ")) {
                             this.AddToObjectAltNames(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs);
                         } else if (this.BeginsWith(this._lines[j], "detail ")) {
                             o.Detail = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("detail=" + o.Detail, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "gender ")) {
                             o.Gender = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("gender=" + o.Gender, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "article ")) {
                             o.Article = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("article=" + o.Article, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "gain ")) {
                             o.GainScript = this.GetEverythingAfter(this._lines[j], "gain ");
                             this.AddObjectAction(this._numberObjs, "gain", o.GainScript);
@@ -6569,7 +6692,9 @@ var LegacyGame = (function () {
                             this.AddObjectAction(this._numberObjs, "lose", o.LoseScript);
                         } else if (this.BeginsWith(this._lines[j], "displaytype ")) {
                             o.DisplayType = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("displaytype=" + o.DisplayType, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "look ")) {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "look ");
@@ -6633,16 +6758,22 @@ var LegacyGame = (function () {
                                 this.AddObjectAction(this._numberObjs, "take", restOfLine);
                             }
                         } else if (Trim(this._lines[j]) == "container") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "surface") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
                                 this.AddToObjectProperties("surface", this._numberObjs, this._nullContext);
                             }
                         } else if (Trim(this._lines[j]) == "opened") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("opened", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "transparent") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("transparent", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "open") {
                             this.AddToObjectProperties("open", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "open ")) {
@@ -6686,7 +6817,9 @@ var LegacyGame = (function () {
                         }
                     } while(!(Trim(this._lines[j]) == "end define"));
                     o.DefinitionSectionEnd = j;
-                    // UNKNOWN SingleLineIfStatement
+                    if (!hidden) {
+                        o.Exists = true;
+                    }
                 } else if (this._gameAslVersion <= 280 && this.BeginsWith(this._lines[j], "define character")) {
                     containerRoomName = origContainerRoomName;
                     this._numberChars = this._numberChars + 1;
@@ -6719,7 +6852,9 @@ var LegacyGame = (function () {
                         this._chars[this._numberChars].ContainerRoom = containerRoomName;
                     } while(!(Trim(this._lines[j]) == "end define"));
                     this._chars[this._numberChars].DefinitionSectionEnd = j;
-                    // UNKNOWN SingleLineIfStatement
+                    if (!hidden) {
+                        this._chars[this._numberChars].Exists = true;
+                    }
                 }
             }
         }
@@ -6731,10 +6866,15 @@ var LegacyGame = (function () {
         var copyright = this.FindStatement(this.GetDefineBlock("game"), "game copyright");
         var info = this.FindStatement(this.GetDefineBlock("game"), "game info");
         this.Print("|bGame name:|cl  " + this._gameName + "|cb|xb", ctx);
-
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (version != "") {
+            this.Print("|bVersion:|xb    " + version, ctx);
+        }
+        if (author != "") {
+            this.Print("|bAuthor:|xb     " + author, ctx);
+        }
+        if (copyright != "") {
+            this.Print("|bCopyright:|xb  " + copyright, ctx);
+        }
         if (info != "") {
             this.Print("", ctx);
             this.Print(info, ctx);
@@ -6749,8 +6889,9 @@ var LegacyGame = (function () {
         if (InStr(filename, "@") != 0) {
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (caption.Length > 0) {
+            this.Print(caption, this._nullContext);
+        }
         this.ShowPictureInText(filename);
     };
     LegacyGame.prototype.ShowRoomInfo = function (room, ctx, noPrint) {
@@ -6782,11 +6923,13 @@ var LegacyGame = (function () {
         var gameBlock = this.GetDefineBlock("game");
         this._currentRoom = room;
         var id = this.GetRoomID(this._currentRoom, ctx);
-
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            // UNKNOWN ExitSubStatement
+        }
         roomAlias = this._rooms[id].RoomAlias;
-
-        // UNKNOWN SingleLineIfStatement
+        if (roomAlias == "") {
+            roomAlias = this._rooms[id].RoomName;
+        }
         prefix = this._rooms[id].Prefix;
         if (prefix == "") {
             roomDisplayName = "|cr" + roomAlias + "|cb";
@@ -6889,7 +7032,9 @@ var LegacyGame = (function () {
             if (descTagExist == false) {
                 roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
                 this.Print(roomDisplayText, ctx);
-                // UNKNOWN SingleLineIfStatement
+                if (doorwayString != "") {
+                    this.Print(doorwayString, ctx);
+                }
             } else {
                 if (descType == 0 /* Text */) {
                     this.Print(descLine, ctx);
@@ -6912,9 +7057,12 @@ var LegacyGame = (function () {
         var m;
         var type = this._collectables[id].Type;
         value = this._collectables[id].Value;
-
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (type == "%" && value > 100) {
+            value = 100;
+        }
+        if ((type == "%" || type == "p") && value < 0) {
+            value = 0;
+        }
         if (InStr(type, "r") > 0) {
             if (InStr(type, "r") == 1) {
                 max = Val(Mid(type, Len(type) - 1));
@@ -6927,8 +7075,12 @@ var LegacyGame = (function () {
                 max = Val(Mid(type, InStr(type, "r") + 1));
                 m = 3;
             }
-            // UNKNOWN SingleLineIfStatement
-            // UNKNOWN SingleLineIfStatement
+            if ((m == 1 || m == 3) && value > max) {
+                value = max;
+            }
+            if ((m == 2 || m == 3) && value < min) {
+                value = min;
+            }
         }
         this._collectables[id].Value = value;
     };
@@ -6990,8 +7142,9 @@ var LegacyGame = (function () {
         var oldBadCmdBefore = this._badCmdBefore;
         var roomID = this.GetRoomID(this._currentRoom, ctx);
         var enteredHelpCommand = false;
-
-        // UNKNOWN SingleLineIfStatement
+        if (input == "") {
+            return true;
+        }
         var cmd = LCase(input);
 
         // UNKNOWN SyncLockBlock
@@ -7027,8 +7180,9 @@ var LegacyGame = (function () {
                 }
             }
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._beforeTurnScript != "" && globalOverride == false) {
+            this.ExecuteScript(this._beforeTurnScript, newCtx);
+        }
         if (!newCtx.DontProcessCommand) {
             userCommandReturn = false;
             if (runUserCommand == true) {
@@ -7189,8 +7343,9 @@ var LegacyGame = (function () {
                             pos = thisComma + 1;
                         }
                     } while(!(thisComma == 0));
-
-                    // UNKNOWN SingleLineIfStatement
+                    if (lastComma != 0) {
+                        invList = Left(invList, lastComma - 1) + " and" + Mid(invList, lastComma + 1);
+                    }
                     this.Print("You are carrying:|n" + invList + ".", ctx);
                 } else {
                     this.Print("You are not carrying anything.", ctx);
@@ -7215,15 +7370,18 @@ var LegacyGame = (function () {
                     }
                 }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (this._afterTurnScript != "" && globalOverride == false) {
+                this.ExecuteScript(this._afterTurnScript, ctx);
+            }
         }
         this.Print("", ctx);
         if (!dontSetIt) {
             this._lastIt = this._thisTurnIt;
             this._lastItMode = this._thisTurnItMode;
         }
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._badCmdBefore == oldBadCmdBefore) {
+            this._badCmdBefore = "";
+        }
         return true;
     };
     LegacyGame.prototype.CmdStartsWith = function (cmd, startsWith) {
@@ -7294,7 +7452,9 @@ var LegacyGame = (function () {
                 foundObject = true;
             }
             if (!foundObject) {
-                // UNKNOWN SingleLineIfStatement
+                if (giveToId != -2) {
+                    this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
+                }
                 this._badCmdBefore = "give " + item + " to";
                 // UNKNOWN ExitSubStatement
             }
@@ -7357,7 +7517,9 @@ var LegacyGame = (function () {
                 }
             }
             if (giveLine == 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (article == "") {
+                    article = "it";
+                }
                 this.SetStringContents("quest.error.charactername", realName, ctx);
                 this.SetStringContents("quest.error.gender", Trim(this.GetGender(character, true, ctx)), ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
@@ -7395,7 +7557,9 @@ var LegacyGame = (function () {
             if (this._gameAslVersion >= 280) {
                 var id = this.Disambiguate(item, "inventory;" + this._currentRoom, ctx);
                 if (id <= 0) {
-                    // UNKNOWN SingleLineIfStatement
+                    if (id != -2) {
+                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    }
                     this._badCmdBefore = "look at";
                     // UNKNOWN ExitSubStatement
                 }
@@ -7447,7 +7611,9 @@ var LegacyGame = (function () {
             var speakLine = "";
             var ObjID = this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
             if (ObjID <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (ObjID != -2) {
+                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                }
                 this._badCmdBefore = "speak to";
                 // UNKNOWN ExitSubStatement
             }
@@ -7624,10 +7790,13 @@ var LegacyGame = (function () {
         if (this._gameAslVersion >= 280) {
             var foundItem = false;
             id = this.Disambiguate(useItem, "inventory", ctx);
-
-            // UNKNOWN SingleLineIfStatement
+            if (id > 0) {
+                foundItem = true;
+            }
             if (!foundItem) {
-                // UNKNOWN SingleLineIfStatement
+                if (id != -2) {
+                    this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                }
                 if (useOn == "") {
                     this._badCmdBefore = "use";
                 } else {
@@ -7673,7 +7842,9 @@ var LegacyGame = (function () {
                 }
                 if (!foundUseScript) {
                     useScript = this._objs[id].Use;
-                    // UNKNOWN SingleLineIfStatement
+                    if (useScript != "") {
+                        foundUseScript = true;
+                    }
                 }
             } else {
                 foundUseOnObject = false;
@@ -7687,7 +7858,9 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!foundUseOnObject) {
-                    // UNKNOWN SingleLineIfStatement
+                    if (useOnObjectId != -2) {
+                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    }
                     this._badCmdBefore = "use " + useItem + " on";
                     // UNKNOWN ExitSubStatement
                 }
@@ -7858,7 +8031,9 @@ var LegacyGame = (function () {
         if (this.ExecuteConditions(conditions, ctx)) {
             this.ExecuteScript((thenScript), ctx);
         } else {
-            // UNKNOWN SingleLineIfStatement
+            if (elsePos != 0) {
+                this.ExecuteScript((elseScript), ctx);
+            }
         }
     };
     LegacyGame.prototype.ExecuteScript = function (scriptLine, ctx, newCallingObjectId) {
@@ -7958,8 +8133,9 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GoDirection = function (direction, ctx) {
         var dirData = new TextAction();
         var id = this.GetRoomID(this._currentRoom, ctx);
-
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            // UNKNOWN ExitSubStatement
+        }
         if (this._gameAslVersion >= 410) {
             this._rooms[id].Exits.ExecuteGo(direction, ctx);
             // UNKNOWN ExitSubStatement
@@ -8239,9 +8415,13 @@ var LegacyGame = (function () {
                 } else if (Mid(txt, i, 2) == "|c") {
                     // UNKNOWN SelectBlock
                 }
-                // UNKNOWN SingleLineIfStatement
+                if (printThis) {
+                    printString = printString + Mid(txt, i, 1);
+                }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (printString != "") {
+                this.DoPrint(printString);
+            }
         }
     };
     LegacyGame.prototype.RetrLine = function (blockType, param, line, ctx) {
@@ -8303,8 +8483,9 @@ var LegacyGame = (function () {
                         var ep = InStr(info, "=");
                         var sp1 = InStr(info, " ");
                         var sp2 = InStr(ep, info, " ");
-
-                        // UNKNOWN SingleLineIfStatement
+                        if (sp2 == 0) {
+                            sp2 = Len(info) + 1;
+                        }
                         var t = Trim(Mid(info, sp1 + 1, ep - sp1 - 1));
                         var i = Trim(Mid(info, ep + 1, sp2 - ep - 1));
                         if (Left(t, 1) == "d") {
@@ -8544,8 +8725,9 @@ var LegacyGame = (function () {
                     }
                 }
                 roomDisplayText = roomDisplayText + "You can go |bout|xb to " + outPlaceAlias + ".";
-
-                // UNKNOWN SingleLineIfStatement
+                if (nsew != "") {
+                    roomDisplayText = roomDisplayText + " ";
+                }
                 directions = directions + "o";
                 if (this._gameAslVersion >= 280) {
                     this.SetStringContents("quest.doorways.out", outPlaceName, ctx);
@@ -8583,8 +8765,9 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.UpdateItems = function (ctx) {
         var invList = {};
-
-        // UNKNOWN SingleLineIfStatement
+        if (!this._outPutOn) {
+            // UNKNOWN ExitSubStatement
+        }
         var name;
         if (this._gameAslVersion >= 280) {
             for (var i = 1; i <= this._numberObjs; i++) {
@@ -8614,7 +8797,9 @@ var LegacyGame = (function () {
                 for (var j = 1; j <= this._numCollectables; j++) {
                     var k = this.DisplayCollectableInfo(j);
                     if (k != "<null>") {
-                        // UNKNOWN SingleLineIfStatement
+                        if (status.Length > 0) {
+                            // UNKNOWN AddAssignmentStatement
+                        }
                         // UNKNOWN AddAssignmentStatement
                     }
                 }
@@ -8639,8 +8824,9 @@ var LegacyGame = (function () {
         var objsFound;
         var objListString;
         var noFormatObjListString;
-
-        // UNKNOWN SingleLineIfStatement
+        if (!this._outPutOn) {
+            // UNKNOWN ExitSubStatement
+        }
         var objList = {};
         var exitList = {};
         var roomBlock;
@@ -8664,8 +8850,9 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(this._currentRoom) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
                 objSuffix = this._objs[i].Suffix;
-
-                // UNKNOWN SingleLineIfStatement
+                if (objSuffix != "") {
+                    objSuffix = " " + objSuffix;
+                }
                 if (this._objs[i].ObjectAlias == "") {
                     this.AddToObjectList(objList, exitList, this._objs[i].ObjectName, 1 /* Object */);
                     objsViewable = objsViewable + this._objs[i].Prefix + "|b" + this._objs[i].ObjectName + "|xb" + objSuffix + ", ";
@@ -8731,7 +8918,9 @@ var LegacyGame = (function () {
             for (var i = 1; i <= this._numDisplayStrings; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, 0 /* String */, ctx);
                 if (displayData != "") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (status.Length > 0) {
+                        // UNKNOWN AddAssignmentStatement
+                    }
                     // UNKNOWN AddAssignmentStatement
                 }
             }
@@ -8740,7 +8929,9 @@ var LegacyGame = (function () {
             for (var i = 1; i <= this._numDisplayNumerics; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, 1 /* Numeric */, ctx);
                 if (displayData != "") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (status.Length > 0) {
+                        // UNKNOWN AddAssignmentStatement
+                    }
                     // UNKNOWN AddAssignmentStatement
                 }
             }
@@ -8755,8 +8946,9 @@ var LegacyGame = (function () {
         var parentIsOpen;
         var parentIsSeen;
         var parentIsSurface;
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._gameAslVersion < 391) {
+            // UNKNOWN ExitSubStatement
+        }
         if (onlyParent != "") {
             onlyParent = LCase(onlyParent);
             parentId = this.GetObjectIdNoAlias(onlyParent);
@@ -8841,8 +9033,9 @@ var LegacyGame = (function () {
                 shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
             }
             var shownPrefix = this._rooms[roomId].Places[i].Prefix;
-
-            // UNKNOWN SingleLineIfStatement
+            if (shownPrefix != "") {
+                shownPrefix = shownPrefix + " ";
+            }
             placeList = placeList + shownPrefix + "|b" + shownPlaceName + "|xb, ";
         }
         return placeList;
@@ -8945,8 +9138,9 @@ var LegacyGame = (function () {
             }
         }
         this._gameFullyLoaded = true;
-
-        // UNKNOWN SingleLineIfStatement
+        if (this._autoIntro && this._gameLoadMethod == "normal") {
+            this.DisplayTextSection("intro", this._nullContext);
+        }
         var startRoom = "";
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "start ")) {
@@ -8996,7 +9190,9 @@ var LegacyGame = (function () {
         this.SendCommand(command, 0, metadata);
     };
     LegacyGame.prototype.SendCommand = function (command, elapsedTime, metadata) {
-        // UNKNOWN SingleLineIfStatement
+        if (!this._readyForCommand) {
+            // UNKNOWN ExitSubStatement
+        }
         var runnerThread = {};
         this.ChangeState(1 /* Working */);
         runnerThread.Start(command);
@@ -9056,7 +9252,9 @@ var LegacyGame = (function () {
         libName = LCase(libName);
 
         // UNKNOWN SelectBlock
-        // UNKNOWN SingleLineIfStatement
+        if (libCode == null) {
+            return null;
+        }
         return this.GetResourceLines(libCode);
     };
 
@@ -9104,9 +9302,12 @@ var LegacyGame = (function () {
                 }
             }
         }
-
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (!anyTimerActive) {
+            nextTrigger = 0;
+        }
+        if (this._gameFinished) {
+            nextTrigger = 0;
+        }
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
         // UNKNOWN RaiseEventStatement
     };
@@ -9119,7 +9320,9 @@ var LegacyGame = (function () {
         // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.FinishWait = function () {
-        // UNKNOWN SingleLineIfStatement
+        if ((this._state != 2 /* Waiting */)) {
+            // UNKNOWN ExitSubStatement
+        }
         var runnerThread = {};
         this.ChangeState(1 /* Working */);
         runnerThread.Start();
@@ -9162,7 +9365,9 @@ var LegacyGame = (function () {
     // UNKNOWN EventStatement
     // UNKNOWN PropertyBlock
     LegacyGame.prototype.GetOriginalFilenameForQSG = function () {
-        // UNKNOWN SingleLineIfStatement
+        if (this._originalFilename != null) {
+            return this._originalFilename;
+        }
         return this._gameFileName;
     };
 
@@ -9183,8 +9388,9 @@ var LegacyGame = (function () {
             return new any();
         }
         var path = this.GetResourcePath(file);
-
-        // UNKNOWN SingleLineIfStatement
+        if (!System.IO.File.Exists(path)) {
+            return null;
+        }
         return new any();
     };
 
@@ -9258,9 +9464,12 @@ var RoomExit = (function () {
         var objName;
         var lastExitId;
         var parentRoom;
-
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (Len(this._objName) > 0) {
+            // UNKNOWN ExitSubStatement
+        }
+        if (this._parent == null) {
+            // UNKNOWN ExitSubStatement
+        }
         parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
         objName = parentRoom;
         if (this._direction != LegacyGame.Direction.None) {
@@ -9597,22 +9806,48 @@ var TextFormatter = (function () {
         return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
     };
     TextFormatter.prototype.FormatText = function (input) {
-        // UNKNOWN SingleLineIfStatement
+        if (input.Length == 0) {
+            return input;
+        }
         var output = "";
+        if (this.align.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.fontSize > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.colour.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.bold) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.italic) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.underline) {
+            // UNKNOWN AddAssignmentStatement
+        }
 
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
         // UNKNOWN AddAssignmentStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (this.underline) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.italic) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.bold) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.colour.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.fontSize > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.align.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
         return output;
     };
     return TextFormatter;

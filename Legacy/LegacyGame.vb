@@ -1210,7 +1210,7 @@ Public Class LegacyGame
     End Function
 
     Private Function IsYes(yn As String) As Boolean
-        If LCase(yn) = "yes" Then IsYes = True Else IsYes = False
+        If LCase(yn) = "yes" Then Return True Else Return False
     End Function
 
     Friend Function BeginsWith(s As String, text As String) As Boolean

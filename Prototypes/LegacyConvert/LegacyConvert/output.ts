@@ -681,8 +681,12 @@ class LegacyGame {
                         do {
                             obp = InStr(testLine, "{");
                             cbp = InStr(testLine, "}");
-                            // UNKNOWN SingleLineIfStatement
-                            // UNKNOWN SingleLineIfStatement
+                            if (obp == 0) {
+                                obp = Len(testLine) + 1;
+                            }
+                            if (cbp == 0) {
+                                cbp = Len(testLine) + 1;
+                            }
                             if (obp < cbp) {
                                 testBraceCount = testBraceCount + 1;
                                 testLine = Mid(testLine, obp + 1);
@@ -696,7 +700,9 @@ class LegacyGame {
                             startLine = UBound(this._lines);
                             restOfLine = Trim(Right(thisLine, Len(thisLine) - InStr(thisLine, "{")));
                             braceCount = 1;
-                            // UNKNOWN SingleLineIfStatement
+                            if (restOfLine != "") {
+                                this.AddLine(restOfLine);
+                            }
                             for (var m = 1; m <= Len(restOfLine); m++) {
                                 if (Mid(restOfLine, m, 1) == "{") {
                                     braceCount = braceCount + 1;
@@ -966,10 +972,18 @@ class LegacyGame {
         }
     }
     YesNo(yn: boolean): string {
-        // UNKNOWN SingleLineIfStatement
+        if (yn == true) {
+            return "Yes";
+        } else {
+            return "No";
+        }
     }
     IsYes(yn: string): boolean {
-        // UNKNOWN SingleLineIfStatement
+        if (LCase(yn) == "yes") {
+            return true;
+        } else {
+            return false;
+        }
     }
     BeginsWith(s: string, text: string): boolean {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
@@ -1004,7 +1018,9 @@ class LegacyGame {
         result.EndLine = 0;
         for (var i = 1; i <= this._numberSections; i++) {
             l = this._lines[this._defineBlocks[i].StartLine];
-            // UNKNOWN SingleLineIfStatement
+            if (InStr(8, l, " ") == 0) {
+                l = l + " ";
+            }
             blockType = Mid(l, 8, InStr(8, l, " ") - 8);
             if (blockType == blockname) {
                 result.StartLine = this._defineBlocks[i].StartLine;
@@ -1284,7 +1300,9 @@ class LegacyGame {
                                     }
                                     do {
                                         c = c + 1;
-                                        // UNKNOWN SingleLineIfStatement
+                                        if (c > libLines) {
+                                            // UNKNOWN ExitDoStatement
+                                        }
                                         if (!this.BeginsWith(libCode[c], "!end")) {
                                             // UNKNOWN ReDimPreserveStatement
                                             for (var d = UBound(this._lines); d >= typeLine + 1; d--) {
@@ -1315,7 +1333,9 @@ class LegacyGame {
         var curPos = 1;
         do {
             slashPos = InStr(curPos, filename, "\\");
-            // UNKNOWN SingleLineIfStatement
+            if (slashPos != 0) {
+                lastSlashPos = slashPos;
+            }
             curPos = slashPos + 1;
         } while (!(slashPos == 0));
         var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
@@ -1370,7 +1390,9 @@ class LegacyGame {
         }
         this.ConvertMultiLineSections();
         hasErrors = this.ConvertFriendlyIfs();
-        // UNKNOWN SingleLineIfStatement
+        if (!hasErrors) {
+            hasErrors = this.ErrorCheck();
+        }
         if (hasErrors) {
             // UNKNOWN ThrowStatement
         }
@@ -1622,14 +1644,20 @@ class LegacyGame {
             } else {
                 err = PlayerError.DefaultLook;
             }
-            // UNKNOWN SingleLineIfStatement
+            if (objectContents == "") {
+                this.PlayerErrorMessage(err, ctx);
+            }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (objectContents != "" && objectContents != "<script>") {
+            this.Print(objectContents, ctx);
+        }
     }
     DoOpenClose(id: number, open: boolean, showLook: boolean, ctx: Context): void {
         if (open) {
             this.AddToObjectProperties("opened", id, ctx);
-            // UNKNOWN SingleLineIfStatement
+            if (showLook) {
+                this.DoLook(id, ctx, null, false);
+            }
         } else {
             this.AddToObjectProperties("not opened", id, ctx);
         }
@@ -1742,21 +1770,27 @@ class LegacyGame {
                     this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
                     ctx.AllowRealNamesInCommand = true;
                     this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._objs[childId].ContainerRoom == "inventory") {
+                        gotObject = true;
+                    }
                 }
                 if (!gotObject) {
                     this._badCmdBefore = verb;
                     // UNKNOWN ExitSubStatement
                 }
             } else {
-                // UNKNOWN SingleLineIfStatement
+                if (childId != -2) {
+                    this.PlayerErrorMessage(PlayerError.NoItem, ctx);
+                }
                 this._badCmdBefore = verb;
                 // UNKNOWN ExitSubStatement
             }
         } else {
             childId = this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
             if (childId <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (childId != -2) {
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
                 this._badCmdBefore = verb;
                 // UNKNOWN ExitSubStatement
             }
@@ -1775,7 +1809,9 @@ class LegacyGame {
             parentName = Trim(Mid(cmd, sepPos + sepLen));
             parentId = this.Disambiguate(parentName, this._currentRoom + ";inventory", ctx);
             if (parentId <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (parentId != -2) {
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
                 this._badCmdBefore = Left(cmd, sepPos + sepLen);
                 // UNKNOWN ExitSubStatement
             }
@@ -1921,7 +1957,9 @@ class LegacyGame {
         name = this.GetEverythingAfter(cmd, action + " ");
         id = this.Disambiguate(name, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
-            // UNKNOWN SingleLineIfStatement
+            if (id != -2) {
+                this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+            }
             this._badCmdBefore = action;
             // UNKNOWN ExitSubStatement
         }
@@ -2079,13 +2117,17 @@ class LegacyGame {
                         verbsList = Trim(Mid(verbsList, scp + 1));
                     }
                 } while (!(scp == 0 || Trim(verbsList) == "" || foundVerb));
-                // UNKNOWN SingleLineIfStatement
+                if (foundVerb) {
+                    continue;
+                }
             }
         }
         if (foundVerb) {
             id = this.Disambiguate(verbObject, "inventory;" + this._currentRoom, ctx);
             if (id < 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (id != -2) {
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
                 this._badCmdBefore = thisVerb;
             } else {
                 this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
@@ -2267,13 +2309,17 @@ class LegacyGame {
                             }
                         }
                         var o = this._objs[contentsIDs[i]];
-                        // UNKNOWN SingleLineIfStatement
+                        if (o.Prefix != "") {
+                            contents = contents + o.Prefix;
+                        }
                         if (o.ObjectAlias != "") {
                             contents = contents + "|b" + o.ObjectAlias + "|xb";
                         } else {
                             contents = contents + "|b" + o.ObjectName + "|xb";
                         }
-                        // UNKNOWN SingleLineIfStatement
+                        if (o.Suffix != "") {
+                            contents = contents + " " + o.Suffix;
+                        }
                     }
                 }
                 return contents + ".";
@@ -2344,7 +2390,9 @@ class LegacyGame {
     }
     GetHTMLColour(colour: string, defaultColour: string): string {
         colour = LCase(colour);
-        // UNKNOWN SingleLineIfStatement
+        if (colour == "" || colour == "0") {
+            colour = defaultColour;
+        }
         // UNKNOWN SelectBlock
     }
     DoPrint(text: string): void {
@@ -2437,7 +2485,9 @@ class LegacyGame {
             variable = Trim(Left(param, sc - 1));
         }
         var value = this.GetNumericContents(variable, ctx, true);
-        // UNKNOWN SingleLineIfStatement
+        if (value <= -32766) {
+            value = 0;
+        }
         if (this.BeginsWith(line, "inc ")) {
             value = value + change;
         } else if (this.BeginsWith(line, "dec ")) {
@@ -2451,7 +2501,9 @@ class LegacyGame {
         var startPos: number;
         var extracted: boolean;
         var resId: number;
-        // UNKNOWN SingleLineIfStatement
+        if (this._resourceFile == "") {
+            return "";
+        }
         var found = false;
         for (var i = 1; i <= this._numResources; i++) {
             if (LCase(file) == LCase(this._resources[i].ResourceName)) {
@@ -2592,7 +2644,9 @@ class LegacyGame {
         var o = this._objs[id];
         do {
             var endPos = InStr(altNames, ";");
-            // UNKNOWN SingleLineIfStatement
+            if (endPos == 0) {
+                endPos = Len(altNames) + 1;
+            }
             var curName = Trim(Left(altNames, endPos - 1));
             if (curName != "") {
                 o.NumberAltNames = o.NumberAltNames + 1;
@@ -2603,7 +2657,9 @@ class LegacyGame {
         } while (!(Trim(altNames) == ""));
     }
     AddToObjectProperties(propertyInfo: string, id: number, ctx: Context): void {
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            return null;
+        }
         if (Right(propertyInfo, 1) != ";") {
             propertyInfo = propertyInfo + ";";
         }
@@ -2614,7 +2670,9 @@ class LegacyGame {
             var name: string;
             var value: string;
             var num: number;
-            // UNKNOWN SingleLineIfStatement
+            if (info == "") {
+                // UNKNOWN ExitDoStatement
+            }
             var ep = InStr(info, "=");
             if (ep != 0) {
                 name = Trim(Left(info, ep - 1));
@@ -2979,10 +3037,18 @@ class LegacyGame {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (this.DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit)) {
                     var thisName: string;
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._objs[i].ObjectAlias != "") {
+                        thisName = LCase(this._objs[i].ObjectAlias);
+                    } else {
+                        thisName = LCase(this._objs[i].ObjectName);
+                    }
                     if (this._gameAslVersion >= 410) {
-                        // UNKNOWN SingleLineIfStatement
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._objs[i].Prefix != "") {
+                            thisName = Trim(LCase(this._objs[i].Prefix)) + " " + thisName;
+                        }
+                        if (this._objs[i].Suffix != "") {
+                            thisName = thisName + " " + Trim(LCase(this._objs[i].Suffix));
+                        }
                     }
                     if (InStr(" " + thisName, " " + LCase(name)) != 0) {
                         numberCorresIds = numberCorresIds + 1;
@@ -3071,7 +3137,9 @@ class LegacyGame {
             }
         }
         if (!found) {
-            // UNKNOWN SingleLineIfStatement
+            if (logError) {
+                this.LogASLError("No such action '" + action + "' defined for object '" + o.ObjectName + "'");
+            }
             return false;
         }
         var newCtx: Context = this.CopyContext(ctx);
@@ -3217,7 +3285,9 @@ class LegacyGame {
         } else if (this.BeginsWith(condition, "flag ")) {
             result = this.ExecuteIfFlag(this.GetParameter(condition, ctx));
         }
-        // UNKNOWN SingleLineIfStatement
+        if (thisNot) {
+            result = !result;
+        }
         return result;
     }
     ExecuteConditions(list: string, ctx: Context): boolean {
@@ -3313,7 +3383,9 @@ class LegacyGame {
                     this.AddObjectAction(this._numberObjs, this._defaultProperties.Actions[j].ActionName, this._defaultProperties.Actions[j].Script);
                 }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (!this._gameLoading) {
+                this.UpdateObjectList(ctx);
+            }
         } else if (this.BeginsWith(data, "exit ")) {
             this.ExecuteCreateExit(data, ctx);
         }
@@ -3522,7 +3594,9 @@ class LegacyGame {
         }
         var id = this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
-            // UNKNOWN SingleLineIfStatement
+            if (id != -2) {
+                this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+            }
             this._badCmdBefore = "examine";
             // UNKNOWN ExitSubStatement
         }
@@ -3700,7 +3774,9 @@ class LegacyGame {
         if (found == false && errorReport) {
             this.LogASLError("No such character/object '" + obj + "'.", LogType.UserError);
         }
-        // UNKNOWN SingleLineIfStatement
+        if (found == false) {
+            result = false;
+        }
         if (realOnly) {
             return found;
         }
@@ -3858,7 +3934,9 @@ class LegacyGame {
         }
         if (!found && this._gameAslVersion >= 280) {
             id = this.Disambiguate(name, room, ctx);
-            // UNKNOWN SingleLineIfStatement
+            if (id > 0) {
+                found = true;
+            }
         }
         if (found) {
             return id;
@@ -4631,11 +4709,15 @@ class LegacyGame {
             }
         }
         if (!exists) {
-            // UNKNOWN SingleLineIfStatement
+            if (!noError) {
+                this.LogASLError("No numeric variable '" + name + "' defined.", LogType.WarningError);
+            }
             return -32767;
         }
         if (arrayIndex > this._numericVariable[numNumber].VariableUBound) {
-            // UNKNOWN SingleLineIfStatement
+            if (!noError) {
+                this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", LogType.WarningError);
+            }
             return -32766;
         }
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
@@ -4663,7 +4745,9 @@ class LegacyGame {
         if (filename.Length == 0) {
             this._player.StopSound();
         } else {
-            // UNKNOWN SingleLineIfStatement
+            if (looped && sync) {
+                sync = false;
+            }
             this._player.PlaySound(filename, sync, looped);
             if (sync) {
                 this.ChangeState(State.Waiting);
@@ -4679,8 +4763,12 @@ class LegacyGame {
         var params: any = {};
         params = new any();
         var filename = params[0];
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (params.Contains("loop")) {
+            looped = true;
+        }
+        if (params.Contains("sync")) {
+            sync = true;
+        }
         if (filename.Length > 0 && InStr(filename, ".") == 0) {
             filename = filename + ".wav";
         }
@@ -4860,11 +4948,15 @@ class LegacyGame {
         this._playerErrorMessageString[PlayerError.AlreadyTaken] = "You already have that.";
     }
     SetFont(name: string): void {
-        // UNKNOWN SingleLineIfStatement
+        if (name == "") {
+            name = this._defaultFontName;
+        }
         this._player.SetFont(name);
     }
     SetFontSize(size: number): void {
-        // UNKNOWN SingleLineIfStatement
+        if (size == 0) {
+            size = this._defaultFontSize;
+        }
         this._player.SetFontSize((size).toString());
     }
     SetNumericVariableContents(name: string, content: number, ctx: Context, arrayIndex: number = 0): void {
@@ -5034,7 +5126,9 @@ class LegacyGame {
                     this._stringVariable[id] = variable;
                     this._numDisplayStrings = this._numDisplayStrings + 1;
                 } else if (type == "numeric") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (variable.VariableContents[0] == "") {
+                        variable.VariableContents[0] = (0).toString();
+                    }
                     this._numberNumericVariables = this._numberNumericVariables + 1;
                     var iNumNumber = this._numberNumericVariables;
                     // UNKNOWN ReDimPreserveStatement
@@ -5122,7 +5216,11 @@ class LegacyGame {
                 this._player.SetPanesVisible(opt);
             } else if (this.BeginsWith(this._lines[i], "abbreviations ")) {
                 opt = LCase(Trim(this.GetEverythingAfter(this._lines[i], "abbreviations ")));
-                // UNKNOWN SingleLineIfStatement
+                if (opt == "off") {
+                    this._useAbbreviations = false;
+                } else {
+                    this._useAbbreviations = true;
+                }
             }
         }
     }
@@ -5176,7 +5274,9 @@ class LegacyGame {
                     if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "alias ")) {
                         r.RoomAlias = this.GetParameter(this._lines[j], this._nullContext);
                         this._objs[this._numberObjs].ObjectAlias = r.RoomAlias;
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("alias=" + r.RoomAlias, this._numberObjs, this._nullContext);
+                        }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "description ")) {
                         r.Description = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "description "));
                         if (this._gameAslVersion >= 350) {
@@ -5287,13 +5387,19 @@ class LegacyGame {
                         }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "indescription ")) {
                         r.InDescription = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("indescription=" + r.InDescription, this._numberObjs, this._nullContext);
+                        }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "look ")) {
                         r.Look = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("look=" + r.Look, this._numberObjs, this._nullContext);
+                        }
                     } else if (this.BeginsWith(this._lines[j], "prefix ")) {
                         r.Prefix = this.GetParameter(this._lines[j], this._nullContext);
-                        // UNKNOWN SingleLineIfStatement
+                        if (this._gameAslVersion >= 350) {
+                            this.AddToObjectProperties("prefix=" + r.Prefix, this._numberObjs, this._nullContext);
+                        }
                     } else if (this.BeginsWith(this._lines[j], "script ")) {
                         r.Script = this.GetEverythingAfter(this._lines[j], "script ");
                         this.AddObjectAction(this._numberObjs, "script", r.Script);
@@ -5525,7 +5631,9 @@ class LegacyGame {
                 i = roomBlock.EndLine;
             }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (aliasName == "") {
+            aliasName = room;
+        }
         prefix = this.FindStatement(roomBlock, "prefix");
         if (prefix == "") {
             prefixAlias = "|cr" + aliasName + "|cb";
@@ -5666,7 +5774,9 @@ class LegacyGame {
                     i = outside.EndLine;
                 }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (aliasOut == "") {
+                aliasOut = doorways;
+            }
             roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + "." + vbCrLf;
             possDir = possDir + "o";
             this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
@@ -5746,14 +5856,20 @@ class LegacyGame {
         this.UpdateObjectList(this._nullContext);
         defineBlock = 0;
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
-            // UNKNOWN SingleLineIfStatement
-            // UNKNOWN SingleLineIfStatement
+            if (this.BeginsWith(this._lines[i], "define")) {
+                defineBlock = defineBlock + 1;
+            }
+            if (this.BeginsWith(this._lines[i], "end define")) {
+                defineBlock = defineBlock - 1;
+            }
             if (this.BeginsWith(this._lines[i], "look") && defineBlock == 0) {
                 lookString = this.GetParameter(this._lines[i], this._nullContext);
                 i = roomBlock.EndLine;
             }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (lookString != "") {
+            this.Print(lookString, this._nullContext);
+        }
     }
     Speak(text: string): void {
         this._player.Speak(text);
@@ -5768,7 +5884,9 @@ class LegacyGame {
         }
     }
     ExecExec(scriptLine: string, ctx: Context): void {
-        // UNKNOWN SingleLineIfStatement
+        if (ctx.CancelExec) {
+            // UNKNOWN ExitSubStatement
+        }
         var execLine = this.GetParameter(scriptLine, ctx);
         var newCtx: Context = this.CopyContext(ctx);
         newCtx.StackCounter = newCtx.StackCounter + 1;
@@ -5965,7 +6083,9 @@ class LegacyGame {
                 result = this.GetParameter(resultLine, ctx) + " ";
             }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (capitalise) {
+            result = UCase(Left(result, 1)) + Right(result, Len(result) - 1);
+        }
         return result;
     }
     GetStringContents(name: string, ctx: Context): string {
@@ -6120,7 +6240,9 @@ class LegacyGame {
         }
         if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
             this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
-            // UNKNOWN SingleLineIfStatement
+            if (this._gameFileName == "") {
+                // UNKNOWN ExitFunctionStatement
+            }
         }
         result = this.InitialiseGame(this._gameFileName, true);
         if (result == false) {
@@ -6233,7 +6355,9 @@ class LegacyGame {
     SaveGame(filename: string, saveFile: boolean = true): number[] {
         var ctx: Context = new Context();
         var saveData: string;
-        // UNKNOWN SingleLineIfStatement
+        if (this._gameAslVersion >= 391) {
+            this.ExecuteScript(this._beforeSaveScript, ctx);
+        }
         if (this._gameAslVersion >= 280) {
             saveData = this.MakeRestoreData();
         } else {
@@ -6427,39 +6551,57 @@ class LegacyGame {
                             this.AddObjectAction(this._numberObjs, defaultProperties.Actions[k].ActionName, defaultProperties.Actions[k].Script);
                         }
                     }
-                    // UNKNOWN SingleLineIfStatement
+                    if (this._gameAslVersion >= 391) {
+                        this.AddToObjectProperties("list", this._numberObjs, this._nullContext);
+                    }
                     var hidden = false;
                     do {
                         j = j + 1;
                         if (Trim(this._lines[j]) == "hidden") {
                             o.Exists = false;
                             hidden = true;
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("hidden", this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
                             containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "prefix ")) {
                             o.Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("prefix=" + o.Prefix, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "suffix ")) {
                             o.Suffix = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("suffix=" + o.Suffix, this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "invisible") {
                             o.Visible = false;
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("invisible", this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "alias ")) {
                             o.ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("alias=" + o.ObjectAlias, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "alt ")) {
                             this.AddToObjectAltNames(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs);
                         } else if (this.BeginsWith(this._lines[j], "detail ")) {
                             o.Detail = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("detail=" + o.Detail, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "gender ")) {
                             o.Gender = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("gender=" + o.Gender, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "article ")) {
                             o.Article = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("article=" + o.Article, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "gain ")) {
                             o.GainScript = this.GetEverythingAfter(this._lines[j], "gain ");
                             this.AddObjectAction(this._numberObjs, "gain", o.GainScript);
@@ -6468,7 +6610,9 @@ class LegacyGame {
                             this.AddObjectAction(this._numberObjs, "lose", o.LoseScript);
                         } else if (this.BeginsWith(this._lines[j], "displaytype ")) {
                             o.DisplayType = this.GetParameter(this._lines[j], this._nullContext);
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 311) {
+                                this.AddToObjectProperties("displaytype=" + o.DisplayType, this._numberObjs, this._nullContext);
+                            }
                         } else if (this.BeginsWith(this._lines[j], "look ")) {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "look ");
@@ -6531,16 +6675,22 @@ class LegacyGame {
                                 this.AddObjectAction(this._numberObjs, "take", restOfLine);
                             }
                         } else if (Trim(this._lines[j]) == "container") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "surface") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
                                 this.AddToObjectProperties("surface", this._numberObjs, this._nullContext);
                             }
                         } else if (Trim(this._lines[j]) == "opened") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("opened", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "transparent") {
-                            // UNKNOWN SingleLineIfStatement
+                            if (this._gameAslVersion >= 391) {
+                                this.AddToObjectProperties("transparent", this._numberObjs, this._nullContext);
+                            }
                         } else if (Trim(this._lines[j]) == "open") {
                             this.AddToObjectProperties("open", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "open ")) {
@@ -6584,7 +6734,9 @@ class LegacyGame {
                         }
                     } while (!(Trim(this._lines[j]) == "end define"));
                     o.DefinitionSectionEnd = j;
-                    // UNKNOWN SingleLineIfStatement
+                    if (!hidden) {
+                        o.Exists = true;
+                    }
                 } else if (this._gameAslVersion <= 280 && this.BeginsWith(this._lines[j], "define character")) {
                     containerRoomName = origContainerRoomName;
                     this._numberChars = this._numberChars + 1;
@@ -6616,7 +6768,9 @@ class LegacyGame {
                         this._chars[this._numberChars].ContainerRoom = containerRoomName;
                     } while (!(Trim(this._lines[j]) == "end define"));
                     this._chars[this._numberChars].DefinitionSectionEnd = j;
-                    // UNKNOWN SingleLineIfStatement
+                    if (!hidden) {
+                        this._chars[this._numberChars].Exists = true;
+                    }
                 }
             }
         }
@@ -6628,9 +6782,15 @@ class LegacyGame {
         var copyright = this.FindStatement(this.GetDefineBlock("game"), "game copyright");
         var info = this.FindStatement(this.GetDefineBlock("game"), "game info");
         this.Print("|bGame name:|cl  " + this._gameName + "|cb|xb", ctx);
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (version != "") {
+            this.Print("|bVersion:|xb    " + version, ctx);
+        }
+        if (author != "") {
+            this.Print("|bAuthor:|xb     " + author, ctx);
+        }
+        if (copyright != "") {
+            this.Print("|bCopyright:|xb  " + copyright, ctx);
+        }
         if (info != "") {
             this.Print("", ctx);
             this.Print(info, ctx);
@@ -6645,7 +6805,9 @@ class LegacyGame {
         if (InStr(filename, "@") != 0) {
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
-        // UNKNOWN SingleLineIfStatement
+        if (caption.Length > 0) {
+            this.Print(caption, this._nullContext);
+        }
         this.ShowPictureInText(filename);
     }
     ShowRoomInfo(room: string, ctx: Context, noPrint: boolean = false): void {
@@ -6676,9 +6838,13 @@ class LegacyGame {
         var gameBlock = this.GetDefineBlock("game");
         this._currentRoom = room;
         var id = this.GetRoomID(this._currentRoom, ctx);
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            // UNKNOWN ExitSubStatement
+        }
         roomAlias = this._rooms[id].RoomAlias;
-        // UNKNOWN SingleLineIfStatement
+        if (roomAlias == "") {
+            roomAlias = this._rooms[id].RoomName;
+        }
         prefix = this._rooms[id].Prefix;
         if (prefix == "") {
             roomDisplayName = "|cr" + roomAlias + "|cb";
@@ -6780,7 +6946,9 @@ class LegacyGame {
             if (descTagExist == false) {
                 roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
                 this.Print(roomDisplayText, ctx);
-                // UNKNOWN SingleLineIfStatement
+                if (doorwayString != "") {
+                    this.Print(doorwayString, ctx);
+                }
             } else {
                 if (descType == TextActionType.Text) {
                     this.Print(descLine, ctx);
@@ -6803,8 +6971,12 @@ class LegacyGame {
         var m: number;
         var type = this._collectables[id].Type;
         value = this._collectables[id].Value;
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (type == "%" && value > 100) {
+            value = 100;
+        }
+        if ((type == "%" || type == "p") && value < 0) {
+            value = 0;
+        }
         if (InStr(type, "r") > 0) {
             if (InStr(type, "r") == 1) {
                 max = Val(Mid(type, Len(type) - 1));
@@ -6817,8 +6989,12 @@ class LegacyGame {
                 max = Val(Mid(type, InStr(type, "r") + 1));
                 m = 3;
             }
-            // UNKNOWN SingleLineIfStatement
-            // UNKNOWN SingleLineIfStatement
+            if ((m == 1 || m == 3) && value > max) {
+                value = max;
+            }
+            if ((m == 2 || m == 3) && value < min) {
+                value = min;
+            }
         }
         this._collectables[id].Value = value;
     }
@@ -6877,7 +7053,9 @@ class LegacyGame {
         var oldBadCmdBefore = this._badCmdBefore;
         var roomID = this.GetRoomID(this._currentRoom, ctx);
         var enteredHelpCommand = false;
-        // UNKNOWN SingleLineIfStatement
+        if (input == "") {
+            return true;
+        }
         var cmd = LCase(input);
         // UNKNOWN SyncLockBlock
         var userCommandReturn: boolean;
@@ -6912,7 +7090,9 @@ class LegacyGame {
                 }
             }
         }
-        // UNKNOWN SingleLineIfStatement
+        if (this._beforeTurnScript != "" && globalOverride == false) {
+            this.ExecuteScript(this._beforeTurnScript, newCtx);
+        }
         if (!newCtx.DontProcessCommand) {
             userCommandReturn = false;
             if (runUserCommand == true) {
@@ -7073,7 +7253,9 @@ class LegacyGame {
                             pos = thisComma + 1;
                         }
                     } while (!(thisComma == 0));
-                    // UNKNOWN SingleLineIfStatement
+                    if (lastComma != 0) {
+                        invList = Left(invList, lastComma - 1) + " and" + Mid(invList, lastComma + 1);
+                    }
                     this.Print("You are carrying:|n" + invList + ".", ctx);
                 } else {
                     this.Print("You are not carrying anything.", ctx);
@@ -7098,14 +7280,18 @@ class LegacyGame {
                     }
                 }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (this._afterTurnScript != "" && globalOverride == false) {
+                this.ExecuteScript(this._afterTurnScript, ctx);
+            }
         }
         this.Print("", ctx);
         if (!dontSetIt) {
             this._lastIt = this._thisTurnIt;
             this._lastItMode = this._thisTurnItMode;
         }
-        // UNKNOWN SingleLineIfStatement
+        if (this._badCmdBefore == oldBadCmdBefore) {
+            this._badCmdBefore = "";
+        }
         return true;
     }
     CmdStartsWith(cmd: string, startsWith: string): boolean {
@@ -7176,7 +7362,9 @@ class LegacyGame {
                 foundObject = true;
             }
             if (!foundObject) {
-                // UNKNOWN SingleLineIfStatement
+                if (giveToId != -2) {
+                    this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
+                }
                 this._badCmdBefore = "give " + item + " to";
                 // UNKNOWN ExitSubStatement
             }
@@ -7239,7 +7427,9 @@ class LegacyGame {
                 }
             }
             if (giveLine == 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (article == "") {
+                    article = "it";
+                }
                 this.SetStringContents("quest.error.charactername", realName, ctx);
                 this.SetStringContents("quest.error.gender", Trim(this.GetGender(character, true, ctx)), ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
@@ -7277,7 +7467,9 @@ class LegacyGame {
             if (this._gameAslVersion >= 280) {
                 var id = this.Disambiguate(item, "inventory;" + this._currentRoom, ctx);
                 if (id <= 0) {
-                    // UNKNOWN SingleLineIfStatement
+                    if (id != -2) {
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    }
                     this._badCmdBefore = "look at";
                     // UNKNOWN ExitSubStatement
                 }
@@ -7329,7 +7521,9 @@ class LegacyGame {
             var speakLine: string = "";
             var ObjID = this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
             if (ObjID <= 0) {
-                // UNKNOWN SingleLineIfStatement
+                if (ObjID != -2) {
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
                 this._badCmdBefore = "speak to";
                 // UNKNOWN ExitSubStatement
             }
@@ -7506,9 +7700,13 @@ class LegacyGame {
         if (this._gameAslVersion >= 280) {
             var foundItem = false;
             id = this.Disambiguate(useItem, "inventory", ctx);
-            // UNKNOWN SingleLineIfStatement
+            if (id > 0) {
+                foundItem = true;
+            }
             if (!foundItem) {
-                // UNKNOWN SingleLineIfStatement
+                if (id != -2) {
+                    this.PlayerErrorMessage(PlayerError.NoItem, ctx);
+                }
                 if (useOn == "") {
                     this._badCmdBefore = "use";
                 } else {
@@ -7554,7 +7752,9 @@ class LegacyGame {
                 }
                 if (!foundUseScript) {
                     useScript = this._objs[id].Use;
-                    // UNKNOWN SingleLineIfStatement
+                    if (useScript != "") {
+                        foundUseScript = true;
+                    }
                 }
             } else {
                 foundUseOnObject = false;
@@ -7568,7 +7768,9 @@ class LegacyGame {
                     }
                 }
                 if (!foundUseOnObject) {
-                    // UNKNOWN SingleLineIfStatement
+                    if (useOnObjectId != -2) {
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    }
                     this._badCmdBefore = "use " + useItem + " on";
                     // UNKNOWN ExitSubStatement
                 }
@@ -7738,7 +7940,9 @@ class LegacyGame {
         if (this.ExecuteConditions(conditions, ctx)) {
             this.ExecuteScript((thenScript), ctx);
         } else {
-            // UNKNOWN SingleLineIfStatement
+            if (elsePos != 0) {
+                this.ExecuteScript((elseScript), ctx);
+            }
         }
     }
     ExecuteScript(scriptLine: string, ctx: Context, newCallingObjectId: number = 0): void {
@@ -7836,7 +8040,9 @@ class LegacyGame {
     GoDirection(direction: string, ctx: Context): void {
         var dirData: TextAction = new TextAction();
         var id = this.GetRoomID(this._currentRoom, ctx);
-        // UNKNOWN SingleLineIfStatement
+        if (id == 0) {
+            // UNKNOWN ExitSubStatement
+        }
         if (this._gameAslVersion >= 410) {
             this._rooms[id].Exits.ExecuteGo(direction, ctx);
             // UNKNOWN ExitSubStatement
@@ -8114,9 +8320,13 @@ class LegacyGame {
                 } else if (Mid(txt, i, 2) == "|c") {
                     // UNKNOWN SelectBlock
                 }
-                // UNKNOWN SingleLineIfStatement
+                if (printThis) {
+                    printString = printString + Mid(txt, i, 1);
+                }
             }
-            // UNKNOWN SingleLineIfStatement
+            if (printString != "") {
+                this.DoPrint(printString);
+            }
         }
     }
     RetrLine(blockType: string, param: string, line: string, ctx: Context): string {
@@ -8178,7 +8388,9 @@ class LegacyGame {
                         var ep = InStr(info, "=");
                         var sp1 = InStr(info, " ");
                         var sp2 = InStr(ep, info, " ");
-                        // UNKNOWN SingleLineIfStatement
+                        if (sp2 == 0) {
+                            sp2 = Len(info) + 1;
+                        }
                         var t = Trim(Mid(info, sp1 + 1, ep - sp1 - 1));
                         var i = Trim(Mid(info, ep + 1, sp2 - ep - 1));
                         if (Left(t, 1) == "d") {
@@ -8417,7 +8629,9 @@ class LegacyGame {
                     }
                 }
                 roomDisplayText = roomDisplayText + "You can go |bout|xb to " + outPlaceAlias + ".";
-                // UNKNOWN SingleLineIfStatement
+                if (nsew != "") {
+                    roomDisplayText = roomDisplayText + " ";
+                }
                 directions = directions + "o";
                 if (this._gameAslVersion >= 280) {
                     this.SetStringContents("quest.doorways.out", outPlaceName, ctx);
@@ -8455,7 +8669,9 @@ class LegacyGame {
     }
     UpdateItems(ctx: Context): void {
         var invList: any = {};
-        // UNKNOWN SingleLineIfStatement
+        if (!this._outPutOn) {
+            // UNKNOWN ExitSubStatement
+        }
         var name: string;
         if (this._gameAslVersion >= 280) {
             for (var i = 1; i <= this._numberObjs; i++) {
@@ -8484,7 +8700,9 @@ class LegacyGame {
                 for (var j = 1; j <= this._numCollectables; j++) {
                     var k = this.DisplayCollectableInfo(j);
                     if (k != "<null>") {
-                        // UNKNOWN SingleLineIfStatement
+                        if (status.Length > 0) {
+                            // UNKNOWN AddAssignmentStatement
+                        }
                         // UNKNOWN AddAssignmentStatement
                     }
                 }
@@ -8509,7 +8727,9 @@ class LegacyGame {
         var objsFound: number;
         var objListString: string;
         var noFormatObjListString: string;
-        // UNKNOWN SingleLineIfStatement
+        if (!this._outPutOn) {
+            // UNKNOWN ExitSubStatement
+        }
         var objList: any = {};
         var exitList: any = {};
         var roomBlock: DefineBlock;
@@ -8533,7 +8753,9 @@ class LegacyGame {
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(this._currentRoom) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
                 objSuffix = this._objs[i].Suffix;
-                // UNKNOWN SingleLineIfStatement
+                if (objSuffix != "") {
+                    objSuffix = " " + objSuffix;
+                }
                 if (this._objs[i].ObjectAlias == "") {
                     this.AddToObjectList(objList, exitList, this._objs[i].ObjectName, Thing.Object);
                     objsViewable = objsViewable + this._objs[i].Prefix + "|b" + this._objs[i].ObjectName + "|xb" + objSuffix + ", ";
@@ -8598,7 +8820,9 @@ class LegacyGame {
             for (var i = 1; i <= this._numDisplayStrings; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.String, ctx);
                 if (displayData != "") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (status.Length > 0) {
+                        // UNKNOWN AddAssignmentStatement
+                    }
                     // UNKNOWN AddAssignmentStatement
                 }
             }
@@ -8607,7 +8831,9 @@ class LegacyGame {
             for (var i = 1; i <= this._numDisplayNumerics; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (displayData != "") {
-                    // UNKNOWN SingleLineIfStatement
+                    if (status.Length > 0) {
+                        // UNKNOWN AddAssignmentStatement
+                    }
                     // UNKNOWN AddAssignmentStatement
                 }
             }
@@ -8621,7 +8847,9 @@ class LegacyGame {
         var parentIsOpen: boolean;
         var parentIsSeen: boolean;
         var parentIsSurface: boolean;
-        // UNKNOWN SingleLineIfStatement
+        if (this._gameAslVersion < 391) {
+            // UNKNOWN ExitSubStatement
+        }
         if (onlyParent != "") {
             onlyParent = LCase(onlyParent);
             parentId = this.GetObjectIdNoAlias(onlyParent);
@@ -8705,7 +8933,9 @@ class LegacyGame {
                 shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
             }
             var shownPrefix = this._rooms[roomId].Places[i].Prefix;
-            // UNKNOWN SingleLineIfStatement
+            if (shownPrefix != "") {
+                shownPrefix = shownPrefix + " ";
+            }
             placeList = placeList + shownPrefix + "|b" + shownPlaceName + "|xb, ";
         }
         return placeList;
@@ -8808,7 +9038,9 @@ class LegacyGame {
             }
         }
         this._gameFullyLoaded = true;
-        // UNKNOWN SingleLineIfStatement
+        if (this._autoIntro && this._gameLoadMethod == "normal") {
+            this.DisplayTextSection("intro", this._nullContext);
+        }
         var startRoom: string = "";
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "start ")) {
@@ -8855,7 +9087,9 @@ class LegacyGame {
         this.SendCommand(command, 0, metadata);
     }
     SendCommand(command: string, elapsedTime: number, metadata: any): void {
-        // UNKNOWN SingleLineIfStatement
+        if (!this._readyForCommand) {
+            // UNKNOWN ExitSubStatement
+        }
         var runnerThread: any = {};
         this.ChangeState(State.Working);
         runnerThread.Start(command);
@@ -8911,7 +9145,9 @@ class LegacyGame {
         var libCode: number[] = null;
         libName = LCase(libName);
         // UNKNOWN SelectBlock
-        // UNKNOWN SingleLineIfStatement
+        if (libCode == null) {
+            return null;
+        }
         return this.GetResourceLines(libCode);
     }
     // UNKNOWN PropertyBlock
@@ -8957,8 +9193,12 @@ class LegacyGame {
                 }
             }
         }
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (!anyTimerActive) {
+            nextTrigger = 0;
+        }
+        if (this._gameFinished) {
+            nextTrigger = 0;
+        }
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
         // UNKNOWN RaiseEventStatement
     }
@@ -8971,7 +9211,9 @@ class LegacyGame {
         // UNKNOWN SyncLockBlock
     }
     FinishWait(): void {
-        // UNKNOWN SingleLineIfStatement
+        if ((this._state != State.Waiting)) {
+            // UNKNOWN ExitSubStatement
+        }
         var runnerThread: any = {};
         this.ChangeState(State.Working);
         runnerThread.Start();
@@ -9012,7 +9254,9 @@ class LegacyGame {
     // UNKNOWN EventStatement
     // UNKNOWN PropertyBlock
     GetOriginalFilenameForQSG(): string {
-        // UNKNOWN SingleLineIfStatement
+        if (this._originalFilename != null) {
+            return this._originalFilename;
+        }
         return this._gameFileName;
     }
     // UNKNOWN DelegateFunctionStatement
@@ -9033,7 +9277,9 @@ class LegacyGame {
             return new any();
         }
         var path: string = this.GetResourcePath(file);
-        // UNKNOWN SingleLineIfStatement
+        if (!System.IO.File.Exists(path)) {
+            return null;
+        }
         return new any();
     }
     m_gameId: string;
@@ -9109,8 +9355,12 @@ class RoomExit {
         var objName: string;
         var lastExitId: number;
         var parentRoom: string;
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (Len(this._objName) > 0) {
+            // UNKNOWN ExitSubStatement
+        }
+        if (this._parent == null) {
+            // UNKNOWN ExitSubStatement
+        }
         parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
         objName = parentRoom;
         if (this._direction != LegacyGame.Direction.None) {
@@ -9445,21 +9695,47 @@ class TextFormatter {
         return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
     }
     FormatText(input: string): string {
-        // UNKNOWN SingleLineIfStatement
+        if (input.Length == 0) {
+            return input;
+        }
         var output: string = "";
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (this.align.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.fontSize > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.colour.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.bold) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.italic) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.underline) {
+            // UNKNOWN AddAssignmentStatement
+        }
         // UNKNOWN AddAssignmentStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
-        // UNKNOWN SingleLineIfStatement
+        if (this.underline) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.italic) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.bold) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.colour.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.fontSize > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
+        if (this.align.Length > 0) {
+            // UNKNOWN AddAssignmentStatement
+        }
         return output;
     }
 }

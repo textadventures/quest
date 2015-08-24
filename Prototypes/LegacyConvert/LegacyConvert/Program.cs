@@ -191,6 +191,27 @@ namespace LegacyConvert
                     }
                     ifResult.Append("\n");
                     return ifResult.ToString();
+                case SyntaxKind.SingleLineIfStatement:
+                    var ifStatement = (SingleLineIfStatementSyntax)node;
+                    var ifStatementCondition = ProcessExpression(ifStatement.Condition, classFields);
+                    var ifStatementResult = new StringBuilder();
+                    ifStatementResult.AppendFormat("{0}if ({1}) {{\n", Tabs(depth), ifStatementCondition);
+                    foreach (var statement in ifStatement.Statements)
+                    {
+                        ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields));
+                    }
+                    ifStatementResult.AppendFormat("{0}}}", Tabs(depth));
+                    if (ifStatement.ElseClause != null)
+                    {
+                        ifStatementResult.Append(" else {\n");
+                        foreach (var statement in ifStatement.ElseClause.Statements)
+                        {
+                            ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields));
+                        }
+                        ifStatementResult.AppendFormat("{0}}}", Tabs(depth));
+                    }
+                    ifStatementResult.Append("\n");
+                    return ifStatementResult.ToString();
                 case SyntaxKind.ForBlock:
                     var forBlock = (ForBlockSyntax)node;
                     string forVariable;
