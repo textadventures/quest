@@ -234,6 +234,8 @@ namespace LegacyConvert
                         step = forVariable + "++";
                     }
                     return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields));
+                case SyntaxKind.ExitForStatement:
+                    return string.Format("{0}continue;\n", Tabs(depth));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
