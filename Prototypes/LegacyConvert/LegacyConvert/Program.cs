@@ -75,6 +75,7 @@ namespace LegacyConvert
                 case SyntaxKind.SubNewStatement:
                 case SyntaxKind.SimpleDoStatement:
                 case SyntaxKind.LoopUntilStatement:
+                case SyntaxKind.LoopWhileStatement:
                 case SyntaxKind.IfStatement:
                 case SyntaxKind.ElseIfStatement:
                 case SyntaxKind.ElseIfBlock:
@@ -165,6 +166,7 @@ namespace LegacyConvert
                     var redim = ProcessExpression(((ReDimStatementSyntax)node).Clauses.First().Expression, classFields);
                     return string.Format("{0}{1} = [];\n", Tabs(depth), redim);
                 case SyntaxKind.DoLoopUntilBlock:
+                case SyntaxKind.DoLoopWhileBlock:
                     var doLoop = (DoLoopBlockSyntax)node;
                     var condition = ProcessExpression(doLoop.LoopStatement.WhileOrUntilClause.Condition, classFields);
                     if (doLoop.LoopStatement.WhileOrUntilClause.Kind() == SyntaxKind.UntilClause)

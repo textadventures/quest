@@ -710,7 +710,28 @@ var LegacyGame = (function () {
                             }
                             if (braceCount != 0) {
                                 var k = j + 1;
-                                // UNKNOWN DoLoopWhileBlock
+                                do {
+                                    for (var m = 1; m <= Len(this._lines[k]); m++) {
+                                        if (Mid(this._lines[k], m, 1) == "{") {
+                                            braceCount = braceCount + 1;
+                                        } else if (Mid(this._lines[k], m, 1) == "}") {
+                                            braceCount = braceCount - 1;
+                                        }
+                                        if (braceCount == 0) {
+                                            lastBrace = m;
+                                            continue;
+                                        }
+                                    }
+                                    if (braceCount != 0) {
+                                        lineToAdd = this._lines[k];
+                                        this.AddLine(lineToAdd);
+                                    } else {
+                                        this.AddLine(Left(this._lines[k], lastBrace - 1));
+                                        afterLastBrace = Trim(Mid(this._lines[k], lastBrace + 1));
+                                    }
+                                    this._lines[k] = "";
+                                    k = k + 1;
+                                } while(braceCount != 0);
                             }
                             this.AddLine("end define");
                             endLineNum = UBound(this._lines);
