@@ -78,7 +78,7 @@ namespace LegacyConvert
                     break;
                 case SyntaxKind.ClassBlock:
                     var className = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, depth, prepend, true, new List<string>()));
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, 0, prepend, true, new List<string>()));
                     if (depth == 0) return classResult;
                     prepend.Append(classResult);
                     return null;
@@ -416,7 +416,7 @@ namespace LegacyConvert
 
         static string Tabs(int depth)
         {
-            return new string('\t', depth);
+            return new string(' ', 4 * depth);
         }
     }
 }

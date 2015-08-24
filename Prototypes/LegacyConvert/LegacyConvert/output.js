@@ -934,17 +934,15 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
     };
     LegacyGame.prototype.ObscureNumericExps = function (s) {
-        var EPos;
-        var CurPos;
-        var OutputString;
-        OutputString = s;
-        CurPos = 1;
+        var ep;
+        var result = s;
+        var pos = 1;
         do {
-            EPos = InStr(CurPos, OutputString, "E");
+            ep = InStr(pos, result, "E");
             // UNKNOWN MultiLineIfBlock
             // UNKNOWN LoopUntilStatement
-        } while(!(EPos == 0));
-        return OutputString;
+        } while(!(ep == 0));
+        return result;
     };
     LegacyGame.prototype.ProcessListInfo = function (line, id) {
         var listInfo = new TextAction();
@@ -1140,7 +1138,7 @@ var LegacyGame = (function () {
         var id;
         var newName;
         var cloneTo;
-        var SC = InStr(cloneString, ";");
+        var scp = InStr(cloneString, ";");
 
         // UNKNOWN MultiLineIfBlock
         this._numberObjs = this._numberObjs + 1;
@@ -1255,21 +1253,21 @@ var LegacyGame = (function () {
         // UNKNOWN MultiLineIfBlock
         return displayData;
     };
-    LegacyGame.prototype.DoAction = function (ObjID, ActionName, ctx, LogError) {
-        if (typeof LogError === "undefined") { LogError = true; }
-        var FoundAction;
-        var ActionScript = "";
-        var o = this._objs[ObjID];
+    LegacyGame.prototype.DoAction = function (id, action, ctx, logError) {
+        if (typeof logError === "undefined") { logError = true; }
+        var found;
+        var script = "";
+        var o = this._objs[id];
 
         // UNKNOWN ForBlock
         // UNKNOWN MultiLineIfBlock
-        var NewThread = this.CopyContext(ctx);
-        NewThread.CallingObjectId = ObjID;
-        this.ExecuteScript(ActionScript, NewThread, ObjID);
+        var newCtx = this.CopyContext(ctx);
+        newCtx.CallingObjectId = id;
+        this.ExecuteScript(script, newCtx, id);
         return true;
     };
-    LegacyGame.prototype.HasAction = function (ObjID, ActionName) {
-        var o = this._objs[ObjID];
+    LegacyGame.prototype.HasAction = function (id, action) {
+        var o = this._objs[id];
 
         // UNKNOWN ForBlock
         return false;
@@ -2052,7 +2050,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ShowPictureInText = function (filename) {
         // UNKNOWN MultiLineIfBlock
     };
-    LegacyGame.prototype.ShowRoomInfoV2 = function (Room) {
+    LegacyGame.prototype.ShowRoomInfoV2 = function (room) {
         var roomDisplayText = "";
         var descTagExist;
         var gameBlock;
@@ -2085,9 +2083,9 @@ var LegacyGame = (function () {
         var defineBlock;
         var lookString = "";
         gameBlock = this.GetDefineBlock("game");
-        this._currentRoom = Room;
+        this._currentRoom = room;
         var roomBlock;
-        roomBlock = this.DefineBlockParam("room", Room);
+        roomBlock = this.DefineBlockParam("room", room);
         var finishedFindingCommas;
         charsViewable = "";
         charsFound = 0;
@@ -2250,8 +2248,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.IsCompatible = function (test, required) {
         var var2Pos;
-        test = "�" + Trim(test) + "�";
-        required = "�" + required + "�";
+        test = "^" + Trim(test) + "^";
+        required = "^" + required + "^";
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
         var finished = false;

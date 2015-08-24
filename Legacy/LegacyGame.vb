@@ -3040,20 +3040,19 @@ Public Class LegacyGame
         '   e.g. 2.345E+20 becomes 2.345EX20
         ' This stops huge numbers breaking parsing of maths functions
 
-        Dim EPos, CurPos As Integer
-        Dim OutputString As String
-        OutputString = s
+        Dim ep As Integer
+        Dim result = s
 
-        CurPos = 1
+        Dim pos = 1
         Do
-            EPos = InStr(CurPos, OutputString, "E")
-            If EPos <> 0 Then
-                OutputString = Left(OutputString, EPos) & "X" & Mid(OutputString, EPos + 2)
-                CurPos = EPos + 2
+            ep = InStr(pos, result, "E")
+            If ep <> 0 Then
+                result = Left(result, ep) & "X" & Mid(result, ep + 2)
+                pos = ep + 2
             End If
-        Loop Until EPos = 0
+        Loop Until ep = 0
 
-        Return OutputString
+        Return result
     End Function
 
     Private Sub ProcessListInfo(line As String, id As Integer)
@@ -3717,21 +3716,21 @@ Public Class LegacyGame
         Dim id As Integer
         Dim newName, cloneTo As String
 
-        Dim SC = InStr(cloneString, ";")
-        If SC = 0 Then
+        Dim scp = InStr(cloneString, ";")
+        If scp = 0 Then
             LogASLError("No new object name specified in 'clone <" & cloneString & ">", LogType.WarningError)
             Exit Sub
         Else
-            Dim objectToClone = Trim(Left(cloneString, SC - 1))
+            Dim objectToClone = Trim(Left(cloneString, scp - 1))
             id = GetObjectIdNoAlias(objectToClone)
 
-            Dim SC2 = InStr(SC + 1, cloneString, ";")
+            Dim SC2 = InStr(scp + 1, cloneString, ";")
             If SC2 = 0 Then
                 cloneTo = _objs(id).ContainerRoom
-                newName = Trim(Mid(cloneString, SC + 1))
+                newName = Trim(Mid(cloneString, scp + 1))
             Else
                 cloneTo = Trim(Mid(cloneString, SC2 + 1))
-                newName = Trim(Mid(cloneString, SC + 1, (SC2 - SC) - 1))
+                newName = Trim(Mid(cloneString, scp + 1, (SC2 - scp) - 1))
             End If
         End If
 
@@ -4150,38 +4149,38 @@ Public Class LegacyGame
         Return displayData
     End Function
 
-    Friend Function DoAction(ObjID As Integer, ActionName As String, ctx As Context, Optional LogError As Boolean = True) As Boolean
-        Dim FoundAction As Boolean
-        Dim ActionScript As String = ""
+    Friend Function DoAction(id As Integer, action As String, ctx As Context, Optional logError As Boolean = True) As Boolean
+        Dim found As Boolean
+        Dim script As String = ""
 
-        Dim o = _objs(ObjID)
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
-            If o.Actions(i).ActionName = LCase(ActionName) Then
-                FoundAction = True
-                ActionScript = o.Actions(i).Script
+            If o.Actions(i).ActionName = LCase(action) Then
+                found = True
+                script = o.Actions(i).Script
                 Exit For
             End If
         Next i
 
-        If Not FoundAction Then
-            If LogError Then LogASLError("No such action '" & ActionName & "' defined for object '" & o.ObjectName & "'")
+        If Not found Then
+            If logError Then LogASLError("No such action '" & action & "' defined for object '" & o.ObjectName & "'")
             Return False
         End If
 
-        Dim NewThread As Context = CopyContext(ctx)
-        NewThread.CallingObjectId = ObjID
+        Dim newCtx As Context = CopyContext(ctx)
+        newCtx.CallingObjectId = id
 
-        ExecuteScript(ActionScript, NewThread, ObjID)
+        ExecuteScript(script, newCtx, id)
 
         Return True
     End Function
 
-    Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
-        Dim o = _objs(ObjID)
+    Public Function HasAction(id As Integer, action As String) As Boolean
+        Dim o = _objs(id)
 
         For i = 1 To o.NumberActions
-            If o.Actions(i).ActionName = LCase(ActionName) Then
+            If o.Actions(i).ActionName = LCase(action) Then
                 Return True
             End If
         Next i
@@ -7284,7 +7283,7 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Sub ShowRoomInfoV2(Room As String)
+    Private Sub ShowRoomInfoV2(room As String)
         ' ShowRoomInfo for Quest 2.x games
 
         Dim roomDisplayText As String = ""
@@ -7309,11 +7308,11 @@ Public Class LegacyGame
         Dim lookString As String = ""
 
         gameBlock = GetDefineBlock("game")
-        _currentRoom = Room
+        _currentRoom = room
 
         'find the room
         Dim roomBlock As DefineBlock
-        roomBlock = DefineBlockParam("room", Room)
+        roomBlock = DefineBlockParam("room", room)
         Dim finishedFindingCommas As Boolean
 
         charsViewable = ""
@@ -7326,7 +7325,7 @@ Public Class LegacyGame
                 i = roomBlock.EndLine
             End If
         Next i
-        If aliasName = "" Then aliasName = Room
+        If aliasName = "" Then aliasName = room
 
         'see if room has a prefix
         prefix = FindStatement(roomBlock, "prefix")
@@ -7369,7 +7368,7 @@ Public Class LegacyGame
         'FIND CHARACTERS ===
 
         For i = 1 To _numberChars
-            If _chars(i).ContainerRoom = Room And _chars(i).Exists And _chars(i).Visible Then
+            If _chars(i).ContainerRoom = room And _chars(i).Exists And _chars(i).Visible Then
                 charsViewable = charsViewable & _chars(i).Prefix & "|b" & _chars(i).ObjectName & "|xb" & _chars(i).Suffix & ", "
                 charsFound = charsFound + 1
             End If
@@ -7410,7 +7409,7 @@ Public Class LegacyGame
         noFormatObjsViewable = ""
 
         For i = 1 To _numberObjs
-            If _objs(i).ContainerRoom = Room And _objs(i).Exists And _objs(i).Visible Then
+            If _objs(i).ContainerRoom = room And _objs(i).Exists And _objs(i).Visible Then
                 objsViewable = objsViewable & _objs(i).Prefix & "|b" & _objs(i).ObjectName & "|xb" & _objs(i).Suffix & ", "
                 noFormatObjsViewable = noFormatObjsViewable & _objs(i).Prefix & _objs(i).ObjectName & ", "
 
@@ -8032,8 +8031,8 @@ Public Class LegacyGame
         Dim var2Pos As Integer
 
         ' This avoids "xxx123" being compatible with "xxx".
-        test = "¦" & Trim(test) & "¦"
-        required = "¦" & required & "¦"
+        test = "^" & Trim(test) & "^"
+        required = "^" & required & "^"
 
         'Go through RequiredLine in chunks going up to variables.
         Dim currentReqLinePos = 1
