@@ -1102,7 +1102,14 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.LoadCASKeywords = function () {
         var questDatLines = this.GetResourceLines(My.Resources.QuestDAT);
-        // UNKNOWN ForEachBlock
+        questDatLines.forEach(function (line) {
+            if (Left(line, 1) != "#") {
+                var scp = InStr(line, ";");
+                var keyword = Trim(Left(line, scp - 1));
+                var num = parseInt(Right(line, Len(line) - scp));
+                this._casKeywords[num] = keyword;
+            }
+        }, this);
     };
     LegacyGame.prototype.GetResourceLines = function (res) {
         var enc = {};
@@ -1212,7 +1219,14 @@ var LegacyGame = (function () {
                             // UNKNOWN DoUntilLoopBlock
                             FileClose(libFileHandle);
                         } else {
-                            // UNKNOWN ForEachBlock
+                            libResourceLines.forEach(function (resLibLine) {
+                                libLines = libLines + 1;
+                                if (!libCode)
+                                    libCode = [];
+                                libLine = resLibLine;
+                                libLine = this.RemoveTabs(libLine);
+                                libCode[libLines] = Trim(libLine);
+                            }, this);
                         }
                         var libVer = -1;
                         if (libCode[1] == "!library") {
@@ -4195,8 +4209,11 @@ var LegacyGame = (function () {
         for (var i = 1; i <= numObjectData; i++) {
             data.Append(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
         }
-
-        // UNKNOWN ForEachBlock
+        this._changeLogObjects.Changes.Keys.forEach(function (key) {
+            var appliesTo = Split(key, "#")(0);
+            var changeData = this._changeLogObjects.Changes.Item(key);
+            data.Append(appliesTo + Chr(0) + changeData + Chr(0));
+        }, this);
         data.Append(Trim(Str(this._numberObjs)) + Chr(0));
         for (var i = 1; i <= this._numberObjs; i++) {
             var exists;
@@ -6996,8 +7013,27 @@ var LegacyGame = (function () {
                 visibleObjectsList.Add(i);
             }
         }
-
-        // UNKNOWN ForEachBlock
+        visibleObjectsList.forEach(function (objId) {
+            objSuffix = this._objs[objId].Suffix;
+            if (objSuffix != "") {
+                objSuffix = " " + objSuffix;
+            }
+            if (this._objs[objId].ObjectAlias == "") {
+                visibleObjects = visibleObjects + this._objs[objId].Prefix + "|b" + this._objs[objId].ObjectName + "|xb" + objSuffix;
+                visibleObjectsNoFormat = visibleObjectsNoFormat + this._objs[objId].Prefix + this._objs[objId].ObjectName;
+            } else {
+                visibleObjects = visibleObjects + this._objs[objId].Prefix + "|b" + this._objs[objId].ObjectAlias + "|xb" + objSuffix;
+                visibleObjectsNoFormat = visibleObjectsNoFormat + this._objs[objId].Prefix + this._objs[objId].ObjectAlias;
+            }
+            count = count + 1;
+            if (count < visibleObjectsList.Count() - 1) {
+                visibleObjects = visibleObjects + ", ";
+                visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
+            } else if (count == visibleObjectsList.Count() - 1) {
+                visibleObjects = visibleObjects + " and ";
+                visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
+            }
+        }, this);
         if (visibleObjectsList.Count() > 0) {
             this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
@@ -7344,7 +7380,9 @@ var LegacyGame = (function () {
             } else if (cmd == "clear") {
                 this.DoClear();
             } else if (cmd == "debug") {
-                // UNKNOWN ForEachBlock
+                this._log.forEach(function (logEntry) {
+                    this.Print(logEntry, ctx);
+                }, this);
             } else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
                 if (this._gameAslVersion >= 280) {
                     for (var i = 1; i <= this._numberObjs; i++) {
@@ -8919,7 +8957,9 @@ var LegacyGame = (function () {
         var r = this._rooms[roomId];
         if (this._gameAslVersion >= 410) {
             if (roomId > 0) {
-                // UNKNOWN ForEachBlock
+                this._rooms[roomId].Exits.Places.Values.forEach(function (roomExit) {
+                    this.AddToObjectList(objList, exitList, roomExit.DisplayName, 2 /* Room */);
+                }, this);
             }
         } else {
             for (var i = 1; i <= r.NumberPlaces; i++) {
@@ -8947,8 +8987,12 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.UpdateExitsList = function () {
         var mergedList = {};
-        // UNKNOWN ForEachBlock
-        // UNKNOWN ForEachBlock
+        this._compassExits.forEach(function (listItem) {
+            mergedList.Add(listItem);
+        }, this);
+        this._gotoExits.forEach(function (listItem) {
+            mergedList.Add(listItem);
+        }, this);
         // UNKNOWN RaiseEventStatement
     };
     LegacyGame.prototype.UpdateStatusVars = function (ctx) {
@@ -9041,7 +9085,9 @@ var LegacyGame = (function () {
                 colObjects = new any();
             }
             if (colObjects.Contains(parentId)) {
-                // UNKNOWN ForEachBlock
+                colObjects.forEach(function (objId) {
+                    hierarchy = hierarchy + this._objs[objId].ObjectName + " -> ";
+                }, this);
                 hierarchy = hierarchy + this._objs[parentId].ObjectName;
                 this.LogASLError("Looped object parents detected: " + hierarchy);
                 result.CanAccessObject = false;
@@ -9326,8 +9372,9 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.RunTimersInNewThread = function (scripts) {
         var scriptList = scripts;
-
-        // UNKNOWN ForEachBlock
+        scriptList.forEach(function (script) {
+            // UNKNOWN TryBlock
+        }, this);
         this.ChangeState(0 /* Ready */);
     };
     LegacyGame.prototype.RaiseNextTimerTickRequest = function () {
@@ -9725,8 +9772,17 @@ var RoomExits = (function () {
         orString = "or";
         list = "";
         count = 0;
-
-        // UNKNOWN ForEachBlock
+        this.AllExits().forEach(function (kvp) {
+            count = count + 1;
+            roomExit = kvp.Value;
+            list = list + this.GetDirectionToken((roomExit.Direction));
+            description = description + this.GetDirectionNameDisplay(roomExit);
+            if (count < this.AllExits.Count - 1) {
+                description = description + ", ";
+            } else if (count == this.AllExits.Count - 1) {
+                description = description + " " + orString + " ";
+            }
+        }, this);
         this._game.SetStringContents("quest.doorways", description, this._game._nullContext);
         if (count > 0) {
             description = descPrefix + " " + description + ".";
@@ -9756,7 +9812,11 @@ var RoomExits = (function () {
         return "to " + sDisplay;
     };
     RoomExits.prototype.GetExitByObjectId = function (id) {
-        // UNKNOWN ForEachBlock
+        this.AllExits().forEach(function (kvp) {
+            if (kvp.Value.ObjId == id) {
+                return kvp.Value;
+            }
+        }, this);
         return null;
     };
     RoomExits.prototype.AllExits = function () {
@@ -9765,9 +9825,18 @@ var RoomExits = (function () {
             // UNKNOWN ExitFunctionStatement
         }
         this._allExits = new any();
-
-        // UNKNOWN ForEachBlock
-        // UNKNOWN ForEachBlock
+        this._directions.Keys.forEach(function (dir) {
+            var roomExit = this._directions.Item(dir);
+            if (this._game._objs[roomExit.ObjId].Exists) {
+                this._allExits.Add(dir, this._directions.Item(dir));
+            }
+        }, this);
+        this._places.Keys.forEach(function (dir) {
+            var roomExit = this._places.Item(dir);
+            if (this._game._objs[roomExit.ObjId].Exists) {
+                this._allExits.Add(dir, this._places.Item(dir));
+            }
+        }, this);
         return this._allExits;
     };
     RoomExits.prototype.RemoveExit = function (roomExit) {

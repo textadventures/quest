@@ -84,6 +84,7 @@ namespace LegacyConvert
                 case SyntaxKind.EndIfStatement:
                 case SyntaxKind.ForStatement:
                 case SyntaxKind.NextStatement:
+                case SyntaxKind.ForEachStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -262,6 +263,28 @@ namespace LegacyConvert
                     return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields));
                 case SyntaxKind.ExitForStatement:
                     return string.Format("{0}continue;\n", Tabs(depth));
+                case SyntaxKind.ForEachBlock:
+                    var forEachBlock = (ForEachBlockSyntax)node;
+                    string forEachVariable;
+                    var forEachVariableIdentifier = forEachBlock.ForEachStatement.ControlVariable as IdentifierNameSyntax;
+                    if (forEachVariableIdentifier != null)
+                    {
+                        forEachVariable = forEachVariableIdentifier.Identifier.Text;
+                    }
+                    else
+                    {
+                        var forVariableDeclarator = forEachBlock.ForEachStatement.ControlVariable as VariableDeclaratorSyntax;
+                        if (forVariableDeclarator != null)
+                        {
+                            forEachVariable = forVariableDeclarator.Names.First().Identifier.Text;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException();
+                        }
+                    }
+                    var forEachIn = ProcessExpression(forEachBlock.ForEachStatement.Expression, classFields);
+                    return string.Format("{0}{1}.forEach(function ({2}) {{\n{3}{0}}}, this);\n", Tabs(depth), forEachIn, forEachVariable, ProcessChildNodes(node, depth, prepend, false, classFields));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }

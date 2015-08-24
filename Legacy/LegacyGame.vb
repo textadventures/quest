@@ -1532,10 +1532,10 @@ Public Class LegacyGame
                             Loop
                             FileClose(libFileHandle)
                         Else
-                            For Each ResLibLine As String In libResourceLines
+                            For Each resLibLine As String In libResourceLines
                                 libLines = libLines + 1
                                 ReDim Preserve libCode(libLines)
-                                libLine = ResLibLine
+                                libLine = resLibLine
                                 libLine = RemoveTabs(libLine)
                                 libCode(libLines) = Trim(libLine)
                             Next
@@ -11504,8 +11504,8 @@ Public Class LegacyGame
         If _gameAslVersion >= 410 Then
 
             If roomId > 0 Then
-                For Each oExit As RoomExit In _rooms(roomId).Exits.Places.Values
-                    AddToObjectList(objList, exitList, oExit.DisplayName, Thing.Room)
+                For Each roomExit As RoomExit In _rooms(roomId).Exits.Places.Values
+                    AddToObjectList(objList, exitList, roomExit.DisplayName, Thing.Room)
                 Next
             End If
 
