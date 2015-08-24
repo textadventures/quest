@@ -74,6 +74,13 @@ namespace LegacyConvert
                 case SyntaxKind.EndSubStatement:
                 case SyntaxKind.SubNewStatement:
                 case SyntaxKind.SimpleDoStatement:
+                case SyntaxKind.LoopUntilStatement:
+                case SyntaxKind.IfStatement:
+                case SyntaxKind.ElseIfStatement:
+                case SyntaxKind.ElseIfBlock:
+                case SyntaxKind.ElseStatement:
+                case SyntaxKind.ElseBlock:
+                case SyntaxKind.EndIfStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -163,6 +170,25 @@ namespace LegacyConvert
                         condition = "!(" + condition + ")";
                     }
                     return string.Format("{0}do {{\n{1}{0}}} while ({2});\n", Tabs(depth), ProcessChildNodes(node, depth, prepend, false, classFields), condition);
+                case SyntaxKind.MultiLineIfBlock:
+                    var ifResult = new StringBuilder();
+                    var ifBlock = (MultiLineIfBlockSyntax)node;
+                    var ifCondition = ProcessExpression(ifBlock.IfStatement.Condition, classFields);
+                    var then = ProcessChildNodes(node, depth, prepend, false, classFields);
+                    ifResult.AppendFormat("{0}if ({1}) {{\n{2}{0}}}", Tabs(depth), ifCondition, then);
+                    foreach (var elseIf in ifBlock.ElseIfBlocks)
+                    {
+                        var elseIfCondition = ProcessExpression(elseIf.ElseIfStatement.Condition, classFields);
+                        var elseIfBlock = ProcessChildNodes(elseIf, depth, prepend, false, classFields);
+                        ifResult.AppendFormat(" else if ({1}) {{\n{2}{0}}}", Tabs(depth), elseIfCondition, elseIfBlock);
+                    }
+                    if (ifBlock.ElseBlock != null)
+                    {
+                        var elseBlock = ProcessChildNodes(ifBlock.ElseBlock, depth, prepend, false, classFields);
+                        ifResult.AppendFormat(" else {{\n{1}{0}}}", Tabs(depth), elseBlock);
+                    }
+                    ifResult.Append("\n");
+                    return ifResult.ToString();
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -257,7 +283,8 @@ namespace LegacyConvert
             {
                 var op = binary.OperatorToken.ValueText;
                 if (op == "&") op = "+";
-                if (op == "=") op = "==";
+                if (op == "=" || op == "Is") op = "==";
+                if (op == "<>" || op == "IsNot") op = "!=";
                 if (op == "And" || op == "AndAlso") op = "&&";
                 if (op == "Or" || op == "OrElse") op = "||";
                 return ProcessExpression(binary.Left, classFields) + " " + op + " " + ProcessExpression(binary.Right, classFields);
@@ -296,6 +323,10 @@ namespace LegacyConvert
                 {
                     return string.Format("parseInt({0})", ProcessExpression(cast.Expression, classFields));
                 }
+                if (cast.Keyword.Text == "CDbl")
+                {
+                    return string.Format("parseFloat({0})", ProcessExpression(cast.Expression, classFields));
+                }
                 if (cast.Keyword.Text == "CStr")
                 {
                     return string.Format("({0}).toString()", ProcessExpression(cast.Expression, classFields));
@@ -325,6 +356,12 @@ namespace LegacyConvert
             if (me != null)
             {
                 return "this";
+            }
+
+            var collectionInitializer = expr as CollectionInitializerSyntax;
+            if (collectionInitializer != null)
+            {
+                return "'expr'";
             }
 
             throw new InvalidOperationException();
