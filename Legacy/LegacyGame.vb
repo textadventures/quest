@@ -1387,6 +1387,22 @@ Public Class LegacyGame
         Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
+    '<NOCONVERT
+    Private Function GetFileData(filename As String) As String
+        If Config.ReadGameFileFromAzureBlob Then
+            Using client As New WebClient
+                Dim fileData = client.DownloadString(filename)
+
+                Dim fileBytes As Byte() = client.DownloadData(filename)
+                m_gameId = TextAdventures.Utility.Utility.CalculateMD5Hash(fileBytes)
+                Return fileData
+            End Using
+        Else
+            Return System.IO.File.ReadAllText(filename)
+        End If
+    End Function
+    'NOCONVERT>
+
     Private Function ParseFile(ByRef filename As String) As Boolean
         'Returns FALSE if failed.
 
@@ -1427,18 +1443,7 @@ Public Class LegacyGame
 
         If LCase(Right(filename, 4)) = ".asl" Or LCase(Right(filename, 4)) = ".txt" Then
             'Read file into Lines array
-            Dim fileData As String
-
-            If Config.ReadGameFileFromAzureBlob Then
-                Using client As New WebClient
-                    fileData = client.DownloadString(filename)
-
-                    Dim fileBytes As Byte() = client.DownloadData(filename)
-                    m_gameId = TextAdventures.Utility.Utility.CalculateMD5Hash(fileBytes)
-                End Using
-            Else
-                fileData = System.IO.File.ReadAllText(filename)
-            End If
+            Dim fileData = GetFileData(filename)
 
             Dim aslLines As String() = fileData.Split(Chr(13))
             ReDim _lines(aslLines.Length)
@@ -11498,37 +11503,34 @@ Public Class LegacyGame
         'FIND DOORWAYS
         Dim roomId As Integer
         roomId = GetRoomID(_currentRoom, ctx)
-
-        Dim r = _rooms(roomId)
-
-        If _gameAslVersion >= 410 Then
-
-            If roomId > 0 Then
+        If roomId > 0 Then
+            If _gameAslVersion >= 410 Then
                 For Each roomExit As RoomExit In _rooms(roomId).Exits.Places.Values
                     AddToObjectList(objList, exitList, roomExit.DisplayName, Thing.Room)
                 Next
-            End If
+            Else
+                Dim r = _rooms(roomId)
 
-        Else
-            For i = 1 To r.NumberPlaces
+                For i = 1 To r.NumberPlaces
 
-                If _gameAslVersion >= 311 And _rooms(roomId).Places(i).Script = "" Then
-                    Dim PlaceID = GetRoomID(_rooms(roomId).Places(i).PlaceName, ctx)
-                    If PlaceID = 0 Then
-                        shownPlaceName = _rooms(roomId).Places(i).PlaceName
-                    Else
-                        If _rooms(PlaceID).RoomAlias <> "" Then
-                            shownPlaceName = _rooms(PlaceID).RoomAlias
-                        Else
+                    If _gameAslVersion >= 311 And _rooms(roomId).Places(i).Script = "" Then
+                        Dim PlaceID = GetRoomID(_rooms(roomId).Places(i).PlaceName, ctx)
+                        If PlaceID = 0 Then
                             shownPlaceName = _rooms(roomId).Places(i).PlaceName
+                        Else
+                            If _rooms(PlaceID).RoomAlias <> "" Then
+                                shownPlaceName = _rooms(PlaceID).RoomAlias
+                            Else
+                                shownPlaceName = _rooms(roomId).Places(i).PlaceName
+                            End If
                         End If
+                    Else
+                        shownPlaceName = _rooms(roomId).Places(i).PlaceName
                     End If
-                Else
-                    shownPlaceName = _rooms(roomId).Places(i).PlaceName
-                End If
 
-                AddToObjectList(objList, exitList, shownPlaceName, Thing.Room)
-            Next i
+                    AddToObjectList(objList, exitList, shownPlaceName, Thing.Room)
+                Next i
+            End If
         End If
 
         RaiseEvent UpdateList(ListType.ObjectsList, objList)
@@ -12309,5 +12311,7 @@ Public Class LegacyGame
         Dim fileData As String = System.IO.File.ReadAllText(_resourceFile, System.Text.Encoding.GetEncoding(1252))
         Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, _startCatPos - 1))
     End Function
+
+    '<LEGACY.TS>
 
 End Class

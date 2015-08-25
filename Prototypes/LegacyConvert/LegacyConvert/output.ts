@@ -1153,12 +1153,7 @@ class LegacyGame {
             this._gamePath = System.IO.Path.GetDirectoryName(filename);
         }
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
-            var fileData: string;
-            if (Config.ReadGameFileFromAzureBlob) {
-                // UNKNOWN UsingBlock
-            } else {
-                fileData = System.IO.File.ReadAllText(filename);
-            }
+            var fileData = GetFileData(filename);
             var aslLines: string[] = fileData.Split(Chr(13));
             this._lines = [];
             this._lines[0] = "";
@@ -8839,30 +8834,30 @@ class LegacyGame {
         }
         var roomId: number;
         roomId = this.GetRoomID(this._currentRoom, ctx);
-        var r = this._rooms[roomId];
-        if (this._gameAslVersion >= 410) {
-            if (roomId > 0) {
+        if (roomId > 0) {
+            if (this._gameAslVersion >= 410) {
                 this._rooms[roomId].Exits.Places.Values.forEach(function (roomExit) {
                     this.AddToObjectList(objList, exitList, roomExit.DisplayName, Thing.Room);
                 }, this);
-            }
-        } else {
-            for (var i = 1; i <= r.NumberPlaces; i++) {
-                if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
-                    var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
-                    if (PlaceID == 0) {
-                        shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
-                    } else {
-                        if (this._rooms[PlaceID].RoomAlias != "") {
-                            shownPlaceName = this._rooms[PlaceID].RoomAlias;
-                        } else {
+            } else {
+                var r = this._rooms[roomId];
+                for (var i = 1; i <= r.NumberPlaces; i++) {
+                    if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
+                        var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
+                        if (PlaceID == 0) {
                             shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
+                        } else {
+                            if (this._rooms[PlaceID].RoomAlias != "") {
+                                shownPlaceName = this._rooms[PlaceID].RoomAlias;
+                            } else {
+                                shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
+                            }
                         }
+                    } else {
+                        shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                     }
-                } else {
-                    shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
+                    this.AddToObjectList(objList, exitList, shownPlaceName, Thing.Room);
                 }
-                this.AddToObjectList(objList, exitList, shownPlaceName, Thing.Room);
             }
         }
         // UNKNOWN RaiseEventStatement

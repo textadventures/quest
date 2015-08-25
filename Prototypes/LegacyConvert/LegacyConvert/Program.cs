@@ -31,6 +31,8 @@ namespace LegacyConvert
             var source = input.ToString();
             source = System.Text.RegularExpressions.Regex.Replace(source, @"\'\<NOCONVERT.*?NOCONVERT\>", "", System.Text.RegularExpressions.RegexOptions.Singleline);
 
+            //source = source.Replace("'<LEGACY.TS>", System.IO.File.ReadAllText(@"..\..\legacy.ts"));
+
             var tree = VisualBasicSyntaxTree.ParseText(source);
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
