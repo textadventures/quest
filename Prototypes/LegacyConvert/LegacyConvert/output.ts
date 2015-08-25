@@ -579,7 +579,7 @@ class LegacyGame {
                     }
                     if (bracketCount == 0) {
                         endParamPos = j;
-                        continue;
+                        break;
                     }
                 }
                 if (endParamPos == 0) {
@@ -721,7 +721,7 @@ class LegacyGame {
                                         }
                                         if (braceCount == 0) {
                                             lastBrace = m;
-                                            continue;
+                                            break;
                                         }
                                     }
                                     if (braceCount != 0) {
@@ -1187,7 +1187,7 @@ class LegacyGame {
                     for (var j = 1; j <= numLibraries; j++) {
                         if (LCase(libFileName) == LCase(libraryList[j])) {
                             libraryAlreadyIncluded = true;
-                            continue;
+                            break;
                         }
                     }
                     if (libraryAlreadyIncluded) {
@@ -1232,7 +1232,7 @@ class LegacyGame {
                             for (var c = 1; c <= libLines; c++) {
                                 if (this.BeginsWith(libCode[c], "!asl-version ")) {
                                     libVer = parseInt(this.GetParameter(libCode[c], this._nullContext));
-                                    continue;
+                                    break;
                                 }
                             }
                         } else {
@@ -1376,7 +1376,7 @@ class LegacyGame {
         for (var i = 1; i <= this._numSkipCheckFiles; i++) {
             if (filenameNoPath == this._skipCheckFile[i]) {
                 skipCheck = true;
-                continue;
+                break;
             }
         }
         if (filenameNoPath == "musicvf1.cas") {
@@ -1415,7 +1415,7 @@ class LegacyGame {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define game ")) {
                 gotGameBlock = true;
-                continue;
+                break;
             }
         }
         if (!gotGameBlock) {
@@ -1641,7 +1641,7 @@ class LegacyGame {
             if (o.Actions[i].ActionName == "look") {
                 foundLook = true;
                 this.ExecuteScript(o.Actions[i].Script, ctx);
-                continue;
+                break;
             }
         }
         if (!foundLook) {
@@ -1649,7 +1649,7 @@ class LegacyGame {
                 if (o.Properties[i].PropertyName == "look") {
                     this.Print(this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
                     foundLook = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -1901,7 +1901,7 @@ class LegacyGame {
             if (LCase(o.Actions[i].ActionName) == action) {
                 foundAction = true;
                 actionScript = o.Actions[i].Script;
-                continue;
+                break;
             }
         }
         if (foundAction) {
@@ -2028,7 +2028,7 @@ class LegacyGame {
             if (LCase(o.Actions[i].ActionName) == action) {
                 foundAction = true;
                 actionScript = o.Actions[i].Script;
-                continue;
+                break;
             }
         }
         if (foundAction) {
@@ -2152,7 +2152,7 @@ class LegacyGame {
                     }
                 } while (!(scp == 0 || Trim(verbsList) == "" || foundVerb));
                 if (foundVerb) {
-                    continue;
+                    break;
                 }
             }
         }
@@ -2171,7 +2171,7 @@ class LegacyGame {
                     if (LCase(o.Actions[i].ActionName) == verbProperty) {
                         foundAction = true;
                         thisScript = o.Actions[i].Script;
-                        continue;
+                        break;
                     }
                 }
                 if (thisScript != "") {
@@ -2182,7 +2182,7 @@ class LegacyGame {
                         if (LCase(o.Properties[i].PropertyName) == verbProperty) {
                             foundAction = true;
                             this.Print(o.Properties[i].PropertyValue, ctx);
-                            continue;
+                            break;
                         }
                     }
                 }
@@ -2210,7 +2210,7 @@ class LegacyGame {
                     }
                     if (BracketCount == 0) {
                         endBracketPos = i;
-                        continue;
+                        break;
                     }
                 }
                 if (endBracketPos != 0) {
@@ -2260,14 +2260,14 @@ class LegacyGame {
             for (var i = 1; i <= numOperators; i++) {
                 if (operators[i] == "/" || operators[i] == "*") {
                     opNum = i;
-                    continue;
+                    break;
                 }
             }
             if (opNum == 0) {
                 for (var i = 1; i <= numOperators; i++) {
                     if (operators[i] == "+" || operators[i] == "-") {
                         opNum = i;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -2458,7 +2458,7 @@ class LegacyGame {
                 if (LCase(this._rooms[i].RoomName) == fromRoom) {
                     found = true;
                     roomId = i;
-                    continue;
+                    break;
                 }
             }
             if (!found) {
@@ -2471,7 +2471,7 @@ class LegacyGame {
                 if (r.Places[i].PlaceName == toRoom) {
                     exitId = i;
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (found) {
@@ -2546,7 +2546,7 @@ class LegacyGame {
                 length = this._resources[i].ResourceLength;
                 extracted = this._resources[i].Extracted;
                 resId = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -2570,7 +2570,7 @@ class LegacyGame {
             if (o.Actions[i].ActionName == name) {
                 foundExisting = true;
                 actionNum = i;
-                continue;
+                break;
             }
         }
         if (!foundExisting) {
@@ -2629,7 +2629,7 @@ class LegacyGame {
                 if (o.GiveData[i].GiveType == giveType && LCase(o.GiveData[i].GiveObject) == LCase(name)) {
                     dataId = i;
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (!found) {
@@ -2661,7 +2661,7 @@ class LegacyGame {
             if (o.Actions[i].ActionName == name) {
                 foundExisting = true;
                 actionNum = i;
-                continue;
+                break;
             }
         }
         if (!foundExisting) {
@@ -2772,7 +2772,7 @@ class LegacyGame {
                 if (o.UseData[i].UseType == useType && LCase(o.UseData[i].UseObject) == LCase(objectName)) {
                     dataId = i;
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (!found) {
@@ -2890,7 +2890,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(objName)) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -2926,7 +2926,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(objName)) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -2955,7 +2955,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(objName)) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3167,7 +3167,7 @@ class LegacyGame {
             if (o.Actions[i].ActionName == LCase(action)) {
                 found = true;
                 script = o.Actions[i].Script;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3262,7 +3262,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(objName)) {
                 foundObject = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!foundObject) {
@@ -3274,7 +3274,7 @@ class LegacyGame {
             if (o.Actions[i].ActionName == actionName) {
                 foundExisting = true;
                 actionNum = i;
-                continue;
+                break;
             }
         }
         if (!foundExisting) {
@@ -3465,7 +3465,7 @@ class LegacyGame {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
                     if (LCase(this._rooms[srcId].Places[i].PlaceName) == LCase(destRoom)) {
                         exists = true;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -3577,7 +3577,7 @@ class LegacyGame {
             if (this.BeginsWith(this._lines[i], "drop ")) {
                 dropStatement = this.GetEverythingAfter(this._lines[i], "drop ");
                 dropFound = true;
-                continue;
+                break;
             }
         }
         this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
@@ -3680,7 +3680,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(name)) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3747,7 +3747,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == objName) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3792,7 +3792,7 @@ class LegacyGame {
                 if (LCase(obj) == LCase(this._chars[i].ObjectName)) {
                     result = this._chars[i].Exists;
                     found = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -3801,7 +3801,7 @@ class LegacyGame {
                 if (LCase(obj) == LCase(this._objs[i].ObjectName)) {
                     result = this._objs[i].Exists;
                     found = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -3830,7 +3830,7 @@ class LegacyGame {
             if (LCase(this._objs[i].ObjectName) == LCase(objName)) {
                 found = true;
                 id = i;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3887,7 +3887,7 @@ class LegacyGame {
             if (this._collectables[i].Name == name) {
                 id = i;
                 found = true;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -3963,7 +3963,7 @@ class LegacyGame {
             if ((LCase(this._objs[i].ObjectName) == LCase(name) || LCase(this._objs[i].ObjectName) == "the " + LCase(name)) && (LCase(this._objs[i].ContainerRoom) == LCase(room) || room == "") && this._objs[i].Exists == true) {
                 id = i;
                 found = true;
-                continue;
+                break;
             }
         }
         if (!found && this._gameAslVersion >= 280) {
@@ -3993,7 +3993,7 @@ class LegacyGame {
             if (LCase(o.Properties[i].PropertyName) == LCase(name)) {
                 found = true;
                 result = o.Properties[i].PropertyValue;
-                continue;
+                break;
             }
         }
         if (existsOnly) {
@@ -4020,7 +4020,7 @@ class LegacyGame {
                 if (LCase(this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext)) == LCase(type)) {
                     blockId = i;
                     found = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -4657,7 +4657,7 @@ class LegacyGame {
             if (this._collectables[i].Name == name) {
                 colNum = i;
                 found = true;
-                continue;
+                break;
             }
         }
         if (!found) {
@@ -4742,7 +4742,7 @@ class LegacyGame {
                 if (LCase(this._numericVariable[i].VariableName) == LCase(name)) {
                     numNumber = i;
                     exists = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -4893,7 +4893,7 @@ class LegacyGame {
                 if (this._timers[j].TimerName == appliesTo) {
                     timerNum = j;
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (found) {
@@ -5009,7 +5009,7 @@ class LegacyGame {
                 if (LCase(this._numericVariable[i].VariableName) == LCase(name)) {
                     numNumber = i;
                     exists = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -5269,7 +5269,7 @@ class LegacyGame {
             if (Trim(this._lines[this._defineBlocks[i].StartLine]) == "define type <defaultroom>") {
                 defaultExists = true;
                 defaultProperties = this.GetPropertiesInType("defaultroom");
-                continue;
+                break;
             }
         }
         for (var i = 1; i <= this._numberSections; i++) {
@@ -5582,7 +5582,7 @@ class LegacyGame {
                         this.AddToObjectProperties("invisible", i, ctx);
                     }
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (!found) {
@@ -5603,14 +5603,14 @@ class LegacyGame {
                 for (var i = 1; i <= this._numberChars; i++) {
                     if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                         this._chars[i].Visible = visible;
-                        continue;
+                        break;
                     }
                 }
             } else if (type == LegacyGame.Thing.Object) {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                         this._objs[i].Visible = visible;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -5868,7 +5868,7 @@ class LegacyGame {
             if (this.BeginsWith(this._lines[i], "description ")) {
                 descLine = this._lines[i];
                 descTagExist = true;
-                continue;
+                break;
             }
         }
         if (descTagExist == false) {
@@ -5876,7 +5876,7 @@ class LegacyGame {
                 if (this.BeginsWith(this._lines[i], "description ")) {
                     descLine = this._lines[i];
                     descTagExist = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -5992,7 +5992,7 @@ class LegacyGame {
                         script = r.Commands[i].CommandScript;
                         foundCommand = true;
                         ep = 0;
-                        continue;
+                        break;
                     }
                 } while (!(ep == 0));
             }
@@ -6022,7 +6022,7 @@ class LegacyGame {
                             script = Trim(Mid(this._lines[i], ScriptPos));
                             foundCommand = true;
                             ep = 0;
-                            continue;
+                            break;
                         }
                     } while (!(ep == 0));
                 }
@@ -6168,7 +6168,7 @@ class LegacyGame {
                 if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
                     id = i;
                     exists = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -6453,7 +6453,7 @@ class LegacyGame {
                         this.AddToObjectProperties("hidden", i, ctx);
                     }
                     found = true;
-                    continue;
+                    break;
                 }
             }
             if (!found) {
@@ -6474,14 +6474,14 @@ class LegacyGame {
                 for (var i = 1; i <= this._numberChars; i++) {
                     if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                         this._chars[i].Exists = exists;
-                        continue;
+                        break;
                     }
                 }
             } else if (type == Thing.Object) {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                         this._objs[i].Exists = exists;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -6512,7 +6512,7 @@ class LegacyGame {
                 if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
                     id = i;
                     exists = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -6546,7 +6546,7 @@ class LegacyGame {
             if (Trim(this._lines[this._defineBlocks[i].StartLine]) == "define type <default>") {
                 defaultExists = true;
                 defaultProperties = this.GetPropertiesInType("default");
-                continue;
+                break;
             }
         }
         for (var i = 1; i <= this._numberSections; i++) {
@@ -7433,7 +7433,7 @@ class LegacyGame {
                 if (o.GiveData[i].GiveType == GiveType.GiveSomethingTo && LCase(o.GiveData[i].GiveObject) == LCase(this._objs[id].ObjectName)) {
                     foundScript = true;
                     script = o.GiveData[i].GiveScript;
-                    continue;
+                    break;
                 }
             }
             if (!foundScript) {
@@ -7442,7 +7442,7 @@ class LegacyGame {
                     if (g.GiveData[i].GiveType == GiveType.GiveToSomething && LCase(g.GiveData[i].GiveObject) == LCase(this._objs[giveToId].ObjectName)) {
                         foundScript = true;
                         script = g.GiveData[i].GiveScript;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -7593,7 +7593,7 @@ class LegacyGame {
                 if (o.Actions[i].ActionName == "speak") {
                     speakLine = "speak " + o.Actions[i].Script;
                     foundSpeak = true;
-                    continue;
+                    break;
                 }
             }
             if (!foundSpeak) {
@@ -7601,7 +7601,7 @@ class LegacyGame {
                     if (o.Properties[i].PropertyName == "speak") {
                         speakLine = "speak <" + o.Properties[i].PropertyValue + ">";
                         foundSpeak = true;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -7806,7 +7806,7 @@ class LegacyGame {
                         if (LCase(this._objs[id].ObjectName) == LCase(r.Use[i].Text)) {
                             foundUseScript = true;
                             useScript = r.Use[i].Script;
-                            continue;
+                            break;
                         }
                     }
                 }
@@ -7839,7 +7839,7 @@ class LegacyGame {
                     if (o.UseData[i].UseType == UseType.UseSomethingOn && LCase(o.UseData[i].UseObject) == LCase(this._objs[id].ObjectName)) {
                         foundUseScript = true;
                         useScript = o.UseData[i].UseScript;
-                        continue;
+                        break;
                     }
                 }
                 if (!foundUseScript) {
@@ -7848,7 +7848,7 @@ class LegacyGame {
                         if (u.UseData[i].UseType == UseType.UseOnSomething && LCase(u.UseData[i].UseObject) == LCase(this._objs[useOnObjectId].ObjectName)) {
                             foundUseScript = true;
                             useScript = u.UseData[i].UseScript;
-                            continue;
+                            break;
                         }
                     }
                 }
@@ -7881,7 +7881,7 @@ class LegacyGame {
                     if (LCase(this._rooms[roomId].Use[i].Text) == LCase(useItem)) {
                         useDeclareLine = "use <> " + this._rooms[roomId].Use[i].Script;
                         found = true;
-                        continue;
+                        break;
                     }
                 }
                 if (!found) {
@@ -8306,7 +8306,7 @@ class LegacyGame {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ObjectName) == LCase(item)) {
                         objId = i;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -8527,7 +8527,7 @@ class LegacyGame {
                         for (var i = 1; i <= this._numberItems; i++) {
                             if (this._items[i].Name == name) {
                                 this._items[i].Got = true;
-                                continue;
+                                break;
                             }
                         }
                         pos = nextComma + 1;
