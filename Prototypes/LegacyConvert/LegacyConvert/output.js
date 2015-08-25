@@ -1263,7 +1263,7 @@ var LegacyGame = (function () {
             this.LoadCASFile(filename);
             l = UBound(this._lines);
         } else {
-            // UNKNOWN ThrowStatement
+            throw "Unrecognized file extension";
         }
 
         // Add libraries to end of code:
@@ -1572,7 +1572,7 @@ var LegacyGame = (function () {
             hasErrors = this.ErrorCheck();
         }
         if (hasErrors) {
-            // UNKNOWN ThrowStatement
+            throw "Errors found in game file.";
         }
         this._saveGameFile = "";
         return result;
@@ -1664,7 +1664,7 @@ var LegacyGame = (function () {
         } else if (chkVer == "QCGF003") {
             casVersion = 3;
         } else {
-            // UNKNOWN ThrowStatement
+            throw "Invalid or corrupted CAS file.";
         }
         if (casVersion == 3) {
             startCat = this.Keyword2CAS("!startcat");

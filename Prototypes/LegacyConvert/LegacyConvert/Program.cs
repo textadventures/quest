@@ -303,6 +303,11 @@ namespace LegacyConvert
                     }
                     var forEachIn = ProcessExpression(forEachBlock.ForEachStatement.Expression, classFields);
                     return string.Format("{0}{1}.forEach(function ({2}) {{\n{3}{0}}}, this);\n", Tabs(depth), forEachIn, forEachVariable, ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments));
+                case SyntaxKind.ThrowStatement:
+                    var throwStatement = (ThrowStatementSyntax)node;
+                    var exception = (ObjectCreationExpressionSyntax)throwStatement.Expression;
+                    var msg = exception.ArgumentList.Arguments.First().GetExpression();
+                    return string.Format("{0}throw {1};\n", Tabs(depth), ProcessExpression(msg, classFields));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
