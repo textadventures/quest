@@ -1528,13 +1528,13 @@ Public Class LegacyGame
                         libLines = 0
 
                         If libResourceLines Is Nothing Then
-                            Do Until EOF(libFileHandle)
+                            Do
                                 libLines = libLines + 1
                                 libLine = LineInput(libFileHandle)
                                 libLine = RemoveTabs(libLine)
                                 ReDim Preserve libCode(libLines)
                                 libCode(libLines) = Trim(libLine)
-                            Loop
+                            Loop Until EOF(libFileHandle)
                             FileClose(libFileHandle)
                         Else
                             For Each resLibLine As String In libResourceLines

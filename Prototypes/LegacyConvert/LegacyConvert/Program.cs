@@ -280,6 +280,7 @@ namespace LegacyConvert
                     }
                     return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments));
                 case SyntaxKind.ExitForStatement:
+                case SyntaxKind.ExitDoStatement:
                     return string.Format("{0}break;\n", Tabs(depth));
                 case SyntaxKind.ForEachBlock:
                     var forEachBlock = (ForEachBlockSyntax)node;

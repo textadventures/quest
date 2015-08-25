@@ -1318,7 +1318,14 @@ var LegacyGame = (function () {
                         this.LogASLError("     - Found library, opening...", 3 /* Init */);
                         libLines = 0;
                         if (libResourceLines == null) {
-                            // UNKNOWN DoUntilLoopBlock
+                            do {
+                                libLines = libLines + 1;
+                                libLine = LineInput(libFileHandle);
+                                libLine = this.RemoveTabs(libLine);
+                                if (!libCode)
+                                    libCode = [];
+                                libCode[libLines] = Trim(libLine);
+                            } while(!(EOF(libFileHandle)));
                             FileClose(libFileHandle);
                         } else {
                             libResourceLines.forEach(function (resLibLine) {
@@ -1461,7 +1468,7 @@ var LegacyGame = (function () {
                                     do {
                                         c = c + 1;
                                         if (c > libLines) {
-                                            // UNKNOWN ExitDoStatement
+                                            break;
                                         }
                                         if (!this.BeginsWith(libCode[c], "!end")) {
                                             if (!this._lines)
@@ -2989,7 +2996,7 @@ var LegacyGame = (function () {
             var value;
             var num;
             if (info == "") {
-                // UNKNOWN ExitDoStatement
+                break;
             }
             var ep = InStr(info, "=");
             if (ep != 0) {
@@ -5586,7 +5593,7 @@ var LegacyGame = (function () {
                         type = this.GetEverythingAfter(this._lines[i], "type ");
                         if (type != "string" && type != "numeric") {
                             this.LogASLError("Unrecognised variable type in variable '" + variable.VariableName + "' - type '" + type + "'", 2 /* WarningError */);
-                            // UNKNOWN ExitDoStatement
+                            break;
                         }
                     } else if (this.BeginsWith(this._lines[i], "onchange ")) {
                         variable.OnChangeScript = this.GetEverythingAfter(this._lines[i], "onchange ");
