@@ -42,7 +42,7 @@ namespace LegacyConvert
             var prepend = new StringBuilder();
             prepend.Append(System.IO.File.ReadAllText(@"..\..\stub.ts"));
 
-            var result = ProcessNode(root, -1, prepend, false);
+            var result = ProcessNode(root, -1, prepend, false, null);
             result = prepend.ToString() + result;
 
             System.IO.File.WriteAllText(@"..\..\output.ts", result);
@@ -57,12 +57,12 @@ namespace LegacyConvert
             Console.ReadKey();
         }
 
-        static string ProcessNode(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields = null)
+        static string ProcessNode(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields = null, List<string> ignoreComments = null)
         {
             switch (node.Kind())
             {
                 case SyntaxKind.CompilationUnit:
-                    return ProcessChildNodes(node, depth, prepend, false, classFields);
+                    return ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments);
                 case SyntaxKind.OptionStatement:
                 case SyntaxKind.ImportsStatement:
                 case SyntaxKind.ClassStatement:
@@ -91,7 +91,7 @@ namespace LegacyConvert
                     break;
                 case SyntaxKind.ClassBlock:
                     var className = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, 0, prepend, true, new List<string>()));
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, 0, prepend, true, new List<string>(), ignoreComments));
                     if (depth == 0) return classResult;
                     prepend.Append(classResult);
                     return null;
@@ -146,7 +146,7 @@ namespace LegacyConvert
                         Tabs(depth),
                         name,
                         type,
-                        ProcessChildNodes(node, depth, prepend, false, classFields),
+                        ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments),
                         string.Join(", ", parameters));
                 case SyntaxKind.ConstructorBlock:
                     var ctor = (ConstructorBlockSyntax)node;
@@ -154,7 +154,7 @@ namespace LegacyConvert
                     return string.Format("{0}constructor({1}) {{\n{2}{0}}}\n",
                         Tabs(depth),
                         string.Join(", ", ctorParams),
-                        ProcessChildNodes(node, depth, prepend, false, classFields));
+                        ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments));
                 case SyntaxKind.SimpleAssignmentStatement:
                     var assign = (AssignmentStatementSyntax)node;
                     var left = ProcessExpression(assign.Left, classFields);
@@ -179,22 +179,22 @@ namespace LegacyConvert
                     {
                         condition = "!(" + condition + ")";
                     }
-                    return string.Format("{0}do {{\n{1}{0}}} while ({2});\n", Tabs(depth), ProcessChildNodes(node, depth, prepend, false, classFields), condition);
+                    return string.Format("{0}do {{\n{1}{0}}} while ({2});\n", Tabs(depth), ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments), condition);
                 case SyntaxKind.MultiLineIfBlock:
                     var ifResult = new StringBuilder();
                     var ifBlock = (MultiLineIfBlockSyntax)node;
                     var ifCondition = ProcessExpression(ifBlock.IfStatement.Condition, classFields);
-                    var then = ProcessChildNodes(node, depth, prepend, false, classFields);
+                    var then = ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments);
                     ifResult.AppendFormat("{0}if ({1}) {{\n{2}{0}}}", Tabs(depth), ifCondition, then);
                     foreach (var elseIf in ifBlock.ElseIfBlocks)
                     {
                         var elseIfCondition = ProcessExpression(elseIf.ElseIfStatement.Condition, classFields);
-                        var elseIfBlock = ProcessChildNodes(elseIf, depth, prepend, false, classFields);
+                        var elseIfBlock = ProcessChildNodes(elseIf, depth, prepend, false, classFields, ignoreComments);
                         ifResult.AppendFormat(" else if ({1}) {{\n{2}{0}}}", Tabs(depth), elseIfCondition, elseIfBlock);
                     }
                     if (ifBlock.ElseBlock != null)
                     {
-                        var elseBlock = ProcessChildNodes(ifBlock.ElseBlock, depth, prepend, false, classFields);
+                        var elseBlock = ProcessChildNodes(ifBlock.ElseBlock, depth, prepend, false, classFields, ignoreComments);
                         ifResult.AppendFormat(" else {{\n{1}{0}}}", Tabs(depth), elseBlock);
                     }
                     ifResult.Append("\n");
@@ -206,7 +206,7 @@ namespace LegacyConvert
                     ifStatementResult.AppendFormat("{0}if ({1}) {{\n", Tabs(depth), ifStatementCondition);
                     foreach (var statement in ifStatement.Statements)
                     {
-                        ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields));
+                        ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields, ignoreComments));
                     }
                     ifStatementResult.AppendFormat("{0}}}", Tabs(depth));
                     if (ifStatement.ElseClause != null)
@@ -214,7 +214,7 @@ namespace LegacyConvert
                         ifStatementResult.Append(" else {\n");
                         foreach (var statement in ifStatement.ElseClause.Statements)
                         {
-                            ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields));
+                            ifStatementResult.AppendFormat(ProcessNode(statement, depth + 1, prepend, false, classFields, ignoreComments));
                         }
                         ifStatementResult.AppendFormat("{0}}}", Tabs(depth));
                     }
@@ -262,7 +262,7 @@ namespace LegacyConvert
                     {
                         step = forVariable + "++";
                     }
-                    return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields));
+                    return string.Format("{0}for (var {1} = {2}; {3}; {4}) {{\n{5}{0}}}\n", Tabs(depth), forVariable, from, toExpr, step, ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments));
                 case SyntaxKind.ExitForStatement:
                     return string.Format("{0}break;\n", Tabs(depth));
                 case SyntaxKind.ForEachBlock:
@@ -286,7 +286,7 @@ namespace LegacyConvert
                         }
                     }
                     var forEachIn = ProcessExpression(forEachBlock.ForEachStatement.Expression, classFields);
-                    return string.Format("{0}{1}.forEach(function ({2}) {{\n{3}{0}}}, this);\n", Tabs(depth), forEachIn, forEachVariable, ProcessChildNodes(node, depth, prepend, false, classFields));
+                    return string.Format("{0}{1}.forEach(function ({2}) {{\n{3}{0}}}, this);\n", Tabs(depth), forEachIn, forEachVariable, ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
@@ -525,7 +525,7 @@ namespace LegacyConvert
             return name;
         }
 
-        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields)
+        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields, List<string> ignoreCommentsFromParent)
         {
             depth++;
 
@@ -552,10 +552,13 @@ namespace LegacyConvert
                 var preComments = childNode.GetLeadingTrivia().Where(t => t.Kind() == SyntaxKind.CommentTrivia);
                 foreach (var c in preComments)
                 {
+                    if (ignoreCommentsFromParent.Contains(c.ToString())) continue;
                     sb.AppendFormat("{0}//{1}\n", Tabs(depth), c.ToString().Substring(1));
                 }
 
-                var result = ProcessNode(childNode, depth, prepend, inClass, classFields);
+                var ignoreComments = preComments.Select(c => c.ToString()).ToList();
+
+                var result = ProcessNode(childNode, depth, prepend, inClass, classFields, ignoreComments);
 
                 sb.Append(result);
 
