@@ -1970,7 +1970,7 @@ var LegacyGame = (function () {
         if (childLength < 0) {
             this.PlayerErrorMessage(0 /* BadCommand */, ctx);
             this._badCmdBefore = verb;
-            // UNKNOWN ExitSubStatement
+            return;
         }
         childName = Trim(Mid(cmd, Len(verb) + 2, childLength));
         gotObject = false;
@@ -1992,14 +1992,14 @@ var LegacyGame = (function () {
                 }
                 if (!gotObject) {
                     this._badCmdBefore = verb;
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             } else {
                 if (childId != -2) {
                     this.PlayerErrorMessage(4 /* NoItem */, ctx);
                 }
                 this._badCmdBefore = verb;
-                // UNKNOWN ExitSubStatement
+                return;
             }
         } else {
             childId = this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
@@ -2008,13 +2008,13 @@ var LegacyGame = (function () {
                     this.PlayerErrorMessage(7 /* BadThing */, ctx);
                 }
                 this._badCmdBefore = verb;
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
         if (noParentSpecified && doAdd) {
             this.SetStringContents("quest.error.article", this._objs[childId].Article, ctx);
             this.PlayerErrorMessage(29 /* BadPut */, ctx);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (doAdd) {
             action = "add";
@@ -2029,14 +2029,14 @@ var LegacyGame = (function () {
                     this.PlayerErrorMessage(7 /* BadThing */, ctx);
                 }
                 this._badCmdBefore = Left(cmd, sepPos + sepLen);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         } else {
             // Assume the player was referring to the parent that the object is already in,
             // if it is even in an object already
             if (!this.IsYes(this.GetObjectProperty("parent", childId, true, false))) {
                 this.PlayerErrorMessage(32 /* CantRemove */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             parentId = this.GetObjectIdNoAlias(this.GetObjectProperty("parent", childId, false, true));
         }
@@ -2049,7 +2049,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage(32 /* CantRemove */, ctx);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Check object is already held by that parent
@@ -2067,7 +2067,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage_ExtendInfo(32 /* CantRemove */, ctx, canAccessObject.ErrorMsg);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var canAccessParent = this.PlayerCanAccessObject(parentId);
         if (!canAccessParent.CanAccessObject) {
@@ -2076,7 +2076,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage_ExtendInfo(32 /* CantRemove */, ctx, canAccessParent.ErrorMsg);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Check if parent is a closed container
@@ -2087,7 +2087,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage(32 /* CantRemove */, ctx);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Now check if it can be added to (or removed from)
@@ -2144,7 +2144,7 @@ var LegacyGame = (function () {
         scp = InStr(parameter, ";");
         if (scp == 0 && add) {
             this.LogASLError("No parent specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (scp != 0) {
             childName = LCase(Trim(Left(parameter, scp - 1)));
@@ -2155,13 +2155,13 @@ var LegacyGame = (function () {
         childId = this.GetObjectIdNoAlias(childName);
         if (childId == 0) {
             this.LogASLError("Invalid child object name specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (scp != 0) {
             parentId = this.GetObjectIdNoAlias(parentName);
             if (parentId == 0) {
                 this.LogASLError("Invalid parent object name specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             this.DoAddRemove(childId, parentId, add, ctx);
         } else {
@@ -2194,7 +2194,7 @@ var LegacyGame = (function () {
                 this.PlayerErrorMessage(7 /* BadThing */, ctx);
             }
             this._badCmdBefore = action;
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Check if it's even a container
@@ -2205,7 +2205,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage(26 /* CantClose */, ctx);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Check if it's already open (or closed)
@@ -2213,11 +2213,11 @@ var LegacyGame = (function () {
         if (doOpen && isOpen) {
             // Object is already open
             this.PlayerErrorMessage(23 /* AlreadyOpen */, ctx);
-            // UNKNOWN ExitSubStatement
+            return;
         } else if (!doOpen && !isOpen) {
             // Object is already closed
             this.PlayerErrorMessage(24 /* AlreadyClosed */, ctx);
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Check if it's accessible, i.e. check it's not itself inside another closed container
@@ -2228,7 +2228,7 @@ var LegacyGame = (function () {
             } else {
                 this.PlayerErrorMessage_ExtendInfo(26 /* CantClose */, ctx, canAccessObject.ErrorMsg);
             }
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Now check if it can be opened (or closed)
@@ -2276,7 +2276,7 @@ var LegacyGame = (function () {
         var afterLine = this.GetAfterParameter(script);
         if (!this.BeginsWith(afterLine, "do <!intproc")) {
             this.LogASLError("No case block specified for '" + script + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var blockName = this.GetParameter(afterLine, ctx);
         var block = this.DefineBlockParam("procedure", blockName);
@@ -2313,7 +2313,7 @@ var LegacyGame = (function () {
                     }
                     if (caseMatch) {
                         this.ExecuteScript(caseScript, ctx);
-                        // UNKNOWN ExitSubStatement
+                        return;
                     }
                 }
             }
@@ -2646,7 +2646,7 @@ var LegacyGame = (function () {
             propName = "list closed";
         } else if (Trim(line) == "list closed off") {
             // default for list closed is off anyway
-            // UNKNOWN ExitSubStatement
+            return;
         } else if (this.BeginsWith(line, "list closed")) {
             listInfo.Type = 1 /* Script */;
             listInfo.Data = this.GetEverythingAfter(line, "list closed");
@@ -2657,14 +2657,14 @@ var LegacyGame = (function () {
             propName = "list empty";
         } else if (Trim(line) == "list empty off") {
             // default for list empty is off anyway
-            // UNKNOWN ExitSubStatement
+            return;
         } else if (this.BeginsWith(line, "list empty")) {
             listInfo.Type = 1 /* Script */;
             listInfo.Data = this.GetEverythingAfter(line, "list empty");
             propName = "list empty";
         } else if (Trim(line) == "list off") {
             this.AddToObjectProperties("not list", id, this._nullContext);
-            // UNKNOWN ExitSubStatement
+            return;
         } else if (this.BeginsWith(line, "list <")) {
             listInfo.Type = 0 /* Text */;
             listInfo.Data = this.GetParameter(line, this._nullContext);
@@ -2701,14 +2701,14 @@ var LegacyGame = (function () {
         var scp = InStr(exitData, ";");
         if (scp == 0) {
             this.LogASLError("No exit name specified in 'destroy exit <" + exitData + ">'");
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var roomExit;
         if (this._gameAslVersion >= 410) {
             roomExit = this.FindExit(exitData);
             if (roomExit == null) {
                 this.LogASLError("Can't find exit in 'destroy exit <" + exitData + ">'");
-                // UNKNOWN ExitSubStatement
+                return;
             }
             roomExit.Parent.RemoveExit(roomExit);
         } else {
@@ -2726,7 +2726,7 @@ var LegacyGame = (function () {
             }
             if (!found) {
                 this.LogASLError("No such room '" + fromRoom + "'");
-                // UNKNOWN ExitSubStatement
+                return;
             }
             found = false;
             var r = this._rooms[roomId];
@@ -2888,7 +2888,7 @@ var LegacyGame = (function () {
             if (this.BeginsWith(giveData, "anything ")) {
                 o.GiveToAnything = this.GetEverythingAfter(giveData, "anything ");
                 this.AddObjectAction(id, "give to anything", o.GiveToAnything, true);
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 giveType = 0 /* GiveToSomething */;
                 actionName = "give to ";
@@ -2897,7 +2897,7 @@ var LegacyGame = (function () {
             if (this.BeginsWith(giveData, "anything ")) {
                 o.GiveAnything = this.GetEverythingAfter(giveData, "anything ");
                 this.AddObjectAction(id, "give anything", o.GiveAnything, true);
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 giveType = 1 /* GiveSomethingTo */;
                 actionName = "give ";
@@ -2937,7 +2937,7 @@ var LegacyGame = (function () {
         var ep = InStr(actionInfo, ">");
         if (ep == Len(actionInfo)) {
             this.LogASLError("No script given for '" + name + "' action data", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var script = Trim(Mid(actionInfo, ep + 1));
         var o = this._objs[id];
@@ -3039,14 +3039,14 @@ var LegacyGame = (function () {
             useData = this.GetEverythingAfter(useData, "on ");
             if (this.BeginsWith(useData, "anything ")) {
                 o.UseOnAnything = this.GetEverythingAfter(useData, "anything ");
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 useType = 0 /* UseOnSomething */;
             }
         } else {
             if (this.BeginsWith(useData, "anything ")) {
                 o.UseAnything = this.GetEverythingAfter(useData, "anything ");
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 useType = 1 /* UseSomethingOn */;
             }
@@ -3124,7 +3124,7 @@ var LegacyGame = (function () {
         var scp = InStr(cloneString, ";");
         if (scp == 0) {
             this.LogASLError("No new object name specified in 'clone <" + cloneString + ">", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         } else {
             var objectToClone = Trim(Left(cloneString, scp - 1));
             id = this.GetObjectIdNoAlias(objectToClone);
@@ -3176,7 +3176,7 @@ var LegacyGame = (function () {
         var scp = InStr(typeData, ";");
         if (scp == 0) {
             this.LogASLError("No type name given in 'type <" + typeData + ">'");
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var objName = Trim(Left(typeData, scp - 1));
         var typeName = Trim(Mid(typeData, scp + 1));
@@ -3189,7 +3189,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             this.LogASLError("No such object in 'type <" + typeData + ">'");
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var o = this._objs[id];
         o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
@@ -3514,25 +3514,25 @@ var LegacyGame = (function () {
             scriptLine = this.GetEverythingAfter(scriptLine, "object ");
             if (!this.BeginsWith(scriptLine, "in ")) {
                 this.LogASLError("Expected 'in' in 'for each object " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         } else if (this.BeginsWith(scriptLine, "exit ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "exit ");
             if (!this.BeginsWith(scriptLine, "in ")) {
                 this.LogASLError("Expected 'in' in 'for each exit " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             isExit = true;
         } else if (this.BeginsWith(scriptLine, "room ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "room ");
             if (!this.BeginsWith(scriptLine, "in ")) {
                 this.LogASLError("Expected 'in' in 'for each room " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             isRoom = true;
         } else {
             this.LogASLError("Unknown type in 'for each " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         scriptLine = this.GetEverythingAfter(scriptLine, "in ");
         if (this.BeginsWith(scriptLine, "game ")) {
@@ -3563,7 +3563,7 @@ var LegacyGame = (function () {
         var scp = InStr(param, ";");
         if (scp == 0) {
             this.LogASLError("No action name specified in 'action " + data + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var objName = Trim(Left(param, scp - 1));
         actionName = Trim(Mid(param, scp + 1));
@@ -3582,7 +3582,7 @@ var LegacyGame = (function () {
         }
         if (!foundObject) {
             this.LogASLError("No such object '" + objName + "' in 'action " + data + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var o = this._objs[id];
         for (var i = 1; i <= o.NumberActions; i++) {
@@ -3757,7 +3757,7 @@ var LegacyGame = (function () {
         if (this._gameAslVersion < 410) {
             if (scp == 0) {
                 this.LogASLError("No exit destination given in 'create exit " + exitData + "'", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
         if (scp == 0) {
@@ -3768,7 +3768,7 @@ var LegacyGame = (function () {
         var srcId = this.GetRoomID(scrRoom, ctx);
         if (srcId == 0) {
             this.LogASLError("No such room '" + scrRoom + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._gameAslVersion < 410) {
             // only do destination room check for ASL <410, as can now have scripts on dynamically
@@ -3778,7 +3778,7 @@ var LegacyGame = (function () {
                 destId = this.GetRoomID(destRoom, ctx);
                 if (destId == 0) {
                     this.LogASLError("No such room '" + destRoom + "'", 2 /* WarningError */);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             }
         }
@@ -3798,7 +3798,7 @@ var LegacyGame = (function () {
             }
             if (exists) {
                 this.LogASLError("Exit from '" + scrRoom + "' to '" + destRoom + "' already exists", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
         var paramPos = InStr(exitData, "<");
@@ -3894,7 +3894,7 @@ var LegacyGame = (function () {
                 }
             }
             this._badCmdBefore = "drop";
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // If object is inside a container, it must be removed before it can be dropped.
@@ -3933,7 +3933,7 @@ var LegacyGame = (function () {
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
                     // removing the object failed
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             }
         }
@@ -3964,7 +3964,7 @@ var LegacyGame = (function () {
         if (item == "") {
             this.PlayerErrorMessage(16 /* BadExamine */, ctx);
             this._badCmdBefore = "examine";
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var id = this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
@@ -3972,21 +3972,21 @@ var LegacyGame = (function () {
                 this.PlayerErrorMessage(7 /* BadThing */, ctx);
             }
             this._badCmdBefore = "examine";
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var o = this._objs[id];
 
         for (var i = 1; i <= o.NumberActions; i++) {
             if (o.Actions[i].ActionName == "examine") {
                 this.ExecuteScript(o.Actions[i].Script, ctx, id);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
 
         for (var i = 1; i <= o.NumberProperties; i++) {
             if (o.Properties[i].PropertyName == "examine") {
                 this.Print(o.Properties[i].PropertyValue, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
 
@@ -3998,7 +3998,7 @@ var LegacyGame = (function () {
                 } else {
                     this.ExecuteScript(action, ctx, id);
                 }
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
         this.DoLook(id, ctx, true);
@@ -4015,7 +4015,7 @@ var LegacyGame = (function () {
         var scp = InStr(data, ";");
         if (scp == 0) {
             this.LogASLError("No property data given in 'property <" + data + ">'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var name = Trim(Left(data, scp - 1));
         var properties = Trim(Mid(data, scp + 1));
@@ -4028,7 +4028,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             this.LogASLError("No such object in 'property <" + data + ">'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         this.AddToObjectProperties(properties, id, ctx);
     };
@@ -4084,7 +4084,7 @@ var LegacyGame = (function () {
         var scp = InStr(data, ";");
         if (scp == 0) {
             this.LogASLError("No action name specified in 'doaction <" + data + ">'");
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var objName = LCase(Trim(Left(data, scp - 1)));
         var actionName = Trim(Mid(data, scp + 1));
@@ -4098,7 +4098,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             this.LogASLError("No such object '" + objName + "'");
-            // UNKNOWN ExitSubStatement
+            return;
         }
         this.DoAction(id, actionName, ctx);
     };
@@ -4199,7 +4199,7 @@ var LegacyGame = (function () {
             data = this.GetEverythingAfter(data, "until ");
         } else {
             this.LogASLError("Expected 'until' or 'while' in 'repeat " + this.ReportErrorLine(data) + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var pos = 1;
         do {
@@ -4238,7 +4238,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             this.LogASLError("No such collectable '" + param + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var op = Left(newVal, 1);
         var newValue = Trim(Right(newVal, Len(newVal) - 1));
@@ -4969,7 +4969,7 @@ var LegacyGame = (function () {
         // See if this is a "for each" loop:
         if (this.BeginsWith(line, "each ")) {
             this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // Executes a for loop, of form:
@@ -5008,7 +5008,7 @@ var LegacyGame = (function () {
         var idx = this.GetArrayIndex(varName, ctx);
         if (IsNumeric(idx.Name)) {
             this.LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         // UNKNOWN TryBlock
     };
@@ -5435,7 +5435,7 @@ var LegacyGame = (function () {
         var exists = false;
         if (IsNumeric(name)) {
             this.LogASLError("Illegal numeric variable name '" + name + "' - check you didn't put % around the variable name in the ASL code", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // First, see if variable already exists. If it does,
@@ -5486,7 +5486,7 @@ var LegacyGame = (function () {
         var id = this.GetObjectIdNoAlias(name);
         if (id == 0) {
             this.LogASLError("Invalid object name specified in '" + cmd + " <" + name + ">", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         this.DoOpenClose(id, open, false, ctx);
     };
@@ -5950,7 +5950,7 @@ var LegacyGame = (function () {
         var block = this.GetDefineBlock("synonyms");
         this._numberSynonyms = 0;
         if (block.StartLine == 0 && block.EndLine == 0) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             var eqp = InStr(this._lines[i], "=");
@@ -6440,7 +6440,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ExecExec = function (scriptLine, ctx) {
         if (ctx.CancelExec) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var execLine = this.GetParameter(scriptLine, ctx);
         var newCtx = this.CopyContext(ctx);
@@ -6448,7 +6448,7 @@ var LegacyGame = (function () {
         if (newCtx.StackCounter > 500) {
             this.LogASLError("Out of stack space running '" + scriptLine + "' - infinite loop?", 2 /* WarningError */);
             ctx.CancelExec = true;
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._gameAslVersion >= 310) {
             newCtx.AllowRealNamesInCommand = true;
@@ -6475,7 +6475,7 @@ var LegacyGame = (function () {
         var value = Mid(info, scp + 1);
         if (IsNumeric(name)) {
             this.LogASLError("Invalid string name '" + name + "' - string names cannot be numeric", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._gameAslVersion >= 281) {
             value = Trim(value);
@@ -7087,7 +7087,7 @@ var LegacyGame = (function () {
         var exists = false;
         if (name == "") {
             this.LogASLError("Internal error - tried to set empty string name to '" + value + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._gameAslVersion >= 281) {
             var bp = InStr(name, "[");
@@ -7098,7 +7098,7 @@ var LegacyGame = (function () {
         }
         if (arrayIndex < 0) {
             this.LogASLError("'" + name + "[" + Trim(Str(arrayIndex)) + "]' is invalid - did not assign to array", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // First, see if the string already exists. If it does,
@@ -7463,7 +7463,7 @@ var LegacyGame = (function () {
         if (typeof noPrint === "undefined") { noPrint = false; }
         if (this._gameAslVersion < 280) {
             this.ShowRoomInfoV2(room);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var roomDisplayText = "";
         var descTagExist;
@@ -7489,7 +7489,7 @@ var LegacyGame = (function () {
         this._currentRoom = room;
         var id = this.GetRoomID(this._currentRoom, ctx);
         if (id == 0) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
 
         // FIRST LINE - YOU ARE IN... ***********************************************
@@ -7740,7 +7740,7 @@ var LegacyGame = (function () {
         var block;
         block = this.DefineBlockParam("text", section);
         if (block.StartLine == 0) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this._gameAslVersion >= 392) {
@@ -8048,7 +8048,7 @@ var LegacyGame = (function () {
             toPos = InStr(giveString, " the ");
             if (toPos == 0) {
                 this.PlayerErrorMessage(2 /* BadGive */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 item = Trim(Mid(giveString, toPos + 4, Len(giveString) - (toPos + 2)));
                 character = Trim(Mid(giveString, 1, toPos));
@@ -8070,9 +8070,9 @@ var LegacyGame = (function () {
                 this.PlayerErrorMessage(4 /* NoItem */, ctx);
                 this._badCmdBefore = "give";
                 this._badCmdAfter = "to " + character;
-                // UNKNOWN ExitSubStatement
+                return;
             } else if (id == -2) {
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 article = this._objs[id].Article;
             }
@@ -8091,7 +8091,7 @@ var LegacyGame = (function () {
             }
             if (notGot == true) {
                 this.PlayerErrorMessage(4 /* NoItem */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             } else {
                 article = this._objs[id].Article;
             }
@@ -8108,7 +8108,7 @@ var LegacyGame = (function () {
                     this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
                 }
                 this._badCmdBefore = "give " + item + " to";
-                // UNKNOWN ExitSubStatement
+                return;
             }
 
             //Find appropriate give script ****
@@ -8164,7 +8164,7 @@ var LegacyGame = (function () {
             var block = this.GetThingBlock(character, this._currentRoom, type);
             if ((block.StartLine == 0 && block.EndLine == 0) || this.IsAvailable(character + "@" + this._currentRoom, type, ctx) == false) {
                 this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             var realName = this._chars[this.GetThingNumber(character, this._currentRoom, type)].ObjectName;
 
@@ -8187,7 +8187,7 @@ var LegacyGame = (function () {
                 this.SetStringContents("quest.error.gender", Trim(this.GetGender(character, true, ctx)), ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
                 this.PlayerErrorMessage(5 /* ItemUnwanted */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
 
             // now, execute the statement on GiveLine
@@ -8226,7 +8226,7 @@ var LegacyGame = (function () {
                         this.PlayerErrorMessage(7 /* BadThing */, ctx);
                     }
                     this._badCmdBefore = "look at";
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
                 this.DoLook(id, ctx);
             } else {
@@ -8249,14 +8249,14 @@ var LegacyGame = (function () {
                     }
                     if (lookLine == "<unfound>") {
                         this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                        // UNKNOWN ExitSubStatement
+                        return;
                     } else if (lookLine == "<undefined>") {
                         this.PlayerErrorMessage(8 /* DefaultLook */, ctx);
-                        // UNKNOWN ExitSubStatement
+                        return;
                     }
                 } else if (lookLine == "<undefined>") {
                     this.PlayerErrorMessage(8 /* DefaultLook */, ctx);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
                 var lookData = Trim(this.GetEverythingAfter(Trim(lookLine), "look "));
                 if (Left(lookData, 1) == "<") {
@@ -8285,7 +8285,7 @@ var LegacyGame = (function () {
                     this.PlayerErrorMessage(7 /* BadThing */, ctx);
                 }
                 this._badCmdBefore = "speak to";
-                // UNKNOWN ExitSubStatement
+                return;
             }
             var foundSpeak = false;
 
@@ -8323,7 +8323,7 @@ var LegacyGame = (function () {
             if (!foundSpeak) {
                 this.SetStringContents("quest.error.gender", UCase(Left(this._objs[ObjID].Gender, 1)) + Mid(this._objs[ObjID].Gender, 2), ctx);
                 this.PlayerErrorMessage(9 /* DefaultSpeak */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             speakLine = this.GetEverythingAfter(speakLine, "speak ");
             if (this.BeginsWith(speakLine, "<")) {
@@ -8388,7 +8388,7 @@ var LegacyGame = (function () {
                 }
             }
             this._badCmdBefore = "take";
-            // UNKNOWN ExitSubStatement
+            return;
         } else {
             this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
         }
@@ -8397,7 +8397,7 @@ var LegacyGame = (function () {
             var canAccessObject = this.PlayerCanAccessObject(id);
             if (!canAccessObject.CanAccessObject) {
                 this.PlayerErrorMessage_ExtendInfo(18 /* BadTake */, ctx, canAccessObject.ErrorMsg);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             var parent = this.GetObjectProperty("parent", id, false, false);
             parentID = this.GetObjectIdNoAlias(parent);
@@ -8419,7 +8419,7 @@ var LegacyGame = (function () {
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
                     // removing the object failed
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             }
             if (t.Type == 3 /* Default */) {
@@ -8489,7 +8489,7 @@ var LegacyGame = (function () {
                     this._badCmdBefore = "use";
                     this._badCmdAfter = "on " + useOn;
                 }
-                // UNKNOWN ExitSubStatement
+                return;
             }
         } else {
             notGotItem = true;
@@ -8505,7 +8505,7 @@ var LegacyGame = (function () {
             }
             if (notGotItem == true) {
                 this.PlayerErrorMessage(4 /* NoItem */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
         }
         var useScript = "";
@@ -8548,7 +8548,7 @@ var LegacyGame = (function () {
                         this.PlayerErrorMessage(7 /* BadThing */, ctx);
                     }
                     this._badCmdBefore = "use " + useItem + " on";
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
 
                 //now, for "use a on b", we have
@@ -8612,7 +8612,7 @@ var LegacyGame = (function () {
                 }
                 if (!found && useDeclareLine == "") {
                     this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             }
             if (useDeclareLine != "<unfound>" && useDeclareLine != "<undefined>" && useOn != "") {
@@ -8631,14 +8631,14 @@ var LegacyGame = (function () {
                 }
                 if (useDeclareLine == "<undefined>") {
                     this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 } else if (useDeclareLine == "<unfound>") {
                     this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             } else if (useDeclareLine == "<unfound>") {
                 this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
-                // UNKNOWN ExitSubStatement
+                return;
             }
             var script = Right(useDeclareLine, Len(useDeclareLine) - InStr(useDeclareLine, ">"));
             this.ExecuteScript(script, ctx);
@@ -8667,7 +8667,7 @@ var LegacyGame = (function () {
                     ep = InStr(sp + 1, name, "'");
                     if (ep == 0) {
                         this.LogASLError("Missing ' in 'action <use " + name + "> " + this.ReportErrorLine(script));
-                        // UNKNOWN ExitSubStatement
+                        return;
                     }
                     objectName = Mid(name, sp + 1, ep - sp - 1);
                     this.AddToUseInfo(id, Trim(Left(name, sp - 1)) + " <" + objectName + "> " + script);
@@ -8681,7 +8681,7 @@ var LegacyGame = (function () {
                     ep = InStr(sp + 1, name, "'");
                     if (ep == 0) {
                         this.LogASLError("Missing ' in 'action <give " + name + "> " + this.ReportErrorLine(script));
-                        // UNKNOWN ExitSubStatement
+                        return;
                     }
                     objectName = Mid(name, sp + 1, ep - sp - 1);
                     this.AddToGiveInfo(id, Trim(Left(name, sp - 1)) + " <" + objectName + "> " + script);
@@ -8701,7 +8701,7 @@ var LegacyGame = (function () {
         if (thenPos == 0) {
             var errMsg = "Expected 'then' missing from script statement '" + this.ReportErrorLine(scriptLine) + "' - statement bypassed.";
             this.LogASLError(errMsg, 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var conditions = Trim(Left(ifLine, thenPos - 1));
         thenPos = thenPos + 4;
@@ -8758,7 +8758,7 @@ var LegacyGame = (function () {
                 var scp = InStr(interval, ";");
                 if (scp == 0) {
                     this.LogASLError("Too few parameters in 'set " + setInstruction + "'", 2 /* WarningError */);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
                 var name = Trim(Left(interval, scp - 1));
                 interval = (Val(Trim(Mid(interval, scp + 1)))).toString();
@@ -8772,7 +8772,7 @@ var LegacyGame = (function () {
                 }
                 if (!found) {
                     this.LogASLError("No such timer '" + name + "'", 2 /* WarningError */);
-                    // UNKNOWN ExitSubStatement
+                    return;
                 }
             } else if (this.BeginsWith(setInstruction, "string ")) {
                 this.ExecSetString(this.GetParameter(setInstruction, ctx), ctx);
@@ -8848,11 +8848,11 @@ var LegacyGame = (function () {
         var dirData = new TextAction();
         var id = this.GetRoomID(this._currentRoom, ctx);
         if (id == 0) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._gameAslVersion >= 410) {
             this._rooms[id].Exits.ExecuteGo(direction, ctx);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var r = this._rooms[id];
         if (direction == "north") {
@@ -9128,7 +9128,7 @@ var LegacyGame = (function () {
         var id = this.GetRoomID(room, ctx);
         if (id == 0) {
             this.LogASLError("No such room '" + room + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         this._currentRoom = room;
         this.SetStringContents("quest.currentroom", room, ctx);
@@ -9554,7 +9554,7 @@ var LegacyGame = (function () {
         // displays the items a player has
         var invList = {};
         if (!this._outPutOn) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var name;
         if (this._gameAslVersion >= 280) {
@@ -9614,7 +9614,7 @@ var LegacyGame = (function () {
         var objListString;
         var noFormatObjListString;
         if (!this._outPutOn) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var objList = {};
         var exitList = {};
@@ -9755,7 +9755,7 @@ var LegacyGame = (function () {
         var parentIsSeen;
         var parentIsSurface;
         if (this._gameAslVersion < 391) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (onlyParent != "") {
             onlyParent = LCase(onlyParent);
@@ -9889,7 +9889,7 @@ var LegacyGame = (function () {
                 }
             }
         }
-        // UNKNOWN ExitSubStatement
+        return;
     };
     LegacyGame.prototype.FindExit = function (tag) {
         // e.g. Takes a tag of the form "room; north" and return's the north exit of room.
@@ -9921,7 +9921,7 @@ var LegacyGame = (function () {
         roomExit = this.FindExit(tag);
         if (roomExit == null) {
             this.LogASLError("Can't find exit '" + tag + "'", 2 /* WarningError */);
-            // UNKNOWN ExitSubStatement
+            return;
         }
         roomExit.IsLocked = lock;
     };
@@ -10037,7 +10037,7 @@ var LegacyGame = (function () {
         // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
         // user input after hitting an "enter" script command.
         if (!this._readyForCommand) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var runnerThread = {};
         this.ChangeState(1 /* Working */);
@@ -10171,7 +10171,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.FinishWait = function () {
         if ((this._state != 2 /* Waiting */)) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         var runnerThread = {};
         this.ChangeState(1 /* Working */);
@@ -10331,10 +10331,10 @@ var RoomExit = (function () {
         var lastExitId;
         var parentRoom;
         if (Len(this._objName) > 0) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (this._parent == null) {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
         objName = parentRoom;
@@ -10459,7 +10459,7 @@ var RoomExits = (function () {
             tag = this._game.GetEverythingAfter(tag, "place ");
             thisDir = -1 /* None */;
         } else {
-            // UNKNOWN ExitSubStatement
+            return;
         }
         if (thisDir != -1 /* None */) {
             // This will reuse an existing Exit object if we're resetting
@@ -10546,7 +10546,7 @@ var RoomExits = (function () {
         } else {
             if (UBound(params) < 1) {
                 this._game.LogASLError("No exit destination given in 'create exit " + script + "'", 2 /* WarningError */);
-                // UNKNOWN ExitSubStatement
+                return;
             }
 
             // Place exit so add "place" tag at the beginning

@@ -179,6 +179,8 @@ namespace LegacyConvert
                 case SyntaxKind.ReturnStatement:
                     var returnStatement = (ReturnStatementSyntax)node;
                     return string.Format("{0}return {1};\n", Tabs(depth), ProcessExpression(returnStatement.Expression, classFields));
+                case SyntaxKind.ExitSubStatement:
+                    return string.Format("{0}return;\n", Tabs(depth));
                 case SyntaxKind.ExpressionStatement:
                     return Tabs(depth) + ProcessExpression(((ExpressionStatementSyntax)node).Expression, classFields) + ";\n";
                 case SyntaxKind.ReDimStatement:
