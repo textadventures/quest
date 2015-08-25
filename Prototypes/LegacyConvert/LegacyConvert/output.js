@@ -5063,7 +5063,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             this.LogASLError("No such collectable in " + condition, 2 /* WarningError */);
-            // UNKNOWN ExitFunctionStatement
+            return false;
         }
         var op = Left(newVal, 1);
         var newValue = Trim(Right(newVal, Len(newVal) - 1));
@@ -6854,7 +6854,7 @@ var LegacyGame = (function () {
         if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
             this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
             if (this._gameFileName == "") {
-                // UNKNOWN ExitFunctionStatement
+                return false;
             }
         }
         result = this.InitialiseGame(this._gameFileName, true);
@@ -10631,8 +10631,7 @@ var RoomExits = (function () {
     };
     RoomExits.prototype.AllExits = function () {
         if (!this._regenerateAllExits) {
-            this.AllExits = this._allExits;
-            // UNKNOWN ExitFunctionStatement
+            return this._allExits;
         }
         this._allExits = new any();
         this._directions.Keys.forEach(function (dir) {

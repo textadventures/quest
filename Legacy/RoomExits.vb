@@ -389,8 +389,7 @@ Friend Class RoomExits
 
     Private Function AllExits() As Dictionary(Of Object, RoomExit)
         If Not _regenerateAllExits Then
-            AllExits = _allExits
-            Exit Function
+            Return _allExits
         End If
 
         _allExits = New Dictionary(Of Object, RoomExit)

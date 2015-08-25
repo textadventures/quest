@@ -6043,7 +6043,7 @@ Public Class LegacyGame
 
         If Not found Then
             LogASLError("No such collectable in " & condition, LogType.WarningError)
-            Exit Function
+            Return False
         End If
 
         Dim op = Left(newVal, 1)
@@ -8125,7 +8125,7 @@ Public Class LegacyGame
 
         If _data Is Nothing And Not System.IO.File.Exists(_gameFileName) Then
             _gameFileName = _player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip")
-            If _gameFileName = "" Then Exit Function
+            If _gameFileName = "" Then Return False
         End If
 
         result = InitialiseGame(_gameFileName, True)
