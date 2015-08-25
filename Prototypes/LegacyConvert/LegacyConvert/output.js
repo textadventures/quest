@@ -1646,7 +1646,6 @@ var LegacyGame = (function () {
         var casVersion;
         var startCat = "";
         var endCatPos;
-        var fileData = "";
         var chkVer;
         var j;
         var curLin;
@@ -1658,11 +1657,7 @@ var LegacyGame = (function () {
         var ckw;
         var d;
         this._lines = [];
-        if (Config.ReadGameFileFromAzureBlob) {
-            // UNKNOWN UsingBlock
-        } else {
-            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
-        }
+        var fileData = this.GetCASFileData(filename);
         chkVer = Left(fileData, 7);
         if (chkVer == "QCGF001") {
             casVersion = 1;
@@ -10263,6 +10258,11 @@ var LegacyGame = (function () {
         return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     };
     LegacyGame.prototype.GetFileData = function (filename) {
+        // TODO
+        return "";
+    };
+
+    LegacyGame.prototype.GetCASFileData = function (filename) {
         // TODO
         return "";
     };

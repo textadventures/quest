@@ -1874,26 +1874,14 @@ Public Class LegacyGame
         _lines(numLines) = line
     End Sub
 
-    Private Sub LoadCASFile(filename As String)
-        Dim endLineReached, exitTheLoop As Boolean
-        Dim textMode As Boolean
-        Dim casVersion As Integer
-        Dim startCat As String = ""
-        Dim endCatPos As Integer
-        Dim fileData As String = ""
-        Dim chkVer As String
-        Dim j As Integer
-        Dim curLin, textData As String
-        Dim cpos, nextLinePos As Integer
-        Dim c, tl, ckw, d As String
-
-        ReDim _lines(0)
-
+    '<NOCONVERT
+    Private Function GetCASFileData(filename As String) As String
         If Config.ReadGameFileFromAzureBlob Then
             Using client As New WebClient
                 Dim url As String = filename
                 Dim baseAddress As Uri = New Uri(url)
                 Dim directory As Uri = New Uri(baseAddress, ".")
+                Dim fileData As String
 
                 Try
                     fileData = client.DownloadString(url)
@@ -1904,10 +1892,30 @@ Public Class LegacyGame
 
                 Dim parts As String() = directory.OriginalString.Split("/"c)
                 m_gameId = parts(parts.Length - 2)
+
+                Return fileData
             End Using
         Else
-            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
+            Return System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
         End If
+    End Function
+    'NOCONVERT>
+
+    Private Sub LoadCASFile(filename As String)
+        Dim endLineReached, exitTheLoop As Boolean
+        Dim textMode As Boolean
+        Dim casVersion As Integer
+        Dim startCat As String = ""
+        Dim endCatPos As Integer
+        Dim chkVer As String
+        Dim j As Integer
+        Dim curLin, textData As String
+        Dim cpos, nextLinePos As Integer
+        Dim c, tl, ckw, d As String
+
+        ReDim _lines(0)
+
+        Dim fileData = GetCASFileData(filename)
 
         chkVer = Left(fileData, 7)
         If chkVer = "QCGF001" Then
