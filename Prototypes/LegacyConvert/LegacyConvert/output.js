@@ -372,6 +372,7 @@ var AppliesTo;
 var LegacyGame = (function () {
     function LegacyGame(data) {
         this._casKeywords = [];
+        //The name of the game
         this._nullContext = new Context();
         this._gameChangeData = new GameChangeDataType();
         this._compassExits = {};
@@ -449,6 +450,7 @@ var LegacyGame = (function () {
                     len = 1;
                 }
                 if (len == 0) {
+                    // unknown code
                     len = 1;
                 }
                 s = Left(s, pos - 1) + Mid(s, pos + len + 1);
@@ -497,12 +499,16 @@ var LegacyGame = (function () {
                 if (Left(this._lines[i], 1) != "'" && !skipBlock) {
                     checkLine = this.ObliterateParameters(this._lines[i]);
                     if (this.BeginsWith(checkLine, "'<ERROR;")) {
+                        // ObliterateParameters denotes a mismatched $, ( etc.
+                        // by prefixing line with '<ERROR;*; where * is the mismatched
+                        // character
                         this.LogASLError("Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
                         this._openErrorReport = this._openErrorReport + "Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'." + vbCrLf;
                         return false;
                     }
                 }
                 if (Left(Trim(checkLine), 1) != "'") {
+                    // Now check {
                     pos = 1;
                     do {
                         bracePos = InStr(pos, checkLine, "{");
@@ -511,6 +517,8 @@ var LegacyGame = (function () {
                             braces = braces + 1;
                         }
                     } while(!(bracePos == 0 || pos > Len(checkLine)));
+
+                    // Now check }
                     pos = 1;
                     do {
                         bracePos = InStr(pos, checkLine, "}");
@@ -530,6 +538,12 @@ var LegacyGame = (function () {
         return !hasErrors;
     };
     LegacyGame.prototype.ConvertFriendlyIfs = function () {
+        // Converts
+        //   if (%something% < 3) then ...
+        // to
+        //   if is <%something%;lt;3> then ...
+        // and also repeat until ...
+        // Returns False if successful
         var convPos;
         var symbPos;
         var symbol;
@@ -563,6 +577,9 @@ var LegacyGame = (function () {
             if (convPos != 0) {
                 varObscureLine = this.ObliterateVariableNames(this._lines[i]);
                 if (this.BeginsWith(varObscureLine, "'<ERROR;")) {
+                    // ObliterateVariableNames denotes a mismatched #, % or $
+                    // by prefixing line with '<ERROR;*; where * is the mismatched
+                    // character
                     this.LogASLError("Expected closing " + Mid(varObscureLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
                     return true;
                 }
@@ -642,6 +659,9 @@ var LegacyGame = (function () {
                     newParam = newParam + ";" + secondData + ">";
                 }
                 this._lines[i] = Left(this._lines[i], startParamPos - 1) + newParam + Mid(this._lines[i], endParamPos + 1);
+
+                // Repeat processing this line, in case there are
+                // further changes to be made.
                 i = i - 1;
             }
         }
@@ -674,6 +694,9 @@ var LegacyGame = (function () {
                         afterLastBrace = "";
                         thisLine = Trim(this._lines[j]);
                         procName = "<!intproc" + curProc + ">";
+
+                        // see if this brace's corresponding closing
+                        // brace is on same line:
                         testLine = Mid(this._lines[j], InStr(this._lines[j], "{") + 1);
                         testBraceCount = 1;
                         do {
@@ -723,12 +746,17 @@ var LegacyGame = (function () {
                                         }
                                     }
                                     if (braceCount != 0) {
+                                        //put Lines(k) into another variable, as
+                                        //AddLine ReDims Lines, which it can't do if
+                                        //passed Lines(x) as a parameter.
                                         lineToAdd = this._lines[k];
                                         this.AddLine(lineToAdd);
                                     } else {
                                         this.AddLine(Left(this._lines[k], lastBrace - 1));
                                         afterLastBrace = Trim(Mid(this._lines[k], lastBrace + 1));
                                     }
+
+                                    //Clear original line
                                     this._lines[k] = "";
                                     k = k + 1;
                                 } while(braceCount != 0);
@@ -741,9 +769,15 @@ var LegacyGame = (function () {
                             this._defineBlocks[this._numberSections] = new DefineBlock();
                             this._defineBlocks[this._numberSections].StartLine = startLine;
                             this._defineBlocks[this._numberSections].EndLine = endLineNum;
+
+                            //Change original line where the { section
+                            //started to call the new procedure.
                             startOfOrig = Trim(Left(thisLine, InStr(thisLine, "{") - 1));
                             this._lines[j] = startOfOrig + " do " + procName + " " + afterLastBrace;
                             curProc = curProc + 1;
+
+                            // Process this line again in case there was stuff after the last brace that included
+                            // more braces. e.g. } else {
                             j = j - 1;
                         }
                     }
@@ -751,12 +785,16 @@ var LegacyGame = (function () {
             }
             i = i + 1;
         } while(!(i > this._numberSections));
+
         for (var i = 1; i <= this._numberSections; i++) {
+            // Join next-line "else"s to corresponding "if"s
             z = this._lines[this._defineBlocks[i].StartLine];
             if (((!this.BeginsWith(z, "define text ")) && (!this.BeginsWith(z, "define menu ")) && z != "define synonyms")) {
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "else ")) {
                         for (var k = j; k >= this._defineBlocks[i].StartLine + 1; k--) {
+                            //Go upwards to find "if" statement that this
+                            //belongs to
                             if (this.BeginsWith(this._lines[k], "if ") || InStr(this.ObliterateParameters(this._lines[k]), " if ") != 0) {
                                 this._lines[k] = this._lines[k] + " " + Trim(this._lines[j]);
                                 this._lines[j] = "";
@@ -769,6 +807,8 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ErrorCheck = function () {
+        // Parses ASL script for errors. Returns TRUE if OK;
+        // False if a critical error is encountered.
         var curBegin;
         var curEnd;
         var hasErrors;
@@ -779,7 +819,9 @@ var LegacyGame = (function () {
         var inText;
         hasErrors = false;
         inText = false;
+
         for (var i = 1; i <= UBound(this._lines); i++) {
+            // Checks for incorrect number of < and > :
             numParamStart = 0;
             numParamEnd = 0;
             if (this.BeginsWith(this._lines[i], "define text ")) {
@@ -789,6 +831,7 @@ var LegacyGame = (function () {
                 inText = false;
             }
             if (!inText) {
+                //Find number of <'s:
                 curPos = 1;
                 finLoop = false;
                 do {
@@ -799,6 +842,8 @@ var LegacyGame = (function () {
                         finLoop = true;
                     }
                 } while(!(finLoop));
+
+                //Find number of >'s:
                 curPos = 1;
                 finLoop = false;
                 do {
@@ -818,10 +863,15 @@ var LegacyGame = (function () {
                 }
             }
         }
+
+        //Exit if errors found
         if (hasErrors == true) {
+            //Exit if errors found
             return true;
         }
+
         for (var i = 1; i <= this._numberSections; i++) {
+            // Checks that define sections have parameters:
             curBegin = this._defineBlocks[i].StartLine;
             curEnd = this._defineBlocks[i].EndLine;
             if (this.BeginsWith(this._lines[curBegin], "define game")) {
@@ -841,6 +891,9 @@ var LegacyGame = (function () {
         return hasErrors;
     };
     LegacyGame.prototype.GetAfterParameter = function (s) {
+        // Returns everything after the end of the first parameter
+        // in a string, i.e. for "use <thing> do <myproc>" it
+        // returns "do <myproc>"
         var eop;
         eop = InStr(s, ">");
         if (eop == 0 || eop + 1 > Len(s)) {
@@ -861,8 +914,18 @@ var LegacyGame = (function () {
             if (inParameter) {
                 if (exitCharacter == ")") {
                     if (InStr("$#%", curChar) > 0) {
+                        // We might be converting a line like:
+                        //   if ( $rand(1;10)$ < 3 ) then {
+                        // and we don't want it to end up like this:
+                        //   if (~~~~~~~~~~~)$ <~~~~~~~~~~~
+                        // which will cause all sorts of confustion. So,
+                        // we get rid of everything between the $ characters
+                        // in this case, and set a flag so we know what we're
+                        // doing.
                         obscuringFunctionName = true;
                         exitCharacter = curChar;
+
+                        // Move along please
                         outputLine = outputLine + "~";
                         i = i + 1;
                         curChar = Mid(s, i, 1);
@@ -885,6 +948,9 @@ var LegacyGame = (function () {
                         inParameter = false;
                         outputLine = outputLine + curChar;
                     } else {
+                        // We've finished obscuring the function name,
+                        // now let's find the next ) as we were before
+                        // we found this dastardly function
                         obscuringFunctionName = false;
                         exitCharacter = ")";
                         outputLine = outputLine + "~";
@@ -922,7 +988,14 @@ var LegacyGame = (function () {
                     inParameter = true;
                     exitCharacter = "%";
                 }
+
+                // The ~ was for collectables, and this syntax only
+                // exists in Quest 2.x. The ~ was only finally
+                // allowed to be present on its own in ASL 320.
                 if (curChar == "~" && this._gameAslVersion < 320) {
+                    // The ~ was for collectables, and this syntax only
+                    // exists in Quest 2.x. The ~ was only finally
+                    // allowed to be present on its own in ASL 320.
                     inParameter = true;
                     exitCharacter = "~";
                 }
@@ -945,7 +1018,11 @@ var LegacyGame = (function () {
         var inTextBlock;
         var inSynonymsBlock;
         var oblitLine;
+
         for (var i = 1; i <= UBound(this._lines); i++) {
+            // If in a synonyms block, we want to remove lines which are comments, but
+            // we don't want to remove synonyms that contain apostrophes, so we only
+            // get rid of lines with an "'" at the beginning or with " '" in them
             if (this.BeginsWith(this._lines[i], "'!qdk-note:")) {
                 this._lines[i] = "#!qdk-note:" + this.GetEverythingAfter(this._lines[i], "'!qdk-note:");
             } else {
@@ -973,6 +1050,7 @@ var LegacyGame = (function () {
                     if (Left(Trim(this._lines[i]), 1) == "'") {
                         this._lines[i] = "";
                     } else {
+                        // we look for " '", not "'" in synonyms lines
                         aposPos = InStr(this.ObliterateParameters(this._lines[i]), " '");
                         if (aposPos != 0) {
                             this._lines[i] = Trim(Left(this._lines[i], aposPos - 1));
@@ -983,6 +1061,8 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ReportErrorLine = function (s) {
+        // We don't want to see the "!intproc" in logged error reports lines.
+        // This function replaces these "do" lines with a nicer-looking "..." for error reporting.
         var replaceFrom;
         replaceFrom = InStr(s, "do <!intproc");
         if (replaceFrom != 0) {
@@ -1006,6 +1086,9 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.BeginsWith = function (s, text) {
+        // Compares the beginning of the line with a given
+        // string. Case insensitive.
+        // Example: beginswith("Hello there","HeLlO")=TRUE
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     };
     LegacyGame.prototype.ConvertCasKeyword = function (casChar) {
@@ -1018,31 +1101,50 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ConvertMultiLines = function () {
         for (var i = UBound(this._lines); i >= 1; i--) {
+            //Goes through each section capable of containing
+            //script commands and puts any multiple-line script commands
+            //into separate procedures. Also joins multiple-line "if"
+            //statements.
+            //This calls RemoveComments after joining lines, so that lines
+            //with "'" as part of a multi-line parameter are not destroyed,
+            //before looking for braces.
             if (Right(this._lines[i], 2) == "__") {
                 this._lines[i] = Left(this._lines[i], Len(this._lines[i]) - 2) + LTrim(this._lines[i + 1]);
                 this._lines[i + 1] = "";
+
+                //Recalculate this line again
                 i = i + 1;
             } else if (Right(this._lines[i], 1) == "_") {
                 this._lines[i] = Left(this._lines[i], Len(this._lines[i]) - 1) + LTrim(this._lines[i + 1]);
                 this._lines[i + 1] = "";
+
+                //Recalculate this line again
                 i = i + 1;
             }
         }
         this.RemoveComments();
     };
     LegacyGame.prototype.GetDefineBlock = function (blockname) {
+        // Returns the start and end points of a named block.
+        // Returns 0 if block not found.
         var l;
         var blockType;
         var result = new DefineBlock();
         result.StartLine = 0;
         result.EndLine = 0;
         for (var i = 1; i <= this._numberSections; i++) {
+            // Get the first line of the define section:
             l = this._lines[this._defineBlocks[i].StartLine];
+
+            // Now, starting from the first word after 'define',
+            // retrieve the next word and compare it to blockname:
+            // Add a space for define blocks with no parameter
             if (InStr(8, l, " ") == 0) {
                 l = l + " ";
             }
             blockType = Mid(l, 8, InStr(8, l, " ") - 8);
             if (blockType == blockname) {
+                // Return the start and end points
                 result.StartLine = this._defineBlocks[i].StartLine;
                 result.EndLine = this._defineBlocks[i].EndLine;
                 return result;
@@ -1051,13 +1153,18 @@ var LegacyGame = (function () {
         return result;
     };
     LegacyGame.prototype.DefineBlockParam = function (blockname, param) {
+        // Returns the start and end points of a named block
         var cache;
         var result = new DefineBlock();
         param = "k" + param;
+
+        // protect against numeric block names
         if (!this._defineBlockParams.ContainsKey(blockname)) {
+            // Lazily create cache of define block params
             cache = new any();
             this._defineBlockParams.Add(blockname, cache);
             for (var i = 1; i <= this._numberSections; i++) {
+                // get the word after "define", e.g. "procedure"
                 var blockType = this.GetEverythingAfter(this._lines[this._defineBlocks[i].StartLine], "define ");
                 var sp = InStr(blockType, " ");
                 if (sp != 0) {
@@ -1068,6 +1175,7 @@ var LegacyGame = (function () {
                     blockKey = "k" + blockKey;
                     if (!cache.ContainsKey(blockKey)) {
                         cache.Add(blockKey, this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine);
+                        // silently ignore duplicates
                     } else {
                     }
                 }
@@ -1101,9 +1209,11 @@ var LegacyGame = (function () {
         return this.Keyword2CAS("!unknown") + KWord + this.Keyword2CAS("!unknown");
     };
     LegacyGame.prototype.LoadCASKeywords = function () {
+        //Loads data required for conversion of CAS files
         var questDatLines = this.GetResourceLines(My.Resources.QuestDAT);
         questDatLines.forEach(function (line) {
             if (Left(line, 1) != "#") {
+                //Lines isn't a comment - so parse it.
                 var scp = InStr(line, ";");
                 var keyword = Trim(Left(line, scp - 1));
                 var num = parseInt(Right(line, Len(line) - scp));
@@ -1117,6 +1227,7 @@ var LegacyGame = (function () {
         return Split(resFile, Chr(13) + Chr(10));
     };
     LegacyGame.prototype.ParseFile = function (filename) {
+        //Returns FALSE if failed.
         var hasErrors;
         var result;
         var libCode = [];
@@ -1146,12 +1257,18 @@ var LegacyGame = (function () {
         var curLine;
         this._defineBlockParams = new any();
         result = true;
+
+        // Parses file and returns the positions of each main
+        // 'define' block. Supports nested defines.
         if (LCase(Right(filename, 4)) == ".zip") {
+            // Parses file and returns the positions of each main
+            // 'define' block. Supports nested defines.
             this._originalFilename = filename;
             filename = this.GetUnzippedFile(filename);
             this._gamePath = System.IO.Path.GetDirectoryName(filename);
         }
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
+            //Read file into Lines array
             var fileData = GetFileData(filename);
             var aslLines = fileData.Split(Chr(13));
             this._lines = [];
@@ -1169,12 +1286,28 @@ var LegacyGame = (function () {
         } else {
             // UNKNOWN ThrowStatement
         }
+
+        // Add libraries to end of code:
         numLibraries = 0;
         do {
             libFoundThisSweep = false;
             for (var i = l; i >= 1; i--) {
+                // We search for includes backwards as a game might include
+                // some-general.lib and then something-specific.lib which needs
+                // something-general; if we include something-specific first,
+                // then something-general afterwards, something-general's startscript
+                // gets executed before something-specific's, as we execute the
+                // lib startscripts backwards as well
                 if (this.BeginsWith(this._lines[i], "!include ")) {
+                    // We search for includes backwards as a game might include
+                    // some-general.lib and then something-specific.lib which needs
+                    // something-general; if we include something-specific first,
+                    // then something-general afterwards, something-general's startscript
+                    // gets executed before something-specific's, as we execute the
+                    // lib startscripts backwards as well
                     libFileName = this.GetParameter(this._lines[i], this._nullContext);
+
+                    //Clear !include statement
                     this._lines[i] = "";
                     libraryAlreadyIncluded = false;
                     this.LogASLError("Including library '" + libFileName + "'...", 3 /* Init */);
@@ -1199,6 +1332,7 @@ var LegacyGame = (function () {
                         if (System.IO.File.Exists(libFile)) {
                             FileOpen(libFileHandle, libFile, OpenMode.Input);
                         } else {
+                            // File was not found; try standard Quest libraries (stored here as resources)
                             this.LogASLError("     - Library not found in game path.", 3 /* Init */);
                             this.LogASLError(" - Searching for " + libFile + " (standard libraries)", 3 /* Init */);
                             libResourceLines = this.GetLibraryLines(libFileName);
@@ -1232,6 +1366,7 @@ var LegacyGame = (function () {
                                 }
                             }
                         } else {
+                            //Old library
                             libVer = 100;
                         }
                         if (libVer == -1) {
@@ -1241,7 +1376,11 @@ var LegacyGame = (function () {
                         ignoreMode = false;
                         for (var c = 1; c <= libLines; c++) {
                             if (this.BeginsWith(libCode[c], "!include ")) {
+                                // Quest only honours !include in a library for asl-version
+                                // 311 or later, as it ignored them in versions < 3.11
                                 if (libVer >= 311) {
+                                    // Quest only honours !include in a library for asl-version
+                                    // 311 or later, as it ignored them in versions < 3.11
                                     this.AddLine(libCode[c]);
                                     l = l + 1;
                                 }
@@ -1275,7 +1414,32 @@ var LegacyGame = (function () {
                                             for (var d = UBound(this._lines); d >= gameLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
                                             }
+
+                                            // startscript lines in a library are prepended
+                                            // with "lib" internally so they are executed
+                                            // before any startscript specified by the
+                                            // calling ASL file, for asl-versions 311 and
+                                            // later.
+                                            // similarly, commands in a library. NB: without this, lib
+                                            // verbs have lower precedence than game verbs anyway. Also
+                                            // lib commands have lower precedence than game commands. We
+                                            // only need this code so that game verbs have a higher
+                                            // precedence than lib commands.
+                                            // we also need it so that lib verbs have a higher
+                                            // precedence than lib commands.
                                             if (libVer >= 311 && this.BeginsWith(libCode[c], "startscript ")) {
+                                                // startscript lines in a library are prepended
+                                                // with "lib" internally so they are executed
+                                                // before any startscript specified by the
+                                                // calling ASL file, for asl-versions 311 and
+                                                // later.
+                                                // similarly, commands in a library. NB: without this, lib
+                                                // verbs have lower precedence than game verbs anyway. Also
+                                                // lib commands have lower precedence than game commands. We
+                                                // only need this code so that game verbs have a higher
+                                                // precedence than lib commands.
+                                                // we also need it so that lib verbs have a higher
+                                                // precedence than lib commands.
                                                 this._lines[gameLine] = "lib " + libCode[c];
                                             } else if (libVer >= 392 && (this.BeginsWith(libCode[c], "command ") || this.BeginsWith(libCode[c], "verb "))) {
                                                 this._lines[gameLine] = "lib " + libCode[c];
@@ -1286,6 +1450,9 @@ var LegacyGame = (function () {
                                             gameLine = gameLine + 1;
                                         }
                                     } while(!(this.BeginsWith(libCode[c], "!end")));
+                                    //ignore
+                                    //ignore
+                                    //ignore
                                 } else if (libCode[c] == "!addto synonyms") {
                                     inDefSynBlock = 0;
                                     for (var d = 1; d <= UBound(this._lines); d++) {
@@ -1297,6 +1464,7 @@ var LegacyGame = (function () {
                                         }
                                     }
                                     if (inDefSynBlock == 0) {
+                                        //No "define synonyms" block in game - so add it
                                         this.AddLine("define synonyms");
                                         this.AddLine("end define");
                                         synLine = UBound(this._lines);
@@ -1326,6 +1494,7 @@ var LegacyGame = (function () {
                                         }
                                     }
                                     if (inDefTypeBlock == 0) {
+                                        //No "define type (whatever)" block in game - so add it
                                         this.AddLine("define type <" + typeBlockName + ">");
                                         this.AddLine("end define");
                                         typeLine = UBound(this._lines);
@@ -1348,8 +1517,11 @@ var LegacyGame = (function () {
                                     } while(!(this.BeginsWith(libCode[c], "!end")));
                                 } else if (libCode[c] == "!library") {
                                 } else if (this.BeginsWith(libCode[c], "!asl-version ")) {
+                                    //ignore
                                 } else if (this.BeginsWith(libCode[c], "'")) {
+                                    //ignore
                                 } else if (this.BeginsWith(libCode[c], "!QDK")) {
+                                    //ignore
                                     ignoreMode = true;
                                 } else if (this.BeginsWith(libCode[c], "!end")) {
                                     ignoreMode = false;
@@ -1381,6 +1553,8 @@ var LegacyGame = (function () {
         if (filenameNoPath == "musicvf1.cas") {
             this._useStaticFrameForPictures = true;
         }
+
+        //RemoveComments called within ConvertMultiLines
         this.ConvertMultiLines();
         if (!skipCheck) {
             if (!this.CheckSections()) {
@@ -1389,8 +1563,17 @@ var LegacyGame = (function () {
         }
         this._numberSections = 1;
         for (var i = 1; i <= l; i++) {
+            // find section beginning with 'define'
             if (this.BeginsWith(this._lines[i], "define") == true) {
+                // find section beginning with 'define'
+                // Now, go through until we reach an 'end define'. However, if we
+                // encounter another 'define' there is a nested define. So, if we
+                // encounter 'define' we increment the definecount. When we find an
+                // 'end define' we decrement it. When definecount is zero, we have
+                // found the end of the section.
                 defineCount = 1;
+
+                // Don't count the current line - we know it begins with 'define'...
                 curLine = i + 1;
                 do {
                     if (this.BeginsWith(this._lines[curLine], "define") == true) {
@@ -1401,6 +1584,9 @@ var LegacyGame = (function () {
                     curLine = curLine + 1;
                 } while(!(defineCount == 0));
                 curLine = curLine - 1;
+
+                // Now, we know that the define section begins at i and ends at
+                // curline. Remember where the section begins and ends:
                 if (!this._defineBlocks)
                     this._defineBlocks = [];
                 this._defineBlocks[this._numberSections] = new DefineBlock();
@@ -1454,6 +1640,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GetParameter = function (s, ctx, convertStringVariables) {
         if (typeof convertStringVariables === "undefined") { convertStringVariables = true; }
+        // Returns the parameters between < and > in a string
         var newParam;
         var startPos;
         var endPos;
@@ -1480,6 +1667,7 @@ var LegacyGame = (function () {
         return this.EvaluateInlineExpressions(newParam);
     };
     LegacyGame.prototype.AddLine = function (line) {
+        //Adds a line to the game script
         var numLines;
         numLines = UBound(this._lines) + 1;
         if (!this._lines)
@@ -1525,6 +1713,7 @@ var LegacyGame = (function () {
         }
         for (var i = 9; i <= Len(fileData); i++) {
             if (casVersion == 3 && Mid(fileData, i, 1) == startCat) {
+                // Read catalog
                 this._startCatPos = i;
                 endCatPos = InStr(j, fileData, this.Keyword2CAS("!endcat"));
                 this.ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1));
@@ -1599,12 +1788,19 @@ var LegacyGame = (function () {
                 if (this.BeginsWith(curLin, "define text") || (casVersion >= 2 && (this.BeginsWith(curLin, "define synonyms") || this.BeginsWith(curLin, "define type") || this.BeginsWith(curLin, "define menu")))) {
                     textMode = true;
                 }
+
+                //j is already at correct place, but i will be
+                //incremented - so put j back one or we will miss a
+                //character.
                 i = j - 1;
             }
         }
     };
     LegacyGame.prototype.RemoveTabs = function (s) {
         if (InStr(s, Chr(9)) > 0) {
+            //Remove tab characters and change them into
+            //spaces; otherwise they bugger up the Trim
+            //commands.
             var cpos = 1;
             var finished = false;
             do {
@@ -1627,6 +1823,9 @@ var LegacyGame = (function () {
             this.AddToObjectProperties("not parent", childId, ctx);
         }
         if (this._gameAslVersion >= 410) {
+            // Putting something in a container implicitly makes that
+            // container "seen". Otherwise we could try to "look at" the
+            // object we just put in the container and have disambigution fail!
             this.AddToObjectProperties("seen", parentId, ctx);
         }
         this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
@@ -1636,10 +1835,19 @@ var LegacyGame = (function () {
         if (typeof showDefaultDescription === "undefined") { showDefaultDescription = true; }
         var objectContents;
         var foundLook = false;
+
+        // First, set the "seen" property, and for ASL >= 391, update visibility for any
+        // object that is contained by this object.
         if (this._gameAslVersion >= 391) {
+            // First, set the "seen" property, and for ASL >= 391, update visibility for any
+            // object that is contained by this object.
             this.AddToObjectProperties("seen", id, ctx);
             this.UpdateVisibilityInContainers(ctx, this._objs[id].ObjectName);
         }
+
+        // First look for action, then look
+        // for property, then check define
+        // section:
         var lookLine;
         var o = this._objs[id];
         for (var i = 1; i <= o.NumberActions; i++) {
@@ -1652,6 +1860,7 @@ var LegacyGame = (function () {
         if (!foundLook) {
             for (var i = 1; i <= o.NumberProperties; i++) {
                 if (o.Properties[i].PropertyName == "look") {
+                    // do this odd RetrieveParameter stuff to convert any variables
                     this.Print(this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
                     foundLook = true;
                     break;
@@ -1683,6 +1892,9 @@ var LegacyGame = (function () {
             } else {
                 err = 8 /* DefaultLook */;
             }
+
+            // Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
+            // any contents.
             if (objectContents == "") {
                 this.PlayerErrorMessage(err, ctx);
             }
@@ -1703,7 +1915,9 @@ var LegacyGame = (function () {
         this.UpdateVisibilityInContainers(ctx, this._objs[id].ObjectName);
     };
     LegacyGame.prototype.EvaluateInlineExpressions = function (s) {
+        // Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
         if (this._gameAslVersion < 391) {
+            // Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
             return s;
         }
         var bracePos;
@@ -1714,6 +1928,7 @@ var LegacyGame = (function () {
             if (bracePos != 0) {
                 resultLine = resultLine + Mid(s, curPos, bracePos - curPos);
                 if (Mid(s, bracePos, 2) == "{{") {
+                    // {{ = {
                     curPos = bracePos + 2;
                     resultLine = resultLine + "{";
                 } else {
@@ -1736,6 +1951,8 @@ var LegacyGame = (function () {
                 resultLine = resultLine + Mid(s, curPos);
             }
         } while(!(bracePos == 0 || curPos > Len(s)));
+
+        // Above, we only bothered checking for {{. But for consistency, also }} = }. So let's do that:
         curPos = 1;
         do {
             bracePos = InStr(curPos, resultLine, "}}");
@@ -1806,7 +2023,10 @@ var LegacyGame = (function () {
                 if (this._objs[childId].ContainerRoom == "inventory") {
                     gotObject = true;
                 } else {
+                    // Player is not carrying the object they referred to. So, first take the object.
                     this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
+
+                    // Try to take the object
                     ctx.AllowRealNamesInCommand = true;
                     this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
                     if (this._objs[childId].ContainerRoom == "inventory") {
@@ -1855,12 +2075,18 @@ var LegacyGame = (function () {
                 // UNKNOWN ExitSubStatement
             }
         } else {
+            // Assume the player was referring to the parent that the object is already in,
+            // if it is even in an object already
             if (!this.IsYes(this.GetObjectProperty("parent", childId, true, false))) {
+                // Assume the player was referring to the parent that the object is already in,
+                // if it is even in an object already
                 this.PlayerErrorMessage(32 /* CantRemove */, ctx);
                 // UNKNOWN ExitSubStatement
             }
             parentId = this.GetObjectIdNoAlias(this.GetObjectProperty("parent", childId, false, true));
         }
+
+        // Check if parent is a container
         isContainer = this.IsYes(this.GetObjectProperty("container", parentId, true, false));
         if (!isContainer) {
             if (doAdd) {
@@ -1870,11 +2096,16 @@ var LegacyGame = (function () {
             }
             // UNKNOWN ExitSubStatement
         }
+
+        // Check object is already held by that parent
         if (this.IsYes(this.GetObjectProperty("parent", childId, true, false))) {
+            // Check object is already held by that parent
             if (doAdd && LCase(this.GetObjectProperty("parent", childId, false, false)) == LCase(this._objs[parentId].ObjectName)) {
                 this.PlayerErrorMessage(33 /* AlreadyPut */, ctx);
             }
         }
+
+        // Check parent and child are accessible to player
         var canAccessObject = this.PlayerCanAccessObject(childId);
         if (!canAccessObject.CanAccessObject) {
             if (doAdd) {
@@ -1893,14 +2124,22 @@ var LegacyGame = (function () {
             }
             // UNKNOWN ExitSubStatement
         }
+
+        // Check if parent is a closed container
         if (!this.IsYes(this.GetObjectProperty("surface", parentId, true, false)) && !this.IsYes(this.GetObjectProperty("opened", parentId, true, false))) {
+            // Check if parent is a closed container
+            // Not a surface and not open, so can't add to this closed container.
             if (doAdd) {
+                // Not a surface and not open, so can't add to this closed container.
                 this.PlayerErrorMessage(30 /* CantPut */, ctx);
             } else {
                 this.PlayerErrorMessage(32 /* CantRemove */, ctx);
             }
             // UNKNOWN ExitSubStatement
         }
+
+        // Now check if it can be added to (or removed from)
+        // First check for an action
         var o = this._objs[parentId];
         for (var i = 1; i <= o.NumberActions; i++) {
             if (LCase(o.Actions[i].ActionName) == action) {
@@ -1913,9 +2152,12 @@ var LegacyGame = (function () {
             this.SetStringContents("quest." + LCase(action) + ".object.name", this._objs[childId].ObjectName, ctx);
             this.ExecuteScript(actionScript, ctx, parentId);
         } else {
+            // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, parentId, true, false));
             if (!propertyExists) {
+                // Show error message
                 if (doAdd) {
+                    // Show error message
                     this.PlayerErrorMessage(30 /* CantPut */, ctx);
                 } else {
                     this.PlayerErrorMessage(32 /* CantRemove */, ctx);
@@ -1923,7 +2165,9 @@ var LegacyGame = (function () {
             } else {
                 textToPrint = this.GetObjectProperty(action, parentId, false, false);
                 if (textToPrint == "") {
+                    // Show default message
                     if (doAdd) {
+                        // Show default message
                         this.PlayerErrorMessage(31 /* DefaultPut */, ctx);
                     } else {
                         this.PlayerErrorMessage(34 /* DefaultRemove */, ctx);
@@ -2002,6 +2246,8 @@ var LegacyGame = (function () {
             this._badCmdBefore = action;
             // UNKNOWN ExitSubStatement
         }
+
+        // Check if it's even a container
         isContainer = this.IsYes(this.GetObjectProperty("container", id, true, false));
         if (!isContainer) {
             if (doOpen) {
@@ -2011,14 +2257,20 @@ var LegacyGame = (function () {
             }
             // UNKNOWN ExitSubStatement
         }
+
+        // Check if it's already open (or closed)
         isOpen = this.IsYes(this.GetObjectProperty("opened", id, true, false));
         if (doOpen && isOpen) {
+            // Object is already open
             this.PlayerErrorMessage(23 /* AlreadyOpen */, ctx);
             // UNKNOWN ExitSubStatement
         } else if (!doOpen && !isOpen) {
+            // Object is already closed
             this.PlayerErrorMessage(24 /* AlreadyClosed */, ctx);
             // UNKNOWN ExitSubStatement
         }
+
+        // Check if it's accessible, i.e. check it's not itself inside another closed container
         var canAccessObject = this.PlayerCanAccessObject(id);
         if (!canAccessObject.CanAccessObject) {
             if (doOpen) {
@@ -2028,6 +2280,9 @@ var LegacyGame = (function () {
             }
             // UNKNOWN ExitSubStatement
         }
+
+        // Now check if it can be opened (or closed)
+        // First check for an action
         var o = this._objs[id];
         for (var i = 1; i <= o.NumberActions; i++) {
             if (LCase(o.Actions[i].ActionName) == action) {
@@ -2039,9 +2294,12 @@ var LegacyGame = (function () {
         if (foundAction) {
             this.ExecuteScript(actionScript, ctx, id);
         } else {
+            // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, id, true, false));
             if (!propertyExists) {
+                // Show error message
                 if (doOpen) {
+                    // Show error message
                     this.PlayerErrorMessage(25 /* CantOpen */, ctx);
                 } else {
                     this.PlayerErrorMessage(26 /* CantClose */, ctx);
@@ -2049,7 +2307,9 @@ var LegacyGame = (function () {
             } else {
                 textToPrint = this.GetObjectProperty(action, id, false, false);
                 if (textToPrint == "") {
+                    // Show default message
                     if (doOpen) {
+                        // Show default message
                         this.PlayerErrorMessage(27 /* DefaultOpen */, ctx);
                     } else {
                         this.PlayerErrorMessage(28 /* DefaultClose */, ctx);
@@ -2062,6 +2322,9 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecuteSelectCase = function (script, ctx) {
+        // ScriptLine passed will look like this:
+        //   select case <whatever> do <!intprocX>
+        // with all the case statements in the intproc.
         var afterLine = this.GetAfterParameter(script);
         if (!this.BeginsWith(afterLine, "do <!intproc")) {
             this.LogASLError("No case block specified for '" + script + "'", 2 /* WarningError */);
@@ -2072,7 +2335,9 @@ var LegacyGame = (function () {
         var checkValue = this.GetParameter(script, ctx);
         var caseMatch = false;
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
+            // Go through all the cases until we find the one that matches
             if (this._lines[i] != "") {
+                // Go through all the cases until we find the one that matches
                 if (!this.BeginsWith(this._lines[i], "case ")) {
                     this.LogASLError("Invalid line in 'select case' block: '" + this._lines[i] + "'", 2 /* WarningError */);
                 } else {
@@ -2129,6 +2394,9 @@ var LegacyGame = (function () {
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], verbTag)) {
                 verbsList = this.GetParameter(this._lines[i], ctx);
+
+                // The property or action the verb uses is either after a colon,
+                // or it's the first (or only) verb on the line.
                 var colonPos = InStr(verbsList, ":");
                 if (colonPos != 0) {
                     verbProperty = LCase(Trim(Mid(verbsList, colonPos + 1)));
@@ -2141,7 +2409,9 @@ var LegacyGame = (function () {
                         verbProperty = LCase(Trim(Left(verbsList, scp - 1)));
                     }
                 }
+
                 do {
+                    // Now let's see if this matches:
                     scp = InStr(verbsList, ";");
                     if (scp == 0) {
                         thisVerb = LCase(verbsList);
@@ -2172,6 +2442,8 @@ var LegacyGame = (function () {
             } else {
                 this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
                 var foundAction = false;
+
+                // Now see if this object has the relevant action or property
                 var o = this._objs[id];
                 for (var i = 1; i <= o.NumberActions; i++) {
                     if (LCase(o.Actions[i].ActionName) == verbProperty) {
@@ -2181,10 +2453,12 @@ var LegacyGame = (function () {
                     }
                 }
                 if (thisScript != "") {
+                    // Avoid an RTE "this array is fixed or temporarily locked"
                     this.ExecuteScript(thisScript, ctx, id);
                 }
                 if (!foundAction) {
                     for (var i = 1; i <= o.NumberProperties; i++) {
+                        // Check properties for a message
                         if (LCase(o.Properties[i].PropertyName) == verbProperty) {
                             foundAction = true;
                             this.Print(o.Properties[i].PropertyValue, ctx);
@@ -2193,6 +2467,7 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!foundAction) {
+                    // Execute the default script from the verb definition
                     this.ExecuteScript(script, ctx);
                 }
             }
@@ -2203,9 +2478,12 @@ var LegacyGame = (function () {
         var openBracketPos;
         var endBracketPos;
         var res = new ExpressionResult();
+
         do {
+            // Find brackets, recursively call ExpressionHandler
             openBracketPos = InStr(expr, "(");
             if (openBracketPos != 0) {
+                // Find equivalent closing bracket
                 var BracketCount = 1;
                 endBracketPos = 0;
                 for (var i = openBracketPos + 1; i <= Len(expr); i++) {
@@ -2234,6 +2512,10 @@ var LegacyGame = (function () {
                 }
             }
         } while(!(openBracketPos == 0));
+
+        // Split expression into elements, e.g.:
+        //       2 + 3 * 578.2 / 36
+        //       E O E O EEEEE O EE      where E=Element, O=Operator
         var numElements = 1;
         var elements;
         elements = [];
@@ -2255,7 +2537,9 @@ var LegacyGame = (function () {
                 elements[numElements] = elements[numElements] + Mid(expr, i, 1);
             }
         }
+
         for (var i = 1; i <= numElements; i++) {
+            // Check Elements are numeric, and trim spaces
             elements[i] = Trim(elements[i]);
             if (!IsNumeric(elements[i])) {
                 res.Message = "Syntax error evaluating expression - non-numeric element '" + elements[i] + "'";
@@ -2266,6 +2550,7 @@ var LegacyGame = (function () {
         var opNum = 0;
         do {
             for (var i = 1; i <= numOperators; i++) {
+                // Go through the Operators array to find next calculation to perform
                 if (operators[i] == "/" || operators[i] == "*") {
                     opNum = i;
                     break;
@@ -2279,14 +2564,19 @@ var LegacyGame = (function () {
                     }
                 }
             }
+
+            // If OpNum is still 0, there are no calculations left to do.
             if (opNum != 0) {
+                // If OpNum is still 0, there are no calculations left to do.
                 var val1 = parseFloat(elements[opNum]);
                 var val2 = parseFloat(elements[opNum + 1]);
                 var result;
 
                 // UNKNOWN SelectBlock
                 elements[opNum] = (result).toString();
+
                 for (var i = opNum; i <= numOperators - 1; i++) {
+                    // Remove this operator, and Elements(OpNum+1) from the arrays
                     operators[i] = operators[i + 1];
                 }
                 for (var i = opNum + 1; i <= numElements - 1; i++) {
@@ -2305,17 +2595,24 @@ var LegacyGame = (function () {
         return res;
     };
     LegacyGame.prototype.ListContents = function (id, ctx) {
+        // Returns a formatted list of the contents of a container.
+        // If the list action causes a script to be run instead, ListContents
+        // returns "<script>"
         var contentsIDs = [];
         if (!this.IsYes(this.GetObjectProperty("container", id, true, false))) {
             return "";
         }
         if (!this.IsYes(this.GetObjectProperty("opened", id, true, false)) && !this.IsYes(this.GetObjectProperty("transparent", id, true, false)) && !this.IsYes(this.GetObjectProperty("surface", id, true, false))) {
+            // Container is closed, so return "list closed" property if there is one.
             if (this.DoAction(id, "list closed", ctx, false)) {
+                // Container is closed, so return "list closed" property if there is one.
                 return "<script>";
             } else {
                 return this.GetObjectProperty("list closed", id, false, false);
             }
         }
+
+        // populate contents string
         var numContents = 0;
         for (var i = 1; i <= this._numberObjs; i++) {
             if (this._objs[i].Exists && this._objs[i].Visible) {
@@ -2329,16 +2626,20 @@ var LegacyGame = (function () {
         }
         var contents = "";
         if (numContents > 0) {
+            // Check if list property is set.
             if (this.DoAction(id, "list", ctx, false)) {
+                // Check if list property is set.
                 return "<script>";
             }
             if (this.IsYes(this.GetObjectProperty("list", id, true, false))) {
+                // Read header, if any
                 var listString = this.GetObjectProperty("list", id, false, false);
                 var displayList = true;
                 if (listString != "") {
                     if (Right(listString, 1) == ":") {
                         contents = Left(listString, Len(listString) - 1) + " ";
                     } else {
+                        // If header doesn't end in a colon, then the header is the only text to print
                         contents = listString;
                         displayList = false;
                     }
@@ -2370,15 +2671,23 @@ var LegacyGame = (function () {
                 }
                 return contents + ".";
             }
+
+            // The "list" property is not set, so do not list contents.
             return "";
         }
+
+        // Container is empty, so return "list empty" property if there is one.
         if (this.DoAction(id, "list empty", ctx, false)) {
+            // Container is empty, so return "list empty" property if there is one.
             return "<script>";
         } else {
             return this.GetObjectProperty("list empty", id, false, false);
         }
     };
     LegacyGame.prototype.ObscureNumericExps = function (s) {
+        // Obscures + or - next to E in Double-type variables with exponents
+        //   e.g. 2.345E+20 becomes 2.345EX20
+        // This stops huge numbers breaking parsing of maths functions
         var ep;
         var result = s;
         var pos = 1;
@@ -2399,6 +2708,7 @@ var LegacyGame = (function () {
             listInfo.Data = this.GetParameter(line, this._nullContext);
             propName = "list closed";
         } else if (Trim(line) == "list closed off") {
+            // default for list closed is off anyway
             // UNKNOWN ExitSubStatement
         } else if (this.BeginsWith(line, "list closed")) {
             listInfo.Type = 1 /* Script */;
@@ -2409,6 +2719,7 @@ var LegacyGame = (function () {
             listInfo.Data = this.GetParameter(line, this._nullContext);
             propName = "list empty";
         } else if (Trim(line) == "list empty off") {
+            // default for list empty is off anyway
             // UNKNOWN ExitSubStatement
         } else if (this.BeginsWith(line, "list empty")) {
             listInfo.Type = 1 /* Script */;
@@ -2435,6 +2746,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.GetHTMLColour = function (colour, defaultColour) {
+        // Converts a Quest foreground or background colour setting into an HTML colour
         colour = LCase(colour);
         if (colour == "" || colour == "0") {
             colour = defaultColour;
@@ -2465,6 +2777,8 @@ var LegacyGame = (function () {
         } else {
             fromRoom = LCase(Trim(Left(exitData, scp - 1)));
             toRoom = Trim(Mid(exitData, scp + 1));
+
+            // Find From Room:
             var found = false;
             for (var i = 1; i <= this._numberRooms; i++) {
                 if (LCase(this._rooms[i].RoomName) == fromRoom) {
@@ -2495,6 +2809,8 @@ var LegacyGame = (function () {
                 r.NumberPlaces = r.NumberPlaces - 1;
             }
         }
+
+        // Update quest.* vars and obj list
         this.ShowRoomInfo(this._currentRoom, ctx, true);
         this.UpdateObjectList(ctx);
         this.AddToChangeLog("room " + fromRoom, "destroy exit " + toRoom);
@@ -2514,9 +2830,12 @@ var LegacyGame = (function () {
         } else if (this.BeginsWith(line, "off ")) {
             propertyString = "not " + this.GetParameter(line, ctx);
         }
+
+        // Game object always has ObjID 1
         this.AddToObjectProperties(propertyString, 1, ctx);
     };
     LegacyGame.prototype.ExecuteIfFlag = function (flag) {
+        // Game ObjID is 1
         return this.GetObjectProperty(flag, 1, true) == "yes";
     };
     LegacyGame.prototype.ExecuteIncDec = function (line, ctx) {
@@ -2551,6 +2870,8 @@ var LegacyGame = (function () {
         if (this._resourceFile == "") {
             return "";
         }
+
+        // Find file in catalog
         var found = false;
         for (var i = 1; i <= this._numResources; i++) {
             if (LCase(file) == LCase(this._resources[i].ResourceName)) {
@@ -2569,7 +2890,10 @@ var LegacyGame = (function () {
         var fileName = System.IO.Path.Combine(this._tempFolder, file);
         System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
         if (!extracted) {
+            // Extract file from cached CAS data
             var fileData = Mid(this._casFileData, startPos, length);
+
+            // Write file to temp dir
             System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
             this._resources[resId].Extracted = true;
         }
@@ -2577,6 +2901,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.AddObjectAction = function (id, name, script, noUpdate) {
         if (typeof noUpdate === "undefined") { noUpdate = false; }
+        // Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
+        // AddToGiveInfo again leading to a big loop
         var actionNum;
         var foundExisting = false;
         var o = this._objs[id];
@@ -2609,6 +2935,9 @@ var LegacyGame = (function () {
     LegacyGame.prototype.AddToObjectChangeLog = function (appliesToType, appliesTo, element, changeData) {
         var changeLog;
 
+        // NOTE: We're only actually ever using the object changelog.
+        // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
+        // need the refactored ChangeLog component for those.
         // UNKNOWN SelectBlock
         changeLog.AddItem(appliesTo, element, changeData);
     };
@@ -2879,6 +3208,7 @@ var LegacyGame = (function () {
         this._objs[this._numberObjs].ContainerRoom = cloneTo;
         this._objs[this._numberObjs].ObjectName = newName;
         if (this._objs[id].IsRoom) {
+            // This is a room so create the corresponding room as well
             this._numberRooms = this._numberRooms + 1;
             if (!this._rooms)
                 this._rooms = [];
@@ -2934,7 +3264,10 @@ var LegacyGame = (function () {
         for (var i = 1; i <= propertyData.NumberActions; i++) {
             this.AddObjectAction(id, propertyData.Actions[i].ActionName, propertyData.Actions[i].Script);
         }
+
         for (var i = 1; i <= propertyData.NumberTypesIncluded; i++) {
+            // New as of Quest 4.0. Fixes bug that "if type" would fail for any
+            // parent types included by the "type" command.
             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
             if (!o.TypesIncluded)
                 o.TypesIncluded = [];
@@ -3018,6 +3351,16 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.Disambiguate = function (name, containedIn, ctx, isExit) {
         if (typeof isExit === "undefined") { isExit = false; }
+        // Returns object ID being referred to by player.
+        // Returns -1 if object doesn't exist, calling function
+        //   then expected to print relevant error.
+        // Returns -2 if "it" meaningless, prints own error.
+        // If it returns an object ID, it also sets quest.lastobject to the name
+        // of the object referred to.
+        // If ctx.AllowRealNamesInCommand is True, will allow an object's real
+        // name to be used even when the object has an alias - this is used when
+        // Disambiguate has been called after an "exec" command to prevent the
+        // player having to choose an object from the disambiguation menu twice
         var numberCorresIds = 0;
         var idNumbers = [];
         var firstPlace;
@@ -3047,7 +3390,10 @@ var LegacyGame = (function () {
                 }
             }
         }
+
+        // If player uses "it", "them" etc. as name:
         if (name == "it" || name == "them" || name == "this" || name == "those" || name == "these" || name == "that") {
+            // If player uses "it", "them" etc. as name:
             this.SetStringContents("quest.error.pronoun", name, ctx);
             if (this._lastIt != 0 && this._lastItMode == 0 /* Inanimate */ && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
                 this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
@@ -3100,6 +3446,7 @@ var LegacyGame = (function () {
         }
         if (this._gameAslVersion >= 391 && numberCorresIds == 0 && this._useAbbreviations && Len(name) > 0) {
             for (var i = 1; i <= this._numberObjs; i++) {
+                // Check for abbreviated object names
                 if (this.DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit)) {
                     var thisName;
                     if (this._objs[i].ObjectAlias != "") {
@@ -3387,6 +3734,8 @@ var LegacyGame = (function () {
             var thisCondition = Trim(Mid(list, pos, nextConditionPos - pos - 1));
             conditions[numConditions] = thisCondition;
             operations[numConditions] = nextCondition;
+
+            // next condition starts from space after and/or
             pos = InStr(nextConditionPos, obscuredConditionList, " ");
         } while(!(isFinalCondition));
         operations[0] = "AND";
@@ -3489,6 +3838,8 @@ var LegacyGame = (function () {
             // UNKNOWN ExitSubStatement
         }
         if (this._gameAslVersion < 410) {
+            // only do destination room check for ASL <410, as can now have scripts on dynamically
+            // created exits, so the destination doesn't necessarily have to exist.
             destRoom = Trim(Mid(newName, scp + 1));
             if (destRoom != "") {
                 destId = this.GetRoomID(destRoom, ctx);
@@ -3498,6 +3849,8 @@ var LegacyGame = (function () {
                 }
             }
         }
+
+        // If it's a "go to" exit, check if it already exists:
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
@@ -3521,6 +3874,8 @@ var LegacyGame = (function () {
             saveData = exitData;
         } else {
             saveData = Left(exitData, paramPos - 1);
+
+            // We do this so the changelog doesn't contain unconverted variable names
             saveData = saveData + "<" + this.GetParameter(exitData, ctx) + ">";
         }
         this.AddToChangeLog("room " + this._rooms[srcId].RoomName, "exit " + saveData);
@@ -3571,6 +3926,7 @@ var LegacyGame = (function () {
             }
         }
         if (!this._gameLoading) {
+            // Update quest.doorways variables
             this.ShowRoomInfo(this._currentRoom, ctx, true);
             this.UpdateObjectList(ctx);
             if (this._gameAslVersion < 410) {
@@ -3580,6 +3936,8 @@ var LegacyGame = (function () {
                     this.UpdateDoorways(destId, ctx);
                 }
             } else {
+                // Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
+                // for current room anyway.
                 this.UpdateDoorways(this.GetRoomID(this._currentRoom, ctx), ctx);
             }
         }
@@ -3605,6 +3963,8 @@ var LegacyGame = (function () {
             this._badCmdBefore = "drop";
             // UNKNOWN ExitSubStatement
         }
+
+        // If object is inside a container, it must be removed before it can be dropped.
         var isInContainer = false;
         if (this._gameAslVersion >= 391) {
             if (this.IsYes(this.GetObjectProperty("parent", id, true, false))) {
@@ -3625,6 +3985,8 @@ var LegacyGame = (function () {
         this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
         if (!dropFound || this.BeginsWith(dropStatement, "everywhere")) {
             if (isInContainer) {
+                // So, we want to drop an object that's in a container or surface. So first
+                // we have to remove the object from that container.
                 var parentDisplayName;
                 if (this._objs[parentId].ObjectAlias != "") {
                     parentDisplayName = this._objs[parentId].ObjectAlias;
@@ -3632,9 +3994,12 @@ var LegacyGame = (function () {
                     parentDisplayName = this._objs[parentId].ObjectName;
                 }
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
+
+                // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
+                    // removing the object failed
                     // UNKNOWN ExitSubStatement
                 }
             }
@@ -3677,19 +4042,25 @@ var LegacyGame = (function () {
             // UNKNOWN ExitSubStatement
         }
         var o = this._objs[id];
+
         for (var i = 1; i <= o.NumberActions; i++) {
+            // Find "examine" action:
             if (o.Actions[i].ActionName == "examine") {
                 this.ExecuteScript(o.Actions[i].Script, ctx, id);
                 // UNKNOWN ExitSubStatement
             }
         }
+
         for (var i = 1; i <= o.NumberProperties; i++) {
+            // Find "examine" property:
             if (o.Properties[i].PropertyName == "examine") {
                 this.Print(o.Properties[i].PropertyValue, ctx);
                 // UNKNOWN ExitSubStatement
             }
         }
+
         for (var i = o.DefinitionSectionStart + 1; i <= this._objs[id].DefinitionSectionEnd - 1; i++) {
+            // Find "examine" tag:
             if (this.BeginsWith(this._lines[i], "examine ")) {
                 var action = Trim(this.GetEverythingAfter(this._lines[i], "examine "));
                 if (Left(action, 1) == "<") {
@@ -3736,6 +4107,8 @@ var LegacyGame = (function () {
         var numParameters = 0;
         var useNewCtx;
         if (this._gameAslVersion >= 392 && Left(procedureName, 8) == "!intproc") {
+            // If "do" procedure is run in a new context, context info is not passed to any nested
+            // script blocks in braces.
             useNewCtx = false;
         } else {
             useNewCtx = true;
@@ -4090,10 +4463,14 @@ var LegacyGame = (function () {
                     propertyList.Actions[j].Script = newProperties.Actions[j - propertyList.NumberActions].Script;
                 }
                 propertyList.NumberActions = propertyList.NumberActions + newProperties.NumberActions;
+
+                // Add this type name to the TypesIncluded list...
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + 1;
                 if (!propertyList.TypesIncluded)
                     propertyList.TypesIncluded = [];
                 propertyList.TypesIncluded[propertyList.NumberTypesIncluded] = typeName;
+
+                // and add the names of the types included by it...
                 if (!propertyList.TypesIncluded)
                     propertyList.TypesIncluded = [];
                 for (var j = propertyList.NumberTypesIncluded + 1; j <= propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded; j++) {
@@ -4138,6 +4515,7 @@ var LegacyGame = (function () {
         return result;
     };
     LegacyGame.prototype.GetThingNumber = function (name, room, type) {
+        // Returns the number in the Chars() or _objs() array of the specified char/obj
         if (type == 0 /* Character */) {
             for (var i = 1; i <= this._numberChars; i++) {
                 if ((room != "" && LCase(this._chars[i].ObjectName) == LCase(name) && LCase(this._chars[i].ContainerRoom) == LCase(room)) || (room == "" && LCase(this._chars[i].ObjectName) == LCase(name))) {
@@ -4154,6 +4532,7 @@ var LegacyGame = (function () {
         return -1;
     };
     LegacyGame.prototype.GetThingBlock = function (name, room, type) {
+        // Returns position where specified char/obj is defined in ASL code
         var result = new DefineBlock();
         if (type == 0 /* Character */) {
             for (var i = 1; i <= this._numberChars; i++) {
@@ -4182,10 +4561,16 @@ var LegacyGame = (function () {
         var roomData = [];
         var numObjectData;
         var numRoomData;
+
+        // <<< FILE HEADER DATA >>>
         data.Append("QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0));
+
+        // The start point for encrypted data is after the filename
         var start = data.Length + 1;
         data.Append(this._currentRoom + Chr(0));
+
         for (var i = 1; i <= this._gameChangeData.NumberChanges; i++) {
+            // Organise Change Log
             if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "object ")) {
                 numObjectData = numObjectData + 1;
                 if (!objectData)
@@ -4200,6 +4585,8 @@ var LegacyGame = (function () {
                 roomData[numRoomData] = this._gameChangeData.ChangeData[i];
             }
         }
+
+        // <<< OBJECT CREATE/CHANGE DATA >>>
         data.Append(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
         for (var i = 1; i <= numObjectData; i++) {
             data.Append(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
@@ -4209,6 +4596,8 @@ var LegacyGame = (function () {
             var changeData = this._changeLogObjects.Changes.Item(key);
             data.Append(appliesTo + Chr(0) + changeData + Chr(0));
         }, this);
+
+        // <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
         data.Append(Trim(Str(this._numberObjs)) + Chr(0));
         for (var i = 1; i <= this._numberObjs; i++) {
             var exists;
@@ -4225,10 +4614,14 @@ var LegacyGame = (function () {
             }
             data.Append(this._objs[i].ObjectName + Chr(0) + exists + visible + this._objs[i].ContainerRoom + Chr(0));
         }
+
+        // <<< ROOM CREATE/CHANGE DATA >>>
         data.Append(Trim(Str(numRoomData)) + Chr(0));
         for (var i = 1; i <= numRoomData; i++) {
             data.Append(this.GetEverythingAfter(roomData[i].AppliesTo, "room ") + Chr(0) + roomData[i].Change + Chr(0));
         }
+
+        // <<< TIMER STATE DATA >>>
         data.Append(Trim(Str(this._numberTimers)) + Chr(0));
         for (var i = 1; i <= this._numberTimers; i++) {
             var t = this._timers[i];
@@ -4241,6 +4634,8 @@ var LegacyGame = (function () {
             data.Append(Trim(Str(t.TimerInterval)) + Chr(0));
             data.Append(Trim(Str(t.TimerTicks)) + Chr(0));
         }
+
+        // <<< STRING VARIABLE DATA >>>
         data.Append(Trim(Str(this._numberStringVariables)) + Chr(0));
         for (var i = 1; i <= this._numberStringVariables; i++) {
             var s = this._stringVariable[i];
@@ -4249,6 +4644,8 @@ var LegacyGame = (function () {
                 data.Append(s.VariableContents[j] + Chr(0));
             }
         }
+
+        // <<< NUMERIC VARIABLE DATA >>>
         data.Append(Trim(Str(this._numberNumericVariables)) + Chr(0));
         for (var i = 1; i <= this._numberNumericVariables; i++) {
             var n = this._numericVariable[i];
@@ -4257,6 +4654,8 @@ var LegacyGame = (function () {
                 data.Append(n.VariableContents[j] + Chr(0));
             }
         }
+
+        // Now encrypt data
         var dataString;
         var newFileData = {};
         dataString = data.ToString();
@@ -4281,6 +4680,7 @@ var LegacyGame = (function () {
         }
         if (this._gameAslVersion >= 391) {
             for (var i = 1; i <= this._numberObjs; i++) {
+                // If this object contains other objects, move them too
                 if (LCase(this.GetObjectProperty("parent", i, false, false)) == LCase(name)) {
                     this.MoveThing(this._objs[i].ObjectName, room, type, ctx);
                 }
@@ -4297,6 +4697,9 @@ var LegacyGame = (function () {
         // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.ConvertParameter = function (parameter, convertChar, action, ctx) {
+        // Returns a string with functions, string and
+        // numeric variables executed or converted as
+        // appropriate, read for display/etc.
         var result = "";
         var pos = 1;
         var finished = false;
@@ -4355,6 +4758,7 @@ var LegacyGame = (function () {
         var block;
         block = this.DefineBlockParam("function", name);
         if (block.StartLine == 0 && block.EndLine == 0) {
+            //Function does not exist; try an internal function.
             intFuncResult = this.DoInternalFunction(name, parameter, ctx);
             if (intFuncResult == "__NOTDEFINED") {
                 this.LogASLError("No such function '" + name + "'", 2 /* WarningError */);
@@ -4414,6 +4818,8 @@ var LegacyGame = (function () {
                 parameters[numParameters] = Trim(untrimmedParameters[numParameters]);
                 pos = scp + 1;
             } while(!(pos >= Len(parameter)));
+
+            // Remove final ";"
             parameter = Left(parameter, Len(parameter) - 1);
         } else {
             numParameters = 1;
@@ -4447,6 +4853,7 @@ var LegacyGame = (function () {
                 }
             }
         } else if (name == "gettag") {
+            // Deprecated
             return this.FindStatement(this.DefineBlockParam("room", parameters[1]), parameters[2]);
         } else if (name == "objectname") {
             return this._objs[ctx.CallingObjectId].ObjectName;
@@ -4631,13 +5038,20 @@ var LegacyGame = (function () {
         return "__NOTDEFINED";
     };
     LegacyGame.prototype.ExecFor = function (line, ctx) {
+        // See if this is a "for each" loop:
         if (this.BeginsWith(line, "each ")) {
+            // See if this is a "for each" loop:
             this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
             // UNKNOWN ExitSubStatement
         }
+
+        // Executes a for loop, of form:
+        //   for <variable; startvalue; endvalue> script
         var endValue;
         var stepValue;
         var forData = this.GetParameter(line, ctx);
+
+        // Extract individual components:
         var scp1 = InStr(forData, ";");
         var scp2 = InStr(scp1 + 1, forData, ";");
         var scp3 = InStr(scp2 + 1, forData, ";");
@@ -4658,6 +5072,9 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecSetVar = function (varInfo, ctx) {
+        // Sets variable contents from a script parameter.
+        // Eg <var1;7> sets numeric variable var1
+        // to 7
         var scp = InStr(varInfo, ";");
         var varName = Trim(Left(varInfo, scp - 1));
         var varCont = Trim(Mid(varInfo, scp + 1));
@@ -4750,6 +5167,7 @@ var LegacyGame = (function () {
         }
         var scp2 = InStr(scp + 1, condition, ";");
         if (scp2 == 0) {
+            // Only two parameters => standard "="
             op = "=";
             value1 = Trim(Left(condition, scp - 1));
             value2 = Trim(Mid(condition, scp + 1));
@@ -4759,6 +5177,7 @@ var LegacyGame = (function () {
             value2 = Trim(Mid(condition, scp2 + 1));
         }
         if (this._gameAslVersion >= 391) {
+            // Evaluate expressions in Value1 and Value2
             expResult = this.ExpressionHandler(value1);
             if (expResult.Success == 0 /* OK */) {
                 value1 = expResult.Result;
@@ -4783,7 +5202,12 @@ var LegacyGame = (function () {
         var numNumber;
         var arrayIndex;
         var exists = false;
+
+        // First, see if the variable already exists. If it
+        // does, get its contents. If not, generate an error.
         if (InStr(name, "[") != 0 && InStr(name, "]") != 0) {
+            // First, see if the variable already exists. If it
+            // does, get its contents. If not, generate an error.
             var op = InStr(name, "[");
             var cp = InStr(name, "]");
             var arrayIndexData = Mid(name, op + 1, (cp - op) - 1);
@@ -4817,6 +5241,8 @@ var LegacyGame = (function () {
             }
             return -32766;
         }
+
+        // Now, set the contents
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
     };
     LegacyGame.prototype.PlayerErrorMessage = function (e, ctx) {
@@ -4845,6 +5271,8 @@ var LegacyGame = (function () {
             if (looped && sync) {
                 sync = false;
             }
+
+            // Can't loop and sync at the same time, that would just hang!
             this._player.PlaySound(filename, sync, looped);
             if (sync) {
                 this.ChangeState(2 /* Waiting */);
@@ -4881,17 +5309,28 @@ var LegacyGame = (function () {
         var numStoredData;
         var storedData = [];
         var decryptedFile = {};
+
         for (var i = 1; i <= Len(fileData); i++) {
+            // Decrypt file
             decryptedFile.Append(Chr(255 - Asc(Mid(fileData, i, 1))));
         }
         this._fileData = decryptedFile.ToString();
         this._currentRoom = this.GetNextChunk();
+
+        // OBJECTS
         var numData = parseInt(this.GetNextChunk());
         var createdObjects = {};
         for (var i = 1; i <= numData; i++) {
             appliesTo = this.GetNextChunk();
             data = this.GetNextChunk();
+
+            // As of Quest 4.0, properties and actions are put into StoredData while we load the file,
+            // and then processed later. This is so any created rooms pick up their properties - otherwise
+            // we try to set them before they've been created.
             if (this.BeginsWith(data, "properties ") || this.BeginsWith(data, "action ")) {
+                // As of Quest 4.0, properties and actions are put into StoredData while we load the file,
+                // and then processed later. This is so any created rooms pick up their properties - otherwise
+                // we try to set them before they've been created.
                 numStoredData = numStoredData + 1;
                 if (!storedData)
                     storedData = [];
@@ -4900,7 +5339,10 @@ var LegacyGame = (function () {
                 storedData[numStoredData].Change = data;
             } else if (this.BeginsWith(data, "create ")) {
                 var createData = appliesTo + ";" + this.GetEverythingAfter(data, "create ");
+
+                // workaround bug where duplicate "create" entries appear in the restore data
                 if (!createdObjects.Contains(createData)) {
+                    // workaround bug where duplicate "create" entries appear in the restore data
                     this.ExecuteCreate("object <" + createData + ">", this._nullContext);
                     createdObjects.Add(createData);
                 }
@@ -4925,6 +5367,8 @@ var LegacyGame = (function () {
             }
             this._objs[objId].ContainerRoom = this.GetNextChunk();
         }
+
+        // ROOMS
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
             appliesTo = this.GetNextChunk();
@@ -4937,7 +5381,9 @@ var LegacyGame = (function () {
                 this.DestroyExit(appliesTo + "; " + this.GetEverythingAfter(data, "destroy exit "), this._nullContext);
             }
         }
+
         for (var i = 1; i <= numStoredData; i++) {
+            // Now go through and apply object properties and actions
             var d = storedData[i];
             if (this.BeginsWith(d.Change, "properties ")) {
                 this.AddToObjectProperties(this.GetEverythingAfter(d.Change, "properties "), this.GetObjectIdNoAlias(d.AppliesTo), this._nullContext);
@@ -4945,6 +5391,8 @@ var LegacyGame = (function () {
                 this.AddToObjectActions(this.GetEverythingAfter(d.Change, "action "), this.GetObjectIdNoAlias(d.AppliesTo), this._nullContext);
             }
         }
+
+        // TIMERS
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
             found = false;
@@ -4968,6 +5416,9 @@ var LegacyGame = (function () {
                 t.TimerTicks = parseInt(this.GetNextChunk());
             }
         }
+
+        // STRING VARIABLES
+        // Set this flag so we don't run any status variable onchange scripts while restoring
         this._gameIsRestoring = true;
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
@@ -4983,6 +5434,8 @@ var LegacyGame = (function () {
                 }
             }
         }
+
+        // NUMERIC VARIABLES
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
             appliesTo = this.GetNextChunk();
@@ -5065,6 +5518,9 @@ var LegacyGame = (function () {
             this.LogASLError("Illegal numeric variable name '" + name + "' - check you didn't put % around the variable name in the ASL code", 2 /* WarningError */);
             // UNKNOWN ExitSubStatement
         }
+
+        // First, see if variable already exists. If it does,
+        // modify it. If not, create it.
         if (this._numberNumericVariables > 0) {
             for (var i = 1; i <= this._numberNumericVariables; i++) {
                 if (LCase(this._numericVariable[i].VariableName) == LCase(name)) {
@@ -5087,6 +5543,8 @@ var LegacyGame = (function () {
                 this._numericVariable[numNumber].VariableContents = [];
             this._numericVariable[numNumber].VariableUBound = arrayIndex;
         }
+
+        // Now, set the contents
         this._numericVariable[numNumber].VariableName = name;
         if (!this._numericVariable[numNumber].VariableContents)
             this._numericVariable[numNumber].VariableContents = [];
@@ -5118,6 +5576,8 @@ var LegacyGame = (function () {
             if (LCase(name) == LCase(this._timers[i].TimerName)) {
                 this._timers[i].TimerActive = state;
                 this._timers[i].BypassThisTurn = true;
+
+                // don't trigger timer during the turn it was first enabled
                 return null;
             }
         }
@@ -5155,6 +5615,7 @@ var LegacyGame = (function () {
         return 2 /* Unfound */;
     };
     LegacyGame.prototype.SetUpChoiceForm = function (blockName, ctx) {
+        // Returns script to execute from choice block
         var block = this.DefineBlockParam("selection", blockName);
         var prompt = this.FindStatement(block, "info");
         var menuOptions = {};
@@ -5172,6 +5633,7 @@ var LegacyGame = (function () {
         return menuScript[choice];
     };
     LegacyGame.prototype.SetUpDefaultFonts = function () {
+        // Sets up default fonts
         var gameblock = this.GetDefineBlock("game");
         this._defaultFontName = "Arial";
         this._defaultFontSize = 9;
@@ -5222,6 +5684,7 @@ var LegacyGame = (function () {
                     }
                 } while(!(Trim(this._lines[i]) == "end define"));
                 if (type == "string") {
+                    // Create string variable
                     this._numberStringVariables = this._numberStringVariables + 1;
                     var id = this._numberStringVariables;
                     if (!this._stringVariable)
@@ -5331,6 +5794,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.SetUpRoomData = function () {
         var defaultProperties = new PropertiesActions();
+
+        // see if define type <defaultroom> exists:
         var defaultExists = false;
         for (var i = 1; i <= this._numberSections; i++) {
             if (Trim(this._lines[this._defineBlocks[i].StartLine]) == "define type <defaultroom>") {
@@ -5368,6 +5833,7 @@ var LegacyGame = (function () {
                 }
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "define ")) {
+                        //skip nested blocks
                         var nestedBlock = 1;
                         do {
                             j = j + 1;
@@ -5572,12 +6038,16 @@ var LegacyGame = (function () {
             if (eqp != 0) {
                 var originalWordsList = Trim(Left(this._lines[i], eqp - 1));
                 var convertWord = Trim(Mid(this._lines[i], eqp + 1));
+
+                //Go through each word in OriginalWordsList (sep.
+                //by ";"):
                 originalWordsList = originalWordsList + ";";
                 var pos = 1;
                 do {
                     var endOfWord = InStr(pos, originalWordsList, ";");
                     var thisWord = Trim(Mid(originalWordsList, pos, endOfWord - pos));
                     if (InStr(" " + convertWord + " ", " " + thisWord + " ") > 0) {
+                        // Recursive synonym
                         this.LogASLError("Recursive synonym detected: '" + thisWord + "' converting to '" + convertWord + "'", 2 /* WarningError */);
                     } else {
                         this._numberSynonyms = this._numberSynonyms + 1;
@@ -5628,6 +6098,8 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.SetUpUserDefinedPlayerErrors = function () {
+        // goes through "define game" block and sets stored error
+        // messages accordingly
         var block = this.GetDefineBlock("game");
         var examineIsCustomised = false;
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
@@ -5641,13 +6113,17 @@ var LegacyGame = (function () {
                 // UNKNOWN SelectBlock
                 this._playerErrorMessageString[currentError] = errorMsg;
                 if (currentError == 8 /* DefaultLook */ && !examineIsCustomised) {
+                    // If we're setting the default look message, and we've not already customised the
+                    // default examine message, then set the default examine message to the same thing.
                     this._playerErrorMessageString[17 /* DefaultExamine */] = errorMsg;
                 }
             }
         }
     };
     LegacyGame.prototype.SetVisibility = function (thing, type, visible, ctx) {
+        // Sets visibilty of objects and characters
         if (this._gameAslVersion >= 280) {
+            // Sets visibilty of objects and characters
             var found = false;
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this._objs[i].ObjectName) == LCase(thing)) {
@@ -5665,10 +6141,15 @@ var LegacyGame = (function () {
                 this.LogASLError("Not found object '" + thing + "'", 2 /* WarningError */);
             }
         } else {
+            // split ThingString into character name and room
+            // (thingstring of form name@room)
             var atPos = InStr(thing, "@");
             var room;
             var name;
+
+            // If no room specified, current room presumed
             if (atPos == 0) {
+                // If no room specified, current room presumed
                 room = this._currentRoom;
                 name = thing;
             } else {
@@ -5697,10 +6178,13 @@ var LegacyGame = (function () {
         if (!this._useStaticFrameForPictures) {
             this._player.ShowPicture(filename);
         } else {
+            // Workaround for a particular game which expects pictures to be in a popup window -
+            // use the static picture frame feature so that image is not cleared
             this._player.SetPanelContents("<img src=\"" + this._player.GetURL(filename) + "\" onload=\"setPanelHeight()\"/>");
         }
     };
     LegacyGame.prototype.ShowRoomInfoV2 = function (room) {
+        // ShowRoomInfo for Quest 2.x games
         var roomDisplayText = "";
         var descTagExist;
         var gameBlock;
@@ -5734,12 +6218,16 @@ var LegacyGame = (function () {
         var lookString = "";
         gameBlock = this.GetDefineBlock("game");
         this._currentRoom = room;
+
+        //find the room
         var roomBlock;
         roomBlock = this.DefineBlockParam("room", room);
         var finishedFindingCommas;
         charsViewable = "";
         charsFound = 0;
+
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
+            //see if room has an alias
             if (this.BeginsWith(this._lines[i], "alias")) {
                 aliasName = this.GetParameter(this._lines[i], this._nullContext);
                 i = roomBlock.EndLine;
@@ -5748,14 +6236,20 @@ var LegacyGame = (function () {
         if (aliasName == "") {
             aliasName = room;
         }
+
+        //see if room has a prefix
         prefix = this.FindStatement(roomBlock, "prefix");
         if (prefix == "") {
             prefixAlias = "|cr" + aliasName + "|cb";
             prefixAliasNoFormat = aliasName;
+            // No formatting version, for label
         } else {
             prefixAlias = prefix + " |cr" + aliasName + "|cb";
             prefixAliasNoFormat = prefix + " " + aliasName;
         }
+
+        //print player's location
+        //find indescription line:
         inDesc = "unfound";
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "indescription")) {
@@ -5764,17 +6258,24 @@ var LegacyGame = (function () {
             }
         }
         if (inDesc != "unfound") {
+            // Print player's location according to indescription:
             if (Right(inDesc, 1) == ":") {
+                // Print player's location according to indescription:
+                // if line ends with a colon, add place name:
                 roomDisplayText = roomDisplayText + Left(inDesc, Len(inDesc) - 1) + " " + prefixAlias + "." + vbCrLf;
             } else {
+                // otherwise, just print the indescription line:
                 roomDisplayText = roomDisplayText + inDesc + vbCrLf;
             }
         } else {
+            // if no indescription line, print the default.
             roomDisplayText = roomDisplayText + "You are in " + prefixAlias + "." + vbCrLf;
         }
         this._player.LocationUpdated(prefixAliasNoFormat);
         this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
+
         for (var i = 1; i <= this._numberChars; i++) {
+            //FIND CHARACTERS ===
             if (this._chars[i].ContainerRoom == room && this._chars[i].Exists && this._chars[i].Visible) {
                 charsViewable = charsViewable + this._chars[i].Prefix + "|b" + this._chars[i].ObjectName + "|xb" + this._chars[i].Suffix + ", ";
                 charsFound = charsFound + 1;
@@ -5784,8 +6285,12 @@ var LegacyGame = (function () {
             charsViewable = "There is nobody here.";
             this.SetStringContents("quest.characters", "", this._nullContext);
         } else {
+            //chop off final comma and add full stop (.)
             charList = Left(charsViewable, Len(charsViewable) - 2);
             this.SetStringContents("quest.characters", charList, this._nullContext);
+
+            //if more than one character, add "and" before
+            //last one:
             cp = InStr(charList, ",");
             if (cp != 0) {
                 foundLastComma = 0;
@@ -5802,6 +6307,8 @@ var LegacyGame = (function () {
             charsViewable = "You can see " + charList + " here.";
         }
         roomDisplayText = roomDisplayText + charsViewable + vbCrLf;
+
+        //FIND OBJECTS
         noFormatObjsViewable = "";
         for (var i = 1; i <= this._numberObjs; i++) {
             if (this._objs[i].ContainerRoom == room && this._objs[i].Exists && this._objs[i].Visible) {
@@ -5834,6 +6341,8 @@ var LegacyGame = (function () {
             this.SetStringContents("quest.objects", "", this._nullContext);
             this.SetStringContents("quest.formatobjects", "", this._nullContext);
         }
+
+        //FIND DOORWAYS
         doorways = "";
         nsew = "";
         places = "";
@@ -5868,8 +6377,11 @@ var LegacyGame = (function () {
                 possDir = possDir + "d";
             }
             if (this.BeginsWith(this._lines[i], "place")) {
+                //remove any prefix semicolon from printed text
                 place = this.GetParameter(this._lines[i], this._nullContext);
                 placeNoFormat = place;
+
+                //Used in object list - no formatting or prefix
                 if (InStr(place, ";") > 0) {
                     placeNoFormat = Right(place, Len(place) - (InStr(place, ";") + 1));
                     place = Trim(Left(place, InStr(place, ";") - 1)) + " |b" + Right(place, Len(place) - (InStr(place, ";") + 1)) + "|xb";
@@ -5881,6 +6393,7 @@ var LegacyGame = (function () {
         }
         var outside;
         if (doorways != "") {
+            //see if outside has an alias
             outside = this.DefineBlockParam("room", doorways);
             for (var i = outside.StartLine + 1; i <= outside.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "alias")) {
@@ -5899,6 +6412,7 @@ var LegacyGame = (function () {
         }
         var finished;
         if (nsew != "") {
+            //strip final comma
             nsew = Left(nsew, Len(nsew) - 2);
             cp = InStr(nsew, ",");
             if (cp != 0) {
@@ -5920,8 +6434,14 @@ var LegacyGame = (function () {
         }
         this.UpdateDirButtons(possDir, this._nullContext);
         if (places != "") {
+            //strip final comma
             places = Left(places, Len(places) - 2);
+
+            //if there is still a comma here, there is more than
+            //one place, so add the word "or" before the last one.
             if (InStr(places, ",") > 0) {
+                //if there is still a comma here, there is more than
+                //one place, so add the word "or" before the last one.
                 lastComma = 0;
                 finishedFindingCommas = false;
                 do {
@@ -5939,6 +6459,10 @@ var LegacyGame = (function () {
         } else {
             this.SetStringContents("quest.doorways.places", "", this._nullContext);
         }
+
+        //Print RoomDisplayText if there is no "description" tag,
+        //otherwise execute the description tag information:
+        // First, look in the "define room" block:
         descTagExist = false;
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "description ")) {
@@ -5949,6 +6473,7 @@ var LegacyGame = (function () {
         }
         if (descTagExist == false) {
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
+                //Look in the "define game" block:
                 if (this.BeginsWith(this._lines[i], "description ")) {
                     descLine = this._lines[i];
                     descTagExist = true;
@@ -5957,9 +6482,13 @@ var LegacyGame = (function () {
             }
         }
         if (descTagExist == false) {
+            //Remove final newline:
             roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
             this.Print(roomDisplayText, this._nullContext);
         } else {
+            //execute description tag:
+            //If no script, just print the tag's parameter.
+            //Otherwise, execute it as ASL script:
             descLine = this.GetEverythingAfter(Trim(descLine), "description ");
             if (Left(descLine, 1) == "<") {
                 this.Print(this.GetParameter(descLine, this._nullContext), this._nullContext);
@@ -5970,6 +6499,7 @@ var LegacyGame = (function () {
         this.UpdateObjectList(this._nullContext);
         defineBlock = 0;
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
+            // don't get the 'look' statements in nested define blocks
             if (this.BeginsWith(this._lines[i], "define")) {
                 defineBlock = defineBlock + 1;
             }
@@ -6026,6 +6556,9 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecSetString = function (info, ctx) {
+        // Sets string contents from a script parameter.
+        // Eg <string1;contents> sets string variable string1
+        // to "contents"
         var scp = InStr(info, ";");
         var name = Trim(Left(info, scp - 1));
         var value = Mid(info, scp + 1);
@@ -6044,14 +6577,21 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ExecUserCommand = function (cmd, ctx, libCommands) {
         if (typeof libCommands === "undefined") { libCommands = false; }
+        //Executes a user-defined command. If unavailable, returns
+        //false.
         var curCmd;
         var commandList;
         var script = "";
         var commandTag;
         var commandLine = "";
         var foundCommand = false;
+
+        //First, check for a command in the current room block
         var roomId = this.GetRoomID(this._currentRoom, ctx);
+
+        // RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         if (roomId != 0) {
+            // RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
             var r = this._rooms[roomId];
             for (var i = 1; i <= r.NumberCommands; i++) {
                 commandList = r.Commands[i].CommandText;
@@ -6080,6 +6620,7 @@ var LegacyGame = (function () {
             commandTag = "lib command";
         }
         if (!foundCommand) {
+            // Check "define game" block
             var block = this.GetDefineBlock("game");
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], commandTag)) {
@@ -6116,12 +6657,26 @@ var LegacyGame = (function () {
         this.ExecuteScript(this.SetUpChoiceForm(section, ctx), ctx);
     };
     LegacyGame.prototype.GetCommandParameters = function (test, required, ctx) {
+        //Gets parameters from line. For example, if 'required'
+        //is "read #1#" and 'test' is "read sign", #1# returns
+        //"sign".
+        // Returns FALSE if #@object# form used and object doesn't
+        // exist.
         var chunksBegin;
         var chunksEnd;
         var varName;
         var var2Pos;
+
+        // Add dots before and after both strings. This fudge
+        // stops problems caused when variables are right at the
+        // beginning or end of a line.
+        // PostScript: well, it used to, I'm not sure if it's really
+        // required now though....
+        // As of Quest 4.0 we use the � character rather than a dot.
         test = "�" + Trim(test) + "�";
         required = "�" + required + "�";
+
+        //Go through RequiredLine in chunks going up to variables.
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
         var finished = false;
@@ -6149,13 +6704,20 @@ var LegacyGame = (function () {
             chunksBegin[numberChunks] = chunkBegin;
             chunksEnd[numberChunks] = chunkEnd;
             varName[numberChunks] = currentVariable;
+
+            //Get to end of variable name
             currentReqLinePos = var2Pos + 1;
             currentTestLinePos = chunkEnd;
         } while(!(finished));
         var success = true;
+
         for (var i = 1; i <= numberChunks - 1; i++) {
+            //Return values to string variable
             var arrayIndex;
+
+            // If VarName contains array name, change to index number
             if (InStr(varName[i], "[") > 0) {
+                // If VarName contains array name, change to index number
                 var indexResult = this.GetArrayIndex(varName[i], ctx);
                 varName[i] = indexResult.Name;
                 arrayIndex = indexResult.Index;
@@ -6172,6 +6734,8 @@ var LegacyGame = (function () {
                     } else {
                         this.PlayerErrorMessage(10 /* BadItem */, ctx);
                     }
+
+                    // The Mid$(...,2) and Left$(...,2) removes the initial/final "."
                     this._badCmdBefore = Mid(Trim(Left(test, chunksEnd[i] - 1)), 2);
                     this._badCmdAfter = Trim(Mid(test, chunksBegin[i + 1]));
                     this._badCmdAfter = Left(this._badCmdAfter, Len(this._badCmdAfter) - 1);
@@ -6209,6 +6773,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetStringContents = function (name, ctx) {
         var returnAlias = false;
         var arrayIndex = 0;
+
+        // Check for property shortcut
         var cp = InStr(name, ":");
         if (cp != 0) {
             var objName = Trim(Left(name, cp - 1));
@@ -6241,6 +6807,9 @@ var LegacyGame = (function () {
             }
             name = Left(name, bp - 1);
         }
+
+        // First, see if the string already exists. If it does,
+        // get its contents. If not, generate an error.
         var exists = false;
         var id;
         if (this._numberStringVariables > 0) {
@@ -6260,17 +6829,26 @@ var LegacyGame = (function () {
             this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", 2 /* WarningError */);
             return "";
         }
+
+        // Now, set the contents
         if (!returnAlias) {
+            // Now, set the contents
             return this._stringVariable[id].VariableContents[arrayIndex];
         } else {
             return this._objs[this.GetObjectIdNoAlias(this._stringVariable[id].VariableContents[arrayIndex])].ObjectAlias;
         }
     };
     LegacyGame.prototype.IsAvailable = function (thingName, type, ctx) {
+        // Returns availability of object/character
+        // split ThingString into character name and room
+        // (thingstring of form name@room)
         var room;
         var name;
         var atPos = InStr(thingName, "@");
+
+        // If no room specified, current room presumed
         if (atPos == 0) {
+            // If no room specified, current room presumed
             room = this._currentRoom;
             name = thingName;
         } else {
@@ -6292,9 +6870,16 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.IsCompatible = function (test, required) {
+        //Tests to see if 'test' "works" with 'required'.
+        //For example, if 'required' = "read #text#", then the
+        //tests of "read book" and "read sign" are compatible.
         var var2Pos;
+
+        // This avoids "xxx123" being compatible with "xxx".
         test = "^" + Trim(test) + "^";
         required = "^" + required + "^";
+
+        //Go through RequiredLine in chunks going up to variables.
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
         var finished = false;
@@ -6312,6 +6897,8 @@ var LegacyGame = (function () {
             } else {
                 return false;
             }
+
+            //Skip to end of variable
             currentReqLinePos = var2Pos + 1;
         } while(!(finished));
         return true;
@@ -6337,6 +6924,8 @@ var LegacyGame = (function () {
         } else {
             fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
         }
+
+        // Check version
         savedQsgVersion = Left(fileData, 10);
         if (this.BeginsWith(savedQsgVersion, "QUEST200.1")) {
             prevQsgVersion = true;
@@ -6367,11 +6956,15 @@ var LegacyGame = (function () {
             return false;
         }
         if (!prevQsgVersion) {
+            // Open Quest 3.0 saved game file
             this._gameLoading = true;
             this.RestoreGameData(fileData);
             this._gameLoading = false;
         } else {
+            // Open Quest 2.x saved game file
             this._currentRoom = lines[3];
+
+            // Start at line 5 as line 4 is always "!c"
             var lineNumber = 5;
             do {
                 data = lines[lineNumber];
@@ -6530,7 +7123,9 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.SetAvailability = function (thingString, exists, ctx, type) {
         if (typeof type === "undefined") { type = 1 /* Object */; }
+        // Sets availability of objects (and characters in ASL<281)
         if (this._gameAslVersion >= 281) {
+            // Sets availability of objects (and characters in ASL<281)
             var found = false;
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this._objs[i].ObjectName) == LCase(thingString)) {
@@ -6548,10 +7143,15 @@ var LegacyGame = (function () {
                 this.LogASLError("Not found object '" + thingString + "'", 2 /* WarningError */);
             }
         } else {
+            // split ThingString into character name and room
+            // (thingstring of form name@room)
             var room;
             var name;
             var atPos = InStr(thingString, "@");
+
+            // If no room specified, currentroom presumed
             if (atPos == 0) {
+                // If no room specified, currentroom presumed
                 room = this._currentRoom;
                 name = thingString;
             } else {
@@ -6596,6 +7196,9 @@ var LegacyGame = (function () {
             this.LogASLError("'" + name + "[" + Trim(Str(arrayIndex)) + "]' is invalid - did not assign to array", 2 /* WarningError */);
             // UNKNOWN ExitSubStatement
         }
+
+        // First, see if the string already exists. If it does,
+        // modify it. If not, create it.
         if (this._numberStringVariables > 0) {
             for (var i = 1; i <= this._numberStringVariables; i++) {
                 if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
@@ -6618,6 +7221,8 @@ var LegacyGame = (function () {
                 this._stringVariable[id].VariableContents = [];
             this._stringVariable[id].VariableUBound = arrayIndex;
         }
+
+        // Now, set the contents
         this._stringVariable[id].VariableName = name;
         if (!this._stringVariable[id].VariableContents)
             this._stringVariable[id].VariableContents = [];
@@ -6633,6 +7238,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpCharObjectInfo = function () {
         var defaultProperties = new PropertiesActions();
         this._numberChars = 0;
+
+        // see if define type <default> exists:
         var defaultExists = false;
         for (var i = 1; i <= this._numberSections; i++) {
             if (Trim(this._lines[this._defineBlocks[i].StartLine]) == "define type <default>") {
@@ -6931,12 +7538,16 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ShowPicture = function (filename) {
+        // In Quest 4.x this function would be used for showing a picture in a popup window, but
+        // this is no longer supported - ALL images are displayed in-line with the game text. Any
+        // image caption is displayed as text, and any image size specified is ignored.
         var caption = "";
         if (InStr(filename, ";") != 0) {
             caption = Trim(Mid(filename, InStr(filename, ";") + 1));
             filename = Trim(Left(filename, InStr(filename, ";") - 1));
         }
         if (InStr(filename, "@") != 0) {
+            // size is ignored
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
         if (caption.Length > 0) {
@@ -6976,6 +7587,8 @@ var LegacyGame = (function () {
         if (id == 0) {
             // UNKNOWN ExitSubStatement
         }
+
+        // FIRST LINE - YOU ARE IN... ***********************************************
         roomAlias = this._rooms[id].RoomAlias;
         if (roomAlias == "") {
             roomAlias = this._rooms[id].RoomName;
@@ -6984,24 +7597,34 @@ var LegacyGame = (function () {
         if (prefix == "") {
             roomDisplayName = "|cr" + roomAlias + "|cb";
             roomDisplayNameNoFormat = roomAlias;
+            // No formatting version, for label
         } else {
             roomDisplayName = prefix + " |cr" + roomAlias + "|cb";
             roomDisplayNameNoFormat = prefix + " " + roomAlias;
         }
         inDescription = this._rooms[id].InDescription;
         if (inDescription != "") {
+            // Print player's location according to indescription:
             if (Right(inDescription, 1) == ":") {
+                // Print player's location according to indescription:
+                // if line ends with a colon, add place name:
                 roomDisplayText = roomDisplayText + Left(inDescription, Len(inDescription) - 1) + " " + roomDisplayName + "." + vbCrLf;
             } else {
+                // otherwise, just print the indescription line:
                 roomDisplayText = roomDisplayText + inDescription + vbCrLf;
             }
         } else {
+            // if no indescription line, print the default.
             roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + "." + vbCrLf;
         }
         this._player.LocationUpdated(UCase(Left(roomAlias, 1)) + Mid(roomAlias, 2));
         this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
+
+        // SHOW OBJECTS *************************************************************
         visibleObjectsNoFormat = "";
         var visibleObjectsList = {};
+
+        // of object IDs
         var count;
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(room) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
@@ -7038,12 +7661,20 @@ var LegacyGame = (function () {
             this.SetStringContents("quest.objects", "", ctx);
             this.SetStringContents("quest.formatobjects", "", ctx);
         }
+
+        // SHOW EXITS ***************************************************************
         doorwayString = this.UpdateDoorways(id, ctx);
         if (this._gameAslVersion < 410) {
             placeList = this.GetGoToExits(id, ctx);
             if (placeList != "") {
+                //strip final comma
                 placeList = Left(placeList, Len(placeList) - 2);
+
+                //if there is still a comma here, there is more than
+                //one place, so add the word "or" before the last one.
                 if (InStr(placeList, ",") > 0) {
+                    //if there is still a comma here, there is more than
+                    //one place, so add the word "or" before the last one.
                     lastComma = 0;
                     finishedFindingCommas = false;
                     do {
@@ -7062,6 +7693,8 @@ var LegacyGame = (function () {
                 this.SetStringContents("quest.doorways.places", "", ctx);
             }
         }
+
+        // GET "LOOK" DESCRIPTION (but don't print it yet) **************************
         objLook = this.GetObjectProperty("look", this._rooms[id].ObjId, null, false);
         if (objLook == "") {
             if (this._rooms[id].Look != "") {
@@ -7071,6 +7704,12 @@ var LegacyGame = (function () {
             lookDesc = objLook;
         }
         this.SetStringContents("quest.lookdesc", lookDesc, ctx);
+
+        // FIND DESCRIPTION TAG, OR ACTION ******************************************
+        // In Quest versions prior to 3.1, with any custom description, the "look"
+        // text was always displayed after the "description" tag was printed/executed.
+        // In Quest 3.1 and later, it isn't - descriptions should print the look
+        // tag themselves when and where necessary.
         showLookText = true;
         if (this._rooms[id].Description.Data != "") {
             descLine = this._rooms[id].Description.Data;
@@ -7081,6 +7720,7 @@ var LegacyGame = (function () {
         }
         if (descTagExist == false) {
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
+                //Look in the "define game" block:
                 if (this.BeginsWith(this._lines[i], "description ")) {
                     descLine = this.GetEverythingAfter(this._lines[i], "description ");
                     descTagExist = true;
@@ -7099,20 +7739,30 @@ var LegacyGame = (function () {
         }
         if (!noPrint) {
             if (descTagExist == false) {
+                //Remove final vbCrLf:
                 roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
                 this.Print(roomDisplayText, ctx);
                 if (doorwayString != "") {
                     this.Print(doorwayString, ctx);
                 }
             } else {
+                //execute description tag:
+                //If no script, just print the tag's parameter.
+                //Otherwise, execute it as ASL script:
                 if (descType == 0 /* Text */) {
+                    //execute description tag:
+                    //If no script, just print the tag's parameter.
+                    //Otherwise, execute it as ASL script:
                     this.Print(descLine, ctx);
                 } else {
                     this.ExecuteScript(descLine, ctx);
                 }
             }
             this.UpdateObjectList(ctx);
+
+            // SHOW "LOOK" DESCRIPTION **************************************************
             if (showLookText) {
+                // SHOW "LOOK" DESCRIPTION **************************************************
                 if (lookDesc != "") {
                     this.Print(lookDesc, ctx);
                 }
@@ -7120,6 +7770,10 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.CheckCollectable = function (id) {
+        // Checks to see whether a collectable item has exceeded
+        // its range - if so, it resets the number to the nearest
+        // valid number. It's a handy quick way of making sure that
+        // a player's health doesn't reach 101%, for example.
         var max;
         var value;
         var min;
@@ -7194,6 +7848,7 @@ var LegacyGame = (function () {
         }
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this._gameAslVersion >= 392) {
+                // Convert string variables etc.
                 this.Print(this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
             } else {
                 this.Print(this._lines[i], ctx);
@@ -7201,10 +7856,15 @@ var LegacyGame = (function () {
         }
         this.Print("", ctx);
     };
+
+    // Returns true if the system is ready to process a new command after completion - so it will be
+    // in most cases, except when ExecCommand just caused an "enter" script command to complete
     LegacyGame.prototype.ExecCommand = function (input, ctx, echo, runUserCommand, dontSetIt) {
         if (typeof echo === "undefined") { echo = true; }
         if (typeof runUserCommand === "undefined") { runUserCommand = true; }
         if (typeof dontSetIt === "undefined") { dontSetIt = false; }
+        // Returns true if the system is ready to process a new command after completion - so it will be
+        // in most cases, except when ExecCommand just caused an "enter" script command to complete
         var parameter;
         var skipAfterTurn = false;
         input = this.RemoveFormatting(input);
@@ -7224,7 +7884,9 @@ var LegacyGame = (function () {
         input = LCase(input);
         this.SetStringContents("quest.originalcommand", input, ctx);
         var newCommand = " " + input + " ";
+
         for (var i = 1; i <= this._numberSynonyms; i++) {
+            // Convert synonyms:
             var cp = 1;
             var n;
             do {
@@ -7235,11 +7897,18 @@ var LegacyGame = (function () {
                 }
             } while(!(n == 0));
         }
+
+        //strip starting and ending spaces
         input = Mid(newCommand, 2, Len(newCommand) - 2);
         this.SetStringContents("quest.command", input, ctx);
+
+        // Execute any "beforeturn" script:
         var newCtx = this.CopyContext(ctx);
         var globalOverride = false;
+
+        // RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
         if (roomID != 0) {
+            // RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
             if (this._rooms[roomID].BeforeTurnScript != "") {
                 if (this.BeginsWith(this._rooms[roomID].BeforeTurnScript, "override")) {
                     this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].BeforeTurnScript, "override"), newCtx);
@@ -7252,7 +7921,13 @@ var LegacyGame = (function () {
         if (this._beforeTurnScript != "" && globalOverride == false) {
             this.ExecuteScript(this._beforeTurnScript, newCtx);
         }
+
+        // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
+        // in which case we don't process the command.
         if (!newCtx.DontProcessCommand) {
+            // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
+            // in which case we don't process the command.
+            //Try to execute user defined command, if allowed:
             userCommandReturn = false;
             if (runUserCommand == true) {
                 userCommandReturn = this.ExecUserCommand(input, ctx);
@@ -7260,14 +7935,17 @@ var LegacyGame = (function () {
                     userCommandReturn = this.ExecVerb(input, ctx);
                 }
                 if (!userCommandReturn) {
+                    // Try command defined by a library
                     userCommandReturn = this.ExecUserCommand(input, ctx, true);
                 }
                 if (!userCommandReturn) {
+                    // Try verb defined by a library
                     userCommandReturn = this.ExecVerb(input, ctx, true);
                 }
             }
             input = LCase(input);
         } else {
+            // Set the UserCommand flag to fudge not processing any more commands
             userCommandReturn = true;
         }
         var invList = "";
@@ -7375,7 +8053,9 @@ var LegacyGame = (function () {
             } else if (cmd == "clear") {
                 this.DoClear();
             } else if (cmd == "debug") {
+                // TO DO: This is temporary, would be better to have a log viewer built in to Player
                 this._log.forEach(function (logEntry) {
+                    // TO DO: This is temporary, would be better to have a log viewer built in to Player
                     this.Print(logEntry, ctx);
                 }, this);
             } else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
@@ -7430,6 +8110,7 @@ var LegacyGame = (function () {
             }
         }
         if (!skipAfterTurn) {
+            // Execute any "afterturn" script:
             globalOverride = false;
             if (roomID != 0) {
                 if (this._rooms[roomID].AfterTurnScript != "") {
@@ -7441,12 +8122,16 @@ var LegacyGame = (function () {
                     }
                 }
             }
+
+            // was set to NullThread here for some reason
             if (this._afterTurnScript != "" && globalOverride == false) {
                 this.ExecuteScript(this._afterTurnScript, ctx);
             }
         }
         this.Print("", ctx);
         if (!dontSetIt) {
+            // Use "DontSetIt" when we don't want "it" etc. to refer to the object used in this turn.
+            // This is used for e.g. auto-remove object from container when taking.
             this._lastIt = this._thisTurnIt;
             this._lastItMode = this._thisTurnItMode;
         }
@@ -7456,6 +8141,10 @@ var LegacyGame = (function () {
         return true;
     };
     LegacyGame.prototype.CmdStartsWith = function (cmd, startsWith) {
+        // When we are checking user input in ExecCommand, we check things like whether
+        // the player entered something beginning with "put ". We need to trim what the player entered
+        // though, otherwise they might just type "put " and then we would try disambiguating an object
+        // called "".
         return this.BeginsWith(Trim(cmd), startsWith);
     };
     LegacyGame.prototype.ExecGive = function (giveString, ctx) {
@@ -7484,7 +8173,10 @@ var LegacyGame = (function () {
         } else {
             type = 0 /* Character */;
         }
+
+        // First see if player has "ItemToGive":
         if (this._gameAslVersion >= 280) {
+            // First see if player has "ItemToGive":
             id = this.Disambiguate(item, "inventory", ctx);
             if (id == -1) {
                 this.PlayerErrorMessage(4 /* NoItem */, ctx);
@@ -7497,6 +8189,7 @@ var LegacyGame = (function () {
                 article = this._objs[id].Article;
             }
         } else {
+            // ASL2:
             var notGot = true;
             for (var i = 1; i <= this._numberItems; i++) {
                 if (LCase(this._items[i].Name) == LCase(item)) {
@@ -7529,6 +8222,10 @@ var LegacyGame = (function () {
                 this._badCmdBefore = "give " + item + " to";
                 // UNKNOWN ExitSubStatement
             }
+
+            //Find appropriate give script ****
+            //now, for "give a to b", we have
+            //ItemID=a and GiveToObjectID=b
             var o = this._objs[giveToId];
             for (var i = 1; i <= o.NumberGiveData; i++) {
                 if (o.GiveData[i].GiveType == 1 /* GiveSomethingTo */ && LCase(o.GiveData[i].GiveObject) == LCase(this._objs[id].ObjectName)) {
@@ -7538,6 +8235,7 @@ var LegacyGame = (function () {
                 }
             }
             if (!foundScript) {
+                //check a for give to <b>:
                 var g = this._objs[id];
                 for (var i = 1; i <= g.NumberGiveData; i++) {
                     if (g.GiveData[i].GiveType == 0 /* GiveToSomething */ && LCase(g.GiveData[i].GiveObject) == LCase(this._objs[giveToId].ObjectName)) {
@@ -7548,6 +8246,7 @@ var LegacyGame = (function () {
                 }
             }
             if (!foundScript) {
+                //check b for give anything:
                 script = this._objs[giveToId].GiveAnything;
                 if (script != "") {
                     foundScript = true;
@@ -7555,6 +8254,7 @@ var LegacyGame = (function () {
                 }
             }
             if (!foundScript) {
+                //check a for give to anything:
                 script = this._objs[id].GiveToAnything;
                 if (script != "") {
                     foundScript = true;
@@ -7572,12 +8272,16 @@ var LegacyGame = (function () {
                 this.PlayerErrorMessage(5 /* ItemUnwanted */, ctx);
             }
         } else {
+            // ASL2:
             var block = this.GetThingBlock(character, this._currentRoom, type);
             if ((block.StartLine == 0 && block.EndLine == 0) || this.IsAvailable(character + "@" + this._currentRoom, type, ctx) == false) {
                 this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
                 // UNKNOWN ExitSubStatement
             }
             var realName = this._chars[this.GetThingNumber(character, this._currentRoom, type)].ObjectName;
+
+            // now, see if there's a give statement for this item in
+            // this characters definition:
             var giveLine = 0;
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "give")) {
@@ -7597,6 +8301,8 @@ var LegacyGame = (function () {
                 this.PlayerErrorMessage(5 /* ItemUnwanted */, ctx);
                 // UNKNOWN ExitSubStatement
             }
+
+            // now, execute the statement on GiveLine
             this.ExecuteScript(this.GetSecondChunk(this._lines[giveLine]), ctx);
         }
     };
@@ -7641,7 +8347,9 @@ var LegacyGame = (function () {
                 }
                 lookLine = this.RetrLine("object", item, "look", ctx);
                 if (lookLine != "<unfound>") {
+                    //Check for availability
                     if (this.IsAvailable(item, 1 /* Object */, ctx) == false) {
+                        //Check for availability
                         lookLine = "<unfound>";
                     }
                 }
@@ -7678,7 +8386,14 @@ var LegacyGame = (function () {
             cmd = this.GetEverythingAfter(cmd, "the ");
         }
         var name = cmd;
+
+        // if the "speak" parameter of the character c$'s definition
+        // is just a parameter, say it - otherwise execute it as
+        // a script.
         if (this._gameAslVersion >= 281) {
+            // if the "speak" parameter of the character c$'s definition
+            // is just a parameter, say it - otherwise execute it as
+            // a script.
             var speakLine = "";
             var ObjID = this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
             if (ObjID <= 0) {
@@ -7689,6 +8404,10 @@ var LegacyGame = (function () {
                 // UNKNOWN ExitSubStatement
             }
             var foundSpeak = false;
+
+            // First look for action, then look
+            // for property, then check define
+            // section:
             var o = this._objs[ObjID];
             for (var i = 1; i <= o.NumberActions; i++) {
                 if (o.Actions[i].ActionName == "speak") {
@@ -7706,6 +8425,9 @@ var LegacyGame = (function () {
                     }
                 }
             }
+
+            // For some reason ASL3 < 311 looks for a "look" tag rather than
+            // having had this set up at initialisation.
             if (this._gameAslVersion < 311 && !foundSpeak) {
                 for (var i = o.DefinitionSectionStart; i <= o.DefinitionSectionEnd; i++) {
                     if (this.BeginsWith(this._lines[i], "speak ")) {
@@ -7735,7 +8457,9 @@ var LegacyGame = (function () {
             var type = 0 /* Character */;
             var data = Trim(this.GetEverythingAfter(Trim(line), "speak "));
             if (line != "<unfound>" && line != "<undefined>") {
+                // Character exists; but is it available??
                 if (this.IsAvailable(cmd + "@" + this._currentRoom, type, ctx) == false) {
+                    // Character exists; but is it available??
                     line = "<undefined>";
                 }
             }
@@ -7769,6 +8493,7 @@ var LegacyGame = (function () {
                 if (this._gameAslVersion >= 410) {
                     id = this.Disambiguate(item, "inventory", ctx);
                     if (id >= 0) {
+                        // Player already has this item
                         this.PlayerErrorMessage(37 /* AlreadyTaken */, ctx);
                     } else {
                         this.PlayerErrorMessage(7 /* BadThing */, ctx);
@@ -7797,15 +8522,22 @@ var LegacyGame = (function () {
         if (this._gameAslVersion >= 280) {
             var t = this._objs[id].Take;
             if (isInContainer && (t.Type == 3 /* Default */ || t.Type == 0 /* Text */)) {
+                // So, we want to take an object that's in a container or surface. So first
+                // we have to remove the object from that container.
                 if (this._objs[parentID].ObjectAlias != "") {
+                    // So, we want to take an object that's in a container or surface. So first
+                    // we have to remove the object from that container.
                     parentDisplayName = this._objs[parentID].ObjectAlias;
                 } else {
                     parentDisplayName = this._objs[parentID].ObjectName;
                 }
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
+
+                // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
+                    // removing the object failed
                     // UNKNOWN ExitSubStatement
                 }
             }
@@ -7822,6 +8554,7 @@ var LegacyGame = (function () {
             }
         } else {
             for (var i = this._objs[id].DefinitionSectionStart + 1; i <= this._objs[id].DefinitionSectionEnd - 1; i++) {
+                // find 'take' line
                 if (this.BeginsWith(this._lines[i], "take")) {
                     var script = Trim(this.GetEverythingAfter(Trim(this._lines[i]), "take"));
                     this.ExecuteScript(script, ctx, id);
@@ -7856,6 +8589,8 @@ var LegacyGame = (function () {
             useOn = "";
             useItem = useLine;
         }
+
+        // see if player has this item:
         var id;
         var notGotItem;
         if (this._gameAslVersion >= 280) {
@@ -7935,6 +8670,10 @@ var LegacyGame = (function () {
                     this._badCmdBefore = "use " + useItem + " on";
                     // UNKNOWN ExitSubStatement
                 }
+
+                //now, for "use a on b", we have
+                //ItemID=a and UseOnObjectID=b
+                //first check b for use <a>:
                 var o = this._objs[useOnObjectId];
                 for (var i = 1; i <= o.NumberUseData; i++) {
                     if (o.UseData[i].UseType == 1 /* UseSomethingOn */ && LCase(o.UseData[i].UseObject) == LCase(this._objs[id].ObjectName)) {
@@ -7944,6 +8683,7 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!foundUseScript) {
+                    //check a for use on <b>:
                     var u = this._objs[id];
                     for (var i = 1; i <= u.NumberUseData; i++) {
                         if (u.UseData[i].UseType == 0 /* UseOnSomething */ && LCase(u.UseData[i].UseObject) == LCase(this._objs[useOnObjectId].ObjectName)) {
@@ -7954,6 +8694,7 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!foundUseScript) {
+                    //check b for use anything:
                     useScript = this._objs[useOnObjectId].UseAnything;
                     if (useScript != "") {
                         foundUseScript = true;
@@ -7961,6 +8702,7 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!foundUseScript) {
+                    //check a for use on anything:
                     useScript = this._objs[id].UseOnAnything;
                     if (useScript != "") {
                         foundUseScript = true;
@@ -7994,14 +8736,18 @@ var LegacyGame = (function () {
                 }
             }
             if (useDeclareLine != "<unfound>" && useDeclareLine != "<undefined>" && useOn != "") {
+                //Check for object availablity
                 if (this.IsAvailable(useOn, 1 /* Object */, ctx) == false) {
+                    //Check for object availablity
                     useDeclareLine = "<undefined>";
                 }
             }
             if (useDeclareLine == "<undefined>") {
                 useDeclareLine = this.RetrLineParam("character", useOn, "use", useItem, ctx);
                 if (useDeclareLine != "<undefined>") {
+                    //Check for character availability
                     if (this.IsAvailable(useOn, 0 /* Character */, ctx) == false) {
+                        //Check for character availability
                         useDeclareLine = "<undefined>";
                     }
                 }
@@ -8093,7 +8839,12 @@ var LegacyGame = (function () {
         if (elsePos != 0) {
             elseScript = Trim(Right(ifLine, Len(ifLine) - (thenEndPos + 4)));
         }
+
+        // Remove braces from around "then" and "else" script
+        // commands, if present
         if (Left(thenScript, 1) == "{" && Right(thenScript, 1) == "}") {
+            // Remove braces from around "then" and "else" script
+            // commands, if present
             thenScript = Mid(thenScript, 2, Len(thenScript) - 2);
         }
         if (Left(elseScript, 1) == "{" && Right(elseScript, 1) == "}") {
@@ -8114,10 +8865,15 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecuteEnter = function (scriptLine, ctx) {
         this._commandOverrideModeOn = true;
         this._commandOverrideVariable = this.GetParameter(scriptLine, ctx);
+
+        // Now, wait for CommandOverrideModeOn to be set
+        // to False by ExecCommand. Execution can then resume.
         this.ChangeState(2 /* Waiting */, true);
 
         // UNKNOWN SyncLockBlock
         this._commandOverrideModeOn = false;
+        // State will have been changed to Working when the user typed their response,
+        // and will be set back to Ready when the call to ExecCommand has finished
     };
     LegacyGame.prototype.ExecuteSet = function (setInstruction, ctx) {
         if (this._gameAslVersion >= 280) {
@@ -8162,12 +8918,20 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.FindStatement = function (block, statement) {
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
+            // Finds a statement within a given block of lines
+            // Ignore sub-define blocks
             if (this.BeginsWith(this._lines[i], "define ")) {
                 do {
                     i = i + 1;
                 } while(!(Trim(this._lines[i]) == "end define"));
             }
+
+            // Check to see if the line matches the statement
+            // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
+                // Check to see if the line matches the statement
+                // that is begin searched for
+                // Return the parameters between < and > :
                 return this.GetParameter(this._lines[i], this._nullContext);
             }
         }
@@ -8175,12 +8939,19 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.FindLine = function (block, statement, statementParam) {
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
+            // Finds a statement within a given block of lines
+            // Ignore sub-define blocks
             if (this.BeginsWith(this._lines[i], "define ")) {
                 do {
                     i = i + 1;
                 } while(!(Trim(this._lines[i]) == "end define"));
             }
+
+            // Check to see if the line matches the statement
+            // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
+                // Check to see if the line matches the statement
+                // that is begin searched for
                 if (UCase(Trim(this.GetParameter(this._lines[i], this._nullContext))) == UCase(Trim(statementParam))) {
                     return Trim(this._lines[i]);
                 }
@@ -8202,6 +8973,8 @@ var LegacyGame = (function () {
         return Trim(Mid(line, endOfFirstBit, lengthOfKeyword));
     };
     LegacyGame.prototype.GoDirection = function (direction, ctx) {
+        // leaves the current room in direction specified by
+        // 'direction'
         var dirData = new TextAction();
         var id = this.GetRoomID(this._currentRoom, ctx);
         if (id == 0) {
@@ -8259,6 +9032,8 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.GoToPlace = function (place, ctx) {
+        // leaves the current room in direction specified by
+        // 'direction'
         var destination = "";
         var placeData;
         var disallowed = false;
@@ -8299,16 +9074,22 @@ var LegacyGame = (function () {
         this._useAbbreviations = true;
         this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
         this.LogASLError("Opening file " + filename + " on " + Date.Now.ToString(), 3 /* Init */);
+
+        // Parse file and find where the 'define' blocks are:
         if (this.ParseFile(filename) == false) {
+            // Parse file and find where the 'define' blocks are:
             this.LogASLError("Unable to open file", 3 /* Init */);
             var err = "Unable to open " + filename;
             if (this._openErrorReport != "") {
+                // Strip last vbcrlf
                 this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 2);
                 err = err + ":" + vbCrLf + vbCrLf + this._openErrorReport;
             }
             this.Print("Error: " + err, this._nullContext);
             return false;
         }
+
+        // Check version
         var gameBlock;
         gameBlock = this.GetDefineBlock("game");
         var aslVersion = "//";
@@ -8334,6 +9115,8 @@ var LegacyGame = (function () {
             this._listVerbs.Add(ListType.ObjectsList, new any());
             this._listVerbs.Add(ListType.InventoryList, new any());
         }
+
+        // Get the name of the game:
         this._gameName = this.GetParameter(this._lines[this.GetDefineBlock("game").StartLine], this._nullContext);
         this._player.UpdateGameName(this._gameName);
         this._player.Show("Panes");
@@ -8355,13 +9138,22 @@ var LegacyGame = (function () {
             this.SetUpExits();
         }
         if (this._gameAslVersion < 280) {
+            // Set up an array containing the names of all the items
+            // used in the game, based on the possitems statement
+            // of the 'define game' block.
             this.SetUpItemArrays();
         }
         if (this._gameAslVersion < 280) {
+            // Now, go through the 'startitems' statement and set up
+            // the items array so we start with those items mentioned.
             this.SetUpStartItems();
         }
+
+        // Set up collectables.
         this.SetUpCollectables();
         this.SetUpDisplayVariables();
+
+        // Set up characters and objects.
         this.SetUpCharObjectInfo();
         this.SetUpUserDefinedPlayerErrors();
         this.SetUpDefaultFonts();
@@ -8375,13 +9167,21 @@ var LegacyGame = (function () {
         return true;
     };
     LegacyGame.prototype.PlaceExist = function (placeName, ctx) {
+        // Returns actual name of an available "place" exit, and if
+        // script is executed on going in that direction, that script
+        // is returned after a ";"
         var roomId = this.GetRoomID(this._currentRoom, ctx);
         var foundPlace = false;
         var scriptPresent = false;
+
+        // check if place is available
         var r = this._rooms[roomId];
         for (var i = 1; i <= r.NumberPlaces; i++) {
             var checkPlace = r.Places[i].PlaceName;
+
+            //remove any prefix and semicolon
             if (InStr(checkPlace, ";") > 0) {
+                //remove any prefix and semicolon
                 checkPlace = Trim(Right(checkPlace, Len(checkPlace) - (InStr(checkPlace, ";") + 1)));
             }
             var checkPlaceName = checkPlace;
@@ -8406,6 +9206,11 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.PlayerItem = function (item, got, ctx, objId) {
         if (typeof objId === "undefined") { objId = 0; }
+        // Gives the player an item (if got=True) or takes an
+        // item away from the player (if got=False).
+        // If ASL>280, setting got=TRUE moves specified
+        // *object* to room "inventory"; setting got=FALSE
+        // drops object into current room.
         var foundObjectName = false;
         if (this._gameAslVersion >= 280) {
             if (objId == 0) {
@@ -8419,6 +9224,7 @@ var LegacyGame = (function () {
             if (objId != 0) {
                 if (got) {
                     if (this._gameAslVersion >= 391) {
+                        // Unset parent information, if any
                         this.AddToObjectProperties("not parent", objId, ctx);
                     }
                     this.MoveThing(this._objs[objId].ObjectName, "inventory", 1 /* Object */, ctx);
@@ -8450,6 +9256,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.PlayGame = function (room, ctx) {
+        //plays the specified room
         var id = this.GetRoomID(room, ctx);
         if (id == 0) {
             this.LogASLError("No such room '" + room + "'", 2 /* WarningError */);
@@ -8462,7 +9269,10 @@ var LegacyGame = (function () {
         }
         this.ShowRoomInfo(room, ctx);
         this.UpdateItems(ctx);
+
+        // Find script lines and execute them.
         if (this._rooms[id].Script != "") {
+            // Find script lines and execute them.
             var script = this._rooms[id].Script;
             this.ExecuteScript(script, ctx);
         }
@@ -8532,10 +9342,23 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpCollectables = function () {
         var lastItem = false;
         this._numCollectables = 0;
+
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
+            // Initialise collectables:
+            // First, find the collectables section within the define
+            // game block, and get its parameters:
             if (this.BeginsWith(this._lines[a], "collectables ")) {
                 var collectables = Trim(this.GetParameter(this._lines[a], this._nullContext, false));
+
+                // if collectables is a null string, there are no
+                // collectables. Otherwise, there is one more object than
+                // the number of commas. So, first check to see if we have
+                // no objects:
                 if (collectables != "") {
+                    // if collectables is a null string, there are no
+                    // collectables. Otherwise, there is one more object than
+                    // the number of commas. So, first check to see if we have
+                    // no objects:
                     this._numCollectables = 1;
                     var pos = 1;
                     do {
@@ -8546,10 +9369,19 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, collectables, ";");
                         }
+
+                        //If there are no more commas, we want everything
+                        //up to the end of the string, and then to exit
+                        //the loop:
                         if (nextComma == 0) {
+                            //If there are no more commas, we want everything
+                            //up to the end of the string, and then to exit
+                            //the loop:
                             nextComma = Len(collectables) + 1;
                             lastItem = true;
                         }
+
+                        //Get item info
                         var info = Trim(Mid(collectables, pos, nextComma - pos));
                         this._collectables[this._numCollectables].Name = Trim(Left(info, InStr(info, " ")));
                         var ep = InStr(info, "=");
@@ -8568,6 +9400,8 @@ var LegacyGame = (function () {
                         }
                         this._collectables[this._numCollectables].Type = t;
                         this._collectables[this._numCollectables].Value = Val(i);
+
+                        // Get display string between square brackets
                         var obp = InStr(info, "[");
                         var cbp = InStr(info, "]");
                         if (obp == 0) {
@@ -8578,6 +9412,7 @@ var LegacyGame = (function () {
                         }
                         pos = nextComma + 1;
                         this._numCollectables = this._numCollectables + 1;
+                        //lastitem set when nextcomma=0, above.
                     } while(!(lastItem == true));
                     this._numCollectables = this._numCollectables - 1;
                 }
@@ -8587,7 +9422,11 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpItemArrays = function () {
         var lastItem = false;
         this._numberItems = 0;
+
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
+            // Initialise items:
+            // First, find the possitems section within the define game
+            // block, and get its parameters:
             if (this.BeginsWith(this._lines[a], "possitems ") || this.BeginsWith(this._lines[a], "items ")) {
                 var possItems = this.GetParameter(this._lines[a], this._nullContext);
                 if (possItems != "") {
@@ -8601,14 +9440,24 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, possItems, ";");
                         }
+
+                        //If there are no more commas, we want everything
+                        //up to the end of the string, and then to exit
+                        //the loop:
                         if (nextComma == 0) {
+                            //If there are no more commas, we want everything
+                            //up to the end of the string, and then to exit
+                            //the loop:
                             nextComma = Len(possItems) + 1;
                             lastItem = true;
                         }
+
+                        //Get item name
                         this._items[this._numberItems].Name = Trim(Mid(possItems, pos, nextComma - pos));
                         this._items[this._numberItems].Got = false;
                         pos = nextComma + 1;
                         this._numberItems = this._numberItems + 1;
+                        //lastitem set when nextcomma=0, above.
                     } while(!(lastItem == true));
                     this._numberItems = this._numberItems - 1;
                 }
@@ -8627,24 +9476,38 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, startItems, ";");
                         }
+
+                        //If there are no more commas, we want everything
+                        //up to the end of the string, and then to exit
+                        //the loop:
                         if (nextComma == 0) {
+                            //If there are no more commas, we want everything
+                            //up to the end of the string, and then to exit
+                            //the loop:
                             nextComma = Len(startItems) + 1;
                             lastItem = true;
                         }
+
+                        //Get item name
                         var name = Trim(Mid(startItems, pos, nextComma - pos));
+
                         for (var i = 1; i <= this._numberItems; i++) {
+                            //Find which item this is, and set it
                             if (this._items[i].Name == name) {
                                 this._items[i].Got = true;
                                 break;
                             }
                         }
                         pos = nextComma + 1;
+                        //lastitem set when nextcomma=0, above.
                     } while(!(lastItem == true));
                 }
             }
         }
     };
     LegacyGame.prototype.ShowHelp = function (ctx) {
+        // In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
+        // in the same window as the game text.
         this.Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
         this.Print("", ctx);
         this.Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx);
@@ -8737,6 +9600,8 @@ var LegacyGame = (function () {
         } else {
             if (this._rooms[roomId].Out.Text != "") {
                 outPlace = this._rooms[roomId].Out.Text;
+
+                //remove any prefix semicolon from printed text
                 var scp = InStr(outPlace, ";");
                 if (scp == 0) {
                     outPlaceName = outPlace;
@@ -8787,6 +9652,7 @@ var LegacyGame = (function () {
                 directions = directions + "f";
             }
             if (outPlace != "") {
+                //see if outside has an alias
                 var outPlaceAlias = this._rooms[this.GetRoomID(outPlaceName, ctx)].RoomAlias;
                 if (outPlaceAlias == "") {
                     outPlaceAlias = outPlace;
@@ -8813,6 +9679,7 @@ var LegacyGame = (function () {
                 this.SetStringContents("quest.doorways.out.display", "", ctx);
             }
             if (nsew != "") {
+                //strip final comma
                 nsew = Left(nsew, Len(nsew) - 2);
                 var cp = InStr(nsew, ",");
                 if (cp != 0) {
@@ -8837,6 +9704,7 @@ var LegacyGame = (function () {
         return roomDisplayText;
     };
     LegacyGame.prototype.UpdateItems = function (ctx) {
+        // displays the items a player has
         var invList = {};
         if (!this._outPutOn) {
             // UNKNOWN ExitSubStatement
@@ -8889,6 +9757,7 @@ var LegacyGame = (function () {
         this.GameFinished();
     };
     LegacyGame.prototype.UpdateObjectList = function (ctx) {
+        // Updates object list
         var shownPlaceName;
         var objSuffix;
         var charsFound;
@@ -8902,10 +9771,15 @@ var LegacyGame = (function () {
         }
         var objList = {};
         var exitList = {};
+
+        //find the room
         var roomBlock;
         roomBlock = this.DefineBlockParam("room", this._currentRoom);
+
+        //FIND CHARACTERS ===
         if (this._gameAslVersion < 281) {
             for (var i = 1; i <= this._numberChars; i++) {
+                // go through Chars() array
                 if (this._chars[i].ContainerRoom == this._currentRoom && this._chars[i].Exists && this._chars[i].Visible) {
                     this.AddToObjectList(objList, exitList, this._chars[i].ObjectName, 0 /* Character */);
                     charsViewable = charsViewable + this._chars[i].Prefix + "|b" + this._chars[i].ObjectName + "|xb" + this._chars[i].Suffix + ", ";
@@ -8915,10 +9789,13 @@ var LegacyGame = (function () {
             if (charsFound == 0) {
                 this.SetStringContents("quest.characters", "", ctx);
             } else {
+                //chop off final comma and add full stop (.)
                 charList = Left(charsViewable, Len(charsViewable) - 2);
                 this.SetStringContents("quest.characters", charList, ctx);
             }
         }
+
+        //FIND OBJECTS
         noFormatObjsViewable = "";
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(this._currentRoom) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
@@ -8947,6 +9824,8 @@ var LegacyGame = (function () {
             this.SetStringContents("quest.objects", "", ctx);
             this.SetStringContents("quest.formatobjects", "", ctx);
         }
+
+        //FIND DOORWAYS
         var roomId;
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
@@ -8981,6 +9860,9 @@ var LegacyGame = (function () {
         this.UpdateExitsList();
     };
     LegacyGame.prototype.UpdateExitsList = function () {
+        // The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
+        // ASL4 code produces these separately. So we keep track of them separately and then
+        // merge to send to the Player.
         var mergedList = {};
         this._compassExits.forEach(function (listItem) {
             mergedList.Add(listItem);
@@ -9019,6 +9901,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.UpdateVisibilityInContainers = function (ctx, onlyParent) {
         if (typeof onlyParent === "undefined") { onlyParent = ""; }
+        // Use OnlyParent to only update objects that are contained by a specific parent
         var parentId;
         var parent;
         var parentIsTransparent;
@@ -9037,9 +9920,12 @@ var LegacyGame = (function () {
             parentIsSurface = this.IsYes(this.GetObjectProperty("surface", parentId, true, false));
         }
         for (var i = 1; i <= this._numberObjs; i++) {
+            // If object has a parent object
             parent = this.GetObjectProperty("parent", i, false, false);
             if (parent != "") {
+                // Check if that parent is open, or transparent
                 if (onlyParent == "") {
+                    // Check if that parent is open, or transparent
                     parentId = this.GetObjectIdNoAlias(parent);
                     parentIsOpen = this.IsYes(this.GetObjectProperty("opened", parentId, true, false));
                     parentIsTransparent = this.IsYes(this.GetObjectProperty("transparent", parentId, true, false));
@@ -9048,6 +9934,9 @@ var LegacyGame = (function () {
                 }
                 if (onlyParent == "" || (LCase(parent) == onlyParent)) {
                     if (parentIsSurface || ((parentIsOpen || parentIsTransparent) && parentIsSeen)) {
+                        // If the parent is a surface, then the contents are always available.
+                        // Otherwise, only if the parent has been seen, AND is either open or transparent,
+                        // then the contents are available.
                         this.SetAvailability(this._objs[i].ObjectName, true, ctx);
                     } else {
                         this.SetAvailability(this._objs[i].ObjectName, false, ctx);
@@ -9058,16 +9947,27 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.PlayerCanAccessObject = function (id, colObjects) {
         if (typeof colObjects === "undefined") { colObjects = null; }
+        // Called to see if a player can interact with an object (take it, open it etc.).
+        // For example, if the object is on a surface which is inside a closed container,
+        // the object cannot be accessed.
         var parent;
         var parentId;
         var parentDisplayName;
         var result = new PlayerCanAccessObjectResult();
         var hierarchy = "";
         if (this.IsYes(this.GetObjectProperty("parent", id, true, false))) {
+            // Object is in a container...
             parent = this.GetObjectProperty("parent", id, false, false);
             parentId = this.GetObjectIdNoAlias(parent);
+
+            // But if it's a surface then it's OK
             if (!this.IsYes(this.GetObjectProperty("surface", parentId, true, false)) && !this.IsYes(this.GetObjectProperty("opened", parentId, true, false))) {
+                // But if it's a surface then it's OK
+                // Parent has no "opened" property, so it's closed. Hence
+                // object can't be accessed
                 if (this._objs[parentId].ObjectAlias != "") {
+                    // Parent has no "opened" property, so it's closed. Hence
+                    // object can't be accessed
                     parentDisplayName = this._objs[parentId].ObjectAlias;
                 } else {
                     parentDisplayName = this._objs[parentId].ObjectName;
@@ -9076,11 +9976,18 @@ var LegacyGame = (function () {
                 result.ErrorMsg = "inside closed " + parentDisplayName;
                 return result;
             }
+
+            // Is the parent itself accessible?
             if (colObjects == null) {
+                // Is the parent itself accessible?
                 colObjects = new any();
             }
             if (colObjects.Contains(parentId)) {
+                // We've already encountered this parent while recursively calling
+                // this function - we're in a loop of parents!
                 colObjects.forEach(function (objId) {
+                    // We've already encountered this parent while recursively calling
+                    // this function - we're in a loop of parents!
                     hierarchy = hierarchy + this._objs[objId].ObjectName + " -> ";
                 }, this);
                 hierarchy = hierarchy + this._objs[parentId].ObjectName;
@@ -9123,11 +10030,13 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.SetUpExits = function () {
         for (var i = 1; i <= this._numberSections; i++) {
+            // Exits have to be set up after all the rooms have been initialised
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define room ")) {
                 var roomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
                 var roomId = this.GetRoomID(roomName, this._nullContext);
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "define ")) {
+                        //skip nested blocks
                         var nestedBlock = 1;
                         do {
                             j = j + 1;
@@ -9145,6 +10054,7 @@ var LegacyGame = (function () {
         // UNKNOWN ExitSubStatement
     };
     LegacyGame.prototype.FindExit = function (tag) {
+        // e.g. Takes a tag of the form "room; north" and return's the north exit of room.
         var params = Split(tag, ";");
         if (UBound(params) < 1) {
             this.LogASLError("No exit specified in '" + tag + "'", 2 /* WarningError */);
@@ -9198,10 +10108,21 @@ var LegacyGame = (function () {
                 this.SetForeground(this.GetParameter(this._lines[i], this._nullContext));
             }
         }
+
+        // Execute any startscript command that appears in the
+        // "define game" block:
         this._autoIntro = true;
+
+        // For ASL>=391, we only run startscripts if LoadMethod is normal (i.e. we haven't started
+        // from a saved QSG file)
         if (this._gameAslVersion < 391 || (this._gameAslVersion >= 391 && this._gameLoadMethod == "normal")) {
+            // For ASL>=391, we only run startscripts if LoadMethod is normal (i.e. we haven't started
+            // from a saved QSG file)
+            // for GameASLVersion 311 and later, any library startscript is executed first:
             if (this._gameAslVersion >= 311) {
                 for (var i = gameBlock.EndLine - 1; i >= gameBlock.StartLine + 1; i--) {
+                    // We go through the game block executing these in reverse order, as
+                    // the statements which are included last should be executed first.
                     if (this.BeginsWith(this._lines[i], "lib startscript ")) {
                         ctx = this._nullContext;
                         this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
@@ -9219,9 +10140,13 @@ var LegacyGame = (function () {
             }
         }
         this._gameFullyLoaded = true;
+
+        // Display intro text
         if (this._autoIntro && this._gameLoadMethod == "normal") {
             this.DisplayTextSection("intro", this._nullContext);
         }
+
+        // Start game from room specified by "start" statement
         var startRoom = "";
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "start ")) {
@@ -9239,6 +10164,7 @@ var LegacyGame = (function () {
             this.PlayGame(this._currentRoom, this._nullContext);
             this.Print("", this._nullContext);
             if (this._gameAslVersion >= 391) {
+                // For ASL>=391, OnLoad is now run for all games.
                 ctx = this._nullContext;
                 this.ExecuteScript(this._onLoadScript, ctx);
             }
@@ -9271,6 +10197,11 @@ var LegacyGame = (function () {
         this.SendCommand(command, 0, metadata);
     };
     LegacyGame.prototype.SendCommand = function (command, elapsedTime, metadata) {
+        // The processing of commands is done in a separate thread, so things like the "enter" command can
+        // lock the thread while waiting for further input. After starting to process the command, we wait
+        // for something to happen before returning from the SendCommand call - either the command will have
+        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
+        // user input after hitting an "enter" script command.
         if (!this._readyForCommand) {
             // UNKNOWN ExitSubStatement
         }
@@ -9288,6 +10219,7 @@ var LegacyGame = (function () {
         // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.ProcessCommandInNewThread = function (command) {
+        // Process command, and change state to Ready if the command finished processing
         // UNKNOWN TryBlock
     };
     LegacyGame.prototype.SendEvent = function (eventName, param) {
@@ -9308,6 +10240,7 @@ var LegacyGame = (function () {
         // UNKNOWN RaiseEventStatement
         this.ChangeState(3 /* Finished */);
 
+        // In case we're in the middle of processing an "enter" command, nudge the thread along
         // UNKNOWN SyncLockBlock
         // UNKNOWN SyncLockBlock
         // UNKNOWN SyncLockBlock
@@ -9347,6 +10280,7 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberTimers; i++) {
             if (this._timers[i].TimerActive) {
                 if (this._timers[i].BypassThisTurn) {
+                    // don't trigger timer during the turn it was first enabled
                     this._timers[i].BypassThisTurn = false;
                 } else {
                     this._timers[i].TimerTicks = this._timers[i].TimerTicks + elapsedTime;
@@ -9497,7 +10431,15 @@ var ChangeLog = (function () {
     }
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
+    // appliesTo = room or object name
+    // element = the thing that's changed, e.g. an action or property name
+    // changeData = the actual change info
     ChangeLog.prototype.AddItem = function (appliesTo, element, changeData) {
+        // appliesTo = room or object name
+        // element = the thing that's changed, e.g. an action or property name
+        // changeData = the actual change info
+        // the first four characters of the changeData will be "prop" or "acti", so we add this to the
+        // key so that actions and properties don't collide.
         var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
         if (this._changes.ContainsKey(key)) {
             this._changes.Remove(key);
@@ -9521,6 +10463,8 @@ var RoomExit = (function () {
         this._objId = game._numberObjs;
         // UNKNOWN WithBlock
     }
+    // If this code was properly object oriented, we could set up properties properly
+    // on the "object" object.
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
@@ -9568,6 +10512,7 @@ var RoomExit = (function () {
             this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.ObjId), this._game._nullContext);
             objName = objName + ".exit" + (lastExitId).toString();
             if (RoomId == 0) {
+                // the room we're pointing at might not exist, especially if this is a script exit
                 this._displayName = ToRoom;
             } else {
                 if (Len(this._game._rooms[RoomId].RoomAlias) > 0) {
@@ -9677,6 +10622,8 @@ var RoomExits = (function () {
             // UNKNOWN ExitSubStatement
         }
         if (thisDir != -1 /* None */) {
+            // This will reuse an existing Exit object if we're resetting
+            // the destination of an existing directional exit.
             this.SetDirection(thisDir, roomExit);
         } else {
             roomExit = new RoomExit();
@@ -9695,14 +10642,23 @@ var RoomExits = (function () {
             afterParam = tag;
         }
         if (Len(afterParam) > 0) {
+            // Script exit
             roomExit.Script = afterParam;
             if (thisDir == -1 /* None */) {
+                // A place exit with a script still has a ToRoom
                 roomExit.ToRoom = params[0];
+
+                // and may have a lock message
                 if (UBound(params) > 0) {
+                    // and may have a lock message
                     roomExit.LockMessage = params[1];
                 }
             } else {
+                // A directional exit with a script may have no parameter.
+                // If it does have a parameter it will be a lock message.
                 if (param) {
+                    // A directional exit with a script may have no parameter.
+                    // If it does have a parameter it will be a lock message.
                     roomExit.LockMessage = params[0];
                 }
             }
@@ -9717,18 +10673,38 @@ var RoomExits = (function () {
         }
     };
     RoomExits.prototype.AddExitFromCreateScript = function (script, ctx) {
+        // sScript is the "create exit ..." script, but without the "create exit" at the beginning.
+        // So it's very similar to creating an exit from a tag, except we have the source room
+        // name before the semicolon (which we don't even care about as we ARE the source room).
         var param;
         var params;
         var paramStart;
         var paramEnd;
+
+        // Just need to convert e.g.
+        //   create exit <src_room; dest_room> { script }
+        // to
+        //   place <dest_room> { script }
+        // And
+        //   create exit north <src_room> { script }
+        // to
+        //   north { script }
+        // And
+        //   create exit north <src_room; dest_room>
+        // to
+        //   north <dest_room>
         param = this._game.GetParameter(script, ctx);
         params = Split(param, ";");
         paramStart = InStr(script, "<");
         paramEnd = InStr(paramStart, script, ">");
         if (paramStart > 1) {
+            // Directional exit
             if (UBound(params) == 0) {
+                // Directional exit
+                // Script directional exit
                 this.AddExitFromTag(Trim(Left(script, paramStart - 1)) + " " + Trim(Mid(script, paramEnd + 1)));
             } else {
+                // "Normal" directional exit
                 this.AddExitFromTag(Trim(Left(script, paramStart - 1)) + " <" + Trim(params[1]) + ">");
             }
         } else {
@@ -9736,6 +10712,8 @@ var RoomExits = (function () {
                 this._game.LogASLError("No exit destination given in 'create exit " + script + "'", 2 /* WarningError */);
                 // UNKNOWN ExitSubStatement
             }
+
+            // Place exit so add "place" tag at the beginning
             this.AddExitFromTag("place <" + Trim(params[1]) + Mid(script, paramEnd));
         }
     };
@@ -9743,6 +10721,7 @@ var RoomExits = (function () {
     // UNKNOWN PropertyBlock
     // UNKNOWN PropertyBlock
     RoomExits.prototype.ExecuteGo = function (cmd, ctx) {
+        // This will handle "n", "go east", "go [to] library" etc.
         var lExitID;
         var oExit;
         if (this._game.BeginsWith(cmd, "go to ")) {
@@ -9835,7 +10814,13 @@ var RoomExits = (function () {
         return this._allExits;
     };
     RoomExits.prototype.RemoveExit = function (roomExit) {
+        // Don't remove directional exits, as if they're recreated
+        // a new object will be created which will have the same name
+        // as the old one. This is because we can't delete objects yet...
         if (roomExit.Direction == -1 /* None */) {
+            // Don't remove directional exits, as if they're recreated
+            // a new object will be created which will have the same name
+            // as the old one. This is because we can't delete objects yet...
             if (this._places.ContainsKey(roomExit.ToRoom)) {
                 this._places.Remove(roomExit.ToRoom);
             }
@@ -9867,6 +10852,7 @@ var TextFormatter = (function () {
             if (codePosition == -1) {
                 // UNKNOWN AddAssignmentStatement
                 finished = true;
+                // can also have size codes
             } else {
                 // UNKNOWN AddAssignmentStatement
                 position = codePosition + 1;
@@ -9893,7 +10879,9 @@ var TextFormatter = (function () {
                 }
                 if (!foundCode) {
                     if (oneCharCode == "s") {
+                        // |s00 |s10 etc.
                         if (position < (input.Length - 2)) {
+                            // |s00 |s10 etc.
                             var sizeCode = input.Substring(position + 1, 2);
                             if (Integer.TryParse(sizeCode, this.fontSize)) {
                                 foundCode = true;

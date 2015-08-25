@@ -527,6 +527,8 @@ namespace LegacyConvert
 
         static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend, bool inClass, List<string> classFields)
         {
+            depth++;
+
             if (classFields != null && classFields.Count == 0)
             {
                 foreach (var childNode in node.ChildNodes())
@@ -540,11 +542,29 @@ namespace LegacyConvert
                     }
                 }
             }
-            
+
             var sb = new StringBuilder();
+
+            var prevTrivia = new List<string>();
+
             foreach (var childNode in node.ChildNodes())
             {
-                sb.Append(ProcessNode(childNode, depth + 1, prepend, inClass, classFields));
+                var preComments = childNode.GetLeadingTrivia().Where(t => t.Kind() == SyntaxKind.CommentTrivia);
+                foreach (var c in preComments)
+                {
+                    sb.AppendFormat("{0}//{1}\n", Tabs(depth), c.ToString().Substring(1));
+                }
+
+                var result = ProcessNode(childNode, depth, prepend, inClass, classFields);
+
+                sb.Append(result);
+
+                var postComments = childNode.GetTrailingTrivia().Where(t => t.Kind() == SyntaxKind.CommentTrivia);
+                foreach (var c in postComments)
+                {
+                    sb.AppendFormat("{0}//{1}\n", Tabs(depth), c.ToString().Substring(1));
+                }
+
             }
             return sb.ToString();
         }
