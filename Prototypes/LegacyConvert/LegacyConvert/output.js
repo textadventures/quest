@@ -10255,6 +10255,10 @@ var LegacyGame = (function () {
         var fileData = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
         return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     };
+    LegacyGame.prototype.GetFileData = function (filename) {
+        // TODO
+        return "";
+    };
     return LegacyGame;
 })();
 var ChangeLog = (function () {

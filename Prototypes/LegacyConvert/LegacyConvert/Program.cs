@@ -31,8 +31,6 @@ namespace LegacyConvert
             var source = input.ToString();
             source = System.Text.RegularExpressions.Regex.Replace(source, @"\'\<NOCONVERT.*?NOCONVERT\>", "", System.Text.RegularExpressions.RegexOptions.Singleline);
 
-            //source = source.Replace("'<LEGACY.TS>", System.IO.File.ReadAllText(@"..\..\legacy.ts"));
-
             var tree = VisualBasicSyntaxTree.ParseText(source);
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
@@ -44,6 +42,12 @@ namespace LegacyConvert
 
             var result = ProcessNode(root, -1, prepend, false, null);
             result = prepend.ToString() + result;
+
+            var legacyTs = System.IO.File.ReadAllText(@"..\..\legacy.ts");
+            var legacyTsLines = legacyTs.Split('\n');
+            var tabbedLegacyTsLines = legacyTsLines.Select(l => Tabs(1) + l);
+
+            result = result.Replace(Tabs(1) + "//<LEGACY.TS>", string.Join("\n", tabbedLegacyTsLines));
 
             System.IO.File.WriteAllText(@"..\..\output.ts", result);
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo

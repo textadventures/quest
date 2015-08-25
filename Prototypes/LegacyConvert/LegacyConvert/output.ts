@@ -9994,7 +9994,10 @@ class LegacyGame {
         var fileData: string = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
         return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     }
-    //<LEGACY.TS>
+    GetFileData(filename: string) : string {
+        // TODO
+        return "";
+    }
 }
 class ChangeLog {
     // NOTE: We only actually use the Object change log at the moment, as that is the only
