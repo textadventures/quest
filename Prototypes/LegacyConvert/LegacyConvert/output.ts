@@ -1251,7 +1251,7 @@ class LegacyGame {
         }
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
             //Read file into Lines array
-            var fileData = GetFileData(filename);
+            var fileData = this.GetFileData(filename);
             var aslLines: string[] = fileData.Split(Chr(13));
             this._lines = [];
             this._lines[0] = "";

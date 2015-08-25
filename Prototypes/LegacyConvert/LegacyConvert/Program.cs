@@ -12,6 +12,7 @@ namespace LegacyConvert
     class Program
     {
         static SemanticModel Model;
+        static List<string> legacyTsClassFields = new List<string>();
 
         static void Main(string[] args)
         {
@@ -40,11 +41,20 @@ namespace LegacyConvert
             var prepend = new StringBuilder();
             prepend.Append(System.IO.File.ReadAllText(@"..\..\stub.ts"));
 
+            var legacyTs = System.IO.File.ReadAllText(@"..\..\legacy.ts");
+            var legacyTsLines = legacyTs.Split('\n');
+            foreach (var line in legacyTsLines)
+            {
+                var match = System.Text.RegularExpressions.Regex.Match(line, @"^(.*?)\(");
+                if (match != null && match.Groups[1].Value.Length > 0)
+                {
+                    legacyTsClassFields.Add(match.Groups[1].Value);
+                }
+            }
+
             var result = ProcessNode(root, -1, prepend, false, null);
             result = prepend.ToString() + result;
 
-            var legacyTs = System.IO.File.ReadAllText(@"..\..\legacy.ts");
-            var legacyTsLines = legacyTs.Split('\n');
             var tabbedLegacyTsLines = legacyTsLines.Select(l => Tabs(1) + l);
 
             result = result.Replace(Tabs(1) + "//<LEGACY.TS>", string.Join("\n", tabbedLegacyTsLines));
@@ -95,7 +105,9 @@ namespace LegacyConvert
                     break;
                 case SyntaxKind.ClassBlock:
                     var className = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, 0, prepend, true, new List<string>(), ignoreComments));
+                    var thisClassFields = new List<string>();
+                    if (className == "LegacyGame") thisClassFields.AddRange(legacyTsClassFields);
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, 0, prepend, true, thisClassFields, ignoreComments));
                     if (depth == 0) return classResult;
                     prepend.Append(classResult);
                     return null;
@@ -533,7 +545,7 @@ namespace LegacyConvert
         {
             depth++;
 
-            if (classFields != null && classFields.Count == 0)
+            if (inClass)
             {
                 foreach (var childNode in node.ChildNodes())
                 {
