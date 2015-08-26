@@ -2435,7 +2435,23 @@ class LegacyGame {
         var newElement: boolean;
         var obscuredExpr = this.ObscureNumericExps(expr);
         for (var i = 1; i <= Len(expr); i++) {
-            // UNKNOWN SelectBlock
+            switch (Mid(obscuredExpr, i, 1)) {
+                case "+":
+                case "*":
+                case "/":
+                    newElement = true;
+                case "-":
+                    // A minus often means subtraction, so it's a new element. But sometimes
+                    // it just denotes a negative number. In this case, the current element will
+                    // be empty.
+                    if (Trim(elements[numElements]) == "") {
+                        newElement = false;
+                    } else {
+                        newElement = true;
+                    }
+                default:
+                    newElement = false;
+            }
             if (newElement) {
                 numElements = numElements + 1;
                 if (!elements) elements = [];
@@ -2477,7 +2493,21 @@ class LegacyGame {
                 var val1 = parseFloat(elements[opNum]);
                 var val2 = parseFloat(elements[opNum + 1]);
                 var result: number;
-                // UNKNOWN SelectBlock
+                switch (operators[opNum]) {
+                    case "/":
+                        if (val2 == 0) {
+                            res.Message = "Division by zero";
+                            res.Success = ExpressionSuccess.Fail;
+                            return res;
+                        }
+                        result = val1 / val2;
+                    case "*":
+                        result = val1 * val2;
+                    case "+":
+                        result = val1 + val2;
+                    case "-":
+                        result = val1 - val2;
+                }
                 elements[opNum] = (result).toString();
                 // Remove this operator, and Elements(OpNum+1) from the arrays
                 for (var i = opNum; i <= numOperators - 1; i++) {
@@ -2646,7 +2676,22 @@ class LegacyGame {
         if (colour == "" || colour == "0") {
             colour = defaultColour;
         }
-        // UNKNOWN SelectBlock
+        switch (colour) {
+            case "white":
+                return "FFFFFF";
+            case "black":
+                return "000000";
+            case "blue":
+                return "0000FF";
+            case "yellow":
+                return "FFFF00";
+            case "red":
+                return "FF0000";
+            case "green":
+                return "00FF00";
+            default:
+                return colour;
+        }
     }
     DoPrint(text: string): void {
         // UNKNOWN RaiseEventStatement
@@ -2823,7 +2868,14 @@ class LegacyGame {
         // NOTE: We're only actually ever using the object changelog.
         // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
         // need the refactored ChangeLog component for those.
-        // UNKNOWN SelectBlock
+        switch (appliesToType) {
+            case ChangeLog.AppliesTo.Object:
+                changeLog = this._changeLogObjects;
+            case ChangeLog.AppliesTo.Room:
+                changeLog = this._changeLogRooms;
+            default:
+                throw "New ArgumentOutOfRangeException()";
+        }
         changeLog.AddItem(appliesTo, element, changeData);
     }
     AddToGiveInfo(id: number, giveData: string): void {
@@ -2973,7 +3025,85 @@ class LegacyGame {
                 o.Properties[num].PropertyValue = value;
             }
             this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
-            // UNKNOWN SelectBlock
+            switch (name) {
+                case "alias":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].RoomAlias = value;
+                    } else {
+                        o.ObjectAlias = value;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                        this.UpdateItems(ctx);
+                    }
+                case "prefix":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Prefix = value;
+                    } else {
+                        if (value != "") {
+                            o.Prefix = value + " ";
+                        } else {
+                            o.Prefix = "";
+                        }
+                    }
+                case "indescription":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].InDescription = value;
+                    }
+                case "description":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Description.Data = value;
+                        this._rooms[o.CorresRoomId].Description.Type = TextActionType.Text;
+                    }
+                case "look":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Look = value;
+                    }
+                case "suffix":
+                    o.Suffix = value;
+                case "displaytype":
+                    o.DisplayType = value;
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "gender":
+                    o.Gender = value;
+                case "article":
+                    o.Article = value;
+                case "detail":
+                    o.Detail = value;
+                case "hidden":
+                    if (falseProperty) {
+                        o.Exists = true;
+                    } else {
+                        o.Exists = false;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "invisible":
+                    if (falseProperty) {
+                        o.Visible = true;
+                    } else {
+                        o.Visible = false;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "take":
+                    if (this._gameAslVersion >= 392) {
+                        if (falseProperty) {
+                            o.Take.Type = TextActionType.Nothing;
+                        } else {
+                            if (value == "") {
+                                o.Take.Type = TextActionType.Default;
+                            } else {
+                                o.Take.Type = TextActionType.Text;
+                                o.Take.Data = value;
+                            }
+                        }
+                    }
+            }
         } while (!(Len(Trim(propertyInfo)) == 0));
     }
     AddToUseInfo(id: number, useData: string): void {
@@ -3341,7 +3471,14 @@ class LegacyGame {
         if (numberCorresIds == 1) {
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[1]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[1];
-            // UNKNOWN SelectBlock
+            switch (this._objs[idNumbers[1]].Article) {
+                case "him":
+                    this._thisTurnItMode = ItType.Male;
+                case "her":
+                    this._thisTurnItMode = ItType.Female;
+                default:
+                    this._thisTurnItMode = ItType.Inanimate;
+            }
             return idNumbers[1];
         } else if (numberCorresIds > 1) {
             descriptionText = [];
@@ -3364,7 +3501,14 @@ class LegacyGame {
             this._choiceNumber = parseInt(response);
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[this._choiceNumber];
-            // UNKNOWN SelectBlock
+            switch (this._objs[idNumbers[this._choiceNumber]].Article) {
+                case "him":
+                    this._thisTurnItMode = ItType.Male;
+                case "her":
+                    this._thisTurnItMode = ItType.Female;
+                default:
+                    this._thisTurnItMode = ItType.Inanimate;
+            }
             this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
             return idNumbers[this._choiceNumber];
         }
@@ -5006,7 +5150,40 @@ class LegacyGame {
             }
         }
         var result = false;
-        // UNKNOWN SelectBlock
+        switch (op) {
+            case "=":
+                if (LCase(value1) == LCase(value2)) {
+                    result = true;
+                }
+                expectNumerics = false;
+            case "!=":
+                if (LCase(value1) != LCase(value2)) {
+                    result = true;
+                }
+                expectNumerics = false;
+            case "gt":
+                if (Val(value1) > Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "lt":
+                if (Val(value1) < Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "gt=":
+                if (Val(value1) >= Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "lt=":
+                if (Val(value1) <= Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            default:
+                this.LogASLError("Unrecognised comparison condition in 'is " + condition + "'", LogType.WarningError);
+        }
         if (expectNumerics) {
             if (!(IsNumeric(value1) && IsNumeric(value2))) {
                 this.LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'", LogType.WarningError);
@@ -5886,7 +6063,91 @@ class LegacyGame {
                 var errorName = Left(errorInfo, scp - 1);
                 var errorMsg = Trim(Mid(errorInfo, scp + 1));
                 var currentError = 0;
-                // UNKNOWN SelectBlock
+                switch (errorName) {
+                    case "badcommand":
+                        currentError = PlayerError.BadCommand;
+                    case "badgo":
+                        currentError = PlayerError.BadGo;
+                    case "badgive":
+                        currentError = PlayerError.BadGive;
+                    case "badcharacter":
+                        currentError = PlayerError.BadCharacter;
+                    case "noitem":
+                        currentError = PlayerError.NoItem;
+                    case "itemunwanted":
+                        currentError = PlayerError.ItemUnwanted;
+                    case "badlook":
+                        currentError = PlayerError.BadLook;
+                    case "badthing":
+                        currentError = PlayerError.BadThing;
+                    case "defaultlook":
+                        currentError = PlayerError.DefaultLook;
+                    case "defaultspeak":
+                        currentError = PlayerError.DefaultSpeak;
+                    case "baditem":
+                        currentError = PlayerError.BadItem;
+                    case "baddrop":
+                        currentError = PlayerError.BadDrop;
+                    case "defaultake":
+                        if (this._gameAslVersion <= 280) {
+                            currentError = PlayerError.BadTake;
+                        } else {
+                            currentError = PlayerError.DefaultTake;
+                        }
+                    case "baduse":
+                        currentError = PlayerError.BadUse;
+                    case "defaultuse":
+                        currentError = PlayerError.DefaultUse;
+                    case "defaultout":
+                        currentError = PlayerError.DefaultOut;
+                    case "badplace":
+                        currentError = PlayerError.BadPlace;
+                    case "badexamine":
+                        if (this._gameAslVersion >= 310) {
+                            currentError = PlayerError.BadExamine;
+                        }
+                    case "defaultexamine":
+                        currentError = PlayerError.DefaultExamine;
+                        examineIsCustomised = true;
+                    case "badtake":
+                        currentError = PlayerError.BadTake;
+                    case "cantdrop":
+                        currentError = PlayerError.CantDrop;
+                    case "defaultdrop":
+                        currentError = PlayerError.DefaultDrop;
+                    case "badpronoun":
+                        currentError = PlayerError.BadPronoun;
+                    case "alreadyopen":
+                        currentError = PlayerError.AlreadyOpen;
+                    case "alreadyclosed":
+                        currentError = PlayerError.AlreadyClosed;
+                    case "cantopen":
+                        currentError = PlayerError.CantOpen;
+                    case "cantclose":
+                        currentError = PlayerError.CantClose;
+                    case "defaultopen":
+                        currentError = PlayerError.DefaultOpen;
+                    case "defaultclose":
+                        currentError = PlayerError.DefaultClose;
+                    case "badput":
+                        currentError = PlayerError.BadPut;
+                    case "cantput":
+                        currentError = PlayerError.CantPut;
+                    case "defaultput":
+                        currentError = PlayerError.DefaultPut;
+                    case "cantremove":
+                        currentError = PlayerError.CantRemove;
+                    case "alreadyput":
+                        currentError = PlayerError.AlreadyPut;
+                    case "defaultremove":
+                        currentError = PlayerError.DefaultRemove;
+                    case "locked":
+                        currentError = PlayerError.Locked;
+                    case "defaultwait":
+                        currentError = PlayerError.DefaultWait;
+                    case "alreadytaken":
+                        currentError = PlayerError.AlreadyTaken;
+                }
                 this._playerErrorMessageString[currentError] = errorMsg;
                 if (currentError == PlayerError.DefaultLook && !examineIsCustomised) {
                     // If we're setting the default look message, and we've not already customised the
@@ -7644,7 +7905,16 @@ class LegacyGame {
                 this.GoDirection(input, ctx);
                 this._lastIt = 0;
             } else if (cmd == "n" || cmd == "s" || cmd == "w" || cmd == "e") {
-                // UNKNOWN SelectBlock
+                switch (InStr("nswe", cmd)) {
+                    case 1:
+                        this.GoDirection("north", ctx);
+                    case 2:
+                        this.GoDirection("south", ctx);
+                    case 3:
+                        this.GoDirection("west", ctx);
+                    case 4:
+                        this.GoDirection("east", ctx);
+                }
                 this._lastIt = 0;
             } else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
                 this.GoDirection("northeast", ctx);
@@ -8927,7 +9197,20 @@ class LegacyGame {
                     i = i + 1;
                     this.ExecuteScript("wait <>", ctx);
                 } else if (Mid(txt, i, 2) == "|c") {
-                    // UNKNOWN SelectBlock
+                    switch (Mid(txt, i, 3)) {
+                        case "|cb":
+                        case "|cr":
+                        case "|cl":
+                        case "|cy":
+                        case "|cg":
+                        default:
+                            // Do nothing - we don't want to remove the colour formatting codes.
+                            this.DoPrint(printString);
+                            printString = "";
+                            printThis = false;
+                            i = i + 1;
+                            this.ExecuteScript("clear", ctx);
+                    }
                 }
                 if (printThis) {
                     printString = printString + Mid(txt, i, 1);
@@ -9840,7 +10123,18 @@ class LegacyGame {
     GetLibraryLines(libName: string): string[] {
         var libCode: number[] = null;
         libName = LCase(libName);
-        // UNKNOWN SelectBlock
+        switch (libName) {
+            case "stdverbs.lib":
+                libCode = My.Resources.stdverbs;
+            case "standard.lib":
+                libCode = My.Resources.standard;
+            case "q3ext.qlb":
+                libCode = My.Resources.q3ext;
+            case "typelib.qlb":
+                libCode = My.Resources.Typelib;
+            case "net.lib":
+                libCode = My.Resources.net;
+        }
         if (libCode == null) {
             return null;
         }
@@ -10341,15 +10635,84 @@ class RoomExits {
         }
     }
     GetDirectionName(dir: Direction): string {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case Direction.Out:
+                return "out";
+            case Direction.North:
+                return "north";
+            case Direction.South:
+                return "south";
+            case Direction.East:
+                return "east";
+            case Direction.West:
+                return "west";
+            case Direction.NorthWest:
+                return "northwest";
+            case Direction.NorthEast:
+                return "northeast";
+            case Direction.SouthWest:
+                return "southwest";
+            case Direction.SouthEast:
+                return "southeast";
+            case Direction.Up:
+                return "up";
+            case Direction.Down:
+                return "down";
+        }
         return null;
     }
     GetDirectionEnum(dir: string): Direction {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case "out":
+                return Direction.Out;
+            case "north":
+                return Direction.North;
+            case "south":
+                return Direction.South;
+            case "east":
+                return Direction.East;
+            case "west":
+                return Direction.West;
+            case "northwest":
+                return Direction.NorthWest;
+            case "northeast":
+                return Direction.NorthEast;
+            case "southwest":
+                return Direction.SouthWest;
+            case "southeast":
+                return Direction.SouthEast;
+            case "up":
+                return Direction.Up;
+            case "down":
+                return Direction.Down;
+        }
         return Direction.None;
     }
     GetDirectionToken(dir: Direction): string {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case Direction.Out:
+                return "o";
+            case Direction.North:
+                return "n";
+            case Direction.South:
+                return "s";
+            case Direction.East:
+                return "e";
+            case Direction.West:
+                return "w";
+            case Direction.NorthWest:
+                return "b";
+            case Direction.NorthEast:
+                return "a";
+            case Direction.SouthWest:
+                return "d";
+            case Direction.SouthEast:
+                return "c";
+            case Direction.Up:
+                return "u";
+            case Direction.Down:
+                return "f";
+        }
         return null;
     }
     GetDirectionNameDisplay(roomExit: RoomExit): string {
@@ -10442,12 +10805,48 @@ class TextFormatter {
                     twoCharCode = input.Substring(position, 2);
                 }
                 var foundCode: boolean = true;
-                // UNKNOWN SelectBlock
+                switch (twoCharCode) {
+                    case "xb":
+                        this.bold = false;
+                    case "xi":
+                        this.italic = false;
+                    case "xu":
+                        this.underline = false;
+                    case "cb":
+                        this.colour = "";
+                    case "cr":
+                        this.colour = "red";
+                    case "cl":
+                        this.colour = "blue";
+                    case "cy":
+                        this.colour = "yellow";
+                    case "cg":
+                        this.colour = "green";
+                    case "jl":
+                        this.align = "";
+                    case "jc":
+                        this.align = "center";
+                    case "jr":
+                        this.align = "right";
+                    default:
+                        foundCode = false;
+                }
                 if (foundCode) {
                     // UNKNOWN AddAssignmentStatement
                 } else {
                     foundCode = true;
-                    // UNKNOWN SelectBlock
+                    switch (oneCharCode) {
+                        case "b":
+                            this.bold = true;
+                        case "i":
+                            this.italic = true;
+                        case "u":
+                            this.underline = true;
+                        case "n":
+                            // UNKNOWN AddAssignmentStatement
+                        default:
+                            foundCode = false;
+                    }
                     if (foundCode) {
                         // UNKNOWN AddAssignmentStatement
                     }

@@ -2468,7 +2468,23 @@ var LegacyGame = (function () {
         var newElement;
         var obscuredExpr = this.ObscureNumericExps(expr);
         for (var i = 1; i <= Len(expr); i++) {
-            // UNKNOWN SelectBlock
+            switch (Mid(obscuredExpr, i, 1)) {
+                case "+":
+                case "*":
+                case "/":
+                    newElement = true;
+                case "-":
+                    // A minus often means subtraction, so it's a new element. But sometimes
+                    // it just denotes a negative number. In this case, the current element will
+                    // be empty.
+                    if (Trim(elements[numElements]) == "") {
+                        newElement = false;
+                    } else {
+                        newElement = true;
+                    }
+                default:
+                    newElement = false;
+            }
             if (newElement) {
                 numElements = numElements + 1;
                 if (!elements)
@@ -2512,8 +2528,21 @@ var LegacyGame = (function () {
                 var val1 = parseFloat(elements[opNum]);
                 var val2 = parseFloat(elements[opNum + 1]);
                 var result;
-
-                // UNKNOWN SelectBlock
+                switch (operators[opNum]) {
+                    case "/":
+                        if (val2 == 0) {
+                            res.Message = "Division by zero";
+                            res.Success = 1 /* Fail */;
+                            return res;
+                        }
+                        result = val1 / val2;
+                    case "*":
+                        result = val1 * val2;
+                    case "+":
+                        result = val1 + val2;
+                    case "-":
+                        result = val1 - val2;
+                }
                 elements[opNum] = (result).toString();
 
                 for (var i = opNum; i <= numOperators - 1; i++) {
@@ -2688,7 +2717,22 @@ var LegacyGame = (function () {
         if (colour == "" || colour == "0") {
             colour = defaultColour;
         }
-        // UNKNOWN SelectBlock
+        switch (colour) {
+            case "white":
+                return "FFFFFF";
+            case "black":
+                return "000000";
+            case "blue":
+                return "0000FF";
+            case "yellow":
+                return "FFFF00";
+            case "red":
+                return "FF0000";
+            case "green":
+                return "00FF00";
+            default:
+                return colour;
+        }
     };
     LegacyGame.prototype.DoPrint = function (text) {
         // UNKNOWN RaiseEventStatement
@@ -2872,10 +2916,14 @@ var LegacyGame = (function () {
     LegacyGame.prototype.AddToObjectChangeLog = function (appliesToType, appliesTo, element, changeData) {
         var changeLog;
 
-        // NOTE: We're only actually ever using the object changelog.
-        // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
-        // need the refactored ChangeLog component for those.
-        // UNKNOWN SelectBlock
+        switch (appliesToType) {
+            case ChangeLog.AppliesTo.Object:
+                changeLog = this._changeLogObjects;
+            case ChangeLog.AppliesTo.Room:
+                changeLog = this._changeLogRooms;
+            default:
+                throw "New ArgumentOutOfRangeException()";
+        }
         changeLog.AddItem(appliesTo, element, changeData);
     };
     LegacyGame.prototype.AddToGiveInfo = function (id, giveData) {
@@ -3029,7 +3077,85 @@ var LegacyGame = (function () {
                 o.Properties[num].PropertyValue = value;
             }
             this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
-            // UNKNOWN SelectBlock
+            switch (name) {
+                case "alias":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].RoomAlias = value;
+                    } else {
+                        o.ObjectAlias = value;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                        this.UpdateItems(ctx);
+                    }
+                case "prefix":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Prefix = value;
+                    } else {
+                        if (value != "") {
+                            o.Prefix = value + " ";
+                        } else {
+                            o.Prefix = "";
+                        }
+                    }
+                case "indescription":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].InDescription = value;
+                    }
+                case "description":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Description.Data = value;
+                        this._rooms[o.CorresRoomId].Description.Type = 0 /* Text */;
+                    }
+                case "look":
+                    if (o.IsRoom) {
+                        this._rooms[o.CorresRoomId].Look = value;
+                    }
+                case "suffix":
+                    o.Suffix = value;
+                case "displaytype":
+                    o.DisplayType = value;
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "gender":
+                    o.Gender = value;
+                case "article":
+                    o.Article = value;
+                case "detail":
+                    o.Detail = value;
+                case "hidden":
+                    if (falseProperty) {
+                        o.Exists = true;
+                    } else {
+                        o.Exists = false;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "invisible":
+                    if (falseProperty) {
+                        o.Visible = true;
+                    } else {
+                        o.Visible = false;
+                    }
+                    if (this._gameFullyLoaded) {
+                        this.UpdateObjectList(ctx);
+                    }
+                case "take":
+                    if (this._gameAslVersion >= 392) {
+                        if (falseProperty) {
+                            o.Take.Type = 2 /* Nothing */;
+                        } else {
+                            if (value == "") {
+                                o.Take.Type = 3 /* Default */;
+                            } else {
+                                o.Take.Type = 0 /* Text */;
+                                o.Take.Data = value;
+                            }
+                        }
+                    }
+            }
         } while(!(Len(Trim(propertyInfo)) == 0));
     };
     LegacyGame.prototype.AddToUseInfo = function (id, useData) {
@@ -3407,8 +3533,14 @@ var LegacyGame = (function () {
         if (numberCorresIds == 1) {
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[1]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[1];
-
-            // UNKNOWN SelectBlock
+            switch (this._objs[idNumbers[1]].Article) {
+                case "him":
+                    this._thisTurnItMode = 1 /* Male */;
+                case "her":
+                    this._thisTurnItMode = 2 /* Female */;
+                default:
+                    this._thisTurnItMode = 0 /* Inanimate */;
+            }
             return idNumbers[1];
         } else if (numberCorresIds > 1) {
             descriptionText = [];
@@ -3431,8 +3563,14 @@ var LegacyGame = (function () {
             this._choiceNumber = parseInt(response);
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[this._choiceNumber];
-
-            // UNKNOWN SelectBlock
+            switch (this._objs[idNumbers[this._choiceNumber]].Article) {
+                case "him":
+                    this._thisTurnItMode = 1 /* Male */;
+                case "her":
+                    this._thisTurnItMode = 2 /* Female */;
+                default:
+                    this._thisTurnItMode = 0 /* Inanimate */;
+            }
             this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
             return idNumbers[this._choiceNumber];
         }
@@ -5115,8 +5253,40 @@ var LegacyGame = (function () {
             }
         }
         var result = false;
-
-        // UNKNOWN SelectBlock
+        switch (op) {
+            case "=":
+                if (LCase(value1) == LCase(value2)) {
+                    result = true;
+                }
+                expectNumerics = false;
+            case "!=":
+                if (LCase(value1) != LCase(value2)) {
+                    result = true;
+                }
+                expectNumerics = false;
+            case "gt":
+                if (Val(value1) > Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "lt":
+                if (Val(value1) < Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "gt=":
+                if (Val(value1) >= Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            case "lt=":
+                if (Val(value1) <= Val(value2)) {
+                    result = true;
+                }
+                expectNumerics = true;
+            default:
+                this.LogASLError("Unrecognised comparison condition in 'is " + condition + "'", 2 /* WarningError */);
+        }
         if (expectNumerics) {
             if (!(IsNumeric(value1) && IsNumeric(value2))) {
                 this.LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'", 2 /* WarningError */);
@@ -6028,8 +6198,91 @@ var LegacyGame = (function () {
                 var errorName = Left(errorInfo, scp - 1);
                 var errorMsg = Trim(Mid(errorInfo, scp + 1));
                 var currentError = 0;
-
-                // UNKNOWN SelectBlock
+                switch (errorName) {
+                    case "badcommand":
+                        currentError = 0 /* BadCommand */;
+                    case "badgo":
+                        currentError = 1 /* BadGo */;
+                    case "badgive":
+                        currentError = 2 /* BadGive */;
+                    case "badcharacter":
+                        currentError = 3 /* BadCharacter */;
+                    case "noitem":
+                        currentError = 4 /* NoItem */;
+                    case "itemunwanted":
+                        currentError = 5 /* ItemUnwanted */;
+                    case "badlook":
+                        currentError = 6 /* BadLook */;
+                    case "badthing":
+                        currentError = 7 /* BadThing */;
+                    case "defaultlook":
+                        currentError = 8 /* DefaultLook */;
+                    case "defaultspeak":
+                        currentError = 9 /* DefaultSpeak */;
+                    case "baditem":
+                        currentError = 10 /* BadItem */;
+                    case "baddrop":
+                        currentError = 21 /* BadDrop */;
+                    case "defaultake":
+                        if (this._gameAslVersion <= 280) {
+                            currentError = 18 /* BadTake */;
+                        } else {
+                            currentError = 11 /* DefaultTake */;
+                        }
+                    case "baduse":
+                        currentError = 12 /* BadUse */;
+                    case "defaultuse":
+                        currentError = 13 /* DefaultUse */;
+                    case "defaultout":
+                        currentError = 14 /* DefaultOut */;
+                    case "badplace":
+                        currentError = 15 /* BadPlace */;
+                    case "badexamine":
+                        if (this._gameAslVersion >= 310) {
+                            currentError = 16 /* BadExamine */;
+                        }
+                    case "defaultexamine":
+                        currentError = 17 /* DefaultExamine */;
+                        examineIsCustomised = true;
+                    case "badtake":
+                        currentError = 18 /* BadTake */;
+                    case "cantdrop":
+                        currentError = 19 /* CantDrop */;
+                    case "defaultdrop":
+                        currentError = 20 /* DefaultDrop */;
+                    case "badpronoun":
+                        currentError = 22 /* BadPronoun */;
+                    case "alreadyopen":
+                        currentError = 23 /* AlreadyOpen */;
+                    case "alreadyclosed":
+                        currentError = 24 /* AlreadyClosed */;
+                    case "cantopen":
+                        currentError = 25 /* CantOpen */;
+                    case "cantclose":
+                        currentError = 26 /* CantClose */;
+                    case "defaultopen":
+                        currentError = 27 /* DefaultOpen */;
+                    case "defaultclose":
+                        currentError = 28 /* DefaultClose */;
+                    case "badput":
+                        currentError = 29 /* BadPut */;
+                    case "cantput":
+                        currentError = 30 /* CantPut */;
+                    case "defaultput":
+                        currentError = 31 /* DefaultPut */;
+                    case "cantremove":
+                        currentError = 32 /* CantRemove */;
+                    case "alreadyput":
+                        currentError = 33 /* AlreadyPut */;
+                    case "defaultremove":
+                        currentError = 34 /* DefaultRemove */;
+                    case "locked":
+                        currentError = 35 /* Locked */;
+                    case "defaultwait":
+                        currentError = 36 /* DefaultWait */;
+                    case "alreadytaken":
+                        currentError = 37 /* AlreadyTaken */;
+                }
                 this._playerErrorMessageString[currentError] = errorMsg;
                 if (currentError == 8 /* DefaultLook */ && !examineIsCustomised) {
                     // If we're setting the default look message, and we've not already customised the
@@ -7853,7 +8106,16 @@ var LegacyGame = (function () {
                 this.GoDirection(input, ctx);
                 this._lastIt = 0;
             } else if (cmd == "n" || cmd == "s" || cmd == "w" || cmd == "e") {
-                // UNKNOWN SelectBlock
+                switch (InStr("nswe", cmd)) {
+                    case 1:
+                        this.GoDirection("north", ctx);
+                    case 2:
+                        this.GoDirection("south", ctx);
+                    case 3:
+                        this.GoDirection("west", ctx);
+                    case 4:
+                        this.GoDirection("east", ctx);
+                }
                 this._lastIt = 0;
             } else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
                 this.GoDirection("northeast", ctx);
@@ -9161,7 +9423,20 @@ var LegacyGame = (function () {
                     i = i + 1;
                     this.ExecuteScript("wait <>", ctx);
                 } else if (Mid(txt, i, 2) == "|c") {
-                    // UNKNOWN SelectBlock
+                    switch (Mid(txt, i, 3)) {
+                        case "|cb":
+                        case "|cr":
+                        case "|cl":
+                        case "|cy":
+                        case "|cg":
+                        default:
+                            // Do nothing - we don't want to remove the colour formatting codes.
+                            this.DoPrint(printString);
+                            printString = "";
+                            printThis = false;
+                            i = i + 1;
+                            this.ExecuteScript("clear", ctx);
+                    }
                 }
                 if (printThis) {
                     printString = printString + Mid(txt, i, 1);
@@ -10098,8 +10373,18 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetLibraryLines = function (libName) {
         var libCode = null;
         libName = LCase(libName);
-
-        // UNKNOWN SelectBlock
+        switch (libName) {
+            case "stdverbs.lib":
+                libCode = My.Resources.stdverbs;
+            case "standard.lib":
+                libCode = My.Resources.standard;
+            case "q3ext.qlb":
+                libCode = My.Resources.q3ext;
+            case "typelib.qlb":
+                libCode = My.Resources.Typelib;
+            case "net.lib":
+                libCode = My.Resources.net;
+        }
         if (libCode == null) {
             return null;
         }
@@ -10599,15 +10884,84 @@ var RoomExits = (function () {
         }
     };
     RoomExits.prototype.GetDirectionName = function (dir) {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case 0 /* Out */:
+                return "out";
+            case 1 /* North */:
+                return "north";
+            case 2 /* South */:
+                return "south";
+            case 3 /* East */:
+                return "east";
+            case 4 /* West */:
+                return "west";
+            case 5 /* NorthWest */:
+                return "northwest";
+            case 6 /* NorthEast */:
+                return "northeast";
+            case 7 /* SouthWest */:
+                return "southwest";
+            case 8 /* SouthEast */:
+                return "southeast";
+            case 9 /* Up */:
+                return "up";
+            case 10 /* Down */:
+                return "down";
+        }
         return null;
     };
     RoomExits.prototype.GetDirectionEnum = function (dir) {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case "out":
+                return 0 /* Out */;
+            case "north":
+                return 1 /* North */;
+            case "south":
+                return 2 /* South */;
+            case "east":
+                return 3 /* East */;
+            case "west":
+                return 4 /* West */;
+            case "northwest":
+                return 5 /* NorthWest */;
+            case "northeast":
+                return 6 /* NorthEast */;
+            case "southwest":
+                return 7 /* SouthWest */;
+            case "southeast":
+                return 8 /* SouthEast */;
+            case "up":
+                return 9 /* Up */;
+            case "down":
+                return 10 /* Down */;
+        }
         return -1 /* None */;
     };
     RoomExits.prototype.GetDirectionToken = function (dir) {
-        // UNKNOWN SelectBlock
+        switch (dir) {
+            case 0 /* Out */:
+                return "o";
+            case 1 /* North */:
+                return "n";
+            case 2 /* South */:
+                return "s";
+            case 3 /* East */:
+                return "e";
+            case 4 /* West */:
+                return "w";
+            case 5 /* NorthWest */:
+                return "b";
+            case 6 /* NorthEast */:
+                return "a";
+            case 7 /* SouthWest */:
+                return "d";
+            case 8 /* SouthEast */:
+                return "c";
+            case 9 /* Up */:
+                return "u";
+            case 10 /* Down */:
+                return "f";
+        }
         return null;
     };
     RoomExits.prototype.GetDirectionNameDisplay = function (roomExit) {
@@ -10697,14 +11051,48 @@ var TextFormatter = (function () {
                     twoCharCode = input.Substring(position, 2);
                 }
                 var foundCode = true;
-
-                // UNKNOWN SelectBlock
+                switch (twoCharCode) {
+                    case "xb":
+                        this.bold = false;
+                    case "xi":
+                        this.italic = false;
+                    case "xu":
+                        this.underline = false;
+                    case "cb":
+                        this.colour = "";
+                    case "cr":
+                        this.colour = "red";
+                    case "cl":
+                        this.colour = "blue";
+                    case "cy":
+                        this.colour = "yellow";
+                    case "cg":
+                        this.colour = "green";
+                    case "jl":
+                        this.align = "";
+                    case "jc":
+                        this.align = "center";
+                    case "jr":
+                        this.align = "right";
+                    default:
+                        foundCode = false;
+                }
                 if (foundCode) {
                     // UNKNOWN AddAssignmentStatement
                 } else {
                     foundCode = true;
+                    switch (oneCharCode) {
+                        case "b":
+                            this.bold = true;
+                        case "i":
+                            this.italic = true;
+                        case "u":
+                            this.underline = true;
+                        case "n":
 
-                    // UNKNOWN SelectBlock
+                        default:
+                            foundCode = false;
+                    }
                     if (foundCode) {
                         // UNKNOWN AddAssignmentStatement
                     }

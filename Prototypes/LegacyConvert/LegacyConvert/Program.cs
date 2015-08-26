@@ -101,6 +101,8 @@ namespace LegacyConvert
                 case SyntaxKind.ForStatement:
                 case SyntaxKind.NextStatement:
                 case SyntaxKind.ForEachStatement:
+                case SyntaxKind.CaseStatement:
+                case SyntaxKind.CaseElseStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -309,8 +311,46 @@ namespace LegacyConvert
                 case SyntaxKind.ThrowStatement:
                     var throwStatement = (ThrowStatementSyntax)node;
                     var exception = (ObjectCreationExpressionSyntax)throwStatement.Expression;
-                    var msg = exception.ArgumentList.Arguments.First().GetExpression();
-                    return string.Format("{0}throw {1};\n", Tabs(depth), ProcessExpression(msg, classFields));
+                    var arg = exception.ArgumentList.Arguments.FirstOrDefault();
+                    string msg;
+                    if (arg != null)
+                    {
+                        msg = ProcessExpression(arg.GetExpression(), classFields);
+                    }
+                    else
+                    {
+                        msg = string.Format("\"{0}\"", exception.ToString());
+                    }
+                    return string.Format("{0}throw {1};\n", Tabs(depth), msg);
+                case SyntaxKind.SelectBlock:
+                    var switchBlock = (SelectBlockSyntax)node;
+                    var switchExpr = ProcessExpression(switchBlock.SelectStatement.Expression, classFields);
+                    var switchResult = new StringBuilder();
+                    switchResult.AppendFormat("{0}switch ({1}) {{\n", Tabs(depth), switchExpr);
+
+                    foreach (var caseBlock in switchBlock.CaseBlocks)
+                    {
+                        foreach (var caseStatement in caseBlock.CaseStatement.Cases)
+                        {
+                            var simpleCase = caseStatement as SimpleCaseClauseSyntax;
+                            if (simpleCase != null)
+                            {
+                                switchResult.AppendFormat("{0}case {1}:\n", Tabs(depth + 1), ProcessExpression(simpleCase.Value, classFields));
+                            }
+                            else
+                            {
+                                var elseCase = caseStatement as ElseCaseClauseSyntax;
+                                if (elseCase == null)
+                                {
+                                    throw new InvalidOperationException();
+                                }
+                                switchResult.AppendFormat("{0}default:\n", Tabs(depth + 1));
+                            }
+                        }
+                        switchResult.Append(ProcessChildNodes(caseBlock, depth + 1, prepend, false, classFields, ignoreComments));
+                    }
+                    switchResult.AppendFormat("{0}}}\n", Tabs(depth));
+                    return switchResult.ToString();
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
