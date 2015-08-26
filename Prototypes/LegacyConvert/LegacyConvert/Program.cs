@@ -367,7 +367,7 @@ namespace LegacyConvert
                 case SyntaxKind.ContinueForStatement:
                     return string.Format("{0}continue;\n", Tabs(depth));
                 default:
-                    return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
+                    throw new InvalidOperationException();
             }
 
             return null;
