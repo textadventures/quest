@@ -6984,7 +6984,7 @@ class LegacyGame {
             var lineNumber: number = 5;
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!i") {
                     scp = InStr(data, ";");
                     name = Trim(Left(data, scp - 1));
@@ -6999,7 +6999,7 @@ class LegacyGame {
             } while (!(data == "!i"));
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!o") {
                     scp = InStr(data, ";");
                     name = Trim(Left(data, scp - 1));
@@ -7014,7 +7014,7 @@ class LegacyGame {
             } while (!(data == "!o"));
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!p") {
                     scp = InStr(data, ";");
                     scp2 = InStr(scp + 1, data, ";");
@@ -7036,7 +7036,7 @@ class LegacyGame {
             } while (!(data == "!p"));
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!s") {
                     scp = InStr(data, ";");
                     scp2 = InStr(scp + 1, data, ";");
@@ -7057,7 +7057,7 @@ class LegacyGame {
             } while (!(data == "!s"));
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!n") {
                     scp = InStr(data, ";");
                     name = Trim(Left(data, scp - 1));
@@ -7067,7 +7067,7 @@ class LegacyGame {
             } while (!(data == "!n"));
             do {
                 data = lines[lineNumber];
-                // UNKNOWN AddAssignmentStatement
+                lineNumber += 1;
                 if (data != "!e") {
                     scp = InStr(data, ";");
                     name = Trim(Left(data, scp - 1));
@@ -9866,9 +9866,9 @@ class LegacyGame {
                     var k = this.DisplayCollectableInfo(j);
                     if (k != "<null>") {
                         if (status.Length > 0) {
-                            // UNKNOWN AddAssignmentStatement
+                            status += Environment.NewLine;
                         }
-                        // UNKNOWN AddAssignmentStatement
+                        status += k;
                     }
                 }
                 this._player.SetStatusText(status);
@@ -9989,9 +9989,9 @@ class LegacyGame {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.String, ctx);
                 if (displayData != "") {
                     if (status.Length > 0) {
-                        // UNKNOWN AddAssignmentStatement
+                        status += Environment.NewLine;
                     }
-                    // UNKNOWN AddAssignmentStatement
+                    status += displayData;
                 }
             }
         }
@@ -10000,9 +10000,9 @@ class LegacyGame {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (displayData != "") {
                     if (status.Length > 0) {
-                        // UNKNOWN AddAssignmentStatement
+                        status += Environment.NewLine;
                     }
-                    // UNKNOWN AddAssignmentStatement
+                    status += displayData;
                 }
             }
         }
@@ -10958,11 +10958,11 @@ class TextFormatter {
         do {
             codePosition = input.IndexOf("|", position);
             if (codePosition == -1) {
-                // UNKNOWN AddAssignmentStatement
+                output += this.FormatText(input.Substring(position));
                 finished = true;
                 // can also have size codes
             } else {
-                // UNKNOWN AddAssignmentStatement
+                output += this.FormatText(input.Substring(position, codePosition - position));
                 position = codePosition + 1;
                 var oneCharCode: string = "";
                 var twoCharCode: string = "";
@@ -11000,7 +11000,7 @@ class TextFormatter {
                         foundCode = false;
                 }
                 if (foundCode) {
-                    // UNKNOWN AddAssignmentStatement
+                    position += 2;
                 } else {
                     foundCode = true;
                     switch (oneCharCode) {
@@ -11011,12 +11011,12 @@ class TextFormatter {
                         case "u":
                             this.underline = true;
                         case "n":
-                            // UNKNOWN AddAssignmentStatement
+                            output += "<br />";
                         default:
                             foundCode = false;
                     }
                     if (foundCode) {
-                        // UNKNOWN AddAssignmentStatement
+                        position += 1;
                     }
                 }
                 if (!foundCode) {
@@ -11026,13 +11026,13 @@ class TextFormatter {
                             var sizeCode: string = input.Substring(position + 1, 2);
                             if (Integer.TryParse(sizeCode, this.fontSize)) {
                                 foundCode = true;
-                                // UNKNOWN AddAssignmentStatement
+                                position += 3;
                             }
                         }
                     }
                 }
                 if (!foundCode) {
-                    // UNKNOWN AddAssignmentStatement
+                    output += "|";
                 }
             }
         } while (!(finished || position >= input.Length));
@@ -11044,41 +11044,41 @@ class TextFormatter {
         }
         var output: string = "";
         if (this.align.Length > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<align align=\"" + this.align + "\">";
         }
         if (this.fontSize > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<font size=\"" + (this.fontSize).toString() + "\">";
         }
         if (this.colour.Length > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<color color=\"" + this.colour + "\">";
         }
         if (this.bold) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<b>";
         }
         if (this.italic) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<i>";
         }
         if (this.underline) {
-            // UNKNOWN AddAssignmentStatement
+            output += "<u>";
         }
-        // UNKNOWN AddAssignmentStatement
+        output += input;
         if (this.underline) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</u>";
         }
         if (this.italic) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</i>";
         }
         if (this.bold) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</b>";
         }
         if (this.colour.Length > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</color>";
         }
         if (this.fontSize > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</font>";
         }
         if (this.align.Length > 0) {
-            // UNKNOWN AddAssignmentStatement
+            output += "</align>";
         }
         return output;
     }

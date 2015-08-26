@@ -361,6 +361,11 @@ namespace LegacyConvert
                         Tabs(depth),
                         ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments),
                         ProcessChildNodes(tryBlock.CatchBlocks.First(), depth, prepend, false, classFields, ignoreComments));
+                case SyntaxKind.AddAssignmentStatement:
+                    var assignment = (AssignmentStatementSyntax)node;
+                    var assignLeft = ProcessExpression(assignment.Left, classFields);
+                    var assignRight = ProcessExpression(assignment.Right, classFields);
+                    return string.Format("{0}{1} {3} {2};\n", Tabs(depth), assignLeft, assignRight, assignment.OperatorToken);
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
