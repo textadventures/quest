@@ -2751,7 +2751,7 @@ var LegacyGame = (function () {
                 this.LogASLError("Can't find exit in 'destroy exit <" + exitData + ">'");
                 return;
             }
-            roomExit.Parent.RemoveExit(roomExit);
+            roomExit.GetParent().RemoveExit(roomExit);
         } else {
             fromRoom = LCase(Trim(Left(exitData, scp - 1)));
             toRoom = Trim(Mid(exitData, scp + 1));
@@ -3838,7 +3838,7 @@ var LegacyGame = (function () {
                     this.AddObjectAction(this._numberObjs, this._defaultRoomProperties.Actions[j].ActionName, this._defaultRoomProperties.Actions[j].Script);
                 }
                 this._rooms[this._numberRooms].Exits = new RoomExits();
-                this._rooms[this._numberRooms].Exits.ObjId = this._rooms[this._numberRooms].ObjId;
+                this._rooms[this._numberRooms].Exits.SetObjId(this._rooms[this._numberRooms].ObjId);
             }
         } else if (this.BeginsWith(data, "object ")) {
             var paramData = this.GetParameter(data, ctx);
@@ -3917,7 +3917,7 @@ var LegacyGame = (function () {
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
-                exists = this._rooms[srcId].Exits.Places.ContainsKey(destRoom);
+                exists = this._rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
             } else {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
                     if (LCase(this._rooms[srcId].Places[i].PlaceName) == LCase(destRoom)) {
@@ -5085,7 +5085,7 @@ var LegacyGame = (function () {
             if (e == null) {
                 return "";
             } else {
-                return this._objs[e.ObjId].ObjectName;
+                return this._objs[e.GetObjId()].ObjectName;
             }
         }
         return "__NOTDEFINED";
@@ -5925,7 +5925,7 @@ var LegacyGame = (function () {
                 r.ObjId = this._numberObjs;
                 if (this._gameAslVersion >= 410) {
                     r.Exits = new RoomExits();
-                    r.Exits.ObjId = r.ObjId;
+                    r.Exits.SetObjId(r.ObjId);
                 }
                 if (defaultExists) {
                     this.AddToObjectProperties(defaultProperties.Properties, this._numberObjs, this._nullContext);
@@ -10179,8 +10179,8 @@ var LegacyGame = (function () {
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
-                this._rooms[roomId].Exits.Places.Values.forEach(function (roomExit) {
-                    this.AddToObjectList(objList, exitList, roomExit.DisplayName, 2 /* Room */);
+                this._rooms[roomId].Exits.GetPlaces().Values.forEach(function (roomExit) {
+                    this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), 2 /* Room */);
                 }, this);
             } else {
                 var r = this._rooms[roomId];
@@ -10398,8 +10398,8 @@ var LegacyGame = (function () {
         var exits = this._rooms[roomId].Exits;
         var dir = exits.GetDirectionEnum(exitName);
         if (dir == -1 /* None */) {
-            if (exits.Places.ContainsKey(exitName)) {
-                return exits.Places.Item(exitName);
+            if (exits.GetPlaces().ContainsKey(exitName)) {
+                return exits.GetPlaces().Item(exitName);
             }
         } else {
             return exits.GetDirectionExit(dir);
@@ -10413,7 +10413,7 @@ var LegacyGame = (function () {
             this.LogASLError("Can't find exit '" + tag + "'", 2 /* WarningError */);
             return;
         }
-        roomExit.IsLocked = lock;
+        roomExit.SetIsLocked(lock);
     };
     LegacyGame.prototype.DoBegin = function () {
         var gameBlock = this.GetDefineBlock("game");
@@ -10698,10 +10698,8 @@ var LegacyGame = (function () {
 })();
 var ChangeLog = (function () {
     function ChangeLog() {
-        this._changes = {};
+        this.Changes = {};
     }
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
     // appliesTo = room or object name
     // element = the thing that's changed, e.g. an action or property name
     // changeData = the actual change info
@@ -10709,17 +10707,12 @@ var ChangeLog = (function () {
         // the first four characters of the changeData will be "prop" or "acti", so we add this to the
         // key so that actions and properties don't collide.
         var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
-        if (this._changes.ContainsKey(key)) {
-            this._changes.Remove(key);
+        if (this.Changes.ContainsKey(key)) {
+            this.Changes.Remove(key);
         }
-        this._changes.Add(key, changeData);
+        this.Changes.Add(key, changeData);
     };
     return ChangeLog;
-})();
-var Config = (function () {
-    function Config() {
-    }
-    return Config;
 })();
 var RoomExit = (function () {
     function RoomExit(game) {
@@ -10729,25 +10722,94 @@ var RoomExit = (function () {
             game._objs = [];
         game._objs[game._numberObjs] = new ObjectType();
         this._objId = game._numberObjs;
-        // UNKNOWN WithBlock
+        var o = game._objs[this._objId];
+        o.IsExit = true;
+        o.Visible = true;
+        o.Exists = true;
     }
-    // If this code was properly object oriented, we could set up properties properly
-    // on the "object" object.
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
+    RoomExit.prototype.SetExitProperty = function (propertyName, value) {
+        this._game.AddToObjectProperties(propertyName + "=" + value, this._objId, this._game._nullContext);
+    };
+    RoomExit.prototype.GetExitProperty = function (propertyName) {
+        return this._game.GetObjectProperty(propertyName, this._objId, false, false);
+    };
+    RoomExit.prototype.SetExitPropertyBool = function (propertyName, value) {
+        var sPropertyString;
+        sPropertyString = propertyName;
+        if (!value) {
+            sPropertyString = "not " + sPropertyString;
+        }
+        this._game.AddToObjectProperties(sPropertyString, this._objId, this._game._nullContext);
+    };
+    RoomExit.prototype.GetExitPropertyBool = function (propertyName) {
+        return (this._game.GetObjectProperty(propertyName, this._objId, true, false) == "yes");
+    };
+    RoomExit.prototype.SetAction = function (actionName, value) {
+        this._game.AddToObjectActions("<" + actionName + "> " + value, this._objId, this._game._nullContext);
+    };
+    RoomExit.prototype.SetToRoom = function (value) {
+        this.SetExitProperty("to", value);
+        this.UpdateObjectName();
+    };
+    RoomExit.prototype.GetToRoom = function () {
+        return this.GetExitProperty("to");
+    };
+    RoomExit.prototype.SetPrefix = function (value) {
+        this.SetExitProperty("prefix", value);
+    };
+    RoomExit.prototype.GetPrefix = function () {
+        return this.GetExitProperty("prefix");
+    };
+    RoomExit.prototype.SetScript = function (value) {
+        if (Len(Value) > 0) {
+            this.SetAction("script", Value);
+        }
+    };
+    RoomExit.prototype.IsScript = function () {
+        return this._game.HasAction(this._objId, "script");
+    };
+    RoomExit.prototype.SetDirection = function (value) {
+        this._direction = value;
+        if (value != LegacyGame.Direction.None) {
+            this.UpdateObjectName();
+        }
+    };
+    RoomExit.prototype.GetDirection = function () {
+        return this._direction;
+    };
+    RoomExit.prototype.SetParent = function (value) {
+        this._parent = value;
+    };
+    RoomExit.prototype.GetParent = function () {
+        return this._parent;
+    };
+    RoomExit.prototype.GetObjId = function () {
+        return this._objId;
+    };
+    RoomExit.prototype.GetRoomId = function () {
+        if (this._roomId == 0) {
+            this._roomId = this._game.GetRoomID(this.GetToRoom(), this._game._nullContext);
+        }
+        return this._roomId;
+    };
+    RoomExit.prototype.GetDisplayName = function () {
+        return this._displayName;
+    };
+    RoomExit.prototype.GetDisplayText = function () {
+        return this._displayName;
+    };
+    RoomExit.prototype.SetIsLocked = function (value) {
+        this.SetExitPropertyBool("locked", value);
+    };
+    RoomExit.prototype.GetIsLocked = function () {
+        return this.GetExitPropertyBool("locked");
+    };
+    RoomExit.prototype.SetLockMessage = function (value) {
+        this.SetExitProperty("lockmessage", value);
+    };
+    RoomExit.prototype.GetLockMessage = function () {
+        return this.GetExitProperty("lockmessage");
+    };
     RoomExit.prototype.RunAction = function (actionName, ctx) {
         this._game.DoAction(this._objId, actionName, ctx);
     };
@@ -10764,50 +10826,50 @@ var RoomExit = (function () {
         if (this._parent == null) {
             return;
         }
-        parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
+        parentRoom = this._game._objs[this._parent.GetObjId()].ObjectName;
         objName = parentRoom;
         if (this._direction != LegacyGame.Direction.None) {
             objName = objName + "." + this._parent.GetDirectionName(this._direction);
             this._game._objs[this._objId].ObjectAlias = this._parent.GetDirectionName(this._direction);
         } else {
-            var lastExitIdString = this._game.GetObjectProperty("quest.lastexitid", (this._parent.ObjId), null, false);
+            var lastExitIdString = this._game.GetObjectProperty("quest.lastexitid", (this._parent.GetObjId()), null, false);
             if (lastExitIdString.Length == 0) {
                 lastExitId = 0;
             } else {
                 lastExitId = parseInt(lastExitId);
             }
             lastExitId = lastExitId + 1;
-            this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.ObjId), this._game._nullContext);
+            this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.GetObjId()), this._game._nullContext);
             objName = objName + ".exit" + (lastExitId).toString();
-            if (RoomId == 0) {
+            if (this.GetRoomId() == 0) {
                 // the room we're pointing at might not exist, especially if this is a script exit
-                this._displayName = ToRoom;
+                this._displayName = this.GetToRoom();
             } else {
-                if (Len(this._game._rooms[RoomId].RoomAlias) > 0) {
-                    this._displayName = this._game._rooms[RoomId].RoomAlias;
+                if (Len(this._game._rooms[this.GetRoomId()].RoomAlias) > 0) {
+                    this._displayName = this._game._rooms[this.GetRoomId()].RoomAlias;
                 } else {
-                    this._displayName = ToRoom;
+                    this._displayName = this.GetToRoom();
                 }
             }
             this._game._objs[this._objId].ObjectAlias = this._displayName;
-            Prefix = this._game._rooms[RoomId].Prefix;
+            this.SetPrefix(this._game._rooms[this.GetRoomId()].Prefix);
         }
         this._game._objs[this._objId].ObjectName = objName;
         this._game._objs[this._objId].ContainerRoom = parentRoom;
         this._objName = objName;
     };
     RoomExit.prototype.Go = function (ctx) {
-        if (IsLocked) {
-            if (ExitPropertyBool("lockmessage")) {
-                this._game.Print(ExitProperty("lockmessage"), ctx);
+        if (this.GetIsLocked()) {
+            if (this.GetExitPropertyBool("lockmessage")) {
+                this._game.Print(this.GetExitProperty("lockmessage"), ctx);
             } else {
                 this._game.PlayerErrorMessage(35 /* Locked */, ctx);
             }
         } else {
-            if (IsScript) {
+            if (this.IsScript()) {
                 this.RunScript(ctx);
             } else {
-                this._game.PlayGame(ToRoom, ctx);
+                this._game.PlayGame(this.GetToRoom(), ctx);
             }
         }
     };
@@ -10823,7 +10885,7 @@ var RoomExits = (function () {
     RoomExits.prototype.SetDirection = function (direction, roomExit) {
         if (this._directions.ContainsKey(direction)) {
             roomExit = this._directions.Item(direction);
-            this._game._objs[roomExit.ObjId].Exists = true;
+            this._game._objs[roomExit.GetObjId()].Exists = true;
         } else {
             roomExit = new RoomExit();
             this._directions.Add(direction, roomExit);
@@ -10837,11 +10899,11 @@ var RoomExits = (function () {
         return null;
     };
     RoomExits.prototype.AddPlaceExit = function (roomExit) {
-        if (this._places.ContainsKey(roomExit.ToRoom)) {
-            var removeItem = this._places.Item(roomExit.ToRoom);
+        if (this._places.ContainsKey(roomExit.GetToRoom())) {
+            var removeItem = this._places.Item(roomExit.GetToRoom());
             this.RemoveExit(removeItem);
         }
-        this._places.Add(roomExit.ToRoom, roomExit);
+        this._places.Add(roomExit.GetToRoom(), roomExit);
         this._regenerateAllExits = true;
     };
     RoomExits.prototype.AddExitFromTag = function (tag) {
@@ -10896,10 +10958,10 @@ var RoomExits = (function () {
         } else {
             roomExit = new RoomExit();
         }
-        roomExit.Parent = this;
-        roomExit.Direction = thisDir;
+        roomExit.SetParent(this);
+        roomExit.SetDirection(thisDir);
         if (this._game.BeginsWith(tag, "locked ")) {
-            roomExit.IsLocked = true;
+            roomExit.SetIsLocked(true);
             tag = this._game.GetEverythingAfter(tag, "locked ");
         }
         if (Left(Trim(tag), 1) == "<") {
@@ -10911,26 +10973,26 @@ var RoomExits = (function () {
         }
         if (Len(afterParam) > 0) {
             // Script exit
-            roomExit.Script = afterParam;
+            roomExit.SetScript(afterParam);
             if (thisDir == -1 /* None */) {
                 // A place exit with a script still has a ToRoom
-                roomExit.ToRoom = params[0];
+                roomExit.SetToRoom(params[0]);
 
                 // and may have a lock message
                 if (UBound(params) > 0) {
-                    roomExit.LockMessage = params[1];
+                    roomExit.SetLockMessage(params[1]);
                 }
             } else {
                 // A directional exit with a script may have no parameter.
                 // If it does have a parameter it will be a lock message.
                 if (param) {
-                    roomExit.LockMessage = params[0];
+                    roomExit.SetLockMessage(params[0]);
                 }
             }
         } else {
-            roomExit.ToRoom = params[0];
+            roomExit.SetToRoom(params[0]);
             if (UBound(params) > 0) {
-                roomExit.LockMessage = params[1];
+                roomExit.SetLockMessage(params[1]);
             }
         }
         if (thisDir == -1 /* None */) {
@@ -10981,9 +11043,15 @@ var RoomExits = (function () {
             this.AddExitFromTag("place <" + Trim(params[1]) + Mid(script, paramEnd));
         }
     };
-
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
+    RoomExits.prototype.SetObjId = function (value) {
+        this._objId = value;
+    };
+    RoomExits.prototype.GetObjId = function () {
+        return this._objId;
+    };
+    RoomExits.prototype.GetPlaces = function () {
+        return this._places;
+    };
     RoomExits.prototype.ExecuteGo = function (cmd, ctx) {
         // This will handle "n", "go east", "go [to] library" etc.
         var lExitID;
@@ -11013,7 +11081,7 @@ var RoomExits = (function () {
         this.AllExits().forEach(function (kvp) {
             count = count + 1;
             roomExit = kvp.Value;
-            list = list + this.GetDirectionToken((roomExit.Direction));
+            list = list + this.GetDirectionToken(roomExit.GetDirection());
             description = description + this.GetDirectionNameDisplay(roomExit);
             if (count < this.AllExits.Count - 1) {
                 description = description + ", ";
@@ -11108,19 +11176,19 @@ var RoomExits = (function () {
         return null;
     };
     RoomExits.prototype.GetDirectionNameDisplay = function (roomExit) {
-        if (roomExit.Direction != -1 /* None */) {
-            var dir = this.GetDirectionName((roomExit.Direction));
+        if (roomExit.GetDirection() != -1 /* None */) {
+            var dir = this.GetDirectionName(roomExit.GetDirection());
             return "|b" + dir + "|xb";
         }
-        var sDisplay = "|b" + roomExit.DisplayName + "|xb";
-        if (Len(roomExit.Prefix) > 0) {
-            sDisplay = roomExit.Prefix + " " + sDisplay;
+        var sDisplay = "|b" + roomExit.GetDisplayName() + "|xb";
+        if (Len(roomExit.GetPrefix()) > 0) {
+            sDisplay = roomExit.GetPrefix() + " " + sDisplay;
         }
         return "to " + sDisplay;
     };
     RoomExits.prototype.GetExitByObjectId = function (id) {
         this.AllExits().forEach(function (kvp) {
-            if (kvp.Value.ObjId == id) {
+            if (kvp.Value.GetObjId() == id) {
                 return kvp.Value;
             }
         }, this);
@@ -11133,13 +11201,13 @@ var RoomExits = (function () {
         this._allExits = new any();
         this._directions.Keys.forEach(function (dir) {
             var roomExit = this._directions.Item(dir);
-            if (this._game._objs[roomExit.ObjId].Exists) {
+            if (this._game._objs[roomExit.GetObjId()].Exists) {
                 this._allExits.Add(dir, this._directions.Item(dir));
             }
         }, this);
         this._places.Keys.forEach(function (dir) {
             var roomExit = this._places.Item(dir);
-            if (this._game._objs[roomExit.ObjId].Exists) {
+            if (this._game._objs[roomExit.GetObjId()].Exists) {
                 this._allExits.Add(dir, this._places.Item(dir));
             }
         }, this);
@@ -11149,12 +11217,12 @@ var RoomExits = (function () {
         // Don't remove directional exits, as if they're recreated
         // a new object will be created which will have the same name
         // as the old one. This is because we can't delete objects yet...
-        if (roomExit.Direction == -1 /* None */) {
-            if (this._places.ContainsKey(roomExit.ToRoom)) {
-                this._places.Remove(roomExit.ToRoom);
+        if (roomExit.GetDirection() == -1 /* None */) {
+            if (this._places.ContainsKey(roomExit.GetToRoom())) {
+                this._places.Remove(roomExit.GetToRoom());
             }
         }
-        this._game._objs[roomExit.ObjId].Exists = false;
+        this._game._objs[roomExit.GetObjId()].Exists = false;
         this._regenerateAllExits = true;
     };
     return RoomExits;

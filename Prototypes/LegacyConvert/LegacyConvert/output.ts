@@ -2710,7 +2710,7 @@ class LegacyGame {
                 this.LogASLError("Can't find exit in 'destroy exit <" + exitData + ">'");
                 return;
             }
-            roomExit.Parent.RemoveExit(roomExit);
+            roomExit.GetParent().RemoveExit(roomExit);
         } else {
             fromRoom = LCase(Trim(Left(exitData, scp - 1)));
             toRoom = Trim(Mid(exitData, scp + 1));
@@ -3769,7 +3769,7 @@ class LegacyGame {
                     this.AddObjectAction(this._numberObjs, this._defaultRoomProperties.Actions[j].ActionName, this._defaultRoomProperties.Actions[j].Script);
                 }
                 this._rooms[this._numberRooms].Exits = new RoomExits();
-                this._rooms[this._numberRooms].Exits.ObjId = this._rooms[this._numberRooms].ObjId;
+                this._rooms[this._numberRooms].Exits.SetObjId(this._rooms[this._numberRooms].ObjId);
             }
         } else if (this.BeginsWith(data, "object ")) {
             var paramData = this.GetParameter(data, ctx);
@@ -3846,7 +3846,7 @@ class LegacyGame {
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
-                exists = this._rooms[srcId].Exits.Places.ContainsKey(destRoom);
+                exists = this._rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
             } else {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
                     if (LCase(this._rooms[srcId].Places[i].PlaceName) == LCase(destRoom)) {
@@ -4985,7 +4985,7 @@ class LegacyGame {
             if (e == null) {
                 return "";
             } else {
-                return this._objs[e.ObjId].ObjectName;
+                return this._objs[e.GetObjId()].ObjectName;
             }
         }
         return "__NOTDEFINED";
@@ -5799,7 +5799,7 @@ class LegacyGame {
                 r.ObjId = this._numberObjs;
                 if (this._gameAslVersion >= 410) {
                     r.Exits = new RoomExits();
-                    r.Exits.ObjId = r.ObjId;
+                    r.Exits.SetObjId(r.ObjId);
                 }
                 if (defaultExists) {
                     this.AddToObjectProperties(defaultProperties.Properties, this._numberObjs, this._nullContext);
@@ -9953,8 +9953,8 @@ class LegacyGame {
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
-                this._rooms[roomId].Exits.Places.Values.forEach(function (roomExit) {
-                    this.AddToObjectList(objList, exitList, roomExit.DisplayName, Thing.Room);
+                this._rooms[roomId].Exits.GetPlaces().Values.forEach(function (roomExit) {
+                    this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), Thing.Room);
                 }, this);
             } else {
                 var r = this._rooms[roomId];
@@ -10168,8 +10168,8 @@ class LegacyGame {
         var exits = this._rooms[roomId].Exits;
         var dir = exits.GetDirectionEnum(exitName);
         if (dir == Direction.None) {
-            if (exits.Places.ContainsKey(exitName)) {
-                return exits.Places.Item(exitName);
+            if (exits.GetPlaces().ContainsKey(exitName)) {
+                return exits.GetPlaces().Item(exitName);
             }
         } else {
             return exits.GetDirectionExit(dir);
@@ -10183,7 +10183,7 @@ class LegacyGame {
             this.LogASLError("Can't find exit '" + tag + "'", LogType.WarningError);
             return;
         }
-        roomExit.IsLocked = lock;
+        roomExit.SetIsLocked(lock);
     }
     DoBegin(): void {
         var gameBlock: DefineBlock = this.GetDefineBlock("game");
@@ -10470,10 +10470,8 @@ class LegacyGame {
 class ChangeLog {
     // NOTE: We only actually use the Object change log at the moment, as that is the only
     // one that has properties and actions.
-    _appliesToType: AppliesTo;
-    _changes: any = {};
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
+    AppliesToType: AppliesTo;
+    Changes: any = {};
     // appliesTo = room or object name
     // element = the thing that's changed, e.g. an action or property name
     // changeData = the actual change info
@@ -10481,14 +10479,11 @@ class ChangeLog {
         // the first four characters of the changeData will be "prop" or "acti", so we add this to the
         // key so that actions and properties don't collide.
         var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
-        if (this._changes.ContainsKey(key)) {
-            this._changes.Remove(key);
+        if (this.Changes.ContainsKey(key)) {
+            this.Changes.Remove(key);
         }
-        this._changes.Add(key, changeData);
+        this.Changes.Add(key, changeData);
     }
-}
-class Config {
-    // UNKNOWN PropertyBlock
 }
 class RoomExit {
     Id: string;
@@ -10506,25 +10501,94 @@ class RoomExit {
         if (!game._objs) game._objs = [];
         game._objs[game._numberObjs] = new ObjectType();
         this._objId = game._numberObjs;
-        // UNKNOWN WithBlock
+        var o = game._objs[this._objId];
+        o.IsExit = true;
+        o.Visible = true;
+        o.Exists = true;
     }
-    // If this code was properly object oriented, we could set up properties properly
-    // on the "object" object.
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
+    SetExitProperty(propertyName: string, value: string): void {
+        this._game.AddToObjectProperties(propertyName + "=" + value, this._objId, this._game._nullContext);
+    }
+    GetExitProperty(propertyName: string): string {
+        return this._game.GetObjectProperty(propertyName, this._objId, false, false);
+    }
+    SetExitPropertyBool(propertyName: string, value: boolean): void {
+        var sPropertyString: string;
+        sPropertyString = propertyName;
+        if (!value) {
+            sPropertyString = "not " + sPropertyString;
+        }
+        this._game.AddToObjectProperties(sPropertyString, this._objId, this._game._nullContext);
+    }
+    GetExitPropertyBool(propertyName: string): boolean {
+        return (this._game.GetObjectProperty(propertyName, this._objId, true, false) == "yes");
+    }
+    SetAction(actionName: string, value: string): void {
+        this._game.AddToObjectActions("<" + actionName + "> " + value, this._objId, this._game._nullContext);
+    }
+    SetToRoom(value: string): void {
+        this.SetExitProperty("to", value);
+        this.UpdateObjectName();
+    }
+    GetToRoom(): string {
+        return this.GetExitProperty("to");
+    }
+    SetPrefix(value: string): void {
+        this.SetExitProperty("prefix", value);
+    }
+    GetPrefix(): string {
+        return this.GetExitProperty("prefix");
+    }
+    SetScript(value: string): void {
+        if (Len(Value) > 0) {
+            this.SetAction("script", Value);
+        }
+    }
+    IsScript(): boolean {
+        return this._game.HasAction(this._objId, "script");
+    }
+    SetDirection(value: Direction): void {
+        this._direction = value;
+        if (value != LegacyGame.Direction.None) {
+            this.UpdateObjectName();
+        }
+    }
+    GetDirection(): Direction {
+        return this._direction;
+    }
+    SetParent(value: RoomExits): void {
+        this._parent = value;
+    }
+    GetParent(): RoomExits {
+        return this._parent;
+    }
+    GetObjId(): number {
+        return this._objId;
+    }
+    GetRoomId(): number {
+        if (this._roomId == 0) {
+            this._roomId = this._game.GetRoomID(this.GetToRoom(), this._game._nullContext);
+        }
+        return this._roomId;
+    }
+    GetDisplayName(): string {
+        return this._displayName;
+    }
+    GetDisplayText(): string {
+        return this._displayName;
+    }
+    SetIsLocked(value: boolean): void {
+        this.SetExitPropertyBool("locked", value);
+    }
+    GetIsLocked(): boolean {
+        return this.GetExitPropertyBool("locked");
+    }
+    SetLockMessage(value: string): void {
+        this.SetExitProperty("lockmessage", value);
+    }
+    GetLockMessage(): string {
+        return this.GetExitProperty("lockmessage");
+    }
     RunAction(actionName: string, ctx: Context): void {
         this._game.DoAction(this._objId, actionName, ctx);
     }
@@ -10541,50 +10605,50 @@ class RoomExit {
         if (this._parent == null) {
             return;
         }
-        parentRoom = this._game._objs[this._parent.ObjId].ObjectName;
+        parentRoom = this._game._objs[this._parent.GetObjId()].ObjectName;
         objName = parentRoom;
         if (this._direction != LegacyGame.Direction.None) {
             objName = objName + "." + this._parent.GetDirectionName(this._direction);
             this._game._objs[this._objId].ObjectAlias = this._parent.GetDirectionName(this._direction);
         } else {
-            var lastExitIdString: string = this._game.GetObjectProperty("quest.lastexitid", (this._parent.ObjId), null, false);
+            var lastExitIdString: string = this._game.GetObjectProperty("quest.lastexitid", (this._parent.GetObjId()), null, false);
             if (lastExitIdString.Length == 0) {
                 lastExitId = 0;
             } else {
                 lastExitId = parseInt(lastExitId);
             }
             lastExitId = lastExitId + 1;
-            this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.ObjId), this._game._nullContext);
+            this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.GetObjId()), this._game._nullContext);
             objName = objName + ".exit" + (lastExitId).toString();
-            if (RoomId == 0) {
+            if (this.GetRoomId() == 0) {
                 // the room we're pointing at might not exist, especially if this is a script exit
-                this._displayName = ToRoom;
+                this._displayName = this.GetToRoom();
             } else {
-                if (Len(this._game._rooms[RoomId].RoomAlias) > 0) {
-                    this._displayName = this._game._rooms[RoomId].RoomAlias;
+                if (Len(this._game._rooms[this.GetRoomId()].RoomAlias) > 0) {
+                    this._displayName = this._game._rooms[this.GetRoomId()].RoomAlias;
                 } else {
-                    this._displayName = ToRoom;
+                    this._displayName = this.GetToRoom();
                 }
             }
             this._game._objs[this._objId].ObjectAlias = this._displayName;
-            Prefix = this._game._rooms[RoomId].Prefix;
+            this.SetPrefix(this._game._rooms[this.GetRoomId()].Prefix);
         }
         this._game._objs[this._objId].ObjectName = objName;
         this._game._objs[this._objId].ContainerRoom = parentRoom;
         this._objName = objName;
     }
     Go(ctx: Context): void {
-        if (IsLocked) {
-            if (ExitPropertyBool("lockmessage")) {
-                this._game.Print(ExitProperty("lockmessage"), ctx);
+        if (this.GetIsLocked()) {
+            if (this.GetExitPropertyBool("lockmessage")) {
+                this._game.Print(this.GetExitProperty("lockmessage"), ctx);
             } else {
                 this._game.PlayerErrorMessage(PlayerError.Locked, ctx);
             }
         } else {
-            if (IsScript) {
+            if (this.IsScript()) {
                 this.RunScript(ctx);
             } else {
-                this._game.PlayGame(ToRoom, ctx);
+                this._game.PlayGame(this.GetToRoom(), ctx);
             }
         }
     }
@@ -10603,7 +10667,7 @@ class RoomExits {
     SetDirection(direction: Direction, roomExit: RoomExit): void {
         if (this._directions.ContainsKey(direction)) {
             roomExit = this._directions.Item(direction);
-            this._game._objs[roomExit.ObjId].Exists = true;
+            this._game._objs[roomExit.GetObjId()].Exists = true;
         } else {
             roomExit = new RoomExit();
             this._directions.Add(direction, roomExit);
@@ -10617,11 +10681,11 @@ class RoomExits {
         return null;
     }
     AddPlaceExit(roomExit: RoomExit): void {
-        if (this._places.ContainsKey(roomExit.ToRoom)) {
-            var removeItem: RoomExit = this._places.Item(roomExit.ToRoom);
+        if (this._places.ContainsKey(roomExit.GetToRoom())) {
+            var removeItem: RoomExit = this._places.Item(roomExit.GetToRoom());
             this.RemoveExit(removeItem);
         }
-        this._places.Add(roomExit.ToRoom, roomExit);
+        this._places.Add(roomExit.GetToRoom(), roomExit);
         this._regenerateAllExits = true;
     }
     AddExitFromTag(tag: string): void {
@@ -10676,10 +10740,10 @@ class RoomExits {
         } else {
             roomExit = new RoomExit();
         }
-        roomExit.Parent = this;
-        roomExit.Direction = thisDir;
+        roomExit.SetParent(this);
+        roomExit.SetDirection(thisDir);
         if (this._game.BeginsWith(tag, "locked ")) {
-            roomExit.IsLocked = true;
+            roomExit.SetIsLocked(true);
             tag = this._game.GetEverythingAfter(tag, "locked ");
         }
         if (Left(Trim(tag), 1) == "<") {
@@ -10691,25 +10755,25 @@ class RoomExits {
         }
         if (Len(afterParam) > 0) {
             // Script exit
-            roomExit.Script = afterParam;
+            roomExit.SetScript(afterParam);
             if (thisDir == Direction.None) {
                 // A place exit with a script still has a ToRoom
-                roomExit.ToRoom = params[0];
+                roomExit.SetToRoom(params[0]);
                 // and may have a lock message
                 if (UBound(params) > 0) {
-                    roomExit.LockMessage = params[1];
+                    roomExit.SetLockMessage(params[1]);
                 }
             } else {
                 // A directional exit with a script may have no parameter.
                 // If it does have a parameter it will be a lock message.
                 if (param) {
-                    roomExit.LockMessage = params[0];
+                    roomExit.SetLockMessage(params[0]);
                 }
             }
         } else {
-            roomExit.ToRoom = params[0];
+            roomExit.SetToRoom(params[0]);
             if (UBound(params) > 0) {
-                roomExit.LockMessage = params[1];
+                roomExit.SetLockMessage(params[1]);
             }
         }
         if (thisDir == Direction.None) {
@@ -10758,8 +10822,15 @@ class RoomExits {
             this.AddExitFromTag("place <" + Trim(params[1]) + Mid(script, paramEnd));
         }
     }
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
+    SetObjId(value: number): void {
+        this._objId = value;
+    }
+    GetObjId(): number {
+        return this._objId;
+    }
+    GetPlaces(): any {
+        return this._places;
+    }
     ExecuteGo(cmd: string, ctx: Context): void {
         // This will handle "n", "go east", "go [to] library" etc.
         var lExitID: number;
@@ -10789,7 +10860,7 @@ class RoomExits {
         this.AllExits().forEach(function (kvp) {
             count = count + 1;
             roomExit = kvp.Value;
-            list = list + this.GetDirectionToken((roomExit.Direction));
+            list = list + this.GetDirectionToken(roomExit.GetDirection());
             description = description + this.GetDirectionNameDisplay(roomExit);
             if (count < this.AllExits.Count - 1) {
                 description = description + ", ";
@@ -10884,19 +10955,19 @@ class RoomExits {
         return null;
     }
     GetDirectionNameDisplay(roomExit: RoomExit): string {
-        if (roomExit.Direction != Direction.None) {
-            var dir = this.GetDirectionName((roomExit.Direction));
+        if (roomExit.GetDirection() != Direction.None) {
+            var dir = this.GetDirectionName(roomExit.GetDirection());
             return "|b" + dir + "|xb";
         }
-        var sDisplay = "|b" + roomExit.DisplayName + "|xb";
-        if (Len(roomExit.Prefix) > 0) {
-            sDisplay = roomExit.Prefix + " " + sDisplay;
+        var sDisplay = "|b" + roomExit.GetDisplayName() + "|xb";
+        if (Len(roomExit.GetPrefix()) > 0) {
+            sDisplay = roomExit.GetPrefix() + " " + sDisplay;
         }
         return "to " + sDisplay;
     }
     GetExitByObjectId(id: number): RoomExit {
         this.AllExits().forEach(function (kvp) {
-            if (kvp.Value.ObjId == id) {
+            if (kvp.Value.GetObjId() == id) {
                 return kvp.Value;
             }
         }, this);
@@ -10909,13 +10980,13 @@ class RoomExits {
         this._allExits = new any();
         this._directions.Keys.forEach(function (dir) {
             var roomExit = this._directions.Item(dir);
-            if (this._game._objs[roomExit.ObjId].Exists) {
+            if (this._game._objs[roomExit.GetObjId()].Exists) {
                 this._allExits.Add(dir, this._directions.Item(dir));
             }
         }, this);
         this._places.Keys.forEach(function (dir) {
             var roomExit = this._places.Item(dir);
-            if (this._game._objs[roomExit.ObjId].Exists) {
+            if (this._game._objs[roomExit.GetObjId()].Exists) {
                 this._allExits.Add(dir, this._places.Item(dir));
             }
         }, this);
@@ -10925,12 +10996,12 @@ class RoomExits {
         // Don't remove directional exits, as if they're recreated
         // a new object will be created which will have the same name
         // as the old one. This is because we can't delete objects yet...
-        if (roomExit.Direction == Direction.None) {
-            if (this._places.ContainsKey(roomExit.ToRoom)) {
-                this._places.Remove(roomExit.ToRoom);
+        if (roomExit.GetDirection() == Direction.None) {
+            if (this._places.ContainsKey(roomExit.GetToRoom())) {
+                this._places.Remove(roomExit.GetToRoom());
             }
         }
-        this._game._objs[roomExit.ObjId].Exists = false;
+        this._game._objs[roomExit.GetObjId()].Exists = false;
         this._regenerateAllExits = true;
     }
 }

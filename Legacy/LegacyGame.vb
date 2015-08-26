@@ -3172,7 +3172,7 @@ Public Class LegacyGame
                 Exit Sub
             End If
 
-            roomExit.Parent.RemoveExit(roomExit)
+            roomExit.GetParent().RemoveExit(roomExit)
 
         Else
 
@@ -4437,7 +4437,7 @@ Public Class LegacyGame
                 Next j
 
                 _rooms(_numberRooms).Exits = New RoomExits(Me)
-                _rooms(_numberRooms).Exits.ObjId = _rooms(_numberRooms).ObjId
+                _rooms(_numberRooms).Exits.SetObjId(_rooms(_numberRooms).ObjId)
             End If
 
         ElseIf BeginsWith(data, "object ") Then
@@ -4528,7 +4528,7 @@ Public Class LegacyGame
         Dim exists = False
         If BeginsWith(exitData, "<") Then
             If _gameAslVersion >= 410 Then
-                exists = _rooms(srcId).Exits.Places.ContainsKey(destRoom)
+                exists = _rooms(srcId).Exits.GetPlaces().ContainsKey(destRoom)
             Else
                 For i = 1 To _rooms(srcId).NumberPlaces
                     If LCase(_rooms(srcId).Places(i).PlaceName) = LCase(destRoom) Then
@@ -5879,7 +5879,7 @@ Public Class LegacyGame
             If e Is Nothing Then
                 Return ""
             Else
-                Return _objs(e.ObjId).ObjectName
+                Return _objs(e.GetObjId()).ObjectName
             End If
         End If
 
@@ -6853,7 +6853,7 @@ Public Class LegacyGame
 
                 If _gameAslVersion >= 410 Then
                     r.Exits = New RoomExits(Me)
-                    r.Exits.ObjId = r.ObjId
+                    r.Exits.SetObjId(r.ObjId)
                 End If
 
                 If defaultExists Then
@@ -11539,8 +11539,8 @@ Public Class LegacyGame
         roomId = GetRoomID(_currentRoom, ctx)
         If roomId > 0 Then
             If _gameAslVersion >= 410 Then
-                For Each roomExit As RoomExit In _rooms(roomId).Exits.Places.Values
-                    AddToObjectList(objList, exitList, roomExit.DisplayName, Thing.Room)
+                For Each roomExit As RoomExit In _rooms(roomId).Exits.GetPlaces().Values
+                    AddToObjectList(objList, exitList, roomExit.GetDisplayName(), Thing.Room)
                 Next
             Else
                 Dim r = _rooms(roomId)
@@ -11826,8 +11826,8 @@ Public Class LegacyGame
         Dim exits = _rooms(roomId).Exits
         Dim dir = exits.GetDirectionEnum(exitName)
         If dir = Direction.None Then
-            If exits.Places.ContainsKey(exitName) Then
-                Return exits.Places.Item(exitName)
+            If exits.GetPlaces().ContainsKey(exitName) Then
+                Return exits.GetPlaces().Item(exitName)
             End If
         Else
             Return exits.GetDirectionExit(dir)
@@ -11846,7 +11846,7 @@ Public Class LegacyGame
             Exit Sub
         End If
 
-        roomExit.IsLocked = lock
+        roomExit.SetIsLocked(lock)
     End Sub
 
     '<NOCONVERT

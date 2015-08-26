@@ -1,5 +1,6 @@
 Option Strict On
 Option Explicit On
+Option Infer On
 
 Imports TextAdventures.Quest.LegacyASL.LegacyGame
 
@@ -21,143 +22,115 @@ Friend Class RoomExit
         ReDim Preserve game._objs(game._numberObjs)
         game._objs(game._numberObjs) = New ObjectType
         _objId = game._numberObjs
-        With game._objs(_objId)
-            .IsExit = True
-            .Visible = True
-            .Exists = True
-        End With
+        Dim o = game._objs(_objId)
+        o.IsExit = True
+        o.Visible = True
+        o.Exists = True
     End Sub
 
-    ' If this code was properly object oriented, we could set up properties properly
-    ' on the "object" object.
-    Private Property ExitProperty(propertyName As String) As String
-        Get
-            ExitProperty = _game.GetObjectProperty(propertyName, _objId, False, False)
-        End Get
-        Set(Value As String)
-            _game.AddToObjectProperties(propertyName & "=" & Value, _objId, _game._nullContext)
-        End Set
-    End Property
+    Private Sub SetExitProperty(propertyName As String, value As String)
+        _game.AddToObjectProperties(propertyName & "=" & value, _objId, _game._nullContext)
+    End Sub
 
-    Private Property ExitPropertyBool(propertyName As String) As Boolean
-        Get
-            ExitPropertyBool = (_game.GetObjectProperty(propertyName, _objId, True, False) = "yes")
-        End Get
-        Set(Value As Boolean)
-            Dim sPropertyString As String
-            sPropertyString = propertyName
-            If Not Value Then sPropertyString = "not " & sPropertyString
-            _game.AddToObjectProperties(sPropertyString, _objId, _game._nullContext)
-        End Set
-    End Property
+    Private Function GetExitProperty(propertyName As String) As String
+        Return _game.GetObjectProperty(propertyName, _objId, False, False)
+    End Function
 
-    Private WriteOnly Property Action(actionName As String) As String
-        Set(Value As String)
-            _game.AddToObjectActions("<" & actionName & "> " & Value, _objId, _game._nullContext)
-        End Set
-    End Property
+    Private Sub SetExitPropertyBool(propertyName As String, value As Boolean)
+        Dim sPropertyString As String
+        sPropertyString = propertyName
+        If Not value Then sPropertyString = "not " & sPropertyString
+        _game.AddToObjectProperties(sPropertyString, _objId, _game._nullContext)
+    End Sub
 
+    Private Function GetExitPropertyBool(propertyName As String) As Boolean
+        Return (_game.GetObjectProperty(propertyName, _objId, True, False) = "yes")
+    End Function
 
-    Public Property ToRoom() As String
-        Get
-            ToRoom = ExitProperty("to")
-        End Get
-        Set(Value As String)
-            ExitProperty("to") = Value
-            UpdateObjectName()
-        End Set
-    End Property
+    Private Sub SetAction(actionName As String, value As String)
+        _game.AddToObjectActions("<" & actionName & "> " & value, _objId, _game._nullContext)
+    End Sub
 
+    Public Sub SetToRoom(value As String)
+        SetExitProperty("to", value)
+        UpdateObjectName()
+    End Sub
 
-    Public Property Prefix() As String
-        Get
-            Prefix = ExitProperty("prefix")
-        End Get
-        Set(Value As String)
-            ExitProperty("prefix") = Value
-        End Set
-    End Property
+    Public Function GetToRoom() As String
+        Return GetExitProperty("to")
+    End Function
 
-    Public WriteOnly Property Script() As String
-        Set(Value As String)
-            If Len(Value) > 0 Then
-                Action("script") = Value
-            End If
-        End Set
-    End Property
+    Public Sub SetPrefix(value As String)
+        SetExitProperty("prefix", value)
+    End Sub
 
-    Private ReadOnly Property IsScript() As Boolean
-        Get
-            IsScript = _game.HasAction(_objId, "script")
-        End Get
-    End Property
+    Public Function GetPrefix() As String
+        Return GetExitProperty("prefix")
+    End Function
 
+    Public Sub SetScript(value As String)
+        If Len(Value) > 0 Then
+            SetAction("script", Value)
+        End If
+    End Sub
 
-    Public Property Direction() As LegacyGame.Direction
-        Get
-            Direction = _direction
-        End Get
-        Set(Value As LegacyGame.Direction)
-            _direction = Value
-            If Value <> LegacyGame.Direction.None Then UpdateObjectName()
-        End Set
-    End Property
+    Private Function IsScript() As Boolean
+        Return _game.HasAction(_objId, "script")
+    End Function
 
-    Public Property Parent() As RoomExits
-        Get
-            Parent = _parent
-        End Get
-        Set(Value As RoomExits)
-            _parent = Value
-        End Set
-    End Property
+    Public Sub SetDirection(value As Direction)
+        _direction = value
+        If value <> LegacyGame.Direction.None Then UpdateObjectName()
+    End Sub
 
-    Public ReadOnly Property ObjId() As Integer
-        Get
-            ObjId = _objId
-        End Get
-    End Property
+    Public Function GetDirection() As Direction
+        Return _direction
+    End Function
 
-    Private ReadOnly Property RoomId() As Integer
-        Get
-            If _roomId = 0 Then
-                _roomId = _game.GetRoomID(ToRoom, _game._nullContext)
-            End If
+    Public Sub SetParent(value As RoomExits)
+        _parent = value
+    End Sub
 
-            RoomId = _roomId
-        End Get
-    End Property
+    Public Function GetParent() As RoomExits
+        Return _parent
+    End Function
 
-    Public ReadOnly Property DisplayName() As String
-        Get
-            DisplayName = _displayName
-        End Get
-    End Property
+    Public Function GetObjId() As Integer
+        Return _objId
+    End Function
 
-    Public ReadOnly Property DisplayText() As String
-        Get
-            DisplayText = _displayName
-        End Get
-    End Property
+    Private Function GetRoomId() As Integer
+        If _roomId = 0 Then
+            _roomId = _game.GetRoomID(GetToRoom(), _game._nullContext)
+        End If
 
+        Return _roomId
+    End Function
 
-    Public Property IsLocked() As Boolean
-        Get
-            IsLocked = ExitPropertyBool("locked")
-        End Get
-        Set(Value As Boolean)
-            ExitPropertyBool("locked") = Value
-        End Set
-    End Property
+    Public Function GetDisplayName() As String
+        Return _displayName
+    End Function
 
-    Public Property LockMessage() As String
-        Get
-            LockMessage = ExitProperty("lockmessage")
-        End Get
-        Set(Value As String)
-            ExitProperty("lockmessage") = Value
-        End Set
-    End Property
+    Public Function GetDisplayText() As String
+        Return _displayName
+    End Function
+
+    Public Sub SetIsLocked(value As Boolean)
+        SetExitPropertyBool("locked", value)
+    End Sub
+
+    Public Function GetIsLocked() As Boolean
+        Return GetExitPropertyBool("locked")
+    End Function
+
+    Public Sub SetLockMessage(value As String)
+        SetExitProperty("lockmessage", value)
+    End Sub
+
+    Public Function GetLockMessage() As String
+        Return GetExitProperty("lockmessage")
+    End Function
+
     Private Sub RunAction(ByRef actionName As String, ByRef ctx As Context)
         _game.DoAction(_objId, actionName, ctx)
     End Sub
@@ -175,7 +148,7 @@ Friend Class RoomExit
         If Len(_objName) > 0 Then Exit Sub
         If _parent Is Nothing Then Exit Sub
 
-        parentRoom = _game._objs(_parent.ObjId).ObjectName
+        parentRoom = _game._objs(_parent.GetObjId()).ObjectName
 
         objName = parentRoom
 
@@ -183,29 +156,29 @@ Friend Class RoomExit
             objName = objName & "." & _parent.GetDirectionName(_direction)
             _game._objs(_objId).ObjectAlias = _parent.GetDirectionName(_direction)
         Else
-            Dim lastExitIdString As String = _game.GetObjectProperty("quest.lastexitid", (_parent.ObjId), , False)
+            Dim lastExitIdString As String = _game.GetObjectProperty("quest.lastexitid", (_parent.GetObjId()), , False)
             If lastExitIdString.Length = 0 Then
                 lastExitId = 0
             Else
                 lastExitId = CInt(lastExitId)
             End If
             lastExitId = lastExitId + 1
-            _game.AddToObjectProperties("quest.lastexitid=" & CStr(lastExitId), (_parent.ObjId), _game._nullContext)
+            _game.AddToObjectProperties("quest.lastexitid=" & CStr(lastExitId), (_parent.GetObjId()), _game._nullContext)
             objName = objName & ".exit" & CStr(lastExitId)
 
-            If RoomId = 0 Then
+            If GetRoomId() = 0 Then
                 ' the room we're pointing at might not exist, especially if this is a script exit
-                _displayName = ToRoom
+                _displayName = GetToRoom()
             Else
-                If Len(_game._rooms(RoomId).RoomAlias) > 0 Then
-                    _displayName = _game._rooms(RoomId).RoomAlias
+                If Len(_game._rooms(GetRoomId()).RoomAlias) > 0 Then
+                    _displayName = _game._rooms(GetRoomId()).RoomAlias
                 Else
-                    _displayName = ToRoom
+                    _displayName = GetToRoom()
                 End If
             End If
 
             _game._objs(_objId).ObjectAlias = _displayName
-            Prefix = _game._rooms(RoomId).Prefix
+            SetPrefix(_game._rooms(GetRoomId()).Prefix)
 
         End If
 
@@ -217,17 +190,17 @@ Friend Class RoomExit
     End Sub
 
     Friend Sub Go(ByRef ctx As Context)
-        If IsLocked Then
-            If ExitPropertyBool("lockmessage") Then
-                _game.Print(ExitProperty("lockmessage"), ctx)
+        If GetIsLocked() Then
+            If GetExitPropertyBool("lockmessage") Then
+                _game.Print(GetExitProperty("lockmessage"), ctx)
             Else
                 _game.PlayerErrorMessage(PlayerError.Locked, ctx)
             End If
         Else
-            If IsScript Then
+            If IsScript() Then
                 RunScript(ctx)
             Else
-                _game.PlayGame(ToRoom, ctx)
+                _game.PlayGame(GetToRoom(), ctx)
             End If
         End If
     End Sub

@@ -21,8 +21,6 @@ namespace LegacyConvert
             input.Append("\n");
             input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\ChangeLog.vb"));
             input.Append("\n");
-            input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\Config.vb"));
-            input.Append("\n");
             input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\RoomExit.vb"));
             input.Append("\n");
             input.Append(System.IO.File.ReadAllText(@"..\..\..\..\..\Legacy\RoomExits.vb"));

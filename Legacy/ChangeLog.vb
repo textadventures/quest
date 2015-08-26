@@ -14,23 +14,8 @@ Friend Class ChangeLog
         Room
     End Enum
 
-    Private _appliesToType As AppliesTo
-    Private _changes As New Dictionary(Of String, String)
-
-    Public Property AppliesToType() As AppliesTo
-        Get
-            Return _appliesToType
-        End Get
-        Set(Value As AppliesTo)
-            _appliesToType = Value
-        End Set
-    End Property
-
-    Public ReadOnly Property Changes() As Dictionary(Of String, String)
-        Get
-            Return _changes
-        End Get
-    End Property
+    Public AppliesToType As AppliesTo
+    Public Changes As New Dictionary(Of String, String)
 
     ' appliesTo = room or object name
     ' element = the thing that's changed, e.g. an action or property name
@@ -40,10 +25,10 @@ Friend Class ChangeLog
         ' key so that actions and properties don't collide.
 
         Dim key = appliesTo & "#" & Left(changeData, 4) & "~" & element
-        If _changes.ContainsKey(key) Then
-            _changes.Remove(key)
+        If Changes.ContainsKey(key) Then
+            Changes.Remove(key)
         End If
 
-        _changes.Add(key, changeData)
+        Changes.Add(key, changeData)
     End Sub
 End Class

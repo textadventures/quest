@@ -23,7 +23,7 @@ Friend Class RoomExits
 
         If _directions.ContainsKey(direction) Then
             roomExit = _directions.Item(direction)
-            _game._objs(roomExit.ObjId).Exists = True
+            _game._objs(roomExit.GetObjId()).Exists = True
         Else
             roomExit = New RoomExit(_game)
             _directions.Add(direction, roomExit)
@@ -42,12 +42,12 @@ Friend Class RoomExits
 
     Public Sub AddPlaceExit(ByRef roomExit As RoomExit)
 
-        If _places.ContainsKey(roomExit.ToRoom) Then
-            Dim removeItem As RoomExit = _places.Item(roomExit.ToRoom)
+        If _places.ContainsKey(roomExit.GetToRoom()) Then
+            Dim removeItem As RoomExit = _places.Item(roomExit.GetToRoom())
             RemoveExit(removeItem)
         End If
 
-        _places.Add(roomExit.ToRoom, roomExit)
+        _places.Add(roomExit.GetToRoom(), roomExit)
         _regenerateAllExits = True
 
     End Sub
@@ -108,11 +108,11 @@ Friend Class RoomExits
             roomExit = New RoomExit(_game)
         End If
 
-        roomExit.Parent = Me
-        roomExit.Direction = thisDir
+        roomExit.SetParent(Me)
+        roomExit.SetDirection(thisDir)
 
         If _game.BeginsWith(tag, "locked ") Then
-            roomExit.IsLocked = True
+            roomExit.SetIsLocked(True)
             tag = _game.GetEverythingAfter(tag, "locked ")
         End If
 
@@ -126,27 +126,27 @@ Friend Class RoomExits
 
         If Len(afterParam) > 0 Then
             ' Script exit
-            roomExit.Script = afterParam
+            roomExit.SetScript(afterParam)
 
             If thisDir = Direction.None Then
                 ' A place exit with a script still has a ToRoom
-                roomExit.ToRoom = params(0)
+                roomExit.SetToRoom(params(0))
 
                 ' and may have a lock message
                 If UBound(params) > 0 Then
-                    roomExit.LockMessage = params(1)
+                    roomExit.SetLockMessage(params(1))
                 End If
             Else
                 ' A directional exit with a script may have no parameter.
                 ' If it does have a parameter it will be a lock message.
                 If param Then
-                    roomExit.LockMessage = params(0)
+                    roomExit.SetLockMessage(params(0))
                 End If
             End If
         Else
-            roomExit.ToRoom = params(0)
+            roomExit.SetToRoom(params(0))
             If UBound(params) > 0 Then
-                roomExit.LockMessage = params(1)
+                roomExit.SetLockMessage(params(1))
             End If
         End If
 
@@ -206,20 +206,17 @@ Friend Class RoomExits
 
     End Sub
 
-    Public Property ObjId() As Integer
-        Get
-            ObjId = _objId
-        End Get
-        Set(Value As Integer)
-            _objId = Value
-        End Set
-    End Property
+    Public Sub SetObjId(value As Integer)
+        _objId = value
+    End Sub
 
-    Public ReadOnly Property Places() As Dictionary(Of String, RoomExit)
-        Get
-            Places = _places
-        End Get
-    End Property
+    Public Function GetObjId() As Integer
+        Return _objId
+    End Function
+
+    Public Function GetPlaces() As Dictionary(Of String, RoomExit)
+        Return _places
+    End Function
 
     Friend Sub ExecuteGo(cmd As String, ByRef ctx As Context)
         ' This will handle "n", "go east", "go [to] library" etc.
@@ -261,7 +258,7 @@ Friend Class RoomExits
             count = count + 1
             roomExit = kvp.Value
 
-            list = list & GetDirectionToken((roomExit.Direction))
+            list = list & GetDirectionToken(roomExit.GetDirection())
             description = description & GetDirectionNameDisplay(roomExit)
 
             If count < AllExits.Count - 1 Then
@@ -366,21 +363,21 @@ Friend Class RoomExits
     End Function
 
     Public Function GetDirectionNameDisplay(ByRef roomExit As RoomExit) As String
-        If roomExit.Direction <> Direction.None Then
-            Dim dir = GetDirectionName((roomExit.Direction))
+        If roomExit.GetDirection() <> Direction.None Then
+            Dim dir = GetDirectionName(roomExit.GetDirection())
             Return "|b" & dir & "|xb"
         End If
 
-        Dim sDisplay = "|b" & roomExit.DisplayName & "|xb"
-        If Len(roomExit.Prefix) > 0 Then
-            sDisplay = roomExit.Prefix & " " & sDisplay
+        Dim sDisplay = "|b" & roomExit.GetDisplayName() & "|xb"
+        If Len(roomExit.GetPrefix()) > 0 Then
+            sDisplay = roomExit.GetPrefix() & " " & sDisplay
         End If
         Return "to " & sDisplay
     End Function
 
     Private Function GetExitByObjectId(ByRef id As Integer) As RoomExit
         For Each kvp As KeyValuePair(Of Object, RoomExit) In AllExits()
-            If kvp.Value.ObjId = id Then
+            If kvp.Value.GetObjId() = id Then
                 Return kvp.Value
             End If
         Next
@@ -396,14 +393,14 @@ Friend Class RoomExits
 
         For Each dir As Direction In _directions.Keys
             Dim roomExit = _directions.Item(dir)
-            If _game._objs(roomExit.ObjId).Exists Then
+            If _game._objs(roomExit.GetObjId()).Exists Then
                 _allExits.Add(dir, _directions.Item(dir))
             End If
         Next
 
         For Each dir As String In _places.Keys
             Dim roomExit = _places.Item(dir)
-            If _game._objs(roomExit.ObjId).Exists Then
+            If _game._objs(roomExit.GetObjId()).Exists Then
                 _allExits.Add(dir, _places.Item(dir))
             End If
         Next
@@ -416,13 +413,13 @@ Friend Class RoomExits
         ' a new object will be created which will have the same name
         ' as the old one. This is because we can't delete objects yet...
 
-        If roomExit.Direction = Direction.None Then
-            If _places.ContainsKey(roomExit.ToRoom) Then
-                _places.Remove(roomExit.ToRoom)
+        If roomExit.GetDirection() = Direction.None Then
+            If _places.ContainsKey(roomExit.GetToRoom()) Then
+                _places.Remove(roomExit.GetToRoom())
             End If
         End If
 
-        _game._objs(roomExit.ObjId).Exists = False
+        _game._objs(roomExit.GetObjId()).Exists = False
         _regenerateAllExits = True
     End Sub
 End Class
