@@ -1246,7 +1246,7 @@ class LegacyGame {
         // 'define' block. Supports nested defines.
         if (LCase(Right(filename, 4)) == ".zip") {
             this._originalFilename = filename;
-            filename = this.GetUnzippedFile(filename);
+            filename = GetUnzippedFile(filename);
             this._gamePath = System.IO.Path.GetDirectoryName(filename);
         }
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
@@ -2693,9 +2693,6 @@ class LegacyGame {
                 return colour;
         }
     }
-    DoPrint(text: string): void {
-        // UNKNOWN RaiseEventStatement
-    }
     DestroyExit(exitData: string, ctx: Context): void {
         var fromRoom: string = "";
         var toRoom: string = "";
@@ -2754,11 +2751,6 @@ class LegacyGame {
     }
     DoClear(): void {
         this._player.ClearScreen();
-    }
-    DoWait(): void {
-        this._player.DoWait();
-        this.ChangeState(State.Waiting);
-        // UNKNOWN SyncLockBlock
     }
     ExecuteFlag(line: string, ctx: Context): void {
         var propertyString: string = "";
@@ -4661,11 +4653,6 @@ class LegacyGame {
             this.UpdateItems(ctx);
         }
     }
-    Pause(duration: number): void {
-        this._player.DoPause(duration);
-        this.ChangeState(State.Waiting);
-        // UNKNOWN SyncLockBlock
-    }
     ConvertParameter(parameter: string, convertChar: string, action: ConvertType, ctx: Context): string {
         // Returns a string with functions, string and
         // numeric variables executed or converted as
@@ -5048,22 +5035,6 @@ class LegacyGame {
         }
         // UNKNOWN TryBlock
     }
-    ExecuteIfAsk(question: string): boolean {
-        this._player.ShowQuestion(question);
-        this.ChangeState(State.Waiting);
-        // UNKNOWN SyncLockBlock
-        return this._questionResponse;
-    }
-    SetQuestionResponse(response: boolean): void {
-        var runnerThread: any = {};
-        this.ChangeState(State.Working);
-        runnerThread.Start(response);
-        this.WaitForStateChange(State.Working);
-    }
-    SetQuestionResponseInNewThread(response: Object): void {
-        this._questionResponse = response;
-        // UNKNOWN SyncLockBlock
-    }
     ExecuteIfGot(item: string): boolean {
         if (this._gameAslVersion >= 280) {
             for (var i = 1; i <= this._numberObjs; i++) {
@@ -5256,6 +5227,7 @@ class LegacyGame {
     PlayMedia(filename: string, sync: boolean, looped: boolean): void {
         if (filename.Length == 0) {
             this._player.StopSound();
+            //TODO: Handle sync parameter
         } else {
             if (looped && sync) {
                 sync = false;
@@ -5264,9 +5236,6 @@ class LegacyGame {
             this._player.PlaySound(filename, sync, looped);
             if (sync) {
                 this.ChangeState(State.Waiting);
-            }
-            if (sync) {
-                // UNKNOWN SyncLockBlock
             }
         }
     }
@@ -7826,7 +7795,14 @@ class LegacyGame {
             return true;
         }
         var cmd = LCase(input);
-        // UNKNOWN SyncLockBlock
+        if (this._commandOverrideModeOn) {
+            // Commands have been overridden for this command,
+            // so put input into previously specified variable
+            // and exit:
+            this.SetStringContents(this._commandOverrideVariable, input, ctx);
+            System.Threading.Monitor.PulseAll(this._commandLock);
+            return false;
+        }
         var userCommandReturn: boolean;
         if (echo) {
             this.Print("> " + input, ctx);
@@ -8791,8 +8767,7 @@ class LegacyGame {
         this._commandOverrideVariable = this.GetParameter(scriptLine, ctx);
         // Now, wait for CommandOverrideModeOn to be set
         // to False by ExecCommand. Execution can then resume.
-        this.ChangeState(State.Waiting, true);
-        // UNKNOWN SyncLockBlock
+        // TODO: Handle in TypeScript version
         this._commandOverrideModeOn = false;
         // State will have been changed to Working when the user typed their response,
         // and will be set back to Ready when the call to ExecCommand has finished
@@ -9616,7 +9591,7 @@ class LegacyGame {
                 }
             }
         }
-        // UNKNOWN RaiseEventStatement
+        // TODO...
         if (this._gameAslVersion >= 284) {
             this.UpdateStatusVars(ctx);
         } else {
@@ -9737,22 +9712,9 @@ class LegacyGame {
                 }
             }
         }
-        // UNKNOWN RaiseEventStatement
+        // TODO...
         this._gotoExits = exitList;
         this.UpdateExitsList();
-    }
-    UpdateExitsList(): void {
-        // The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
-        // ASL4 code produces these separately. So we keep track of them separately and then
-        // merge to send to the Player.
-        var mergedList: any = {};
-        this._compassExits.forEach(function (listItem) {
-            mergedList.Add(listItem);
-        }, this);
-        this._gotoExits.forEach(function (listItem) {
-            mergedList.Add(listItem);
-        }, this);
-        // UNKNOWN RaiseEventStatement
     }
     UpdateStatusVars(ctx: Context): void {
         var displayData: string;
@@ -9958,12 +9920,6 @@ class LegacyGame {
         }
         roomExit.IsLocked = lock;
     }
-    Begin(): void {
-        var runnerThread: any = {};
-        this.ChangeState(State.Working);
-        runnerThread.Start();
-        // UNKNOWN SyncLockBlock
-    }
     DoBegin(): void {
         var gameBlock: DefineBlock = this.GetDefineBlock("game");
         var ctx: Context = new Context();
@@ -10037,21 +9993,15 @@ class LegacyGame {
         this.RaiseNextTimerTickRequest();
         this.ChangeState(State.Ready);
     }
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
     Finish(): void {
         this.GameFinished();
     }
-    // UNKNOWN EventStatement
-    // UNKNOWN EventStatement
-    // UNKNOWN EventStatement
     Save(filename: string, html: string): void {
         this.SaveGame(filename);
     }
     Save(html: string): number[] {
-        return this.SaveGame(Filename, false);
+        return this.SaveGame(this._filename, false);
     }
-    // UNKNOWN PropertyBlock
     SendCommand(command: string): void {
         this.SendCommand(command, 0, null);
     }
@@ -10070,23 +10020,17 @@ class LegacyGame {
         var runnerThread: any = {};
         this.ChangeState(State.Working);
         runnerThread.Start(command);
-        this.WaitForStateChange(State.Working);
+        WaitForStateChange(State.Working);
         if (elapsedTime > 0) {
             this.Tick(elapsedTime);
         } else {
             this.RaiseNextTimerTickRequest();
         }
     }
-    WaitForStateChange(changedFromState: State): void {
-        // UNKNOWN SyncLockBlock
-    }
     ProcessCommandInNewThread(command: Object): void {
         // Process command, and change state to Ready if the command finished processing
         // UNKNOWN TryBlock
     }
-    SendEvent(eventName: string, param: string): void {
-    }
-    // UNKNOWN EventStatement
     Initialise(player: IPlayer): boolean {
         this._player = player;
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
@@ -10097,12 +10041,7 @@ class LegacyGame {
     }
     GameFinished(): void {
         this._gameFinished = true;
-        // UNKNOWN RaiseEventStatement
         this.ChangeState(State.Finished);
-        // In case we're in the middle of processing an "enter" command, nudge the thread along
-        // UNKNOWN SyncLockBlock
-        // UNKNOWN SyncLockBlock
-        // UNKNOWN SyncLockBlock
         this.Cleanup();
     }
     GetResourcePath(filename: string): string {
@@ -10140,7 +10079,6 @@ class LegacyGame {
         }
         return this.GetResourceLines(libCode);
     }
-    // UNKNOWN PropertyBlock
     Tick(elapsedTime: number): void {
         var i: number;
         var timerScripts: any = {};
@@ -10163,7 +10101,7 @@ class LegacyGame {
             var runnerThread: any = {};
             this.ChangeState(State.Working);
             runnerThread.Start(timerScripts);
-            this.WaitForStateChange(State.Working);
+            WaitForStateChange(State.Working);
         }
         this.RaiseNextTimerTickRequest();
     }
@@ -10193,7 +10131,7 @@ class LegacyGame {
             nextTrigger = 0;
         }
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
-        // UNKNOWN RaiseEventStatement
+        // TODO...
     }
     ChangeState(newState: State): void {
         var acceptCommands: boolean = (newState == State.Ready);
@@ -10201,93 +10139,13 @@ class LegacyGame {
     }
     ChangeState(newState: State, acceptCommands: boolean): void {
         this._readyForCommand = acceptCommands;
-        // UNKNOWN SyncLockBlock
-    }
-    FinishWait(): void {
-        if ((this._state != State.Waiting)) {
-            return;
-        }
-        var runnerThread: any = {};
-        this.ChangeState(State.Working);
-        runnerThread.Start();
-        this.WaitForStateChange(State.Working);
-    }
-    FinishWaitInNewThread(): void {
-        // UNKNOWN SyncLockBlock
-    }
-    FinishPause(): void {
-        this.FinishWait();
     }
     m_menuResponse: string;
-    ShowMenu(menuData: MenuData): string {
-        this._player.ShowMenu(menuData);
-        this.ChangeState(State.Waiting);
-        // UNKNOWN SyncLockBlock
-        return this.m_menuResponse;
-    }
-    SetMenuResponse(response: string): void {
-        var runnerThread: any = {};
-        this.ChangeState(State.Working);
-        runnerThread.Start(response);
-        this.WaitForStateChange(State.Working);
-    }
-    SetMenuResponseInNewThread(response: Object): void {
-        this.m_menuResponse = response;
-        // UNKNOWN SyncLockBlock
-    }
-    LogException(ex: Exception): void {
-        // UNKNOWN RaiseEventStatement
-    }
-    GetExternalScripts(): any {
-        return null;
-    }
-    GetExternalStylesheets(): any {
-        return null;
-    }
-    // UNKNOWN EventStatement
-    // UNKNOWN PropertyBlock
     GetOriginalFilenameForQSG(): string {
         if (this._originalFilename != null) {
             return this._originalFilename;
         }
         return this._gameFileName;
-    }
-    // UNKNOWN DelegateFunctionStatement
-    m_unzipFunction: UnzipFunctionDelegate;
-    SetUnzipFunction(unzipFunction: UnzipFunctionDelegate): void {
-        this.m_unzipFunction = unzipFunction;
-    }
-    GetUnzippedFile(filename: string): string {
-        var tempDir: string = null;
-        var result: string = this.m_unzipFunction.Invoke(filename, tempDir);
-        this._tempFolder = tempDir;
-        return result;
-    }
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    GetResource(file: string): any {
-        if (file == "_game.cas") {
-            return new any();
-        }
-        var path: string = this.GetResourcePath(file);
-        if (!System.IO.File.Exists(path)) {
-            return null;
-        }
-        return new any();
-    }
-    m_gameId: string;
-    // UNKNOWN PropertyBlock
-    GetResources(): any {
-        for (var i = 1; i <= this._numResources; i++) {
-            // UNKNOWN YieldStatement
-        }
-        if (this._numResources > 0) {
-            // UNKNOWN YieldStatement
-        }
-    }
-    GetResourcelessCAS(): number[] {
-        var fileData: string = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
-        return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     }
     GetFileData(filename: string) : string {
         // TODO
@@ -10297,6 +10155,36 @@ class LegacyGame {
     GetCASFileData(filename: string) : string {
         // TODO
         return "";
+    }
+    
+    DoPrint(text: string) {
+        // TODO
+        console.log(text);
+    }
+    
+    DoWait() {
+        // TODO
+    }
+    
+    Pause(duration: number) {
+        // TODO
+    }
+    
+    ExecuteIfAsk(question: string) : boolean {
+        // TODO
+        return true;
+    }
+    
+    UpdateExitsList() {
+        // TODO
+    }
+    
+    Begin() {
+        this.DoBegin();
+    }
+    
+    ShowMenu(menuData: MenuData) : string {
+        // TODO
     }
 }
 class ChangeLog {

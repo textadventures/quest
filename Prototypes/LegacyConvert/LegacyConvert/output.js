@@ -1243,7 +1243,7 @@ var LegacyGame = (function () {
         // 'define' block. Supports nested defines.
         if (LCase(Right(filename, 4)) == ".zip") {
             this._originalFilename = filename;
-            filename = this.GetUnzippedFile(filename);
+            filename = GetUnzippedFile(filename);
             this._gamePath = System.IO.Path.GetDirectoryName(filename);
         }
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
@@ -2734,9 +2734,6 @@ var LegacyGame = (function () {
                 return colour;
         }
     };
-    LegacyGame.prototype.DoPrint = function (text) {
-        // UNKNOWN RaiseEventStatement
-    };
     LegacyGame.prototype.DestroyExit = function (exitData, ctx) {
         var fromRoom = "";
         var toRoom = "";
@@ -2798,11 +2795,6 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.DoClear = function () {
         this._player.ClearScreen();
-    };
-    LegacyGame.prototype.DoWait = function () {
-        this._player.DoWait();
-        this.ChangeState(2 /* Waiting */);
-        // UNKNOWN SyncLockBlock
     };
     LegacyGame.prototype.ExecuteFlag = function (line, ctx) {
         var propertyString = "";
@@ -4757,11 +4749,6 @@ var LegacyGame = (function () {
             this.UpdateItems(ctx);
         }
     };
-    LegacyGame.prototype.Pause = function (duration) {
-        this._player.DoPause(duration);
-        this.ChangeState(2 /* Waiting */);
-        // UNKNOWN SyncLockBlock
-    };
     LegacyGame.prototype.ConvertParameter = function (parameter, convertChar, action, ctx) {
         // Returns a string with functions, string and
         // numeric variables executed or converted as
@@ -5150,23 +5137,6 @@ var LegacyGame = (function () {
         }
         // UNKNOWN TryBlock
     };
-    LegacyGame.prototype.ExecuteIfAsk = function (question) {
-        this._player.ShowQuestion(question);
-        this.ChangeState(2 /* Waiting */);
-
-        // UNKNOWN SyncLockBlock
-        return this._questionResponse;
-    };
-    LegacyGame.prototype.SetQuestionResponse = function (response) {
-        var runnerThread = {};
-        this.ChangeState(1 /* Working */);
-        runnerThread.Start(response);
-        this.WaitForStateChange(1 /* Working */);
-    };
-    LegacyGame.prototype.SetQuestionResponseInNewThread = function (response) {
-        this._questionResponse = response;
-        // UNKNOWN SyncLockBlock
-    };
     LegacyGame.prototype.ExecuteIfGot = function (item) {
         if (this._gameAslVersion >= 280) {
             for (var i = 1; i <= this._numberObjs; i++) {
@@ -5362,6 +5332,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.PlayMedia = function (filename, sync, looped) {
         if (filename.Length == 0) {
             this._player.StopSound();
+            //TODO: Handle sync parameter
         } else {
             if (looped && sync) {
                 sync = false;
@@ -5371,9 +5342,6 @@ var LegacyGame = (function () {
             this._player.PlaySound(filename, sync, looped);
             if (sync) {
                 this.ChangeState(2 /* Waiting */);
-            }
-            if (sync) {
-                // UNKNOWN SyncLockBlock
             }
         }
     };
@@ -8022,8 +7990,14 @@ var LegacyGame = (function () {
             return true;
         }
         var cmd = LCase(input);
-
-        // UNKNOWN SyncLockBlock
+        if (this._commandOverrideModeOn) {
+            // Commands have been overridden for this command,
+            // so put input into previously specified variable
+            // and exit:
+            this.SetStringContents(this._commandOverrideVariable, input, ctx);
+            System.Threading.Monitor.PulseAll(this._commandLock);
+            return false;
+        }
         var userCommandReturn;
         if (echo) {
             this.Print("> " + input, ctx);
@@ -9006,9 +8980,7 @@ var LegacyGame = (function () {
 
         // Now, wait for CommandOverrideModeOn to be set
         // to False by ExecCommand. Execution can then resume.
-        this.ChangeState(2 /* Waiting */, true);
-
-        // UNKNOWN SyncLockBlock
+        // TODO: Handle in TypeScript version
         this._commandOverrideModeOn = false;
         // State will have been changed to Working when the user typed their response,
         // and will be set back to Ready when the call to ExecCommand has finished
@@ -9851,7 +9823,7 @@ var LegacyGame = (function () {
             }
         }
 
-        // UNKNOWN RaiseEventStatement
+        // TODO...
         if (this._gameAslVersion >= 284) {
             this.UpdateStatusVars(ctx);
         } else {
@@ -9976,22 +9948,9 @@ var LegacyGame = (function () {
             }
         }
 
-        // UNKNOWN RaiseEventStatement
+        // TODO...
         this._gotoExits = exitList;
         this.UpdateExitsList();
-    };
-    LegacyGame.prototype.UpdateExitsList = function () {
-        // The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
-        // ASL4 code produces these separately. So we keep track of them separately and then
-        // merge to send to the Player.
-        var mergedList = {};
-        this._compassExits.forEach(function (listItem) {
-            mergedList.Add(listItem);
-        }, this);
-        this._gotoExits.forEach(function (listItem) {
-            mergedList.Add(listItem);
-        }, this);
-        // UNKNOWN RaiseEventStatement
     };
     LegacyGame.prototype.UpdateStatusVars = function (ctx) {
         var displayData;
@@ -10200,12 +10159,6 @@ var LegacyGame = (function () {
         }
         roomExit.IsLocked = lock;
     };
-    LegacyGame.prototype.Begin = function () {
-        var runnerThread = {};
-        this.ChangeState(1 /* Working */);
-        runnerThread.Start();
-        // UNKNOWN SyncLockBlock
-    };
     LegacyGame.prototype.DoBegin = function () {
         var gameBlock = this.GetDefineBlock("game");
         var ctx = new Context();
@@ -10281,24 +10234,15 @@ var LegacyGame = (function () {
         this.RaiseNextTimerTickRequest();
         this.ChangeState(0 /* Ready */);
     };
-
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
     LegacyGame.prototype.Finish = function () {
         this.GameFinished();
     };
-
-    // UNKNOWN EventStatement
-    // UNKNOWN EventStatement
-    // UNKNOWN EventStatement
     LegacyGame.prototype.Save = function (filename, html) {
         this.SaveGame(filename);
     };
     LegacyGame.prototype.Save = function (html) {
-        return this.SaveGame(Filename, false);
+        return this.SaveGame(this._filename, false);
     };
-
-    // UNKNOWN PropertyBlock
     LegacyGame.prototype.SendCommand = function (command) {
         this.SendCommand(command, 0, null);
     };
@@ -10317,24 +10261,17 @@ var LegacyGame = (function () {
         var runnerThread = {};
         this.ChangeState(1 /* Working */);
         runnerThread.Start(command);
-        this.WaitForStateChange(1 /* Working */);
+        WaitForStateChange(1 /* Working */);
         if (elapsedTime > 0) {
             this.Tick(elapsedTime);
         } else {
             this.RaiseNextTimerTickRequest();
         }
     };
-    LegacyGame.prototype.WaitForStateChange = function (changedFromState) {
-        // UNKNOWN SyncLockBlock
-    };
     LegacyGame.prototype.ProcessCommandInNewThread = function (command) {
         // Process command, and change state to Ready if the command finished processing
         // UNKNOWN TryBlock
     };
-    LegacyGame.prototype.SendEvent = function (eventName, param) {
-    };
-
-    // UNKNOWN EventStatement
     LegacyGame.prototype.Initialise = function (player) {
         this._player = player;
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
@@ -10345,14 +10282,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.GameFinished = function () {
         this._gameFinished = true;
-
-        // UNKNOWN RaiseEventStatement
         this.ChangeState(3 /* Finished */);
-
-        // In case we're in the middle of processing an "enter" command, nudge the thread along
-        // UNKNOWN SyncLockBlock
-        // UNKNOWN SyncLockBlock
-        // UNKNOWN SyncLockBlock
         this.Cleanup();
     };
     LegacyGame.prototype.GetResourcePath = function (filename) {
@@ -10390,8 +10320,6 @@ var LegacyGame = (function () {
         }
         return this.GetResourceLines(libCode);
     };
-
-    // UNKNOWN PropertyBlock
     LegacyGame.prototype.Tick = function (elapsedTime) {
         var i;
         var timerScripts = {};
@@ -10414,7 +10342,7 @@ var LegacyGame = (function () {
             var runnerThread = {};
             this.ChangeState(1 /* Working */);
             runnerThread.Start(timerScripts);
-            this.WaitForStateChange(1 /* Working */);
+            WaitForStateChange(1 /* Working */);
         }
         this.RaiseNextTimerTickRequest();
     };
@@ -10444,7 +10372,7 @@ var LegacyGame = (function () {
             nextTrigger = 0;
         }
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
-        // UNKNOWN RaiseEventStatement
+        // TODO...
     };
     LegacyGame.prototype.ChangeState = function (newState) {
         var acceptCommands = (newState == 0 /* Ready */);
@@ -10452,95 +10380,13 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ChangeState = function (newState, acceptCommands) {
         this._readyForCommand = acceptCommands;
-        // UNKNOWN SyncLockBlock
-    };
-    LegacyGame.prototype.FinishWait = function () {
-        if ((this._state != 2 /* Waiting */)) {
-            return;
-        }
-        var runnerThread = {};
-        this.ChangeState(1 /* Working */);
-        runnerThread.Start();
-        this.WaitForStateChange(1 /* Working */);
-    };
-    LegacyGame.prototype.FinishWaitInNewThread = function () {
-        // UNKNOWN SyncLockBlock
-    };
-    LegacyGame.prototype.FinishPause = function () {
-        this.FinishWait();
     };
 
-    LegacyGame.prototype.ShowMenu = function (menuData) {
-        this._player.ShowMenu(menuData);
-        this.ChangeState(2 /* Waiting */);
-
-        // UNKNOWN SyncLockBlock
-        return this.m_menuResponse;
-    };
-    LegacyGame.prototype.SetMenuResponse = function (response) {
-        var runnerThread = {};
-        this.ChangeState(1 /* Working */);
-        runnerThread.Start(response);
-        this.WaitForStateChange(1 /* Working */);
-    };
-    LegacyGame.prototype.SetMenuResponseInNewThread = function (response) {
-        this.m_menuResponse = response;
-        // UNKNOWN SyncLockBlock
-    };
-    LegacyGame.prototype.LogException = function (ex) {
-        // UNKNOWN RaiseEventStatement
-    };
-    LegacyGame.prototype.GetExternalScripts = function () {
-        return null;
-    };
-    LegacyGame.prototype.GetExternalStylesheets = function () {
-        return null;
-    };
-
-    // UNKNOWN EventStatement
-    // UNKNOWN PropertyBlock
     LegacyGame.prototype.GetOriginalFilenameForQSG = function () {
         if (this._originalFilename != null) {
             return this._originalFilename;
         }
         return this._gameFileName;
-    };
-
-    LegacyGame.prototype.SetUnzipFunction = function (unzipFunction) {
-        this.m_unzipFunction = unzipFunction;
-    };
-    LegacyGame.prototype.GetUnzippedFile = function (filename) {
-        var tempDir = null;
-        var result = this.m_unzipFunction.Invoke(filename, tempDir);
-        this._tempFolder = tempDir;
-        return result;
-    };
-
-    // UNKNOWN PropertyBlock
-    // UNKNOWN PropertyBlock
-    LegacyGame.prototype.GetResource = function (file) {
-        if (file == "_game.cas") {
-            return new any();
-        }
-        var path = this.GetResourcePath(file);
-        if (!System.IO.File.Exists(path)) {
-            return null;
-        }
-        return new any();
-    };
-
-    // UNKNOWN PropertyBlock
-    LegacyGame.prototype.GetResources = function () {
-        for (var i = 1; i <= this._numResources; i++) {
-            // UNKNOWN YieldStatement
-        }
-        if (this._numResources > 0) {
-            // UNKNOWN YieldStatement
-        }
-    };
-    LegacyGame.prototype.GetResourcelessCAS = function () {
-        var fileData = System.IO.File.ReadAllText(this._resourceFile, System.Text.Encoding.GetEncoding(1252));
-        return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, this._startCatPos - 1));
     };
     LegacyGame.prototype.GetFileData = function (filename) {
         // TODO
@@ -10550,6 +10396,36 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetCASFileData = function (filename) {
         // TODO
         return "";
+    };
+
+    LegacyGame.prototype.DoPrint = function (text) {
+        // TODO
+        console.log(text);
+    };
+
+    LegacyGame.prototype.DoWait = function () {
+        // TODO
+    };
+
+    LegacyGame.prototype.Pause = function (duration) {
+        // TODO
+    };
+
+    LegacyGame.prototype.ExecuteIfAsk = function (question) {
+        // TODO
+        return true;
+    };
+
+    LegacyGame.prototype.UpdateExitsList = function () {
+        // TODO
+    };
+
+    LegacyGame.prototype.Begin = function () {
+        this.DoBegin();
+    };
+
+    LegacyGame.prototype.ShowMenu = function (menuData) {
+        // TODO
     };
     return LegacyGame;
 })();
