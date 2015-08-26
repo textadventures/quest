@@ -7249,7 +7249,7 @@ class LegacyGame {
         for (var i = 1; i <= this._numberSections; i++) {
             var block = this._defineBlocks[i];
             if (!(this.BeginsWith(this._lines[block.StartLine], "define room") || this.BeginsWith(this._lines[block.StartLine], "define game") || this.BeginsWith(this._lines[block.StartLine], "define object "))) {
-                // UNKNOWN ContinueForStatement
+                continue;
             }
             var restOfLine: string;
             var origContainerRoomName: string;

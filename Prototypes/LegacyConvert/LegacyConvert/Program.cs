@@ -366,6 +366,8 @@ namespace LegacyConvert
                     var assignLeft = ProcessExpression(assignment.Left, classFields);
                     var assignRight = ProcessExpression(assignment.Right, classFields);
                     return string.Format("{0}{1} {3} {2};\n", Tabs(depth), assignLeft, assignRight, assignment.OperatorToken);
+                case SyntaxKind.ContinueForStatement:
+                    return string.Format("{0}continue;\n", Tabs(depth));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }
