@@ -10375,7 +10375,10 @@ Public Class LegacyGame
                 LogASLError(GetParameter(scriptLine, ctx), LogType.Misc)
             ElseIf BeginsWith(scriptLine, "mailto ") Then
                 Dim emailAddress As String = GetParameter(scriptLine, ctx)
+                ' TODO: Just write HTML directly
+                '<NOCONVERT
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
+                'NOCONVERT>
             ElseIf BeginsWith(scriptLine, "shell ") And _gameAslVersion < 410 Then
                 LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(scriptLine, "shellexe ") And _gameAslVersion < 410 Then

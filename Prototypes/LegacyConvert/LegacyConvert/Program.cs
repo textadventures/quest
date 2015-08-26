@@ -103,6 +103,10 @@ namespace LegacyConvert
                 case SyntaxKind.ForEachStatement:
                 case SyntaxKind.CaseStatement:
                 case SyntaxKind.CaseElseStatement:
+                case SyntaxKind.TryStatement:
+                case SyntaxKind.CatchBlock:
+                case SyntaxKind.EndTryStatement:
+                case SyntaxKind.CatchStatement:
                     // ignore;
                     break;
                 case SyntaxKind.ClassBlock:
@@ -351,6 +355,12 @@ namespace LegacyConvert
                     }
                     switchResult.AppendFormat("{0}}}\n", Tabs(depth));
                     return switchResult.ToString();
+                case SyntaxKind.TryBlock:
+                    var tryBlock = (TryBlockSyntax)node;
+                    return string.Format("{0}try {{\n{1}{0}}}\n{0}catch (e) {{\n{2}{0}}}\n",
+                        Tabs(depth),
+                        ProcessChildNodes(node, depth, prepend, false, classFields, ignoreComments),
+                        ProcessChildNodes(tryBlock.CatchBlocks.First(), depth, prepend, false, classFields, ignoreComments));
                 default:
                     return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
             }

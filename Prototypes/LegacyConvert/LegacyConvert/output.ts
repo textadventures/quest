@@ -5033,7 +5033,53 @@ class LegacyGame {
             this.LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric", LogType.WarningError);
             return;
         }
-        // UNKNOWN TryBlock
+        try {
+            if (this._gameAslVersion >= 391) {
+                var expResult = this.ExpressionHandler(varCont);
+                if (expResult.Success == ExpressionSuccess.OK) {
+                    varCont = expResult.Result;
+                } else {
+                    varCont = "0";
+                    this.LogASLError("Error setting numeric variable <" + varInfo + "> : " + expResult.Message, LogType.WarningError);
+                }
+            } else {
+                var obscuredVarInfo = this.ObscureNumericExps(varCont);
+                var opPos = InStr(obscuredVarInfo, "+");
+                if (opPos == 0) {
+                    opPos = InStr(obscuredVarInfo, "*");
+                }
+                if (opPos == 0) {
+                    opPos = InStr(obscuredVarInfo, "/");
+                }
+                if (opPos == 0) {
+                    opPos = InStr(2, obscuredVarInfo, "-");
+                }
+                if (opPos != 0) {
+                    var op = Mid(varCont, opPos, 1);
+                    var num1 = Val(Left(varCont, opPos - 1));
+                    var num2 = Val(Mid(varCont, opPos + 1));
+                    switch (op) {
+                        case "+":
+                            varCont = Str(num1 + num2);
+                        case "-":
+                            varCont = Str(num1 - num2);
+                        case "*":
+                            varCont = Str(num1 * num2);
+                        case "/":
+                            if (num2 != 0) {
+                                varCont = Str(num1 / num2);
+                            } else {
+                                this.LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError);
+                                varCont = "0";
+                            }
+                    }
+                }
+            }
+            this.SetNumericVariableContents(idx.Name, Val(varCont), ctx, idx.Index);
+        }
+        catch (e) {
+            this.LogASLError("Error setting variable '" + idx.Name + "' to '" + varCont + "'", LogType.WarningError);
+        }
     }
     ExecuteIfGot(item: string): boolean {
         if (this._gameAslVersion >= 280) {
@@ -6532,7 +6578,13 @@ class LegacyGame {
             newCtx.AllowRealNamesInCommand = true;
         }
         if (InStr(execLine, ";") == 0) {
-            // UNKNOWN TryBlock
+            try {
+                this.ExecCommand(execLine, newCtx, false);
+            }
+            catch (e) {
+                this.LogASLError("Internal error " + Err.Number + " running '" + scriptLine + "'", LogType.WarningError);
+                ctx.CancelExec = true;
+            }
         } else {
             var scp = InStr(execLine, ";");
             var ex = Trim(Left(execLine, scp - 1));
@@ -8760,7 +8812,220 @@ class LegacyGame {
         }
     }
     ExecuteScript(scriptLine: string, ctx: Context, newCallingObjectId: number = 0): void {
-        // UNKNOWN TryBlock
+        try {
+            if (Trim(scriptLine) == "") {
+                return;
+            }
+            if (this._gameFinished) {
+                return;
+            }
+            if (InStr(scriptLine, vbCrLf) > 0) {
+                var curPos = 1;
+                var finished = false;
+                do {
+                    var crLfPos = InStr(curPos, scriptLine, vbCrLf);
+                    if (crLfPos == 0) {
+                        finished = true;
+                        crLfPos = Len(scriptLine) + 1;
+                    }
+                    var curScriptLine = Trim(Mid(scriptLine, curPos, crLfPos - curPos));
+                    if (curScriptLine != vbCrLf) {
+                        this.ExecuteScript(curScriptLine, ctx);
+                    }
+                    curPos = crLfPos + 2;
+                } while (!(finished));
+                return;
+            }
+            if (newCallingObjectId != 0) {
+                ctx.CallingObjectId = newCallingObjectId;
+            }
+            if (this.BeginsWith(scriptLine, "if ")) {
+                this.ExecuteIf(scriptLine, ctx);
+                // This command does nothing in the Quest 5 player, as there is no separate help window
+                // This command does nothing in the Quest 5 player, as there is no separate picture window
+                // This command does nothing in the Quest 5 player, as there is no separate help window
+                // TODO: Just write HTML directly
+            } else if (this.BeginsWith(scriptLine, "select case ")) {
+                this.ExecuteSelectCase(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "choose ")) {
+                this.ExecuteChoose(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "set ")) {
+                this.ExecuteSet(this.GetEverythingAfter(scriptLine, "set "), ctx);
+            } else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
+                this.ExecuteIncDec(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "say ")) {
+                this.Print(Chr(34) + this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
+            } else if (this.BeginsWith(scriptLine, "do ")) {
+                this.ExecuteDo(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "doaction ")) {
+                this.ExecuteDoAction(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "give ")) {
+                this.PlayerItem(this.GetParameter(scriptLine, ctx), true, ctx);
+            } else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
+                this.PlayerItem(this.GetParameter(scriptLine, ctx), false, ctx);
+            } else if (this.BeginsWith(scriptLine, "msg ")) {
+                this.Print(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "speak ")) {
+                this.Speak(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
+                this.Print(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (Trim(LCase(scriptLine)) == "helpclose") {
+            } else if (this.BeginsWith(scriptLine, "goto ")) {
+                // This command does nothing in the Quest 5 player, as there is no separate help window
+                this.PlayGame(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "playerwin")) {
+                this.FinishGame(StopType.Win, ctx);
+            } else if (this.BeginsWith(scriptLine, "playerlose")) {
+                this.FinishGame(StopType.Lose, ctx);
+            } else if (Trim(LCase(scriptLine)) == "stop") {
+                this.FinishGame(StopType.Null, ctx);
+            } else if (this.BeginsWith(scriptLine, "playwav ")) {
+                this.PlayWav(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "playmidi ")) {
+                this.PlayMedia(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "playmp3 ")) {
+                this.PlayMedia(this.GetParameter(scriptLine, ctx));
+            } else if (Trim(LCase(scriptLine)) == "picture close") {
+            } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture popup ")) || (this._gameAslVersion >= 282 && this._gameAslVersion < 390 && this.BeginsWith(scriptLine, "picture ")) || (this._gameAslVersion < 282 && this.BeginsWith(scriptLine, "show "))) {
+                // This command does nothing in the Quest 5 player, as there is no separate picture window
+                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+            } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture "))) {
+                this.ShowPictureInText(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "animate persist ")) {
+                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "animate ")) {
+                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "extract ")) {
+                this.ExtractFile(this.GetParameter(scriptLine, ctx));
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hideobject ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showobject ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "moveobject ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hidechar ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showchar ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "movechar ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Character, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealobject ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealobject ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealchar ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
+            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealchar ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
+            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "hide ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
+            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "show ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
+            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "move ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "reveal ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "conceal ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "open ")) {
+                this.SetOpenClose(this.GetParameter(scriptLine, ctx), true, ctx);
+            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "close ")) {
+                this.SetOpenClose(this.GetParameter(scriptLine, ctx), false, ctx);
+            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "add ")) {
+                this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), true, ctx);
+            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "remove ")) {
+                this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), false, ctx);
+            } else if (this.BeginsWith(scriptLine, "clone ")) {
+                this.ExecClone(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "exec ")) {
+                this.ExecExec(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "setstring ")) {
+                this.ExecSetString(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "setvar ")) {
+                this.ExecSetVar(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "for ")) {
+                this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
+            } else if (this.BeginsWith(scriptLine, "property ")) {
+                this.ExecProperty(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "type ")) {
+                this.ExecType(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "action ")) {
+                this.ExecuteAction(this.GetEverythingAfter(scriptLine, "action "), ctx);
+            } else if (this.BeginsWith(scriptLine, "flag ")) {
+                this.ExecuteFlag(this.GetEverythingAfter(scriptLine, "flag "), ctx);
+            } else if (this.BeginsWith(scriptLine, "create ")) {
+                this.ExecuteCreate(this.GetEverythingAfter(scriptLine, "create "), ctx);
+            } else if (this.BeginsWith(scriptLine, "destroy exit ")) {
+                this.DestroyExit(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "repeat ")) {
+                this.ExecuteRepeat(this.GetEverythingAfter(scriptLine, "repeat "), ctx);
+            } else if (this.BeginsWith(scriptLine, "enter ")) {
+                this.ExecuteEnter(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "displaytext ")) {
+                this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "helpdisplaytext ")) {
+                this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
+            } else if (this.BeginsWith(scriptLine, "font ")) {
+                this.SetFont(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "pause ")) {
+                this.Pause(parseInt(this.GetParameter(scriptLine, ctx)));
+            } else if (Trim(LCase(scriptLine)) == "clear") {
+                this.DoClear();
+            } else if (Trim(LCase(scriptLine)) == "helpclear") {
+            } else if (this.BeginsWith(scriptLine, "background ")) {
+                // This command does nothing in the Quest 5 player, as there is no separate help window
+                this.SetBackground(this.GetParameter(scriptLine, ctx));
+            } else if (this.BeginsWith(scriptLine, "foreground ")) {
+                this.SetForeground(this.GetParameter(scriptLine, ctx));
+            } else if (Trim(LCase(scriptLine)) == "nointro") {
+                this._autoIntro = false;
+            } else if (this.BeginsWith(scriptLine, "debug ")) {
+                this.LogASLError(this.GetParameter(scriptLine, ctx), LogType.Misc);
+            } else if (this.BeginsWith(scriptLine, "mailto ")) {
+                var emailAddress: string = this.GetParameter(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {
+                // TODO: Just write HTML directly
+                this.LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError);
+            } else if (this.BeginsWith(scriptLine, "shellexe ") && this._gameAslVersion < 410) {
+                this.LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError);
+            } else if (this.BeginsWith(scriptLine, "wait")) {
+                this.ExecuteWait(Trim(this.GetEverythingAfter(Trim(scriptLine), "wait")), ctx);
+            } else if (this.BeginsWith(scriptLine, "timeron ")) {
+                this.SetTimerState(this.GetParameter(scriptLine, ctx), true);
+            } else if (this.BeginsWith(scriptLine, "timeroff ")) {
+                this.SetTimerState(this.GetParameter(scriptLine, ctx), false);
+            } else if (Trim(LCase(scriptLine)) == "outputon") {
+                this._outPutOn = true;
+                this.UpdateObjectList(ctx);
+                this.UpdateItems(ctx);
+            } else if (Trim(LCase(scriptLine)) == "outputoff") {
+                this._outPutOn = false;
+            } else if (Trim(LCase(scriptLine)) == "panes off") {
+                this._player.SetPanesVisible("off");
+            } else if (Trim(LCase(scriptLine)) == "panes on") {
+                this._player.SetPanesVisible("on");
+            } else if (this.BeginsWith(scriptLine, "lock ")) {
+                this.ExecuteLock(this.GetParameter(scriptLine, ctx), true);
+            } else if (this.BeginsWith(scriptLine, "unlock ")) {
+                this.ExecuteLock(this.GetParameter(scriptLine, ctx), false);
+            } else if (this.BeginsWith(scriptLine, "playmod ") && this._gameAslVersion < 410) {
+                this.LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError);
+            } else if (this.BeginsWith(scriptLine, "modvolume") && this._gameAslVersion < 410) {
+                this.LogASLError("'modvolume' is not supported in this version of Quest", LogType.WarningError);
+            } else if (Trim(LCase(scriptLine)) == "dontprocess") {
+                ctx.DontProcessCommand = true;
+            } else if (this.BeginsWith(scriptLine, "return ")) {
+                ctx.FunctionReturnValue = this.GetParameter(scriptLine, ctx);
+            } else {
+                if (this.BeginsWith(scriptLine, "'") == false) {
+                    this.LogASLError("Unrecognized keyword. Line reads: '" + Trim(this.ReportErrorLine(scriptLine)) + "'", LogType.WarningError);
+                }
+            }
+        }
+        catch (e) {
+            this.Print("[An internal error occurred]", ctx);
+            this.LogASLError(Err.Number + " - '" + Err.Description + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
+        }
     }
     ExecuteEnter(scriptLine: string, ctx: Context): void {
         this._commandOverrideModeOn = true;
@@ -10029,7 +10294,14 @@ class LegacyGame {
     }
     ProcessCommandInNewThread(command: Object): void {
         // Process command, and change state to Ready if the command finished processing
-        // UNKNOWN TryBlock
+        try {
+            if (this.ExecCommand(command, new Context())) {
+                this.ChangeState(State.Ready);
+            }
+        }
+        catch (e) {
+            this.ChangeState(State.Ready);
+        }
     }
     Initialise(player: IPlayer): boolean {
         this._player = player;
@@ -10056,7 +10328,11 @@ class LegacyGame {
     }
     DeleteDirectory(dir: string): void {
         if (System.IO.Directory.Exists(dir)) {
-            // UNKNOWN TryBlock
+            try {
+                System.IO.Directory.Delete(dir, true);
+            }
+            catch (e) {
+            }
         }
     }
     GetLibraryLines(libName: string): string[] {
@@ -10108,7 +10384,11 @@ class LegacyGame {
     RunTimersInNewThread(scripts: Object): void {
         var scriptList: any = scripts;
         scriptList.forEach(function (script) {
-            // UNKNOWN TryBlock
+            try {
+                this.ExecuteScript(script, this._nullContext);
+            }
+            catch (e) {
+            }
         }, this);
         this.ChangeState(State.Ready);
     }
