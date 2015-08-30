@@ -35,6 +35,20 @@ function InStr(arg1, arg2, arg3?): number {
     return input.indexOf(search, start - 1) + 1;
 }
 
+function InStrRev(arg1, arg2, arg3?): number {
+    var input, search;
+    if (typeof arg3 === 'undefined') {
+        input = arg1;
+        search = arg2;
+        return input.lastIndexOf(search) + 1;
+    }
+        
+    var start = arg1;
+    input = arg2;
+    search = arg3;
+    return input.lastIndexOf(search, start - 1) + 1;
+}
+
 function Split(input: string, splitChar: string): string[] {
     return input.split(splitChar);
 }
@@ -4707,7 +4721,7 @@ class LegacyGame {
         var id = this.GetThingNumber(name, "", type);
         if (InStr(room, "[") > 0) {
             var idx = this.GetArrayIndex(room, ctx);
-            room = room + Trim(Str(idx));
+            room = room + Trim(Str(idx.Index));
         }
         if (type == Thing.Character) {
             this._chars[id].ContainerRoom = room;
@@ -5296,7 +5310,7 @@ class LegacyGame {
             if (IsNumeric(arrayIndexData)) {
                 arrayIndex = parseInt(arrayIndexData);
             } else {
-                arrayIndex = parseInt(this.GetNumericContents(arrayIndexData, ctx));
+                arrayIndex = this.GetNumericContents(arrayIndexData, ctx);
             }
             name = Left(name, op - 1);
         } else {
@@ -5342,11 +5356,8 @@ class LegacyGame {
     GetErrorMessage(e: PlayerError, ctx: Context): string {
         return this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
     }
-    PlayMedia(filename: string): void {
-        this.PlayMedia(filename, false, false);
-    }
-    PlayMedia(filename: string, sync: boolean, looped: boolean): void {
-        if (filename.Length == 0) {
+    PlayMedia(filename: string, sync: boolean = false, looped: boolean = false): void {
+        if (filename.length == 0) {
             this._player.StopSound();
             //TODO: Handle sync parameter
         } else {
@@ -5361,18 +5372,11 @@ class LegacyGame {
         }
     }
     PlayWav(parameter: string): void {
-        var sync: boolean = false;
-        var looped: boolean = false;
-        var params: any = {};
-        params = new any();
+        var params: string[] = parameter.split(";");
         var filename = params[0];
-        if (params.Contains("loop")) {
-            looped = true;
-        }
-        if (params.Contains("sync")) {
-            sync = true;
-        }
-        if (filename.Length > 0 && InStr(filename, ".") == 0) {
+        var looped = (params.indexOf("loop") != -1);
+        var sync = (params.indexOf("sync") != -1);
+        if (filename.length > 0 && InStr(filename, ".") == 0) {
             filename = filename + ".wav";
         }
         this.PlayMedia(filename, sync, looped);
@@ -5873,7 +5877,7 @@ class LegacyGame {
                 this._objs[this._numberObjs].CorresRoomId = this._numberRooms;
                 r.ObjId = this._numberObjs;
                 if (this._gameAslVersion >= 410) {
-                    r.Exits = new RoomExits();
+                    r.Exits = new RoomExits(this);
                     r.Exits.SetObjId(r.ObjId);
                 }
                 if (defaultExists) {
@@ -6280,14 +6284,14 @@ class LegacyGame {
                 name = Trim(Left(thing, atPos - 1));
                 room = Trim(Right(thing, Len(thing) - atPos));
             }
-            if (type == LegacyGame.Thing.Character) {
+            if (type == Thing.Character) {
                 for (var i = 1; i <= this._numberChars; i++) {
                     if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                         this._chars[i].Visible = visible;
                         break;
                     }
                 }
-            } else if (type == LegacyGame.Thing.Object) {
+            } else if (type == Thing.Object) {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                         this._objs[i].Visible = visible;
