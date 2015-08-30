@@ -2,7 +2,7 @@ function Left(input, length) {
     return input.substring(0, length);
 }
 function Right(input, length) {
-    return input.substring(input.length - length - 1);
+    return input.substring(input.length - length);
 }
 function Mid(input, start, length) {
     if (typeof length === 'undefined') {
@@ -449,6 +449,7 @@ var LegacyGame = (function () {
         this._nullContext = new Context();
         this._gameChangeData = new GameChangeDataType();
         this._textFormatter = new TextFormatter();
+        this._log = [];
         this._commandLock = new Object();
         this._stateLock = new Object();
         this._state = State.Ready;

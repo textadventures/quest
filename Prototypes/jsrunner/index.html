@@ -21,6 +21,7 @@
 	<script src="attributes.js"></script>
 	<script src="loader.js"></script>
 	<script src="ui.js"></script>
+	<script src="asl4.js"></script>
 
 	<script>
 		// quest.js will want a base url for image resources
@@ -28,8 +29,16 @@
 		var file = $_GET['file'] || 'test.aslx';
 
 		$.get(file, function (data) {
-			quest.load(data);
-			quest.begin();
+			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
+				var game = new LegacyGame(file, file, null);
+				var player = new Player();
+				game.Initialise(player);
+				console.log(game);
+			}
+			else {
+				quest.load(data);
+				quest.begin();
+			}
 		});
 	</script>
 </head>

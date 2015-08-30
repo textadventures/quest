@@ -3,7 +3,7 @@ function Left(input: string, length: number): string {
 }
 
 function Right(input: string, length: number): string {
-    return input.substring(input.length - length - 1);
+    return input.substring(input.length - length);
 }
 
 function Mid(input: string, start: number, length?: number): string {
@@ -483,7 +483,7 @@ class LegacyGame {
     _compassExits: ListData[];
     _gotoExits: ListData[];
     _textFormatter: TextFormatter = new TextFormatter();
-    _log: string[];
+    _log: string[] = [];
     _casFileData: string;
     _commandLock: Object = new Object();
     _stateLock: Object = new Object();
