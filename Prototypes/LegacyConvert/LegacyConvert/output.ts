@@ -73,7 +73,17 @@ function Len(input: string): number {
 
 function UBound(array: any[]): number {
     return array.length - 1;
-}enum State {Ready, Working, Waiting, Finished};
+}
+
+function Str(input: number): string {
+    return input.toString();
+}
+
+function Val(input: string): number {
+    return parseInt(input);
+}
+
+enum State {Ready, Working, Waiting, Finished};
 class DefineBlock {
     StartLine: number;
     EndLine: number;
@@ -9886,8 +9896,11 @@ class LegacyGame {
         // Updates object list
         var shownPlaceName: string;
         var objSuffix: string;
+        var charsViewable: string = "";
         var charsFound: number;
         var noFormatObjsViewable: string;
+        var charList: string;
+        var objsViewable: string = "";
         var charList: string;
         var objsFound: number;
         var objListString: string;
