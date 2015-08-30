@@ -1339,7 +1339,7 @@ class LegacyGame {
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
             //Read file into Lines array
             var fileData = this.GetFileData(filename);
-            var aslLines: string[] = fileData.replace(/\\r\\n/g, "\n").split("\n");
+            var aslLines: string[] = fileData.replace(/\r\n/g, "\n").split("\n");
             this._lines = [];
             this._lines[0] = "";
             for (var l = 1; l <= aslLines.length; l++) {
@@ -1831,23 +1831,7 @@ class LegacyGame {
         }
     }
     RemoveTabs(s: string): string {
-        if (InStr(s, Chr(9)) > 0) {
-            //Remove tab characters and change them into
-            //spaces; otherwise they bugger up the Trim
-            //commands.
-            var cpos = 1;
-            var finished = false;
-            do {
-                var tabChar = InStr(cpos, s, Chr(9));
-                if (tabChar != 0) {
-                    s = Left(s, tabChar - 1) + Space(4) + Mid(s, tabChar + 1);
-                    cpos = tabChar + 1;
-                } else {
-                    finished = true;
-                }
-            } while (!(finished));
-        }
-        return s;
+        return s.replace(/\t/g, "    ");
     }
     DoAddRemove(childId: number, parentId: number, add: boolean, ctx: Context): void {
         if (add) {
