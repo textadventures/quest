@@ -32,7 +32,13 @@
 			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
 				var game = new LegacyGame(file, file, null);
 				var player = new Player();
-				game.Initialise(player);
+				var onSuccess = function () {
+					console.log("success");
+				};
+				var onFailure = function () {
+					console.log("fail");
+				};
+				game.Initialise(player, onSuccess, onFailure);
 				console.log(game);
 			}
 			else {
