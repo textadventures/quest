@@ -9711,7 +9711,10 @@ class LegacyGame {
     }
     UpdateDoorways(roomId: number, ctx: Context): string {
         var roomDisplayText: string = "";
+        var outPlace: string = "";
         var directions: string = "";
+        var nsew: string = "";
+        var outPlaceName: string = "";
         var outPlacePrefix: string = "";
         var n = "north";
         var s = "south";

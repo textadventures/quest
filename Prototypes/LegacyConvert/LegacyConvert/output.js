@@ -9932,7 +9932,10 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.UpdateDoorways = function (roomId, ctx) {
         var roomDisplayText = "";
+        var outPlace = "";
         var directions = "";
+        var nsew = "";
+        var outPlaceName = "";
         var outPlacePrefix = "";
         var n = "north";
         var s = "south";

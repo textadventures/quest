@@ -11267,8 +11267,11 @@ Public Class LegacyGame
     End Sub
 
     Private Function UpdateDoorways(roomId As Integer, ctx As Context) As String
-        Dim roomDisplayText As String = "", outPlace As String = ""
-        Dim directions As String = "", nsew As String = "", outPlaceName As String = ""
+        Dim roomDisplayText As String = ""
+        Dim outPlace As String = ""
+        Dim directions As String = ""
+        Dim nsew As String = ""
+        Dim outPlaceName As String = ""
         Dim outPlacePrefix As String = ""
 
         Dim n = "north"
