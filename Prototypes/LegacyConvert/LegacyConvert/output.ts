@@ -1771,7 +1771,7 @@ class LegacyGame {
                                 nextLinePos = Len(textData) + 1;
                                 finished = true;
                             }
-                            tl = DecryptString(Mid(textData, cpos, nextLinePos - cpos));
+                            tl = this.DecryptString(Mid(textData, cpos, nextLinePos - cpos));
                             this.AddLine(tl);
                             cpos = nextLinePos + 1;
                         } while (!(finished));
@@ -1796,7 +1796,7 @@ class LegacyGame {
                                     j = j + 1;
                                     d = Mid(fileData, j, 1);
                                     if (d != Chr(0)) {
-                                        curLin = curLin + DecryptString(d);
+                                        curLin = curLin + this.DecryptString(d);
                                     } else {
                                         curLin = curLin + "> ";
                                         exitTheLoop = true;
@@ -9736,7 +9736,7 @@ class LegacyGame {
     }
     ReadCatalog(data: string): void {
         var nullPos = InStr(data, Chr(0));
-        this._numResources = parseInt(DecryptString(Left(data, nullPos - 1)));
+        this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
         if (!this._resources) this._resources = [];
         this._resources[this._numResources] = new ResourceType();
         data = Mid(data, nullPos + 1);
@@ -9744,10 +9744,10 @@ class LegacyGame {
         for (var i = 1; i <= this._numResources; i++) {
             var r = this._resources[i];
             nullPos = InStr(data, Chr(0));
-            r.ResourceName = DecryptString(Left(data, nullPos - 1));
+            r.ResourceName = this.DecryptString(Left(data, nullPos - 1));
             data = Mid(data, nullPos + 1);
             nullPos = InStr(data, Chr(0));
-            r.ResourceLength = parseInt(DecryptString(Left(data, nullPos - 1)));
+            r.ResourceLength = parseInt(this.DecryptString(Left(data, nullPos - 1)));
             data = Mid(data, nullPos + 1);
             r.ResourceStart = resourceStart;
             resourceStart = resourceStart + r.ResourceLength;
@@ -10545,6 +10545,12 @@ class LegacyGame {
     
     ShowMenu(menuData: MenuData) : string {
         // TODO
+        return null;
+    }
+    
+    DecryptString(s: string): string {
+        // TODO
+        return null;
     }
 }
 class ChangeLog {
