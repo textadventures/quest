@@ -1703,7 +1703,7 @@ class LegacyGame {
         } else if (type == LogType.InternalError) {
             err = "INTERNAL ERROR: " + err;
         }
-        this._log.Add(err);
+        this._log.push(err);
     }
     GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): string {
         // Returns the parameters between < and > in a string
@@ -5428,9 +5428,9 @@ class LegacyGame {
             } else if (this.BeginsWith(data, "create ")) {
                 var createData: string = appliesTo + ";" + this.GetEverythingAfter(data, "create ");
                 // workaround bug where duplicate "create" entries appear in the restore data
-                if (!createdObjects.Contains(createData)) {
+                if (createdObjects.indexOf(createData) == -1) {
                     this.ExecuteCreate("object <" + createData + ">", this._nullContext);
-                    createdObjects.Add(createData);
+                    createdObjects.push(createData);
                 }
             } else {
                 this.LogASLError("QSG Error: Unrecognised item '" + appliesTo + "; " + data + "'", LogType.InternalError);
@@ -6674,7 +6674,7 @@ class LegacyGame {
                 this.ExecCommand(execLine, newCtx, false);
             }
             catch (e) {
-                this.LogASLError("Internal error " + Err.Number + " running '" + scriptLine + "'", LogType.WarningError);
+                this.LogASLError("Internal error running '" + scriptLine + "'", LogType.WarningError);
                 ctx.CancelExec = true;
             }
         } else {
@@ -6917,7 +6917,7 @@ class LegacyGame {
             if (IsNumeric(arrayIndexData)) {
                 arrayIndex = parseInt(arrayIndexData);
             } else {
-                arrayIndex = parseInt(this.GetNumericContents(arrayIndexData, ctx));
+                arrayIndex = this.GetNumericContents(arrayIndexData, ctx);
                 if (arrayIndex == -32767) {
                     this.LogASLError("Array index in '" + name + "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LogType.WarningError);
                     return "";
@@ -7029,11 +7029,12 @@ class LegacyGame {
         var lines: string[] = null;
         this._gameLoadMethod = "loaded";
         var prevQsgVersion = false;
-        if (this._data == null) {
-            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
-        } else {
-            fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
-        }
+        // TODO
+        //if (this._data == null) {
+        //    fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
+        //} else {
+        //    fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
+        //}
         // Check version
         savedQsgVersion = Left(fileData, 10);
         if (this.BeginsWith(savedQsgVersion, "QUEST200.1")) {
@@ -7042,7 +7043,7 @@ class LegacyGame {
             return false;
         }
         if (prevQsgVersion) {
-            lines = fileData.Split('expr', StringSplitOptions.None);
+            lines = fileData.split("\n");
             this._gameFileName = lines[1];
         } else {
             this.InitFileData(fileData);
@@ -7054,12 +7055,13 @@ class LegacyGame {
                 this._gameFileName = this._data.SourceFile;
             }
         }
-        if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
-            this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
-            if (this._gameFileName == "") {
-                return false;
-            }
-        }
+        // TODO
+        //if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
+        //    this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
+        //    if (this._gameFileName == "") {
+        //        return false;
+        //    }
+        //}
         result = this.InitialiseGame(this._gameFileName, true);
         if (result == false) {
             return false;
@@ -7182,45 +7184,47 @@ class LegacyGame {
         } else {
             saveData = this.MakeRestoreDataV2();
         }
-        if (saveFile) {
-            System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252));
-        }
+        // TODO
+        //if (saveFile) {
+        //    System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252));
+        //}
         this._saveGameFile = filename;
-        return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
+        //return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
+        return null;
     }
     MakeRestoreDataV2(): string {
         var lines: string[] = [];
         var i: number;
-        lines.Add("QUEST200.1");
-        lines.Add(this.GetOriginalFilenameForQSG);
-        lines.Add(this._gameName);
-        lines.Add(this._currentRoom);
-        lines.Add("!c");
+        lines.push("QUEST200.1");
+        lines.push(this.GetOriginalFilenameForQSG());
+        lines.push(this._gameName);
+        lines.push(this._currentRoom);
+        lines.push("!c");
         for (var i = 1; i <= this._numCollectables; i++) {
-            lines.Add(this._collectables[i].Name + ";" + Str(this._collectables[i].Value));
+            lines.push(this._collectables[i].Name + ";" + Str(this._collectables[i].Value));
         }
-        lines.Add("!i");
+        lines.push("!i");
         for (var i = 1; i <= this._numberItems; i++) {
-            lines.Add(this._items[i].Name + ";" + this.YesNo(this._items[i].Got));
+            lines.push(this._items[i].Name + ";" + this.YesNo(this._items[i].Got));
         }
-        lines.Add("!o");
+        lines.push("!o");
         for (var i = 1; i <= this._numberObjs; i++) {
-            lines.Add(this._objs[i].ObjectName + ";" + this.YesNo(this._objs[i].Exists) + ";" + this.YesNo(this._objs[i].Visible) + ";" + this._objs[i].ContainerRoom);
+            lines.push(this._objs[i].ObjectName + ";" + this.YesNo(this._objs[i].Exists) + ";" + this.YesNo(this._objs[i].Visible) + ";" + this._objs[i].ContainerRoom);
         }
-        lines.Add("!p");
+        lines.push("!p");
         for (var i = 1; i <= this._numberChars; i++) {
-            lines.Add(this._chars[i].ObjectName + ";" + this.YesNo(this._chars[i].Exists) + ";" + this.YesNo(this._chars[i].Visible) + ";" + this._chars[i].ContainerRoom);
+            lines.push(this._chars[i].ObjectName + ";" + this.YesNo(this._chars[i].Exists) + ";" + this.YesNo(this._chars[i].Visible) + ";" + this._chars[i].ContainerRoom);
         }
-        lines.Add("!s");
+        lines.push("!s");
         for (var i = 1; i <= this._numberStringVariables; i++) {
-            lines.Add(this._stringVariable[i].VariableName + ";" + this._stringVariable[i].VariableContents[0]);
+            lines.push(this._stringVariable[i].VariableName + ";" + this._stringVariable[i].VariableContents[0]);
         }
-        lines.Add("!n");
+        lines.push("!n");
         for (var i = 1; i <= this._numberNumericVariables; i++) {
-            lines.Add(this._numericVariable[i].VariableName + ";" + Str(parseFloat(this._numericVariable[i].VariableContents[0])));
+            lines.push(this._numericVariable[i].VariableName + ";" + Str(parseFloat(this._numericVariable[i].VariableContents[0])));
         }
-        lines.Add("!e");
-        return String.Join("\n", lines);
+        lines.push("!e");
+        return lines.join("\n");
     }
     SetAvailability(thingString: string, exists: boolean, ctx: Context, type: Thing = Thing.Object): void {
         // Sets availability of objects (and characters in ASL<281)
@@ -10762,7 +10766,7 @@ class RoomExits {
             roomExit = this._directions.Item(direction);
             this._game._objs[roomExit.GetObjId()].Exists = true;
         } else {
-            roomExit = new RoomExit();
+            roomExit = new RoomExit(this._game);
             this._directions.Add(direction, roomExit);
         }
         this._regenerateAllExits = true;
@@ -10831,7 +10835,7 @@ class RoomExits {
             // the destination of an existing directional exit.
             this.SetDirection(thisDir, roomExit);
         } else {
-            roomExit = new RoomExit();
+            roomExit = new RoomExit(this._game);
         }
         roomExit.SetParent(this);
         roomExit.SetDirection(thisDir);
@@ -11070,7 +11074,7 @@ class RoomExits {
         if (!this._regenerateAllExits) {
             return this._allExits;
         }
-        this._allExits = new any();
+        this._allExits = [];
         this._directions.Keys.forEach(function (dir) {
             var roomExit = this._directions.Item(dir);
             if (this._game._objs[roomExit.GetObjId()].Exists) {
