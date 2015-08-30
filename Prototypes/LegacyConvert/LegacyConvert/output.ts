@@ -5377,9 +5377,6 @@ class LegacyGame {
             }
             // Can't loop and sync at the same time, that would just hang!
             this._player.PlaySound(filename, sync, looped);
-            if (sync) {
-                this.ChangeState(State.Waiting);
-            }
         }
     }
     PlayWav(parameter: string): void {
@@ -7640,7 +7637,7 @@ class LegacyGame {
             // size is ignored
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
-        if (caption.Length > 0) {
+        if (caption.length > 0) {
             this.Print(caption, this._nullContext);
         }
         this.ShowPictureInText(filename);
@@ -7713,7 +7710,7 @@ class LegacyGame {
         var count: number;
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(room) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
-                visibleObjectsList.Add(i);
+                visibleObjectsList.push(i);
             }
         }
         visibleObjectsList.forEach(function (objId) {
@@ -7729,15 +7726,15 @@ class LegacyGame {
                 visibleObjectsNoFormat = visibleObjectsNoFormat + this._objs[objId].Prefix + this._objs[objId].ObjectAlias;
             }
             count = count + 1;
-            if (count < visibleObjectsList.Count() - 1) {
+            if (count < visibleObjectsList.length - 1) {
                 visibleObjects = visibleObjects + ", ";
                 visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
-            } else if (count == visibleObjectsList.Count() - 1) {
+            } else if (count == visibleObjectsList.length - 1) {
                 visibleObjects = visibleObjects + " and ";
                 visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
             }
         }, this);
-        if (visibleObjectsList.Count() > 0) {
+        if (visibleObjectsList.length > 0) {
             this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
             this.SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
@@ -7948,7 +7945,6 @@ class LegacyGame {
             // so put input into previously specified variable
             // and exit:
             this.SetStringContents(this._commandOverrideVariable, input, ctx);
-            System.Threading.Monitor.PulseAll(this._commandLock);
             return false;
         }
         var userCommandReturn: boolean;
@@ -8865,7 +8861,7 @@ class LegacyGame {
             }
         }
         if (this._gameFullyLoaded) {
-            this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "action <" + name + "> " + script);
+            this.AddToObjectChangeLog(AppliesTo.Object, this._objs[id].ObjectName, name, "action <" + name + "> " + script);
         }
     }
     ExecuteIf(scriptLine: string, ctx: Context): void {
@@ -9116,7 +9112,7 @@ class LegacyGame {
         }
         catch (e) {
             this.Print("[An internal error occurred]", ctx);
-            this.LogASLError(Err.Number + " - '" + Err.Description + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
+            this.LogASLError("Error - '" + e + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
         }
     }
     ExecuteEnter(scriptLine: string, ctx: Context): void {
@@ -9315,12 +9311,13 @@ class LegacyGame {
         this._loadedFromQsg = fromQsg;
         this._changeLogRooms = new ChangeLog();
         this._changeLogObjects = new ChangeLog();
-        this._changeLogRooms.AppliesToType = ChangeLog.AppliesTo.Room;
-        this._changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object;
+        this._changeLogRooms.AppliesToType = AppliesTo.Room;
+        this._changeLogObjects.AppliesToType = AppliesTo.Object;
         this._outPutOn = true;
         this._useAbbreviations = true;
-        this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
-        this.LogASLError("Opening file " + filename + " on " + Date.Now.ToString(), LogType.Init);
+        // TODO
+        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
+        this.LogASLError("Opening file " + filename, LogType.Init);
         // Parse file and find where the 'define' blocks are:
         if (this.ParseFile(filename) == false) {
             this.LogASLError("Unable to open file", LogType.Init);
@@ -9960,8 +9957,8 @@ class LegacyGame {
                 for (var j = 1; j <= this._numCollectables; j++) {
                     var k = this.DisplayCollectableInfo(j);
                     if (k != "<null>") {
-                        if (status.Length > 0) {
-                            status += Environment.NewLine;
+                        if (status.length > 0) {
+                            status += "\n";
                         }
                         status += k;
                     }
@@ -10086,8 +10083,8 @@ class LegacyGame {
             for (var i = 1; i <= this._numDisplayStrings; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.String, ctx);
                 if (displayData != "") {
-                    if (status.Length > 0) {
-                        status += Environment.NewLine;
+                    if (status.length > 0) {
+                        status += "\n";
                     }
                     status += displayData;
                 }
@@ -10097,8 +10094,8 @@ class LegacyGame {
             for (var i = 1; i <= this._numDisplayNumerics; i++) {
                 displayData = this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (displayData != "") {
-                    if (status.Length > 0) {
-                        status += Environment.NewLine;
+                    if (status.length > 0) {
+                        status += "\n";
                     }
                     status += displayData;
                 }
@@ -10180,7 +10177,7 @@ class LegacyGame {
             if (colObjects == null) {
                 colObjects = [];
             }
-            if (colObjects.Contains(parentId)) {
+            if (colObjects.indexOf(parentId) != -1) {
                 // We've already encountered this parent while recursively calling
                 // this function - we're in a loop of parents!
                 colObjects.forEach(function (objId) {
@@ -10191,7 +10188,7 @@ class LegacyGame {
                 result.CanAccessObject = false;
                 return result;
             }
-            colObjects.Add(parentId);
+            colObjects.push(parentId);
             return this.PlayerCanAccessObject(parentId, colObjects);
         }
         result.CanAccessObject = true;
@@ -10354,51 +10351,17 @@ class LegacyGame {
             }
         }
         this.RaiseNextTimerTickRequest();
-        this.ChangeState(State.Ready);
     }
     Finish(): void {
         this.GameFinished();
     }
-    Save(filename: string, html: string): void {
-        this.SaveGame(filename);
-    }
-    Save(html: string): number[] {
-        return this.SaveGame(this._filename, false);
-    }
-    SendCommand(command: string): void {
-        this.SendCommand(command, 0, null);
-    }
-    SendCommand(command: string, metadata: any): void {
-        this.SendCommand(command, 0, metadata);
-    }
-    SendCommand(command: string, elapsedTime: number, metadata: any): void {
-        // The processing of commands is done in a separate thread, so things like the "enter" command can
-        // lock the thread while waiting for further input. After starting to process the command, we wait
-        // for something to happen before returning from the SendCommand call - either the command will have
-        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
-        // user input after hitting an "enter" script command.
-        if (!this._readyForCommand) {
-            return;
-        }
-        var runnerThread: any = {};
-        this.ChangeState(State.Working);
-        runnerThread.Start(command);
-        WaitForStateChange(State.Working);
+    SendCommand(command: string, elapsedTime?: number): void {
+        this.ExecCommand(command, new Context());
+        
         if (elapsedTime > 0) {
             this.Tick(elapsedTime);
         } else {
             this.RaiseNextTimerTickRequest();
-        }
-    }
-    ProcessCommandInNewThread(command: Object): void {
-        // Process command, and change state to Ready if the command finished processing
-        try {
-            if (this.ExecCommand(command, new Context())) {
-                this.ChangeState(State.Ready);
-            }
-        }
-        catch (e) {
-            this.ChangeState(State.Ready);
         }
     }
     Initialise(player: Player): boolean {
@@ -10411,8 +10374,6 @@ class LegacyGame {
     }
     GameFinished(): void {
         this._gameFinished = true;
-        this.ChangeState(State.Finished);
-        this.Cleanup();
     }
     GetResourcePath(filename: string): string {
         if (!this._resourceFile == null && this._resourceFile.Length > 0) {
@@ -10498,13 +10459,6 @@ class LegacyGame {
         }
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
         // TODO...
-    }
-    ChangeState(newState: State): void {
-        var acceptCommands: boolean = (newState == State.Ready);
-        this.ChangeState(newState, acceptCommands);
-    }
-    ChangeState(newState: State, acceptCommands: boolean): void {
-        this._readyForCommand = acceptCommands;
     }
     m_menuResponse: string;
     GetOriginalFilenameForQSG(): string {
