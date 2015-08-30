@@ -490,17 +490,17 @@ class LegacyGame {
                     defines = defines - 1;
                     if (defines < 0) {
                         this.LogASLError("Extra 'end define' after block '" + section + "'", LogType.FatalError);
-                        this._openErrorReport = this._openErrorReport + "Extra 'end define' after block '" + section + "'" + vbCrLf;
+                        this._openErrorReport = this._openErrorReport + "Extra 'end define' after block '" + section + "'\n";
                         hasErrors = true;
                         defines = 0;
                     }
                     if (braces > 0) {
                         this.LogASLError("Missing } in block '" + section + "'", LogType.FatalError);
-                        this._openErrorReport = this._openErrorReport + "Missing } in block '" + section + "'" + vbCrLf;
+                        this._openErrorReport = this._openErrorReport + "Missing } in block '" + section + "'\n";
                         hasErrors = true;
                     } else if (braces < 0) {
                         this.LogASLError("Too many } in block '" + section + "'", LogType.FatalError);
-                        this._openErrorReport = this._openErrorReport + "Too many } in block '" + section + "'" + vbCrLf;
+                        this._openErrorReport = this._openErrorReport + "Too many } in block '" + section + "'\n";
                         hasErrors = true;
                     }
                 }
@@ -511,7 +511,7 @@ class LegacyGame {
                         // by prefixing line with '<ERROR;*; where * is the mismatched
                         // character
                         this.LogASLError("Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
-                        this._openErrorReport = this._openErrorReport + "Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'." + vbCrLf;
+                        this._openErrorReport = this._openErrorReport + "Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'.\n";
                         return false;
                     }
                 }
@@ -539,7 +539,7 @@ class LegacyGame {
         }
         if (defines > 0) {
             this.LogASLError("Missing 'end define'", LogType.FatalError);
-            this._openErrorReport = this._openErrorReport + "Missing 'end define'." + vbCrLf;
+            this._openErrorReport = this._openErrorReport + "Missing 'end define'.\n";
             hasErrors = true;
         }
         return !hasErrors;
@@ -1084,7 +1084,7 @@ class LegacyGame {
         var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
         var keyword: string = this._casKeywords[c];
         if (keyword == "!cr") {
-            keyword = vbCrLf;
+            keyword = "\n";
         }
         return keyword;
     }
@@ -1311,7 +1311,7 @@ class LegacyGame {
                             libResourceLines = this.GetLibraryLines(libFileName);
                             if (libResourceLines == null) {
                                 this.LogASLError("Library not found.", LogType.FatalError);
-                                this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found." + vbCrLf;
+                                this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
                                 return false;
                             }
                         }
@@ -1560,7 +1560,7 @@ class LegacyGame {
             }
         }
         if (!gotGameBlock) {
-            this._openErrorReport = this._openErrorReport + "No 'define game' block." + vbCrLf;
+            this._openErrorReport = this._openErrorReport + "No 'define game' block.\n";
             return false;
         }
         this.ConvertMultiLineSections();
@@ -1695,7 +1695,7 @@ class LegacyGame {
                 do {
                     ckw = Mid(fileData, j, 1);
                     c = this.ConvertCasKeyword(ckw);
-                    if (c == vbCrLf) {
+                    if (c == "\n") {
                         endLineReached = true;
                     } else {
                         if (Left(c, 1) != "!") {
@@ -2861,9 +2861,9 @@ class LegacyGame {
         // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
         // need the refactored ChangeLog component for those.
         switch (appliesToType) {
-            case ChangeLog.AppliesTo.Object:
+            case AppliesTo.Object:
                 changeLog = this._changeLogObjects;
-            case ChangeLog.AppliesTo.Room:
+            case AppliesTo.Room:
                 changeLog = this._changeLogRooms;
             default:
                 throw "New ArgumentOutOfRangeException()";
@@ -5991,9 +5991,9 @@ class LegacyGame {
                     } else if (this.BeginsWith(this._lines[j], "action ")) {
                         this.AddToObjectActions(this.GetEverythingAfter(this._lines[j], "action "), this._numberObjs, this._nullContext);
                     } else if (this.BeginsWith(this._lines[j], "beforeturn ")) {
-                        r.BeforeTurnScript = r.BeforeTurnScript + this.GetEverythingAfter(this._lines[j], "beforeturn ") + vbCrLf;
+                        r.BeforeTurnScript = r.BeforeTurnScript + this.GetEverythingAfter(this._lines[j], "beforeturn ") + "\n";
                     } else if (this.BeginsWith(this._lines[j], "afterturn ")) {
-                        r.AfterTurnScript = r.AfterTurnScript + this.GetEverythingAfter(this._lines[j], "afterturn ") + vbCrLf;
+                        r.AfterTurnScript = r.AfterTurnScript + this.GetEverythingAfter(this._lines[j], "afterturn ") + "\n";
                     }
                 }
             }
@@ -6060,9 +6060,9 @@ class LegacyGame {
         this._afterTurnScript = "";
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "beforeturn ")) {
-                this._beforeTurnScript = this._beforeTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "beforeturn ") + vbCrLf;
+                this._beforeTurnScript = this._beforeTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "beforeturn ") + "\n";
             } else if (this.BeginsWith(this._lines[i], "afterturn ")) {
-                this._afterTurnScript = this._afterTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "afterturn ") + vbCrLf;
+                this._afterTurnScript = this._afterTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "afterturn ") + "\n";
             }
         }
     }
@@ -6306,14 +6306,14 @@ class LegacyGame {
             // Print player's location according to indescription:
             if (Right(inDesc, 1) == ":") {
                 // if line ends with a colon, add place name:
-                roomDisplayText = roomDisplayText + Left(inDesc, Len(inDesc) - 1) + " " + prefixAlias + "." + vbCrLf;
+                roomDisplayText = roomDisplayText + Left(inDesc, Len(inDesc) - 1) + " " + prefixAlias + ".\n";
             } else {
                 // otherwise, just print the indescription line:
-                roomDisplayText = roomDisplayText + inDesc + vbCrLf;
+                roomDisplayText = roomDisplayText + inDesc + "\n";
             }
         } else {
             // if no indescription line, print the default.
-            roomDisplayText = roomDisplayText + "You are in " + prefixAlias + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You are in " + prefixAlias + ".\n";
         }
         this._player.LocationUpdated(prefixAliasNoFormat);
         this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
@@ -6348,7 +6348,7 @@ class LegacyGame {
             }
             charsViewable = "You can see " + charList + " here.";
         }
-        roomDisplayText = roomDisplayText + charsViewable + vbCrLf;
+        roomDisplayText = roomDisplayText + charsViewable + "\n";
         //FIND OBJECTS
         noFormatObjsViewable = "";
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -6377,7 +6377,7 @@ class LegacyGame {
             objsViewable = "There is " + objListString + " here.";
             this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), this._nullContext);
             this.SetStringContents("quest.formatobjects", objListString, this._nullContext);
-            roomDisplayText = roomDisplayText + objsViewable + vbCrLf;
+            roomDisplayText = roomDisplayText + objsViewable + "\n";
         } else {
             this.SetStringContents("quest.objects", "", this._nullContext);
             this.SetStringContents("quest.formatobjects", "", this._nullContext);
@@ -6443,7 +6443,7 @@ class LegacyGame {
             if (aliasOut == "") {
                 aliasOut = doorways;
             }
-            roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + ".\n";
             possDir = possDir + "o";
             this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
         } else {
@@ -6466,7 +6466,7 @@ class LegacyGame {
                 } while (!(finished));
                 nsew = Trim(Left(nsew, cp - 1)) + " or " + Trim(Mid(nsew, cp + 1));
             }
-            roomDisplayText = roomDisplayText + "You can go " + nsew + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go " + nsew + ".\n";
             this.SetStringContents("quest.doorways.dirs", nsew, this._nullContext);
         } else {
             this.SetStringContents("quest.doorways.dirs", "", this._nullContext);
@@ -6490,7 +6490,7 @@ class LegacyGame {
                 } while (!(finishedFindingCommas));
                 places = Left(places, lastComma) + " or" + Right(places, Len(places) - lastComma);
             }
-            roomDisplayText = roomDisplayText + "You can go to " + places + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go to " + places + ".\n";
             this.SetStringContents("quest.doorways.places", places, this._nullContext);
         } else {
             this.SetStringContents("quest.doorways.places", "", this._nullContext);
@@ -7128,7 +7128,7 @@ class LegacyGame {
             lines.Add(this._numericVariable[i].VariableName + ";" + Str(parseFloat(this._numericVariable[i].VariableContents[0])));
         }
         lines.Add("!e");
-        return String.Join(vbCrLf, lines);
+        return String.Join("\n", lines);
     }
     SetAvailability(thingString: string, exists: boolean, ctx: Context, type: Thing = Thing.Object): void {
         // Sets availability of objects (and characters in ASL<281)
@@ -7599,14 +7599,14 @@ class LegacyGame {
             // Print player's location according to indescription:
             if (Right(inDescription, 1) == ":") {
                 // if line ends with a colon, add place name:
-                roomDisplayText = roomDisplayText + Left(inDescription, Len(inDescription) - 1) + " " + roomDisplayName + "." + vbCrLf;
+                roomDisplayText = roomDisplayText + Left(inDescription, Len(inDescription) - 1) + " " + roomDisplayName + ".\n";
             } else {
                 // otherwise, just print the indescription line:
-                roomDisplayText = roomDisplayText + inDescription + vbCrLf;
+                roomDisplayText = roomDisplayText + inDescription + "\n";
             }
         } else {
             // if no indescription line, print the default.
-            roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + ".\n";
         }
         this._player.LocationUpdated(UCase(Left(roomAlias, 1)) + Mid(roomAlias, 2));
         this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
@@ -7645,7 +7645,7 @@ class LegacyGame {
             this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
             this.SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
-            roomDisplayText = roomDisplayText + visibleObjects + vbCrLf;
+            roomDisplayText = roomDisplayText + visibleObjects + "\n";
         } else {
             this.SetStringContents("quest.objects", "", ctx);
             this.SetStringContents("quest.formatobjects", "", ctx);
@@ -7672,7 +7672,7 @@ class LegacyGame {
                     } while (!(finishedFindingCommas));
                     placeList = Left(placeList, lastComma - 1) + " or" + Right(placeList, Len(placeList) - lastComma);
                 }
-                roomDisplayText = roomDisplayText + "You can go to " + placeList + "." + vbCrLf;
+                roomDisplayText = roomDisplayText + "You can go to " + placeList + ".\n";
                 this.SetStringContents("quest.doorways.places", placeList, ctx);
             } else {
                 this.SetStringContents("quest.doorways.places", "", ctx);
@@ -7722,8 +7722,8 @@ class LegacyGame {
         }
         if (!noPrint) {
             if (descTagExist == false) {
-                //Remove final vbCrLf:
-                roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
+                //Remove final \n
+                roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 1);
                 this.Print(roomDisplayText, ctx);
                 if (doorwayString != "") {
                     this.Print(doorwayString, ctx);
@@ -8819,20 +8819,20 @@ class LegacyGame {
             if (this._gameFinished) {
                 return;
             }
-            if (InStr(scriptLine, vbCrLf) > 0) {
+            if (InStr(scriptLine, "\n") > 0) {
                 var curPos = 1;
                 var finished = false;
                 do {
-                    var crLfPos = InStr(curPos, scriptLine, vbCrLf);
+                    var crLfPos = InStr(curPos, scriptLine, "\n");
                     if (crLfPos == 0) {
                         finished = true;
                         crLfPos = Len(scriptLine) + 1;
                     }
                     var curScriptLine = Trim(Mid(scriptLine, curPos, crLfPos - curPos));
-                    if (curScriptLine != vbCrLf) {
+                    if (curScriptLine != "\n") {
                         this.ExecuteScript(curScriptLine, ctx);
                     }
-                    curPos = crLfPos + 2;
+                    curPos = crLfPos + 1;
                 } while (!(finished));
                 return;
             }
@@ -8841,10 +8841,6 @@ class LegacyGame {
             }
             if (this.BeginsWith(scriptLine, "if ")) {
                 this.ExecuteIf(scriptLine, ctx);
-                // This command does nothing in the Quest 5 player, as there is no separate help window
-                // This command does nothing in the Quest 5 player, as there is no separate picture window
-                // This command does nothing in the Quest 5 player, as there is no separate help window
-                // TODO: Just write HTML directly
             } else if (this.BeginsWith(scriptLine, "select case ")) {
                 this.ExecuteSelectCase(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "choose ")) {
@@ -9234,9 +9230,9 @@ class LegacyGame {
             this.LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + filename;
             if (this._openErrorReport != "") {
-                // Strip last vbcrlf
-                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 2);
-                err = err + ":" + vbCrLf + vbCrLf + this._openErrorReport;
+                // Strip last \n
+                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 1);
+                err = err + ":\n\n" + this._openErrorReport;
             }
             this.Print("Error: " + err, this._nullContext);
             return false;
@@ -11024,7 +11020,7 @@ class TextFormatter {
         var codePosition: number;
         var finished: boolean = false;
         var nobr: boolean = false;
-        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
+        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />");
         if (Right(input, 3) == "|xn") {
             nobr = true;
             input = Left(input, Len(input) - 3);
