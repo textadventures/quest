@@ -10376,26 +10376,29 @@ class LegacyGame {
         this._gameFinished = true;
     }
     GetResourcePath(filename: string): string {
-        if (!this._resourceFile == null && this._resourceFile.Length > 0) {
+        if (!this._resourceFile == null && this._resourceFile.length > 0) {
             var extractResult: string = this.ExtractFile(filename);
             return extractResult;
         }
-        return System.IO.Path.Combine(this._gamePath, filename);
+        // TODO
+        //return System.IO.Path.Combine(this._gamePath, filename);
+        return null;
     }
     GetLibraryLines(libName: string): string[] {
         var libCode: number[] = null;
         libName = LCase(libName);
+        // TODO: Store standard libraries somewhere
         switch (libName) {
             case "stdverbs.lib":
-                libCode = My.Resources.stdverbs;
+                //libCode = My.Resources.stdverbs;
             case "standard.lib":
-                libCode = My.Resources.standard;
+                //libCode = My.Resources.standard;
             case "q3ext.qlb":
-                libCode = My.Resources.q3ext;
+                //libCode = My.Resources.q3ext;
             case "typelib.qlb":
-                libCode = My.Resources.Typelib;
+                //libCode = My.Resources.Typelib;
             case "net.lib":
-                libCode = My.Resources.net;
+                //libCode = My.Resources.net;
         }
         if (libCode == null) {
             return null;
@@ -10404,8 +10407,7 @@ class LegacyGame {
     }
     Tick(elapsedTime: number): void {
         var i: number;
-        var timerScripts: stringp[] = [];
-        Debug.Print("Tick: " + elapsedTime.ToString);
+        var timerScripts: string[] = [];
         for (var i = 1; i <= this._numberTimers; i++) {
             if (this._timers[i].TimerActive) {
                 if (this._timers[i].BypassThisTurn) {
@@ -10415,29 +10417,24 @@ class LegacyGame {
                     this._timers[i].TimerTicks = this._timers[i].TimerTicks + elapsedTime;
                     if (this._timers[i].TimerTicks >= this._timers[i].TimerInterval) {
                         this._timers[i].TimerTicks = 0;
-                        timerScripts.Add(this._timers[i].TimerAction);
+                        timerScripts.push(this._timers[i].TimerAction);
                     }
                 }
             }
         }
-        if (timerScripts.Count > 0) {
-            var runnerThread: any = {};
-            this.ChangeState(State.Working);
-            runnerThread.Start(timerScripts);
-            WaitForStateChange(State.Working);
+        if (timerScripts.length > 0) {
+            this.RunTimer(timerScripts);
         }
         this.RaiseNextTimerTickRequest();
     }
-    RunTimersInNewThread(scripts: Object): void {
-        var scriptList: any = scripts;
-        scriptList.forEach(function (script) {
+    RunTimer(scripts: string[]): void {
+        scripts.forEach(function (script) {
             try {
                 this.ExecuteScript(script, this._nullContext);
             }
             catch (e) {
             }
         }, this);
-        this.ChangeState(State.Ready);
     }
     RaiseNextTimerTickRequest(): void {
         var anyTimerActive: boolean = false;
@@ -10457,7 +10454,6 @@ class LegacyGame {
         if (this._gameFinished) {
             nextTrigger = 0;
         }
-        Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
         // TODO...
     }
     m_menuResponse: string;
@@ -10591,8 +10587,8 @@ class RoomExit {
         return this.GetExitProperty("prefix");
     }
     SetScript(value: string): void {
-        if (Len(Value) > 0) {
-            this.SetAction("script", Value);
+        if (Len(value) > 0) {
+            this.SetAction("script", value);
         }
     }
     IsScript(): boolean {
@@ -10600,7 +10596,7 @@ class RoomExit {
     }
     SetDirection(value: Direction): void {
         this._direction = value;
-        if (value != LegacyGame.Direction.None) {
+        if (value != Direction.None) {
             this.UpdateObjectName();
         }
     }
@@ -10658,15 +10654,13 @@ class RoomExit {
         }
         parentRoom = this._game._objs[this._parent.GetObjId()].ObjectName;
         objName = parentRoom;
-        if (this._direction != LegacyGame.Direction.None) {
+        if (this._direction != Direction.None) {
             objName = objName + "." + this._parent.GetDirectionName(this._direction);
             this._game._objs[this._objId].ObjectAlias = this._parent.GetDirectionName(this._direction);
         } else {
             var lastExitIdString: string = this._game.GetObjectProperty("quest.lastexitid", (this._parent.GetObjId()), null, false);
-            if (lastExitIdString.Length == 0) {
+            if (lastExitIdString.length == 0) {
                 lastExitId = 0;
-            } else {
-                lastExitId = parseInt(lastExitId);
             }
             lastExitId = lastExitId + 1;
             this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.GetObjId()), this._game._nullContext);
@@ -11072,27 +11066,27 @@ class TextFormatter {
         var codePosition: number;
         var finished: boolean = false;
         var nobr: boolean = false;
-        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />");
+        input = input.replace(/&/g, "&amp;").replace(/\</g, "&lt;").replace(/\>/g, "&gt;").replace(/\n/g, "<br />");
         if (Right(input, 3) == "|xn") {
             nobr = true;
             input = Left(input, Len(input) - 3);
         }
         do {
-            codePosition = input.IndexOf("|", position);
+            codePosition = input.indexOf("|", position);
             if (codePosition == -1) {
-                output += this.FormatText(input.Substring(position));
+                output += this.FormatText(input.substr(position));
                 finished = true;
                 // can also have size codes
             } else {
-                output += this.FormatText(input.Substring(position, codePosition - position));
+                output += this.FormatText(input.substr(position, codePosition - position));
                 position = codePosition + 1;
                 var oneCharCode: string = "";
                 var twoCharCode: string = "";
-                if (position < input.Length) {
-                    oneCharCode = input.Substring(position, 1);
+                if (position < input.length) {
+                    oneCharCode = input.substr(position, 1);
                 }
-                if (position < (input.Length - 1)) {
-                    twoCharCode = input.Substring(position, 2);
+                if (position < (input.length - 1)) {
+                    twoCharCode = input.substr(position, 2);
                 }
                 var foundCode: boolean = true;
                 switch (twoCharCode) {
@@ -11144,9 +11138,11 @@ class TextFormatter {
                 if (!foundCode) {
                     if (oneCharCode == "s") {
                         // |s00 |s10 etc.
-                        if (position < (input.Length - 2)) {
-                            var sizeCode: string = input.Substring(position + 1, 2);
-                            if (Integer.TryParse(sizeCode, this.fontSize)) {
+                        if (position < (input.length - 2)) {
+                            var sizeCode: string = input.substr(position + 1, 2);
+                            var fontSize: number = parseInt(sizeCode);
+                            if (!isNaN(fontSize)) {
+                                this.fontSize = fontSize;
                                 foundCode = true;
                                 position += 3;
                             }
@@ -11157,21 +11153,21 @@ class TextFormatter {
                     output += "|";
                 }
             }
-        } while (!(finished || position >= input.Length));
-        return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
+        } while (!(finished || position >= input.length));
+        return "<output" + (nobr ? " nobr=\"true\"" : "") + ">" + output +  "</output>";
     }
     FormatText(input: string): string {
-        if (input.Length == 0) {
+        if (input.length == 0) {
             return input;
         }
         var output: string = "";
-        if (this.align.Length > 0) {
+        if (this.align.length > 0) {
             output += "<align align=\"" + this.align + "\">";
         }
         if (this.fontSize > 0) {
             output += "<font size=\"" + (this.fontSize).toString() + "\">";
         }
-        if (this.colour.Length > 0) {
+        if (this.colour.length > 0) {
             output += "<color color=\"" + this.colour + "\">";
         }
         if (this.bold) {
@@ -11193,13 +11189,13 @@ class TextFormatter {
         if (this.bold) {
             output += "</b>";
         }
-        if (this.colour.Length > 0) {
+        if (this.colour.length > 0) {
             output += "</color>";
         }
         if (this.fontSize > 0) {
             output += "</font>";
         }
-        if (this.align.Length > 0) {
+        if (this.align.length > 0) {
             output += "</align>";
         }
         return output;

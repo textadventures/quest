@@ -1,26 +1,21 @@
 function Left(input, length) {
     return input.substring(0, length);
 }
-
 function Right(input, length) {
     return input.substring(input.length - length - 1);
 }
-
 function Mid(input, start, length) {
     if (typeof length === 'undefined') {
         return input.substr(start - 1);
     }
     return input.substr(start - 1, length);
 }
-
 function UCase(input) {
     return input.toUpperCase();
 }
-
 function LCase(input) {
     return input.toLowerCase();
 }
-
 function InStr(arg1, arg2, arg3) {
     var input, search;
     if (typeof arg3 === 'undefined') {
@@ -28,52 +23,130 @@ function InStr(arg1, arg2, arg3) {
         search = arg2;
         return input.indexOf(search) + 1;
     }
-
     var start = arg1;
     input = arg2;
     search = arg3;
     return input.indexOf(search, start - 1) + 1;
 }
-
+function InStrRev(arg1, arg2, arg3) {
+    var input, search;
+    if (typeof arg3 === 'undefined') {
+        input = arg1;
+        search = arg2;
+        return input.lastIndexOf(search) + 1;
+    }
+    var start = arg1;
+    input = arg2;
+    search = arg3;
+    return input.lastIndexOf(search, start - 1) + 1;
+}
 function Split(input, splitChar) {
     return input.split(splitChar);
 }
-
 function Join(input, joinChar) {
     return input.join(joinChar);
 }
-
 function IsNumeric(input) {
     return !isNaN(parseFloat(input)) && isFinite(input);
 }
-
 function Replace(input, oldString, newString) {
     return input.split(oldString).join(newString);
 }
-
 function Trim(input) {
     return input.trim();
 }
-
 function LTrim(input) {
     return input.replace(/^\s+/, "");
 }
-
 function Asc(input) {
     return input.charCodeAt(0);
 }
-
 function Chr(input) {
     return String.fromCharCode(input);
 }
-
 function Len(input) {
     return input.length;
 }
-
 function UBound(array) {
     return array.length - 1;
 }
+function Str(input) {
+    return input.toString();
+}
+function Val(input) {
+    return parseInt(input);
+}
+var MenuData = (function () {
+    function MenuData(caption, options, allowCancel) {
+        // TODO
+    }
+    return MenuData;
+})();
+var Player = (function () {
+    function Player() {
+    }
+    Player.prototype.ShowMenu = function (menuData) {
+    };
+    Player.prototype.DoWait = function () {
+    };
+    Player.prototype.DoPause = function (ms) {
+    };
+    Player.prototype.ShowQuestion = function (caption) {
+    };
+    Player.prototype.PlaySound = function (filename, synchronous, looped) {
+    };
+    Player.prototype.StopSound = function () {
+    };
+    Player.prototype.ClearScreen = function () {
+    };
+    Player.prototype.SetBackground = function (colour) {
+    };
+    Player.prototype.SetForeground = function (colour) {
+    };
+    Player.prototype.SetFont = function (fontName) {
+    };
+    Player.prototype.SetFontSize = function (fontSize) {
+    };
+    Player.prototype.SetPanelContents = function (html) {
+    };
+    Player.prototype.SetWindowMenu = function (menuData) {
+    };
+    Player.prototype.SetPanesVisible = function (data) {
+    };
+    Player.prototype.ShowPicture = function (filename) {
+    };
+    Player.prototype.GetURL = function (file) {
+    };
+    Player.prototype.LocationUpdated = function (location) {
+    };
+    Player.prototype.Speak = function (text) {
+    };
+    Player.prototype.GetNewGameFile = function (originalFilename, extensions) {
+    };
+    Player.prototype.RequestSave = function (html) {
+    };
+    Player.prototype.UpdateGameName = function (name) {
+    };
+    Player.prototype.Show = function (element) {
+    };
+    Player.prototype.SetStatusText = function (text) {
+    };
+    return Player;
+})();
+var ListData = (function () {
+    function ListData(text, verbs) {
+        this.Text = text;
+        this.Verbs = verbs;
+    }
+    return ListData;
+})();
+var ListType;
+(function (ListType) {
+    ListType[ListType["InventoryList"] = 0] = "InventoryList";
+    ListType[ListType["ExitsList"] = 1] = "ExitsList";
+    ListType[ListType["ObjectsList"] = 2] = "ObjectsList";
+})(ListType || (ListType = {}));
+;
 var State;
 (function (State) {
     State[State["Ready"] = 0] = "Ready";
@@ -370,23 +443,29 @@ var AppliesTo;
 })(AppliesTo || (AppliesTo = {}));
 ;
 var LegacyGame = (function () {
-    function LegacyGame(data) {
+    function LegacyGame(filename, originalFilename, data) {
         this._casKeywords = [];
         //The name of the game
         this._nullContext = new Context();
         this._gameChangeData = new GameChangeDataType();
-        this._compassExits = {};
-        this._gotoExits = {};
         this._textFormatter = new TextFormatter();
-        this._log = {};
         this._commandLock = new Object();
         this._stateLock = new Object();
-        this._state = 0 /* Ready */;
+        this._state = State.Ready;
         this._waitLock = new Object();
         this._readyForCommand = true;
-        this._random = new Random();
         this._listVerbs = {};
-        this.New(null, null);
+        this.LoadCASKeywords();
+        this._gameLoadMethod = "normal";
+        this._filename = filename;
+        this._originalFilename = originalFilename;
+        // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
+        // for compatibility with games which have non-fatal errors in them.
+        this._numSkipCheckFiles = 3;
+        this._skipCheckFile = [];
+        this._skipCheckFile[1] = "bargain.cas";
+        this._skipCheckFile[2] = "easymoney.asl";
+        this._skipCheckFile[3] = "musicvf1.cas";
         this._data = data;
     }
     LegacyGame.prototype.CopyContext = function (ctx) {
@@ -401,7 +480,6 @@ var LegacyGame = (function () {
         result.StackCounter = ctx.StackCounter;
         return result;
     };
-
     LegacyGame.prototype.RemoveFormatting = function (s) {
         var code;
         var pos;
@@ -412,41 +490,59 @@ var LegacyGame = (function () {
                 code = Mid(s, pos + 1, 3);
                 if (Left(code, 1) == "b") {
                     len = 1;
-                } else if (Left(code, 2) == "xb") {
+                }
+                else if (Left(code, 2) == "xb") {
                     len = 2;
-                } else if (Left(code, 1) == "u") {
+                }
+                else if (Left(code, 1) == "u") {
                     len = 1;
-                } else if (Left(code, 2) == "xu") {
+                }
+                else if (Left(code, 2) == "xu") {
                     len = 2;
-                } else if (Left(code, 1) == "i") {
+                }
+                else if (Left(code, 1) == "i") {
                     len = 1;
-                } else if (Left(code, 2) == "xi") {
+                }
+                else if (Left(code, 2) == "xi") {
                     len = 2;
-                } else if (Left(code, 2) == "cr") {
+                }
+                else if (Left(code, 2) == "cr") {
                     len = 2;
-                } else if (Left(code, 2) == "cb") {
+                }
+                else if (Left(code, 2) == "cb") {
                     len = 2;
-                } else if (Left(code, 2) == "cl") {
+                }
+                else if (Left(code, 2) == "cl") {
                     len = 2;
-                } else if (Left(code, 2) == "cy") {
+                }
+                else if (Left(code, 2) == "cy") {
                     len = 2;
-                } else if (Left(code, 2) == "cg") {
+                }
+                else if (Left(code, 2) == "cg") {
                     len = 2;
-                } else if (Left(code, 1) == "n") {
+                }
+                else if (Left(code, 1) == "n") {
                     len = 1;
-                } else if (Left(code, 2) == "xn") {
+                }
+                else if (Left(code, 2) == "xn") {
                     len = 2;
-                } else if (Left(code, 1) == "s") {
+                }
+                else if (Left(code, 1) == "s") {
                     len = 3;
-                } else if (Left(code, 2) == "jc") {
+                }
+                else if (Left(code, 2) == "jc") {
                     len = 2;
-                } else if (Left(code, 2) == "jl") {
+                }
+                else if (Left(code, 2) == "jl") {
                     len = 2;
-                } else if (Left(code, 2) == "jr") {
+                }
+                else if (Left(code, 2) == "jr") {
                     len = 2;
-                } else if (Left(code, 1) == "w") {
+                }
+                else if (Left(code, 1) == "w") {
                     len = 1;
-                } else if (Left(code, 1) == "c") {
+                }
+                else if (Left(code, 1) == "c") {
                     len = 1;
                 }
                 if (len == 0) {
@@ -455,7 +551,7 @@ var LegacyGame = (function () {
                 }
                 s = Left(s, pos - 1) + Mid(s, pos + len + 1);
             }
-        } while(!(pos == 0));
+        } while (!(pos == 0));
         return s;
     };
     LegacyGame.prototype.CheckSections = function () {
@@ -478,21 +574,23 @@ var LegacyGame = (function () {
                     braces = 0;
                     defines = defines + 1;
                     skipBlock = this.BeginsWith(this._lines[i], "define text") || this.BeginsWith(this._lines[i], "define synonyms");
-                } else if (Trim(this._lines[i]) == "end define") {
+                }
+                else if (Trim(this._lines[i]) == "end define") {
                     defines = defines - 1;
                     if (defines < 0) {
-                        this.LogASLError("Extra 'end define' after block '" + section + "'", 1 /* FatalError */);
-                        this._openErrorReport = this._openErrorReport + "Extra 'end define' after block '" + section + "'" + vbCrLf;
+                        this.LogASLError("Extra 'end define' after block '" + section + "'", LogType.FatalError);
+                        this._openErrorReport = this._openErrorReport + "Extra 'end define' after block '" + section + "'\n";
                         hasErrors = true;
                         defines = 0;
                     }
                     if (braces > 0) {
-                        this.LogASLError("Missing } in block '" + section + "'", 1 /* FatalError */);
-                        this._openErrorReport = this._openErrorReport + "Missing } in block '" + section + "'" + vbCrLf;
+                        this.LogASLError("Missing } in block '" + section + "'", LogType.FatalError);
+                        this._openErrorReport = this._openErrorReport + "Missing } in block '" + section + "'\n";
                         hasErrors = true;
-                    } else if (braces < 0) {
-                        this.LogASLError("Too many } in block '" + section + "'", 1 /* FatalError */);
-                        this._openErrorReport = this._openErrorReport + "Too many } in block '" + section + "'" + vbCrLf;
+                    }
+                    else if (braces < 0) {
+                        this.LogASLError("Too many } in block '" + section + "'", LogType.FatalError);
+                        this._openErrorReport = this._openErrorReport + "Too many } in block '" + section + "'\n";
                         hasErrors = true;
                     }
                 }
@@ -502,8 +600,8 @@ var LegacyGame = (function () {
                         // ObliterateParameters denotes a mismatched $, ( etc.
                         // by prefixing line with '<ERROR;*; where * is the mismatched
                         // character
-                        this.LogASLError("Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
-                        this._openErrorReport = this._openErrorReport + "Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'." + vbCrLf;
+                        this.LogASLError("Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
+                        this._openErrorReport = this._openErrorReport + "Expected closing " + Mid(checkLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'.\n";
                         return false;
                     }
                 }
@@ -516,8 +614,7 @@ var LegacyGame = (function () {
                             pos = bracePos + 1;
                             braces = braces + 1;
                         }
-                    } while(!(bracePos == 0 || pos > Len(checkLine)));
-
+                    } while (!(bracePos == 0 || pos > Len(checkLine)));
                     // Now check }
                     pos = 1;
                     do {
@@ -526,13 +623,13 @@ var LegacyGame = (function () {
                             pos = bracePos + 1;
                             braces = braces - 1;
                         }
-                    } while(!(bracePos == 0 || pos > Len(checkLine)));
+                    } while (!(bracePos == 0 || pos > Len(checkLine)));
                 }
             }
         }
         if (defines > 0) {
-            this.LogASLError("Missing 'end define'", 1 /* FatalError */);
-            this._openErrorReport = this._openErrorReport + "Missing 'end define'." + vbCrLf;
+            this.LogASLError("Missing 'end define'", LogType.FatalError);
+            this._openErrorReport = this._openErrorReport + "Missing 'end define'.\n";
             hasErrors = true;
         }
         return !hasErrors;
@@ -580,7 +677,7 @@ var LegacyGame = (function () {
                     // ObliterateVariableNames denotes a mismatched #, % or $
                     // by prefixing line with '<ERROR;*; where * is the mismatched
                     // character
-                    this.LogASLError("Expected closing " + Mid(varObscureLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
+                    this.LogASLError("Expected closing " + Mid(varObscureLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
                     return true;
                 }
                 startParamPos = InStr(convPos, this._lines[i], "(");
@@ -589,7 +686,8 @@ var LegacyGame = (function () {
                 for (var j = startParamPos + 1; j <= Len(this._lines[i]); j++) {
                     if (Mid(this._lines[i], j, 1) == "(") {
                         bracketCount = bracketCount + 1;
-                    } else if (Mid(this._lines[i], j, 1) == ")") {
+                    }
+                    else if (Mid(this._lines[i], j, 1) == ")") {
                         bracketCount = bracketCount - 1;
                     }
                     if (bracketCount == 0) {
@@ -598,7 +696,7 @@ var LegacyGame = (function () {
                     }
                 }
                 if (endParamPos == 0) {
-                    this.LogASLError("Expected ) in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
+                    this.LogASLError("Expected ) in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
                     return true;
                 }
                 paramData = Mid(this._lines[i], startParamPos + 1, (endParamPos - startParamPos) - 1);
@@ -616,50 +714,61 @@ var LegacyGame = (function () {
                                     if (symbPos == 0) {
                                         symbPos = InStr(paramData, "=");
                                         if (symbPos == 0) {
-                                            this.LogASLError("Unrecognised 'if' condition in '" + this.ReportErrorLine(this._lines[i]) + "'", 1 /* FatalError */);
+                                            this.LogASLError("Unrecognised 'if' condition in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
                                             return true;
-                                        } else {
+                                        }
+                                        else {
                                             symbol = "=";
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         symbol = ">";
                                     }
-                                } else {
+                                }
+                                else {
                                     symbol = "<";
                                 }
-                            } else {
+                            }
+                            else {
                                 symbol = ">=";
                             }
-                        } else {
+                        }
+                        else {
                             symbol = "<=";
                         }
-                    } else {
+                    }
+                    else {
                         symbol = "<>";
                     }
-                } else {
+                }
+                else {
                     symbol = "<>";
                 }
                 firstData = Trim(Left(paramData, symbPos - 1));
                 secondData = Trim(Mid(paramData, symbPos + Len(symbol)));
                 if (symbol == "=") {
                     newParam = "is <" + firstData + ";" + secondData + ">";
-                } else {
+                }
+                else {
                     newParam = "is <" + firstData + ";";
                     if (symbol == "<") {
                         newParam = newParam + "lt";
-                    } else if (symbol == ">") {
+                    }
+                    else if (symbol == ">") {
                         newParam = newParam + "gt";
-                    } else if (symbol == ">=") {
+                    }
+                    else if (symbol == ">=") {
                         newParam = newParam + "gt=";
-                    } else if (symbol == "<=") {
+                    }
+                    else if (symbol == "<=") {
                         newParam = newParam + "lt=";
-                    } else if (symbol == "<>") {
+                    }
+                    else if (symbol == "<>") {
                         newParam = newParam + "!=";
                     }
                     newParam = newParam + ";" + secondData + ">";
                 }
                 this._lines[i] = Left(this._lines[i], startParamPos - 1) + newParam + Mid(this._lines[i], endParamPos + 1);
-
                 // Repeat processing this line, in case there are
                 // further changes to be made.
                 i = i - 1;
@@ -694,7 +803,6 @@ var LegacyGame = (function () {
                         afterLastBrace = "";
                         thisLine = Trim(this._lines[j]);
                         procName = "<!intproc" + curProc + ">";
-
                         // see if this brace's corresponding closing
                         // brace is on same line:
                         testLine = Mid(this._lines[j], InStr(this._lines[j], "{") + 1);
@@ -711,11 +819,12 @@ var LegacyGame = (function () {
                             if (obp < cbp) {
                                 testBraceCount = testBraceCount + 1;
                                 testLine = Mid(testLine, obp + 1);
-                            } else if (cbp < obp) {
+                            }
+                            else if (cbp < obp) {
                                 testBraceCount = testBraceCount - 1;
                                 testLine = Mid(testLine, cbp + 1);
                             }
-                        } while(!(obp == cbp || testBraceCount == 0));
+                        } while (!(obp == cbp || testBraceCount == 0));
                         if (testBraceCount != 0) {
                             this.AddLine("define procedure " + procName);
                             startLine = UBound(this._lines);
@@ -727,7 +836,8 @@ var LegacyGame = (function () {
                             for (var m = 1; m <= Len(restOfLine); m++) {
                                 if (Mid(restOfLine, m, 1) == "{") {
                                     braceCount = braceCount + 1;
-                                } else if (Mid(restOfLine, m, 1) == "}") {
+                                }
+                                else if (Mid(restOfLine, m, 1) == "}") {
                                     braceCount = braceCount - 1;
                                 }
                             }
@@ -737,7 +847,8 @@ var LegacyGame = (function () {
                                     for (var m = 1; m <= Len(this._lines[k]); m++) {
                                         if (Mid(this._lines[k], m, 1) == "{") {
                                             braceCount = braceCount + 1;
-                                        } else if (Mid(this._lines[k], m, 1) == "}") {
+                                        }
+                                        else if (Mid(this._lines[k], m, 1) == "}") {
                                             braceCount = braceCount - 1;
                                         }
                                         if (braceCount == 0) {
@@ -751,15 +862,15 @@ var LegacyGame = (function () {
                                         //passed Lines(x) as a parameter.
                                         lineToAdd = this._lines[k];
                                         this.AddLine(lineToAdd);
-                                    } else {
+                                    }
+                                    else {
                                         this.AddLine(Left(this._lines[k], lastBrace - 1));
                                         afterLastBrace = Trim(Mid(this._lines[k], lastBrace + 1));
                                     }
-
                                     //Clear original line
                                     this._lines[k] = "";
                                     k = k + 1;
-                                } while(braceCount != 0);
+                                } while (braceCount != 0);
                             }
                             this.AddLine("end define");
                             endLineNum = UBound(this._lines);
@@ -769,13 +880,11 @@ var LegacyGame = (function () {
                             this._defineBlocks[this._numberSections] = new DefineBlock();
                             this._defineBlocks[this._numberSections].StartLine = startLine;
                             this._defineBlocks[this._numberSections].EndLine = endLineNum;
-
                             //Change original line where the { section
                             //started to call the new procedure.
                             startOfOrig = Trim(Left(thisLine, InStr(thisLine, "{") - 1));
                             this._lines[j] = startOfOrig + " do " + procName + " " + afterLastBrace;
                             curProc = curProc + 1;
-
                             // Process this line again in case there was stuff after the last brace that included
                             // more braces. e.g. } else {
                             j = j - 1;
@@ -784,13 +893,15 @@ var LegacyGame = (function () {
                 }
             }
             i = i + 1;
-        } while(!(i > this._numberSections));
-
+        } while (!(i > this._numberSections));
+        // Join next-line "else"s to corresponding "if"s
         for (var i = 1; i <= this._numberSections; i++) {
             z = this._lines[this._defineBlocks[i].StartLine];
             if (((!this.BeginsWith(z, "define text ")) && (!this.BeginsWith(z, "define menu ")) && z != "define synonyms")) {
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "else ")) {
+                        //Go upwards to find "if" statement that this
+                        //belongs to
                         for (var k = j; k >= this._defineBlocks[i].StartLine + 1; k--) {
                             if (this.BeginsWith(this._lines[k], "if ") || InStr(this.ObliterateParameters(this._lines[k]), " if ") != 0) {
                                 this._lines[k] = this._lines[k] + " " + Trim(this._lines[j]);
@@ -816,7 +927,7 @@ var LegacyGame = (function () {
         var inText;
         hasErrors = false;
         inText = false;
-
+        // Checks for incorrect number of < and > :
         for (var i = 1; i <= UBound(this._lines); i++) {
             numParamStart = 0;
             numParamEnd = 0;
@@ -834,11 +945,11 @@ var LegacyGame = (function () {
                     if (InStr(curPos, this._lines[i], "<") != 0) {
                         numParamStart = numParamStart + 1;
                         curPos = InStr(curPos, this._lines[i], "<") + 1;
-                    } else {
+                    }
+                    else {
                         finLoop = true;
                     }
-                } while(!(finLoop));
-
+                } while (!(finLoop));
                 //Find number of >'s:
                 curPos = 1;
                 finLoop = false;
@@ -846,37 +957,39 @@ var LegacyGame = (function () {
                     if (InStr(curPos, this._lines[i], ">") != 0) {
                         numParamEnd = numParamEnd + 1;
                         curPos = InStr(curPos, this._lines[i], ">") + 1;
-                    } else {
+                    }
+                    else {
                         finLoop = true;
                     }
-                } while(!(finLoop));
+                } while (!(finLoop));
                 if (numParamStart > numParamEnd) {
-                    this.LogASLError("Expected > in " + this.ReportErrorLine(this._lines[i]), 1 /* FatalError */);
+                    this.LogASLError("Expected > in " + this.ReportErrorLine(this._lines[i]), LogType.FatalError);
                     hasErrors = true;
-                } else if (numParamStart < numParamEnd) {
-                    this.LogASLError("Too many > in " + this.ReportErrorLine(this._lines[i]), 1 /* FatalError */);
+                }
+                else if (numParamStart < numParamEnd) {
+                    this.LogASLError("Too many > in " + this.ReportErrorLine(this._lines[i]), LogType.FatalError);
                     hasErrors = true;
                 }
             }
         }
-
         //Exit if errors found
         if (hasErrors == true) {
             return true;
         }
-
+        // Checks that define sections have parameters:
         for (var i = 1; i <= this._numberSections; i++) {
             curBegin = this._defineBlocks[i].StartLine;
             curEnd = this._defineBlocks[i].EndLine;
             if (this.BeginsWith(this._lines[curBegin], "define game")) {
                 if (InStr(this._lines[curBegin], "<") == 0) {
-                    this.LogASLError("'define game' has no parameter - game has no name", 1 /* FatalError */);
+                    this.LogASLError("'define game' has no parameter - game has no name", LogType.FatalError);
                     return true;
                 }
-            } else {
+            }
+            else {
                 if (!this.BeginsWith(this._lines[curBegin], "define synonyms") && !this.BeginsWith(this._lines[curBegin], "define options")) {
                     if (InStr(this._lines[curBegin], "<") == 0) {
-                        this.LogASLError(this._lines[curBegin] + " has no parameter", 1 /* FatalError */);
+                        this.LogASLError(this._lines[curBegin] + " has no parameter", LogType.FatalError);
                         hasErrors = true;
                     }
                 }
@@ -892,7 +1005,8 @@ var LegacyGame = (function () {
         eop = InStr(s, ">");
         if (eop == 0 || eop + 1 > Len(s)) {
             return "";
-        } else {
+        }
+        else {
             return Trim(Mid(s, eop + 1));
         }
     };
@@ -918,7 +1032,6 @@ var LegacyGame = (function () {
                         // doing.
                         obscuringFunctionName = true;
                         exitCharacter = curChar;
-
                         // Move along please
                         outputLine = outputLine + "~";
                         i = i + 1;
@@ -936,12 +1049,14 @@ var LegacyGame = (function () {
                     inParameter = true;
                     exitCharacter = ")";
                 }
-            } else {
+            }
+            else {
                 if (curChar == exitCharacter) {
                     if (!obscuringFunctionName) {
                         inParameter = false;
                         outputLine = outputLine + curChar;
-                    } else {
+                    }
+                    else {
                         // We've finished obscuring the function name,
                         // now let's find the next ) as we were before
                         // we found this dastardly function
@@ -949,14 +1064,16 @@ var LegacyGame = (function () {
                         exitCharacter = ")";
                         outputLine = outputLine + "~";
                     }
-                } else {
+                }
+                else {
                     outputLine = outputLine + "~";
                 }
             }
         }
         if (inParameter) {
             return "'<ERROR;" + exitCharacter + ";" + outputLine;
-        } else {
+        }
+        else {
             return outputLine;
         }
     };
@@ -982,7 +1099,6 @@ var LegacyGame = (function () {
                     inParameter = true;
                     exitCharacter = "%";
                 }
-
                 // The ~ was for collectables, and this syntax only
                 // exists in Quest 2.x. The ~ was only finally
                 // allowed to be present on its own in ASL 320.
@@ -990,11 +1106,13 @@ var LegacyGame = (function () {
                     inParameter = true;
                     exitCharacter = "~";
                 }
-            } else {
+            }
+            else {
                 if (curChar == exitCharacter) {
                     inParameter = false;
                     outputLine = outputLine + curChar;
-                } else {
+                }
+                else {
                     outputLine = outputLine + "X";
                 }
             }
@@ -1009,18 +1127,24 @@ var LegacyGame = (function () {
         var inTextBlock;
         var inSynonymsBlock;
         var oblitLine;
-
+        // If in a synonyms block, we want to remove lines which are comments, but
+        // we don't want to remove synonyms that contain apostrophes, so we only
+        // get rid of lines with an "'" at the beginning or with " '" in them
         for (var i = 1; i <= UBound(this._lines); i++) {
             if (this.BeginsWith(this._lines[i], "'!qdk-note:")) {
                 this._lines[i] = "#!qdk-note:" + this.GetEverythingAfter(this._lines[i], "'!qdk-note:");
-            } else {
+            }
+            else {
                 if (this.BeginsWith(this._lines[i], "define text ")) {
                     inTextBlock = true;
-                } else if (Trim(this._lines[i]) == "define synonyms") {
+                }
+                else if (Trim(this._lines[i]) == "define synonyms") {
                     inSynonymsBlock = true;
-                } else if (this.BeginsWith(this._lines[i], "define type ")) {
+                }
+                else if (this.BeginsWith(this._lines[i], "define type ")) {
                     inSynonymsBlock = true;
-                } else if (Trim(this._lines[i]) == "end define") {
+                }
+                else if (Trim(this._lines[i]) == "end define") {
                     inTextBlock = false;
                     inSynonymsBlock = false;
                 }
@@ -1034,10 +1158,12 @@ var LegacyGame = (function () {
                             }
                         }
                     }
-                } else if (inSynonymsBlock) {
+                }
+                else if (inSynonymsBlock) {
                     if (Left(Trim(this._lines[i]), 1) == "'") {
                         this._lines[i] = "";
-                    } else {
+                    }
+                    else {
                         // we look for " '", not "'" in synonyms lines
                         aposPos = InStr(this.ObliterateParameters(this._lines[i]), " '");
                         if (aposPos != 0) {
@@ -1055,21 +1181,24 @@ var LegacyGame = (function () {
         replaceFrom = InStr(s, "do <!intproc");
         if (replaceFrom != 0) {
             return Left(s, replaceFrom - 1) + "...";
-        } else {
+        }
+        else {
             return s;
         }
     };
     LegacyGame.prototype.YesNo = function (yn) {
         if (yn == true) {
             return "Yes";
-        } else {
+        }
+        else {
             return "No";
         }
     };
     LegacyGame.prototype.IsYes = function (yn) {
         if (LCase(yn) == "yes") {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     };
@@ -1080,25 +1209,33 @@ var LegacyGame = (function () {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     };
     LegacyGame.prototype.ConvertCasKeyword = function (casChar) {
-        var c = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
-        var keyword = this._casKeywords[c];
-        if (keyword == "!cr") {
-            keyword = vbCrLf;
-        }
-        return keyword;
+        // TODO
+        //var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
+        //var keyword: string = this._casKeywords[c];
+        //if (keyword == "!cr") {
+        //    keyword = "\n";
+        //}
+        //return keyword;
+        return null;
     };
     LegacyGame.prototype.ConvertMultiLines = function () {
+        //Goes through each section capable of containing
+        //script commands and puts any multiple-line script commands
+        //into separate procedures. Also joins multiple-line "if"
+        //statements.
+        //This calls RemoveComments after joining lines, so that lines
+        //with "'" as part of a multi-line parameter are not destroyed,
+        //before looking for braces.
         for (var i = UBound(this._lines); i >= 1; i--) {
             if (Right(this._lines[i], 2) == "__") {
                 this._lines[i] = Left(this._lines[i], Len(this._lines[i]) - 2) + LTrim(this._lines[i + 1]);
                 this._lines[i + 1] = "";
-
                 //Recalculate this line again
                 i = i + 1;
-            } else if (Right(this._lines[i], 1) == "_") {
+            }
+            else if (Right(this._lines[i], 1) == "_") {
                 this._lines[i] = Left(this._lines[i], Len(this._lines[i]) - 1) + LTrim(this._lines[i + 1]);
                 this._lines[i + 1] = "";
-
                 //Recalculate this line again
                 i = i + 1;
             }
@@ -1116,7 +1253,6 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberSections; i++) {
             // Get the first line of the define section:
             l = this._lines[this._defineBlocks[i].StartLine];
-
             // Now, starting from the first word after 'define',
             // retrieve the next word and compare it to blockname:
             // Add a space for define blocks with no parameter
@@ -1137,13 +1273,11 @@ var LegacyGame = (function () {
         // Returns the start and end points of a named block
         var cache;
         var result = new DefineBlock();
-        param = "k" + param;
-
-        // protect against numeric block names
-        if (!this._defineBlockParams.ContainsKey(blockname)) {
+        param = "k" + param; // protect against numeric block names
+        if (!this._defineBlockParams[blockname]) {
             // Lazily create cache of define block params
-            cache = new any();
-            this._defineBlockParams.Add(blockname, cache);
+            cache = {};
+            this._defineBlockParams[blockname] = cache;
             for (var i = 1; i <= this._numberSections; i++) {
                 // get the word after "define", e.g. "procedure"
                 var blockType = this.GetEverythingAfter(this._lines[this._defineBlocks[i].StartLine], "define ");
@@ -1154,15 +1288,14 @@ var LegacyGame = (function () {
                 if (blockType == blockname) {
                     var blockKey = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext, false);
                     blockKey = "k" + blockKey;
-                    if (!cache.ContainsKey(blockKey)) {
-                        cache.Add(blockKey, this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine);
-                        // silently ignore duplicates
-                    } else {
+                    if (!cache[blockKey]) {
+                        cache[blockKey] = this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine;
                     }
                 }
             }
-        } else {
-            cache = this._defineBlockParams.Item(blockname);
+        }
+        else {
+            cache = this._defineBlockParams[blockname];
         }
         if (cache.ContainsKey(param)) {
             var blocks = Split(cache.Item(param), ",");
@@ -1190,17 +1323,20 @@ var LegacyGame = (function () {
         return this.Keyword2CAS("!unknown") + KWord + this.Keyword2CAS("!unknown");
     };
     LegacyGame.prototype.LoadCASKeywords = function () {
+        // TODO - just hardcode as an object, e.g.
+        //   { "game"=1, "procedure"=2, "room"=3 }
+        // or better the other way round, as we only care about decompiling
         //Loads data required for conversion of CAS files
-        var questDatLines = this.GetResourceLines(My.Resources.QuestDAT);
-        questDatLines.forEach(function (line) {
-            if (Left(line, 1) != "#") {
-                //Lines isn't a comment - so parse it.
-                var scp = InStr(line, ";");
-                var keyword = Trim(Left(line, scp - 1));
-                var num = parseInt(Right(line, Len(line) - scp));
-                this._casKeywords[num] = keyword;
-            }
-        }, this);
+        //var questDatLines: string[] = this.GetResourceLines(My.Resources.QuestDAT);
+        //questDatLines.forEach(function (line) {
+        //    if (Left(line, 1) != "#") {
+        //        //Lines isn't a comment - so parse it.
+        //        var scp = InStr(line, ";");
+        //        var keyword = Trim(Left(line, scp - 1));
+        //        var num = parseInt(Right(line, Len(line) - scp));
+        //        this._casKeywords[num] = keyword;
+        //    }
+        //}, this);
     };
     LegacyGame.prototype.GetResourceLines = function (res) {
         var enc = {};
@@ -1236,36 +1372,35 @@ var LegacyGame = (function () {
         var typeLine;
         var defineCount;
         var curLine;
-        this._defineBlockParams = new any();
+        this._defineBlockParams = {};
         result = true;
-
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
-        if (LCase(Right(filename, 4)) == ".zip") {
-            this._originalFilename = filename;
-            filename = GetUnzippedFile(filename);
-            this._gamePath = System.IO.Path.GetDirectoryName(filename);
-        }
+        //  TODO: Handle zip files
+        //if (LCase(Right(filename, 4)) == ".zip") {
+        //    this._originalFilename = filename;
+        //    filename = GetUnzippedFile(filename);
+        //    this._gamePath = System.IO.Path.GetDirectoryName(filename);
+        //}
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
             //Read file into Lines array
             var fileData = this.GetFileData(filename);
-            var aslLines = fileData.Split(Chr(13));
+            var aslLines = fileData.replace(/\r\n/g, "\n").split("\n");
             this._lines = [];
             this._lines[0] = "";
-            for (var l = 1; l <= aslLines.Length; l++) {
-                this._lines[l] = aslLines[l - 1];
-                this._lines[l] = this.RemoveTabs(this._lines[l]);
-                this._lines[l] = this._lines[l].Trim(" ", Chr(10), Chr(13));
+            for (var l = 1; l <= aslLines.length; l++) {
+                this._lines[l] = this.RemoveTabs(aslLines[l - 1]).trim();
             }
-            l = aslLines.Length;
-        } else if (LCase(Right(filename, 4)) == ".cas") {
+            l = aslLines.length;
+        }
+        else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
             l = UBound(this._lines);
-        } else {
+        }
+        else {
             throw "Unrecognized file extension";
         }
-
         // Add libraries to end of code:
         numLibraries = 0;
         do {
@@ -1279,11 +1414,10 @@ var LegacyGame = (function () {
                 // lib startscripts backwards as well
                 if (this.BeginsWith(this._lines[i], "!include ")) {
                     libFileName = this.GetParameter(this._lines[i], this._nullContext);
-
                     //Clear !include statement
                     this._lines[i] = "";
                     libraryAlreadyIncluded = false;
-                    this.LogASLError("Including library '" + libFileName + "'...", 3 /* Init */);
+                    this.LogASLError("Including library '" + libFileName + "'...", LogType.Init);
                     for (var j = 1; j <= numLibraries; j++) {
                         if (LCase(libFileName) == LCase(libraryList[j])) {
                             libraryAlreadyIncluded = true;
@@ -1291,8 +1425,9 @@ var LegacyGame = (function () {
                         }
                     }
                     if (libraryAlreadyIncluded) {
-                        this.LogASLError("     - Library already included.", 3 /* Init */);
-                    } else {
+                        this.LogASLError("     - Library already included.", LogType.Init);
+                    }
+                    else {
                         numLibraries = numLibraries + 1;
                         if (!libraryList)
                             libraryList = [];
@@ -1300,43 +1435,42 @@ var LegacyGame = (function () {
                         libFoundThisSweep = true;
                         libResourceLines = null;
                         libFile = this._gamePath + libFileName;
-                        this.LogASLError(" - Searching for " + libFile + " (game path)", 3 /* Init */);
-                        libFileHandle = FreeFile();
-                        if (System.IO.File.Exists(libFile)) {
-                            FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        } else {
-                            // File was not found; try standard Quest libraries (stored here as resources)
-                            this.LogASLError("     - Library not found in game path.", 3 /* Init */);
-                            this.LogASLError(" - Searching for " + libFile + " (standard libraries)", 3 /* Init */);
-                            libResourceLines = this.GetLibraryLines(libFileName);
-                            if (libResourceLines == null) {
-                                this.LogASLError("Library not found.", 1 /* FatalError */);
-                                this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found." + vbCrLf;
-                                return false;
-                            }
-                        }
-                        this.LogASLError("     - Found library, opening...", 3 /* Init */);
-                        libLines = 0;
-                        if (libResourceLines == null) {
-                            do {
-                                libLines = libLines + 1;
-                                libLine = LineInput(libFileHandle);
-                                libLine = this.RemoveTabs(libLine);
-                                if (!libCode)
-                                    libCode = [];
-                                libCode[libLines] = Trim(libLine);
-                            } while(!(EOF(libFileHandle)));
-                            FileClose(libFileHandle);
-                        } else {
-                            libResourceLines.forEach(function (resLibLine) {
-                                libLines = libLines + 1;
-                                if (!libCode)
-                                    libCode = [];
-                                libLine = resLibLine;
-                                libLine = this.RemoveTabs(libLine);
-                                libCode[libLines] = Trim(libLine);
-                            }, this);
-                        }
+                        this.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
+                        // TODO: Handle libraries
+                        //libFileHandle = FreeFile();
+                        //if (System.IO.File.Exists(libFile)) {
+                        //    FileOpen(libFileHandle, libFile, OpenMode.Input);
+                        //} else {
+                        //    // File was not found; try standard Quest libraries (stored here as resources)
+                        //    this.LogASLError("     - Library not found in game path.", LogType.Init);
+                        //    this.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
+                        //    libResourceLines = this.GetLibraryLines(libFileName);
+                        //    if (libResourceLines == null) {
+                        //        this.LogASLError("Library not found.", LogType.FatalError);
+                        //        this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
+                        //        return false;
+                        //    }
+                        //}
+                        //this.LogASLError("     - Found library, opening...", LogType.Init);
+                        //libLines = 0;
+                        //if (libResourceLines == null) {
+                        //    do {
+                        //        libLines = libLines + 1;
+                        //        libLine = LineInput(libFileHandle);
+                        //        libLine = this.RemoveTabs(libLine);
+                        //        if (!libCode) libCode = [];
+                        //        libCode[libLines] = Trim(libLine);
+                        //    } while (!(EOF(libFileHandle)));
+                        //    FileClose(libFileHandle);
+                        //} else {
+                        //    libResourceLines.forEach(function (resLibLine) {
+                        //        libLines = libLines + 1;
+                        //        if (!libCode) libCode = [];
+                        //        libLine = resLibLine;
+                        //        libLine = this.RemoveTabs(libLine);
+                        //        libCode[libLines] = Trim(libLine);
+                        //    }, this);
+                        //}
                         var libVer = -1;
                         if (libCode[1] == "!library") {
                             for (var c = 1; c <= libLines; c++) {
@@ -1345,12 +1479,13 @@ var LegacyGame = (function () {
                                     break;
                                 }
                             }
-                        } else {
+                        }
+                        else {
                             //Old library
                             libVer = 100;
                         }
                         if (libVer == -1) {
-                            this.LogASLError(" - Library has no asl-version information.", 4 /* LibraryWarningError */);
+                            this.LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError);
                             libVer = 200;
                         }
                         ignoreMode = false;
@@ -1362,23 +1497,28 @@ var LegacyGame = (function () {
                                     this.AddLine(libCode[c]);
                                     l = l + 1;
                                 }
-                            } else if (Left(libCode[c], 1) != "!" && Left(libCode[c], 1) != "'" && !ignoreMode) {
+                            }
+                            else if (Left(libCode[c], 1) != "!" && Left(libCode[c], 1) != "'" && !ignoreMode) {
                                 this.AddLine(libCode[c]);
                                 l = l + 1;
-                            } else {
+                            }
+                            else {
                                 if (libCode[c] == "!addto game") {
                                     inDefGameBlock = 0;
                                     for (var d = 1; d <= UBound(this._lines); d++) {
                                         if (this.BeginsWith(this._lines[d], "define game ")) {
                                             inDefGameBlock = 1;
-                                        } else if (this.BeginsWith(this._lines[d], "define ")) {
+                                        }
+                                        else if (this.BeginsWith(this._lines[d], "define ")) {
                                             if (inDefGameBlock != 0) {
                                                 inDefGameBlock = inDefGameBlock + 1;
                                             }
-                                        } else if (this._lines[d] == "end define" && inDefGameBlock == 1) {
+                                        }
+                                        else if (this._lines[d] == "end define" && inDefGameBlock == 1) {
                                             gameLine = d;
                                             d = UBound(this._lines);
-                                        } else if (this._lines[d] == "end define") {
+                                        }
+                                        else if (this._lines[d] == "end define") {
                                             if (inDefGameBlock != 0) {
                                                 inDefGameBlock = inDefGameBlock - 1;
                                             }
@@ -1392,7 +1532,6 @@ var LegacyGame = (function () {
                                             for (var d = UBound(this._lines); d >= gameLine + 1; d--) {
                                                 this._lines[d] = this._lines[d - 1];
                                             }
-
                                             // startscript lines in a library are prepended
                                             // with "lib" internally so they are executed
                                             // before any startscript specified by the
@@ -1407,24 +1546,25 @@ var LegacyGame = (function () {
                                             // precedence than lib commands.
                                             if (libVer >= 311 && this.BeginsWith(libCode[c], "startscript ")) {
                                                 this._lines[gameLine] = "lib " + libCode[c];
-                                            } else if (libVer >= 392 && (this.BeginsWith(libCode[c], "command ") || this.BeginsWith(libCode[c], "verb "))) {
+                                            }
+                                            else if (libVer >= 392 && (this.BeginsWith(libCode[c], "command ") || this.BeginsWith(libCode[c], "verb "))) {
                                                 this._lines[gameLine] = "lib " + libCode[c];
-                                            } else {
+                                            }
+                                            else {
                                                 this._lines[gameLine] = libCode[c];
                                             }
                                             l = l + 1;
                                             gameLine = gameLine + 1;
                                         }
-                                    } while(!(this.BeginsWith(libCode[c], "!end")));
-                                    //ignore
-                                    //ignore
-                                    //ignore
-                                } else if (libCode[c] == "!addto synonyms") {
+                                    } while (!(this.BeginsWith(libCode[c], "!end")));
+                                }
+                                else if (libCode[c] == "!addto synonyms") {
                                     inDefSynBlock = 0;
                                     for (var d = 1; d <= UBound(this._lines); d++) {
                                         if (this._lines[d] == "define synonyms") {
                                             inDefSynBlock = 1;
-                                        } else if (this._lines[d] == "end define" && inDefSynBlock == 1) {
+                                        }
+                                        else if (this._lines[d] == "end define" && inDefSynBlock == 1) {
                                             synLine = d;
                                             d = UBound(this._lines);
                                         }
@@ -1447,14 +1587,16 @@ var LegacyGame = (function () {
                                             l = l + 1;
                                             synLine = synLine + 1;
                                         }
-                                    } while(!(this.BeginsWith(libCode[c], "!end")));
-                                } else if (this.BeginsWith(libCode[c], "!addto type ")) {
+                                    } while (!(this.BeginsWith(libCode[c], "!end")));
+                                }
+                                else if (this.BeginsWith(libCode[c], "!addto type ")) {
                                     inDefTypeBlock = 0;
                                     typeBlockName = LCase(this.GetParameter(libCode[c], this._nullContext));
                                     for (var d = 1; d <= UBound(this._lines); d++) {
                                         if (LCase(this._lines[d]) == "define type <" + typeBlockName + ">") {
                                             inDefTypeBlock = 1;
-                                        } else if (this._lines[d] == "end define" && inDefTypeBlock == 1) {
+                                        }
+                                        else if (this._lines[d] == "end define" && inDefTypeBlock == 1) {
                                             typeLine = d;
                                             d = UBound(this._lines);
                                         }
@@ -1480,16 +1622,19 @@ var LegacyGame = (function () {
                                             l = l + 1;
                                             typeLine = typeLine + 1;
                                         }
-                                    } while(!(this.BeginsWith(libCode[c], "!end")));
-                                } else if (libCode[c] == "!library") {
-                                } else if (this.BeginsWith(libCode[c], "!asl-version ")) {
-                                    //ignore
-                                } else if (this.BeginsWith(libCode[c], "'")) {
-                                    //ignore
-                                } else if (this.BeginsWith(libCode[c], "!QDK")) {
+                                    } while (!(this.BeginsWith(libCode[c], "!end")));
+                                }
+                                else if (libCode[c] == "!library") {
+                                }
+                                else if (this.BeginsWith(libCode[c], "!asl-version ")) {
+                                }
+                                else if (this.BeginsWith(libCode[c], "'")) {
+                                }
+                                else if (this.BeginsWith(libCode[c], "!QDK")) {
                                     //ignore
                                     ignoreMode = true;
-                                } else if (this.BeginsWith(libCode[c], "!end")) {
+                                }
+                                else if (this.BeginsWith(libCode[c], "!end")) {
                                     ignoreMode = false;
                                 }
                             }
@@ -1497,7 +1642,7 @@ var LegacyGame = (function () {
                     }
                 }
             }
-        } while(!(libFoundThisSweep == false));
+        } while (!(libFoundThisSweep == false));
         skipCheck = false;
         var lastSlashPos;
         var slashPos;
@@ -1508,7 +1653,7 @@ var LegacyGame = (function () {
                 lastSlashPos = slashPos;
             }
             curPos = slashPos + 1;
-        } while(!(slashPos == 0));
+        } while (!(slashPos == 0));
         var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
         for (var i = 1; i <= this._numSkipCheckFiles; i++) {
             if (filenameNoPath == this._skipCheckFile[i]) {
@@ -1519,7 +1664,6 @@ var LegacyGame = (function () {
         if (filenameNoPath == "musicvf1.cas") {
             this._useStaticFrameForPictures = true;
         }
-
         //RemoveComments called within ConvertMultiLines
         this.ConvertMultiLines();
         if (!skipCheck) {
@@ -1537,19 +1681,18 @@ var LegacyGame = (function () {
                 // 'end define' we decrement it. When definecount is zero, we have
                 // found the end of the section.
                 defineCount = 1;
-
                 // Don't count the current line - we know it begins with 'define'...
                 curLine = i + 1;
                 do {
                     if (this.BeginsWith(this._lines[curLine], "define") == true) {
                         defineCount = defineCount + 1;
-                    } else if (this.BeginsWith(this._lines[curLine], "end define") == true) {
+                    }
+                    else if (this.BeginsWith(this._lines[curLine], "end define") == true) {
                         defineCount = defineCount - 1;
                     }
                     curLine = curLine + 1;
-                } while(!(defineCount == 0));
+                } while (!(defineCount == 0));
                 curLine = curLine - 1;
-
                 // Now, we know that the define section begins at i and ends at
                 // curline. Remember where the section begins and ends:
                 if (!this._defineBlocks)
@@ -1570,7 +1713,7 @@ var LegacyGame = (function () {
             }
         }
         if (!gotGameBlock) {
-            this._openErrorReport = this._openErrorReport + "No 'define game' block." + vbCrLf;
+            this._openErrorReport = this._openErrorReport + "No 'define game' block.\n";
             return false;
         }
         this.ConvertMultiLineSections();
@@ -1585,26 +1728,32 @@ var LegacyGame = (function () {
         return result;
     };
     LegacyGame.prototype.LogASLError = function (err, type) {
-        if (typeof type === "undefined") { type = 0 /* Misc */; }
-        if (type == 1 /* FatalError */) {
+        if (type === void 0) { type = LogType.Misc; }
+        if (type == LogType.FatalError) {
             err = "FATAL ERROR: " + err;
-        } else if (type == 2 /* WarningError */) {
+        }
+        else if (type == LogType.WarningError) {
             err = "ERROR: " + err;
-        } else if (type == 4 /* LibraryWarningError */) {
+        }
+        else if (type == LogType.LibraryWarningError) {
             err = "WARNING ERROR (LIBRARY): " + err;
-        } else if (type == 3 /* Init */) {
+        }
+        else if (type == LogType.Init) {
             err = "INIT: " + err;
-        } else if (type == 5 /* Warning */) {
+        }
+        else if (type == LogType.Warning) {
             err = "WARNING: " + err;
-        } else if (type == 6 /* UserError */) {
+        }
+        else if (type == LogType.UserError) {
             err = "ERROR (REQUESTED): " + err;
-        } else if (type == 7 /* InternalError */) {
+        }
+        else if (type == LogType.InternalError) {
             err = "INTERNAL ERROR: " + err;
         }
-        this._log.Add(err);
+        this._log.push(err);
     };
     LegacyGame.prototype.GetParameter = function (s, ctx, convertStringVariables) {
-        if (typeof convertStringVariables === "undefined") { convertStringVariables = true; }
+        if (convertStringVariables === void 0) { convertStringVariables = true; }
         // Returns the parameters between < and > in a string
         var newParam;
         var startPos;
@@ -1612,21 +1761,24 @@ var LegacyGame = (function () {
         startPos = InStr(s, "<");
         endPos = InStr(s, ">");
         if (startPos == 0 || endPos == 0) {
-            this.LogASLError("Expected parameter in '" + this.ReportErrorLine(s) + "'", 2 /* WarningError */);
+            this.LogASLError("Expected parameter in '" + this.ReportErrorLine(s) + "'", LogType.WarningError);
             return "";
         }
         var retrParam = Mid(s, startPos + 1, (endPos - startPos) - 1);
         if (convertStringVariables) {
             if (this._gameAslVersion >= 320) {
-                newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", 0 /* Strings */, ctx), "%", 2 /* Numeric */, ctx), "$", 1 /* Functions */, ctx);
-            } else {
-                if (!Left(retrParam, 9) == "~Internal") {
-                    newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", 0 /* Strings */, ctx), "%", 2 /* Numeric */, ctx), "~", 3 /* Collectables */, ctx), "$", 1 /* Functions */, ctx);
-                } else {
+                newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
+            }
+            else {
+                if (Left(retrParam, 9) != "~Internal") {
+                    newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx);
+                }
+                else {
                     newParam = retrParam;
                 }
             }
-        } else {
+        }
+        else {
             newParam = retrParam;
         }
         return this.EvaluateInlineExpressions(newParam);
@@ -1661,11 +1813,14 @@ var LegacyGame = (function () {
         chkVer = Left(fileData, 7);
         if (chkVer == "QCGF001") {
             casVersion = 1;
-        } else if (chkVer == "QCGF002") {
+        }
+        else if (chkVer == "QCGF002") {
             casVersion = 2;
-        } else if (chkVer == "QCGF003") {
+        }
+        else if (chkVer == "QCGF003") {
             casVersion = 3;
-        } else {
+        }
+        else {
             throw "Invalid or corrupted CAS file.";
         }
         if (casVersion == 3) {
@@ -1681,7 +1836,8 @@ var LegacyGame = (function () {
                 this._resourceOffset = endCatPos + 1;
                 i = Len(fileData);
                 this._casFileData = fileData;
-            } else {
+            }
+            else {
                 curLin = "";
                 endLineReached = false;
                 if (textMode == true) {
@@ -1696,10 +1852,10 @@ var LegacyGame = (function () {
                                 nextLinePos = Len(textData) + 1;
                                 finished = true;
                             }
-                            tl = DecryptString(Mid(textData, cpos, nextLinePos - cpos));
+                            tl = this.DecryptString(Mid(textData, cpos, nextLinePos - cpos));
                             this.AddLine(tl);
                             cpos = nextLinePos + 1;
-                        } while(!(finished));
+                        } while (!(finished));
                     }
                     textMode = false;
                     i = InStr(i, fileData, Chr(253));
@@ -1708,12 +1864,14 @@ var LegacyGame = (function () {
                 do {
                     ckw = Mid(fileData, j, 1);
                     c = this.ConvertCasKeyword(ckw);
-                    if (c == vbCrLf) {
+                    if (c == "\n") {
                         endLineReached = true;
-                    } else {
+                    }
+                    else {
                         if (Left(c, 1) != "!") {
                             curLin = curLin + c + " ";
-                        } else {
+                        }
+                        else {
                             if (c == "!quote") {
                                 exitTheLoop = false;
                                 curLin = curLin + "<";
@@ -1721,34 +1879,36 @@ var LegacyGame = (function () {
                                     j = j + 1;
                                     d = Mid(fileData, j, 1);
                                     if (d != Chr(0)) {
-                                        curLin = curLin + DecryptString(d);
-                                    } else {
+                                        curLin = curLin + this.DecryptString(d);
+                                    }
+                                    else {
                                         curLin = curLin + "> ";
                                         exitTheLoop = true;
                                     }
-                                } while(!(exitTheLoop));
-                            } else if (c == "!unknown") {
+                                } while (!(exitTheLoop));
+                            }
+                            else if (c == "!unknown") {
                                 exitTheLoop = false;
                                 do {
                                     j = j + 1;
                                     d = Mid(fileData, j, 1);
                                     if (d != Chr(254)) {
                                         curLin = curLin + d;
-                                    } else {
+                                    }
+                                    else {
                                         exitTheLoop = true;
                                     }
-                                } while(!(exitTheLoop));
+                                } while (!(exitTheLoop));
                                 curLin = curLin + " ";
                             }
                         }
                     }
                     j = j + 1;
-                } while(!(endLineReached));
+                } while (!(endLineReached));
                 this.AddLine(Trim(curLin));
                 if (this.BeginsWith(curLin, "define text") || (casVersion >= 2 && (this.BeginsWith(curLin, "define synonyms") || this.BeginsWith(curLin, "define type") || this.BeginsWith(curLin, "define menu")))) {
                     textMode = true;
                 }
-
                 //j is already at correct place, but i will be
                 //incremented - so put j back one or we will miss a
                 //character.
@@ -1757,29 +1917,14 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.RemoveTabs = function (s) {
-        if (InStr(s, Chr(9)) > 0) {
-            //Remove tab characters and change them into
-            //spaces; otherwise they bugger up the Trim
-            //commands.
-            var cpos = 1;
-            var finished = false;
-            do {
-                var tabChar = InStr(cpos, s, Chr(9));
-                if (tabChar != 0) {
-                    s = Left(s, tabChar - 1) + Space(4) + Mid(s, tabChar + 1);
-                    cpos = tabChar + 1;
-                } else {
-                    finished = true;
-                }
-            } while(!(finished));
-        }
-        return s;
+        return s.replace(/\t/g, "    ");
     };
     LegacyGame.prototype.DoAddRemove = function (childId, parentId, add, ctx) {
         if (add) {
             this.AddToObjectProperties("parent=" + this._objs[parentId].ObjectName, childId, ctx);
             this._objs[childId].ContainerRoom = this._objs[parentId].ContainerRoom;
-        } else {
+        }
+        else {
             this.AddToObjectProperties("not parent", childId, ctx);
         }
         if (this._gameAslVersion >= 410) {
@@ -1791,18 +1936,16 @@ var LegacyGame = (function () {
         this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
     };
     LegacyGame.prototype.DoLook = function (id, ctx, showExamineError, showDefaultDescription) {
-        if (typeof showExamineError === "undefined") { showExamineError = false; }
-        if (typeof showDefaultDescription === "undefined") { showDefaultDescription = true; }
+        if (showExamineError === void 0) { showExamineError = false; }
+        if (showDefaultDescription === void 0) { showDefaultDescription = true; }
         var objectContents;
         var foundLook = false;
-
         // First, set the "seen" property, and for ASL >= 391, update visibility for any
         // object that is contained by this object.
         if (this._gameAslVersion >= 391) {
             this.AddToObjectProperties("seen", id, ctx);
             this.UpdateVisibilityInContainers(ctx, this._objs[id].ObjectName);
         }
-
         // First look for action, then look
         // for property, then check define
         // section:
@@ -1831,7 +1974,8 @@ var LegacyGame = (function () {
                     lookLine = Trim(this.GetEverythingAfter(this._lines[i], "look "));
                     if (Left(lookLine, 1) == "<") {
                         this.Print(this.GetParameter(this._lines[i], ctx), ctx);
-                    } else {
+                    }
+                    else {
                         this.ExecuteScript(lookLine, ctx, id);
                     }
                     foundLook = true;
@@ -1840,17 +1984,18 @@ var LegacyGame = (function () {
         }
         if (this._gameAslVersion >= 391) {
             objectContents = this.ListContents(id, ctx);
-        } else {
+        }
+        else {
             objectContents = "";
         }
         if (!foundLook && showDefaultDescription) {
             var err;
             if (showExamineError) {
-                err = 17 /* DefaultExamine */;
-            } else {
-                err = 8 /* DefaultLook */;
+                err = PlayerError.DefaultExamine;
             }
-
+            else {
+                err = PlayerError.DefaultLook;
+            }
             // Print "Nothing out of the ordinary" or whatever, but only if we're not going to list
             // any contents.
             if (objectContents == "") {
@@ -1867,7 +2012,8 @@ var LegacyGame = (function () {
             if (showLook) {
                 this.DoLook(id, ctx, null, false);
             }
-        } else {
+        }
+        else {
             this.AddToObjectProperties("not opened", id, ctx);
         }
         this.UpdateVisibilityInContainers(ctx, this._objs[id].ObjectName);
@@ -1888,15 +2034,17 @@ var LegacyGame = (function () {
                     // {{ = {
                     curPos = bracePos + 2;
                     resultLine = resultLine + "{";
-                } else {
+                }
+                else {
                     var EndBracePos = InStr(bracePos + 1, s, "}");
                     if (EndBracePos == 0) {
-                        this.LogASLError("Expected } in '" + s + "'", 2 /* WarningError */);
+                        this.LogASLError("Expected } in '" + s + "'", LogType.WarningError);
                         return "<ERROR>";
-                    } else {
+                    }
+                    else {
                         var expression = Mid(s, bracePos + 1, EndBracePos - bracePos - 1);
                         var expResult = this.ExpressionHandler(expression);
-                        if (expResult.Success != 0 /* OK */) {
+                        if (expResult.Success != ExpressionSuccess.OK) {
                             this.LogASLError("Error evaluating expression in <" + s + "> - " + expResult.Message);
                             return "<ERROR>";
                         }
@@ -1904,11 +2052,11 @@ var LegacyGame = (function () {
                         curPos = EndBracePos + 1;
                     }
                 }
-            } else {
+            }
+            else {
                 resultLine = resultLine + Mid(s, curPos);
             }
-        } while(!(bracePos == 0 || curPos > Len(s)));
-
+        } while (!(bracePos == 0 || curPos > Len(s)));
         // Above, we only bothered checking for {{. But for consistency, also }} = }. So let's do that:
         curPos = 1;
         do {
@@ -1917,7 +2065,7 @@ var LegacyGame = (function () {
                 resultLine = Left(resultLine, bracePos) + Mid(resultLine, bracePos + 2);
                 curPos = bracePos + 1;
             }
-        } while(!(bracePos == 0 || curPos > Len(resultLine)));
+        } while (!(bracePos == 0 || curPos > Len(resultLine)));
         return resultLine;
     };
     LegacyGame.prototype.ExecAddRemove = function (cmd, ctx) {
@@ -1951,12 +2099,14 @@ var LegacyGame = (function () {
                 sepPos = InStr(cmd, " onto ");
                 sepLen = 6;
             }
-        } else if (this.BeginsWith(cmd, "add ")) {
+        }
+        else if (this.BeginsWith(cmd, "add ")) {
             verb = "add";
             doAdd = true;
             sepPos = InStr(cmd, " to ");
             sepLen = 4;
-        } else if (this.BeginsWith(cmd, "remove ")) {
+        }
+        else if (this.BeginsWith(cmd, "remove ")) {
             verb = "remove";
             doAdd = false;
             sepPos = InStr(cmd, " from ");
@@ -1968,7 +2118,7 @@ var LegacyGame = (function () {
         }
         childLength = sepPos - (Len(verb) + 2);
         if (childLength < 0) {
-            this.PlayerErrorMessage(0 /* BadCommand */, ctx);
+            this.PlayerErrorMessage(PlayerError.BadCommand, ctx);
             this._badCmdBefore = verb;
             return;
         }
@@ -1979,10 +2129,10 @@ var LegacyGame = (function () {
             if (childId > 0) {
                 if (this._objs[childId].ContainerRoom == "inventory") {
                     gotObject = true;
-                } else {
+                }
+                else {
                     // Player is not carrying the object they referred to. So, first take the object.
                     this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
-
                     // Try to take the object
                     ctx.AllowRealNamesInCommand = true;
                     this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
@@ -1994,18 +2144,20 @@ var LegacyGame = (function () {
                     this._badCmdBefore = verb;
                     return;
                 }
-            } else {
+            }
+            else {
                 if (childId != -2) {
-                    this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                    this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
                 this._badCmdBefore = verb;
                 return;
             }
-        } else {
+        }
+        else {
             childId = this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
             if (childId <= 0) {
                 if (childId != -2) {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 this._badCmdBefore = verb;
                 return;
@@ -2013,12 +2165,13 @@ var LegacyGame = (function () {
         }
         if (noParentSpecified && doAdd) {
             this.SetStringContents("quest.error.article", this._objs[childId].Article, ctx);
-            this.PlayerErrorMessage(29 /* BadPut */, ctx);
+            this.PlayerErrorMessage(PlayerError.BadPut, ctx);
             return;
         }
         if (doAdd) {
             action = "add";
-        } else {
+        }
+        else {
             action = "remove";
         }
         if (!noParentSpecified) {
@@ -2026,70 +2179,70 @@ var LegacyGame = (function () {
             parentId = this.Disambiguate(parentName, this._currentRoom + ";inventory", ctx);
             if (parentId <= 0) {
                 if (parentId != -2) {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 this._badCmdBefore = Left(cmd, sepPos + sepLen);
                 return;
             }
-        } else {
+        }
+        else {
             // Assume the player was referring to the parent that the object is already in,
             // if it is even in an object already
             if (!this.IsYes(this.GetObjectProperty("parent", childId, true, false))) {
-                this.PlayerErrorMessage(32 /* CantRemove */, ctx);
+                this.PlayerErrorMessage(PlayerError.CantRemove, ctx);
                 return;
             }
             parentId = this.GetObjectIdNoAlias(this.GetObjectProperty("parent", childId, false, true));
         }
-
         // Check if parent is a container
         isContainer = this.IsYes(this.GetObjectProperty("container", parentId, true, false));
         if (!isContainer) {
             if (doAdd) {
-                this.PlayerErrorMessage(30 /* CantPut */, ctx);
-            } else {
-                this.PlayerErrorMessage(32 /* CantRemove */, ctx);
+                this.PlayerErrorMessage(PlayerError.CantPut, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
             return;
         }
-
         // Check object is already held by that parent
         if (this.IsYes(this.GetObjectProperty("parent", childId, true, false))) {
             if (doAdd && LCase(this.GetObjectProperty("parent", childId, false, false)) == LCase(this._objs[parentId].ObjectName)) {
-                this.PlayerErrorMessage(33 /* AlreadyPut */, ctx);
+                this.PlayerErrorMessage(PlayerError.AlreadyPut, ctx);
             }
         }
-
         // Check parent and child are accessible to player
         var canAccessObject = this.PlayerCanAccessObject(childId);
         if (!canAccessObject.CanAccessObject) {
             if (doAdd) {
-                this.PlayerErrorMessage_ExtendInfo(30 /* CantPut */, ctx, canAccessObject.ErrorMsg);
-            } else {
-                this.PlayerErrorMessage_ExtendInfo(32 /* CantRemove */, ctx, canAccessObject.ErrorMsg);
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessObject.ErrorMsg);
+            }
+            else {
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessObject.ErrorMsg);
             }
             return;
         }
         var canAccessParent = this.PlayerCanAccessObject(parentId);
         if (!canAccessParent.CanAccessObject) {
             if (doAdd) {
-                this.PlayerErrorMessage_ExtendInfo(30 /* CantPut */, ctx, canAccessParent.ErrorMsg);
-            } else {
-                this.PlayerErrorMessage_ExtendInfo(32 /* CantRemove */, ctx, canAccessParent.ErrorMsg);
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessParent.ErrorMsg);
+            }
+            else {
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessParent.ErrorMsg);
             }
             return;
         }
-
         // Check if parent is a closed container
         if (!this.IsYes(this.GetObjectProperty("surface", parentId, true, false)) && !this.IsYes(this.GetObjectProperty("opened", parentId, true, false))) {
             // Not a surface and not open, so can't add to this closed container.
             if (doAdd) {
-                this.PlayerErrorMessage(30 /* CantPut */, ctx);
-            } else {
-                this.PlayerErrorMessage(32 /* CantRemove */, ctx);
+                this.PlayerErrorMessage(PlayerError.CantPut, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
             return;
         }
-
         // Now check if it can be added to (or removed from)
         // First check for an action
         var o = this._objs[parentId];
@@ -2103,26 +2256,31 @@ var LegacyGame = (function () {
         if (foundAction) {
             this.SetStringContents("quest." + LCase(action) + ".object.name", this._objs[childId].ObjectName, ctx);
             this.ExecuteScript(actionScript, ctx, parentId);
-        } else {
+        }
+        else {
             // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, parentId, true, false));
             if (!propertyExists) {
                 // Show error message
                 if (doAdd) {
-                    this.PlayerErrorMessage(30 /* CantPut */, ctx);
-                } else {
-                    this.PlayerErrorMessage(32 /* CantRemove */, ctx);
+                    this.PlayerErrorMessage(PlayerError.CantPut, ctx);
                 }
-            } else {
+                else {
+                    this.PlayerErrorMessage(PlayerError.CantRemove, ctx);
+                }
+            }
+            else {
                 textToPrint = this.GetObjectProperty(action, parentId, false, false);
                 if (textToPrint == "") {
                     // Show default message
                     if (doAdd) {
-                        this.PlayerErrorMessage(31 /* DefaultPut */, ctx);
-                    } else {
-                        this.PlayerErrorMessage(34 /* DefaultRemove */, ctx);
+                        this.PlayerErrorMessage(PlayerError.DefaultPut, ctx);
                     }
-                } else {
+                    else {
+                        this.PlayerErrorMessage(PlayerError.DefaultRemove, ctx);
+                    }
+                }
+                else {
                     this.Print(textToPrint, ctx);
                 }
                 this.DoAddRemove(childId, parentId, doAdd, ctx);
@@ -2138,33 +2296,36 @@ var LegacyGame = (function () {
         var scp;
         if (add) {
             commandName = "add";
-        } else {
+        }
+        else {
             commandName = "remove";
         }
         scp = InStr(parameter, ";");
         if (scp == 0 && add) {
-            this.LogASLError("No parent specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
+            this.LogASLError("No parent specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
             return;
         }
         if (scp != 0) {
             childName = LCase(Trim(Left(parameter, scp - 1)));
             parentName = LCase(Trim(Mid(parameter, scp + 1)));
-        } else {
+        }
+        else {
             childName = LCase(Trim(parameter));
         }
         childId = this.GetObjectIdNoAlias(childName);
         if (childId == 0) {
-            this.LogASLError("Invalid child object name specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
+            this.LogASLError("Invalid child object name specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
             return;
         }
         if (scp != 0) {
             parentId = this.GetObjectIdNoAlias(parentName);
             if (parentId == 0) {
-                this.LogASLError("Invalid parent object name specified in '" + commandName + " <" + parameter + ">", 2 /* WarningError */);
+                this.LogASLError("Invalid parent object name specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
                 return;
             }
             this.DoAddRemove(childId, parentId, add, ctx);
-        } else {
+        }
+        else {
             this.AddToObjectProperties("not parent", childId, ctx);
             this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
         }
@@ -2183,7 +2344,8 @@ var LegacyGame = (function () {
         if (this.BeginsWith(cmd, "open ")) {
             action = "open";
             doOpen = true;
-        } else if (this.BeginsWith(cmd, "close ")) {
+        }
+        else if (this.BeginsWith(cmd, "close ")) {
             action = "close";
             doOpen = false;
         }
@@ -2191,46 +2353,45 @@ var LegacyGame = (function () {
         id = this.Disambiguate(name, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
             if (id != -2) {
-                this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                this.PlayerErrorMessage(PlayerError.BadThing, ctx);
             }
             this._badCmdBefore = action;
             return;
         }
-
         // Check if it's even a container
         isContainer = this.IsYes(this.GetObjectProperty("container", id, true, false));
         if (!isContainer) {
             if (doOpen) {
-                this.PlayerErrorMessage(25 /* CantOpen */, ctx);
-            } else {
-                this.PlayerErrorMessage(26 /* CantClose */, ctx);
+                this.PlayerErrorMessage(PlayerError.CantOpen, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.CantClose, ctx);
             }
             return;
         }
-
         // Check if it's already open (or closed)
         isOpen = this.IsYes(this.GetObjectProperty("opened", id, true, false));
         if (doOpen && isOpen) {
             // Object is already open
-            this.PlayerErrorMessage(23 /* AlreadyOpen */, ctx);
-            return;
-        } else if (!doOpen && !isOpen) {
-            // Object is already closed
-            this.PlayerErrorMessage(24 /* AlreadyClosed */, ctx);
+            this.PlayerErrorMessage(PlayerError.AlreadyOpen, ctx);
             return;
         }
-
+        else if (!doOpen && !isOpen) {
+            // Object is already closed
+            this.PlayerErrorMessage(PlayerError.AlreadyClosed, ctx);
+            return;
+        }
         // Check if it's accessible, i.e. check it's not itself inside another closed container
         var canAccessObject = this.PlayerCanAccessObject(id);
         if (!canAccessObject.CanAccessObject) {
             if (doOpen) {
-                this.PlayerErrorMessage_ExtendInfo(25 /* CantOpen */, ctx, canAccessObject.ErrorMsg);
-            } else {
-                this.PlayerErrorMessage_ExtendInfo(26 /* CantClose */, ctx, canAccessObject.ErrorMsg);
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, canAccessObject.ErrorMsg);
+            }
+            else {
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, canAccessObject.ErrorMsg);
             }
             return;
         }
-
         // Now check if it can be opened (or closed)
         // First check for an action
         var o = this._objs[id];
@@ -2243,26 +2404,31 @@ var LegacyGame = (function () {
         }
         if (foundAction) {
             this.ExecuteScript(actionScript, ctx, id);
-        } else {
+        }
+        else {
             // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, id, true, false));
             if (!propertyExists) {
                 // Show error message
                 if (doOpen) {
-                    this.PlayerErrorMessage(25 /* CantOpen */, ctx);
-                } else {
-                    this.PlayerErrorMessage(26 /* CantClose */, ctx);
+                    this.PlayerErrorMessage(PlayerError.CantOpen, ctx);
                 }
-            } else {
+                else {
+                    this.PlayerErrorMessage(PlayerError.CantClose, ctx);
+                }
+            }
+            else {
                 textToPrint = this.GetObjectProperty(action, id, false, false);
                 if (textToPrint == "") {
                     // Show default message
                     if (doOpen) {
-                        this.PlayerErrorMessage(27 /* DefaultOpen */, ctx);
-                    } else {
-                        this.PlayerErrorMessage(28 /* DefaultClose */, ctx);
+                        this.PlayerErrorMessage(PlayerError.DefaultOpen, ctx);
                     }
-                } else {
+                    else {
+                        this.PlayerErrorMessage(PlayerError.DefaultClose, ctx);
+                    }
+                }
+                else {
                     this.Print(textToPrint, ctx);
                 }
                 this.DoOpenClose(id, doOpen, true, ctx);
@@ -2275,7 +2441,7 @@ var LegacyGame = (function () {
         // with all the case statements in the intproc.
         var afterLine = this.GetAfterParameter(script);
         if (!this.BeginsWith(afterLine, "do <!intproc")) {
-            this.LogASLError("No case block specified for '" + script + "'", 2 /* WarningError */);
+            this.LogASLError("No case block specified for '" + script + "'", LogType.WarningError);
             return;
         }
         var blockName = this.GetParameter(afterLine, ctx);
@@ -2286,13 +2452,15 @@ var LegacyGame = (function () {
             // Go through all the cases until we find the one that matches
             if (this._lines[i] != "") {
                 if (!this.BeginsWith(this._lines[i], "case ")) {
-                    this.LogASLError("Invalid line in 'select case' block: '" + this._lines[i] + "'", 2 /* WarningError */);
-                } else {
+                    this.LogASLError("Invalid line in 'select case' block: '" + this._lines[i] + "'", LogType.WarningError);
+                }
+                else {
                     var caseScript = "";
                     if (this.BeginsWith(this._lines[i], "case else ")) {
                         caseMatch = true;
                         caseScript = this.GetEverythingAfter(this._lines[i], "case else ");
-                    } else {
+                    }
+                    else {
                         var thisCase = this.GetParameter(this._lines[i], ctx);
                         var finished = false;
                         do {
@@ -2306,10 +2474,11 @@ var LegacyGame = (function () {
                                 caseScript = this.GetAfterParameter(this._lines[i]);
                                 caseMatch = true;
                                 finished = true;
-                            } else {
+                            }
+                            else {
                                 thisCase = Mid(thisCase, SCP + 1);
                             }
-                        } while(!(finished));
+                        } while (!(finished));
                     }
                     if (caseMatch) {
                         this.ExecuteScript(caseScript, ctx);
@@ -2320,7 +2489,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecVerb = function (cmd, ctx, libCommands) {
-        if (typeof libCommands === "undefined") { libCommands = false; }
+        if (libCommands === void 0) { libCommands = false; }
         var gameBlock;
         var foundVerb = false;
         var verbProperty = "";
@@ -2334,34 +2503,37 @@ var LegacyGame = (function () {
         var thisScript = "";
         if (!libCommands) {
             verbTag = "verb ";
-        } else {
+        }
+        else {
             verbTag = "lib verb ";
         }
         gameBlock = this.GetDefineBlock("game");
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], verbTag)) {
                 verbsList = this.GetParameter(this._lines[i], ctx);
-
                 // The property or action the verb uses is either after a colon,
                 // or it's the first (or only) verb on the line.
                 var colonPos = InStr(verbsList, ":");
                 if (colonPos != 0) {
                     verbProperty = LCase(Trim(Mid(verbsList, colonPos + 1)));
                     verbsList = Trim(Left(verbsList, colonPos - 1));
-                } else {
+                }
+                else {
                     scp = InStr(verbsList, ";");
                     if (scp == 0) {
                         verbProperty = LCase(verbsList);
-                    } else {
+                    }
+                    else {
                         verbProperty = LCase(Trim(Left(verbsList, scp - 1)));
                     }
                 }
-
+                // Now let's see if this matches:
                 do {
                     scp = InStr(verbsList, ";");
                     if (scp == 0) {
                         thisVerb = LCase(verbsList);
-                    } else {
+                    }
+                    else {
                         thisVerb = LCase(Trim(Left(verbsList, scp - 1)));
                     }
                     if (this.BeginsWith(cmd, thisVerb + " ")) {
@@ -2372,7 +2544,7 @@ var LegacyGame = (function () {
                     if (scp != 0) {
                         verbsList = Trim(Mid(verbsList, scp + 1));
                     }
-                } while(!(scp == 0 || Trim(verbsList) == "" || foundVerb));
+                } while (!(scp == 0 || Trim(verbsList) == "" || foundVerb));
                 if (foundVerb) {
                     break;
                 }
@@ -2382,13 +2554,13 @@ var LegacyGame = (function () {
             id = this.Disambiguate(verbObject, "inventory;" + this._currentRoom, ctx);
             if (id < 0) {
                 if (id != -2) {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 this._badCmdBefore = thisVerb;
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
                 var foundAction = false;
-
                 // Now see if this object has the relevant action or property
                 var o = this._objs[id];
                 for (var i = 1; i <= o.NumberActions; i++) {
@@ -2403,6 +2575,7 @@ var LegacyGame = (function () {
                     this.ExecuteScript(thisScript, ctx, id);
                 }
                 if (!foundAction) {
+                    // Check properties for a message
                     for (var i = 1; i <= o.NumberProperties; i++) {
                         if (LCase(o.Properties[i].PropertyName) == verbProperty) {
                             foundAction = true;
@@ -2423,7 +2596,7 @@ var LegacyGame = (function () {
         var openBracketPos;
         var endBracketPos;
         var res = new ExpressionResult();
-
+        // Find brackets, recursively call ExpressionHandler
         do {
             openBracketPos = InStr(expr, "(");
             if (openBracketPos != 0) {
@@ -2433,7 +2606,8 @@ var LegacyGame = (function () {
                 for (var i = openBracketPos + 1; i <= Len(expr); i++) {
                     if (Mid(expr, i, 1) == "(") {
                         BracketCount = BracketCount + 1;
-                    } else if (Mid(expr, i, 1) == ")") {
+                    }
+                    else if (Mid(expr, i, 1) == ")") {
                         BracketCount = BracketCount - 1;
                     }
                     if (BracketCount == 0) {
@@ -2443,20 +2617,20 @@ var LegacyGame = (function () {
                 }
                 if (endBracketPos != 0) {
                     var NestedResult = this.ExpressionHandler(Mid(expr, openBracketPos + 1, endBracketPos - openBracketPos - 1));
-                    if (NestedResult.Success != 0 /* OK */) {
+                    if (NestedResult.Success != ExpressionSuccess.OK) {
                         res.Success = NestedResult.Success;
                         res.Message = NestedResult.Message;
                         return res;
                     }
                     expr = Left(expr, openBracketPos - 1) + " " + NestedResult.Result + " " + Mid(expr, endBracketPos + 1);
-                } else {
+                }
+                else {
                     res.Message = "Missing closing bracket";
-                    res.Success = 1 /* Fail */;
+                    res.Success = ExpressionSuccess.Fail;
                     return res;
                 }
             }
-        } while(!(openBracketPos == 0));
-
+        } while (!(openBracketPos == 0));
         // Split expression into elements, e.g.:
         //       2 + 3 * 578.2 / 36
         //       E O E O EEEEE O EE      where E=Element, O=Operator
@@ -2479,7 +2653,8 @@ var LegacyGame = (function () {
                     // be empty.
                     if (Trim(elements[numElements]) == "") {
                         newElement = false;
-                    } else {
+                    }
+                    else {
                         newElement = true;
                     }
                 default:
@@ -2493,21 +2668,23 @@ var LegacyGame = (function () {
                 if (!operators)
                     operators = [];
                 operators[numOperators] = Mid(expr, i, 1);
-            } else {
+            }
+            else {
                 elements[numElements] = elements[numElements] + Mid(expr, i, 1);
             }
         }
-
+        // Check Elements are numeric, and trim spaces
         for (var i = 1; i <= numElements; i++) {
             elements[i] = Trim(elements[i]);
             if (!IsNumeric(elements[i])) {
                 res.Message = "Syntax error evaluating expression - non-numeric element '" + elements[i] + "'";
-                res.Success = 1 /* Fail */;
+                res.Success = ExpressionSuccess.Fail;
                 return res;
             }
         }
         var opNum = 0;
         do {
+            // Go through the Operators array to find next calculation to perform
             for (var i = 1; i <= numOperators; i++) {
                 if (operators[i] == "/" || operators[i] == "*") {
                     opNum = i;
@@ -2522,7 +2699,6 @@ var LegacyGame = (function () {
                     }
                 }
             }
-
             // If OpNum is still 0, there are no calculations left to do.
             if (opNum != 0) {
                 var val1 = parseFloat(elements[opNum]);
@@ -2532,7 +2708,7 @@ var LegacyGame = (function () {
                     case "/":
                         if (val2 == 0) {
                             res.Message = "Division by zero";
-                            res.Success = 1 /* Fail */;
+                            res.Success = ExpressionSuccess.Fail;
                             return res;
                         }
                         result = val1 / val2;
@@ -2544,7 +2720,7 @@ var LegacyGame = (function () {
                         result = val1 - val2;
                 }
                 elements[opNum] = (result).toString();
-
+                // Remove this operator, and Elements(OpNum+1) from the arrays
                 for (var i = opNum; i <= numOperators - 1; i++) {
                     operators[i] = operators[i + 1];
                 }
@@ -2558,8 +2734,8 @@ var LegacyGame = (function () {
                 if (!elements)
                     elements = [];
             }
-        } while(!(opNum == 0 || numOperators == 0));
-        res.Success = 0 /* OK */;
+        } while (!(opNum == 0 || numOperators == 0));
+        res.Success = ExpressionSuccess.OK;
         res.Result = elements[1];
         return res;
     };
@@ -2575,11 +2751,11 @@ var LegacyGame = (function () {
             // Container is closed, so return "list closed" property if there is one.
             if (this.DoAction(id, "list closed", ctx, false)) {
                 return "<script>";
-            } else {
+            }
+            else {
                 return this.GetObjectProperty("list closed", id, false, false);
             }
         }
-
         // populate contents string
         var numContents = 0;
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -2605,12 +2781,14 @@ var LegacyGame = (function () {
                 if (listString != "") {
                     if (Right(listString, 1) == ":") {
                         contents = Left(listString, Len(listString) - 1) + " ";
-                    } else {
+                    }
+                    else {
                         // If header doesn't end in a colon, then the header is the only text to print
                         contents = listString;
                         displayList = false;
                     }
-                } else {
+                }
+                else {
                     contents = UCase(Left(this._objs[id].Article, 1)) + Mid(this._objs[id].Article, 2) + " contains ";
                 }
                 if (displayList) {
@@ -2618,7 +2796,8 @@ var LegacyGame = (function () {
                         if (i > 1) {
                             if (i < numContents) {
                                 contents = contents + ", ";
-                            } else {
+                            }
+                            else {
                                 contents = contents + " and ";
                             }
                         }
@@ -2628,7 +2807,8 @@ var LegacyGame = (function () {
                         }
                         if (o.ObjectAlias != "") {
                             contents = contents + "|b" + o.ObjectAlias + "|xb";
-                        } else {
+                        }
+                        else {
                             contents = contents + "|b" + o.ObjectName + "|xb";
                         }
                         if (o.Suffix != "") {
@@ -2638,15 +2818,14 @@ var LegacyGame = (function () {
                 }
                 return contents + ".";
             }
-
             // The "list" property is not set, so do not list contents.
             return "";
         }
-
         // Container is empty, so return "list empty" property if there is one.
         if (this.DoAction(id, "list empty", ctx, false)) {
             return "<script>";
-        } else {
+        }
+        else {
             return this.GetObjectProperty("list empty", id, false, false);
         }
     };
@@ -2663,50 +2842,59 @@ var LegacyGame = (function () {
                 result = Left(result, ep) + "X" + Mid(result, ep + 2);
                 pos = ep + 2;
             }
-        } while(!(ep == 0));
+        } while (!(ep == 0));
         return result;
     };
     LegacyGame.prototype.ProcessListInfo = function (line, id) {
         var listInfo = new TextAction();
         var propName = "";
         if (this.BeginsWith(line, "list closed <")) {
-            listInfo.Type = 0 /* Text */;
+            listInfo.Type = TextActionType.Text;
             listInfo.Data = this.GetParameter(line, this._nullContext);
             propName = "list closed";
-        } else if (Trim(line) == "list closed off") {
+        }
+        else if (Trim(line) == "list closed off") {
             // default for list closed is off anyway
             return;
-        } else if (this.BeginsWith(line, "list closed")) {
-            listInfo.Type = 1 /* Script */;
+        }
+        else if (this.BeginsWith(line, "list closed")) {
+            listInfo.Type = TextActionType.Script;
             listInfo.Data = this.GetEverythingAfter(line, "list closed");
             propName = "list closed";
-        } else if (this.BeginsWith(line, "list empty <")) {
-            listInfo.Type = 0 /* Text */;
+        }
+        else if (this.BeginsWith(line, "list empty <")) {
+            listInfo.Type = TextActionType.Text;
             listInfo.Data = this.GetParameter(line, this._nullContext);
             propName = "list empty";
-        } else if (Trim(line) == "list empty off") {
+        }
+        else if (Trim(line) == "list empty off") {
             // default for list empty is off anyway
             return;
-        } else if (this.BeginsWith(line, "list empty")) {
-            listInfo.Type = 1 /* Script */;
+        }
+        else if (this.BeginsWith(line, "list empty")) {
+            listInfo.Type = TextActionType.Script;
             listInfo.Data = this.GetEverythingAfter(line, "list empty");
             propName = "list empty";
-        } else if (Trim(line) == "list off") {
+        }
+        else if (Trim(line) == "list off") {
             this.AddToObjectProperties("not list", id, this._nullContext);
             return;
-        } else if (this.BeginsWith(line, "list <")) {
-            listInfo.Type = 0 /* Text */;
+        }
+        else if (this.BeginsWith(line, "list <")) {
+            listInfo.Type = TextActionType.Text;
             listInfo.Data = this.GetParameter(line, this._nullContext);
             propName = "list";
-        } else if (this.BeginsWith(line, "list ")) {
-            listInfo.Type = 1 /* Script */;
+        }
+        else if (this.BeginsWith(line, "list ")) {
+            listInfo.Type = TextActionType.Script;
             listInfo.Data = this.GetEverythingAfter(line, "list ");
             propName = "list";
         }
         if (propName != "") {
-            if (listInfo.Type == 0 /* Text */) {
+            if (listInfo.Type == TextActionType.Text) {
                 this.AddToObjectProperties(propName + "=" + listInfo.Data, id, this._nullContext);
-            } else {
+            }
+            else {
                 this.AddToObjectActions("<" + propName + "> " + listInfo.Data, id, this._nullContext);
             }
         }
@@ -2752,10 +2940,10 @@ var LegacyGame = (function () {
                 return;
             }
             roomExit.GetParent().RemoveExit(roomExit);
-        } else {
+        }
+        else {
             fromRoom = LCase(Trim(Left(exitData, scp - 1)));
             toRoom = Trim(Mid(exitData, scp + 1));
-
             // Find From Room:
             var found = false;
             for (var i = 1; i <= this._numberRooms; i++) {
@@ -2787,7 +2975,6 @@ var LegacyGame = (function () {
                 r.NumberPlaces = r.NumberPlaces - 1;
             }
         }
-
         // Update quest.* vars and obj list
         this.ShowRoomInfo(this._currentRoom, ctx, true);
         this.UpdateObjectList(ctx);
@@ -2800,10 +2987,10 @@ var LegacyGame = (function () {
         var propertyString = "";
         if (this.BeginsWith(line, "on ")) {
             propertyString = this.GetParameter(line, ctx);
-        } else if (this.BeginsWith(line, "off ")) {
+        }
+        else if (this.BeginsWith(line, "off ")) {
             propertyString = "not " + this.GetParameter(line, ctx);
         }
-
         // Game object always has ObjID 1
         this.AddToObjectProperties(propertyString, 1, ctx);
     };
@@ -2819,7 +3006,8 @@ var LegacyGame = (function () {
         if (sc == 0) {
             change = 1;
             variable = param;
-        } else {
+        }
+        else {
             change = Val(Mid(param, sc + 1));
             variable = Trim(Left(param, sc - 1));
         }
@@ -2829,7 +3017,8 @@ var LegacyGame = (function () {
         }
         if (this.BeginsWith(line, "inc ")) {
             value = value + change;
-        } else if (this.BeginsWith(line, "dec ")) {
+        }
+        else if (this.BeginsWith(line, "dec ")) {
             value = value - change;
         }
         var arrayIndex = this.GetArrayIndex(variable, ctx);
@@ -2843,7 +3032,6 @@ var LegacyGame = (function () {
         if (this._resourceFile == "") {
             return "";
         }
-
         // Find file in catalog
         var found = false;
         for (var i = 1; i <= this._numResources; i++) {
@@ -2857,23 +3045,24 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("Unable to extract '" + file + "' - not present in resources.", 2 /* WarningError */);
+            this.LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
-        var fileName = System.IO.Path.Combine(this._tempFolder, file);
-        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+        // TODO: Extract file from CAS
+        //var fileName = System.IO.Path.Combine(this._tempFolder, file);
+        //System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
         if (!extracted) {
             // Extract file from cached CAS data
             var fileData = Mid(this._casFileData, startPos, length);
-
             // Write file to temp dir
-            System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
+            //System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
             this._resources[resId].Extracted = true;
         }
-        return fileName;
+        //return fileName;
+        return null;
     };
     LegacyGame.prototype.AddObjectAction = function (id, name, script, noUpdate) {
-        if (typeof noUpdate === "undefined") { noUpdate = false; }
+        if (noUpdate === void 0) { noUpdate = false; }
         // Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         // AddToGiveInfo again leading to a big loop
         var actionNum;
@@ -2907,11 +3096,13 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.AddToObjectChangeLog = function (appliesToType, appliesTo, element, changeData) {
         var changeLog;
-
+        // NOTE: We're only actually ever using the object changelog.
+        // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
+        // need the refactored ChangeLog component for those.
         switch (appliesToType) {
-            case ChangeLog.AppliesTo.Object:
+            case AppliesTo.Object:
                 changeLog = this._changeLogObjects;
-            case ChangeLog.AppliesTo.Room:
+            case AppliesTo.Room:
                 changeLog = this._changeLogRooms;
             default:
                 throw "New ArgumentOutOfRangeException()";
@@ -2929,17 +3120,20 @@ var LegacyGame = (function () {
                 o.GiveToAnything = this.GetEverythingAfter(giveData, "anything ");
                 this.AddObjectAction(id, "give to anything", o.GiveToAnything, true);
                 return;
-            } else {
-                giveType = 0 /* GiveToSomething */;
+            }
+            else {
+                giveType = GiveType.GiveToSomething;
                 actionName = "give to ";
             }
-        } else {
+        }
+        else {
             if (this.BeginsWith(giveData, "anything ")) {
                 o.GiveAnything = this.GetEverythingAfter(giveData, "anything ");
                 this.AddObjectAction(id, "give anything", o.GiveAnything, true);
                 return;
-            } else {
-                giveType = 1 /* GiveSomethingTo */;
+            }
+            else {
+                giveType = GiveType.GiveSomethingTo;
                 actionName = "give ";
             }
         }
@@ -2976,7 +3170,7 @@ var LegacyGame = (function () {
         var name = LCase(this.GetParameter(actionInfo, ctx));
         var ep = InStr(actionInfo, ">");
         if (ep == Len(actionInfo)) {
-            this.LogASLError("No script given for '" + name + "' action data", 2 /* WarningError */);
+            this.LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
             return;
         }
         var script = Trim(Mid(actionInfo, ep + 1));
@@ -3014,7 +3208,7 @@ var LegacyGame = (function () {
                 o.AltNames[o.NumberAltNames] = curName;
             }
             altNames = Mid(altNames, endPos + 1);
-        } while(!(Trim(altNames) == ""));
+        } while (!(Trim(altNames) == ""));
     };
     LegacyGame.prototype.AddToObjectProperties = function (propertyInfo, id, ctx) {
         if (id == 0) {
@@ -3037,7 +3231,8 @@ var LegacyGame = (function () {
             if (ep != 0) {
                 name = Trim(Left(info, ep - 1));
                 value = Trim(Mid(info, ep + 1));
-            } else {
+            }
+            else {
                 name = info;
                 value = "";
             }
@@ -3064,16 +3259,18 @@ var LegacyGame = (function () {
             }
             if (falseProperty) {
                 o.Properties[num].PropertyName = "";
-            } else {
+            }
+            else {
                 o.Properties[num].PropertyName = name;
                 o.Properties[num].PropertyValue = value;
             }
-            this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
+            this.AddToObjectChangeLog(AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
             switch (name) {
                 case "alias":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].RoomAlias = value;
-                    } else {
+                    }
+                    else {
                         o.ObjectAlias = value;
                     }
                     if (this._gameFullyLoaded) {
@@ -3083,10 +3280,12 @@ var LegacyGame = (function () {
                 case "prefix":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].Prefix = value;
-                    } else {
+                    }
+                    else {
                         if (value != "") {
                             o.Prefix = value + " ";
-                        } else {
+                        }
+                        else {
                             o.Prefix = "";
                         }
                     }
@@ -3097,7 +3296,7 @@ var LegacyGame = (function () {
                 case "description":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].Description.Data = value;
-                        this._rooms[o.CorresRoomId].Description.Type = 0 /* Text */;
+                        this._rooms[o.CorresRoomId].Description.Type = TextActionType.Text;
                     }
                 case "look":
                     if (o.IsRoom) {
@@ -3119,7 +3318,8 @@ var LegacyGame = (function () {
                 case "hidden":
                     if (falseProperty) {
                         o.Exists = true;
-                    } else {
+                    }
+                    else {
                         o.Exists = false;
                     }
                     if (this._gameFullyLoaded) {
@@ -3128,7 +3328,8 @@ var LegacyGame = (function () {
                 case "invisible":
                     if (falseProperty) {
                         o.Visible = true;
-                    } else {
+                    }
+                    else {
                         o.Visible = false;
                     }
                     if (this._gameFullyLoaded) {
@@ -3137,18 +3338,20 @@ var LegacyGame = (function () {
                 case "take":
                     if (this._gameAslVersion >= 392) {
                         if (falseProperty) {
-                            o.Take.Type = 2 /* Nothing */;
-                        } else {
+                            o.Take.Type = TextActionType.Nothing;
+                        }
+                        else {
                             if (value == "") {
-                                o.Take.Type = 3 /* Default */;
-                            } else {
-                                o.Take.Type = 0 /* Text */;
+                                o.Take.Type = TextActionType.Default;
+                            }
+                            else {
+                                o.Take.Type = TextActionType.Text;
                                 o.Take.Data = value;
                             }
                         }
                     }
             }
-        } while(!(Len(Trim(propertyInfo)) == 0));
+        } while (!(Len(Trim(propertyInfo)) == 0));
     };
     LegacyGame.prototype.AddToUseInfo = function (id, useData) {
         var useType;
@@ -3158,15 +3361,18 @@ var LegacyGame = (function () {
             if (this.BeginsWith(useData, "anything ")) {
                 o.UseOnAnything = this.GetEverythingAfter(useData, "anything ");
                 return;
-            } else {
-                useType = 0 /* UseOnSomething */;
             }
-        } else {
+            else {
+                useType = UseType.UseOnSomething;
+            }
+        }
+        else {
             if (this.BeginsWith(useData, "anything ")) {
                 o.UseAnything = this.GetEverythingAfter(useData, "anything ");
                 return;
-            } else {
-                useType = 1 /* UseSomethingOn */;
+            }
+            else {
+                useType = UseType.UseSomethingOn;
             }
         }
         if (Left(Trim(useData), 1) == "<") {
@@ -3191,7 +3397,8 @@ var LegacyGame = (function () {
             o.UseData[dataId].UseType = useType;
             o.UseData[dataId].UseObject = objectName;
             o.UseData[dataId].UseScript = Mid(useData, ep + 2);
-        } else {
+        }
+        else {
             o.Use = Trim(useData);
         }
     };
@@ -3202,9 +3409,9 @@ var LegacyGame = (function () {
         return this.GetParameter("<" + s + ">", ctx);
     };
     LegacyGame.prototype.DisambObjHere = function (ctx, id, firstPlace, twoPlaces, secondPlace, isExit) {
-        if (typeof twoPlaces === "undefined") { twoPlaces = false; }
-        if (typeof secondPlace === "undefined") { secondPlace = ""; }
-        if (typeof isExit === "undefined") { isExit = false; }
+        if (twoPlaces === void 0) { twoPlaces = false; }
+        if (secondPlace === void 0) { secondPlace = ""; }
+        if (isExit === void 0) { isExit = false; }
         var isSeen;
         var onlySeen = false;
         if (firstPlace == "game") {
@@ -3216,10 +3423,12 @@ var LegacyGame = (function () {
                 var roomObjId = this._rooms[this.GetRoomID(this._objs[id].ContainerRoom, ctx)].ObjId;
                 if (this._objs[id].ContainerRoom == "inventory") {
                     isSeen = true;
-                } else {
+                }
+                else {
                     if (this.IsYes(this.GetObjectProperty("visited", roomObjId, true, false))) {
                         isSeen = true;
-                    } else {
+                    }
+                    else {
                         if (this.IsYes(this.GetObjectProperty("seen", id, true, false))) {
                             isSeen = true;
                         }
@@ -3241,16 +3450,18 @@ var LegacyGame = (function () {
         var cloneTo;
         var scp = InStr(cloneString, ";");
         if (scp == 0) {
-            this.LogASLError("No new object name specified in 'clone <" + cloneString + ">", 2 /* WarningError */);
+            this.LogASLError("No new object name specified in 'clone <" + cloneString + ">", LogType.WarningError);
             return;
-        } else {
+        }
+        else {
             var objectToClone = Trim(Left(cloneString, scp - 1));
             id = this.GetObjectIdNoAlias(objectToClone);
             var SC2 = InStr(scp + 1, cloneString, ";");
             if (SC2 == 0) {
                 cloneTo = this._objs[id].ContainerRoom;
                 newName = Trim(Mid(cloneString, scp + 1));
-            } else {
+            }
+            else {
                 cloneTo = Trim(Mid(cloneString, SC2 + 1));
                 newName = Trim(Mid(cloneString, scp + 1, (SC2 - scp) - 1));
             }
@@ -3274,7 +3485,8 @@ var LegacyGame = (function () {
             this._objs[this._numberObjs].CorresRoom = newName;
             this._objs[this._numberObjs].CorresRoomId = this._numberRooms;
             this.AddToChangeLog("room " + newName, "create");
-        } else {
+        }
+        else {
             this.AddToChangeLog("object " + newName, "create " + this._objs[this._numberObjs].ContainerRoom);
         }
         this.UpdateObjectList(ctx);
@@ -3283,7 +3495,8 @@ var LegacyGame = (function () {
         if (this._badCmdBefore != "") {
             if (this._badCmdAfter == "") {
                 this.ExecCommand(this._badCmdBefore + " " + correction, ctx, false);
-            } else {
+            }
+            else {
                 this.ExecCommand(this._badCmdBefore + " " + correction + " " + this._badCmdAfter, ctx, false);
             }
         }
@@ -3319,7 +3532,8 @@ var LegacyGame = (function () {
         for (var i = 1; i <= propertyData.NumberActions; i++) {
             this.AddObjectAction(id, propertyData.Actions[i].ActionName, propertyData.Actions[i].Script);
         }
-
+        // New as of Quest 4.0. Fixes bug that "if type" would fail for any
+        // parent types included by the "type" command.
         for (var i = 1; i <= propertyData.NumberTypesIncluded; i++) {
             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
             if (!o.TypesIncluded)
@@ -3331,7 +3545,7 @@ var LegacyGame = (function () {
         var id;
         var scp = InStr(actionData, ";");
         if (scp == 0) {
-            this.LogASLError("No action name given in condition 'action <" + actionData + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No action name given in condition 'action <" + actionData + ">' ...", LogType.WarningError);
             return false;
         }
         var objName = Trim(Left(actionData, scp - 1));
@@ -3345,7 +3559,7 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such object '" + objName + "' in condition 'action <" + actionData + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No such object '" + objName + "' in condition 'action <" + actionData + ">' ...", LogType.WarningError);
             return false;
         }
         var o = this._objs[id];
@@ -3360,7 +3574,7 @@ var LegacyGame = (function () {
         var id;
         var scp = InStr(typeData, ";");
         if (scp == 0) {
-            this.LogASLError("No type name given in condition 'type <" + typeData + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No type name given in condition 'type <" + typeData + ">' ...", LogType.WarningError);
             return false;
         }
         var objName = Trim(Left(typeData, scp - 1));
@@ -3374,7 +3588,7 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such object '" + objName + "' in condition 'type <" + typeData + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No such object '" + objName + "' in condition 'type <" + typeData + ">' ...", LogType.WarningError);
             return false;
         }
         var o = this._objs[id];
@@ -3396,14 +3610,15 @@ var LegacyGame = (function () {
         var data = Mid(varName, beginPos + 1, (endPos - beginPos) - 1);
         if (IsNumeric(data)) {
             result.Index = parseInt(data);
-        } else {
-            result.Index = parseInt(this.GetNumericContents(data, ctx));
+        }
+        else {
+            result.Index = this.GetNumericContents(data, ctx);
         }
         result.Name = Left(varName, beginPos - 1);
         return result;
     };
     LegacyGame.prototype.Disambiguate = function (name, containedIn, ctx, isExit) {
-        if (typeof isExit === "undefined") { isExit = false; }
+        if (isExit === void 0) { isExit = false; }
         // Returns object ID being referred to by player.
         // Returns -1 if object doesn't exist, calling function
         //   then expected to print relevant error.
@@ -3429,7 +3644,8 @@ var LegacyGame = (function () {
             twoPlaces = true;
             firstPlace = Trim(Left(containedIn, scp - 1));
             secondPlace = Trim(Mid(containedIn, scp + 1));
-        } else {
+        }
+        else {
             twoPlaces = false;
             firstPlace = containedIn;
         }
@@ -3443,33 +3659,37 @@ var LegacyGame = (function () {
                 }
             }
         }
-
         // If player uses "it", "them" etc. as name:
         if (name == "it" || name == "them" || name == "this" || name == "those" || name == "these" || name == "that") {
             this.SetStringContents("quest.error.pronoun", name, ctx);
-            if (this._lastIt != 0 && this._lastItMode == 0 /* Inanimate */ && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
+            if (this._lastIt != 0 && this._lastItMode == ItType.Inanimate && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
                 this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
-            } else {
-                this.PlayerErrorMessage(22 /* BadPronoun */, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
                 return -2;
             }
-        } else if (name == "him") {
+        }
+        else if (name == "him") {
             this.SetStringContents("quest.error.pronoun", name, ctx);
-            if (this._lastIt != 0 && this._lastItMode == 1 /* Male */ && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
+            if (this._lastIt != 0 && this._lastItMode == ItType.Male && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
                 this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
-            } else {
-                this.PlayerErrorMessage(22 /* BadPronoun */, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
                 return -2;
             }
-        } else if (name == "her") {
+        }
+        else if (name == "her") {
             this.SetStringContents("quest.error.pronoun", name, ctx);
-            if (this._lastIt != 0 && this._lastItMode == 2 /* Female */ && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
+            if (this._lastIt != 0 && this._lastItMode == ItType.Female && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
                 this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
-            } else {
-                this.PlayerErrorMessage(22 /* BadPronoun */, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
                 return -2;
             }
         }
@@ -3497,12 +3717,14 @@ var LegacyGame = (function () {
             }
         }
         if (this._gameAslVersion >= 391 && numberCorresIds == 0 && this._useAbbreviations && Len(name) > 0) {
+            // Check for abbreviated object names
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (this.DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit)) {
                     var thisName;
                     if (this._objs[i].ObjectAlias != "") {
                         thisName = LCase(this._objs[i].ObjectAlias);
-                    } else {
+                    }
+                    else {
                         thisName = LCase(this._objs[i].ObjectName);
                     }
                     if (this._gameAslVersion >= 410) {
@@ -3527,14 +3749,15 @@ var LegacyGame = (function () {
             this._thisTurnIt = idNumbers[1];
             switch (this._objs[idNumbers[1]].Article) {
                 case "him":
-                    this._thisTurnItMode = 1 /* Male */;
+                    this._thisTurnItMode = ItType.Male;
                 case "her":
-                    this._thisTurnItMode = 2 /* Female */;
+                    this._thisTurnItMode = ItType.Female;
                 default:
-                    this._thisTurnItMode = 0 /* Inanimate */;
+                    this._thisTurnItMode = ItType.Inanimate;
             }
             return idNumbers[1];
-        } else if (numberCorresIds > 1) {
+        }
+        else if (numberCorresIds > 1) {
             descriptionText = [];
             var question = "Please select which " + name + " you mean:";
             this.Print("- |i" + question + "|xi", ctx);
@@ -3544,24 +3767,25 @@ var LegacyGame = (function () {
                 if (descriptionText[i] == "") {
                     if (this._objs[idNumbers[i]].Prefix == "") {
                         descriptionText[i] = this._objs[idNumbers[i]].ObjectAlias;
-                    } else {
+                    }
+                    else {
                         descriptionText[i] = this._objs[idNumbers[i]].Prefix + this._objs[idNumbers[i]].ObjectAlias;
                     }
                 }
                 menuItems.Add((i).toString(), descriptionText[i]);
             }
-            var mnu = new MenuData();
+            var mnu = new MenuData(question, menuItems, false);
             var response = this.ShowMenu(mnu);
             this._choiceNumber = parseInt(response);
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[this._choiceNumber];
             switch (this._objs[idNumbers[this._choiceNumber]].Article) {
                 case "him":
-                    this._thisTurnItMode = 1 /* Male */;
+                    this._thisTurnItMode = ItType.Male;
                 case "her":
-                    this._thisTurnItMode = 2 /* Female */;
+                    this._thisTurnItMode = ItType.Female;
                 default:
-                    this._thisTurnItMode = 0 /* Inanimate */;
+                    this._thisTurnItMode = ItType.Inanimate;
             }
             this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
             return idNumbers[this._choiceNumber];
@@ -3573,13 +3797,14 @@ var LegacyGame = (function () {
     LegacyGame.prototype.DisplayStatusVariableInfo = function (id, type, ctx) {
         var displayData = "";
         var ep;
-        if (type == 0 /* String */) {
+        if (type == VarType.String) {
             displayData = this.ConvertVarsIn(this._stringVariable[id].DisplayString, ctx);
             ep = InStr(displayData, "!");
             if (ep != 0) {
                 displayData = Left(displayData, ep - 1) + this._stringVariable[id].VariableContents[0] + Mid(displayData, ep + 1);
             }
-        } else if (type == 1 /* Numeric */) {
+        }
+        else if (type == VarType.Numeric) {
             if (this._numericVariable[id].NoZeroDisplay && Val(this._numericVariable[id].VariableContents[0]) == 0) {
                 return "";
             }
@@ -3596,7 +3821,8 @@ var LegacyGame = (function () {
                 var betweenStar = Mid(displayData, firstStar + 1, (secondStar - firstStar) - 1);
                 if (parseFloat(this._numericVariable[id].VariableContents[0]) != 1) {
                     displayData = beforeStar + betweenStar + afterStar;
-                } else {
+                }
+                else {
                     displayData = beforeStar + afterStar;
                 }
             }
@@ -3604,7 +3830,7 @@ var LegacyGame = (function () {
         return displayData;
     };
     LegacyGame.prototype.DoAction = function (id, action, ctx, logError) {
-        if (typeof logError === "undefined") { logError = true; }
+        if (logError === void 0) { logError = true; }
         var found;
         var script = "";
         var o = this._objs[id];
@@ -3643,32 +3869,36 @@ var LegacyGame = (function () {
         if (this.BeginsWith(scriptLine, "object ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "object ");
             if (!this.BeginsWith(scriptLine, "in ")) {
-                this.LogASLError("Expected 'in' in 'for each object " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
+                this.LogASLError("Expected 'in' in 'for each object " + this.ReportErrorLine(scriptLine) + "'", LogType.WarningError);
                 return;
             }
-        } else if (this.BeginsWith(scriptLine, "exit ")) {
+        }
+        else if (this.BeginsWith(scriptLine, "exit ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "exit ");
             if (!this.BeginsWith(scriptLine, "in ")) {
-                this.LogASLError("Expected 'in' in 'for each exit " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
+                this.LogASLError("Expected 'in' in 'for each exit " + this.ReportErrorLine(scriptLine) + "'", LogType.WarningError);
                 return;
             }
             isExit = true;
-        } else if (this.BeginsWith(scriptLine, "room ")) {
+        }
+        else if (this.BeginsWith(scriptLine, "room ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "room ");
             if (!this.BeginsWith(scriptLine, "in ")) {
-                this.LogASLError("Expected 'in' in 'for each room " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
+                this.LogASLError("Expected 'in' in 'for each room " + this.ReportErrorLine(scriptLine) + "'", LogType.WarningError);
                 return;
             }
             isRoom = true;
-        } else {
-            this.LogASLError("Unknown type in 'for each " + this.ReportErrorLine(scriptLine) + "'", 2 /* WarningError */);
+        }
+        else {
+            this.LogASLError("Unknown type in 'for each " + this.ReportErrorLine(scriptLine) + "'", LogType.WarningError);
             return;
         }
         scriptLine = this.GetEverythingAfter(scriptLine, "in ");
         if (this.BeginsWith(scriptLine, "game ")) {
             inLocation = "";
             scriptToRun = this.GetEverythingAfter(scriptLine, "game ");
-        } else {
+        }
+        else {
             inLocation = LCase(this.GetParameter(scriptLine, ctx));
             var bracketPos = InStr(scriptLine, ">");
             scriptToRun = Trim(Mid(scriptLine, bracketPos + 1));
@@ -3692,7 +3922,7 @@ var LegacyGame = (function () {
         var param = this.GetParameter(data, ctx);
         var scp = InStr(param, ";");
         if (scp == 0) {
-            this.LogASLError("No action name specified in 'action " + data + "'", 2 /* WarningError */);
+            this.LogASLError("No action name specified in 'action " + data + "'", LogType.WarningError);
             return;
         }
         var objName = Trim(Left(param, scp - 1));
@@ -3700,7 +3930,8 @@ var LegacyGame = (function () {
         var ep = InStr(data, ">");
         if (ep == Len(Trim(data))) {
             script = "";
-        } else {
+        }
+        else {
             script = Trim(Mid(data, ep + 1));
         }
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -3711,7 +3942,7 @@ var LegacyGame = (function () {
             }
         }
         if (!foundObject) {
-            this.LogASLError("No such object '" + objName + "' in 'action " + data + "'", 2 /* WarningError */);
+            this.LogASLError("No such object '" + objName + "' in 'action " + data + "'", LogType.WarningError);
             return;
         }
         var o = this._objs[id];
@@ -3739,30 +3970,41 @@ var LegacyGame = (function () {
         if (this.BeginsWith(condition, "not ")) {
             thisNot = true;
             condition = this.GetEverythingAfter(condition, "not ");
-        } else {
+        }
+        else {
             thisNot = false;
         }
         if (this.BeginsWith(condition, "got ")) {
             result = this.ExecuteIfGot(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "has ")) {
+        }
+        else if (this.BeginsWith(condition, "has ")) {
             result = this.ExecuteIfHas(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "ask ")) {
+        }
+        else if (this.BeginsWith(condition, "ask ")) {
             result = this.ExecuteIfAsk(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "is ")) {
+        }
+        else if (this.BeginsWith(condition, "is ")) {
             result = this.ExecuteIfIs(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "here ")) {
+        }
+        else if (this.BeginsWith(condition, "here ")) {
             result = this.ExecuteIfHere(this.GetParameter(condition, ctx), ctx);
-        } else if (this.BeginsWith(condition, "exists ")) {
+        }
+        else if (this.BeginsWith(condition, "exists ")) {
             result = this.ExecuteIfExists(this.GetParameter(condition, ctx), false);
-        } else if (this.BeginsWith(condition, "real ")) {
+        }
+        else if (this.BeginsWith(condition, "real ")) {
             result = this.ExecuteIfExists(this.GetParameter(condition, ctx), true);
-        } else if (this.BeginsWith(condition, "property ")) {
+        }
+        else if (this.BeginsWith(condition, "property ")) {
             result = this.ExecuteIfProperty(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "action ")) {
+        }
+        else if (this.BeginsWith(condition, "action ")) {
             result = this.ExecuteIfAction(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "type ")) {
+        }
+        else if (this.BeginsWith(condition, "type ")) {
             result = this.ExecuteIfType(this.GetParameter(condition, ctx));
-        } else if (this.BeginsWith(condition, "flag ")) {
+        }
+        else if (this.BeginsWith(condition, "flag ")) {
             result = this.ExecuteIfFlag(this.GetParameter(condition, ctx));
         }
         if (thisNot) {
@@ -3797,17 +4039,17 @@ var LegacyGame = (function () {
             var thisCondition = Trim(Mid(list, pos, nextConditionPos - pos - 1));
             conditions[numConditions] = thisCondition;
             operations[numConditions] = nextCondition;
-
             // next condition starts from space after and/or
             pos = InStr(nextConditionPos, obscuredConditionList, " ");
-        } while(!(isFinalCondition));
+        } while (!(isFinalCondition));
         operations[0] = "AND";
         var result = true;
         for (var i = 1; i <= numConditions; i++) {
             var thisResult = this.ExecuteCondition(conditions[i], ctx);
             if (operations[i - 1] == "AND") {
                 result = thisResult && result;
-            } else if (operations[i - 1] == "OR") {
+            }
+            else if (operations[i - 1] == "OR") {
                 result = thisResult || result;
             }
         }
@@ -3837,17 +4079,19 @@ var LegacyGame = (function () {
                 for (var j = 1; j <= this._defaultRoomProperties.NumberActions; j++) {
                     this.AddObjectAction(this._numberObjs, this._defaultRoomProperties.Actions[j].ActionName, this._defaultRoomProperties.Actions[j].Script);
                 }
-                this._rooms[this._numberRooms].Exits = new RoomExits();
+                this._rooms[this._numberRooms].Exits = new RoomExits(this);
                 this._rooms[this._numberRooms].Exits.SetObjId(this._rooms[this._numberRooms].ObjId);
             }
-        } else if (this.BeginsWith(data, "object ")) {
+        }
+        else if (this.BeginsWith(data, "object ")) {
             var paramData = this.GetParameter(data, ctx);
             var scp = InStr(paramData, ";");
             var containerRoom;
             if (scp == 0) {
                 newName = paramData;
                 containerRoom = "";
-            } else {
+            }
+            else {
                 newName = Trim(Left(paramData, scp - 1));
                 containerRoom = Trim(Mid(paramData, scp + 1));
             }
@@ -3873,7 +4117,8 @@ var LegacyGame = (function () {
             if (!this._gameLoading) {
                 this.UpdateObjectList(ctx);
             }
-        } else if (this.BeginsWith(data, "exit ")) {
+        }
+        else if (this.BeginsWith(data, "exit ")) {
             this.ExecuteCreateExit(data, ctx);
         }
     };
@@ -3886,18 +4131,19 @@ var LegacyGame = (function () {
         var scp = InStr(newName, ";");
         if (this._gameAslVersion < 410) {
             if (scp == 0) {
-                this.LogASLError("No exit destination given in 'create exit " + exitData + "'", 2 /* WarningError */);
+                this.LogASLError("No exit destination given in 'create exit " + exitData + "'", LogType.WarningError);
                 return;
             }
         }
         if (scp == 0) {
             scrRoom = Trim(newName);
-        } else {
+        }
+        else {
             scrRoom = Trim(Left(newName, scp - 1));
         }
         var srcId = this.GetRoomID(scrRoom, ctx);
         if (srcId == 0) {
-            this.LogASLError("No such room '" + scrRoom + "'", 2 /* WarningError */);
+            this.LogASLError("No such room '" + scrRoom + "'", LogType.WarningError);
             return;
         }
         if (this._gameAslVersion < 410) {
@@ -3907,18 +4153,18 @@ var LegacyGame = (function () {
             if (destRoom != "") {
                 destId = this.GetRoomID(destRoom, ctx);
                 if (destId == 0) {
-                    this.LogASLError("No such room '" + destRoom + "'", 2 /* WarningError */);
+                    this.LogASLError("No such room '" + destRoom + "'", LogType.WarningError);
                     return;
                 }
             }
         }
-
         // If it's a "go to" exit, check if it already exists:
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
                 exists = this._rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
-            } else {
+            }
+            else {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
                     if (LCase(this._rooms[srcId].Places[i].PlaceName) == LCase(destRoom)) {
                         exists = true;
@@ -3927,7 +4173,7 @@ var LegacyGame = (function () {
                 }
             }
             if (exists) {
-                this.LogASLError("Exit from '" + scrRoom + "' to '" + destRoom + "' already exists", 2 /* WarningError */);
+                this.LogASLError("Exit from '" + scrRoom + "' to '" + destRoom + "' already exists", LogType.WarningError);
                 return;
             }
         }
@@ -3935,9 +4181,9 @@ var LegacyGame = (function () {
         var saveData;
         if (paramPos == 0) {
             saveData = exitData;
-        } else {
+        }
+        else {
             saveData = Left(exitData, paramPos - 1);
-
             // We do this so the changelog doesn't contain unconverted variable names
             saveData = saveData + "<" + this.GetParameter(exitData, ctx) + ">";
         }
@@ -3945,47 +4191,60 @@ var LegacyGame = (function () {
         var r = this._rooms[srcId];
         if (this._gameAslVersion >= 410) {
             r.Exits.AddExitFromCreateScript(exitData, ctx);
-        } else {
+        }
+        else {
             if (this.BeginsWith(exitData, "north ")) {
                 r.North.Data = destRoom;
-                r.North.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "south ")) {
+                r.North.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "south ")) {
                 r.South.Data = destRoom;
-                r.South.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "east ")) {
+                r.South.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "east ")) {
                 r.East.Data = destRoom;
-                r.East.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "west ")) {
+                r.East.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "west ")) {
                 r.West.Data = destRoom;
-                r.West.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "northeast ")) {
+                r.West.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "northeast ")) {
                 r.NorthEast.Data = destRoom;
-                r.NorthEast.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "northwest ")) {
+                r.NorthEast.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "northwest ")) {
                 r.NorthWest.Data = destRoom;
-                r.NorthWest.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "southeast ")) {
+                r.NorthWest.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "southeast ")) {
                 r.SouthEast.Data = destRoom;
-                r.SouthEast.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "southwest ")) {
+                r.SouthEast.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "southwest ")) {
                 r.SouthWest.Data = destRoom;
-                r.SouthWest.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "up ")) {
+                r.SouthWest.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "up ")) {
                 r.Up.Data = destRoom;
-                r.Up.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "down ")) {
+                r.Up.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "down ")) {
                 r.Down.Data = destRoom;
-                r.Down.Type = 0 /* Text */;
-            } else if (this.BeginsWith(exitData, "out ")) {
+                r.Down.Type = TextActionType.Text;
+            }
+            else if (this.BeginsWith(exitData, "out ")) {
                 r.Out.Text = destRoom;
-            } else if (this.BeginsWith(exitData, "<")) {
+            }
+            else if (this.BeginsWith(exitData, "<")) {
                 r.NumberPlaces = r.NumberPlaces + 1;
                 if (!r.Places)
                     r.Places = [];
                 r.Places[r.NumberPlaces] = new PlaceType();
                 r.Places[r.NumberPlaces].PlaceName = destRoom;
-            } else {
-                this.LogASLError("Invalid direction in 'create exit " + exitData + "'", 2 /* WarningError */);
+            }
+            else {
+                this.LogASLError("Invalid direction in 'create exit " + exitData + "'", LogType.WarningError);
             }
         }
         if (!this._gameLoading) {
@@ -3995,10 +4254,12 @@ var LegacyGame = (function () {
             if (this._gameAslVersion < 410) {
                 if (this._currentRoom == this._rooms[srcId].RoomName) {
                     this.UpdateDoorways(srcId, ctx);
-                } else if (this._currentRoom == this._rooms[destId].RoomName) {
+                }
+                else if (this._currentRoom == this._rooms[destId].RoomName) {
                     this.UpdateDoorways(destId, ctx);
                 }
-            } else {
+            }
+            else {
                 // Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 // for current room anyway.
                 this.UpdateDoorways(this.GetRoomID(this._currentRoom, ctx), ctx);
@@ -4012,21 +4273,22 @@ var LegacyGame = (function () {
         id = this.Disambiguate(obj, "inventory", ctx);
         if (id > 0) {
             found = true;
-        } else {
+        }
+        else {
             found = false;
         }
         if (!found) {
             if (id != -2) {
                 if (this._gameAslVersion >= 391) {
-                    this.PlayerErrorMessage(4 /* NoItem */, ctx);
-                } else {
-                    this.PlayerErrorMessage(21 /* BadDrop */, ctx);
+                    this.PlayerErrorMessage(PlayerError.NoItem, ctx);
+                }
+                else {
+                    this.PlayerErrorMessage(PlayerError.BadDrop, ctx);
                 }
             }
             this._badCmdBefore = "drop";
             return;
         }
-
         // If object is inside a container, it must be removed before it can be dropped.
         var isInContainer = false;
         if (this._gameAslVersion >= 391) {
@@ -4053,11 +4315,11 @@ var LegacyGame = (function () {
                 var parentDisplayName;
                 if (this._objs[parentId].ObjectAlias != "") {
                     parentDisplayName = this._objs[parentId].ObjectAlias;
-                } else {
+                }
+                else {
                     parentDisplayName = this._objs[parentId].ObjectName;
                 }
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
-
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
@@ -4068,23 +4330,28 @@ var LegacyGame = (function () {
             }
         }
         if (!dropFound) {
-            this.PlayerErrorMessage(20 /* DefaultDrop */, ctx);
+            this.PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
             this.PlayerItem(this._objs[id].ObjectName, false, ctx);
-        } else {
+        }
+        else {
             if (this.BeginsWith(dropStatement, "everywhere")) {
                 this.PlayerItem(this._objs[id].ObjectName, false, ctx);
                 if (InStr(dropStatement, "<") != 0) {
                     this.Print(this.GetParameter(dropStatement, ctx), ctx);
-                } else {
-                    this.PlayerErrorMessage(20 /* DefaultDrop */, ctx);
                 }
-            } else if (this.BeginsWith(dropStatement, "nowhere")) {
+                else {
+                    this.PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
+                }
+            }
+            else if (this.BeginsWith(dropStatement, "nowhere")) {
                 if (InStr(dropStatement, "<") != 0) {
                     this.Print(this.GetParameter(dropStatement, ctx), ctx);
-                } else {
-                    this.PlayerErrorMessage(19 /* CantDrop */, ctx);
                 }
-            } else {
+                else {
+                    this.PlayerErrorMessage(PlayerError.CantDrop, ctx);
+                }
+            }
+            else {
                 this.ExecuteScript(dropStatement, ctx);
             }
         }
@@ -4092,40 +4359,41 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecExamine = function (command, ctx) {
         var item = LCase(Trim(this.GetEverythingAfter(command, "examine ")));
         if (item == "") {
-            this.PlayerErrorMessage(16 /* BadExamine */, ctx);
+            this.PlayerErrorMessage(PlayerError.BadExamine, ctx);
             this._badCmdBefore = "examine";
             return;
         }
         var id = this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
             if (id != -2) {
-                this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                this.PlayerErrorMessage(PlayerError.BadThing, ctx);
             }
             this._badCmdBefore = "examine";
             return;
         }
         var o = this._objs[id];
-
+        // Find "examine" action:
         for (var i = 1; i <= o.NumberActions; i++) {
             if (o.Actions[i].ActionName == "examine") {
                 this.ExecuteScript(o.Actions[i].Script, ctx, id);
                 return;
             }
         }
-
+        // Find "examine" property:
         for (var i = 1; i <= o.NumberProperties; i++) {
             if (o.Properties[i].PropertyName == "examine") {
                 this.Print(o.Properties[i].PropertyValue, ctx);
                 return;
             }
         }
-
+        // Find "examine" tag:
         for (var i = o.DefinitionSectionStart + 1; i <= this._objs[id].DefinitionSectionEnd - 1; i++) {
             if (this.BeginsWith(this._lines[i], "examine ")) {
                 var action = Trim(this.GetEverythingAfter(this._lines[i], "examine "));
                 if (Left(action, 1) == "<") {
                     this.Print(this.GetParameter(this._lines[i], ctx), ctx);
-                } else {
+                }
+                else {
                     this.ExecuteScript(action, ctx, id);
                 }
                 return;
@@ -4144,7 +4412,7 @@ var LegacyGame = (function () {
         var found;
         var scp = InStr(data, ";");
         if (scp == 0) {
-            this.LogASLError("No property data given in 'property <" + data + ">'", 2 /* WarningError */);
+            this.LogASLError("No property data given in 'property <" + data + ">'", LogType.WarningError);
             return;
         }
         var name = Trim(Left(data, scp - 1));
@@ -4157,7 +4425,7 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such object in 'property <" + data + ">'", 2 /* WarningError */);
+            this.LogASLError("No such object in 'property <" + data + ">'", LogType.WarningError);
             return;
         }
         this.AddToObjectProperties(properties, id, ctx);
@@ -4170,7 +4438,8 @@ var LegacyGame = (function () {
             // If "do" procedure is run in a new context, context info is not passed to any nested
             // script blocks in braces.
             useNewCtx = false;
-        } else {
+        }
+        else {
             useNewCtx = true;
         }
         if (this._gameAslVersion >= 284) {
@@ -4192,17 +4461,19 @@ var LegacyGame = (function () {
                         newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = Trim(Mid(parameters, pos, scp - pos));
                     pos = scp + 1;
-                } while(!(pos >= Len(parameters)));
+                } while (!(pos >= Len(parameters)));
             }
         }
         var block = this.DefineBlockParam("procedure", procedureName);
         if (block.StartLine == 0 && block.EndLine == 0) {
-            this.LogASLError("No such procedure " + procedureName, 2 /* WarningError */);
-        } else {
+            this.LogASLError("No such procedure " + procedureName, LogType.WarningError);
+        }
+        else {
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (!useNewCtx) {
                     this.ExecuteScript(this._lines[i], ctx);
-                } else {
+                }
+                else {
                     this.ExecuteScript(this._lines[i], newCtx);
                     ctx.DontProcessCommand = newCtx.DontProcessCommand;
                 }
@@ -4282,7 +4553,7 @@ var LegacyGame = (function () {
             }
         }
         if (found == false && errorReport) {
-            this.LogASLError("No such character/object '" + obj + "'.", 6 /* UserError */);
+            this.LogASLError("No such character/object '" + obj + "'.", LogType.UserError);
         }
         if (found == false) {
             result = false;
@@ -4296,7 +4567,7 @@ var LegacyGame = (function () {
         var id;
         var scp = InStr(data, ";");
         if (scp == 0) {
-            this.LogASLError("No property name given in condition 'property <" + data + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No property name given in condition 'property <" + data + ">' ...", LogType.WarningError);
             return false;
         }
         var objName = Trim(Left(data, scp - 1));
@@ -4310,7 +4581,7 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such object '" + objName + "' in condition 'property <" + data + ">' ...", 2 /* WarningError */);
+            this.LogASLError("No such object '" + objName + "' in condition 'property <" + data + ">' ...", LogType.WarningError);
             return false;
         }
         return this.GetObjectProperty(propertyName, id, true) == "yes";
@@ -4324,11 +4595,13 @@ var LegacyGame = (function () {
         if (this.BeginsWith(data, "while ")) {
             repeatWhileTrue = true;
             data = this.GetEverythingAfter(data, "while ");
-        } else if (this.BeginsWith(data, "until ")) {
+        }
+        else if (this.BeginsWith(data, "until ")) {
             repeatWhileTrue = false;
             data = this.GetEverythingAfter(data, "until ");
-        } else {
-            this.LogASLError("Expected 'until' or 'while' in 'repeat " + this.ReportErrorLine(data) + "'", 2 /* WarningError */);
+        }
+        else {
+            this.LogASLError("Expected 'until' or 'while' in 'repeat " + this.ReportErrorLine(data) + "'", LogType.WarningError);
             return;
         }
         var pos = 1;
@@ -4338,19 +4611,21 @@ var LegacyGame = (function () {
             if ((!this.BeginsWith(afterBracket, "and ")) && (!this.BeginsWith(afterBracket, "or "))) {
                 repeatScript = afterBracket;
                 foundScript = true;
-            } else {
+            }
+            else {
                 pos = bracketPos + 1;
             }
-        } while(!(foundScript || afterBracket == ""));
+        } while (!(foundScript || afterBracket == ""));
         var conditions = Trim(Left(data, bracketPos));
         var finished = false;
         do {
             if (this.ExecuteConditions(conditions, ctx) == repeatWhileTrue) {
                 this.ExecuteScript(repeatScript, ctx);
-            } else {
+            }
+            else {
                 finished = true;
             }
-        } while(!(finished || this._gameFinished));
+        } while (!(finished || this._gameFinished));
     };
     LegacyGame.prototype.ExecuteSetCollectable = function (param, ctx) {
         var val;
@@ -4367,21 +4642,24 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such collectable '" + param + "'", 2 /* WarningError */);
+            this.LogASLError("No such collectable '" + param + "'", LogType.WarningError);
             return;
         }
         var op = Left(newVal, 1);
         var newValue = Trim(Right(newVal, Len(newVal) - 1));
         if (IsNumeric(newValue)) {
-            val = Conversion.Val(newValue);
-        } else {
+            val = Val(newValue);
+        }
+        else {
             val = this.GetCollectableAmount(newValue);
         }
         if (op == "+") {
             this._collectables[id].Value = this._collectables[id].Value + val;
-        } else if (op == "-") {
+        }
+        else if (op == "-") {
             this._collectables[id].Value = this._collectables[id].Value - val;
-        } else if (op == "=") {
+        }
+        else if (op == "=") {
             this._collectables[id].Value = val;
         }
         this.CheckCollectable(id);
@@ -4390,10 +4668,12 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecuteWait = function (waitLine, ctx) {
         if (waitLine != "") {
             this.Print(this.GetParameter(waitLine, ctx), ctx);
-        } else {
+        }
+        else {
             if (this._gameAslVersion >= 410) {
-                this.PlayerErrorMessage(36 /* DefaultWait */, ctx);
-            } else {
+                this.PlayerErrorMessage(PlayerError.DefaultWait, ctx);
+            }
+            else {
                 this.Print("|nPress a key to continue...", ctx);
             }
         }
@@ -4420,7 +4700,7 @@ var LegacyGame = (function () {
         var name = LCase(this.GetParameter(actionInfo, this._nullContext));
         var ep = InStr(actionInfo, ">");
         if (ep == Len(actionInfo)) {
-            this.LogASLError("No script given for '" + name + "' action data", 2 /* WarningError */);
+            this.LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
             return new ActionType();
         }
         var script = Trim(Mid(actionInfo, ep + 1));
@@ -4430,7 +4710,7 @@ var LegacyGame = (function () {
         return result;
     };
     LegacyGame.prototype.GetObjectId = function (name, ctx, room) {
-        if (typeof room === "undefined") { room = ""; }
+        if (room === void 0) { room = ""; }
         var id;
         var found = false;
         if (this.BeginsWith(name, "the ")) {
@@ -4463,8 +4743,8 @@ var LegacyGame = (function () {
         return 0;
     };
     LegacyGame.prototype.GetObjectProperty = function (name, id, existsOnly, logError) {
-        if (typeof existsOnly === "undefined") { existsOnly = false; }
-        if (typeof logError === "undefined") { logError = true; }
+        if (existsOnly === void 0) { existsOnly = false; }
+        if (logError === void 0) { logError = true; }
         var result = "";
         var found = false;
         var o = this._objs[id];
@@ -4485,13 +4765,13 @@ var LegacyGame = (function () {
             return result;
         }
         if (logError) {
-            this.LogASLError("Object '" + this._objs[id].ObjectName + "' has no property '" + name + "'", 2 /* WarningError */);
+            this.LogASLError("Object '" + this._objs[id].ObjectName + "' has no property '" + name + "'", LogType.WarningError);
             return "!";
         }
         return "";
     };
     LegacyGame.prototype.GetPropertiesInType = function (type, err) {
-        if (typeof err === "undefined") { err = true; }
+        if (err === void 0) { err = true; }
         var blockId;
         var propertyList = new PropertiesActions();
         var found = false;
@@ -4506,7 +4786,7 @@ var LegacyGame = (function () {
         }
         if (!found) {
             if (err) {
-                this.LogASLError("No such type '" + type + "'", 2 /* WarningError */);
+                this.LogASLError("No such type '" + type + "'", LogType.WarningError);
             }
             return new PropertiesActions();
         }
@@ -4523,13 +4803,11 @@ var LegacyGame = (function () {
                     propertyList.Actions[j].Script = newProperties.Actions[j - propertyList.NumberActions].Script;
                 }
                 propertyList.NumberActions = propertyList.NumberActions + newProperties.NumberActions;
-
                 // Add this type name to the TypesIncluded list...
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + 1;
                 if (!propertyList.TypesIncluded)
                     propertyList.TypesIncluded = [];
                 propertyList.TypesIncluded[propertyList.NumberTypesIncluded] = typeName;
-
                 // and add the names of the types included by it...
                 if (!propertyList.TypesIncluded)
                     propertyList.TypesIncluded = [];
@@ -4537,14 +4815,17 @@ var LegacyGame = (function () {
                     propertyList.TypesIncluded[j] = newProperties.TypesIncluded[j - propertyList.NumberTypesIncluded];
                 }
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded;
-            } else if (this.BeginsWith(this._lines[i], "action ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "action ")) {
                 propertyList.NumberActions = propertyList.NumberActions + 1;
                 if (!propertyList.Actions)
                     propertyList.Actions = [];
                 propertyList.Actions[propertyList.NumberActions] = this.GetObjectActions(this.GetEverythingAfter(this._lines[i], "action "));
-            } else if (this.BeginsWith(this._lines[i], "properties ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "properties ")) {
                 propertyList.Properties = propertyList.Properties + this.GetParameter(this._lines[i], this._nullContext) + ";";
-            } else if (Trim(this._lines[i]) != "") {
+            }
+            else if (Trim(this._lines[i]) != "") {
                 propertyList.Properties = propertyList.Properties + this._lines[i] + ";";
             }
         }
@@ -4553,7 +4834,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetRoomID = function (name, ctx) {
         if (InStr(name, "[") > 0) {
             var idx = this.GetArrayIndex(name, ctx);
-            name = name + Trim(Str(idx));
+            name = name + Trim(Str(idx.Index));
         }
         for (var i = 1; i <= this._numberRooms; i++) {
             if (LCase(this._rooms[i].RoomName) == LCase(name)) {
@@ -4566,23 +4847,25 @@ var LegacyGame = (function () {
         var result = new TextAction();
         textScript = Trim(textScript);
         if (Left(textScript, 1) == "<") {
-            result.Type = 0 /* Text */;
+            result.Type = TextActionType.Text;
             result.Data = this.GetParameter(textScript, this._nullContext);
-        } else {
-            result.Type = 1 /* Script */;
+        }
+        else {
+            result.Type = TextActionType.Script;
             result.Data = textScript;
         }
         return result;
     };
     LegacyGame.prototype.GetThingNumber = function (name, room, type) {
         // Returns the number in the Chars() or _objs() array of the specified char/obj
-        if (type == 0 /* Character */) {
+        if (type == Thing.Character) {
             for (var i = 1; i <= this._numberChars; i++) {
                 if ((room != "" && LCase(this._chars[i].ObjectName) == LCase(name) && LCase(this._chars[i].ContainerRoom) == LCase(room)) || (room == "" && LCase(this._chars[i].ObjectName) == LCase(name))) {
                     return i;
                 }
             }
-        } else if (type == 1 /* Object */) {
+        }
+        else if (type == Thing.Object) {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if ((room != "" && LCase(this._objs[i].ObjectName) == LCase(name) && LCase(this._objs[i].ContainerRoom) == LCase(room)) || (room == "" && LCase(this._objs[i].ObjectName) == LCase(name))) {
                     return i;
@@ -4594,7 +4877,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetThingBlock = function (name, room, type) {
         // Returns position where specified char/obj is defined in ASL code
         var result = new DefineBlock();
-        if (type == 0 /* Character */) {
+        if (type == Thing.Character) {
             for (var i = 1; i <= this._numberChars; i++) {
                 if (LCase(this._chars[i].ObjectName) == LCase(name) && LCase(this._chars[i].ContainerRoom) == LCase(room)) {
                     result.StartLine = this._chars[i].DefinitionSectionStart;
@@ -4602,7 +4885,8 @@ var LegacyGame = (function () {
                     return result;
                 }
             }
-        } else if (type == 1 /* Object */) {
+        }
+        else if (type == Thing.Object) {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this._objs[i].ObjectName) == LCase(name) && LCase(this._objs[i].ContainerRoom) == LCase(room)) {
                     result.StartLine = this._objs[i].DefinitionSectionStart;
@@ -4616,19 +4900,18 @@ var LegacyGame = (function () {
         return result;
     };
     LegacyGame.prototype.MakeRestoreData = function () {
-        var data = {};
+        var data = [];
         var objectData = [];
         var roomData = [];
         var numObjectData;
         var numRoomData;
-
         // <<< FILE HEADER DATA >>>
-        data.Append("QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0));
-
+        var header = "QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0);
+        data.push(header);
         // The start point for encrypted data is after the filename
-        var start = data.Length + 1;
-        data.Append(this._currentRoom + Chr(0));
-
+        var start = header.length + 1;
+        data.push(this._currentRoom + Chr(0));
+        // Organise Change Log
         for (var i = 1; i <= this._gameChangeData.NumberChanges; i++) {
             if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "object ")) {
                 numObjectData = numObjectData + 1;
@@ -4636,7 +4919,8 @@ var LegacyGame = (function () {
                     objectData = [];
                 objectData[numObjectData] = new ChangeType();
                 objectData[numObjectData] = this._gameChangeData.ChangeData[i];
-            } else if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "room ")) {
+            }
+            else if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "room ")) {
                 numRoomData = numRoomData + 1;
                 if (!roomData)
                     roomData = [];
@@ -4644,100 +4928,98 @@ var LegacyGame = (function () {
                 roomData[numRoomData] = this._gameChangeData.ChangeData[i];
             }
         }
-
         // <<< OBJECT CREATE/CHANGE DATA >>>
-        data.Append(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
+        data.push(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
         for (var i = 1; i <= numObjectData; i++) {
-            data.Append(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
+            data.push(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
         }
         this._changeLogObjects.Changes.Keys.forEach(function (key) {
-            var appliesTo = Split(key, "#")(0);
+            var appliesTo = Split(key, "#")[0];
             var changeData = this._changeLogObjects.Changes.Item(key);
-            data.Append(appliesTo + Chr(0) + changeData + Chr(0));
+            data.push(appliesTo + Chr(0) + changeData + Chr(0));
         }, this);
-
         // <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
-        data.Append(Trim(Str(this._numberObjs)) + Chr(0));
+        data.push(Trim(Str(this._numberObjs)) + Chr(0));
         for (var i = 1; i <= this._numberObjs; i++) {
             var exists;
             var visible;
             if (this._objs[i].Exists) {
                 exists = Chr(1);
-            } else {
+            }
+            else {
                 exists = Chr(0);
             }
             if (this._objs[i].Visible) {
                 visible = Chr(1);
-            } else {
+            }
+            else {
                 visible = Chr(0);
             }
-            data.Append(this._objs[i].ObjectName + Chr(0) + exists + visible + this._objs[i].ContainerRoom + Chr(0));
+            data.push(this._objs[i].ObjectName + Chr(0) + exists + visible + this._objs[i].ContainerRoom + Chr(0));
         }
-
         // <<< ROOM CREATE/CHANGE DATA >>>
-        data.Append(Trim(Str(numRoomData)) + Chr(0));
+        data.push(Trim(Str(numRoomData)) + Chr(0));
         for (var i = 1; i <= numRoomData; i++) {
-            data.Append(this.GetEverythingAfter(roomData[i].AppliesTo, "room ") + Chr(0) + roomData[i].Change + Chr(0));
+            data.push(this.GetEverythingAfter(roomData[i].AppliesTo, "room ") + Chr(0) + roomData[i].Change + Chr(0));
         }
-
         // <<< TIMER STATE DATA >>>
-        data.Append(Trim(Str(this._numberTimers)) + Chr(0));
+        data.push(Trim(Str(this._numberTimers)) + Chr(0));
         for (var i = 1; i <= this._numberTimers; i++) {
             var t = this._timers[i];
-            data.Append(t.TimerName + Chr(0));
+            data.push(t.TimerName + Chr(0));
             if (t.TimerActive) {
-                data.Append(Chr(1));
-            } else {
-                data.Append(Chr(0));
+                data.push(Chr(1));
             }
-            data.Append(Trim(Str(t.TimerInterval)) + Chr(0));
-            data.Append(Trim(Str(t.TimerTicks)) + Chr(0));
+            else {
+                data.push(Chr(0));
+            }
+            data.push(Trim(Str(t.TimerInterval)) + Chr(0));
+            data.push(Trim(Str(t.TimerTicks)) + Chr(0));
         }
-
         // <<< STRING VARIABLE DATA >>>
-        data.Append(Trim(Str(this._numberStringVariables)) + Chr(0));
+        data.push(Trim(Str(this._numberStringVariables)) + Chr(0));
         for (var i = 1; i <= this._numberStringVariables; i++) {
             var s = this._stringVariable[i];
-            data.Append(s.VariableName + Chr(0) + Trim(Str(s.VariableUBound)) + Chr(0));
+            data.push(s.VariableName + Chr(0) + Trim(Str(s.VariableUBound)) + Chr(0));
             for (var j = 0; j <= s.VariableUBound; j++) {
-                data.Append(s.VariableContents[j] + Chr(0));
+                data.push(s.VariableContents[j] + Chr(0));
             }
         }
-
         // <<< NUMERIC VARIABLE DATA >>>
-        data.Append(Trim(Str(this._numberNumericVariables)) + Chr(0));
+        data.push(Trim(Str(this._numberNumericVariables)) + Chr(0));
         for (var i = 1; i <= this._numberNumericVariables; i++) {
             var n = this._numericVariable[i];
-            data.Append(n.VariableName + Chr(0) + Trim(Str(n.VariableUBound)) + Chr(0));
+            data.push(n.VariableName + Chr(0) + Trim(Str(n.VariableUBound)) + Chr(0));
             for (var j = 0; j <= n.VariableUBound; j++) {
-                data.Append(n.VariableContents[j] + Chr(0));
+                data.push(n.VariableContents[j] + Chr(0));
             }
         }
-
         // Now encrypt data
         var dataString;
-        var newFileData = {};
-        dataString = data.ToString();
-        newFileData.Append(Left(dataString, start - 1));
+        var newFileData = [];
+        dataString = data.join("");
+        newFileData.push(Left(dataString, start - 1));
         for (var i = start; i <= Len(dataString); i++) {
-            newFileData.Append(Chr(255 - Asc(Mid(dataString, i, 1))));
+            newFileData.push(Chr(255 - Asc(Mid(dataString, i, 1))));
         }
-        return newFileData.ToString();
+        return newFileData.join("");
     };
     LegacyGame.prototype.MoveThing = function (name, room, type, ctx) {
         var oldRoom = "";
         var id = this.GetThingNumber(name, "", type);
         if (InStr(room, "[") > 0) {
             var idx = this.GetArrayIndex(room, ctx);
-            room = room + Trim(Str(idx));
+            room = room + Trim(Str(idx.Index));
         }
-        if (type == 0 /* Character */) {
+        if (type == Thing.Character) {
             this._chars[id].ContainerRoom = room;
-        } else if (type == 1 /* Object */) {
+        }
+        else if (type == Thing.Object) {
             oldRoom = this._objs[id].ContainerRoom;
             this._objs[id].ContainerRoom = room;
         }
         if (this._gameAslVersion >= 391) {
+            // If this object contains other objects, move them too
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this.GetObjectProperty("parent", i, false, false)) == LCase(name)) {
                     this.MoveThing(this._objs[i].ObjectName, room, type, ctx);
@@ -4767,27 +5049,31 @@ var LegacyGame = (function () {
             if (finished == false) {
                 var nextPos = InStr(varPos + 1, parameter, convertChar);
                 if (nextPos == 0) {
-                    this.LogASLError("Line parameter <" + parameter + "> has missing " + convertChar, 2 /* WarningError */);
+                    this.LogASLError("Line parameter <" + parameter + "> has missing " + convertChar, LogType.WarningError);
                     return "<ERROR>";
                 }
                 var varName = Mid(parameter, varPos + 1, (nextPos - 1) - varPos);
                 if (varName == "") {
                     result = result + convertChar;
-                } else {
-                    if (action == 0 /* Strings */) {
+                }
+                else {
+                    if (action == ConvertType.Strings) {
                         result = result + this.GetStringContents(varName, ctx);
-                    } else if (action == 1 /* Functions */) {
+                    }
+                    else if (action == ConvertType.Functions) {
                         varName = this.EvaluateInlineExpressions(varName);
                         result = result + this.DoFunction(varName, ctx);
-                    } else if (action == 2 /* Numeric */) {
+                    }
+                    else if (action == ConvertType.Numeric) {
                         result = result + Trim(Str(this.GetNumericContents(varName, ctx)));
-                    } else if (action == 3 /* Collectables */) {
+                    }
+                    else if (action == ConvertType.Collectables) {
                         result = result + Trim(Str(this.GetCollectableAmount(varName)));
                     }
                 }
                 pos = nextPos + 1;
             }
-        } while(!(finished));
+        } while (!(finished));
         return result;
     };
     LegacyGame.prototype.DoFunction = function (data, ctx) {
@@ -4800,11 +5086,12 @@ var LegacyGame = (function () {
             name = Trim(Left(data, paramPos - 1));
             var endParamPos = InStrRev(data, ")");
             if (endParamPos == 0) {
-                this.LogASLError("Expected ) in $" + data + "$", 2 /* WarningError */);
+                this.LogASLError("Expected ) in $" + data + "$", LogType.WarningError);
                 return "";
             }
             parameter = Mid(data, paramPos + 1, (endParamPos - paramPos) - 1);
-        } else {
+        }
+        else {
             name = data;
             parameter = "";
         }
@@ -4814,15 +5101,17 @@ var LegacyGame = (function () {
             //Function does not exist; try an internal function.
             intFuncResult = this.DoInternalFunction(name, parameter, ctx);
             if (intFuncResult == "__NOTDEFINED") {
-                this.LogASLError("No such function '" + name + "'", 2 /* WarningError */);
+                this.LogASLError("No such function '" + name + "'", LogType.WarningError);
                 return "[ERROR]";
-            } else {
+            }
+            else {
                 intFuncExecuted = true;
             }
         }
         if (intFuncExecuted) {
             return intFuncResult;
-        } else {
+        }
+        else {
             var newCtx = this.CopyContext(ctx);
             var numParameters = 0;
             var pos = 1;
@@ -4838,9 +5127,10 @@ var LegacyGame = (function () {
                         newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = parameterData;
                     pos = scp + 1;
-                } while(!(pos >= Len(parameter)));
+                } while (!(pos >= Len(parameter)));
                 this.SetStringContents("quest.function.numparameters", Trim(Str(numParameters)), ctx);
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.function.numparameters", "0", ctx);
                 newCtx.NumParameters = 0;
             }
@@ -4870,11 +5160,11 @@ var LegacyGame = (function () {
                 untrimmedParameters[numParameters] = Mid(parameter, pos, scp - pos);
                 parameters[numParameters] = Trim(untrimmedParameters[numParameters]);
                 pos = scp + 1;
-            } while(!(pos >= Len(parameter)));
-
+            } while (!(pos >= Len(parameter)));
             // Remove final ";"
             parameter = Left(parameter, Len(parameter) - 1);
-        } else {
+        }
+        else {
             numParameters = 1;
             parameters = [];
             untrimmedParameters = [];
@@ -4886,31 +5176,39 @@ var LegacyGame = (function () {
         if (name == "displayname") {
             objId = this.GetObjectId(parameters[1], ctx);
             if (objId == -1) {
-                this.LogASLError("Object '" + parameters[1] + "' does not exist", 2 /* WarningError */);
+                this.LogASLError("Object '" + parameters[1] + "' does not exist", LogType.WarningError);
                 return "!";
-            } else {
+            }
+            else {
                 return this._objs[this.GetObjectId(parameters[1], ctx)].ObjectAlias;
             }
-        } else if (name == "numberparameters") {
+        }
+        else if (name == "numberparameters") {
             return Trim(Str(ctx.NumParameters));
-        } else if (name == "parameter") {
+        }
+        else if (name == "parameter") {
             if (numParameters == 0) {
-                this.LogASLError("No parameter number specified for $parameter$ function", 2 /* WarningError */);
+                this.LogASLError("No parameter number specified for $parameter$ function", LogType.WarningError);
                 return "";
-            } else {
+            }
+            else {
                 if (Val(parameters[1]) > ctx.NumParameters) {
-                    this.LogASLError("No parameter number " + parameters[1] + " sent to this function", 2 /* WarningError */);
+                    this.LogASLError("No parameter number " + parameters[1] + " sent to this function", LogType.WarningError);
                     return "";
-                } else {
+                }
+                else {
                     return Trim(ctx.Parameters[parseInt(parameters[1])]);
                 }
             }
-        } else if (name == "gettag") {
+        }
+        else if (name == "gettag") {
             // Deprecated
             return this.FindStatement(this.DefineBlockParam("room", parameters[1]), parameters[2]);
-        } else if (name == "objectname") {
+        }
+        else if (name == "objectname") {
             return this._objs[ctx.CallingObjectId].ObjectName;
-        } else if (name == "locationof") {
+        }
+        else if (name == "locationof") {
             for (var i = 1; i <= this._numberChars; i++) {
                 if (LCase(this._chars[i].ObjectName) == LCase(parameters[1])) {
                     return this._chars[i].ContainerRoom;
@@ -4921,116 +5219,144 @@ var LegacyGame = (function () {
                     return this._objs[i].ContainerRoom;
                 }
             }
-        } else if (name == "lengthof") {
+        }
+        else if (name == "lengthof") {
             return Str(Len(untrimmedParameters[1]));
-        } else if (name == "left") {
+        }
+        else if (name == "left") {
             if (Val(parameters[2]) < 0) {
-                this.LogASLError("Invalid function call in '$Left$(" + parameters[1] + "; " + parameters[2] + ")$'", 2 /* WarningError */);
+                this.LogASLError("Invalid function call in '$Left$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
                 return "!";
-            } else {
+            }
+            else {
                 return Left(parameters[1], parseInt(parameters[2]));
             }
-        } else if (name == "right") {
+        }
+        else if (name == "right") {
             if (Val(parameters[2]) < 0) {
-                this.LogASLError("Invalid function call in '$Right$(" + parameters[1] + "; " + parameters[2] + ")$'", 2 /* WarningError */);
+                this.LogASLError("Invalid function call in '$Right$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
                 return "!";
-            } else {
+            }
+            else {
                 return Right(parameters[1], parseInt(parameters[2]));
             }
-        } else if (name == "mid") {
+        }
+        else if (name == "mid") {
             if (numParameters == 3) {
                 if (Val(parameters[2]) < 0) {
-                    this.LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", 2 /* WarningError */);
+                    this.LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", LogType.WarningError);
                     return "!";
-                } else {
+                }
+                else {
                     return Mid(parameters[1], parseInt(parameters[2]), parseInt(parameters[3]));
                 }
-            } else if (numParameters == 2) {
+            }
+            else if (numParameters == 2) {
                 if (Val(parameters[2]) < 0) {
-                    this.LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + ")$'", 2 /* WarningError */);
+                    this.LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
                     return "!";
-                } else {
+                }
+                else {
                     return Mid(parameters[1], parseInt(parameters[2]));
                 }
             }
-            this.LogASLError("Invalid function call to '$Mid$(...)$'", 2 /* WarningError */);
+            this.LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError);
             return "";
-        } else if (name == "rand") {
-            return Str(Int(this._random.NextDouble() * (parseFloat(parameters[2]) - parseFloat(parameters[1]) + 1)) + parseFloat(parameters[1]));
-        } else if (name == "instr") {
+        }
+        else if (name == "rand") {
+            return Str(Math.random() * (parseFloat(parameters[2]) - parseFloat(parameters[1]) + 1) + parseFloat(parameters[1]));
+        }
+        else if (name == "instr") {
             if (numParameters == 3) {
                 param3 = "";
                 if (InStr(parameters[3], "_") != 0) {
                     for (var i = 1; i <= Len(parameters[3]); i++) {
                         if (Mid(parameters[3], i, 1) == "_") {
                             param3 = param3 + " ";
-                        } else {
+                        }
+                        else {
                             param3 = param3 + Mid(parameters[3], i, 1);
                         }
                     }
-                } else {
+                }
+                else {
                     param3 = parameters[3];
                 }
                 if (Val(parameters[1]) <= 0) {
-                    this.LogASLError("Invalid function call in '$instr(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", 2 /* WarningError */);
+                    this.LogASLError("Invalid function call in '$instr(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", LogType.WarningError);
                     return "!";
-                } else {
+                }
+                else {
                     return Trim(Str(InStr(parseInt(parameters[1]), parameters[2], param3)));
                 }
-            } else if (numParameters == 2) {
+            }
+            else if (numParameters == 2) {
                 param2 = "";
                 if (InStr(parameters[2], "_") != 0) {
                     for (var i = 1; i <= Len(parameters[2]); i++) {
                         if (Mid(parameters[2], i, 1) == "_") {
                             param2 = param2 + " ";
-                        } else {
+                        }
+                        else {
                             param2 = param2 + Mid(parameters[2], i, 1);
                         }
                     }
-                } else {
+                }
+                else {
                     param2 = parameters[2];
                 }
                 return Trim(Str(InStr(parameters[1], param2)));
             }
-            this.LogASLError("Invalid function call to '$Instr$(...)$'", 2 /* WarningError */);
+            this.LogASLError("Invalid function call to '$Instr$(...)$'", LogType.WarningError);
             return "";
-        } else if (name == "ucase") {
+        }
+        else if (name == "ucase") {
             return UCase(parameters[1]);
-        } else if (name == "lcase") {
+        }
+        else if (name == "lcase") {
             return LCase(parameters[1]);
-        } else if (name == "capfirst") {
+        }
+        else if (name == "capfirst") {
             return UCase(Left(parameters[1], 1)) + Mid(parameters[1], 2);
-        } else if (name == "symbol") {
+        }
+        else if (name == "symbol") {
             if (parameters[1] == "lt") {
                 return "<";
-            } else if (parameters[1] == "gt") {
+            }
+            else if (parameters[1] == "gt") {
                 return ">";
-            } else {
+            }
+            else {
                 return "!";
             }
-        } else if (name == "loadmethod") {
+        }
+        else if (name == "loadmethod") {
             return this._gameLoadMethod;
-        } else if (name == "timerstate") {
+        }
+        else if (name == "timerstate") {
             for (var i = 1; i <= this._numberTimers; i++) {
                 if (LCase(this._timers[i].TimerName) == LCase(parameters[1])) {
                     if (this._timers[i].TimerActive) {
                         return "1";
-                    } else {
+                    }
+                    else {
                         return "0";
                     }
                 }
             }
-            this.LogASLError("No such timer '" + parameters[1] + "'", 2 /* WarningError */);
+            this.LogASLError("No such timer '" + parameters[1] + "'", LogType.WarningError);
             return "!";
-        } else if (name == "timerinterval") {
+        }
+        else if (name == "timerinterval") {
             for (var i = 1; i <= this._numberTimers; i++) {
                 if (LCase(this._timers[i].TimerName) == LCase(parameters[1])) {
                     return Str(this._timers[i].TimerInterval);
                 }
             }
-            this.LogASLError("No such timer '" + parameters[1] + "'", 2 /* WarningError */);
+            this.LogASLError("No such timer '" + parameters[1] + "'", LogType.WarningError);
             return "!";
-        } else if (name == "ubound") {
+        }
+        else if (name == "ubound") {
             for (var i = 1; i <= this._numberNumericVariables; i++) {
                 if (LCase(this._numericVariable[i].VariableName) == LCase(parameters[1])) {
                     return Trim(Str(this._numericVariable[i].VariableUBound));
@@ -5041,9 +5367,10 @@ var LegacyGame = (function () {
                     return Trim(Str(this._stringVariable[i].VariableUBound));
                 }
             }
-            this.LogASLError("No such variable '" + parameters[1] + "'", 2 /* WarningError */);
+            this.LogASLError("No such variable '" + parameters[1] + "'", LogType.WarningError);
             return "!";
-        } else if (name == "objectproperty") {
+        }
+        else if (name == "objectproperty") {
             var FoundObj = false;
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this._objs[i].ObjectName) == LCase(parameters[1])) {
@@ -5053,38 +5380,49 @@ var LegacyGame = (function () {
                 }
             }
             if (!FoundObj) {
-                this.LogASLError("No such object '" + parameters[1] + "'", 2 /* WarningError */);
+                this.LogASLError("No such object '" + parameters[1] + "'", LogType.WarningError);
                 return "!";
-            } else {
+            }
+            else {
                 return this.GetObjectProperty(parameters[2], objId);
             }
-        } else if (name == "getobjectname") {
+        }
+        else if (name == "getobjectname") {
             if (numParameters == 3) {
                 objId = this.Disambiguate(parameters[1], parameters[2] + ";" + parameters[3], ctx);
-            } else if (numParameters == 2) {
+            }
+            else if (numParameters == 2) {
                 objId = this.Disambiguate(parameters[1], parameters[2], ctx);
-            } else {
+            }
+            else {
                 objId = this.Disambiguate(parameters[1], this._currentRoom + ";inventory", ctx);
             }
             if (objId <= -1) {
-                this.LogASLError("No object found with display name '" + parameters[1] + "'", 2 /* WarningError */);
+                this.LogASLError("No object found with display name '" + parameters[1] + "'", LogType.WarningError);
                 return "!";
-            } else {
+            }
+            else {
                 return this._objs[objId].ObjectName;
             }
-        } else if (name == "thisobject") {
+        }
+        else if (name == "thisobject") {
             return this._objs[ctx.CallingObjectId].ObjectName;
-        } else if (name == "thisobjectname") {
+        }
+        else if (name == "thisobjectname") {
             return this._objs[ctx.CallingObjectId].ObjectAlias;
-        } else if (name == "speechenabled") {
+        }
+        else if (name == "speechenabled") {
             return "1";
-        } else if (name == "removeformatting") {
+        }
+        else if (name == "removeformatting") {
             return this.RemoveFormatting(parameter);
-        } else if (name == "findexit" && this._gameAslVersion >= 410) {
+        }
+        else if (name == "findexit" && this._gameAslVersion >= 410) {
             var e = this.FindExit(parameter);
             if (e == null) {
                 return "";
-            } else {
+            }
+            else {
                 return this._objs[e.GetObjId()].ObjectName;
             }
         }
@@ -5096,13 +5434,11 @@ var LegacyGame = (function () {
             this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
             return;
         }
-
         // Executes a for loop, of form:
         //   for <variable; startvalue; endvalue> script
         var endValue;
         var stepValue;
         var forData = this.GetParameter(line, ctx);
-
         // Extract individual components:
         var scp1 = InStr(forData, ";");
         var scp2 = InStr(scp1 + 1, forData, ";");
@@ -5112,7 +5448,8 @@ var LegacyGame = (function () {
         if (scp3 != 0) {
             endValue = parseInt(Mid(forData, scp2 + 1, (scp3 - 1) - scp2));
             stepValue = parseInt(Mid(forData, scp3 + 1));
-        } else {
+        }
+        else {
             endValue = parseInt(Mid(forData, scp2 + 1));
             stepValue = 1;
         }
@@ -5132,19 +5469,21 @@ var LegacyGame = (function () {
         var varCont = Trim(Mid(varInfo, scp + 1));
         var idx = this.GetArrayIndex(varName, ctx);
         if (IsNumeric(idx.Name)) {
-            this.LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric", 2 /* WarningError */);
+            this.LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric", LogType.WarningError);
             return;
         }
-        try  {
+        try {
             if (this._gameAslVersion >= 391) {
                 var expResult = this.ExpressionHandler(varCont);
-                if (expResult.Success == 0 /* OK */) {
+                if (expResult.Success == ExpressionSuccess.OK) {
                     varCont = expResult.Result;
-                } else {
-                    varCont = "0";
-                    this.LogASLError("Error setting numeric variable <" + varInfo + "> : " + expResult.Message, 2 /* WarningError */);
                 }
-            } else {
+                else {
+                    varCont = "0";
+                    this.LogASLError("Error setting numeric variable <" + varInfo + "> : " + expResult.Message, LogType.WarningError);
+                }
+            }
+            else {
                 var obscuredVarInfo = this.ObscureNumericExps(varCont);
                 var opPos = InStr(obscuredVarInfo, "+");
                 if (opPos == 0) {
@@ -5170,16 +5509,18 @@ var LegacyGame = (function () {
                         case "/":
                             if (num2 != 0) {
                                 varCont = Str(num1 / num2);
-                            } else {
-                                this.LogASLError("Division by zero - The result of this operation has been set to zero.", 2 /* WarningError */);
+                            }
+                            else {
+                                this.LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError);
                                 varCont = "0";
                             }
                     }
                 }
             }
             this.SetNumericVariableContents(idx.Name, Val(varCont), ctx, idx.Index);
-        } catch (e) {
-            this.LogASLError("Error setting variable '" + idx.Name + "' to '" + varCont + "'", 2 /* WarningError */);
+        }
+        catch (e) {
+            this.LogASLError("Error setting variable '" + idx.Name + "' to '" + varCont + "'", LogType.WarningError);
         }
     };
     LegacyGame.prototype.ExecuteIfGot = function (item) {
@@ -5189,7 +5530,7 @@ var LegacyGame = (function () {
                     return this._objs[i].ContainerRoom == "inventory" && this._objs[i].Exists;
                 }
             }
-            this.LogASLError("No object '" + item + "' defined.", 2 /* WarningError */);
+            this.LogASLError("No object '" + item + "' defined.", LogType.WarningError);
             return false;
         }
         for (var i = 1; i <= this._numberItems; i++) {
@@ -5197,7 +5538,7 @@ var LegacyGame = (function () {
                 return this._items[i].Got;
             }
         }
-        this.LogASLError("Item '" + item + "' not defined.", 2 /* WarningError */);
+        this.LogASLError("Item '" + item + "' not defined.", LogType.WarningError);
         return false;
     };
     LegacyGame.prototype.ExecuteIfHas = function (condition) {
@@ -5215,21 +5556,24 @@ var LegacyGame = (function () {
             }
         }
         if (!found) {
-            this.LogASLError("No such collectable in " + condition, 2 /* WarningError */);
+            this.LogASLError("No such collectable in " + condition, LogType.WarningError);
             return false;
         }
         var op = Left(newVal, 1);
         var newValue = Trim(Right(newVal, Len(newVal) - 1));
         if (IsNumeric(newValue)) {
             checkValue = Val(newValue);
-        } else {
+        }
+        else {
             checkValue = this.GetCollectableAmount(newValue);
         }
         if (op == "+") {
             return this._collectables[colNum].Value > checkValue;
-        } else if (op == "-") {
+        }
+        else if (op == "-") {
             return this._collectables[colNum].Value < checkValue;
-        } else if (op == "=") {
+        }
+        else if (op == "=") {
             return this._collectables[colNum].Value == checkValue;
         }
         return false;
@@ -5242,7 +5586,7 @@ var LegacyGame = (function () {
         var expResult;
         var scp = InStr(condition, ";");
         if (scp == 0) {
-            this.LogASLError("Expected second parameter in 'is " + condition + "'", 2 /* WarningError */);
+            this.LogASLError("Expected second parameter in 'is " + condition + "'", LogType.WarningError);
             return false;
         }
         var scp2 = InStr(scp + 1, condition, ";");
@@ -5251,7 +5595,8 @@ var LegacyGame = (function () {
             op = "=";
             value1 = Trim(Left(condition, scp - 1));
             value2 = Trim(Mid(condition, scp + 1));
-        } else {
+        }
+        else {
             value1 = Trim(Left(condition, scp - 1));
             op = Trim(Mid(condition, scp + 1, (scp2 - scp) - 1));
             value2 = Trim(Mid(condition, scp2 + 1));
@@ -5259,11 +5604,11 @@ var LegacyGame = (function () {
         if (this._gameAslVersion >= 391) {
             // Evaluate expressions in Value1 and Value2
             expResult = this.ExpressionHandler(value1);
-            if (expResult.Success == 0 /* OK */) {
+            if (expResult.Success == ExpressionSuccess.OK) {
                 value1 = expResult.Result;
             }
             expResult = this.ExpressionHandler(value2);
-            if (expResult.Success == 0 /* OK */) {
+            if (expResult.Success == ExpressionSuccess.OK) {
                 value2 = expResult.Result;
             }
         }
@@ -5300,21 +5645,20 @@ var LegacyGame = (function () {
                 }
                 expectNumerics = true;
             default:
-                this.LogASLError("Unrecognised comparison condition in 'is " + condition + "'", 2 /* WarningError */);
+                this.LogASLError("Unrecognised comparison condition in 'is " + condition + "'", LogType.WarningError);
         }
         if (expectNumerics) {
             if (!(IsNumeric(value1) && IsNumeric(value2))) {
-                this.LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'", 2 /* WarningError */);
+                this.LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'", LogType.WarningError);
             }
         }
         return result;
     };
     LegacyGame.prototype.GetNumericContents = function (name, ctx, noError) {
-        if (typeof noError === "undefined") { noError = false; }
+        if (noError === void 0) { noError = false; }
         var numNumber;
         var arrayIndex;
         var exists = false;
-
         // First, see if the variable already exists. If it
         // does, get its contents. If not, generate an error.
         if (InStr(name, "[") != 0 && InStr(name, "]") != 0) {
@@ -5323,11 +5667,13 @@ var LegacyGame = (function () {
             var arrayIndexData = Mid(name, op + 1, (cp - op) - 1);
             if (IsNumeric(arrayIndexData)) {
                 arrayIndex = parseInt(arrayIndexData);
-            } else {
-                arrayIndex = parseInt(this.GetNumericContents(arrayIndexData, ctx));
+            }
+            else {
+                arrayIndex = this.GetNumericContents(arrayIndexData, ctx);
             }
             name = Left(name, op - 1);
-        } else {
+        }
+        else {
             arrayIndex = 0;
         }
         if (this._numberNumericVariables > 0) {
@@ -5341,17 +5687,16 @@ var LegacyGame = (function () {
         }
         if (!exists) {
             if (!noError) {
-                this.LogASLError("No numeric variable '" + name + "' defined.", 2 /* WarningError */);
+                this.LogASLError("No numeric variable '" + name + "' defined.", LogType.WarningError);
             }
             return -32767;
         }
         if (arrayIndex > this._numericVariable[numNumber].VariableUBound) {
             if (!noError) {
-                this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", 2 /* WarningError */);
+                this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", LogType.WarningError);
             }
             return -32766;
         }
-
         // Now, set the contents
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
     };
@@ -5369,40 +5714,30 @@ var LegacyGame = (function () {
         this.Print(message, ctx);
     };
     LegacyGame.prototype.GetErrorMessage = function (e, ctx) {
-        return this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this._playerErrorMessageString[e], "%", 2 /* Numeric */, ctx), "$", 1 /* Functions */, ctx), "#", 0 /* Strings */, ctx);
-    };
-    LegacyGame.prototype.PlayMedia = function (filename) {
-        this.PlayMedia(filename, false, false);
+        return this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
     };
     LegacyGame.prototype.PlayMedia = function (filename, sync, looped) {
-        if (filename.Length == 0) {
+        if (sync === void 0) { sync = false; }
+        if (looped === void 0) { looped = false; }
+        if (filename.length == 0) {
             this._player.StopSound();
-            //TODO: Handle sync parameter
-        } else {
+        }
+        else {
             if (looped && sync) {
                 sync = false;
             }
-
             // Can't loop and sync at the same time, that would just hang!
             this._player.PlaySound(filename, sync, looped);
-            if (sync) {
-                this.ChangeState(2 /* Waiting */);
-            }
         }
     };
     LegacyGame.prototype.PlayWav = function (parameter) {
-        var sync = false;
-        var looped = false;
-        var params = {};
-        params = new any();
+        var params = parameter.split(";").map(function (p) {
+            return p.trim();
+        });
         var filename = params[0];
-        if (params.Contains("loop")) {
-            looped = true;
-        }
-        if (params.Contains("sync")) {
-            sync = true;
-        }
-        if (filename.Length > 0 && InStr(filename, ".") == 0) {
+        var looped = (params.indexOf("loop") != -1);
+        var sync = (params.indexOf("sync") != -1);
+        if (filename.length > 0 && InStr(filename, ".") == 0) {
             filename = filename + ".wav";
         }
         this.PlayMedia(filename, sync, looped);
@@ -5417,20 +5752,18 @@ var LegacyGame = (function () {
         var numStoredData;
         var storedData = [];
         var decryptedFile = {};
-
+        // Decrypt file
         for (var i = 1; i <= Len(fileData); i++) {
             decryptedFile.Append(Chr(255 - Asc(Mid(fileData, i, 1))));
         }
         this._fileData = decryptedFile.ToString();
         this._currentRoom = this.GetNextChunk();
-
         // OBJECTS
         var numData = parseInt(this.GetNextChunk());
-        var createdObjects = {};
+        var createdObjects = [];
         for (var i = 1; i <= numData; i++) {
             appliesTo = this.GetNextChunk();
             data = this.GetNextChunk();
-
             // As of Quest 4.0, properties and actions are put into StoredData while we load the file,
             // and then processed later. This is so any created rooms pick up their properties - otherwise
             // we try to set them before they've been created.
@@ -5441,16 +5774,17 @@ var LegacyGame = (function () {
                 storedData[numStoredData] = new ChangeType();
                 storedData[numStoredData].AppliesTo = appliesTo;
                 storedData[numStoredData].Change = data;
-            } else if (this.BeginsWith(data, "create ")) {
+            }
+            else if (this.BeginsWith(data, "create ")) {
                 var createData = appliesTo + ";" + this.GetEverythingAfter(data, "create ");
-
                 // workaround bug where duplicate "create" entries appear in the restore data
-                if (!createdObjects.Contains(createData)) {
+                if (createdObjects.indexOf(createData) == -1) {
                     this.ExecuteCreate("object <" + createData + ">", this._nullContext);
-                    createdObjects.Add(createData);
+                    createdObjects.push(createData);
                 }
-            } else {
-                this.LogASLError("QSG Error: Unrecognised item '" + appliesTo + "; " + data + "'", 7 /* InternalError */);
+            }
+            else {
+                this.LogASLError("QSG Error: Unrecognised item '" + appliesTo + "; " + data + "'", LogType.InternalError);
             }
         }
         numData = parseInt(this.GetNextChunk());
@@ -5460,17 +5794,18 @@ var LegacyGame = (function () {
             objId = this.GetObjectIdNoAlias(appliesTo);
             if (Left(data, 1) == Chr(1)) {
                 this._objs[objId].Exists = true;
-            } else {
+            }
+            else {
                 this._objs[objId].Exists = false;
             }
             if (Right(data, 1) == Chr(1)) {
                 this._objs[objId].Visible = true;
-            } else {
+            }
+            else {
                 this._objs[objId].Visible = false;
             }
             this._objs[objId].ContainerRoom = this.GetNextChunk();
         }
-
         // ROOMS
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
@@ -5478,22 +5813,24 @@ var LegacyGame = (function () {
             data = this.GetNextChunk();
             if (this.BeginsWith(data, "exit ")) {
                 this.ExecuteCreate(data, this._nullContext);
-            } else if (data == "create") {
+            }
+            else if (data == "create") {
                 this.ExecuteCreate("room <" + appliesTo + ">", this._nullContext);
-            } else if (this.BeginsWith(data, "destroy exit ")) {
+            }
+            else if (this.BeginsWith(data, "destroy exit ")) {
                 this.DestroyExit(appliesTo + "; " + this.GetEverythingAfter(data, "destroy exit "), this._nullContext);
             }
         }
-
+        // Now go through and apply object properties and actions
         for (var i = 1; i <= numStoredData; i++) {
             var d = storedData[i];
             if (this.BeginsWith(d.Change, "properties ")) {
                 this.AddToObjectProperties(this.GetEverythingAfter(d.Change, "properties "), this.GetObjectIdNoAlias(d.AppliesTo), this._nullContext);
-            } else if (this.BeginsWith(d.Change, "action ")) {
+            }
+            else if (this.BeginsWith(d.Change, "action ")) {
                 this.AddToObjectActions(this.GetEverythingAfter(d.Change, "action "), this.GetObjectIdNoAlias(d.AppliesTo), this._nullContext);
             }
         }
-
         // TIMERS
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
@@ -5511,14 +5848,14 @@ var LegacyGame = (function () {
                 var thisChar = this.GetFileDataChars(1);
                 if (thisChar == Chr(1)) {
                     t.TimerActive = true;
-                } else {
+                }
+                else {
                     t.TimerActive = false;
                 }
                 t.TimerInterval = parseInt(this.GetNextChunk());
                 t.TimerTicks = parseInt(this.GetNextChunk());
             }
         }
-
         // STRING VARIABLES
         // Set this flag so we don't run any status variable onchange scripts while restoring
         this._gameIsRestoring = true;
@@ -5529,14 +5866,14 @@ var LegacyGame = (function () {
             if (varUbound == 0) {
                 data = this.GetNextChunk();
                 this.SetStringContents(appliesTo, data, this._nullContext);
-            } else {
+            }
+            else {
                 for (var j = 0; j <= varUbound; j++) {
                     data = this.GetNextChunk();
                     this.SetStringContents(appliesTo, data, this._nullContext, j);
                 }
             }
         }
-
         // NUMERIC VARIABLES
         numData = parseInt(this.GetNextChunk());
         for (var i = 1; i <= numData; i++) {
@@ -5545,7 +5882,8 @@ var LegacyGame = (function () {
             if (varUbound == 0) {
                 data = this.GetNextChunk();
                 this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext);
-            } else {
+            }
+            else {
                 for (var j = 0; j <= varUbound; j++) {
                     data = this.GetNextChunk();
                     this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext, j);
@@ -5561,44 +5899,44 @@ var LegacyGame = (function () {
         this._player.SetForeground("#" + this.GetHTMLColour(col, "black"));
     };
     LegacyGame.prototype.SetDefaultPlayerErrorMessages = function () {
-        this._playerErrorMessageString[0 /* BadCommand */] = "I don't understand your command. Type HELP for a list of valid commands.";
-        this._playerErrorMessageString[1 /* BadGo */] = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place.";
-        this._playerErrorMessageString[2 /* BadGive */] = "You didn't say who you wanted to give that to.";
-        this._playerErrorMessageString[3 /* BadCharacter */] = "I can't see anybody of that name here.";
-        this._playerErrorMessageString[4 /* NoItem */] = "You don't have that.";
-        this._playerErrorMessageString[5 /* ItemUnwanted */] = "#quest.error.gender# doesn't want #quest.error.article#.";
-        this._playerErrorMessageString[6 /* BadLook */] = "You didn't say what you wanted to look at.";
-        this._playerErrorMessageString[7 /* BadThing */] = "I can't see that here.";
-        this._playerErrorMessageString[8 /* DefaultLook */] = "Nothing out of the ordinary.";
-        this._playerErrorMessageString[9 /* DefaultSpeak */] = "#quest.error.gender# says nothing.";
-        this._playerErrorMessageString[10 /* BadItem */] = "I can't see that anywhere.";
-        this._playerErrorMessageString[11 /* DefaultTake */] = "You pick #quest.error.article# up.";
-        this._playerErrorMessageString[12 /* BadUse */] = "You didn't say what you wanted to use that on.";
-        this._playerErrorMessageString[13 /* DefaultUse */] = "You can't use that here.";
-        this._playerErrorMessageString[14 /* DefaultOut */] = "There's nowhere you can go out to around here.";
-        this._playerErrorMessageString[15 /* BadPlace */] = "You can't go there.";
-        this._playerErrorMessageString[17 /* DefaultExamine */] = "Nothing out of the ordinary.";
-        this._playerErrorMessageString[18 /* BadTake */] = "You can't take #quest.error.article#.";
-        this._playerErrorMessageString[19 /* CantDrop */] = "You can't drop that here.";
-        this._playerErrorMessageString[20 /* DefaultDrop */] = "You drop #quest.error.article#.";
-        this._playerErrorMessageString[21 /* BadDrop */] = "You are not carrying such a thing.";
-        this._playerErrorMessageString[22 /* BadPronoun */] = "I don't know what '#quest.error.pronoun#' you are referring to.";
-        this._playerErrorMessageString[16 /* BadExamine */] = "You didn't say what you wanted to examine.";
-        this._playerErrorMessageString[23 /* AlreadyOpen */] = "It is already open.";
-        this._playerErrorMessageString[24 /* AlreadyClosed */] = "It is already closed.";
-        this._playerErrorMessageString[25 /* CantOpen */] = "You can't open that.";
-        this._playerErrorMessageString[26 /* CantClose */] = "You can't close that.";
-        this._playerErrorMessageString[27 /* DefaultOpen */] = "You open it.";
-        this._playerErrorMessageString[28 /* DefaultClose */] = "You close it.";
-        this._playerErrorMessageString[29 /* BadPut */] = "You didn't specify what you wanted to put #quest.error.article# on or in.";
-        this._playerErrorMessageString[30 /* CantPut */] = "You can't put that there.";
-        this._playerErrorMessageString[31 /* DefaultPut */] = "Done.";
-        this._playerErrorMessageString[32 /* CantRemove */] = "You can't remove that.";
-        this._playerErrorMessageString[33 /* AlreadyPut */] = "It is already there.";
-        this._playerErrorMessageString[34 /* DefaultRemove */] = "Done.";
-        this._playerErrorMessageString[35 /* Locked */] = "The exit is locked.";
-        this._playerErrorMessageString[36 /* DefaultWait */] = "Press a key to continue...";
-        this._playerErrorMessageString[37 /* AlreadyTaken */] = "You already have that.";
+        this._playerErrorMessageString[PlayerError.BadCommand] = "I don't understand your command. Type HELP for a list of valid commands.";
+        this._playerErrorMessageString[PlayerError.BadGo] = "I don't understand your use of 'GO' - you must either GO in some direction, or GO TO a place.";
+        this._playerErrorMessageString[PlayerError.BadGive] = "You didn't say who you wanted to give that to.";
+        this._playerErrorMessageString[PlayerError.BadCharacter] = "I can't see anybody of that name here.";
+        this._playerErrorMessageString[PlayerError.NoItem] = "You don't have that.";
+        this._playerErrorMessageString[PlayerError.ItemUnwanted] = "#quest.error.gender# doesn't want #quest.error.article#.";
+        this._playerErrorMessageString[PlayerError.BadLook] = "You didn't say what you wanted to look at.";
+        this._playerErrorMessageString[PlayerError.BadThing] = "I can't see that here.";
+        this._playerErrorMessageString[PlayerError.DefaultLook] = "Nothing out of the ordinary.";
+        this._playerErrorMessageString[PlayerError.DefaultSpeak] = "#quest.error.gender# says nothing.";
+        this._playerErrorMessageString[PlayerError.BadItem] = "I can't see that anywhere.";
+        this._playerErrorMessageString[PlayerError.DefaultTake] = "You pick #quest.error.article# up.";
+        this._playerErrorMessageString[PlayerError.BadUse] = "You didn't say what you wanted to use that on.";
+        this._playerErrorMessageString[PlayerError.DefaultUse] = "You can't use that here.";
+        this._playerErrorMessageString[PlayerError.DefaultOut] = "There's nowhere you can go out to around here.";
+        this._playerErrorMessageString[PlayerError.BadPlace] = "You can't go there.";
+        this._playerErrorMessageString[PlayerError.DefaultExamine] = "Nothing out of the ordinary.";
+        this._playerErrorMessageString[PlayerError.BadTake] = "You can't take #quest.error.article#.";
+        this._playerErrorMessageString[PlayerError.CantDrop] = "You can't drop that here.";
+        this._playerErrorMessageString[PlayerError.DefaultDrop] = "You drop #quest.error.article#.";
+        this._playerErrorMessageString[PlayerError.BadDrop] = "You are not carrying such a thing.";
+        this._playerErrorMessageString[PlayerError.BadPronoun] = "I don't know what '#quest.error.pronoun#' you are referring to.";
+        this._playerErrorMessageString[PlayerError.BadExamine] = "You didn't say what you wanted to examine.";
+        this._playerErrorMessageString[PlayerError.AlreadyOpen] = "It is already open.";
+        this._playerErrorMessageString[PlayerError.AlreadyClosed] = "It is already closed.";
+        this._playerErrorMessageString[PlayerError.CantOpen] = "You can't open that.";
+        this._playerErrorMessageString[PlayerError.CantClose] = "You can't close that.";
+        this._playerErrorMessageString[PlayerError.DefaultOpen] = "You open it.";
+        this._playerErrorMessageString[PlayerError.DefaultClose] = "You close it.";
+        this._playerErrorMessageString[PlayerError.BadPut] = "You didn't specify what you wanted to put #quest.error.article# on or in.";
+        this._playerErrorMessageString[PlayerError.CantPut] = "You can't put that there.";
+        this._playerErrorMessageString[PlayerError.DefaultPut] = "Done.";
+        this._playerErrorMessageString[PlayerError.CantRemove] = "You can't remove that.";
+        this._playerErrorMessageString[PlayerError.AlreadyPut] = "It is already there.";
+        this._playerErrorMessageString[PlayerError.DefaultRemove] = "Done.";
+        this._playerErrorMessageString[PlayerError.Locked] = "The exit is locked.";
+        this._playerErrorMessageString[PlayerError.DefaultWait] = "Press a key to continue...";
+        this._playerErrorMessageString[PlayerError.AlreadyTaken] = "You already have that.";
     };
     LegacyGame.prototype.SetFont = function (name) {
         if (name == "") {
@@ -5613,14 +5951,13 @@ var LegacyGame = (function () {
         this._player.SetFontSize((size).toString());
     };
     LegacyGame.prototype.SetNumericVariableContents = function (name, content, ctx, arrayIndex) {
-        if (typeof arrayIndex === "undefined") { arrayIndex = 0; }
+        if (arrayIndex === void 0) { arrayIndex = 0; }
         var numNumber;
         var exists = false;
         if (IsNumeric(name)) {
-            this.LogASLError("Illegal numeric variable name '" + name + "' - check you didn't put % around the variable name in the ASL code", 2 /* WarningError */);
+            this.LogASLError("Illegal numeric variable name '" + name + "' - check you didn't put % around the variable name in the ASL code", LogType.WarningError);
             return;
         }
-
         // First, see if variable already exists. If it does,
         // modify it. If not, create it.
         if (this._numberNumericVariables > 0) {
@@ -5645,7 +5982,6 @@ var LegacyGame = (function () {
                 this._numericVariable[numNumber].VariableContents = [];
             this._numericVariable[numNumber].VariableUBound = arrayIndex;
         }
-
         // Now, set the contents
         this._numericVariable[numNumber].VariableName = name;
         if (!this._numericVariable[numNumber].VariableContents)
@@ -5663,12 +5999,13 @@ var LegacyGame = (function () {
         var cmd;
         if (open) {
             cmd = "open";
-        } else {
+        }
+        else {
             cmd = "close";
         }
         var id = this.GetObjectIdNoAlias(name);
         if (id == 0) {
-            this.LogASLError("Invalid object name specified in '" + cmd + " <" + name + ">", 2 /* WarningError */);
+            this.LogASLError("Invalid object name specified in '" + cmd + " <" + name + ">", LogType.WarningError);
             return;
         }
         this.DoOpenClose(id, open, false, ctx);
@@ -5678,17 +6015,16 @@ var LegacyGame = (function () {
             if (LCase(name) == LCase(this._timers[i].TimerName)) {
                 this._timers[i].TimerActive = state;
                 this._timers[i].BypassThisTurn = true;
-
                 // don't trigger timer during the turn it was first enabled
                 return null;
             }
         }
-        this.LogASLError("No such timer '" + name + "'", 2 /* WarningError */);
+        this.LogASLError("No such timer '" + name + "'", LogType.WarningError);
     };
     LegacyGame.prototype.SetUnknownVariableType = function (variableData, ctx) {
         var scp = InStr(variableData, ";");
         if (scp == 0) {
-            return 0 /* Error */;
+            return SetResult.Error;
         }
         var name = Trim(Left(variableData, scp - 1));
         if (InStr(name, "[") != 0 && InStr(name, "]") != 0) {
@@ -5699,22 +6035,22 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberStringVariables; i++) {
             if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
                 this.ExecSetString(variableData, ctx);
-                return 1 /* Found */;
+                return SetResult.Found;
             }
         }
         for (var i = 1; i <= this._numberNumericVariables; i++) {
             if (LCase(this._numericVariable[i].VariableName) == LCase(name)) {
                 this.ExecSetVar(variableData, ctx);
-                return 1 /* Found */;
+                return SetResult.Found;
             }
         }
         for (var i = 1; i <= this._numCollectables; i++) {
             if (LCase(this._collectables[i].Name) == LCase(name)) {
                 this.ExecuteSetCollectable(variableData, ctx);
-                return 1 /* Found */;
+                return SetResult.Found;
             }
         }
-        return 2 /* Unfound */;
+        return SetResult.Unfound;
     };
     LegacyGame.prototype.SetUpChoiceForm = function (blockName, ctx) {
         // Returns script to execute from choice block
@@ -5729,7 +6065,7 @@ var LegacyGame = (function () {
             }
         }
         this.Print("- |i" + prompt + "|xi", ctx);
-        var mnu = new MenuData();
+        var mnu = new MenuData(prompt, menuOptions, false);
         var choice = this.ShowMenu(mnu);
         this.Print("- " + menuOptions[choice] + "|n", ctx);
         return menuScript[choice];
@@ -5745,7 +6081,8 @@ var LegacyGame = (function () {
                 if (name != "") {
                     this._defaultFontName = name;
                 }
-            } else if (this.BeginsWith(this._lines[i], "default fontsize ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "default fontsize ")) {
                 var size = parseInt(this.GetParameter(this._lines[i], this._nullContext));
                 if (size != 0) {
                     this._defaultFontSize = size;
@@ -5770,21 +6107,24 @@ var LegacyGame = (function () {
                     if (this.BeginsWith(this._lines[i], "type ")) {
                         type = this.GetEverythingAfter(this._lines[i], "type ");
                         if (type != "string" && type != "numeric") {
-                            this.LogASLError("Unrecognised variable type in variable '" + variable.VariableName + "' - type '" + type + "'", 2 /* WarningError */);
+                            this.LogASLError("Unrecognised variable type in variable '" + variable.VariableName + "' - type '" + type + "'", LogType.WarningError);
                             break;
                         }
-                    } else if (this.BeginsWith(this._lines[i], "onchange ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[i], "onchange ")) {
                         variable.OnChangeScript = this.GetEverythingAfter(this._lines[i], "onchange ");
-                    } else if (this.BeginsWith(this._lines[i], "display ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[i], "display ")) {
                         var displayString = this.GetEverythingAfter(this._lines[i], "display ");
                         if (this.BeginsWith(displayString, "nozero ")) {
                             variable.NoZeroDisplay = true;
                         }
                         variable.DisplayString = this.GetParameter(this._lines[i], this._nullContext, false);
-                    } else if (this.BeginsWith(this._lines[i], "value ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[i], "value ")) {
                         variable.VariableContents[0] = this.GetParameter(this._lines[i], this._nullContext);
                     }
-                } while(!(Trim(this._lines[i]) == "end define"));
+                } while (!(Trim(this._lines[i]) == "end define"));
                 if (type == "string") {
                     // Create string variable
                     this._numberStringVariables = this._numberStringVariables + 1;
@@ -5793,7 +6133,8 @@ var LegacyGame = (function () {
                         this._stringVariable = [];
                     this._stringVariable[id] = variable;
                     this._numDisplayStrings = this._numDisplayStrings + 1;
-                } else if (type == "numeric") {
+                }
+                else if (type == "numeric") {
                     if (variable.VariableContents[0] == "") {
                         variable.VariableContents[0] = (0).toString();
                     }
@@ -5821,9 +6162,11 @@ var LegacyGame = (function () {
             if (nestBlock == 0) {
                 if (this.BeginsWith(this._lines[i], "define ")) {
                     nestBlock = nestBlock + 1;
-                } else if (this.BeginsWith(this._lines[i], "properties ")) {
+                }
+                else if (this.BeginsWith(this._lines[i], "properties ")) {
                     this.AddToObjectProperties(this.GetParameter(this._lines[i], this._nullContext), this._numberObjs, this._nullContext);
-                } else if (this.BeginsWith(this._lines[i], "type ")) {
+                }
+                else if (this.BeginsWith(this._lines[i], "type ")) {
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                     if (!o.TypesIncluded)
                         o.TypesIncluded = [];
@@ -5833,10 +6176,12 @@ var LegacyGame = (function () {
                     for (var k = 1; k <= propertyData.NumberActions; k++) {
                         this.AddObjectAction(this._numberObjs, propertyData.Actions[k].ActionName, propertyData.Actions[k].Script);
                     }
-                } else if (this.BeginsWith(this._lines[i], "action ")) {
+                }
+                else if (this.BeginsWith(this._lines[i], "action ")) {
                     this.AddToObjectActions(this.GetEverythingAfter(this._lines[i], "action "), this._numberObjs, this._nullContext);
                 }
-            } else {
+            }
+            else {
                 if (Trim(this._lines[i]) == "end define") {
                     nestBlock = nestBlock - 1;
                 }
@@ -5850,18 +6195,21 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define menu ")) {
                 if (exists) {
-                    this.LogASLError("Can't load menu '" + this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext) + "' - only one menu can be added.", 2 /* WarningError */);
-                } else {
+                    this.LogASLError("Can't load menu '" + this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext) + "' - only one menu can be added.", LogType.WarningError);
+                }
+                else {
                     menuTitle = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
                     for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                         if (Trim(this._lines[j]) != "") {
                             var scp = InStr(this._lines[j], ":");
                             if (scp == 0 && this._lines[j] != "-") {
-                                this.LogASLError("No menu command specified in menu '" + menuTitle + "', item '" + this._lines[j], 2 /* WarningError */);
-                            } else {
+                                this.LogASLError("No menu command specified in menu '" + menuTitle + "', item '" + this._lines[j], LogType.WarningError);
+                            }
+                            else {
                                 if (this._lines[j] == "-") {
                                     menuOptions.Add("k" + (j).toString(), "-");
-                                } else {
+                                }
+                                else {
                                     menuOptions.Add(Trim(Mid(this._lines[j], scp + 1)), Trim(Left(this._lines[j], scp - 1)));
                                 }
                             }
@@ -5874,7 +6222,7 @@ var LegacyGame = (function () {
             }
         }
         if (exists) {
-            var windowMenu = new MenuData();
+            var windowMenu = new MenuData(menuTitle, menuOptions, false);
             this._player.SetWindowMenu(windowMenu);
         }
     };
@@ -5884,11 +6232,13 @@ var LegacyGame = (function () {
             if (this.BeginsWith(this._lines[i], "panes ")) {
                 opt = LCase(Trim(this.GetEverythingAfter(this._lines[i], "panes ")));
                 this._player.SetPanesVisible(opt);
-            } else if (this.BeginsWith(this._lines[i], "abbreviations ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "abbreviations ")) {
                 opt = LCase(Trim(this.GetEverythingAfter(this._lines[i], "abbreviations ")));
                 if (opt == "off") {
                     this._useAbbreviations = false;
-                } else {
+                }
+                else {
                     this._useAbbreviations = true;
                 }
             }
@@ -5896,7 +6246,6 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.SetUpRoomData = function () {
         var defaultProperties = new PropertiesActions();
-
         // see if define type <defaultroom> exists:
         var defaultExists = false;
         for (var i = 1; i <= this._numberSections; i++) {
@@ -5924,7 +6273,7 @@ var LegacyGame = (function () {
                 this._objs[this._numberObjs].CorresRoomId = this._numberRooms;
                 r.ObjId = this._numberObjs;
                 if (this._gameAslVersion >= 410) {
-                    r.Exits = new RoomExits();
+                    r.Exits = new RoomExits(this);
                     r.Exits.SetObjId(r.ObjId);
                 }
                 if (defaultExists) {
@@ -5941,10 +6290,11 @@ var LegacyGame = (function () {
                             j = j + 1;
                             if (this.BeginsWith(this._lines[j], "define ")) {
                                 nestedBlock = nestedBlock + 1;
-                            } else if (Trim(this._lines[j]) == "end define") {
+                            }
+                            else if (Trim(this._lines[j]) == "end define") {
                                 nestedBlock = nestedBlock - 1;
                             }
-                        } while(!(nestedBlock == 0));
+                        } while (!(nestedBlock == 0));
                     }
                     if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "alias ")) {
                         r.RoomAlias = this.GetParameter(this._lines[j], this._nullContext);
@@ -5952,16 +6302,19 @@ var LegacyGame = (function () {
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("alias=" + r.RoomAlias, this._numberObjs, this._nullContext);
                         }
-                    } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "description ")) {
+                    }
+                    else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "description ")) {
                         r.Description = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "description "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.Description.Type == 1 /* Script */) {
+                            if (r.Description.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "description", r.Description.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("description=" + r.Description.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "out ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "out ")) {
                         r.Out.Text = this.GetParameter(this._lines[j], this._nullContext);
                         r.Out.Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                         if (this._gameAslVersion >= 350) {
@@ -5970,122 +6323,148 @@ var LegacyGame = (function () {
                             }
                             this.AddToObjectProperties("out=" + r.Out.Text, this._numberObjs, this._nullContext);
                         }
-                    } else if (this.BeginsWith(this._lines[j], "east ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "east ")) {
                         r.East = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "east "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.East.Type == 1 /* Script */) {
+                            if (r.East.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "east", r.East.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("east=" + r.East.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "west ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "west ")) {
                         r.West = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "west "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.West.Type == 1 /* Script */) {
+                            if (r.West.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "west", r.West.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("west=" + r.West.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "north ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "north ")) {
                         r.North = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "north "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.North.Type == 1 /* Script */) {
+                            if (r.North.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "north", r.North.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("north=" + r.North.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "south ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "south ")) {
                         r.South = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "south "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.South.Type == 1 /* Script */) {
+                            if (r.South.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "south", r.South.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("south=" + r.South.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "northeast ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "northeast ")) {
                         r.NorthEast = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "northeast "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.NorthEast.Type == 1 /* Script */) {
+                            if (r.NorthEast.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "northeast", r.NorthEast.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("northeast=" + r.NorthEast.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "northwest ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "northwest ")) {
                         r.NorthWest = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "northwest "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.NorthWest.Type == 1 /* Script */) {
+                            if (r.NorthWest.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "northwest", r.NorthWest.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("northwest=" + r.NorthWest.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "southeast ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "southeast ")) {
                         r.SouthEast = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "southeast "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.SouthEast.Type == 1 /* Script */) {
+                            if (r.SouthEast.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "southeast", r.SouthEast.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("southeast=" + r.SouthEast.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "southwest ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "southwest ")) {
                         r.SouthWest = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "southwest "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.SouthWest.Type == 1 /* Script */) {
+                            if (r.SouthWest.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "southwest", r.SouthWest.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("southwest=" + r.SouthWest.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "up ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "up ")) {
                         r.Up = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "up "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.Up.Type == 1 /* Script */) {
+                            if (r.Up.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "up", r.Up.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("up=" + r.Up.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this.BeginsWith(this._lines[j], "down ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "down ")) {
                         r.Down = this.GetTextOrScript(this.GetEverythingAfter(this._lines[j], "down "));
                         if (this._gameAslVersion >= 350) {
-                            if (r.Down.Type == 1 /* Script */) {
+                            if (r.Down.Type == TextActionType.Script) {
                                 this.AddObjectAction(this._numberObjs, "down", r.Down.Data);
-                            } else {
+                            }
+                            else {
                                 this.AddToObjectProperties("down=" + r.Down.Data, this._numberObjs, this._nullContext);
                             }
                         }
-                    } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "indescription ")) {
+                    }
+                    else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "indescription ")) {
                         r.InDescription = this.GetParameter(this._lines[j], this._nullContext);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("indescription=" + r.InDescription, this._numberObjs, this._nullContext);
                         }
-                    } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "look ")) {
+                    }
+                    else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "look ")) {
                         r.Look = this.GetParameter(this._lines[j], this._nullContext);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("look=" + r.Look, this._numberObjs, this._nullContext);
                         }
-                    } else if (this.BeginsWith(this._lines[j], "prefix ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "prefix ")) {
                         r.Prefix = this.GetParameter(this._lines[j], this._nullContext);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("prefix=" + r.Prefix, this._numberObjs, this._nullContext);
                         }
-                    } else if (this.BeginsWith(this._lines[j], "script ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "script ")) {
                         r.Script = this.GetEverythingAfter(this._lines[j], "script ");
                         this.AddObjectAction(this._numberObjs, "script", r.Script);
-                    } else if (this.BeginsWith(this._lines[j], "command ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "command ")) {
                         r.NumberCommands = r.NumberCommands + 1;
                         if (!r.Commands)
                             r.Commands = [];
                         r.Commands[r.NumberCommands] = new UserDefinedCommandType();
                         r.Commands[r.NumberCommands].CommandText = this.GetParameter(this._lines[j], this._nullContext, false);
                         r.Commands[r.NumberCommands].CommandScript = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
-                    } else if (this.BeginsWith(this._lines[j], "place ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "place ")) {
                         r.NumberPlaces = r.NumberPlaces + 1;
                         if (!r.Places)
                             r.Places = [];
@@ -6094,21 +6473,25 @@ var LegacyGame = (function () {
                         var scp = InStr(placeData, ";");
                         if (scp == 0) {
                             r.Places[r.NumberPlaces].PlaceName = placeData;
-                        } else {
+                        }
+                        else {
                             r.Places[r.NumberPlaces].PlaceName = Trim(Mid(placeData, scp + 1));
                             r.Places[r.NumberPlaces].Prefix = Trim(Left(placeData, scp - 1));
                         }
                         r.Places[r.NumberPlaces].Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
-                    } else if (this.BeginsWith(this._lines[j], "use ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "use ")) {
                         r.NumberUse = r.NumberUse + 1;
                         if (!r.Use)
                             r.Use = [];
                         r.Use[r.NumberUse] = new ScriptText();
                         r.Use[r.NumberUse].Text = this.GetParameter(this._lines[j], this._nullContext);
                         r.Use[r.NumberUse].Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
-                    } else if (this.BeginsWith(this._lines[j], "properties ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "properties ")) {
                         this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                    } else if (this.BeginsWith(this._lines[j], "type ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "type ")) {
                         this._objs[this._numberObjs].NumberTypesIncluded = this._objs[this._numberObjs].NumberTypesIncluded + 1;
                         if (!this._objs[this._numberObjs].TypesIncluded)
                             this._objs[this._numberObjs].TypesIncluded = [];
@@ -6118,12 +6501,15 @@ var LegacyGame = (function () {
                         for (var k = 1; k <= propertyData.NumberActions; k++) {
                             this.AddObjectAction(this._numberObjs, propertyData.Actions[k].ActionName, propertyData.Actions[k].Script);
                         }
-                    } else if (this.BeginsWith(this._lines[j], "action ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "action ")) {
                         this.AddToObjectActions(this.GetEverythingAfter(this._lines[j], "action "), this._numberObjs, this._nullContext);
-                    } else if (this.BeginsWith(this._lines[j], "beforeturn ")) {
-                        r.BeforeTurnScript = r.BeforeTurnScript + this.GetEverythingAfter(this._lines[j], "beforeturn ") + vbCrLf;
-                    } else if (this.BeginsWith(this._lines[j], "afterturn ")) {
-                        r.AfterTurnScript = r.AfterTurnScript + this.GetEverythingAfter(this._lines[j], "afterturn ") + vbCrLf;
+                    }
+                    else if (this.BeginsWith(this._lines[j], "beforeturn ")) {
+                        r.BeforeTurnScript = r.BeforeTurnScript + this.GetEverythingAfter(this._lines[j], "beforeturn ") + "\n";
+                    }
+                    else if (this.BeginsWith(this._lines[j], "afterturn ")) {
+                        r.AfterTurnScript = r.AfterTurnScript + this.GetEverythingAfter(this._lines[j], "afterturn ") + "\n";
                     }
                 }
             }
@@ -6140,7 +6526,6 @@ var LegacyGame = (function () {
             if (eqp != 0) {
                 var originalWordsList = Trim(Left(this._lines[i], eqp - 1));
                 var convertWord = Trim(Mid(this._lines[i], eqp + 1));
-
                 //Go through each word in OriginalWordsList (sep.
                 //by ";"):
                 originalWordsList = originalWordsList + ";";
@@ -6150,8 +6535,9 @@ var LegacyGame = (function () {
                     var thisWord = Trim(Mid(originalWordsList, pos, endOfWord - pos));
                     if (InStr(" " + convertWord + " ", " " + thisWord + " ") > 0) {
                         // Recursive synonym
-                        this.LogASLError("Recursive synonym detected: '" + thisWord + "' converting to '" + convertWord + "'", 2 /* WarningError */);
-                    } else {
+                        this.LogASLError("Recursive synonym detected: '" + thisWord + "' converting to '" + convertWord + "'", LogType.WarningError);
+                    }
+                    else {
                         this._numberSynonyms = this._numberSynonyms + 1;
                         if (!this._synonyms)
                             this._synonyms = [];
@@ -6160,7 +6546,7 @@ var LegacyGame = (function () {
                         this._synonyms[this._numberSynonyms].ConvertTo = convertWord;
                     }
                     pos = endOfWord + 1;
-                } while(!(pos >= Len(originalWordsList)));
+                } while (!(pos >= Len(originalWordsList)));
             }
         }
     };
@@ -6176,11 +6562,14 @@ var LegacyGame = (function () {
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "interval ")) {
                         this._timers[this._numberTimers].TimerInterval = parseInt(this.GetParameter(this._lines[j], this._nullContext));
-                    } else if (this.BeginsWith(this._lines[j], "action ")) {
+                    }
+                    else if (this.BeginsWith(this._lines[j], "action ")) {
                         this._timers[this._numberTimers].TimerAction = this.GetEverythingAfter(this._lines[j], "action ");
-                    } else if (Trim(LCase(this._lines[j])) == "enabled") {
+                    }
+                    else if (Trim(LCase(this._lines[j])) == "enabled") {
                         this._timers[this._numberTimers].TimerActive = true;
-                    } else if (Trim(LCase(this._lines[j])) == "disabled") {
+                    }
+                    else if (Trim(LCase(this._lines[j])) == "disabled") {
                         this._timers[this._numberTimers].TimerActive = false;
                     }
                 }
@@ -6193,9 +6582,10 @@ var LegacyGame = (function () {
         this._afterTurnScript = "";
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "beforeturn ")) {
-                this._beforeTurnScript = this._beforeTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "beforeturn ") + vbCrLf;
-            } else if (this.BeginsWith(this._lines[i], "afterturn ")) {
-                this._afterTurnScript = this._afterTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "afterturn ") + vbCrLf;
+                this._beforeTurnScript = this._beforeTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "beforeturn ") + "\n";
+            }
+            else if (this.BeginsWith(this._lines[i], "afterturn ")) {
+                this._afterTurnScript = this._afterTurnScript + this.GetEverythingAfter(Trim(this._lines[i]), "afterturn ") + "\n";
             }
         }
     };
@@ -6213,100 +6603,101 @@ var LegacyGame = (function () {
                 var currentError = 0;
                 switch (errorName) {
                     case "badcommand":
-                        currentError = 0 /* BadCommand */;
+                        currentError = PlayerError.BadCommand;
                     case "badgo":
-                        currentError = 1 /* BadGo */;
+                        currentError = PlayerError.BadGo;
                     case "badgive":
-                        currentError = 2 /* BadGive */;
+                        currentError = PlayerError.BadGive;
                     case "badcharacter":
-                        currentError = 3 /* BadCharacter */;
+                        currentError = PlayerError.BadCharacter;
                     case "noitem":
-                        currentError = 4 /* NoItem */;
+                        currentError = PlayerError.NoItem;
                     case "itemunwanted":
-                        currentError = 5 /* ItemUnwanted */;
+                        currentError = PlayerError.ItemUnwanted;
                     case "badlook":
-                        currentError = 6 /* BadLook */;
+                        currentError = PlayerError.BadLook;
                     case "badthing":
-                        currentError = 7 /* BadThing */;
+                        currentError = PlayerError.BadThing;
                     case "defaultlook":
-                        currentError = 8 /* DefaultLook */;
+                        currentError = PlayerError.DefaultLook;
                     case "defaultspeak":
-                        currentError = 9 /* DefaultSpeak */;
+                        currentError = PlayerError.DefaultSpeak;
                     case "baditem":
-                        currentError = 10 /* BadItem */;
+                        currentError = PlayerError.BadItem;
                     case "baddrop":
-                        currentError = 21 /* BadDrop */;
+                        currentError = PlayerError.BadDrop;
                     case "defaultake":
                         if (this._gameAslVersion <= 280) {
-                            currentError = 18 /* BadTake */;
-                        } else {
-                            currentError = 11 /* DefaultTake */;
+                            currentError = PlayerError.BadTake;
+                        }
+                        else {
+                            currentError = PlayerError.DefaultTake;
                         }
                     case "baduse":
-                        currentError = 12 /* BadUse */;
+                        currentError = PlayerError.BadUse;
                     case "defaultuse":
-                        currentError = 13 /* DefaultUse */;
+                        currentError = PlayerError.DefaultUse;
                     case "defaultout":
-                        currentError = 14 /* DefaultOut */;
+                        currentError = PlayerError.DefaultOut;
                     case "badplace":
-                        currentError = 15 /* BadPlace */;
+                        currentError = PlayerError.BadPlace;
                     case "badexamine":
                         if (this._gameAslVersion >= 310) {
-                            currentError = 16 /* BadExamine */;
+                            currentError = PlayerError.BadExamine;
                         }
                     case "defaultexamine":
-                        currentError = 17 /* DefaultExamine */;
+                        currentError = PlayerError.DefaultExamine;
                         examineIsCustomised = true;
                     case "badtake":
-                        currentError = 18 /* BadTake */;
+                        currentError = PlayerError.BadTake;
                     case "cantdrop":
-                        currentError = 19 /* CantDrop */;
+                        currentError = PlayerError.CantDrop;
                     case "defaultdrop":
-                        currentError = 20 /* DefaultDrop */;
+                        currentError = PlayerError.DefaultDrop;
                     case "badpronoun":
-                        currentError = 22 /* BadPronoun */;
+                        currentError = PlayerError.BadPronoun;
                     case "alreadyopen":
-                        currentError = 23 /* AlreadyOpen */;
+                        currentError = PlayerError.AlreadyOpen;
                     case "alreadyclosed":
-                        currentError = 24 /* AlreadyClosed */;
+                        currentError = PlayerError.AlreadyClosed;
                     case "cantopen":
-                        currentError = 25 /* CantOpen */;
+                        currentError = PlayerError.CantOpen;
                     case "cantclose":
-                        currentError = 26 /* CantClose */;
+                        currentError = PlayerError.CantClose;
                     case "defaultopen":
-                        currentError = 27 /* DefaultOpen */;
+                        currentError = PlayerError.DefaultOpen;
                     case "defaultclose":
-                        currentError = 28 /* DefaultClose */;
+                        currentError = PlayerError.DefaultClose;
                     case "badput":
-                        currentError = 29 /* BadPut */;
+                        currentError = PlayerError.BadPut;
                     case "cantput":
-                        currentError = 30 /* CantPut */;
+                        currentError = PlayerError.CantPut;
                     case "defaultput":
-                        currentError = 31 /* DefaultPut */;
+                        currentError = PlayerError.DefaultPut;
                     case "cantremove":
-                        currentError = 32 /* CantRemove */;
+                        currentError = PlayerError.CantRemove;
                     case "alreadyput":
-                        currentError = 33 /* AlreadyPut */;
+                        currentError = PlayerError.AlreadyPut;
                     case "defaultremove":
-                        currentError = 34 /* DefaultRemove */;
+                        currentError = PlayerError.DefaultRemove;
                     case "locked":
-                        currentError = 35 /* Locked */;
+                        currentError = PlayerError.Locked;
                     case "defaultwait":
-                        currentError = 36 /* DefaultWait */;
+                        currentError = PlayerError.DefaultWait;
                     case "alreadytaken":
-                        currentError = 37 /* AlreadyTaken */;
+                        currentError = PlayerError.AlreadyTaken;
                 }
                 this._playerErrorMessageString[currentError] = errorMsg;
-                if (currentError == 8 /* DefaultLook */ && !examineIsCustomised) {
+                if (currentError == PlayerError.DefaultLook && !examineIsCustomised) {
                     // If we're setting the default look message, and we've not already customised the
                     // default examine message, then set the default examine message to the same thing.
-                    this._playerErrorMessageString[17 /* DefaultExamine */] = errorMsg;
+                    this._playerErrorMessageString[PlayerError.DefaultExamine] = errorMsg;
                 }
             }
         }
     };
     LegacyGame.prototype.SetVisibility = function (thing, type, visible, ctx) {
-        // Sets visibilty of objects and characters
+        // Sets visibilty of objects and characters        
         if (this._gameAslVersion >= 280) {
             var found = false;
             for (var i = 1; i <= this._numberObjs; i++) {
@@ -6314,7 +6705,8 @@ var LegacyGame = (function () {
                     this._objs[i].Visible = visible;
                     if (visible) {
                         this.AddToObjectProperties("not invisible", i, ctx);
-                    } else {
+                    }
+                    else {
                         this.AddToObjectProperties("invisible", i, ctx);
                     }
                     found = true;
@@ -6322,31 +6714,33 @@ var LegacyGame = (function () {
                 }
             }
             if (!found) {
-                this.LogASLError("Not found object '" + thing + "'", 2 /* WarningError */);
+                this.LogASLError("Not found object '" + thing + "'", LogType.WarningError);
             }
-        } else {
+        }
+        else {
             // split ThingString into character name and room
             // (thingstring of form name@room)
             var atPos = InStr(thing, "@");
             var room;
             var name;
-
             // If no room specified, current room presumed
             if (atPos == 0) {
                 room = this._currentRoom;
                 name = thing;
-            } else {
+            }
+            else {
                 name = Trim(Left(thing, atPos - 1));
                 room = Trim(Right(thing, Len(thing) - atPos));
             }
-            if (type == LegacyGame.Thing.Character) {
+            if (type == Thing.Character) {
                 for (var i = 1; i <= this._numberChars; i++) {
                     if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                         this._chars[i].Visible = visible;
                         break;
                     }
                 }
-            } else if (type == LegacyGame.Thing.Object) {
+            }
+            else if (type == Thing.Object) {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                         this._objs[i].Visible = visible;
@@ -6360,7 +6754,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ShowPictureInText = function (filename) {
         if (!this._useStaticFrameForPictures) {
             this._player.ShowPicture(filename);
-        } else {
+        }
+        else {
             // Workaround for a particular game which expects pictures to be in a popup window -
             // use the static picture frame feature so that image is not cleared
             this._player.SetPanelContents("<img src=\"" + this._player.GetURL(filename) + "\" onload=\"setPanelHeight()\"/>");
@@ -6401,14 +6796,13 @@ var LegacyGame = (function () {
         var lookString = "";
         gameBlock = this.GetDefineBlock("game");
         this._currentRoom = room;
-
         //find the room
         var roomBlock;
         roomBlock = this.DefineBlockParam("room", room);
         var finishedFindingCommas;
         charsViewable = "";
         charsFound = 0;
-
+        //see if room has an alias
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "alias")) {
                 aliasName = this.GetParameter(this._lines[i], this._nullContext);
@@ -6418,18 +6812,16 @@ var LegacyGame = (function () {
         if (aliasName == "") {
             aliasName = room;
         }
-
         //see if room has a prefix
         prefix = this.FindStatement(roomBlock, "prefix");
         if (prefix == "") {
             prefixAlias = "|cr" + aliasName + "|cb";
             prefixAliasNoFormat = aliasName;
-            // No formatting version, for label
-        } else {
+        }
+        else {
             prefixAlias = prefix + " |cr" + aliasName + "|cb";
             prefixAliasNoFormat = prefix + " " + aliasName;
         }
-
         //print player's location
         //find indescription line:
         inDesc = "unfound";
@@ -6443,18 +6835,20 @@ var LegacyGame = (function () {
             // Print player's location according to indescription:
             if (Right(inDesc, 1) == ":") {
                 // if line ends with a colon, add place name:
-                roomDisplayText = roomDisplayText + Left(inDesc, Len(inDesc) - 1) + " " + prefixAlias + "." + vbCrLf;
-            } else {
-                // otherwise, just print the indescription line:
-                roomDisplayText = roomDisplayText + inDesc + vbCrLf;
+                roomDisplayText = roomDisplayText + Left(inDesc, Len(inDesc) - 1) + " " + prefixAlias + ".\n";
             }
-        } else {
+            else {
+                // otherwise, just print the indescription line:
+                roomDisplayText = roomDisplayText + inDesc + "\n";
+            }
+        }
+        else {
             // if no indescription line, print the default.
-            roomDisplayText = roomDisplayText + "You are in " + prefixAlias + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You are in " + prefixAlias + ".\n";
         }
         this._player.LocationUpdated(prefixAliasNoFormat);
         this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
-
+        //FIND CHARACTERS ===
         for (var i = 1; i <= this._numberChars; i++) {
             if (this._chars[i].ContainerRoom == room && this._chars[i].Exists && this._chars[i].Visible) {
                 charsViewable = charsViewable + this._chars[i].Prefix + "|b" + this._chars[i].ObjectName + "|xb" + this._chars[i].Suffix + ", ";
@@ -6464,11 +6858,11 @@ var LegacyGame = (function () {
         if (charsFound == 0) {
             charsViewable = "There is nobody here.";
             this.SetStringContents("quest.characters", "", this._nullContext);
-        } else {
+        }
+        else {
             //chop off final comma and add full stop (.)
             charList = Left(charsViewable, Len(charsViewable) - 2);
             this.SetStringContents("quest.characters", charList, this._nullContext);
-
             //if more than one character, add "and" before
             //last one:
             cp = InStr(charList, ",");
@@ -6478,16 +6872,16 @@ var LegacyGame = (function () {
                     ncp = InStr(cp + 1, charList, ",");
                     if (ncp == 0) {
                         foundLastComma = 1;
-                    } else {
+                    }
+                    else {
                         cp = ncp;
                     }
-                } while(!(foundLastComma == 1));
+                } while (!(foundLastComma == 1));
                 charList = Trim(Left(charList, cp - 1)) + " and " + Trim(Mid(charList, cp + 1));
             }
             charsViewable = "You can see " + charList + " here.";
         }
-        roomDisplayText = roomDisplayText + charsViewable + vbCrLf;
-
+        roomDisplayText = roomDisplayText + charsViewable + "\n";
         //FIND OBJECTS
         noFormatObjsViewable = "";
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -6507,21 +6901,22 @@ var LegacyGame = (function () {
                     ncp = InStr(cp + 1, objListString, ",");
                     if (ncp == 0) {
                         finishedLoop = true;
-                    } else {
+                    }
+                    else {
                         cp = ncp;
                     }
-                } while(!(finishedLoop));
+                } while (!(finishedLoop));
                 objListString = Trim(Left(objListString, cp - 1) + " and " + Trim(Mid(objListString, cp + 1)));
             }
             objsViewable = "There is " + objListString + " here.";
             this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), this._nullContext);
             this.SetStringContents("quest.formatobjects", objListString, this._nullContext);
-            roomDisplayText = roomDisplayText + objsViewable + vbCrLf;
-        } else {
+            roomDisplayText = roomDisplayText + objsViewable + "\n";
+        }
+        else {
             this.SetStringContents("quest.objects", "", this._nullContext);
             this.SetStringContents("quest.formatobjects", "", this._nullContext);
         }
-
         //FIND DOORWAYS
         doorways = "";
         nsew = "";
@@ -6534,25 +6929,32 @@ var LegacyGame = (function () {
             if (this.BeginsWith(this._lines[i], "north ")) {
                 nsew = nsew + "|bnorth|xb, ";
                 possDir = possDir + "n";
-            } else if (this.BeginsWith(this._lines[i], "south ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "south ")) {
                 nsew = nsew + "|bsouth|xb, ";
                 possDir = possDir + "s";
-            } else if (this.BeginsWith(this._lines[i], "east ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "east ")) {
                 nsew = nsew + "|beast|xb, ";
                 possDir = possDir + "e";
-            } else if (this.BeginsWith(this._lines[i], "west ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "west ")) {
                 nsew = nsew + "|bwest|xb, ";
                 possDir = possDir + "w";
-            } else if (this.BeginsWith(this._lines[i], "northeast ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "northeast ")) {
                 nsew = nsew + "|bnortheast|xb, ";
                 possDir = possDir + "a";
-            } else if (this.BeginsWith(this._lines[i], "northwest ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "northwest ")) {
                 nsew = nsew + "|bnorthwest|xb, ";
                 possDir = possDir + "b";
-            } else if (this.BeginsWith(this._lines[i], "southeast ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "southeast ")) {
                 nsew = nsew + "|bsoutheast|xb, ";
                 possDir = possDir + "c";
-            } else if (this.BeginsWith(this._lines[i], "southwest ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "southwest ")) {
                 nsew = nsew + "|bsouthwest|xb, ";
                 possDir = possDir + "d";
             }
@@ -6560,12 +6962,12 @@ var LegacyGame = (function () {
                 //remove any prefix semicolon from printed text
                 place = this.GetParameter(this._lines[i], this._nullContext);
                 placeNoFormat = place;
-
                 //Used in object list - no formatting or prefix
                 if (InStr(place, ";") > 0) {
                     placeNoFormat = Right(place, Len(place) - (InStr(place, ";") + 1));
                     place = Trim(Left(place, InStr(place, ";") - 1)) + " |b" + Right(place, Len(place) - (InStr(place, ";") + 1)) + "|xb";
-                } else {
+                }
+                else {
                     place = "|b" + place + "|xb";
                 }
                 places = places + place + ", ";
@@ -6584,10 +6986,11 @@ var LegacyGame = (function () {
             if (aliasOut == "") {
                 aliasOut = doorways;
             }
-            roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + ".\n";
             possDir = possDir + "o";
             this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
-        } else {
+        }
+        else {
             this.SetStringContents("quest.doorways.out", "", this._nullContext);
         }
         var finished;
@@ -6601,22 +7004,23 @@ var LegacyGame = (function () {
                     ncp = InStr(cp + 1, nsew, ",");
                     if (ncp == 0) {
                         finished = true;
-                    } else {
+                    }
+                    else {
                         cp = ncp;
                     }
-                } while(!(finished));
+                } while (!(finished));
                 nsew = Trim(Left(nsew, cp - 1)) + " or " + Trim(Mid(nsew, cp + 1));
             }
-            roomDisplayText = roomDisplayText + "You can go " + nsew + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go " + nsew + ".\n";
             this.SetStringContents("quest.doorways.dirs", nsew, this._nullContext);
-        } else {
+        }
+        else {
             this.SetStringContents("quest.doorways.dirs", "", this._nullContext);
         }
         this.UpdateDirButtons(possDir, this._nullContext);
         if (places != "") {
             //strip final comma
             places = Left(places, Len(places) - 2);
-
             //if there is still a comma here, there is more than
             //one place, so add the word "or" before the last one.
             if (InStr(places, ",") > 0) {
@@ -6629,15 +7033,15 @@ var LegacyGame = (function () {
                         finishedFindingCommas = true;
                         lastComma = oldLastComma;
                     }
-                } while(!(finishedFindingCommas));
+                } while (!(finishedFindingCommas));
                 places = Left(places, lastComma) + " or" + Right(places, Len(places) - lastComma);
             }
-            roomDisplayText = roomDisplayText + "You can go to " + places + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You can go to " + places + ".\n";
             this.SetStringContents("quest.doorways.places", places, this._nullContext);
-        } else {
+        }
+        else {
             this.SetStringContents("quest.doorways.places", "", this._nullContext);
         }
-
         //Print RoomDisplayText if there is no "description" tag,
         //otherwise execute the description tag information:
         // First, look in the "define room" block:
@@ -6650,6 +7054,7 @@ var LegacyGame = (function () {
             }
         }
         if (descTagExist == false) {
+            //Look in the "define game" block:
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "description ")) {
                     descLine = this._lines[i];
@@ -6662,14 +7067,16 @@ var LegacyGame = (function () {
             //Remove final newline:
             roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
             this.Print(roomDisplayText, this._nullContext);
-        } else {
+        }
+        else {
             //execute description tag:
             //If no script, just print the tag's parameter.
             //Otherwise, execute it as ASL script:
             descLine = this.GetEverythingAfter(Trim(descLine), "description ");
             if (Left(descLine, 1) == "<") {
                 this.Print(this.GetParameter(descLine, this._nullContext), this._nullContext);
-            } else {
+            }
+            else {
                 this.ExecuteScript(descLine, this._nullContext);
             }
         }
@@ -6697,11 +7104,12 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.AddToObjectList = function (objList, exitList, name, type) {
         name = this.CapFirst(name);
-        if (type == 2 /* Room */) {
-            objList.Add(new ListData());
-            exitList.Add(new ListData());
-        } else {
-            objList.Add(new ListData());
+        if (type == Thing.Room) {
+            objList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
+            exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
+        }
+        else {
+            objList.Add(new ListData(name, this._listVerbs[ListType.ObjectsList]));
         }
     };
     LegacyGame.prototype.ExecExec = function (scriptLine, ctx) {
@@ -6712,7 +7120,7 @@ var LegacyGame = (function () {
         var newCtx = this.CopyContext(ctx);
         newCtx.StackCounter = newCtx.StackCounter + 1;
         if (newCtx.StackCounter > 500) {
-            this.LogASLError("Out of stack space running '" + scriptLine + "' - infinite loop?", 2 /* WarningError */);
+            this.LogASLError("Out of stack space running '" + scriptLine + "' - infinite loop?", LogType.WarningError);
             ctx.CancelExec = true;
             return;
         }
@@ -6720,20 +7128,23 @@ var LegacyGame = (function () {
             newCtx.AllowRealNamesInCommand = true;
         }
         if (InStr(execLine, ";") == 0) {
-            try  {
+            try {
                 this.ExecCommand(execLine, newCtx, false);
-            } catch (e) {
-                this.LogASLError("Internal error " + Err.Number + " running '" + scriptLine + "'", 2 /* WarningError */);
+            }
+            catch (e) {
+                this.LogASLError("Internal error running '" + scriptLine + "'", LogType.WarningError);
                 ctx.CancelExec = true;
             }
-        } else {
+        }
+        else {
             var scp = InStr(execLine, ";");
             var ex = Trim(Left(execLine, scp - 1));
             var r = Trim(Mid(execLine, scp + 1));
             if (r == "normal") {
                 this.ExecCommand(ex, newCtx, false, false);
-            } else {
-                this.LogASLError("Unrecognised post-command parameter in " + Trim(scriptLine), 2 /* WarningError */);
+            }
+            else {
+                this.LogASLError("Unrecognised post-command parameter in " + Trim(scriptLine), LogType.WarningError);
             }
         }
     };
@@ -6745,7 +7156,7 @@ var LegacyGame = (function () {
         var name = Trim(Left(info, scp - 1));
         var value = Mid(info, scp + 1);
         if (IsNumeric(name)) {
-            this.LogASLError("Invalid string name '" + name + "' - string names cannot be numeric", 2 /* WarningError */);
+            this.LogASLError("Invalid string name '" + name + "' - string names cannot be numeric", LogType.WarningError);
             return;
         }
         if (this._gameAslVersion >= 281) {
@@ -6758,7 +7169,7 @@ var LegacyGame = (function () {
         this.SetStringContents(idx.Name, value, ctx, idx.Index);
     };
     LegacyGame.prototype.ExecUserCommand = function (cmd, ctx, libCommands) {
-        if (typeof libCommands === "undefined") { libCommands = false; }
+        if (libCommands === void 0) { libCommands = false; }
         //Executes a user-defined command. If unavailable, returns
         //false.
         var curCmd;
@@ -6767,10 +7178,8 @@ var LegacyGame = (function () {
         var commandTag;
         var commandLine = "";
         var foundCommand = false;
-
         //First, check for a command in the current room block
         var roomId = this.GetRoomID(this._currentRoom, ctx);
-
         // RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         if (roomId != 0) {
             var r = this._rooms[roomId];
@@ -6781,7 +7190,8 @@ var LegacyGame = (function () {
                     ep = InStr(commandList, ";");
                     if (ep == 0) {
                         curCmd = commandList;
-                    } else {
+                    }
+                    else {
                         curCmd = Trim(Left(commandList, ep - 1));
                         commandList = Trim(Mid(commandList, ep + 1));
                     }
@@ -6792,12 +7202,13 @@ var LegacyGame = (function () {
                         ep = 0;
                         break;
                     }
-                } while(!(ep == 0));
+                } while (!(ep == 0));
             }
         }
         if (!libCommands) {
             commandTag = "command";
-        } else {
+        }
+        else {
             commandTag = "lib command";
         }
         if (!foundCommand) {
@@ -6811,7 +7222,8 @@ var LegacyGame = (function () {
                         ep = InStr(commandList, ";");
                         if (ep == 0) {
                             curCmd = commandList;
-                        } else {
+                        }
+                        else {
                             curCmd = Trim(Left(commandList, ep - 1));
                             commandList = Trim(Mid(commandList, ep + 1));
                         }
@@ -6823,7 +7235,7 @@ var LegacyGame = (function () {
                             ep = 0;
                             break;
                         }
-                    } while(!(ep == 0));
+                    } while (!(ep == 0));
                 }
             }
         }
@@ -6847,7 +7259,6 @@ var LegacyGame = (function () {
         var chunksEnd;
         var varName;
         var var2Pos;
-
         // Add dots before and after both strings. This fudge
         // stops problems caused when variables are right at the
         // beginning or end of a line.
@@ -6856,7 +7267,6 @@ var LegacyGame = (function () {
         // As of Quest 4.0 we use the � character rather than a dot.
         test = "�" + Trim(test) + "�";
         required = "�" + required + "�";
-
         //Go through RequiredLine in chunks going up to variables.
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
@@ -6868,7 +7278,8 @@ var LegacyGame = (function () {
             if (nextVarPos == 0) {
                 finished = true;
                 nextVarPos = Len(required) + 1;
-            } else {
+            }
+            else {
                 var2Pos = InStr(nextVarPos + 1, required, "#");
                 currentVariable = Mid(required, nextVarPos + 1, (var2Pos - 1) - nextVarPos);
             }
@@ -6885,22 +7296,21 @@ var LegacyGame = (function () {
             chunksBegin[numberChunks] = chunkBegin;
             chunksEnd[numberChunks] = chunkEnd;
             varName[numberChunks] = currentVariable;
-
             //Get to end of variable name
             currentReqLinePos = var2Pos + 1;
             currentTestLinePos = chunkEnd;
-        } while(!(finished));
+        } while (!(finished));
         var success = true;
-
+        //Return values to string variable
         for (var i = 1; i <= numberChunks - 1; i++) {
             var arrayIndex;
-
             // If VarName contains array name, change to index number
             if (InStr(varName[i], "[") > 0) {
                 var indexResult = this.GetArrayIndex(varName[i], ctx);
                 varName[i] = indexResult.Name;
                 arrayIndex = indexResult.Index;
-            } else {
+            }
+            else {
                 arrayIndex = 0;
             }
             var curChunk = Mid(test, chunksEnd[i], chunksBegin[i + 1] - chunksEnd[i]);
@@ -6909,24 +7319,27 @@ var LegacyGame = (function () {
                 var id = this.Disambiguate(curChunk, this._currentRoom + ";" + "inventory", ctx);
                 if (id == -1) {
                     if (this._gameAslVersion >= 391) {
-                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                    } else {
-                        this.PlayerErrorMessage(10 /* BadItem */, ctx);
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
-
+                    else {
+                        this.PlayerErrorMessage(PlayerError.BadItem, ctx);
+                    }
                     // The Mid$(...,2) and Left$(...,2) removes the initial/final "."
                     this._badCmdBefore = Mid(Trim(Left(test, chunksEnd[i] - 1)), 2);
                     this._badCmdAfter = Trim(Mid(test, chunksBegin[i + 1]));
                     this._badCmdAfter = Left(this._badCmdAfter, Len(this._badCmdAfter) - 1);
                     success = false;
-                } else if (id == -2) {
+                }
+                else if (id == -2) {
                     this._badCmdBefore = Trim(Left(test, chunksEnd[i] - 1));
                     this._badCmdAfter = Trim(Mid(test, chunksBegin[i + 1]));
                     success = false;
-                } else {
+                }
+                else {
                     this.SetStringContents(varName[i], this._objs[id].ObjectName, ctx, arrayIndex);
                 }
-            } else {
+            }
+            else {
                 this.SetStringContents(varName[i], curChunk, ctx, arrayIndex);
             }
         }
@@ -6936,11 +7349,13 @@ var LegacyGame = (function () {
         var result;
         if (this._gameAslVersion >= 281) {
             result = this._objs[this.GetObjectIdNoAlias(character)].Gender;
-        } else {
+        }
+        else {
             var resultLine = this.RetrLine("character", character, "gender", ctx);
             if (resultLine == "<unfound>") {
                 result = "it ";
-            } else {
+            }
+            else {
                 result = this.GetParameter(resultLine, ctx) + " ";
             }
         }
@@ -6952,7 +7367,6 @@ var LegacyGame = (function () {
     LegacyGame.prototype.GetStringContents = function (name, ctx) {
         var returnAlias = false;
         var arrayIndex = 0;
-
         // Check for property shortcut
         var cp = InStr(name, ":");
         if (cp != 0) {
@@ -6977,16 +7391,16 @@ var LegacyGame = (function () {
             var arrayIndexData = Mid(name, bp + 1, (ep - bp) - 1);
             if (IsNumeric(arrayIndexData)) {
                 arrayIndex = parseInt(arrayIndexData);
-            } else {
-                arrayIndex = parseInt(this.GetNumericContents(arrayIndexData, ctx));
+            }
+            else {
+                arrayIndex = this.GetNumericContents(arrayIndexData, ctx);
                 if (arrayIndex == -32767) {
-                    this.LogASLError("Array index in '" + name + "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", 2 /* WarningError */);
+                    this.LogASLError("Array index in '" + name + "' is not valid. An array index must be either a number or a numeric variable (without surrounding '%' characters)", LogType.WarningError);
                     return "";
                 }
             }
             name = Left(name, bp - 1);
         }
-
         // First, see if the string already exists. If it does,
         // get its contents. If not, generate an error.
         var exists = false;
@@ -7001,18 +7415,18 @@ var LegacyGame = (function () {
             }
         }
         if (!exists) {
-            this.LogASLError("No string variable '" + name + "' defined.", 2 /* WarningError */);
+            this.LogASLError("No string variable '" + name + "' defined.", LogType.WarningError);
             return "";
         }
         if (arrayIndex > this._stringVariable[id].VariableUBound) {
-            this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", 2 /* WarningError */);
+            this.LogASLError("Array index of '" + name + "[" + Trim(Str(arrayIndex)) + "]' too big.", LogType.WarningError);
             return "";
         }
-
         // Now, set the contents
         if (!returnAlias) {
             return this._stringVariable[id].VariableContents[arrayIndex];
-        } else {
+        }
+        else {
             return this._objs[this.GetObjectIdNoAlias(this._stringVariable[id].VariableContents[arrayIndex])].ObjectAlias;
         }
     };
@@ -7023,22 +7437,23 @@ var LegacyGame = (function () {
         var room;
         var name;
         var atPos = InStr(thingName, "@");
-
         // If no room specified, current room presumed
         if (atPos == 0) {
             room = this._currentRoom;
             name = thingName;
-        } else {
+        }
+        else {
             name = Trim(Left(thingName, atPos - 1));
             room = Trim(Right(thingName, Len(thingName) - atPos));
         }
-        if (type == 0 /* Character */) {
+        if (type == Thing.Character) {
             for (var i = 1; i <= this._numberChars; i++) {
                 if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                     return this._chars[i].Exists;
                 }
             }
-        } else if (type == 1 /* Object */) {
+        }
+        else if (type == Thing.Object) {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                     return this._objs[i].Exists;
@@ -7051,11 +7466,9 @@ var LegacyGame = (function () {
         //For example, if 'required' = "read #text#", then the
         //tests of "read book" and "read sign" are compatible.
         var var2Pos;
-
         // This avoids "xxx123" being compatible with "xxx".
         test = "^" + Trim(test) + "^";
         required = "^" + required + "^";
-
         //Go through RequiredLine in chunks going up to variables.
         var currentReqLinePos = 1;
         var currentTestLinePos = 1;
@@ -7065,19 +7478,20 @@ var LegacyGame = (function () {
             if (nextVarPos == 0) {
                 nextVarPos = Len(required) + 1;
                 finished = true;
-            } else {
+            }
+            else {
                 var2Pos = InStr(nextVarPos + 1, required, "#");
             }
             var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
             if (InStr(currentTestLinePos, test, checkChunk) != 0) {
                 currentTestLinePos = InStr(currentTestLinePos, test, checkChunk) + Len(checkChunk);
-            } else {
+            }
+            else {
                 return false;
             }
-
             //Skip to end of variable
             currentReqLinePos = var2Pos + 1;
-        } while(!(finished));
+        } while (!(finished));
         return true;
     };
     LegacyGame.prototype.OpenGame = function (filename) {
@@ -7096,38 +7510,42 @@ var LegacyGame = (function () {
         var lines = null;
         this._gameLoadMethod = "loaded";
         var prevQsgVersion = false;
-        if (this._data == null) {
-            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
-        } else {
-            fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
-        }
-
+        // TODO
+        //if (this._data == null) {
+        //    fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
+        //} else {
+        //    fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
+        //}
         // Check version
         savedQsgVersion = Left(fileData, 10);
         if (this.BeginsWith(savedQsgVersion, "QUEST200.1")) {
             prevQsgVersion = true;
-        } else if (!this.BeginsWith(savedQsgVersion, "QUEST300")) {
+        }
+        else if (!this.BeginsWith(savedQsgVersion, "QUEST300")) {
             return false;
         }
         if (prevQsgVersion) {
-            lines = fileData.Split('expr', StringSplitOptions.None);
+            lines = fileData.split("\n");
             this._gameFileName = lines[1];
-        } else {
+        }
+        else {
             this.InitFileData(fileData);
             this.GetNextChunk();
             if (this._data == null) {
                 this._gameFileName = this.GetNextChunk();
-            } else {
+            }
+            else {
                 this.GetNextChunk();
                 this._gameFileName = this._data.SourceFile;
             }
         }
-        if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
-            this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
-            if (this._gameFileName == "") {
-                return false;
-            }
-        }
+        // TODO
+        //if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
+        //    this._gameFileName = this._player.GetNewGameFile(this._gameFileName, "*.asl;*.cas;*.zip");
+        //    if (this._gameFileName == "") {
+        //        return false;
+        //    }
+        //}
         result = this.InitialiseGame(this._gameFileName, true);
         if (result == false) {
             return false;
@@ -7137,10 +7555,10 @@ var LegacyGame = (function () {
             this._gameLoading = true;
             this.RestoreGameData(fileData);
             this._gameLoading = false;
-        } else {
+        }
+        else {
             // Open Quest 2.x saved game file
             this._currentRoom = lines[3];
-
             // Start at line 5 as line 4 is always "!c"
             var lineNumber = 5;
             do {
@@ -7157,7 +7575,7 @@ var LegacyGame = (function () {
                         }
                     }
                 }
-            } while(!(data == "!i"));
+            } while (!(data == "!i"));
             do {
                 data = lines[lineNumber];
                 lineNumber += 1;
@@ -7172,7 +7590,7 @@ var LegacyGame = (function () {
                         }
                     }
                 }
-            } while(!(data == "!o"));
+            } while (!(data == "!o"));
             do {
                 data = lines[lineNumber];
                 lineNumber += 1;
@@ -7194,7 +7612,7 @@ var LegacyGame = (function () {
                         }
                     }
                 }
-            } while(!(data == "!p"));
+            } while (!(data == "!p"));
             do {
                 data = lines[lineNumber];
                 lineNumber += 1;
@@ -7215,7 +7633,7 @@ var LegacyGame = (function () {
                         }
                     }
                 }
-            } while(!(data == "!s"));
+            } while (!(data == "!s"));
             do {
                 data = lines[lineNumber];
                 lineNumber += 1;
@@ -7225,7 +7643,7 @@ var LegacyGame = (function () {
                     data = Right(data, Len(data) - scp);
                     this.SetStringContents(name, data, this._nullContext);
                 }
-            } while(!(data == "!n"));
+            } while (!(data == "!n"));
             do {
                 data = lines[lineNumber];
                 lineNumber += 1;
@@ -7235,13 +7653,13 @@ var LegacyGame = (function () {
                     data = Right(data, Len(data) - scp);
                     this.SetNumericVariableContents(name, Val(data), this._nullContext);
                 }
-            } while(!(data == "!e"));
+            } while (!(data == "!e"));
         }
         this._saveGameFile = filename;
         return true;
     };
     LegacyGame.prototype.SaveGame = function (filename, saveFile) {
-        if (typeof saveFile === "undefined") { saveFile = true; }
+        if (saveFile === void 0) { saveFile = true; }
         var ctx = new Context();
         var saveData;
         if (this._gameAslVersion >= 391) {
@@ -7249,51 +7667,54 @@ var LegacyGame = (function () {
         }
         if (this._gameAslVersion >= 280) {
             saveData = this.MakeRestoreData();
-        } else {
+        }
+        else {
             saveData = this.MakeRestoreDataV2();
         }
-        if (saveFile) {
-            System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252));
-        }
+        // TODO
+        //if (saveFile) {
+        //    System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252));
+        //}
         this._saveGameFile = filename;
-        return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
+        //return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
+        return null;
     };
     LegacyGame.prototype.MakeRestoreDataV2 = function () {
-        var lines = {};
+        var lines = [];
         var i;
-        lines.Add("QUEST200.1");
-        lines.Add(this.GetOriginalFilenameForQSG);
-        lines.Add(this._gameName);
-        lines.Add(this._currentRoom);
-        lines.Add("!c");
+        lines.push("QUEST200.1");
+        lines.push(this.GetOriginalFilenameForQSG());
+        lines.push(this._gameName);
+        lines.push(this._currentRoom);
+        lines.push("!c");
         for (var i = 1; i <= this._numCollectables; i++) {
-            lines.Add(this._collectables[i].Name + ";" + Str(this._collectables[i].Value));
+            lines.push(this._collectables[i].Name + ";" + Str(this._collectables[i].Value));
         }
-        lines.Add("!i");
+        lines.push("!i");
         for (var i = 1; i <= this._numberItems; i++) {
-            lines.Add(this._items[i].Name + ";" + this.YesNo(this._items[i].Got));
+            lines.push(this._items[i].Name + ";" + this.YesNo(this._items[i].Got));
         }
-        lines.Add("!o");
+        lines.push("!o");
         for (var i = 1; i <= this._numberObjs; i++) {
-            lines.Add(this._objs[i].ObjectName + ";" + this.YesNo(this._objs[i].Exists) + ";" + this.YesNo(this._objs[i].Visible) + ";" + this._objs[i].ContainerRoom);
+            lines.push(this._objs[i].ObjectName + ";" + this.YesNo(this._objs[i].Exists) + ";" + this.YesNo(this._objs[i].Visible) + ";" + this._objs[i].ContainerRoom);
         }
-        lines.Add("!p");
+        lines.push("!p");
         for (var i = 1; i <= this._numberChars; i++) {
-            lines.Add(this._chars[i].ObjectName + ";" + this.YesNo(this._chars[i].Exists) + ";" + this.YesNo(this._chars[i].Visible) + ";" + this._chars[i].ContainerRoom);
+            lines.push(this._chars[i].ObjectName + ";" + this.YesNo(this._chars[i].Exists) + ";" + this.YesNo(this._chars[i].Visible) + ";" + this._chars[i].ContainerRoom);
         }
-        lines.Add("!s");
+        lines.push("!s");
         for (var i = 1; i <= this._numberStringVariables; i++) {
-            lines.Add(this._stringVariable[i].VariableName + ";" + this._stringVariable[i].VariableContents[0]);
+            lines.push(this._stringVariable[i].VariableName + ";" + this._stringVariable[i].VariableContents[0]);
         }
-        lines.Add("!n");
+        lines.push("!n");
         for (var i = 1; i <= this._numberNumericVariables; i++) {
-            lines.Add(this._numericVariable[i].VariableName + ";" + Str(parseFloat(this._numericVariable[i].VariableContents[0])));
+            lines.push(this._numericVariable[i].VariableName + ";" + Str(parseFloat(this._numericVariable[i].VariableContents[0])));
         }
-        lines.Add("!e");
-        return String.Join(vbCrLf, lines);
+        lines.push("!e");
+        return lines.join("\n");
     };
     LegacyGame.prototype.SetAvailability = function (thingString, exists, ctx, type) {
-        if (typeof type === "undefined") { type = 1 /* Object */; }
+        if (type === void 0) { type = Thing.Object; }
         // Sets availability of objects (and characters in ASL<281)
         if (this._gameAslVersion >= 281) {
             var found = false;
@@ -7302,7 +7723,8 @@ var LegacyGame = (function () {
                     this._objs[i].Exists = exists;
                     if (exists) {
                         this.AddToObjectProperties("not hidden", i, ctx);
-                    } else {
+                    }
+                    else {
                         this.AddToObjectProperties("hidden", i, ctx);
                     }
                     found = true;
@@ -7310,31 +7732,33 @@ var LegacyGame = (function () {
                 }
             }
             if (!found) {
-                this.LogASLError("Not found object '" + thingString + "'", 2 /* WarningError */);
+                this.LogASLError("Not found object '" + thingString + "'", LogType.WarningError);
             }
-        } else {
+        }
+        else {
             // split ThingString into character name and room
             // (thingstring of form name@room)
             var room;
             var name;
             var atPos = InStr(thingString, "@");
-
             // If no room specified, currentroom presumed
             if (atPos == 0) {
                 room = this._currentRoom;
                 name = thingString;
-            } else {
+            }
+            else {
                 name = Trim(Left(thingString, atPos - 1));
                 room = Trim(Right(thingString, Len(thingString) - atPos));
             }
-            if (type == 0 /* Character */) {
+            if (type == Thing.Character) {
                 for (var i = 1; i <= this._numberChars; i++) {
                     if (LCase(this._chars[i].ContainerRoom) == LCase(room) && LCase(this._chars[i].ObjectName) == LCase(name)) {
                         this._chars[i].Exists = exists;
                         break;
                     }
                 }
-            } else if (type == 1 /* Object */) {
+            }
+            else if (type == Thing.Object) {
                 for (var i = 1; i <= this._numberObjs; i++) {
                     if (LCase(this._objs[i].ContainerRoom) == LCase(room) && LCase(this._objs[i].ObjectName) == LCase(name)) {
                         this._objs[i].Exists = exists;
@@ -7347,11 +7771,11 @@ var LegacyGame = (function () {
         this.UpdateObjectList(ctx);
     };
     LegacyGame.prototype.SetStringContents = function (name, value, ctx, arrayIndex) {
-        if (typeof arrayIndex === "undefined") { arrayIndex = 0; }
+        if (arrayIndex === void 0) { arrayIndex = 0; }
         var id;
         var exists = false;
         if (name == "") {
-            this.LogASLError("Internal error - tried to set empty string name to '" + value + "'", 2 /* WarningError */);
+            this.LogASLError("Internal error - tried to set empty string name to '" + value + "'", LogType.WarningError);
             return;
         }
         if (this._gameAslVersion >= 281) {
@@ -7362,10 +7786,9 @@ var LegacyGame = (function () {
             }
         }
         if (arrayIndex < 0) {
-            this.LogASLError("'" + name + "[" + Trim(Str(arrayIndex)) + "]' is invalid - did not assign to array", 2 /* WarningError */);
+            this.LogASLError("'" + name + "[" + Trim(Str(arrayIndex)) + "]' is invalid - did not assign to array", LogType.WarningError);
             return;
         }
-
         // First, see if the string already exists. If it does,
         // modify it. If not, create it.
         if (this._numberStringVariables > 0) {
@@ -7390,7 +7813,6 @@ var LegacyGame = (function () {
                 this._stringVariable[id].VariableContents = [];
             this._stringVariable[id].VariableUBound = arrayIndex;
         }
-
         // Now, set the contents
         this._stringVariable[id].VariableName = name;
         if (!this._stringVariable[id].VariableContents)
@@ -7407,7 +7829,6 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpCharObjectInfo = function () {
         var defaultProperties = new PropertiesActions();
         this._numberChars = 0;
-
         // see if define type <default> exists:
         var defaultExists = false;
         for (var i = 1; i <= this._numberSections; i++) {
@@ -7427,7 +7848,8 @@ var LegacyGame = (function () {
             var containerRoomName;
             if (this.BeginsWith(this._lines[block.StartLine], "define room")) {
                 origContainerRoomName = this.GetParameter(this._lines[block.StartLine], this._nullContext);
-            } else {
+            }
+            else {
                 origContainerRoomName = "";
             }
             var startLine = block.StartLine;
@@ -7451,7 +7873,7 @@ var LegacyGame = (function () {
                     o.Visible = true;
                     o.Gender = "it";
                     o.Article = "it";
-                    o.Take.Type = 2 /* Nothing */;
+                    o.Take.Type = TextActionType.Nothing;
                     if (defaultExists) {
                         this.AddToObjectProperties(defaultProperties.Properties, this._numberObjs, this._nullContext);
                         for (var k = 1; k <= defaultProperties.NumberActions; k++) {
@@ -7470,84 +7892,104 @@ var LegacyGame = (function () {
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("hidden", this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
                             containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "prefix ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "prefix ")) {
                             o.Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("prefix=" + o.Prefix, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "suffix ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "suffix ")) {
                             o.Suffix = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("suffix=" + o.Suffix, this._numberObjs, this._nullContext);
                             }
-                        } else if (Trim(this._lines[j]) == "invisible") {
+                        }
+                        else if (Trim(this._lines[j]) == "invisible") {
                             o.Visible = false;
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("invisible", this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "alias ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "alias ")) {
                             o.ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("alias=" + o.ObjectAlias, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "alt ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "alt ")) {
                             this.AddToObjectAltNames(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs);
-                        } else if (this.BeginsWith(this._lines[j], "detail ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "detail ")) {
                             o.Detail = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("detail=" + o.Detail, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "gender ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "gender ")) {
                             o.Gender = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("gender=" + o.Gender, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "article ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "article ")) {
                             o.Article = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("article=" + o.Article, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "gain ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "gain ")) {
                             o.GainScript = this.GetEverythingAfter(this._lines[j], "gain ");
                             this.AddObjectAction(this._numberObjs, "gain", o.GainScript);
-                        } else if (this.BeginsWith(this._lines[j], "lose ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "lose ")) {
                             o.LoseScript = this.GetEverythingAfter(this._lines[j], "lose ");
                             this.AddObjectAction(this._numberObjs, "lose", o.LoseScript);
-                        } else if (this.BeginsWith(this._lines[j], "displaytype ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "displaytype ")) {
                             o.DisplayType = this.GetParameter(this._lines[j], this._nullContext);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("displaytype=" + o.DisplayType, this._numberObjs, this._nullContext);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "look ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "look ")) {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "look ");
                                 if (Left(restOfLine, 1) == "<") {
                                     this.AddToObjectProperties("look=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                                } else {
+                                }
+                                else {
                                     this.AddObjectAction(this._numberObjs, "look", restOfLine);
                                 }
                             }
-                        } else if (this.BeginsWith(this._lines[j], "examine ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "examine ")) {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "examine ");
                                 if (Left(restOfLine, 1) == "<") {
                                     this.AddToObjectProperties("examine=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                                } else {
+                                }
+                                else {
                                     this.AddObjectAction(this._numberObjs, "examine", restOfLine);
                                 }
                             }
-                        } else if (this._gameAslVersion >= 311 && this.BeginsWith(this._lines[j], "speak ")) {
+                        }
+                        else if (this._gameAslVersion >= 311 && this.BeginsWith(this._lines[j], "speak ")) {
                             restOfLine = this.GetEverythingAfter(this._lines[j], "speak ");
                             if (Left(restOfLine, 1) == "<") {
                                 this.AddToObjectProperties("speak=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
+                            }
+                            else {
                                 this.AddObjectAction(this._numberObjs, "speak", restOfLine);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "properties ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "properties ")) {
                             this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "type ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "type ")) {
                             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                             if (!o.TypesIncluded)
                                 o.TypesIncluded = [];
@@ -7563,90 +8005,115 @@ var LegacyGame = (function () {
                                 o.TypesIncluded[k + o.NumberTypesIncluded] = PropertyData.TypesIncluded[k];
                             }
                             o.NumberTypesIncluded = o.NumberTypesIncluded + PropertyData.NumberTypesIncluded;
-                        } else if (this.BeginsWith(this._lines[j], "action ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "action ")) {
                             this.AddToObjectActions(this.GetEverythingAfter(this._lines[j], "action "), this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "use ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "use ")) {
                             this.AddToUseInfo(this._numberObjs, this.GetEverythingAfter(this._lines[j], "use "));
-                        } else if (this.BeginsWith(this._lines[j], "give ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "give ")) {
                             this.AddToGiveInfo(this._numberObjs, this.GetEverythingAfter(this._lines[j], "give "));
-                        } else if (Trim(this._lines[j]) == "take") {
-                            o.Take.Type = 3 /* Default */;
+                        }
+                        else if (Trim(this._lines[j]) == "take") {
+                            o.Take.Type = TextActionType.Default;
                             this.AddToObjectProperties("take", this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "take ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "take ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "take "), 1) == "<") {
-                                o.Take.Type = 0 /* Text */;
+                                o.Take.Type = TextActionType.Text;
                                 o.Take.Data = this.GetParameter(this._lines[j], this._nullContext);
                                 this.AddToObjectProperties("take=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
-                                o.Take.Type = 1 /* Script */;
+                            }
+                            else {
+                                o.Take.Type = TextActionType.Script;
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "take ");
                                 o.Take.Data = restOfLine;
                                 this.AddObjectAction(this._numberObjs, "take", restOfLine);
                             }
-                        } else if (Trim(this._lines[j]) == "container") {
+                        }
+                        else if (Trim(this._lines[j]) == "container") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
                             }
-                        } else if (Trim(this._lines[j]) == "surface") {
+                        }
+                        else if (Trim(this._lines[j]) == "surface") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("container", this._numberObjs, this._nullContext);
                                 this.AddToObjectProperties("surface", this._numberObjs, this._nullContext);
                             }
-                        } else if (Trim(this._lines[j]) == "opened") {
+                        }
+                        else if (Trim(this._lines[j]) == "opened") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("opened", this._numberObjs, this._nullContext);
                             }
-                        } else if (Trim(this._lines[j]) == "transparent") {
+                        }
+                        else if (Trim(this._lines[j]) == "transparent") {
                             if (this._gameAslVersion >= 391) {
                                 this.AddToObjectProperties("transparent", this._numberObjs, this._nullContext);
                             }
-                        } else if (Trim(this._lines[j]) == "open") {
+                        }
+                        else if (Trim(this._lines[j]) == "open") {
                             this.AddToObjectProperties("open", this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "open ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "open ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "open "), 1) == "<") {
                                 this.AddToObjectProperties("open=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
+                            }
+                            else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "open ");
                                 this.AddObjectAction(this._numberObjs, "open", restOfLine);
                             }
-                        } else if (Trim(this._lines[j]) == "close") {
+                        }
+                        else if (Trim(this._lines[j]) == "close") {
                             this.AddToObjectProperties("close", this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "close ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "close ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "close "), 1) == "<") {
                                 this.AddToObjectProperties("close=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
+                            }
+                            else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "close ");
                                 this.AddObjectAction(this._numberObjs, "close", restOfLine);
                             }
-                        } else if (Trim(this._lines[j]) == "add") {
+                        }
+                        else if (Trim(this._lines[j]) == "add") {
                             this.AddToObjectProperties("add", this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "add ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "add ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "add "), 1) == "<") {
                                 this.AddToObjectProperties("add=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
+                            }
+                            else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "add ");
                                 this.AddObjectAction(this._numberObjs, "add", restOfLine);
                             }
-                        } else if (Trim(this._lines[j]) == "remove") {
+                        }
+                        else if (Trim(this._lines[j]) == "remove") {
                             this.AddToObjectProperties("remove", this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "remove ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "remove ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "remove "), 1) == "<") {
                                 this.AddToObjectProperties("remove=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                            } else {
+                            }
+                            else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "remove ");
                                 this.AddObjectAction(this._numberObjs, "remove", restOfLine);
                             }
-                        } else if (this.BeginsWith(this._lines[j], "parent ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "parent ")) {
                             this.AddToObjectProperties("parent=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "list")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "list")) {
                             this.ProcessListInfo(this._lines[j], this._numberObjs);
                         }
-                    } while(!(Trim(this._lines[j]) == "end define"));
+                    } while (!(Trim(this._lines[j]) == "end define"));
                     o.DefinitionSectionEnd = j;
                     if (!hidden) {
                         o.Exists = true;
                     }
-                } else if (this._gameAslVersion <= 280 && this.BeginsWith(this._lines[j], "define character")) {
+                }
+                else if (this._gameAslVersion <= 280 && this.BeginsWith(this._lines[j], "define character")) {
                     containerRoomName = origContainerRoomName;
                     this._numberChars = this._numberChars + 1;
                     if (!this._chars)
@@ -7662,21 +8129,27 @@ var LegacyGame = (function () {
                         if (Trim(this._lines[j]) == "hidden") {
                             this._chars[this._numberChars].Exists = false;
                             hidden = true;
-                        } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
                             containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "prefix ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "prefix ")) {
                             this._chars[this._numberChars].Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
-                        } else if (this.BeginsWith(this._lines[j], "suffix ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "suffix ")) {
                             this._chars[this._numberChars].Suffix = " " + this.GetParameter(this._lines[j], this._nullContext);
-                        } else if (Trim(this._lines[j]) == "invisible") {
+                        }
+                        else if (Trim(this._lines[j]) == "invisible") {
                             this._chars[this._numberChars].Visible = false;
-                        } else if (this.BeginsWith(this._lines[j], "alias ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "alias ")) {
                             this._chars[this._numberChars].ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
-                        } else if (this.BeginsWith(this._lines[j], "detail ")) {
+                        }
+                        else if (this.BeginsWith(this._lines[j], "detail ")) {
                             this._chars[this._numberChars].Detail = this.GetParameter(this._lines[j], this._nullContext);
                         }
                         this._chars[this._numberChars].ContainerRoom = containerRoomName;
-                    } while(!(Trim(this._lines[j]) == "end define"));
+                    } while (!(Trim(this._lines[j]) == "end define"));
                     this._chars[this._numberChars].DefinitionSectionEnd = j;
                     if (!hidden) {
                         this._chars[this._numberChars].Exists = true;
@@ -7719,13 +8192,13 @@ var LegacyGame = (function () {
             // size is ignored
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
-        if (caption.Length > 0) {
+        if (caption.length > 0) {
             this.Print(caption, this._nullContext);
         }
         this.ShowPictureInText(filename);
     };
     LegacyGame.prototype.ShowRoomInfo = function (room, ctx, noPrint) {
-        if (typeof noPrint === "undefined") { noPrint = false; }
+        if (noPrint === void 0) { noPrint = false; }
         if (this._gameAslVersion < 280) {
             this.ShowRoomInfoV2(room);
             return;
@@ -7756,7 +8229,6 @@ var LegacyGame = (function () {
         if (id == 0) {
             return;
         }
-
         // FIRST LINE - YOU ARE IN... ***********************************************
         roomAlias = this._rooms[id].RoomAlias;
         if (roomAlias == "") {
@@ -7766,8 +8238,8 @@ var LegacyGame = (function () {
         if (prefix == "") {
             roomDisplayName = "|cr" + roomAlias + "|cb";
             roomDisplayNameNoFormat = roomAlias;
-            // No formatting version, for label
-        } else {
+        }
+        else {
             roomDisplayName = prefix + " |cr" + roomAlias + "|cb";
             roomDisplayNameNoFormat = prefix + " " + roomAlias;
         }
@@ -7776,27 +8248,27 @@ var LegacyGame = (function () {
             // Print player's location according to indescription:
             if (Right(inDescription, 1) == ":") {
                 // if line ends with a colon, add place name:
-                roomDisplayText = roomDisplayText + Left(inDescription, Len(inDescription) - 1) + " " + roomDisplayName + "." + vbCrLf;
-            } else {
-                // otherwise, just print the indescription line:
-                roomDisplayText = roomDisplayText + inDescription + vbCrLf;
+                roomDisplayText = roomDisplayText + Left(inDescription, Len(inDescription) - 1) + " " + roomDisplayName + ".\n";
             }
-        } else {
+            else {
+                // otherwise, just print the indescription line:
+                roomDisplayText = roomDisplayText + inDescription + "\n";
+            }
+        }
+        else {
             // if no indescription line, print the default.
-            roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + "." + vbCrLf;
+            roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + ".\n";
         }
         this._player.LocationUpdated(UCase(Left(roomAlias, 1)) + Mid(roomAlias, 2));
         this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
-
         // SHOW OBJECTS *************************************************************
         visibleObjectsNoFormat = "";
-        var visibleObjectsList = {};
-
+        var visibleObjectsList = [];
         // of object IDs
         var count;
         for (var i = 1; i <= this._numberObjs; i++) {
             if (LCase(this._objs[i].ContainerRoom) == LCase(room) && this._objs[i].Exists && this._objs[i].Visible && !this._objs[i].IsExit) {
-                visibleObjectsList.Add(i);
+                visibleObjectsList.push(i);
             }
         }
         visibleObjectsList.forEach(function (objId) {
@@ -7807,29 +8279,31 @@ var LegacyGame = (function () {
             if (this._objs[objId].ObjectAlias == "") {
                 visibleObjects = visibleObjects + this._objs[objId].Prefix + "|b" + this._objs[objId].ObjectName + "|xb" + objSuffix;
                 visibleObjectsNoFormat = visibleObjectsNoFormat + this._objs[objId].Prefix + this._objs[objId].ObjectName;
-            } else {
+            }
+            else {
                 visibleObjects = visibleObjects + this._objs[objId].Prefix + "|b" + this._objs[objId].ObjectAlias + "|xb" + objSuffix;
                 visibleObjectsNoFormat = visibleObjectsNoFormat + this._objs[objId].Prefix + this._objs[objId].ObjectAlias;
             }
             count = count + 1;
-            if (count < visibleObjectsList.Count() - 1) {
+            if (count < visibleObjectsList.length - 1) {
                 visibleObjects = visibleObjects + ", ";
                 visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
-            } else if (count == visibleObjectsList.Count() - 1) {
+            }
+            else if (count == visibleObjectsList.length - 1) {
                 visibleObjects = visibleObjects + " and ";
                 visibleObjectsNoFormat = visibleObjectsNoFormat + ", ";
             }
         }, this);
-        if (visibleObjectsList.Count() > 0) {
+        if (visibleObjectsList.length > 0) {
             this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
             this.SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
-            roomDisplayText = roomDisplayText + visibleObjects + vbCrLf;
-        } else {
+            roomDisplayText = roomDisplayText + visibleObjects + "\n";
+        }
+        else {
             this.SetStringContents("quest.objects", "", ctx);
             this.SetStringContents("quest.formatobjects", "", ctx);
         }
-
         // SHOW EXITS ***************************************************************
         doorwayString = this.UpdateDoorways(id, ctx);
         if (this._gameAslVersion < 410) {
@@ -7837,7 +8311,6 @@ var LegacyGame = (function () {
             if (placeList != "") {
                 //strip final comma
                 placeList = Left(placeList, Len(placeList) - 2);
-
                 //if there is still a comma here, there is more than
                 //one place, so add the word "or" before the last one.
                 if (InStr(placeList, ",") > 0) {
@@ -7850,27 +8323,27 @@ var LegacyGame = (function () {
                             finishedFindingCommas = true;
                             lastComma = oldLastComma;
                         }
-                    } while(!(finishedFindingCommas));
+                    } while (!(finishedFindingCommas));
                     placeList = Left(placeList, lastComma - 1) + " or" + Right(placeList, Len(placeList) - lastComma);
                 }
-                roomDisplayText = roomDisplayText + "You can go to " + placeList + "." + vbCrLf;
+                roomDisplayText = roomDisplayText + "You can go to " + placeList + ".\n";
                 this.SetStringContents("quest.doorways.places", placeList, ctx);
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.doorways.places", "", ctx);
             }
         }
-
         // GET "LOOK" DESCRIPTION (but don't print it yet) **************************
         objLook = this.GetObjectProperty("look", this._rooms[id].ObjId, null, false);
         if (objLook == "") {
             if (this._rooms[id].Look != "") {
                 lookDesc = this._rooms[id].Look;
             }
-        } else {
+        }
+        else {
             lookDesc = objLook;
         }
         this.SetStringContents("quest.lookdesc", lookDesc, ctx);
-
         // FIND DESCRIPTION TAG, OR ACTION ******************************************
         // In Quest versions prior to 3.1, with any custom description, the "look"
         // text was always displayed after the "description" tag was printed/executed.
@@ -7881,19 +8354,22 @@ var LegacyGame = (function () {
             descLine = this._rooms[id].Description.Data;
             descType = this._rooms[id].Description.Type;
             descTagExist = true;
-        } else {
+        }
+        else {
             descTagExist = false;
         }
         if (descTagExist == false) {
+            //Look in the "define game" block:
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "description ")) {
                     descLine = this.GetEverythingAfter(this._lines[i], "description ");
                     descTagExist = true;
                     if (Left(descLine, 1) == "<") {
                         descLine = this.GetParameter(descLine, ctx);
-                        descType = 0 /* Text */;
-                    } else {
-                        descType = 1 /* Script */;
+                        descType = TextActionType.Text;
+                    }
+                    else {
+                        descType = TextActionType.Script;
                     }
                     i = gameBlock.EndLine;
                 }
@@ -7904,24 +8380,25 @@ var LegacyGame = (function () {
         }
         if (!noPrint) {
             if (descTagExist == false) {
-                //Remove final vbCrLf:
-                roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
+                //Remove final \n
+                roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 1);
                 this.Print(roomDisplayText, ctx);
                 if (doorwayString != "") {
                     this.Print(doorwayString, ctx);
                 }
-            } else {
+            }
+            else {
                 //execute description tag:
                 //If no script, just print the tag's parameter.
                 //Otherwise, execute it as ASL script:
-                if (descType == 0 /* Text */) {
+                if (descType == TextActionType.Text) {
                     this.Print(descLine, ctx);
-                } else {
+                }
+                else {
                     this.ExecuteScript(descLine, ctx);
                 }
             }
             this.UpdateObjectList(ctx);
-
             // SHOW "LOOK" DESCRIPTION **************************************************
             if (showLookText) {
                 if (lookDesc != "") {
@@ -7951,10 +8428,12 @@ var LegacyGame = (function () {
             if (InStr(type, "r") == 1) {
                 max = Val(Mid(type, Len(type) - 1));
                 m = 1;
-            } else if (InStr(type, "r") == Len(type)) {
+            }
+            else if (InStr(type, "r") == Len(type)) {
                 min = Val(Left(type, Len(type) - 1));
                 m = 2;
-            } else {
+            }
+            else {
                 min = Val(Left(type, InStr(type, "r") - 1));
                 max = Val(Mid(type, InStr(type, "r") + 1));
                 m = 3;
@@ -7972,13 +8451,16 @@ var LegacyGame = (function () {
         var display;
         if (this._collectables[id].Display == "<def>") {
             display = "You have " + Trim(Str(this._collectables[id].Value)) + " " + this._collectables[id].Name;
-        } else if (this._collectables[id].Display == "") {
+        }
+        else if (this._collectables[id].Display == "") {
             display = "<null>";
-        } else {
+        }
+        else {
             var ep = InStr(this._collectables[id].Display, "!");
             if (ep == 0) {
                 display = this._collectables[id].Display;
-            } else {
+            }
+            else {
                 var firstBit = Left(this._collectables[id].Display, ep - 1);
                 var nextBit = Right(this._collectables[id].Display, Len(this._collectables[id].Display) - ep);
                 display = firstBit + Trim(Str(this._collectables[id].Value)) + nextBit;
@@ -7991,7 +8473,8 @@ var LegacyGame = (function () {
                 var betweenStar = Mid(display, firstStarPos + 1, (secondStarPos - firstStarPos) - 1);
                 if (this._collectables[id].Value != 1) {
                     display = beforeStar + betweenStar + afterStar;
-                } else {
+                }
+                else {
                     display = beforeStar + afterStar;
                 }
             }
@@ -8011,19 +8494,19 @@ var LegacyGame = (function () {
             if (this._gameAslVersion >= 392) {
                 // Convert string variables etc.
                 this.Print(this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
-            } else {
+            }
+            else {
                 this.Print(this._lines[i], ctx);
             }
         }
         this.Print("", ctx);
     };
-
     // Returns true if the system is ready to process a new command after completion - so it will be
     // in most cases, except when ExecCommand just caused an "enter" script command to complete
     LegacyGame.prototype.ExecCommand = function (input, ctx, echo, runUserCommand, dontSetIt) {
-        if (typeof echo === "undefined") { echo = true; }
-        if (typeof runUserCommand === "undefined") { runUserCommand = true; }
-        if (typeof dontSetIt === "undefined") { dontSetIt = false; }
+        if (echo === void 0) { echo = true; }
+        if (runUserCommand === void 0) { runUserCommand = true; }
+        if (dontSetIt === void 0) { dontSetIt = false; }
         var parameter;
         var skipAfterTurn = false;
         input = this.RemoveFormatting(input);
@@ -8039,7 +8522,6 @@ var LegacyGame = (function () {
             // so put input into previously specified variable
             // and exit:
             this.SetStringContents(this._commandOverrideVariable, input, ctx);
-            System.Threading.Monitor.PulseAll(this._commandLock);
             return false;
         }
         var userCommandReturn;
@@ -8049,7 +8531,7 @@ var LegacyGame = (function () {
         input = LCase(input);
         this.SetStringContents("quest.originalcommand", input, ctx);
         var newCommand = " " + input + " ";
-
+        // Convert synonyms:
         for (var i = 1; i <= this._numberSynonyms; i++) {
             var cp = 1;
             var n;
@@ -8059,24 +8541,22 @@ var LegacyGame = (function () {
                     newCommand = Left(newCommand, n - 1) + " " + this._synonyms[i].ConvertTo + " " + Mid(newCommand, n + Len(this._synonyms[i].OriginalWord) + 2);
                     cp = n + 1;
                 }
-            } while(!(n == 0));
+            } while (!(n == 0));
         }
-
         //strip starting and ending spaces
         input = Mid(newCommand, 2, Len(newCommand) - 2);
         this.SetStringContents("quest.command", input, ctx);
-
         // Execute any "beforeturn" script:
         var newCtx = this.CopyContext(ctx);
         var globalOverride = false;
-
         // RoomID is 0 if there are no rooms in the game. Unlikely, but we get an RTE otherwise.
         if (roomID != 0) {
             if (this._rooms[roomID].BeforeTurnScript != "") {
                 if (this.BeginsWith(this._rooms[roomID].BeforeTurnScript, "override")) {
                     this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].BeforeTurnScript, "override"), newCtx);
                     globalOverride = true;
-                } else {
+                }
+                else {
                     this.ExecuteScript(this._rooms[roomID].BeforeTurnScript, newCtx);
                 }
             }
@@ -8084,7 +8564,6 @@ var LegacyGame = (function () {
         if (this._beforeTurnScript != "" && globalOverride == false) {
             this.ExecuteScript(this._beforeTurnScript, newCtx);
         }
-
         // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
         // in which case we don't process the command.
         if (!newCtx.DontProcessCommand) {
@@ -8105,7 +8584,8 @@ var LegacyGame = (function () {
                 }
             }
             input = LCase(input);
-        } else {
+        }
+        else {
             // Set the UserCommand flag to fudge not processing any more commands
             userCommandReturn = true;
         }
@@ -8114,16 +8594,20 @@ var LegacyGame = (function () {
             if (this.CmdStartsWith(input, "speak to ")) {
                 parameter = this.GetEverythingAfter(input, "speak to ");
                 this.ExecSpeak(parameter, ctx);
-            } else if (this.CmdStartsWith(input, "talk to ")) {
+            }
+            else if (this.CmdStartsWith(input, "talk to ")) {
                 parameter = this.GetEverythingAfter(input, "talk to ");
                 this.ExecSpeak(parameter, ctx);
-            } else if (cmd == "exit" || cmd == "out" || cmd == "leave") {
+            }
+            else if (cmd == "exit" || cmd == "out" || cmd == "leave") {
                 this.GoDirection("out", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "north" || cmd == "south" || cmd == "east" || cmd == "west") {
+            }
+            else if (cmd == "north" || cmd == "south" || cmd == "east" || cmd == "west") {
                 this.GoDirection(input, ctx);
                 this._lastIt = 0;
-            } else if (cmd == "n" || cmd == "s" || cmd == "w" || cmd == "e") {
+            }
+            else if (cmd == "n" || cmd == "s" || cmd == "w" || cmd == "e") {
                 switch (InStr("nswe", cmd)) {
                     case 1:
                         this.GoDirection("north", ctx);
@@ -8135,106 +8619,143 @@ var LegacyGame = (function () {
                         this.GoDirection("east", ctx);
                 }
                 this._lastIt = 0;
-            } else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
+            }
+            else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
                 this.GoDirection("northeast", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "nw" || cmd == "northwest" || cmd == "north-west" || cmd == "north west" || cmd == "go nw" || cmd == "go northwest" || cmd == "go north-west" || cmd == "go north west") {
+            }
+            else if (cmd == "nw" || cmd == "northwest" || cmd == "north-west" || cmd == "north west" || cmd == "go nw" || cmd == "go northwest" || cmd == "go north-west" || cmd == "go north west") {
                 this.GoDirection("northwest", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "se" || cmd == "southeast" || cmd == "south-east" || cmd == "south east" || cmd == "go se" || cmd == "go southeast" || cmd == "go south-east" || cmd == "go south east") {
+            }
+            else if (cmd == "se" || cmd == "southeast" || cmd == "south-east" || cmd == "south east" || cmd == "go se" || cmd == "go southeast" || cmd == "go south-east" || cmd == "go south east") {
                 this.GoDirection("southeast", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "sw" || cmd == "southwest" || cmd == "south-west" || cmd == "south west" || cmd == "go sw" || cmd == "go southwest" || cmd == "go south-west" || cmd == "go south west") {
+            }
+            else if (cmd == "sw" || cmd == "southwest" || cmd == "south-west" || cmd == "south west" || cmd == "go sw" || cmd == "go southwest" || cmd == "go south-west" || cmd == "go south west") {
                 this.GoDirection("southwest", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "up" || cmd == "u") {
+            }
+            else if (cmd == "up" || cmd == "u") {
                 this.GoDirection("up", ctx);
                 this._lastIt = 0;
-            } else if (cmd == "down" || cmd == "d") {
+            }
+            else if (cmd == "down" || cmd == "d") {
                 this.GoDirection("down", ctx);
                 this._lastIt = 0;
-            } else if (this.CmdStartsWith(input, "go ")) {
+            }
+            else if (this.CmdStartsWith(input, "go ")) {
                 if (this._gameAslVersion >= 410) {
                     this._rooms[this.GetRoomID(this._currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
-                } else {
+                }
+                else {
                     parameter = this.GetEverythingAfter(input, "go ");
                     if (parameter == "out") {
                         this.GoDirection("out", ctx);
-                    } else if (parameter == "north" || parameter == "south" || parameter == "east" || parameter == "west" || parameter == "up" || parameter == "down") {
+                    }
+                    else if (parameter == "north" || parameter == "south" || parameter == "east" || parameter == "west" || parameter == "up" || parameter == "down") {
                         this.GoDirection(parameter, ctx);
-                    } else if (this.BeginsWith(parameter, "to ")) {
+                    }
+                    else if (this.BeginsWith(parameter, "to ")) {
                         parameter = this.GetEverythingAfter(parameter, "to ");
                         this.GoToPlace(parameter, ctx);
-                    } else {
-                        this.PlayerErrorMessage(1 /* BadGo */, ctx);
+                    }
+                    else {
+                        this.PlayerErrorMessage(PlayerError.BadGo, ctx);
                     }
                 }
                 this._lastIt = 0;
-            } else if (this.CmdStartsWith(input, "give ")) {
+            }
+            else if (this.CmdStartsWith(input, "give ")) {
                 parameter = this.GetEverythingAfter(input, "give ");
                 this.ExecGive(parameter, ctx);
-            } else if (this.CmdStartsWith(input, "take ")) {
+            }
+            else if (this.CmdStartsWith(input, "take ")) {
                 parameter = this.GetEverythingAfter(input, "take ");
                 this.ExecTake(parameter, ctx);
-            } else if (this.CmdStartsWith(input, "drop ") && this._gameAslVersion >= 280) {
+            }
+            else if (this.CmdStartsWith(input, "drop ") && this._gameAslVersion >= 280) {
                 parameter = this.GetEverythingAfter(input, "drop ");
                 this.ExecDrop(parameter, ctx);
-            } else if (this.CmdStartsWith(input, "get ")) {
+            }
+            else if (this.CmdStartsWith(input, "get ")) {
                 parameter = this.GetEverythingAfter(input, "get ");
                 this.ExecTake(parameter, ctx);
-            } else if (this.CmdStartsWith(input, "pick up ")) {
+            }
+            else if (this.CmdStartsWith(input, "pick up ")) {
                 parameter = this.GetEverythingAfter(input, "pick up ");
                 this.ExecTake(parameter, ctx);
-            } else if (cmd == "pick it up" || cmd == "pick them up" || cmd == "pick this up" || cmd == "pick that up" || cmd == "pick these up" || cmd == "pick those up" || cmd == "pick him up" || cmd == "pick her up") {
+            }
+            else if (cmd == "pick it up" || cmd == "pick them up" || cmd == "pick this up" || cmd == "pick that up" || cmd == "pick these up" || cmd == "pick those up" || cmd == "pick him up" || cmd == "pick her up") {
                 this.ExecTake(Mid(cmd, 6, InStr(7, cmd, " ") - 6), ctx);
-            } else if (this.CmdStartsWith(input, "look ")) {
+            }
+            else if (this.CmdStartsWith(input, "look ")) {
                 this.ExecLook(input, ctx);
-            } else if (this.CmdStartsWith(input, "l ")) {
+            }
+            else if (this.CmdStartsWith(input, "l ")) {
                 this.ExecLook("look " + this.GetEverythingAfter(input, "l "), ctx);
-            } else if (this.CmdStartsWith(input, "examine ") && this._gameAslVersion >= 280) {
+            }
+            else if (this.CmdStartsWith(input, "examine ") && this._gameAslVersion >= 280) {
                 this.ExecExamine(input, ctx);
-            } else if (this.CmdStartsWith(input, "x ") && this._gameAslVersion >= 280) {
+            }
+            else if (this.CmdStartsWith(input, "x ") && this._gameAslVersion >= 280) {
                 this.ExecExamine("examine " + this.GetEverythingAfter(input, "x "), ctx);
-            } else if (cmd == "l" || cmd == "look") {
+            }
+            else if (cmd == "l" || cmd == "look") {
                 this.ExecLook("look", ctx);
-            } else if (cmd == "x" || cmd == "examine") {
+            }
+            else if (cmd == "x" || cmd == "examine") {
                 this.ExecExamine("examine", ctx);
-            } else if (this.CmdStartsWith(input, "use ")) {
+            }
+            else if (this.CmdStartsWith(input, "use ")) {
                 this.ExecUse(input, ctx);
-            } else if (this.CmdStartsWith(input, "open ") && this._gameAslVersion >= 391) {
+            }
+            else if (this.CmdStartsWith(input, "open ") && this._gameAslVersion >= 391) {
                 this.ExecOpenClose(input, ctx);
-            } else if (this.CmdStartsWith(input, "close ") && this._gameAslVersion >= 391) {
+            }
+            else if (this.CmdStartsWith(input, "close ") && this._gameAslVersion >= 391) {
                 this.ExecOpenClose(input, ctx);
-            } else if (this.CmdStartsWith(input, "put ") && this._gameAslVersion >= 391) {
+            }
+            else if (this.CmdStartsWith(input, "put ") && this._gameAslVersion >= 391) {
                 this.ExecAddRemove(input, ctx);
-            } else if (this.CmdStartsWith(input, "add ") && this._gameAslVersion >= 391) {
+            }
+            else if (this.CmdStartsWith(input, "add ") && this._gameAslVersion >= 391) {
                 this.ExecAddRemove(input, ctx);
-            } else if (this.CmdStartsWith(input, "remove ") && this._gameAslVersion >= 391) {
+            }
+            else if (this.CmdStartsWith(input, "remove ") && this._gameAslVersion >= 391) {
                 this.ExecAddRemove(input, ctx);
-            } else if (cmd == "save") {
+            }
+            else if (cmd == "save") {
                 this._player.RequestSave(null);
-            } else if (cmd == "quit") {
+            }
+            else if (cmd == "quit") {
                 this.GameFinished();
-            } else if (this.BeginsWith(cmd, "help")) {
+            }
+            else if (this.BeginsWith(cmd, "help")) {
                 this.ShowHelp(ctx);
                 enteredHelpCommand = true;
-            } else if (cmd == "about") {
+            }
+            else if (cmd == "about") {
                 this.ShowGameAbout(ctx);
-            } else if (cmd == "clear") {
+            }
+            else if (cmd == "clear") {
                 this.DoClear();
-            } else if (cmd == "debug") {
+            }
+            else if (cmd == "debug") {
                 // TO DO: This is temporary, would be better to have a log viewer built in to Player
                 this._log.forEach(function (logEntry) {
                     this.Print(logEntry, ctx);
                 }, this);
-            } else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
+            }
+            else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
                 if (this._gameAslVersion >= 280) {
                     for (var i = 1; i <= this._numberObjs; i++) {
                         if (this._objs[i].ContainerRoom == "inventory" && this._objs[i].Exists && this._objs[i].Visible) {
                             invList = invList + this._objs[i].Prefix;
                             if (this._objs[i].ObjectAlias == "") {
                                 invList = invList + "|b" + this._objs[i].ObjectName + "|xb";
-                            } else {
+                            }
+                            else {
                                 invList = invList + "|b" + this._objs[i].ObjectAlias + "|xb";
                             }
                             if (this._objs[i].Suffix != "") {
@@ -8243,7 +8764,8 @@ var LegacyGame = (function () {
                             invList = invList + ", ";
                         }
                     }
-                } else {
+                }
+                else {
                     for (var j = 1; j <= this._numberItems; j++) {
                         if (this._items[j].Got == true) {
                             invList = invList + this._items[j].Name + ", ";
@@ -8262,20 +8784,24 @@ var LegacyGame = (function () {
                             lastComma = thisComma;
                             pos = thisComma + 1;
                         }
-                    } while(!(thisComma == 0));
+                    } while (!(thisComma == 0));
                     if (lastComma != 0) {
                         invList = Left(invList, lastComma - 1) + " and" + Mid(invList, lastComma + 1);
                     }
                     this.Print("You are carrying:|n" + invList + ".", ctx);
-                } else {
+                }
+                else {
                     this.Print("You are not carrying anything.", ctx);
                 }
-            } else if (this.CmdStartsWith(input, "oops ")) {
+            }
+            else if (this.CmdStartsWith(input, "oops ")) {
                 this.ExecOops(this.GetEverythingAfter(input, "oops "), ctx);
-            } else if (this.CmdStartsWith(input, "the ")) {
+            }
+            else if (this.CmdStartsWith(input, "the ")) {
                 this.ExecOops(this.GetEverythingAfter(input, "the "), ctx);
-            } else {
-                this.PlayerErrorMessage(0 /* BadCommand */, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadCommand, ctx);
             }
         }
         if (!skipAfterTurn) {
@@ -8286,12 +8812,12 @@ var LegacyGame = (function () {
                     if (this.BeginsWith(this._rooms[roomID].AfterTurnScript, "override")) {
                         this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].AfterTurnScript, "override"), ctx);
                         globalOverride = true;
-                    } else {
+                    }
+                    else {
                         this.ExecuteScript(this._rooms[roomID].AfterTurnScript, ctx);
                     }
                 }
             }
-
             // was set to NullThread here for some reason
             if (this._afterTurnScript != "" && globalOverride == false) {
                 this.ExecuteScript(this._afterTurnScript, ctx);
@@ -8327,36 +8853,41 @@ var LegacyGame = (function () {
         if (toPos == 0) {
             toPos = InStr(giveString, " the ");
             if (toPos == 0) {
-                this.PlayerErrorMessage(2 /* BadGive */, ctx);
+                this.PlayerErrorMessage(PlayerError.BadGive, ctx);
                 return;
-            } else {
+            }
+            else {
                 item = Trim(Mid(giveString, toPos + 4, Len(giveString) - (toPos + 2)));
                 character = Trim(Mid(giveString, 1, toPos));
             }
-        } else {
+        }
+        else {
             item = Trim(Mid(giveString, 1, toPos));
             character = Trim(Mid(giveString, toPos + 3, Len(giveString) - (toPos + 2)));
         }
         if (this._gameAslVersion >= 281) {
-            type = 1 /* Object */;
-        } else {
-            type = 0 /* Character */;
+            type = Thing.Object;
         }
-
+        else {
+            type = Thing.Character;
+        }
         // First see if player has "ItemToGive":
         if (this._gameAslVersion >= 280) {
             id = this.Disambiguate(item, "inventory", ctx);
             if (id == -1) {
-                this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 this._badCmdBefore = "give";
                 this._badCmdAfter = "to " + character;
                 return;
-            } else if (id == -2) {
+            }
+            else if (id == -2) {
                 return;
-            } else {
+            }
+            else {
                 article = this._objs[id].Article;
             }
-        } else {
+        }
+        else {
             // ASL2:
             var notGot = true;
             for (var i = 1; i <= this._numberItems; i++) {
@@ -8364,15 +8895,17 @@ var LegacyGame = (function () {
                     if (this._items[i].Got == false) {
                         notGot = true;
                         i = this._numberItems;
-                    } else {
+                    }
+                    else {
                         notGot = false;
                     }
                 }
             }
             if (notGot == true) {
-                this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
-            } else {
+            }
+            else {
                 article = this._objs[id].Article;
             }
         }
@@ -8385,18 +8918,17 @@ var LegacyGame = (function () {
             }
             if (!foundObject) {
                 if (giveToId != -2) {
-                    this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 }
                 this._badCmdBefore = "give " + item + " to";
                 return;
             }
-
             //Find appropriate give script ****
             //now, for "give a to b", we have
             //ItemID=a and GiveToObjectID=b
             var o = this._objs[giveToId];
             for (var i = 1; i <= o.NumberGiveData; i++) {
-                if (o.GiveData[i].GiveType == 1 /* GiveSomethingTo */ && LCase(o.GiveData[i].GiveObject) == LCase(this._objs[id].ObjectName)) {
+                if (o.GiveData[i].GiveType == GiveType.GiveSomethingTo && LCase(o.GiveData[i].GiveObject) == LCase(this._objs[id].ObjectName)) {
                     foundScript = true;
                     script = o.GiveData[i].GiveScript;
                     break;
@@ -8406,7 +8938,7 @@ var LegacyGame = (function () {
                 //check a for give to <b>:
                 var g = this._objs[id];
                 for (var i = 1; i <= g.NumberGiveData; i++) {
-                    if (g.GiveData[i].GiveType == 0 /* GiveToSomething */ && LCase(g.GiveData[i].GiveObject) == LCase(this._objs[giveToId].ObjectName)) {
+                    if (g.GiveData[i].GiveType == GiveType.GiveToSomething && LCase(g.GiveData[i].GiveObject) == LCase(this._objs[giveToId].ObjectName)) {
                         foundScript = true;
                         script = g.GiveData[i].GiveScript;
                         break;
@@ -8431,23 +8963,24 @@ var LegacyGame = (function () {
             }
             if (foundScript) {
                 this.ExecuteScript(script, ctx, id);
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.error.charactername", this._objs[giveToId].ObjectName, ctx);
                 var gender = Trim(this._objs[giveToId].Gender);
                 gender = UCase(Left(gender, 1)) + Mid(gender, 2);
                 this.SetStringContents("quest.error.gender", gender, ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
-                this.PlayerErrorMessage(5 /* ItemUnwanted */, ctx);
+                this.PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
             }
-        } else {
+        }
+        else {
             // ASL2:
             var block = this.GetThingBlock(character, this._currentRoom, type);
             if ((block.StartLine == 0 && block.EndLine == 0) || this.IsAvailable(character + "@" + this._currentRoom, type, ctx) == false) {
-                this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
+                this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 return;
             }
             var realName = this._chars[this.GetThingNumber(character, this._currentRoom, type)].ObjectName;
-
             // now, see if there's a give statement for this item in
             // this characters definition:
             var giveLine = 0;
@@ -8466,10 +8999,9 @@ var LegacyGame = (function () {
                 this.SetStringContents("quest.error.charactername", realName, ctx);
                 this.SetStringContents("quest.error.gender", Trim(this.GetGender(character, true, ctx)), ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
-                this.PlayerErrorMessage(5 /* ItemUnwanted */, ctx);
+                this.PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
                 return;
             }
-
             // now, execute the statement on GiveLine
             this.ExecuteScript(this.GetSecondChunk(this._lines[giveLine]), ctx);
         }
@@ -8478,24 +9010,31 @@ var LegacyGame = (function () {
         var item;
         if (Trim(lookLine) == "look") {
             this.ShowRoomInfo((this._currentRoom), ctx);
-        } else {
+        }
+        else {
             if (this._gameAslVersion < 391) {
                 var atPos = InStr(lookLine, " at ");
                 if (atPos == 0) {
                     item = this.GetEverythingAfter(lookLine, "look ");
-                } else {
+                }
+                else {
                     item = Trim(Mid(lookLine, atPos + 4));
                 }
-            } else {
+            }
+            else {
                 if (this.BeginsWith(lookLine, "look at ")) {
                     item = this.GetEverythingAfter(lookLine, "look at ");
-                } else if (this.BeginsWith(lookLine, "look in ")) {
+                }
+                else if (this.BeginsWith(lookLine, "look in ")) {
                     item = this.GetEverythingAfter(lookLine, "look in ");
-                } else if (this.BeginsWith(lookLine, "look on ")) {
+                }
+                else if (this.BeginsWith(lookLine, "look on ")) {
                     item = this.GetEverythingAfter(lookLine, "look on ");
-                } else if (this.BeginsWith(lookLine, "look inside ")) {
+                }
+                else if (this.BeginsWith(lookLine, "look inside ")) {
                     item = this.GetEverythingAfter(lookLine, "look inside ");
-                } else {
+                }
+                else {
                     item = this.GetEverythingAfter(lookLine, "look ");
                 }
             }
@@ -8503,46 +9042,50 @@ var LegacyGame = (function () {
                 var id = this.Disambiguate(item, "inventory;" + this._currentRoom, ctx);
                 if (id <= 0) {
                     if (id != -2) {
-                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
                     this._badCmdBefore = "look at";
                     return;
                 }
                 this.DoLook(id, ctx);
-            } else {
+            }
+            else {
                 if (this.BeginsWith(item, "the ")) {
                     item = this.GetEverythingAfter(item, "the ");
                 }
                 lookLine = this.RetrLine("object", item, "look", ctx);
                 if (lookLine != "<unfound>") {
                     //Check for availability
-                    if (this.IsAvailable(item, 1 /* Object */, ctx) == false) {
+                    if (this.IsAvailable(item, Thing.Object, ctx) == false) {
                         lookLine = "<unfound>";
                     }
                 }
                 if (lookLine == "<unfound>") {
                     lookLine = this.RetrLine("character", item, "look", ctx);
                     if (lookLine != "<unfound>") {
-                        if (this.IsAvailable(item, 0 /* Character */, ctx) == false) {
+                        if (this.IsAvailable(item, Thing.Character, ctx) == false) {
                             lookLine = "<unfound>";
                         }
                     }
                     if (lookLine == "<unfound>") {
-                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                        return;
-                    } else if (lookLine == "<undefined>") {
-                        this.PlayerErrorMessage(8 /* DefaultLook */, ctx);
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                         return;
                     }
-                } else if (lookLine == "<undefined>") {
-                    this.PlayerErrorMessage(8 /* DefaultLook */, ctx);
+                    else if (lookLine == "<undefined>") {
+                        this.PlayerErrorMessage(PlayerError.DefaultLook, ctx);
+                        return;
+                    }
+                }
+                else if (lookLine == "<undefined>") {
+                    this.PlayerErrorMessage(PlayerError.DefaultLook, ctx);
                     return;
                 }
                 var lookData = Trim(this.GetEverythingAfter(Trim(lookLine), "look "));
                 if (Left(lookData, 1) == "<") {
                     var LookText = this.GetParameter(lookLine, ctx);
                     this.Print(LookText, ctx);
-                } else {
+                }
+                else {
                     this.ExecuteScript(lookData, ctx);
                 }
             }
@@ -8553,7 +9096,6 @@ var LegacyGame = (function () {
             cmd = this.GetEverythingAfter(cmd, "the ");
         }
         var name = cmd;
-
         // if the "speak" parameter of the character c$'s definition
         // is just a parameter, say it - otherwise execute it as
         // a script.
@@ -8562,13 +9104,12 @@ var LegacyGame = (function () {
             var ObjID = this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
             if (ObjID <= 0) {
                 if (ObjID != -2) {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 this._badCmdBefore = "speak to";
                 return;
             }
             var foundSpeak = false;
-
             // First look for action, then look
             // for property, then check define
             // section:
@@ -8589,7 +9130,6 @@ var LegacyGame = (function () {
                     }
                 }
             }
-
             // For some reason ASL3 < 311 looks for a "look" tag rather than
             // having had this set up at initialisation.
             if (this._gameAslVersion < 311 && !foundSpeak) {
@@ -8602,7 +9142,7 @@ var LegacyGame = (function () {
             }
             if (!foundSpeak) {
                 this.SetStringContents("quest.error.gender", UCase(Left(this._objs[ObjID].Gender, 1)) + Mid(this._objs[ObjID].Gender, 2), ctx);
-                this.PlayerErrorMessage(9 /* DefaultSpeak */, ctx);
+                this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
                 return;
             }
             speakLine = this.GetEverythingAfter(speakLine, "speak ");
@@ -8610,15 +9150,18 @@ var LegacyGame = (function () {
                 var text = this.GetParameter(speakLine, ctx);
                 if (this._gameAslVersion >= 350) {
                     this.Print(text, ctx);
-                } else {
+                }
+                else {
                     this.Print(Chr(34) + text + Chr(34), ctx);
                 }
-            } else {
+            }
+            else {
                 this.ExecuteScript(speakLine, ctx, ObjID);
             }
-        } else {
+        }
+        else {
             var line = this.RetrLine("character", cmd, "speak", ctx);
-            var type = 0 /* Character */;
+            var type = Thing.Character;
             var data = Trim(this.GetEverythingAfter(Trim(line), "speak "));
             if (line != "<unfound>" && line != "<undefined>") {
                 // Character exists; but is it available??
@@ -8627,15 +9170,18 @@ var LegacyGame = (function () {
                 }
             }
             if (line == "<undefined>") {
-                this.PlayerErrorMessage(3 /* BadCharacter */, ctx);
-            } else if (line == "<unfound>") {
+                this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
+            }
+            else if (line == "<unfound>") {
                 this.SetStringContents("quest.error.gender", Trim(this.GetGender(cmd, true, ctx)), ctx);
                 this.SetStringContents("quest.error.charactername", cmd, ctx);
-                this.PlayerErrorMessage(9 /* DefaultSpeak */, ctx);
-            } else if (this.BeginsWith(data, "<")) {
+                this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
+            }
+            else if (this.BeginsWith(data, "<")) {
                 data = this.GetParameter(line, ctx);
                 this.Print(Chr(34) + data + Chr(34), ctx);
-            } else {
+            }
+            else {
                 this.ExecuteScript(data, ctx);
             }
         }
@@ -8648,7 +9194,8 @@ var LegacyGame = (function () {
         var id = this.Disambiguate(item, this._currentRoom, ctx);
         if (id < 0) {
             foundItem = false;
-        } else {
+        }
+        else {
             foundItem = true;
         }
         if (!foundItem) {
@@ -8657,26 +9204,30 @@ var LegacyGame = (function () {
                     id = this.Disambiguate(item, "inventory", ctx);
                     if (id >= 0) {
                         // Player already has this item
-                        this.PlayerErrorMessage(37 /* AlreadyTaken */, ctx);
-                    } else {
-                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                        this.PlayerErrorMessage(PlayerError.AlreadyTaken, ctx);
                     }
-                } else if (this._gameAslVersion >= 391) {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                } else {
-                    this.PlayerErrorMessage(10 /* BadItem */, ctx);
+                    else {
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    }
+                }
+                else if (this._gameAslVersion >= 391) {
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
+                else {
+                    this.PlayerErrorMessage(PlayerError.BadItem, ctx);
                 }
             }
             this._badCmdBefore = "take";
             return;
-        } else {
+        }
+        else {
             this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
         }
         var isInContainer = false;
         if (this._gameAslVersion >= 391) {
             var canAccessObject = this.PlayerCanAccessObject(id);
             if (!canAccessObject.CanAccessObject) {
-                this.PlayerErrorMessage_ExtendInfo(18 /* BadTake */, ctx, canAccessObject.ErrorMsg);
+                this.PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, canAccessObject.ErrorMsg);
                 return;
             }
             var parent = this.GetObjectProperty("parent", id, false, false);
@@ -8684,16 +9235,16 @@ var LegacyGame = (function () {
         }
         if (this._gameAslVersion >= 280) {
             var t = this._objs[id].Take;
-            if (isInContainer && (t.Type == 3 /* Default */ || t.Type == 0 /* Text */)) {
+            if (isInContainer && (t.Type == TextActionType.Default || t.Type == TextActionType.Text)) {
                 // So, we want to take an object that's in a container or surface. So first
                 // we have to remove the object from that container.
                 if (this._objs[parentID].ObjectAlias != "") {
                     parentDisplayName = this._objs[parentID].ObjectAlias;
-                } else {
+                }
+                else {
                     parentDisplayName = this._objs[parentID].ObjectName;
                 }
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
-
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
@@ -8702,18 +9253,23 @@ var LegacyGame = (function () {
                     return;
                 }
             }
-            if (t.Type == 3 /* Default */) {
-                this.PlayerErrorMessage(11 /* DefaultTake */, ctx);
+            if (t.Type == TextActionType.Default) {
+                this.PlayerErrorMessage(PlayerError.DefaultTake, ctx);
                 this.PlayerItem(item, true, ctx, id);
-            } else if (t.Type == 0 /* Text */) {
+            }
+            else if (t.Type == TextActionType.Text) {
                 this.Print(t.Data, ctx);
                 this.PlayerItem(item, true, ctx, id);
-            } else if (t.Type == 1 /* Script */) {
-                this.ExecuteScript(t.Data, ctx, id);
-            } else {
-                this.PlayerErrorMessage(18 /* BadTake */, ctx);
             }
-        } else {
+            else if (t.Type == TextActionType.Script) {
+                this.ExecuteScript(t.Data, ctx, id);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadTake, ctx);
+            }
+        }
+        else {
+            // find 'take' line
             for (var i = this._objs[id].DefinitionSectionStart + 1; i <= this._objs[id].DefinitionSectionEnd - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "take")) {
                     var script = Trim(this.GetEverythingAfter(Trim(this._lines[i]), "take"));
@@ -8723,7 +9279,7 @@ var LegacyGame = (function () {
                 }
             }
             if (!foundTake) {
-                this.PlayerErrorMessage(18 /* BadTake */, ctx);
+                this.PlayerErrorMessage(PlayerError.BadTake, ctx);
             }
         }
     };
@@ -8739,17 +9295,18 @@ var LegacyGame = (function () {
         if (onWithPos == 0) {
             onWithPos = InStr(useLine, " with ");
             endOnWith = onWithPos + 4;
-        } else {
+        }
+        else {
             endOnWith = onWithPos + 2;
         }
         if (onWithPos != 0) {
             useOn = Trim(Right(useLine, Len(useLine) - endOnWith));
             useItem = Trim(Left(useLine, onWithPos - 1));
-        } else {
+        }
+        else {
             useOn = "";
             useItem = useLine;
         }
-
         // see if player has this item:
         var id;
         var notGotItem;
@@ -8761,30 +9318,33 @@ var LegacyGame = (function () {
             }
             if (!foundItem) {
                 if (id != -2) {
-                    this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                    this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
                 if (useOn == "") {
                     this._badCmdBefore = "use";
-                } else {
+                }
+                else {
                     this._badCmdBefore = "use";
                     this._badCmdAfter = "on " + useOn;
                 }
                 return;
             }
-        } else {
+        }
+        else {
             notGotItem = true;
             for (var i = 1; i <= this._numberItems; i++) {
                 if (LCase(this._items[i].Name) == LCase(useItem)) {
                     if (this._items[i].Got == false) {
                         notGotItem = true;
                         i = this._numberItems;
-                    } else {
+                    }
+                    else {
                         notGotItem = false;
                     }
                 }
             }
             if (notGotItem == true) {
-                this.PlayerErrorMessage(4 /* NoItem */, ctx);
+                this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             }
         }
@@ -8812,12 +9372,14 @@ var LegacyGame = (function () {
                         foundUseScript = true;
                     }
                 }
-            } else {
+            }
+            else {
                 foundUseOnObject = false;
                 useOnObjectId = this.Disambiguate(useOn, this._currentRoom, ctx);
                 if (useOnObjectId > 0) {
                     foundUseOnObject = true;
-                } else {
+                }
+                else {
                     useOnObjectId = this.Disambiguate(useOn, "inventory", ctx);
                     if (useOnObjectId > 0) {
                         foundUseOnObject = true;
@@ -8825,18 +9387,17 @@ var LegacyGame = (function () {
                 }
                 if (!foundUseOnObject) {
                     if (useOnObjectId != -2) {
-                        this.PlayerErrorMessage(7 /* BadThing */, ctx);
+                        this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
                     this._badCmdBefore = "use " + useItem + " on";
                     return;
                 }
-
                 //now, for "use a on b", we have
                 //ItemID=a and UseOnObjectID=b
                 //first check b for use <a>:
                 var o = this._objs[useOnObjectId];
                 for (var i = 1; i <= o.NumberUseData; i++) {
-                    if (o.UseData[i].UseType == 1 /* UseSomethingOn */ && LCase(o.UseData[i].UseObject) == LCase(this._objs[id].ObjectName)) {
+                    if (o.UseData[i].UseType == UseType.UseSomethingOn && LCase(o.UseData[i].UseObject) == LCase(this._objs[id].ObjectName)) {
                         foundUseScript = true;
                         useScript = o.UseData[i].UseScript;
                         break;
@@ -8846,7 +9407,7 @@ var LegacyGame = (function () {
                     //check a for use on <b>:
                     var u = this._objs[id];
                     for (var i = 1; i <= u.NumberUseData; i++) {
-                        if (u.UseData[i].UseType == 0 /* UseOnSomething */ && LCase(u.UseData[i].UseObject) == LCase(this._objs[useOnObjectId].ObjectName)) {
+                        if (u.UseData[i].UseType == UseType.UseOnSomething && LCase(u.UseData[i].UseObject) == LCase(this._objs[useOnObjectId].ObjectName)) {
                             foundUseScript = true;
                             useScript = u.UseData[i].UseScript;
                             break;
@@ -8872,13 +9433,16 @@ var LegacyGame = (function () {
             }
             if (foundUseScript) {
                 this.ExecuteScript(useScript, ctx, id);
-            } else {
-                this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
             }
-        } else {
+            else {
+                this.PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+            }
+        }
+        else {
             if (useOn != "") {
                 useDeclareLine = this.RetrLineParam("object", useOn, "use", useItem, ctx);
-            } else {
+            }
+            else {
                 found = false;
                 for (var i = 1; i <= this._rooms[roomId].NumberUse; i++) {
                     if (LCase(this._rooms[roomId].Use[i].Text) == LCase(useItem)) {
@@ -8891,13 +9455,13 @@ var LegacyGame = (function () {
                     useDeclareLine = this.FindLine(this.GetDefineBlock("game"), "use", useItem);
                 }
                 if (!found && useDeclareLine == "") {
-                    this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
+                    this.PlayerErrorMessage(PlayerError.DefaultUse, ctx);
                     return;
                 }
             }
             if (useDeclareLine != "<unfound>" && useDeclareLine != "<undefined>" && useOn != "") {
                 //Check for object availablity
-                if (this.IsAvailable(useOn, 1 /* Object */, ctx) == false) {
+                if (this.IsAvailable(useOn, Thing.Object, ctx) == false) {
                     useDeclareLine = "<undefined>";
                 }
             }
@@ -8905,19 +9469,21 @@ var LegacyGame = (function () {
                 useDeclareLine = this.RetrLineParam("character", useOn, "use", useItem, ctx);
                 if (useDeclareLine != "<undefined>") {
                     //Check for character availability
-                    if (this.IsAvailable(useOn, 0 /* Character */, ctx) == false) {
+                    if (this.IsAvailable(useOn, Thing.Character, ctx) == false) {
                         useDeclareLine = "<undefined>";
                     }
                 }
                 if (useDeclareLine == "<undefined>") {
-                    this.PlayerErrorMessage(7 /* BadThing */, ctx);
-                    return;
-                } else if (useDeclareLine == "<unfound>") {
-                    this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
+                    this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                     return;
                 }
-            } else if (useDeclareLine == "<unfound>") {
-                this.PlayerErrorMessage(13 /* DefaultUse */, ctx);
+                else if (useDeclareLine == "<unfound>") {
+                    this.PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+                    return;
+                }
+            }
+            else if (useDeclareLine == "<unfound>") {
+                this.PlayerErrorMessage(PlayerError.DefaultUse, ctx);
                 return;
             }
             var script = Right(useDeclareLine, Len(useDeclareLine) - InStr(useDeclareLine, ">"));
@@ -8925,7 +9491,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ObjectActionUpdate = function (id, name, script, noUpdate) {
-        if (typeof noUpdate === "undefined") { noUpdate = false; }
+        if (noUpdate === void 0) { noUpdate = false; }
         var objectName;
         var sp;
         var ep;
@@ -8933,14 +9499,18 @@ var LegacyGame = (function () {
         if (!noUpdate) {
             if (name == "take") {
                 this._objs[id].Take.Data = script;
-                this._objs[id].Take.Type = 1 /* Script */;
-            } else if (name == "use") {
+                this._objs[id].Take.Type = TextActionType.Script;
+            }
+            else if (name == "use") {
                 this.AddToUseInfo(id, script);
-            } else if (name == "gain") {
+            }
+            else if (name == "gain") {
                 this._objs[id].GainScript = script;
-            } else if (name == "lose") {
+            }
+            else if (name == "lose") {
                 this._objs[id].LoseScript = script;
-            } else if (this.BeginsWith(name, "use ")) {
+            }
+            else if (this.BeginsWith(name, "use ")) {
                 name = this.GetEverythingAfter(name, "use ");
                 if (InStr(name, "'") > 0) {
                     sp = InStr(name, "'");
@@ -8951,10 +9521,12 @@ var LegacyGame = (function () {
                     }
                     objectName = Mid(name, sp + 1, ep - sp - 1);
                     this.AddToUseInfo(id, Trim(Left(name, sp - 1)) + " <" + objectName + "> " + script);
-                } else {
+                }
+                else {
                     this.AddToUseInfo(id, name + " " + script);
                 }
-            } else if (this.BeginsWith(name, "give ")) {
+            }
+            else if (this.BeginsWith(name, "give ")) {
                 name = this.GetEverythingAfter(name, "give ");
                 if (InStr(name, "'") > 0) {
                     sp = InStr(name, "'");
@@ -8965,13 +9537,14 @@ var LegacyGame = (function () {
                     }
                     objectName = Mid(name, sp + 1, ep - sp - 1);
                     this.AddToGiveInfo(id, Trim(Left(name, sp - 1)) + " <" + objectName + "> " + script);
-                } else {
+                }
+                else {
                     this.AddToGiveInfo(id, name + " " + script);
                 }
             }
         }
         if (this._gameFullyLoaded) {
-            this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "action <" + name + "> " + script);
+            this.AddToObjectChangeLog(AppliesTo.Object, this._objs[id].ObjectName, name, "action <" + name + "> " + script);
         }
     };
     LegacyGame.prototype.ExecuteIf = function (scriptLine, ctx) {
@@ -8980,7 +9553,7 @@ var LegacyGame = (function () {
         var thenPos = InStr(obscuredLine, "then");
         if (thenPos == 0) {
             var errMsg = "Expected 'then' missing from script statement '" + this.ReportErrorLine(scriptLine) + "' - statement bypassed.";
-            this.LogASLError(errMsg, 2 /* WarningError */);
+            this.LogASLError(errMsg, LogType.WarningError);
             return;
         }
         var conditions = Trim(Left(ifLine, thenPos - 1));
@@ -8989,7 +9562,8 @@ var LegacyGame = (function () {
         var thenEndPos;
         if (elsePos == 0) {
             thenEndPos = Len(obscuredLine) + 1;
-        } else {
+        }
+        else {
             thenEndPos = elsePos - 1;
         }
         var thenScript = Trim(Mid(ifLine, thenPos, thenEndPos - thenPos));
@@ -8997,7 +9571,6 @@ var LegacyGame = (function () {
         if (elsePos != 0) {
             elseScript = Trim(Right(ifLine, Len(ifLine) - (thenEndPos + 4)));
         }
-
         // Remove braces from around "then" and "else" script
         // commands, if present
         if (Left(thenScript, 1) == "{" && Right(thenScript, 1) == "}") {
@@ -9008,36 +9581,37 @@ var LegacyGame = (function () {
         }
         if (this.ExecuteConditions(conditions, ctx)) {
             this.ExecuteScript((thenScript), ctx);
-        } else {
+        }
+        else {
             if (elsePos != 0) {
                 this.ExecuteScript((elseScript), ctx);
             }
         }
     };
     LegacyGame.prototype.ExecuteScript = function (scriptLine, ctx, newCallingObjectId) {
-        if (typeof newCallingObjectId === "undefined") { newCallingObjectId = 0; }
-        try  {
+        if (newCallingObjectId === void 0) { newCallingObjectId = 0; }
+        try {
             if (Trim(scriptLine) == "") {
                 return;
             }
             if (this._gameFinished) {
                 return;
             }
-            if (InStr(scriptLine, vbCrLf) > 0) {
+            if (InStr(scriptLine, "\n") > 0) {
                 var curPos = 1;
                 var finished = false;
                 do {
-                    var crLfPos = InStr(curPos, scriptLine, vbCrLf);
+                    var crLfPos = InStr(curPos, scriptLine, "\n");
                     if (crLfPos == 0) {
                         finished = true;
                         crLfPos = Len(scriptLine) + 1;
                     }
                     var curScriptLine = Trim(Mid(scriptLine, curPos, crLfPos - curPos));
-                    if (curScriptLine != vbCrLf) {
+                    if (curScriptLine != "\n") {
                         this.ExecuteScript(curScriptLine, ctx);
                     }
-                    curPos = crLfPos + 2;
-                } while(!(finished));
+                    curPos = crLfPos + 1;
+                } while (!(finished));
                 return;
             }
             if (newCallingObjectId != 0) {
@@ -9045,195 +9619,276 @@ var LegacyGame = (function () {
             }
             if (this.BeginsWith(scriptLine, "if ")) {
                 this.ExecuteIf(scriptLine, ctx);
-                // This command does nothing in the Quest 5 player, as there is no separate help window
-                // This command does nothing in the Quest 5 player, as there is no separate picture window
-                // This command does nothing in the Quest 5 player, as there is no separate help window
-                // TODO: Just write HTML directly
-            } else if (this.BeginsWith(scriptLine, "select case ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "select case ")) {
                 this.ExecuteSelectCase(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "choose ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "choose ")) {
                 this.ExecuteChoose(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "set ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "set ")) {
                 this.ExecuteSet(this.GetEverythingAfter(scriptLine, "set "), ctx);
-            } else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
                 this.ExecuteIncDec(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "say ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "say ")) {
                 this.Print(Chr(34) + this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
-            } else if (this.BeginsWith(scriptLine, "do ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "do ")) {
                 this.ExecuteDo(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "doaction ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "doaction ")) {
                 this.ExecuteDoAction(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "give ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "give ")) {
                 this.PlayerItem(this.GetParameter(scriptLine, ctx), true, ctx);
-            } else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
                 this.PlayerItem(this.GetParameter(scriptLine, ctx), false, ctx);
-            } else if (this.BeginsWith(scriptLine, "msg ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "msg ")) {
                 this.Print(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "speak ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "speak ")) {
                 this.Speak(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "helpmsg ")) {
                 this.Print(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (Trim(LCase(scriptLine)) == "helpclose") {
-            } else if (this.BeginsWith(scriptLine, "goto ")) {
+            }
+            else if (Trim(LCase(scriptLine)) == "helpclose") {
+            }
+            else if (this.BeginsWith(scriptLine, "goto ")) {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
                 this.PlayGame(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "playerwin")) {
-                this.FinishGame(0 /* Win */, ctx);
-            } else if (this.BeginsWith(scriptLine, "playerlose")) {
-                this.FinishGame(1 /* Lose */, ctx);
-            } else if (Trim(LCase(scriptLine)) == "stop") {
-                this.FinishGame(2 /* Null */, ctx);
-            } else if (this.BeginsWith(scriptLine, "playwav ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "playerwin")) {
+                this.FinishGame(StopType.Win, ctx);
+            }
+            else if (this.BeginsWith(scriptLine, "playerlose")) {
+                this.FinishGame(StopType.Lose, ctx);
+            }
+            else if (Trim(LCase(scriptLine)) == "stop") {
+                this.FinishGame(StopType.Null, ctx);
+            }
+            else if (this.BeginsWith(scriptLine, "playwav ")) {
                 this.PlayWav(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "playmidi ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "playmidi ")) {
                 this.PlayMedia(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "playmp3 ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "playmp3 ")) {
                 this.PlayMedia(this.GetParameter(scriptLine, ctx));
-            } else if (Trim(LCase(scriptLine)) == "picture close") {
-            } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture popup ")) || (this._gameAslVersion >= 282 && this._gameAslVersion < 390 && this.BeginsWith(scriptLine, "picture ")) || (this._gameAslVersion < 282 && this.BeginsWith(scriptLine, "show "))) {
+            }
+            else if (Trim(LCase(scriptLine)) == "picture close") {
+            }
+            else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture popup ")) || (this._gameAslVersion >= 282 && this._gameAslVersion < 390 && this.BeginsWith(scriptLine, "picture ")) || (this._gameAslVersion < 282 && this.BeginsWith(scriptLine, "show "))) {
                 // This command does nothing in the Quest 5 player, as there is no separate picture window
                 this.ShowPicture(this.GetParameter(scriptLine, ctx));
-            } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture "))) {
+            }
+            else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture "))) {
                 this.ShowPictureInText(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "animate persist ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "animate persist ")) {
                 this.ShowPicture(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "animate ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "animate ")) {
                 this.ShowPicture(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "extract ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "extract ")) {
                 this.ExtractFile(this.GetParameter(scriptLine, ctx));
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hideobject ")) {
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hideobject ")) {
                 this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showobject ")) {
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showobject ")) {
                 this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "moveobject ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), 1 /* Object */, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hidechar ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx, 0 /* Character */);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showchar ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx, 0 /* Character */);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "movechar ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), 0 /* Character */, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealobject ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 1 /* Object */, true, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealobject ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 1 /* Object */, false, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealchar ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 0 /* Character */, true, ctx);
-            } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealchar ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 0 /* Character */, false, ctx);
-            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "hide ")) {
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "moveobject ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hidechar ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showchar ")) {
+                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "movechar ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Character, ctx);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealobject ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealobject ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealchar ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
+            }
+            else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealchar ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
+            }
+            else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "hide ")) {
                 this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
-            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "show ")) {
+            }
+            else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "show ")) {
                 this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
-            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "move ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), 1 /* Object */, ctx);
-            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "reveal ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 1 /* Object */, true, ctx);
-            } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "conceal ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), 1 /* Object */, false, ctx);
-            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "open ")) {
+            }
+            else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "move ")) {
+                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+            }
+            else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "reveal ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+            }
+            else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "conceal ")) {
+                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+            }
+            else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "open ")) {
                 this.SetOpenClose(this.GetParameter(scriptLine, ctx), true, ctx);
-            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "close ")) {
+            }
+            else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "close ")) {
                 this.SetOpenClose(this.GetParameter(scriptLine, ctx), false, ctx);
-            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "add ")) {
+            }
+            else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "add ")) {
                 this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), true, ctx);
-            } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "remove ")) {
+            }
+            else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "remove ")) {
                 this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), false, ctx);
-            } else if (this.BeginsWith(scriptLine, "clone ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "clone ")) {
                 this.ExecClone(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "exec ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "exec ")) {
                 this.ExecExec(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "setstring ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "setstring ")) {
                 this.ExecSetString(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "setvar ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "setvar ")) {
                 this.ExecSetVar(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "for ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "for ")) {
                 this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
-            } else if (this.BeginsWith(scriptLine, "property ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "property ")) {
                 this.ExecProperty(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "type ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "type ")) {
                 this.ExecType(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "action ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "action ")) {
                 this.ExecuteAction(this.GetEverythingAfter(scriptLine, "action "), ctx);
-            } else if (this.BeginsWith(scriptLine, "flag ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "flag ")) {
                 this.ExecuteFlag(this.GetEverythingAfter(scriptLine, "flag "), ctx);
-            } else if (this.BeginsWith(scriptLine, "create ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "create ")) {
                 this.ExecuteCreate(this.GetEverythingAfter(scriptLine, "create "), ctx);
-            } else if (this.BeginsWith(scriptLine, "destroy exit ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "destroy exit ")) {
                 this.DestroyExit(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "repeat ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "repeat ")) {
                 this.ExecuteRepeat(this.GetEverythingAfter(scriptLine, "repeat "), ctx);
-            } else if (this.BeginsWith(scriptLine, "enter ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "enter ")) {
                 this.ExecuteEnter(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "displaytext ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "displaytext ")) {
                 this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "helpdisplaytext ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "helpdisplaytext ")) {
                 this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
-            } else if (this.BeginsWith(scriptLine, "font ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "font ")) {
                 this.SetFont(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "pause ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "pause ")) {
                 this.Pause(parseInt(this.GetParameter(scriptLine, ctx)));
-            } else if (Trim(LCase(scriptLine)) == "clear") {
+            }
+            else if (Trim(LCase(scriptLine)) == "clear") {
                 this.DoClear();
-            } else if (Trim(LCase(scriptLine)) == "helpclear") {
-            } else if (this.BeginsWith(scriptLine, "background ")) {
+            }
+            else if (Trim(LCase(scriptLine)) == "helpclear") {
+            }
+            else if (this.BeginsWith(scriptLine, "background ")) {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
                 this.SetBackground(this.GetParameter(scriptLine, ctx));
-            } else if (this.BeginsWith(scriptLine, "foreground ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "foreground ")) {
                 this.SetForeground(this.GetParameter(scriptLine, ctx));
-            } else if (Trim(LCase(scriptLine)) == "nointro") {
+            }
+            else if (Trim(LCase(scriptLine)) == "nointro") {
                 this._autoIntro = false;
-            } else if (this.BeginsWith(scriptLine, "debug ")) {
-                this.LogASLError(this.GetParameter(scriptLine, ctx), 0 /* Misc */);
-            } else if (this.BeginsWith(scriptLine, "mailto ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "debug ")) {
+                this.LogASLError(this.GetParameter(scriptLine, ctx), LogType.Misc);
+            }
+            else if (this.BeginsWith(scriptLine, "mailto ")) {
                 var emailAddress = this.GetParameter(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {
+            }
+            else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {
                 // TODO: Just write HTML directly
-                this.LogASLError("'shell' is not supported in this version of Quest", 2 /* WarningError */);
-            } else if (this.BeginsWith(scriptLine, "shellexe ") && this._gameAslVersion < 410) {
-                this.LogASLError("'shellexe' is not supported in this version of Quest", 2 /* WarningError */);
-            } else if (this.BeginsWith(scriptLine, "wait")) {
+                this.LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError);
+            }
+            else if (this.BeginsWith(scriptLine, "shellexe ") && this._gameAslVersion < 410) {
+                this.LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError);
+            }
+            else if (this.BeginsWith(scriptLine, "wait")) {
                 this.ExecuteWait(Trim(this.GetEverythingAfter(Trim(scriptLine), "wait")), ctx);
-            } else if (this.BeginsWith(scriptLine, "timeron ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "timeron ")) {
                 this.SetTimerState(this.GetParameter(scriptLine, ctx), true);
-            } else if (this.BeginsWith(scriptLine, "timeroff ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "timeroff ")) {
                 this.SetTimerState(this.GetParameter(scriptLine, ctx), false);
-            } else if (Trim(LCase(scriptLine)) == "outputon") {
+            }
+            else if (Trim(LCase(scriptLine)) == "outputon") {
                 this._outPutOn = true;
                 this.UpdateObjectList(ctx);
                 this.UpdateItems(ctx);
-            } else if (Trim(LCase(scriptLine)) == "outputoff") {
+            }
+            else if (Trim(LCase(scriptLine)) == "outputoff") {
                 this._outPutOn = false;
-            } else if (Trim(LCase(scriptLine)) == "panes off") {
+            }
+            else if (Trim(LCase(scriptLine)) == "panes off") {
                 this._player.SetPanesVisible("off");
-            } else if (Trim(LCase(scriptLine)) == "panes on") {
+            }
+            else if (Trim(LCase(scriptLine)) == "panes on") {
                 this._player.SetPanesVisible("on");
-            } else if (this.BeginsWith(scriptLine, "lock ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "lock ")) {
                 this.ExecuteLock(this.GetParameter(scriptLine, ctx), true);
-            } else if (this.BeginsWith(scriptLine, "unlock ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "unlock ")) {
                 this.ExecuteLock(this.GetParameter(scriptLine, ctx), false);
-            } else if (this.BeginsWith(scriptLine, "playmod ") && this._gameAslVersion < 410) {
-                this.LogASLError("'playmod' is not supported in this version of Quest", 2 /* WarningError */);
-            } else if (this.BeginsWith(scriptLine, "modvolume") && this._gameAslVersion < 410) {
-                this.LogASLError("'modvolume' is not supported in this version of Quest", 2 /* WarningError */);
-            } else if (Trim(LCase(scriptLine)) == "dontprocess") {
+            }
+            else if (this.BeginsWith(scriptLine, "playmod ") && this._gameAslVersion < 410) {
+                this.LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError);
+            }
+            else if (this.BeginsWith(scriptLine, "modvolume") && this._gameAslVersion < 410) {
+                this.LogASLError("'modvolume' is not supported in this version of Quest", LogType.WarningError);
+            }
+            else if (Trim(LCase(scriptLine)) == "dontprocess") {
                 ctx.DontProcessCommand = true;
-            } else if (this.BeginsWith(scriptLine, "return ")) {
+            }
+            else if (this.BeginsWith(scriptLine, "return ")) {
                 ctx.FunctionReturnValue = this.GetParameter(scriptLine, ctx);
-            } else {
+            }
+            else {
                 if (this.BeginsWith(scriptLine, "'") == false) {
-                    this.LogASLError("Unrecognized keyword. Line reads: '" + Trim(this.ReportErrorLine(scriptLine)) + "'", 2 /* WarningError */);
+                    this.LogASLError("Unrecognized keyword. Line reads: '" + Trim(this.ReportErrorLine(scriptLine)) + "'", LogType.WarningError);
                 }
             }
-        } catch (e) {
+        }
+        catch (e) {
             this.Print("[An internal error occurred]", ctx);
-            this.LogASLError(Err.Number + " - '" + Err.Description + "' occurred processing script line '" + scriptLine + "'", 7 /* InternalError */);
+            this.LogASLError("Error - '" + e + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
         }
     };
     LegacyGame.prototype.ExecuteEnter = function (scriptLine, ctx) {
         this._commandOverrideModeOn = true;
         this._commandOverrideVariable = this.GetParameter(scriptLine, ctx);
-
         // Now, wait for CommandOverrideModeOn to be set
         // to False by ExecCommand. Execution can then resume.
         // TODO: Handle in TypeScript version
@@ -9247,7 +9902,7 @@ var LegacyGame = (function () {
                 var interval = this.GetParameter(setInstruction, ctx);
                 var scp = InStr(interval, ";");
                 if (scp == 0) {
-                    this.LogASLError("Too few parameters in 'set " + setInstruction + "'", 2 /* WarningError */);
+                    this.LogASLError("Too few parameters in 'set " + setInstruction + "'", LogType.WarningError);
                     return;
                 }
                 var name = Trim(Left(interval, scp - 1));
@@ -9261,36 +9916,42 @@ var LegacyGame = (function () {
                     }
                 }
                 if (!found) {
-                    this.LogASLError("No such timer '" + name + "'", 2 /* WarningError */);
+                    this.LogASLError("No such timer '" + name + "'", LogType.WarningError);
                     return;
                 }
-            } else if (this.BeginsWith(setInstruction, "string ")) {
+            }
+            else if (this.BeginsWith(setInstruction, "string ")) {
                 this.ExecSetString(this.GetParameter(setInstruction, ctx), ctx);
-            } else if (this.BeginsWith(setInstruction, "numeric ")) {
+            }
+            else if (this.BeginsWith(setInstruction, "numeric ")) {
                 this.ExecSetVar(this.GetParameter(setInstruction, ctx), ctx);
-            } else if (this.BeginsWith(setInstruction, "collectable ")) {
+            }
+            else if (this.BeginsWith(setInstruction, "collectable ")) {
                 this.ExecuteSetCollectable(this.GetParameter(setInstruction, ctx), ctx);
-            } else {
+            }
+            else {
                 var result = this.SetUnknownVariableType(this.GetParameter(setInstruction, ctx), ctx);
-                if (result == 0 /* Error */) {
-                    this.LogASLError("Error on setting 'set " + setInstruction + "'", 2 /* WarningError */);
-                } else if (result == 2 /* Unfound */) {
-                    this.LogASLError("Variable type not specified in 'set " + setInstruction + "'", 2 /* WarningError */);
+                if (result == SetResult.Error) {
+                    this.LogASLError("Error on setting 'set " + setInstruction + "'", LogType.WarningError);
+                }
+                else if (result == SetResult.Unfound) {
+                    this.LogASLError("Variable type not specified in 'set " + setInstruction + "'", LogType.WarningError);
                 }
             }
-        } else {
+        }
+        else {
             this.ExecuteSetCollectable(this.GetParameter(setInstruction, ctx), ctx);
         }
     };
     LegacyGame.prototype.FindStatement = function (block, statement) {
+        // Finds a statement within a given block of lines
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             // Ignore sub-define blocks
             if (this.BeginsWith(this._lines[i], "define ")) {
                 do {
                     i = i + 1;
-                } while(!(Trim(this._lines[i]) == "end define"));
+                } while (!(Trim(this._lines[i]) == "end define"));
             }
-
             // Check to see if the line matches the statement
             // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
@@ -9301,14 +9962,14 @@ var LegacyGame = (function () {
         return "";
     };
     LegacyGame.prototype.FindLine = function (block, statement, statementParam) {
+        // Finds a statement within a given block of lines
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             // Ignore sub-define blocks
             if (this.BeginsWith(this._lines[i], "define ")) {
                 do {
                     i = i + 1;
-                } while(!(Trim(this._lines[i]) == "end define"));
+                } while (!(Trim(this._lines[i]) == "end define"));
             }
-
             // Check to see if the line matches the statement
             // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
@@ -9347,47 +10008,61 @@ var LegacyGame = (function () {
         var r = this._rooms[id];
         if (direction == "north") {
             dirData = r.North;
-        } else if (direction == "south") {
+        }
+        else if (direction == "south") {
             dirData = r.South;
-        } else if (direction == "west") {
+        }
+        else if (direction == "west") {
             dirData = r.West;
-        } else if (direction == "east") {
+        }
+        else if (direction == "east") {
             dirData = r.East;
-        } else if (direction == "northeast") {
+        }
+        else if (direction == "northeast") {
             dirData = r.NorthEast;
-        } else if (direction == "northwest") {
+        }
+        else if (direction == "northwest") {
             dirData = r.NorthWest;
-        } else if (direction == "southeast") {
+        }
+        else if (direction == "southeast") {
             dirData = r.SouthEast;
-        } else if (direction == "southwest") {
+        }
+        else if (direction == "southwest") {
             dirData = r.SouthWest;
-        } else if (direction == "up") {
+        }
+        else if (direction == "up") {
             dirData = r.Up;
-        } else if (direction == "down") {
+        }
+        else if (direction == "down") {
             dirData = r.Down;
-        } else if (direction == "out") {
+        }
+        else if (direction == "out") {
             if (r.Out.Script == "") {
                 dirData.Data = r.Out.Text;
-                dirData.Type = 0 /* Text */;
-            } else {
+                dirData.Type = TextActionType.Text;
+            }
+            else {
                 dirData.Data = r.Out.Script;
-                dirData.Type = 1 /* Script */;
+                dirData.Type = TextActionType.Script;
             }
         }
-        if (dirData.Type == 1 /* Script */ && dirData.Data != "") {
+        if (dirData.Type == TextActionType.Script && dirData.Data != "") {
             this.ExecuteScript(dirData.Data, ctx);
-        } else if (dirData.Data != "") {
+        }
+        else if (dirData.Data != "") {
             var newRoom = dirData.Data;
             var scp = InStr(newRoom, ";");
             if (scp != 0) {
                 newRoom = Trim(Mid(newRoom, scp + 1));
             }
             this.PlayGame(newRoom, ctx);
-        } else {
+        }
+        else {
             if (direction == "out") {
-                this.PlayerErrorMessage(14 /* DefaultOut */, ctx);
-            } else {
-                this.PlayerErrorMessage(15 /* BadPlace */, ctx);
+                this.PlayerErrorMessage(PlayerError.DefaultOut, ctx);
+            }
+            else {
+                this.PlayerErrorMessage(PlayerError.BadPlace, ctx);
             }
         }
     };
@@ -9400,54 +10075,57 @@ var LegacyGame = (function () {
         placeData = this.PlaceExist(place, ctx);
         if (placeData != "") {
             destination = placeData;
-        } else if (this.BeginsWith(place, "the ")) {
+        }
+        else if (this.BeginsWith(place, "the ")) {
             var np = this.GetEverythingAfter(place, "the ");
             placeData = this.PlaceExist(np, ctx);
             if (placeData != "") {
                 destination = placeData;
-            } else {
+            }
+            else {
                 disallowed = true;
             }
-        } else {
+        }
+        else {
             disallowed = true;
         }
         if (destination != "") {
             if (InStr(destination, ";") > 0) {
                 var s = Trim(Right(destination, Len(destination) - InStr(destination, ";")));
                 this.ExecuteScript(s, ctx);
-            } else {
+            }
+            else {
                 this.PlayGame(destination, ctx);
             }
         }
         if (disallowed == true) {
-            this.PlayerErrorMessage(15 /* BadPlace */, ctx);
+            this.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         }
     };
     LegacyGame.prototype.InitialiseGame = function (filename, fromQsg) {
-        if (typeof fromQsg === "undefined") { fromQsg = false; }
+        if (fromQsg === void 0) { fromQsg = false; }
         this._loadedFromQsg = fromQsg;
         this._changeLogRooms = new ChangeLog();
         this._changeLogObjects = new ChangeLog();
-        this._changeLogRooms.AppliesToType = ChangeLog.AppliesTo.Room;
-        this._changeLogObjects.AppliesToType = ChangeLog.AppliesTo.Object;
+        this._changeLogRooms.AppliesToType = AppliesTo.Room;
+        this._changeLogObjects.AppliesToType = AppliesTo.Object;
         this._outPutOn = true;
         this._useAbbreviations = true;
-        this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
-        this.LogASLError("Opening file " + filename + " on " + Date.Now.ToString(), 3 /* Init */);
-
+        // TODO
+        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
+        this.LogASLError("Opening file " + filename, LogType.Init);
         // Parse file and find where the 'define' blocks are:
         if (this.ParseFile(filename) == false) {
-            this.LogASLError("Unable to open file", 3 /* Init */);
+            this.LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + filename;
             if (this._openErrorReport != "") {
-                // Strip last vbcrlf
-                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 2);
-                err = err + ":" + vbCrLf + vbCrLf + this._openErrorReport;
+                // Strip last \n
+                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 1);
+                err = err + ":\n\n" + this._openErrorReport;
             }
             this.Print("Error: " + err, this._nullContext);
             return false;
         }
-
         // Check version
         var gameBlock;
         gameBlock = this.GetDefineBlock("game");
@@ -9458,23 +10136,24 @@ var LegacyGame = (function () {
             }
         }
         if (aslVersion == "//") {
-            this.LogASLError("File contains no version header.", 2 /* WarningError */);
-        } else {
+            this.LogASLError("File contains no version header.", LogType.WarningError);
+        }
+        else {
             this._gameAslVersion = parseInt(aslVersion);
             var recognisedVersions = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/";
             if (InStr(recognisedVersions, "/" + aslVersion + "/") == 0) {
-                this.LogASLError("Unrecognised ASL version number.", 2 /* WarningError */);
+                this.LogASLError("Unrecognised ASL version number.", LogType.WarningError);
             }
         }
-        this._listVerbs.Add(ListType.ExitsList, new any());
+        this._listVerbs.Add(ListType.ExitsList, ["Go to"]);
         if (this._gameAslVersion >= 280 && this._gameAslVersion < 390) {
-            this._listVerbs.Add(ListType.ObjectsList, new any());
-            this._listVerbs.Add(ListType.InventoryList, new any());
-        } else {
-            this._listVerbs.Add(ListType.ObjectsList, new any());
-            this._listVerbs.Add(ListType.InventoryList, new any());
+            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Examine", "Take", "Speak to"]);
+            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Examine", "Use", "Drop"]);
         }
-
+        else {
+            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Take", "Speak to"]);
+            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Use", "Drop"]);
+        }
         // Get the name of the game:
         this._gameName = this.GetParameter(this._lines[this.GetDefineBlock("game").StartLine], this._nullContext);
         this._player.UpdateGameName(this._gameName);
@@ -9486,7 +10165,8 @@ var LegacyGame = (function () {
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "beforesave ")) {
                 this._beforeSaveScript = this.GetEverythingAfter(this._lines[i], "beforesave ");
-            } else if (this.BeginsWith(this._lines[i], "onload ")) {
+            }
+            else if (this.BeginsWith(this._lines[i], "onload ")) {
                 this._onLoadScript = this.GetEverythingAfter(this._lines[i], "onload ");
             }
         }
@@ -9507,11 +10187,9 @@ var LegacyGame = (function () {
             // the items array so we start with those items mentioned.
             this.SetUpStartItems();
         }
-
         // Set up collectables.
         this.SetUpCollectables();
         this.SetUpDisplayVariables();
-
         // Set up characters and objects.
         this.SetUpCharObjectInfo();
         this.SetUpUserDefinedPlayerErrors();
@@ -9520,7 +10198,7 @@ var LegacyGame = (function () {
         this.SetUpTimers();
         this.SetUpMenus();
         this._gameFileName = filename;
-        this.LogASLError("Finished loading file.", 3 /* Init */);
+        this.LogASLError("Finished loading file.", LogType.Init);
         this._defaultRoomProperties = this.GetPropertiesInType("defaultroom", false);
         this._defaultProperties = this.GetPropertiesInType("default", false);
         return true;
@@ -9532,12 +10210,10 @@ var LegacyGame = (function () {
         var roomId = this.GetRoomID(this._currentRoom, ctx);
         var foundPlace = false;
         var scriptPresent = false;
-
         // check if place is available
         var r = this._rooms[roomId];
         for (var i = 1; i <= r.NumberPlaces; i++) {
             var checkPlace = r.Places[i].PlaceName;
-
             //remove any prefix and semicolon
             if (InStr(checkPlace, ";") > 0) {
                 checkPlace = Trim(Right(checkPlace, Len(checkPlace) - (InStr(checkPlace, ";") + 1)));
@@ -9555,7 +10231,8 @@ var LegacyGame = (function () {
                 foundPlace = true;
                 if (r.Places[i].Script != "") {
                     return checkPlace + ";" + r.Places[i].Script;
-                } else {
+                }
+                else {
                     return checkPlace;
                 }
             }
@@ -9563,7 +10240,7 @@ var LegacyGame = (function () {
         return "";
     };
     LegacyGame.prototype.PlayerItem = function (item, got, ctx, objId) {
-        if (typeof objId === "undefined") { objId = 0; }
+        if (objId === void 0) { objId = 0; }
         // Gives the player an item (if got=True) or takes an
         // item away from the player (if got=False).
         // If ASL>280, setting got=TRUE moves specified
@@ -9585,12 +10262,13 @@ var LegacyGame = (function () {
                         // Unset parent information, if any
                         this.AddToObjectProperties("not parent", objId, ctx);
                     }
-                    this.MoveThing(this._objs[objId].ObjectName, "inventory", 1 /* Object */, ctx);
+                    this.MoveThing(this._objs[objId].ObjectName, "inventory", Thing.Object, ctx);
                     if (this._objs[objId].GainScript != "") {
                         this.ExecuteScript(this._objs[objId].GainScript, ctx);
                     }
-                } else {
-                    this.MoveThing(this._objs[objId].ObjectName, this._currentRoom, 1 /* Object */, ctx);
+                }
+                else {
+                    this.MoveThing(this._objs[objId].ObjectName, this._currentRoom, Thing.Object, ctx);
                     if (this._objs[objId].LoseScript != "") {
                         this.ExecuteScript(this._objs[objId].LoseScript, ctx);
                     }
@@ -9598,12 +10276,14 @@ var LegacyGame = (function () {
                 foundObjectName = true;
             }
             if (!foundObjectName) {
-                this.LogASLError("No such object '" + item + "'", 2 /* WarningError */);
-            } else {
+                this.LogASLError("No such object '" + item + "'", LogType.WarningError);
+            }
+            else {
                 this.UpdateItems(ctx);
                 this.UpdateObjectList(ctx);
             }
-        } else {
+        }
+        else {
             for (var i = 1; i <= this._numberItems; i++) {
                 if (this._items[i].Name == item) {
                     this._items[i].Got = got;
@@ -9617,7 +10297,7 @@ var LegacyGame = (function () {
         //plays the specified room
         var id = this.GetRoomID(room, ctx);
         if (id == 0) {
-            this.LogASLError("No such room '" + room + "'", 2 /* WarningError */);
+            this.LogASLError("No such room '" + room + "'", LogType.WarningError);
             return;
         }
         this._currentRoom = room;
@@ -9627,7 +10307,6 @@ var LegacyGame = (function () {
         }
         this.ShowRoomInfo(room, ctx);
         this.UpdateItems(ctx);
-
         // Find script lines and execute them.
         if (this._rooms[id].Script != "") {
             var script = this._rooms[id].Script;
@@ -9641,7 +10320,8 @@ var LegacyGame = (function () {
         var printString = "";
         if (txt == "") {
             this.DoPrint(printString);
-        } else {
+        }
+        else {
             for (var i = 1; i <= Len(txt); i++) {
                 var printThis = true;
                 if (Mid(txt, i, 2) == "|w") {
@@ -9650,7 +10330,8 @@ var LegacyGame = (function () {
                     printThis = false;
                     i = i + 1;
                     this.ExecuteScript("wait <>", ctx);
-                } else if (Mid(txt, i, 2) == "|c") {
+                }
+                else if (Mid(txt, i, 2) == "|c") {
                     switch (Mid(txt, i, 3)) {
                         case "|cb":
                         case "|cr":
@@ -9678,9 +10359,10 @@ var LegacyGame = (function () {
     LegacyGame.prototype.RetrLine = function (blockType, param, line, ctx) {
         var searchblock;
         if (blockType == "object") {
-            searchblock = this.GetThingBlock(param, this._currentRoom, 1 /* Object */);
-        } else {
-            searchblock = this.GetThingBlock(param, this._currentRoom, 0 /* Character */);
+            searchblock = this.GetThingBlock(param, this._currentRoom, Thing.Object);
+        }
+        else {
+            searchblock = this.GetThingBlock(param, this._currentRoom, Thing.Character);
         }
         if (searchblock.StartLine == 0 && searchblock.EndLine == 0) {
             return "<undefined>";
@@ -9695,9 +10377,10 @@ var LegacyGame = (function () {
     LegacyGame.prototype.RetrLineParam = function (blockType, param, line, lineParam, ctx) {
         var searchblock;
         if (blockType == "object") {
-            searchblock = this.GetThingBlock(param, this._currentRoom, 1 /* Object */);
-        } else {
-            searchblock = this.GetThingBlock(param, this._currentRoom, 0 /* Character */);
+            searchblock = this.GetThingBlock(param, this._currentRoom, Thing.Object);
+        }
+        else {
+            searchblock = this.GetThingBlock(param, this._currentRoom, Thing.Character);
         }
         if (searchblock.StartLine == 0 && searchblock.EndLine == 0) {
             return "<undefined>";
@@ -9712,11 +10395,12 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpCollectables = function () {
         var lastItem = false;
         this._numCollectables = 0;
-
+        // Initialise collectables:
+        // First, find the collectables section within the define
+        // game block, and get its parameters:
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
             if (this.BeginsWith(this._lines[a], "collectables ")) {
                 var collectables = Trim(this.GetParameter(this._lines[a], this._nullContext, false));
-
                 // if collectables is a null string, there are no
                 // collectables. Otherwise, there is one more object than
                 // the number of commas. So, first check to see if we have
@@ -9732,7 +10416,6 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, collectables, ";");
                         }
-
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
                         //the loop:
@@ -9740,7 +10423,6 @@ var LegacyGame = (function () {
                             nextComma = Len(collectables) + 1;
                             lastItem = true;
                         }
-
                         //Get item info
                         var info = Trim(Mid(collectables, pos, nextComma - pos));
                         this._collectables[this._numCollectables].Name = Trim(Left(info, InStr(info, " ")));
@@ -9755,25 +10437,25 @@ var LegacyGame = (function () {
                         if (Left(t, 1) == "d") {
                             t = Mid(t, 2);
                             this._collectables[this._numCollectables].DisplayWhenZero = false;
-                        } else {
+                        }
+                        else {
                             this._collectables[this._numCollectables].DisplayWhenZero = true;
                         }
                         this._collectables[this._numCollectables].Type = t;
                         this._collectables[this._numCollectables].Value = Val(i);
-
                         // Get display string between square brackets
                         var obp = InStr(info, "[");
                         var cbp = InStr(info, "]");
                         if (obp == 0) {
                             this._collectables[this._numCollectables].Display = "<def>";
-                        } else {
+                        }
+                        else {
                             var b = Mid(info, obp + 1, (cbp - 1) - obp);
                             this._collectables[this._numCollectables].Display = Trim(b);
                         }
                         pos = nextComma + 1;
                         this._numCollectables = this._numCollectables + 1;
-                        //lastitem set when nextcomma=0, above.
-                    } while(!(lastItem == true));
+                    } while (!(lastItem == true));
                     this._numCollectables = this._numCollectables - 1;
                 }
             }
@@ -9782,7 +10464,9 @@ var LegacyGame = (function () {
     LegacyGame.prototype.SetUpItemArrays = function () {
         var lastItem = false;
         this._numberItems = 0;
-
+        // Initialise items:
+        // First, find the possitems section within the define game
+        // block, and get its parameters:
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
             if (this.BeginsWith(this._lines[a], "possitems ") || this.BeginsWith(this._lines[a], "items ")) {
                 var possItems = this.GetParameter(this._lines[a], this._nullContext);
@@ -9797,7 +10481,6 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, possItems, ";");
                         }
-
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
                         //the loop:
@@ -9805,14 +10488,12 @@ var LegacyGame = (function () {
                             nextComma = Len(possItems) + 1;
                             lastItem = true;
                         }
-
                         //Get item name
                         this._items[this._numberItems].Name = Trim(Mid(possItems, pos, nextComma - pos));
                         this._items[this._numberItems].Got = false;
                         pos = nextComma + 1;
                         this._numberItems = this._numberItems + 1;
-                        //lastitem set when nextcomma=0, above.
-                    } while(!(lastItem == true));
+                    } while (!(lastItem == true));
                     this._numberItems = this._numberItems - 1;
                 }
             }
@@ -9830,7 +10511,6 @@ var LegacyGame = (function () {
                         if (nextComma == 0) {
                             nextComma = InStr(pos + 1, startItems, ";");
                         }
-
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
                         //the loop:
@@ -9838,10 +10518,9 @@ var LegacyGame = (function () {
                             nextComma = Len(startItems) + 1;
                             lastItem = true;
                         }
-
                         //Get item name
                         var name = Trim(Mid(startItems, pos, nextComma - pos));
-
+                        //Find which item this is, and set it
                         for (var i = 1; i <= this._numberItems; i++) {
                             if (this._items[i].Name == name) {
                                 this._items[i].Got = true;
@@ -9849,8 +10528,7 @@ var LegacyGame = (function () {
                             }
                         }
                         pos = nextComma + 1;
-                        //lastitem set when nextcomma=0, above.
-                    } while(!(lastItem == true));
+                    } while (!(lastItem == true));
                 }
             }
         }
@@ -9870,7 +10548,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ReadCatalog = function (data) {
         var nullPos = InStr(data, Chr(0));
-        this._numResources = parseInt(DecryptString(Left(data, nullPos - 1)));
+        this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
         if (!this._resources)
             this._resources = [];
         this._resources[this._numResources] = new ResourceType();
@@ -9879,10 +10557,10 @@ var LegacyGame = (function () {
         for (var i = 1; i <= this._numResources; i++) {
             var r = this._resources[i];
             nullPos = InStr(data, Chr(0));
-            r.ResourceName = DecryptString(Left(data, nullPos - 1));
+            r.ResourceName = this.DecryptString(Left(data, nullPos - 1));
             data = Mid(data, nullPos + 1);
             nullPos = InStr(data, Chr(0));
-            r.ResourceLength = parseInt(DecryptString(Left(data, nullPos - 1)));
+            r.ResourceLength = parseInt(this.DecryptString(Left(data, nullPos - 1)));
             data = Mid(data, nullPos + 1);
             r.ResourceStart = resourceStart;
             resourceStart = resourceStart + r.ResourceLength;
@@ -9890,7 +10568,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.UpdateDirButtons = function (dirs, ctx) {
-        var compassExits = {};
+        var compassExits = [];
         if (InStr(dirs, "n") > 0) {
             this.AddCompassExit(compassExits, "north");
         }
@@ -9928,7 +10606,7 @@ var LegacyGame = (function () {
         this.UpdateExitsList();
     };
     LegacyGame.prototype.AddCompassExit = function (exitList, name) {
-        exitList.Add(new ListData());
+        exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
     };
     LegacyGame.prototype.UpdateDoorways = function (roomId, ctx) {
         var roomDisplayText = "";
@@ -9950,15 +10628,16 @@ var LegacyGame = (function () {
         var o = "out";
         if (this._gameAslVersion >= 410) {
             this._rooms[roomId].Exits.GetAvailableDirectionsDescription(roomDisplayText, directions);
-        } else {
+        }
+        else {
             if (this._rooms[roomId].Out.Text != "") {
                 outPlace = this._rooms[roomId].Out.Text;
-
                 //remove any prefix semicolon from printed text
                 var scp = InStr(outPlace, ";");
                 if (scp == 0) {
                     outPlaceName = outPlace;
-                } else {
+                }
+                else {
                     outPlaceName = Trim(Mid(outPlace, scp + 1));
                     outPlacePrefix = Trim(Left(outPlace, scp - 1));
                     outPlace = outPlacePrefix + " " + outPlaceName;
@@ -10009,7 +10688,8 @@ var LegacyGame = (function () {
                 var outPlaceAlias = this._rooms[this.GetRoomID(outPlaceName, ctx)].RoomAlias;
                 if (outPlaceAlias == "") {
                     outPlaceAlias = outPlace;
-                } else {
+                }
+                else {
                     if (this._gameAslVersion >= 360) {
                         if (outPlacePrefix != "") {
                             outPlaceAlias = outPlacePrefix + " " + outPlaceAlias;
@@ -10023,11 +10703,13 @@ var LegacyGame = (function () {
                 directions = directions + "o";
                 if (this._gameAslVersion >= 280) {
                     this.SetStringContents("quest.doorways.out", outPlaceName, ctx);
-                } else {
+                }
+                else {
                     this.SetStringContents("quest.doorways.out", outPlaceAlias, ctx);
                 }
                 this.SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx);
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.doorways.out", "", ctx);
                 this.SetStringContents("quest.doorways.out.display", "", ctx);
             }
@@ -10041,15 +10723,17 @@ var LegacyGame = (function () {
                         var ncp = InStr(cp + 1, nsew, ",");
                         if (ncp == 0) {
                             finished = true;
-                        } else {
+                        }
+                        else {
                             cp = ncp;
                         }
-                    } while(!(finished));
+                    } while (!(finished));
                     nsew = Trim(Left(nsew, cp - 1)) + " or " + Trim(Mid(nsew, cp + 1));
                 }
                 roomDisplayText = roomDisplayText + "You can go " + nsew + ".";
                 this.SetStringContents("quest.doorways.dirs", nsew, ctx);
-            } else {
+            }
+            else {
                 this.SetStringContents("quest.doorways.dirs", "", ctx);
             }
         }
@@ -10058,7 +10742,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.UpdateItems = function (ctx) {
         // displays the items a player has
-        var invList = {};
+        var invList = [];
         if (!this._outPutOn) {
             return;
         }
@@ -10068,31 +10752,33 @@ var LegacyGame = (function () {
                 if (this._objs[i].ContainerRoom == "inventory" && this._objs[i].Exists && this._objs[i].Visible) {
                     if (this._objs[i].ObjectAlias == "") {
                         name = this._objs[i].ObjectName;
-                    } else {
+                    }
+                    else {
                         name = this._objs[i].ObjectAlias;
                     }
-                    invList.Add(new ListData());
-                }
-            }
-        } else {
-            for (var j = 1; j <= this._numberItems; j++) {
-                if (this._items[j].Got == true) {
-                    invList.Add(new ListData());
+                    invList.push(new ListData(this.CapFirst(name), this._listVerbs[ListType.InventoryList]));
                 }
             }
         }
-
+        else {
+            for (var j = 1; j <= this._numberItems; j++) {
+                if (this._items[j].Got == true) {
+                    invList.push(new ListData(this.CapFirst(this._items[j].Name), this._listVerbs[ListType.InventoryList]));
+                }
+            }
+        }
         // TODO...
         if (this._gameAslVersion >= 284) {
             this.UpdateStatusVars(ctx);
-        } else {
+        }
+        else {
             if (this._numCollectables > 0) {
                 var status = "";
                 for (var j = 1; j <= this._numCollectables; j++) {
                     var k = this.DisplayCollectableInfo(j);
                     if (k != "<null>") {
-                        if (status.Length > 0) {
-                            status += Environment.NewLine;
+                        if (status.length > 0) {
+                            status += "\n";
                         }
                         status += k;
                     }
@@ -10102,9 +10788,10 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.FinishGame = function (stopType, ctx) {
-        if (stopType == 0 /* Win */) {
+        if (stopType == StopType.Win) {
             this.DisplayTextSection("win", ctx);
-        } else if (stopType == 1 /* Lose */) {
+        }
+        else if (stopType == StopType.Lose) {
             this.DisplayTextSection("lose", ctx);
         }
         this.GameFinished();
@@ -10113,8 +10800,11 @@ var LegacyGame = (function () {
         // Updates object list
         var shownPlaceName;
         var objSuffix;
+        var charsViewable = "";
         var charsFound;
         var noFormatObjsViewable;
+        var charList;
+        var objsViewable = "";
         var charList;
         var objsFound;
         var objListString;
@@ -10122,31 +10812,30 @@ var LegacyGame = (function () {
         if (!this._outPutOn) {
             return;
         }
-        var objList = {};
-        var exitList = {};
-
+        var objList = [];
+        var exitList = [];
         //find the room
         var roomBlock;
         roomBlock = this.DefineBlockParam("room", this._currentRoom);
-
         //FIND CHARACTERS ===
         if (this._gameAslVersion < 281) {
+            // go through Chars() array
             for (var i = 1; i <= this._numberChars; i++) {
                 if (this._chars[i].ContainerRoom == this._currentRoom && this._chars[i].Exists && this._chars[i].Visible) {
-                    this.AddToObjectList(objList, exitList, this._chars[i].ObjectName, 0 /* Character */);
+                    this.AddToObjectList(objList, exitList, this._chars[i].ObjectName, Thing.Character);
                     charsViewable = charsViewable + this._chars[i].Prefix + "|b" + this._chars[i].ObjectName + "|xb" + this._chars[i].Suffix + ", ";
                     charsFound = charsFound + 1;
                 }
             }
             if (charsFound == 0) {
                 this.SetStringContents("quest.characters", "", ctx);
-            } else {
+            }
+            else {
                 //chop off final comma and add full stop (.)
                 charList = Left(charsViewable, Len(charsViewable) - 2);
                 this.SetStringContents("quest.characters", charList, ctx);
             }
         }
-
         //FIND OBJECTS
         noFormatObjsViewable = "";
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -10156,11 +10845,12 @@ var LegacyGame = (function () {
                     objSuffix = " " + objSuffix;
                 }
                 if (this._objs[i].ObjectAlias == "") {
-                    this.AddToObjectList(objList, exitList, this._objs[i].ObjectName, 1 /* Object */);
+                    this.AddToObjectList(objList, exitList, this._objs[i].ObjectName, Thing.Object);
                     objsViewable = objsViewable + this._objs[i].Prefix + "|b" + this._objs[i].ObjectName + "|xb" + objSuffix + ", ";
                     noFormatObjsViewable = noFormatObjsViewable + this._objs[i].Prefix + this._objs[i].ObjectName + ", ";
-                } else {
-                    this.AddToObjectList(objList, exitList, this._objs[i].ObjectAlias, 1 /* Object */);
+                }
+                else {
+                    this.AddToObjectList(objList, exitList, this._objs[i].ObjectAlias, Thing.Object);
                     objsViewable = objsViewable + this._objs[i].Prefix + "|b" + this._objs[i].ObjectAlias + "|xb" + objSuffix + ", ";
                     noFormatObjsViewable = noFormatObjsViewable + this._objs[i].Prefix + this._objs[i].ObjectAlias + ", ";
                 }
@@ -10172,41 +10862,44 @@ var LegacyGame = (function () {
             noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2);
             this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), ctx);
             this.SetStringContents("quest.formatobjects", objListString, ctx);
-        } else {
+        }
+        else {
             this.SetStringContents("quest.objects", "", ctx);
             this.SetStringContents("quest.formatobjects", "", ctx);
         }
-
         //FIND DOORWAYS
         var roomId;
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
                 this._rooms[roomId].Exits.GetPlaces().Values.forEach(function (roomExit) {
-                    this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), 2 /* Room */);
+                    this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), Thing.Room);
                 }, this);
-            } else {
+            }
+            else {
                 var r = this._rooms[roomId];
                 for (var i = 1; i <= r.NumberPlaces; i++) {
                     if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
                         var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
                         if (PlaceID == 0) {
                             shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
-                        } else {
+                        }
+                        else {
                             if (this._rooms[PlaceID].RoomAlias != "") {
                                 shownPlaceName = this._rooms[PlaceID].RoomAlias;
-                            } else {
+                            }
+                            else {
                                 shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                     }
-                    this.AddToObjectList(objList, exitList, shownPlaceName, 2 /* Room */);
+                    this.AddToObjectList(objList, exitList, shownPlaceName, Thing.Room);
                 }
             }
         }
-
         // TODO...
         this._gotoExits = exitList;
         this.UpdateExitsList();
@@ -10216,10 +10909,10 @@ var LegacyGame = (function () {
         var status = "";
         if (this._numDisplayStrings > 0) {
             for (var i = 1; i <= this._numDisplayStrings; i++) {
-                displayData = this.DisplayStatusVariableInfo(i, 0 /* String */, ctx);
+                displayData = this.DisplayStatusVariableInfo(i, VarType.String, ctx);
                 if (displayData != "") {
-                    if (status.Length > 0) {
-                        status += Environment.NewLine;
+                    if (status.length > 0) {
+                        status += "\n";
                     }
                     status += displayData;
                 }
@@ -10227,10 +10920,10 @@ var LegacyGame = (function () {
         }
         if (this._numDisplayNumerics > 0) {
             for (var i = 1; i <= this._numDisplayNumerics; i++) {
-                displayData = this.DisplayStatusVariableInfo(i, 1 /* Numeric */, ctx);
+                displayData = this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (displayData != "") {
-                    if (status.Length > 0) {
-                        status += Environment.NewLine;
+                    if (status.length > 0) {
+                        status += "\n";
                     }
                     status += displayData;
                 }
@@ -10239,7 +10932,7 @@ var LegacyGame = (function () {
         this._player.SetStatusText(status);
     };
     LegacyGame.prototype.UpdateVisibilityInContainers = function (ctx, onlyParent) {
-        if (typeof onlyParent === "undefined") { onlyParent = ""; }
+        if (onlyParent === void 0) { onlyParent = ""; }
         // Use OnlyParent to only update objects that are contained by a specific parent
         var parentId;
         var parent;
@@ -10276,7 +10969,8 @@ var LegacyGame = (function () {
                         // Otherwise, only if the parent has been seen, AND is either open or transparent,
                         // then the contents are available.
                         this.SetAvailability(this._objs[i].ObjectName, true, ctx);
-                    } else {
+                    }
+                    else {
                         this.SetAvailability(this._objs[i].ObjectName, false, ctx);
                     }
                 }
@@ -10284,7 +10978,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.PlayerCanAccessObject = function (id, colObjects) {
-        if (typeof colObjects === "undefined") { colObjects = null; }
+        if (colObjects === void 0) { colObjects = null; }
         // Called to see if a player can interact with an object (take it, open it etc.).
         // For example, if the object is on a surface which is inside a closed container,
         // the object cannot be accessed.
@@ -10297,26 +10991,25 @@ var LegacyGame = (function () {
             // Object is in a container...
             parent = this.GetObjectProperty("parent", id, false, false);
             parentId = this.GetObjectIdNoAlias(parent);
-
             // But if it's a surface then it's OK
             if (!this.IsYes(this.GetObjectProperty("surface", parentId, true, false)) && !this.IsYes(this.GetObjectProperty("opened", parentId, true, false))) {
                 // Parent has no "opened" property, so it's closed. Hence
                 // object can't be accessed
                 if (this._objs[parentId].ObjectAlias != "") {
                     parentDisplayName = this._objs[parentId].ObjectAlias;
-                } else {
+                }
+                else {
                     parentDisplayName = this._objs[parentId].ObjectName;
                 }
                 result.CanAccessObject = false;
                 result.ErrorMsg = "inside closed " + parentDisplayName;
                 return result;
             }
-
             // Is the parent itself accessible?
             if (colObjects == null) {
-                colObjects = new any();
+                colObjects = [];
             }
-            if (colObjects.Contains(parentId)) {
+            if (colObjects.indexOf(parentId) != -1) {
                 // We've already encountered this parent while recursively calling
                 // this function - we're in a loop of parents!
                 colObjects.forEach(function (objId) {
@@ -10327,7 +11020,7 @@ var LegacyGame = (function () {
                 result.CanAccessObject = false;
                 return result;
             }
-            colObjects.Add(parentId);
+            colObjects.push(parentId);
             return this.PlayerCanAccessObject(parentId, colObjects);
         }
         result.CanAccessObject = true;
@@ -10340,16 +11033,19 @@ var LegacyGame = (function () {
             if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
                 var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
                 if (PlaceID == 0) {
-                    this.LogASLError("No such room '" + this._rooms[roomId].Places[i].PlaceName + "'", 2 /* WarningError */);
+                    this.LogASLError("No such room '" + this._rooms[roomId].Places[i].PlaceName + "'", LogType.WarningError);
                     shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
-                } else {
+                }
+                else {
                     if (this._rooms[PlaceID].RoomAlias != "") {
                         shownPlaceName = this._rooms[PlaceID].RoomAlias;
-                    } else {
+                    }
+                    else {
                         shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                     }
                 }
-            } else {
+            }
+            else {
                 shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
             }
             var shownPrefix = this._rooms[roomId].Places[i].Prefix;
@@ -10361,6 +11057,7 @@ var LegacyGame = (function () {
         return placeList;
     };
     LegacyGame.prototype.SetUpExits = function () {
+        // Exits have to be set up after all the rooms have been initialised
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define room ")) {
                 var roomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
@@ -10373,10 +11070,11 @@ var LegacyGame = (function () {
                             j = j + 1;
                             if (this.BeginsWith(this._lines[j], "define ")) {
                                 nestedBlock = nestedBlock + 1;
-                            } else if (Trim(this._lines[j]) == "end define") {
+                            }
+                            else if (Trim(this._lines[j]) == "end define") {
                                 nestedBlock = nestedBlock - 1;
                             }
-                        } while(!(nestedBlock == 0));
+                        } while (!(nestedBlock == 0));
                     }
                     this._rooms[roomId].Exits.AddExitFromTag(this._lines[j]);
                 }
@@ -10388,23 +11086,24 @@ var LegacyGame = (function () {
         // e.g. Takes a tag of the form "room; north" and return's the north exit of room.
         var params = Split(tag, ";");
         if (UBound(params) < 1) {
-            this.LogASLError("No exit specified in '" + tag + "'", 2 /* WarningError */);
-            return new RoomExit();
+            this.LogASLError("No exit specified in '" + tag + "'", LogType.WarningError);
+            return new RoomExit(this);
         }
         var room = Trim(params[0]);
         var exitName = Trim(params[1]);
         var roomId = this.GetRoomID(room, this._nullContext);
         if (roomId == 0) {
-            this.LogASLError("Can't find room '" + room + "'", 2 /* WarningError */);
+            this.LogASLError("Can't find room '" + room + "'", LogType.WarningError);
             return null;
         }
         var exits = this._rooms[roomId].Exits;
         var dir = exits.GetDirectionEnum(exitName);
-        if (dir == -1 /* None */) {
+        if (dir == Direction.None) {
             if (exits.GetPlaces().ContainsKey(exitName)) {
                 return exits.GetPlaces().Item(exitName);
             }
-        } else {
+        }
+        else {
             return exits.GetDirectionExit(dir);
         }
         return null;
@@ -10413,7 +11112,7 @@ var LegacyGame = (function () {
         var roomExit;
         roomExit = this.FindExit(tag);
         if (roomExit == null) {
-            this.LogASLError("Can't find exit '" + tag + "'", 2 /* WarningError */);
+            this.LogASLError("Can't find exit '" + tag + "'", LogType.WarningError);
             return;
         }
         roomExit.SetIsLocked(lock);
@@ -10433,16 +11132,16 @@ var LegacyGame = (function () {
                 this.SetForeground(this.GetParameter(this._lines[i], this._nullContext));
             }
         }
-
         // Execute any startscript command that appears in the
         // "define game" block:
         this._autoIntro = true;
-
         // For ASL>=391, we only run startscripts if LoadMethod is normal (i.e. we haven't started
         // from a saved QSG file)
         if (this._gameAslVersion < 391 || (this._gameAslVersion >= 391 && this._gameLoadMethod == "normal")) {
             // for GameASLVersion 311 and later, any library startscript is executed first:
             if (this._gameAslVersion >= 311) {
+                // We go through the game block executing these in reverse order, as
+                // the statements which are included last should be executed first.
                 for (var i = gameBlock.EndLine - 1; i >= gameBlock.StartLine + 1; i--) {
                     if (this.BeginsWith(this._lines[i], "lib startscript ")) {
                         ctx = this._nullContext;
@@ -10454,19 +11153,18 @@ var LegacyGame = (function () {
                 if (this.BeginsWith(this._lines[i], "startscript ")) {
                     ctx = this._nullContext;
                     this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "startscript")), ctx);
-                } else if (this.BeginsWith(this._lines[i], "lib startscript ") && this._gameAslVersion < 311) {
+                }
+                else if (this.BeginsWith(this._lines[i], "lib startscript ") && this._gameAslVersion < 311) {
                     ctx = this._nullContext;
                     this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
                 }
             }
         }
         this._gameFullyLoaded = true;
-
         // Display intro text
         if (this._autoIntro && this._gameLoadMethod == "normal") {
             this.DisplayTextSection("intro", this._nullContext);
         }
-
         // Start game from room specified by "start" statement
         var startRoom = "";
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
@@ -10478,7 +11176,8 @@ var LegacyGame = (function () {
             ctx = this._nullContext;
             this.PlayGame(startRoom, ctx);
             this.Print("", this._nullContext);
-        } else {
+        }
+        else {
             this.UpdateItems(this._nullContext);
             this.Print("Restored saved game", this._nullContext);
             this.Print("", this._nullContext);
@@ -10491,96 +11190,54 @@ var LegacyGame = (function () {
             }
         }
         this.RaiseNextTimerTickRequest();
-        this.ChangeState(0 /* Ready */);
     };
     LegacyGame.prototype.Finish = function () {
         this.GameFinished();
     };
-    LegacyGame.prototype.Save = function (filename, html) {
-        this.SaveGame(filename);
-    };
-    LegacyGame.prototype.Save = function (html) {
-        return this.SaveGame(this._filename, false);
-    };
-    LegacyGame.prototype.SendCommand = function (command) {
-        this.SendCommand(command, 0, null);
-    };
-    LegacyGame.prototype.SendCommand = function (command, metadata) {
-        this.SendCommand(command, 0, metadata);
-    };
-    LegacyGame.prototype.SendCommand = function (command, elapsedTime, metadata) {
-        // The processing of commands is done in a separate thread, so things like the "enter" command can
-        // lock the thread while waiting for further input. After starting to process the command, we wait
-        // for something to happen before returning from the SendCommand call - either the command will have
-        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
-        // user input after hitting an "enter" script command.
-        if (!this._readyForCommand) {
-            return;
-        }
-        var runnerThread = {};
-        this.ChangeState(1 /* Working */);
-        runnerThread.Start(command);
-        WaitForStateChange(1 /* Working */);
+    LegacyGame.prototype.SendCommand = function (command, elapsedTime) {
+        this.ExecCommand(command, new Context());
         if (elapsedTime > 0) {
             this.Tick(elapsedTime);
-        } else {
-            this.RaiseNextTimerTickRequest();
         }
-    };
-    LegacyGame.prototype.ProcessCommandInNewThread = function (command) {
-        try  {
-            if (this.ExecCommand(command, new Context())) {
-                this.ChangeState(0 /* Ready */);
-            }
-        } catch (e) {
-            this.ChangeState(0 /* Ready */);
+        else {
+            this.RaiseNextTimerTickRequest();
         }
     };
     LegacyGame.prototype.Initialise = function (player) {
         this._player = player;
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
             return this.OpenGame(this._filename);
-        } else {
+        }
+        else {
             return this.InitialiseGame(this._filename);
         }
     };
     LegacyGame.prototype.GameFinished = function () {
         this._gameFinished = true;
-        this.ChangeState(3 /* Finished */);
-        this.Cleanup();
     };
     LegacyGame.prototype.GetResourcePath = function (filename) {
-        if (!this._resourceFile == null && this._resourceFile.Length > 0) {
+        if (!this._resourceFile == null && this._resourceFile.length > 0) {
             var extractResult = this.ExtractFile(filename);
             return extractResult;
         }
-        return System.IO.Path.Combine(this._gamePath, filename);
-    };
-    LegacyGame.prototype.Cleanup = function () {
-        this.DeleteDirectory(this._tempFolder);
-    };
-    LegacyGame.prototype.DeleteDirectory = function (dir) {
-        if (System.IO.Directory.Exists(dir)) {
-            try  {
-                System.IO.Directory.Delete(dir, true);
-            } catch (e) {
-            }
-        }
+        // TODO
+        //return System.IO.Path.Combine(this._gamePath, filename);
+        return null;
     };
     LegacyGame.prototype.GetLibraryLines = function (libName) {
         var libCode = null;
         libName = LCase(libName);
+        // TODO: Store standard libraries somewhere
         switch (libName) {
             case "stdverbs.lib":
-                libCode = My.Resources.stdverbs;
+            //libCode = My.Resources.stdverbs;
             case "standard.lib":
-                libCode = My.Resources.standard;
+            //libCode = My.Resources.standard;
             case "q3ext.qlb":
-                libCode = My.Resources.q3ext;
+            //libCode = My.Resources.q3ext;
             case "typelib.qlb":
-                libCode = My.Resources.Typelib;
+            //libCode = My.Resources.Typelib;
             case "net.lib":
-                libCode = My.Resources.net;
         }
         if (libCode == null) {
             return null;
@@ -10589,39 +11246,35 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.Tick = function (elapsedTime) {
         var i;
-        var timerScripts = {};
-        Debug.Print("Tick: " + elapsedTime.ToString);
+        var timerScripts = [];
         for (var i = 1; i <= this._numberTimers; i++) {
             if (this._timers[i].TimerActive) {
                 if (this._timers[i].BypassThisTurn) {
                     // don't trigger timer during the turn it was first enabled
                     this._timers[i].BypassThisTurn = false;
-                } else {
+                }
+                else {
                     this._timers[i].TimerTicks = this._timers[i].TimerTicks + elapsedTime;
                     if (this._timers[i].TimerTicks >= this._timers[i].TimerInterval) {
                         this._timers[i].TimerTicks = 0;
-                        timerScripts.Add(this._timers[i].TimerAction);
+                        timerScripts.push(this._timers[i].TimerAction);
                     }
                 }
             }
         }
-        if (timerScripts.Count > 0) {
-            var runnerThread = {};
-            this.ChangeState(1 /* Working */);
-            runnerThread.Start(timerScripts);
-            WaitForStateChange(1 /* Working */);
+        if (timerScripts.length > 0) {
+            this.RunTimer(timerScripts);
         }
         this.RaiseNextTimerTickRequest();
     };
-    LegacyGame.prototype.RunTimersInNewThread = function (scripts) {
-        var scriptList = scripts;
-        scriptList.forEach(function (script) {
-            try  {
+    LegacyGame.prototype.RunTimer = function (scripts) {
+        scripts.forEach(function (script) {
+            try {
                 this.ExecuteScript(script, this._nullContext);
-            } catch (e) {
+            }
+            catch (e) {
             }
         }, this);
-        this.ChangeState(0 /* Ready */);
     };
     LegacyGame.prototype.RaiseNextTimerTickRequest = function () {
         var anyTimerActive = false;
@@ -10641,17 +11294,8 @@ var LegacyGame = (function () {
         if (this._gameFinished) {
             nextTrigger = 0;
         }
-        Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString);
         // TODO...
     };
-    LegacyGame.prototype.ChangeState = function (newState) {
-        var acceptCommands = (newState == 0 /* Ready */);
-        this.ChangeState(newState, acceptCommands);
-    };
-    LegacyGame.prototype.ChangeState = function (newState, acceptCommands) {
-        this._readyForCommand = acceptCommands;
-    };
-
     LegacyGame.prototype.GetOriginalFilenameForQSG = function () {
         if (this._originalFilename != null) {
             return this._originalFilename;
@@ -10662,40 +11306,41 @@ var LegacyGame = (function () {
         // TODO
         return "";
     };
-
     LegacyGame.prototype.GetCASFileData = function (filename) {
         // TODO
         return "";
     };
-
     LegacyGame.prototype.DoPrint = function (text) {
         // TODO
         console.log(text);
     };
-
     LegacyGame.prototype.DoWait = function () {
         // TODO
     };
-
     LegacyGame.prototype.Pause = function (duration) {
         // TODO
     };
-
     LegacyGame.prototype.ExecuteIfAsk = function (question) {
         // TODO
         return true;
     };
-
     LegacyGame.prototype.UpdateExitsList = function () {
-        // TODO
+        // The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
+        // ASL4 code produces these separately. So we keep track of them separately and then
+        // merge to send to the Player.
+        var mergedList = this._compassExits.concat(this._gotoExits);
+        // TODO: RaiseEvent UpdateList(ListType.ExitsList, mergedList)
     };
-
     LegacyGame.prototype.Begin = function () {
         this.DoBegin();
     };
-
     LegacyGame.prototype.ShowMenu = function (menuData) {
         // TODO
+        return null;
+    };
+    LegacyGame.prototype.DecryptString = function (s) {
+        // TODO
+        return null;
     };
     return LegacyGame;
 })();
@@ -10764,8 +11409,8 @@ var RoomExit = (function () {
         return this.GetExitProperty("prefix");
     };
     RoomExit.prototype.SetScript = function (value) {
-        if (Len(Value) > 0) {
-            this.SetAction("script", Value);
+        if (Len(value) > 0) {
+            this.SetAction("script", value);
         }
     };
     RoomExit.prototype.IsScript = function () {
@@ -10773,7 +11418,7 @@ var RoomExit = (function () {
     };
     RoomExit.prototype.SetDirection = function (value) {
         this._direction = value;
-        if (value != LegacyGame.Direction.None) {
+        if (value != Direction.None) {
             this.UpdateObjectName();
         }
     };
@@ -10831,15 +11476,14 @@ var RoomExit = (function () {
         }
         parentRoom = this._game._objs[this._parent.GetObjId()].ObjectName;
         objName = parentRoom;
-        if (this._direction != LegacyGame.Direction.None) {
+        if (this._direction != Direction.None) {
             objName = objName + "." + this._parent.GetDirectionName(this._direction);
             this._game._objs[this._objId].ObjectAlias = this._parent.GetDirectionName(this._direction);
-        } else {
+        }
+        else {
             var lastExitIdString = this._game.GetObjectProperty("quest.lastexitid", (this._parent.GetObjId()), null, false);
-            if (lastExitIdString.Length == 0) {
+            if (lastExitIdString.length == 0) {
                 lastExitId = 0;
-            } else {
-                lastExitId = parseInt(lastExitId);
             }
             lastExitId = lastExitId + 1;
             this._game.AddToObjectProperties("quest.lastexitid=" + (lastExitId).toString(), (this._parent.GetObjId()), this._game._nullContext);
@@ -10847,10 +11491,12 @@ var RoomExit = (function () {
             if (this.GetRoomId() == 0) {
                 // the room we're pointing at might not exist, especially if this is a script exit
                 this._displayName = this.GetToRoom();
-            } else {
+            }
+            else {
                 if (Len(this._game._rooms[this.GetRoomId()].RoomAlias) > 0) {
                     this._displayName = this._game._rooms[this.GetRoomId()].RoomAlias;
-                } else {
+                }
+                else {
                     this._displayName = this.GetToRoom();
                 }
             }
@@ -10865,13 +11511,16 @@ var RoomExit = (function () {
         if (this.GetIsLocked()) {
             if (this.GetExitPropertyBool("lockmessage")) {
                 this._game.Print(this.GetExitProperty("lockmessage"), ctx);
-            } else {
-                this._game.PlayerErrorMessage(35 /* Locked */, ctx);
             }
-        } else {
+            else {
+                this._game.PlayerErrorMessage(PlayerError.Locked, ctx);
+            }
+        }
+        else {
             if (this.IsScript()) {
                 this.RunScript(ctx);
-            } else {
+            }
+            else {
                 this._game.PlayGame(this.GetToRoom(), ctx);
             }
         }
@@ -10889,8 +11538,9 @@ var RoomExits = (function () {
         if (this._directions.ContainsKey(direction)) {
             roomExit = this._directions.Item(direction);
             this._game._objs[roomExit.GetObjId()].Exists = true;
-        } else {
-            roomExit = new RoomExit();
+        }
+        else {
+            roomExit = new RoomExit(this._game);
             this._directions.Add(direction, roomExit);
         }
         this._regenerateAllExits = true;
@@ -10917,49 +11567,62 @@ var RoomExits = (function () {
         var param;
         if (this._game.BeginsWith(tag, "out ")) {
             tag = this._game.GetEverythingAfter(tag, "out ");
-            thisDir = 0 /* Out */;
-        } else if (this._game.BeginsWith(tag, "east ")) {
+            thisDir = Direction.Out;
+        }
+        else if (this._game.BeginsWith(tag, "east ")) {
             tag = this._game.GetEverythingAfter(tag, "east ");
-            thisDir = 3 /* East */;
-        } else if (this._game.BeginsWith(tag, "west ")) {
+            thisDir = Direction.East;
+        }
+        else if (this._game.BeginsWith(tag, "west ")) {
             tag = this._game.GetEverythingAfter(tag, "west ");
-            thisDir = 4 /* West */;
-        } else if (this._game.BeginsWith(tag, "north ")) {
+            thisDir = Direction.West;
+        }
+        else if (this._game.BeginsWith(tag, "north ")) {
             tag = this._game.GetEverythingAfter(tag, "north ");
-            thisDir = 1 /* North */;
-        } else if (this._game.BeginsWith(tag, "south ")) {
+            thisDir = Direction.North;
+        }
+        else if (this._game.BeginsWith(tag, "south ")) {
             tag = this._game.GetEverythingAfter(tag, "south ");
-            thisDir = 2 /* South */;
-        } else if (this._game.BeginsWith(tag, "northeast ")) {
+            thisDir = Direction.South;
+        }
+        else if (this._game.BeginsWith(tag, "northeast ")) {
             tag = this._game.GetEverythingAfter(tag, "northeast ");
-            thisDir = 6 /* NorthEast */;
-        } else if (this._game.BeginsWith(tag, "northwest ")) {
+            thisDir = Direction.NorthEast;
+        }
+        else if (this._game.BeginsWith(tag, "northwest ")) {
             tag = this._game.GetEverythingAfter(tag, "northwest ");
-            thisDir = 5 /* NorthWest */;
-        } else if (this._game.BeginsWith(tag, "southeast ")) {
+            thisDir = Direction.NorthWest;
+        }
+        else if (this._game.BeginsWith(tag, "southeast ")) {
             tag = this._game.GetEverythingAfter(tag, "southeast ");
-            thisDir = 8 /* SouthEast */;
-        } else if (this._game.BeginsWith(tag, "southwest ")) {
+            thisDir = Direction.SouthEast;
+        }
+        else if (this._game.BeginsWith(tag, "southwest ")) {
             tag = this._game.GetEverythingAfter(tag, "southwest ");
-            thisDir = 7 /* SouthWest */;
-        } else if (this._game.BeginsWith(tag, "up ")) {
+            thisDir = Direction.SouthWest;
+        }
+        else if (this._game.BeginsWith(tag, "up ")) {
             tag = this._game.GetEverythingAfter(tag, "up ");
-            thisDir = 9 /* Up */;
-        } else if (this._game.BeginsWith(tag, "down ")) {
+            thisDir = Direction.Up;
+        }
+        else if (this._game.BeginsWith(tag, "down ")) {
             tag = this._game.GetEverythingAfter(tag, "down ");
-            thisDir = 10 /* Down */;
-        } else if (this._game.BeginsWith(tag, "place ")) {
+            thisDir = Direction.Down;
+        }
+        else if (this._game.BeginsWith(tag, "place ")) {
             tag = this._game.GetEverythingAfter(tag, "place ");
-            thisDir = -1 /* None */;
-        } else {
+            thisDir = Direction.None;
+        }
+        else {
             return;
         }
-        if (thisDir != -1 /* None */) {
+        if (thisDir != Direction.None) {
             // This will reuse an existing Exit object if we're resetting
             // the destination of an existing directional exit.
             this.SetDirection(thisDir, roomExit);
-        } else {
-            roomExit = new RoomExit();
+        }
+        else {
+            roomExit = new RoomExit(this._game);
         }
         roomExit.SetParent(this);
         roomExit.SetDirection(thisDir);
@@ -10971,34 +11634,36 @@ var RoomExits = (function () {
             params = Split(this._game.GetParameter(tag, this._game._nullContext), ";");
             afterParam = Trim(Mid(tag, InStr(tag, ">") + 1));
             param = true;
-        } else {
+        }
+        else {
             afterParam = tag;
         }
         if (Len(afterParam) > 0) {
             // Script exit
             roomExit.SetScript(afterParam);
-            if (thisDir == -1 /* None */) {
+            if (thisDir == Direction.None) {
                 // A place exit with a script still has a ToRoom
                 roomExit.SetToRoom(params[0]);
-
                 // and may have a lock message
                 if (UBound(params) > 0) {
                     roomExit.SetLockMessage(params[1]);
                 }
-            } else {
+            }
+            else {
                 // A directional exit with a script may have no parameter.
                 // If it does have a parameter it will be a lock message.
                 if (param) {
                     roomExit.SetLockMessage(params[0]);
                 }
             }
-        } else {
+        }
+        else {
             roomExit.SetToRoom(params[0]);
             if (UBound(params) > 0) {
                 roomExit.SetLockMessage(params[1]);
             }
         }
-        if (thisDir == -1 /* None */) {
+        if (thisDir == Direction.None) {
             this.AddPlaceExit(roomExit);
         }
     };
@@ -11010,7 +11675,6 @@ var RoomExits = (function () {
         var params;
         var paramStart;
         var paramEnd;
-
         // Just need to convert e.g.
         //   create exit <src_room; dest_room> { script }
         // to
@@ -11032,16 +11696,17 @@ var RoomExits = (function () {
             if (UBound(params) == 0) {
                 // Script directional exit
                 this.AddExitFromTag(Trim(Left(script, paramStart - 1)) + " " + Trim(Mid(script, paramEnd + 1)));
-            } else {
+            }
+            else {
                 // "Normal" directional exit
                 this.AddExitFromTag(Trim(Left(script, paramStart - 1)) + " <" + Trim(params[1]) + ">");
             }
-        } else {
+        }
+        else {
             if (UBound(params) < 1) {
-                this._game.LogASLError("No exit destination given in 'create exit " + script + "'", 2 /* WarningError */);
+                this._game.LogASLError("No exit destination given in 'create exit " + script + "'", LogType.WarningError);
                 return;
             }
-
             // Place exit so add "place" tag at the beginning
             this.AddExitFromTag("place <" + Trim(params[1]) + Mid(script, paramEnd));
         }
@@ -11061,13 +11726,15 @@ var RoomExits = (function () {
         var oExit;
         if (this._game.BeginsWith(cmd, "go to ")) {
             cmd = this._game.GetEverythingAfter(cmd, "go to ");
-        } else if (this._game.BeginsWith(cmd, "go ")) {
+        }
+        else if (this._game.BeginsWith(cmd, "go ")) {
             cmd = this._game.GetEverythingAfter(cmd, "go ");
         }
         lExitID = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
         if (lExitID == -1) {
-            this._game.PlayerErrorMessage(15 /* BadPlace */, ctx);
-        } else {
+            this._game.PlayerErrorMessage(PlayerError.BadPlace, ctx);
+        }
+        else {
             oExit = this.GetExitByObjectId(lExitID);
             oExit.Go(ctx);
         }
@@ -11088,7 +11755,8 @@ var RoomExits = (function () {
             description = description + this.GetDirectionNameDisplay(roomExit);
             if (count < this.AllExits.Count - 1) {
                 description = description + ", ";
-            } else if (count == this.AllExits.Count - 1) {
+            }
+            else if (count == this.AllExits.Count - 1) {
                 description = description + " " + orString + " ";
             }
         }, this);
@@ -11099,27 +11767,27 @@ var RoomExits = (function () {
     };
     RoomExits.prototype.GetDirectionName = function (dir) {
         switch (dir) {
-            case 0 /* Out */:
+            case Direction.Out:
                 return "out";
-            case 1 /* North */:
+            case Direction.North:
                 return "north";
-            case 2 /* South */:
+            case Direction.South:
                 return "south";
-            case 3 /* East */:
+            case Direction.East:
                 return "east";
-            case 4 /* West */:
+            case Direction.West:
                 return "west";
-            case 5 /* NorthWest */:
+            case Direction.NorthWest:
                 return "northwest";
-            case 6 /* NorthEast */:
+            case Direction.NorthEast:
                 return "northeast";
-            case 7 /* SouthWest */:
+            case Direction.SouthWest:
                 return "southwest";
-            case 8 /* SouthEast */:
+            case Direction.SouthEast:
                 return "southeast";
-            case 9 /* Up */:
+            case Direction.Up:
                 return "up";
-            case 10 /* Down */:
+            case Direction.Down:
                 return "down";
         }
         return null;
@@ -11127,59 +11795,59 @@ var RoomExits = (function () {
     RoomExits.prototype.GetDirectionEnum = function (dir) {
         switch (dir) {
             case "out":
-                return 0 /* Out */;
+                return Direction.Out;
             case "north":
-                return 1 /* North */;
+                return Direction.North;
             case "south":
-                return 2 /* South */;
+                return Direction.South;
             case "east":
-                return 3 /* East */;
+                return Direction.East;
             case "west":
-                return 4 /* West */;
+                return Direction.West;
             case "northwest":
-                return 5 /* NorthWest */;
+                return Direction.NorthWest;
             case "northeast":
-                return 6 /* NorthEast */;
+                return Direction.NorthEast;
             case "southwest":
-                return 7 /* SouthWest */;
+                return Direction.SouthWest;
             case "southeast":
-                return 8 /* SouthEast */;
+                return Direction.SouthEast;
             case "up":
-                return 9 /* Up */;
+                return Direction.Up;
             case "down":
-                return 10 /* Down */;
+                return Direction.Down;
         }
-        return -1 /* None */;
+        return Direction.None;
     };
     RoomExits.prototype.GetDirectionToken = function (dir) {
         switch (dir) {
-            case 0 /* Out */:
+            case Direction.Out:
                 return "o";
-            case 1 /* North */:
+            case Direction.North:
                 return "n";
-            case 2 /* South */:
+            case Direction.South:
                 return "s";
-            case 3 /* East */:
+            case Direction.East:
                 return "e";
-            case 4 /* West */:
+            case Direction.West:
                 return "w";
-            case 5 /* NorthWest */:
+            case Direction.NorthWest:
                 return "b";
-            case 6 /* NorthEast */:
+            case Direction.NorthEast:
                 return "a";
-            case 7 /* SouthWest */:
+            case Direction.SouthWest:
                 return "d";
-            case 8 /* SouthEast */:
+            case Direction.SouthEast:
                 return "c";
-            case 9 /* Up */:
+            case Direction.Up:
                 return "u";
-            case 10 /* Down */:
+            case Direction.Down:
                 return "f";
         }
         return null;
     };
     RoomExits.prototype.GetDirectionNameDisplay = function (roomExit) {
-        if (roomExit.GetDirection() != -1 /* None */) {
+        if (roomExit.GetDirection() != Direction.None) {
             var dir = this.GetDirectionName(roomExit.GetDirection());
             return "|b" + dir + "|xb";
         }
@@ -11201,7 +11869,7 @@ var RoomExits = (function () {
         if (!this._regenerateAllExits) {
             return this._allExits;
         }
-        this._allExits = new any();
+        this._allExits = [];
         this._directions.Keys.forEach(function (dir) {
             var roomExit = this._directions.Item(dir);
             if (this._game._objs[roomExit.GetObjId()].Exists) {
@@ -11220,7 +11888,7 @@ var RoomExits = (function () {
         // Don't remove directional exits, as if they're recreated
         // a new object will be created which will have the same name
         // as the old one. This is because we can't delete objects yet...
-        if (roomExit.GetDirection() == -1 /* None */) {
+        if (roomExit.GetDirection() == Direction.None) {
             if (this._places.ContainsKey(roomExit.GetToRoom())) {
                 this._places.Remove(roomExit.GetToRoom());
             }
@@ -11242,27 +11910,27 @@ var TextFormatter = (function () {
         var codePosition;
         var finished = false;
         var nobr = false;
-        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />");
+        input = input.replace(/&/g, "&amp;").replace(/\</g, "&lt;").replace(/\>/g, "&gt;").replace(/\n/g, "<br />");
         if (Right(input, 3) == "|xn") {
             nobr = true;
             input = Left(input, Len(input) - 3);
         }
         do {
-            codePosition = input.IndexOf("|", position);
+            codePosition = input.indexOf("|", position);
             if (codePosition == -1) {
-                output += this.FormatText(input.Substring(position));
+                output += this.FormatText(input.substr(position));
                 finished = true;
-                // can also have size codes
-            } else {
-                output += this.FormatText(input.Substring(position, codePosition - position));
+            }
+            else {
+                output += this.FormatText(input.substr(position, codePosition - position));
                 position = codePosition + 1;
                 var oneCharCode = "";
                 var twoCharCode = "";
-                if (position < input.Length) {
-                    oneCharCode = input.Substring(position, 1);
+                if (position < input.length) {
+                    oneCharCode = input.substr(position, 1);
                 }
-                if (position < (input.Length - 1)) {
-                    twoCharCode = input.Substring(position, 2);
+                if (position < (input.length - 1)) {
+                    twoCharCode = input.substr(position, 2);
                 }
                 var foundCode = true;
                 switch (twoCharCode) {
@@ -11293,7 +11961,8 @@ var TextFormatter = (function () {
                 }
                 if (foundCode) {
                     position += 2;
-                } else {
+                }
+                else {
                     foundCode = true;
                     switch (oneCharCode) {
                         case "b":
@@ -11314,9 +11983,11 @@ var TextFormatter = (function () {
                 if (!foundCode) {
                     if (oneCharCode == "s") {
                         // |s00 |s10 etc.
-                        if (position < (input.Length - 2)) {
-                            var sizeCode = input.Substring(position + 1, 2);
-                            if (Integer.TryParse(sizeCode, this.fontSize)) {
+                        if (position < (input.length - 2)) {
+                            var sizeCode = input.substr(position + 1, 2);
+                            var fontSize = parseInt(sizeCode);
+                            if (!isNaN(fontSize)) {
+                                this.fontSize = fontSize;
                                 foundCode = true;
                                 position += 3;
                             }
@@ -11327,21 +11998,21 @@ var TextFormatter = (function () {
                     output += "|";
                 }
             }
-        } while(!(finished || position >= input.Length));
-        return String.Format("<output{0}>{1}</output>", nobr ? " nobr=\"true\"" : "", output);
+        } while (!(finished || position >= input.length));
+        return "<output" + (nobr ? " nobr=\"true\"" : "") + ">" + output + "</output>";
     };
     TextFormatter.prototype.FormatText = function (input) {
-        if (input.Length == 0) {
+        if (input.length == 0) {
             return input;
         }
         var output = "";
-        if (this.align.Length > 0) {
+        if (this.align.length > 0) {
             output += "<align align=\"" + this.align + "\">";
         }
         if (this.fontSize > 0) {
             output += "<font size=\"" + (this.fontSize).toString() + "\">";
         }
-        if (this.colour.Length > 0) {
+        if (this.colour.length > 0) {
             output += "<color color=\"" + this.colour + "\">";
         }
         if (this.bold) {
@@ -11363,13 +12034,13 @@ var TextFormatter = (function () {
         if (this.bold) {
             output += "</b>";
         }
-        if (this.colour.Length > 0) {
+        if (this.colour.length > 0) {
             output += "</color>";
         }
         if (this.fontSize > 0) {
             output += "</font>";
         }
-        if (this.align.Length > 0) {
+        if (this.align.length > 0) {
             output += "</align>";
         }
         return output;
