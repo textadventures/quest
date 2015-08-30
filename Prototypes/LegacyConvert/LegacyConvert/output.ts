@@ -98,7 +98,7 @@ function Val(input: string): number {
 }
 
 class MenuData {
-    constructor(caption?: string, options?: any, allowCancel?: boolean) {
+    constructor(caption: string, options: any, allowCancel: boolean) {
         // TODO
     }
 }
@@ -480,10 +480,10 @@ class LegacyGame {
     _onLoadScript: string;
     _numSkipCheckFiles: number;
     _skipCheckFile: string[];
-    _compassExits: any = {};
-    _gotoExits: any = {};
+    _compassExits: ListData[];
+    _gotoExits: ListData[];
     _textFormatter: TextFormatter = new TextFormatter();
-    _log: any = {};
+    _log: string[];
     _casFileData: string;
     _commandLock: Object = new Object();
     _stateLock: Object = new Object();
@@ -3587,7 +3587,7 @@ class LegacyGame {
                 }
                 menuItems.Add((i).toString(), descriptionText[i]);
             }
-            var mnu: MenuData = new MenuData();
+            var mnu: MenuData = new MenuData(question, menuItems, false);
             var response: string = this.ShowMenu(mnu);
             this._choiceNumber = parseInt(response);
             this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
@@ -5383,7 +5383,9 @@ class LegacyGame {
         }
     }
     PlayWav(parameter: string): void {
-        var params: string[] = parameter.split(";");
+        var params: string[] = parameter.split(";").map(function (p) {
+            return p.trim();
+        });
         var filename = params[0];
         var looped = (params.indexOf("loop") != -1);
         var sync = (params.indexOf("sync") != -1);
@@ -5410,7 +5412,7 @@ class LegacyGame {
         this._currentRoom = this.GetNextChunk();
         // OBJECTS
         var numData = parseInt(this.GetNextChunk());
-        var createdObjects: any = {};
+        var createdObjects: string[] = [];
         for (var i = 1; i <= numData; i++) {
             appliesTo = this.GetNextChunk();
             data = this.GetNextChunk();
@@ -5699,7 +5701,7 @@ class LegacyGame {
             }
         }
         this.Print("- |i" + prompt + "|xi", ctx);
-        var mnu: MenuData = new MenuData();
+        var mnu: MenuData = new MenuData(prompt, menuOptions, false);
         var choice: string = this.ShowMenu(mnu);
         this.Print("- " + menuOptions[choice] + "|n", ctx);
         return menuScript[choice];
@@ -5841,7 +5843,7 @@ class LegacyGame {
             }
         }
         if (exists) {
-            var windowMenu: MenuData = new MenuData();
+            var windowMenu: MenuData = new MenuData(menuTitle, menuOptions, false);
             this._player.SetWindowMenu(windowMenu);
         }
     }
@@ -7187,7 +7189,7 @@ class LegacyGame {
         return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
     }
     MakeRestoreDataV2(): string {
-        var lines: any = {};
+        var lines: string[] = [];
         var i: number;
         lines.Add("QUEST200.1");
         lines.Add(this.GetOriginalFilenameForQSG);
@@ -7702,7 +7704,7 @@ class LegacyGame {
         this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
         // SHOW OBJECTS *************************************************************
         visibleObjectsNoFormat = "";
-        var visibleObjectsList: any = {};
+        var visibleObjectsList: number[] = [];
         // of object IDs
         var count: number;
         for (var i = 1; i <= this._numberObjs; i++) {
@@ -9345,13 +9347,13 @@ class LegacyGame {
                 this.LogASLError("Unrecognised ASL version number.", LogType.WarningError);
             }
         }
-        this._listVerbs.Add(ListType.ExitsList, new any());
+        this._listVerbs.Add(ListType.ExitsList, ["Go to"]);
         if (this._gameAslVersion >= 280 && this._gameAslVersion < 390) {
-            this._listVerbs.Add(ListType.ObjectsList, new any());
-            this._listVerbs.Add(ListType.InventoryList, new any());
+            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Examine", "Take", "Speak to"]);
+            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Examine", "Use", "Drop"]);
         } else {
-            this._listVerbs.Add(ListType.ObjectsList, new any());
-            this._listVerbs.Add(ListType.InventoryList, new any());
+            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Take", "Speak to"]);
+            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Use", "Drop"]);
         }
         // Get the name of the game:
         this._gameName = this.GetParameter(this._lines[this.GetDefineBlock("game").StartLine], this._nullContext);
@@ -9755,7 +9757,7 @@ class LegacyGame {
         }
     }
     UpdateDirButtons(dirs: string, ctx: Context): void {
-        var compassExits: any = {};
+        var compassExits: ListData[] = [];
         if (InStr(dirs, "n") > 0) {
             this.AddCompassExit(compassExits, "north");
         }
@@ -9793,7 +9795,7 @@ class LegacyGame {
         this.UpdateExitsList();
     }
     AddCompassExit(exitList: any, name: string): void {
-        exitList.Add(new ListData());
+        exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
     }
     UpdateDoorways(roomId: number, ctx: Context): string {
         var roomDisplayText: string = "";
@@ -9922,7 +9924,7 @@ class LegacyGame {
     }
     UpdateItems(ctx: Context): void {
         // displays the items a player has
-        var invList: any = {};
+        var invList: ListData[] = [];
         if (!this._outPutOn) {
             return;
         }
@@ -9935,13 +9937,13 @@ class LegacyGame {
                     } else {
                         name = this._objs[i].ObjectAlias;
                     }
-                    invList.Add(new ListData());
+                    invList.push(new ListData(this.CapFirst(name), this._listVerbs[ListType.InventoryList]));
                 }
             }
         } else {
             for (var j = 1; j <= this._numberItems; j++) {
                 if (this._items[j].Got == true) {
-                    invList.Add(new ListData());
+                    invList.push(new ListData(this.CapFirst(this._items[j].Name), this._listVerbs[ListType.InventoryList]));
                 }
             }
         }
@@ -9988,8 +9990,8 @@ class LegacyGame {
         if (!this._outPutOn) {
             return;
         }
-        var objList: any = {};
-        var exitList: any = {};
+        var objList: ListData[] = [];
+        var exitList: ListData[] = [];
         //find the room
         var roomBlock: DefineBlock;
         roomBlock = this.DefineBlockParam("room", this._currentRoom);
@@ -10144,7 +10146,7 @@ class LegacyGame {
             }
         }
     }
-    PlayerCanAccessObject(id: number, colObjects: any = null): PlayerCanAccessObjectResult {
+    PlayerCanAccessObject(id: number, colObjects: number[] = null): PlayerCanAccessObjectResult {
         // Called to see if a player can interact with an object (take it, open it etc.).
         // For example, if the object is on a surface which is inside a closed container,
         // the object cannot be accessed.
@@ -10172,7 +10174,7 @@ class LegacyGame {
             }
             // Is the parent itself accessible?
             if (colObjects == null) {
-                colObjects = new any();
+                colObjects = [];
             }
             if (colObjects.Contains(parentId)) {
                 // We've already encountered this parent while recursively calling
@@ -10248,7 +10250,7 @@ class LegacyGame {
         var params = Split(tag, ";");
         if (UBound(params) < 1) {
             this.LogASLError("No exit specified in '" + tag + "'", LogType.WarningError);
-            return new RoomExit();
+            return new RoomExit(this);
         }
         var room = Trim(params[0]);
         var exitName = Trim(params[1]);
@@ -10437,7 +10439,7 @@ class LegacyGame {
     }
     Tick(elapsedTime: number): void {
         var i: number;
-        var timerScripts: any = {};
+        var timerScripts: stringp[] = [];
         Debug.Print("Tick: " + elapsedTime.ToString);
         for (var i = 1; i <= this._numberTimers; i++) {
             if (this._timers[i].TimerActive) {
@@ -10536,7 +10538,12 @@ class LegacyGame {
     }
     
     UpdateExitsList() {
-        // TODO
+        // The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
+        // ASL4 code produces these separately. So we keep track of them separately and then
+        // merge to send to the Player.
+        var mergedList: ListData[] = this._compassExits.concat(this._gotoExits);
+        
+        // TODO: RaiseEvent UpdateList(ListType.ExitsList, mergedList)
     }
     
     Begin() {
