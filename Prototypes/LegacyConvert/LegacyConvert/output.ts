@@ -388,7 +388,6 @@ class LegacyGame {
     _waitLock: Object = new Object();
     _readyForCommand: boolean = true;
     _gameLoading: boolean;
-    _random: Random = new Random();
     _tempFolder: string;
     _playerErrorMessageString: string;
     _listVerbs: any = {};
@@ -4866,7 +4865,7 @@ class LegacyGame {
             this.LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError);
             return "";
         } else if (name == "rand") {
-            return Str(Int(this._random.NextDouble() * (parseFloat(parameters[2]) - parseFloat(parameters[1]) + 1)) + parseFloat(parameters[1]));
+            return Str(Math.random() * (parseFloat(parameters[2]) - parseFloat(parameters[1]) + 1) + parseFloat(parameters[1]));
         } else if (name == "instr") {
             if (numParameters == 3) {
                 param3 = "";
