@@ -83,6 +83,84 @@ function Val(input: string): number {
     return parseInt(input);
 }
 
+class MenuData {
+    constructor(caption: string, options: any, allowCancel: boolean) {
+        // TODO
+    }
+}
+
+class Player {
+    ShowMenu(menuData: MenuData) {
+        
+    }
+    DoWait() {
+        
+    }
+    DoPause(ms: number) {
+        
+    }
+    ShowQuestion(caption: string) {
+        
+    }
+    PlaySound(filename: string, synchronous: boolean, looped: boolean) {
+        
+    }
+    StopSound() {
+        
+    }
+    ClearScreen() {
+        
+    }
+    SetBackground(colour: string) {
+        
+    }
+    SetForeground(colour: string) {
+        
+    }
+    SetFont(fontName: string) {
+        
+    }
+    SetFontSize(fontSize: string) {
+        
+    }
+    SetPanelContents(html: string) {
+        
+    }
+    SetWindowMenu(menuData: MenuData) {
+        
+    }
+    SetPanesVisible(data: string) {
+        
+    }
+    ShowPicture(filename: string) {
+        
+    }
+    GetURL(file: string) {
+        
+    }
+    LocationUpdated(location: string) {
+        
+    }
+    Speak(text: string) {
+        
+    }
+    GetNewGameFile(originalFilename: string, extensions: string) {
+        
+    }
+    RequestSave(html: string) {
+        
+    }
+    UpdateGameName(name: string) {
+        
+    }
+    Show(element: string) {
+        
+    }
+    SetStatusText(text: string) {
+        
+    }
+}
+
 enum State {Ready, Working, Waiting, Finished};
 class DefineBlock {
     StartLine: number;
@@ -394,7 +472,7 @@ class LegacyGame {
     _filename: string;
     _originalFilename: string;
     _data: InitGameData;
-    _player: IPlayer;
+    _player: Player;
     _gameFinished: boolean;
     _gameIsRestoring: boolean;
     _useStaticFrameForPictures: boolean;
@@ -10314,7 +10392,7 @@ class LegacyGame {
             this.ChangeState(State.Ready);
         }
     }
-    Initialise(player: IPlayer): boolean {
+    Initialise(player: Player): boolean {
         this._player = player;
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
             return this.OpenGame(this._filename);
