@@ -1275,17 +1275,22 @@ class LegacyGame {
         return this.Keyword2CAS("!unknown") + KWord + this.Keyword2CAS("!unknown");
     }
     LoadCASKeywords(): void {
+        // TODO - just hardcode as an object, e.g.
+        //   { "game"=1, "procedure"=2, "room"=3 }
+        // or better the other way round, as we only care about decompiling
+        
+        
         //Loads data required for conversion of CAS files
-        var questDatLines: string[] = this.GetResourceLines(My.Resources.QuestDAT);
-        questDatLines.forEach(function (line) {
-            if (Left(line, 1) != "#") {
-                //Lines isn't a comment - so parse it.
-                var scp = InStr(line, ";");
-                var keyword = Trim(Left(line, scp - 1));
-                var num = parseInt(Right(line, Len(line) - scp));
-                this._casKeywords[num] = keyword;
-            }
-        }, this);
+        //var questDatLines: string[] = this.GetResourceLines(My.Resources.QuestDAT);
+        //questDatLines.forEach(function (line) {
+        //    if (Left(line, 1) != "#") {
+        //        //Lines isn't a comment - so parse it.
+        //        var scp = InStr(line, ";");
+        //        var keyword = Trim(Left(line, scp - 1));
+        //        var num = parseInt(Right(line, Len(line) - scp));
+        //        this._casKeywords[num] = keyword;
+        //    }
+        //}, this);
     }
     GetResourceLines(res: number[]): string[] {
         var enc: any = {};
@@ -1325,23 +1330,22 @@ class LegacyGame {
         result = true;
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
-        if (LCase(Right(filename, 4)) == ".zip") {
-            this._originalFilename = filename;
-            filename = GetUnzippedFile(filename);
-            this._gamePath = System.IO.Path.GetDirectoryName(filename);
-        }
+        //  TODO: Handle zip files
+        //if (LCase(Right(filename, 4)) == ".zip") {
+        //    this._originalFilename = filename;
+        //    filename = GetUnzippedFile(filename);
+        //    this._gamePath = System.IO.Path.GetDirectoryName(filename);
+        //}
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
             //Read file into Lines array
             var fileData = this.GetFileData(filename);
-            var aslLines: string[] = fileData.Split(Chr(13));
+            var aslLines: string[] = fileData.replace(/\\r\\n/g, "\n").split("\n");
             this._lines = [];
             this._lines[0] = "";
-            for (var l = 1; l <= aslLines.Length; l++) {
-                this._lines[l] = aslLines[l - 1];
-                this._lines[l] = this.RemoveTabs(this._lines[l]);
-                this._lines[l] = this._lines[l].Trim(" ", Chr(10), Chr(13));
+            for (var l = 1; l <= aslLines.length; l++) {
+                this._lines[l] = this.RemoveTabs(aslLines[l - 1]).trim();
             }
-            l = aslLines.Length;
+            l = aslLines.length;
         } else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
@@ -1382,40 +1386,43 @@ class LegacyGame {
                         libResourceLines = null;
                         libFile = this._gamePath + libFileName;
                         this.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        libFileHandle = FreeFile();
-                        if (System.IO.File.Exists(libFile)) {
-                            FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        } else {
-                            // File was not found; try standard Quest libraries (stored here as resources)
-                            this.LogASLError("     - Library not found in game path.", LogType.Init);
-                            this.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
-                            libResourceLines = this.GetLibraryLines(libFileName);
-                            if (libResourceLines == null) {
-                                this.LogASLError("Library not found.", LogType.FatalError);
-                                this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
-                                return false;
-                            }
-                        }
-                        this.LogASLError("     - Found library, opening...", LogType.Init);
-                        libLines = 0;
-                        if (libResourceLines == null) {
-                            do {
-                                libLines = libLines + 1;
-                                libLine = LineInput(libFileHandle);
-                                libLine = this.RemoveTabs(libLine);
-                                if (!libCode) libCode = [];
-                                libCode[libLines] = Trim(libLine);
-                            } while (!(EOF(libFileHandle)));
-                            FileClose(libFileHandle);
-                        } else {
-                            libResourceLines.forEach(function (resLibLine) {
-                                libLines = libLines + 1;
-                                if (!libCode) libCode = [];
-                                libLine = resLibLine;
-                                libLine = this.RemoveTabs(libLine);
-                                libCode[libLines] = Trim(libLine);
-                            }, this);
-                        }
+                        
+                        // TODO: Handle libraries
+                        
+                        //libFileHandle = FreeFile();
+                        //if (System.IO.File.Exists(libFile)) {
+                        //    FileOpen(libFileHandle, libFile, OpenMode.Input);
+                        //} else {
+                        //    // File was not found; try standard Quest libraries (stored here as resources)
+                        //    this.LogASLError("     - Library not found in game path.", LogType.Init);
+                        //    this.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
+                        //    libResourceLines = this.GetLibraryLines(libFileName);
+                        //    if (libResourceLines == null) {
+                        //        this.LogASLError("Library not found.", LogType.FatalError);
+                        //        this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
+                        //        return false;
+                        //    }
+                        //}
+                        //this.LogASLError("     - Found library, opening...", LogType.Init);
+                        //libLines = 0;
+                        //if (libResourceLines == null) {
+                        //    do {
+                        //        libLines = libLines + 1;
+                        //        libLine = LineInput(libFileHandle);
+                        //        libLine = this.RemoveTabs(libLine);
+                        //        if (!libCode) libCode = [];
+                        //        libCode[libLines] = Trim(libLine);
+                        //    } while (!(EOF(libFileHandle)));
+                        //    FileClose(libFileHandle);
+                        //} else {
+                        //    libResourceLines.forEach(function (resLibLine) {
+                        //        libLines = libLines + 1;
+                        //        if (!libCode) libCode = [];
+                        //        libLine = resLibLine;
+                        //        libLine = this.RemoveTabs(libLine);
+                        //        libCode[libLines] = Trim(libLine);
+                        //    }, this);
+                        //}
                         var libVer = -1;
                         if (libCode[1] == "!library") {
                             for (var c = 1; c <= libLines; c++) {
@@ -1689,7 +1696,7 @@ class LegacyGame {
             if (this._gameAslVersion >= 320) {
                 newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
             } else {
-                if (!Left(retrParam, 9) == "~Internal") {
+                if (Left(retrParam, 9) != "~Internal") {
                     newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx);
                 } else {
                     newParam = retrParam;
