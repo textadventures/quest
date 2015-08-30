@@ -5257,7 +5257,7 @@ Public Class LegacyGame
     Friend Function GetRoomID(name As String, ctx As Context) As Integer
         If InStr(name, "[") > 0 Then
             Dim idx = GetArrayIndex(name, ctx)
-            name = name & Trim(Str(idx))
+            name = name & Trim(Str(idx.Index))
         End If
 
         For i = 1 To _numberRooms
@@ -5476,7 +5476,7 @@ Public Class LegacyGame
 
         If InStr(room, "[") > 0 Then
             Dim idx = GetArrayIndex(room, ctx)
-            room = room & Trim(Str(idx))
+            room = room & Trim(Str(idx.Index))
         End If
 
         If type = Thing.Character Then
