@@ -466,7 +466,6 @@ class LegacyGame {
     _waitLock: Object = new Object();
     _readyForCommand: boolean = true;
     _gameLoading: boolean;
-    _tempFolder: string;
     _playerErrorMessageString: string;
     _listVerbs: any = {};
     _filename: string;
@@ -479,8 +478,7 @@ class LegacyGame {
     _fileData: string;
     _fileDataPos: number;
     _questionResponse: boolean;
-    constructor(filename: string, originalFilename: string) {
-        this._tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString());
+    constructor(filename: string, originalFilename: string, data: InitGameData) {
         this.LoadCASKeywords();
         this._gameLoadMethod = "normal";
         this._filename = filename;
@@ -492,9 +490,6 @@ class LegacyGame {
         this._skipCheckFile[1] = "bargain.cas";
         this._skipCheckFile[2] = "easymoney.asl";
         this._skipCheckFile[3] = "musicvf1.cas";
-    }
-    constructor(data: InitGameData) {
-        this.New(null, null);
         this._data = data;
     }
     RemoveFormatting(s: string): string {
@@ -2901,16 +2896,18 @@ class LegacyGame {
             this.LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
-        var fileName = System.IO.Path.Combine(this._tempFolder, file);
-        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+        // TODO: Extract file from CAS
+        //var fileName = System.IO.Path.Combine(this._tempFolder, file);
+        //System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
         if (!extracted) {
             // Extract file from cached CAS data
             var fileData = Mid(this._casFileData, startPos, length);
             // Write file to temp dir
-            System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
+            //System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
             this._resources[resId].Extracted = true;
         }
-        return fileName;
+        //return fileName;
+        return null;
     }
     AddObjectAction(id: number, name: string, script: string, noUpdate: boolean = false): void {
         // Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
@@ -10411,18 +10408,6 @@ class LegacyGame {
             return extractResult;
         }
         return System.IO.Path.Combine(this._gamePath, filename);
-    }
-    Cleanup(): void {
-        this.DeleteDirectory(this._tempFolder);
-    }
-    DeleteDirectory(dir: string): void {
-        if (System.IO.Directory.Exists(dir)) {
-            try {
-                System.IO.Directory.Delete(dir, true);
-            }
-            catch (e) {
-            }
-        }
     }
     GetLibraryLines(libName: string): string[] {
         var libCode: number[] = null;
