@@ -1163,12 +1163,14 @@ class LegacyGame {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     }
     ConvertCasKeyword(casChar: string): string {
-        var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
-        var keyword: string = this._casKeywords[c];
-        if (keyword == "!cr") {
-            keyword = "\n";
-        }
-        return keyword;
+        // TODO
+        //var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
+        //var keyword: string = this._casKeywords[c];
+        //if (keyword == "!cr") {
+        //    keyword = "\n";
+        //}
+        //return keyword;
+        return null;
     }
     ConvertMultiLines(): void {
         //Goes through each section capable of containing
@@ -1224,12 +1226,11 @@ class LegacyGame {
         // Returns the start and end points of a named block
         var cache: any;
         var result = new DefineBlock();
-        param = "k" + param;
-        // protect against numeric block names
-        if (!this._defineBlockParams.ContainsKey(blockname)) {
+        param = "k" + param; // protect against numeric block names
+        if (!this._defineBlockParams[blockname]) {
             // Lazily create cache of define block params
-            cache = new any();
-            this._defineBlockParams.Add(blockname, cache);
+            cache = {};
+            this._defineBlockParams[blockname] = cache;
             for (var i = 1; i <= this._numberSections; i++) {
                 // get the word after "define", e.g. "procedure"
                 var blockType = this.GetEverythingAfter(this._lines[this._defineBlocks[i].StartLine], "define ");
@@ -1240,15 +1241,13 @@ class LegacyGame {
                 if (blockType == blockname) {
                     var blockKey = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext, false);
                     blockKey = "k" + blockKey;
-                    if (!cache.ContainsKey(blockKey)) {
-                        cache.Add(blockKey, this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine);
-                        // silently ignore duplicates
-                    } else {
+                    if (!cache[blockKey]) {
+                        cache[blockKey] = this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine;
                     }
                 }
             }
         } else {
-            cache = this._defineBlockParams.Item(blockname);
+            cache = this._defineBlockParams[blockname];
         }
         if (cache.ContainsKey(param)) {
             var blocks = Split(cache.Item(param), ",");
@@ -1322,7 +1321,7 @@ class LegacyGame {
         var typeLine: number;
         var defineCount: number;
         var curLine: number;
-        this._defineBlockParams = new any();
+        this._defineBlockParams = {};
         result = true;
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
