@@ -27,25 +27,30 @@
 		// quest.js will want a base url for image resources
 
 		var file = $_GET['file'] || 'test.aslx';
-
-		$.get(file, function (data) {
-			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
-				var game = new LegacyGame(file, file, null);
-				var player = new Player();
-				var onSuccess = function () {
-					console.log("success");
-				};
-				var onFailure = function () {
-					console.log("fail");
-				};
-				game.Initialise(player, onSuccess, onFailure);
-				console.log(game);
-			}
-			else {
+		
+		if (file.toLowerCase().substr(file.length - 4) === '.asl') {
+			var fileFetcher = function (filename, callback) {
+				$.get(filename, function (data) {
+					callback(data);
+				});
+			};
+			var game = new LegacyGame(file, file, null, fileFetcher);
+			var player = new Player();
+			var onSuccess = function () {
+				console.log("success");
+			};
+			var onFailure = function () {
+				console.log("fail");
+			};
+			game.Initialise(player, onSuccess, onFailure);
+			console.log(game);
+		}
+		else {
+			$.get(file, function (data) {
 				quest.load(data);
 				quest.begin();
-			}
-		});
+			});
+		}
 	</script>
 </head>
 <body>

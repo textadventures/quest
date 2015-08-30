@@ -190,6 +190,14 @@ interface Callback {
     (): void;
 }
 
+interface FileFetcherCallback {
+    (data: string): void;
+}
+
+interface FileFetcher {
+    (filename: string, callback: FileFetcherCallback): void;
+}
+
 enum State {Ready, Working, Waiting, Finished};
 class DefineBlock {
     StartLine: number;
@@ -507,7 +515,9 @@ class LegacyGame {
     _fileData: string;
     _fileDataPos: number;
     _questionResponse: boolean;
-    constructor(filename: string, originalFilename: string, data: InitGameData) {
+    _fileFetcher: FileFetcher;
+    
+    constructor(filename: string, originalFilename: string, data: InitGameData, fileFetcher: FileFetcher) {
         this.LoadCASKeywords();
         this._gameLoadMethod = "normal";
         this._filename = filename;
@@ -520,6 +530,7 @@ class LegacyGame {
         this._skipCheckFile[2] = "easymoney.asl";
         this._skipCheckFile[3] = "musicvf1.cas";
         this._data = data;
+        this._fileFetcher = fileFetcher;
     }
     RemoveFormatting(s: string): string {
         var code: string;
@@ -1326,10 +1337,8 @@ class LegacyGame {
         var resFile: string = enc.GetString(res);
         return Split(resFile, Chr(13) + Chr(10));
     }
-    ParseFile(filename: string): boolean {
-        //Returns FALSE if failed.
+    ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): void {
         var hasErrors: boolean;
-        var result: boolean;
         var libCode: string[] = [];
         var libLines: number;
         var ignoreMode: boolean;
@@ -1356,7 +1365,319 @@ class LegacyGame {
         var defineCount: number;
         var curLine: number;
         this._defineBlockParams = {};
-        result = true;
+        var self = this;
+        
+        var doParse = function () {
+            // Add libraries to end of code:
+            numLibraries = 0;
+            do {
+                libFoundThisSweep = false;
+                for (var i = l; i >= 1; i--) {
+                    // We search for includes backwards as a game might include
+                    // some-general.lib and then something-specific.lib which needs
+                    // something-general; if we include something-specific first,
+                    // then something-general afterwards, something-general's startscript
+                    // gets executed before something-specific's, as we execute the
+                    // lib startscripts backwards as well
+                    if (self.BeginsWith(self._lines[i], "!include ")) {
+                        libFileName = self.GetParameter(self._lines[i], self._nullContext);
+                        //Clear !include statement
+                        self._lines[i] = "";
+                        libraryAlreadyIncluded = false;
+                        self.LogASLError("Including library '" + libFileName + "'...", LogType.Init);
+                        for (var j = 1; j <= numLibraries; j++) {
+                            if (LCase(libFileName) == LCase(libraryList[j])) {
+                                libraryAlreadyIncluded = true;
+                                break;
+                            }
+                        }
+                        if (libraryAlreadyIncluded) {
+                            self.LogASLError("     - Library already included.", LogType.Init);
+                        } else {
+                            numLibraries = numLibraries + 1;
+                            if (!libraryList) libraryList = [];
+                            libraryList[numLibraries] = libFileName;
+                            libFoundThisSweep = true;
+                            libResourceLines = null;
+                            libFile = self._gamePath + libFileName;
+                            self.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
+                            
+                            // TODO: Handle libraries
+                            
+                            //libFileHandle = FreeFile();
+                            //if (System.IO.File.Exists(libFile)) {
+                            //    FileOpen(libFileHandle, libFile, OpenMode.Input);
+                            //} else {
+                            //    // File was not found; try standard Quest libraries (stored here as resources)
+                            //    self.LogASLError("     - Library not found in game path.", LogType.Init);
+                            //    self.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
+                            //    libResourceLines = self.GetLibraryLines(libFileName);
+                            //    if (libResourceLines == null) {
+                            //        self.LogASLError("Library not found.", LogType.FatalError);
+                            //        self._openErrorReport = self._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
+                            //        return false;
+                            //    }
+                            //}
+                            //self.LogASLError("     - Found library, opening...", LogType.Init);
+                            //libLines = 0;
+                            //if (libResourceLines == null) {
+                            //    do {
+                            //        libLines = libLines + 1;
+                            //        libLine = LineInput(libFileHandle);
+                            //        libLine = self.RemoveTabs(libLine);
+                            //        if (!libCode) libCode = [];
+                            //        libCode[libLines] = Trim(libLine);
+                            //    } while (!(EOF(libFileHandle)));
+                            //    FileClose(libFileHandle);
+                            //} else {
+                            //    libResourceLines.forEach(function (resLibLine) {
+                            //        libLines = libLines + 1;
+                            //        if (!libCode) libCode = [];
+                            //        libLine = resLibLine;
+                            //        libLine = self.RemoveTabs(libLine);
+                            //        libCode[libLines] = Trim(libLine);
+                            //    }, this);
+                            //}
+                            var libVer = -1;
+                            if (libCode[1] == "!library") {
+                                for (var c = 1; c <= libLines; c++) {
+                                    if (self.BeginsWith(libCode[c], "!asl-version ")) {
+                                        libVer = parseInt(self.GetParameter(libCode[c], self._nullContext));
+                                        break;
+                                    }
+                                }
+                            } else {
+                                //Old library
+                                libVer = 100;
+                            }
+                            if (libVer == -1) {
+                                self.LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError);
+                                libVer = 200;
+                            }
+                            ignoreMode = false;
+                            for (var c = 1; c <= libLines; c++) {
+                                if (self.BeginsWith(libCode[c], "!include ")) {
+                                    // Quest only honours !include in a library for asl-version
+                                    // 311 or later, as it ignored them in versions < 3.11
+                                    if (libVer >= 311) {
+                                        self.AddLine(libCode[c]);
+                                        l = l + 1;
+                                    }
+                                } else if (Left(libCode[c], 1) != "!" && Left(libCode[c], 1) != "'" && !ignoreMode) {
+                                    self.AddLine(libCode[c]);
+                                    l = l + 1;
+                                } else {
+                                    if (libCode[c] == "!addto game") {
+                                        inDefGameBlock = 0;
+                                        for (var d = 1; d <= UBound(self._lines); d++) {
+                                            if (self.BeginsWith(self._lines[d], "define game ")) {
+                                                inDefGameBlock = 1;
+                                            } else if (self.BeginsWith(self._lines[d], "define ")) {
+                                                if (inDefGameBlock != 0) {
+                                                    inDefGameBlock = inDefGameBlock + 1;
+                                                }
+                                            } else if (self._lines[d] == "end define" && inDefGameBlock == 1) {
+                                                gameLine = d;
+                                                d = UBound(self._lines);
+                                            } else if (self._lines[d] == "end define") {
+                                                if (inDefGameBlock != 0) {
+                                                    inDefGameBlock = inDefGameBlock - 1;
+                                                }
+                                            }
+                                        }
+                                        do {
+                                            c = c + 1;
+                                            if (!self.BeginsWith(libCode[c], "!end")) {
+                                                if (!self._lines) self._lines = [];
+                                                for (var d = UBound(self._lines); d >= gameLine + 1; d--) {
+                                                    self._lines[d] = self._lines[d - 1];
+                                                }
+                                                // startscript lines in a library are prepended
+                                                // with "lib" internally so they are executed
+                                                // before any startscript specified by the
+                                                // calling ASL file, for asl-versions 311 and
+                                                // later.
+                                                // similarly, commands in a library. NB: without this, lib
+                                                // verbs have lower precedence than game verbs anyway. Also
+                                                // lib commands have lower precedence than game commands. We
+                                                // only need this code so that game verbs have a higher
+                                                // precedence than lib commands.
+                                                // we also need it so that lib verbs have a higher
+                                                // precedence than lib commands.
+                                                if (libVer >= 311 && self.BeginsWith(libCode[c], "startscript ")) {
+                                                    self._lines[gameLine] = "lib " + libCode[c];
+                                                } else if (libVer >= 392 && (self.BeginsWith(libCode[c], "command ") || self.BeginsWith(libCode[c], "verb "))) {
+                                                    self._lines[gameLine] = "lib " + libCode[c];
+                                                } else {
+                                                    self._lines[gameLine] = libCode[c];
+                                                }
+                                                l = l + 1;
+                                                gameLine = gameLine + 1;
+                                            }
+                                        } while (!(self.BeginsWith(libCode[c], "!end")));
+                                        //ignore
+                                        //ignore
+                                        //ignore
+                                    } else if (libCode[c] == "!addto synonyms") {
+                                        inDefSynBlock = 0;
+                                        for (var d = 1; d <= UBound(self._lines); d++) {
+                                            if (self._lines[d] == "define synonyms") {
+                                                inDefSynBlock = 1;
+                                            } else if (self._lines[d] == "end define" && inDefSynBlock == 1) {
+                                                synLine = d;
+                                                d = UBound(self._lines);
+                                            }
+                                        }
+                                        if (inDefSynBlock == 0) {
+                                            //No "define synonyms" block in game - so add it
+                                            self.AddLine("define synonyms");
+                                            self.AddLine("end define");
+                                            synLine = UBound(self._lines);
+                                        }
+                                        do {
+                                            c = c + 1;
+                                            if (!self.BeginsWith(libCode[c], "!end")) {
+                                                if (!self._lines) self._lines = [];
+                                                for (var d = UBound(self._lines); d >= synLine + 1; d--) {
+                                                    self._lines[d] = self._lines[d - 1];
+                                                }
+                                                self._lines[synLine] = libCode[c];
+                                                l = l + 1;
+                                                synLine = synLine + 1;
+                                            }
+                                        } while (!(self.BeginsWith(libCode[c], "!end")));
+                                    } else if (self.BeginsWith(libCode[c], "!addto type ")) {
+                                        inDefTypeBlock = 0;
+                                        typeBlockName = LCase(self.GetParameter(libCode[c], self._nullContext));
+                                        for (var d = 1; d <= UBound(self._lines); d++) {
+                                            if (LCase(self._lines[d]) == "define type <" + typeBlockName + ">") {
+                                                inDefTypeBlock = 1;
+                                            } else if (self._lines[d] == "end define" && inDefTypeBlock == 1) {
+                                                typeLine = d;
+                                                d = UBound(self._lines);
+                                            }
+                                        }
+                                        if (inDefTypeBlock == 0) {
+                                            //No "define type (whatever)" block in game - so add it
+                                            self.AddLine("define type <" + typeBlockName + ">");
+                                            self.AddLine("end define");
+                                            typeLine = UBound(self._lines);
+                                        }
+                                        do {
+                                            c = c + 1;
+                                            if (c > libLines) {
+                                                break;
+                                            }
+                                            if (!self.BeginsWith(libCode[c], "!end")) {
+                                                if (!self._lines) self._lines = [];
+                                                for (var d = UBound(self._lines); d >= typeLine + 1; d--) {
+                                                    self._lines[d] = self._lines[d - 1];
+                                                }
+                                                self._lines[typeLine] = libCode[c];
+                                                l = l + 1;
+                                                typeLine = typeLine + 1;
+                                            }
+                                        } while (!(self.BeginsWith(libCode[c], "!end")));
+                                    } else if (libCode[c] == "!library") {
+                                    } else if (self.BeginsWith(libCode[c], "!asl-version ")) {
+                                        //ignore
+                                    } else if (self.BeginsWith(libCode[c], "'")) {
+                                        //ignore
+                                    } else if (self.BeginsWith(libCode[c], "!QDK")) {
+                                        //ignore
+                                        ignoreMode = true;
+                                    } else if (self.BeginsWith(libCode[c], "!end")) {
+                                        ignoreMode = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } while (!(libFoundThisSweep == false));
+            skipCheck = false;
+            var lastSlashPos: number;
+            var slashPos: number;
+            var curPos = 1;
+            do {
+                slashPos = InStr(curPos, filename, "\\");
+                if (slashPos != 0) {
+                    lastSlashPos = slashPos;
+                }
+                curPos = slashPos + 1;
+            } while (!(slashPos == 0));
+            var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
+            for (var i = 1; i <= self._numSkipCheckFiles; i++) {
+                if (filenameNoPath == self._skipCheckFile[i]) {
+                    skipCheck = true;
+                    break;
+                }
+            }
+            if (filenameNoPath == "musicvf1.cas") {
+                self._useStaticFrameForPictures = true;
+            }
+            //RemoveComments called within ConvertMultiLines
+            self.ConvertMultiLines();
+            if (!skipCheck) {
+                if (!self.CheckSections()) {
+                    return false;
+                }
+            }
+            self._numberSections = 1;
+            for (var i = 1; i <= l; i++) {
+                // find section beginning with 'define'
+                if (self.BeginsWith(self._lines[i], "define") == true) {
+                    // Now, go through until we reach an 'end define'. However, if we
+                    // encounter another 'define' there is a nested define. So, if we
+                    // encounter 'define' we increment the definecount. When we find an
+                    // 'end define' we decrement it. When definecount is zero, we have
+                    // found the end of the section.
+                    defineCount = 1;
+                    // Don't count the current line - we know it begins with 'define'...
+                    curLine = i + 1;
+                    do {
+                        if (self.BeginsWith(self._lines[curLine], "define") == true) {
+                            defineCount = defineCount + 1;
+                        } else if (self.BeginsWith(self._lines[curLine], "end define") == true) {
+                            defineCount = defineCount - 1;
+                        }
+                        curLine = curLine + 1;
+                    } while (!(defineCount == 0));
+                    curLine = curLine - 1;
+                    // Now, we know that the define section begins at i and ends at
+                    // curline. Remember where the section begins and ends:
+                    if (!self._defineBlocks) self._defineBlocks = [];
+                    self._defineBlocks[self._numberSections] = new DefineBlock();
+                    self._defineBlocks[self._numberSections].StartLine = i;
+                    self._defineBlocks[self._numberSections].EndLine = curLine;
+                    self._numberSections = self._numberSections + 1;
+                    i = curLine;
+                }
+            }
+            self._numberSections = self._numberSections - 1;
+            var gotGameBlock = false;
+            for (var i = 1; i <= self._numberSections; i++) {
+                if (self.BeginsWith(self._lines[self._defineBlocks[i].StartLine], "define game ")) {
+                    gotGameBlock = true;
+                    break;
+                }
+            }
+            if (!gotGameBlock) {
+                self._openErrorReport = self._openErrorReport + "No 'define game' block.\n";
+                return false;
+            }
+            self.ConvertMultiLineSections();
+            hasErrors = self.ConvertFriendlyIfs();
+            if (!hasErrors) {
+                hasErrors = self.ErrorCheck();
+            }
+            if (hasErrors) {
+                throw "Errors found in game file.";
+            }
+            self._saveGameFile = "";
+            onSuccess();
+        };
+        
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
         //  TODO: Handle zip files
@@ -1366,330 +1687,25 @@ class LegacyGame {
         //    this._gamePath = System.IO.Path.GetDirectoryName(filename);
         //}
         if (LCase(Right(filename, 4)) == ".asl" || LCase(Right(filename, 4)) == ".txt") {
-            //Read file into Lines array
-            var fileData = this.GetFileData(filename);
-            var aslLines: string[] = fileData.replace(/\r\n/g, "\n").split("\n");
-            this._lines = [];
-            this._lines[0] = "";
-            for (var l = 1; l <= aslLines.length; l++) {
-                this._lines[l] = this.RemoveTabs(aslLines[l - 1]).trim();
-            }
-            l = aslLines.length;
+            var self = this;
+            this.GetFileData(filename, function (fileData: string) {
+                var aslLines: string[] = fileData.replace(/\r\n/g, "\n").split("\n");
+                self._lines = [];
+                self._lines[0] = "";
+                for (var l = 1; l <= aslLines.length; l++) {
+                    self._lines[l] = self.RemoveTabs(aslLines[l - 1]).trim();
+                }
+                l = aslLines.length;
+                doParse();
+            });
         } else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
             l = UBound(this._lines);
+            doParse();
         } else {
             throw "Unrecognized file extension";
         }
-        // Add libraries to end of code:
-        numLibraries = 0;
-        do {
-            libFoundThisSweep = false;
-            for (var i = l; i >= 1; i--) {
-                // We search for includes backwards as a game might include
-                // some-general.lib and then something-specific.lib which needs
-                // something-general; if we include something-specific first,
-                // then something-general afterwards, something-general's startscript
-                // gets executed before something-specific's, as we execute the
-                // lib startscripts backwards as well
-                if (this.BeginsWith(this._lines[i], "!include ")) {
-                    libFileName = this.GetParameter(this._lines[i], this._nullContext);
-                    //Clear !include statement
-                    this._lines[i] = "";
-                    libraryAlreadyIncluded = false;
-                    this.LogASLError("Including library '" + libFileName + "'...", LogType.Init);
-                    for (var j = 1; j <= numLibraries; j++) {
-                        if (LCase(libFileName) == LCase(libraryList[j])) {
-                            libraryAlreadyIncluded = true;
-                            break;
-                        }
-                    }
-                    if (libraryAlreadyIncluded) {
-                        this.LogASLError("     - Library already included.", LogType.Init);
-                    } else {
-                        numLibraries = numLibraries + 1;
-                        if (!libraryList) libraryList = [];
-                        libraryList[numLibraries] = libFileName;
-                        libFoundThisSweep = true;
-                        libResourceLines = null;
-                        libFile = this._gamePath + libFileName;
-                        this.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        
-                        // TODO: Handle libraries
-                        
-                        //libFileHandle = FreeFile();
-                        //if (System.IO.File.Exists(libFile)) {
-                        //    FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        //} else {
-                        //    // File was not found; try standard Quest libraries (stored here as resources)
-                        //    this.LogASLError("     - Library not found in game path.", LogType.Init);
-                        //    this.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
-                        //    libResourceLines = this.GetLibraryLines(libFileName);
-                        //    if (libResourceLines == null) {
-                        //        this.LogASLError("Library not found.", LogType.FatalError);
-                        //        this._openErrorReport = this._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
-                        //        return false;
-                        //    }
-                        //}
-                        //this.LogASLError("     - Found library, opening...", LogType.Init);
-                        //libLines = 0;
-                        //if (libResourceLines == null) {
-                        //    do {
-                        //        libLines = libLines + 1;
-                        //        libLine = LineInput(libFileHandle);
-                        //        libLine = this.RemoveTabs(libLine);
-                        //        if (!libCode) libCode = [];
-                        //        libCode[libLines] = Trim(libLine);
-                        //    } while (!(EOF(libFileHandle)));
-                        //    FileClose(libFileHandle);
-                        //} else {
-                        //    libResourceLines.forEach(function (resLibLine) {
-                        //        libLines = libLines + 1;
-                        //        if (!libCode) libCode = [];
-                        //        libLine = resLibLine;
-                        //        libLine = this.RemoveTabs(libLine);
-                        //        libCode[libLines] = Trim(libLine);
-                        //    }, this);
-                        //}
-                        var libVer = -1;
-                        if (libCode[1] == "!library") {
-                            for (var c = 1; c <= libLines; c++) {
-                                if (this.BeginsWith(libCode[c], "!asl-version ")) {
-                                    libVer = parseInt(this.GetParameter(libCode[c], this._nullContext));
-                                    break;
-                                }
-                            }
-                        } else {
-                            //Old library
-                            libVer = 100;
-                        }
-                        if (libVer == -1) {
-                            this.LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError);
-                            libVer = 200;
-                        }
-                        ignoreMode = false;
-                        for (var c = 1; c <= libLines; c++) {
-                            if (this.BeginsWith(libCode[c], "!include ")) {
-                                // Quest only honours !include in a library for asl-version
-                                // 311 or later, as it ignored them in versions < 3.11
-                                if (libVer >= 311) {
-                                    this.AddLine(libCode[c]);
-                                    l = l + 1;
-                                }
-                            } else if (Left(libCode[c], 1) != "!" && Left(libCode[c], 1) != "'" && !ignoreMode) {
-                                this.AddLine(libCode[c]);
-                                l = l + 1;
-                            } else {
-                                if (libCode[c] == "!addto game") {
-                                    inDefGameBlock = 0;
-                                    for (var d = 1; d <= UBound(this._lines); d++) {
-                                        if (this.BeginsWith(this._lines[d], "define game ")) {
-                                            inDefGameBlock = 1;
-                                        } else if (this.BeginsWith(this._lines[d], "define ")) {
-                                            if (inDefGameBlock != 0) {
-                                                inDefGameBlock = inDefGameBlock + 1;
-                                            }
-                                        } else if (this._lines[d] == "end define" && inDefGameBlock == 1) {
-                                            gameLine = d;
-                                            d = UBound(this._lines);
-                                        } else if (this._lines[d] == "end define") {
-                                            if (inDefGameBlock != 0) {
-                                                inDefGameBlock = inDefGameBlock - 1;
-                                            }
-                                        }
-                                    }
-                                    do {
-                                        c = c + 1;
-                                        if (!this.BeginsWith(libCode[c], "!end")) {
-                                            if (!this._lines) this._lines = [];
-                                            for (var d = UBound(this._lines); d >= gameLine + 1; d--) {
-                                                this._lines[d] = this._lines[d - 1];
-                                            }
-                                            // startscript lines in a library are prepended
-                                            // with "lib" internally so they are executed
-                                            // before any startscript specified by the
-                                            // calling ASL file, for asl-versions 311 and
-                                            // later.
-                                            // similarly, commands in a library. NB: without this, lib
-                                            // verbs have lower precedence than game verbs anyway. Also
-                                            // lib commands have lower precedence than game commands. We
-                                            // only need this code so that game verbs have a higher
-                                            // precedence than lib commands.
-                                            // we also need it so that lib verbs have a higher
-                                            // precedence than lib commands.
-                                            if (libVer >= 311 && this.BeginsWith(libCode[c], "startscript ")) {
-                                                this._lines[gameLine] = "lib " + libCode[c];
-                                            } else if (libVer >= 392 && (this.BeginsWith(libCode[c], "command ") || this.BeginsWith(libCode[c], "verb "))) {
-                                                this._lines[gameLine] = "lib " + libCode[c];
-                                            } else {
-                                                this._lines[gameLine] = libCode[c];
-                                            }
-                                            l = l + 1;
-                                            gameLine = gameLine + 1;
-                                        }
-                                    } while (!(this.BeginsWith(libCode[c], "!end")));
-                                    //ignore
-                                    //ignore
-                                    //ignore
-                                } else if (libCode[c] == "!addto synonyms") {
-                                    inDefSynBlock = 0;
-                                    for (var d = 1; d <= UBound(this._lines); d++) {
-                                        if (this._lines[d] == "define synonyms") {
-                                            inDefSynBlock = 1;
-                                        } else if (this._lines[d] == "end define" && inDefSynBlock == 1) {
-                                            synLine = d;
-                                            d = UBound(this._lines);
-                                        }
-                                    }
-                                    if (inDefSynBlock == 0) {
-                                        //No "define synonyms" block in game - so add it
-                                        this.AddLine("define synonyms");
-                                        this.AddLine("end define");
-                                        synLine = UBound(this._lines);
-                                    }
-                                    do {
-                                        c = c + 1;
-                                        if (!this.BeginsWith(libCode[c], "!end")) {
-                                            if (!this._lines) this._lines = [];
-                                            for (var d = UBound(this._lines); d >= synLine + 1; d--) {
-                                                this._lines[d] = this._lines[d - 1];
-                                            }
-                                            this._lines[synLine] = libCode[c];
-                                            l = l + 1;
-                                            synLine = synLine + 1;
-                                        }
-                                    } while (!(this.BeginsWith(libCode[c], "!end")));
-                                } else if (this.BeginsWith(libCode[c], "!addto type ")) {
-                                    inDefTypeBlock = 0;
-                                    typeBlockName = LCase(this.GetParameter(libCode[c], this._nullContext));
-                                    for (var d = 1; d <= UBound(this._lines); d++) {
-                                        if (LCase(this._lines[d]) == "define type <" + typeBlockName + ">") {
-                                            inDefTypeBlock = 1;
-                                        } else if (this._lines[d] == "end define" && inDefTypeBlock == 1) {
-                                            typeLine = d;
-                                            d = UBound(this._lines);
-                                        }
-                                    }
-                                    if (inDefTypeBlock == 0) {
-                                        //No "define type (whatever)" block in game - so add it
-                                        this.AddLine("define type <" + typeBlockName + ">");
-                                        this.AddLine("end define");
-                                        typeLine = UBound(this._lines);
-                                    }
-                                    do {
-                                        c = c + 1;
-                                        if (c > libLines) {
-                                            break;
-                                        }
-                                        if (!this.BeginsWith(libCode[c], "!end")) {
-                                            if (!this._lines) this._lines = [];
-                                            for (var d = UBound(this._lines); d >= typeLine + 1; d--) {
-                                                this._lines[d] = this._lines[d - 1];
-                                            }
-                                            this._lines[typeLine] = libCode[c];
-                                            l = l + 1;
-                                            typeLine = typeLine + 1;
-                                        }
-                                    } while (!(this.BeginsWith(libCode[c], "!end")));
-                                } else if (libCode[c] == "!library") {
-                                } else if (this.BeginsWith(libCode[c], "!asl-version ")) {
-                                    //ignore
-                                } else if (this.BeginsWith(libCode[c], "'")) {
-                                    //ignore
-                                } else if (this.BeginsWith(libCode[c], "!QDK")) {
-                                    //ignore
-                                    ignoreMode = true;
-                                } else if (this.BeginsWith(libCode[c], "!end")) {
-                                    ignoreMode = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } while (!(libFoundThisSweep == false));
-        skipCheck = false;
-        var lastSlashPos: number;
-        var slashPos: number;
-        var curPos = 1;
-        do {
-            slashPos = InStr(curPos, filename, "\\");
-            if (slashPos != 0) {
-                lastSlashPos = slashPos;
-            }
-            curPos = slashPos + 1;
-        } while (!(slashPos == 0));
-        var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
-        for (var i = 1; i <= this._numSkipCheckFiles; i++) {
-            if (filenameNoPath == this._skipCheckFile[i]) {
-                skipCheck = true;
-                break;
-            }
-        }
-        if (filenameNoPath == "musicvf1.cas") {
-            this._useStaticFrameForPictures = true;
-        }
-        //RemoveComments called within ConvertMultiLines
-        this.ConvertMultiLines();
-        if (!skipCheck) {
-            if (!this.CheckSections()) {
-                return false;
-            }
-        }
-        this._numberSections = 1;
-        for (var i = 1; i <= l; i++) {
-            // find section beginning with 'define'
-            if (this.BeginsWith(this._lines[i], "define") == true) {
-                // Now, go through until we reach an 'end define'. However, if we
-                // encounter another 'define' there is a nested define. So, if we
-                // encounter 'define' we increment the definecount. When we find an
-                // 'end define' we decrement it. When definecount is zero, we have
-                // found the end of the section.
-                defineCount = 1;
-                // Don't count the current line - we know it begins with 'define'...
-                curLine = i + 1;
-                do {
-                    if (this.BeginsWith(this._lines[curLine], "define") == true) {
-                        defineCount = defineCount + 1;
-                    } else if (this.BeginsWith(this._lines[curLine], "end define") == true) {
-                        defineCount = defineCount - 1;
-                    }
-                    curLine = curLine + 1;
-                } while (!(defineCount == 0));
-                curLine = curLine - 1;
-                // Now, we know that the define section begins at i and ends at
-                // curline. Remember where the section begins and ends:
-                if (!this._defineBlocks) this._defineBlocks = [];
-                this._defineBlocks[this._numberSections] = new DefineBlock();
-                this._defineBlocks[this._numberSections].StartLine = i;
-                this._defineBlocks[this._numberSections].EndLine = curLine;
-                this._numberSections = this._numberSections + 1;
-                i = curLine;
-            }
-        }
-        this._numberSections = this._numberSections - 1;
-        var gotGameBlock = false;
-        for (var i = 1; i <= this._numberSections; i++) {
-            if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define game ")) {
-                gotGameBlock = true;
-                break;
-            }
-        }
-        if (!gotGameBlock) {
-            this._openErrorReport = this._openErrorReport + "No 'define game' block.\n";
-            return false;
-        }
-        this.ConvertMultiLineSections();
-        hasErrors = this.ConvertFriendlyIfs();
-        if (!hasErrors) {
-            hasErrors = this.ErrorCheck();
-        }
-        if (hasErrors) {
-            throw "Errors found in game file.";
-        }
-        this._saveGameFile = "";
-        return result;
     }
     LogASLError(err: string, type: LogType = LogType.Misc): void {
         if (type == LogType.FatalError) {
@@ -9318,11 +9334,85 @@ class LegacyGame {
         this._changeLogObjects.AppliesToType = AppliesTo.Object;
         this._outPutOn = true;
         this._useAbbreviations = true;
-        // TODO
-        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
-        this.LogASLError("Opening file " + filename, LogType.Init);
-        // Parse file and find where the 'define' blocks are:
-        if (this.ParseFile(filename) == false) {
+        var self = this;
+        
+        var doInitialise = function () {
+            // Check version
+            var gameBlock: DefineBlock;
+            gameBlock = self.GetDefineBlock("game");
+            var aslVersion = "//";
+            for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
+                if (self.BeginsWith(self._lines[i], "asl-version ")) {
+                    aslVersion = self.GetParameter(self._lines[i], self._nullContext);
+                }
+            }
+            if (aslVersion == "//") {
+                self.LogASLError("File contains no version header.", LogType.WarningError);
+            } else {
+                self._gameAslVersion = parseInt(aslVersion);
+                var recognisedVersions = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/";
+                if (InStr(recognisedVersions, "/" + aslVersion + "/") == 0) {
+                    self.LogASLError("Unrecognised ASL version number.", LogType.WarningError);
+                }
+            }
+            self._listVerbs.Add(ListType.ExitsList, ["Go to"]);
+            if (self._gameAslVersion >= 280 && self._gameAslVersion < 390) {
+                self._listVerbs.Add(ListType.ObjectsList, ["Look at", "Examine", "Take", "Speak to"]);
+                self._listVerbs.Add(ListType.InventoryList, ["Look at", "Examine", "Use", "Drop"]);
+            } else {
+                self._listVerbs.Add(ListType.ObjectsList, ["Look at", "Take", "Speak to"]);
+                self._listVerbs.Add(ListType.InventoryList, ["Look at", "Use", "Drop"]);
+            }
+            // Get the name of the game:
+            self._gameName = self.GetParameter(self._lines[self.GetDefineBlock("game").StartLine], self._nullContext);
+            self._player.UpdateGameName(self._gameName);
+            self._player.Show("Panes");
+            self._player.Show("Location");
+            self._player.Show("Command");
+            self.SetUpGameObject();
+            self.SetUpOptions();
+            for (var i = self.GetDefineBlock("game").StartLine + 1; i <= self.GetDefineBlock("game").EndLine - 1; i++) {
+                if (self.BeginsWith(self._lines[i], "beforesave ")) {
+                    self._beforeSaveScript = self.GetEverythingAfter(self._lines[i], "beforesave ");
+                } else if (self.BeginsWith(self._lines[i], "onload ")) {
+                    self._onLoadScript = self.GetEverythingAfter(self._lines[i], "onload ");
+                }
+            }
+            self.SetDefaultPlayerErrorMessages();
+            self.SetUpSynonyms();
+            self.SetUpRoomData();
+            if (self._gameAslVersion >= 410) {
+                self.SetUpExits();
+            }
+            if (self._gameAslVersion < 280) {
+                // Set up an array containing the names of all the items
+                // used in the game, based on the possitems statement
+                // of the 'define game' block.
+                self.SetUpItemArrays();
+            }
+            if (self._gameAslVersion < 280) {
+                // Now, go through the 'startitems' statement and set up
+                // the items array so we start with those items mentioned.
+                self.SetUpStartItems();
+            }
+            // Set up collectables.
+            self.SetUpCollectables();
+            self.SetUpDisplayVariables();
+            // Set up characters and objects.
+            self.SetUpCharObjectInfo();
+            self.SetUpUserDefinedPlayerErrors();
+            self.SetUpDefaultFonts();
+            self.SetUpTurnScript();
+            self.SetUpTimers();
+            self.SetUpMenus();
+            self._gameFileName = filename;
+            self.LogASLError("Finished loading file.", LogType.Init);
+            self._defaultRoomProperties = self.GetPropertiesInType("defaultroom", false);
+            self._defaultProperties = self.GetPropertiesInType("default", false);
+            onSuccess();
+        };
+        
+        var onParseFailure = function () {
             this.LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + filename;
             if (this._openErrorReport != "") {
@@ -9332,82 +9422,12 @@ class LegacyGame {
             }
             this.Print("Error: " + err, this._nullContext);
             onFailure();
-            return;
         }
-        // Check version
-        var gameBlock: DefineBlock;
-        gameBlock = this.GetDefineBlock("game");
-        var aslVersion = "//";
-        for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
-            if (this.BeginsWith(this._lines[i], "asl-version ")) {
-                aslVersion = this.GetParameter(this._lines[i], this._nullContext);
-            }
-        }
-        if (aslVersion == "//") {
-            this.LogASLError("File contains no version header.", LogType.WarningError);
-        } else {
-            this._gameAslVersion = parseInt(aslVersion);
-            var recognisedVersions = "/100/200/210/217/280/281/282/283/284/285/300/310/311/320/350/390/391/392/400/410/";
-            if (InStr(recognisedVersions, "/" + aslVersion + "/") == 0) {
-                this.LogASLError("Unrecognised ASL version number.", LogType.WarningError);
-            }
-        }
-        this._listVerbs.Add(ListType.ExitsList, ["Go to"]);
-        if (this._gameAslVersion >= 280 && this._gameAslVersion < 390) {
-            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Examine", "Take", "Speak to"]);
-            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Examine", "Use", "Drop"]);
-        } else {
-            this._listVerbs.Add(ListType.ObjectsList, ["Look at", "Take", "Speak to"]);
-            this._listVerbs.Add(ListType.InventoryList, ["Look at", "Use", "Drop"]);
-        }
-        // Get the name of the game:
-        this._gameName = this.GetParameter(this._lines[this.GetDefineBlock("game").StartLine], this._nullContext);
-        this._player.UpdateGameName(this._gameName);
-        this._player.Show("Panes");
-        this._player.Show("Location");
-        this._player.Show("Command");
-        this.SetUpGameObject();
-        this.SetUpOptions();
-        for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
-            if (this.BeginsWith(this._lines[i], "beforesave ")) {
-                this._beforeSaveScript = this.GetEverythingAfter(this._lines[i], "beforesave ");
-            } else if (this.BeginsWith(this._lines[i], "onload ")) {
-                this._onLoadScript = this.GetEverythingAfter(this._lines[i], "onload ");
-            }
-        }
-        this.SetDefaultPlayerErrorMessages();
-        this.SetUpSynonyms();
-        this.SetUpRoomData();
-        if (this._gameAslVersion >= 410) {
-            this.SetUpExits();
-        }
-        if (this._gameAslVersion < 280) {
-            // Set up an array containing the names of all the items
-            // used in the game, based on the possitems statement
-            // of the 'define game' block.
-            this.SetUpItemArrays();
-        }
-        if (this._gameAslVersion < 280) {
-            // Now, go through the 'startitems' statement and set up
-            // the items array so we start with those items mentioned.
-            this.SetUpStartItems();
-        }
-        // Set up collectables.
-        this.SetUpCollectables();
-        this.SetUpDisplayVariables();
-        // Set up characters and objects.
-        this.SetUpCharObjectInfo();
-        this.SetUpUserDefinedPlayerErrors();
-        this.SetUpDefaultFonts();
-        this.SetUpTurnScript();
-        this.SetUpTimers();
-        this.SetUpMenus();
-        this._gameFileName = filename;
-        this.LogASLError("Finished loading file.", LogType.Init);
-        this._defaultRoomProperties = this.GetPropertiesInType("defaultroom", false);
-        this._defaultProperties = this.GetPropertiesInType("default", false);
-        onSuccess();
-        return;
+        
+        // TODO
+        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
+        this.LogASLError("Opening file " + filename, LogType.Init);
+        this.ParseFile(filename, doInitialise, onFailure);
     }
     PlaceExist(placeName: string, ctx: Context): string {
         // Returns actual name of an available "place" exit, and if
@@ -10468,9 +10488,8 @@ class LegacyGame {
         }
         return this._gameFileName;
     }
-    GetFileData(filename: string) : string {
-        // TODO
-        return "";
+    GetFileData(filename: string, callback: FileFetcherCallback): void {
+        this._fileFetcher(filename, callback);
     }
     
     GetCASFileData(filename: string) : string {
