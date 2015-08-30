@@ -175,6 +175,17 @@ class Player {
     }
 }
 
+class ListData {
+    Text: string;
+    Verbs: string[];
+    constructor(text: string, verbs: string[]) {
+        this.Text = text;
+        this.Verbs = verbs;
+    }
+}
+
+enum ListType {InventoryList, ExitsList, ObjectsList};
+
 enum State {Ready, Working, Waiting, Finished};
 class DefineBlock {
     StartLine: number;
@@ -6635,10 +6646,10 @@ class LegacyGame {
     AddToObjectList(objList: any, exitList: any, name: string, type: Thing): void {
         name = this.CapFirst(name);
         if (type == Thing.Room) {
-            objList.Add(new ListData());
-            exitList.Add(new ListData());
+            objList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
+            exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
         } else {
-            objList.Add(new ListData());
+            objList.Add(new ListData(name, this._listVerbs[ListType.ObjectsList]));
         }
     }
     ExecExec(scriptLine: string, ctx: Context): void {
