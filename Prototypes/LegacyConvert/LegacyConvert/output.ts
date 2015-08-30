@@ -84,7 +84,7 @@ function Val(input: string): number {
 }
 
 class MenuData {
-    constructor(caption: string, options: any, allowCancel: boolean) {
+    constructor(caption?: string, options?: any, allowCancel?: boolean) {
         // TODO
     }
 }
@@ -3090,7 +3090,7 @@ class LegacyGame {
                 o.Properties[num].PropertyName = name;
                 o.Properties[num].PropertyValue = value;
             }
-            this.AddToObjectChangeLog(ChangeLog.AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
+            this.AddToObjectChangeLog(AppliesTo.Object, this._objs[id].ObjectName, name, "properties " + info);
             switch (name) {
                 case "alias":
                     if (o.IsRoom) {
@@ -3412,7 +3412,7 @@ class LegacyGame {
         if (IsNumeric(data)) {
             result.Index = parseInt(data);
         } else {
-            result.Index = parseInt(this.GetNumericContents(data, ctx));
+            result.Index = this.GetNumericContents(data, ctx);
         }
         result.Name = Left(varName, beginPos - 1);
         return result;
@@ -3842,7 +3842,7 @@ class LegacyGame {
                 for (var j = 1; j <= this._defaultRoomProperties.NumberActions; j++) {
                     this.AddObjectAction(this._numberObjs, this._defaultRoomProperties.Actions[j].ActionName, this._defaultRoomProperties.Actions[j].Script);
                 }
-                this._rooms[this._numberRooms].Exits = new RoomExits();
+                this._rooms[this._numberRooms].Exits = new RoomExits(this);
                 this._rooms[this._numberRooms].Exits.SetObjId(this._rooms[this._numberRooms].ObjId);
             }
         } else if (this.BeginsWith(data, "object ")) {
@@ -4371,7 +4371,7 @@ class LegacyGame {
         var op = Left(newVal, 1);
         var newValue = Trim(Right(newVal, Len(newVal) - 1));
         if (IsNumeric(newValue)) {
-            val = Conversion.Val(newValue);
+            val = Val(newValue);
         } else {
             val = this.GetCollectableAmount(newValue);
         }
@@ -4541,7 +4541,7 @@ class LegacyGame {
     GetRoomID(name: string, ctx: Context): number {
         if (InStr(name, "[") > 0) {
             var idx = this.GetArrayIndex(name, ctx);
-            name = name + Trim(Str(idx));
+            name = name + Trim(Str(idx.Index));
         }
         for (var i = 1; i <= this._numberRooms; i++) {
             if (LCase(this._rooms[i].RoomName) == LCase(name)) {
@@ -4604,16 +4604,17 @@ class LegacyGame {
         return result;
     }
     MakeRestoreData(): string {
-        var data: any = {};
+        var data: string[] = [];
         var objectData: ChangeType[] = [];
         var roomData: ChangeType[] = [];
         var numObjectData: number;
         var numRoomData: number;
         // <<< FILE HEADER DATA >>>
-        data.Append("QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0));
+        var header = "QUEST300" + Chr(0) + this.GetOriginalFilenameForQSG() + Chr(0);
+        data.push(header);
         // The start point for encrypted data is after the filename
-        var start = data.Length + 1;
-        data.Append(this._currentRoom + Chr(0));
+        var start = header.length + 1;
+        data.push(this._currentRoom + Chr(0));
         // Organise Change Log
         for (var i = 1; i <= this._gameChangeData.NumberChanges; i++) {
             if (this.BeginsWith(this._gameChangeData.ChangeData[i].AppliesTo, "object ")) {
@@ -4629,17 +4630,17 @@ class LegacyGame {
             }
         }
         // <<< OBJECT CREATE/CHANGE DATA >>>
-        data.Append(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
+        data.push(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
         for (var i = 1; i <= numObjectData; i++) {
-            data.Append(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
+            data.push(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
         }
         this._changeLogObjects.Changes.Keys.forEach(function (key) {
-            var appliesTo = Split(key, "#")(0);
+            var appliesTo = Split(key, "#")[0];
             var changeData = this._changeLogObjects.Changes.Item(key);
-            data.Append(appliesTo + Chr(0) + changeData + Chr(0));
+            data.push(appliesTo + Chr(0) + changeData + Chr(0));
         }, this);
         // <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
-        data.Append(Trim(Str(this._numberObjs)) + Chr(0));
+        data.push(Trim(Str(this._numberObjs)) + Chr(0));
         for (var i = 1; i <= this._numberObjs; i++) {
             var exists: string;
             var visible: string;
@@ -4653,53 +4654,53 @@ class LegacyGame {
             } else {
                 visible = Chr(0);
             }
-            data.Append(this._objs[i].ObjectName + Chr(0) + exists + visible + this._objs[i].ContainerRoom + Chr(0));
+            data.push(this._objs[i].ObjectName + Chr(0) + exists + visible + this._objs[i].ContainerRoom + Chr(0));
         }
         // <<< ROOM CREATE/CHANGE DATA >>>
-        data.Append(Trim(Str(numRoomData)) + Chr(0));
+        data.push(Trim(Str(numRoomData)) + Chr(0));
         for (var i = 1; i <= numRoomData; i++) {
-            data.Append(this.GetEverythingAfter(roomData[i].AppliesTo, "room ") + Chr(0) + roomData[i].Change + Chr(0));
+            data.push(this.GetEverythingAfter(roomData[i].AppliesTo, "room ") + Chr(0) + roomData[i].Change + Chr(0));
         }
         // <<< TIMER STATE DATA >>>
-        data.Append(Trim(Str(this._numberTimers)) + Chr(0));
+        data.push(Trim(Str(this._numberTimers)) + Chr(0));
         for (var i = 1; i <= this._numberTimers; i++) {
             var t = this._timers[i];
-            data.Append(t.TimerName + Chr(0));
+            data.push(t.TimerName + Chr(0));
             if (t.TimerActive) {
-                data.Append(Chr(1));
+                data.push(Chr(1));
             } else {
-                data.Append(Chr(0));
+                data.push(Chr(0));
             }
-            data.Append(Trim(Str(t.TimerInterval)) + Chr(0));
-            data.Append(Trim(Str(t.TimerTicks)) + Chr(0));
+            data.push(Trim(Str(t.TimerInterval)) + Chr(0));
+            data.push(Trim(Str(t.TimerTicks)) + Chr(0));
         }
         // <<< STRING VARIABLE DATA >>>
-        data.Append(Trim(Str(this._numberStringVariables)) + Chr(0));
+        data.push(Trim(Str(this._numberStringVariables)) + Chr(0));
         for (var i = 1; i <= this._numberStringVariables; i++) {
             var s = this._stringVariable[i];
-            data.Append(s.VariableName + Chr(0) + Trim(Str(s.VariableUBound)) + Chr(0));
+            data.push(s.VariableName + Chr(0) + Trim(Str(s.VariableUBound)) + Chr(0));
             for (var j = 0; j <= s.VariableUBound; j++) {
-                data.Append(s.VariableContents[j] + Chr(0));
+                data.push(s.VariableContents[j] + Chr(0));
             }
         }
         // <<< NUMERIC VARIABLE DATA >>>
-        data.Append(Trim(Str(this._numberNumericVariables)) + Chr(0));
+        data.push(Trim(Str(this._numberNumericVariables)) + Chr(0));
         for (var i = 1; i <= this._numberNumericVariables; i++) {
             var n = this._numericVariable[i];
-            data.Append(n.VariableName + Chr(0) + Trim(Str(n.VariableUBound)) + Chr(0));
+            data.push(n.VariableName + Chr(0) + Trim(Str(n.VariableUBound)) + Chr(0));
             for (var j = 0; j <= n.VariableUBound; j++) {
-                data.Append(n.VariableContents[j] + Chr(0));
+                data.push(n.VariableContents[j] + Chr(0));
             }
         }
         // Now encrypt data
         var dataString: string;
-        var newFileData: any = {};
-        dataString = data.ToString();
-        newFileData.Append(Left(dataString, start - 1));
+        var newFileData: string[] = [];
+        dataString = data.join("");
+        newFileData.push(Left(dataString, start - 1));
         for (var i = start; i <= Len(dataString); i++) {
-            newFileData.Append(Chr(255 - Asc(Mid(dataString, i, 1))));
+            newFileData.push(Chr(255 - Asc(Mid(dataString, i, 1))));
         }
-        return newFileData.ToString();
+        return newFileData.join("");
     }
     MoveThing(name: string, room: string, type: Thing, ctx: Context): void {
         var oldRoom: string = "";
