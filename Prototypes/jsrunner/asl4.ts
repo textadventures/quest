@@ -3314,7 +3314,7 @@ class LegacyGame {
                 twoPlaces = false;
                 secondPlace = "";
                 onlySeen = true;
-                var roomObjId = this._rooms[this.GetRoomID(this._objs[id].ContainerRoom, ctx)].ObjId;
+                var roomObjId = this._rooms[this.GetRoomId(this._objs[id].ContainerRoom, ctx)].ObjId;
                 if (this._objs[id].ContainerRoom == "inventory") {
                     isSeen = true;
                 } else {
@@ -3988,7 +3988,7 @@ class LegacyGame {
         } else {
             scrRoom = Trim(Left(newName, scp - 1));
         }
-        var srcId = this.GetRoomID(scrRoom, ctx);
+        var srcId = this.GetRoomId(scrRoom, ctx);
         if (srcId == 0) {
             this.LogASLError("No such room '" + scrRoom + "'", LogType.WarningError);
             return;
@@ -3998,7 +3998,7 @@ class LegacyGame {
             // created exits, so the destination doesn't necessarily have to exist.
             destRoom = Trim(Mid(newName, scp + 1));
             if (destRoom != "") {
-                destId = this.GetRoomID(destRoom, ctx);
+                destId = this.GetRoomId(destRoom, ctx);
                 if (destId == 0) {
                     this.LogASLError("No such room '" + destRoom + "'", LogType.WarningError);
                     return;
@@ -4091,7 +4091,7 @@ class LegacyGame {
             } else {
                 // Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 // for current room anyway.
-                this.UpdateDoorways(this.GetRoomID(this._currentRoom, ctx), ctx);
+                this.UpdateDoorways(this.GetRoomId(this._currentRoom, ctx), ctx);
             }
         }
     }
@@ -4627,7 +4627,7 @@ class LegacyGame {
         }
         return propertyList;
     }
-    GetRoomID(name: string, ctx: Context): number {
+    GetRoomId(name: string, ctx: Context): number {
         if (InStr(name, "[") > 0) {
             var idx = this.GetArrayIndex(name, ctx);
             name = name + Trim(Str(idx.Index));
@@ -6828,7 +6828,7 @@ class LegacyGame {
         var commandLine: string = "";
         var foundCommand = false;
         //First, check for a command in the current room block
-        var roomId = this.GetRoomID(this._currentRoom, ctx);
+        var roomId = this.GetRoomId(this._currentRoom, ctx);
         // RoomID is 0 if we have no rooms in the game. Unlikely, but we get an RTE otherwise.
         if (roomId != 0) {
             var r = this._rooms[roomId];
@@ -7781,7 +7781,7 @@ class LegacyGame {
         var objSuffix: string;
         var gameBlock = this.GetDefineBlock("game");
         this._currentRoom = room;
-        var id = this.GetRoomID(this._currentRoom, ctx);
+        var id = this.GetRoomId(this._currentRoom, ctx);
         if (id == 0) {
             return;
         }
@@ -8046,7 +8046,7 @@ class LegacyGame {
         var skipAfterTurn = false;
         input = this.RemoveFormatting(input);
         var oldBadCmdBefore = this._badCmdBefore;
-        var roomID = this.GetRoomID(this._currentRoom, ctx);
+        var roomID = this.GetRoomId(this._currentRoom, ctx);
         var enteredHelpCommand = false;
         if (input == "") {
             return true;
@@ -8172,7 +8172,7 @@ class LegacyGame {
                 this._lastIt = 0;
             } else if (this.CmdStartsWith(input, "go ")) {
                 if (this._gameAslVersion >= 410) {
-                    this._rooms[this.GetRoomID(this._currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
+                    this._rooms[this.GetRoomId(this._currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
                 } else {
                     parameter = this.GetEverythingAfter(input, "go ");
                     if (parameter == "out") {
@@ -8743,7 +8743,7 @@ class LegacyGame {
         var useItem: string;
         useLine = Trim(this.GetEverythingAfter(useLine, "use "));
         var roomId: number;
-        roomId = this.GetRoomID(this._currentRoom, ctx);
+        roomId = this.GetRoomId(this._currentRoom, ctx);
         var onWithPos = InStr(useLine, " on ");
         if (onWithPos == 0) {
             onWithPos = InStr(useLine, " with ");
@@ -9336,7 +9336,7 @@ class LegacyGame {
         // leaves the current room in direction specified by
         // 'direction'
         var dirData: TextAction = new TextAction();
-        var id = this.GetRoomID(this._currentRoom, ctx);
+        var id = this.GetRoomId(this._currentRoom, ctx);
         if (id == 0) {
             return;
         }
@@ -9530,7 +9530,7 @@ class LegacyGame {
         // Returns actual name of an available "place" exit, and if
         // script is executed on going in that direction, that script
         // is returned after a ";"
-        var roomId = this.GetRoomID(this._currentRoom, ctx);
+        var roomId = this.GetRoomId(this._currentRoom, ctx);
         var foundPlace = false;
         var scriptPresent = false;
         // check if place is available
@@ -9543,7 +9543,7 @@ class LegacyGame {
             }
             var checkPlaceName = checkPlace;
             if (this._gameAslVersion >= 311 && r.Places[i].Script == "") {
-                var destRoomId = this.GetRoomID(checkPlace, ctx);
+                var destRoomId = this.GetRoomId(checkPlace, ctx);
                 if (destRoomId != 0) {
                     if (this._rooms[destRoomId].RoomAlias != "") {
                         checkPlaceName = this._rooms[destRoomId].RoomAlias;
@@ -9613,7 +9613,7 @@ class LegacyGame {
     }
     PlayGame(room: string, ctx: Context): void {
         //plays the specified room
-        var id = this.GetRoomID(room, ctx);
+        var id = this.GetRoomId(room, ctx);
         if (id == 0) {
             this.LogASLError("No such room '" + room + "'", LogType.WarningError);
             return;
@@ -9987,7 +9987,7 @@ class LegacyGame {
             }
             if (outPlace != "") {
                 //see if outside has an alias
-                var outPlaceAlias = this._rooms[this.GetRoomID(outPlaceName, ctx)].RoomAlias;
+                var outPlaceAlias = this._rooms[this.GetRoomId(outPlaceName, ctx)].RoomAlias;
                 if (outPlaceAlias == "") {
                     outPlaceAlias = outPlace;
                 } else {
@@ -10159,7 +10159,7 @@ class LegacyGame {
         }
         //FIND DOORWAYS
         var roomId: number;
-        roomId = this.GetRoomID(this._currentRoom, ctx);
+        roomId = this.GetRoomId(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
                 var places = this._rooms[roomId].Exits.GetPlaces();
@@ -10171,12 +10171,12 @@ class LegacyGame {
                 var r = this._rooms[roomId];
                 for (var i = 1; i <= r.NumberPlaces; i++) {
                     if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
-                        var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
-                        if (PlaceID == 0) {
+                        var placeId = this.GetRoomId(this._rooms[roomId].Places[i].PlaceName, ctx);
+                        if (placeId == 0) {
                             shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                         } else {
-                            if (this._rooms[PlaceID].RoomAlias != "") {
-                                shownPlaceName = this._rooms[PlaceID].RoomAlias;
+                            if (this._rooms[placeId].RoomAlias != "") {
+                                shownPlaceName = this._rooms[placeId].RoomAlias;
                             } else {
                                 shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                             }
@@ -10315,13 +10315,13 @@ class LegacyGame {
         var shownPlaceName: string;
         for (var i = 1; i <= this._rooms[roomId].NumberPlaces; i++) {
             if (this._gameAslVersion >= 311 && this._rooms[roomId].Places[i].Script == "") {
-                var PlaceID = this.GetRoomID(this._rooms[roomId].Places[i].PlaceName, ctx);
-                if (PlaceID == 0) {
+                var placeId = this.GetRoomId(this._rooms[roomId].Places[i].PlaceName, ctx);
+                if (placeId == 0) {
                     this.LogASLError("No such room '" + this._rooms[roomId].Places[i].PlaceName + "'", LogType.WarningError);
                     shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                 } else {
-                    if (this._rooms[PlaceID].RoomAlias != "") {
-                        shownPlaceName = this._rooms[PlaceID].RoomAlias;
+                    if (this._rooms[placeId].RoomAlias != "") {
+                        shownPlaceName = this._rooms[placeId].RoomAlias;
                     } else {
                         shownPlaceName = this._rooms[roomId].Places[i].PlaceName;
                     }
@@ -10342,7 +10342,7 @@ class LegacyGame {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define room ")) {
                 var roomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
-                var roomId = this.GetRoomID(roomName, this._nullContext);
+                var roomId = this.GetRoomId(roomName, this._nullContext);
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "define ")) {
                         //skip nested blocks
@@ -10371,7 +10371,7 @@ class LegacyGame {
         }
         var room = Trim(params[0]);
         var exitName = Trim(params[1]);
-        var roomId = this.GetRoomID(room, this._nullContext);
+        var roomId = this.GetRoomId(room, this._nullContext);
         if (roomId == 0) {
             this.LogASLError("Can't find room '" + room + "'", LogType.WarningError);
             return null;
@@ -10577,7 +10577,7 @@ class LegacyGame {
         }
         // TODO...
     }
-    m_menuResponse: string;
+
     GetOriginalFilenameForQSG(): string {
         if (this._originalFilename != null) {
             return this._originalFilename;
@@ -10731,7 +10731,7 @@ class RoomExit {
     }
     GetRoomId(): number {
         if (this._roomId == 0) {
-            this._roomId = this._game.GetRoomID(this.GetToRoom(), this._game._nullContext);
+            this._roomId = this._game.GetRoomId(this.GetToRoom(), this._game._nullContext);
         }
         return this._roomId;
     }
@@ -11002,19 +11002,19 @@ class RoomExits {
     }
     ExecuteGo(cmd: string, ctx: Context): void {
         // This will handle "n", "go east", "go [to] library" etc.
-        var lExitID: number;
-        var oExit: RoomExit;
+        var exitId: number;
+        var roomExit: RoomExit;
         if (this._game.BeginsWith(cmd, "go to ")) {
             cmd = this._game.GetEverythingAfter(cmd, "go to ");
         } else if (this._game.BeginsWith(cmd, "go ")) {
             cmd = this._game.GetEverythingAfter(cmd, "go ");
         }
-        lExitID = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
-        if (lExitID == -1) {
+        exitId = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
+        if (exitId == -1) {
             this._game.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         } else {
-            oExit = this.GetExitByObjectId(lExitID);
-            oExit.Go(ctx);
+            roomExit = this.GetExitByObjectId(exitId);
+            roomExit.Go(ctx);
         }
     }
     GetAvailableDirectionsDescription(description: string, list: string): void {
@@ -11127,11 +11127,11 @@ class RoomExits {
             var dir = this.GetDirectionName(roomExit.GetDirection());
             return "|b" + dir + "|xb";
         }
-        var sDisplay = "|b" + roomExit.GetDisplayName() + "|xb";
+        var display = "|b" + roomExit.GetDisplayName() + "|xb";
         if (Len(roomExit.GetPrefix()) > 0) {
-            sDisplay = roomExit.GetPrefix() + " " + sDisplay;
+            display = roomExit.GetPrefix() + " " + display;
         }
-        return "to " + sDisplay;
+        return "to " + display;
     }
     GetExitByObjectId(id: number): RoomExit {
         this.AllExits().forEach(function (roomExit) {
