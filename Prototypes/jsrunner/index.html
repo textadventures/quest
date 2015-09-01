@@ -44,8 +44,10 @@
 				var onFailure = function () {
 					console.log("fail");
 				};
+				quest.sendCommand = function (command, elapsedTime) {
+					game.SendCommand(command, elapsedTime);
+				}
 				game.Initialise(player, onSuccess, onFailure);
-				console.log(game);
 			}
 			else {
 				$.get(file, function (data) {

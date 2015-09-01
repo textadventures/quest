@@ -11340,7 +11340,7 @@ class TextFormatter {
             output += '<div style="text-align:' + this.align + '">';
         }
         if (this.fontSize > 0) {
-            output += '<span style="font-size:' + (this.fontSize).toString() + 'px">';
+            output += '<span style="font-size:' + (this.fontSize).toString() + 'pt">';
         }
         if (this.colour.length > 0) {
             output += '<span style="color:' + this.colour + '">';
