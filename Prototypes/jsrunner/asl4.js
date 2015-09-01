@@ -275,6 +275,8 @@ var PlaceType = (function () {
 })();
 var RoomType = (function () {
     function RoomType() {
+        this.RoomName = "";
+        this.RoomAlias = "";
         this.Description = new TextAction();
         this.Out = new ScriptText();
         this.East = new TextAction();
@@ -287,13 +289,37 @@ var RoomType = (function () {
         this.SouthWest = new TextAction();
         this.Up = new TextAction();
         this.Down = new TextAction();
+        this.InDescription = "";
+        this.Look = "";
+        this.Prefix = "";
+        this.Script = "";
+        this.BeforeTurnScript = "";
+        this.AfterTurnScript = "";
     }
     return RoomType;
 })();
 var ObjectType = (function () {
     function ObjectType() {
+        this.ObjectName = "";
+        this.ObjectAlias = "";
+        this.Detail = "";
+        this.ContainerRoom = "";
+        this.Prefix = "";
+        this.Suffix = "";
+        this.Gender = "";
+        this.Article = "";
+        this.GainScript = "";
+        this.LoseScript = "";
+        this.NumberProperties = 0;
         this.Speak = new TextAction();
         this.Take = new TextAction();
+        this.CorresRoom = "";
+        this.UseAnything = "";
+        this.UseOnAnything = "";
+        this.Use = "";
+        this.GiveAnything = "";
+        this.GiveToAnything = "";
+        this.DisplayType = "";
         this.AddScript = new TextAction();
         this.RemoveScript = new TextAction();
         this.OpenScript = new TextAction();
@@ -1303,7 +1329,7 @@ var LegacyGame = (function () {
         else {
             cache = this._defineBlockParams[blockname];
         }
-        if (cache.ContainsKey(param)) {
+        if (cache[param]) {
             var blocks = Split(cache.Item(param), ",");
             result.StartLine = parseInt(blocks[0]);
             result.EndLine = parseInt(blocks[1]);
@@ -4200,7 +4226,7 @@ var LegacyGame = (function () {
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
-                exists = this._rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
+                exists = !!this._rooms[srcId].Exits.GetPlaces()[destRoom];
             }
             else {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
@@ -11183,7 +11209,7 @@ var LegacyGame = (function () {
         var exits = this._rooms[roomId].Exits;
         var dir = exits.GetDirectionEnum(exitName);
         if (dir == Direction.None) {
-            if (exits.GetPlaces().ContainsKey(exitName)) {
+            if (exits.GetPlaces()[exitName]) {
                 return exits.GetPlaces().Item(exitName);
             }
         }
@@ -11634,7 +11660,7 @@ var RoomExits = (function () {
         return roomExit;
     };
     RoomExits.prototype.GetDirectionExit = function (direction) {
-        if (this._directions.ContainsKey(direction)) {
+        if (this._directions[direction]) {
             return this._directions.Item(direction);
         }
         return null;
@@ -11973,8 +11999,8 @@ var RoomExits = (function () {
         // a new object will be created which will have the same name
         // as the old one. This is because we can't delete objects yet...
         if (roomExit.GetDirection() == Direction.None) {
-            if (this._places.ContainsKey(roomExit.GetToRoom())) {
-                this._places.Remove(roomExit.GetToRoom());
+            if (this._places[roomExit.GetToRoom()]) {
+                delete this._places[roomExit.GetToRoom()];
             }
         }
         this._game._objs[roomExit.GetObjId()].Exists = false;

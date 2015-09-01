@@ -292,8 +292,8 @@ class PlaceType {
     Script: string;
 }
 class RoomType {
-    RoomName: string;
-    RoomAlias: string;
+    RoomName: string = "";
+    RoomAlias: string = "";
     Commands: UserDefinedCommandType[];
     NumberCommands: number;
     Description: TextAction = new TextAction();
@@ -308,56 +308,56 @@ class RoomType {
     SouthWest: TextAction = new TextAction();
     Up: TextAction = new TextAction();
     Down: TextAction = new TextAction();
-    InDescription: string;
-    Look: string;
+    InDescription: string = "";
+    Look: string = "";
     Places: PlaceType[];
     NumberPlaces: number;
-    Prefix: string;
-    Script: string;
+    Prefix: string = "";
+    Script: string = "";
     Use: ScriptText[];
     NumberUse: number;
     ObjId: number;
-    BeforeTurnScript: string;
-    AfterTurnScript: string;
+    BeforeTurnScript: string = "";
+    AfterTurnScript: string = "";
     Exits: RoomExits;
 }
 class ObjectType {
-    ObjectName: string;
-    ObjectAlias: string;
-    Detail: string;
-    ContainerRoom: string;
+    ObjectName: string = "";
+    ObjectAlias: string = "";
+    Detail: string = "";
+    ContainerRoom: string = "";
     Exists: boolean;
     IsGlobal: boolean;
-    Prefix: string;
-    Suffix: string;
-    Gender: string;
-    Article: string;
+    Prefix: string = "";
+    Suffix: string = "";
+    Gender: string = "";
+    Article: string = "";
     DefinitionSectionStart: number;
     DefinitionSectionEnd: number;
     Visible: boolean;
-    GainScript: string;
-    LoseScript: string;
-    NumberProperties: number;
+    GainScript: string = "";
+    LoseScript: string = "";
+    NumberProperties: number = 0;
     Properties: PropertyType[];
     Speak: TextAction = new TextAction();
     Take: TextAction = new TextAction();
     IsRoom: boolean;
     IsExit: boolean;
-    CorresRoom: string;
+    CorresRoom: string = "";
     CorresRoomId: number;
     Loaded: boolean;
     NumberActions: number;
     Actions: ActionType[];
     NumberUseData: number;
     UseData: UseDataType[];
-    UseAnything: string;
-    UseOnAnything: string;
-    Use: string;
+    UseAnything: string = "";
+    UseOnAnything: string = "";
+    Use: string = "";
     NumberGiveData: number;
     GiveData: GiveDataType[];
-    GiveAnything: string;
-    GiveToAnything: string;
-    DisplayType: string;
+    GiveAnything: string = "";
+    GiveToAnything: string = "";
+    DisplayType: string = "";
     NumberTypesIncluded: number;
     TypesIncluded: string[];
     NumberAltNames: number;
@@ -1290,7 +1290,7 @@ class LegacyGame {
         } else {
             cache = this._defineBlockParams[blockname];
         }
-        if (cache.ContainsKey(param)) {
+        if (cache[param]) {
             var blocks = Split(cache.Item(param), ",");
             result.StartLine = parseInt(blocks[0]);
             result.EndLine = parseInt(blocks[1]);
@@ -3995,7 +3995,7 @@ class LegacyGame {
         var exists = false;
         if (this.BeginsWith(exitData, "<")) {
             if (this._gameAslVersion >= 410) {
-                exists = this._rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
+                exists = !!this._rooms[srcId].Exits.GetPlaces()[destRoom];
             } else {
                 for (var i = 1; i <= this._rooms[srcId].NumberPlaces; i++) {
                     if (LCase(this._rooms[srcId].Places[i].PlaceName) == LCase(destRoom)) {
@@ -10363,7 +10363,7 @@ class LegacyGame {
         var exits = this._rooms[roomId].Exits;
         var dir = exits.GetDirectionEnum(exitName);
         if (dir == Direction.None) {
-            if (exits.GetPlaces().ContainsKey(exitName)) {
+            if (exits.GetPlaces()[exitName]) {
                 return exits.GetPlaces().Item(exitName);
             }
         } else {
@@ -10823,7 +10823,7 @@ class RoomExits {
         return roomExit;
     }
     GetDirectionExit(direction: Direction): RoomExit {
-        if (this._directions.ContainsKey(direction)) {
+        if (this._directions[direction]) {
             return this._directions.Item(direction);
         }
         return null;
@@ -11141,8 +11141,8 @@ class RoomExits {
         // a new object will be created which will have the same name
         // as the old one. This is because we can't delete objects yet...
         if (roomExit.GetDirection() == Direction.None) {
-            if (this._places.ContainsKey(roomExit.GetToRoom())) {
-                this._places.Remove(roomExit.GetToRoom());
+            if (this._places[roomExit.GetToRoom()]) {
+                delete this._places[roomExit.GetToRoom()];
             }
         }
         this._game._objs[roomExit.GetObjId()].Exists = false;
