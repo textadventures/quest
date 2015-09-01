@@ -1372,6 +1372,7 @@ class LegacyGame {
             numLibraries = 0;
             do {
                 libFoundThisSweep = false;
+                l = self._lines.length - 1;
                 for (var i = l; i >= 1; i--) {
                     // We search for includes backwards as a game might include
                     // some-general.lib and then something-specific.lib which needs
@@ -1620,13 +1621,14 @@ class LegacyGame {
             self.ConvertMultiLines();
             if (!skipCheck) {
                 if (!self.CheckSections()) {
-                    return false;
+                    onFailure();
+                    return;
                 }
             }
             self._numberSections = 1;
             for (var i = 1; i <= l; i++) {
                 // find section beginning with 'define'
-                if (self.BeginsWith(self._lines[i], "define") == true) {
+                if (self.BeginsWith(self._lines[i], "define")) {
                     // Now, go through until we reach an 'end define'. However, if we
                     // encounter another 'define' there is a nested define. So, if we
                     // encounter 'define' we increment the definecount. When we find an
@@ -1664,7 +1666,8 @@ class LegacyGame {
             }
             if (!gotGameBlock) {
                 self._openErrorReport = self._openErrorReport + "No 'define game' block.\n";
-                return false;
+                onFailure();
+                return;
             }
             self.ConvertMultiLineSections();
             hasErrors = self.ConvertFriendlyIfs();
@@ -1695,13 +1698,11 @@ class LegacyGame {
                 for (var l = 1; l <= aslLines.length; l++) {
                     self._lines[l] = self.RemoveTabs(aslLines[l - 1]).trim();
                 }
-                l = aslLines.length;
                 doParse();
             });
         } else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
-            l = UBound(this._lines);
             doParse();
         } else {
             throw "Unrecognized file extension";
