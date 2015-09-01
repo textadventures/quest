@@ -11986,14 +11986,14 @@ var RoomExits = (function () {
         for (var dir in this._directions) {
             var roomExit = this._directions[dir];
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.push(dir, this._directions[dir]);
+                this._allExits.push(this._directions[dir]);
             }
         }
         ;
         for (var dir in this._places) {
             var roomExit = this._places[dir];
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.push(dir, this._places[dir]);
+                this._allExits.push(this._places[dir]);
             }
         }
         ;
