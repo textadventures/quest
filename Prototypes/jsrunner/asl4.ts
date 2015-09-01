@@ -1,3 +1,9 @@
+interface Window {
+    quest: any;
+}
+
+var quest = window.quest || {};
+
 function Left(input: string, length: number): string {
     return input.substring(0, length);
 }
@@ -9643,12 +9649,22 @@ class LegacyGame {
                     i = i + 1;
                     this.ExecuteScript("wait <>", ctx);
                 } else if (Mid(txt, i, 2) == "|c") {
-                    // Do nothing - we don't want to remove the colour formatting codes.
-                    this.DoPrint(printString);
-                    printString = "";
-                    printThis = false;
-                    i = i + 1;
-                    this.ExecuteScript("clear", ctx);
+                    switch (Mid(txt, i, 3)) {
+                        case "|cb":
+                        case "|cr":
+                        case "|cl":
+                        case "|cy":
+                        case "|cg":
+                            // Do nothing - we don't want to remove the colour formatting codes.
+                            break;
+                        default:
+                            this.DoPrint(printString);
+                            printString = "";
+                            printThis = false;
+                            i = i + 1;
+                            this.ExecuteScript("clear", ctx);
+                            break;
+                    }
                 }
                 if (printThis) {
                     printString = printString + Mid(txt, i, 1);
@@ -10590,7 +10606,10 @@ class LegacyGame {
     
     DoPrint(text: string) {
         // TODO
+        var output = this._textFormatter.OutputHTML(text);
         console.log(text);
+        console.log(output.text);
+        quest.print(output.text, !output.nobr);
     }
     
     DoWait() {
@@ -11168,6 +11187,10 @@ class RoomExits {
         this._regenerateAllExits = true;
     }
 }
+class TextFormatterResult {
+    text: string;
+    nobr: boolean;
+}
 class TextFormatter {
     // the Player generates style tags for us
     // so all we need to do is have some kind of <color> <fontsize> <justify> tags etc.
@@ -11178,7 +11201,7 @@ class TextFormatter {
     colour: string = "";
     fontSize: number = 0;
     align: string = "";
-    OutputHTML(input: string): string {
+    OutputHTML(input: string): TextFormatterResult {
         var output: string = "";
         var position: number = 0;
         var codePosition: number;
@@ -11289,7 +11312,10 @@ class TextFormatter {
                 }
             }
         } while (!(finished || position >= input.length));
-        return "<output" + (nobr ? " nobr=\"true\"" : "") + ">" + output +  "</output>";
+        var result = new TextFormatterResult();
+        result.text = output;
+        result.nobr = nobr;
+        return result;
     }
     FormatText(input: string): string {
         if (input.length == 0) {
@@ -11297,13 +11323,13 @@ class TextFormatter {
         }
         var output: string = "";
         if (this.align.length > 0) {
-            output += "<align align=\"" + this.align + "\">";
+            output += '<div style="text-align:' + this.align + '">';
         }
         if (this.fontSize > 0) {
-            output += "<font size=\"" + (this.fontSize).toString() + "\">";
+            output += '<span style="font-size:' + (this.fontSize).toString() + 'px">';
         }
         if (this.colour.length > 0) {
-            output += "<color color=\"" + this.colour + "\">";
+            output += '<span style="color:' + this.colour + '">';
         }
         if (this.bold) {
             output += "<b>";
@@ -11325,13 +11351,13 @@ class TextFormatter {
             output += "</b>";
         }
         if (this.colour.length > 0) {
-            output += "</color>";
+            output += "</span>";
         }
         if (this.fontSize > 0) {
-            output += "</font>";
+            output += "</span>";
         }
         if (this.align.length > 0) {
-            output += "</align>";
+            output += "</div>";
         }
         return output;
     }

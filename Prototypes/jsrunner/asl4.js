@@ -1,3 +1,4 @@
+var quest = window.quest || {};
 function Left(input, length) {
     return input.substring(0, length);
 }
@@ -10489,12 +10490,22 @@ var LegacyGame = (function () {
                     this.ExecuteScript("wait <>", ctx);
                 }
                 else if (Mid(txt, i, 2) == "|c") {
-                    // Do nothing - we don't want to remove the colour formatting codes.
-                    this.DoPrint(printString);
-                    printString = "";
-                    printThis = false;
-                    i = i + 1;
-                    this.ExecuteScript("clear", ctx);
+                    switch (Mid(txt, i, 3)) {
+                        case "|cb":
+                        case "|cr":
+                        case "|cl":
+                        case "|cy":
+                        case "|cg":
+                            // Do nothing - we don't want to remove the colour formatting codes.
+                            break;
+                        default:
+                            this.DoPrint(printString);
+                            printString = "";
+                            printThis = false;
+                            i = i + 1;
+                            this.ExecuteScript("clear", ctx);
+                            break;
+                    }
                 }
                 if (printThis) {
                     printString = printString + Mid(txt, i, 1);
@@ -11469,7 +11480,10 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.DoPrint = function (text) {
         // TODO
+        var output = this._textFormatter.OutputHTML(text);
         console.log(text);
+        console.log(output.text);
+        quest.print(output.text, !output.nobr);
     };
     LegacyGame.prototype.DoWait = function () {
         // TODO
@@ -12051,6 +12065,11 @@ var RoomExits = (function () {
     };
     return RoomExits;
 })();
+var TextFormatterResult = (function () {
+    function TextFormatterResult() {
+    }
+    return TextFormatterResult;
+})();
 var TextFormatter = (function () {
     function TextFormatter() {
         this.colour = "";
@@ -12169,7 +12188,10 @@ var TextFormatter = (function () {
                 }
             }
         } while (!(finished || position >= input.length));
-        return "<output" + (nobr ? " nobr=\"true\"" : "") + ">" + output + "</output>";
+        var result = new TextFormatterResult();
+        result.text = output;
+        result.nobr = nobr;
+        return result;
     };
     TextFormatter.prototype.FormatText = function (input) {
         if (input.length == 0) {
@@ -12177,13 +12199,13 @@ var TextFormatter = (function () {
         }
         var output = "";
         if (this.align.length > 0) {
-            output += "<align align=\"" + this.align + "\">";
+            output += '<div style="text-align:' + this.align + '">';
         }
         if (this.fontSize > 0) {
-            output += "<font size=\"" + (this.fontSize).toString() + "\">";
+            output += '<span style="font-size:' + (this.fontSize).toString() + 'px">';
         }
         if (this.colour.length > 0) {
-            output += "<color color=\"" + this.colour + "\">";
+            output += '<span style="color:' + this.colour + '">';
         }
         if (this.bold) {
             output += "<b>";
@@ -12205,13 +12227,13 @@ var TextFormatter = (function () {
             output += "</b>";
         }
         if (this.colour.length > 0) {
-            output += "</color>";
+            output += "</span>";
         }
         if (this.fontSize > 0) {
-            output += "</font>";
+            output += "</span>";
         }
         if (this.align.length > 0) {
-            output += "</align>";
+            output += "</div>";
         }
         return output;
     };
