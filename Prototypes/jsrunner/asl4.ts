@@ -503,7 +503,7 @@ class LegacyGame {
     _waitLock: Object = new Object();
     _readyForCommand: boolean = true;
     _gameLoading: boolean;
-    _playerErrorMessageString: string;
+    _playerErrorMessageString: string[] = [];
     _listVerbs: any = {};
     _filename: string;
     _originalFilename: string;
@@ -2558,6 +2558,7 @@ class LegacyGame {
                 case "*":
                 case "/":
                     newElement = true;
+                    break;
                 case "-":
                     // A minus often means subtraction, so it's a new element. But sometimes
                     // it just denotes a negative number. In this case, the current element will
@@ -2567,8 +2568,10 @@ class LegacyGame {
                     } else {
                         newElement = true;
                     }
+                    break;
                 default:
                     newElement = false;
+                    break;
             }
             if (newElement) {
                 numElements = numElements + 1;
@@ -2619,12 +2622,16 @@ class LegacyGame {
                             return res;
                         }
                         result = val1 / val2;
+                        break;
                     case "*":
                         result = val1 * val2;
+                        break;
                     case "+":
                         result = val1 + val2;
+                        break;
                     case "-":
                         result = val1 - val2;
+                        break;
                 }
                 elements[opNum] = (result).toString();
                 // Remove this operator, and Elements(OpNum+1) from the arrays
@@ -2983,8 +2990,10 @@ class LegacyGame {
         switch (appliesToType) {
             case AppliesTo.Object:
                 changeLog = this._changeLogObjects;
+                break;
             case AppliesTo.Room:
                 changeLog = this._changeLogRooms;
+                break;
             default:
                 throw "New ArgumentOutOfRangeException()";
         }
@@ -3148,6 +3157,7 @@ class LegacyGame {
                         this.UpdateObjectList(ctx);
                         this.UpdateItems(ctx);
                     }
+                    break;
                 case "prefix":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].Prefix = value;
@@ -3158,32 +3168,41 @@ class LegacyGame {
                             o.Prefix = "";
                         }
                     }
+                    break;
                 case "indescription":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].InDescription = value;
                     }
+                    break;
                 case "description":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].Description.Data = value;
                         this._rooms[o.CorresRoomId].Description.Type = TextActionType.Text;
                     }
+                    break;
                 case "look":
                     if (o.IsRoom) {
                         this._rooms[o.CorresRoomId].Look = value;
                     }
+                    break;
                 case "suffix":
                     o.Suffix = value;
+                    break;
                 case "displaytype":
                     o.DisplayType = value;
                     if (this._gameFullyLoaded) {
                         this.UpdateObjectList(ctx);
                     }
+                    break;
                 case "gender":
                     o.Gender = value;
+                    break;
                 case "article":
                     o.Article = value;
+                    break;
                 case "detail":
                     o.Detail = value;
+                    break;
                 case "hidden":
                     if (falseProperty) {
                         o.Exists = true;
@@ -3193,6 +3212,7 @@ class LegacyGame {
                     if (this._gameFullyLoaded) {
                         this.UpdateObjectList(ctx);
                     }
+                    break;
                 case "invisible":
                     if (falseProperty) {
                         o.Visible = true;
@@ -3202,6 +3222,7 @@ class LegacyGame {
                     if (this._gameFullyLoaded) {
                         this.UpdateObjectList(ctx);
                     }
+                    break;
                 case "take":
                     if (this._gameAslVersion >= 392) {
                         if (falseProperty) {
@@ -3215,8 +3236,9 @@ class LegacyGame {
                             }
                         }
                     }
+                    break;
             }
-        } while (!(Len(Trim(propertyInfo)) == 0));
+        } while (Len(Trim(propertyInfo)) != 0);
     }
     AddToUseInfo(id: number, useData: string): void {
         var useType: UseType;
@@ -3586,10 +3608,13 @@ class LegacyGame {
             switch (this._objs[idNumbers[1]].Article) {
                 case "him":
                     this._thisTurnItMode = ItType.Male;
+                    break;
                 case "her":
                     this._thisTurnItMode = ItType.Female;
+                    break;
                 default:
                     this._thisTurnItMode = ItType.Inanimate;
+                    break;
             }
             return idNumbers[1];
         } else if (numberCorresIds > 1) {
@@ -3616,10 +3641,13 @@ class LegacyGame {
             switch (this._objs[idNumbers[this._choiceNumber]].Article) {
                 case "him":
                     this._thisTurnItMode = ItType.Male;
+                    break;
                 case "her":
                     this._thisTurnItMode = ItType.Female;
+                    break;
                 default:
                     this._thisTurnItMode = ItType.Inanimate;
+                    break;
             }
             this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
             return idNumbers[this._choiceNumber];
@@ -5182,10 +5210,13 @@ class LegacyGame {
                     switch (op) {
                         case "+":
                             varCont = Str(num1 + num2);
+                            break;
                         case "-":
                             varCont = Str(num1 - num2);
+                            break;
                         case "*":
                             varCont = Str(num1 * num2);
+                            break;
                         case "/":
                             if (num2 != 0) {
                                 varCont = Str(num1 / num2);
@@ -5193,6 +5224,7 @@ class LegacyGame {
                                 this.LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError);
                                 varCont = "0";
                             }
+                            break;
                     }
                 }
             }
@@ -5294,33 +5326,40 @@ class LegacyGame {
                     result = true;
                 }
                 expectNumerics = false;
+                break;
             case "!=":
                 if (LCase(value1) != LCase(value2)) {
                     result = true;
                 }
                 expectNumerics = false;
+                break;
             case "gt":
                 if (Val(value1) > Val(value2)) {
                     result = true;
                 }
                 expectNumerics = true;
+                break;
             case "lt":
                 if (Val(value1) < Val(value2)) {
                     result = true;
                 }
                 expectNumerics = true;
+                break;
             case "gt=":
                 if (Val(value1) >= Val(value2)) {
                     result = true;
                 }
                 expectNumerics = true;
+                break;
             case "lt=":
                 if (Val(value1) <= Val(value2)) {
                     result = true;
                 }
                 expectNumerics = true;
+                break;
             default:
                 this.LogASLError("Unrecognised comparison condition in 'is " + condition + "'", LogType.WarningError);
+                break;
         }
         if (expectNumerics) {
             if (!(IsNumeric(value1) && IsNumeric(value2))) {
@@ -6191,87 +6230,125 @@ class LegacyGame {
                 switch (errorName) {
                     case "badcommand":
                         currentError = PlayerError.BadCommand;
+                        break;
                     case "badgo":
                         currentError = PlayerError.BadGo;
+                        break;
                     case "badgive":
                         currentError = PlayerError.BadGive;
+                        break;
                     case "badcharacter":
                         currentError = PlayerError.BadCharacter;
+                        break;
                     case "noitem":
                         currentError = PlayerError.NoItem;
+                        break;
                     case "itemunwanted":
                         currentError = PlayerError.ItemUnwanted;
+                        break;
                     case "badlook":
                         currentError = PlayerError.BadLook;
+                        break;
                     case "badthing":
                         currentError = PlayerError.BadThing;
+                        break;
                     case "defaultlook":
                         currentError = PlayerError.DefaultLook;
+                        break;
                     case "defaultspeak":
                         currentError = PlayerError.DefaultSpeak;
+                        break;
                     case "baditem":
                         currentError = PlayerError.BadItem;
+                        break;
                     case "baddrop":
                         currentError = PlayerError.BadDrop;
+                        break;
                     case "defaultake":
                         if (this._gameAslVersion <= 280) {
                             currentError = PlayerError.BadTake;
                         } else {
                             currentError = PlayerError.DefaultTake;
                         }
+                        break;
                     case "baduse":
                         currentError = PlayerError.BadUse;
+                        break;
                     case "defaultuse":
                         currentError = PlayerError.DefaultUse;
+                        break;
                     case "defaultout":
                         currentError = PlayerError.DefaultOut;
+                        break;
                     case "badplace":
                         currentError = PlayerError.BadPlace;
+                        break;
                     case "badexamine":
                         if (this._gameAslVersion >= 310) {
                             currentError = PlayerError.BadExamine;
                         }
+                        break;
                     case "defaultexamine":
                         currentError = PlayerError.DefaultExamine;
                         examineIsCustomised = true;
+                        break;
                     case "badtake":
                         currentError = PlayerError.BadTake;
+                        break;
                     case "cantdrop":
                         currentError = PlayerError.CantDrop;
+                        break;
                     case "defaultdrop":
                         currentError = PlayerError.DefaultDrop;
+                        break;
                     case "badpronoun":
                         currentError = PlayerError.BadPronoun;
+                        break;
                     case "alreadyopen":
                         currentError = PlayerError.AlreadyOpen;
+                        break;
                     case "alreadyclosed":
                         currentError = PlayerError.AlreadyClosed;
+                        break;
                     case "cantopen":
                         currentError = PlayerError.CantOpen;
+                        break;
                     case "cantclose":
                         currentError = PlayerError.CantClose;
+                        break;
                     case "defaultopen":
                         currentError = PlayerError.DefaultOpen;
+                        break;
                     case "defaultclose":
                         currentError = PlayerError.DefaultClose;
+                        break;
                     case "badput":
                         currentError = PlayerError.BadPut;
+                        break;
                     case "cantput":
                         currentError = PlayerError.CantPut;
+                        break;
                     case "defaultput":
                         currentError = PlayerError.DefaultPut;
+                        break;
                     case "cantremove":
                         currentError = PlayerError.CantRemove;
+                        break;
                     case "alreadyput":
                         currentError = PlayerError.AlreadyPut;
+                        break;
                     case "defaultremove":
                         currentError = PlayerError.DefaultRemove;
+                        break;
                     case "locked":
                         currentError = PlayerError.Locked;
+                        break;
                     case "defaultwait":
                         currentError = PlayerError.DefaultWait;
+                        break;
                     case "alreadytaken":
                         currentError = PlayerError.AlreadyTaken;
+                        break;
                 }
                 this._playerErrorMessageString[currentError] = errorMsg;
                 if (currentError == PlayerError.DefaultLook && !examineIsCustomised) {
@@ -8048,12 +8125,16 @@ class LegacyGame {
                 switch (InStr("nswe", cmd)) {
                     case 1:
                         this.GoDirection("north", ctx);
+                        break;
                     case 2:
                         this.GoDirection("south", ctx);
+                        break;
                     case 3:
                         this.GoDirection("west", ctx);
+                        break;
                     case 4:
                         this.GoDirection("east", ctx);
+                        break;
                 }
                 this._lastIt = 0;
             } else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
@@ -9552,20 +9633,12 @@ class LegacyGame {
                     i = i + 1;
                     this.ExecuteScript("wait <>", ctx);
                 } else if (Mid(txt, i, 2) == "|c") {
-                    switch (Mid(txt, i, 3)) {
-                        case "|cb":
-                        case "|cr":
-                        case "|cl":
-                        case "|cy":
-                        case "|cg":
-                        default:
-                            // Do nothing - we don't want to remove the colour formatting codes.
-                            this.DoPrint(printString);
-                            printString = "";
-                            printThis = false;
-                            i = i + 1;
-                            this.ExecuteScript("clear", ctx);
-                    }
+                    // Do nothing - we don't want to remove the colour formatting codes.
+                    this.DoPrint(printString);
+                    printString = "";
+                    printThis = false;
+                    i = i + 1;
+                    this.ExecuteScript("clear", ctx);
                 }
                 if (printThis) {
                     printString = printString + Mid(txt, i, 1);
@@ -10417,14 +10490,19 @@ class LegacyGame {
         switch (libName) {
             case "stdverbs.lib":
                 //libCode = My.Resources.stdverbs;
+                break;
             case "standard.lib":
                 //libCode = My.Resources.standard;
+                break;
             case "q3ext.qlb":
                 //libCode = My.Resources.q3ext;
+                break;
             case "typelib.qlb":
                 //libCode = My.Resources.Typelib;
+                break;
             case "net.lib":
                 //libCode = My.Resources.net;
+                break;
         }
         if (libCode == null) {
             return null;
@@ -11110,28 +11188,40 @@ class TextFormatter {
                 switch (twoCharCode) {
                     case "xb":
                         this.bold = false;
+                        break;
                     case "xi":
                         this.italic = false;
+                        break;
                     case "xu":
                         this.underline = false;
+                        break;
                     case "cb":
                         this.colour = "";
+                        break;
                     case "cr":
                         this.colour = "red";
+                        break;
                     case "cl":
                         this.colour = "blue";
+                        break;
                     case "cy":
                         this.colour = "yellow";
+                        break;
                     case "cg":
                         this.colour = "green";
+                        break;
                     case "jl":
                         this.align = "";
+                        break;
                     case "jc":
                         this.align = "center";
+                        break;
                     case "jr":
                         this.align = "right";
+                        break;
                     default:
                         foundCode = false;
+                        break;
                 }
                 if (foundCode) {
                     position += 2;
@@ -11140,14 +11230,19 @@ class TextFormatter {
                     switch (oneCharCode) {
                         case "b":
                             this.bold = true;
+                            break;
                         case "i":
                             this.italic = true;
+                            break;
                         case "u":
                             this.underline = true;
+                            break;
                         case "n":
                             output += "<br />";
+                            break;
                         default:
                             foundCode = false;
+                            break;
                     }
                     if (foundCode) {
                         position += 1;
