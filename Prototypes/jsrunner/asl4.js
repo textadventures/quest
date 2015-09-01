@@ -10742,8 +10742,6 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ShowHelp = function (ctx) {
-        // In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
-        // in the same window as the game text.
         this.Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
         this.Print("", ctx);
         this.Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx);
