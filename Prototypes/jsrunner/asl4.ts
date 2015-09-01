@@ -3606,7 +3606,7 @@ class LegacyGame {
                         descriptionText[i] = this._objs[idNumbers[i]].Prefix + this._objs[idNumbers[i]].ObjectAlias;
                     }
                 }
-                menuItems.Add((i).toString(), descriptionText[i]);
+                menuItems[i.toString()] = descriptionText[i];
             }
             var mnu: MenuData = new MenuData(question, menuItems, false);
             var response: string = this.ShowMenu(mnu);
@@ -5714,8 +5714,8 @@ class LegacyGame {
         var menuScript: any = {};
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "choice ")) {
-                menuOptions.Add((i).toString(), this.GetParameter(this._lines[i], ctx));
-                menuScript.Add((i).toString(), Trim(Right(this._lines[i], Len(this._lines[i]) - InStr(this._lines[i], ">"))));
+                menuOptions[i.toString()] = this.GetParameter(this._lines[i], ctx);
+                menuScript[i.toString()] = Trim(Right(this._lines[i], Len(this._lines[i]) - InStr(this._lines[i], ">")));
             }
         }
         this.Print("- |i" + prompt + "|xi", ctx);
@@ -5847,9 +5847,9 @@ class LegacyGame {
                                 this.LogASLError("No menu command specified in menu '" + menuTitle + "', item '" + this._lines[j], LogType.WarningError);
                             } else {
                                 if (this._lines[j] == "-") {
-                                    menuOptions.Add("k" + (j).toString(), "-");
+                                    menuOptions["k" + j] = "-";
                                 } else {
-                                    menuOptions.Add(Trim(Mid(this._lines[j], scp + 1)), Trim(Left(this._lines[j], scp - 1)));
+                                    menuOptions[Trim(Mid(this._lines[j], scp + 1))] = Trim(Left(this._lines[j], scp - 1));
                                 }
                             }
                         }
@@ -6663,13 +6663,13 @@ class LegacyGame {
     Speak(text: string): void {
         this._player.Speak(text);
     }
-    AddToObjectList(objList: any, exitList: any, name: string, type: Thing): void {
+    AddToObjectList(objList: ListData[], exitList: ListData[], name: string, type: Thing): void {
         name = this.CapFirst(name);
         if (type == Thing.Room) {
-            objList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
-            exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
+            objList.push(new ListData(name, this._listVerbs[ListType.ExitsList]));
+            exitList.push(new ListData(name, this._listVerbs[ListType.ExitsList]));
         } else {
-            objList.Add(new ListData(name, this._listVerbs[ListType.ObjectsList]));
+            objList.push(new ListData(name, this._listVerbs[ListType.ObjectsList]));
         }
     }
     ExecExec(scriptLine: string, ctx: Context): void {
@@ -9356,13 +9356,13 @@ class LegacyGame {
                     self.LogASLError("Unrecognised ASL version number.", LogType.WarningError);
                 }
             }
-            self._listVerbs.Add(ListType.ExitsList, ["Go to"]);
+            self._listVerbs[ListType.ExitsList] = ["Go to"];
             if (self._gameAslVersion >= 280 && self._gameAslVersion < 390) {
-                self._listVerbs.Add(ListType.ObjectsList, ["Look at", "Examine", "Take", "Speak to"]);
-                self._listVerbs.Add(ListType.InventoryList, ["Look at", "Examine", "Use", "Drop"]);
+                self._listVerbs[ListType.ObjectsList] = ["Look at", "Examine", "Take", "Speak to"];
+                self._listVerbs[ListType.InventoryList] ["Look at", "Examine", "Use", "Drop"];
             } else {
-                self._listVerbs.Add(ListType.ObjectsList, ["Look at", "Take", "Speak to"]);
-                self._listVerbs.Add(ListType.InventoryList, ["Look at", "Use", "Drop"]);
+                self._listVerbs[ListType.ObjectsList] = ["Look at", "Take", "Speak to"];
+                self._listVerbs[ListType.InventoryList] = ["Look at", "Use", "Drop"];
             }
             // Get the name of the game:
             self._gameName = self.GetParameter(self._lines[self.GetDefineBlock("game").StartLine], self._nullContext);
@@ -9821,8 +9821,8 @@ class LegacyGame {
         this._compassExits = compassExits;
         this.UpdateExitsList();
     }
-    AddCompassExit(exitList: any, name: string): void {
-        exitList.Add(new ListData(name, this._listVerbs[ListType.ExitsList]));
+    AddCompassExit(exitList: ListData[], name: string): void {
+        exitList.push(new ListData(name, this._listVerbs[ListType.ExitsList]));
     }
     UpdateDoorways(roomId: number, ctx: Context): string {
         var roomDisplayText: string = "";
@@ -10551,10 +10551,7 @@ class ChangeLog {
         // the first four characters of the changeData will be "prop" or "acti", so we add this to the
         // key so that actions and properties don't collide.
         var key = appliesTo + "#" + Left(changeData, 4) + "~" + element;
-        if (this.Changes.ContainsKey(key)) {
-            this.Changes.Remove(key);
-        }
-        this.Changes.Add(key, changeData);
+        this.Changes[key] = changeData;
     }
 }
 class RoomExit {
@@ -10735,12 +10732,12 @@ class RoomExits {
         this._regenerateAllExits = true;
     }
     SetDirection(direction: Direction, roomExit: RoomExit): void {
-        if (this._directions.ContainsKey(direction)) {
+        if (this._directions[direction]) {
             roomExit = this._directions.Item(direction);
             this._game._objs[roomExit.GetObjId()].Exists = true;
         } else {
             roomExit = new RoomExit(this._game);
-            this._directions.Add(direction, roomExit);
+            this._directions[direction] = roomExit;
         }
         this._regenerateAllExits = true;
     }
@@ -10751,11 +10748,7 @@ class RoomExits {
         return null;
     }
     AddPlaceExit(roomExit: RoomExit): void {
-        if (this._places.ContainsKey(roomExit.GetToRoom())) {
-            var removeItem: RoomExit = this._places.Item(roomExit.GetToRoom());
-            this.RemoveExit(removeItem);
-        }
-        this._places.Add(roomExit.GetToRoom(), roomExit);
+        this._places[roomExit.GetToRoom()] = roomExit;
         this._regenerateAllExits = true;
     }
     AddExitFromTag(tag: string): void {
@@ -11051,13 +11044,13 @@ class RoomExits {
         this._directions.Keys.forEach(function (dir) {
             var roomExit = this._directions.Item(dir);
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.Add(dir, this._directions.Item(dir));
+                this._allExits.push(dir, this._directions.Item(dir));
             }
         }, this);
         this._places.Keys.forEach(function (dir) {
             var roomExit = this._places.Item(dir);
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.Add(dir, this._places.Item(dir));
+                this._allExits.push(dir, this._places.Item(dir));
             }
         }, this);
         return this._allExits;
