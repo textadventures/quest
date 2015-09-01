@@ -409,6 +409,13 @@ var ExpressionResult = (function () {
     }
     return ExpressionResult;
 })();
+var GetAvailableDirectionsResult = (function () {
+    function GetAvailableDirectionsResult() {
+        this.Description = "";
+        this.List = "";
+    }
+    return GetAvailableDirectionsResult;
+})();
 var PlayerError;
 (function (PlayerError) {
     PlayerError[PlayerError["BadCommand"] = 0] = "BadCommand";
@@ -10827,7 +10834,9 @@ var LegacyGame = (function () {
         var d = "down";
         var o = "out";
         if (this._gameAslVersion >= 410) {
-            this._rooms[roomId].Exits.GetAvailableDirectionsDescription(roomDisplayText, directions);
+            var result = this._rooms[roomId].Exits.GetAvailableDirectionsDescription();
+            roomDisplayText = result.Description;
+            directions = result.List;
         }
         else {
             if (this._rooms[roomId].Out.Text != "") {
@@ -11948,14 +11957,15 @@ var RoomExits = (function () {
             roomExit.Go(ctx);
         }
     };
-    RoomExits.prototype.GetAvailableDirectionsDescription = function (description, list) {
+    RoomExits.prototype.GetAvailableDirectionsDescription = function () {
         var roomExit;
         var count = 0;
         var descPrefix;
         var orString;
         descPrefix = "You can go";
         orString = "or";
-        list = "";
+        var list = "";
+        var description = "";
         count = 0;
         this.AllExits().forEach(function (roomExit) {
             count = count + 1;
@@ -11972,6 +11982,10 @@ var RoomExits = (function () {
         if (count > 0) {
             description = descPrefix + " " + description + ".";
         }
+        var result = new GetAvailableDirectionsResult();
+        result.Description = description;
+        result.List = list;
+        return result;
     };
     RoomExits.prototype.GetDirectionName = function (dir) {
         switch (dir) {

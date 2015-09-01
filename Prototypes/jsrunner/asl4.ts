@@ -396,6 +396,10 @@ class ExpressionResult {
     Success: ExpressionSuccess;
     Message: string = "";
 }
+class GetAvailableDirectionsResult {
+    Description: string = "";
+    List: string = "";
+} 
 enum PlayerError {BadCommand, BadGo, BadGive, BadCharacter, NoItem, ItemUnwanted, BadLook, BadThing, DefaultLook, DefaultSpeak, BadItem, DefaultTake, BadUse, DefaultUse, DefaultOut, BadPlace, BadExamine, DefaultExamine, BadTake, CantDrop, DefaultDrop, BadDrop, BadPronoun, AlreadyOpen, AlreadyClosed, CantOpen, CantClose, DefaultOpen, DefaultClose, BadPut, CantPut, DefaultPut, CantRemove, AlreadyPut, DefaultRemove, Locked, DefaultWait, AlreadyTaken};
 enum ItType {Inanimate, Male, Female};
 enum SetResult {Error, Found, Unfound};
@@ -9945,7 +9949,9 @@ class LegacyGame {
         var d = "down";
         var o = "out";
         if (this._gameAslVersion >= 410) {
-            this._rooms[roomId].Exits.GetAvailableDirectionsDescription(roomDisplayText, directions);
+            var result = this._rooms[roomId].Exits.GetAvailableDirectionsDescription();
+            roomDisplayText = result.Description;
+            directions = result.List;
         } else {
             if (this._rooms[roomId].Out.Text != "") {
                 outPlace = this._rooms[roomId].Out.Text;
@@ -11034,14 +11040,15 @@ class RoomExits {
             roomExit.Go(ctx);
         }
     }
-    GetAvailableDirectionsDescription(description: string, list: string): void {
+    GetAvailableDirectionsDescription(): GetAvailableDirectionsResult {
         var roomExit: RoomExit;
         var count: number = 0;
         var descPrefix: string;
         var orString: string;
         descPrefix = "You can go";
         orString = "or";
-        list = "";
+        var list = "";
+        var description = "";
         count = 0;
         this.AllExits().forEach(function (roomExit) {
             count = count + 1;
@@ -11057,6 +11064,10 @@ class RoomExits {
         if (count > 0) {
             description = descPrefix + " " + description + ".";
         }
+        var result = new GetAvailableDirectionsResult();
+        result.Description = description;
+        result.List = list;
+        return result;
     }
     GetDirectionName(dir: Direction): string {
         switch (dir) {
