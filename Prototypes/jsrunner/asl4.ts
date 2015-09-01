@@ -209,91 +209,91 @@ class DefineBlock {
     EndLine: number;
 }
 class Context {
-    CallingObjectId: number;
-    NumParameters: number;
+    CallingObjectId: number = 0;
+    NumParameters: number = 0;
     Parameters: string[];
-    FunctionReturnValue: string;
+    FunctionReturnValue: string = "";
     AllowRealNamesInCommand: boolean;
     DontProcessCommand: boolean;
     CancelExec: boolean;
-    StackCounter: number;
+    StackCounter: number = 0;
 }
 enum LogType {Misc, FatalError, WarningError, Init, LibraryWarningError, Warning, UserError, InternalError};
 enum Direction {None = -1, Out = 0, North = 1, South = 2, East = 3, West = 4, NorthWest = 5, NorthEast = 6, SouthWest = 7, SouthEast = 8, Up = 9, Down = 10};
 class ItemType {
-    Name: string;
+    Name: string = "";
     Got: boolean;
 }
 class Collectable {
-    Name: string;
-    Type: string;
-    Value: number;
-    Display: string;
+    Name: string = "";
+    Type: string = "";
+    Value: number = 0;
+    Display: string = "";
     DisplayWhenZero: boolean;
 }
 class PropertyType {
-    PropertyName: string;
-    PropertyValue: string;
+    PropertyName: string = "";
+    PropertyValue: string = "";
 }
 class ActionType {
-    ActionName: string;
-    Script: string;
+    ActionName: string = "";
+    Script: string = "";
 }
 class UseDataType {
-    UseObject: string;
+    UseObject: string = "";
     UseType: UseType;
-    UseScript: string;
+    UseScript: string = "";
 }
 class GiveDataType {
-    GiveObject: string;
+    GiveObject: string = "";
     GiveType: GiveType;
-    GiveScript: string;
+    GiveScript: string = "";
 }
 class PropertiesActions {
-    Properties: string;
-    NumberActions: number;
+    Properties: string = "";
+    NumberActions: number = 0;
     Actions: ActionType[];
-    NumberTypesIncluded: number;
+    NumberTypesIncluded: number = 0;
     TypesIncluded: string[];
 }
 class VariableType {
-    VariableName: string;
+    VariableName: string = "";
     VariableContents: string[];
-    VariableUBound: number;
-    DisplayString: string;
-    OnChangeScript: string;
+    VariableUBound: number = 0;
+    DisplayString: string = "";
+    OnChangeScript: string = "";
     NoZeroDisplay: boolean;
 }
 class SynonymType {
-    OriginalWord: string;
-    ConvertTo: string;
+    OriginalWord: string = "";
+    ConvertTo: string = "";
 }
 class TimerType {
-    TimerName: string;
-    TimerInterval: number;
+    TimerName: string = "";
+    TimerInterval: number = 0;
     TimerActive: boolean;
-    TimerAction: string;
+    TimerAction: string = "";
     TimerTicks: number;
     BypassThisTurn: boolean;
 }
 class UserDefinedCommandType {
-    CommandText: string;
-    CommandScript: string;
+    CommandText: string = "";
+    CommandScript: string = "";
 }
 class TextAction {
-    Data: string;
+    Data: string = "";
     Type: TextActionType;
 }
 enum TextActionType {Text, Script, Nothing, Default};
 class ScriptText {
-    Text: string;
-    Script: string;
+    Text: string = "";
+    Script: string = "";
 }
 class PlaceType {
-    PlaceName: string;
-    Prefix: string;
-    PlaceAlias: string;
-    Script: string;
+    PlaceName: string = "";
+    Prefix: string = "";
+    PlaceAlias: string = "";
+    Script: string = "";
 }
 class RoomType {
     RoomName: string = "";
@@ -372,23 +372,23 @@ class ObjectType {
     CloseScript: TextAction = new TextAction();
 }
 class ChangeType {
-    AppliesTo: string;
-    Change: string;
+    AppliesTo: string = "";
+    Change: string = "";
 }
 class GameChangeDataType {
-    NumberChanges: number;
+    NumberChanges: number = 0;
     ChangeData: ChangeType[];
 }
 class ResourceType {
-    ResourceName: string;
+    ResourceName: string = "";
     ResourceStart: number;
     ResourceLength: number;
     Extracted: boolean;
 }
 class ExpressionResult {
-    Result: string;
+    Result: string = "";
     Success: ExpressionSuccess;
-    Message: string;
+    Message: string = "";
 }
 enum PlayerError {BadCommand, BadGo, BadGive, BadCharacter, NoItem, ItemUnwanted, BadLook, BadThing, DefaultLook, DefaultSpeak, BadItem, DefaultTake, BadUse, DefaultUse, DefaultOut, BadPlace, BadExamine, DefaultExamine, BadTake, CantDrop, DefaultDrop, BadDrop, BadPronoun, AlreadyOpen, AlreadyClosed, CantOpen, CantClose, DefaultOpen, DefaultClose, BadPut, CantPut, DefaultPut, CantRemove, AlreadyPut, DefaultRemove, Locked, DefaultWait, AlreadyTaken};
 enum ItType {Inanimate, Male, Female};

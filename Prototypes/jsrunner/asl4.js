@@ -164,6 +164,10 @@ var DefineBlock = (function () {
 })();
 var Context = (function () {
     function Context() {
+        this.CallingObjectId = 0;
+        this.NumParameters = 0;
+        this.FunctionReturnValue = "";
+        this.StackCounter = 0;
     }
     return Context;
 })();
@@ -197,61 +201,89 @@ var Direction;
 ;
 var ItemType = (function () {
     function ItemType() {
+        this.Name = "";
     }
     return ItemType;
 })();
 var Collectable = (function () {
     function Collectable() {
+        this.Name = "";
+        this.Type = "";
+        this.Value = 0;
+        this.Display = "";
     }
     return Collectable;
 })();
 var PropertyType = (function () {
     function PropertyType() {
+        this.PropertyName = "";
+        this.PropertyValue = "";
     }
     return PropertyType;
 })();
 var ActionType = (function () {
     function ActionType() {
+        this.ActionName = "";
+        this.Script = "";
     }
     return ActionType;
 })();
 var UseDataType = (function () {
     function UseDataType() {
+        this.UseObject = "";
+        this.UseScript = "";
     }
     return UseDataType;
 })();
 var GiveDataType = (function () {
     function GiveDataType() {
+        this.GiveObject = "";
+        this.GiveScript = "";
     }
     return GiveDataType;
 })();
 var PropertiesActions = (function () {
     function PropertiesActions() {
+        this.Properties = "";
+        this.NumberActions = 0;
+        this.NumberTypesIncluded = 0;
     }
     return PropertiesActions;
 })();
 var VariableType = (function () {
     function VariableType() {
+        this.VariableName = "";
+        this.VariableUBound = 0;
+        this.DisplayString = "";
+        this.OnChangeScript = "";
     }
     return VariableType;
 })();
 var SynonymType = (function () {
     function SynonymType() {
+        this.OriginalWord = "";
+        this.ConvertTo = "";
     }
     return SynonymType;
 })();
 var TimerType = (function () {
     function TimerType() {
+        this.TimerName = "";
+        this.TimerInterval = 0;
+        this.TimerAction = "";
     }
     return TimerType;
 })();
 var UserDefinedCommandType = (function () {
     function UserDefinedCommandType() {
+        this.CommandText = "";
+        this.CommandScript = "";
     }
     return UserDefinedCommandType;
 })();
 var TextAction = (function () {
     function TextAction() {
+        this.Data = "";
     }
     return TextAction;
 })();
@@ -265,11 +297,17 @@ var TextActionType;
 ;
 var ScriptText = (function () {
     function ScriptText() {
+        this.Text = "";
+        this.Script = "";
     }
     return ScriptText;
 })();
 var PlaceType = (function () {
     function PlaceType() {
+        this.PlaceName = "";
+        this.Prefix = "";
+        this.PlaceAlias = "";
+        this.Script = "";
     }
     return PlaceType;
 })();
@@ -329,21 +367,27 @@ var ObjectType = (function () {
 })();
 var ChangeType = (function () {
     function ChangeType() {
+        this.AppliesTo = "";
+        this.Change = "";
     }
     return ChangeType;
 })();
 var GameChangeDataType = (function () {
     function GameChangeDataType() {
+        this.NumberChanges = 0;
     }
     return GameChangeDataType;
 })();
 var ResourceType = (function () {
     function ResourceType() {
+        this.ResourceName = "";
     }
     return ResourceType;
 })();
 var ExpressionResult = (function () {
     function ExpressionResult() {
+        this.Result = "";
+        this.Message = "";
     }
     return ExpressionResult;
 })();
