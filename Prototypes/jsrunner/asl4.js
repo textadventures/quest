@@ -131,6 +131,7 @@ var Player = (function () {
     Player.prototype.UpdateGameName = function (name) {
     };
     Player.prototype.Show = function (element) {
+        quest.ui.show(element);
     };
     Player.prototype.SetStatusText = function (text) {
     };

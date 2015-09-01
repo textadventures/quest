@@ -25,33 +25,35 @@
 
 	<script>
 		// quest.js will want a base url for image resources
-
-		var file = $_GET['file'] || 'test.aslx';
+		window.gridApi = window.gridApi || {};
+		window.gridApi.onLoad = function () {
+			var file = $_GET['file'] || 'test.aslx';
 		
-		if (file.toLowerCase().substr(file.length - 4) === '.asl') {
-			var fileFetcher = function (filename, callback) {
-				$.get(filename, function (data) {
-					callback(data);
+			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
+				var fileFetcher = function (filename, callback) {
+					$.get(filename, function (data) {
+						callback(data);
+					});
+				};
+				var game = new LegacyGame(file, file, null, fileFetcher);
+				var player = new Player();
+				var onSuccess = function () {
+					console.log("success");
+					game.Begin();
+				};
+				var onFailure = function () {
+					console.log("fail");
+				};
+				game.Initialise(player, onSuccess, onFailure);
+				console.log(game);
+			}
+			else {
+				$.get(file, function (data) {
+					quest.load(data);
+					quest.begin();
 				});
-			};
-			var game = new LegacyGame(file, file, null, fileFetcher);
-			var player = new Player();
-			var onSuccess = function () {
-				console.log("success");
-				game.Begin();
-			};
-			var onFailure = function () {
-				console.log("fail");
-			};
-			game.Initialise(player, onSuccess, onFailure);
-			console.log(game);
-		}
-		else {
-			$.get(file, function (data) {
-				quest.load(data);
-				quest.begin();
-			});
-		}
+			}
+		};
 	</script>
 </head>
 <body>

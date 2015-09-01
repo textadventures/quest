@@ -179,7 +179,7 @@ class Player {
         
     }
     Show(element: string) {
-        
+        quest.ui.show(element);
     }
     SetStatusText(text: string) {
         

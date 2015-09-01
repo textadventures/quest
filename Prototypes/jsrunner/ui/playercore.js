@@ -1028,10 +1028,6 @@ $(function () {
 // gridApi is global for interop between PaperScript and JavaScript - a workaround until
 // this tutorial exists: http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
 
-window.gridApi = {};
-window.gridApi.onLoad = function () {
-};
-
 _canvasSupported = (window.HTMLCanvasElement);
 
 function Grid_DrawGridLines(minX, minY, maxX, maxY, border) {
