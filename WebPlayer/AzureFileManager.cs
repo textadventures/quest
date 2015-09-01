@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace WebPlayer
@@ -16,14 +17,14 @@ namespace WebPlayer
             public string SourceGameUrl { get; set; }
         }
 
-        public string GetFileForID(string id)
+        public async Task<string> GetFileForID(string id)
         {
             if (id.StartsWith("editor/"))
             {
                 return string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7));
             }
 
-            var game = Api.GetData<ApiGame>("api/game/" + id);
+            var game = await Api.GetData<ApiGame>("api/game/" + id);
 
             if (game == null) return null;
 
@@ -36,9 +37,9 @@ namespace WebPlayer
             return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
         }
 
-        public static ApiGame GetGameData(string id)
+        public static async Task<ApiGame> GetGameData(string id)
         {
-            var result = Api.GetData<ApiGame>("api/game/" + id);
+            var result = await Api.GetData<ApiGame>("api/game/" + id);
             result.SourceGameUrl = GetSourceGameUrl(result);
             return result;
         }

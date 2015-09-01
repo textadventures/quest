@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
 using TextAdventures.Utility.JSInterop;
+using System.Threading.Tasks;
 
 namespace WebPlayer.Mobile
 {
@@ -65,7 +66,7 @@ namespace WebPlayer.Mobile
             }
         }
 
-        protected void InitTimerTick(object sender, EventArgs e)
+        protected async void InitTimerTick(object sender, EventArgs e)
         {
             if (m_buffer == null) return;
             m_buffer.InitStage++;
@@ -73,7 +74,7 @@ namespace WebPlayer.Mobile
             switch (m_buffer.InitStage)
             {
                 case 1:
-                    string initialText = LoadGameForRequest();
+                    string initialText = await LoadGameForRequest();
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
@@ -95,7 +96,7 @@ namespace WebPlayer.Mobile
             }
         }
 
-        private string LoadGameForRequest()
+        private async Task<string> LoadGameForRequest()
         {
             string folder = null;
             string gameFile = Request["file"];
@@ -108,7 +109,7 @@ namespace WebPlayer.Mobile
                     IFileManager fileManager = FileManagerLoader.GetFileManager();
                     if (fileManager != null)
                     {
-                        gameFile = fileManager.GetFileForID(id);
+                        gameFile = await fileManager.GetFileForID(id);
                     }
                 }
             }
@@ -120,7 +121,7 @@ namespace WebPlayer.Mobile
 
             if (loadData != null)
             {
-                apiGameData = AzureFileManager.GetGameData(id);
+                apiGameData = await AzureFileManager.GetGameData(id);
                 if (apiGameData == null)
                 {
                     throw new InvalidOperationException("No API data returned for game id " + id);

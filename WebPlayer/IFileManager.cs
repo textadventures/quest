@@ -1,7 +1,9 @@
-﻿namespace WebPlayer
+﻿using System.Threading.Tasks;
+
+namespace WebPlayer
 {
     public interface IFileManager
     {
-        string GetFileForID(string id);
+        Task<string> GetFileForID(string id);
     }
 }
