@@ -65,6 +65,8 @@ function Chr(input) {
     return String.fromCharCode(input);
 }
 function Len(input) {
+    if (input === null || input === undefined)
+        return 0;
     return input.length;
 }
 function UBound(array) {
@@ -447,6 +449,7 @@ var LegacyGame = (function () {
         this._casKeywords = [];
         //The name of the game
         this._nullContext = new Context();
+        this._numberRooms = 0;
         this._gameChangeData = new GameChangeDataType();
         this._textFormatter = new TextFormatter();
         this._log = [];
@@ -11617,7 +11620,8 @@ var RoomExits = (function () {
         this._game = game;
         this._regenerateAllExits = true;
     }
-    RoomExits.prototype.SetDirection = function (direction, roomExit) {
+    RoomExits.prototype.SetDirection = function (direction) {
+        var roomExit;
         if (this._directions[direction]) {
             roomExit = this._directions.Item(direction);
             this._game._objs[roomExit.GetObjId()].Exists = true;
@@ -11627,6 +11631,7 @@ var RoomExits = (function () {
             this._directions[direction] = roomExit;
         }
         this._regenerateAllExits = true;
+        return roomExit;
     };
     RoomExits.prototype.GetDirectionExit = function (direction) {
         if (this._directions.ContainsKey(direction)) {
@@ -11698,7 +11703,7 @@ var RoomExits = (function () {
         if (thisDir != Direction.None) {
             // This will reuse an existing Exit object if we're resetting
             // the destination of an existing directional exit.
-            this.SetDirection(thisDir, roomExit);
+            roomExit = this.SetDirection(thisDir);
         }
         else {
             roomExit = new RoomExit(this._game);

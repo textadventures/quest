@@ -82,6 +82,7 @@ function Chr(input: number): string {
 }
 
 function Len(input: string): number {
+    if (input === null || input === undefined) return 0;
     return input.length;
 }
 
@@ -439,7 +440,7 @@ class LegacyGame {
     _defaultProperties: PropertiesActions;
     _defaultRoomProperties: PropertiesActions;
     _rooms: RoomType[];
-    _numberRooms: number;
+    _numberRooms: number = 0;
     _numericVariable: VariableType[];
     _numberNumericVariables: number;
     _stringVariable: VariableType[];
@@ -10809,7 +10810,8 @@ class RoomExits {
         this._game = game;
         this._regenerateAllExits = true;
     }
-    SetDirection(direction: Direction, roomExit: RoomExit): void {
+    SetDirection(direction: Direction): RoomExit {
+        var roomExit: RoomExit;
         if (this._directions[direction]) {
             roomExit = this._directions.Item(direction);
             this._game._objs[roomExit.GetObjId()].Exists = true;
@@ -10818,6 +10820,7 @@ class RoomExits {
             this._directions[direction] = roomExit;
         }
         this._regenerateAllExits = true;
+        return roomExit;
     }
     GetDirectionExit(direction: Direction): RoomExit {
         if (this._directions.ContainsKey(direction)) {
@@ -10877,7 +10880,7 @@ class RoomExits {
         if (thisDir != Direction.None) {
             // This will reuse an existing Exit object if we're resetting
             // the destination of an existing directional exit.
-            this.SetDirection(thisDir, roomExit);
+            roomExit = this.SetDirection(thisDir);
         } else {
             roomExit = new RoomExit(this._game);
         }
