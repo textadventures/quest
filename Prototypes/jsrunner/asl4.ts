@@ -998,7 +998,7 @@ class LegacyGame {
             }
         }
         //Exit if errors found
-        if (hasErrors == true) {
+        if (hasErrors) {
             return true;
         }
         // Checks that define sections have parameters:
@@ -1197,11 +1197,7 @@ class LegacyGame {
         }
     }
     YesNo(yn: boolean): string {
-        if (yn == true) {
-            return "Yes";
-        } else {
-            return "No";
-        }
+        return yn ? "Yes" : "No";
     }
     IsYes(yn: string): boolean {
         if (LCase(yn) == "yes") {
@@ -1610,7 +1606,7 @@ class LegacyGame {
                         }
                     }
                 }
-            } while (!(libFoundThisSweep == false));
+            } while (libFoundThisSweep);
             skipCheck = false;
             var lastSlashPos: number;
             var slashPos: number;
@@ -1653,9 +1649,9 @@ class LegacyGame {
                     // Don't count the current line - we know it begins with 'define'...
                     curLine = i + 1;
                     do {
-                        if (self.BeginsWith(self._lines[curLine], "define") == true) {
+                        if (self.BeginsWith(self._lines[curLine], "define")) {
                             defineCount = defineCount + 1;
-                        } else if (self.BeginsWith(self._lines[curLine], "end define") == true) {
+                        } else if (self.BeginsWith(self._lines[curLine], "end define")) {
                             defineCount = defineCount - 1;
                         }
                         curLine = curLine + 1;
@@ -1820,7 +1816,7 @@ class LegacyGame {
             } else {
                 curLin = "";
                 endLineReached = false;
-                if (textMode == true) {
+                if (textMode) {
                     textData = Mid(fileData, i, InStr(i, fileData, Chr(253)) - (i - 1));
                     textData = Left(textData, Len(textData) - 1);
                     cpos = 1;
@@ -3328,7 +3324,7 @@ class LegacyGame {
                 }
             }
         }
-        if (((twoPlaces == false && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || firstPlace == "")) || (twoPlaces == true && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || LCase(this._objs[id].ContainerRoom) == LCase(secondPlace)))) && this._objs[id].Exists == true && this._objs[id].IsExit == isExit) {
+        if (((!twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || firstPlace == "")) || (twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || LCase(this._objs[id].ContainerRoom) == LCase(secondPlace)))) && this._objs[id].Exists && this._objs[id].IsExit == isExit) {
             if (!onlySeen) {
                 return true;
             }
@@ -4368,10 +4364,10 @@ class LegacyGame {
                 }
             }
         }
-        if (found == false && errorReport) {
+        if (!found && errorReport) {
             this.LogASLError("No such character/object '" + obj + "'.", LogType.UserError);
         }
-        if (found == false) {
+        if (!found) {
             result = false;
         }
         if (realOnly) {
@@ -4523,7 +4519,7 @@ class LegacyGame {
             name = this.GetEverythingAfter(name, "the ");
         }
         for (var i = 1; i <= this._numberObjs; i++) {
-            if ((LCase(this._objs[i].ObjectName) == LCase(name) || LCase(this._objs[i].ObjectName) == "the " + LCase(name)) && (LCase(this._objs[i].ContainerRoom) == LCase(room) || room == "") && this._objs[i].Exists == true) {
+            if ((LCase(this._objs[i].ObjectName) == LCase(name) || LCase(this._objs[i].ObjectName) == "the " + LCase(name)) && (LCase(this._objs[i].ContainerRoom) == LCase(room) || room == "") && this._objs[i].Exists) {
                 id = i;
                 found = true;
                 break;
@@ -4832,7 +4828,7 @@ class LegacyGame {
             }
             var currentBit = Mid(parameter, pos, varPos - pos);
             result = result + currentBit;
-            if (finished == false) {
+            if (!finished) {
                 var nextPos = InStr(varPos + 1, parameter, convertChar);
                 if (nextPos == 0) {
                     this.LogASLError("Line parameter <" + parameter + "> has missing " + convertChar, LogType.WarningError);
@@ -5681,7 +5677,7 @@ class LegacyGame {
                 }
             }
         }
-        if (exists == false) {
+        if (!exists) {
             this._numberNumericVariables = this._numberNumericVariables + 1;
             numNumber = this._numberNumericVariables;
             if (!this._numericVariable) this._numericVariable = [];
@@ -6708,7 +6704,7 @@ class LegacyGame {
                 break;
             }
         }
-        if (descTagExist == false) {
+        if (!descTagExist) {
             //Look in the "define game" block:
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "description ")) {
@@ -6718,7 +6714,7 @@ class LegacyGame {
                 }
             }
         }
-        if (descTagExist == false) {
+        if (!descTagExist) {
             //Remove final newline:
             roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
             this.Print(roomDisplayText, this._nullContext);
@@ -7906,7 +7902,7 @@ class LegacyGame {
         } else {
             descTagExist = false;
         }
-        if (descTagExist == false) {
+        if (!descTagExist) {
             //Look in the "define game" block:
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "description ")) {
@@ -7926,7 +7922,7 @@ class LegacyGame {
             showLookText = false;
         }
         if (!noPrint) {
-            if (descTagExist == false) {
+            if (!descTagExist) {
                 //Remove final \n
                 roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 1);
                 this.Print(roomDisplayText, ctx);
@@ -8018,7 +8014,7 @@ class LegacyGame {
                 }
             }
         }
-        if (this._collectables[id].Value == 0 && this._collectables[id].DisplayWhenZero == false) {
+        if (this._collectables[id].Value == 0 && !this._collectables[id].DisplayWhenZero) {
             display = "<null>";
         }
         return display;
@@ -8095,7 +8091,7 @@ class LegacyGame {
                 }
             }
         }
-        if (this._beforeTurnScript != "" && globalOverride == false) {
+        if (this._beforeTurnScript != "" && !globalOverride) {
             this.ExecuteScript(this._beforeTurnScript, newCtx);
         }
         // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
@@ -8103,7 +8099,7 @@ class LegacyGame {
         if (!newCtx.DontProcessCommand) {
             //Try to execute user defined command, if allowed:
             userCommandReturn = false;
-            if (runUserCommand == true) {
+            if (runUserCommand) {
                 userCommandReturn = this.ExecUserCommand(input, ctx);
                 if (!userCommandReturn) {
                     userCommandReturn = this.ExecVerb(input, ctx);
@@ -8262,7 +8258,7 @@ class LegacyGame {
                     }
                 } else {
                     for (var j = 1; j <= this._numberItems; j++) {
-                        if (this._items[j].Got == true) {
+                        if (this._items[j].Got) {
                             invList = invList + this._items[j].Name + ", ";
                         }
                     }
@@ -8308,8 +8304,7 @@ class LegacyGame {
                     }
                 }
             }
-            // was set to NullThread here for some reason
-            if (this._afterTurnScript != "" && globalOverride == false) {
+            if (this._afterTurnScript != "" && !globalOverride) {
                 this.ExecuteScript(this._afterTurnScript, ctx);
             }
         }
@@ -8376,15 +8371,15 @@ class LegacyGame {
             var notGot = true;
             for (var i = 1; i <= this._numberItems; i++) {
                 if (LCase(this._items[i].Name) == LCase(item)) {
-                    if (this._items[i].Got == false) {
+                    if (!this._items[i].Got) {
                         notGot = true;
-                        i = this._numberItems;
+                        break;
                     } else {
                         notGot = false;
                     }
                 }
             }
-            if (notGot == true) {
+            if (notGot) {
                 this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             } else {
@@ -8456,7 +8451,7 @@ class LegacyGame {
         } else {
             // ASL2:
             var block = this.GetThingBlock(character, this._currentRoom, type);
-            if ((block.StartLine == 0 && block.EndLine == 0) || this.IsAvailable(character + "@" + this._currentRoom, type, ctx) == false) {
+            if ((block.StartLine == 0 && block.EndLine == 0) || !this.IsAvailable(character + "@" + this._currentRoom, type, ctx)) {
                 this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 return;
             }
@@ -8528,14 +8523,14 @@ class LegacyGame {
                 lookLine = this.RetrLine("object", item, "look", ctx);
                 if (lookLine != "<unfound>") {
                     //Check for availability
-                    if (this.IsAvailable(item, Thing.Object, ctx) == false) {
+                    if (!this.IsAvailable(item, Thing.Object, ctx)) {
                         lookLine = "<unfound>";
                     }
                 }
                 if (lookLine == "<unfound>") {
                     lookLine = this.RetrLine("character", item, "look", ctx);
                     if (lookLine != "<unfound>") {
-                        if (this.IsAvailable(item, Thing.Character, ctx) == false) {
+                        if (!this.IsAvailable(item, Thing.Character, ctx)) {
                             lookLine = "<unfound>";
                         }
                     }
@@ -8631,7 +8626,7 @@ class LegacyGame {
             var data = Trim(this.GetEverythingAfter(Trim(line), "speak "));
             if (line != "<unfound>" && line != "<undefined>") {
                 // Character exists; but is it available??
-                if (this.IsAvailable(cmd + "@" + this._currentRoom, type, ctx) == false) {
+                if (!this.IsAvailable(cmd + "@" + this._currentRoom, type, ctx)) {
                     line = "<undefined>";
                 }
             }
@@ -8783,7 +8778,7 @@ class LegacyGame {
             notGotItem = true;
             for (var i = 1; i <= this._numberItems; i++) {
                 if (LCase(this._items[i].Name) == LCase(useItem)) {
-                    if (this._items[i].Got == false) {
+                    if (!this._items[i].Got) {
                         notGotItem = true;
                         i = this._numberItems;
                     } else {
@@ -8791,7 +8786,7 @@ class LegacyGame {
                     }
                 }
             }
-            if (notGotItem == true) {
+            if (notGotItem) {
                 this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             }
@@ -8904,7 +8899,7 @@ class LegacyGame {
             }
             if (useDeclareLine != "<unfound>" && useDeclareLine != "<undefined>" && useOn != "") {
                 //Check for object availablity
-                if (this.IsAvailable(useOn, Thing.Object, ctx) == false) {
+                if (!this.IsAvailable(useOn, Thing.Object, ctx)) {
                     useDeclareLine = "<undefined>";
                 }
             }
@@ -8912,7 +8907,7 @@ class LegacyGame {
                 useDeclareLine = this.RetrLineParam("character", useOn, "use", useItem, ctx);
                 if (useDeclareLine != "<undefined>") {
                     //Check for character availability
-                    if (this.IsAvailable(useOn, Thing.Character, ctx) == false) {
+                    if (!this.IsAvailable(useOn, Thing.Character, ctx)) {
                         useDeclareLine = "<undefined>";
                     }
                 }
@@ -9221,7 +9216,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "return ")) {
                 ctx.FunctionReturnValue = this.GetParameter(scriptLine, ctx);
             } else {
-                if (this.BeginsWith(scriptLine, "'") == false) {
+                if (!this.BeginsWith(scriptLine, "'")) {
                     this.LogASLError("Unrecognized keyword. Line reads: '" + Trim(this.ReportErrorLine(scriptLine)) + "'", LogType.WarningError);
                 }
             }
@@ -9419,7 +9414,7 @@ class LegacyGame {
                 this.PlayGame(destination, ctx);
             }
         }
-        if (disallowed == true) {
+        if (disallowed) {
             this.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         }
     }
@@ -9759,7 +9754,7 @@ class LegacyGame {
                         pos = nextComma + 1;
                         this._numCollectables = this._numCollectables + 1;
                         //lastitem set when nextcomma=0, above.
-                    } while (!(lastItem == true));
+                    } while (!lastItem);
                     this._numCollectables = this._numCollectables - 1;
                 }
             }
@@ -9797,7 +9792,7 @@ class LegacyGame {
                         pos = nextComma + 1;
                         this._numberItems = this._numberItems + 1;
                         //lastitem set when nextcomma=0, above.
-                    } while (!(lastItem == true));
+                    } while (!lastItem);
                     this._numberItems = this._numberItems - 1;
                 }
             }
@@ -9833,7 +9828,7 @@ class LegacyGame {
                         }
                         pos = nextComma + 1;
                         //lastitem set when nextcomma=0, above.
-                    } while (!(lastItem == true));
+                    } while (!lastItem);
                 }
             }
         }
@@ -10057,7 +10052,7 @@ class LegacyGame {
             }
         } else {
             for (var j = 1; j <= this._numberItems; j++) {
-                if (this._items[j].Got == true) {
+                if (this._items[j].Got) {
                     invList.push(new ListData(this.CapFirst(this._items[j].Name), this._listVerbs[ListType.InventoryList]));
                 }
             }
