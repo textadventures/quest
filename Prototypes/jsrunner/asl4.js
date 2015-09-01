@@ -12077,12 +12077,14 @@ var RoomExits = (function () {
         return "to " + display;
     };
     RoomExits.prototype.GetExitByObjectId = function (id) {
+        var result;
         this.AllExits().forEach(function (roomExit) {
             if (roomExit.GetObjId() == id) {
-                return roomExit;
+                result = roomExit;
+                return;
             }
         }, this);
-        return null;
+        return result;
     };
     RoomExits.prototype.AllExits = function () {
         if (!this._regenerateAllExits) {

@@ -11158,12 +11158,14 @@ class RoomExits {
         return "to " + display;
     }
     GetExitByObjectId(id: number): RoomExit {
+        var result: RoomExit;
         this.AllExits().forEach(function (roomExit) {
             if (roomExit.GetObjId() == id) {
-                return roomExit;
+                result = roomExit;
+                return;
             }
         }, this);
-        return null;
+        return result;
     }
     AllExits(): RoomExit[] {
         if (!this._regenerateAllExits) {
