@@ -1291,7 +1291,7 @@ class LegacyGame {
             cache = this._defineBlockParams[blockname];
         }
         if (cache[param]) {
-            var blocks = Split(cache.Item(param), ",");
+            var blocks = Split(cache[param], ",");
             result.StartLine = parseInt(blocks[0]);
             result.EndLine = parseInt(blocks[1]);
         }
@@ -4711,7 +4711,7 @@ class LegacyGame {
         }
         this._changeLogObjects.Changes.Keys.forEach(function (key) {
             var appliesTo = Split(key, "#")[0];
-            var changeData = this._changeLogObjects.Changes.Item(key);
+            var changeData = this._changeLogObjects.Changes[key];
             data.push(appliesTo + Chr(0) + changeData + Chr(0));
         }, this);
         // <<< OBJECT EXIST/VISIBLE/ROOM DATA >>>
@@ -10364,7 +10364,7 @@ class LegacyGame {
         var dir = exits.GetDirectionEnum(exitName);
         if (dir == Direction.None) {
             if (exits.GetPlaces()[exitName]) {
-                return exits.GetPlaces().Item(exitName);
+                return exits.GetPlaces()[exitName];
             }
         } else {
             return exits.GetDirectionExit(dir);
@@ -10813,7 +10813,7 @@ class RoomExits {
     SetDirection(direction: Direction): RoomExit {
         var roomExit: RoomExit;
         if (this._directions[direction]) {
-            roomExit = this._directions.Item(direction);
+            roomExit = this._directions[direction];
             this._game._objs[roomExit.GetObjId()].Exists = true;
         } else {
             roomExit = new RoomExit(this._game);
@@ -10824,7 +10824,7 @@ class RoomExits {
     }
     GetDirectionExit(direction: Direction): RoomExit {
         if (this._directions[direction]) {
-            return this._directions.Item(direction);
+            return this._directions[direction];
         }
         return null;
     }
@@ -11122,18 +11122,18 @@ class RoomExits {
             return this._allExits;
         }
         this._allExits = [];
-        this._directions.Keys.forEach(function (dir) {
-            var roomExit = this._directions.Item(dir);
+        for (var dir in this._directions) {
+            var roomExit = this._directions[dir];
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.push(dir, this._directions.Item(dir));
+                this._allExits.push(dir, this._directions[dir]);
             }
-        }, this);
-        this._places.Keys.forEach(function (dir) {
-            var roomExit = this._places.Item(dir);
+        };
+        for (var dir in this._places) {
+            var roomExit = this._places[dir];
             if (this._game._objs[roomExit.GetObjId()].Exists) {
-                this._allExits.push(dir, this._places.Item(dir));
+                this._allExits.push(dir, this._places[dir]);
             }
-        }, this);
+        };
         return this._allExits;
     }
     RemoveExit(roomExit: RoomExit): void {
