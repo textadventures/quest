@@ -1371,6 +1371,7 @@ var LegacyGame = (function () {
         //}, this);
     };
     LegacyGame.prototype.GetResourceLines = function (res) {
+        // TODO
         var enc = {};
         var resFile = enc.GetString(res);
         return Split(resFile, Chr(13) + Chr(10));
@@ -4993,11 +4994,11 @@ var LegacyGame = (function () {
             }
         }
         // <<< OBJECT CREATE/CHANGE DATA >>>
-        data.push(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
+        data.push(Trim(Str(numObjectData + Object.keys(this._changeLogObjects.Changes).length)) + Chr(0));
         for (var i = 1; i <= numObjectData; i++) {
             data.push(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
         }
-        this._changeLogObjects.Changes.Keys.forEach(function (key) {
+        Object.keys(this._changeLogObjects.Changes).forEach(function (key) {
             var appliesTo = Split(key, "#")[0];
             var changeData = this._changeLogObjects.Changes[key];
             data.push(appliesTo + Chr(0) + changeData + Chr(0));
@@ -5826,12 +5827,12 @@ var LegacyGame = (function () {
         var found;
         var numStoredData;
         var storedData = [];
-        var decryptedFile = {};
+        var decryptedFile = [];
         // Decrypt file
         for (var i = 1; i <= Len(fileData); i++) {
-            decryptedFile.Append(Chr(255 - Asc(Mid(fileData, i, 1))));
+            decryptedFile.push(Chr(255 - Asc(Mid(fileData, i, 1))));
         }
-        this._fileData = decryptedFile.ToString();
+        this._fileData = decryptedFile.join("");
         this._currentRoom = this.GetNextChunk();
         // OBJECTS
         var numData = parseInt(this.GetNextChunk());
@@ -6290,7 +6291,7 @@ var LegacyGame = (function () {
                             }
                         }
                     }
-                    if (menuOptions.Count > 0) {
+                    if (Object.keys(menuOptions).length > 0) {
                         exists = true;
                     }
                 }
@@ -10982,9 +10983,12 @@ var LegacyGame = (function () {
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
-                this._rooms[roomId].Exits.GetPlaces().Values.forEach(function (roomExit) {
+                var places = this._rooms[roomId].Exits.GetPlaces();
+                for (var key in places) {
+                    var roomExit = places[key];
                     this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), Thing.Room);
-                }, this);
+                }
+                ;
             }
             else {
                 var r = this._rooms[roomId];
@@ -11858,9 +11862,8 @@ var RoomExits = (function () {
         orString = "or";
         list = "";
         count = 0;
-        this.AllExits().forEach(function (kvp) {
+        this.AllExits().forEach(function (roomExit) {
             count = count + 1;
-            roomExit = kvp.Value;
             list = list + this.GetDirectionToken(roomExit.GetDirection());
             description = description + this.GetDirectionNameDisplay(roomExit);
             if (count < this.AllExits.Count - 1) {
@@ -11968,9 +11971,9 @@ var RoomExits = (function () {
         return "to " + sDisplay;
     };
     RoomExits.prototype.GetExitByObjectId = function (id) {
-        this.AllExits().forEach(function (kvp) {
-            if (kvp.Value.GetObjId() == id) {
-                return kvp.Value;
+        this.AllExits().forEach(function (roomExit) {
+            if (roomExit.GetObjId() == id) {
+                return roomExit;
             }
         }, this);
         return null;

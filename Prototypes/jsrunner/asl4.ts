@@ -98,8 +98,12 @@ function Val(input: string): number {
     return parseInt(input);
 }
 
+interface StringDictionary {
+    [index: string]: string;
+}
+
 class MenuData {
-    constructor(caption: string, options: any, allowCancel: boolean) {
+    constructor(caption: string, options: StringDictionary, allowCancel: boolean) {
         // TODO
     }
 }
@@ -409,6 +413,15 @@ class PlayerCanAccessObjectResult {
     ErrorMsg: string;
 }
 enum AppliesTo {Object, Room};
+
+interface DefineBlockParams {
+    [index: string]: StringDictionary;
+}
+
+interface ListVerbs {
+    [index: number]: string[];
+}
+
 class LegacyGame {
     CopyContext(ctx: Context): Context {
         var result: Context = new Context();
@@ -422,7 +435,7 @@ class LegacyGame {
         result.StackCounter = ctx.StackCounter;
         return result;
     }
-    _defineBlockParams: any;
+    _defineBlockParams: DefineBlockParams;
     _openErrorReport: string;
     _casKeywords: string[] = [];
     //Tokenised CAS keywords
@@ -505,7 +518,7 @@ class LegacyGame {
     _readyForCommand: boolean = true;
     _gameLoading: boolean;
     _playerErrorMessageString: string[] = [];
-    _listVerbs: any = {};
+    _listVerbs: ListVerbs = {};
     _filename: string;
     _originalFilename: string;
     _data: InitGameData;
@@ -1265,7 +1278,7 @@ class LegacyGame {
     }
     DefineBlockParam(blockname: string, param: string): DefineBlock {
         // Returns the start and end points of a named block
-        var cache: any;
+        var cache: StringDictionary;
         var result = new DefineBlock();
         param = "k" + param; // protect against numeric block names
         if (!this._defineBlockParams[blockname]) {
@@ -1334,6 +1347,7 @@ class LegacyGame {
         //}, this);
     }
     GetResourceLines(res: number[]): string[] {
+        // TODO
         var enc: any = {};
         var resFile: string = enc.GetString(res);
         return Split(resFile, Chr(13) + Chr(10));
@@ -2983,7 +2997,7 @@ class LegacyGame {
         this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].AppliesTo = appliesTo;
         this._gameChangeData.ChangeData[this._gameChangeData.NumberChanges].Change = changeData;
     }
-    AddToObjectChangeLog(appliesToType: any, appliesTo: string, element: string, changeData: string): void {
+    AddToObjectChangeLog(appliesToType: AppliesTo, appliesTo: string, element: string, changeData: string): void {
         var changeLog: ChangeLog;
         // NOTE: We're only actually ever using the object changelog.
         // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
@@ -3622,7 +3636,7 @@ class LegacyGame {
             descriptionText = [];
             var question = "Please select which " + name + " you mean:";
             this.Print("- |i" + question + "|xi", ctx);
-            var menuItems: any = {};
+            var menuItems: StringDictionary = {};
             for (var i = 1; i <= numberCorresIds; i++) {
                 descriptionText[i] = this._objs[idNumbers[i]].Detail;
                 if (descriptionText[i] == "") {
@@ -4705,11 +4719,11 @@ class LegacyGame {
             }
         }
         // <<< OBJECT CREATE/CHANGE DATA >>>
-        data.push(Trim(Str(numObjectData + this._changeLogObjects.Changes.Count)) + Chr(0));
+        data.push(Trim(Str(numObjectData + Object.keys(this._changeLogObjects.Changes).length)) + Chr(0));
         for (var i = 1; i <= numObjectData; i++) {
             data.push(this.GetEverythingAfter(objectData[i].AppliesTo, "object ") + Chr(0) + objectData[i].Change + Chr(0));
         }
-        this._changeLogObjects.Changes.Keys.forEach(function (key) {
+        Object.keys(this._changeLogObjects.Changes).forEach(function (key) {
             var appliesTo = Split(key, "#")[0];
             var changeData = this._changeLogObjects.Changes[key];
             data.push(appliesTo + Chr(0) + changeData + Chr(0));
@@ -5461,12 +5475,12 @@ class LegacyGame {
         var found: boolean;
         var numStoredData: number;
         var storedData: ChangeType[] = [];
-        var decryptedFile: any = {};
+        var decryptedFile: string[] = [];
         // Decrypt file
         for (var i = 1; i <= Len(fileData); i++) {
-            decryptedFile.Append(Chr(255 - Asc(Mid(fileData, i, 1))));
+            decryptedFile.push(Chr(255 - Asc(Mid(fileData, i, 1))));
         }
-        this._fileData = decryptedFile.ToString();
+        this._fileData = decryptedFile.join("");
         this._currentRoom = this.GetNextChunk();
         // OBJECTS
         var numData = parseInt(this.GetNextChunk());
@@ -5750,8 +5764,8 @@ class LegacyGame {
         // Returns script to execute from choice block
         var block = this.DefineBlockParam("selection", blockName);
         var prompt = this.FindStatement(block, "info");
-        var menuOptions: any = {};
-        var menuScript: any = {};
+        var menuOptions: StringDictionary = {};
+        var menuScript: StringDictionary = {};
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "choice ")) {
                 menuOptions[i.toString()] = this.GetParameter(this._lines[i], ctx);
@@ -5873,7 +5887,7 @@ class LegacyGame {
     SetUpMenus(): void {
         var exists: boolean = false;
         var menuTitle: string = "";
-        var menuOptions: any = {};
+        var menuOptions: StringDictionary = {};
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define menu ")) {
                 if (exists) {
@@ -5894,7 +5908,7 @@ class LegacyGame {
                             }
                         }
                     }
-                    if (menuOptions.Count > 0) {
+                    if (Object.keys(menuOptions).length > 0) {
                         exists = true;
                     }
                 }
@@ -10148,9 +10162,11 @@ class LegacyGame {
         roomId = this.GetRoomID(this._currentRoom, ctx);
         if (roomId > 0) {
             if (this._gameAslVersion >= 410) {
-                this._rooms[roomId].Exits.GetPlaces().Values.forEach(function (roomExit) {
+                var places = this._rooms[roomId].Exits.GetPlaces();
+                for (var key in places) {
+                    var roomExit = places[key];
                     this.AddToObjectList(objList, exitList, roomExit.GetDisplayName(), Thing.Room);
-                }, this);
+                };
             } else {
                 var r = this._rooms[roomId];
                 for (var i = 1; i <= r.NumberPlaces; i++) {
@@ -10622,7 +10638,7 @@ class ChangeLog {
     // NOTE: We only actually use the Object change log at the moment, as that is the only
     // one that has properties and actions.
     AppliesToType: AppliesTo;
-    Changes: any = {};
+    Changes: StringDictionary = {};
     // appliesTo = room or object name
     // element = the thing that's changed, e.g. an action or property name
     // changeData = the actual change info
@@ -10637,7 +10653,7 @@ class RoomExit {
     Id: string;
     _objId: number;
     _roomId: number;
-    _direction: any;
+    _direction: Direction;
     _parent: RoomExits;
     _objName: string;
     _displayName: string;
@@ -10799,11 +10815,20 @@ class RoomExit {
         }
     }
 }
+
+interface NumberRoomExitDictionary {
+    [index: number]: RoomExit;
+}
+
+interface StringRoomExitDictionary {
+    [index: string]: RoomExit;
+}
+
 class RoomExits {
-    _directions: any = {};
-    _places: any = {};
+    _directions: NumberRoomExitDictionary = {};
+    _places: StringRoomExitDictionary = {};
     _objId: number;
-    _allExits: any;
+    _allExits: RoomExit[];
     _regenerateAllExits: boolean;
     _game: LegacyGame;
     constructor(game: LegacyGame) {
@@ -10972,7 +10997,7 @@ class RoomExits {
     GetObjId(): number {
         return this._objId;
     }
-    GetPlaces(): any {
+    GetPlaces(): StringRoomExitDictionary {
         return this._places;
     }
     ExecuteGo(cmd: string, ctx: Context): void {
@@ -11001,9 +11026,8 @@ class RoomExits {
         orString = "or";
         list = "";
         count = 0;
-        this.AllExits().forEach(function (kvp) {
+        this.AllExits().forEach(function (roomExit) {
             count = count + 1;
-            roomExit = kvp.Value;
             list = list + this.GetDirectionToken(roomExit.GetDirection());
             description = description + this.GetDirectionNameDisplay(roomExit);
             if (count < this.AllExits.Count - 1) {
@@ -11110,14 +11134,14 @@ class RoomExits {
         return "to " + sDisplay;
     }
     GetExitByObjectId(id: number): RoomExit {
-        this.AllExits().forEach(function (kvp) {
-            if (kvp.Value.GetObjId() == id) {
-                return kvp.Value;
+        this.AllExits().forEach(function (roomExit) {
+            if (roomExit.GetObjId() == id) {
+                return roomExit;
             }
         }, this);
         return null;
     }
-    AllExits(): any {
+    AllExits(): RoomExit[] {
         if (!this._regenerateAllExits) {
             return this._allExits;
         }
