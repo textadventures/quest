@@ -85,8 +85,14 @@ interface StringDictionary {
 }
 
 class MenuData {
+    Caption: string;
+    Options: StringDictionary;
+    AllowCancel: Boolean;
+    
     constructor(caption: string, options: StringDictionary, allowCancel: boolean) {
-        // TODO
+        this.Caption = caption;
+        this.Options = options;
+        this.AllowCancel = allowCancel;
     }
 }
 
@@ -1311,22 +1317,219 @@ class LegacyGame {
         return this.Keyword2CAS("!unknown") + KWord + this.Keyword2CAS("!unknown");
     }
     LoadCASKeywords(): void {
-        // TODO - just hardcode as an object, e.g.
-        //   { "game"=1, "procedure"=2, "room"=3 }
-        // or better the other way round, as we only care about decompiling
-        
-        
-        //Loads data required for conversion of CAS files
-        //var questDatLines: string[] = this.GetResourceLines(My.Resources.QuestDAT);
-        //questDatLines.forEach(function (line) {
-        //    if (Left(line, 1) != "#") {
-        //        //Lines isn't a comment - so parse it.
-        //        var scp = InStr(line, ";");
-        //        var keyword = Trim(Left(line, scp - 1));
-        //        var num = parseInt(Right(line, Len(line) - scp));
-        //        this._casKeywords[num] = keyword;
-        //    }
-        //}, this);
+        this._casKeywords[0] = "!null";
+        this._casKeywords[1] = "game";
+        this._casKeywords[2] = "procedure";
+        this._casKeywords[3] = "room";
+        this._casKeywords[4] = "object";
+        this._casKeywords[5] = "character";
+        this._casKeywords[6] = "text";
+        this._casKeywords[7] = "selection";
+        this._casKeywords[8] = "define";
+        this._casKeywords[9] = "end";
+        this._casKeywords[10] = "!quote";
+        this._casKeywords[11] = "asl-version";
+        this._casKeywords[12] = "game";
+        this._casKeywords[13] = "version";
+        this._casKeywords[14] = "author";
+        this._casKeywords[15] = "copyright";
+        this._casKeywords[16] = "info";
+        this._casKeywords[17] = "start";
+        this._casKeywords[18] = "possitems";
+        this._casKeywords[19] = "startitems";
+        this._casKeywords[20] = "prefix";
+        this._casKeywords[21] = "look";
+        this._casKeywords[22] = "out";
+        this._casKeywords[23] = "gender";
+        this._casKeywords[24] = "speak";
+        this._casKeywords[25] = "take";
+        this._casKeywords[26] = "alias";
+        this._casKeywords[27] = "place";
+        this._casKeywords[28] = "east";
+        this._casKeywords[29] = "north";
+        this._casKeywords[30] = "west";
+        this._casKeywords[31] = "south";
+        this._casKeywords[32] = "give";
+        this._casKeywords[33] = "hideobject";
+        this._casKeywords[34] = "hidechar";
+        this._casKeywords[35] = "showobject";
+        this._casKeywords[36] = "showchar";
+        this._casKeywords[37] = "collectable";
+        this._casKeywords[38] = "collecatbles";
+        this._casKeywords[39] = "command";
+        this._casKeywords[40] = "use";
+        this._casKeywords[41] = "hidden";
+        this._casKeywords[42] = "script";
+        this._casKeywords[43] = "font";
+        this._casKeywords[44] = "default";
+        this._casKeywords[45] = "fontname";
+        this._casKeywords[46] = "fontsize";
+        this._casKeywords[47] = "startscript";
+        this._casKeywords[48] = "nointro";
+        this._casKeywords[49] = "indescription";
+        this._casKeywords[50] = "description";
+        this._casKeywords[51] = "function";
+        this._casKeywords[52] = "setvar";
+        this._casKeywords[53] = "for";
+        this._casKeywords[54] = "error";
+        this._casKeywords[55] = "synonyms";
+        this._casKeywords[56] = "beforeturn";
+        this._casKeywords[57] = "afterturn";
+        this._casKeywords[58] = "invisible";
+        this._casKeywords[59] = "nodebug";
+        this._casKeywords[60] = "suffix";
+        this._casKeywords[61] = "startin";
+        this._casKeywords[62] = "northeast";
+        this._casKeywords[63] = "northwest";
+        this._casKeywords[64] = "southeast";
+        this._casKeywords[65] = "southwest";
+        this._casKeywords[66] = "items";
+        this._casKeywords[67] = "examine";
+        this._casKeywords[68] = "detail";
+        this._casKeywords[69] = "drop";
+        this._casKeywords[70] = "everywhere";
+        this._casKeywords[71] = "nowhere";
+        this._casKeywords[72] = "on";
+        this._casKeywords[73] = "anything";
+        this._casKeywords[74] = "article";
+        this._casKeywords[75] = "gain";
+        this._casKeywords[76] = "properties";
+        this._casKeywords[77] = "type";
+        this._casKeywords[78] = "action";
+        this._casKeywords[79] = "displaytype";
+        this._casKeywords[80] = "override";
+        this._casKeywords[81] = "enabled";
+        this._casKeywords[82] = "disabled";
+        this._casKeywords[83] = "variable";
+        this._casKeywords[84] = "value";
+        this._casKeywords[85] = "display";
+        this._casKeywords[86] = "nozero";
+        this._casKeywords[87] = "onchange";
+        this._casKeywords[88] = "timer";
+        this._casKeywords[89] = "alt";
+        this._casKeywords[90] = "lib";
+        this._casKeywords[91] = "up";
+        this._casKeywords[92] = "down";
+        this._casKeywords[93] = "gametype";
+        this._casKeywords[94] = "singleplayer";
+        this._casKeywords[95] = "multiplayer";
+        this._casKeywords[96] = "verb";
+        this._casKeywords[97] = "menu";
+        this._casKeywords[98] = "container";
+        this._casKeywords[99] = "surface";
+        this._casKeywords[100] = "transparent";
+        this._casKeywords[101] = "opened";
+        this._casKeywords[102] = "parent";
+        this._casKeywords[103] = "open";
+        this._casKeywords[104] = "close";
+        this._casKeywords[105] = "add";
+        this._casKeywords[106] = "remove";
+        this._casKeywords[107] = "list";
+        this._casKeywords[108] = "empty";
+        this._casKeywords[109] = "closed";
+        this._casKeywords[110] = "options";
+        this._casKeywords[111] = "abbreviations";
+        this._casKeywords[112] = "locked";
+        this._casKeywords[150] = "do";
+        this._casKeywords[151] = "if";
+        this._casKeywords[152] = "got";
+        this._casKeywords[153] = "then";
+        this._casKeywords[154] = "else";
+        this._casKeywords[155] = "has";
+        this._casKeywords[156] = "say";
+        this._casKeywords[157] = "playwav";
+        this._casKeywords[158] = "lose";
+        this._casKeywords[159] = "msg";
+        this._casKeywords[160] = "not";
+        this._casKeywords[161] = "playerlose";
+        this._casKeywords[162] = "playerwin";
+        this._casKeywords[163] = "ask";
+        this._casKeywords[164] = "goto";
+        this._casKeywords[165] = "set";
+        this._casKeywords[166] = "show";
+        this._casKeywords[167] = "choice";
+        this._casKeywords[168] = "choose";
+        this._casKeywords[169] = "is";
+        this._casKeywords[170] = "setstring";
+        this._casKeywords[171] = "displaytext";
+        this._casKeywords[172] = "exec";
+        this._casKeywords[173] = "pause";
+        this._casKeywords[174] = "clear";
+        this._casKeywords[175] = "debug";
+        this._casKeywords[176] = "enter";
+        this._casKeywords[177] = "movechar";
+        this._casKeywords[178] = "moveobject";
+        this._casKeywords[179] = "revealchar";
+        this._casKeywords[180] = "revealobject";
+        this._casKeywords[181] = "concealchar";
+        this._casKeywords[182] = "concealobject";
+        this._casKeywords[183] = "mailto";
+        this._casKeywords[184] = "and";
+        this._casKeywords[185] = "or";
+        this._casKeywords[186] = "outputoff";
+        this._casKeywords[187] = "outputon";
+        this._casKeywords[188] = "here";
+        this._casKeywords[189] = "playmidi";
+        this._casKeywords[190] = "drop";
+        this._casKeywords[191] = "helpmsg";
+        this._casKeywords[192] = "helpdisplaytext";
+        this._casKeywords[193] = "helpclear";
+        this._casKeywords[194] = "helpclose";
+        this._casKeywords[195] = "hide";
+        this._casKeywords[196] = "show";
+        this._casKeywords[197] = "move";
+        this._casKeywords[198] = "conceal";
+        this._casKeywords[199] = "reveal";
+        this._casKeywords[200] = "numeric";
+        this._casKeywords[201] = "string";
+        this._casKeywords[202] = "collectable";
+        this._casKeywords[203] = "property";
+        this._casKeywords[204] = "create";
+        this._casKeywords[205] = "exit";
+        this._casKeywords[206] = "doaction";
+        this._casKeywords[207] = "close";
+        this._casKeywords[208] = "each";
+        this._casKeywords[209] = "in";
+        this._casKeywords[210] = "repeat";
+        this._casKeywords[211] = "while";
+        this._casKeywords[212] = "until";
+        this._casKeywords[213] = "timeron";
+        this._casKeywords[214] = "timeroff";
+        this._casKeywords[215] = "stop";
+        this._casKeywords[216] = "panes";
+        this._casKeywords[217] = "on";
+        this._casKeywords[218] = "off";
+        this._casKeywords[219] = "return";
+        this._casKeywords[220] = "playmod";
+        this._casKeywords[221] = "modvolume";
+        this._casKeywords[222] = "clone";
+        this._casKeywords[223] = "shellexe";
+        this._casKeywords[224] = "background";
+        this._casKeywords[225] = "foreground";
+        this._casKeywords[226] = "wait";
+        this._casKeywords[227] = "picture";
+        this._casKeywords[228] = "nospeak";
+        this._casKeywords[229] = "animate";
+        this._casKeywords[230] = "persist";
+        this._casKeywords[231] = "inc";
+        this._casKeywords[232] = "dec";
+        this._casKeywords[233] = "flag";
+        this._casKeywords[234] = "dontprocess";
+        this._casKeywords[235] = "destroy";
+        this._casKeywords[236] = "beforesave";
+        this._casKeywords[237] = "onload";
+        this._casKeywords[238] = "playmp3";
+        this._casKeywords[239] = "extract";
+        this._casKeywords[240] = "shell";
+        this._casKeywords[241] = "popup";
+        this._casKeywords[242] = "select";
+        this._casKeywords[243] = "case";
+        this._casKeywords[244] = "lock";
+        this._casKeywords[245] = "unlock";
+        this._casKeywords[252] = "!startcat";
+        this._casKeywords[253] = "!endcat";
+        this._casKeywords[254] = "!unknown";
+        this._casKeywords[255] = "!cr";
     }
     GetResourceLines(res: number[]): string[] {
         // TODO
