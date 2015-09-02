@@ -1528,12 +1528,6 @@ class LegacyGame {
         this._casKeywords[254] = "!unknown";
         this._casKeywords[255] = "!cr";
     }
-    GetResourceLines(res: number[]): string[] {
-        // TODO
-        var enc: any = {};
-        var resFile: string = enc.GetString(res);
-        return Split(resFile, Chr(13) + Chr(10));
-    }
     ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): void {
         var hasErrors: boolean;
         var libCode: string[] = [];
@@ -9360,8 +9354,8 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "clear") {
                 this.DoClear();
             } else if (Trim(LCase(scriptLine)) == "helpclear") {
-            } else if (this.BeginsWith(scriptLine, "background ")) {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
+            } else if (this.BeginsWith(scriptLine, "background ")) {
                 this.SetBackground(this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "foreground ")) {
                 this.SetForeground(this.GetParameter(scriptLine, ctx));
@@ -9370,9 +9364,9 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "debug ")) {
                 this.LogASLError(this.GetParameter(scriptLine, ctx), LogType.Misc);
             } else if (this.BeginsWith(scriptLine, "mailto ")) {
-                var emailAddress: string = this.GetParameter(scriptLine, ctx);
-            } else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {
                 // TODO: Just write HTML directly
+                var emailAddress: string = this.GetParameter(scriptLine, ctx);
+            } else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {               
                 this.LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError);
             } else if (this.BeginsWith(scriptLine, "shellexe ") && this._gameAslVersion < 410) {
                 this.LogASLError("'shellexe' is not supported in this version of Quest", LogType.WarningError);
@@ -10693,30 +10687,9 @@ class LegacyGame {
         return null;
     }
     GetLibraryLines(libName: string): string[] {
-        var libCode: number[] = null;
-        libName = LCase(libName);
-        // TODO: Store standard libraries somewhere
-        switch (libName) {
-            case "stdverbs.lib":
-                //libCode = My.Resources.stdverbs;
-                break;
-            case "standard.lib":
-                //libCode = My.Resources.standard;
-                break;
-            case "q3ext.qlb":
-                //libCode = My.Resources.q3ext;
-                break;
-            case "typelib.qlb":
-                //libCode = My.Resources.Typelib;
-                break;
-            case "net.lib":
-                //libCode = My.Resources.net;
-                break;
-        }
-        if (libCode == null) {
-            return null;
-        }
-        return this.GetResourceLines(libCode);
+        var lib = libraries[libName.toLowerCase()];
+        if (!lib) return null;
+        return lib.split("\n");
     }
     Tick(elapsedTime: number): void {
         var i: number = 0;
@@ -11550,3 +11523,2982 @@ class TextFormatter {
         return output;
     }
 }
+var libraries: StringDictionary = {};
+libraries["stdverbs.lib"] = `!library
+!asl-version <400>
+!name <Additional verbs>
+!version <1.0>
+!author <Alex Warren>
+! This library adds default responses for a number of common commands that players might use in a game. It also allows players to type multiple commands on the same command line.
+
+' STDVERBS.LIB v1.0
+' for Quest 4.0
+' Copyright © 2007 Axe Software. Please do not modify this library.
+
+!addto game
+	verb <buy> msg <You can't buy #(quest.lastobject):article#.>
+	verb <climb> msg <You can't climb #(quest.lastobject):article#.>
+	verb <drink> msg <You can't drink #(quest.lastobject):article#.>
+	verb <eat> msg <You can't eat #(quest.lastobject):article#.>
+	verb <hit> msg <You can't hit #(quest.lastobject):article#.>
+	verb <kill> msg <You can't kill #(quest.lastobject):article#.>
+	verb <kiss> msg <I don't think #(quest.lastobject):article# would like that.>
+	verb <knock> msg <You can't knock #(quest.lastobject):article#.>
+	verb <lick> msg <You can't lick #(quest.lastobject):article#.>
+	verb <listen to> msg <You listen, but #(quest.lastobject):article# makes no sound.>
+	verb <lock> msg <You can't lock #(quest.lastobject):article#.>
+	verb <move> msg <You can't move #(quest.lastobject):article#.>
+	verb <pull> msg <You can't pull #(quest.lastobject):article#.>
+	verb <push> msg <You can't push #(quest.lastobject):article#.>
+	verb <read> msg <You can't read #(quest.lastobject):article#.>
+	verb <search> msg <You can't search #(quest.lastobject):article#.>
+	verb <show> msg <You can't show #(quest.lastobject):article#.>
+	verb <sit on> msg <You can't sit on #(quest.lastobject):article#.>
+	verb <smell; sniff> msg <You sniff, but #(quest.lastobject):article# doesn't smell of much.>
+	verb <taste> msg <You can't taste #(quest.lastobject):article#.>
+	verb <throw> msg <You can't throw #(quest.lastobject):article#.>
+	verb <tie> msg <You can't tie #(quest.lastobject):article#.>
+	verb <touch> msg <You can't touch #(quest.lastobject):article#.>
+	verb <turn on> msg <You can't turn #(quest.lastobject):article# on.>
+	verb <turn off> msg <You can't turn #(quest.lastobject):article# off.>
+	verb <turn> msg <You can't turn #(quest.lastobject):article#.>
+	verb <unlock> msg <You can't unlock #(quest.lastobject):article#.>
+	verb <untie> msg <You can't untie #(quest.lastobject):article#.>
+	verb <wear> msg <You can't wear #(quest.lastobject):article#.>
+	
+	command <ask #stdverbs.command#> msg <You get no reply.>
+	command <listen> msg <You can't hear much.>
+	command <jump> msg <You jump, but nothing happens.>
+	command <tell #stdverbs.command#> msg <You get no reply.>
+	command <sit down; sleep> msg <No time for lounging about now.>
+	command <wait> msg <Time passes.>
+	command <xyzzy> msg <Surprisingly, absolutely nothing happens.>
+	
+	command <#stdverbs.command#. #stdverbs.command2#; _
+		#stdverbs.command#, then #stdverbs.command2#; _
+		#stdverbs.command#, and then #stdverbs.command2#; _
+		#stdverbs.command#, #stdverbs.command2#; _
+		#stdverbs.command# and then #stdverbs.command2#; _
+		#stdverbs.command# then #stdverbs.command2#> {
+		exec <#stdverbs.command#>
+		exec <#stdverbs.command2#>
+	}
+	
+	command <#stdverbs.command#.> exec <#stdverbs.command#>
+!end`;
+libraries["standard.lib"] = `!library
+
+'----------------------------------------------------------------------
+
+'Filename:	standard.lib
+
+'Version:		beta 3a ( minor bug fix of beta 3 )
+
+'Type:		ASL Library ( for Quest 2.0/2.1 only )
+
+'By:			A.G. Bampton (originally 10/08/1999)   
+
+'Revision:	21/12/1999
+
+'Purpose/ 	See STDLIB.RTF for details of what this library does
+'Usage:		and how to use it.
+'
+'WARNING:	I STRONGLY ADVISE YOU NEVER CHANGE ANY CODE IN THIS
+'	    	LIBRARY! It's complete and functional 'as is' and if
+'	    	it has been altered I will not be able to offer any
+'	    	support for it's use. Tailor/modify the way it works
+'	    	in external code - either within your 'ASL' game code
+'	    	or, IF YOU ARE USING QUEST PRO AND CAN COMPILE YOUR
+'	    	GAME TO A 'CAS' FILE ONLY, by including a customising
+'	    	library as per 'library_demo.asl' my standard library
+'	    	demo. 
+'----------------------------------------------------------------------
+
+!asl-version <200>
+
+!addto game
+	command <look at #object#> do <Look_Proc>
+	command <x #object#> do <Look_Proc>
+	command <drop #object# in #container#> do <Put_In_Container_Proc>
+	command <drop #object# down> do <Drop_Proc>
+	command <drop #object#> do <Drop_Proc>
+	command <give #give_com_string#> do <Alternate_Give_Proc>
+	command <take #object# from #character#> do <Take_Back_Proc>
+	command <take #character#'s #object#> do <Take_Back_Proc>
+	command <take #character#s #object#> do <Take_Back_Proc>
+	command <take #character#' #object#> do <Take_Back_Proc>
+	command <take #object#> do <Special_Take_Proc>
+	command <customdrop #object# in #container#> do <Put_In_Container_Proc>
+	command <customdrop #object#> do <Drop_Proc>
+	command <customtake #object# from #character#> do <Take_Back_Proc>
+	command <customtake #object#> do <Special_Take_Proc>
+!end
+
+
+!addto synonyms
+	examine; inspect = look at
+	drop the; put the; put down the; put down; put = drop
+	give back the; give back; give the = give
+	get the; get; take back the; take back; take the = take
+	out of the; out of; back from the; back from; from the = from
+	in to; in to the; into the; into; inside the; inside = in
+	back to the; back to; to the = to 
+!end
+
+'-------------------------------------------------------------------
+
+'The rest of this library is appended to the calling ASL file
+
+
+define procedure <Alternate_Give_Proc>
+	setvar <found_to;0>
+	for <to_true;1;$lengthof(#give_com_string#)$> do <to_test>
+		if not is <%found_to%;0> then {
+		exec <give #give_com_string#;normal>
+		setvar <found_to;0>
+		}
+		else {
+		for <space_true;1;$lengthof(#give_com_string#)$> do <space_test>
+		setstring <give_char;$left(#give_com_string#;%found_space%)$>
+		setstring <give_obj;$mid(#give_com_string#;%found_space%)$>
+		exec <give #give_obj# to #give_char#;normal>
+		}
+end define
+	
+
+define procedure <to_test>
+	setstring <to_test_for;$mid(o to c;2;4)$>
+	setstring <test_part;$mid(#give_com_string#;%to_true%;4)$>
+	if is <#to_test_for#;#test_part#> then setvar <found_to;%to_true%>
+end define
+	
+
+define procedure <space_test>
+	setstring <to_test_for;$mid(c o;2;1)$>
+	setstring <test_part;$mid(#give_com_string#;%space_true%;1)$>
+	if is <#to_test_for#;#test_part#> then setvar <found_space;%space_true%>
+end define
+
+
+define procedure <Look_Proc>
+
+if not is <#standard.lib.version#;> then {
+
+	if is <$instr(#standard.lib.characters#;#object#)$;0> then {
+	setstring <where_it_is;$locationof(#object#)$>
+
+		if not is <$instr(#standard.lib.containers#;#where_it_is#)$;0> then {
+
+			if not is <$instr(#standard.lib.characters#;#where_it_is#)$;0> then {
+
+				if here <#where_it_is#> then {
+				moveobject <#object#;#quest.currentroom#>
+				showobject <#object#>
+				exec <look at #object#;normal>
+				moveobject <#object#;#where_it_is#>
+				}
+				else {
+				exec <look at #object#;normal>
+				}
+
+			}
+			else {
+
+				if here <#where_it_is#> or got <#where_it_is#> then {
+				moveobject <#object#;#quest.currentroom#>
+				showobject <#object#>
+				exec <look at #object#;normal>
+				moveobject <#object#;#where_it_is#>
+				}
+				else {
+				exec <look at #object#;normal>
+				}
+
+			}
+
+		}
+		else {
+
+			if got <#object#> then {
+			moveobject <#object#;#quest.currentroom#>
+			showobject <#object#>
+			exec <look at #object#;normal>
+			do <Check_Contents_Proc>
+			hideobject <#object#>
+			moveobject <#object#;#where_it_is#>
+			}
+			else {
+			exec <look at #object#;normal>
+
+				if here <#object#> then {
+				do <Check_Contents_Proc>
+				}
+
+			}	
+
+		}
+
+	}
+	else {
+	exec <look at #object#;normal>
+
+		if here <#object#> then {
+		do <Check_Contents_Proc>
+		}
+	}
+
+}
+else {
+do <Old_Look_Proc>
+}
+
+end define
+
+define procedure <Check_Contents_Proc>
+
+    	if not is <$instr(#standard.lib.containers#;#object#)$;0> then {
+	    setstring <where_we_were;#quest.currentroom#>
+    	outputoff
+	    goto <#object#>
+		    if is <$lengthof(#quest.objects#)$;0> then {
+    		goto <#where_we_were#>
+	    	outputon
+		    }
+    		else {
+	    	setstring <parsed_list;$gettag(#object#;prefix)$ __
+		    $parse_object_list$>
+    		goto <#where_we_were#>
+	    	outputon
+		    msg <#parsed_list#>
+		    }
+    	}
+end define
+
+define function <parse_object_list>
+	setvar <found_comma;0>
+	for <last_comma;1;$lengthof(#quest.formatobjects#)$> {
+	do <Last_Comma_Proc>
+	}
+		if not is <%found_comma%;0> then { 
+		setvar <remaining;%last_comma%-%found_comma%>
+		setvar <remaining;%remaining%-1>
+		setvar <found_comma;%found_comma%-1>
+		setstring <left_part;$left(#quest.formatobjects#;__
+		%found_comma%)$>
+		setstring <right_part;$right(#quest.formatobjects#;__
+		%remaining%)$>
+		setstring <parsed_object_list;#left_part# and #right_part#.>
+		}
+		if is <%found_comma%;0> then {
+		setstring <parsed_object_list;#quest.formatobjects#.>
+		}
+		return <#parsed_object_list#>
+end define
+
+define procedure <Last_Comma_Proc>
+	setstring <test_part;$mid(#quest.formatobjects#;%last_comma%;1)$>
+	if is <#test_part#;,> then setvar <found_comma;%last_comma%>
+end define
+
+
+define procedure <Drop_Proc>
+
+	if is <$instr(#standard.lib.characters#;#object#)$;0> then {
+	do <override_permitted>  
+	if is <#override#;yes> then {
+
+		if got <#object#> then {
+		lose <#object#>
+		moveobject <#object#;#quest.currentroom#>
+		showobject <#object#>
+		setvar <custom_message; $lengthof(#std.lib.message.drop#)$>
+			if is <%custom_message%; 0> then msg <You drop the #object#.>
+			else msg <#std.lib.message.drop#.>
+		}
+		else {
+		setvar <custom_message; $lengthof(#std.lib.message.notcarried#)$>
+			if is <%custom_message%; 0> then msg <You're not holding the #object#.>
+			else msg <#std.lib.message.notcarried#.>
+		}
+
+	}
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+end define
+
+
+define procedure <Special_Take_Proc>
+
+if not is <#standard.lib.version#;> then {
+
+	if is <$instr(#standard.lib.characters#;#object#)$;0> then {
+	do <override_permitted>  
+		if is <#override#;yes> then {
+		setstring <where_it_is;$locationof(#object#)$>
+			if not is <$instr(#standard.lib.containers#;#where_it_is#)$;0> then {
+				if not is <$instr(#standard.lib.characters#;#where_it_is#)$;0> then {
+					if here <#where_it_is#> then {
+					exec <take #object# from #where_it_is#>
+					}
+					else exec <take #object#;normal>
+				}
+				else {
+					if here <#where_it_is#> or got <#where_it_is#> then {
+					exec <take #object# from #where_it_is#>
+					}
+					else exec <take #object#;normal>
+				}
+			}
+			else {
+				if got <#object#> then {
+				setvar <custom_message; $lengthof(#std.lib.message.alreadygot#)$>
+					if is <%custom_message%; 0> then {
+					msg <You already have it.>
+					}
+					else {
+					msg <#std.lib.message.alreadygot#.>
+					}
+				}
+				else {
+					if here <#object#> then {
+					exec <take #object#;normal>
+					}
+					else {
+					exec <take #object#;normal>
+					}
+				}
+			}
+		}
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+}
+else {
+do <Old_Special_Take_Proc>
+}
+end define
+
+
+define procedure <Take_Back_Proc>
+
+if not is <#standard.lib.version#;> then {
+
+	if not is <$instr(#standard.lib.containers#;#character#)$;0> then {
+	if is <$instr(#standard.lib.characters#;#character#)$;0> then {
+	setstring <container;#character#>
+	}
+	else {
+	setstring <container;#object#>
+	}
+	do <override_permitted>  
+	if is <#override#;yes> then {
+
+	if here <#character#> or got <#container#> then {
+		if is <$locationof(#object#)$;#character#> then {
+		moveobject <#object#;#quest.currentroom#>
+		give <#object#>
+		hideobject <#object#>
+		setvar <custom_message; $lengthof(#std.lib.message.takefrom#)$>
+			if is <%custom_message%; 0> then {
+				if is <$gettag(#character#;look)$;character> then {
+				msg <You reach out and take the #object# from $capfirst(#character#)$.> }
+				else msg <You take the #object# out of the #character#.> 
+			}
+			else msg <#std.lib.message.takefrom#.>
+		}
+		else {
+			setvar <custom_message; $lengthof(#std.lib.message.objnotheld#)$>
+			if is <%custom_message%;0> then {
+				if is <$gettag(#character#;look)$;character> then {
+				msg <You can't do that, $capfirst(#character#)$ doesn't have the #object#.> }
+				else msg <You can't do that, the #object# isn't in the #character#.>
+			}
+			else msg <#std.lib.message.objnotheld#.>
+		}
+	}
+	else {
+	setvar <custom_message; $lengthof(#std.lib.message.charnothere#)$>
+		if is <%custom_message%; 0> then {
+			if is <$gettag(#character#;look)$;character> then {
+			msg <You can't do that, $capfirst(#character#)$ isn't here.> }
+			else msg <You can't do that, the #character# isn't here.>
+		}
+		else msg <#std.lib.message.charnothere#.>
+	}
+
+	}
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+}
+else {
+do <Old_Take_Back_Proc>
+}
+end define
+
+
+define procedure <Put_In_Container_Proc>
+	do <override_permitted>  
+	if is <#override#;yes> then {
+
+	if is <#object#;#container#> then do <Put_In_Self_Proc>
+	else {
+	setstring <test_prefix;$gettag(#container#;prefix)$>
+		if is <$lengthof(#test_prefix#)$;0> then do <Not_A_Container_Proc>
+		else do <Put_In_Container_Verified_Proc>
+	}
+
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+end define
+
+
+define procedure <Not_A_Container_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.notacontainer#)$>
+		if is <%custom_message%; 0> then msg <It's not possible to do that.>
+		else msg <#std.library.message.notacontainer#.>					
+end define
+
+
+define procedure <Put_In_Self_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.putinself#)$>
+		if is <%custom_message%; 0> then msg <That would be some feat if you could manage it!>
+		else msg <#std.library.message.putinself#.>					
+end define
+
+define procedure <Put_In_Container_Verified_Proc>
+	if is <$gettag(#container#;look)$;character> then {
+	msg <( assuming you meant "|iGive #object# to $capfirst(#container#)$"|xi. )>
+	exec <give #object# to #container#>
+	}
+	else if is <$gettag(#object#;look)$;character> and here <#object#> then do <Put_Char_In_Obj_Proc>
+	else if is <$gettag(#object#;look)$;character> then do <Character_Not_Here_Proc>
+	else {
+	if got <#object#> and got <#container#> then do <Put_It_In_Proc>
+		else {
+			if got <#object#> and here <#container#> then do <Put_It_In_Proc>
+			else {
+				if got <#object#> then do <No_Container_Here_Proc>
+				else {
+				do <Nothing_To_Put_In_Proc>
+				}
+			}
+		}
+	}
+end define
+
+
+define procedure <Put_Char_In_Obj_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.putcharinobj#)$>
+		if is <%custom_message%; 0> then msg <You can't do that with $capfirst(#object#)$.>
+		else msg <#std.lib.message.putcharinobj#.> 
+end define
+
+
+define procedure <No_Container_Here_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.nocontainerhere#)$>
+		if is <%custom_message%; 0> then msg <The #container# isn't available for you __
+		to put things in at the moment.>
+		else msg <#std.library.message.nocontainerhere#.>					
+end define
+
+
+define procedure <Character_Not_Here_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.charnothere#)$>
+		if is <%custom_message%; 0> then msg <$capfirst(#object#)$ isn't here.>
+		else msg <#std.lib.message.charnothere#.>
+end define
+
+
+define procedure <Nothing_To_Put_In_Proc>
+	setvar <custom_message; $lengthof(#std.lib.message.nothingtoputin#)$>
+		if is <%custom_message%; 0> then msg <You don't appear to be holding the #object#.>
+		else msg <#std.lib.message.nothingtoputin#.>
+end define
+
+
+define procedure <Put_It_In_Proc>
+	lose <#object#>
+	moveobject <#object#;#container#>
+	showobject <#object#@#container#>
+	setvar <custom_message; $lengthof(#std.lib.message.putincontainer#)$>
+		if is <%custom_message%; 0> then msg <You put the #object# into the #container#.> 
+		else msg <#std.lib.message.putincontainer#.>
+end define
+
+
+define procedure <override_permitted>
+	setstring <override;#reset#>
+	if is <$left(#quest.command#;6)$;custom> then {
+		if is <#std.lib.override#;yes> then {
+		setstring <std.lib.override;#reset#>
+		setstring <override;yes>
+		}
+		else {
+		setstring <override;#reset#>	
+		}
+	}
+	else setstring <override;yes>
+end define
+
+define procedure <standard_lib_setup>
+	setstring <reset;>
+	setstring <std.lib.message.override;>
+	setstring <std.lib.message.drop;>
+	setstring <std.lib.message.notcarried;>
+	setstring <std.lib.message.alreadygot;>
+	setstring <std.lib.message.takefrom;>
+	setstring <std.lib.message.objnotheld;>
+	setstring <std.lib.message.charnothere;>
+	setstring <std.lib.message.nocontainerhere;>
+	setstring <std.lib.message.notacontainer;>
+	setstring <std.lib.message.putincontainer;>
+	setstring <std.lib.message.nothingtoputin;>
+	setstring <std.lib.message.putcharinobj;>
+	setstring <std.lib.message.putinself;>
+end define
+
+
+'==== Following code included for backward compatibility only ====
+
+define procedure <Old_Look_Proc>
+	if got <#object#> then {
+	moveobject <#object#;#quest.currentroom#>
+	showobject <#object#>
+	exec <look at #object#;normal>
+	do <Old_Contents_Proc>
+	hideobject <#object#>
+	}
+	else {
+	setstring <where_it_is;$locationof(#object#)$>
+		
+	if here <#where_it_is#> or got <#where_it_is#> then {
+		moveobject <#object#;#quest.currentroom#>
+		showobject <#object#>
+		exec <look at #object#;normal>
+		moveobject <#object#;#where_it_is#>
+		do <Old_Contents_Proc>
+		}
+		else {
+		exec <look at #object#;normal>
+		do <Old_Contents_Proc>
+		}
+	}
+end define
+
+
+define procedure <Old_Contents_Proc>
+	if is <$locationof(#object#)$;#quest.currentroom#> or got <#object#> then {
+	setstring <Where_We_Were;#quest.currentroom#>
+	outputoff
+	goto <#object#>
+		if is <$lengthof(#quest.objects#)$;0> then {
+		goto <#Where_We_Were#>
+		outputon
+		}
+		else {
+		outputon
+		msg <$gettag(#object#;prefix)$ #quest.formatobjects#.>
+		outputoff
+		goto <#Where_We_Were#>
+		outputon
+		}
+	}
+end define
+
+define procedure <Old_Special_Take_Proc>
+	do <override_permitted>  
+	if is <#override#;yes> then {
+
+	setstring <where_it_is;$locationof(#object#)$>
+	if here <#where_it_is#> or got <#where_it_is#> then exec <take #object# from #where_it_is#>
+	else {
+		if got <#object#> then {
+		setvar <custom_message; $lengthof(#std.lib.message.alreadygot#)$>
+			if is <%custom_message%; 0> then msg <You already have it.>
+			else msg <#std.lib.message.alreadygot#.>
+		}
+		else exec <take #object#;normal>
+	}
+
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+end define
+
+
+define procedure <Old_Take_Back_Proc>
+	do <override_permitted>  
+	if is <#override#;yes> then {
+
+	if here <#character#> or got <#character#> then {
+		if is <$locationof(#object#)$;#character#> then {
+		moveobject <#object#;#quest.currentroom#>
+		give <#object#>
+		hideobject <#object#>
+		setvar <custom_message; $lengthof(#std.lib.message.takefrom#)$>
+			if is <%custom_message%; 0> then {
+				if is <$gettag(#character#;look)$;character> then {
+				msg <You reach out and take the #object# from $capfirst(#character#)$.> }
+				else msg <You take the #object# out of the #character#.> 
+			}
+			else msg <#std.lib.message.takefrom#.>
+		}
+		else {
+			setvar <custom_message; $lengthof(#std.lib.message.objnotheld#)$>
+			if is <%custom_message%;0> then {
+				if is <$gettag(#character#;look)$;character> then {
+				msg <You can't do that, $capfirst(#character#)$ doesn't have the #object#.> }
+				else msg <You can't do that, the #object# isn't in the #character#.>
+			}
+			else msg <#std.lib.message.objnotheld#.>
+		}
+	}
+	else {
+	setvar <custom_message; $lengthof(#std.lib.message.charnothere#)$>
+		if is <%custom_message%; 0> then {
+			if is <$gettag(#character#;look)$;character> then {
+			msg <You can't do that, $capfirst(#character#)$ isn't here.> }
+			else msg <You can't do that, the #character# isn't here.>
+		}
+		else msg <#std.lib.message.charnothere#.>
+	}
+
+	}
+	else msg <Sorry, I don't understand '#quest.originalcommand#'.>
+end define
+`;
+libraries["q3ext.qlb"] = `!library
+!deprecated
+!asl-version <300>
+
+' N.B. THIS IS RELEASE 6 FOR QUEST 3.02 OR LATER
+
+!addto game
+   command <examine in #q3ext.qlb.object#> do <q3ext.qlb.ExamProc>
+   command <examine #q3ext.qlb.object#> do <q3ext.qlb.ExamProc>
+   command <look in #q3ext.qlb.object#> do <q3ext.qlb.ExamProc>   
+   command <look at #q3ext.qlb.object#> do <q3ext.qlb.LookProc>
+   command <look #q3ext.qlb.object#> do <q3ext.qlb.LookProc>  
+   command <give #q3ext.qlb.give#> do <q3ext.qlb.GiveProc>
+   command <drop #q3ext.qlb.object# in #q3ext.qlb.container#> do <q3ext.qlb.PutInProc>
+   command <drop #q3ext.qlb.object#> exec <drop $q3ext.qlb.objname(#q3ext.qlb.object#)$;normal>
+   command <take #q3ext.qlb.object# from #q3ext.qlb.container#> do <q3ext.qlb.TakeBackProc>
+   command <take #q3ext.qlc.container#'s #q3ext.qlb.object#> do <q3ext.qlb.TakeBackProc>
+   command <take #q3ext.qlb.container#s #q3ext.qlb.object#> do <q3ext.qlb.TakeBackProc>
+   command <take #q3ext.qlb.container#' #q3ext.qlb.object#> do <q3ext.qlb.TakeBackProc>
+   command <take #q3ext.qlb.object#> do <q3ext.qlb.SpecialTakeProc>
+   command <read #q3ext.qlb.object#> do <q3ext.qlb.ReadProc>
+   command <wear #q3ext.qlb.object#> do <q3ext.qlb.WearProc>
+   command <unwear #q3ext.qlb.object#> do <q3ext.qlb.UnWearProc>
+   command <open #q3ext.qlb.object#> do <q3ext.qlb.OpenProc>
+   command <close #q3ext.qlb.object#> do <q3ext.qlb.CloseProc>
+!end
+
+!addto synonyms
+   of; the =
+   x = examine
+   put; put down = drop
+   give back = give
+   pick up; pick; get; take back = take
+   out of; back from = from
+   in to; into; inside = in
+   back to = to
+   don; drop on = wear
+   take off; remove = unwear
+   shut = close
+   talk = speak
+   look at in = examine
+   go = go to
+   to to = to
+!end
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* This is a dummy room - only needed for the force_refresh procedure to function  *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define room <q3ext.qlb.limbo>
+   look <Just a dummy!>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*    This procedure implements an alternative room description - optional usage   * 
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.DescribeRoomProc>
+   set string <q3ext.qlb.indescription;$gettag(#quest.currentroom#;indescription)$>
+   if is <#q3ext.qlb.indescription#;> then {
+      msg <|nYou are in $gettag(#quest.currentroom#;prefix)$ |b|cl#quest.currentroom#.|cb|xb|xn>
+   }
+   else {
+      msg <|n#q3ext.qlb.indescription#$gettag(#quest.currentroom#;prefix)$ |b|cl#quest.currentroom#.|cb|xb|xn>                
+   }
+   set string <q3ext.qlb.ObjList;>
+   set string <q3ext.qlb.CharList;>
+   for each object in <#quest.currentroom#> {
+      if property <#quest.thing#;invisible> or property <#quest.thing#;hidden> then {
+      }
+      else {
+         if property <#quest.thing#;human> then {
+            set <q3ext.qlb.CharList;#q3ext.qlb.CharList# |b#quest.thing#|xb, >
+         }
+         else{
+            set <q3ext.qlb.ObjList;#q3ext.qlb.ObjList# $objectproperty(#quest.thing#;prefix)$>
+            set <q3ext.qlb.ObjList;#q3ext.qlb.ObjList# |b#quest.thing#|xb, >
+         }
+      }
+   }
+   if ($lengthof(#q3ext.qlb.CharList#)$ >0) then {
+      set numeric <q3ext.qlb.LengthOf;$lengthof(#q3ext.qlb.CharList#)$ - 1>
+      set <q3ext.qlb.CharList;$left(#q3ext.qlb.CharList#;%q3ext.qlb.LengthOf%)$>
+      set <q3ext.qlb.CharList;$q3ext.qlb.parsed(#q3ext.qlb.CharList#)$>
+         if ($instr(#q3ext.qlb.CharList#;_and_)$ >0) then { 
+            msg < (#q3ext.qlb.CharList# are also here.)|xn>    
+         }
+         else {
+            msg < (#q3ext.qlb.CharList# is also here.)|xn>        
+         }
+      }
+      msg <|n|n$parameter(1)$|n>
+      if ($lengthof(#q3ext.qlb.ObjList#)$ >0) then {     
+         set <q3ext.qlb.LengthOf;$lengthof(#q3ext.qlb.ObjList#)$ - 1>
+         set <q3ext.qlb.ObjList;$left(#q3ext.qlb.ObjList#;%q3ext.qlb.LengthOf%)$>      
+         set <q3ext.qlb.ObjList;$q3ext.qlb.parsed(#q3ext.qlb.ObjList#)$>
+         if ($instr(#q3ext.qlb.ObjList#;_and_)$ >0) then { 
+            msg <There are #q3ext.qlb.ObjList# here.|n>     
+         }
+         else {
+            msg <There is #q3ext.qlb.ObjList# here.|n>         
+         }        
+      }
+      if not is <#quest.doorways.dirs#;> then {
+         msg <You can move #quest.doorways.dirs#.>
+      }
+      if not is <#quest.doorways.places#;> then {
+         msg <You can go to #quest.doorways.places#.>
+      }
+      if not is <#quest.doorways.out#;> then {
+         msg <You can go out to |b#quest.doorways.out.display#|xb.>
+      }     
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  All regular 'take' commands are directed here to be tested for special needs   *
+'*  The code redirects to other procedures if object is in a container, and also   *
+'*  checks the player doesn't already have the item & prints message if he does.   *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.SpecialTakeProc>
+   set string <q3ext.qlb.containedby;$q3ext.qlb.containedby$>  
+   if (#q3ext.qlb.containedby# = nil) then {
+      if got <#q3ext.qlb.object#> then {
+         msg <You already have the #q3ext.qlb.object#.>           
+      } 
+      else {
+         exec <take #q3ext.qlb.object#;normal>
+      }
+   }
+   else {
+      do <q3ext.qlb.TakeBackProc>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*       This code is called if an object is taken that is in a container          * 
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.TakeBackProc>
+   set string <q3ext.qlb.containedby;$q3ext.qlb.containedby$>
+   if (#q3ext.qlb.containedby# = nil) then {
+      msg <(assuming you meant to take the #q3ext.qlb.object#).>
+      exec <take #q3ext.qlb.object#>
+   }
+   else {
+      if here <#q3ext.qlb.containedby#> or got <#q3ext.qlb.containedby#> then {
+         if not property <#q3ext.qlb.containedby#; closed> then {
+            move <#q3ext.qlb.object#;#quest.currentroom#>
+         }
+      }
+         outputoff
+         exec <take #q3ext.qlb.object#;normal>
+         outputoff
+         set string <q3ext.qlb.wherenow;#quest.currentroom#>
+         goto <q3ext.qlb.limbo>
+         goto <#q3ext.qlb.wherenow#>
+         outputon
+         if got <#q3ext.qlb.object#> then {
+            if property <#q3ext.qlb.containedby#;human> then {
+               msg <You take the #q3ext.qlb.object# from $capfirst(#q3ext.qlb.containedby#)$.>
+            }
+            else {
+               msg <You take the #q3ext.qlb.object# out of the #q3ext.qlb.containedby#.>
+            }
+         }
+      else {
+         exec <take #q3ext.qlb.object#;normal>
+      }
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*       Code called when an object is 'given to' or 'put into' a container        *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.GiveProc>
+   set numeric <q3ext.qlb.ToPos;$instr(#q3ext.qlb.give#;_to_)$>
+   if (%q3ext.qlb.ToPos% <> 0) then {
+      set string <q3ext.qlb.GiveObj;$left(#q3ext.qlb.give#;%q3ext.qlb.ToPos%)$>
+      set string <q3ext.qlb.GiveObj;$q3ext.qlb.realname(#q3ext.qlb.Giveobj#)$>
+      set <q3ext.qlb.ToPos;%q3ext.qlb.ToPos% + 4>
+      set string <q3ext.qlb.GiveTo;$mid(#q3ext.qlb.give#;%q3ext.qlb.ToPos%)$>
+      set string <q3ext.qlb.GiveTo;$q3ext.qlb.realname(#q3ext.qlb.GiveTo#)$>      
+      if not property <#q3ext.qlb.GiveObj#; unworn> and action <#q3ext.qlb.GiveObj#;wear> then {
+         msg <You'll have to take $objectproperty(#q3ext.qlb.GiveObj#;pronoun)$ off first.>
+      }
+      else {
+         if here <#q3ext.qlb.GiveObj#> or got <#q3ext.qlb.GiveObj#> then {
+            if here <#q3ext.qlb.GiveTo#> or got <#q3ext.qlb.GiveTo#> then {
+               if property <#q3ext.qlb.GiveTo#;container> and not property <#q3ext.qlb.GiveTo#; closed> then {
+                  if got <#q3ext.qlb.GiveTo#> then {
+                     outputoff
+                     exec <drop #q3ext.qlb.GiveTo#>
+                     outputon
+                     exec <give #q3ext.qlb.GiveObj# to $q3ext.qlb.objname(#q3ext.qlb.GiveTo#)$; normal>
+                     outputoff
+                     exec <take #q3ext.qlb.GiveTo#>
+                     do <force_refresh>
+                     outputon
+                  }
+                  else {
+                     exec <give #q3ext.qlb.GiveObj# to $q3ext.qlb.objname(#q3ext.qlb.GiveTo#)$; normal>
+                     do <force_refresh>                  
+                  }
+               }
+               else {
+                  if property <#q3ext.qlb.GiveObj#;human > then {
+                     msg <You try, but $capfirst(#q3ext.qlb.GiveObj#)$ isn't interested.>
+                  }
+                  else {
+                     msg <Hard as you try, you find you cannot do that|xn>
+                     if property <#q3ext.qlb.GiveTo#; closed> then {
+                        msg < while the #q3ext.qlb.GiveTo# is closed.>
+                     }
+                     else {
+                        msg <.|n>
+                     }
+                  }
+               }
+            }
+            else {
+               if property <#q3ext.qlb.GiveTo#;human> then {
+                  msg <$capfirst(#q3ext.qlb.GiveObj#)$ isn't here.>
+               }
+               else {
+                  msg <The #q3ext.qlb.GiveTo# isn't available.>
+               }          
+            }
+         }
+         else {
+            if property <#q3ext.qlb.GiveObj#;human > then {
+               msg <$capfirst(#q3ext.qlb.GiveObj#)$ isn't here.>
+            }
+            else {
+               msg <The #q3ext.qlb.GiveObj# isn't available.>
+            }
+         }
+      }
+   }
+   else {
+'***  Deals with 'Give character the object' style. 
+      for <q3ext.qlb.SpaceTrue;1;$lengthof(#q3ext.qlb.give#)$> do <q3ext.qlb.SpaceTest>
+      set string <q3ext.qlb.GiveTo;$left(#q3ext.qlb.give#;%q3ext.qlb.FoundSpace%)$>
+      set string <q3ext.qlb.GiveObj;$mid(#q3ext.qlb.give#;%q3ext.qlb.FoundSpace%)$>
+      exec <give #q3ext.qlb.GiveObj# to #q3ext.qlb.GiveTo#>
+    }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*   A utility procedure, called to find the positions of spaces in player input   *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.SpaceTest>
+   set string <q3ext.qlb.Space;$mid(c o;2;1)$>
+   set string <q3ext.qlb.TestPart;$mid(#q3ext.qlb.give#;%q3ext.qlb.SpaceTrue%;1)$>
+   if is <#q3ext.qlb.space#;#q3ext.qlb.TestPart#> then set numeric <q3ext.qlb.FoundSpace;%q3ext.qlb.SpaceTrue%>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*      This procedure deals with examining containers & objects in containers.    *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.ExamProc>
+   set <q3ext.qlb.object; $q3ext.qlb.objname(#q3ext.qlb.object#)$>
+   set <q3ext.qlb.object; $q3ext.qlb.wornfix()$>
+   set string <q3ext.qlb.containedby;$q3ext.qlb.containedby$>
+   set string <q3ext.qlb.whereat;#quest.currentroom#>
+   if (#q3ext.qlb.containedby# = nil) then {
+      if action <#q3ext.qlb.object#; open> then {
+         if property <#q3ext.qlb.object#; closed> then {
+            if ($objectproperty(#q3ext.qlb.object#; closedexam)$ = null) then {
+               msg <Nothing out of the ordinary.>               
+            }
+            else {
+               msg <$objectproperty(#q3ext.qlb.object#; closedexam)$.>
+            }
+         }
+         else {
+            if ($objectproperty(#q3ext.qlb.object#; openexam)$ = null) then {
+               msg <Nothing out of the ordinary.>               
+            }
+            else {
+               msg <$objectproperty(#q3ext.qlb.object#; openexam)$.>
+            }
+         }
+      }
+      else {
+         exec <examine #q3ext.qlb.object#;normal>
+      }
+      if property <#q3ext.qlb.object#;container> then {
+         if here <#q3ext.qlb.object#> or got <#q3ext.qlb.object#> then {
+            doaction <#q3ext.qlb.object#;contents>
+         }
+      }
+   }
+   else {
+      if here <#q3ext.qlb.containedby#> or got <#q3ext.qlb.containedby#> then {
+         if not property <#q3ext.qlb.containedby#; closed> then {
+            outputoff
+            goto <#q3ext.qlb.containedby#_inventory>
+            outputon
+               if action <#q3ext.qlb.object#; open> then {
+                  if property <#q3ext.qlb.object#; closed> then {
+                     if ($objectproperty(#q3ext.qlb.object#; closedexam)$ = null) then {
+                        msg <Nothing out of the ordinary.>               
+                     }
+                     else {
+                        msg <$objectproperty(#q3ext.qlb.object#; closedexam)$.>
+                     }
+                  }
+                  else {
+                     if ($objectproperty(#q3ext.qlb.object#; openexam)$ = null) then {
+                        msg <Nothing out of the ordinary.>               
+                     }
+                     else {
+                        msg <$objectproperty(#q3ext.qlb.object#; openexam)$.>
+                     }
+                  }
+               }
+               else {
+                  exec <examine #q3ext.qlb.object#;normal>
+               }
+            outputoff
+            goto <#q3ext.qlb.whereat#>
+            outputon
+         }
+         else {
+            exec <examine #q3ext.qlb.object#;normal>
+         }
+      }
+      else {
+         exec <examine #q3ext.qlb.object#;normal>         
+      }
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*      This procedure deals with 'looking at' objects held in containers.         *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.LookProc>
+   set <q3ext.qlb.object; $q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   set <q3ext.qlb.object; $q3ext.qlb.wornfix()$>
+   set string <q3ext.qlb.containedby;$q3ext.qlb.containedby$>
+   set string <q3ext.qlb.whereat;#quest.currentroom#>
+   if (#q3ext.qlb.containedby# = nil) then {
+      exec <look at $q3ext.qlb.objname(#q3ext.qlb.object#)$;normal>
+   }
+   else {
+      if here <#q3ext.qlb.containedby#> or got <#q3ext.qlb.containedby#> then {
+         if not property <#q3ext.qlb.containedby#; closed> then {
+            outputoff
+            goto <#q3ext.qlb.containedby#_inventory>
+            outputon
+            exec <look at $q3ext.qlb.objname(#q3ext.qlb.object#)$;normal>   
+            outputoff
+            goto <#q3ext.qlb.whereat#>
+            outputon
+         }
+         else {
+            exec <look at $q3ext.qlb.objname(#q3ext.qlb.object#)$;normal>
+         }
+      }
+      else {
+         exec <look at $q3ext.qlb.objname(#q3ext.qlb.object#)$;normal>
+      }
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*   Redirects 'put into' so that it is processed by the 'give to' routine, these  *
+'*   are functionally identical so no need to have duplicate code                  *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.PutInProc>
+   exec <give #q3ext.qlb.object# to #q3ext.qlb.container#>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  A utility procedure, returns the position of the last comma in a passed string *
+'*  Used to replace the last comma with 'and' when parsing output strings          *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.LastCommaProc>
+   set string <q3ext.qlb.TestPart;$mid(#q3ext.qlb.Param#;%q3ext.qlb.LastComma%;1)$>
+   if is <#q3ext.qlb.TestPart#;,> then set <q3ext.qlb.FoundComma;%q3ext.qlb.LastComma%>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  The 'read' command procedure.                                                  *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.ReadProc>
+   set <q3ext.qlb.object;$q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   if property <#q3ext.qlb.object#;readable> then {
+      doaction <#q3ext.qlb.object#;read>
+      if not is <$objectproperty(#q3ext.qlb.object#;readaction)$; nil> then {
+         doaction <#q3ext.qlb.object#;readaction>
+      }
+   }
+   else {
+      msg <There's nothing to read!>
+   }
+end define
+
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  The 'wear' command procedure.                                                  *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.WearProc>
+   set <q3ext.qlb.object;$q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   msg <#q3ext.qlb.object#.....>
+   if got <#q3ext.qlb.object#> then {
+      if action <#q3ext.qlb.object#;wear> then {
+         if ($objectproperty(#q3ext.qlb.object#;sex)$ = %q3ext.qlb.playersex%) then {
+            do <q3ext.qlb.CheckWearProc>
+         }
+         else {
+            msg <On second thoughts you decide that the |xn>
+            msg <#q3ext.qlb.object# |xn>
+            if (%q3ext.qlb.playersex% = 1) then {
+               msg <won't suit a man like you at all.>
+            }
+            else {
+               msg <won't suit a woman like you at all.>
+            }
+         }
+         }
+         else {
+         msg <You cannot wear the #q3ext.qlb.object#.>
+         }
+   }
+   else {
+      msg <You are not carrying the #q3ext.qlb.object#.>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  The 'CheckWear' procedure - this checks the sense of wear commands             *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.CheckWearProc>
+   set numeric <q3ext.qlb.wearable;0>
+   if ($objectproperty(#q3ext.qlb.object#;topcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;topcover)$ <= %q3ext.qlb.topcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+   if ($objectproperty(#q3ext.qlb.object#;headcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;headcover)$ <= %q3ext.qlb.headcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+   if ($objectproperty(#q3ext.qlb.object#;feetcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;feetcover)$ <= %q3ext.qlb.feetcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+   if ($objectproperty(#q3ext.qlb.object#;handscover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;handscover)$ <= %q3ext.qlb.handscovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+' - disallow for coats (don't affect ability to put on lower torso clothes)
+   set <q3ext.qlb.tempcovered;%q3ext.qlb.botcovered%>
+   if (%q3ext.qlb.tempcovered% > 63) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ < 33) then {
+      set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% - 64>
+   }
+' - disallow for skirts and dresses (like coats!)
+   if (%q3ext.qlb.tempcovered% > 31) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ < 16) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ <> 4) then {
+      set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% - 32>
+   }
+' - disallow wearing of skirts/dresses and trousers simultaneously
+   if (%q3ext.qlb.tempcovered% > 15) then {
+      set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% + 16> 
+   }
+   if ($objectproperty(#q3ext.qlb.object#;botcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ <= %q3ext.qlb.tempcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+   if (%q3ext.qlb.wearable% =0) then {
+      doaction <#q3ext.qlb.object#;wear>
+      property <#q3ext.qlb.object#; not unworn>
+      set <q3ext.qlb.topcovered;%q3ext.qlb.topcovered% + $objectproperty(#q3ext.qlb.object#;topcover)$>
+      set <q3ext.qlb.headcovered;%q3ext.qlb.headcovered% + $objectproperty(#q3ext.qlb.object#;headcover)$>
+      set <q3ext.qlb.handscovered;%q3ext.qlb.handscovered% + $objectproperty(#q3ext.qlb.object#;handscover)$>
+      set <q3ext.qlb.feetcovered;%q3ext.qlb.feetcovered% + $objectproperty(#q3ext.qlb.object#;feetcover)$>
+      set <q3ext.qlb.botcovered;%q3ext.qlb.botcovered% + $objectproperty(#q3ext.qlb.object#;botcover)$>
+   }
+   else {
+      msg <Given what you are already wearing - that makes no sense at all.>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  The 'unwear' command procedure.                                                *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.UnWearProc>
+   set <q3ext.qlb.object;$q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   if not property <#q3ext.qlb.object#; unworn> then {
+      if action <#q3ext.qlb.object#;unwear> then {
+         do <q3ext.qlb.CheckUnwearProc>
+      }
+      else {
+      msg <You cannot do that.>
+      }
+   }
+   else {
+      msg <You aren't wearing the #q3ext.qlb.object#.>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*  The 'CheckUnwear' procedure.                                                   *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.CheckUnwearProc>
+   set numeric <q3ext.qlb.wearable;0>
+   set <q3ext.qlb.tempcovered; %q3ext.qlb.topcovered% /2>
+   if ($objectproperty(#q3ext.qlb.object#;topcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;topcover)$ <= %q3ext.qlb.tempcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 1>
+   }
+   set <q3ext.qlb.tempcovered; %q3ext.qlb.headcovered% /2>
+   if ($objectproperty(#q3ext.qlb.object#;headcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;headcover)$ <= %q3ext.qlb.tempcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 2>
+   }
+   set <q3ext.qlb.tempcovered; %q3ext.qlb.feetcovered% /2>
+   if ($objectproperty(#q3ext.qlb.object#;feetcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;feetcover)$ <= %q3ext.qlb.tempcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 4>
+   }
+   set <q3ext.qlb.tempcovered; %q3ext.qlb.handscovered% /2>   
+      if ($objectproperty(#q3ext.qlb.object#;handscover)$ <> 0) and __
+      ($objectproperty(#q3ext.qlb.object#;handscover)$ <= %q3ext.qlb.tempcovered%) then {
+         set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 8>
+   }
+' - disallow for coats (don't affect ability to take off lower torso clothes)
+   set <q3ext.qlb.tempcovered;%q3ext.qlb.botcovered%>
+   if (%q3ext.qlb.tempcovered% > 63) then {
+      set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% - 64>
+   }
+' - disallow for skirts and dresses (like coats!)
+   if (%q3ext.qlb.tempcovered% > 31) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ <> 4) then {
+      set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% - 32>
+   }
+   set <q3ext.qlb.tempcovered;%q3ext.qlb.tempcovered% /2>
+   if ($objectproperty(#q3ext.qlb.object#;botcover)$ <> 0) and __
+   ($objectproperty(#q3ext.qlb.object#;botcover)$ <= %q3ext.qlb.tempcovered%) then {
+      set <q3ext.qlb.wearable;%q3ext.qlb.wearable% + 16>
+   }
+   if (%q3ext.qlb.wearable% =0) then {
+      doaction <#q3ext.qlb.object#;unwear>
+      property <#q3ext.qlb.object#; unworn>
+      set <q3ext.qlb.topcovered;%q3ext.qlb.topcovered% - $objectproperty(#q3ext.qlb.object#;topcover)$>
+      set <q3ext.qlb.headcovered;%q3ext.qlb.headcovered% - $objectproperty(#q3ext.qlb.object#;headcover)$>
+      set <q3ext.qlb.handscovered;%q3ext.qlb.handscovered% - $objectproperty(#q3ext.qlb.object#;handscover)$>
+      set <q3ext.qlb.feetcovered;%q3ext.qlb.feetcovered% - $objectproperty(#q3ext.qlb.object#;feetcover)$>
+      set <q3ext.qlb.botcovered;%q3ext.qlb.botcovered% - $objectproperty(#q3ext.qlb.object#;botcover)$>
+   }
+   else {
+      msg <Given what you are wearing, that isn't possible.>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* Open and close commands for 'openable' type                                     *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.OpenProc>
+   set <q3ext.qlb.object; $q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   if action <#q3ext.qlb.object#; open> then {
+      doaction <#q3ext.qlb.object#; open> 
+   }
+   else msg <You can't do that.>
+end define
+
+define procedure <q3ext.qlb.CloseProc>
+   set <q3ext.qlb.object; $q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   if action <#q3ext.qlb.object#; close> then {
+      doaction <#q3ext.qlb.object#; close>
+   }
+   else msg <You can't do that.>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* This forces the inventory window to be refreshed - Quest doesn't do it itself!  *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <force_refresh>
+      outputoff
+      set string <q3ext.qlb.wherenow;#quest.currentroom#>
+      goto <q3ext.qlb.limbo>
+      goto <#q3ext.qlb.wherenow#>      
+      outputon
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* This is called to initialise the library                                        *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define procedure <q3ext.qlb.setup>
+'  These are defaults - making the player male and naked! - it will probably be 
+'  required to set these variables differently in the startscript AFTER calling
+'  this setup routine
+'  'q3ext.qlb.playersex' should be set to 1 for a male player, 2 for a female.
+   set numeric <q3ext.qlb.headcovered;0>
+   set numeric <q3ext.qlb.handscovered;0>
+   set numeric <q3ext.qlb.feetcovered;0>
+   set numeric <q3ext.qlb.topcovered;0>
+   set numeric <q3ext.qlb.botcovered;0>
+   set numeric <q3ext.qlb.tempcovered;0>
+   set numeric <q3ext.qlb.playersex;1>
+   set numeric <q3ext.qlb.version;6>
+   if (%q3ext.qlb.version% < $parameter(1)$) then {
+      msg <WARNING!|n|nThis game requires Version $parameter(1)$ (or later) of _
+      the Q3EXT.QLB library, you appear to have Version %q3ext.qlb.version%. _
+      |n|nPlease obtain the latest release of the library before trying to run this _
+      game.|n|n|w>
+   }
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*                         FUNCTION DEFINITIONS FOLLOW                             *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* Returns passed string that was comma separated list 'parsed' to read naturally. *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define function <q3ext.qlb.parsed>
+   set numeric <q3ext.qlb.FoundComma;0>
+   set string <q3ext.qlb.Param;$parameter(1)$>
+   for <q3ext.qlb.LastComma;1;$lengthof(#q3ext.qlb.Param#)$> {
+   do <q3ext.qlb.LastCommaProc>
+   }
+      if not is <%q3ext.qlb.FoundComma%;0> then { 
+      set numeric <q3ext.qlb.remaining;%q3ext.qlb.LastComma%-%q3ext.qlb.FoundComma%>
+      set <q3ext.qlb.remaining;%q3ext.qlb.remaining%-1>
+      set <q3ext.qlb.FoundComma;%q3ext.qlb.FoundComma%-1>
+      set string <q3ext.qlb.LeftPart;$left(#q3ext.qlb.Param#;__
+      %q3ext.qlb.FoundComma%)$>
+      set string <q3ext.qlb.RightPart;$right(#q3ext.qlb.Param#;__
+      %q3ext.qlb.remaining%)$>
+      set string <q3ext.qlb.parsed;#q3ext.qlb.LeftPart# and #q3ext.qlb.RightPart#>
+      }
+      if is <%q3ext.qlb.FoundComma%;0> then {
+      set string <q3ext.qlb.parsed;#q3ext.qlb.Param#>
+      }
+      return <#q3ext.qlb.parsed#>
+end define
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'* The following function returns the name of the object in who's container the    *
+'* looked at object is held, or 'nil' if the object isn't in a container.          *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define function <q3ext.qlb.containedby>
+   set <q3ext.qlb.object; $q3ext.qlb.realname(#q3ext.qlb.object#)$>
+   set string <q3ext.qlb.containedby;$locationof(#q3ext.qlb.object#)$>
+   set numeric <q3ext.qlb.LengthOf;$lengthof(#q3ext.qlb.containedby#)$>
+   if (%q3ext.qlb.LengthOf% < 11) then {
+      set <q3ext.qlb.containedby;nil>
+   }
+   if (%q3ext.qlb.LengthOf% > 11) then {
+      set <q3ext.qlb.containedby;$right(#q3ext.qlb.containedby#;10)$>
+   }
+   if (#q3ext.qlb.containedby# <> _inventory) then {
+      set <q3ext.qlb.containedby;nil>
+   }
+   if (#q3ext.qlb.containedby# = _inventory) then {
+      set <q3ext.qlb.containedby;$locationof(#q3ext.qlb.object#)$>
+      set <q3ext.qlb.LengthOf;%q3ext.qlb.LengthOf%-10>
+      set <q3ext.qlb.containedby;$left(#q3ext.qlb.containedby#;%q3ext.qlb.LengthOf%)$>    
+   }
+   return <#q3ext.qlb.containedby#>
+end define
+
+define function <q3ext.qlb.wornfix>
+   set string <q3ext.qlb.wornfix;#q3ext.qlb.object#>
+   if action <#q3ext.qlb.object#; wear> and not property <#q3ext.qlb.object#; unworn> then {
+      set <q3ext.qlb.wornfix;#q3ext.qlb.object# [worn]>
+   }
+   return <#q3ext.qlb.wornfix#>
+end define
+
+define function <q3ext.qlb.objname>
+      set string <q3ext.qlb.objname;$parameter(1)$>
+      set <q3ext.qlb.objname;$q3ext.qlb.realname(#q3ext.qlb.objname#)$>      
+      set <q3ext.qlb.objname;$displayname(#q3ext.qlb.objname#)$>
+      return <#q3ext.qlb.objname#>
+end define
+
+define function <q3ext.qlb.realname>
+      set numeric <q3ext.qlb.found;0>
+      set string <q3ext.qlb.objname;$parameter(1)$>
+      set string <q3ext.qlb.lobjname;$lcase(#q3ext.qlb.objname#)$>
+
+      for each object in <#quest.currentroom#> {
+         set string <q3ext.qlb.display;$displayname(#quest.thing#)$>
+         set string <q3ext.qlb.display;$lcase(#q3ext.qlb.display#)$>
+         set string <q3ext.qlb.realname;#quest.thing#>
+         set string <q3ext.qlb.realname;$lcase(#q3ext.qlb.realname#)$>
+         if ( $instr(#q3ext.qlb.display#;#q3ext.qlb.lobjname#)$ > 0 ) or _
+            ( $instr(#q3ext.qlb.lobjname#;#q3ext.qlb.realname#)$ > 0 ) then {  
+             set <q3ext.qlb.objname;#quest.thing#>
+             set <q3ext.qlb.found;1>
+         }    
+      }
+      if (%q3ext.qlb.found% = 0) then {
+         for each object in inventory {
+         set string <q3ext.qlb.display;$displayname(#quest.thing#)$>
+         set string <q3ext.qlb.display;$lcase(#q3ext.qlb.display#)$>
+         set string <q3ext.qlb.realname;#quest.thing#>
+         set string <q3ext.qlb.realname;$lcase(#q3ext.qlb.realname#)$>
+            if ( $instr(#q3ext.qlb.display#;#q3ext.qlb.lobjname#)$ > 0 ) or _
+               ( $instr(#q3ext.qlb.lobjname#;#q3ext.qlb.realname#)$ > 0 ) then {  
+               set <q3ext.qlb.objname;#quest.thing#>      
+               set <q3ext.qlb.found;1>
+            }    
+         }     
+      }
+       if (%q3ext.qlb.found% = 0) then {
+         for each object in game {
+         set string <q3ext.qlb.display;$displayname(#quest.thing#)$>
+         set string <q3ext.qlb.display;$lcase(#q3ext.qlb.display#)$>
+         set string <q3ext.qlb.realname;#quest.thing#>
+         set string <q3ext.qlb.realname;$lcase(#q3ext.qlb.realname#)$>
+            if ( $instr(#q3ext.qlb.display#;#q3ext.qlb.lobjname#)$ > 0 ) or _
+               ( $instr(#q3ext.qlb.lobjname#;#q3ext.qlb.realname#)$ > 0 ) then {  
+                set <q3ext.qlb.objname;#quest.thing#>      
+            }    
+         }     
+      }     
+   return <#q3ext.qlb.objname#>
+end define
+
+
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+'*                           TYPE DEFINITIONS FOLLOW                               *
+'* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <human>
+   human
+   type <container>
+   displaytype=Person
+   action <take> {
+      set string <q3ext.qlb.object; $mid(#quest.command#;6)$>
+      msg <You can't take $capfirst(#q3ext.qlb.object#)$!>
+   }
+   action <speak> {
+      set string <q3ext.qlb.object; $mid(#quest.command#;10)$>
+      msg <$capfirst(#q3ext.qlb.object#)$ doesn't reply to you.>
+   }
+      action <give anything> {
+         if property <#q3ext.qlb.GiveTo#;container> then {
+         msg <|n$capfirst(#q3ext.qlb.GiveTo#)$ accepts the #q3ext.qlb.GiveObj#.>
+         move <#q3ext.qlb.GiveObj#;#q3ext.qlb.GiveTo#_inventory>
+         }
+         else {
+         msg <$capfirst(#q3ext.qlb.GiveTo#)$ doesn't seem to want the #q3ext.qlb.GiveObj#.>
+         }
+   }
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <container>
+   container
+   action <contents> {
+      if not property <#q3ext.qlb.object#; closed> then {
+         outputoff
+         goto <#q3ext.qlb.object#_inventory>
+         set string <q3ext.qlb.whatsheld;$gettag(#q3ext.qlb.object#_inventory;prefix)$$q3ext.qlb.parsed(#quest.formatobjects#)$.>
+         if ($lengthof(#quest.objects#)$ = 0) then set <q3ext.qlb.whatsheld;>
+         outputon
+         msg <#q3ext.qlb.whatsheld#>         
+         outputoff
+         goto <#q3ext.qlb.whereat#>
+         outputon
+      }
+   }
+
+   action <give anything> {
+      msg <You put the #q3ext.qlb.GiveObj# in the #q3ext.qlb.GiveTo#.>
+      move <#q3ext.qlb.GiveObj#; #q3ext.qlb.GiveTo#_inventory>
+   }
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <object>
+      prefix = a
+      take = nil
+      action <take> {
+         if ($objectproperty(#q3ext.qlb.object#;take)$=nil) then {
+            msg <You pick up the #q3ext.qlb.object#.>
+         }
+         else {
+         msg <$objectproperty(#q3ext.qlb.object#;take)$.>      
+         }     
+      move <#q3ext.qlb.object#;inventory>
+      do <force_refresh>
+      }
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <scenery>
+   invisible
+   prefix = a
+   pronoun = that
+   notake = nil
+   action <take> {
+      if ($objectproperty(#q3ext.qlb.object#;notake)$=nil) then {
+      msg <Taking $objectproperty(#q3ext.qlb.object#;pronoun)$ would serve no useful purpose.>
+      }
+      else {
+      msg <$objectproperty(#q3ext.qlb.object#;notake)$.>    
+      }
+   }
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <readable>
+   readable
+   readmessage = You start to read but it is so incredibly dull you decide not to bother.
+   readaction = nil
+   action <read> {
+   set string <q3ext.qlb.objname;$thisobject$>
+   msg <$objectproperty(#q3ext.qlb.objname#;readmessage)$>
+   }
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+' *  The openable type                                                              *
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <openable>
+   closed
+   properties <closeddesc = null>
+   properties <opendesc = null>
+   properties <closingdesc = null>
+   properties <openingdesc = null>
+   properties <closedexam = null>
+   properties <openexam = null>  
+   
+   prefix = a
+     
+   action <open> {
+   set string <q3ext.qlb.opened; $thisobject$>   
+   if property <$thisobject$; closed> then {
+      property <$thisobject$; not closed>
+      if ($objectproperty(#q3ext.qlb.opened#; openingdesc)$ = null) then {
+         msg <You open the #q3ext.qlb.object#.>
+      }
+      else {
+         msg <$objectproperty(#q3ext.qlb.opened#; openingdesc)$>
+      }
+   }
+   else msg <The #q3ext.qlb.object# is already open.>
+   }
+    
+   action <close> {
+   set string <q3ext.qlb.closed; $thisobject$>    
+   if not property <$thisobject$;closed> then {
+      property <$thisobject$; closed>
+      if ($objectproperty(#q3ext.qlb.closed#; closingdesc)$ = null) then {
+         msg <You close the #q3ext.qlb.object#.>
+      }
+      else {
+         msg <$objectproperty(#q3ext.qlb.closed#; closingdesc)$.>      
+      }
+   }
+   else msg <The #q3ext.qlb.object# is already closed.>
+   }
+    
+   action <look> {
+   set string <q3ext.qlb.lookedat; $thisobject$>
+   if property <$thisobject$; closed> then {
+      if ($objectproperty(#q3ext.qlb.lookedat#; closeddesc)$ = null) then {
+         set string <q3ext.qlb.lookmessage ;The #q3ext.qlb.lookedat# is closed>
+      }
+      else {
+         set string <q3ext.qlb.lookmessage ;$objectproperty(#q3ext.qlb.lookedat#; closeddesc)$.>
+      }
+   }
+   else {
+      if ($objectproperty(#q3ext.qlb.lookedat#; opendesc)$ = null) then {
+         set string <q3ext.qlb.lookmessage ;The #q3ext.qlb.lookedat# is open>
+      }
+      else {
+         set string <q3ext.qlb.lookmessage ;$objectproperty(#q3ext.qlb.lookedat#; opendesc)$.>
+      }
+   }
+   msg <#q3ext.qlb.lookmessage#.>
+   }
+   
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+' * This clothing type is not used directly but inherited by specific clothes.      *
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 
+define type <clothing>
+   type <object>
+   unworn
+   headcover = 0
+   handscover = 0
+   feetcover = 0
+   topcover = 0
+   botcover = 0
+   sex = 1
+   pronoun = it
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   properties <alias=$thisobject$>
+      action <wear> {
+      set string <q3ext.qlb.objname;$thisobject$>
+      msg <$objectproperty(#q3ext.qlb.objname#;wearmessage)$>
+      property <#q3ext.qlb.objname#;alias=#q3ext.qlb.objname# [worn]>
+      move <#q3ext.qlb.objname#;inventory>
+      do <force_refresh>
+      }
+      action <unwear> {
+      set string <q3ext.qlb.objname;$thisobject$>
+      msg <$objectproperty(#q3ext.qlb.objname#;unwearmessage)$>
+      property <#q3ext.qlb.objname#;alias=$thisobject$>
+      do <force_refresh>
+      }   
+end define  
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+' * This lib defines 15 specific clothing objects, and most of these can be used    *
+' * to good effect for other garments - the defined objects are listed together     *
+' * with other garments that work similarly for game purposes.                      *
+' *                                                                                 *
+' * DEFINED GARMENT : ALSO USABLE FOR THESE GARMENTS                                *
+' * hat             : any headwear                                                  *
+' * gloves          : any handwear                                                  *
+' * shoes           : boots, outer footwear generally                               *
+' * socks           : stockings                                                     *
+' * tights          : pantie hose                                                   *
+' * undies          : panties, briefs - lower portion underwear generally           *
+' * teddy           : uhm.. any underthing that covers like a teddy!                *
+' * trousers        : jeans, shorts (not the underwear variety)                     *
+' * dress           : coverall                                                      *
+' * skirt           : kilt maybe?                                                   *
+' * vest            : bra, other 'top only' undergarment                            *
+' * shirt           : blouse, T-Shirt etc.                                          *
+' * sweater         : pullover, sweatshirt - '2nd layer' top garment                *
+' * jacket          : fleece, parka, anorak, short coat of whatever type            *
+' * coat            : any long length outermost garment like a coat                 *
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <shoes>
+      type <clothing>
+      feetcover = 4
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+      pronoun = them
+   properties <prefix=a pair of>
+end define
+
+define type <socks>
+      type <clothing>
+      feetcover = 2
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+      pronoun = them
+   properties <prefix=a pair of>
+end define
+
+define type <tights>
+      type <clothing>
+      feetcover = 2
+      botcover = 8
+      pronoun = them
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+   properties <prefix=a pair of>
+end define
+
+define type <hat>
+      type <clothing>
+      headcover = 2
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <gloves>
+      type <clothing>
+      handscover = 2
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+      pronoun = them
+ properties <prefix=a pair of>
+end define
+
+define type <vest>
+      type <clothing>
+      topcover = 2
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <shirt>
+      type <clothing>
+      topcover = 8
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <teddy>
+      type <clothing>
+      topcover = 4
+      botcover = 4
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <undies>
+      type <clothing>
+      botcover = 2
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+      pronoun = them
+   properties <prefix=a pair of>
+end define
+
+define type <dress>
+      type <clothing>
+      topcover = 8
+      botcover = 32
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <skirt>
+      type <clothing>
+      botcover = 32
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <trousers>
+      type <clothing>
+      botcover = 16
+      wearmessage = You put them on.
+      unwearmessage = You take them off.
+      pronoun = them
+   properties <prefix=a pair of>
+end define
+
+define type <sweater>
+      type <clothing>
+      topcover = 16
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <jacket>
+      type <clothing>
+      topcover = 32
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+define type <coat>
+      type <clothing>
+      topcover = 64
+      botcover = 64
+      wearmessage = You put it on.
+      unwearmessage = You take it off.
+   properties <prefix=a>
+end define
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *`;
+libraries["typelib.qlb"] = `!library
+!deprecated
+!asl-version <311>
+!name <MaDbRiT's Type Library>
+!version <1.009 06-Sep-2003>
+!author <MaDbRiT (Al Bampton)>
+!help <typelib.pdf>
+! This library adds a whole set of types, with related actions and properties to Quest.
+! It is easy to use from Q.D.K. but be sure to read the manual before you start. 
+
+
+'=====================================================
+'== This is MaDbRiT's QUEST Types Library @06-09-03 ==
+'== It will only work with Quest 3.11 build 137 or  == 
+'== later This version is specifically designed to  ==
+'== be easily usable from Q.D.K.                    ==
+'=====================================================
+'==        !!!! PLEASE READ THE MANUAL !!!!         ==
+'==        !!!! NEVER CHANGE THIS FILE !!!!         ==
+'=====================================================
+
+'======================================
+'== Add these lines to the gameblock ==
+'======================================
+
+!addto game
+   command <look at #TLSdObj#; look #TLSdObj#; l #TLSdObj#> do <TLPlook>
+   command <examine #TLSdObj#; inspect #TLSdObj#; x #TLSdObj#> do <TLPexamine>
+   command <open #TLSdObj#> do <TLPopen>
+   command <close #TLSdObj#; shut #TLSdObj#> do <TLPclose>   
+   command <take #TLSdObj# from #TLSiObj#> do <TLPtake>
+   command <take #TLSdObj# off> do <TLPunWear>
+   command <take #TLSdObj#> do <TLPtake>
+   command <drop #TLSdObj# into #TLSiObj#> do <TLPputIn>
+   command <drop #TLSdObj# on> do <TLPwear>   
+   command <drop #TLSdObj# down; drop down #TLSdObj#; drop #TLSdObj#> do <TLPdrop>   
+   command <give #TLSdObj# to #TLSiObj#;give #TLSiObj# the #TLSdObj#> do <TLPgive>
+   command <read #TLSdObj#> do <TLPread>   
+   command <wear #TLSdObj#> do <TLPwear>
+   command <unwear #TLSdObj#> do <TLPunWear>
+   description {
+      do <TLProomDescription>
+   }
+   startscript do <TLPstartup>
+'   nodebug
+!end
+
+'===========================================
+'== Add some synonyms used in the library ==
+'===========================================
+
+!addto synonyms
+   back; back from; out of =from
+   inside; in to; in =into
+   look into = examine   
+   put =drop
+   don; drop on = wear
+   take off; remove = unwear
+   shut = close
+   talk = speak
+!end
+
+'==================================================
+'== A couple of dummy rooms, used by the library ==
+'==================================================
+
+define room <TLRcontainers>
+
+end define
+
+define room <TLRcontents>
+
+end define
+
+'================
+'== PROCEDURES ==
+'================
+
+'===========================================================
+'== Configure the library for use - called in startscript ==
+'===========================================================
+
+define procedure <TLPstartup>
+
+   set string <TLSplayerRoom;>
+   set string <TLScontentList;>
+   set string <TLStemp;>
+   set string <TLSrealName;>
+   set string <TLSlist;>
+   set string <TLStempName;>
+   set string <TLMnotOpenable;Try as you might, you find that __
+              is just not possible.>
+   set string <TLMnotClosable;Try as you might, you find that __
+              is just not possible.>
+   set string <TLMtaken;Taken.>
+   set string <TLMalreadyTaken;You have already got>
+   set string <TLMdontHaveDObj;You don't seem to have that.>
+   set string <TLMnoNeed;You realise there is no need __
+               to do that and change your mind.>
+   set string <TLSthisObj;>
+   set string <TLSobjAlias;>
+   set string <TLSindescription;>
+   set string <TLSalias;>
+   set string <TLSobjList;>
+   set string <TLScharList;>
+   set numeric <TLNcomma;0>
+   set numeric <TLNcount;0>
+   set numeric <TLNlength;0>
+   set numeric <TLNsizeLimit;0>
+   set numeric <TLNweightLimit;0>
+   set numeric <TLNheadCovered;0>
+   set numeric <TLNhandsCovered;0>
+   set numeric <TLNfeetCovered;0>
+   set numeric <TLNtopCovered;0>
+   set numeric <TLNbotCovered;0>
+   set numeric <TLNtempCovered;0>
+   set numeric <TLNwearable;0>
+   set numeric <TLNlengthOf;0>
+'***
+' TLNplayerSex' should be set to 1 for a male player, 2 for a female.
+'***
+   set numeric <TLNplayerSex;1>
+
+   for each object in game {
+      if type <#quest.thing#;TLTcontainable> then {
+      if (#(quest.thing):isIn#<>nil) then {
+         move <#quest.thing#;TLRcontainers>
+        }
+    }
+    if type <#quest.thing#;TLTclothing> then {
+    property <#quest.thing#;displayname=$displayname(#quest.thing#)$>
+      if property <#quest.thing#;worn> then {
+          move <#quest.thing#;inventory>
+         property <#quest.thing#;alias=#(quest.thing):displayname# [worn]>
+         set <TLNtopCovered;%TLNtopCovered% + #(quest.thing):topcover#>
+         set <TLNheadCovered;%TLNheadCovered% + #(quest.thing):headcover#>
+         set <TLNhandsCovered;%TLNhandsCovered% + #(quest.thing):handscover#>
+         set <TLNfeetCovered;%TLNfeetCovered% + #(quest.thing):feetcover#>
+            set <TLNbotCovered;%TLNbotCovered% + #(quest.thing):botcover#>
+          }
+   }
+   }
+   
+end define
+
+'==================================
+'== Alternative room description ==
+'==================================
+
+define procedure <TLProomDescription>
+   set <TLSindescription;$gettag(#quest.currentroom#;indescription)$>
+   set <TLSalias;$gettag(#quest.currentroom#;alias)$>
+   if is <#TLSindescription#;> then {
+     if is <#TLSalias#;> then {
+         msg <You are in $gettag(#quest.currentroom#;prefix)$ |b|cl#quest.currentroom#.|cb|xb|xn>
+     }
+     else {
+         msg <You are in $gettag(#quest.currentroom#;prefix)$ |b|cl#TLSalias#.|cb|xb|xn>
+     }
+   }
+   else {
+     if is <#TLSalias#;> then {
+         msg <#TLSindescription# $gettag(#quest.currentroom#;prefix)$ |b|cl#quest.currentroom#.|cb|xb|xn>
+     }
+     else {
+         msg <#TLSindescription# $gettag(#quest.currentroom#;prefix)$ |b|cl#TLSalias#.|cb|xb|xn>
+     }
+   }
+   msg <|n#quest.lookdesc#|n>
+   set <TLSobjList;>
+   set <TLScharList;>
+   for each object in <#quest.currentroom#> {
+      set <TLSthisObj;#quest.thing#>
+      if property <#quest.thing#;invisible> or property <#quest.thing#;hidden> then {
+      }
+      else {
+         if type <#quest.thing#;TLTactor> then {
+			if property <#quest.thing#;named> then {
+            	set <TLScharList;#TLScharList# |b$capfirst(#@quest.thing#)$|xb, >
+			}
+			else set <TLScharList;#TLScharList# #(quest.thing):prefix# |b#@quest.thing#|xb, >
+         }
+         else{
+            set <TLSobjList;#TLSobjList# #(quest.thing):prefix#>
+            set <TLSobjList;#TLSobjList# |b#@quest.thing#|xb, >
+         }
+      }
+   }
+   if ($lengthof(#TLScharList#)$ >0) then {
+      set <TLNlengthOf;$lengthof(#TLScharList#)$ - 1>
+      set <TLScharList;$left(#TLScharList#;%TLNlengthOf%)$>
+      set <TLScharList;$TLFcontentFormat(#TLScharList#)$>
+         if ($instr(#TLScharList#;_and_)$ >0) then { 
+            msg <#TLScharList# are here.|n>    
+         }
+         else {
+            msg <#TLScharList# is here.|n>        
+         }
+      }
+      if ($lengthof(#TLSobjList#)$ >0) then {     
+         set <TLNlengthOf;$lengthof(#TLSobjList#)$ - 1>
+         set <TLSobjList;$left(#TLSobjList#;%TLNlengthOf%)$>
+         set <TLSobjList;$TLFcontentFormat(#TLSobjList#)$>
+         if ($instr(#TLSobjList#;_and_)$ >0) then { 
+            msg <You can see #TLSobjList# here.|n>     
+         }
+         else {
+            msg <You can see #TLSobjList# here.|n>         
+         }        
+      }
+      if not is <#quest.doorways.dirs#;> then {
+         msg <You can move #quest.doorways.dirs#.>
+      }
+      if not is <#quest.doorways.places#;> then {
+         msg <You can go to #quest.doorways.places#.>
+      }
+      if not is <#quest.doorways.out#;> then {
+         msg <You can go out to |b#quest.doorways.out.display#|xb.>
+      }     
+end define
+
+
+'================================================================
+'== Override the inbuilt LOOK function - need extra capability ==
+'================================================================
+
+define procedure <TLPlook>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if ($locationof(#TLSdObj#)$=TLRcontents) then {
+            move <#TLSdObj#;#quest.currentroom#>
+         }
+         exec <look at #TLSdObj#;normal>
+         if type <#TLSdObj#;TLTcontainable> then {
+            if (#(TLSdObj):isIn#<>nil) then {
+               move <#TLSdObj#;TLRContents>
+            }
+         }
+      }
+      else exec <look #TLSdObj#;normal>
+   do <TLPemptyContents>
+end define
+
+'===================================================================
+'== Override the inbuilt EXAMINE function - need extra capability ==
+'===================================================================
+
+define procedure <TLPexamine>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if ($locationof(#TLSdObj#)$=TLRcontents) then {
+            move <#TLSdObj#;#quest.currentroom#>
+         }         
+         do <TLPexamineContainer>
+         if type <#TLSdObj#;TLTcontainable> then {
+            if (#(TLSdObj):isIn#<>nil) then {
+               move <#TLSdObj#;TLRContents>
+            }
+         }         
+      }
+   else do <TLPexamineContainer>
+   do <TLPemptyContents>
+end define
+
+'================================================================
+'== Tests examined object & calls contents action where needed ==
+'================================================================
+
+define procedure <TLPexamineContainer>
+   exec <x #TLSdObj#;normal>
+   if type <#TLSdObj#;TLTcontainer> then {
+     doaction <#TLSdObj#;contents>
+   }
+end define
+
+'================================================================
+'== Override the inbuilt TAKE function - need extra capability ==
+'================================================================
+
+define procedure <TLPtake>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if ($locationof(#TLSdObj#)$<>inventory) then  {
+            move <#TLSdObj#;#quest.currentroom#>
+            if property <#TLSdObj#;takeable> then {
+               doaction <#TLSdObj#;take>
+               if property <#TLSdObj#;isIn> then {
+                  property <#TLSdObj#;isIn=nil>
+               }
+            }
+            else {
+            	msg <#(TLSdObj):noTake#>
+                if property <#TLSdObj#;isIn> then {
+                  	if (#(TLSdObj):isIn#<> nil) then {
+ 						move <#TLSdObj#;TLRcontents>
+					}
+                }
+			}
+         }
+         else msg <#TLMalreadyTaken# #(TLSdObj):article#.>
+      }
+      else doaction <#TLSdObj#;take>
+   do <TLPemptyContents>
+end define
+
+'================================================================
+'== Override the inbuilt DROP function - need extra capability ==
+'================================================================
+
+define procedure <TLPdrop>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if property <#TLSdObj#;worn> then {
+            msg <You'll have to take #(TLSdObj):article# off first.>
+         }
+         else exec <drop #TLSTemp#;normal>
+      }
+      else exec <drop #TLStemp#;normal>
+end define
+
+
+'================================================================
+'== Override the inbuilt GIVE function - need extra capability ==
+'================================================================
+
+define procedure <TLPgive>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+   set <TLSiObj;$TLFgetObjectName(#TLSiObj#)$>
+   if (#TLSdObj#=!) then {
+      exec <look at #TLSdObj#;normal>
+   }
+   else {
+      if (#TLSIObj#=!) then {
+         exec <look at #TLSIObj#;normal>
+      }
+      else {
+       if property <#TLSdObj#;worn> then {
+         msg <You'll have to take #(TLSdObj):article# off first.>     
+       }
+       else {
+         do <TLPcheckGive>
+      }
+      }
+   }
+   do <TLPemptyContents>
+end define
+
+'=============================================================
+'== Tests objects & redirects or runs standard give routine == 
+'=============================================================
+
+define procedure <TLPcheckGive>
+   if type <#TLSdObj#;TLTcontainable> or type <#TLSiObj#;TLTcontainer> then {
+      do <TLPcheckIObj>
+   }
+   else {
+      exec <give #TLSdObj# to #TLSiObj#;normal>
+   }
+end define
+
+
+'=========================================================
+'== 3 utility procedures - manipulate contained objects ==
+'=========================================================
+
+define procedure <TLPfillContents>
+   for each object in <TLRcontainers> {
+      if got <#(quest.thing):isIn#> or here <#(quest.thing):isIn#> then {
+         if not property <#(quest.thing):isIn#;closed> then {
+            move <#quest.thing#;TLRcontents>
+         }
+      }
+   }   
+end define
+
+define procedure <TLPvalidContents>
+   for each object in <TLRcontents> {
+      if (#(quest.thing):isIn# <> #TLSdobj# ) then {
+         move <#quest.thing#;TLRcontainers>
+      }
+   } 
+end define
+
+define procedure <TLPemptyContents>
+   for each object in <TLRcontents> {
+      move <#quest.thing#;TLRcontainers>
+   } 
+end define
+
+'===================================
+'== Handle the added OPEN command ==
+'===================================
+
+define procedure <TLPopen>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+       do <TLPopenObj>
+      }
+      else exec <look #TLSdObj#;normal>
+   do <TLPemptyContents>   
+end define
+
+'==================================================================
+'== Tests open-ed object & calls open action or denial as needed ==
+'==================================================================
+
+define procedure <TLPopenObj>
+   if type <#TLSdObj#;TLTclosable> then {
+     doaction <#TLSdObj#;open>
+   }
+   else msg <#TLMnotOpenable#>
+end define
+
+'====================================
+'== Handle the added CLOSE command ==
+'====================================
+
+define procedure <TLPclose>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+       do <TLPcloseObj>
+      }
+      else exec <look #TLSdObj#;normal>
+   do <TLPemptyContents>   
+end define
+
+'===================================================================
+'== Tests close-d object & calls close action or denial as needed ==
+'===================================================================
+
+define procedure <TLPcloseObj>
+   if type <#TLSdObj#;TLTclosable> then {
+     doaction <#TLSdObj#;close>
+   }
+   else msg <#TLMnotClosable#>
+end define
+
+'=====================================
+'== Handle the added PUT IN command ==
+'=====================================
+
+define procedure <TLPputIn>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+'   set <TLSiObj;$TLFgetObjectName(#TLSiObj#)$>
+   set <TLSiObj;$TLFgetObjectName(#TLSiObj#)$>   
+      if (#TLSdObj# <> !) then {
+         do <TLPcheckIObj>
+      }
+      else msg <#TLMdontHaveDObj#>
+   do <TLPemptyContents>
+end define
+
+'===========================================
+'== Test the indirect object is available ==
+'===========================================
+
+define procedure <TLPcheckIObj>
+   if (#TLSiObj# <> !) then {
+      do <TLPcheckContainer>
+   }
+   else {
+   	if property <#TLSiObj#;named> then msg <$displayname(TLSiObj)$ isn't here.>
+	else msg <The $displayname(TLSiObj)$ isn't here.>
+   }
+end define
+
+'======================================
+'== Test for container & containable ==
+'======================================
+
+define procedure <TLPcheckContainer>
+   if not type <#TLSiObj#;TLTcontainer> then {
+      msg <You can't put things in $TLFnamed(#TLSiObj#)$.>
+   }
+   else {
+      if property <#TLSiObj#;closed> then {
+         msg <You'll have to open $TLFnamed(#TLSiObj#)$...>
+      }
+      else {
+         if not type <#TLSdObj#;TLTcontainable> then {
+            msg <You can't put $TLFnamed(#TLSdObj#)$ in anything.>
+         }
+         else do <TLPcontainerLimits>
+      }
+   }
+end define
+
+'======================================
+'== Both legal objects, check limits ==
+'======================================
+define procedure <TLPcontainerLimits>
+   if (#(TLSdObj):isIn#<>#TLSiObj#) then { 
+      set <TLNsizeLimit;$TLFsizeHeld(#TLSiObj#)$>
+      set <TLNweightLimit;$TLFweightHeld(#TLSiObj#)$>
+      set <TLNsizeLimit;#(TLSiObj):sizeLimit# - %TLNsizeLimit%>
+      set <TLNweightLimit;#(TLSiObj):weightLimit# - %TLNweightLimit%>
+      if (%TLNsizeLimit% < #(TLSdObj):size#) then {
+         msg <#(TLSdObj):tooBig#>
+      }
+      else {
+         if (%TLNweightLimit% < #(TLSdObj):weight#) then {
+            msg <#(TLSdObj):tooHeavy#>
+         }
+         else {
+            move <#TLSdObj#;TLRcontainers>
+            property <#TLSdOBJ#;isIn=#TLSiObj#>
+				doaction <#TLSdObj#;contained>
+         }
+      }  
+   }
+   else msg <#TLMnoNeed#>
+end define
+
+'===================================
+'== The 'read' command procedure. ==
+'===================================
+
+define procedure <TLPread>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if type <#TLSdObj#;TLTreadable> then {
+            doaction <#TLSdObj#;read>
+         }
+         else msg <There's nothing to read!>
+      }
+      else exec <look #TLSdObj#;normal>
+   do <TLPemptyContents> 
+end define
+
+'===================================
+'== The 'wear' command procedure. ==
+'===================================
+
+define procedure <TLPwear>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if action <#TLSdObj#;wear> then {
+            if (#(TLSdObj):sex# = %TLNplayerSex%) then {
+               do <TLPcheckWear>
+            }
+            else {
+               msg <On second thoughts you decide that the |xn>
+               msg <#TLSdObj# |xn>
+               if (%TLNplayerSex% = 1) then {
+                  msg <won't suit a man like you at all.>
+               }
+               else msg <won't suit a woman like you at all.>
+            }
+         }
+         else {
+            if (#(TLSdObj):noWear#= default) then {
+            	msg <You cannot wear $TLFnamed(#TLSdObj#)$!>
+			}
+			else {
+				msg <#(TLSdObj):noWear#>
+			}
+         }
+      }
+      else msg <$TLFnamed(#TLStemp#)$ isn't here.>
+   do <TLPemptyContents>
+end define
+
+'========================================================================
+'== The 'checkWear' procedure - this checks the sense of wear commands ==
+'========================================================================
+
+define procedure <TLPcheckWear>
+   set <TLNwearable;0>
+   if (#(TLSdObj):topcover# <> 0) and (#(TLSdObj):topcover# <= %TLNtopCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+   if (#(TLSdObj):headcover# <> 0) and (#(TLSdObj):headcover# <= %TLNheadCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+   if (#(TLSdObj):feetcover# <> 0) and (#(TLSdObj):feetcover# <= %TLNfeetCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+   if (#(TLSdObj):handscover# <> 0) and (#(TLSdObj):handscover# <= %TLNhandsCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+' - disallow for coats (don't affect ability to put on lower torso clothes)
+   set <TLNtempCovered;%TLNbotCovered%>
+   if (%TLNtempCovered% > 63) and (#(TLSdObj):botcover# < 33) then {
+      set <TLNtempCovered;%TLNtempCovered% - 64>
+   }
+' - disallow for skirts and dresses (like coats!)
+   if (%TLNtempCovered% > 31) and (#(TLSdObj):botcover# < 16) and __
+   (#(TLSdObj):botcover# <> 4) then {
+      set <TLNtempCovered;%TLNtempCovered% - 32>
+   }
+' - disallow wearing of skirts/dresses and trousers simultaneously
+   if (%TLNtempCovered% > 15) then {
+      set <TLNtempCovered;%TLNtempCovered% + 16> 
+   }
+   if (#(TLSdObj):botcover# <> 0) and (#(TLSdObj):botcover# <= %TLNtempCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+   if (%TLNwearable% =0) then {
+      doaction <#TLSdObj#;wear>
+      property <#TLSdObj#; worn>
+      set <TLNtopCovered;%TLNtopCovered% + #(TLSdObj):topcover#>
+      set <TLNheadCovered;%TLNheadCovered% + #(TLSdObj):headcover#>
+      set <TLNhandsCovered;%TLNhandsCovered% + #(TLSdObj):handscover#>
+      set <TLNfeetCovered;%TLNfeetCovered% + #(TLSdObj):feetcover#>
+      set <TLNbotCovered;%TLNbotCovered% + #(TLSdObj):botcover#>
+   }
+   else {
+      msg <Given what you are already wearing - that makes no sense at all.>
+   }
+end define
+
+'=====================================
+'== The 'unwear' command procedure. ==
+'=====================================
+
+define procedure <TLPunWear>
+   do <TLPfillContents>
+   set <TLSdObj;$TLFgetObjectName(#TLSdObj#)$>
+      if (#TLSdObj# <> !) then {
+         if property <#TLSdObj#; worn> then {
+            if action <#TLSdObj#;unwear> then {
+               do <TLPcheckUnWear>
+            }
+            else msg <You can't do that.>
+         }
+         else msg <You can't do that.>
+      }
+      else msg <You aren't wearing $TLFnamed(#TLStemp#)$.>
+   do <TLPemptyContents>
+end define
+
+'==================================
+'== The 'CheckUnwear' procedure. ==
+'==================================
+
+define procedure <TLPcheckUnWear>
+   set <TLNwearable;0>
+   set <TLNtempCovered; %TLNtopCovered% /2>
+   if (#(TLSdObj):topcover# <> 0) and (#(TLSdObj):topcover# <= %TLNtempCovered%) then {
+      set <TLNwearable;%TLNwearable% + 1>
+   }
+   set <TLNtempCovered; %TLNheadCovered% /2>
+   if (#(TLSdObj):headcover# <> 0) and (#(TLSdObj):headcover# <= %TLNtempCovered%) then {
+      set <TLNwearable;%TLNwearable% + 2>
+   }
+   set <TLNtempCovered; %TLNfeetCovered% /2>
+   if (#(TLSdObj):feetcover# <> 0) and (#(TLSdObj):feetcover# <= %TLNtempCovered%) then {
+      set <TLNwearable;%TLNwearable% + 4>
+   }
+   set <TLNtempCovered; %TLNhandsCovered% /2>   
+      if (#(TLSdObj):handscover# <> 0) and (#(TLSdObj):handscover# <= %TLNtempCovered%) then {
+         set <TLNwearable;%TLNwearable% + 8>
+   }
+' - disallow for coats (don't affect ability to take off lower torso clothes)
+   set <TLNtempCovered;%TLNbotCovered%>
+   if (%TLNtempCovered% > 63) then {
+      set <TLNtempCovered;%TLNtempCovered% - 64>
+   }
+' - disallow for skirts and dresses (like coats!)
+   if (%TLNtempCovered% > 31) and (#(TLSdObj):botcover# <> 4) then {
+      set <TLNtempCovered;%TLNtempCcovered% - 32>
+   }
+   set <TLNtempCovered;%TLNtempCovered% /2>
+   if (#(TLSdObj):botcover# <> 0) and (#(TLSdObj):botcover# <= %TLNtempCovered%) then {
+      set <TLNwearable;%TLNwearable% + 16>
+   }
+   if (%TLNwearable% =0) then {
+      doaction <#TLSdObj#;unwear>
+      property <#TLSdObj#; not worn>
+      set <TLNtopCovered;%TLNtopCovered% - #(TLSdObj):topcover#>
+      set <TLNheadCovered;%TLNheadCovered% - #(TLSdObj):headcover#>
+      set <TLNhandsCovered;%TLNhandsCovered% - #(TLSdObj):handscover#>
+      set <TLNfeetCovered;%TLNfeetCovered% - #(TLSdObj):feetcover#>
+      set <TLNbotCovered;%TLNbotCovered% - #(TLSdObj):botcover#>
+   }
+   else {
+      msg <Given what you are wearing, that isn't possible.>
+   }
+end define
+
+'===============
+'== FUNCTIONS ==
+'===============
+
+'========================================================
+'== Returns object real name, checking three locations ==
+'========================================================
+
+define function <TLFgetObjectName>
+   set <TLStemp;$parameter(1)$>
+   set <TLSrealName;$getobjectname(#TLStemp#)$>
+'msg <DEBUG #TLStemp# #TLSrealName#>
+   if (#TLSrealName#=!) then {
+      set <TLSrealName;$getobjectname(#TLStemp#;TLRcontents)$>
+   }
+   if (#TLSrealName#=!) then {
+      set <TLSrealName;$getobjectname(#TLStemp# [worn])$>
+        if (#TLSrealName#=!) then {
+         set <TLSrealName;$getobjectname(#TLStemp# [worn];TLRcontents)$>
+      }
+   }
+   return <#TLSrealName#>
+end define
+
+'=====================================================
+'== Replaces last comma in parsed string with "and" ==
+'=====================================================
+
+define function <TLFcontentFormat>
+   set <TLStemp;$parameter(1)$>
+   set <TLNlength;$lengthof(#TLStemp#)$>
+   set <TLNcomma;0>
+   for <TLNcount; 1; %TLNlength%; 1> {
+      if ($mid(#TLStemp#;%TLNcount%;1)$ =,) then {
+         set <TLNcomma;%TLNcount%>
+      }
+   }
+   if (%TLNcomma% <>0) then {
+      set <TLNcomma;%TLNcomma%-1>
+      set <TLSlist;$left(#TLStemp#;%TLNcomma%)$ and>
+      set <TLNcomma;%TLNcomma%+2>
+      set <TLSlist;#TLSlist#$mid(#TLStemp#;%TLNcomma%)$>     
+   }
+   else set <TLSlist;#TLStemp#>
+   return <#TLSlist#>
+end define
+
+'=================================================
+'== Returns sizes / weights held in a container ==
+'=================================================
+
+define function <TLFsizeHeld>
+   set <TLNsizeLimit;0>
+   for each object in <TLRcontents> {
+      if (#(quest.thing):isIn#=#TLSiObj#) then {
+         set <TLNsizeLimit;%TLNsizeLimit% + #(quest.thing):size#>
+      }     
+   }
+   return <%TLNsizeLimit%>
+end define
+
+define function <TLFweightHeld>
+   set <TLNweightLimit;0>
+   for each object in <TLRcontents> {
+      if (#(quest.thing):isIn#=#TLSiObj#) then {
+         set <TLNweightLimit;%TLNweightLimit% + #(quest.thing):weight#>
+      }     
+   }
+   return <%TLNweightLimit%>
+end define
+
+'========================================================
+'== Returns proper name or 'the object' as appropriate ==
+'========================================================
+
+define function <TLFnamed>
+   set <TLStempName;$parameter(1)$>
+   if property <#TLStempName#;named> then {
+     set <TLStempName;$capfirst(#TLStempName#)$>
+   }
+   else set <TLStempName;the #TLStempName#>
+   return <#TLStempName#>
+end define
+
+'======================
+'== TYPE DEFINITIONS ==
+'======================
+
+define type <TLTactor>
+   listHeader = He is carrying
+   noSpeak = He says nothing.
+   article = he
+   displaytype = person
+   named
+   action <speak> {
+      set <TLSthisObj;$thisobject$> 
+      msg <#(TLSthisObj):noSpeak#>
+   }
+   
+end define
+
+'=====================================================================
+'== The TLTcontainer type: object that you can put other objects in ==
+'=====================================================================
+
+define type <TLTcontainer>
+   listHeader=It contains
+   sizeLimit=100
+   weightLimit=100
+      
+   action <contents> {
+   do <TLPvalidContents>
+      outputoff
+      set <TLSplayerRoom;#quest.currentroom#>
+      goto <TLRcontents>
+      set <TLScontentList;#quest.formatobjects#>         
+      goto <#TLSplayerRoom#>
+      outputon
+      set <TLSthisObj;$thisobject$>
+      if type <#TLSthisObj#;TLTClosable> then {
+         if property <#TLSthisObj#;closed> then {
+            set <TLScontentList;>
+            msg <#(TLSthisObj):closedDesc#>
+         }
+      }
+      if ($lengthof(#TLScontentList#)$ > 0) then {
+         msg <#(TLSdObj):listHeader# #TLScontentList#.>
+      }
+   }
+end define
+
+'=========================================================================
+'== The TLTcontainable type: object that can be put into a TLTcontainer == 
+'=========================================================================
+
+define type <TLTcontainable>
+   isIn=nil
+   size=25
+   weight=25
+   tooBig=It is too big to fit.
+   tooHeavy=It is too heavy for that.
+   action <contained> msg <O.K.>
+end define
+
+'=================================================================
+'== The TLTclosable type: object that can be opened and closed == 
+'=================================================================
+
+define type <TLTclosable>
+   closed
+   closedDesc=(It is closed, you cannot see inside.)
+   isClosedDesc=It is already closed.
+   isOpenedDesc=It is already open.
+   closingDesc=You close it.
+   openingDesc=You open it.
+   article=it
+
+   action <open> {
+      set <TLSthisObj;$thisobject$>
+      if property <#TLSthisObj#;closed> then {
+         doaction <#TLSthisObj#;opened>
+         property <#TLSthisObj#;not closed>
+      }
+      else {
+         msg <#(TLSthisObj):isOpenedDesc#>
+      }
+   }
+
+   action <close> {
+      set <TLSthisObj;$thisobject$>
+      if property <#TLSthisObj#;closed> then {
+         msg <#(TLSthisObj):isClosedDesc#>
+      }
+      else {
+         doaction <#TLSthisObj#;closed>
+         property <#TLSthisObj#;closed>
+      }
+   }
+
+   	action <opened> {
+    	msg <#(TLSthisObj):openingDesc#>
+   	}
+
+   	action <closed> {
+   		msg <#(TLSthisObj):closingDesc#>
+   	}
+
+end define
+
+'=============================================
+'== The TLTreadable type: a readable object ==
+'=============================================
+
+define type <TLTreadable>
+   readmessage = You start to read but it is so incredibly dull you decide not to bother.
+   action <read> {
+   set <TLSdObj;$thisobject$>
+   msg <#(TLSdObj):readmessage#>
+   }
+end define
+
+
+'====================================================
+'== The TLTobject type: a visible, takeable object ==
+'====================================================
+
+define type <TLTobject>
+   takeable
+   action <take> {
+      set <TLSthisObj;$thisobject$>
+      move <#TLSthisObj#;inventory>
+      msg <#TLMtaken#>
+      if property <#TLSthisObj#;TLTcontainable> then {
+         property <#TLSthisObj#;isIn=nil>
+      }
+   }
+end define
+
+'=================================================
+'== The TLTscenery type: fixed, unlisted object ==
+'=================================================
+
+define type <TLTscenery>
+   invisible
+end define
+
+'============================================================
+'== The default type: common functionality for all objects ==
+'============================================================
+
+!addto type <default>
+'define type <default>
+   prefix=a
+      article=it
+      displaytype=object
+      noTake = Taking that would serve no useful purpose.
+	  noWear = default
+'end define
+!end
+
+
+'================================================================================
+'== This clothing type is not used directly but inherited by specific clothes. ==
+'================================================================================
+ 
+define type <TLTclothing>
+   type <TLTobject>
+   headcover = 0
+   handscover = 0
+   feetcover = 0
+   topcover = 0
+   botcover = 0
+   sex = 1
+   article = it
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   properties <displayname=$thisobject$>
+      action <wear> {
+         set <TLSdObj;$thisobject$>
+         msg <#(TLSdObj):wearmessage#>
+         property <#TLSdObj#;alias=#(TLSdObj):displayname# [worn]>
+         move <#TLSdObj#;inventory>
+      }
+      action <unwear> {
+         set <TLSdObj;$thisobject$>
+         msg <#(TLSdObj):unwearmessage#>
+         property <#TLSdObj#;alias=#(TLSdObj):displayname#>
+      }   
+end define  
+
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+' * This lib defines 15 specific clothing objects, and most of these can be used    *
+' * to good effect for other garments - the defined objects are listed together     *
+' * with other garments that work similarly for game purposes.                      *
+' *                                                                                 *
+' * DEFINED GARMENT : ALSO USABLE FOR THESE GARMENTS                                *
+' * hat             : any headwear                                                  *
+' * gloves          : any handwear                                                  *
+' * shoes           : boots, outer footwear generally                               *
+' * socks           : stockings                                                     *
+' * tights          : pantie hose                                                   *
+' * undies          : panties, briefs - lower portion underwear generally           *
+' * teddy           : uhm.. any underthing that covers like a teddy!                *
+' * trousers        : jeans, shorts (not the underwear variety)                     *
+' * dress           : coverall                                                      *
+' * skirt           : kilt maybe?                                                   *
+' * vest            : bra, other 'top only' undergarment                            *
+' * shirt           : blouse, T-Shirt etc.                                          *
+' * sweater         : pullover, sweatshirt - '2nd layer' top garment                *
+' * jacket          : fleece, parka, anorak, short coat of whatever type            *
+' * coat            : any long length outermost garment like a coat                 *
+' * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+define type <TLTshoes>
+   type <TLTclothing>
+   feetcover = 4
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   article = them
+   prefix=a pair of
+end define
+
+define type <TLTsocks>
+   type <TLTclothing>
+   feetcover = 2
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   article = them
+   prefix=a pair of
+end define
+
+define type <TLTtights>
+   type <TLTclothing>
+   feetcover = 2
+   botcover = 8
+   article = them
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   prefix=a pair of
+end define
+
+define type <TLThat>
+   type <TLTclothing>
+   headcover = 2
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTgloves>
+   type <TLTclothing>
+   handscover = 2
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   article = them
+   prefix=a pair of
+end define
+
+define type <TLTvest>
+   type <TLTclothing>
+   topcover = 2
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTshirt>
+   type <TLTclothing>
+   topcover = 8
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTteddy>
+   type <TLTclothing>
+   topcover = 4
+   botcover = 4
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+ end define
+
+define type <TLTundies>
+   type <TLTclothing>
+   botcover = 2
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   article = them
+   prefix=a pair of
+end define
+
+define type <TLTdress>
+   type <TLTclothing>
+   topcover = 8
+   botcover = 32
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTskirt>
+   type <TLTclothing>
+   botcover = 32
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTtrousers>
+   type <TLTclothing>
+   botcover = 16
+   wearmessage = You put them on.
+   unwearmessage = You take them off.
+   article = them
+   prefix=a pair of
+end define
+
+define type <TLTsweater>
+   type <TLTclothing>
+   topcover = 16
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTjacket>
+   type <TLTclothing>
+   topcover = 32
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+define type <TLTcoat>
+   type <TLTclothing>
+   topcover = 64
+   botcover = 64
+   wearmessage = You put it on.
+   unwearmessage = You take it off.
+   prefix=a
+end define
+
+
+'==========================
+'== INTERFACE FOR Q.D.K. ==
+'==========================
+
+!QDK
+
+'script <MaDbRiTs Types Library>
+'   command <Initialise the library (use in startscript); TLPstartup>
+'      display <Initialise MaDbRiTs Types Library.>
+
+object <Basics>
+   type <Regular object; TLTobject>
+   type <Scenery (not takeable or described) object; TLTscenery> 
+   property <Make regular object not takeable;not takeable>
+   property <Not takeable msg;noTake;text>
+   property <Not wearable msg;noWear;text>
+   
+object <Readable>
+   type <Readable object;TLTreadable>
+   property <Message if read;readMessage;text>
+   action <Action if read;read>
+
+object <Containers>
+   type <Container object (can have things put in it); TLTcontainer>
+   property <Header for listing;listHeader;text> 
+   property <Size Limit;sizeLimit;text>
+   property <Weight Limit;weightLimit;text>
+   
+   type <Containable object (can be put in things); TLTcontainable>  
+   property <Size;size;text>
+   property <Weight;weight;text>
+   property <Start game inside;isIn;objects>
+   property <Msg if Too Big;tooBig;text>
+   property <Msg if Too Heavy;tooHeavy;text>
+	action <Action when contained;contained>
+
+object <Actor>
+   type <Actor can carry things;TLTcontainer>
+   property <Header for listing;listHeader;text> 
+   property <Size Limit;sizeLimit;text>
+   property <Weight Limit;weightLimit;text>
+   type <Actor; TLTactor>
+   property <Actor not named. (e.g. 'the sailor' not 'Jack');not named>
+   property <Default speak reply;noSpeak;text>
+   action <Script if spoken to;speak>
+   
+object <Closables>   
+   type <Closable object     NOTE Following properties all have useful defaults;TLTclosable>
+   property <Start open?;not closed>
+   property <Closed text (container);closedDesc;text>
+   property <Is closed description;isClosedDesc;text>   
+   property <Closing description;closingDesc;text>   
+   property <Is open description;isOpenDesc;text>   
+   property <Opening description;openingDesc;text>
+   action <Script when opened;opened>
+   action <Script when closed;closed>
+
+object <Clothing 1>  
+   type <Sweater;TLTsweater>
+   type <Shirt;TLTshirt>
+   type <Vest (top half underwear / bra etc.);TLTvest>
+   type <Teddy (or 1 piece swimsuit etc.);TLTteddy>
+   type <Underwear (shorts or briefs);TLTundies>
+   type <Socks;TLTsocks>
+   type <Tights (a.k.a. Panty Hose);TLTtights>
+   type <Dress;TLTdress>
+   type <Skirt;TLTskirt>
+   type <Trousers;TLTtrousers>
+   type <Shoes;TLTshoes>
+   type <Hat           NOTE Clothing continues on next tab!;TLThat>   
+   
+   
+object <Clothing 2>
+   type <Gloves;TLTgloves>
+   type <Jacket (short coat);TLTjacket>
+   type <Coat (long coat)       NOTE Properties below have defaults! See the manual;TLTcoat>  
+   property <Msg when put on;wearmessage;text>
+   property <Msg when taken off;unwearmessage;text>   
+   property <Head cover value;headcover;text>
+   property <Hands cover value;handscover;text>
+   property <Feet cover value;feetcover;text>
+   property <Top cover value;topcover;text>
+   property <Bottom cover value;botcover;text>
+   property <Sex;sex;text>
+   property <Start game worn?;worn>
+!end
+`;
+libraries["net.lib"] = `!library
+!asl-version <350>
+!name <QuestNet Standard Library>
+!version <1.0>
+!author <Alex Warren>
+! This library adds useful additional QuestNet functions. We recommend you include this library in all QuestNet (multiplayer) games.
+
+' NET.LIB v1.0
+' for QuestNet Server 3.5
+' Copyright © 2004 Axe Software. Please do not modify this library.
+
+!QDK
+
+	object <QuestNet>
+		type <This object can be &given to other players; giveable>
+
+!end
+
+
+define type <giveable>
+        action <give to anything> {
+                if ( #quest.give.object.name# = player%userid% ) then {
+                        msg <It is silly to give things to yourself!>
+                }
+                else {
+                        if property <#quest.give.object.name#; netplayer> then {
+                                move <$thisobject$; #quest.give.object.name#>
+                                msg <You give $name(#quest.give.object.name#)$ the $thisobjectname$.>
+                                msgto <#quest.give.object.name#; |b$name(%userid%)$|xb has given you a |b$thisobjectname$|xb.>
+                                if action <$thisobject$; gain> then {
+                                	with <#quest.give.object.name#> {
+                                		doaction <$thisobject$; gain>
+                                	}
+                                }
+                                if action <$thisobject$; lose> then {
+                                	doaction <$thisobject$; lose>
+                                }
+                        }
+                        else {
+                                msg <The $displayname(#quest.give.object.name#)$ doesn't want that.>
+                        }
+                }
+        }
+end define
+`;
