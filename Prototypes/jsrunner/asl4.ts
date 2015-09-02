@@ -27,32 +27,16 @@ function LCase(input: string): string {
     return input.toLowerCase();
 }
 
-function InStr(arg1, arg2, arg3?): number {
-    var input, search;
-    if (typeof arg3 === 'undefined') {
-        input = arg1;
-        search = arg2;
-        return input.indexOf(search) + 1;
-    }
-    
-    var start = arg1;
-    input = arg2;
-    search = arg3;
+function InStr(input: string, search: string): number {
+    return input.indexOf(search) + 1;
+}
+
+function InStrFrom(start: number, input: string, search: string): number {
     return input.indexOf(search, start - 1) + 1;
 }
 
-function InStrRev(arg1, arg2, arg3?): number {
-    var input, search;
-    if (typeof arg3 === 'undefined') {
-        input = arg1;
-        search = arg2;
-        return input.lastIndexOf(search) + 1;
-    }
-        
-    var start = arg1;
-    input = arg2;
-    search = arg3;
-    return input.lastIndexOf(search, start - 1) + 1;
+function InStrRev(input: string, search: string): number {
+    return input.lastIndexOf(search) + 1;
 }
 
 function Split(input: string, splitChar: string): string[] {
@@ -63,7 +47,7 @@ function Join(input: string[], joinChar: string): string {
     return input.join(joinChar);
 }
 
-function IsNumeric(input): boolean {
+function IsNumeric(input: any): boolean {
     return !isNaN(parseFloat(input)) && isFinite(input);
 }
 
@@ -665,7 +649,7 @@ class LegacyGame {
                     // Now check {
                     pos = 1;
                     do {
-                        bracePos = InStr(pos, checkLine, "{");
+                        bracePos = InStrFrom(pos, checkLine, "{");
                         if (bracePos != 0) {
                             pos = bracePos + 1;
                             braces = braces + 1;
@@ -674,7 +658,7 @@ class LegacyGame {
                     // Now check }
                     pos = 1;
                     do {
-                        bracePos = InStr(pos, checkLine, "}");
+                        bracePos = InStrFrom(pos, checkLine, "}");
                         if (bracePos != 0) {
                             pos = bracePos + 1;
                             braces = braces - 1;
@@ -736,7 +720,7 @@ class LegacyGame {
                     this.LogASLError("Expected closing " + Mid(varObscureLine, 9, 1) + " character in '" + this.ReportErrorLine(this._lines[i]) + "'", LogType.FatalError);
                     return true;
                 }
-                startParamPos = InStr(convPos, this._lines[i], "(");
+                startParamPos = InStrFrom(convPos, this._lines[i], "(");
                 endParamPos = 0;
                 bracketCount = 1;
                 for (var j = startParamPos + 1; j <= Len(this._lines[i]); j++) {
@@ -980,9 +964,9 @@ class LegacyGame {
                 curPos = 1;
                 finLoop = false;
                 do {
-                    if (InStr(curPos, this._lines[i], "<") != 0) {
+                    if (InStrFrom(curPos, this._lines[i], "<") != 0) {
                         numParamStart = numParamStart + 1;
-                        curPos = InStr(curPos, this._lines[i], "<") + 1;
+                        curPos = InStrFrom(curPos, this._lines[i], "<") + 1;
                     } else {
                         finLoop = true;
                     }
@@ -991,9 +975,9 @@ class LegacyGame {
                 curPos = 1;
                 finLoop = false;
                 do {
-                    if (InStr(curPos, this._lines[i], ">") != 0) {
+                    if (InStrFrom(curPos, this._lines[i], ">") != 0) {
                         numParamEnd = numParamEnd + 1;
-                        curPos = InStr(curPos, this._lines[i], ">") + 1;
+                        curPos = InStrFrom(curPos, this._lines[i], ">") + 1;
                     } else {
                         finLoop = true;
                     }
@@ -1269,10 +1253,10 @@ class LegacyGame {
             // Now, starting from the first word after 'define',
             // retrieve the next word and compare it to blockname:
             // Add a space for define blocks with no parameter
-            if (InStr(8, l, " ") == 0) {
+            if (InStrFrom(8, l, " ") == 0) {
                 l = l + " ";
             }
-            blockType = Mid(l, 8, InStr(8, l, " ") - 8);
+            blockType = Mid(l, 8, InStrFrom(8, l, " ") - 8);
             if (blockType == blockname) {
                 // Return the start and end points
                 result.StartLine = this._defineBlocks[i].StartLine;
@@ -1622,7 +1606,7 @@ class LegacyGame {
             var slashPos: number = 0;
             var curPos = 1;
             do {
-                slashPos = InStr(curPos, filename, "\\");
+                slashPos = InStrFrom(curPos, filename, "\\");
                 if (slashPos != 0) {
                     lastSlashPos = slashPos;
                 }
@@ -1817,7 +1801,7 @@ class LegacyGame {
             if (casVersion == 3 && Mid(fileData, i, 1) == startCat) {
                 // Read catalog
                 this._startCatPos = i;
-                endCatPos = InStr(j, fileData, this.Keyword2CAS("!endcat"));
+                endCatPos = InStrFrom(j, fileData, this.Keyword2CAS("!endcat"));
                 this.ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1));
                 this._resourceFile = filename;
                 this._resourceOffset = endCatPos + 1;
@@ -1827,13 +1811,13 @@ class LegacyGame {
                 curLin = "";
                 endLineReached = false;
                 if (textMode) {
-                    textData = Mid(fileData, i, InStr(i, fileData, Chr(253)) - (i - 1));
+                    textData = Mid(fileData, i, InStrFrom(i, fileData, Chr(253)) - (i - 1));
                     textData = Left(textData, Len(textData) - 1);
                     cpos = 1;
                     var finished = false;
                     if (textData != "") {
                         do {
-                            nextLinePos = InStr(cpos, textData, Chr(0));
+                            nextLinePos = InStrFrom(cpos, textData, Chr(0));
                             if (nextLinePos == 0) {
                                 nextLinePos = Len(textData) + 1;
                                 finished = true;
@@ -1844,7 +1828,7 @@ class LegacyGame {
                         } while (!(finished));
                     }
                     textMode = false;
-                    i = InStr(i, fileData, Chr(253));
+                    i = InStrFrom(i, fileData, Chr(253));
                 }
                 j = i;
                 do {
@@ -2001,7 +1985,7 @@ class LegacyGame {
         var curPos = 1;
         var resultLine = "";
         do {
-            bracePos = InStr(curPos, s, "{");
+            bracePos = InStrFrom(curPos, s, "{");
             if (bracePos != 0) {
                 resultLine = resultLine + Mid(s, curPos, bracePos - curPos);
                 if (Mid(s, bracePos, 2) == "{{") {
@@ -2009,7 +1993,7 @@ class LegacyGame {
                     curPos = bracePos + 2;
                     resultLine = resultLine + "{";
                 } else {
-                    var EndBracePos = InStr(bracePos + 1, s, "}");
+                    var EndBracePos = InStrFrom(bracePos + 1, s, "}");
                     if (EndBracePos == 0) {
                         this.LogASLError("Expected } in '" + s + "'", LogType.WarningError);
                         return "<ERROR>";
@@ -2031,7 +2015,7 @@ class LegacyGame {
         // Above, we only bothered checking for {{. But for consistency, also }} = }. So let's do that:
         curPos = 1;
         do {
-            bracePos = InStr(curPos, resultLine, "}}");
+            bracePos = InStrFrom(curPos, resultLine, "}}");
             if (bracePos != 0) {
                 resultLine = Left(resultLine, bracePos) + Mid(resultLine, bracePos + 2);
                 curPos = bracePos + 1;
@@ -2763,7 +2747,7 @@ class LegacyGame {
         var result = s;
         var pos = 1;
         do {
-            ep = InStr(pos, result, "E");
+            ep = InStrFrom(pos, result, "E");
             if (ep != 0) {
                 result = Left(result, ep) + "X" + Mid(result, ep + 2);
                 pos = ep + 2;
@@ -3353,7 +3337,7 @@ class LegacyGame {
         } else {
             var objectToClone = Trim(Left(cloneString, scp - 1));
             id = this.GetObjectIdNoAlias(objectToClone);
-            var SC2 = InStr(scp + 1, cloneString, ";");
+            var SC2 = InStrFrom(scp + 1, cloneString, ";");
             if (SC2 == 0) {
                 cloneTo = this._objs[id].ContainerRoom;
                 newName = Trim(Mid(cloneString, scp + 1));
@@ -3697,7 +3681,7 @@ class LegacyGame {
             }
             if (InStr(displayData, "*") > 0) {
                 var firstStar = InStr(displayData, "*");
-                var secondStar = InStr(firstStar + 1, displayData, "*");
+                var secondStar = InStrFrom(firstStar + 1, displayData, "*");
                 var beforeStar = Left(displayData, firstStar - 1);
                 var afterStar = Mid(displayData, secondStar + 1);
                 var betweenStar = Mid(displayData, firstStar + 1, (secondStar - firstStar) - 1);
@@ -3887,9 +3871,9 @@ class LegacyGame {
             if (!conditions) conditions = [];
             if (!operations) operations = [];
             var nextCondition = "AND";
-            var nextConditionPos = InStr(pos, obscuredConditionList, "and ");
+            var nextConditionPos = InStrFrom(pos, obscuredConditionList, "and ");
             if (nextConditionPos == 0) {
-                nextConditionPos = InStr(pos, obscuredConditionList, "or ");
+                nextConditionPos = InStrFrom(pos, obscuredConditionList, "or ");
                 nextCondition = "OR";
             }
             if (nextConditionPos == 0) {
@@ -3901,7 +3885,7 @@ class LegacyGame {
             conditions[numConditions] = thisCondition;
             operations[numConditions] = nextCondition;
             // next condition starts from space after and/or
-            pos = InStr(nextConditionPos, obscuredConditionList, " ");
+            pos = InStrFrom(nextConditionPos, obscuredConditionList, " ");
         } while (!(isFinalCondition));
         operations[0] = "AND";
         var result = true;
@@ -4271,7 +4255,7 @@ class LegacyGame {
             var obp = InStr(procedureName, "(");
             var cbp: number = 0;
             if (obp != 0) {
-                cbp = InStr(obp + 1, procedureName, ")");
+                cbp = InStrFrom(obp + 1, procedureName, ")");
             }
             if (obp != 0 && cbp != 0) {
                 var parameters = Mid(procedureName, obp + 1, (cbp - obp) - 1);
@@ -4280,7 +4264,7 @@ class LegacyGame {
                 var pos = 1;
                 do {
                     numParameters = numParameters + 1;
-                    var scp = InStr(pos, parameters, ";");
+                    var scp = InStrFrom(pos, parameters, ";");
                     newCtx.NumParameters = numParameters;
                     if (!newCtx.Parameters) newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = Trim(Mid(parameters, pos, scp - pos));
@@ -4426,7 +4410,7 @@ class LegacyGame {
         }
         var pos = 1;
         do {
-            bracketPos = InStr(pos, data, ">");
+            bracketPos = InStrFrom(pos, data, ">");
             afterBracket = Trim(Mid(data, bracketPos + 1));
             if ((!this.BeginsWith(afterBracket, "and ")) && (!this.BeginsWith(afterBracket, "or "))) {
                 repeatScript = afterBracket;
@@ -4497,7 +4481,7 @@ class LegacyGame {
         this._fileDataPos = 1;
     }
     GetNextChunk(): string {
-        var nullPos = InStr(this._fileDataPos, this._fileData, Chr(0));
+        var nullPos = InStrFrom(this._fileDataPos, this._fileData, Chr(0));
         var result = Mid(this._fileData, this._fileDataPos, nullPos - this._fileDataPos);
         if (nullPos < Len(this._fileData)) {
             this._fileDataPos = nullPos + 1;
@@ -4831,7 +4815,7 @@ class LegacyGame {
         var pos = 1;
         var finished = false;
         do {
-            var varPos = InStr(pos, parameter, convertChar);
+            var varPos = InStrFrom(pos, parameter, convertChar);
             if (varPos == 0) {
                 varPos = Len(parameter) + 1;
                 finished = true;
@@ -4839,7 +4823,7 @@ class LegacyGame {
             var currentBit = Mid(parameter, pos, varPos - pos);
             result = result + currentBit;
             if (!finished) {
-                var nextPos = InStr(varPos + 1, parameter, convertChar);
+                var nextPos = InStrFrom(varPos + 1, parameter, convertChar);
                 if (nextPos == 0) {
                     this.LogASLError("Line parameter <" + parameter + "> has missing " + convertChar, LogType.WarningError);
                     return "<ERROR>";
@@ -4904,7 +4888,7 @@ class LegacyGame {
                 parameter = parameter + ";";
                 do {
                     numParameters = numParameters + 1;
-                    var scp = InStr(pos, parameter, ";");
+                    var scp = InStrFrom(pos, parameter, ";");
                     var parameterData = Trim(Mid(parameter, pos, scp - pos));
                     this.SetStringContents("quest.function.parameter." + Trim(Str(numParameters)), parameterData, ctx);
                     newCtx.NumParameters = numParameters;
@@ -4935,7 +4919,7 @@ class LegacyGame {
             parameter = parameter + ";";
             do {
                 numParameters = numParameters + 1;
-                var scp = InStr(pos, parameter, ";");
+                var scp = InStrFrom(pos, parameter, ";");
                 if (!parameters) parameters = [];
                 if (!untrimmedParameters) untrimmedParameters = [];
                 untrimmedParameters[numParameters] = Mid(parameter, pos, scp - pos);
@@ -5045,7 +5029,7 @@ class LegacyGame {
                     this.LogASLError("Invalid function call in '$instr(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", LogType.WarningError);
                     return "!";
                 } else {
-                    return Trim(Str(InStr(parseInt(parameters[1]), parameters[2], param3)));
+                    return Trim(Str(InStrFrom(parseInt(parameters[1]), parameters[2], param3)));
                 }
             } else if (numParameters == 2) {
                 param2 = "";
@@ -5173,8 +5157,8 @@ class LegacyGame {
         var forData = this.GetParameter(line, ctx);
         // Extract individual components:
         var scp1 = InStr(forData, ";");
-        var scp2 = InStr(scp1 + 1, forData, ";");
-        var scp3 = InStr(scp2 + 1, forData, ";");
+        var scp2 = InStrFrom(scp1 + 1, forData, ";");
+        var scp3 = InStrFrom(scp2 + 1, forData, ";");
         var counterVariable = Trim(Left(forData, scp1 - 1));
         var startValue = parseInt(Mid(forData, scp1 + 1, (scp2 - 1) - scp1));
         if (scp3 != 0) {
@@ -5222,7 +5206,7 @@ class LegacyGame {
                     opPos = InStr(obscuredVarInfo, "/");
                 }
                 if (opPos == 0) {
-                    opPos = InStr(2, obscuredVarInfo, "-");
+                    opPos = InStrFrom(2, obscuredVarInfo, "-");
                 }
                 if (opPos != 0) {
                     var op = Mid(varCont, opPos, 1);
@@ -5318,7 +5302,7 @@ class LegacyGame {
             this.LogASLError("Expected second parameter in 'is " + condition + "'", LogType.WarningError);
             return false;
         }
-        var scp2 = InStr(scp + 1, condition, ";");
+        var scp2 = InStrFrom(scp + 1, condition, ";");
         if (scp2 == 0) {
             // Only two parameters => standard "="
             op = "=";
@@ -6185,7 +6169,7 @@ class LegacyGame {
                 originalWordsList = originalWordsList + ";";
                 var pos = 1;
                 do {
-                    var endOfWord = InStr(pos, originalWordsList, ";");
+                    var endOfWord = InStrFrom(pos, originalWordsList, ";");
                     var thisWord = Trim(Mid(originalWordsList, pos, endOfWord - pos));
                     if (InStr(" " + convertWord + " ", " " + thisWord + " ") > 0) {
                         // Recursive synonym
@@ -6545,7 +6529,7 @@ class LegacyGame {
             if (cp != 0) {
                 foundLastComma = 0;
                 do {
-                    ncp = InStr(cp + 1, charList, ",");
+                    ncp = InStrFrom(cp + 1, charList, ",");
                     if (ncp == 0) {
                         foundLastComma = 1;
                     } else {
@@ -6573,7 +6557,7 @@ class LegacyGame {
             cp = InStr(objListString, ",");
             if (cp != 0) {
                 do {
-                    ncp = InStr(cp + 1, objListString, ",");
+                    ncp = InStrFrom(cp + 1, objListString, ",");
                     if (ncp == 0) {
                         finishedLoop = true;
                     } else {
@@ -6665,7 +6649,7 @@ class LegacyGame {
             if (cp != 0) {
                 finished = false;
                 do {
-                    ncp = InStr(cp + 1, nsew, ",");
+                    ncp = InStrFrom(cp + 1, nsew, ",");
                     if (ncp == 0) {
                         finished = true;
                     } else {
@@ -6690,7 +6674,7 @@ class LegacyGame {
                 finishedFindingCommas = false;
                 do {
                     oldLastComma = lastComma;
-                    lastComma = InStr(lastComma + 1, places, ",");
+                    lastComma = InStrFrom(lastComma + 1, places, ",");
                     if (lastComma == 0) {
                         finishedFindingCommas = true;
                         lastComma = oldLastComma;
@@ -6925,17 +6909,17 @@ class LegacyGame {
         var finished = false;
         var numberChunks = 0;
         do {
-            var nextVarPos = InStr(currentReqLinePos, required, "#");
+            var nextVarPos = InStrFrom(currentReqLinePos, required, "#");
             var currentVariable = "";
             if (nextVarPos == 0) {
                 finished = true;
                 nextVarPos = Len(required) + 1;
             } else {
-                var2Pos = InStr(nextVarPos + 1, required, "#");
+                var2Pos = InStrFrom(nextVarPos + 1, required, "#");
                 currentVariable = Mid(required, nextVarPos + 1, (var2Pos - 1) - nextVarPos);
             }
             var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
-            var chunkBegin = InStr(currentTestLinePos, LCase(test), LCase(checkChunk));
+            var chunkBegin = InStrFrom(currentTestLinePos, LCase(test), LCase(checkChunk));
             var chunkEnd = chunkBegin + Len(checkChunk);
             numberChunks = numberChunks + 1;
             if (!chunksBegin) chunksBegin = [];
@@ -7015,7 +6999,7 @@ class LegacyGame {
             var propName = Trim(Mid(name, cp + 1));
             var obp = InStr(objName, "(");
             if (obp != 0) {
-                var cbp = InStr(obp, objName, ")");
+                var cbp = InStrFrom(obp, objName, ")");
                 if (cbp != 0) {
                     objName = this.GetStringContents(Mid(objName, obp + 1, (cbp - obp) - 1), ctx);
                 }
@@ -7111,16 +7095,16 @@ class LegacyGame {
         var currentTestLinePos = 1;
         var finished = false;
         do {
-            var nextVarPos = InStr(currentReqLinePos, required, "#");
+            var nextVarPos = InStrFrom(currentReqLinePos, required, "#");
             if (nextVarPos == 0) {
                 nextVarPos = Len(required) + 1;
                 finished = true;
             } else {
-                var2Pos = InStr(nextVarPos + 1, required, "#");
+                var2Pos = InStrFrom(nextVarPos + 1, required, "#");
             }
             var checkChunk = Mid(required, currentReqLinePos, (nextVarPos - 1) - (currentReqLinePos - 1));
-            if (InStr(currentTestLinePos, test, checkChunk) != 0) {
-                currentTestLinePos = InStr(currentTestLinePos, test, checkChunk) + Len(checkChunk);
+            if (InStrFrom(currentTestLinePos, test, checkChunk) != 0) {
+                currentTestLinePos = InStrFrom(currentTestLinePos, test, checkChunk) + Len(checkChunk);
             } else {
                 return false;
             }
@@ -7225,8 +7209,8 @@ class LegacyGame {
                     lineNumber += 1;
                     if (data != "!p") {
                         scp = InStr(data, ";");
-                        scp2 = InStr(scp + 1, data, ";");
-                        scp3 = InStr(scp2 + 1, data, ";");
+                        scp2 = InStrFrom(scp + 1, data, ";");
+                        scp3 = InStrFrom(scp2 + 1, data, ";");
                         name = Trim(Left(data, scp - 1));
                         cdatb = this.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
                         visible = this.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
@@ -7247,8 +7231,8 @@ class LegacyGame {
                     lineNumber += 1;
                     if (data != "!s") {
                         scp = InStr(data, ";");
-                        scp2 = InStr(scp + 1, data, ";");
-                        scp3 = InStr(scp2 + 1, data, ";");
+                        scp2 = InStrFrom(scp + 1, data, ";");
+                        scp3 = InStrFrom(scp2 + 1, data, ";");
                         name = Trim(Left(data, scp - 1));
                         cdatb = this.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
                         visible = this.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
@@ -7878,7 +7862,7 @@ class LegacyGame {
                     finishedFindingCommas = false;
                     do {
                         oldLastComma = lastComma;
-                        lastComma = InStr(lastComma + 1, placeList, ",");
+                        lastComma = InStrFrom(lastComma + 1, placeList, ",");
                         if (lastComma == 0) {
                             finishedFindingCommas = true;
                             lastComma = oldLastComma;
@@ -8016,7 +8000,7 @@ class LegacyGame {
             }
             if (InStr(display, "*") > 0) {
                 var firstStarPos = InStr(display, "*");
-                var secondStarPos = InStr(firstStarPos + 1, display, "*");
+                var secondStarPos = InStrFrom(firstStarPos + 1, display, "*");
                 var beforeStar = Left(display, firstStarPos - 1);
                 var afterStar = Mid(display, secondStarPos + 1);
                 var betweenStar = Mid(display, firstStarPos + 1, (secondStarPos - firstStarPos) - 1);
@@ -8080,7 +8064,7 @@ class LegacyGame {
             var cp = 1;
             var n: number = 0;
             do {
-                n = InStr(cp, newCommand, " " + this._synonyms[i].OriginalWord + " ");
+                n = InStrFrom(cp, newCommand, " " + this._synonyms[i].OriginalWord + " ");
                 if (n != 0) {
                     newCommand = Left(newCommand, n - 1) + " " + this._synonyms[i].ConvertTo + " " + Mid(newCommand, n + Len(this._synonyms[i].OriginalWord) + 2);
                     cp = n + 1;
@@ -8212,7 +8196,7 @@ class LegacyGame {
                 parameter = this.GetEverythingAfter(input, "pick up ");
                 this.ExecTake(parameter, ctx);
             } else if (cmd == "pick it up" || cmd == "pick them up" || cmd == "pick this up" || cmd == "pick that up" || cmd == "pick these up" || cmd == "pick those up" || cmd == "pick him up" || cmd == "pick her up") {
-                this.ExecTake(Mid(cmd, 6, InStr(7, cmd, " ") - 6), ctx);
+                this.ExecTake(Mid(cmd, 6, InStrFrom(7, cmd, " ") - 6), ctx);
             } else if (this.CmdStartsWith(input, "look ")) {
                 this.ExecLook(input, ctx);
             } else if (this.CmdStartsWith(input, "l ")) {
@@ -8283,7 +8267,7 @@ class LegacyGame {
                     var lastComma: number = 0;
                     var thisComma: number = 0;
                     do {
-                        thisComma = InStr(pos, invList, ",");
+                        thisComma = InStrFrom(pos, invList, ",");
                         if (thisComma != 0) {
                             lastComma = thisComma;
                             pos = thisComma + 1;
@@ -8958,7 +8942,7 @@ class LegacyGame {
                 name = this.GetEverythingAfter(name, "use ");
                 if (InStr(name, "'") > 0) {
                     sp = InStr(name, "'");
-                    ep = InStr(sp + 1, name, "'");
+                    ep = InStrFrom(sp + 1, name, "'");
                     if (ep == 0) {
                         this.LogASLError("Missing ' in 'action <use " + name + "> " + this.ReportErrorLine(script));
                         return;
@@ -8972,7 +8956,7 @@ class LegacyGame {
                 name = this.GetEverythingAfter(name, "give ");
                 if (InStr(name, "'") > 0) {
                     sp = InStr(name, "'");
-                    ep = InStr(sp + 1, name, "'");
+                    ep = InStrFrom(sp + 1, name, "'");
                     if (ep == 0) {
                         this.LogASLError("Missing ' in 'action <give " + name + "> " + this.ReportErrorLine(script));
                         return;
@@ -9039,7 +9023,7 @@ class LegacyGame {
                 var curPos = 1;
                 var finished = false;
                 do {
-                    var crLfPos = InStr(curPos, scriptLine, "\n");
+                    var crLfPos = InStrFrom(curPos, scriptLine, "\n");
                     if (crLfPos == 0) {
                         finished = true;
                         crLfPos = Len(scriptLine) + 1;
@@ -9463,7 +9447,7 @@ class LegacyGame {
             self._listVerbs[ListType.ExitsList] = ["Go to"];
             if (self._gameAslVersion >= 280 && self._gameAslVersion < 390) {
                 self._listVerbs[ListType.ObjectsList] = ["Look at", "Examine", "Take", "Speak to"];
-                self._listVerbs[ListType.InventoryList] ["Look at", "Examine", "Use", "Drop"];
+                self._listVerbs[ListType.InventoryList] = ["Look at", "Examine", "Use", "Drop"];
             } else {
                 self._listVerbs[ListType.ObjectsList] = ["Look at", "Take", "Speak to"];
                 self._listVerbs[ListType.InventoryList] = ["Look at", "Use", "Drop"];
@@ -9735,9 +9719,9 @@ class LegacyGame {
                     do {
                         if (!this._collectables) this._collectables = [];
                         this._collectables[this._numCollectables] = new Collectable();
-                        var nextComma = InStr(pos + 1, collectables, ",");
+                        var nextComma = InStrFrom(pos + 1, collectables, ",");
                         if (nextComma == 0) {
-                            nextComma = InStr(pos + 1, collectables, ";");
+                            nextComma = InStrFrom(pos + 1, collectables, ";");
                         }
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
@@ -9751,7 +9735,7 @@ class LegacyGame {
                         this._collectables[this._numCollectables].Name = Trim(Left(info, InStr(info, " ")));
                         var ep = InStr(info, "=");
                         var sp1 = InStr(info, " ");
-                        var sp2 = InStr(ep, info, " ");
+                        var sp2 = InStrFrom(ep, info, " ");
                         if (sp2 == 0) {
                             sp2 = Len(info) + 1;
                         }
@@ -9798,9 +9782,9 @@ class LegacyGame {
                     do {
                         if (!this._items) this._items = [];
                         this._items[this._numberItems] = new ItemType();
-                        var nextComma = InStr(pos + 1, possItems, ",");
+                        var nextComma = InStrFrom(pos + 1, possItems, ",");
                         if (nextComma == 0) {
-                            nextComma = InStr(pos + 1, possItems, ";");
+                            nextComma = InStrFrom(pos + 1, possItems, ";");
                         }
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
@@ -9829,9 +9813,9 @@ class LegacyGame {
                 if (startItems != "") {
                     var pos = 1;
                     do {
-                        var nextComma = InStr(pos + 1, startItems, ",");
+                        var nextComma = InStrFrom(pos + 1, startItems, ",");
                         if (nextComma == 0) {
-                            nextComma = InStr(pos + 1, startItems, ";");
+                            nextComma = InStrFrom(pos + 1, startItems, ";");
                         }
                         //If there are no more commas, we want everything
                         //up to the end of the string, and then to exit
@@ -10035,7 +10019,7 @@ class LegacyGame {
                 if (cp != 0) {
                     var finished = false;
                     do {
-                        var ncp = InStr(cp + 1, nsew, ",");
+                        var ncp = InStrFrom(cp + 1, nsew, ",");
                         if (ncp == 0) {
                             finished = true;
                         } else {
@@ -10991,7 +10975,7 @@ class RoomExits {
         param = this._game.GetParameter(script, ctx);
         params = Split(param, ";");
         paramStart = InStr(script, "<");
-        paramEnd = InStr(paramStart, script, ">");
+        paramEnd = InStrFrom(paramStart, script, ">");
         if (paramStart > 1) {
             // Directional exit
             if (UBound(params) == 0) {
