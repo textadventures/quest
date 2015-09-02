@@ -43,16 +43,8 @@ function Split(input: string, splitChar: string): string[] {
     return input.split(splitChar);
 }
 
-function Join(input: string[], joinChar: string): string {
-    return input.join(joinChar);
-}
-
 function IsNumeric(input: any): boolean {
     return !isNaN(parseFloat(input)) && isFinite(input);
-}
-
-function Replace(input: string, oldString: string, newString: string): string {
-    return input.split(oldString).join(newString);
 }
 
 function Trim(input: string): string {

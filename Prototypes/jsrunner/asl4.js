@@ -29,14 +29,8 @@ function InStrRev(input, search) {
 function Split(input, splitChar) {
     return input.split(splitChar);
 }
-function Join(input, joinChar) {
-    return input.join(joinChar);
-}
 function IsNumeric(input) {
     return !isNaN(parseFloat(input)) && isFinite(input);
-}
-function Replace(input, oldString, newString) {
-    return input.split(oldString).join(newString);
 }
 function Trim(input) {
     return input.trim();
