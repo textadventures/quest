@@ -1204,15 +1204,12 @@ class LegacyGame {
         // Example: beginswith("Hello there","HeLlO")=TRUE
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     }
-    ConvertCasKeyword(casChar: string): string {
-        // TODO
-        //var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
-        //var keyword: string = this._casKeywords[c];
-        //if (keyword == "!cr") {
-        //    keyword = "\n";
-        //}
-        //return keyword;
-        return null;
+    ConvertCasKeyword(casChar: number): string {
+        var keyword: string = this._casKeywords[casChar];
+        if (keyword == "!cr") {
+            keyword = "\n";
+        }
+        return keyword;
     }
     ConvertMultiLines(): void {
         //Goes through each section capable of containing
@@ -1975,7 +1972,7 @@ class LegacyGame {
         var nextLinePos: number = 0;
         var c: string;
         var tl: string;
-        var ckw: string;
+        var ckw: number;
         var d: string;
         this._lines = [];
         var fileData = this.GetCASFileData(filename);
@@ -2027,7 +2024,7 @@ class LegacyGame {
                 }
                 j = i;
                 do {
-                    ckw = Mid(fileData, j, 1);
+                    ckw = Asc(Mid(fileData, j, 1));
                     c = this.ConvertCasKeyword(ckw);
                     if (c == "\n") {
                         endLineReached = true;

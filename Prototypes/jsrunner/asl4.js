@@ -1310,14 +1310,11 @@ var LegacyGame = (function () {
         return Left(LTrim(LCase(s)), Len(text)) == LCase(text);
     };
     LegacyGame.prototype.ConvertCasKeyword = function (casChar) {
-        // TODO
-        //var c: number = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)(0);
-        //var keyword: string = this._casKeywords[c];
-        //if (keyword == "!cr") {
-        //    keyword = "\n";
-        //}
-        //return keyword;
-        return null;
+        var keyword = this._casKeywords[casChar];
+        if (keyword == "!cr") {
+            keyword = "\n";
+        }
+        return keyword;
     };
     LegacyGame.prototype.ConvertMultiLines = function () {
         //Goes through each section capable of containing
@@ -2167,7 +2164,7 @@ var LegacyGame = (function () {
                 }
                 j = i;
                 do {
-                    ckw = Mid(fileData, j, 1);
+                    ckw = Asc(Mid(fileData, j, 1));
                     c = this.ConvertCasKeyword(ckw);
                     if (c == "\n") {
                         endLineReached = true;
