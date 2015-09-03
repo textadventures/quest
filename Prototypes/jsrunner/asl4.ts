@@ -188,7 +188,7 @@ interface FileFetcherCallback {
 }
 
 interface FileFetcher {
-    (filename: string, callback: FileFetcherCallback): void;
+    (filename: string, onSuccess: FileFetcherCallback, onFailure: FileFetcherCallback): void;
 }
 
 enum State {Ready, Working, Waiting, Finished};
@@ -1890,7 +1890,7 @@ class LegacyGame {
                     self._lines[l] = self.RemoveTabs(aslLines[l - 1]).trim();
                 }
                 doParse();
-            });
+            }, onFailure);
         } else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
@@ -10753,8 +10753,8 @@ class LegacyGame {
         }
         return this._gameFileName;
     }
-    GetFileData(filename: string, callback: FileFetcherCallback): void {
-        this._fileFetcher(filename, callback);
+    GetFileData(filename: string, onSuccess: FileFetcherCallback, onFailure: FileFetcherCallback): void {
+        this._fileFetcher(filename, onSuccess, onFailure);
     }
     
     GetCASFileData(filename: string) : string {

@@ -30,9 +30,11 @@
 			var file = $_GET['file'] || 'test.aslx';
 		
 			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
-				var fileFetcher = function (filename, callback) {
-					$.get(filename, function (data) {
-						callback(data);
+				var fileFetcher = function (filename, onSuccess, onFailure) {
+					$.ajax({
+						url: filename,
+						success: onSuccess,
+						error: onFailure
 					});
 				};
 				var game = new LegacyGame(file, file, null, fileFetcher);

@@ -2039,7 +2039,7 @@ var LegacyGame = (function () {
                     self._lines[l] = self.RemoveTabs(aslLines[l - 1]).trim();
                 }
                 doParse();
-            });
+            }, onFailure);
         }
         else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
@@ -11696,8 +11696,8 @@ var LegacyGame = (function () {
         }
         return this._gameFileName;
     };
-    LegacyGame.prototype.GetFileData = function (filename, callback) {
-        this._fileFetcher(filename, callback);
+    LegacyGame.prototype.GetFileData = function (filename, onSuccess, onFailure) {
+        this._fileFetcher(filename, onSuccess, onFailure);
     };
     LegacyGame.prototype.GetCASFileData = function (filename) {
         // TODO
