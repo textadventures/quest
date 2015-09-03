@@ -694,8 +694,8 @@ var LegacyGame = (function () {
         var bracePos = 0;
         var pos = 0;
         var section = "";
-        var hasErrors;
-        var skipBlock;
+        var hasErrors = false;
+        var skipBlock = false;
         this._openErrorReport = "";
         hasErrors = false;
         defines = 0;
@@ -1052,12 +1052,12 @@ var LegacyGame = (function () {
         // False if a critical error is encountered.
         var curBegin = 0;
         var curEnd = 0;
-        var hasErrors;
+        var hasErrors = false;
         var curPos = 0;
         var numParamStart = 0;
         var numParamEnd = 0;
-        var finLoop;
-        var inText;
+        var finLoop = false;
+        var inText = false;
         hasErrors = false;
         inText = false;
         // Checks for incorrect number of < and > :
@@ -1144,11 +1144,11 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ObliterateParameters = function (s) {
-        var inParameter;
+        var inParameter = false;
         var exitCharacter = "";
         var curChar;
         var outputLine = "";
-        var obscuringFunctionName;
+        var obscuringFunctionName = false;
         inParameter = false;
         for (var i = 1; i <= Len(s); i++) {
             curChar = Mid(s, i, 1);
@@ -1211,7 +1211,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ObliterateVariableNames = function (s) {
-        var inParameter;
+        var inParameter = false;
         var exitCharacter = "";
         var outputLine = "";
         var curChar;
@@ -1257,8 +1257,8 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.RemoveComments = function () {
         var aposPos = 0;
-        var inTextBlock;
-        var inSynonymsBlock;
+        var inTextBlock = false;
+        var inSynonymsBlock = false;
         var oblitLine;
         // If in a synonyms block, we want to remove lines which are comments, but
         // we don't want to remove synonyms that contain apostrophes, so we only
@@ -1663,11 +1663,11 @@ var LegacyGame = (function () {
         this._casKeywords[255] = "!cr";
     };
     LegacyGame.prototype.ParseFile = function (filename, onSuccess, onFailure) {
-        var hasErrors;
+        var hasErrors = false;
         var libCode = [];
         var libLines = 0;
-        var ignoreMode;
-        var skipCheck;
+        var ignoreMode = false;
+        var skipCheck = false;
         var c = 0;
         var d = 0;
         var l = 0;
@@ -1679,11 +1679,11 @@ var LegacyGame = (function () {
         var gameLine = 0;
         var inDefSynBlock = 0;
         var synLine = 0;
-        var libFoundThisSweep;
+        var libFoundThisSweep = false;
         var libFileName;
         var libraryList = [];
         var numLibraries = 0;
-        var libraryAlreadyIncluded;
+        var libraryAlreadyIncluded = false;
         var inDefTypeBlock = 0;
         var typeBlockName;
         var typeLine = 0;
@@ -2115,9 +2115,9 @@ var LegacyGame = (function () {
         this._lines[numLines] = line;
     };
     LegacyGame.prototype.LoadCASFile = function (filename) {
-        var endLineReached;
-        var exitTheLoop;
-        var textMode;
+        var endLineReached = false;
+        var exitTheLoop = false;
+        var textMode = false;
         var casVersion = 0;
         var startCat = "";
         var endCatPos = 0;
@@ -2394,19 +2394,19 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecAddRemove = function (cmd, ctx) {
         var childId = 0;
         var childName;
-        var doAdd;
+        var doAdd = false;
         var sepPos = 0;
         var parentId = 0;
         var sepLen = 0;
         var parentName;
         var verb = "";
         var action;
-        var foundAction;
+        var foundAction = false;
         var actionScript = "";
-        var propertyExists;
+        var propertyExists = false;
         var textToPrint;
-        var isContainer;
-        var gotObject;
+        var isContainer = false;
+        var gotObject = false;
         var childLength = 0;
         var noParentSpecified = false;
         if (this.BeginsWith(cmd, "put ")) {
@@ -2656,14 +2656,14 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecOpenClose = function (cmd, ctx) {
         var id = 0;
         var name;
-        var doOpen;
-        var isOpen;
-        var foundAction;
+        var doOpen = false;
+        var isOpen = false;
+        var foundAction = false;
         var action = "";
         var actionScript = "";
-        var propertyExists;
+        var propertyExists = false;
         var textToPrint;
-        var isContainer;
+        var isContainer = false;
         if (this.BeginsWith(cmd, "open ")) {
             action = "open";
             doOpen = true;
@@ -2962,7 +2962,7 @@ var LegacyGame = (function () {
         elements = [];
         var numOperators = 0;
         var operators = [];
-        var newElement;
+        var newElement = false;
         var obscuredExpr = this.ObscureNumericExps(expr);
         for (var i = 1; i <= Len(expr); i++) {
             switch (Mid(obscuredExpr, i, 1)) {
@@ -3357,7 +3357,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExtractFile = function (file) {
         var length = 0;
         var startPos = 0;
-        var extracted;
+        var extracted = false;
         var resId = 0;
         if (this._resourceFile == "") {
             return "";
@@ -3757,7 +3757,7 @@ var LegacyGame = (function () {
         if (twoPlaces === void 0) { twoPlaces = false; }
         if (secondPlace === void 0) { secondPlace = ""; }
         if (isExit === void 0) { isExit = false; }
-        var isSeen;
+        var isSeen = false;
         var onlySeen = false;
         if (firstPlace == "game") {
             firstPlace = "";
@@ -3850,7 +3850,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ExecType = function (typeData, ctx) {
         var id = 0;
-        var found;
+        var found = false;
         var scp = InStr(typeData, ";");
         if (scp == 0) {
             this.LogASLError("No type name given in 'type <" + typeData + ">'");
@@ -3980,7 +3980,7 @@ var LegacyGame = (function () {
         var idNumbers = [];
         var firstPlace;
         var secondPlace = "";
-        var twoPlaces;
+        var twoPlaces = false;
         var descriptionText;
         var validNames;
         var numValidNames = 0;
@@ -4184,7 +4184,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.DoAction = function (id, action, ctx, logError) {
         if (logError === void 0) { logError = true; }
-        var found;
+        var found = false;
         var script = "";
         var o = this._objs[id];
         for (var i = 1; i <= o.NumberActions; i++) {
@@ -4217,8 +4217,8 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecForEach = function (scriptLine, ctx) {
         var inLocation;
         var scriptToRun;
-        var isExit;
-        var isRoom;
+        var isExit = false;
+        var isRoom = false;
         if (this.BeginsWith(scriptLine, "object ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "object ");
             if (!this.BeginsWith(scriptLine, "in ")) {
@@ -4318,8 +4318,8 @@ var LegacyGame = (function () {
         this.ObjectActionUpdate(id, actionName, script);
     };
     LegacyGame.prototype.ExecuteCondition = function (condition, ctx) {
-        var result;
-        var thisNot;
+        var result = false;
+        var thisNot = false;
         if (this.BeginsWith(condition, "not ")) {
             thisNot = true;
             condition = this.GetEverythingAfter(condition, "not ");
@@ -4620,7 +4620,7 @@ var LegacyGame = (function () {
         }
     };
     LegacyGame.prototype.ExecDrop = function (obj, ctx) {
-        var found;
+        var found = false;
         var parentId = 0;
         var id = 0;
         id = this.Disambiguate(obj, "inventory", ctx);
@@ -4762,7 +4762,7 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.ExecProperty = function (data, ctx) {
         var id = 0;
-        var found;
+        var found = false;
         var scp = InStr(data, ";");
         if (scp == 0) {
             this.LogASLError("No property data given in 'property <" + data + ">'", LogType.WarningError);
@@ -4786,7 +4786,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ExecuteDo = function (procedureName, ctx) {
         var newCtx = this.CopyContext(ctx);
         var numParameters = 0;
-        var useNewCtx;
+        var useNewCtx = false;
         if (this._gameAslVersion >= 392 && Left(procedureName, 8) == "!intproc") {
             // If "do" procedure is run in a new context, context info is not passed to any nested
             // script blocks in braces.
@@ -4876,7 +4876,7 @@ var LegacyGame = (function () {
         return false;
     };
     LegacyGame.prototype.ExecuteIfExists = function (obj, realOnly) {
-        var result;
+        var result = false;
         var errorReport = false;
         var scp = 0;
         if (InStr(obj, ";") != 0) {
@@ -4940,7 +4940,7 @@ var LegacyGame = (function () {
         return this.GetObjectProperty(propertyName, id, true) == "yes";
     };
     LegacyGame.prototype.ExecuteRepeat = function (data, ctx) {
-        var repeatWhileTrue;
+        var repeatWhileTrue = false;
         var repeatScript = "";
         var bracketPos = 0;
         var afterBracket;
@@ -5939,7 +5939,7 @@ var LegacyGame = (function () {
         var value1;
         var value2;
         var op;
-        var expectNumerics;
+        var expectNumerics = false;
         var expResult;
         var scp = InStr(condition, ";");
         if (scp == 0) {
@@ -6112,7 +6112,7 @@ var LegacyGame = (function () {
         var objId = 0;
         var timerNum = 0;
         var varUbound = 0;
-        var found;
+        var found = false;
         var numStoredData = 0;
         var storedData = [];
         var decryptedFile = [];
@@ -7166,7 +7166,7 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ShowRoomInfoV2 = function (room) {
         // ShowRoomInfo for Quest 2.x games
         var roomDisplayText = "";
-        var descTagExist;
+        var descTagExist = false;
         var gameBlock;
         var charsViewable;
         var charsFound = 0;
@@ -7201,7 +7201,7 @@ var LegacyGame = (function () {
         //find the room
         var roomBlock;
         roomBlock = this.DefineBlockParam("room", room);
-        var finishedFindingCommas;
+        var finishedFindingCommas = false;
         charsViewable = "";
         charsFound = 0;
         //see if room has an alias
@@ -7293,7 +7293,7 @@ var LegacyGame = (function () {
                 objsFound = objsFound + 1;
             }
         }
-        var finishedLoop;
+        var finishedLoop = false;
         if (objsFound != 0) {
             objListString = Left(objsViewable, Len(objsViewable) - 2);
             noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2);
@@ -7395,7 +7395,7 @@ var LegacyGame = (function () {
         else {
             this.SetStringContents("quest.doorways.out", "", this._nullContext);
         }
-        var finished;
+        var finished = false;
         if (nsew != "") {
             //strip final comma
             nsew = Left(nsew, Len(nsew) - 2);
@@ -7897,9 +7897,9 @@ var LegacyGame = (function () {
         return true;
     };
     LegacyGame.prototype.OpenGame = function (filename, onSuccess, onFailure) {
-        var cdatb;
-        var result;
-        var visible;
+        var cdatb = false;
+        var result = false;
+        var visible = false;
         var room;
         var fileData = "";
         var savedQsgVersion;
@@ -8605,10 +8605,10 @@ var LegacyGame = (function () {
             return;
         }
         var roomDisplayText = "";
-        var descTagExist;
+        var descTagExist = false;
         var doorwayString;
         var roomAlias;
-        var finishedFindingCommas;
+        var finishedFindingCommas = false;
         var prefix;
         var roomDisplayName;
         var roomDisplayNameNoFormat;
@@ -8620,7 +8620,7 @@ var LegacyGame = (function () {
         var oldLastComma = 0;
         var descType = 0;
         var descLine = "";
-        var showLookText;
+        var showLookText = false;
         var lookDesc = "";
         var objLook;
         var objSuffix;
@@ -8925,7 +8925,7 @@ var LegacyGame = (function () {
             this.SetStringContents(this._commandOverrideVariable, input, ctx);
             return false;
         }
-        var userCommandReturn;
+        var userCommandReturn = false;
         if (echo) {
             this.Print("> " + input, ctx);
         }
@@ -9713,7 +9713,7 @@ var LegacyGame = (function () {
         }
         // see if player has this item:
         var id = 0;
-        var notGotItem;
+        var notGotItem = false;
         if (this._gameAslVersion >= 280) {
             var foundItem = false;
             id = this.Disambiguate(useItem, "inventory", ctx);
@@ -9753,10 +9753,10 @@ var LegacyGame = (function () {
             }
         }
         var useScript = "";
-        var foundUseScript;
-        var foundUseOnObject;
+        var foundUseScript = false;
+        var foundUseOnObject = false;
         var useOnObjectId = 0;
-        var found;
+        var found = false;
         if (this._gameAslVersion >= 280) {
             foundUseScript = false;
             if (useOn == "") {
@@ -11344,10 +11344,10 @@ var LegacyGame = (function () {
         // Use OnlyParent to only update objects that are contained by a specific parent
         var parentId = 0;
         var parent;
-        var parentIsTransparent;
-        var parentIsOpen;
-        var parentIsSeen;
-        var parentIsSurface;
+        var parentIsTransparent = false;
+        var parentIsOpen = false;
+        var parentIsSeen = false;
+        var parentIsSurface = false;
         if (this._gameAslVersion < 391) {
             return;
         }
@@ -11958,7 +11958,7 @@ var RoomExits = (function () {
         var roomExit = null;
         var params = [];
         var afterParam;
-        var param;
+        var param = false;
         if (this._game.BeginsWith(tag, "out ")) {
             tag = this._game.GetEverythingAfter(tag, "out ");
             thisDir = Direction.Out;

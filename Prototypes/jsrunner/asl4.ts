@@ -601,8 +601,8 @@ class LegacyGame {
         var bracePos: number = 0;
         var pos: number = 0;
         var section: string = "";
-        var hasErrors: boolean;
-        var skipBlock: boolean;
+        var hasErrors: boolean = false;
+        var skipBlock: boolean = false;
         this._openErrorReport = "";
         hasErrors = false;
         defines = 0;
@@ -939,12 +939,12 @@ class LegacyGame {
         // False if a critical error is encountered.
         var curBegin: number = 0;
         var curEnd: number = 0;
-        var hasErrors: boolean;
+        var hasErrors: boolean = false;
         var curPos: number = 0;
         var numParamStart: number = 0;
         var numParamEnd: number = 0;
-        var finLoop: boolean;
-        var inText: boolean;
+        var finLoop: boolean = false;
+        var inText: boolean = false;
         hasErrors = false;
         inText = false;
         // Checks for incorrect number of < and > :
@@ -1026,11 +1026,11 @@ class LegacyGame {
         }
     }
     ObliterateParameters(s: string): string {
-        var inParameter: boolean;
+        var inParameter: boolean = false;
         var exitCharacter: string = "";
         var curChar: string;
         var outputLine: string = "";
-        var obscuringFunctionName: boolean;
+        var obscuringFunctionName: boolean = false;
         inParameter = false;
         for (var i = 1; i <= Len(s); i++) {
             curChar = Mid(s, i, 1);
@@ -1089,7 +1089,7 @@ class LegacyGame {
         }
     }
     ObliterateVariableNames(s: string): string {
-        var inParameter: boolean;
+        var inParameter: boolean = false;
         var exitCharacter: string = "";
         var outputLine: string = "";
         var curChar: string;
@@ -1133,8 +1133,8 @@ class LegacyGame {
     }
     RemoveComments(): void {
         var aposPos: number = 0;
-        var inTextBlock: boolean;
-        var inSynonymsBlock: boolean;
+        var inTextBlock: boolean = false;
+        var inSynonymsBlock: boolean = false;
         var oblitLine: string;
         // If in a synonyms block, we want to remove lines which are comments, but
         // we don't want to remove synonyms that contain apostrophes, so we only
@@ -1529,11 +1529,11 @@ class LegacyGame {
         this._casKeywords[255] = "!cr";
     }
     ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): void {
-        var hasErrors: boolean;
+        var hasErrors: boolean = false;
         var libCode: string[] = [];
         var libLines: number = 0;
-        var ignoreMode: boolean;
-        var skipCheck: boolean;
+        var ignoreMode: boolean = false;
+        var skipCheck: boolean = false;
         var c: number = 0;
         var d: number = 0;
         var l: number = 0;
@@ -1545,11 +1545,11 @@ class LegacyGame {
         var gameLine: number = 0;
         var inDefSynBlock: number = 0;
         var synLine: number = 0;
-        var libFoundThisSweep: boolean;
+        var libFoundThisSweep: boolean = false;
         var libFileName: string;
         var libraryList: string[] = [];
         var numLibraries: number = 0;
-        var libraryAlreadyIncluded: boolean;
+        var libraryAlreadyIncluded: boolean = false;
         var inDefTypeBlock: number = 0;
         var typeBlockName: string;
         var typeLine: number = 0;
@@ -1952,9 +1952,9 @@ class LegacyGame {
         this._lines[numLines] = line;
     }
     LoadCASFile(filename: string): void {
-        var endLineReached: boolean;
-        var exitTheLoop: boolean;
-        var textMode: boolean;
+        var endLineReached: boolean = false;
+        var exitTheLoop: boolean = false;
+        var textMode: boolean = false;
         var casVersion: number = 0;
         var startCat: string = "";
         var endCatPos: number = 0;
@@ -2212,19 +2212,19 @@ class LegacyGame {
     ExecAddRemove(cmd: string, ctx: Context): void {
         var childId: number = 0;
         var childName: string;
-        var doAdd: boolean;
+        var doAdd: boolean = false;
         var sepPos: number = 0;
         var parentId: number = 0;
         var sepLen: number = 0;
         var parentName: string;
         var verb: string = "";
         var action: string;
-        var foundAction: boolean;
+        var foundAction: boolean = false;
         var actionScript: string = "";
-        var propertyExists: boolean;
+        var propertyExists: boolean = false;
         var textToPrint: string;
-        var isContainer: boolean;
-        var gotObject: boolean;
+        var isContainer: boolean = false;
+        var gotObject: boolean = false;
         var childLength: number = 0;
         var noParentSpecified = false;
         if (this.BeginsWith(cmd, "put ")) {
@@ -2455,14 +2455,14 @@ class LegacyGame {
     ExecOpenClose(cmd: string, ctx: Context): void {
         var id: number = 0;
         var name: string;
-        var doOpen: boolean;
-        var isOpen: boolean;
-        var foundAction: boolean;
+        var doOpen: boolean = false;
+        var isOpen: boolean = false;
+        var foundAction: boolean = false;
         var action: string = "";
         var actionScript: string = "";
-        var propertyExists: boolean;
+        var propertyExists: boolean = false;
         var textToPrint: string;
-        var isContainer: boolean;
+        var isContainer: boolean = false;
         if (this.BeginsWith(cmd, "open ")) {
             action = "open";
             doOpen = true;
@@ -2741,7 +2741,7 @@ class LegacyGame {
         elements = [];
         var numOperators = 0;
         var operators: string[] = [];
-        var newElement: boolean;
+        var newElement: boolean = false;
         var obscuredExpr = this.ObscureNumericExps(expr);
         for (var i = 1; i <= Len(expr); i++) {
             switch (Mid(obscuredExpr, i, 1)) {
@@ -3109,7 +3109,7 @@ class LegacyGame {
     ExtractFile(file: string): string {
         var length: number = 0;
         var startPos: number = 0;
-        var extracted: boolean;
+        var extracted: boolean = false;
         var resId: number = 0;
         if (this._resourceFile == "") {
             return "";
@@ -3482,7 +3482,7 @@ class LegacyGame {
         return this.GetParameter("<" + s + ">", ctx);
     }
     DisambObjHere(ctx: Context, id: number, firstPlace: string, twoPlaces: boolean = false, secondPlace: string = "", isExit: boolean = false): boolean {
-        var isSeen: boolean;
+        var isSeen: boolean = false;
         var onlySeen = false;
         if (firstPlace == "game") {
             firstPlace = "";
@@ -3569,7 +3569,7 @@ class LegacyGame {
     }
     ExecType(typeData: string, ctx: Context): void {
         var id: number = 0;
-        var found: boolean;
+        var found: boolean = false;
         var scp = InStr(typeData, ";");
         if (scp == 0) {
             this.LogASLError("No type name given in 'type <" + typeData + ">'");
@@ -3695,7 +3695,7 @@ class LegacyGame {
         var idNumbers: number[] = [];
         var firstPlace: string;
         var secondPlace: string = "";
-        var twoPlaces: boolean;
+        var twoPlaces: boolean = false;
         var descriptionText: string[];
         var validNames: string[];
         var numValidNames: number = 0;
@@ -3885,7 +3885,7 @@ class LegacyGame {
         return displayData;
     }
     DoAction(id: number, action: string, ctx: Context, logError: boolean = true): boolean {
-        var found: boolean;
+        var found: boolean = false;
         var script: string = "";
         var o = this._objs[id];
         for (var i = 1; i <= o.NumberActions; i++) {
@@ -3918,8 +3918,8 @@ class LegacyGame {
     ExecForEach(scriptLine: string, ctx: Context): void {
         var inLocation: string;
         var scriptToRun: string;
-        var isExit: boolean;
-        var isRoom: boolean;
+        var isExit: boolean = false;
+        var isRoom: boolean = false;
         if (this.BeginsWith(scriptLine, "object ")) {
             scriptLine = this.GetEverythingAfter(scriptLine, "object ");
             if (!this.BeginsWith(scriptLine, "in ")) {
@@ -4013,8 +4013,8 @@ class LegacyGame {
         this.ObjectActionUpdate(id, actionName, script);
     }
     ExecuteCondition(condition: string, ctx: Context): boolean {
-        var result: boolean;
-        var thisNot: boolean;
+        var result: boolean = false;
+        var thisNot: boolean = false;
         if (this.BeginsWith(condition, "not ")) {
             thisNot = true;
             condition = this.GetEverythingAfter(condition, "not ");
@@ -4276,7 +4276,7 @@ class LegacyGame {
         }
     }
     ExecDrop(obj: string, ctx: Context): void {
-        var found: boolean;
+        var found: boolean = false;
         var parentId: number = 0;
         var id: number = 0;
         id = this.Disambiguate(obj, "inventory", ctx);
@@ -4409,7 +4409,7 @@ class LegacyGame {
     }
     ExecProperty(data: string, ctx: Context): void {
         var id: number = 0;
-        var found: boolean;
+        var found: boolean = false;
         var scp = InStr(data, ";");
         if (scp == 0) {
             this.LogASLError("No property data given in 'property <" + data + ">'", LogType.WarningError);
@@ -4433,7 +4433,7 @@ class LegacyGame {
     ExecuteDo(procedureName: string, ctx: Context): void {
         var newCtx: Context = this.CopyContext(ctx);
         var numParameters = 0;
-        var useNewCtx: boolean;
+        var useNewCtx: boolean = false;
         if (this._gameAslVersion >= 392 && Left(procedureName, 8) == "!intproc") {
             // If "do" procedure is run in a new context, context info is not passed to any nested
             // script blocks in braces.
@@ -4519,7 +4519,7 @@ class LegacyGame {
         return false;
     }
     ExecuteIfExists(obj: string, realOnly: boolean): boolean {
-        var result: boolean;
+        var result: boolean = false;
         var errorReport = false;
         var scp: number = 0;
         if (InStr(obj, ";") != 0) {
@@ -4583,7 +4583,7 @@ class LegacyGame {
         return this.GetObjectProperty(propertyName, id, true) == "yes";
     }
     ExecuteRepeat(data: string, ctx: Context): void {
-        var repeatWhileTrue: boolean;
+        var repeatWhileTrue: boolean = false;
         var repeatScript: string = "";
         var bracketPos: number = 0;
         var afterBracket: string;
@@ -5485,7 +5485,7 @@ class LegacyGame {
         var value1: string;
         var value2: string;
         var op: string;
-        var expectNumerics: boolean;
+        var expectNumerics: boolean = false;
         var expResult: ExpressionResult;
         var scp = InStr(condition, ";");
         if (scp == 0) {
@@ -5652,7 +5652,7 @@ class LegacyGame {
         var objId: number = 0;
         var timerNum: number = 0;
         var varUbound: number = 0;
-        var found: boolean;
+        var found: boolean = false;
         var numStoredData: number = 0;
         var storedData: ChangeType[] = [];
         var decryptedFile: string[] = [];
@@ -6617,7 +6617,7 @@ class LegacyGame {
     ShowRoomInfoV2(room: string): void {
         // ShowRoomInfo for Quest 2.x games
         var roomDisplayText: string = "";
-        var descTagExist: boolean;
+        var descTagExist: boolean = false;
         var gameBlock: DefineBlock;
         var charsViewable: string;
         var charsFound: number = 0;
@@ -6652,7 +6652,7 @@ class LegacyGame {
         //find the room
         var roomBlock: DefineBlock;
         roomBlock = this.DefineBlockParam("room", room);
-        var finishedFindingCommas: boolean;
+        var finishedFindingCommas: boolean = false;
         charsViewable = "";
         charsFound = 0;
         //see if room has an alias
@@ -6740,7 +6740,7 @@ class LegacyGame {
                 objsFound = objsFound + 1;
             }
         }
-        var finishedLoop: boolean;
+        var finishedLoop: boolean = false;
         if (objsFound != 0) {
             objListString = Left(objsViewable, Len(objsViewable) - 2);
             noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2);
@@ -6831,7 +6831,7 @@ class LegacyGame {
         } else {
             this.SetStringContents("quest.doorways.out", "", this._nullContext);
         }
-        var finished: boolean;
+        var finished: boolean = false;
         if (nsew != "") {
             //strip final comma
             nsew = Left(nsew, Len(nsew) - 2);
@@ -7304,9 +7304,9 @@ class LegacyGame {
         return true;
     }
     OpenGame(filename: string, onSuccess: Callback, onFailure: Callback): void {
-        var cdatb: boolean;
-        var result: boolean;
-        var visible: boolean;
+        var cdatb: boolean = false;
+        var result: boolean = false;
+        var visible: boolean = false;
         var room: string;
         var fileData: string = "";
         var savedQsgVersion: string;
@@ -7940,10 +7940,10 @@ class LegacyGame {
             return;
         }
         var roomDisplayText: string = "";
-        var descTagExist: boolean;
+        var descTagExist: boolean = false;
         var doorwayString: string;
         var roomAlias: string;
-        var finishedFindingCommas: boolean;
+        var finishedFindingCommas: boolean = false;
         var prefix: string;
         var roomDisplayName: string;
         var roomDisplayNameNoFormat: string;
@@ -7955,7 +7955,7 @@ class LegacyGame {
         var oldLastComma: number = 0;
         var descType: number = 0;
         var descLine: string = "";
-        var showLookText: boolean;
+        var showLookText: boolean = false;
         var lookDesc: string = "";
         var objLook: string;
         var objSuffix: string;
@@ -8242,7 +8242,7 @@ class LegacyGame {
             this.SetStringContents(this._commandOverrideVariable, input, ctx);
             return false;
         }
-        var userCommandReturn: boolean;
+        var userCommandReturn: boolean = false;
         if (echo) {
             this.Print("> " + input, ctx);
         }
@@ -8942,7 +8942,7 @@ class LegacyGame {
         }
         // see if player has this item:
         var id: number = 0;
-        var notGotItem: boolean;
+        var notGotItem: boolean = false;
         if (this._gameAslVersion >= 280) {
             var foundItem = false;
             id = this.Disambiguate(useItem, "inventory", ctx);
@@ -8979,10 +8979,10 @@ class LegacyGame {
             }
         }
         var useScript: string = "";
-        var foundUseScript: boolean;
-        var foundUseOnObject: boolean;
+        var foundUseScript: boolean = false;
+        var foundUseOnObject: boolean = false;
         var useOnObjectId: number = 0;
-        var found: boolean;
+        var found: boolean = false;
         if (this._gameAslVersion >= 280) {
             foundUseScript = false;
             if (useOn == "") {
@@ -10413,10 +10413,10 @@ class LegacyGame {
         // Use OnlyParent to only update objects that are contained by a specific parent
         var parentId: number = 0;
         var parent: string;
-        var parentIsTransparent: boolean;
-        var parentIsOpen: boolean;
-        var parentIsSeen: boolean;
-        var parentIsSurface: boolean;
+        var parentIsTransparent: boolean = false;
+        var parentIsOpen: boolean = false;
+        var parentIsSeen: boolean = false;
+        var parentIsSurface: boolean = false;
         if (this._gameAslVersion < 391) {
             return;
         }
@@ -11034,7 +11034,7 @@ class RoomExits {
         var roomExit: RoomExit = null;
         var params: string[] = [];
         var afterParam: string;
-        var param: boolean;
+        var param: boolean = false;
         if (this._game.BeginsWith(tag, "out ")) {
             tag = this._game.GetEverythingAfter(tag, "out ");
             thisDir = Direction.Out;
