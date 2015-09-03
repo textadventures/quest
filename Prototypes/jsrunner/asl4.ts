@@ -87,7 +87,7 @@ interface StringDictionary {
 class MenuData {
     Caption: string;
     Options: StringDictionary;
-    AllowCancel: Boolean;
+    AllowCancel: boolean;
     
     constructor(caption: string, options: StringDictionary, allowCancel: boolean) {
         this.Caption = caption;
@@ -201,23 +201,23 @@ class Context {
     NumParameters: number = 0;
     Parameters: string[];
     FunctionReturnValue: string = "";
-    AllowRealNamesInCommand: boolean;
-    DontProcessCommand: boolean;
-    CancelExec: boolean;
+    AllowRealNamesInCommand: boolean = false;
+    DontProcessCommand: boolean = false;
+    CancelExec: boolean = false;
     StackCounter: number = 0;
 }
 enum LogType {Misc, FatalError, WarningError, Init, LibraryWarningError, Warning, UserError, InternalError};
 enum Direction {None = -1, Out = 0, North = 1, South = 2, East = 3, West = 4, NorthWest = 5, NorthEast = 6, SouthWest = 7, SouthEast = 8, Up = 9, Down = 10};
 class ItemType {
     Name: string = "";
-    Got: boolean;
+    Got: boolean = false;
 }
 class Collectable {
     Name: string = "";
     Type: string = "";
     Value: number = 0;
     Display: string = "";
-    DisplayWhenZero: boolean;
+    DisplayWhenZero: boolean = false;
 }
 class PropertyType {
     PropertyName: string = "";
@@ -250,7 +250,7 @@ class VariableType {
     VariableUBound: number = 0;
     DisplayString: string = "";
     OnChangeScript: string = "";
-    NoZeroDisplay: boolean;
+    NoZeroDisplay: boolean = false;
 }
 class SynonymType {
     OriginalWord: string = "";
@@ -259,10 +259,10 @@ class SynonymType {
 class TimerType {
     TimerName: string = "";
     TimerInterval: number = 0;
-    TimerActive: boolean;
+    TimerActive: boolean = false;
     TimerAction: string = "";
     TimerTicks: number = 0;
-    BypassThisTurn: boolean;
+    BypassThisTurn: boolean = false;
 }
 class UserDefinedCommandType {
     CommandText: string = "";
@@ -318,26 +318,26 @@ class ObjectType {
     ObjectAlias: string = "";
     Detail: string = "";
     ContainerRoom: string = "";
-    Exists: boolean;
-    IsGlobal: boolean;
+    Exists: boolean = false;
+    IsGlobal: boolean = false;
     Prefix: string = "";
     Suffix: string = "";
     Gender: string = "";
     Article: string = "";
     DefinitionSectionStart: number = 0;
     DefinitionSectionEnd: number = 0;
-    Visible: boolean;
+    Visible: boolean = false;
     GainScript: string = "";
     LoseScript: string = "";
     NumberProperties: number = 0;
     Properties: PropertyType[];
     Speak: TextAction = new TextAction();
     Take: TextAction = new TextAction();
-    IsRoom: boolean;
-    IsExit: boolean;
+    IsRoom: boolean = false;
+    IsExit: boolean = false;
     CorresRoom: string = "";
     CorresRoomId: number = 0;
-    Loaded: boolean;
+    Loaded: boolean = false;
     NumberActions: number = 0;
     Actions: ActionType[];
     NumberUseData: number = 0;
@@ -371,7 +371,7 @@ class ResourceType {
     ResourceName: string = "";
     ResourceStart: number = 0;
     ResourceLength: number = 0;
-    Extracted: boolean;
+    Extracted: boolean = false;
 }
 class ExpressionResult {
     Result: string = "";
@@ -401,7 +401,7 @@ class ArrayResult {
     Index: number = 0;
 }
 class PlayerCanAccessObjectResult {
-    CanAccessObject: boolean;
+    CanAccessObject: boolean = false;
     ErrorMsg: string;
 }
 enum AppliesTo {Object, Room};
@@ -466,12 +466,12 @@ class LegacyGame {
     _saveGameFile: string;
     _defaultFontName: string;
     _defaultFontSize: number = 0;
-    _autoIntro: boolean;
-    _commandOverrideModeOn: boolean;
+    _autoIntro: boolean = false;
+    _commandOverrideModeOn: boolean = false;
     _commandOverrideVariable: string;
     _afterTurnScript: string;
     _beforeTurnScript: string;
-    _outPutOn: boolean;
+    _outPutOn: boolean = false;
     _gameAslVersion: number = 0;
     _choiceNumber: number = 0;
     _gameLoadMethod: string;
@@ -479,7 +479,7 @@ class LegacyGame {
     _numberTimers: number = 0;
     _numDisplayStrings: number = 0;
     _numDisplayNumerics: number = 0;
-    _gameFullyLoaded: boolean;
+    _gameFullyLoaded: boolean = false;
     _gameChangeData: GameChangeDataType = new GameChangeDataType();
     _lastIt: number = 0;
     _lastItMode: ItType;
@@ -492,8 +492,8 @@ class LegacyGame {
     _resourceFile: string;
     _resourceOffset: number = 0;
     _startCatPos: number = 0;
-    _useAbbreviations: boolean;
-    _loadedFromQsg: boolean;
+    _useAbbreviations: boolean = false;
+    _loadedFromQsg: boolean = false;
     _beforeSaveScript: string;
     _onLoadScript: string;
     _numSkipCheckFiles: number = 0;
@@ -508,19 +508,19 @@ class LegacyGame {
     _state: State = State.Ready;
     _waitLock: Object = new Object();
     _readyForCommand: boolean = true;
-    _gameLoading: boolean;
+    _gameLoading: boolean = false;
     _playerErrorMessageString: string[] = [];
     _listVerbs: ListVerbs = {};
     _filename: string;
     _originalFilename: string;
     _data: InitGameData;
     _player: Player;
-    _gameFinished: boolean;
-    _gameIsRestoring: boolean;
-    _useStaticFrameForPictures: boolean;
+    _gameFinished: boolean = false;
+    _gameIsRestoring: boolean = false;
+    _useStaticFrameForPictures: boolean = false;
     _fileData: string;
     _fileDataPos: number = 0;
-    _questionResponse: boolean;
+    _questionResponse: boolean = false;
     _fileFetcher: FileFetcher;
     
     constructor(filename: string, originalFilename: string, data: InitGameData, fileFetcher: FileFetcher) {
@@ -3504,7 +3504,11 @@ class LegacyGame {
                 }
             }
         }
-        if (((!twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || firstPlace == "")) || (twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || LCase(this._objs[id].ContainerRoom) == LCase(secondPlace)))) && this._objs[id].Exists && this._objs[id].IsExit == isExit) {
+        
+        if (((!twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || firstPlace == "")) ||
+            (twoPlaces && (LCase(this._objs[id].ContainerRoom) == LCase(firstPlace) || LCase(this._objs[id].ContainerRoom) == LCase(secondPlace)))) &&
+            this._objs[id].Exists && this._objs[id].IsExit == isExit) {
+
             if (!onlySeen) {
                 return true;
             }
