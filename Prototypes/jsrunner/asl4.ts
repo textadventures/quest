@@ -10765,8 +10765,6 @@ class LegacyGame {
     DoPrint(text: string) {
         // TODO
         var output = this._textFormatter.OutputHTML(text);
-        console.log(text);
-        console.log(output.text);
         quest.print(output.text, !output.nobr);
     }
     
