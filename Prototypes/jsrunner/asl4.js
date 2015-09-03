@@ -1662,6 +1662,98 @@ var LegacyGame = (function () {
         this._casKeywords[254] = "!unknown";
         this._casKeywords[255] = "!cr";
     };
+    LegacyGame.prototype.LoadLibraries = function (onSuccess, onFailure, start) {
+        if (start === void 0) { start = this._lines.length - 1; }
+        var libFoundThisSweep = false;
+        var libFile;
+        var libFoundThisSweep = false;
+        var libFileName;
+        var libraryList = [];
+        var numLibraries = 0;
+        var libraryAlreadyIncluded = false;
+        var self = this;
+        for (var i = start; i >= 1; i--) {
+            // We search for includes backwards as a game might include
+            // some-general.lib and then something-specific.lib which needs
+            // something-general; if we include something-specific first,
+            // then something-general afterwards, something-general's startscript
+            // gets executed before something-specific's, as we execute the
+            // lib startscripts backwards as well
+            if (self.BeginsWith(self._lines[i], "!include ")) {
+                libFileName = self.GetParameter(self._lines[i], self._nullContext);
+                //Clear !include statement
+                self._lines[i] = "";
+                libraryAlreadyIncluded = false;
+                self.LogASLError("Including library '" + libFileName + "'...", LogType.Init);
+                for (var j = 1; j <= numLibraries; j++) {
+                    if (LCase(libFileName) == LCase(libraryList[j])) {
+                        libraryAlreadyIncluded = true;
+                        break;
+                    }
+                }
+                if (libraryAlreadyIncluded) {
+                    self.LogASLError("     - Library already included.", LogType.Init);
+                }
+                else {
+                    numLibraries = numLibraries + 1;
+                    if (!libraryList)
+                        libraryList = [];
+                    libraryList[numLibraries] = libFileName;
+                    libFoundThisSweep = true;
+                    libFile = self._gamePath + libFileName;
+                    self.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
+                    console.log("load " + libFileName);
+                    var libCode;
+                    // TODO: Handle libraries
+                    //   - call the fileFetcher to get the library contents. On failure, try the built-in
+                    //     library definitions.
+                    //   - we don't want to be inside this do while loop though
+                    //libFileHandle = FreeFile();
+                    //if (System.IO.File.Exists(libFile)) {
+                    //    FileOpen(libFileHandle, libFile, OpenMode.Input);
+                    //} else {
+                    //    // File was not found; try standard Quest libraries (stored here as resources)
+                    //    self.LogASLError("     - Library not found in game path.", LogType.Init);
+                    //    self.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
+                    //    libResourceLines = self.GetLibraryLines(libFileName);
+                    //    if (libResourceLines == null) {
+                    //        self.LogASLError("Library not found.", LogType.FatalError);
+                    //        self._openErrorReport = self._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
+                    //        return false;
+                    //    }
+                    //}
+                    //self.LogASLError("     - Found library, opening...", LogType.Init);
+                    //libLines = 0;
+                    //if (libResourceLines == null) {
+                    //    do {
+                    //        libLines = libLines + 1;
+                    //        libLine = LineInput(libFileHandle);
+                    //        libLine = self.RemoveTabs(libLine);
+                    //        if (!libCode) libCode = [];
+                    //        libCode[libLines] = Trim(libLine);
+                    //    } while (!(EOF(libFileHandle)));
+                    //    FileClose(libFileHandle);
+                    //} else {
+                    //    libResourceLines.forEach(function (resLibLine) {
+                    //        libLines = libLines + 1;
+                    //        if (!libCode) libCode = [];
+                    //        libLine = resLibLine;
+                    //        libLine = self.RemoveTabs(libLine);
+                    //        libCode[libLines] = Trim(libLine);
+                    //    }, this);
+                    //}
+                    //self.LoadLibrary(libCode);
+                    // ^ pass into this an onSuccess callback: LoadLibraries(onSuccess, onFailure, start = i-1)
+                    //   for the moment, just ignore libraries
+                    self.LoadLibraries(onSuccess, onFailure, i - 1);
+                    break;
+                }
+            }
+        }
+        if (!libFoundThisSweep) {
+            onSuccess();
+        }
+    };
     LegacyGame.prototype.LoadLibrary = function (libCode) {
         var self = this;
         var libLines = 0;
@@ -1842,56 +1934,11 @@ var LegacyGame = (function () {
         var skipCheck = false;
         var c = 0;
         var d = 0;
-        var libFile;
-        var libFoundThisSweep = false;
-        var libFileName;
-        var libraryList = [];
-        var numLibraries = 0;
-        var libraryAlreadyIncluded = false;
         var defineCount = 0;
         var curLine = 0;
         this._defineBlockParams = {};
         var self = this;
         var doParse = function () {
-            // Add libraries to end of code:
-            numLibraries = 0;
-            do {
-                libFoundThisSweep = false;
-                for (var i = self._lines.length - 1; i >= 1; i--) {
-                    // We search for includes backwards as a game might include
-                    // some-general.lib and then something-specific.lib which needs
-                    // something-general; if we include something-specific first,
-                    // then something-general afterwards, something-general's startscript
-                    // gets executed before something-specific's, as we execute the
-                    // lib startscripts backwards as well
-                    if (self.BeginsWith(self._lines[i], "!include ")) {
-                        libFileName = self.GetParameter(self._lines[i], self._nullContext);
-                        //Clear !include statement
-                        self._lines[i] = "";
-                        libraryAlreadyIncluded = false;
-                        self.LogASLError("Including library '" + libFileName + "'...", LogType.Init);
-                        for (var j = 1; j <= numLibraries; j++) {
-                            if (LCase(libFileName) == LCase(libraryList[j])) {
-                                libraryAlreadyIncluded = true;
-                                break;
-                            }
-                        }
-                        if (libraryAlreadyIncluded) {
-                            self.LogASLError("     - Library already included.", LogType.Init);
-                        }
-                        else {
-                            numLibraries = numLibraries + 1;
-                            if (!libraryList)
-                                libraryList = [];
-                            libraryList[numLibraries] = libFileName;
-                            libFoundThisSweep = true;
-                            libFile = self._gamePath + libFileName;
-                            self.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                            var libCode;
-                        }
-                    }
-                }
-            } while (libFoundThisSweep);
             skipCheck = false;
             var lastSlashPos = 0;
             var slashPos = 0;
@@ -1978,6 +2025,10 @@ var LegacyGame = (function () {
             self._saveGameFile = "";
             onSuccess();
         };
+        var loadLibrariesAndParseFile = function () {
+            // Add libraries to end of _lines, then parse the result
+            self.LoadLibraries(doParse, onFailure);
+        };
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
         //  TODO: Handle zip files
@@ -1995,13 +2046,13 @@ var LegacyGame = (function () {
                 for (var l = 1; l <= aslLines.length; l++) {
                     self._lines[l] = self.RemoveTabs(aslLines[l - 1]).trim();
                 }
-                doParse();
+                loadLibrariesAndParseFile();
             }, onFailure);
         }
         else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
             this.LoadCASFile(filename);
-            doParse();
+            loadLibrariesAndParseFile();
         }
         else {
             throw "Unrecognized file extension";
