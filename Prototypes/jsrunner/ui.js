@@ -19,15 +19,20 @@
         uiFunction(jsElement);
     };
         
-    var show = function(element) {
+    var show = function (element) {
         showHide(element, true);
     };
     
-    var hide = function(element) {
+    var hide = function (element) {
         showHide(element, false);
-    }
+    };
+    
+    var locationUpdated = function(location) {
+        updateLocation(location);
+    };
     
     quest.ui = quest.ui || {};
     quest.ui.show = show;
     quest.ui.hide = hide;
+    quest.ui.locationUpdated = locationUpdated;
 })();

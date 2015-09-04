@@ -106,6 +106,7 @@ var Player = (function () {
     Player.prototype.GetURL = function (file) {
     };
     Player.prototype.LocationUpdated = function (location) {
+        quest.ui.locationUpdated(location);
     };
     Player.prototype.Speak = function (text) {
     };

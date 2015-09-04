@@ -151,7 +151,7 @@ class Player {
         
     }
     LocationUpdated(location: string) {
-        
+        quest.ui.locationUpdated(location);
     }
     Speak(text: string) {
         
