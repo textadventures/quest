@@ -27,12 +27,10 @@
         showHide(element, false);
     };
     
-    var locationUpdated = function(location) {
-        updateLocation(location);
-    };
-    
     quest.ui = quest.ui || {};
     quest.ui.show = show;
     quest.ui.hide = hide;
-    quest.ui.locationUpdated = locationUpdated;
+    quest.ui.locationUpdated = updateLocation;
+    quest.ui.updateList = updateList;
+    quest.ui.updateCompass = updateCompass;
 })();

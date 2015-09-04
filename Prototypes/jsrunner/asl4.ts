@@ -171,6 +171,15 @@ class Player {
     SetStatusText(text: string) {
         
     }
+    UpdateInventoryList(items: ListData[]) {
+        quest.ui.updateList("inventory", items);
+    }
+    UpdateObjectsList(items: ListData[]) {
+        quest.ui.updateList("placesObjects", items);
+    }
+    UpdateExitsList(items: ListData[]) {
+        quest.ui.updateCompass(items);
+    }
 }
 
 class ListData {
@@ -10226,7 +10235,7 @@ class LegacyGame {
                 }
             }
         }
-        // TODO...
+        this._player.UpdateInventoryList(invList);
         if (this._gameAslVersion >= 284) {
             this.UpdateStatusVars(ctx);
         } else {

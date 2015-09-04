@@ -121,6 +121,15 @@ var Player = (function () {
     };
     Player.prototype.SetStatusText = function (text) {
     };
+    Player.prototype.UpdateInventoryList = function (items) {
+        quest.ui.updateList("inventory", items);
+    };
+    Player.prototype.UpdateObjectsList = function (items) {
+        quest.ui.updateList("placesObjects", items);
+    };
+    Player.prototype.UpdateExitsList = function (items) {
+        quest.ui.updateCompass(items);
+    };
     return Player;
 })();
 var ListData = (function () {
@@ -11138,7 +11147,7 @@ var LegacyGame = (function () {
                 }
             }
         }
-        // TODO...
+        this._player.UpdateInventoryList(invList);
         if (this._gameAslVersion >= 284) {
             this.UpdateStatusVars(ctx);
         }

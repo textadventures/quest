@@ -396,8 +396,7 @@ function hideBorder() {
 
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
-function updateCompass(listData) {
-    var directions = listData.split("/");
+function updateCompass(directions) {
     updateDir(directions, "NW", _compassDirs[0]);
     updateDir(directions, "N", _compassDirs[1]);
     updateDir(directions, "NE", _compassDirs[2]);
@@ -502,8 +501,7 @@ function updateList(listName, listData) {
 
     $(listElement).empty();
     var count = 0;
-    $.each(listData, function (key, value) {
-        var data = JSON.parse(value);
+    $.each(listData, function (key, data) {
         var objectDisplayName = data["Text"];
         var verbsArray, idPrefix;
 
