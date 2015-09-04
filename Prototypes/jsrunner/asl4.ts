@@ -495,12 +495,10 @@ class LegacyGame {
     _loadedFromQsg: boolean = false;
     _beforeSaveScript: string;
     _onLoadScript: string;
-    _numSkipCheckFiles: number = 0;
-    _skipCheckFile: string[];
+    _skipCheckFile = ["bargain.cas", "easymoney.asl", "musicvf1.cas"];
     _compassExits: ListData[];
     _gotoExits: ListData[];
     _textFormatter: TextFormatter = new TextFormatter();
-    _log: string[] = [];
     _casFileData: string;
     _commandLock: Object = new Object();
     _stateLock: Object = new Object();
@@ -527,13 +525,6 @@ class LegacyGame {
         this._gameLoadMethod = "normal";
         this._filename = filename;
         this._originalFilename = originalFilename;
-        // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
-        // for compatibility with games which have non-fatal errors in them.
-        this._numSkipCheckFiles = 3;
-        this._skipCheckFile = [];
-        this._skipCheckFile[1] = "bargain.cas";
-        this._skipCheckFile[2] = "easymoney.asl";
-        this._skipCheckFile[3] = "musicvf1.cas";
         this._data = data;
         this._fileFetcher = fileFetcher;
     }
@@ -1301,7 +1292,6 @@ class LegacyGame {
         return Right(s, Len(s) - Len(text));
     }
     Keyword2CAS(KWord: string): string {
-        var k = "";
         if (KWord == "") {
             return "";
         }
@@ -1772,8 +1762,6 @@ class LegacyGame {
     ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): void {
         var hasErrors: boolean = false;
         var skipCheck: boolean = false;
-        var c: number = 0;
-        var d: number = 0;
         var defineCount: number = 0;
         var curLine: number = 0;
         this._defineBlockParams = {};
@@ -1792,12 +1780,9 @@ class LegacyGame {
                 curPos = slashPos + 1;
             } while (!(slashPos == 0));
             var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
-            for (var i = 1; i <= self._numSkipCheckFiles; i++) {
-                if (filenameNoPath == self._skipCheckFile[i]) {
-                    skipCheck = true;
-                    break;
-                }
-            }
+            // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
+            // for compatibility with games which have non-fatal errors in them.
+            skipCheck = (self._skipCheckFile.indexOf(filenameNoPath) !== -1)
             if (filenameNoPath == "musicvf1.cas") {
                 self._useStaticFrameForPictures = true;
             }
@@ -1913,7 +1898,6 @@ class LegacyGame {
         } else if (type == LogType.InternalError) {
             err = "INTERNAL ERROR: " + err;
         }
-        this._log.push(err);
         console.log(err);
     }
     GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): string {
@@ -5918,7 +5902,6 @@ class LegacyGame {
             var pos = InStr(name, "[");
             name = Left(name, pos - 1);
         }
-        var contents = Trim(Mid(variableData, scp + 1));
         for (var i = 1; i <= this._numberStringVariables; i++) {
             if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
                 this.ExecSetString(variableData, ctx);
@@ -8421,11 +8404,6 @@ class LegacyGame {
                 this.ShowGameAbout(ctx);
             } else if (cmd == "clear") {
                 this.DoClear();
-            } else if (cmd == "debug") {
-                // TO DO: This is temporary, would be better to have a log viewer built in to Player
-                this._log.forEach(function (logEntry) {
-                    this.Print(logEntry, ctx);
-                }, this);
             } else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
                 if (this._gameAslVersion >= 280) {
                     for (var i = 1; i <= this._numberObjs; i++) {
@@ -9691,21 +9669,19 @@ class LegacyGame {
         };
         
         var onParseFailure = function () {
-            this.LogASLError("Unable to open file", LogType.Init);
+            self.LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + filename;
-            if (this._openErrorReport != "") {
+            if (self._openErrorReport) {
                 // Strip last \n
-                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 1);
-                err = err + ":\n\n" + this._openErrorReport;
+                self._openErrorReport = Left(self._openErrorReport, Len(self._openErrorReport) - 1);
+                err = err + ":\n\n" + self._openErrorReport;
             }
-            this.Print("Error: " + err, this._nullContext);
+            self.Print("Error: " + err, self._nullContext);
             onFailure();
         };
         
-        // TODO
-        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
         this.LogASLError("Opening file " + filename, LogType.Init);
-        this.ParseFile(filename, doInitialise, onFailure);
+        this.ParseFile(filename, doInitialise, onParseFailure);
     }
     PlaceExist(placeName: string, ctx: Context): string {
         // Returns actual name of an available "place" exit, and if
@@ -10761,7 +10737,6 @@ class LegacyGame {
     }
     
     DoPrint(text: string) {
-        // TODO
         var output = this._textFormatter.OutputHTML(text);
         quest.print(output.text, !output.nobr);
     }

@@ -571,9 +571,8 @@ var LegacyGame = (function () {
         this._startCatPos = 0;
         this._useAbbreviations = false;
         this._loadedFromQsg = false;
-        this._numSkipCheckFiles = 0;
+        this._skipCheckFile = ["bargain.cas", "easymoney.asl", "musicvf1.cas"];
         this._textFormatter = new TextFormatter();
-        this._log = [];
         this._commandLock = new Object();
         this._stateLock = new Object();
         this._state = State.Ready;
@@ -591,13 +590,6 @@ var LegacyGame = (function () {
         this._gameLoadMethod = "normal";
         this._filename = filename;
         this._originalFilename = originalFilename;
-        // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
-        // for compatibility with games which have non-fatal errors in them.
-        this._numSkipCheckFiles = 3;
-        this._skipCheckFile = [];
-        this._skipCheckFile[1] = "bargain.cas";
-        this._skipCheckFile[2] = "easymoney.asl";
-        this._skipCheckFile[3] = "musicvf1.cas";
         this._data = data;
         this._fileFetcher = fileFetcher;
     }
@@ -1436,7 +1428,6 @@ var LegacyGame = (function () {
         return Right(s, Len(s) - Len(text));
     };
     LegacyGame.prototype.Keyword2CAS = function (KWord) {
-        var k = "";
         if (KWord == "") {
             return "";
         }
@@ -1664,7 +1655,6 @@ var LegacyGame = (function () {
     };
     LegacyGame.prototype.LoadLibraries = function (onSuccess, onFailure, start) {
         if (start === void 0) { start = this._lines.length - 1; }
-        var libFoundThisSweep = false;
         var libFoundThisSweep = false;
         var libFileName;
         var libraryList = [];
@@ -1915,8 +1905,6 @@ var LegacyGame = (function () {
     LegacyGame.prototype.ParseFile = function (filename, onSuccess, onFailure) {
         var hasErrors = false;
         var skipCheck = false;
-        var c = 0;
-        var d = 0;
         var defineCount = 0;
         var curLine = 0;
         this._defineBlockParams = {};
@@ -1934,12 +1922,9 @@ var LegacyGame = (function () {
                 curPos = slashPos + 1;
             } while (!(slashPos == 0));
             var filenameNoPath = LCase(Mid(filename, lastSlashPos + 1));
-            for (var i = 1; i <= self._numSkipCheckFiles; i++) {
-                if (filenameNoPath == self._skipCheckFile[i]) {
-                    skipCheck = true;
-                    break;
-                }
-            }
+            // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
+            // for compatibility with games which have non-fatal errors in them.
+            skipCheck = (self._skipCheckFile.indexOf(filenameNoPath) !== -1);
             if (filenameNoPath == "musicvf1.cas") {
                 self._useStaticFrameForPictures = true;
             }
@@ -2064,7 +2049,6 @@ var LegacyGame = (function () {
         else if (type == LogType.InternalError) {
             err = "INTERNAL ERROR: " + err;
         }
-        this._log.push(err);
         console.log(err);
     };
     LegacyGame.prototype.GetParameter = function (s, ctx, convertStringVariables) {
@@ -6387,7 +6371,6 @@ var LegacyGame = (function () {
             var pos = InStr(name, "[");
             name = Left(name, pos - 1);
         }
-        var contents = Trim(Mid(variableData, scp + 1));
         for (var i = 1; i <= this._numberStringVariables; i++) {
             if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
                 this.ExecSetString(variableData, ctx);
@@ -9138,12 +9121,6 @@ var LegacyGame = (function () {
             else if (cmd == "clear") {
                 this.DoClear();
             }
-            else if (cmd == "debug") {
-                // TO DO: This is temporary, would be better to have a log viewer built in to Player
-                this._log.forEach(function (logEntry) {
-                    this.Print(logEntry, ctx);
-                }, this);
-            }
             else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
                 if (this._gameAslVersion >= 280) {
                     for (var i = 1; i <= this._numberObjs; i++) {
@@ -10585,20 +10562,18 @@ var LegacyGame = (function () {
             onSuccess();
         };
         var onParseFailure = function () {
-            this.LogASLError("Unable to open file", LogType.Init);
+            self.LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + filename;
-            if (this._openErrorReport != "") {
+            if (self._openErrorReport) {
                 // Strip last \n
-                this._openErrorReport = Left(this._openErrorReport, Len(this._openErrorReport) - 1);
-                err = err + ":\n\n" + this._openErrorReport;
+                self._openErrorReport = Left(self._openErrorReport, Len(self._openErrorReport) - 1);
+                err = err + ":\n\n" + self._openErrorReport;
             }
-            this.Print("Error: " + err, this._nullContext);
+            self.Print("Error: " + err, self._nullContext);
             onFailure();
         };
-        // TODO
-        //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
         this.LogASLError("Opening file " + filename, LogType.Init);
-        this.ParseFile(filename, doInitialise, onFailure);
+        this.ParseFile(filename, doInitialise, onParseFailure);
     };
     LegacyGame.prototype.PlaceExist = function (placeName, ctx) {
         // Returns actual name of an available "place" exit, and if
@@ -11202,7 +11177,6 @@ var LegacyGame = (function () {
         var noFormatObjsViewable;
         var charList;
         var objsViewable = "";
-        var charList;
         var objsFound = 0;
         var objListString;
         var noFormatObjListString;
@@ -11696,7 +11670,6 @@ var LegacyGame = (function () {
         return "";
     };
     LegacyGame.prototype.DoPrint = function (text) {
-        // TODO
         var output = this._textFormatter.OutputHTML(text);
         quest.print(output.text, !output.nobr);
     };
