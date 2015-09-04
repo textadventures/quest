@@ -10032,7 +10032,6 @@ var LegacyGame = (function () {
             else if (Trim(LCase(scriptLine)) == "helpclose") {
             }
             else if (this.BeginsWith(scriptLine, "goto ")) {
-                // This command does nothing in the Quest 5 player, as there is no separate help window
                 this.PlayGame(this.GetParameter(scriptLine, ctx), ctx);
             }
             else if (this.BeginsWith(scriptLine, "playerwin")) {

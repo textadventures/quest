@@ -9233,8 +9233,8 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
                 this.Print(this.GetParameter(scriptLine, ctx), ctx);
             } else if (Trim(LCase(scriptLine)) == "helpclose") {
-            } else if (this.BeginsWith(scriptLine, "goto ")) {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
+            } else if (this.BeginsWith(scriptLine, "goto ")) {
                 this.PlayGame(this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "playerwin")) {
                 this.FinishGame(StopType.Win, ctx);
