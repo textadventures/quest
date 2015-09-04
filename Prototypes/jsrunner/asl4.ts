@@ -461,7 +461,6 @@ class LegacyGame {
     _currentRoom: string;
     _collectables: Collectable[];
     _numCollectables: number = 0;
-    _gamePath: string;
     _gameFileName: string;
     _saveGameFile: string;
     _defaultFontName: string;
@@ -1531,7 +1530,6 @@ class LegacyGame {
     
     LoadLibraries(onSuccess: Callback, onFailure: Callback, start: number = this._lines.length - 1) {
         var libFoundThisSweep = false;
-        var libFile: string;
         var libFoundThisSweep: boolean = false;
         var libFileName: string;
         var libraryList: string[] = [];
@@ -1565,73 +1563,58 @@ class LegacyGame {
                     if (!libraryList) libraryList = [];
                     libraryList[numLibraries] = libFileName;
                     libFoundThisSweep = true;
-                    libFile = self._gamePath + libFileName;
-                    self.LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
+                    self.LogASLError(" - Searching for " + libFileName + " (game path)", LogType.Init);
                     
-                    console.log("load " + libFileName);
-                    var libCode: string[];
+                    var loadLibrary = function (libCode: string[]) {
+                        self.LogASLError("     - Found library, opening...", LogType.Init);
+                        libCode = libCode.map(function (line: string) {
+                            return self.RemoveTabs(line).trim();
+                        });
+                        
+                        self.LoadLibrary(libCode);
+                        
+                        // continue scanning for libraries
+                        self.LoadLibraries(onSuccess, onFailure, i-1);
+                    }
                     
-                    // TODO: Handle libraries
-                    //   - call the fileFetcher to get the library contents. On failure, try the built-in
-                    //     library definitions.
+                    var onLibSuccess = function (data: string) {
+                        var libCode = data.split("\n");
+                        loadLibrary(libCode);
+                    };
                     
-                    //libFileHandle = FreeFile();
-                    //if (System.IO.File.Exists(libFile)) {
-                    //    FileOpen(libFileHandle, libFile, OpenMode.Input);
-                    //} else {
-                    //    // File was not found; try standard Quest libraries (stored here as resources)
-                    //    self.LogASLError("     - Library not found in game path.", LogType.Init);
-                    //    self.LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
-                    //    libResourceLines = self.GetLibraryLines(libFileName);
-                    //    if (libResourceLines == null) {
-                    //        self.LogASLError("Library not found.", LogType.FatalError);
-                    //        self._openErrorReport = self._openErrorReport + "Library '" + libraryList[numLibraries] + "' not found.\n";
-                    //        return false;
-                    //    }
-                    //}
-                    //self.LogASLError("     - Found library, opening...", LogType.Init);
-                    //libLines = 0;
-                    //if (libResourceLines == null) {
-                    //    do {
-                    //        libLines = libLines + 1;
-                    //        libLine = LineInput(libFileHandle);
-                    //        libLine = self.RemoveTabs(libLine);
-                    //        if (!libCode) libCode = [];
-                    //        libCode[libLines] = Trim(libLine);
-                    //    } while (!(EOF(libFileHandle)));
-                    //    FileClose(libFileHandle);
-                    //} else {
-                    //    libResourceLines.forEach(function (resLibLine) {
-                    //        libLines = libLines + 1;
-                    //        if (!libCode) libCode = [];
-                    //        libLine = resLibLine;
-                    //        libLine = self.RemoveTabs(libLine);
-                    //        libCode[libLines] = Trim(libLine);
-                    //    }, this);
-                    //}
+                    var onLibFailure = function () {
+                        // File was not found; try standard Quest libraries (stored at the end of asl4.ts)
+                        self.LogASLError("     - Library not found in game path.", LogType.Init);
+                        self.LogASLError(" - Searching for " + libFileName + " (standard libraries)", LogType.Init);
+                        var libCode = self.GetLibraryLines(libFileName);
+                        if (libCode) {
+                            loadLibrary(libCode);
+                        }
+                        else {
+                            self.LogASLError("Library not found.", LogType.FatalError);
+                            onFailure();
+                        }
+                    };
                     
-                    
-                    //self.LoadLibrary(libCode);
-                    // ^ pass into this an onSuccess callback: LoadLibraries(onSuccess, onFailure, start = i-1)
-                    
-                    
-                    //   for the moment, just ignore libraries
-                    self.LoadLibraries(onSuccess, onFailure, i-1);
-                    
-                    
+                    this.GetFileData(libFileName, onLibSuccess, onLibFailure);
                     break;
                 }
             }
         }
         
         if (!libFoundThisSweep) {
-            onSuccess();
+            if (start == this._lines.length - 1) {
+                onSuccess();
+            }
+            else {
+                this.LoadLibraries(onSuccess, onFailure);
+            }
         }
     }
     
     LoadLibrary(libCode: string[]) {
         var self = this;
-        var libLines: number = 0;
+        var libLines: number = libCode.length - 1;
         var ignoreMode: boolean = false;
         var inDefGameBlock: number = 0;
         var gameLine: number = 0;
@@ -1680,7 +1663,7 @@ class LegacyGame {
                             }
                         } else if (self._lines[d] == "end define" && inDefGameBlock == 1) {
                             gameLine = d;
-                            d = UBound(self._lines);
+                            break;
                         } else if (self._lines[d] == "end define") {
                             if (inDefGameBlock != 0) {
                                 inDefGameBlock = inDefGameBlock - 1;
@@ -1690,10 +1673,6 @@ class LegacyGame {
                     do {
                         c = c + 1;
                         if (!self.BeginsWith(libCode[c], "!end")) {
-                            if (!self._lines) self._lines = [];
-                            for (var d = UBound(self._lines); d >= gameLine + 1; d--) {
-                                self._lines[d] = self._lines[d - 1];
-                            }
                             // startscript lines in a library are prepended
                             // with "lib" internally so they are executed
                             // before any startscript specified by the
@@ -1706,13 +1685,15 @@ class LegacyGame {
                             // precedence than lib commands.
                             // we also need it so that lib verbs have a higher
                             // precedence than lib commands.
+                            var lineToAdd: string;
                             if (libVer >= 311 && self.BeginsWith(libCode[c], "startscript ")) {
-                                self._lines[gameLine] = "lib " + libCode[c];
+                                lineToAdd = "lib " + libCode[c];
                             } else if (libVer >= 392 && (self.BeginsWith(libCode[c], "command ") || self.BeginsWith(libCode[c], "verb "))) {
-                                self._lines[gameLine] = "lib " + libCode[c];
+                                lineToAdd = "lib " + libCode[c];
                             } else {
-                                self._lines[gameLine] = libCode[c];
+                                lineToAdd = libCode[c];
                             }
+                            self._lines.splice(gameLine, 0, lineToAdd);
                             gameLine = gameLine + 1;
                         }
                     } while (!(self.BeginsWith(libCode[c], "!end")));
@@ -1934,6 +1915,7 @@ class LegacyGame {
             err = "INTERNAL ERROR: " + err;
         }
         this._log.push(err);
+        console.log(err);
     }
     GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): string {
         // Returns the parameters between < and > in a string
