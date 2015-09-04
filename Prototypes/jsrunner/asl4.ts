@@ -1530,7 +1530,6 @@ class LegacyGame {
     
     LoadLibraries(onSuccess: Callback, onFailure: Callback, start: number = this._lines.length - 1) {
         var libFoundThisSweep = false;
-        var libFoundThisSweep: boolean = false;
         var libFileName: string;
         var libraryList: string[] = [];
         var numLibraries: number = 0;
@@ -1575,7 +1574,7 @@ class LegacyGame {
                         
                         // continue scanning for libraries
                         self.LoadLibraries(onSuccess, onFailure, i-1);
-                    }
+                    };
                     
                     var onLibSuccess = function (data: string) {
                         var libCode = data.split("\n");
@@ -9701,7 +9700,7 @@ class LegacyGame {
             }
             this.Print("Error: " + err, this._nullContext);
             onFailure();
-        }
+        };
         
         // TODO
         //this._gamePath = System.IO.Path.GetDirectoryName(filename) + "\\";
@@ -10288,7 +10287,6 @@ class LegacyGame {
         var noFormatObjsViewable: string;
         var charList: string;
         var objsViewable: string = "";
-        var charList: string;
         var objsFound: number = 0;
         var objListString: string;
         var noFormatObjListString: string;
