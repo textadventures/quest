@@ -97,6 +97,11 @@ class MenuData {
 }
 
 class Player {
+    TextFormatter: TextFormatter;
+    constructor(textFormatter: TextFormatter) {
+        this.TextFormatter = textFormatter;
+    }
+    
     ShowMenu(menuData: MenuData) {
         
     }
@@ -122,13 +127,13 @@ class Player {
         
     }
     SetForeground(colour: string) {
-        
+        this.TextFormatter.foreground = colour;
     }
     SetFont(fontName: string) {
-        
+        this.TextFormatter.fontFamily = fontName;
     }
-    SetFontSize(fontSize: string) {
-        
+    SetFontSize(fontSize: number) {
+        this.TextFormatter.fontSize = fontSize;
     }
     SetPanelContents(html: string) {
         
@@ -511,7 +516,7 @@ class LegacyGame {
     _filename: string;
     _originalFilename: string;
     _data: InitGameData;
-    _player: Player;
+    _player: Player = new Player(this._textFormatter);
     _gameFinished: boolean = false;
     _gameIsRestoring: boolean = false;
     _useStaticFrameForPictures: boolean = false;
@@ -5820,12 +5825,6 @@ class LegacyGame {
         }
         this._player.SetFont(name);
     }
-    SetFontSize(size: number): void {
-        if (size == 0) {
-            size = this._defaultFontSize;
-        }
-        this._player.SetFontSize((size).toString());
-    }
     SetNumericVariableContents(name: string, content: number, ctx: Context, arrayIndex: number = 0): void {
         var numNumber: number = 0;
         var exists = false;
@@ -10564,7 +10563,7 @@ class LegacyGame {
         var gameBlock: DefineBlock = this.GetDefineBlock("game");
         var ctx: Context = new Context();
         this.SetFont("");
-        this.SetFontSize(0);
+        this._player.SetFontSize(this._defaultFontSize);
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "background ")) {
                 this.SetBackground(this.GetParameter(this._lines[i], this._nullContext));
@@ -10644,8 +10643,7 @@ class LegacyGame {
             this.RaiseNextTimerTickRequest();
         }
     }
-    Initialise(player: Player, onSuccess: Callback, onFailure: Callback): void {
-        this._player = player;
+    Initialise(onSuccess: Callback, onFailure: Callback): void {
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
             this.OpenGame(this._filename, onSuccess, onFailure);
         } else {
@@ -11337,6 +11335,8 @@ class TextFormatter {
     colour: string = "";
     fontSize: number = 0;
     align: string = "";
+    fontFamily: string = "";
+    foreground: string = "";
     OutputHTML(input: string): TextFormatterResult {
         var output: string = "";
         var position: number = 0;
@@ -11461,9 +11461,7 @@ class TextFormatter {
         if (this.align.length > 0) {
             output += '<div style="text-align:' + this.align + '">';
         }
-        if (this.fontSize > 0) {
-            output += '<span style="font-size:' + (this.fontSize).toString() + 'pt">';
-        }
+        output += '<span style="font-family:' + this.fontFamily +  ';font-size:' + (this.fontSize).toString() + 'pt">';
         if (this.colour.length > 0) {
             output += '<span style="color:' + this.colour + '">';
         }
@@ -11489,9 +11487,7 @@ class TextFormatter {
         if (this.colour.length > 0) {
             output += "</span>";
         }
-        if (this.fontSize > 0) {
-            output += "</span>";
-        }
+        output += "</span>";
         if (this.align.length > 0) {
             output += "</div>";
         }

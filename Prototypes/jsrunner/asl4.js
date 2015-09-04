@@ -67,7 +67,8 @@ var MenuData = (function () {
     return MenuData;
 })();
 var Player = (function () {
-    function Player() {
+    function Player(textFormatter) {
+        this.TextFormatter = textFormatter;
     }
     Player.prototype.ShowMenu = function (menuData) {
     };
@@ -86,10 +87,13 @@ var Player = (function () {
     Player.prototype.SetBackground = function (colour) {
     };
     Player.prototype.SetForeground = function (colour) {
+        this.TextFormatter.foreground = colour;
     };
     Player.prototype.SetFont = function (fontName) {
+        this.TextFormatter.fontFamily = fontName;
     };
     Player.prototype.SetFontSize = function (fontSize) {
+        this.TextFormatter.fontSize = fontSize;
     };
     Player.prototype.SetPanelContents = function (html) {
     };
@@ -581,6 +585,7 @@ var LegacyGame = (function () {
         this._gameLoading = false;
         this._playerErrorMessageString = [];
         this._listVerbs = {};
+        this._player = new Player(this._textFormatter);
         this._gameFinished = false;
         this._gameIsRestoring = false;
         this._useStaticFrameForPictures = false;
@@ -6284,12 +6289,6 @@ var LegacyGame = (function () {
         }
         this._player.SetFont(name);
     };
-    LegacyGame.prototype.SetFontSize = function (size) {
-        if (size == 0) {
-            size = this._defaultFontSize;
-        }
-        this._player.SetFontSize((size).toString());
-    };
     LegacyGame.prototype.SetNumericVariableContents = function (name, content, ctx, arrayIndex) {
         if (arrayIndex === void 0) { arrayIndex = 0; }
         var numNumber = 0;
@@ -11494,7 +11493,7 @@ var LegacyGame = (function () {
         var gameBlock = this.GetDefineBlock("game");
         var ctx = new Context();
         this.SetFont("");
-        this.SetFontSize(0);
+        this._player.SetFontSize(this._defaultFontSize);
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "background ")) {
                 this.SetBackground(this.GetParameter(this._lines[i], this._nullContext));
@@ -11576,8 +11575,7 @@ var LegacyGame = (function () {
             this.RaiseNextTimerTickRequest();
         }
     };
-    LegacyGame.prototype.Initialise = function (player, onSuccess, onFailure) {
-        this._player = player;
+    LegacyGame.prototype.Initialise = function (onSuccess, onFailure) {
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
             this.OpenGame(this._filename, onSuccess, onFailure);
         }
@@ -12272,6 +12270,8 @@ var TextFormatter = (function () {
         this.colour = "";
         this.fontSize = 0;
         this.align = "";
+        this.fontFamily = "";
+        this.foreground = "";
     }
     TextFormatter.prototype.OutputHTML = function (input) {
         var output = "";
@@ -12398,9 +12398,7 @@ var TextFormatter = (function () {
         if (this.align.length > 0) {
             output += '<div style="text-align:' + this.align + '">';
         }
-        if (this.fontSize > 0) {
-            output += '<span style="font-size:' + (this.fontSize).toString() + 'pt">';
-        }
+        output += '<span style="font-family:' + this.fontFamily + ';font-size:' + (this.fontSize).toString() + 'pt">';
         if (this.colour.length > 0) {
             output += '<span style="color:' + this.colour + '">';
         }
@@ -12426,9 +12424,7 @@ var TextFormatter = (function () {
         if (this.colour.length > 0) {
             output += "</span>";
         }
-        if (this.fontSize > 0) {
-            output += "</span>";
-        }
+        output += "</span>";
         if (this.align.length > 0) {
             output += "</div>";
         }

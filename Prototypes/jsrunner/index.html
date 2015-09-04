@@ -38,7 +38,6 @@
 					});
 				};
 				var game = new LegacyGame(file, file, null, fileFetcher);
-				var player = new Player();
 				var onSuccess = function () {
 					game.Begin();
 				};
@@ -48,7 +47,7 @@
 				quest.sendCommand = function (command, elapsedTime) {
 					game.SendCommand(command, elapsedTime);
 				}
-				game.Initialise(player, onSuccess, onFailure);
+				game.Initialise(onSuccess, onFailure);
 			}
 			else {
 				$.get(file, function (data) {
