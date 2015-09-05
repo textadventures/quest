@@ -125,7 +125,7 @@ var Player = (function () {
         quest.ui.updateList("inventory", items);
     };
     Player.prototype.UpdateObjectsList = function (items) {
-        quest.ui.updateList("placesObjects", items);
+        quest.ui.updateList("placesobjects", items);
     };
     Player.prototype.UpdateExitsList = function (items) {
         quest.ui.updateCompass(items);
@@ -11284,7 +11284,7 @@ var LegacyGame = (function () {
                 }
             }
         }
-        // TODO...
+        this._player.UpdateObjectsList(objList);
         this._gotoExits = exitList;
         this.UpdateExitsList();
     };

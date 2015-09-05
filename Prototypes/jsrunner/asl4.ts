@@ -175,7 +175,7 @@ class Player {
         quest.ui.updateList("inventory", items);
     }
     UpdateObjectsList(items: ListData[]) {
-        quest.ui.updateList("placesObjects", items);
+        quest.ui.updateList("placesobjects", items);
     }
     UpdateExitsList(items: ListData[]) {
         quest.ui.updateCompass(items);
@@ -10364,7 +10364,7 @@ class LegacyGame {
                 }
             }
         }
-        // TODO...
+        this._player.UpdateObjectsList(objList);
         this._gotoExits = exitList;
         this.UpdateExitsList();
     }
