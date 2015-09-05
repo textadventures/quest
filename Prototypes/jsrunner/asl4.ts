@@ -185,9 +185,13 @@ class Player {
 class ListData {
     Text: string;
     Verbs: string[];
+    ElementId: string;
+    ElementName: string;
     constructor(text: string, verbs: string[]) {
         this.Text = text;
         this.Verbs = verbs;
+        this.ElementId = text;
+        this.ElementName = text;
     }
 }
 

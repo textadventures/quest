@@ -136,6 +136,8 @@ var ListData = (function () {
     function ListData(text, verbs) {
         this.Text = text;
         this.Verbs = verbs;
+        this.ElementId = text;
+        this.ElementName = text;
     }
     return ListData;
 })();
