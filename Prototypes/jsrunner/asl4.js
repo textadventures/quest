@@ -588,6 +588,8 @@ var LegacyGame = (function () {
         this._useAbbreviations = false;
         this._loadedFromQsg = false;
         this._skipCheckFile = ["bargain.cas", "easymoney.asl", "musicvf1.cas"];
+        this._compassExits = [];
+        this._gotoExits = [];
         this._textFormatter = new TextFormatter();
         this._commandLock = new Object();
         this._stateLock = new Object();
@@ -11697,7 +11699,7 @@ var LegacyGame = (function () {
         // ASL4 code produces these separately. So we keep track of them separately and then
         // merge to send to the Player.
         var mergedList = this._compassExits.concat(this._gotoExits);
-        // TODO: RaiseEvent UpdateList(ListType.ExitsList, mergedList)
+        this._player.UpdateExitsList(mergedList);
     };
     LegacyGame.prototype.Begin = function () {
         this.DoBegin();

@@ -514,8 +514,8 @@ class LegacyGame {
     _beforeSaveScript: string;
     _onLoadScript: string;
     _skipCheckFile = ["bargain.cas", "easymoney.asl", "musicvf1.cas"];
-    _compassExits: ListData[];
-    _gotoExits: ListData[];
+    _compassExits: ListData[] = [];
+    _gotoExits: ListData[] = [];
     _textFormatter: TextFormatter = new TextFormatter();
     _casFileData: string;
     _commandLock: Object = new Object();
@@ -10770,8 +10770,7 @@ class LegacyGame {
         // ASL4 code produces these separately. So we keep track of them separately and then
         // merge to send to the Player.
         var mergedList: ListData[] = this._compassExits.concat(this._gotoExits);
-        
-        // TODO: RaiseEvent UpdateList(ListType.ExitsList, mergedList)
+        this._player.UpdateExitsList(mergedList);
     }
     
     Begin() {

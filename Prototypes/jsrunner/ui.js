@@ -27,10 +27,17 @@
         showHide(element, false);
     };
     
+    var updateCompassDirections = function (listData) {
+        var directions = listData.map(function (item) {
+            return item.Text;
+        });
+        updateCompass(directions);
+    }
+    
     quest.ui = quest.ui || {};
     quest.ui.show = show;
     quest.ui.hide = hide;
     quest.ui.locationUpdated = updateLocation;
     quest.ui.updateList = updateList;
-    quest.ui.updateCompass = updateCompass;
+    quest.ui.updateCompass = updateCompassDirections;
 })();
