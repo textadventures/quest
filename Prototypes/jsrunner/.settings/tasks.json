@@ -9,8 +9,7 @@
         {
             "taskName": "default",
             "args": [],
-            "isBuildCommand": true,
-            "problemMatcher": "$msCompile"
+            "isBuildCommand": true
         }
     ]
 }

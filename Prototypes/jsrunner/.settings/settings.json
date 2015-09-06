@@ -1,4 +1,7 @@
 // Place your settings in this file to overwrite default and user settings.
 {
 	"editor.fontSize": 14
+	
+	// fixes errors because VSCode doesn't understand TS1.6, but breaks "Go to definition" etc.
+	//"typescript.tsdk": "/usr/local/lib/node_modules/typescript/bin"
 }

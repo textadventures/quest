@@ -435,6 +435,27 @@ interface ListVerbs {
 }
 
 class LegacyGame {
+    async Test() {
+        console.log("hello world");
+        
+        var delayAsync = function (timeout: number): Promise<void> {
+            return new Promise<void>((resolve) => setTimeout(resolve, timeout));
+        };
+        
+        console.log('Awaiting ...');
+        await delayAsync(1000);
+        console.log('Finished awaiting!');
+        var result = await this.SomeInt();
+        console.log('Result is ' + result);
+    }
+    async SomeInt(): Promise<number> {
+        var delayAsync = function (timeout: number): Promise<number> {
+            return new Promise<number>((resolve) => setTimeout(function () {
+                resolve(12)
+            }, timeout));
+        };
+        return await delayAsync(5000);
+    }
     CopyContext(ctx: Context): Context {
         var result: Context = new Context();
         result.CallingObjectId = ctx.CallingObjectId;
