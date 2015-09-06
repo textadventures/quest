@@ -2133,7 +2133,7 @@ class LegacyGame {
             }
         }
         if (this._gameAslVersion >= 391) {
-            objectContents = this.ListContents(id, ctx);
+            objectContents = await this.ListContents(id, ctx);
         } else {
             objectContents = "";
         }
@@ -2154,11 +2154,11 @@ class LegacyGame {
             this.Print(objectContents, ctx);
         }
     }
-    DoOpenClose(id: number, open: boolean, showLook: boolean, ctx: Context): void {
+    async DoOpenClose(id: number, open: boolean, showLook: boolean, ctx: Context): Promise<void> {
         if (open) {
             this.AddToObjectProperties("opened", id, ctx);
             if (showLook) {
-                this.DoLook(id, ctx, null, false);
+                await this.DoLook(id, ctx, null, false);
             }
         } else {
             this.AddToObjectProperties("not opened", id, ctx);
@@ -2845,7 +2845,7 @@ class LegacyGame {
         res.Result = elements[1];
         return res;
     }
-    ListContents(id: number, ctx: Context): string {
+    async ListContents(id: number, ctx: Context): Promise<string> {
         // Returns a formatted list of the contents of a container.
         // If the list action causes a script to be run instead, ListContents
         // returns "<script>"
@@ -2855,7 +2855,7 @@ class LegacyGame {
         }
         if (!this.IsYes(this.GetObjectProperty("opened", id, true, false)) && !this.IsYes(this.GetObjectProperty("transparent", id, true, false)) && !this.IsYes(this.GetObjectProperty("surface", id, true, false))) {
             // Container is closed, so return "list closed" property if there is one.
-            if (this.DoAction(id, "list closed", ctx, false)) {
+            if (await this.DoAction(id, "list closed", ctx, false)) {
                 return "<script>";
             } else {
                 return this.GetObjectProperty("list closed", id, false, false);
@@ -2875,7 +2875,7 @@ class LegacyGame {
         var contents = "";
         if (numContents > 0) {
             // Check if list property is set.
-            if (this.DoAction(id, "list", ctx, false)) {
+            if (await this.DoAction(id, "list", ctx, false)) {
                 return "<script>";
             }
             if (this.IsYes(this.GetObjectProperty("list", id, true, false))) {
@@ -2922,7 +2922,7 @@ class LegacyGame {
             return "";
         }
         // Container is empty, so return "list empty" property if there is one.
-        if (this.DoAction(id, "list empty", ctx, false)) {
+        if (await this.DoAction(id, "list empty", ctx, false)) {
             return "<script>";
         } else {
             return this.GetObjectProperty("list empty", id, false, false);
@@ -4402,7 +4402,7 @@ class LegacyGame {
                 return;
             }
         }
-        this.DoLook(id, ctx, true);
+        await this.DoLook(id, ctx, true);
     }
     ExecMoveThing(data: string, type: Thing, ctx: Context): void {
         var scp = InStr(data, ";");
@@ -4479,7 +4479,7 @@ class LegacyGame {
             }
         }
     }
-    ExecuteDoAction(data: string, ctx: Context): void {
+    async ExecuteDoAction(data: string, ctx: Context): Promise<void> {
         var id: number = 0;
         var scp = InStr(data, ";");
         if (scp == 0) {
@@ -4500,7 +4500,7 @@ class LegacyGame {
             this.LogASLError("No such object '" + objName + "'");
             return;
         }
-        this.DoAction(id, actionName, ctx);
+        await this.DoAction(id, actionName, ctx);
     }
     ExecuteIfHere(obj: string, ctx: Context): boolean {
         if (this._gameAslVersion <= 281) {
@@ -8398,15 +8398,15 @@ class LegacyGame {
             } else if (this.CmdStartsWith(input, "use ")) {
                 this.ExecUse(input, ctx);
             } else if (this.CmdStartsWith(input, "open ") && this._gameAslVersion >= 391) {
-                this.ExecOpenClose(input, ctx);
+                await this.ExecOpenClose(input, ctx);
             } else if (this.CmdStartsWith(input, "close ") && this._gameAslVersion >= 391) {
-                this.ExecOpenClose(input, ctx);
+                await this.ExecOpenClose(input, ctx);
             } else if (this.CmdStartsWith(input, "put ") && this._gameAslVersion >= 391) {
-                this.ExecAddRemove(input, ctx);
+                await this.ExecAddRemove(input, ctx);
             } else if (this.CmdStartsWith(input, "add ") && this._gameAslVersion >= 391) {
-                this.ExecAddRemove(input, ctx);
+                await this.ExecAddRemove(input, ctx);
             } else if (this.CmdStartsWith(input, "remove ") && this._gameAslVersion >= 391) {
-                this.ExecAddRemove(input, ctx);
+                await this.ExecAddRemove(input, ctx);
             } else if (cmd == "save") {
                 this._player.RequestSave(null);
             } else if (cmd == "quit") {
@@ -8693,7 +8693,7 @@ class LegacyGame {
                     this._badCmdBefore = "look at";
                     return;
                 }
-                this.DoLook(id, ctx);
+                await this.DoLook(id, ctx);
             } else {
                 if (this.BeginsWith(item, "the ")) {
                     item = this.GetEverythingAfter(item, "the ");
@@ -9223,7 +9223,7 @@ class LegacyGame {
             if (this.BeginsWith(scriptLine, "if ")) {
                 this.ExecuteIf(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "select case ")) {
-                this.ExecuteSelectCase(scriptLine, ctx);
+                await this.ExecuteSelectCase(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "choose ")) {
                 this.ExecuteChoose(this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "set ")) {
@@ -10908,8 +10908,8 @@ class RoomExit {
     GetLockMessage(): string {
         return this.GetExitProperty("lockmessage");
     }
-    RunAction(actionName: string, ctx: Context): void {
-        this._game.DoAction(this._objId, actionName, ctx);
+    async RunAction(actionName: string, ctx: Context): Promise<void> {
+        await this._game.DoAction(this._objId, actionName, ctx);
     }
     RunScript(ctx: Context): void {
         this.RunAction("script", ctx);
