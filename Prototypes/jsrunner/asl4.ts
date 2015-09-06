@@ -2294,7 +2294,7 @@ class LegacyGame {
                     this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
                     // Try to take the object
                     ctx.AllowRealNamesInCommand = true;
-                    this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
+                    await this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
                     if (this._objs[childId].ContainerRoom == "inventory") {
                         gotObject = true;
                     }
@@ -3030,7 +3030,7 @@ class LegacyGame {
                 return colour;
         }
     }
-    DestroyExit(exitData: string, ctx: Context): void {
+    async DestroyExit(exitData: string, ctx: Context): Promise<void> {
         var fromRoom: string = "";
         var toRoom: string = "";
         var roomId: number = 0;
@@ -3082,7 +3082,7 @@ class LegacyGame {
             }
         }
         // Update quest.* vars and obj list
-        this.ShowRoomInfo(this._currentRoom, ctx, true);
+        await this.ShowRoomInfo(this._currentRoom, ctx, true);
         this.UpdateObjectList(ctx);
         this.AddToChangeLog("room " + fromRoom, "destroy exit " + toRoom);
     }
@@ -3579,12 +3579,12 @@ class LegacyGame {
         }
         this.UpdateObjectList(ctx);
     }
-    ExecOops(correction: string, ctx: Context): void {
+    async ExecOops(correction: string, ctx: Context): Promise<void> {
         if (this._badCmdBefore != "") {
             if (this._badCmdAfter == "") {
-                this.ExecCommand(this._badCmdBefore + " " + correction, ctx, false);
+                await this.ExecCommand(this._badCmdBefore + " " + correction, ctx, false);
             } else {
-                this.ExecCommand(this._badCmdBefore + " " + correction + " " + this._badCmdAfter, ctx, false);
+                await this.ExecCommand(this._badCmdBefore + " " + correction + " " + this._badCmdAfter, ctx, false);
             }
         }
     }
@@ -4281,7 +4281,7 @@ class LegacyGame {
         }
         if (!this._gameLoading) {
             // Update quest.doorways variables
-            this.ShowRoomInfo(this._currentRoom, ctx, true);
+            await this.ShowRoomInfo(this._currentRoom, ctx, true);
             this.UpdateObjectList(ctx);
             if (this._gameAslVersion < 410) {
                 if (this._currentRoom == this._rooms[srcId].RoomName) {
@@ -4349,7 +4349,7 @@ class LegacyGame {
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
-                this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
+                await this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
                     // removing the object failed
                     return;
@@ -4358,10 +4358,10 @@ class LegacyGame {
         }
         if (!dropFound) {
             this.PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
-            this.PlayerItem(this._objs[id].ObjectName, false, ctx);
+            await this.PlayerItem(this._objs[id].ObjectName, false, ctx);
         } else {
             if (this.BeginsWith(dropStatement, "everywhere")) {
-                this.PlayerItem(this._objs[id].ObjectName, false, ctx);
+                await this.PlayerItem(this._objs[id].ObjectName, false, ctx);
                 if (InStr(dropStatement, "<") != 0) {
                     this.Print(await this.GetParameter(dropStatement, ctx), ctx);
                 } else {
@@ -6977,7 +6977,7 @@ class LegacyGame {
         }
         if (InStr(execLine, ";") == 0) {
             try {
-                this.ExecCommand(execLine, newCtx, false);
+                await this.ExecCommand(execLine, newCtx, false);
             }
             catch (e) {
                 this.LogASLError("Internal error running '" + scriptLine + "'", LogType.WarningError);
@@ -6988,7 +6988,7 @@ class LegacyGame {
             var ex = Trim(Left(execLine, scp - 1));
             var r = Trim(Mid(execLine, scp + 1));
             if (r == "normal") {
-                this.ExecCommand(ex, newCtx, false, false);
+                await this.ExecCommand(ex, newCtx, false, false);
             } else {
                 this.LogASLError("Unrecognised post-command parameter in " + Trim(scriptLine), LogType.WarningError);
             }
@@ -8325,49 +8325,49 @@ class LegacyGame {
         if (!userCommandReturn) {
             if (this.CmdStartsWith(input, "speak to ")) {
                 parameter = this.GetEverythingAfter(input, "speak to ");
-                this.ExecSpeak(parameter, ctx);
+                await this.ExecSpeak(parameter, ctx);
             } else if (this.CmdStartsWith(input, "talk to ")) {
                 parameter = this.GetEverythingAfter(input, "talk to ");
-                this.ExecSpeak(parameter, ctx);
+                await this.ExecSpeak(parameter, ctx);
             } else if (cmd == "exit" || cmd == "out" || cmd == "leave") {
-                this.GoDirection("out", ctx);
+                await this.GoDirection("out", ctx);
                 this._lastIt = 0;
             } else if (cmd == "north" || cmd == "south" || cmd == "east" || cmd == "west") {
-                this.GoDirection(input, ctx);
+                await this.GoDirection(input, ctx);
                 this._lastIt = 0;
             } else if (cmd == "n" || cmd == "s" || cmd == "w" || cmd == "e") {
                 switch (InStr("nswe", cmd)) {
                     case 1:
-                        this.GoDirection("north", ctx);
+                        await this.GoDirection("north", ctx);
                         break;
                     case 2:
-                        this.GoDirection("south", ctx);
+                        await this.GoDirection("south", ctx);
                         break;
                     case 3:
-                        this.GoDirection("west", ctx);
+                        await this.GoDirection("west", ctx);
                         break;
                     case 4:
-                        this.GoDirection("east", ctx);
+                        await this.GoDirection("east", ctx);
                         break;
                 }
                 this._lastIt = 0;
             } else if (cmd == "ne" || cmd == "northeast" || cmd == "north-east" || cmd == "north east" || cmd == "go ne" || cmd == "go northeast" || cmd == "go north-east" || cmd == "go north east") {
-                this.GoDirection("northeast", ctx);
+                await this.GoDirection("northeast", ctx);
                 this._lastIt = 0;
             } else if (cmd == "nw" || cmd == "northwest" || cmd == "north-west" || cmd == "north west" || cmd == "go nw" || cmd == "go northwest" || cmd == "go north-west" || cmd == "go north west") {
-                this.GoDirection("northwest", ctx);
+                await this.GoDirection("northwest", ctx);
                 this._lastIt = 0;
             } else if (cmd == "se" || cmd == "southeast" || cmd == "south-east" || cmd == "south east" || cmd == "go se" || cmd == "go southeast" || cmd == "go south-east" || cmd == "go south east") {
-                this.GoDirection("southeast", ctx);
+                await this.GoDirection("southeast", ctx);
                 this._lastIt = 0;
             } else if (cmd == "sw" || cmd == "southwest" || cmd == "south-west" || cmd == "south west" || cmd == "go sw" || cmd == "go southwest" || cmd == "go south-west" || cmd == "go south west") {
-                this.GoDirection("southwest", ctx);
+                await this.GoDirection("southwest", ctx);
                 this._lastIt = 0;
             } else if (cmd == "up" || cmd == "u") {
-                this.GoDirection("up", ctx);
+                await this.GoDirection("up", ctx);
                 this._lastIt = 0;
             } else if (cmd == "down" || cmd == "d") {
-                this.GoDirection("down", ctx);
+                await this.GoDirection("down", ctx);
                 this._lastIt = 0;
             } else if (this.CmdStartsWith(input, "go ")) {
                 if (this._gameAslVersion >= 410) {
@@ -8375,12 +8375,12 @@ class LegacyGame {
                 } else {
                     parameter = this.GetEverythingAfter(input, "go ");
                     if (parameter == "out") {
-                        this.GoDirection("out", ctx);
+                        await this.GoDirection("out", ctx);
                     } else if (parameter == "north" || parameter == "south" || parameter == "east" || parameter == "west" || parameter == "up" || parameter == "down") {
-                        this.GoDirection(parameter, ctx);
+                        await this.GoDirection(parameter, ctx);
                     } else if (this.BeginsWith(parameter, "to ")) {
                         parameter = this.GetEverythingAfter(parameter, "to ");
-                        this.GoToPlace(parameter, ctx);
+                        await this.GoToPlace(parameter, ctx);
                     } else {
                         this.PlayerErrorMessage(PlayerError.BadGo, ctx);
                     }
@@ -8388,35 +8388,35 @@ class LegacyGame {
                 this._lastIt = 0;
             } else if (this.CmdStartsWith(input, "give ")) {
                 parameter = this.GetEverythingAfter(input, "give ");
-                this.ExecGive(parameter, ctx);
+                await this.ExecGive(parameter, ctx);
             } else if (this.CmdStartsWith(input, "take ")) {
                 parameter = this.GetEverythingAfter(input, "take ");
-                this.ExecTake(parameter, ctx);
+                await this.ExecTake(parameter, ctx);
             } else if (this.CmdStartsWith(input, "drop ") && this._gameAslVersion >= 280) {
                 parameter = this.GetEverythingAfter(input, "drop ");
                 await this.ExecDrop(parameter, ctx);
             } else if (this.CmdStartsWith(input, "get ")) {
                 parameter = this.GetEverythingAfter(input, "get ");
-                this.ExecTake(parameter, ctx);
+                await this.ExecTake(parameter, ctx);
             } else if (this.CmdStartsWith(input, "pick up ")) {
                 parameter = this.GetEverythingAfter(input, "pick up ");
-                this.ExecTake(parameter, ctx);
+                await this.ExecTake(parameter, ctx);
             } else if (cmd == "pick it up" || cmd == "pick them up" || cmd == "pick this up" || cmd == "pick that up" || cmd == "pick these up" || cmd == "pick those up" || cmd == "pick him up" || cmd == "pick her up") {
-                this.ExecTake(Mid(cmd, 6, InStrFrom(7, cmd, " ") - 6), ctx);
+                await this.ExecTake(Mid(cmd, 6, InStrFrom(7, cmd, " ") - 6), ctx);
             } else if (this.CmdStartsWith(input, "look ")) {
-                this.ExecLook(input, ctx);
+                await this.ExecLook(input, ctx);
             } else if (this.CmdStartsWith(input, "l ")) {
-                this.ExecLook("look " + this.GetEverythingAfter(input, "l "), ctx);
+                await this.ExecLook("look " + this.GetEverythingAfter(input, "l "), ctx);
             } else if (this.CmdStartsWith(input, "examine ") && this._gameAslVersion >= 280) {
                 await this.ExecExamine(input, ctx);
             } else if (this.CmdStartsWith(input, "x ") && this._gameAslVersion >= 280) {
                 await this.ExecExamine("examine " + this.GetEverythingAfter(input, "x "), ctx);
             } else if (cmd == "l" || cmd == "look") {
-                this.ExecLook("look", ctx);
+                await this.ExecLook("look", ctx);
             } else if (cmd == "x" || cmd == "examine") {
                 await this.ExecExamine("examine", ctx);
             } else if (this.CmdStartsWith(input, "use ")) {
-                this.ExecUse(input, ctx);
+                await this.ExecUse(input, ctx);
             } else if (this.CmdStartsWith(input, "open ") && this._gameAslVersion >= 391) {
                 await this.ExecOpenClose(input, ctx);
             } else if (this.CmdStartsWith(input, "close ") && this._gameAslVersion >= 391) {
@@ -8682,7 +8682,7 @@ class LegacyGame {
     async ExecLook(lookLine: string, ctx: Context): Promise<void> {
         var item: string;
         if (Trim(lookLine) == "look") {
-            this.ShowRoomInfo((this._currentRoom), ctx);
+            await this.ShowRoomInfo((this._currentRoom), ctx);
         } else {
             if (this._gameAslVersion < 391) {
                 var atPos = InStr(lookLine, " at ");
@@ -8897,7 +8897,7 @@ class LegacyGame {
                 this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
-                this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
+                await this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
                 if (this.GetObjectProperty("parent", id, false, false) != "") {
                     // removing the object failed
                     return;
@@ -8905,10 +8905,10 @@ class LegacyGame {
             }
             if (t.Type == TextActionType.Default) {
                 this.PlayerErrorMessage(PlayerError.DefaultTake, ctx);
-                this.PlayerItem(item, true, ctx, id);
+                await this.PlayerItem(item, true, ctx, id);
             } else if (t.Type == TextActionType.Text) {
                 this.Print(t.Data, ctx);
-                this.PlayerItem(item, true, ctx, id);
+                await this.PlayerItem(item, true, ctx, id);
             } else if (t.Type == TextActionType.Script) {
                 await this.ExecuteScript(t.Data, ctx, id);
             } else {
@@ -9241,7 +9241,7 @@ class LegacyGame {
                 ctx.CallingObjectId = newCallingObjectId;
             }
             if (this.BeginsWith(scriptLine, "if ")) {
-                this.ExecuteIf(scriptLine, ctx);
+                await this.ExecuteIf(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "select case ")) {
                 await this.ExecuteSelectCase(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "choose ")) {
@@ -9257,9 +9257,9 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "doaction ")) {
                 this.ExecuteDoAction(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "give ")) {
-                this.PlayerItem(await this.GetParameter(scriptLine, ctx), true, ctx);
+                await this.PlayerItem(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
-                this.PlayerItem(await this.GetParameter(scriptLine, ctx), false, ctx);
+                await this.PlayerItem(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this.BeginsWith(scriptLine, "msg ")) {
                 this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "speak ")) {
@@ -9269,7 +9269,7 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "helpclose") {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
             } else if (this.BeginsWith(scriptLine, "goto ")) {
-                this.PlayGame(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.PlayGame(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "playerwin")) {
                 this.FinishGame(StopType.Win, ctx);
             } else if (this.BeginsWith(scriptLine, "playerlose")) {
@@ -9575,7 +9575,7 @@ class LegacyGame {
             if (scp != 0) {
                 newRoom = Trim(Mid(newRoom, scp + 1));
             }
-            this.PlayGame(newRoom, ctx);
+            await this.PlayGame(newRoom, ctx);
         } else {
             if (direction == "out") {
                 this.PlayerErrorMessage(PlayerError.DefaultOut, ctx);
@@ -9609,7 +9609,7 @@ class LegacyGame {
                 var s = Trim(Right(destination, Len(destination) - InStr(destination, ";")));
                 await this.ExecuteScript(s, ctx);
             } else {
-                this.PlayGame(destination, ctx);
+                await this.PlayGame(destination, ctx);
             }
         }
         if (disallowed) {
@@ -9814,7 +9814,7 @@ class LegacyGame {
         if (this._gameAslVersion >= 391 && this._gameAslVersion < 410) {
             this.AddToObjectProperties("visited", this._rooms[id].ObjId, ctx);
         }
-        this.ShowRoomInfo(room, ctx);
+        await this.ShowRoomInfo(room, ctx);
         this.UpdateItems(ctx);
         // Find script lines and execute them.
         if (this._rooms[id].Script != "") {
@@ -10650,13 +10650,13 @@ class LegacyGame {
         }
         if (!this._loadedFromQsg) {
             ctx = this._nullContext;
-            this.PlayGame(startRoom, ctx);
+            await this.PlayGame(startRoom, ctx);
             this.Print("", this._nullContext);
         } else {
             this.UpdateItems(this._nullContext);
             this.Print("Restored saved game", this._nullContext);
             this.Print("", this._nullContext);
-            this.PlayGame(this._currentRoom, this._nullContext);
+            await this.PlayGame(this._currentRoom, this._nullContext);
             this.Print("", this._nullContext);
             if (this._gameAslVersion >= 391) {
                 // For ASL>=391, OnLoad is now run for all games.
@@ -10669,8 +10669,8 @@ class LegacyGame {
     Finish(): void {
         this.GameFinished();
     }
-    SendCommand(command: string, elapsedTime?: number): void {
-        this.ExecCommand(command, new Context());
+    async SendCommand(command: string, elapsedTime?: number): Promise<void> {
+        await this.ExecCommand(command, new Context());
         
         if (elapsedTime > 0) {
             this.Tick(elapsedTime);
@@ -10974,7 +10974,7 @@ class RoomExit {
         this._game._objs[this._objId].ContainerRoom = parentRoom;
         this._objName = objName;
     }
-    Go(ctx: Context): void {
+    async Go(ctx: Context): Promise<void> {
         if (this.GetIsLocked()) {
             if (this.GetExitPropertyBool("lockmessage")) {
                 this._game.Print(this.GetExitProperty("lockmessage"), ctx);
@@ -10985,7 +10985,7 @@ class RoomExit {
             if (this.IsScript()) {
                 this.RunScript(ctx);
             } else {
-                this._game.PlayGame(this.GetToRoom(), ctx);
+                await this._game.PlayGame(this.GetToRoom(), ctx);
             }
         }
     }
