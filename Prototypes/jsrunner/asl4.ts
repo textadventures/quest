@@ -135,7 +135,7 @@ class Player {
         this.TextFormatter.fontFamily = fontName;
     }
     SetFontSize(fontSize: number) {
-        this.TextFormatter.fontSize = fontSize;
+        this.TextFormatter.defaultFontSize = fontSize;
     }
     SetPanelContents(html: string) {
         
@@ -11376,6 +11376,7 @@ class TextFormatter {
     underline: boolean;
     colour: string = "";
     fontSize: number = 0;
+    defaultFontSize: number = 0;
     align: string = "";
     fontFamily: string = "";
     foreground: string = "";
@@ -11503,7 +11504,9 @@ class TextFormatter {
         if (this.align.length > 0) {
             output += '<div style="text-align:' + this.align + '">';
         }
-        output += '<span style="font-family:' + this.fontFamily +  ';font-size:' + (this.fontSize).toString() + 'pt">';
+        var fontSize = this.fontSize;
+        if (fontSize == 0) fontSize = this.defaultFontSize;
+        output += '<span style="font-family:' + this.fontFamily +  ';font-size:' + fontSize.toString() + 'pt">';
         if (this.colour.length > 0) {
             output += '<span style="color:' + this.colour + '">';
         }
