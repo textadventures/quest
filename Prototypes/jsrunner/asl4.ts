@@ -4285,14 +4285,14 @@ class LegacyGame {
             this.UpdateObjectList(ctx);
             if (this._gameAslVersion < 410) {
                 if (this._currentRoom == this._rooms[srcId].RoomName) {
-                    this.UpdateDoorways(srcId, ctx);
+                    await this.UpdateDoorways(srcId, ctx);
                 } else if (this._currentRoom == this._rooms[destId].RoomName) {
-                    this.UpdateDoorways(destId, ctx);
+                    await this.UpdateDoorways(destId, ctx);
                 }
             } else {
                 // Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 // for current room anyway.
-                this.UpdateDoorways(this.GetRoomId(this._currentRoom, ctx), ctx);
+                await this.UpdateDoorways(this.GetRoomId(this._currentRoom, ctx), ctx);
             }
         }
     }
@@ -5738,7 +5738,7 @@ class LegacyGame {
             } else if (data == "create") {
                 await this.ExecuteCreate("room <" + appliesTo + ">", this._nullContext);
             } else if (this.BeginsWith(data, "destroy exit ")) {
-                this.DestroyExit(appliesTo + "; " + this.GetEverythingAfter(data, "destroy exit "), this._nullContext);
+                await this.DestroyExit(appliesTo + "; " + this.GetEverythingAfter(data, "destroy exit "), this._nullContext);
             }
         }
         // Now go through and apply object properties and actions
@@ -5926,7 +5926,7 @@ class LegacyGame {
         }
         this.LogASLError("No such timer '" + name + "'", LogType.WarningError);
     }
-    SetUnknownVariableType(variableData: string, ctx: Context): SetResult {
+    async SetUnknownVariableType(variableData: string, ctx: Context): Promise<SetResult> {
         var scp = InStr(variableData, ";");
         if (scp == 0) {
             return SetResult.Error;
@@ -5938,13 +5938,13 @@ class LegacyGame {
         }
         for (var i = 1; i <= this._numberStringVariables; i++) {
             if (LCase(this._stringVariable[i].VariableName) == LCase(name)) {
-                this.ExecSetString(variableData, ctx);
+                await this.ExecSetString(variableData, ctx);
                 return SetResult.Found;
             }
         }
         for (var i = 1; i <= this._numberNumericVariables; i++) {
             if (LCase(this._numericVariable[i].VariableName) == LCase(name)) {
-                this.ExecSetVar(variableData, ctx);
+                await this.ExecSetVar(variableData, ctx);
                 return SetResult.Found;
             }
         }
@@ -7082,7 +7082,7 @@ class LegacyGame {
             }
         }
         if (foundCommand) {
-            if (this.GetCommandParameters(cmd, commandLine, ctx)) {
+            if (await this.GetCommandParameters(cmd, commandLine, ctx)) {
                 await this.ExecuteScript(script, ctx);
             }
         }
@@ -7373,7 +7373,7 @@ class LegacyGame {
             if (!prevQsgVersion) {
                 // Open Quest 3.0 saved game file
                 this._gameLoading = true;
-                this.RestoreGameData(fileData);
+                await this.RestoreGameData(fileData);
                 this._gameLoading = false;
             } else {
                 // Open Quest 2.x saved game file
@@ -8376,7 +8376,7 @@ class LegacyGame {
                 this._lastIt = 0;
             } else if (this.CmdStartsWith(input, "go ")) {
                 if (this._gameAslVersion >= 410) {
-                    this._rooms[this.GetRoomId(this._currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
+                    await this._rooms[this.GetRoomId(this._currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
                 } else {
                     parameter = this.GetEverythingAfter(input, "go ");
                     if (parameter == "out") {
@@ -8437,10 +8437,10 @@ class LegacyGame {
             } else if (cmd == "quit") {
                 this.GameFinished();
             } else if (this.BeginsWith(cmd, "help")) {
-                this.ShowHelp(ctx);
+                await this.ShowHelp(ctx);
                 enteredHelpCommand = true;
             } else if (cmd == "about") {
-                this.ShowGameAbout(ctx);
+                await this.ShowGameAbout(ctx);
             } else if (cmd == "clear") {
                 this.DoClear();
             } else if (cmd == "inventory" || cmd == "inv" || cmd == "i") {
@@ -8487,9 +8487,9 @@ class LegacyGame {
                     await this.Print("You are not carrying anything.", ctx);
                 }
             } else if (this.CmdStartsWith(input, "oops ")) {
-                this.ExecOops(this.GetEverythingAfter(input, "oops "), ctx);
+                await this.ExecOops(this.GetEverythingAfter(input, "oops "), ctx);
             } else if (this.CmdStartsWith(input, "the ")) {
-                this.ExecOops(this.GetEverythingAfter(input, "the "), ctx);
+                await this.ExecOops(this.GetEverythingAfter(input, "the "), ctx);
             } else {
                 await this.PlayerErrorMessage(PlayerError.BadCommand, ctx);
             }
@@ -9276,11 +9276,11 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "goto ")) {
                 await this.PlayGame(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "playerwin")) {
-                this.FinishGame(StopType.Win, ctx);
+                await this.FinishGame(StopType.Win, ctx);
             } else if (this.BeginsWith(scriptLine, "playerlose")) {
-                this.FinishGame(StopType.Lose, ctx);
+                await this.FinishGame(StopType.Lose, ctx);
             } else if (Trim(LCase(scriptLine)) == "stop") {
-                this.FinishGame(StopType.Null, ctx);
+                await this.FinishGame(StopType.Null, ctx);
             } else if (this.BeginsWith(scriptLine, "playwav ")) {
                 this.PlayWav(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "playmidi ")) {
@@ -9290,13 +9290,13 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "picture close") {
             } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture popup ")) || (this._gameAslVersion >= 282 && this._gameAslVersion < 390 && this.BeginsWith(scriptLine, "picture ")) || (this._gameAslVersion < 282 && this.BeginsWith(scriptLine, "show "))) {
                 // This command does nothing in the Quest 5 player, as there is no separate picture window
-                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
+                await this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture "))) {
                 this.ShowPictureInText(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "animate persist ")) {
-                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
+                await this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "animate ")) {
-                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
+                await this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "extract ")) {
                 this.ExtractFile(await this.GetParameter(scriptLine, ctx));
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hideobject ")) {
@@ -9330,9 +9330,9 @@ class LegacyGame {
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "conceal ")) {
                 this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "open ")) {
-                this.SetOpenClose(await this.GetParameter(scriptLine, ctx), true, ctx);
+                await this.SetOpenClose(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "close ")) {
-                this.SetOpenClose(await this.GetParameter(scriptLine, ctx), false, ctx);
+                await this.SetOpenClose(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "add ")) {
                 this.ExecAddRemoveScript(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "remove ")) {
@@ -9342,9 +9342,9 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "exec ")) {
                 await this.ExecExec(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "setstring ")) {
-                this.ExecSetString(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.ExecSetString(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "setvar ")) {
-                this.ExecSetVar(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.ExecSetVar(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "for ")) {
                 await this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
             } else if (this.BeginsWith(scriptLine, "property ")) {
@@ -9358,7 +9358,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "create ")) {
                 await this.ExecuteCreate(this.GetEverythingAfter(scriptLine, "create "), ctx);
             } else if (this.BeginsWith(scriptLine, "destroy exit ")) {
-                this.DestroyExit(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.DestroyExit(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "repeat ")) {
                 await this.ExecuteRepeat(this.GetEverythingAfter(scriptLine, "repeat "), ctx);
             } else if (this.BeginsWith(scriptLine, "enter ")) {
@@ -9463,13 +9463,13 @@ class LegacyGame {
                     return;
                 }
             } else if (this.BeginsWith(setInstruction, "string ")) {
-                this.ExecSetString(await this.GetParameter(setInstruction, ctx), ctx);
+                await this.ExecSetString(await this.GetParameter(setInstruction, ctx), ctx);
             } else if (this.BeginsWith(setInstruction, "numeric ")) {
-                this.ExecSetVar(await this.GetParameter(setInstruction, ctx), ctx);
+                await this.ExecSetVar(await this.GetParameter(setInstruction, ctx), ctx);
             } else if (this.BeginsWith(setInstruction, "collectable ")) {
                 this.ExecuteSetCollectable(await this.GetParameter(setInstruction, ctx), ctx);
             } else {
-                var result = this.SetUnknownVariableType(await this.GetParameter(setInstruction, ctx), ctx);
+                var result = await this.SetUnknownVariableType(await this.GetParameter(setInstruction, ctx), ctx);
                 if (result == SetResult.Error) {
                     this.LogASLError("Error on setting 'set " + setInstruction + "'", LogType.WarningError);
                 } else if (result == SetResult.Unfound) {
@@ -9539,7 +9539,7 @@ class LegacyGame {
             return;
         }
         if (this._gameAslVersion >= 410) {
-            this._rooms[id].Exits.ExecuteGo(direction, ctx);
+            await this._rooms[id].Exits.ExecuteGo(direction, ctx);
             return;
         }
         var r = this._rooms[id];
@@ -10681,14 +10681,14 @@ class LegacyGame {
         await this.ExecCommand(command, new Context());
         
         if (elapsedTime > 0) {
-            this.Tick(elapsedTime);
+            await this.Tick(elapsedTime);
         } else {
             this.RaiseNextTimerTickRequest();
         }
     }
-    Initialise(onSuccess: Callback, onFailure: Callback): void {
+    async Initialise(onSuccess: Callback, onFailure: Callback): Promise<void> {
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
-            this.OpenGame(this._filename, onSuccess, onFailure);
+            await this.OpenGame(this._filename, onSuccess, onFailure);
         } else {
             this.InitialiseGame(this._filename, false, onSuccess, onFailure);
         }
@@ -10991,7 +10991,7 @@ class RoomExit {
             }
         } else {
             if (this.IsScript()) {
-                this.RunScript(ctx);
+                await this.RunScript(ctx);
             } else {
                 await this._game.PlayGame(this.GetToRoom(), ctx);
             }
@@ -11197,7 +11197,7 @@ class RoomExits {
             await this._game.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         } else {
             roomExit = this.GetExitByObjectId(exitId);
-            roomExit.Go(ctx);
+            await roomExit.Go(ctx);
         }
     }
     async GetAvailableDirectionsDescription(): Promise<GetAvailableDirectionsResult> {
