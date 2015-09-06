@@ -10,6 +10,9 @@ define game <>
 		msg <Enter some words...>
 		enter <input>
 		msg <You typed: #input#>
+		msg <Type something else.>
+		enter <input2>
+		msg <First #input#, now #input2#.>
 	}
 	verb <read> msg <You can't read that.>
 end define

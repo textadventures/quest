@@ -487,6 +487,7 @@ class LegacyGame {
     _defaultFontSize: number = 0;
     _autoIntro: boolean = false;
     _commandOverrideModeOn: boolean = false;
+    _commandOverrideResolve: Callback;
     _commandOverrideVariable: string;
     _afterTurnScript: string;
     _beforeTurnScript: string;
@@ -8257,10 +8258,12 @@ class LegacyGame {
         }
         var cmd = LCase(input);
         if (this._commandOverrideModeOn) {
+            this._commandOverrideModeOn = false;
             // Commands have been overridden for this command,
             // so put input into previously specified variable
             // and exit:
             await this.SetStringContents(this._commandOverrideVariable, input, ctx);
+            this._commandOverrideResolve();
             return false;
         }
         var userCommandReturn: boolean = false;
@@ -9433,11 +9436,9 @@ class LegacyGame {
         this._commandOverrideModeOn = true;
         this._commandOverrideVariable = await this.GetParameter(scriptLine, ctx);
         // Now, wait for CommandOverrideModeOn to be set
-        // to False by ExecCommand. Execution can then resume.
-        // TODO: Handle in TypeScript version
-        this._commandOverrideModeOn = false;
-        // State will have been changed to Working when the user typed their response,
-        // and will be set back to Ready when the call to ExecCommand has finished
+        // to False by ExecCommand. Execution can then resume.        
+        var self = this;        
+        return new Promise<void>((resolve) => self._commandOverrideResolve = resolve);
     }
     async ExecuteSet(setInstruction: string, ctx: Context): Promise<void> {
         if (this._gameAslVersion >= 280) {
