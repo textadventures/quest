@@ -6,6 +6,11 @@ define game <>
 	asl-version <410>
 	start <room>
 	game info <Created with QDK 4.1.5>
+	command <test> {
+		msg <Enter some words...>
+		enter <input>
+		msg <You typed: #input#>
+	}
 	verb <read> msg <You can't read that.>
 end define
 
