@@ -2285,7 +2285,7 @@ class LegacyGame {
         childName = Trim(Mid(cmd, Len(verb) + 2, childLength));
         gotObject = false;
         if (this._gameAslVersion >= 392 && doAdd) {
-            childId = this.Disambiguate(childName, this._currentRoom + ";inventory", ctx);
+            childId = await this.Disambiguate(childName, this._currentRoom + ";inventory", ctx);
             if (childId > 0) {
                 if (this._objs[childId].ContainerRoom == "inventory") {
                     gotObject = true;
@@ -2311,7 +2311,7 @@ class LegacyGame {
                 return;
             }
         } else {
-            childId = this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
+            childId = await this.Disambiguate(childName, "inventory;" + this._currentRoom, ctx);
             if (childId <= 0) {
                 if (childId != -2) {
                     this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -2321,7 +2321,7 @@ class LegacyGame {
             }
         }
         if (noParentSpecified && doAdd) {
-            this.SetStringContents("quest.error.article", this._objs[childId].Article, ctx);
+            await this.SetStringContents("quest.error.article", this._objs[childId].Article, ctx);
             this.PlayerErrorMessage(PlayerError.BadPut, ctx);
             return;
         }
@@ -2332,7 +2332,7 @@ class LegacyGame {
         }
         if (!noParentSpecified) {
             parentName = Trim(Mid(cmd, sepPos + sepLen));
-            parentId = this.Disambiguate(parentName, this._currentRoom + ";inventory", ctx);
+            parentId = await this.Disambiguate(parentName, this._currentRoom + ";inventory", ctx);
             if (parentId <= 0) {
                 if (parentId != -2) {
                     this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -2405,7 +2405,7 @@ class LegacyGame {
             }
         }
         if (foundAction) {
-            this.SetStringContents("quest." + LCase(action) + ".object.name", this._objs[childId].ObjectName, ctx);
+            await this.SetStringContents("quest." + LCase(action) + ".object.name", this._objs[childId].ObjectName, ctx);
             await this.ExecuteScript(actionScript, ctx, parentId);
         } else {
             // Now check for a property
@@ -2492,7 +2492,7 @@ class LegacyGame {
             doOpen = false;
         }
         name = this.GetEverythingAfter(cmd, action + " ");
-        id = this.Disambiguate(name, this._currentRoom + ";inventory", ctx);
+        id = await this.Disambiguate(name, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
             if (id != -2) {
                 this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -2677,14 +2677,14 @@ class LegacyGame {
             }
         }
         if (foundVerb) {
-            id = this.Disambiguate(verbObject, "inventory;" + this._currentRoom, ctx);
+            id = await this.Disambiguate(verbObject, "inventory;" + this._currentRoom, ctx);
             if (id < 0) {
                 if (id != -2) {
                     this.PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 this._badCmdBefore = thisVerb;
             } else {
-                this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
+                await this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
                 var foundAction = false;
                 // Now see if this object has the relevant action or property
                 var o = this._objs[id];
@@ -3125,7 +3125,7 @@ class LegacyGame {
             value = value - change;
         }
         var arrayIndex = this.GetArrayIndex(variable, ctx);
-        this.SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
+        await this.SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
     }
     ExtractFile(file: string): string {
         var length: number = 0;
@@ -3701,7 +3701,7 @@ class LegacyGame {
         result.Name = Left(varName, beginPos - 1);
         return result;
     }
-    Disambiguate(name: string, containedIn: string, ctx: Context, isExit: boolean = false): number {
+    async Disambiguate(name: string, containedIn: string, ctx: Context, isExit: boolean = false): Promise<number> {
         // Returns object ID being referred to by player.
         // Returns -1 if object doesn't exist, calling function
         //   then expected to print relevant error.
@@ -3721,7 +3721,7 @@ class LegacyGame {
         var validNames: string[];
         var numValidNames: number = 0;
         name = Trim(name);
-        this.SetStringContents("quest.lastobject", "", ctx);
+        await this.SetStringContents("quest.lastobject", "", ctx);
         if (InStr(containedIn, ";") != 0) {
             var scp = InStr(containedIn, ";");
             twoPlaces = true;
@@ -3735,7 +3735,7 @@ class LegacyGame {
             for (var i = 1; i <= this._numberObjs; i++) {
                 if (this.DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace)) {
                     if (LCase(this._objs[i].ObjectName) == LCase(name)) {
-                        this.SetStringContents("quest.lastobject", this._objs[i].ObjectName, ctx);
+                        await this.SetStringContents("quest.lastobject", this._objs[i].ObjectName, ctx);
                         return i;
                     }
                 }
@@ -3743,27 +3743,27 @@ class LegacyGame {
         }
         // If player uses "it", "them" etc. as name:
         if (name == "it" || name == "them" || name == "this" || name == "those" || name == "these" || name == "that") {
-            this.SetStringContents("quest.error.pronoun", name, ctx);
+            await this.SetStringContents("quest.error.pronoun", name, ctx);
             if (this._lastIt != 0 && this._lastItMode == ItType.Inanimate && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
-                this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
+                await this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
             } else {
                 this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
                 return -2;
             }
         } else if (name == "him") {
-            this.SetStringContents("quest.error.pronoun", name, ctx);
+            await this.SetStringContents("quest.error.pronoun", name, ctx);
             if (this._lastIt != 0 && this._lastItMode == ItType.Male && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
-                this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
+                await this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
             } else {
                 this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
                 return -2;
             }
         } else if (name == "her") {
-            this.SetStringContents("quest.error.pronoun", name, ctx);
+            await this.SetStringContents("quest.error.pronoun", name, ctx);
             if (this._lastIt != 0 && this._lastItMode == ItType.Female && this.DisambObjHere(ctx, this._lastIt, firstPlace, twoPlaces, secondPlace)) {
-                this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
+                await this.SetStringContents("quest.lastobject", this._objs[this._lastIt].ObjectName, ctx);
                 return this._lastIt;
             } else {
                 this.PlayerErrorMessage(PlayerError.BadPronoun, ctx);
@@ -3819,7 +3819,7 @@ class LegacyGame {
             }
         }
         if (numberCorresIds == 1) {
-            this.SetStringContents("quest.lastobject", this._objs[idNumbers[1]].ObjectName, ctx);
+            await this.SetStringContents("quest.lastobject", this._objs[idNumbers[1]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[1];
             switch (this._objs[idNumbers[1]].Article) {
                 case "him":
@@ -3852,7 +3852,7 @@ class LegacyGame {
             var mnu: MenuData = new MenuData(question, menuItems, false);
             var response: string = this.ShowMenu(mnu);
             this._choiceNumber = parseInt(response);
-            this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
+            await this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[this._choiceNumber];
             switch (this._objs[idNumbers[this._choiceNumber]].Article) {
                 case "him":
@@ -3869,7 +3869,7 @@ class LegacyGame {
             return idNumbers[this._choiceNumber];
         }
         this._thisTurnIt = this._lastIt;
-        this.SetStringContents("quest.error.object", name, ctx);
+        await this.SetStringContents("quest.error.object", name, ctx);
         return -1;
     }
     async DisplayStatusVariableInfo(id: number, type: VarType, ctx: Context): Promise<string> {
@@ -3977,7 +3977,7 @@ class LegacyGame {
         for (var i = 1; i <= this._numberObjs; i++) {
             if (inLocation == "" || LCase(this._objs[i].ContainerRoom) == inLocation) {
                 if (this._objs[i].IsRoom == isRoom && this._objs[i].IsExit == isExit) {
-                    this.SetStringContents("quest.thing", this._objs[i].ObjectName, ctx);
+                    await this.SetStringContents("quest.thing", this._objs[i].ObjectName, ctx);
                     await this.ExecuteScript(scriptToRun, ctx);
                 }
             }
@@ -4300,7 +4300,7 @@ class LegacyGame {
         var found: boolean = false;
         var parentId: number = 0;
         var id: number = 0;
-        id = this.Disambiguate(obj, "inventory", ctx);
+        id = await this.Disambiguate(obj, "inventory", ctx);
         if (id > 0) {
             found = true;
         } else {
@@ -4335,7 +4335,7 @@ class LegacyGame {
                 break;
             }
         }
-        this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
+        await this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
         if (!dropFound || this.BeginsWith(dropStatement, "everywhere")) {
             if (isInContainer) {
                 // So, we want to drop an object that's in a container or surface. So first
@@ -4385,7 +4385,7 @@ class LegacyGame {
             this._badCmdBefore = "examine";
             return;
         }
-        var id = this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
+        var id = await this.Disambiguate(item, this._currentRoom + ";inventory", ctx);
         if (id <= 0) {
             if (id != -2) {
                 this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -4717,7 +4717,7 @@ class LegacyGame {
         result.Script = script;
         return result;
     }
-    GetObjectId(name: string, ctx: Context, room: string = ""): number {
+    async GetObjectId(name: string, ctx: Context, room: string = ""): Promise<number> {
         var id: number = 0;
         var found = false;
         if (this.BeginsWith(name, "the ")) {
@@ -4731,7 +4731,7 @@ class LegacyGame {
             }
         }
         if (!found && this._gameAslVersion >= 280) {
-            id = this.Disambiguate(name, room, ctx);
+            id = await this.Disambiguate(name, room, ctx);
             if (id > 0) {
                 found = true;
             }
@@ -5101,15 +5101,15 @@ class LegacyGame {
                     numParameters = numParameters + 1;
                     var scp = InStrFrom(pos, parameter, ";");
                     var parameterData = Trim(Mid(parameter, pos, scp - pos));
-                    this.SetStringContents("quest.function.parameter." + Trim(Str(numParameters)), parameterData, ctx);
+                    await this.SetStringContents("quest.function.parameter." + Trim(Str(numParameters)), parameterData, ctx);
                     newCtx.NumParameters = numParameters;
                     if (!newCtx.Parameters) newCtx.Parameters = [];
                     newCtx.Parameters[numParameters] = parameterData;
                     pos = scp + 1;
                 } while (!(pos >= Len(parameter)));
-                this.SetStringContents("quest.function.numparameters", Trim(Str(numParameters)), ctx);
+                await this.SetStringContents("quest.function.numparameters", Trim(Str(numParameters)), ctx);
             } else {
-                this.SetStringContents("quest.function.numparameters", "0", ctx);
+                await this.SetStringContents("quest.function.numparameters", "0", ctx);
                 newCtx.NumParameters = 0;
             }
             var result: string = "";
@@ -5149,12 +5149,12 @@ class LegacyGame {
         var param2: string;
         var param3: string;
         if (name == "displayname") {
-            objId = this.GetObjectId(parameters[1], ctx);
+            objId = await this.GetObjectId(parameters[1], ctx);
             if (objId == -1) {
                 this.LogASLError("Object '" + parameters[1] + "' does not exist", LogType.WarningError);
                 return "!";
             } else {
-                return this._objs[this.GetObjectId(parameters[1], ctx)].ObjectAlias;
+                return this._objs[await this.GetObjectId(parameters[1], ctx)].ObjectAlias;
             }
         } else if (name == "numberparameters") {
             return Trim(Str(ctx.NumParameters));
@@ -5325,11 +5325,11 @@ class LegacyGame {
             }
         } else if (name == "getobjectname") {
             if (numParameters == 3) {
-                objId = this.Disambiguate(parameters[1], parameters[2] + ";" + parameters[3], ctx);
+                objId = await this.Disambiguate(parameters[1], parameters[2] + ";" + parameters[3], ctx);
             } else if (numParameters == 2) {
-                objId = this.Disambiguate(parameters[1], parameters[2], ctx);
+                objId = await this.Disambiguate(parameters[1], parameters[2], ctx);
             } else {
-                objId = this.Disambiguate(parameters[1], this._currentRoom + ";inventory", ctx);
+                objId = await this.Disambiguate(parameters[1], this._currentRoom + ";inventory", ctx);
             }
             if (objId <= -1) {
                 this.LogASLError("No object found with display name '" + parameters[1] + "'", LogType.WarningError);
@@ -5381,12 +5381,12 @@ class LegacyGame {
         }
         var loopScript = Trim(Mid(line, InStr(line, ">") + 1));
         for (var i = startValue; stepValue > 0 ? i <= endValue : i >= endValue; i = i + stepValue) {
-            this.SetNumericVariableContents(counterVariable, i, ctx);
+            await this.SetNumericVariableContents(counterVariable, i, ctx);
             await this.ExecuteScript(loopScript, ctx);
             i = this.GetNumericContents(counterVariable, ctx);
         }
     }
-    ExecSetVar(varInfo: string, ctx: Context): void {
+    async ExecSetVar(varInfo: string, ctx: Context): Promise<void> {
         // Sets variable contents from a script parameter.
         // Eg <var1;7> sets numeric variable var1
         // to 7
@@ -5444,7 +5444,7 @@ class LegacyGame {
                     }
                 }
             }
-            this.SetNumericVariableContents(idx.Name, Val(varCont), ctx, idx.Index);
+            await this.SetNumericVariableContents(idx.Name, Val(varCont), ctx, idx.Index);
         }
         catch (e) {
             this.LogASLError("Error setting variable '" + idx.Name + "' to '" + varCont + "'", LogType.WarningError);
@@ -5669,7 +5669,7 @@ class LegacyGame {
         }
         this.PlayMedia(filename, sync, looped);
     }
-    RestoreGameData(fileData: string): void {
+    async RestoreGameData(fileData: string): Promise<void> {
         var appliesTo: string;
         var data: string = "";
         var objId: number = 0;
@@ -5783,11 +5783,11 @@ class LegacyGame {
             varUbound = parseInt(this.GetNextChunk());
             if (varUbound == 0) {
                 data = this.GetNextChunk();
-                this.SetStringContents(appliesTo, data, this._nullContext);
+                await this.SetStringContents(appliesTo, data, this._nullContext);
             } else {
                 for (var j = 0; j <= varUbound; j++) {
                     data = this.GetNextChunk();
-                    this.SetStringContents(appliesTo, data, this._nullContext, j);
+                    await this.SetStringContents(appliesTo, data, this._nullContext, j);
                 }
             }
         }
@@ -5798,11 +5798,11 @@ class LegacyGame {
             varUbound = parseInt(this.GetNextChunk());
             if (varUbound == 0) {
                 data = this.GetNextChunk();
-                this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext);
+                await this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext);
             } else {
                 for (var j = 0; j <= varUbound; j++) {
                     data = this.GetNextChunk();
-                    this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext, j);
+                    await this.SetNumericVariableContents(appliesTo, Val(data), this._nullContext, j);
                 }
             }
         }
@@ -6714,7 +6714,7 @@ class LegacyGame {
             roomDisplayText = roomDisplayText + "You are in " + prefixAlias + ".\n";
         }
         this._player.LocationUpdated(prefixAliasNoFormat);
-        this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
+        await this.SetStringContents("quest.formatroom", prefixAliasNoFormat, this._nullContext);
         //FIND CHARACTERS ===
         for (var i = 1; i <= this._numberChars; i++) {
             if (this._chars[i].ContainerRoom == room && this._chars[i].Exists && this._chars[i].Visible) {
@@ -6724,11 +6724,11 @@ class LegacyGame {
         }
         if (charsFound == 0) {
             charsViewable = "There is nobody here.";
-            this.SetStringContents("quest.characters", "", this._nullContext);
+            await this.SetStringContents("quest.characters", "", this._nullContext);
         } else {
             //chop off final comma and add full stop (.)
             charList = Left(charsViewable, Len(charsViewable) - 2);
-            this.SetStringContents("quest.characters", charList, this._nullContext);
+            await this.SetStringContents("quest.characters", charList, this._nullContext);
             //if more than one character, add "and" before
             //last one:
             cp = InStr(charList, ",");
@@ -6773,12 +6773,12 @@ class LegacyGame {
                 objListString = Trim(Left(objListString, cp - 1) + " and " + Trim(Mid(objListString, cp + 1)));
             }
             objsViewable = "There is " + objListString + " here.";
-            this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), this._nullContext);
-            this.SetStringContents("quest.formatobjects", objListString, this._nullContext);
+            await this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), this._nullContext);
+            await this.SetStringContents("quest.formatobjects", objListString, this._nullContext);
             roomDisplayText = roomDisplayText + objsViewable + "\n";
         } else {
-            this.SetStringContents("quest.objects", "", this._nullContext);
-            this.SetStringContents("quest.formatobjects", "", this._nullContext);
+            await this.SetStringContents("quest.objects", "", this._nullContext);
+            await this.SetStringContents("quest.formatobjects", "", this._nullContext);
         }
         //FIND DOORWAYS
         doorways = "";
@@ -6843,9 +6843,9 @@ class LegacyGame {
             }
             roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + ".\n";
             possDir = possDir + "o";
-            this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
+            await this.SetStringContents("quest.doorways.out", aliasOut, this._nullContext);
         } else {
-            this.SetStringContents("quest.doorways.out", "", this._nullContext);
+            await this.SetStringContents("quest.doorways.out", "", this._nullContext);
         }
         var finished: boolean = false;
         if (nsew != "") {
@@ -6865,9 +6865,9 @@ class LegacyGame {
                 nsew = Trim(Left(nsew, cp - 1)) + " or " + Trim(Mid(nsew, cp + 1));
             }
             roomDisplayText = roomDisplayText + "You can go " + nsew + ".\n";
-            this.SetStringContents("quest.doorways.dirs", nsew, this._nullContext);
+            await this.SetStringContents("quest.doorways.dirs", nsew, this._nullContext);
         } else {
-            this.SetStringContents("quest.doorways.dirs", "", this._nullContext);
+            await this.SetStringContents("quest.doorways.dirs", "", this._nullContext);
         }
         this.UpdateDirButtons(possDir, this._nullContext);
         if (places != "") {
@@ -6889,9 +6889,9 @@ class LegacyGame {
                 places = Left(places, lastComma) + " or" + Right(places, Len(places) - lastComma);
             }
             roomDisplayText = roomDisplayText + "You can go to " + places + ".\n";
-            this.SetStringContents("quest.doorways.places", places, this._nullContext);
+            await this.SetStringContents("quest.doorways.places", places, this._nullContext);
         } else {
-            this.SetStringContents("quest.doorways.places", "", this._nullContext);
+            await this.SetStringContents("quest.doorways.places", "", this._nullContext);
         }
         //Print RoomDisplayText if there is no "description" tag,
         //otherwise execute the description tag information:
@@ -6994,7 +6994,7 @@ class LegacyGame {
             }
         }
     }
-    ExecSetString(info: string, ctx: Context): void {
+    async ExecSetString(info: string, ctx: Context): Promise<void> {
         // Sets string contents from a script parameter.
         // Eg <string1;contents> sets string variable string1
         // to "contents"
@@ -7012,7 +7012,7 @@ class LegacyGame {
             }
         }
         var idx = this.GetArrayIndex(name, ctx);
-        this.SetStringContents(idx.Name, value, ctx, idx.Index);
+        await this.SetStringContents(idx.Name, value, ctx, idx.Index);
     }
     async ExecUserCommand(cmd: string, ctx: Context, libCommands: boolean = false): Promise<boolean> {
         //Executes a user-defined command. If unavailable, returns
@@ -7091,7 +7091,7 @@ class LegacyGame {
     async ExecuteChoose(section: string, ctx: Context): Promise<void> {
         await this.ExecuteScript(await this.SetUpChoiceForm(section, ctx), ctx);
     }
-    GetCommandParameters(test: string, required: string, ctx: Context): boolean {
+    async GetCommandParameters(test: string, required: string, ctx: Context): Promise<boolean> {
         //Gets parameters from line. For example, if 'required'
         //is "read #1#" and 'test' is "read sign", #1# returns
         //"sign".
@@ -7153,7 +7153,7 @@ class LegacyGame {
             var curChunk = Mid(test, chunksEnd[i], chunksBegin[i + 1] - chunksEnd[i]);
             if (this.BeginsWith(varName[i], "@")) {
                 varName[i] = this.GetEverythingAfter(varName[i], "@");
-                var id = this.Disambiguate(curChunk, this._currentRoom + ";" + "inventory", ctx);
+                var id = await this.Disambiguate(curChunk, this._currentRoom + ";" + "inventory", ctx);
                 if (id == -1) {
                     if (this._gameAslVersion >= 391) {
                         this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -7170,10 +7170,10 @@ class LegacyGame {
                     this._badCmdAfter = Trim(Mid(test, chunksBegin[i + 1]));
                     success = false;
                 } else {
-                    this.SetStringContents(varName[i], this._objs[id].ObjectName, ctx, arrayIndex);
+                    await this.SetStringContents(varName[i], this._objs[id].ObjectName, ctx, arrayIndex);
                 }
             } else {
-                this.SetStringContents(varName[i], curChunk, ctx, arrayIndex);
+                await this.SetStringContents(varName[i], curChunk, ctx, arrayIndex);
             }
         }
         return success;
@@ -7319,7 +7319,7 @@ class LegacyGame {
         } while (!(finished));
         return true;
     }
-    OpenGame(filename: string, onSuccess: Callback, onFailure: Callback): void {
+    async OpenGame(filename: string, onSuccess: Callback, onFailure: Callback): Promise<void> {
         var cdatb: boolean = false;
         var result: boolean = false;
         var visible: boolean = false;
@@ -7369,7 +7369,7 @@ class LegacyGame {
         //        return false;
         //    }
         //}
-        this.InitialiseGame(this._gameFileName, true, function () {
+        await this.InitialiseGame(this._gameFileName, true, async function () : Promise<void> {
             if (!prevQsgVersion) {
                 // Open Quest 3.0 saved game file
                 this._gameLoading = true;
@@ -7460,7 +7460,7 @@ class LegacyGame {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
                         data = Right(data, Len(data) - scp);
-                        this.SetStringContents(name, data, this._nullContext);
+                        await this.SetStringContents(name, data, this._nullContext);
                     }
                 } while (!(data == "!n"));
                 do {
@@ -7470,7 +7470,7 @@ class LegacyGame {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
                         data = Right(data, Len(data) - scp);
-                        this.SetNumericVariableContents(name, Val(data), this._nullContext);
+                        await this.SetNumericVariableContents(name, Val(data), this._nullContext);
                     }
                 } while (!(data == "!e"));
             }
@@ -7952,7 +7952,7 @@ class LegacyGame {
     }
     async ShowRoomInfo(room: string, ctx: Context, noPrint: boolean = false): Promise<void> {
         if (this._gameAslVersion < 280) {
-            this.ShowRoomInfoV2(room);
+            await this.ShowRoomInfoV2(room);
             return;
         }
         var roomDisplayText: string = "";
@@ -8011,7 +8011,7 @@ class LegacyGame {
             roomDisplayText = roomDisplayText + "You are in " + roomDisplayName + ".\n";
         }
         this._player.LocationUpdated(UCase(Left(roomAlias, 1)) + Mid(roomAlias, 2));
-        this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
+        await this.SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
         
         // SHOW OBJECTS *************************************************************
         visibleObjectsNoFormat = "";
@@ -8045,17 +8045,17 @@ class LegacyGame {
             }
         }, this);
         if (visibleObjectsList.length > 0) {
-            this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
+            await this.SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
-            this.SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
+            await this.SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
             roomDisplayText = roomDisplayText + visibleObjects + "\n";
         } else {
-            this.SetStringContents("quest.objects", "", ctx);
-            this.SetStringContents("quest.formatobjects", "", ctx);
+            await this.SetStringContents("quest.objects", "", ctx);
+            await this.SetStringContents("quest.formatobjects", "", ctx);
         }
         
         // SHOW EXITS ***************************************************************
-        doorwayString = this.UpdateDoorways(id, ctx);
+        doorwayString = await this.UpdateDoorways(id, ctx);
         if (this._gameAslVersion < 410) {
             placeList = this.GetGoToExits(id, ctx);
             if (placeList != "") {
@@ -8077,9 +8077,9 @@ class LegacyGame {
                     placeList = Left(placeList, lastComma - 1) + " or" + Right(placeList, Len(placeList) - lastComma);
                 }
                 roomDisplayText = roomDisplayText + "You can go to " + placeList + ".\n";
-                this.SetStringContents("quest.doorways.places", placeList, ctx);
+                await this.SetStringContents("quest.doorways.places", placeList, ctx);
             } else {
-                this.SetStringContents("quest.doorways.places", "", ctx);
+                await this.SetStringContents("quest.doorways.places", "", ctx);
             }
         }
         // GET "LOOK" DESCRIPTION (but don't print it yet) **************************
@@ -8091,7 +8091,7 @@ class LegacyGame {
         } else {
             lookDesc = objLook;
         }
-        this.SetStringContents("quest.lookdesc", lookDesc, ctx);
+        await this.SetStringContents("quest.lookdesc", lookDesc, ctx);
         // FIND DESCRIPTION TAG, OR ACTION ******************************************
         // In Quest versions prior to 3.1, with any custom description, the "look"
         // text was always displayed after the "description" tag was printed/executed.
@@ -8255,7 +8255,7 @@ class LegacyGame {
             // Commands have been overridden for this command,
             // so put input into previously specified variable
             // and exit:
-            this.SetStringContents(this._commandOverrideVariable, input, ctx);
+            await this.SetStringContents(this._commandOverrideVariable, input, ctx);
             return false;
         }
         var userCommandReturn: boolean = false;
@@ -8263,7 +8263,7 @@ class LegacyGame {
             this.Print("> " + input, ctx);
         }
         input = LCase(input);
-        this.SetStringContents("quest.originalcommand", input, ctx);
+        await this.SetStringContents("quest.originalcommand", input, ctx);
         var newCommand = " " + input + " ";
         // Convert synonyms:
         for (var i = 1; i <= this._numberSynonyms; i++) {
@@ -8279,7 +8279,7 @@ class LegacyGame {
         }
         //strip starting and ending spaces
         input = Mid(newCommand, 2, Len(newCommand) - 2);
-        this.SetStringContents("quest.command", input, ctx);
+        await this.SetStringContents("quest.command", input, ctx);
         // Execute any "beforeturn" script:
         var newCtx: Context = this.CopyContext(ctx);
         var globalOverride = false;
@@ -8553,7 +8553,7 @@ class LegacyGame {
         }
         // First see if player has "ItemToGive":
         if (this._gameAslVersion >= 280) {
-            id = this.Disambiguate(item, "inventory", ctx);
+            id = await this.Disambiguate(item, "inventory", ctx);
             if (id == -1) {
                 this.PlayerErrorMessage(PlayerError.NoItem, ctx);
                 this._badCmdBefore = "give";
@@ -8587,7 +8587,7 @@ class LegacyGame {
         if (this._gameAslVersion >= 281) {
             var foundScript = false;
             var foundObject = false;
-            var giveToId = this.Disambiguate(character, this._currentRoom, ctx);
+            var giveToId = await this.Disambiguate(character, this._currentRoom, ctx);
             if (giveToId > 0) {
                 foundObject = true;
             }
@@ -8625,7 +8625,7 @@ class LegacyGame {
                 script = this._objs[giveToId].GiveAnything;
                 if (script != "") {
                     foundScript = true;
-                    this.SetStringContents("quest.give.object.name", this._objs[id].ObjectName, ctx);
+                    await this.SetStringContents("quest.give.object.name", this._objs[id].ObjectName, ctx);
                 }
             }
             if (!foundScript) {
@@ -8633,17 +8633,17 @@ class LegacyGame {
                 script = this._objs[id].GiveToAnything;
                 if (script != "") {
                     foundScript = true;
-                    this.SetStringContents("quest.give.object.name", this._objs[giveToId].ObjectName, ctx);
+                    await this.SetStringContents("quest.give.object.name", this._objs[giveToId].ObjectName, ctx);
                 }
             }
             if (foundScript) {
                 await this.ExecuteScript(script, ctx, id);
             } else {
-                this.SetStringContents("quest.error.charactername", this._objs[giveToId].ObjectName, ctx);
+                await this.SetStringContents("quest.error.charactername", this._objs[giveToId].ObjectName, ctx);
                 var gender = Trim(this._objs[giveToId].Gender);
                 gender = UCase(Left(gender, 1)) + Mid(gender, 2);
-                this.SetStringContents("quest.error.gender", gender, ctx);
-                this.SetStringContents("quest.error.article", article, ctx);
+                await this.SetStringContents("quest.error.gender", gender, ctx);
+                await this.SetStringContents("quest.error.article", article, ctx);
                 this.PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
             }
         } else {
@@ -8669,9 +8669,9 @@ class LegacyGame {
                 if (article == "") {
                     article = "it";
                 }
-                this.SetStringContents("quest.error.charactername", realName, ctx);
-                this.SetStringContents("quest.error.gender", Trim(await this.GetGender(character, true, ctx)), ctx);
-                this.SetStringContents("quest.error.article", article, ctx);
+                await this.SetStringContents("quest.error.charactername", realName, ctx);
+                await this.SetStringContents("quest.error.gender", Trim(await this.GetGender(character, true, ctx)), ctx);
+                await this.SetStringContents("quest.error.article", article, ctx);
                 this.PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
                 return;
             }
@@ -8705,7 +8705,7 @@ class LegacyGame {
                 }
             }
             if (this._gameAslVersion >= 280) {
-                var id = this.Disambiguate(item, "inventory;" + this._currentRoom, ctx);
+                var id = await this.Disambiguate(item, "inventory;" + this._currentRoom, ctx);
                 if (id <= 0) {
                     if (id != -2) {
                         this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -8763,7 +8763,7 @@ class LegacyGame {
         // a script.
         if (this._gameAslVersion >= 281) {
             var speakLine: string = "";
-            var ObjID = this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
+            var ObjID = await this.Disambiguate(name, "inventory;" + this._currentRoom, ctx);
             if (ObjID <= 0) {
                 if (ObjID != -2) {
                     this.PlayerErrorMessage(PlayerError.BadThing, ctx);
@@ -8803,7 +8803,7 @@ class LegacyGame {
                 }
             }
             if (!foundSpeak) {
-                this.SetStringContents("quest.error.gender", UCase(Left(this._objs[ObjID].Gender, 1)) + Mid(this._objs[ObjID].Gender, 2), ctx);
+                await this.SetStringContents("quest.error.gender", UCase(Left(this._objs[ObjID].Gender, 1)) + Mid(this._objs[ObjID].Gender, 2), ctx);
                 this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
                 return;
             }
@@ -8831,8 +8831,8 @@ class LegacyGame {
             if (line == "<undefined>") {
                 this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
             } else if (line == "<unfound>") {
-                this.SetStringContents("quest.error.gender", Trim(await this.GetGender(cmd, true, ctx)), ctx);
-                this.SetStringContents("quest.error.charactername", cmd, ctx);
+                await this.SetStringContents("quest.error.gender", Trim(await this.GetGender(cmd, true, ctx)), ctx);
+                await this.SetStringContents("quest.error.charactername", cmd, ctx);
                 this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
             } else if (this.BeginsWith(data, "<")) {
                 data = await this.GetParameter(line, ctx);
@@ -8847,7 +8847,7 @@ class LegacyGame {
         var parentDisplayName: string;
         var foundItem = true;
         var foundTake = false;
-        var id = this.Disambiguate(item, this._currentRoom, ctx);
+        var id = await this.Disambiguate(item, this._currentRoom, ctx);
         if (id < 0) {
             foundItem = false;
         } else {
@@ -8856,7 +8856,7 @@ class LegacyGame {
         if (!foundItem) {
             if (id != -2) {
                 if (this._gameAslVersion >= 410) {
-                    id = this.Disambiguate(item, "inventory", ctx);
+                    id = await this.Disambiguate(item, "inventory", ctx);
                     if (id >= 0) {
                         // Player already has this item
                         this.PlayerErrorMessage(PlayerError.AlreadyTaken, ctx);
@@ -8872,7 +8872,7 @@ class LegacyGame {
             this._badCmdBefore = "take";
             return;
         } else {
-            this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
+            await this.SetStringContents("quest.error.article", this._objs[id].Article, ctx);
         }
         var isInContainer = false;
         if (this._gameAslVersion >= 391) {
@@ -8956,7 +8956,7 @@ class LegacyGame {
         var notGotItem: boolean = false;
         if (this._gameAslVersion >= 280) {
             var foundItem = false;
-            id = this.Disambiguate(useItem, "inventory", ctx);
+            id = await this.Disambiguate(useItem, "inventory", ctx);
             if (id > 0) {
                 foundItem = true;
             }
@@ -9015,11 +9015,11 @@ class LegacyGame {
                 }
             } else {
                 foundUseOnObject = false;
-                useOnObjectId = this.Disambiguate(useOn, this._currentRoom, ctx);
+                useOnObjectId = await this.Disambiguate(useOn, this._currentRoom, ctx);
                 if (useOnObjectId > 0) {
                     foundUseOnObject = true;
                 } else {
-                    useOnObjectId = this.Disambiguate(useOn, "inventory", ctx);
+                    useOnObjectId = await this.Disambiguate(useOn, "inventory", ctx);
                     if (useOnObjectId > 0) {
                         foundUseOnObject = true;
                     }
@@ -9058,7 +9058,7 @@ class LegacyGame {
                     useScript = this._objs[useOnObjectId].UseAnything;
                     if (useScript != "") {
                         foundUseScript = true;
-                        this.SetStringContents("quest.use.object.name", this._objs[id].ObjectName, ctx);
+                        await this.SetStringContents("quest.use.object.name", this._objs[id].ObjectName, ctx);
                     }
                 }
                 if (!foundUseScript) {
@@ -9066,7 +9066,7 @@ class LegacyGame {
                     useScript = this._objs[id].UseOnAnything;
                     if (useScript != "") {
                         foundUseScript = true;
-                        this.SetStringContents("quest.use.object.name", this._objs[useOnObjectId].ObjectName, ctx);
+                        await this.SetStringContents("quest.use.object.name", this._objs[useOnObjectId].ObjectName, ctx);
                     }
                 }
             }
@@ -9245,7 +9245,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "select case ")) {
                 await this.ExecuteSelectCase(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "choose ")) {
-                this.ExecuteChoose(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.ExecuteChoose(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "set ")) {
                 this.ExecuteSet(this.GetEverythingAfter(scriptLine, "set "), ctx);
             } else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
@@ -9341,7 +9341,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "setvar ")) {
                 this.ExecSetVar(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "for ")) {
-                this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
+                await this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
             } else if (this.BeginsWith(scriptLine, "property ")) {
                 this.ExecProperty(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "type ")) {
@@ -9810,7 +9810,7 @@ class LegacyGame {
             return;
         }
         this._currentRoom = room;
-        this.SetStringContents("quest.currentroom", room, ctx);
+        await this.SetStringContents("quest.currentroom", room, ctx);
         if (this._gameAslVersion >= 391 && this._gameAslVersion < 410) {
             this.AddToObjectProperties("visited", this._rooms[id].ObjId, ctx);
         }
@@ -10109,7 +10109,7 @@ class LegacyGame {
     AddCompassExit(exitList: ListData[], name: string): void {
         exitList.push(new ListData(name, this._listVerbs[ListType.ExitsList]));
     }
-    UpdateDoorways(roomId: number, ctx: Context): string {
+    async UpdateDoorways(roomId: number, ctx: Context): Promise<string> {
         var roomDisplayText: string = "";
         var outPlace: string = "";
         var directions: string = "";
@@ -10128,7 +10128,7 @@ class LegacyGame {
         var d = "down";
         var o = "out";
         if (this._gameAslVersion >= 410) {
-            var result = this._rooms[roomId].Exits.GetAvailableDirectionsDescription();
+            var result = await this._rooms[roomId].Exits.GetAvailableDirectionsDescription();
             roomDisplayText = result.Description;
             directions = result.List;
         } else {
@@ -10202,14 +10202,14 @@ class LegacyGame {
                 }
                 directions = directions + "o";
                 if (this._gameAslVersion >= 280) {
-                    this.SetStringContents("quest.doorways.out", outPlaceName, ctx);
+                    await this.SetStringContents("quest.doorways.out", outPlaceName, ctx);
                 } else {
-                    this.SetStringContents("quest.doorways.out", outPlaceAlias, ctx);
+                    await this.SetStringContents("quest.doorways.out", outPlaceAlias, ctx);
                 }
-                this.SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx);
+                await this.SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx);
             } else {
-                this.SetStringContents("quest.doorways.out", "", ctx);
-                this.SetStringContents("quest.doorways.out.display", "", ctx);
+                await this.SetStringContents("quest.doorways.out", "", ctx);
+                await this.SetStringContents("quest.doorways.out.display", "", ctx);
             }
             if (nsew != "") {
                 //strip final comma
@@ -10228,9 +10228,9 @@ class LegacyGame {
                     nsew = Trim(Left(nsew, cp - 1)) + " or " + Trim(Mid(nsew, cp + 1));
                 }
                 roomDisplayText = roomDisplayText + "You can go " + nsew + ".";
-                this.SetStringContents("quest.doorways.dirs", nsew, ctx);
+                await this.SetStringContents("quest.doorways.dirs", nsew, ctx);
             } else {
-                this.SetStringContents("quest.doorways.dirs", "", ctx);
+                await this.SetStringContents("quest.doorways.dirs", "", ctx);
             }
         }
         this.UpdateDirButtons(directions, ctx);
@@ -10319,11 +10319,11 @@ class LegacyGame {
                 }
             }
             if (charsFound == 0) {
-                this.SetStringContents("quest.characters", "", ctx);
+                await this.SetStringContents("quest.characters", "", ctx);
             } else {
                 //chop off final comma and add full stop (.)
                 charList = Left(charsViewable, Len(charsViewable) - 2);
-                this.SetStringContents("quest.characters", charList, ctx);
+                await this.SetStringContents("quest.characters", charList, ctx);
             }
         }
         //FIND OBJECTS
@@ -10349,11 +10349,11 @@ class LegacyGame {
         if (objsFound != 0) {
             objListString = Left(objsViewable, Len(objsViewable) - 2);
             noFormatObjListString = Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2);
-            this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), ctx);
-            this.SetStringContents("quest.formatobjects", objListString, ctx);
+            await this.SetStringContents("quest.objects", Left(noFormatObjsViewable, Len(noFormatObjsViewable) - 2), ctx);
+            await this.SetStringContents("quest.formatobjects", objListString, ctx);
         } else {
-            this.SetStringContents("quest.objects", "", ctx);
-            this.SetStringContents("quest.formatobjects", "", ctx);
+            await this.SetStringContents("quest.objects", "", ctx);
+            await this.SetStringContents("quest.formatobjects", "", ctx);
         }
         //FIND DOORWAYS
         var roomId: number = 0;
@@ -11175,7 +11175,7 @@ class RoomExits {
     GetPlaces(): StringRoomExitDictionary {
         return this._places;
     }
-    ExecuteGo(cmd: string, ctx: Context): void {
+    async ExecuteGo(cmd: string, ctx: Context): Promise<void> {
         // This will handle "n", "go east", "go [to] library" etc.
         var exitId: number = 0;
         var roomExit: RoomExit;
@@ -11184,7 +11184,7 @@ class RoomExits {
         } else if (this._game.BeginsWith(cmd, "go ")) {
             cmd = this._game.GetEverythingAfter(cmd, "go ");
         }
-        exitId = this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
+        exitId = await this._game.Disambiguate(cmd, this._game._currentRoom, ctx, true);
         if (exitId == -1) {
             this._game.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         } else {
@@ -11192,7 +11192,7 @@ class RoomExits {
             roomExit.Go(ctx);
         }
     }
-    GetAvailableDirectionsDescription(): GetAvailableDirectionsResult {
+    async GetAvailableDirectionsDescription(): Promise<GetAvailableDirectionsResult> {
         var roomExit: RoomExit;
         var count: number = 0;
         var descPrefix: string;
@@ -11212,7 +11212,7 @@ class RoomExits {
                 description = description + " " + orString + " ";
             }
         }, this);
-        this._game.SetStringContents("quest.doorways", description, this._game._nullContext);
+        await this._game.SetStringContents("quest.doorways", description, this._game._nullContext);
         if (count > 0) {
             description = descPrefix + " " + description + ".";
         }
