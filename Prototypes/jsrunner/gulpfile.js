@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');  
 var ts = require('gulp-typescript');  
 var babel = require('gulp-babel');
+var uglify = require('gulp-uglify');
 
 var tsProject = ts.createProject('./tsconfig.json');
 
@@ -13,6 +14,7 @@ gulp.task('default', function() {
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject))
         .pipe(babel())
+        //.pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('.'));
 });
