@@ -2131,7 +2131,7 @@ class LegacyGame {
             for (var i = 1; i <= o.NumberProperties; i++) {
                 if (o.Properties[i].PropertyName == "look") {
                     // do this odd RetrieveParameter stuff to convert any variables
-                    this.Print(await this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
+                    await this.Print(await this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
                     foundLook = true;
                     break;
                 }
@@ -2142,7 +2142,7 @@ class LegacyGame {
                 if (this.BeginsWith(this._lines[i], "look ")) {
                     lookLine = Trim(this.GetEverythingAfter(this._lines[i], "look "));
                     if (Left(lookLine, 1) == "<") {
-                        this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
+                        await this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
                     } else {
                         await this.ExecuteScript(lookLine, ctx, id);
                     }
@@ -2169,7 +2169,7 @@ class LegacyGame {
             }
         }
         if (objectContents != "" && objectContents != "<script>") {
-            this.Print(objectContents, ctx);
+            await this.Print(objectContents, ctx);
         }
     }
     async DoOpenClose(id: number, open: boolean, showLook: boolean, ctx: Context): Promise<void> {
@@ -2291,7 +2291,7 @@ class LegacyGame {
                     gotObject = true;
                 } else {
                     // Player is not carrying the object they referred to. So, first take the object.
-                    this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
+                    await this.Print("(first taking " + this._objs[childId].Article + ")", ctx);
                     // Try to take the object
                     ctx.AllowRealNamesInCommand = true;
                     await this.ExecCommand("take " + this._objs[childId].ObjectName, ctx, false, null, true);
@@ -2427,7 +2427,7 @@ class LegacyGame {
                         this.PlayerErrorMessage(PlayerError.DefaultRemove, ctx);
                     }
                 } else {
-                    this.Print(textToPrint, ctx);
+                    await this.Print(textToPrint, ctx);
                 }
                 this.DoAddRemove(childId, parentId, doAdd, ctx);
             }
@@ -2563,7 +2563,7 @@ class LegacyGame {
                         this.PlayerErrorMessage(PlayerError.DefaultClose, ctx);
                     }
                 } else {
-                    this.Print(textToPrint, ctx);
+                    await this.Print(textToPrint, ctx);
                 }
                 this.DoOpenClose(id, doOpen, true, ctx);
             }
@@ -2704,7 +2704,7 @@ class LegacyGame {
                     for (var i = 1; i <= o.NumberProperties; i++) {
                         if (LCase(o.Properties[i].PropertyName) == verbProperty) {
                             foundAction = true;
-                            this.Print(o.Properties[i].PropertyValue, ctx);
+                            await this.Print(o.Properties[i].PropertyValue, ctx);
                             break;
                         }
                     }
@@ -3836,7 +3836,7 @@ class LegacyGame {
         } else if (numberCorresIds > 1) {
             descriptionText = [];
             var question = "Please select which " + name + " you mean:";
-            this.Print("- |i" + question + "|xi", ctx);
+            await this.Print("- |i" + question + "|xi", ctx);
             var menuItems: StringDictionary = {};
             for (var i = 1; i <= numberCorresIds; i++) {
                 descriptionText[i] = this._objs[idNumbers[i]].Detail;
@@ -3865,7 +3865,7 @@ class LegacyGame {
                     this._thisTurnItMode = ItType.Inanimate;
                     break;
             }
-            this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
+            await this.Print("- " + descriptionText[this._choiceNumber] + "|n", ctx);
             return idNumbers[this._choiceNumber];
         }
         this._thisTurnIt = this._lastIt;
@@ -4346,7 +4346,7 @@ class LegacyGame {
                 } else {
                     parentDisplayName = this._objs[parentId].ObjectName;
                 }
-                this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
+                await this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 await this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
@@ -4363,13 +4363,13 @@ class LegacyGame {
             if (this.BeginsWith(dropStatement, "everywhere")) {
                 await this.PlayerItem(this._objs[id].ObjectName, false, ctx);
                 if (InStr(dropStatement, "<") != 0) {
-                    this.Print(await this.GetParameter(dropStatement, ctx), ctx);
+                    await this.Print(await this.GetParameter(dropStatement, ctx), ctx);
                 } else {
                     this.PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
                 }
             } else if (this.BeginsWith(dropStatement, "nowhere")) {
                 if (InStr(dropStatement, "<") != 0) {
-                    this.Print(await this.GetParameter(dropStatement, ctx), ctx);
+                    await this.Print(await this.GetParameter(dropStatement, ctx), ctx);
                 } else {
                     this.PlayerErrorMessage(PlayerError.CantDrop, ctx);
                 }
@@ -4404,7 +4404,7 @@ class LegacyGame {
         // Find "examine" property:
         for (var i = 1; i <= o.NumberProperties; i++) {
             if (o.Properties[i].PropertyName == "examine") {
-                this.Print(o.Properties[i].PropertyValue, ctx);
+                await this.Print(o.Properties[i].PropertyValue, ctx);
                 return;
             }
         }
@@ -4413,7 +4413,7 @@ class LegacyGame {
             if (this.BeginsWith(this._lines[i], "examine ")) {
                 var action = Trim(this.GetEverythingAfter(this._lines[i], "examine "));
                 if (Left(action, 1) == "<") {
-                    this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
+                    await this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
                 } else {
                     await this.ExecuteScript(action, ctx, id);
                 }
@@ -4677,12 +4677,12 @@ class LegacyGame {
     }
     async ExecuteWait(waitLine: string, ctx: Context): Promise<void> {
         if (waitLine != "") {
-            this.Print(await this.GetParameter(waitLine, ctx), ctx);
+            await this.Print(await this.GetParameter(waitLine, ctx), ctx);
         } else {
             if (this._gameAslVersion >= 410) {
                 this.PlayerErrorMessage(PlayerError.DefaultWait, ctx);
             } else {
-                this.Print("|nPress a key to continue...", ctx);
+                await this.Print("|nPress a key to continue...", ctx);
             }
         }
         this.DoWait();
@@ -5628,7 +5628,7 @@ class LegacyGame {
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
     }
     async PlayerErrorMessage(e: PlayerError, ctx: Context): Promise<void> {
-        this.Print(await this.GetErrorMessage(e, ctx), ctx);
+        await this.Print(await this.GetErrorMessage(e, ctx), ctx);
     }
     async PlayerErrorMessage_ExtendInfo(e: PlayerError, ctx: Context, extraInfo: string): Promise<void> {
         var message = await this.GetErrorMessage(e, ctx);
@@ -5638,7 +5638,7 @@ class LegacyGame {
             }
             message = message + " - " + extraInfo + ".";
         }
-        this.Print(message, ctx);
+        await this.Print(message, ctx);
     }
     async GetErrorMessage(e: PlayerError, ctx: Context): Promise<string> {
         return await this.ConvertParameter(
@@ -5968,10 +5968,10 @@ class LegacyGame {
                 menuScript[i.toString()] = Trim(Right(this._lines[i], Len(this._lines[i]) - InStr(this._lines[i], ">")));
             }
         }
-        this.Print("- |i" + prompt + "|xi", ctx);
+        await this.Print("- |i" + prompt + "|xi", ctx);
         var mnu: MenuData = new MenuData(prompt, menuOptions, false);
         var choice: string = this.ShowMenu(mnu);
-        this.Print("- " + menuOptions[choice] + "|n", ctx);
+        await this.Print("- " + menuOptions[choice] + "|n", ctx);
         return menuScript[choice];
     }
     SetUpDefaultFonts(): void {
@@ -6917,14 +6917,14 @@ class LegacyGame {
         if (!descTagExist) {
             //Remove final newline:
             roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 2);
-            this.Print(roomDisplayText, this._nullContext);
+            await this.Print(roomDisplayText, this._nullContext);
         } else {
             //execute description tag:
             //If no script, just print the tag's parameter.
             //Otherwise, execute it as ASL script:
             descLine = this.GetEverythingAfter(Trim(descLine), "description ");
             if (Left(descLine, 1) == "<") {
-                this.Print(await this.GetParameter(descLine, this._nullContext), this._nullContext);
+                await this.Print(await this.GetParameter(descLine, this._nullContext), this._nullContext);
             } else {
                 await this.ExecuteScript(descLine, this._nullContext);
             }
@@ -6945,7 +6945,7 @@ class LegacyGame {
             }
         }
         if (lookString != "") {
-            this.Print(lookString, this._nullContext);
+            await this.Print(lookString, this._nullContext);
         }
     }
     Speak(text: string): void {
@@ -7912,27 +7912,27 @@ class LegacyGame {
         }
         this.UpdateVisibilityInContainers(this._nullContext);
     }
-    ShowGameAbout(ctx: Context): void {
+    async ShowGameAbout(ctx: Context): Promise<void> {
         var version = this.FindStatement(this.GetDefineBlock("game"), "game version");
         var author = this.FindStatement(this.GetDefineBlock("game"), "game author");
         var copyright = this.FindStatement(this.GetDefineBlock("game"), "game copyright");
         var info = this.FindStatement(this.GetDefineBlock("game"), "game info");
-        this.Print("|bGame name:|cl  " + this._gameName + "|cb|xb", ctx);
+        await this.Print("|bGame name:|cl  " + this._gameName + "|cb|xb", ctx);
         if (version != "") {
-            this.Print("|bVersion:|xb    " + version, ctx);
+            await this.Print("|bVersion:|xb    " + version, ctx);
         }
         if (author != "") {
-            this.Print("|bAuthor:|xb     " + author, ctx);
+            await this.Print("|bAuthor:|xb     " + author, ctx);
         }
         if (copyright != "") {
-            this.Print("|bCopyright:|xb  " + copyright, ctx);
+            await this.Print("|bCopyright:|xb  " + copyright, ctx);
         }
         if (info != "") {
-            this.Print("", ctx);
-            this.Print(info, ctx);
+            await this.Print("", ctx);
+            await this.Print(info, ctx);
         }
     }
-    ShowPicture(filename: string): void {
+    async ShowPicture(filename: string): Promise<void> {
         // In Quest 4.x this function would be used for showing a picture in a popup window, but
         // this is no longer supported - ALL images are displayed in-line with the game text. Any
         // image caption is displayed as text, and any image size specified is ignored.
@@ -7946,7 +7946,7 @@ class LegacyGame {
             filename = Trim(Left(filename, InStr(filename, "@") - 1));
         }
         if (caption.length > 0) {
-            this.Print(caption, this._nullContext);
+            await this.Print(caption, this._nullContext);
         }
         this.ShowPictureInText(filename);
     }
@@ -8128,16 +8128,16 @@ class LegacyGame {
             if (!descTagExist) {
                 //Remove final \n
                 roomDisplayText = Left(roomDisplayText, Len(roomDisplayText) - 1);
-                this.Print(roomDisplayText, ctx);
+                await this.Print(roomDisplayText, ctx);
                 if (doorwayString != "") {
-                    this.Print(doorwayString, ctx);
+                    await this.Print(doorwayString, ctx);
                 }
             } else {
                 //execute description tag:
                 //If no script, just print the tag's parameter.
                 //Otherwise, execute it as ASL script:
                 if (descType == TextActionType.Text) {
-                    this.Print(descLine, ctx);
+                    await this.Print(descLine, ctx);
                 } else {
                     await this.ExecuteScript(descLine, ctx);
                 }
@@ -8146,7 +8146,7 @@ class LegacyGame {
             // SHOW "LOOK" DESCRIPTION **************************************************
             if (showLookText) {
                 if (lookDesc != "") {
-                    this.Print(lookDesc, ctx);
+                    await this.Print(lookDesc, ctx);
                 }
             }
         }
@@ -8231,12 +8231,12 @@ class LegacyGame {
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this._gameAslVersion >= 392) {
                 // Convert string variables etc.
-                this.Print(await this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
+                await this.Print(await this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
             } else {
-                this.Print(this._lines[i], ctx);
+                await this.Print(this._lines[i], ctx);
             }
         }
-        this.Print("", ctx);
+        await this.Print("", ctx);
     }
     // Returns true if the system is ready to process a new command after completion - so it will be
     // in most cases, except when ExecCommand just caused an "enter" script command to complete
@@ -8260,7 +8260,7 @@ class LegacyGame {
         }
         var userCommandReturn: boolean = false;
         if (echo) {
-            this.Print("> " + input, ctx);
+            await this.Print("> " + input, ctx);
         }
         input = LCase(input);
         await this.SetStringContents("quest.originalcommand", input, ctx);
@@ -8477,9 +8477,9 @@ class LegacyGame {
                     if (lastComma != 0) {
                         invList = Left(invList, lastComma - 1) + " and" + Mid(invList, lastComma + 1);
                     }
-                    this.Print("You are carrying:|n" + invList + ".", ctx);
+                    await this.Print("You are carrying:|n" + invList + ".", ctx);
                 } else {
-                    this.Print("You are not carrying anything.", ctx);
+                    await this.Print("You are not carrying anything.", ctx);
                 }
             } else if (this.CmdStartsWith(input, "oops ")) {
                 this.ExecOops(this.GetEverythingAfter(input, "oops "), ctx);
@@ -8506,7 +8506,7 @@ class LegacyGame {
                 await this.ExecuteScript(this._afterTurnScript, ctx);
             }
         }
-        this.Print("", ctx);
+        await this.Print("", ctx);
         if (!dontSetIt) {
             // Use "DontSetIt" when we don't want "it" etc. to refer to the object used in this turn.
             // This is used for e.g. auto-remove object from container when taking.
@@ -8746,7 +8746,7 @@ class LegacyGame {
                 var lookData = Trim(this.GetEverythingAfter(Trim(lookLine), "look "));
                 if (Left(lookData, 1) == "<") {
                     var lookText = await this.GetParameter(lookLine, ctx);
-                    this.Print(lookText, ctx);
+                    await this.Print(lookText, ctx);
                 } else {
                     await this.ExecuteScript(lookData, ctx);
                 }
@@ -8811,9 +8811,9 @@ class LegacyGame {
             if (this.BeginsWith(speakLine, "<")) {
                 var text = await this.GetParameter(speakLine, ctx);
                 if (this._gameAslVersion >= 350) {
-                    this.Print(text, ctx);
+                    await this.Print(text, ctx);
                 } else {
-                    this.Print(Chr(34) + text + Chr(34), ctx);
+                    await this.Print(Chr(34) + text + Chr(34), ctx);
                 }
             } else {
                 await this.ExecuteScript(speakLine, ctx, ObjID);
@@ -8836,7 +8836,7 @@ class LegacyGame {
                 this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
             } else if (this.BeginsWith(data, "<")) {
                 data = await this.GetParameter(line, ctx);
-                this.Print(Chr(34) + data + Chr(34), ctx);
+                await this.Print(Chr(34) + data + Chr(34), ctx);
             } else {
                 await this.ExecuteScript(data, ctx);
             }
@@ -8894,7 +8894,7 @@ class LegacyGame {
                 } else {
                     parentDisplayName = this._objs[parentID].ObjectName;
                 }
-                this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
+                await this.Print("(first removing " + this._objs[id].Article + " from " + parentDisplayName + ")", ctx);
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
                 await this.ExecCommand("remove " + this._objs[id].ObjectName, ctx, false, null, true);
@@ -8907,7 +8907,7 @@ class LegacyGame {
                 this.PlayerErrorMessage(PlayerError.DefaultTake, ctx);
                 await this.PlayerItem(item, true, ctx, id);
             } else if (t.Type == TextActionType.Text) {
-                this.Print(t.Data, ctx);
+                await this.Print(t.Data, ctx);
                 await this.PlayerItem(item, true, ctx, id);
             } else if (t.Type == TextActionType.Script) {
                 await this.ExecuteScript(t.Data, ctx, id);
@@ -9251,7 +9251,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
                 this.ExecuteIncDec(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "say ")) {
-                this.Print(Chr(34) + await this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
+                await this.Print(Chr(34) + await this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
             } else if (this.BeginsWith(scriptLine, "do ")) {
                 await this.ExecuteDo(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "doaction ")) {
@@ -9261,11 +9261,11 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
                 await this.PlayerItem(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this.BeginsWith(scriptLine, "msg ")) {
-                this.Print(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "speak ")) {
                 this.Speak(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
-                this.Print(await this.GetParameter(scriptLine, ctx), ctx);
+                await this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (Trim(LCase(scriptLine)) == "helpclose") {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
             } else if (this.BeginsWith(scriptLine, "goto ")) {
@@ -9420,7 +9420,7 @@ class LegacyGame {
             }
         }
         catch (e) {
-            this.Print("[An internal error occurred]", ctx);
+            await this.Print("[An internal error occurred]", ctx);
             this.LogASLError("Error - '" + e + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
         }
     }
@@ -9710,7 +9710,7 @@ class LegacyGame {
                 self._openErrorReport = Left(self._openErrorReport, Len(self._openErrorReport) - 1);
                 err = err + ":\n\n" + self._openErrorReport;
             }
-            self.Print("Error: " + err, self._nullContext);
+            self.DoPrint("Error: " + err);
             onFailure();
         };
         
@@ -10039,14 +10039,14 @@ class LegacyGame {
             }
         }
     }
-    ShowHelp(ctx: Context): void {
-        this.Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
-        this.Print("", ctx);
-        this.Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx);
-        this.Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx);
-        this.Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx);
-        this.Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx);
-        this.Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.", ctx);
+    async ShowHelp(ctx: Context): Promise<void> {
+        await this.Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
+        await this.Print("", ctx);
+        await this.Print("|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn", ctx);
+        await this.Print("To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n", ctx);
+        await this.Print("|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n", ctx);
+        await this.Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx);
+        await this.Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.", ctx);
     }
     ReadCatalog(data: string): void {
         var nullPos = InStr(data, Chr(0));
@@ -10651,13 +10651,13 @@ class LegacyGame {
         if (!this._loadedFromQsg) {
             ctx = this._nullContext;
             await this.PlayGame(startRoom, ctx);
-            this.Print("", this._nullContext);
+            await this.Print("", this._nullContext);
         } else {
             this.UpdateItems(this._nullContext);
-            this.Print("Restored saved game", this._nullContext);
-            this.Print("", this._nullContext);
+            await this.Print("Restored saved game", this._nullContext);
+            await this.Print("", this._nullContext);
             await this.PlayGame(this._currentRoom, this._nullContext);
-            this.Print("", this._nullContext);
+            await this.Print("", this._nullContext);
             if (this._gameAslVersion >= 391) {
                 // For ASL>=391, OnLoad is now run for all games.
                 ctx = this._nullContext;
@@ -10977,7 +10977,7 @@ class RoomExit {
     async Go(ctx: Context): Promise<void> {
         if (this.GetIsLocked()) {
             if (this.GetExitPropertyBool("lockmessage")) {
-                this._game.Print(this.GetExitProperty("lockmessage"), ctx);
+                await this._game.Print(this.GetExitProperty("lockmessage"), ctx);
             } else {
                 this._game.PlayerErrorMessage(PlayerError.Locked, ctx);
             }
