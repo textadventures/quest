@@ -1,5 +1,6 @@
+asl4.js
+browser-polyfill.min.js
 .vs/
-.settings/
 node_modules/
 [Bb]in/
 obj/
