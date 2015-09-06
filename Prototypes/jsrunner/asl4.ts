@@ -1271,7 +1271,7 @@ class LegacyGame {
         }
         return result;
     }
-    DefineBlockParam(blockname: string, param: string): DefineBlock {
+    async DefineBlockParam(blockname: string, param: string): Promise<DefineBlock> {
         // Returns the start and end points of a named block
         var cache: StringDictionary;
         var result = new DefineBlock();
@@ -1288,7 +1288,7 @@ class LegacyGame {
                     blockType = Trim(Left(blockType, sp - 1));
                 }
                 if (blockType == blockname) {
-                    var blockKey = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext, false);
+                    var blockKey = await this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext, false);
                     blockKey = "k" + blockKey;
                     if (!cache[blockKey]) {
                         cache[blockKey] = this._defineBlocks[i].StartLine + "," + this._defineBlocks[i].EndLine;
@@ -1554,7 +1554,7 @@ class LegacyGame {
             // gets executed before something-specific's, as we execute the
             // lib startscripts backwards as well
             if (self.BeginsWith(self._lines[i], "!include ")) {
-                libFileName = self.GetParameter(self._lines[i], self._nullContext);
+                libFileName = self.GetSimpleParameter(self._lines[i]);
                 //Clear !include statement
                 self._lines[i] = "";
                 libraryAlreadyIncluded = false;
@@ -1638,7 +1638,7 @@ class LegacyGame {
         if (libCode[1] == "!library") {
             for (var c = 1; c <= libLines; c++) {
                 if (self.BeginsWith(libCode[c], "!asl-version ")) {
-                    libVer = parseInt(self.GetParameter(libCode[c], self._nullContext));
+                    libVer = parseInt(self.GetSimpleParameter(libCode[c]));
                     break;
                 }
             }
@@ -1735,7 +1735,7 @@ class LegacyGame {
                     } while (!(self.BeginsWith(libCode[c], "!end")));
                 } else if (self.BeginsWith(libCode[c], "!addto type ")) {
                     inDefTypeBlock = 0;
-                    typeBlockName = LCase(self.GetParameter(libCode[c], self._nullContext));
+                    typeBlockName = LCase(self.GetSimpleParameter(libCode[c]));
                     for (var d = 1; d <= UBound(self._lines); d++) {
                         if (LCase(self._lines[d]) == "define type <" + typeBlockName + ">") {
                             inDefTypeBlock = 1;
@@ -1920,7 +1920,7 @@ class LegacyGame {
         }
         console.log(err);
     }
-    GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): string {
+    async GetParameter(s: string, ctx: Context, convertStringVariables: boolean = true): Promise<string> {
         // Returns the parameters between < and > in a string
         var newParam: string;
         var startPos: number = 0;
@@ -1934,10 +1934,15 @@ class LegacyGame {
         var retrParam = Mid(s, startPos + 1, (endPos - startPos) - 1);
         if (convertStringVariables) {
             if (this._gameAslVersion >= 320) {
-                newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
+                newParam = await this.ConvertParameter(
+                    await this.ConvertParameter(
+                        await this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
             } else {
                 if (Left(retrParam, 9) != "~Internal") {
-                    newParam = this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx);
+                    newParam = await this.ConvertParameter(
+                        await this.ConvertParameter(
+                            await this.ConvertParameter(
+                                await this.ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx);
                 } else {
                     newParam = retrParam;
                 }
@@ -1946,6 +1951,19 @@ class LegacyGame {
             newParam = retrParam;
         }
         return this.EvaluateInlineExpressions(newParam);
+    }
+    GetSimpleParameter(s: string): string {
+        // Returns the parameters between < and > in a string
+        var newParam: string;
+        var startPos: number = 0;
+        var endPos: number = 0;
+        startPos = InStr(s, "<");
+        endPos = InStr(s, ">");
+        if (startPos == 0 || endPos == 0) {
+            this.LogASLError("Expected parameter in '" + this.ReportErrorLine(s) + "'", LogType.WarningError);
+            return "";
+        }
+        return Mid(s, startPos + 1, (endPos - startPos) - 1);
     }
     AddLine(line: string): void {
         //Adds a line to the game script
@@ -2113,7 +2131,7 @@ class LegacyGame {
             for (var i = 1; i <= o.NumberProperties; i++) {
                 if (o.Properties[i].PropertyName == "look") {
                     // do this odd RetrieveParameter stuff to convert any variables
-                    this.Print(this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
+                    this.Print(await this.GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
                     foundLook = true;
                     break;
                 }
@@ -2124,7 +2142,7 @@ class LegacyGame {
                 if (this.BeginsWith(this._lines[i], "look ")) {
                     lookLine = Trim(this.GetEverythingAfter(this._lines[i], "look "));
                     if (Left(lookLine, 1) == "<") {
-                        this.Print(this.GetParameter(this._lines[i], ctx), ctx);
+                        this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
                     } else {
                         await this.ExecuteScript(lookLine, ctx, id);
                     }
@@ -2560,9 +2578,9 @@ class LegacyGame {
             this.LogASLError("No case block specified for '" + script + "'", LogType.WarningError);
             return;
         }
-        var blockName = this.GetParameter(afterLine, ctx);
-        var block = this.DefineBlockParam("procedure", blockName);
-        var checkValue = this.GetParameter(script, ctx);
+        var blockName = await this.GetParameter(afterLine, ctx);
+        var block = await this.DefineBlockParam("procedure", blockName);
+        var checkValue = await this.GetParameter(script, ctx);
         var caseMatch = false;
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             // Go through all the cases until we find the one that matches
@@ -2575,7 +2593,7 @@ class LegacyGame {
                         caseMatch = true;
                         caseScript = this.GetEverythingAfter(this._lines[i], "case else ");
                     } else {
-                        var thisCase = this.GetParameter(this._lines[i], ctx);
+                        var thisCase = await this.GetParameter(this._lines[i], ctx);
                         var finished = false;
                         do {
                             var SCP = InStr(thisCase, ";");
@@ -2621,7 +2639,7 @@ class LegacyGame {
         gameBlock = this.GetDefineBlock("game");
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], verbTag)) {
-                verbsList = this.GetParameter(this._lines[i], ctx);
+                verbsList = await this.GetParameter(this._lines[i], ctx);
                 // The property or action the verb uses is either after a colon,
                 // or it's the first (or only) verb on the line.
                 var colonPos = InStr(verbsList, ":");
@@ -2949,7 +2967,7 @@ class LegacyGame {
         var propName: string = "";
         if (this.BeginsWith(line, "list closed <")) {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = this.GetParameter(line, this._nullContext);
+            listInfo.Data = this.GetSimpleParameter(line);
             propName = "list closed";
         } else if (Trim(line) == "list closed off") {
             // default for list closed is off anyway
@@ -2960,7 +2978,7 @@ class LegacyGame {
             propName = "list closed";
         } else if (this.BeginsWith(line, "list empty <")) {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = this.GetParameter(line, this._nullContext);
+            listInfo.Data = this.GetSimpleParameter(line);
             propName = "list empty";
         } else if (Trim(line) == "list empty off") {
             // default for list empty is off anyway
@@ -2974,7 +2992,7 @@ class LegacyGame {
             return;
         } else if (this.BeginsWith(line, "list <")) {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = this.GetParameter(line, this._nullContext);
+            listInfo.Data = this.GetSimpleParameter(line);
             propName = "list";
         } else if (this.BeginsWith(line, "list ")) {
             listInfo.Type = TextActionType.Script;
@@ -3071,12 +3089,12 @@ class LegacyGame {
     DoClear(): void {
         this._player.ClearScreen();
     }
-    ExecuteFlag(line: string, ctx: Context): void {
+    async ExecuteFlag(line: string, ctx: Context): Promise<void> {
         var propertyString: string = "";
         if (this.BeginsWith(line, "on ")) {
-            propertyString = this.GetParameter(line, ctx);
+            propertyString = await this.GetParameter(line, ctx);
         } else if (this.BeginsWith(line, "off ")) {
-            propertyString = "not " + this.GetParameter(line, ctx);
+            propertyString = "not " + await this.GetParameter(line, ctx);
         }
         // Game object always has ObjID 1
         this.AddToObjectProperties(propertyString, 1, ctx);
@@ -3085,10 +3103,10 @@ class LegacyGame {
         // Game ObjID is 1
         return this.GetObjectProperty(flag, 1, true) == "yes";
     }
-    ExecuteIncDec(line: string, ctx: Context): void {
+    async ExecuteIncDec(line: string, ctx: Context): Promise<void> {
         var variable: string;
         var change: number = 0;
-        var param = this.GetParameter(line, ctx);
+        var param = await this.GetParameter(line, ctx);
         var sc = InStr(param, ";");
         if (sc == 0) {
             change = 1;
@@ -3219,7 +3237,7 @@ class LegacyGame {
             }
         }
         if (Left(Trim(giveData), 1) == "<") {
-            var name = this.GetParameter(giveData, this._nullContext);
+            var name = this.GetSimpleParameter(giveData);
             var dataId: number = 0;
             actionName = actionName + "'" + name + "'";
             var found = false;
@@ -3244,10 +3262,10 @@ class LegacyGame {
             this.AddObjectAction(id, actionName, actionScript, true);
         }
     }
-    AddToObjectActions(actionInfo: string, id: number, ctx: Context): void {
+    async AddToObjectActions(actionInfo: string, id: number, ctx: Context): Promise<void> {
         var actionNum: number = 0;
         var foundExisting = false;
-        var name = LCase(this.GetParameter(actionInfo, ctx));
+        var name = LCase(await this.GetParameter(actionInfo, ctx));
         var ep = InStr(actionInfo, ">");
         if (ep == Len(actionInfo)) {
             this.LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
@@ -3454,7 +3472,7 @@ class LegacyGame {
             }
         }
         if (Left(Trim(useData), 1) == "<") {
-            var objectName = this.GetParameter(useData, this._nullContext);
+            var objectName = this.GetSimpleParameter(useData);
             var dataId: number = 0;
             var found = false;
             for (var i = 1; i <= o.NumberUseData; i++) {
@@ -3481,8 +3499,8 @@ class LegacyGame {
     CapFirst(s: string): string {
         return UCase(Left(s, 1)) + Mid(s, 2);
     }
-    ConvertVarsIn(s: string, ctx: Context): string {
-        return this.GetParameter("<" + s + ">", ctx);
+    async ConvertVarsIn(s: string, ctx: Context): Promise<string> {
+        return await this.GetParameter("<" + s + ">", ctx);
     }
     DisambObjHere(ctx: Context, id: number, firstPlace: string, twoPlaces: boolean = false, secondPlace: string = "", isExit: boolean = false): boolean {
         var isSeen: boolean = false;
@@ -3854,11 +3872,11 @@ class LegacyGame {
         this.SetStringContents("quest.error.object", name, ctx);
         return -1;
     }
-    DisplayStatusVariableInfo(id: number, type: VarType, ctx: Context): string {
+    async DisplayStatusVariableInfo(id: number, type: VarType, ctx: Context): Promise<string> {
         var displayData: string = "";
         var ep: number = 0;
         if (type == VarType.String) {
-            displayData = this.ConvertVarsIn(this._stringVariable[id].DisplayString, ctx);
+            displayData = await this.ConvertVarsIn(this._stringVariable[id].DisplayString, ctx);
             ep = InStr(displayData, "!");
             if (ep != 0) {
                 displayData = Left(displayData, ep - 1) + this._stringVariable[id].VariableContents[0] + Mid(displayData, ep + 1);
@@ -3867,7 +3885,7 @@ class LegacyGame {
             if (this._numericVariable[id].NoZeroDisplay && Val(this._numericVariable[id].VariableContents[0]) == 0) {
                 return "";
             }
-            displayData = this.ConvertVarsIn(this._numericVariable[id].DisplayString, ctx);
+            displayData = await this.ConvertVarsIn(this._numericVariable[id].DisplayString, ctx);
             ep = InStr(displayData, "!");
             if (ep != 0) {
                 displayData = Left(displayData, ep - 1) + this._numericVariable[id].VariableContents[0] + Mid(displayData, ep + 1);
@@ -3952,7 +3970,7 @@ class LegacyGame {
             inLocation = "";
             scriptToRun = this.GetEverythingAfter(scriptLine, "game ");
         } else {
-            inLocation = LCase(this.GetParameter(scriptLine, ctx));
+            inLocation = LCase(await this.GetParameter(scriptLine, ctx));
             var bracketPos = InStr(scriptLine, ">");
             scriptToRun = Trim(Mid(scriptLine, bracketPos + 1));
         }
@@ -3965,14 +3983,14 @@ class LegacyGame {
             }
         }
     }
-    ExecuteAction(data: string, ctx: Context): void {
+    async ExecuteAction(data: string, ctx: Context): Promise<void> {
         var actionName: string;
         var script: string;
         var actionNum: number = 0;
         var id: number = 0;
         var foundExisting = false;
         var foundObject = false;
-        var param = this.GetParameter(data, ctx);
+        var param = await this.GetParameter(data, ctx);
         var scp = InStr(param, ";");
         if (scp == 0) {
             this.LogASLError("No action name specified in 'action " + data + "'", LogType.WarningError);
@@ -4015,7 +4033,7 @@ class LegacyGame {
         o.Actions[actionNum].Script = script;
         this.ObjectActionUpdate(id, actionName, script);
     }
-    ExecuteCondition(condition: string, ctx: Context): boolean {
+    async ExecuteCondition(condition: string, ctx: Context): Promise<boolean> {
         var result: boolean = false;
         var thisNot: boolean = false;
         if (this.BeginsWith(condition, "not ")) {
@@ -4025,34 +4043,34 @@ class LegacyGame {
             thisNot = false;
         }
         if (this.BeginsWith(condition, "got ")) {
-            result = this.ExecuteIfGot(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfGot(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "has ")) {
-            result = this.ExecuteIfHas(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfHas(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "ask ")) {
-            result = this.ExecuteIfAsk(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfAsk(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "is ")) {
-            result = this.ExecuteIfIs(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfIs(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "here ")) {
-            result = this.ExecuteIfHere(this.GetParameter(condition, ctx), ctx);
+            result = this.ExecuteIfHere(await this.GetParameter(condition, ctx), ctx);
         } else if (this.BeginsWith(condition, "exists ")) {
-            result = this.ExecuteIfExists(this.GetParameter(condition, ctx), false);
+            result = this.ExecuteIfExists(await this.GetParameter(condition, ctx), false);
         } else if (this.BeginsWith(condition, "real ")) {
-            result = this.ExecuteIfExists(this.GetParameter(condition, ctx), true);
+            result = this.ExecuteIfExists(await this.GetParameter(condition, ctx), true);
         } else if (this.BeginsWith(condition, "property ")) {
-            result = this.ExecuteIfProperty(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfProperty(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "action ")) {
-            result = this.ExecuteIfAction(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfAction(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "type ")) {
-            result = this.ExecuteIfType(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfType(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "flag ")) {
-            result = this.ExecuteIfFlag(this.GetParameter(condition, ctx));
+            result = this.ExecuteIfFlag(await this.GetParameter(condition, ctx));
         }
         if (thisNot) {
             result = !result;
         }
         return result;
     }
-    ExecuteConditions(list: string, ctx: Context): boolean {
+    async ExecuteConditions(list: string, ctx: Context): Promise<boolean> {
         var conditions: string[];
         var numConditions = 0;
         var operations: string[];
@@ -4083,7 +4101,7 @@ class LegacyGame {
         operations[0] = "AND";
         var result = true;
         for (var i = 1; i <= numConditions; i++) {
-            var thisResult = this.ExecuteCondition(conditions[i], ctx);
+            var thisResult = await this.ExecuteCondition(conditions[i], ctx);
             if (operations[i - 1] == "AND") {
                 result = thisResult && result;
             } else if (operations[i - 1] == "OR") {
@@ -4092,10 +4110,10 @@ class LegacyGame {
         }
         return result;
     }
-    ExecuteCreate(data: string, ctx: Context): void {
+    async ExecuteCreate(data: string, ctx: Context): Promise<void> {
         var newName: string;
         if (this.BeginsWith(data, "room ")) {
-            newName = this.GetParameter(data, ctx);
+            newName = await this.GetParameter(data, ctx);
             this._numberRooms = this._numberRooms + 1;
             if (!this._rooms) this._rooms = [];
             this._rooms[this._numberRooms] = new RoomType();
@@ -4118,7 +4136,7 @@ class LegacyGame {
                 this._rooms[this._numberRooms].Exits.SetObjId(this._rooms[this._numberRooms].ObjId);
             }
         } else if (this.BeginsWith(data, "object ")) {
-            var paramData = this.GetParameter(data, ctx);
+            var paramData = await this.GetParameter(data, ctx);
             var scp = InStr(paramData, ";");
             var containerRoom: string;
             if (scp == 0) {
@@ -4153,12 +4171,12 @@ class LegacyGame {
             this.ExecuteCreateExit(data, ctx);
         }
     }
-    ExecuteCreateExit(data: string, ctx: Context): void {
+    async ExecuteCreateExit(data: string, ctx: Context): Promise<void> {
         var scrRoom: string;
         var destRoom: string = "";
         var destId: number = 0;
         var exitData = this.GetEverythingAfter(data, "exit ");
-        var newName = this.GetParameter(data, ctx);
+        var newName = await this.GetParameter(data, ctx);
         var scp = InStr(newName, ";");
         if (this._gameAslVersion < 410) {
             if (scp == 0) {
@@ -4213,7 +4231,7 @@ class LegacyGame {
         } else {
             saveData = Left(exitData, paramPos - 1);
             // We do this so the changelog doesn't contain unconverted variable names
-            saveData = saveData + "<" + this.GetParameter(exitData, ctx) + ">";
+            saveData = saveData + "<" + await this.GetParameter(exitData, ctx) + ">";
         }
         this.AddToChangeLog("room " + this._rooms[srcId].RoomName, "exit " + saveData);
         var r = this._rooms[srcId];
@@ -4345,13 +4363,13 @@ class LegacyGame {
             if (this.BeginsWith(dropStatement, "everywhere")) {
                 this.PlayerItem(this._objs[id].ObjectName, false, ctx);
                 if (InStr(dropStatement, "<") != 0) {
-                    this.Print(this.GetParameter(dropStatement, ctx), ctx);
+                    this.Print(await this.GetParameter(dropStatement, ctx), ctx);
                 } else {
                     this.PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
                 }
             } else if (this.BeginsWith(dropStatement, "nowhere")) {
                 if (InStr(dropStatement, "<") != 0) {
-                    this.Print(this.GetParameter(dropStatement, ctx), ctx);
+                    this.Print(await this.GetParameter(dropStatement, ctx), ctx);
                 } else {
                     this.PlayerErrorMessage(PlayerError.CantDrop, ctx);
                 }
@@ -4395,7 +4413,7 @@ class LegacyGame {
             if (this.BeginsWith(this._lines[i], "examine ")) {
                 var action = Trim(this.GetEverythingAfter(this._lines[i], "examine "));
                 if (Left(action, 1) == "<") {
-                    this.Print(this.GetParameter(this._lines[i], ctx), ctx);
+                    this.Print(await this.GetParameter(this._lines[i], ctx), ctx);
                 } else {
                     await this.ExecuteScript(action, ctx, id);
                 }
@@ -4465,7 +4483,7 @@ class LegacyGame {
                 } while (!(pos >= Len(parameters)));
             }
         }
-        var block = this.DefineBlockParam("procedure", procedureName);
+        var block = await this.DefineBlockParam("procedure", procedureName);
         if (block.StartLine == 0 && block.EndLine == 0) {
             this.LogASLError("No such procedure " + procedureName, LogType.WarningError);
         } else {
@@ -4615,7 +4633,7 @@ class LegacyGame {
         var conditions = Trim(Left(data, bracketPos));
         var finished = false;
         do {
-            if (this.ExecuteConditions(conditions, ctx) == repeatWhileTrue) {
+            if (await this.ExecuteConditions(conditions, ctx) == repeatWhileTrue) {
                 await this.ExecuteScript(repeatScript, ctx);
             } else {
                 finished = true;
@@ -4657,9 +4675,9 @@ class LegacyGame {
         this.CheckCollectable(id);
         this.UpdateItems(ctx);
     }
-    ExecuteWait(waitLine: string, ctx: Context): void {
+    async ExecuteWait(waitLine: string, ctx: Context): Promise<void> {
         if (waitLine != "") {
-            this.Print(this.GetParameter(waitLine, ctx), ctx);
+            this.Print(await this.GetParameter(waitLine, ctx), ctx);
         } else {
             if (this._gameAslVersion >= 410) {
                 this.PlayerErrorMessage(PlayerError.DefaultWait, ctx);
@@ -4687,7 +4705,7 @@ class LegacyGame {
         return result;
     }
     GetObjectActions(actionInfo: string): ActionType {
-        var name = LCase(this.GetParameter(actionInfo, this._nullContext));
+        var name = LCase(this.GetSimpleParameter(actionInfo));
         var ep = InStr(actionInfo, ">");
         if (ep == Len(actionInfo)) {
             this.LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
@@ -4763,7 +4781,7 @@ class LegacyGame {
         var found = false;
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define type")) {
-                if (LCase(this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext)) == LCase(type)) {
+                if (LCase(this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine])) == LCase(type)) {
                     blockId = i;
                     found = true;
                     break;
@@ -4778,7 +4796,7 @@ class LegacyGame {
         }
         for (var i = this._defineBlocks[blockId].StartLine + 1; i <= this._defineBlocks[blockId].EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "type ")) {
-                var typeName = LCase(this.GetParameter(this._lines[i], this._nullContext));
+                var typeName = LCase(this.GetSimpleParameter(this._lines[i]));
                 var newProperties = this.GetPropertiesInType(typeName);
                 propertyList.Properties = propertyList.Properties + newProperties.Properties;
                 if (!propertyList.Actions) propertyList.Actions = [];
@@ -4803,7 +4821,7 @@ class LegacyGame {
                 if (!propertyList.Actions) propertyList.Actions = [];
                 propertyList.Actions[propertyList.NumberActions] = this.GetObjectActions(this.GetEverythingAfter(this._lines[i], "action "));
             } else if (this.BeginsWith(this._lines[i], "properties ")) {
-                propertyList.Properties = propertyList.Properties + this.GetParameter(this._lines[i], this._nullContext) + ";";
+                propertyList.Properties = propertyList.Properties + this.GetSimpleParameter(this._lines[i]) + ";";
             } else if (Trim(this._lines[i]) != "") {
                 propertyList.Properties = propertyList.Properties + this._lines[i] + ";";
             }
@@ -4827,7 +4845,7 @@ class LegacyGame {
         textScript = Trim(textScript);
         if (Left(textScript, 1) == "<") {
             result.Type = TextActionType.Text;
-            result.Data = this.GetParameter(textScript, this._nullContext);
+            result.Data = this.GetSimpleParameter(textScript);
         } else {
             result.Type = TextActionType.Script;
             result.Data = textScript;
@@ -5000,7 +5018,7 @@ class LegacyGame {
             this.UpdateItems(ctx);
         }
     }
-    ConvertParameter(parameter: string, convertChar: string, action: ConvertType, ctx: Context): string {
+    async ConvertParameter(parameter: string, convertChar: string, action: ConvertType, ctx: Context): Promise<string> {
         // Returns a string with functions, string and
         // numeric variables executed or converted as
         // appropriate, read for display/etc.
@@ -5029,7 +5047,7 @@ class LegacyGame {
                         result = result + this.GetStringContents(varName, ctx);
                     } else if (action == ConvertType.Functions) {
                         varName = this.EvaluateInlineExpressions(varName);
-                        result = result + this.DoFunction(varName, ctx);
+                        result = result + await this.DoFunction(varName, ctx);
                     } else if (action == ConvertType.Numeric) {
                         result = result + Trim(Str(this.GetNumericContents(varName, ctx)));
                     } else if (action == ConvertType.Collectables) {
@@ -5060,10 +5078,10 @@ class LegacyGame {
             parameter = "";
         }
         var block: DefineBlock;
-        block = this.DefineBlockParam("function", name);
+        block = await this.DefineBlockParam("function", name);
         if (block.StartLine == 0 && block.EndLine == 0) {
             //Function does not exist; try an internal function.
-            intFuncResult = this.DoInternalFunction(name, parameter, ctx);
+            intFuncResult = await this.DoInternalFunction(name, parameter, ctx);
             if (intFuncResult == "__NOTDEFINED") {
                 this.LogASLError("No such function '" + name + "'", LogType.WarningError);
                 return "[ERROR]";
@@ -5102,7 +5120,7 @@ class LegacyGame {
             return result;
         }
     }
-    DoInternalFunction(name: string, parameter: string, ctx: Context): string {
+    async DoInternalFunction(name: string, parameter: string, ctx: Context): Promise<string> {
         var parameters: string[];
         var untrimmedParameters: string[];
         var objId: number = 0;
@@ -5154,7 +5172,7 @@ class LegacyGame {
             }
         } else if (name == "gettag") {
             // Deprecated
-            return this.FindStatement(this.DefineBlockParam("room", parameters[1]), parameters[2]);
+            return await this.FindStatement(await this.DefineBlockParam("room", parameters[1]), parameters[2]);
         } else if (name == "objectname") {
             return this._objs[ctx.CallingObjectId].ObjectName;
         } else if (name == "locationof") {
@@ -5340,14 +5358,14 @@ class LegacyGame {
     async ExecFor(line: string, ctx: Context): Promise<void> {
         // See if this is a "for each" loop:
         if (this.BeginsWith(line, "each ")) {
-            this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
+            await this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
             return;
         }
         // Executes a for loop, of form:
         //   for <variable; startvalue; endvalue> script
         var endValue: number = 0;
         var stepValue: number = 0;
-        var forData = this.GetParameter(line, ctx);
+        var forData = await this.GetParameter(line, ctx);
         // Extract individual components:
         var scp1 = InStr(forData, ";");
         var scp2 = InStrFrom(scp1 + 1, forData, ";");
@@ -5609,11 +5627,11 @@ class LegacyGame {
         // Now, set the contents
         return Val(this._numericVariable[numNumber].VariableContents[arrayIndex]);
     }
-    PlayerErrorMessage(e: PlayerError, ctx: Context): void {
-        this.Print(this.GetErrorMessage(e, ctx), ctx);
+    async PlayerErrorMessage(e: PlayerError, ctx: Context): Promise<void> {
+        this.Print(await this.GetErrorMessage(e, ctx), ctx);
     }
-    PlayerErrorMessage_ExtendInfo(e: PlayerError, ctx: Context, extraInfo: string): void {
-        var message = this.GetErrorMessage(e, ctx);
+    async PlayerErrorMessage_ExtendInfo(e: PlayerError, ctx: Context, extraInfo: string): Promise<void> {
+        var message = await this.GetErrorMessage(e, ctx);
         if (extraInfo != "") {
             if (Right(message, 1) == ".") {
                 message = Left(message, Len(message) - 1);
@@ -5622,8 +5640,10 @@ class LegacyGame {
         }
         this.Print(message, ctx);
     }
-    GetErrorMessage(e: PlayerError, ctx: Context): string {
-        return this.ConvertParameter(this.ConvertParameter(this.ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
+    async GetErrorMessage(e: PlayerError, ctx: Context): Promise<string> {
+        return await this.ConvertParameter(
+            await this.ConvertParameter(
+                await this.ConvertParameter(this._playerErrorMessageString[e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
     }
     PlayMedia(filename: string, sync: boolean = false, looped: boolean = false): void {
         if (filename.length == 0) {
@@ -5936,15 +5956,15 @@ class LegacyGame {
         }
         return SetResult.Unfound;
     }
-    SetUpChoiceForm(blockName: string, ctx: Context): string {
+    async SetUpChoiceForm(blockName: string, ctx: Context): Promise<string> {
         // Returns script to execute from choice block
-        var block = this.DefineBlockParam("selection", blockName);
+        var block = await this.DefineBlockParam("selection", blockName);
         var prompt = this.FindStatement(block, "info");
         var menuOptions: StringDictionary = {};
         var menuScript: StringDictionary = {};
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "choice ")) {
-                menuOptions[i.toString()] = this.GetParameter(this._lines[i], ctx);
+                menuOptions[i.toString()] = await this.GetParameter(this._lines[i], ctx);
                 menuScript[i.toString()] = Trim(Right(this._lines[i], Len(this._lines[i]) - InStr(this._lines[i], ">")));
             }
         }
@@ -5961,24 +5981,24 @@ class LegacyGame {
         this._defaultFontSize = 9;
         for (var i = gameblock.StartLine + 1; i <= gameblock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "default fontname ")) {
-                var name = this.GetParameter(this._lines[i], this._nullContext);
+                var name = this.GetSimpleParameter(this._lines[i]);
                 if (name != "") {
                     this._defaultFontName = name;
                 }
             } else if (this.BeginsWith(this._lines[i], "default fontsize ")) {
-                var size = parseInt(this.GetParameter(this._lines[i], this._nullContext));
+                var size = parseInt(this.GetSimpleParameter(this._lines[i]));
                 if (size != 0) {
                     this._defaultFontSize = size;
                 }
             }
         }
     }
-    SetUpDisplayVariables(): void {
+    async SetUpDisplayVariables(): Promise<void> {
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "define variable ")) {
                 var variable = new VariableType();
                 variable.VariableContents = [];
-                variable.VariableName = this.GetParameter(this._lines[i], this._nullContext);
+                variable.VariableName = this.GetSimpleParameter(this._lines[i]);
                 variable.DisplayString = "";
                 variable.NoZeroDisplay = false;
                 variable.OnChangeScript = "";
@@ -6000,9 +6020,9 @@ class LegacyGame {
                         if (this.BeginsWith(displayString, "nozero ")) {
                             variable.NoZeroDisplay = true;
                         }
-                        variable.DisplayString = this.GetParameter(this._lines[i], this._nullContext, false);
+                        variable.DisplayString = this.GetSimpleParameter(this._lines[i]);
                     } else if (this.BeginsWith(this._lines[i], "value ")) {
-                        variable.VariableContents[0] = this.GetParameter(this._lines[i], this._nullContext);
+                        variable.VariableContents[0] = await this.GetParameter(this._lines[i], this._nullContext);
                     }
                 } while (!(Trim(this._lines[i]) == "end define"));
                 if (type == "string") {
@@ -6040,12 +6060,12 @@ class LegacyGame {
                 if (this.BeginsWith(this._lines[i], "define ")) {
                     nestBlock = nestBlock + 1;
                 } else if (this.BeginsWith(this._lines[i], "properties ")) {
-                    this.AddToObjectProperties(this.GetParameter(this._lines[i], this._nullContext), this._numberObjs, this._nullContext);
+                    this.AddToObjectProperties(this.GetSimpleParameter(this._lines[i]), this._numberObjs, this._nullContext);
                 } else if (this.BeginsWith(this._lines[i], "type ")) {
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                     if (!o.TypesIncluded) o.TypesIncluded = [];
-                    o.TypesIncluded[o.NumberTypesIncluded] = this.GetParameter(this._lines[i], this._nullContext);
-                    var propertyData = this.GetPropertiesInType(this.GetParameter(this._lines[i], this._nullContext));
+                    o.TypesIncluded[o.NumberTypesIncluded] = this.GetSimpleParameter(this._lines[i]);
+                    var propertyData = this.GetPropertiesInType(this.GetSimpleParameter(this._lines[i]));
                     this.AddToObjectProperties(propertyData.Properties, this._numberObjs, this._nullContext);
                     for (var k = 1; k <= propertyData.NumberActions; k++) {
                         this.AddObjectAction(this._numberObjs, propertyData.Actions[k].ActionName, propertyData.Actions[k].Script);
@@ -6067,9 +6087,9 @@ class LegacyGame {
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define menu ")) {
                 if (exists) {
-                    this.LogASLError("Can't load menu '" + this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext) + "' - only one menu can be added.", LogType.WarningError);
+                    this.LogASLError("Can't load menu '" + this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]) + "' - only one menu can be added.", LogType.WarningError);
                 } else {
-                    menuTitle = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
+                    menuTitle = this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]);
                     for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                         if (Trim(this._lines[j]) != "") {
                             var scp = InStr(this._lines[j], ":");
@@ -6131,7 +6151,7 @@ class LegacyGame {
                 if (!this._objs) this._objs = [];
                 this._objs[this._numberObjs] = new ObjectType();
                 var r = this._rooms[this._numberRooms];
-                r.RoomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
+                r.RoomName = this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]);
                 this._objs[this._numberObjs].ObjectName = r.RoomName;
                 this._objs[this._numberObjs].IsRoom = true;
                 this._objs[this._numberObjs].CorresRoom = r.RoomName;
@@ -6161,7 +6181,7 @@ class LegacyGame {
                         } while (!(nestedBlock == 0));
                     }
                     if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "alias ")) {
-                        r.RoomAlias = this.GetParameter(this._lines[j], this._nullContext);
+                        r.RoomAlias = this.GetSimpleParameter(this._lines[j]);
                         this._objs[this._numberObjs].ObjectAlias = r.RoomAlias;
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("alias=" + r.RoomAlias, this._numberObjs, this._nullContext);
@@ -6176,7 +6196,7 @@ class LegacyGame {
                             }
                         }
                     } else if (this.BeginsWith(this._lines[j], "out ")) {
-                        r.Out.Text = this.GetParameter(this._lines[j], this._nullContext);
+                        r.Out.Text = this.GetSimpleParameter(this._lines[j]);
                         r.Out.Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                         if (this._gameAslVersion >= 350) {
                             if (r.Out.Script != "") {
@@ -6275,17 +6295,17 @@ class LegacyGame {
                             }
                         }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "indescription ")) {
-                        r.InDescription = this.GetParameter(this._lines[j], this._nullContext);
+                        r.InDescription = this.GetSimpleParameter(this._lines[j]);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("indescription=" + r.InDescription, this._numberObjs, this._nullContext);
                         }
                     } else if (this._gameAslVersion >= 280 && this.BeginsWith(this._lines[j], "look ")) {
-                        r.Look = this.GetParameter(this._lines[j], this._nullContext);
+                        r.Look = this.GetSimpleParameter(this._lines[j]);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("look=" + r.Look, this._numberObjs, this._nullContext);
                         }
                     } else if (this.BeginsWith(this._lines[j], "prefix ")) {
-                        r.Prefix = this.GetParameter(this._lines[j], this._nullContext);
+                        r.Prefix = this.GetSimpleParameter(this._lines[j]);
                         if (this._gameAslVersion >= 350) {
                             this.AddToObjectProperties("prefix=" + r.Prefix, this._numberObjs, this._nullContext);
                         }
@@ -6296,13 +6316,13 @@ class LegacyGame {
                         r.NumberCommands = r.NumberCommands + 1;
                         if (!r.Commands) r.Commands = [];
                         r.Commands[r.NumberCommands] = new UserDefinedCommandType();
-                        r.Commands[r.NumberCommands].CommandText = this.GetParameter(this._lines[j], this._nullContext, false);
+                        r.Commands[r.NumberCommands].CommandText = this.GetSimpleParameter(this._lines[j]);
                         r.Commands[r.NumberCommands].CommandScript = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                     } else if (this.BeginsWith(this._lines[j], "place ")) {
                         r.NumberPlaces = r.NumberPlaces + 1;
                         if (!r.Places) r.Places = [];
                         r.Places[r.NumberPlaces] = new PlaceType();
-                        var placeData = this.GetParameter(this._lines[j], this._nullContext);
+                        var placeData = this.GetSimpleParameter(this._lines[j]);
                         var scp = InStr(placeData, ";");
                         if (scp == 0) {
                             r.Places[r.NumberPlaces].PlaceName = placeData;
@@ -6315,15 +6335,15 @@ class LegacyGame {
                         r.NumberUse = r.NumberUse + 1;
                         if (!r.Use) r.Use = [];
                         r.Use[r.NumberUse] = new ScriptText();
-                        r.Use[r.NumberUse].Text = this.GetParameter(this._lines[j], this._nullContext);
+                        r.Use[r.NumberUse].Text = this.GetSimpleParameter(this._lines[j]);
                         r.Use[r.NumberUse].Script = Trim(Mid(this._lines[j], InStr(this._lines[j], ">") + 1));
                     } else if (this.BeginsWith(this._lines[j], "properties ")) {
-                        this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                        this.AddToObjectProperties(this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                     } else if (this.BeginsWith(this._lines[j], "type ")) {
                         this._objs[this._numberObjs].NumberTypesIncluded = this._objs[this._numberObjs].NumberTypesIncluded + 1;
                         if (!this._objs[this._numberObjs].TypesIncluded) this._objs[this._numberObjs].TypesIncluded = [];
-                        this._objs[this._numberObjs].TypesIncluded[this._objs[this._numberObjs].NumberTypesIncluded] = this.GetParameter(this._lines[j], this._nullContext);
-                        var propertyData = this.GetPropertiesInType(this.GetParameter(this._lines[j], this._nullContext));
+                        this._objs[this._numberObjs].TypesIncluded[this._objs[this._numberObjs].NumberTypesIncluded] = this.GetSimpleParameter(this._lines[j]);
+                        var propertyData = this.GetPropertiesInType(this.GetSimpleParameter(this._lines[j]));
                         this.AddToObjectProperties(propertyData.Properties, this._numberObjs, this._nullContext);
                         for (var k = 1; k <= propertyData.NumberActions; k++) {
                             this.AddObjectAction(this._numberObjs, propertyData.Actions[k].ActionName, propertyData.Actions[k].Script);
@@ -6378,11 +6398,11 @@ class LegacyGame {
                 this._numberTimers = this._numberTimers + 1;
                 if (!this._timers) this._timers = [];
                 this._timers[this._numberTimers] = new TimerType();
-                this._timers[this._numberTimers].TimerName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
+                this._timers[this._numberTimers].TimerName = this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]);
                 this._timers[this._numberTimers].TimerActive = false;
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "interval ")) {
-                        this._timers[this._numberTimers].TimerInterval = parseInt(this.GetParameter(this._lines[j], this._nullContext));
+                        this._timers[this._numberTimers].TimerInterval = parseInt(this.GetSimpleParameter(this._lines[j]));
                     } else if (this.BeginsWith(this._lines[j], "action ")) {
                         this._timers[this._numberTimers].TimerAction = this.GetEverythingAfter(this._lines[j], "action ");
                     } else if (Trim(LCase(this._lines[j])) == "enabled") {
@@ -6413,7 +6433,7 @@ class LegacyGame {
         var examineIsCustomised = false;
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "error ")) {
-                var errorInfo = this.GetParameter(this._lines[i], this._nullContext, false);
+                var errorInfo = this.GetSimpleParameter(this._lines[i]);
                 var scp = InStr(errorInfo, ";");
                 var errorName = Left(errorInfo, scp - 1);
                 var errorMsg = Trim(Mid(errorInfo, scp + 1));
@@ -6647,14 +6667,14 @@ class LegacyGame {
         this._currentRoom = room;
         //find the room
         var roomBlock: DefineBlock;
-        roomBlock = this.DefineBlockParam("room", room);
+        roomBlock = await this.DefineBlockParam("room", room);
         var finishedFindingCommas: boolean = false;
         charsViewable = "";
         charsFound = 0;
         //see if room has an alias
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "alias")) {
-                aliasName = this.GetParameter(this._lines[i], this._nullContext);
+                aliasName = await this.GetParameter(this._lines[i], this._nullContext);
                 i = roomBlock.EndLine;
             }
         }
@@ -6676,7 +6696,7 @@ class LegacyGame {
         inDesc = "unfound";
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "indescription")) {
-                inDesc = Trim(this.GetParameter(this._lines[i], this._nullContext));
+                inDesc = Trim(await this.GetParameter(this._lines[i], this._nullContext));
                 i = roomBlock.EndLine;
             }
         }
@@ -6767,7 +6787,7 @@ class LegacyGame {
         possDir = "";
         for (var i = roomBlock.StartLine + 1; i <= roomBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "out")) {
-                doorways = this.GetParameter(this._lines[i], this._nullContext);
+                doorways = await this.GetParameter(this._lines[i], this._nullContext);
             }
             if (this.BeginsWith(this._lines[i], "north ")) {
                 nsew = nsew + "|bnorth|xb, ";
@@ -6796,7 +6816,7 @@ class LegacyGame {
             }
             if (this.BeginsWith(this._lines[i], "place")) {
                 //remove any prefix semicolon from printed text
-                place = this.GetParameter(this._lines[i], this._nullContext);
+                place = await this.GetParameter(this._lines[i], this._nullContext);
                 placeNoFormat = place;
                 //Used in object list - no formatting or prefix
                 if (InStr(place, ";") > 0) {
@@ -6811,10 +6831,10 @@ class LegacyGame {
         var outside: DefineBlock;
         if (doorways != "") {
             //see if outside has an alias
-            outside = this.DefineBlockParam("room", doorways);
+            outside = await this.DefineBlockParam("room", doorways);
             for (var i = outside.StartLine + 1; i <= outside.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "alias")) {
-                    aliasOut = this.GetParameter(this._lines[i], this._nullContext);
+                    aliasOut = await this.GetParameter(this._lines[i], this._nullContext);
                     i = outside.EndLine;
                 }
             }
@@ -6904,7 +6924,7 @@ class LegacyGame {
             //Otherwise, execute it as ASL script:
             descLine = this.GetEverythingAfter(Trim(descLine), "description ");
             if (Left(descLine, 1) == "<") {
-                this.Print(this.GetParameter(descLine, this._nullContext), this._nullContext);
+                this.Print(await this.GetParameter(descLine, this._nullContext), this._nullContext);
             } else {
                 await this.ExecuteScript(descLine, this._nullContext);
             }
@@ -6920,7 +6940,7 @@ class LegacyGame {
                 defineBlock = defineBlock - 1;
             }
             if (this.BeginsWith(this._lines[i], "look") && defineBlock == 0) {
-                lookString = this.GetParameter(this._lines[i], this._nullContext);
+                lookString = await this.GetParameter(this._lines[i], this._nullContext);
                 i = roomBlock.EndLine;
             }
         }
@@ -6940,11 +6960,11 @@ class LegacyGame {
             objList.push(new ListData(name, this._listVerbs[ListType.ObjectsList]));
         }
     }
-    ExecExec(scriptLine: string, ctx: Context): void {
+    async ExecExec(scriptLine: string, ctx: Context): Promise<void> {
         if (ctx.CancelExec) {
             return;
         }
-        var execLine = this.GetParameter(scriptLine, ctx);
+        var execLine = await this.GetParameter(scriptLine, ctx);
         var newCtx: Context = this.CopyContext(ctx);
         newCtx.StackCounter = newCtx.StackCounter + 1;
         if (newCtx.StackCounter > 500) {
@@ -7039,7 +7059,7 @@ class LegacyGame {
             var block = this.GetDefineBlock("game");
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], commandTag)) {
-                    commandList = this.GetParameter(this._lines[i], ctx, false);
+                    commandList = await this.GetParameter(this._lines[i], ctx, false);
                     var ep: number = 0;
                     do {
                         ep = InStr(commandList, ";");
@@ -7069,7 +7089,7 @@ class LegacyGame {
         return foundCommand;
     }
     async ExecuteChoose(section: string, ctx: Context): Promise<void> {
-        await this.ExecuteScript(this.SetUpChoiceForm(section, ctx), ctx);
+        await this.ExecuteScript(await this.SetUpChoiceForm(section, ctx), ctx);
     }
     GetCommandParameters(test: string, required: string, ctx: Context): boolean {
         //Gets parameters from line. For example, if 'required'
@@ -7158,7 +7178,7 @@ class LegacyGame {
         }
         return success;
     }
-    GetGender(character: string, capitalise: boolean, ctx: Context): string {
+    async GetGender(character: string, capitalise: boolean, ctx: Context): Promise<string> {
         var result: string;
         if (this._gameAslVersion >= 281) {
             result = this._objs[this.GetObjectIdNoAlias(character)].Gender;
@@ -7167,7 +7187,7 @@ class LegacyGame {
             if (resultLine == "<unfound>") {
                 result = "it ";
             } else {
-                result = this.GetParameter(resultLine, ctx) + " ";
+                result = await this.GetParameter(resultLine, ctx) + " ";
             }
         }
         if (capitalise) {
@@ -7636,7 +7656,7 @@ class LegacyGame {
             var origContainerRoomName: string;
             var containerRoomName: string;
             if (this.BeginsWith(this._lines[block.StartLine], "define room")) {
-                origContainerRoomName = this.GetParameter(this._lines[block.StartLine], this._nullContext);
+                origContainerRoomName = this.GetSimpleParameter(this._lines[block.StartLine]);
             } else {
                 origContainerRoomName = "";
             }
@@ -7653,7 +7673,7 @@ class LegacyGame {
                     if (!this._objs) this._objs = [];
                     this._objs[this._numberObjs] = new ObjectType();
                     var o = this._objs[this._numberObjs];
-                    o.ObjectName = this.GetParameter(this._lines[j], this._nullContext);
+                    o.ObjectName = this.GetSimpleParameter(this._lines[j]);
                     o.ObjectAlias = o.ObjectName;
                     o.DefinitionSectionStart = j;
                     o.ContainerRoom = containerRoomName;
@@ -7680,14 +7700,14 @@ class LegacyGame {
                                 this.AddToObjectProperties("hidden", this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
-                            containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
+                            containerRoomName = this.GetSimpleParameter(this._lines[j]);
                         } else if (this.BeginsWith(this._lines[j], "prefix ")) {
-                            o.Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
+                            o.Prefix = this.GetSimpleParameter(this._lines[j]) + " ";
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("prefix=" + o.Prefix, this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "suffix ")) {
-                            o.Suffix = this.GetParameter(this._lines[j], this._nullContext);
+                            o.Suffix = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("suffix=" + o.Suffix, this._numberObjs, this._nullContext);
                             }
@@ -7697,24 +7717,24 @@ class LegacyGame {
                                 this.AddToObjectProperties("invisible", this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "alias ")) {
-                            o.ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
+                            o.ObjectAlias = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("alias=" + o.ObjectAlias, this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "alt ")) {
-                            this.AddToObjectAltNames(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs);
+                            this.AddToObjectAltNames(this.GetSimpleParameter(this._lines[j]), this._numberObjs);
                         } else if (this.BeginsWith(this._lines[j], "detail ")) {
-                            o.Detail = this.GetParameter(this._lines[j], this._nullContext);
+                            o.Detail = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("detail=" + o.Detail, this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "gender ")) {
-                            o.Gender = this.GetParameter(this._lines[j], this._nullContext);
+                            o.Gender = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("gender=" + o.Gender, this._numberObjs, this._nullContext);
                             }
                         } else if (this.BeginsWith(this._lines[j], "article ")) {
-                            o.Article = this.GetParameter(this._lines[j], this._nullContext);
+                            o.Article = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("article=" + o.Article, this._numberObjs, this._nullContext);
                             }
@@ -7725,7 +7745,7 @@ class LegacyGame {
                             o.LoseScript = this.GetEverythingAfter(this._lines[j], "lose ");
                             this.AddObjectAction(this._numberObjs, "lose", o.LoseScript);
                         } else if (this.BeginsWith(this._lines[j], "displaytype ")) {
-                            o.DisplayType = this.GetParameter(this._lines[j], this._nullContext);
+                            o.DisplayType = this.GetSimpleParameter(this._lines[j]);
                             if (this._gameAslVersion >= 311) {
                                 this.AddToObjectProperties("displaytype=" + o.DisplayType, this._numberObjs, this._nullContext);
                             }
@@ -7733,7 +7753,7 @@ class LegacyGame {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "look ");
                                 if (Left(restOfLine, 1) == "<") {
-                                    this.AddToObjectProperties("look=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                    this.AddToObjectProperties("look=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                                 } else {
                                     this.AddObjectAction(this._numberObjs, "look", restOfLine);
                                 }
@@ -7742,7 +7762,7 @@ class LegacyGame {
                             if (this._gameAslVersion >= 311) {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "examine ");
                                 if (Left(restOfLine, 1) == "<") {
-                                    this.AddToObjectProperties("examine=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                    this.AddToObjectProperties("examine=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                                 } else {
                                     this.AddObjectAction(this._numberObjs, "examine", restOfLine);
                                 }
@@ -7750,17 +7770,17 @@ class LegacyGame {
                         } else if (this._gameAslVersion >= 311 && this.BeginsWith(this._lines[j], "speak ")) {
                             restOfLine = this.GetEverythingAfter(this._lines[j], "speak ");
                             if (Left(restOfLine, 1) == "<") {
-                                this.AddToObjectProperties("speak=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                this.AddToObjectProperties("speak=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 this.AddObjectAction(this._numberObjs, "speak", restOfLine);
                             }
                         } else if (this.BeginsWith(this._lines[j], "properties ")) {
-                            this.AddToObjectProperties(this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                            this.AddToObjectProperties(this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "type ")) {
                             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                             if (!o.TypesIncluded) o.TypesIncluded = [];
-                            o.TypesIncluded[o.NumberTypesIncluded] = this.GetParameter(this._lines[j], this._nullContext);
-                            var PropertyData = this.GetPropertiesInType(this.GetParameter(this._lines[j], this._nullContext));
+                            o.TypesIncluded[o.NumberTypesIncluded] = this.GetSimpleParameter(this._lines[j]);
+                            var PropertyData = this.GetPropertiesInType(this.GetSimpleParameter(this._lines[j]));
                             this.AddToObjectProperties(PropertyData.Properties, this._numberObjs, this._nullContext);
                             for (var k = 1; k <= PropertyData.NumberActions; k++) {
                                 this.AddObjectAction(this._numberObjs, PropertyData.Actions[k].ActionName, PropertyData.Actions[k].Script);
@@ -7782,8 +7802,8 @@ class LegacyGame {
                         } else if (this.BeginsWith(this._lines[j], "take ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "take "), 1) == "<") {
                                 o.Take.Type = TextActionType.Text;
-                                o.Take.Data = this.GetParameter(this._lines[j], this._nullContext);
-                                this.AddToObjectProperties("take=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                o.Take.Data = this.GetSimpleParameter(this._lines[j]);
+                                this.AddToObjectProperties("take=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 o.Take.Type = TextActionType.Script;
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "take ");
@@ -7811,7 +7831,7 @@ class LegacyGame {
                             this.AddToObjectProperties("open", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "open ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "open "), 1) == "<") {
-                                this.AddToObjectProperties("open=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                this.AddToObjectProperties("open=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "open ");
                                 this.AddObjectAction(this._numberObjs, "open", restOfLine);
@@ -7820,7 +7840,7 @@ class LegacyGame {
                             this.AddToObjectProperties("close", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "close ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "close "), 1) == "<") {
-                                this.AddToObjectProperties("close=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                this.AddToObjectProperties("close=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "close ");
                                 this.AddObjectAction(this._numberObjs, "close", restOfLine);
@@ -7829,7 +7849,7 @@ class LegacyGame {
                             this.AddToObjectProperties("add", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "add ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "add "), 1) == "<") {
-                                this.AddToObjectProperties("add=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                this.AddToObjectProperties("add=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "add ");
                                 this.AddObjectAction(this._numberObjs, "add", restOfLine);
@@ -7838,13 +7858,13 @@ class LegacyGame {
                             this.AddToObjectProperties("remove", this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "remove ")) {
                             if (Left(this.GetEverythingAfter(this._lines[j], "remove "), 1) == "<") {
-                                this.AddToObjectProperties("remove=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                                this.AddToObjectProperties("remove=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                             } else {
                                 restOfLine = this.GetEverythingAfter(this._lines[j], "remove ");
                                 this.AddObjectAction(this._numberObjs, "remove", restOfLine);
                             }
                         } else if (this.BeginsWith(this._lines[j], "parent ")) {
-                            this.AddToObjectProperties("parent=" + this.GetParameter(this._lines[j], this._nullContext), this._numberObjs, this._nullContext);
+                            this.AddToObjectProperties("parent=" + this.GetSimpleParameter(this._lines[j]), this._numberObjs, this._nullContext);
                         } else if (this.BeginsWith(this._lines[j], "list")) {
                             this.ProcessListInfo(this._lines[j], this._numberObjs);
                         }
@@ -7858,7 +7878,7 @@ class LegacyGame {
                     this._numberChars = this._numberChars + 1;
                     if (!this._chars) this._chars = [];
                     this._chars[this._numberChars] = new ObjectType();
-                    this._chars[this._numberChars].ObjectName = this.GetParameter(this._lines[j], this._nullContext);
+                    this._chars[this._numberChars].ObjectName = this.GetSimpleParameter(this._lines[j]);
                     this._chars[this._numberChars].DefinitionSectionStart = j;
                     this._chars[this._numberChars].ContainerRoom = "";
                     this._chars[this._numberChars].Visible = true;
@@ -7869,17 +7889,17 @@ class LegacyGame {
                             this._chars[this._numberChars].Exists = false;
                             hidden = true;
                         } else if (this.BeginsWith(this._lines[j], "startin ") && containerRoomName == "__UNKNOWN") {
-                            containerRoomName = this.GetParameter(this._lines[j], this._nullContext);
+                            containerRoomName = this.GetSimpleParameter(this._lines[j]);
                         } else if (this.BeginsWith(this._lines[j], "prefix ")) {
-                            this._chars[this._numberChars].Prefix = this.GetParameter(this._lines[j], this._nullContext) + " ";
+                            this._chars[this._numberChars].Prefix = this.GetSimpleParameter(this._lines[j]) + " ";
                         } else if (this.BeginsWith(this._lines[j], "suffix ")) {
-                            this._chars[this._numberChars].Suffix = " " + this.GetParameter(this._lines[j], this._nullContext);
+                            this._chars[this._numberChars].Suffix = " " + this.GetSimpleParameter(this._lines[j]);
                         } else if (Trim(this._lines[j]) == "invisible") {
                             this._chars[this._numberChars].Visible = false;
                         } else if (this.BeginsWith(this._lines[j], "alias ")) {
-                            this._chars[this._numberChars].ObjectAlias = this.GetParameter(this._lines[j], this._nullContext);
+                            this._chars[this._numberChars].ObjectAlias = this.GetSimpleParameter(this._lines[j]);
                         } else if (this.BeginsWith(this._lines[j], "detail ")) {
-                            this._chars[this._numberChars].Detail = this.GetParameter(this._lines[j], this._nullContext);
+                            this._chars[this._numberChars].Detail = this.GetSimpleParameter(this._lines[j]);
                         }
                         this._chars[this._numberChars].ContainerRoom = containerRoomName;
                     } while (!(Trim(this._lines[j]) == "end define"));
@@ -8092,7 +8112,7 @@ class LegacyGame {
                     descLine = this.GetEverythingAfter(this._lines[i], "description ");
                     descTagExist = true;
                     if (Left(descLine, 1) == "<") {
-                        descLine = this.GetParameter(descLine, ctx);
+                        descLine = await this.GetParameter(descLine, ctx);
                         descType = TextActionType.Text;
                     } else {
                         descType = TextActionType.Script;
@@ -8202,16 +8222,16 @@ class LegacyGame {
         }
         return display;
     }
-    DisplayTextSection(section: string, ctx: Context): void {
+    async DisplayTextSection(section: string, ctx: Context): Promise<void> {
         var block: DefineBlock;
-        block = this.DefineBlockParam("text", section);
+        block = await this.DefineBlockParam("text", section);
         if (block.StartLine == 0) {
             return;
         }
         for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
             if (this._gameAslVersion >= 392) {
                 // Convert string variables etc.
-                this.Print(this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
+                this.Print(await this.GetParameter("<" + this._lines[i] + ">", ctx), ctx);
             } else {
                 this.Print(this._lines[i], ctx);
             }
@@ -8374,7 +8394,7 @@ class LegacyGame {
                 this.ExecTake(parameter, ctx);
             } else if (this.CmdStartsWith(input, "drop ") && this._gameAslVersion >= 280) {
                 parameter = this.GetEverythingAfter(input, "drop ");
-                this.ExecDrop(parameter, ctx);
+                await this.ExecDrop(parameter, ctx);
             } else if (this.CmdStartsWith(input, "get ")) {
                 parameter = this.GetEverythingAfter(input, "get ");
                 this.ExecTake(parameter, ctx);
@@ -8388,13 +8408,13 @@ class LegacyGame {
             } else if (this.CmdStartsWith(input, "l ")) {
                 this.ExecLook("look " + this.GetEverythingAfter(input, "l "), ctx);
             } else if (this.CmdStartsWith(input, "examine ") && this._gameAslVersion >= 280) {
-                this.ExecExamine(input, ctx);
+                await this.ExecExamine(input, ctx);
             } else if (this.CmdStartsWith(input, "x ") && this._gameAslVersion >= 280) {
-                this.ExecExamine("examine " + this.GetEverythingAfter(input, "x "), ctx);
+                await this.ExecExamine("examine " + this.GetEverythingAfter(input, "x "), ctx);
             } else if (cmd == "l" || cmd == "look") {
                 this.ExecLook("look", ctx);
             } else if (cmd == "x" || cmd == "examine") {
-                this.ExecExamine("examine", ctx);
+                await this.ExecExamine("examine", ctx);
             } else if (this.CmdStartsWith(input, "use ")) {
                 this.ExecUse(input, ctx);
             } else if (this.CmdStartsWith(input, "open ") && this._gameAslVersion >= 391) {
@@ -8639,7 +8659,7 @@ class LegacyGame {
             var giveLine = 0;
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "give")) {
-                    var ItemCheck = this.GetParameter(this._lines[i], ctx);
+                    var ItemCheck = await this.GetParameter(this._lines[i], ctx);
                     if (LCase(ItemCheck) == LCase(item)) {
                         giveLine = i;
                     }
@@ -8650,7 +8670,7 @@ class LegacyGame {
                     article = "it";
                 }
                 this.SetStringContents("quest.error.charactername", realName, ctx);
-                this.SetStringContents("quest.error.gender", Trim(this.GetGender(character, true, ctx)), ctx);
+                this.SetStringContents("quest.error.gender", Trim(await this.GetGender(character, true, ctx)), ctx);
                 this.SetStringContents("quest.error.article", article, ctx);
                 this.PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
                 return;
@@ -8725,8 +8745,8 @@ class LegacyGame {
                 }
                 var lookData = Trim(this.GetEverythingAfter(Trim(lookLine), "look "));
                 if (Left(lookData, 1) == "<") {
-                    var LookText = this.GetParameter(lookLine, ctx);
-                    this.Print(LookText, ctx);
+                    var lookText = await this.GetParameter(lookLine, ctx);
+                    this.Print(lookText, ctx);
                 } else {
                     await this.ExecuteScript(lookData, ctx);
                 }
@@ -8789,7 +8809,7 @@ class LegacyGame {
             }
             speakLine = this.GetEverythingAfter(speakLine, "speak ");
             if (this.BeginsWith(speakLine, "<")) {
-                var text = this.GetParameter(speakLine, ctx);
+                var text = await this.GetParameter(speakLine, ctx);
                 if (this._gameAslVersion >= 350) {
                     this.Print(text, ctx);
                 } else {
@@ -8811,11 +8831,11 @@ class LegacyGame {
             if (line == "<undefined>") {
                 this.PlayerErrorMessage(PlayerError.BadCharacter, ctx);
             } else if (line == "<unfound>") {
-                this.SetStringContents("quest.error.gender", Trim(this.GetGender(cmd, true, ctx)), ctx);
+                this.SetStringContents("quest.error.gender", Trim(await this.GetGender(cmd, true, ctx)), ctx);
                 this.SetStringContents("quest.error.charactername", cmd, ctx);
                 this.PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
             } else if (this.BeginsWith(data, "<")) {
-                data = this.GetParameter(line, ctx);
+                data = await this.GetParameter(line, ctx);
                 this.Print(Chr(34) + data + Chr(34), ctx);
             } else {
                 await this.ExecuteScript(data, ctx);
@@ -9057,7 +9077,7 @@ class LegacyGame {
             }
         } else {
             if (useOn != "") {
-                useDeclareLine = this.RetrLineParam("object", useOn, "use", useItem, ctx);
+                useDeclareLine = await this.RetrLineParam("object", useOn, "use", useItem, ctx);
             } else {
                 found = false;
                 for (var i = 1; i <= this._rooms[roomId].NumberUse; i++) {
@@ -9082,7 +9102,7 @@ class LegacyGame {
                 }
             }
             if (useDeclareLine == "<undefined>") {
-                useDeclareLine = this.RetrLineParam("character", useOn, "use", useItem, ctx);
+                useDeclareLine = await this.RetrLineParam("character", useOn, "use", useItem, ctx);
                 if (useDeclareLine != "<undefined>") {
                     //Check for character availability
                     if (!this.IsAvailable(useOn, Thing.Character, ctx)) {
@@ -9225,31 +9245,31 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "select case ")) {
                 await this.ExecuteSelectCase(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "choose ")) {
-                this.ExecuteChoose(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecuteChoose(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "set ")) {
                 this.ExecuteSet(this.GetEverythingAfter(scriptLine, "set "), ctx);
             } else if (this.BeginsWith(scriptLine, "inc ") || this.BeginsWith(scriptLine, "dec ")) {
                 this.ExecuteIncDec(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "say ")) {
-                this.Print(Chr(34) + this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
+                this.Print(Chr(34) + await this.GetParameter(scriptLine, ctx) + Chr(34), ctx);
             } else if (this.BeginsWith(scriptLine, "do ")) {
-                this.ExecuteDo(this.GetParameter(scriptLine, ctx), ctx);
+                await this.ExecuteDo(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "doaction ")) {
-                this.ExecuteDoAction(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecuteDoAction(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "give ")) {
-                this.PlayerItem(this.GetParameter(scriptLine, ctx), true, ctx);
+                this.PlayerItem(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this.BeginsWith(scriptLine, "lose ") || this.BeginsWith(scriptLine, "drop ")) {
-                this.PlayerItem(this.GetParameter(scriptLine, ctx), false, ctx);
+                this.PlayerItem(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this.BeginsWith(scriptLine, "msg ")) {
-                this.Print(this.GetParameter(scriptLine, ctx), ctx);
+                this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "speak ")) {
-                this.Speak(this.GetParameter(scriptLine, ctx));
+                this.Speak(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
-                this.Print(this.GetParameter(scriptLine, ctx), ctx);
+                this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (Trim(LCase(scriptLine)) == "helpclose") {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
             } else if (this.BeginsWith(scriptLine, "goto ")) {
-                this.PlayGame(this.GetParameter(scriptLine, ctx), ctx);
+                this.PlayGame(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "playerwin")) {
                 this.FinishGame(StopType.Win, ctx);
             } else if (this.BeginsWith(scriptLine, "playerlose")) {
@@ -9257,75 +9277,75 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "stop") {
                 this.FinishGame(StopType.Null, ctx);
             } else if (this.BeginsWith(scriptLine, "playwav ")) {
-                this.PlayWav(this.GetParameter(scriptLine, ctx));
+                this.PlayWav(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "playmidi ")) {
-                this.PlayMedia(this.GetParameter(scriptLine, ctx));
+                this.PlayMedia(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "playmp3 ")) {
-                this.PlayMedia(this.GetParameter(scriptLine, ctx));
+                this.PlayMedia(await this.GetParameter(scriptLine, ctx));
             } else if (Trim(LCase(scriptLine)) == "picture close") {
             } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture popup ")) || (this._gameAslVersion >= 282 && this._gameAslVersion < 390 && this.BeginsWith(scriptLine, "picture ")) || (this._gameAslVersion < 282 && this.BeginsWith(scriptLine, "show "))) {
                 // This command does nothing in the Quest 5 player, as there is no separate picture window
-                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if ((this._gameAslVersion >= 390 && this.BeginsWith(scriptLine, "picture "))) {
-                this.ShowPictureInText(this.GetParameter(scriptLine, ctx));
+                this.ShowPictureInText(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "animate persist ")) {
-                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "animate ")) {
-                this.ShowPicture(this.GetParameter(scriptLine, ctx));
+                this.ShowPicture(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "extract ")) {
-                this.ExtractFile(this.GetParameter(scriptLine, ctx));
+                this.ExtractFile(await this.GetParameter(scriptLine, ctx));
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hideobject ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showobject ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "moveobject ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+                this.ExecMoveThing(await this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "hidechar ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "showchar ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "movechar ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Character, ctx);
+                this.ExecMoveThing(await this.GetParameter(scriptLine, ctx), Thing.Character, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealobject ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealobject ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "revealchar ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
             } else if (this._gameAslVersion < 281 && this.BeginsWith(scriptLine, "concealchar ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "hide ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), false, ctx);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "show ")) {
-                this.SetAvailability(this.GetParameter(scriptLine, ctx), true, ctx);
+                this.SetAvailability(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "move ")) {
-                this.ExecMoveThing(this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
+                this.ExecMoveThing(await this.GetParameter(scriptLine, ctx), Thing.Object, ctx);
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "reveal ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
             } else if (this._gameAslVersion >= 281 && this.BeginsWith(scriptLine, "conceal ")) {
-                this.SetVisibility(this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+                this.SetVisibility(await this.GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "open ")) {
-                this.SetOpenClose(this.GetParameter(scriptLine, ctx), true, ctx);
+                this.SetOpenClose(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "close ")) {
-                this.SetOpenClose(this.GetParameter(scriptLine, ctx), false, ctx);
+                this.SetOpenClose(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "add ")) {
-                this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), true, ctx);
+                this.ExecAddRemoveScript(await this.GetParameter(scriptLine, ctx), true, ctx);
             } else if (this._gameAslVersion >= 391 && this.BeginsWith(scriptLine, "remove ")) {
-                this.ExecAddRemoveScript(this.GetParameter(scriptLine, ctx), false, ctx);
+                this.ExecAddRemoveScript(await this.GetParameter(scriptLine, ctx), false, ctx);
             } else if (this.BeginsWith(scriptLine, "clone ")) {
-                this.ExecClone(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecClone(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "exec ")) {
                 this.ExecExec(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "setstring ")) {
-                this.ExecSetString(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecSetString(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "setvar ")) {
-                this.ExecSetVar(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecSetVar(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "for ")) {
                 this.ExecFor(this.GetEverythingAfter(scriptLine, "for "), ctx);
             } else if (this.BeginsWith(scriptLine, "property ")) {
-                this.ExecProperty(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecProperty(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "type ")) {
-                this.ExecType(this.GetParameter(scriptLine, ctx), ctx);
+                this.ExecType(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "action ")) {
                 this.ExecuteAction(this.GetEverythingAfter(scriptLine, "action "), ctx);
             } else if (this.BeginsWith(scriptLine, "flag ")) {
@@ -9333,34 +9353,34 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "create ")) {
                 this.ExecuteCreate(this.GetEverythingAfter(scriptLine, "create "), ctx);
             } else if (this.BeginsWith(scriptLine, "destroy exit ")) {
-                this.DestroyExit(this.GetParameter(scriptLine, ctx), ctx);
+                this.DestroyExit(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "repeat ")) {
-                this.ExecuteRepeat(this.GetEverythingAfter(scriptLine, "repeat "), ctx);
+                await this.ExecuteRepeat(this.GetEverythingAfter(scriptLine, "repeat "), ctx);
             } else if (this.BeginsWith(scriptLine, "enter ")) {
                 this.ExecuteEnter(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "displaytext ")) {
-                this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
+                this.DisplayTextSection(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "helpdisplaytext ")) {
-                this.DisplayTextSection(this.GetParameter(scriptLine, ctx), ctx);
+                this.DisplayTextSection(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "font ")) {
-                this.SetFont(this.GetParameter(scriptLine, ctx));
+                this.SetFont(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "pause ")) {
-                this.Pause(parseInt(this.GetParameter(scriptLine, ctx)));
+                this.Pause(parseInt(await this.GetParameter(scriptLine, ctx)));
             } else if (Trim(LCase(scriptLine)) == "clear") {
                 this.DoClear();
             } else if (Trim(LCase(scriptLine)) == "helpclear") {
                 // This command does nothing in the Quest 5 player, as there is no separate help window
             } else if (this.BeginsWith(scriptLine, "background ")) {
-                this.SetBackground(this.GetParameter(scriptLine, ctx));
+                this.SetBackground(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "foreground ")) {
-                this.SetForeground(this.GetParameter(scriptLine, ctx));
+                this.SetForeground(await this.GetParameter(scriptLine, ctx));
             } else if (Trim(LCase(scriptLine)) == "nointro") {
                 this._autoIntro = false;
             } else if (this.BeginsWith(scriptLine, "debug ")) {
-                this.LogASLError(this.GetParameter(scriptLine, ctx), LogType.Misc);
+                this.LogASLError(await this.GetParameter(scriptLine, ctx), LogType.Misc);
             } else if (this.BeginsWith(scriptLine, "mailto ")) {
                 // TODO: Just write HTML directly
-                var emailAddress: string = this.GetParameter(scriptLine, ctx);
+                var emailAddress: string = await this.GetParameter(scriptLine, ctx);
             } else if (this.BeginsWith(scriptLine, "shell ") && this._gameAslVersion < 410) {               
                 this.LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError);
             } else if (this.BeginsWith(scriptLine, "shellexe ") && this._gameAslVersion < 410) {
@@ -9368,9 +9388,9 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "wait")) {
                 this.ExecuteWait(Trim(this.GetEverythingAfter(Trim(scriptLine), "wait")), ctx);
             } else if (this.BeginsWith(scriptLine, "timeron ")) {
-                this.SetTimerState(this.GetParameter(scriptLine, ctx), true);
+                this.SetTimerState(await this.GetParameter(scriptLine, ctx), true);
             } else if (this.BeginsWith(scriptLine, "timeroff ")) {
-                this.SetTimerState(this.GetParameter(scriptLine, ctx), false);
+                this.SetTimerState(await this.GetParameter(scriptLine, ctx), false);
             } else if (Trim(LCase(scriptLine)) == "outputon") {
                 this._outPutOn = true;
                 this.UpdateObjectList(ctx);
@@ -9382,9 +9402,9 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "panes on") {
                 this._player.SetPanesVisible("on");
             } else if (this.BeginsWith(scriptLine, "lock ")) {
-                this.ExecuteLock(this.GetParameter(scriptLine, ctx), true);
+                this.ExecuteLock(await this.GetParameter(scriptLine, ctx), true);
             } else if (this.BeginsWith(scriptLine, "unlock ")) {
-                this.ExecuteLock(this.GetParameter(scriptLine, ctx), false);
+                this.ExecuteLock(await this.GetParameter(scriptLine, ctx), false);
             } else if (this.BeginsWith(scriptLine, "playmod ") && this._gameAslVersion < 410) {
                 this.LogASLError("'playmod' is not supported in this version of Quest", LogType.WarningError);
             } else if (this.BeginsWith(scriptLine, "modvolume") && this._gameAslVersion < 410) {
@@ -9392,7 +9412,7 @@ class LegacyGame {
             } else if (Trim(LCase(scriptLine)) == "dontprocess") {
                 ctx.DontProcessCommand = true;
             } else if (this.BeginsWith(scriptLine, "return ")) {
-                ctx.FunctionReturnValue = this.GetParameter(scriptLine, ctx);
+                ctx.FunctionReturnValue = await this.GetParameter(scriptLine, ctx);
             } else {
                 if (!this.BeginsWith(scriptLine, "'")) {
                     this.LogASLError("Unrecognized keyword. Line reads: '" + Trim(this.ReportErrorLine(scriptLine)) + "'", LogType.WarningError);
@@ -9404,9 +9424,9 @@ class LegacyGame {
             this.LogASLError("Error - '" + e + "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
         }
     }
-    ExecuteEnter(scriptLine: string, ctx: Context): void {
+    async ExecuteEnter(scriptLine: string, ctx: Context): Promise<void> {
         this._commandOverrideModeOn = true;
-        this._commandOverrideVariable = this.GetParameter(scriptLine, ctx);
+        this._commandOverrideVariable = await this.GetParameter(scriptLine, ctx);
         // Now, wait for CommandOverrideModeOn to be set
         // to False by ExecCommand. Execution can then resume.
         // TODO: Handle in TypeScript version
@@ -9414,10 +9434,10 @@ class LegacyGame {
         // State will have been changed to Working when the user typed their response,
         // and will be set back to Ready when the call to ExecCommand has finished
     }
-    ExecuteSet(setInstruction: string, ctx: Context): void {
+    async ExecuteSet(setInstruction: string, ctx: Context): Promise<void> {
         if (this._gameAslVersion >= 280) {
             if (this.BeginsWith(setInstruction, "interval ")) {
-                var interval = this.GetParameter(setInstruction, ctx);
+                var interval = await this.GetParameter(setInstruction, ctx);
                 var scp = InStr(interval, ";");
                 if (scp == 0) {
                     this.LogASLError("Too few parameters in 'set " + setInstruction + "'", LogType.WarningError);
@@ -9438,13 +9458,13 @@ class LegacyGame {
                     return;
                 }
             } else if (this.BeginsWith(setInstruction, "string ")) {
-                this.ExecSetString(this.GetParameter(setInstruction, ctx), ctx);
+                this.ExecSetString(await this.GetParameter(setInstruction, ctx), ctx);
             } else if (this.BeginsWith(setInstruction, "numeric ")) {
-                this.ExecSetVar(this.GetParameter(setInstruction, ctx), ctx);
+                this.ExecSetVar(await this.GetParameter(setInstruction, ctx), ctx);
             } else if (this.BeginsWith(setInstruction, "collectable ")) {
-                this.ExecuteSetCollectable(this.GetParameter(setInstruction, ctx), ctx);
+                this.ExecuteSetCollectable(await this.GetParameter(setInstruction, ctx), ctx);
             } else {
-                var result = this.SetUnknownVariableType(this.GetParameter(setInstruction, ctx), ctx);
+                var result = this.SetUnknownVariableType(await this.GetParameter(setInstruction, ctx), ctx);
                 if (result == SetResult.Error) {
                     this.LogASLError("Error on setting 'set " + setInstruction + "'", LogType.WarningError);
                 } else if (result == SetResult.Unfound) {
@@ -9452,7 +9472,7 @@ class LegacyGame {
                 }
             }
         } else {
-            this.ExecuteSetCollectable(this.GetParameter(setInstruction, ctx), ctx);
+            this.ExecuteSetCollectable(await this.GetParameter(setInstruction, ctx), ctx);
         }
     }
     FindStatement(block: DefineBlock, statement: string): string {
@@ -9468,7 +9488,7 @@ class LegacyGame {
             // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
                 // Return the parameters between < and > :
-                return this.GetParameter(this._lines[i], this._nullContext);
+                return this.GetSimpleParameter(this._lines[i]);
             }
         }
         return "";
@@ -9485,7 +9505,7 @@ class LegacyGame {
             // Check to see if the line matches the statement
             // that is begin searched for
             if (this.BeginsWith(this._lines[i], statement)) {
-                if (UCase(Trim(this.GetParameter(this._lines[i], this._nullContext))) == UCase(Trim(statementParam))) {
+                if (UCase(Trim(this.GetSimpleParameter(this._lines[i]))) == UCase(Trim(statementParam))) {
                     return Trim(this._lines[i]);
                 }
             }
@@ -9613,7 +9633,7 @@ class LegacyGame {
             var aslVersion = "//";
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (self.BeginsWith(self._lines[i], "asl-version ")) {
-                    aslVersion = self.GetParameter(self._lines[i], self._nullContext);
+                    aslVersion = self.GetSimpleParameter(self._lines[i]);
                 }
             }
             if (aslVersion == "//") {
@@ -9634,7 +9654,7 @@ class LegacyGame {
                 self._listVerbs[ListType.InventoryList] = ["Look at", "Use", "Drop"];
             }
             // Get the name of the game:
-            self._gameName = self.GetParameter(self._lines[self.GetDefineBlock("game").StartLine], self._nullContext);
+            self._gameName = self.GetSimpleParameter(self._lines[self.GetDefineBlock("game").StartLine]);
             self._player.UpdateGameName(self._gameName);
             self._player.Show("Panes");
             self._player.Show("Location");
@@ -9862,7 +9882,7 @@ class LegacyGame {
         }
         return "<unfound>";
     }
-    RetrLineParam(blockType: string, param: string, line: string, lineParam: string, ctx: Context): string {
+    async RetrLineParam(blockType: string, param: string, line: string, lineParam: string, ctx: Context): Promise<string> {
         var searchblock: DefineBlock;
         if (blockType == "object") {
             searchblock = this.GetThingBlock(param, this._currentRoom, Thing.Object);
@@ -9873,7 +9893,7 @@ class LegacyGame {
             return "<undefined>";
         }
         for (var i = searchblock.StartLine + 1; i <= searchblock.EndLine - 1; i++) {
-            if (this.BeginsWith(this._lines[i], line) && LCase(this.GetParameter(this._lines[i], ctx)) == LCase(lineParam)) {
+            if (this.BeginsWith(this._lines[i], line) && LCase(await this.GetParameter(this._lines[i], ctx)) == LCase(lineParam)) {
                 return Trim(this._lines[i]);
             }
         }
@@ -9887,7 +9907,7 @@ class LegacyGame {
         // game block, and get its parameters:
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
             if (this.BeginsWith(this._lines[a], "collectables ")) {
-                var collectables = Trim(this.GetParameter(this._lines[a], this._nullContext, false));
+                var collectables = Trim(this.GetSimpleParameter(this._lines[a]));
                 // if collectables is a null string, there are no
                 // collectables. Otherwise, there is one more object than
                 // the number of commas. So, first check to see if we have
@@ -9954,7 +9974,7 @@ class LegacyGame {
         // block, and get its parameters:
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
             if (this.BeginsWith(this._lines[a], "possitems ") || this.BeginsWith(this._lines[a], "items ")) {
-                var possItems = this.GetParameter(this._lines[a], this._nullContext);
+                var possItems = this.GetSimpleParameter(this._lines[a]);
                 if (possItems != "") {
                     this._numberItems = this._numberItems + 1;
                     var pos = 1;
@@ -9988,7 +10008,7 @@ class LegacyGame {
         var lastItem = false;
         for (var a = this.GetDefineBlock("game").StartLine + 1; a <= this.GetDefineBlock("game").EndLine - 1; a++) {
             if (this.BeginsWith(this._lines[a], "startitems ")) {
-                var startItems = this.GetParameter(this._lines[a], this._nullContext);
+                var startItems = this.GetSimpleParameter(this._lines[a]);
                 if (startItems != "") {
                     var pos = 1;
                     do {
@@ -10268,7 +10288,7 @@ class LegacyGame {
         }
         this.GameFinished();
     }
-    UpdateObjectList(ctx: Context): void {
+    async UpdateObjectList(ctx: Context): Promise<void> {
         // Updates object list
         var shownPlaceName: string;
         var objSuffix: string;
@@ -10287,7 +10307,7 @@ class LegacyGame {
         var exitList: ListData[] = [];
         //find the room
         var roomBlock: DefineBlock;
-        roomBlock = this.DefineBlockParam("room", this._currentRoom);
+        roomBlock = await this.DefineBlockParam("room", this._currentRoom);
         //FIND CHARACTERS ===
         if (this._gameAslVersion < 281) {
             // go through Chars() array
@@ -10370,12 +10390,12 @@ class LegacyGame {
         this._gotoExits = exitList;
         this.UpdateExitsList();
     }
-    UpdateStatusVars(ctx: Context): void {
+    async UpdateStatusVars(ctx: Context): Promise<void> {
         var displayData: string;
         var status: string = "";
         if (this._numDisplayStrings > 0) {
             for (var i = 1; i <= this._numDisplayStrings; i++) {
-                displayData = this.DisplayStatusVariableInfo(i, VarType.String, ctx);
+                displayData = await this.DisplayStatusVariableInfo(i, VarType.String, ctx);
                 if (displayData != "") {
                     if (status.length > 0) {
                         status += "\n";
@@ -10386,7 +10406,7 @@ class LegacyGame {
         }
         if (this._numDisplayNumerics > 0) {
             for (var i = 1; i <= this._numDisplayNumerics; i++) {
-                displayData = this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
+                displayData = await this.DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (displayData != "") {
                     if (status.length > 0) {
                         status += "\n";
@@ -10519,7 +10539,7 @@ class LegacyGame {
         // Exits have to be set up after all the rooms have been initialised
         for (var i = 1; i <= this._numberSections; i++) {
             if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define room ")) {
-                var roomName = this.GetParameter(this._lines[this._defineBlocks[i].StartLine], this._nullContext);
+                var roomName = this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]);
                 var roomId = this.GetRoomId(roomName, this._nullContext);
                 for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
                     if (this.BeginsWith(this._lines[j], "define ")) {
@@ -10581,12 +10601,12 @@ class LegacyGame {
         this._player.SetFontSize(this._defaultFontSize);
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "background ")) {
-                this.SetBackground(this.GetParameter(this._lines[i], this._nullContext));
+                this.SetBackground(await this.GetParameter(this._lines[i], this._nullContext));
             }
         }
         for (var i = this.GetDefineBlock("game").StartLine + 1; i <= this.GetDefineBlock("game").EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "foreground ")) {
-                this.SetForeground(this.GetParameter(this._lines[i], this._nullContext));
+                this.SetForeground(await this.GetParameter(this._lines[i], this._nullContext));
             }
         }
         // Execute any startscript command that appears in the
@@ -10625,7 +10645,7 @@ class LegacyGame {
         var startRoom: string = "";
         for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
             if (this.BeginsWith(this._lines[i], "start ")) {
-                startRoom = this.GetParameter(this._lines[i], this._nullContext);
+                startRoom = await this.GetParameter(this._lines[i], this._nullContext);
             }
         }
         if (!this._loadedFromQsg) {
@@ -11071,7 +11091,7 @@ class RoomExits {
             tag = this._game.GetEverythingAfter(tag, "locked ");
         }
         if (Left(Trim(tag), 1) == "<") {
-            params = Split(this._game.GetParameter(tag, this._game._nullContext), ";");
+            params = Split(this._game.GetSimpleParameter(tag), ";");
             afterParam = Trim(Mid(tag, InStr(tag, ">") + 1));
             param = true;
         } else {
@@ -11104,7 +11124,7 @@ class RoomExits {
             this.AddPlaceExit(roomExit);
         }
     }
-    AddExitFromCreateScript(script: string, ctx: Context): void {
+    async AddExitFromCreateScript(script: string, ctx: Context): Promise<void> {
         // sScript is the "create exit ..." script, but without the "create exit" at the beginning.
         // So it's very similar to creating an exit from a tag, except we have the source room
         // name before the semicolon (which we don't even care about as we ARE the source room).
@@ -11124,7 +11144,7 @@ class RoomExits {
         //   create exit north <src_room; dest_room>
         // to
         //   north <dest_room>
-        param = this._game.GetParameter(script, ctx);
+        param = await this._game.GetParameter(script, ctx);
         params = Split(param, ";");
         paramStart = InStr(script, "<");
         paramEnd = InStrFrom(paramStart, script, ">");
