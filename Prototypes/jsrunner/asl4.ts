@@ -435,27 +435,6 @@ interface ListVerbs {
 }
 
 class LegacyGame {
-    async Test() {
-        console.log("hello world");
-        
-        var delayAsync = function (timeout: number): Promise<void> {
-            return new Promise<void>((resolve) => setTimeout(resolve, timeout));
-        };
-        
-        console.log('Awaiting ...');
-        await delayAsync(1000);
-        console.log('Finished awaiting!');
-        var result = await this.SomeInt();
-        console.log('Result is ' + result);
-    }
-    async SomeInt(): Promise<number> {
-        var delayAsync = function (timeout: number): Promise<number> {
-            return new Promise<number>((resolve) => setTimeout(function () {
-                resolve(12)
-            }, timeout));
-        };
-        return await delayAsync(5000);
-    }
     CopyContext(ctx: Context): Context {
         var result: Context = new Context();
         result.CallingObjectId = ctx.CallingObjectId;
@@ -2109,7 +2088,7 @@ class LegacyGame {
         }
         this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
     }
-    DoLook(id: number, ctx: Context, showExamineError: boolean = false, showDefaultDescription: boolean = true): void {
+    async DoLook(id: number, ctx: Context, showExamineError: boolean = false, showDefaultDescription: boolean = true): Promise<void> {
         var objectContents: string;
         var foundLook = false;
         // First, set the "seen" property, and for ASL >= 391, update visibility for any
@@ -2126,7 +2105,7 @@ class LegacyGame {
         for (var i = 1; i <= o.NumberActions; i++) {
             if (o.Actions[i].ActionName == "look") {
                 foundLook = true;
-                this.ExecuteScript(o.Actions[i].Script, ctx);
+                await this.ExecuteScript(o.Actions[i].Script, ctx);
                 break;
             }
         }
@@ -2147,7 +2126,7 @@ class LegacyGame {
                     if (Left(lookLine, 1) == "<") {
                         this.Print(this.GetParameter(this._lines[i], ctx), ctx);
                     } else {
-                        this.ExecuteScript(lookLine, ctx, id);
+                        await this.ExecuteScript(lookLine, ctx, id);
                     }
                     foundLook = true;
                 }
@@ -2233,7 +2212,7 @@ class LegacyGame {
         } while (!(bracePos == 0 || curPos > Len(resultLine)));
         return resultLine;
     }
-    ExecAddRemove(cmd: string, ctx: Context): void {
+    async ExecAddRemove(cmd: string, ctx: Context): Promise<void> {
         var childId: number = 0;
         var childName: string;
         var doAdd: boolean = false;
@@ -2409,7 +2388,7 @@ class LegacyGame {
         }
         if (foundAction) {
             this.SetStringContents("quest." + LCase(action) + ".object.name", this._objs[childId].ObjectName, ctx);
-            this.ExecuteScript(actionScript, ctx, parentId);
+            await this.ExecuteScript(actionScript, ctx, parentId);
         } else {
             // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, parentId, true, false));
@@ -2476,7 +2455,7 @@ class LegacyGame {
             this.UpdateVisibilityInContainers(ctx, this._objs[parentId].ObjectName);
         }
     }
-    ExecOpenClose(cmd: string, ctx: Context): void {
+    async ExecOpenClose(cmd: string, ctx: Context): Promise<void> {
         var id: number = 0;
         var name: string;
         var doOpen: boolean = false;
@@ -2545,7 +2524,7 @@ class LegacyGame {
             }
         }
         if (foundAction) {
-            this.ExecuteScript(actionScript, ctx, id);
+            await this.ExecuteScript(actionScript, ctx, id);
         } else {
             // Now check for a property
             propertyExists = this.IsYes(this.GetObjectProperty(action, id, true, false));
@@ -2572,7 +2551,7 @@ class LegacyGame {
             }
         }
     }
-    ExecuteSelectCase(script: string, ctx: Context): void {
+    async ExecuteSelectCase(script: string, ctx: Context): Promise<void> {
         // ScriptLine passed will look like this:
         //   select case <whatever> do <!intprocX>
         // with all the case statements in the intproc.
@@ -2615,14 +2594,14 @@ class LegacyGame {
                         } while (!(finished));
                     }
                     if (caseMatch) {
-                        this.ExecuteScript(caseScript, ctx);
+                        await this.ExecuteScript(caseScript, ctx);
                         return;
                     }
                 }
             }
         }
     }
-    ExecVerb(cmd: string, ctx: Context, libCommands: boolean = false): boolean {
+    async ExecVerb(cmd: string, ctx: Context, libCommands: boolean = false): Promise<boolean> {
         var gameBlock: DefineBlock;
         var foundVerb = false;
         var verbProperty: string = "";
@@ -2700,7 +2679,7 @@ class LegacyGame {
                 }
                 if (thisScript != "") {
                     // Avoid an RTE "this array is fixed or temporarily locked"
-                    this.ExecuteScript(thisScript, ctx, id);
+                    await this.ExecuteScript(thisScript, ctx, id);
                 }
                 if (!foundAction) {
                     // Check properties for a message
@@ -2714,7 +2693,7 @@ class LegacyGame {
                 }
                 if (!foundAction) {
                     // Execute the default script from the verb definition
-                    this.ExecuteScript(script, ctx);
+                    await this.ExecuteScript(script, ctx);
                 }
             }
         }
@@ -3908,7 +3887,7 @@ class LegacyGame {
         }
         return displayData;
     }
-    DoAction(id: number, action: string, ctx: Context, logError: boolean = true): boolean {
+    async DoAction(id: number, action: string, ctx: Context, logError: boolean = true): Promise<boolean> {
         var found: boolean = false;
         var script: string = "";
         var o = this._objs[id];
@@ -3927,7 +3906,7 @@ class LegacyGame {
         }
         var newCtx: Context = this.CopyContext(ctx);
         newCtx.CallingObjectId = id;
-        this.ExecuteScript(script, newCtx, id);
+        await this.ExecuteScript(script, newCtx, id);
         return true;
     }
     HasAction(id: number, action: string): boolean {
@@ -3939,7 +3918,7 @@ class LegacyGame {
         }
         return false;
     }
-    ExecForEach(scriptLine: string, ctx: Context): void {
+    async ExecForEach(scriptLine: string, ctx: Context): Promise<void> {
         var inLocation: string;
         var scriptToRun: string;
         var isExit: boolean = false;
@@ -3981,7 +3960,7 @@ class LegacyGame {
             if (inLocation == "" || LCase(this._objs[i].ContainerRoom) == inLocation) {
                 if (this._objs[i].IsRoom == isRoom && this._objs[i].IsExit == isExit) {
                     this.SetStringContents("quest.thing", this._objs[i].ObjectName, ctx);
-                    this.ExecuteScript(scriptToRun, ctx);
+                    await this.ExecuteScript(scriptToRun, ctx);
                 }
             }
         }
@@ -4299,7 +4278,7 @@ class LegacyGame {
             }
         }
     }
-    ExecDrop(obj: string, ctx: Context): void {
+    async ExecDrop(obj: string, ctx: Context): Promise<void> {
         var found: boolean = false;
         var parentId: number = 0;
         var id: number = 0;
@@ -4377,11 +4356,11 @@ class LegacyGame {
                     this.PlayerErrorMessage(PlayerError.CantDrop, ctx);
                 }
             } else {
-                this.ExecuteScript(dropStatement, ctx);
+                await this.ExecuteScript(dropStatement, ctx);
             }
         }
     }
-    ExecExamine(command: string, ctx: Context): void {
+    async ExecExamine(command: string, ctx: Context): Promise<void> {
         var item = LCase(Trim(this.GetEverythingAfter(command, "examine ")));
         if (item == "") {
             this.PlayerErrorMessage(PlayerError.BadExamine, ctx);
@@ -4400,7 +4379,7 @@ class LegacyGame {
         // Find "examine" action:
         for (var i = 1; i <= o.NumberActions; i++) {
             if (o.Actions[i].ActionName == "examine") {
-                this.ExecuteScript(o.Actions[i].Script, ctx, id);
+                await this.ExecuteScript(o.Actions[i].Script, ctx, id);
                 return;
             }
         }
@@ -4418,7 +4397,7 @@ class LegacyGame {
                 if (Left(action, 1) == "<") {
                     this.Print(this.GetParameter(this._lines[i], ctx), ctx);
                 } else {
-                    this.ExecuteScript(action, ctx, id);
+                    await this.ExecuteScript(action, ctx, id);
                 }
                 return;
             }
@@ -4454,7 +4433,7 @@ class LegacyGame {
         }
         this.AddToObjectProperties(properties, id, ctx);
     }
-    ExecuteDo(procedureName: string, ctx: Context): void {
+    async ExecuteDo(procedureName: string, ctx: Context): Promise<void> {
         var newCtx: Context = this.CopyContext(ctx);
         var numParameters = 0;
         var useNewCtx: boolean = false;
@@ -4492,9 +4471,9 @@ class LegacyGame {
         } else {
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
                 if (!useNewCtx) {
-                    this.ExecuteScript(this._lines[i], ctx);
+                    await this.ExecuteScript(this._lines[i], ctx);
                 } else {
-                    this.ExecuteScript(this._lines[i], newCtx);
+                    await this.ExecuteScript(this._lines[i], newCtx);
                     ctx.DontProcessCommand = newCtx.DontProcessCommand;
                 }
             }
@@ -4606,7 +4585,7 @@ class LegacyGame {
         }
         return this.GetObjectProperty(propertyName, id, true) == "yes";
     }
-    ExecuteRepeat(data: string, ctx: Context): void {
+    async ExecuteRepeat(data: string, ctx: Context): Promise<void> {
         var repeatWhileTrue: boolean = false;
         var repeatScript: string = "";
         var bracketPos: number = 0;
@@ -4637,7 +4616,7 @@ class LegacyGame {
         var finished = false;
         do {
             if (this.ExecuteConditions(conditions, ctx) == repeatWhileTrue) {
-                this.ExecuteScript(repeatScript, ctx);
+                await this.ExecuteScript(repeatScript, ctx);
             } else {
                 finished = true;
             }
@@ -5062,7 +5041,7 @@ class LegacyGame {
         } while (!(finished));
         return result;
     }
-    DoFunction(data: string, ctx: Context): string {
+    async DoFunction(data: string, ctx: Context): Promise<string> {
         var name: string;
         var parameter: string;
         var intFuncResult: string = "";
@@ -5117,7 +5096,7 @@ class LegacyGame {
             }
             var result: string = "";
             for (var i = block.StartLine + 1; i <= block.EndLine - 1; i++) {
-                this.ExecuteScript(this._lines[i], newCtx);
+                await this.ExecuteScript(this._lines[i], newCtx);
                 result = newCtx.FunctionReturnValue;
             }
             return result;
@@ -5358,7 +5337,7 @@ class LegacyGame {
         }
         return "__NOTDEFINED";
     }
-    ExecFor(line: string, ctx: Context): void {
+    async ExecFor(line: string, ctx: Context): Promise<void> {
         // See if this is a "for each" loop:
         if (this.BeginsWith(line, "each ")) {
             this.ExecForEach(this.GetEverythingAfter(line, "each "), ctx);
@@ -5385,7 +5364,7 @@ class LegacyGame {
         var loopScript = Trim(Mid(line, InStr(line, ">") + 1));
         for (var i = startValue; stepValue > 0 ? i <= endValue : i >= endValue; i = i + stepValue) {
             this.SetNumericVariableContents(counterVariable, i, ctx);
-            this.ExecuteScript(loopScript, ctx);
+            await this.ExecuteScript(loopScript, ctx);
             i = this.GetNumericContents(counterVariable, ctx);
         }
     }
@@ -5861,7 +5840,7 @@ class LegacyGame {
         }
         this._player.SetFont(name);
     }
-    SetNumericVariableContents(name: string, content: number, ctx: Context, arrayIndex: number = 0): void {
+    async SetNumericVariableContents(name: string, content: number, ctx: Context, arrayIndex: number = 0): Promise<void> {
         var numNumber: number = 0;
         var exists = false;
         if (IsNumeric(name)) {
@@ -5896,7 +5875,7 @@ class LegacyGame {
         this._numericVariable[numNumber].VariableContents[arrayIndex] = (content).toString();
         if (this._numericVariable[numNumber].OnChangeScript != "" && !this._gameIsRestoring) {
             var script = this._numericVariable[numNumber].OnChangeScript;
-            this.ExecuteScript(script, ctx);
+            await this.ExecuteScript(script, ctx);
         }
         if (this._numericVariable[numNumber].DisplayString != "") {
             this.UpdateStatusVars(ctx);
@@ -6631,7 +6610,7 @@ class LegacyGame {
             this._player.SetPanelContents("<img src=\"" + this._player.GetURL(filename) + "\" onload=\"setPanelHeight()\"/>");
         }
     }
-    ShowRoomInfoV2(room: string): void {
+    async ShowRoomInfoV2(room: string): Promise<void> {
         // ShowRoomInfo for Quest 2.x games
         var roomDisplayText: string = "";
         var descTagExist: boolean = false;
@@ -6927,7 +6906,7 @@ class LegacyGame {
             if (Left(descLine, 1) == "<") {
                 this.Print(this.GetParameter(descLine, this._nullContext), this._nullContext);
             } else {
-                this.ExecuteScript(descLine, this._nullContext);
+                await this.ExecuteScript(descLine, this._nullContext);
             }
         }
         this.UpdateObjectList(this._nullContext);
@@ -7015,7 +6994,7 @@ class LegacyGame {
         var idx = this.GetArrayIndex(name, ctx);
         this.SetStringContents(idx.Name, value, ctx, idx.Index);
     }
-    ExecUserCommand(cmd: string, ctx: Context, libCommands: boolean = false): boolean {
+    async ExecUserCommand(cmd: string, ctx: Context, libCommands: boolean = false): Promise<boolean> {
         //Executes a user-defined command. If unavailable, returns
         //false.
         var curCmd: string;
@@ -7084,13 +7063,13 @@ class LegacyGame {
         }
         if (foundCommand) {
             if (this.GetCommandParameters(cmd, commandLine, ctx)) {
-                this.ExecuteScript(script, ctx);
+                await this.ExecuteScript(script, ctx);
             }
         }
         return foundCommand;
     }
-    ExecuteChoose(section: string, ctx: Context): void {
-        this.ExecuteScript(this.SetUpChoiceForm(section, ctx), ctx);
+    async ExecuteChoose(section: string, ctx: Context): Promise<void> {
+        await this.ExecuteScript(this.SetUpChoiceForm(section, ctx), ctx);
     }
     GetCommandParameters(test: string, required: string, ctx: Context): boolean {
         //Gets parameters from line. For example, if 'required'
@@ -7479,11 +7458,11 @@ class LegacyGame {
             onSuccess();
         }, onFailure);
     }
-    SaveGame(filename: string, saveFile: boolean = true): number[] {
+    async SaveGame(filename: string, saveFile: boolean = true): Promise<number[]> {
         var ctx: Context = new Context();
         var saveData: string;
         if (this._gameAslVersion >= 391) {
-            this.ExecuteScript(this._beforeSaveScript, ctx);
+            await this.ExecuteScript(this._beforeSaveScript, ctx);
         }
         if (this._gameAslVersion >= 280) {
             saveData = this.MakeRestoreData();
@@ -7496,7 +7475,7 @@ class LegacyGame {
         //}
         this._saveGameFile = filename;
         //return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
-        return null;
+        return new Promise<number[]>((resolve) => null);
     }
     MakeRestoreDataV2(): string {
         var lines: string[] = [];
@@ -7584,7 +7563,7 @@ class LegacyGame {
         this.UpdateItems(ctx);
         this.UpdateObjectList(ctx);
     }
-    SetStringContents(name: string, value: string, ctx: Context, arrayIndex: number = 0): void {
+    async SetStringContents(name: string, value: string, ctx: Context, arrayIndex: number = 0): Promise<void> {
         var id: number = 0;
         var exists = false;
         if (name == "") {
@@ -7630,7 +7609,7 @@ class LegacyGame {
         this._stringVariable[id].VariableContents[arrayIndex] = value;
         if (this._stringVariable[id].OnChangeScript != "") {
             var script = this._stringVariable[id].OnChangeScript;
-            this.ExecuteScript(script, ctx);
+            await this.ExecuteScript(script, ctx);
         }
         if (this._stringVariable[id].DisplayString != "") {
             this.UpdateStatusVars(ctx);
@@ -7951,7 +7930,7 @@ class LegacyGame {
         }
         this.ShowPictureInText(filename);
     }
-    ShowRoomInfo(room: string, ctx: Context, noPrint: boolean = false): void {
+    async ShowRoomInfo(room: string, ctx: Context, noPrint: boolean = false): Promise<void> {
         if (this._gameAslVersion < 280) {
             this.ShowRoomInfoV2(room);
             return;
@@ -8140,7 +8119,7 @@ class LegacyGame {
                 if (descType == TextActionType.Text) {
                     this.Print(descLine, ctx);
                 } else {
-                    this.ExecuteScript(descLine, ctx);
+                    await this.ExecuteScript(descLine, ctx);
                 }
             }
             this.UpdateObjectList(ctx);
@@ -8241,7 +8220,7 @@ class LegacyGame {
     }
     // Returns true if the system is ready to process a new command after completion - so it will be
     // in most cases, except when ExecCommand just caused an "enter" script command to complete
-    ExecCommand(input: string, ctx: Context, echo: boolean = true, runUserCommand: boolean = true, dontSetIt: boolean = false): boolean {
+    async ExecCommand(input: string, ctx: Context, echo: boolean = true, runUserCommand: boolean = true, dontSetIt: boolean = false): Promise<boolean> {
         var parameter: string;
         var skipAfterTurn = false;
         input = this.RemoveFormatting(input);
@@ -8288,15 +8267,15 @@ class LegacyGame {
         if (roomID != 0) {
             if (this._rooms[roomID].BeforeTurnScript != "") {
                 if (this.BeginsWith(this._rooms[roomID].BeforeTurnScript, "override")) {
-                    this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].BeforeTurnScript, "override"), newCtx);
+                    await this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].BeforeTurnScript, "override"), newCtx);
                     globalOverride = true;
                 } else {
-                    this.ExecuteScript(this._rooms[roomID].BeforeTurnScript, newCtx);
+                    await this.ExecuteScript(this._rooms[roomID].BeforeTurnScript, newCtx);
                 }
             }
         }
         if (this._beforeTurnScript != "" && !globalOverride) {
-            this.ExecuteScript(this._beforeTurnScript, newCtx);
+            await this.ExecuteScript(this._beforeTurnScript, newCtx);
         }
         // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
         // in which case we don't process the command.
@@ -8304,17 +8283,17 @@ class LegacyGame {
             //Try to execute user defined command, if allowed:
             userCommandReturn = false;
             if (runUserCommand) {
-                userCommandReturn = this.ExecUserCommand(input, ctx);
+                userCommandReturn = await this.ExecUserCommand(input, ctx);
                 if (!userCommandReturn) {
-                    userCommandReturn = this.ExecVerb(input, ctx);
+                    userCommandReturn = await this.ExecVerb(input, ctx);
                 }
                 if (!userCommandReturn) {
                     // Try command defined by a library
-                    userCommandReturn = this.ExecUserCommand(input, ctx, true);
+                    userCommandReturn = await this.ExecUserCommand(input, ctx, true);
                 }
                 if (!userCommandReturn) {
                     // Try verb defined by a library
-                    userCommandReturn = this.ExecVerb(input, ctx, true);
+                    userCommandReturn = await this.ExecVerb(input, ctx, true);
                 }
             }
             input = LCase(input);
@@ -8496,15 +8475,15 @@ class LegacyGame {
             if (roomID != 0) {
                 if (this._rooms[roomID].AfterTurnScript != "") {
                     if (this.BeginsWith(this._rooms[roomID].AfterTurnScript, "override")) {
-                        this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].AfterTurnScript, "override"), ctx);
+                        await this.ExecuteScript(this.GetEverythingAfter(this._rooms[roomID].AfterTurnScript, "override"), ctx);
                         globalOverride = true;
                     } else {
-                        this.ExecuteScript(this._rooms[roomID].AfterTurnScript, ctx);
+                        await this.ExecuteScript(this._rooms[roomID].AfterTurnScript, ctx);
                     }
                 }
             }
             if (this._afterTurnScript != "" && !globalOverride) {
-                this.ExecuteScript(this._afterTurnScript, ctx);
+                await this.ExecuteScript(this._afterTurnScript, ctx);
             }
         }
         this.Print("", ctx);
@@ -8526,7 +8505,7 @@ class LegacyGame {
         // called "".
         return this.BeginsWith(Trim(cmd), startsWith);
     }
-    ExecGive(giveString: string, ctx: Context): void {
+    async ExecGive(giveString: string, ctx: Context): Promise<void> {
         var article: string;
         var item: string;
         var character: string;
@@ -8638,7 +8617,7 @@ class LegacyGame {
                 }
             }
             if (foundScript) {
-                this.ExecuteScript(script, ctx, id);
+                await this.ExecuteScript(script, ctx, id);
             } else {
                 this.SetStringContents("quest.error.charactername", this._objs[giveToId].ObjectName, ctx);
                 var gender = Trim(this._objs[giveToId].Gender);
@@ -8677,10 +8656,10 @@ class LegacyGame {
                 return;
             }
             // now, execute the statement on GiveLine
-            this.ExecuteScript(this.GetSecondChunk(this._lines[giveLine]), ctx);
+            await this.ExecuteScript(this.GetSecondChunk(this._lines[giveLine]), ctx);
         }
     }
-    ExecLook(lookLine: string, ctx: Context): void {
+    async ExecLook(lookLine: string, ctx: Context): Promise<void> {
         var item: string;
         if (Trim(lookLine) == "look") {
             this.ShowRoomInfo((this._currentRoom), ctx);
@@ -8749,12 +8728,12 @@ class LegacyGame {
                     var LookText = this.GetParameter(lookLine, ctx);
                     this.Print(LookText, ctx);
                 } else {
-                    this.ExecuteScript(lookData, ctx);
+                    await this.ExecuteScript(lookData, ctx);
                 }
             }
         }
     }
-    ExecSpeak(cmd: string, ctx: Context): void {
+    async ExecSpeak(cmd: string, ctx: Context): Promise<void> {
         if (this.BeginsWith(cmd, "the ")) {
             cmd = this.GetEverythingAfter(cmd, "the ");
         }
@@ -8817,7 +8796,7 @@ class LegacyGame {
                     this.Print(Chr(34) + text + Chr(34), ctx);
                 }
             } else {
-                this.ExecuteScript(speakLine, ctx, ObjID);
+                await this.ExecuteScript(speakLine, ctx, ObjID);
             }
         } else {
             var line = this.RetrLine("character", cmd, "speak", ctx);
@@ -8839,11 +8818,11 @@ class LegacyGame {
                 data = this.GetParameter(line, ctx);
                 this.Print(Chr(34) + data + Chr(34), ctx);
             } else {
-                this.ExecuteScript(data, ctx);
+                await this.ExecuteScript(data, ctx);
             }
         }
     }
-    ExecTake(item: string, ctx: Context): void {
+    async ExecTake(item: string, ctx: Context): Promise<void> {
         var parentID: number = 0;
         var parentDisplayName: string;
         var foundItem = true;
@@ -8911,7 +8890,7 @@ class LegacyGame {
                 this.Print(t.Data, ctx);
                 this.PlayerItem(item, true, ctx, id);
             } else if (t.Type == TextActionType.Script) {
-                this.ExecuteScript(t.Data, ctx, id);
+                await this.ExecuteScript(t.Data, ctx, id);
             } else {
                 this.PlayerErrorMessage(PlayerError.BadTake, ctx);
             }
@@ -8920,7 +8899,7 @@ class LegacyGame {
             for (var i = this._objs[id].DefinitionSectionStart + 1; i <= this._objs[id].DefinitionSectionEnd - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "take")) {
                     var script = Trim(this.GetEverythingAfter(Trim(this._lines[i]), "take"));
-                    this.ExecuteScript(script, ctx, id);
+                    await this.ExecuteScript(script, ctx, id);
                     foundTake = true;
                     i = this._objs[id].DefinitionSectionEnd;
                 }
@@ -8930,7 +8909,7 @@ class LegacyGame {
             }
         }
     }
-    ExecUse(useLine: string, ctx: Context): void {
+    async ExecUse(useLine: string, ctx: Context): Promise<void> {
         var endOnWith: number = 0;
         var useDeclareLine = "";
         var useOn: string;
@@ -9072,7 +9051,7 @@ class LegacyGame {
                 }
             }
             if (foundUseScript) {
-                this.ExecuteScript(useScript, ctx, id);
+                await this.ExecuteScript(useScript, ctx, id);
             } else {
                 this.PlayerErrorMessage(PlayerError.DefaultUse, ctx);
             }
@@ -9122,7 +9101,7 @@ class LegacyGame {
                 return;
             }
             var script = Right(useDeclareLine, Len(useDeclareLine) - InStr(useDeclareLine, ">"));
-            this.ExecuteScript(script, ctx);
+            await this.ExecuteScript(script, ctx);
         }
     }
     ObjectActionUpdate(id: number, name: string, script: string, noUpdate: boolean = false): void {
@@ -9174,7 +9153,7 @@ class LegacyGame {
             this.AddToObjectChangeLog(AppliesTo.Object, this._objs[id].ObjectName, name, "action <" + name + "> " + script);
         }
     }
-    ExecuteIf(scriptLine: string, ctx: Context): void {
+    async ExecuteIf(scriptLine: string, ctx: Context): Promise<void> {
         var ifLine = Trim(this.GetEverythingAfter(Trim(scriptLine), "if "));
         var obscuredLine = this.ObliterateParameters(ifLine);
         var thenPos = InStr(obscuredLine, "then");
@@ -9206,14 +9185,14 @@ class LegacyGame {
             elseScript = Mid(elseScript, 2, Len(elseScript) - 2);
         }
         if (this.ExecuteConditions(conditions, ctx)) {
-            this.ExecuteScript((thenScript), ctx);
+            await this.ExecuteScript((thenScript), ctx);
         } else {
             if (elsePos != 0) {
-                this.ExecuteScript((elseScript), ctx);
+                await this.ExecuteScript((elseScript), ctx);
             }
         }
     }
-    ExecuteScript(scriptLine: string, ctx: Context, newCallingObjectId: number = 0): void {
+    async ExecuteScript(scriptLine: string, ctx: Context, newCallingObjectId: number = 0): Promise<void> {
         try {
             if (Trim(scriptLine) == "") {
                 return;
@@ -9232,7 +9211,7 @@ class LegacyGame {
                     }
                     var curScriptLine = Trim(Mid(scriptLine, curPos, crLfPos - curPos));
                     if (curScriptLine != "\n") {
-                        this.ExecuteScript(curScriptLine, ctx);
+                        await this.ExecuteScript(curScriptLine, ctx);
                     }
                     curPos = crLfPos + 1;
                 } while (!(finished));
@@ -9526,7 +9505,7 @@ class LegacyGame {
         var lengthOfKeyword = (Len(line) - endOfFirstBit) + 1;
         return Trim(Mid(line, endOfFirstBit, lengthOfKeyword));
     }
-    GoDirection(direction: string, ctx: Context): void {
+    async GoDirection(direction: string, ctx: Context): Promise<void> {
         // leaves the current room in direction specified by
         // 'direction'
         var dirData: TextAction = new TextAction();
@@ -9569,7 +9548,7 @@ class LegacyGame {
             }
         }
         if (dirData.Type == TextActionType.Script && dirData.Data != "") {
-            this.ExecuteScript(dirData.Data, ctx);
+            await this.ExecuteScript(dirData.Data, ctx);
         } else if (dirData.Data != "") {
             var newRoom = dirData.Data;
             var scp = InStr(newRoom, ";");
@@ -9585,7 +9564,7 @@ class LegacyGame {
             }
         }
     }
-    GoToPlace(place: string, ctx: Context): void {
+    async GoToPlace(place: string, ctx: Context): Promise<void> {
         // leaves the current room in direction specified by
         // 'direction'
         var destination = "";
@@ -9608,7 +9587,7 @@ class LegacyGame {
         if (destination != "") {
             if (InStr(destination, ";") > 0) {
                 var s = Trim(Right(destination, Len(destination) - InStr(destination, ";")));
-                this.ExecuteScript(s, ctx);
+                await this.ExecuteScript(s, ctx);
             } else {
                 this.PlayGame(destination, ctx);
             }
@@ -9753,7 +9732,7 @@ class LegacyGame {
         }
         return "";
     }
-    PlayerItem(item: string, got: boolean, ctx: Context, objId: number = 0): void {
+    async PlayerItem(item: string, got: boolean, ctx: Context, objId: number = 0): Promise<void> {
         // Gives the player an item (if got=True) or takes an
         // item away from the player (if got=False).
         // If ASL>280, setting got=TRUE moves specified
@@ -9777,12 +9756,12 @@ class LegacyGame {
                     }
                     this.MoveThing(this._objs[objId].ObjectName, "inventory", Thing.Object, ctx);
                     if (this._objs[objId].GainScript != "") {
-                        this.ExecuteScript(this._objs[objId].GainScript, ctx);
+                        await this.ExecuteScript(this._objs[objId].GainScript, ctx);
                     }
                 } else {
                     this.MoveThing(this._objs[objId].ObjectName, this._currentRoom, Thing.Object, ctx);
                     if (this._objs[objId].LoseScript != "") {
-                        this.ExecuteScript(this._objs[objId].LoseScript, ctx);
+                        await this.ExecuteScript(this._objs[objId].LoseScript, ctx);
                     }
                 }
                 foundObjectName = true;
@@ -9803,7 +9782,7 @@ class LegacyGame {
             this.UpdateItems(ctx);
         }
     }
-    PlayGame(room: string, ctx: Context): void {
+    async PlayGame(room: string, ctx: Context): Promise<void> {
         //plays the specified room
         var id = this.GetRoomId(room, ctx);
         if (id == 0) {
@@ -9820,13 +9799,13 @@ class LegacyGame {
         // Find script lines and execute them.
         if (this._rooms[id].Script != "") {
             var script = this._rooms[id].Script;
-            this.ExecuteScript(script, ctx);
+            await this.ExecuteScript(script, ctx);
         }
         if (this._gameAslVersion >= 410) {
             this.AddToObjectProperties("visited", this._rooms[id].ObjId, ctx);
         }
     }
-    Print(txt: string, ctx: Context): void {
+    async Print(txt: string, ctx: Context): Promise<void> {
         var printString = "";
         if (txt == "") {
             this.DoPrint(printString);
@@ -9838,7 +9817,7 @@ class LegacyGame {
                     printString = "";
                     printThis = false;
                     i = i + 1;
-                    this.ExecuteScript("wait <>", ctx);
+                    await this.ExecuteScript("wait <>", ctx);
                 } else if (Mid(txt, i, 2) == "|c") {
                     switch (Mid(txt, i, 3)) {
                         case "|cb":
@@ -9853,7 +9832,7 @@ class LegacyGame {
                             printString = "";
                             printThis = false;
                             i = i + 1;
-                            this.ExecuteScript("clear", ctx);
+                            await this.ExecuteScript("clear", ctx);
                             break;
                     }
                 }
@@ -10595,7 +10574,7 @@ class LegacyGame {
         }
         roomExit.SetIsLocked(lock);
     }
-    DoBegin(): void {
+    async DoBegin(): Promise<void> {
         var gameBlock: DefineBlock = this.GetDefineBlock("game");
         var ctx: Context = new Context();
         this.SetFont("");
@@ -10623,17 +10602,17 @@ class LegacyGame {
                 for (var i = gameBlock.EndLine - 1; i >= gameBlock.StartLine + 1; i--) {
                     if (this.BeginsWith(this._lines[i], "lib startscript ")) {
                         ctx = this._nullContext;
-                        this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
+                        await this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
                     }
                 }
             }
             for (var i = gameBlock.StartLine + 1; i <= gameBlock.EndLine - 1; i++) {
                 if (this.BeginsWith(this._lines[i], "startscript ")) {
                     ctx = this._nullContext;
-                    this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "startscript")), ctx);
+                    await this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "startscript")), ctx);
                 } else if (this.BeginsWith(this._lines[i], "lib startscript ") && this._gameAslVersion < 311) {
                     ctx = this._nullContext;
-                    this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
+                    await this.ExecuteScript(Trim(this.GetEverythingAfter(Trim(this._lines[i]), "lib startscript ")), ctx);
                 }
             }
         }
@@ -10662,7 +10641,7 @@ class LegacyGame {
             if (this._gameAslVersion >= 391) {
                 // For ASL>=391, OnLoad is now run for all games.
                 ctx = this._nullContext;
-                this.ExecuteScript(this._onLoadScript, ctx);
+                await this.ExecuteScript(this._onLoadScript, ctx);
             }
         }
         this.RaiseNextTimerTickRequest();
@@ -10725,10 +10704,10 @@ class LegacyGame {
         }
         this.RaiseNextTimerTickRequest();
     }
-    RunTimer(scripts: string[]): void {
-        scripts.forEach(function (script) {
+    async RunTimer(scripts: string[]): Promise<void> {
+        await scripts.forEach(async function (script) {
             try {
-                this.ExecuteScript(script, this._nullContext);
+                await this.ExecuteScript(script, this._nullContext);
             }
             catch (e) {
             }
