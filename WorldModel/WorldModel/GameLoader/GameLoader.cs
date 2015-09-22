@@ -51,8 +51,9 @@ namespace TextAdventures.Quest
             {"550", WorldModelVersion.v550},
         };
 
-        public GameLoader(WorldModel worldModel, LoadMode mode)
+        public GameLoader(WorldModel worldModel, LoadMode mode, bool? isCompiled = null)
         {
+            IsCompiledFile = isCompiled ?? false;
             m_worldModel = worldModel;
             m_scriptFactory = new ScriptFactory(worldModel);
             m_scriptFactory.ErrorHandler += AddError;
@@ -67,9 +68,6 @@ namespace TextAdventures.Quest
             {
                 throw new ArgumentException("Expected filename or data");
             }
-
-            // defaults to false, but if we're reading from Azure it's always a compiled file
-            IsCompiledFile = Config.ReadGameFileFromAzureBlob;
 
             if (Path.GetExtension(filename) == ".quest")
             {
@@ -417,11 +415,22 @@ namespace TextAdventures.Quest
             // do a preliminary pass of the base .aslx file to scan for any template definitions,
             // then we add those and mark them as non-overwritable.
 
-            System.IO.FileStream stream = new System.IO.FileStream(filename,
-                    System.IO.FileMode.Open,
-                    System.IO.FileAccess.Read,
-                    System.IO.FileShare.ReadWrite);
-            XmlReader reader = new XmlTextReader(stream);
+            XmlReader reader;
+
+            if (Config.ReadGameFileFromAzureBlob)
+            {
+                using (var client = new WebClient())
+                {
+                    client.Encoding = System.Text.Encoding.UTF8;
+                    var data = client.DownloadString(filename);
+                    reader = new XmlTextReader(new StringReader(data));
+                }
+            }
+            else
+            {
+                var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                reader = new XmlTextReader(stream);
+            }
 
             TemplateLoader templateLoader = new TemplateLoader();
             templateLoader.GameLoader = this;

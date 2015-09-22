@@ -102,6 +102,7 @@ namespace WebPlayer
             string folder = null;
             string gameFile = Request["file"];
             string id = Request["id"];
+            bool? isCompiled = null;
 
             if (string.IsNullOrEmpty(gameFile))
             {
@@ -110,7 +111,9 @@ namespace WebPlayer
                     IFileManager fileManager = FileManagerLoader.GetFileManager();
                     if (fileManager != null)
                     {
-                        gameFile = await fileManager.GetFileForID(id);
+                        var result = await fileManager.GetFileForID(id);
+                        gameFile = result.Filename;
+                        isCompiled = result.IsCompiled;
                     }
                 }
             }
@@ -129,10 +132,10 @@ namespace WebPlayer
                 }
             }
 
-            return LoadGame(gameFile, id, folder, loadData, apiGameData);
+            return LoadGame(gameFile, isCompiled, id, folder, loadData, apiGameData);
         }
 
-        private string LoadGame(string gameFile, string id, string folder, string loadData, AzureFileManager.ApiGame apiGameData)
+        private string LoadGame(string gameFile, bool? isCompiled, string id, string folder, string loadData, AzureFileManager.ApiGame apiGameData)
         {
             if (string.IsNullOrEmpty(gameFile) && loadData == null)
             {
@@ -178,7 +181,7 @@ namespace WebPlayer
                     m_player.ResourceUrlRoot = AzureFileManager.GetResourceUrlRoot(id);
                 }
                 
-                if (m_player.Initialise(out errors))
+                if (m_player.Initialise(out errors, isCompiled))
                 {
                     Resources.AddGame(m_player.Game);
 

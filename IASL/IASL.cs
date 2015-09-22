@@ -12,7 +12,7 @@ namespace TextAdventures.Quest
 
     public interface IASL
     {
-        bool Initialise(IPlayer player);
+        bool Initialise(IPlayer player, bool? isCompiled = null);
         void Begin();
         void SendCommand(string command);
         void SendCommand(string command, IDictionary<string, string> metadata);

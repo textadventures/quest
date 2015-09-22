@@ -17,18 +17,26 @@ namespace WebPlayer
             public string SourceGameUrl { get; set; }
         }
 
-        public async Task<string> GetFileForID(string id)
+        public async Task<SourceFileData> GetFileForID(string id)
         {
             if (id.StartsWith("editor/"))
             {
-                return string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7));
+                return new SourceFileData
+                {
+                    Filename = string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7)),
+                    IsCompiled = false
+                };
             }
 
             var game = await Api.GetData<ApiGame>("api/game/" + id);
 
             if (game == null) return null;
 
-            return GetSourceGameUrl(game);
+            return new SourceFileData
+            {
+                Filename = GetSourceGameUrl(game),
+                IsCompiled = true
+            };
         }
 
         private static string GetSourceGameUrl(ApiGame game)

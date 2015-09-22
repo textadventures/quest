@@ -12063,7 +12063,7 @@ Public Class LegacyGame
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
     'NOCONVERT>
 
-    Public Function Initialise(player As IPlayer) As Boolean Implements IASL.Initialise
+    Public Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Boolean Implements IASL.Initialise
         _player = player
         If LCase(Right(_filename, 4)) = ".qsg" Or _data IsNot Nothing Then
             Return OpenGame(_filename)

@@ -10,10 +10,13 @@ namespace WebPlayer
     internal class DebugFileManager : IFileManager
     {
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<string> GetFileForID(string id)
+        public async Task<SourceFileData> GetFileForID(string id)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            return ConfigurationManager.AppSettings["DebugFileManagerFile"];
+            return new SourceFileData
+            {
+                Filename = ConfigurationManager.AppSettings["DebugFileManagerFile"]
+            };
         }
     }
 }

@@ -482,11 +482,11 @@ namespace TextAdventures.Quest
             if (m_playerUI != null) m_playerUI.UpdateGameName(name);
         }
 
-        public bool Initialise(IPlayer player)
+        public bool Initialise(IPlayer player, bool? isCompiled = null)
         {
             m_editMode = false;
             m_playerUI = player;
-            GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play);
+            GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play, isCompiled);
             bool result = InitialiseInternal(loader);
             if (result)
             {

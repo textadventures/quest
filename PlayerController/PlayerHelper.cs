@@ -63,9 +63,9 @@ namespace TextAdventures.Quest
             m_gameTimer = m_game as IASLTimer;
         }
 
-        public bool Initialise(IPlayer player, out List<string> errors)
+        public bool Initialise(IPlayer player, out List<string> errors, bool? isCompiled = null)
         {
-            bool result = m_game.Initialise(player);
+            bool result = m_game.Initialise(player, isCompiled);
             if (m_game.Errors.Count > 0)
             {
                 errors = m_game.Errors;

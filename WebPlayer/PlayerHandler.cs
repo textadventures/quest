@@ -45,7 +45,7 @@ namespace WebPlayer
         public AzureFileManager.ApiGame ApiGameData { get; set; }
         public string ResourceUrlRoot { get; set; }
 
-        public bool Initialise(out List<string> errors)
+        public bool Initialise(out List<string> errors, bool? isCompiled)
         {
             Logging.Log.DebugFormat("{0} Initialising {1}", GameId, m_filename);
 
@@ -72,7 +72,7 @@ namespace WebPlayer
                 gameTimer.RequestNextTimerTick += RequestNextTimerTick;
             }
 
-            bool success = m_controller.Initialise(this, out errors);
+            bool success = m_controller.Initialise(this, out errors, isCompiled);
             if (success)
             {
                 Logging.Log.DebugFormat("{0} Initialised successfully", GameId);
