@@ -460,7 +460,7 @@ namespace WebPlayer
             {
                 if (ResourceUrlRoot == null)
                 {
-                    return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
+                    return string.Format("https://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
                         m_controller.Game.GameID,
                         file);
                 }
