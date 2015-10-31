@@ -1703,6 +1703,7 @@ namespace TextAdventures.Quest
 
         public bool IsVerbAttribute(string attributeName)
         {
+            attributeName = attributeName.Trim();
             return m_worldModel.Elements.GetElements(ElementType.Object).Any(
                 e => e.Fields.GetAsType<bool>("isverb") && e.Fields.GetString("property") == attributeName);
         }
@@ -2078,6 +2079,7 @@ namespace TextAdventures.Quest
 
         public CanAddVerbResult CanAddVerb(string verbPattern)
         {
+            verbPattern = verbPattern.Trim();
             if (verbPattern == "ask")
             {
                 return new CanAddVerbResult
