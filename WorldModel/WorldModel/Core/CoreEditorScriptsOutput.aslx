@@ -375,12 +375,10 @@
     </control>
   </editor>
 
+  <!-- removed the ability to add this as it doesn't work on desktop -->
   <editor>
     <appliesto>(function)ShowVimeo</appliesto>
     <display>Play Vimeo video #0</display>
-    <category>[EditorScriptsOutputOutput]</category>
-    <create>ShowVimeo ("")</create>
-    <add>[EditorScriptsOutputPlayVimeovideo]</add>
 
     <control>
       <controltype>label</controltype>
