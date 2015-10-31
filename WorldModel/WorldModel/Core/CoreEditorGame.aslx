@@ -64,28 +64,6 @@
       </control>
 
       <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameDifficulty]</caption>
-        <attribute>difficulty</attribute>
-        <validvalues type="simplestringlist">;Easy;Medium;Hard;Very Hard</validvalues>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>[EditorGameCruelty]</caption>
-        <attribute>cruelty</attribute>
-        <validvalues type="simplestringlist">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameWhatdothecruelty]</caption>
-        <href>http://www.ifwiki.org/index.php/Cruelty_scale</href>
-        <advanced/>
-      </control>
-
-      <control>
         <controltype>file</controltype>
         <caption>[EditorGameCoverart]</caption>
         <attribute>cover</attribute>
