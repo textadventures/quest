@@ -341,11 +341,14 @@
           if (this.health > 100) {
             this.health = 100
           }
-          else if (this.health <= 0) {
-            this.health = 0
+          else if (this.health = 0) {
             if (HasScript(game, "onhealthzero")) {
               do (game, "onhealthzero")
             }
+          }
+          else if (this.health < 0) {
+            this.health = 0
+            // changedhealth will be called again so the onhealthzero script will run
           }
         }
       }
