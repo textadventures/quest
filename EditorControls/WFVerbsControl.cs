@@ -83,6 +83,8 @@ namespace TextAdventures.Quest.EditorControls
 
         protected override void Add()
         {
+            Save();
+
             // TO DO: This fetches all verbs in the game, but verbs can be defined in rooms, so we should
             // filter out any out-of-scope verbs.
 
