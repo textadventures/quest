@@ -22,7 +22,7 @@
               desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(game.pov.parent)) + "</b>")
             }
             if (game.autodescription_youarein_newline) {
-              msg (desc)
+              msg (desc + "<br/>")
               desc = ""
             }
           }
@@ -31,7 +31,7 @@
             desc = AddDescriptionLine(desc, objects)
             
             if (game.autodescription_youcansee_newline) {
-              msg (desc)
+              msg (desc + "<br/>")
               desc = ""
             }
           }
@@ -40,7 +40,7 @@
             desc = AddDescriptionLine(desc, exits)
             
             if (game.autodescription_youcango_newline) {
-              msg (desc)
+              msg (desc + "<br/>")
               desc = ""
             }
           }
@@ -58,7 +58,7 @@
             else  {
               desc = AddDescriptionLine(desc, GetRoomDescription())
               if (game.autodescription_description_newline) {
-                msg (desc)
+                msg (desc + "<br/>")
                 desc = ""
               }
             }
