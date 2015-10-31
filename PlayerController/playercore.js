@@ -790,39 +790,15 @@ function setInterfaceString(name, text) {
     }
 }
 
-function CheckFlashAndShowMsg() {
-    var hasFlash = false;
-    try {
-        //IE 7
-        var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-        if (fo)
-            hasFlash = true;
-    } catch (e) {
-        //IE 8+, and all other modern browsers
-        if (navigator.mimeTypes["application/x-shockwave-flash"] != undefined)
-            hasFlash = true;
-    }
-
-    if (!hasFlash)
-        addText("<b><i>You must install <a href=\"http://get.adobe.com/flashplayer/\" target=\"_blank\">Adobe Flash Player</a> for Internet Explorer for videos to work.</i></b>");
-
-    return hasFlash;
-}
-
 function AddYouTube(id) {
-    if (!CheckFlashAndShowMsg())
-        return;
-
-    var url = "http://www.youtube.com/v/" + id + "?version=3&autoplay=1";
-    var embedHTML = "<object width=\"425\" height=\"344\"><param name=\"movie\" value=\"" + url + "\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><param name=\"wmode\" value=\"transparent\"></param><embed wmode=\"transparent\" src=\"" + url + "\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"425\" height=\"344\"></embed></object>";
+    var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
+    var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
     addText(embedHTML);
 }
 
 function AddVimeo(id) {
-    if (!CheckFlashAndShowMsg())
-        return;
-
-    var embedHTML = "<object width=\"400\" height=\"225\"><param name=\"allowfullscreen\" value=\"true\" /><param name=\"allowscriptaccess\" value=\"always\" /><param name=\"movie\" value=\"http://vimeo.com/moogaloop.swf?clip_id=" + id + "&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=1&amp;loop=0\" /><param name=\"wmode\" value=\"transparent\"></param><embed wmode=\"transparent\" src=\"http://vimeo.com/moogaloop.swf?clip_id=" + id + "&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=1&amp;loop=0\" type=\"application/x-shockwave-flash\" allowfullscreen=\"true\" allowscriptaccess=\"always\" width=\"400\" height=\"225\"></embed></object>";
+    var url = "https://player.vimeo.com/video/" + id + "?autoplay=1";
+    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" width=\"500\" height=\"281\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
     addText(embedHTML);
 }
 
