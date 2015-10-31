@@ -82,7 +82,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>eatmsg</attribute>
-      <caption>[EditorObjectOptionsMessagetoprint]</caption>
+      <caption>[EditorObjectOptionsMessageEat]</caption>
       <nullable/>
       <mustinherit>edible</mustinherit>
     </control>
