@@ -486,6 +486,11 @@ namespace WebPlayer
 
         public string GetUIOption(UIOption option)
         {
+            if (option == UIOption.UseGameColours || option == UIOption.UseGameFont)
+            {
+                return "true";
+            }
+
             return null;
         }
 
