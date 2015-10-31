@@ -46,13 +46,13 @@ Partial Class PublishWindow
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFilename.Location = New System.Drawing.Point(68, 10)
         Me.txtFilename.Name = "txtFilename"
-        Me.txtFilename.Size = New System.Drawing.Size(311, 20)
+        Me.txtFilename.Size = New System.Drawing.Size(362, 20)
         Me.txtFilename.TabIndex = 1
         '
         'cmdBrowse
         '
         Me.cmdBrowse.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdBrowse.Location = New System.Drawing.Point(385, 8)
+        Me.cmdBrowse.Location = New System.Drawing.Point(436, 8)
         Me.cmdBrowse.Name = "cmdBrowse"
         Me.cmdBrowse.Size = New System.Drawing.Size(75, 23)
         Me.cmdBrowse.TabIndex = 2
@@ -73,7 +73,7 @@ Partial Class PublishWindow
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(384, 77)
+        Me.cmdCancel.Location = New System.Drawing.Point(435, 89)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
         Me.cmdCancel.TabIndex = 4
@@ -83,7 +83,7 @@ Partial Class PublishWindow
         'cmdSave
         '
         Me.cmdSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSave.Location = New System.Drawing.Point(303, 77)
+        Me.cmdSave.Location = New System.Drawing.Point(354, 89)
         Me.cmdSave.Name = "cmdSave"
         Me.cmdSave.Size = New System.Drawing.Size(75, 23)
         Me.cmdSave.TabIndex = 5
@@ -101,15 +101,15 @@ Partial Class PublishWindow
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(472, 112)
+        Me.ClientSize = New System.Drawing.Size(523, 123)
         Me.Controls.Add(Me.cmdSave)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.chkIncludeWalkthrough)
         Me.Controls.Add(Me.cmdBrowse)
         Me.Controls.Add(Me.txtFilename)
         Me.Controls.Add(Me.Label1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(1200, 150)
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(300, 150)
         Me.Name = "PublishWindow"
