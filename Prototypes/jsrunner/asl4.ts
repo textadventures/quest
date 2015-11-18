@@ -2025,10 +2025,7 @@ class LegacyGame {
                 curLin = "";
                 endLineReached = false;
                 if (textMode) {
-                    // WAS:                    
-                    //   textData = Mid(fileData, i, InStrFrom(i, fileData, Chr(253)) - (i - 1));
-                    //   textData = Left(textData, Len(textData) - 1);
-                    textData = fileData.slice(i, fileData.indexOf(253, i) - 1);
+                    textData = fileData.slice(i - 1, fileData.indexOf(253, i));
                     cpos = 1;
                     var finished = false;
                     if (textData.length > 0) {
