@@ -211,6 +211,14 @@ interface FileFetcher {
     (filename: string, onSuccess: FileFetcherCallback, onFailure: FileFetcherCallback): void;
 }
 
+interface BinaryFileFetcherCallback {
+    (data: Uint8Array): void;
+}
+
+interface BinaryFileFetcher {
+    (filename: string, onSuccess: BinaryFileFetcherCallback, onFailure: FileFetcherCallback): void;
+}
+
 enum State {Ready, Working, Waiting, Finished};
 class DefineBlock {
     StartLine: number = 0;
@@ -540,14 +548,16 @@ class LegacyGame {
     _fileDataPos: number = 0;
     _questionResponse: boolean = false;
     _fileFetcher: FileFetcher;
+    _binaryFileFetcher: BinaryFileFetcher;
     
-    constructor(filename: string, originalFilename: string, data: InitGameData, fileFetcher: FileFetcher) {
+    constructor(filename: string, originalFilename: string, data: InitGameData, fileFetcher: FileFetcher, binaryFileFetcher: BinaryFileFetcher) {
         this.LoadCASKeywords();
         this._gameLoadMethod = "normal";
         this._filename = filename;
         this._originalFilename = originalFilename;
         this._data = data;
         this._fileFetcher = fileFetcher;
+        this._binaryFileFetcher = binaryFileFetcher;
     }
     RemoveFormatting(s: string): string {
         var code: string;
@@ -1312,16 +1322,12 @@ class LegacyGame {
         }
         return Right(s, Len(s) - Len(text));
     }
-    Keyword2CAS(KWord: string): string {
-        if (KWord == "") {
-            return "";
-        }
+    Keyword2CAS(KWord: string): number {
         for (var i = 0; i <= 255; i++) {
             if (LCase(KWord) == LCase(this._casKeywords[i])) {
-                return Chr(i);
+                return i;
             }
         }
-        return this.Keyword2CAS("!unknown") + KWord + this.Keyword2CAS("!unknown");
     }
     LoadCASKeywords(): void {
         this._casKeywords[0] = "!null";
@@ -1968,31 +1974,29 @@ class LegacyGame {
     }
     AddLine(line: string): void {
         //Adds a line to the game script
-        var numLines: number = 0;
-        numLines = UBound(this._lines) + 1;
-        if (!this._lines) this._lines = [];
-        this._lines[numLines] = line;
+        if (!this._lines || this._lines.length == 0) this._lines = [""];
+        this._lines.push(line);
     }
     async LoadCASFile(filename: string): Promise<void> {
         var endLineReached: boolean = false;
         var exitTheLoop: boolean = false;
         var textMode: boolean = false;
         var casVersion: number = 0;
-        var startCat: string = "";
+        var startCat: number;
         var endCatPos: number = 0;
         var chkVer: string;
         var j: number = 0;
         var curLin: string;
-        var textData: string;
+        var textData: Uint8Array;
         var cpos: number = 0;
         var nextLinePos: number = 0;
         var c: string;
         var tl: string;
         var ckw: number;
-        var d: string;
+        var d: number;
         this._lines = [];
         var fileData = await this.GetCASFileData(filename);
-        chkVer = Left(fileData, 7);
+        chkVer = String.fromCharCode.apply(null, fileData.slice(0, 7));
         if (chkVer == "QCGF001") {
             casVersion = 1;
         } else if (chkVer == "QCGF002") {
@@ -2005,42 +2009,46 @@ class LegacyGame {
         if (casVersion == 3) {
             startCat = this.Keyword2CAS("!startcat");
         }
-        for (var i = 9; i <= Len(fileData); i++) {
-            if (casVersion == 3 && Mid(fileData, i, 1) == startCat) {
+        for (var i = 8; i < fileData.length; i++) {
+            if (casVersion == 3 && fileData[i] == startCat) {
                 // Read catalog
                 this._startCatPos = i;
-                endCatPos = InStrFrom(j, fileData, this.Keyword2CAS("!endcat"));
-                this.ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1));
-                this._resourceFile = filename;
-                this._resourceOffset = endCatPos + 1;
-                i = Len(fileData);
-                this._casFileData = fileData;
+                endCatPos = fileData.indexOf(this.Keyword2CAS("!endcat"), j);
+                
+                // TODO...
+                //this.ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1));
+                // this._resourceFile = filename;
+                // this._resourceOffset = endCatPos + 1;
+                // i = Len(fileData);
+                // this._casFileData = fileData;
             } else {
                 curLin = "";
                 endLineReached = false;
                 if (textMode) {
-                    textData = Mid(fileData, i, InStrFrom(i, fileData, Chr(253)) - (i - 1));
-                    textData = Left(textData, Len(textData) - 1);
+                    // WAS:                    
+                    //   textData = Mid(fileData, i, InStrFrom(i, fileData, Chr(253)) - (i - 1));
+                    //   textData = Left(textData, Len(textData) - 1);
+                    textData = fileData.slice(i, fileData.indexOf(253, i) - 1);
                     cpos = 1;
                     var finished = false;
-                    if (textData != "") {
+                    if (textData.length > 0) {
                         do {
-                            nextLinePos = InStrFrom(cpos, textData, Chr(0));
-                            if (nextLinePos == 0) {
-                                nextLinePos = Len(textData) + 1;
+                            nextLinePos = textData.indexOf(0, cpos);
+                            if (nextLinePos == -1) {
+                                nextLinePos = textData.length + 1;
                                 finished = true;
                             }
-                            tl = this.DecryptString(Mid(textData, cpos, nextLinePos - cpos));
+                            tl = this.DecryptString(textData.slice(cpos, nextLinePos));
                             this.AddLine(tl);
                             cpos = nextLinePos + 1;
                         } while (!(finished));
                     }
                     textMode = false;
-                    i = InStrFrom(i, fileData, Chr(253));
+                    i = fileData.indexOf(253, i);
                 }
                 j = i;
                 do {
-                    ckw = Asc(Mid(fileData, j, 1));
+                    ckw = fileData[j];
                     c = this.ConvertCasKeyword(ckw);
                     if (c == "\n") {
                         endLineReached = true;
@@ -2053,9 +2061,9 @@ class LegacyGame {
                                 curLin = curLin + "<";
                                 do {
                                     j = j + 1;
-                                    d = Mid(fileData, j, 1);
-                                    if (d != Chr(0)) {
-                                        curLin = curLin + this.DecryptString(d);
+                                    d = fileData[j];
+                                    if (d != 0) {
+                                        curLin = curLin + this.DecryptItem(d);
                                     } else {
                                         curLin = curLin + "> ";
                                         exitTheLoop = true;
@@ -2065,8 +2073,8 @@ class LegacyGame {
                                 exitTheLoop = false;
                                 do {
                                     j = j + 1;
-                                    d = Mid(fileData, j, 1);
-                                    if (d != Chr(254)) {
+                                    d = fileData[j];
+                                    if (d != 254) {
                                         curLin = curLin + d;
                                     } else {
                                         exitTheLoop = true;
@@ -10055,24 +10063,25 @@ class LegacyGame {
         await this.Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.", ctx);
     }
     ReadCatalog(data: string): void {
-        var nullPos = InStr(data, Chr(0));
-        this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
-        if (!this._resources) this._resources = [];
-        this._resources[this._numResources] = new ResourceType();
-        data = Mid(data, nullPos + 1);
-        var resourceStart = 0;
-        for (var i = 1; i <= this._numResources; i++) {
-            var r = this._resources[i];
-            nullPos = InStr(data, Chr(0));
-            r.ResourceName = this.DecryptString(Left(data, nullPos - 1));
-            data = Mid(data, nullPos + 1);
-            nullPos = InStr(data, Chr(0));
-            r.ResourceLength = parseInt(this.DecryptString(Left(data, nullPos - 1)));
-            data = Mid(data, nullPos + 1);
-            r.ResourceStart = resourceStart;
-            resourceStart = resourceStart + r.ResourceLength;
-            r.Extracted = false;
-        }
+        //TODO
+        // var nullPos = InStr(data, Chr(0));
+        // this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
+        // if (!this._resources) this._resources = [];
+        // this._resources[this._numResources] = new ResourceType();
+        // data = Mid(data, nullPos + 1);
+        // var resourceStart = 0;
+        // for (var i = 1; i <= this._numResources; i++) {
+        //     var r = this._resources[i];
+        //     nullPos = InStr(data, Chr(0));
+        //     r.ResourceName = this.DecryptString(Left(data, nullPos - 1));
+        //     data = Mid(data, nullPos + 1);
+        //     nullPos = InStr(data, Chr(0));
+        //     r.ResourceLength = parseInt(this.DecryptString(Left(data, nullPos - 1)));
+        //     data = Mid(data, nullPos + 1);
+        //     r.ResourceStart = resourceStart;
+        //     resourceStart = resourceStart + r.ResourceLength;
+        //     r.Extracted = false;
+        // }
     }
     UpdateDirButtons(dirs: string, ctx: Context): void {
         var compassExits: ListData[] = [];
@@ -10773,18 +10782,18 @@ class LegacyGame {
         this._fileFetcher(filename, onSuccess, onFailure);
     }
     
-    async GetCASFileData(filename: string) : Promise<string> {
+    async GetCASFileData(filename: string) : Promise<Uint8Array> {
         var self = this;
-        return new Promise<string>(function (resolve) {
-            var onSuccess = function (data: string) {
+        return new Promise<Uint8Array>(function (resolve) {
+            var onSuccess = function (data: Uint8Array) {
                 resolve(data);
             };
             
             var onFailure = function () {
-                resolve("");
+                resolve(null);
             };
         
-            self._fileFetcher(filename, onSuccess, onFailure);
+            self._binaryFileFetcher(filename, onSuccess, onFailure);
         });
     }
     
@@ -10823,9 +10832,14 @@ class LegacyGame {
         return null;
     }
     
-    DecryptString(s: string): string {
-        // TODO
-        return null;
+    DecryptString(input: Uint8Array): string {
+        var decoded = input.map(e => e ^ 255);
+        return String.fromCharCode.apply(null, decoded);
+    }
+    
+    DecryptItem(input: number): string {
+        var decoded = input ^ 255;
+        return String.fromCharCode(decoded);
     }
 }
 class ChangeLog {

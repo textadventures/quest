@@ -38,7 +38,24 @@
 						error: onFailure
 					});
 				};
-				var game = new LegacyGame(file, file, null, fileFetcher);
+				
+				var binaryFileFetcher = function (filename, onSuccess, onFailure) {
+					var xhr = new XMLHttpRequest();
+					xhr.open('GET', filename, true);
+					xhr.responseType = 'arraybuffer';
+					xhr.onload = function() {
+						if (this.status == 200) {
+							var result = new Uint8Array(this.response);
+							onSuccess(result);
+						}
+						else {
+							onFailure();
+						}
+					};
+					xhr.send();
+				};
+				
+				var game = new LegacyGame(file, file, null, fileFetcher, binaryFileFetcher);
 				var onSuccess = function () {
 					game.Begin();
 				};
