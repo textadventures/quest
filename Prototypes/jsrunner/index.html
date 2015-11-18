@@ -29,8 +29,8 @@
 		window.gridApi = window.gridApi || {};
 		window.gridApi.onLoad = function () {
 			var file = $_GET['file'] || 'test.aslx';
-		
-			if (file.toLowerCase().substr(file.length - 4) === '.asl') {
+			var ext = file.toLowerCase().substr(file.length - 4);
+			if (ext === '.asl' || ext === '.cas') {
 				var fileFetcher = function (filename, onSuccess, onFailure) {
 					$.ajax({
 						url: filename,

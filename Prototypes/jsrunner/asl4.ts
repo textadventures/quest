@@ -1780,7 +1780,7 @@ class LegacyGame {
         }
     };
     
-    ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): void {
+    async ParseFile(filename: string, onSuccess: Callback, onFailure: Callback): Promise<void> {
         var hasErrors: boolean = false;
         var skipCheck: boolean = false;
         var defineCount: number = 0;
@@ -1897,7 +1897,7 @@ class LegacyGame {
             }, onFailure);
         } else if (LCase(Right(filename, 4)) == ".cas") {
             this.LogASLError("Loading CAS");
-            this.LoadCASFile(filename);
+            await this.LoadCASFile(filename);
             loadLibrariesAndParseFile();
         } else {
             throw "Unrecognized file extension";
@@ -1973,7 +1973,7 @@ class LegacyGame {
         if (!this._lines) this._lines = [];
         this._lines[numLines] = line;
     }
-    LoadCASFile(filename: string): void {
+    async LoadCASFile(filename: string): Promise<void> {
         var endLineReached: boolean = false;
         var exitTheLoop: boolean = false;
         var textMode: boolean = false;
@@ -1991,7 +1991,7 @@ class LegacyGame {
         var ckw: number;
         var d: string;
         this._lines = [];
-        var fileData = this.GetCASFileData(filename);
+        var fileData = await this.GetCASFileData(filename);
         chkVer = Left(fileData, 7);
         if (chkVer == "QCGF001") {
             casVersion = 1;
@@ -9622,7 +9622,7 @@ class LegacyGame {
             await this.PlayerErrorMessage(PlayerError.BadPlace, ctx);
         }
     }
-    InitialiseGame(filename: string, fromQsg: boolean, onSuccess: Callback, onFailure: Callback): void {
+    async InitialiseGame(filename: string, fromQsg: boolean, onSuccess: Callback, onFailure: Callback): Promise<void> {
         this._loadedFromQsg = fromQsg;
         this._changeLogRooms = new ChangeLog();
         this._changeLogObjects = new ChangeLog();
@@ -9721,7 +9721,7 @@ class LegacyGame {
         };
         
         this.LogASLError("Opening file " + filename, LogType.Init);
-        this.ParseFile(filename, doInitialise, onParseFailure);
+        await this.ParseFile(filename, doInitialise, onParseFailure);
     }
     PlaceExist(placeName: string, ctx: Context): string {
         // Returns actual name of an available "place" exit, and if
@@ -10691,7 +10691,7 @@ class LegacyGame {
         if (LCase(Right(this._filename, 4)) == ".qsg" || this._data != null) {
             await this.OpenGame(this._filename, onSuccess, onFailure);
         } else {
-            this.InitialiseGame(this._filename, false, onSuccess, onFailure);
+            await this.InitialiseGame(this._filename, false, onSuccess, onFailure);
         }
     }
     GameFinished(): void {
@@ -10773,9 +10773,19 @@ class LegacyGame {
         this._fileFetcher(filename, onSuccess, onFailure);
     }
     
-    GetCASFileData(filename: string) : string {
-        // TODO
-        return "";
+    async GetCASFileData(filename: string) : Promise<string> {
+        var self = this;
+        return new Promise<string>(function (resolve) {
+            var onSuccess = function (data: string) {
+                resolve(data);
+            };
+            
+            var onFailure = function () {
+                resolve("");
+            };
+        
+            self._fileFetcher(filename, onSuccess, onFailure);
+        });
     }
     
     DoPrint(text: string) {
