@@ -11188,13 +11188,13 @@ Public Class LegacyGame
         Dim nullPos = InStr(data, Chr(0))
         _numResources = CInt(DecryptString(Left(data, nullPos - 1)))
         ReDim Preserve _resources(_numResources)
-        _resources(_numResources) = New ResourceType
 
         data = Mid(data, nullPos + 1)
 
         Dim resourceStart = 0
 
         For i = 1 To _numResources
+            _resources(i) = New ResourceType
             Dim r = _resources(i)
             nullPos = InStr(data, Chr(0))
             r.ResourceName = DecryptString(Left(data, nullPos - 1))
