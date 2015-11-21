@@ -196,9 +196,12 @@ namespace WebPlayer
 
             string output = string.Empty;
 
-            foreach (string error in errors)
+            if (errors != null)
             {
-                output += error + "<br/>";
+                foreach (string error in errors)
+                {
+                    output += error + "<br/>";
+                }
             }
 
             return output;

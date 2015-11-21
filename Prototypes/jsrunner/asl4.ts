@@ -1794,6 +1794,7 @@ class LegacyGame {
             var curPos = 1;
             do {
                 slashPos = InStrFrom(curPos, filename, "\\");
+                if (slashPos == 0) slashPos = InStrFrom(curPos, filename, "/");
                 if (slashPos != 0) {
                     lastSlashPos = slashPos;
                 }

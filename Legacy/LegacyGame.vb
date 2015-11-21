@@ -1720,6 +1720,7 @@ Public Class LegacyGame
         Dim curPos = 1
         Do
             slashPos = InStr(curPos, filename, "\")
+            If slashPos = 0 Then slashPos = InStr(curPos, filename, "/")
             If slashPos <> 0 Then lastSlashPos = slashPos
             curPos = slashPos + 1
         Loop Until slashPos = 0
