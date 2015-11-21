@@ -528,7 +528,7 @@ class LegacyGame {
     _compassExits: ListData[] = [];
     _gotoExits: ListData[] = [];
     _textFormatter: TextFormatter = new TextFormatter();
-    _casFileData: string;
+    _casFileData: Uint8Array;
     _commandLock: Object = new Object();
     _stateLock: Object = new Object();
     _state: State = State.Ready;
@@ -1322,13 +1322,6 @@ class LegacyGame {
         }
         return Right(s, Len(s) - Len(text));
     }
-    Keyword2CAS(KWord: string): number {
-        for (var i = 0; i <= 255; i++) {
-            if (LCase(KWord) == LCase(this._casKeywords[i])) {
-                return i;
-            }
-        }
-    }
     LoadCASKeywords(): void {
         this._casKeywords[0] = "!null";
         this._casKeywords[1] = "game";
@@ -2007,20 +2000,18 @@ class LegacyGame {
             throw "Invalid or corrupted CAS file.";
         }
         if (casVersion == 3) {
-            startCat = this.Keyword2CAS("!startcat");
+            startCat = 252; // !startcat
         }
         for (var i = 8; i < fileData.length; i++) {
             if (casVersion == 3 && fileData[i] == startCat) {
                 // Read catalog
                 this._startCatPos = i;
-                endCatPos = fileData.indexOf(this.Keyword2CAS("!endcat"), j);
-                
-                // TODO...
-                //this.ReadCatalog(Mid(fileData, j + 1, endCatPos - j - 1));
-                // this._resourceFile = filename;
-                // this._resourceOffset = endCatPos + 1;
-                // i = Len(fileData);
-                // this._casFileData = fileData;
+                endCatPos = fileData.indexOf(253 /* !endcat */, j);                
+                this.ReadCatalog(fileData.slice(j + 1, endCatPos));
+                this._resourceFile = filename;
+                this._resourceOffset = endCatPos + 1;
+                i = fileData.length;
+                this._casFileData = fileData;
             } else {
                 curLin = "";
                 endLineReached = false;
@@ -3162,7 +3153,7 @@ class LegacyGame {
         //System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
         if (!extracted) {
             // Extract file from cached CAS data
-            var fileData = Mid(this._casFileData, startPos, length);
+            //var fileData = Mid(this._casFileData, startPos, length);
             // Write file to temp dir
             //System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
             this._resources[resId].Extracted = true;
@@ -10059,26 +10050,25 @@ class LegacyGame {
         await this.Print("|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n", ctx);
         await this.Print("|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.", ctx);
     }
-    ReadCatalog(data: string): void {
-        //TODO
-        // var nullPos = InStr(data, Chr(0));
-        // this._numResources = parseInt(this.DecryptString(Left(data, nullPos - 1)));
-        // if (!this._resources) this._resources = [];
-        // this._resources[this._numResources] = new ResourceType();
-        // data = Mid(data, nullPos + 1);
-        // var resourceStart = 0;
-        // for (var i = 1; i <= this._numResources; i++) {
-        //     var r = this._resources[i];
-        //     nullPos = InStr(data, Chr(0));
-        //     r.ResourceName = this.DecryptString(Left(data, nullPos - 1));
-        //     data = Mid(data, nullPos + 1);
-        //     nullPos = InStr(data, Chr(0));
-        //     r.ResourceLength = parseInt(this.DecryptString(Left(data, nullPos - 1)));
-        //     data = Mid(data, nullPos + 1);
-        //     r.ResourceStart = resourceStart;
-        //     resourceStart = resourceStart + r.ResourceLength;
-        //     r.Extracted = false;
-        // }
+    ReadCatalog(data: Uint8Array): void {
+        var nullPos = data.indexOf(0);
+        this._numResources = parseInt(this.DecryptString(data.slice(0, nullPos)));
+        if (!this._resources) this._resources = [];
+        data = data.slice(nullPos + 1);
+        var resourceStart = 0;
+        for (var i = 1; i <= this._numResources; i++) {
+            this._resources[i] = new ResourceType(); 
+            var r = this._resources[i];
+            var nullPos = data.indexOf(0);
+            r.ResourceName = this.DecryptString(data.slice(0, nullPos));
+            data = data.slice(nullPos + 1);
+            nullPos = data.indexOf(0);
+            r.ResourceLength = parseInt(this.DecryptString(data.slice(0, nullPos)));
+            data = data.slice(nullPos + 1);
+            r.ResourceStart = resourceStart;
+            resourceStart = resourceStart + r.ResourceLength;
+            r.Extracted = false;
+        }
     }
     UpdateDirButtons(dirs: string, ctx: Context): void {
         var compassExits: ListData[] = [];
