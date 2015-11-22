@@ -9,11 +9,10 @@ function ui_init() {
 }
 
 function sendEndWait() {
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("endwait");
-        $("#cmdSubmit").click();
-    }, 100);
-    waitEnded();
+    setTimeout(function () {
+        quest.endWait();
+        waitEnded();
+    }, 1);
 }
 
 function sessionTimeout() {

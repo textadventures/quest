@@ -108,7 +108,7 @@ class Player {
         
     }
     DoWait() {
-        
+        quest.ui.beginWait();
     }
     DoPause(ms: number) {
         
@@ -497,6 +497,7 @@ class LegacyGame {
     _commandOverrideModeOn: boolean = false;
     _commandOverrideResolve: Callback;
     _commandOverrideVariable: string;
+    _waitResolve: Callback;
     _afterTurnScript: string;
     _beforeTurnScript: string;
     _outPutOn: boolean = false;
@@ -4683,7 +4684,7 @@ class LegacyGame {
                 await this.Print("|nPress a key to continue...", ctx);
             }
         }
-        this.DoWait();
+        await this.DoWait();
     }
     InitFileData(fileData: string): void {
         this._fileData = fileData;
@@ -10790,8 +10791,13 @@ class LegacyGame {
         quest.print(output.text, !output.nobr);
     }
     
-    DoWait() {
-        // TODO
+    async DoWait(): Promise<void> {
+        this._player.DoWait();
+        return new Promise<void>(resolve => this._waitResolve = resolve);
+    }
+    
+    EndWait() {
+        this._waitResolve();
     }
     
     Pause(duration: number) {

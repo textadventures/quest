@@ -124,16 +124,16 @@ $(function () {
     ui_init();
     updateStatusVisibility();
 
-    var overrideContextMenuClick = function(e) {
-        if (!e) e = window.event;
-        if ((e.type && e.type == "contextmenu") || (e.button && e.button == 2) || (e.which && e.which == 3)) {
-            return false;
-        }
-        return true;
-    };
-    if (document.layers) document.captureEvents(Event.MOUSEDOWN);
-    document.onmousedown = overrideContextMenuClick;
-    document.oncontextmenu = overrideContextMenuClick;
+    // var overrideContextMenuClick = function(e) {
+    //     if (!e) e = window.event;
+    //     if ((e.type && e.type == "contextmenu") || (e.button && e.button == 2) || (e.which && e.which == 3)) {
+    //         return false;
+    //     }
+    //     return true;
+    // };
+    // if (document.layers) document.captureEvents(Event.MOUSEDOWN);
+    // document.onmousedown = overrideContextMenuClick;
+    // document.oncontextmenu = overrideContextMenuClick;
 
     $("#txtCommand").focus();
 });
@@ -558,10 +558,12 @@ function updateVerbButtons(selectedItem, verbsArray, idprefix) {
 }
 
 function beginWait() {
-    _waitMode = true;
-    $("#txtCommand").hide();
-    $("#endWaitLink").show();
-    markScrollPosition();
+    setTimeout(function () {
+        _waitMode = true;
+        $("#txtCommand").hide();
+        $("#endWaitLink").show();
+        markScrollPosition();
+    }, 1);
 }
 
 function endWait() {

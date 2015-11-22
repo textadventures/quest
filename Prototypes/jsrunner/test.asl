@@ -14,6 +14,12 @@ define game <>
 		enter <input2>
 		msg <First #input#, now #input2#.>
 	}
+	command <test2> {
+		wait <Press a key please...>
+		msg <Done!>
+		wait <Now press a key again...>
+		msg <Finished!>
+	}
 	verb <read> msg <You can't read that.>
 end define
 
