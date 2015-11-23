@@ -41,4 +41,5 @@
     quest.ui.updateList = updateList;
     quest.ui.updateCompass = updateCompassDirections;
     quest.ui.beginWait = beginWait;
+    quest.ui.showQuestion = showQuestion;
 })();

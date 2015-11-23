@@ -114,7 +114,7 @@ class Player {
         
     }
     ShowQuestion(caption: string) {
-        
+        quest.ui.showQuestion(caption);
     }
     PlaySound(filename: string, synchronous: boolean, looped: boolean) {
         
@@ -201,6 +201,10 @@ enum ListType {InventoryList, ExitsList, ObjectsList};
 
 interface Callback {
     (): void;
+}
+
+interface BooleanCallback {
+    (data: boolean): void;
 }
 
 interface FileFetcherCallback {
@@ -498,6 +502,7 @@ class LegacyGame {
     _commandOverrideResolve: Callback;
     _commandOverrideVariable: string;
     _waitResolve: Callback;
+    _askResolve: BooleanCallback;
     _afterTurnScript: string;
     _beforeTurnScript: string;
     _outPutOn: boolean = false;
@@ -4046,7 +4051,7 @@ class LegacyGame {
         } else if (this.BeginsWith(condition, "has ")) {
             result = this.ExecuteIfHas(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "ask ")) {
-            result = this.ExecuteIfAsk(await this.GetParameter(condition, ctx));
+            result = await this.ExecuteIfAsk(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "is ")) {
             result = this.ExecuteIfIs(await this.GetParameter(condition, ctx));
         } else if (this.BeginsWith(condition, "here ")) {
@@ -10804,9 +10809,13 @@ class LegacyGame {
         // TODO
     }
     
-    ExecuteIfAsk(question: string) : boolean {
-        // TODO
-        return true;
+    async ExecuteIfAsk(question: string): Promise<boolean> {
+        this._player.ShowQuestion(question);
+        return new Promise<boolean>(resolve => this._askResolve = resolve);
+    }
+    
+    SetQuestionResponse(response: string) {
+        this._askResolve(response == "yes");
     }
     
     UpdateExitsList() {

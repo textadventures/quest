@@ -20,6 +20,10 @@ define game <>
 		wait <Now press a key again...>
 		msg <Finished!>
 	}
+	command <ask> {
+		if ask <test question> then msg <You answered YES.> else msg <You answered NO.>
+		if ask <another question> then msg <YES to question 2> else msg <NO to question 2>
+	}
 	verb <read> msg <You can't read that.>
 end define
 

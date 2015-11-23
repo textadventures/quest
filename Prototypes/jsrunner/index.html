@@ -64,6 +64,7 @@
 				};
 				quest.sendCommand = game.SendCommand.bind(game);
 				quest.endWait = game.EndWait.bind(game);
+				quest.setQuestionResponse = game.SetQuestionResponse.bind(game);
 				game.Initialise(onSuccess, onFailure);
 			}
 			else {

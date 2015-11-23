@@ -74,10 +74,7 @@ var _waitingForSoundToFinish = false;
 
 function msgboxSubmit(text) {
     $("#msgbox").dialog("close");
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("msgbox " + text);
-        $("#cmdSubmit").click();
-    }, 100);
+    quest.setQuestionResponse(text);
 }
 
 var _menuSelection = "";
