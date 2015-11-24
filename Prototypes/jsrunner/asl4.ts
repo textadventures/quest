@@ -181,6 +181,9 @@ class Player {
     UpdateExitsList(items: ListData[]) {
         quest.ui.updateCompass(items);
     }
+    RequestNextTimerTick(seconds: number) {
+        quest.ui.requestNextTimerTick(seconds);
+    }
 }
 
 class ListData {
@@ -10767,7 +10770,7 @@ class LegacyGame {
         if (this._gameFinished) {
             nextTrigger = 0;
         }
-        // TODO...
+        this._player.RequestNextTimerTick(nextTrigger);
     }
 
     GetOriginalFilenameForQSG(): string {

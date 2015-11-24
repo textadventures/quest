@@ -43,4 +43,5 @@
     quest.ui.beginWait = beginWait;
     quest.ui.showQuestion = showQuestion;
     quest.ui.showMenu = showMenu;
+    quest.ui.requestNextTimerTick = requestNextTimerTick;
 })();

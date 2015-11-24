@@ -24,6 +24,8 @@ define game <>
 		if ask <test question> then msg <You answered YES.> else msg <You answered NO.>
 		if ask <another question> then msg <YES to question 2> else msg <NO to question 2>
 	}
+	command <tmron> timeron <mytimer>
+	command <tmroff> timeroff <mytimer>
 	verb <read> msg <You can't read that.>
 end define
 
@@ -67,5 +69,11 @@ end define
 
 define room <kitchen>
 	west <room>
+end define
+
+define timer <mytimer>
+	interval <5>
+	action msg <Tick>
+	disabled
 end define
 
