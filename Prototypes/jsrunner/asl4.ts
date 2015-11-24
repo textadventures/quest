@@ -9383,7 +9383,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "font ")) {
                 this.SetFont(await this.GetParameter(scriptLine, ctx));
             } else if (this.BeginsWith(scriptLine, "pause ")) {
-                this.Pause(parseInt(await this.GetParameter(scriptLine, ctx)));
+                await this.Pause(parseInt(await this.GetParameter(scriptLine, ctx)));
             } else if (Trim(LCase(scriptLine)) == "clear") {
                 this.DoClear();
             } else if (Trim(LCase(scriptLine)) == "helpclear") {
@@ -10812,8 +10812,12 @@ class LegacyGame {
         this._waitResolve();
     }
     
-    Pause(duration: number) {
-        // TODO
+    Pause(duration: number): Promise<void> {
+        return new Promise<void>(function (resolve) {
+            setTimeout(function () {
+                resolve();
+            }, duration);
+        });
     }
     
     async ExecuteIfAsk(question: string): Promise<boolean> {
