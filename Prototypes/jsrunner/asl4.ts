@@ -109,9 +109,6 @@ class Player {
     DoWait() {
         quest.ui.beginWait();
     }
-    DoPause(ms: number) {
-        
-    }
     ShowQuestion(caption: string) {
         quest.ui.showQuestion(caption);
     }
@@ -122,7 +119,7 @@ class Player {
         
     }
     ClearScreen() {
-        
+        quest.ui.clearScreen();
     }
     SetBackground(colour: string) {
         

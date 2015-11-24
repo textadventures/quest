@@ -44,4 +44,5 @@
     quest.ui.showQuestion = showQuestion;
     quest.ui.showMenu = showMenu;
     quest.ui.requestNextTimerTick = requestNextTimerTick;
+    quest.ui.clearScreen = clearScreen;
 })();
