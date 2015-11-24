@@ -2074,7 +2074,7 @@ class LegacyGame {
                                     j = j + 1;
                                     d = fileData[j];
                                     if (d != 254) {
-                                        curLin = curLin + d;
+                                        curLin = curLin + String.fromCharCode(d);
                                     } else {
                                         exitTheLoop = true;
                                     }
