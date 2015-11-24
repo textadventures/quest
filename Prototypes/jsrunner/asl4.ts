@@ -466,7 +466,7 @@ class LegacyGame {
         return result;
     }
     _defineBlockParams: DefineBlockParams;
-    _openErrorReport: string;
+    _openErrorReport: string = "";
     _casKeywords: string[] = [];
     //Tokenised CAS keywords
     _lines: string[];
@@ -475,7 +475,7 @@ class LegacyGame {
     //Stores the start and end lines of each 'define' section
     _numberSections: number = 0;
     //Number of define sections
-    _gameName: string;
+    _gameName: string = "";
     //The name of the game
     _nullContext: Context = new Context();
     _changeLogRooms: ChangeLog;
@@ -496,26 +496,26 @@ class LegacyGame {
     _numberChars: number = 0;
     _numberObjs: number = 0;
     _numberItems: number = 0;
-    _currentRoom: string;
+    _currentRoom: string = "";
     _collectables: Collectable[];
     _numCollectables: number = 0;
-    _gameFileName: string;
-    _saveGameFile: string;
-    _defaultFontName: string;
+    _gameFileName: string = "";
+    _saveGameFile: string = "";
+    _defaultFontName: string = "";
     _defaultFontSize: number = 0;
     _autoIntro: boolean = false;
     _commandOverrideModeOn: boolean = false;
     _commandOverrideResolve: Callback;
-    _commandOverrideVariable: string;
+    _commandOverrideVariable: string = "";
     _waitResolve: Callback;
     _askResolve: BooleanCallback;
     _menuResolve: StringCallback;
-    _afterTurnScript: string;
-    _beforeTurnScript: string;
+    _afterTurnScript: string = "";
+    _beforeTurnScript: string = "";
     _outPutOn: boolean = false;
     _gameAslVersion: number = 0;
     _choiceNumber: number = 0;
-    _gameLoadMethod: string;
+    _gameLoadMethod: string = "";
     _timers: TimerType[];
     _numberTimers: number = 0;
     _numDisplayStrings: number = 0;
@@ -526,17 +526,17 @@ class LegacyGame {
     _lastItMode: ItType;
     _thisTurnIt: number = 0;
     _thisTurnItMode: ItType;
-    _badCmdBefore: string;
-    _badCmdAfter: string;
+    _badCmdBefore: string = "";
+    _badCmdAfter: string = "";
     _numResources: number = 0;
     _resources: ResourceType[];
-    _resourceFile: string;
+    _resourceFile: string = "";
     _resourceOffset: number = 0;
     _startCatPos: number = 0;
     _useAbbreviations: boolean = false;
     _loadedFromQsg: boolean = false;
-    _beforeSaveScript: string;
-    _onLoadScript: string;
+    _beforeSaveScript: string = "";
+    _onLoadScript: string = "";
     _skipCheckFile = ["bargain.cas", "easymoney.asl", "musicvf1.cas"];
     _compassExits: ListData[] = [];
     _gotoExits: ListData[] = [];
@@ -550,14 +550,14 @@ class LegacyGame {
     _gameLoading: boolean = false;
     _playerErrorMessageString: string[] = [];
     _listVerbs: ListVerbs = {};
-    _filename: string;
-    _originalFilename: string;
+    _filename: string = "";
+    _originalFilename: string = "";
     _data: InitGameData;
     _player: Player = new Player(this._textFormatter);
     _gameFinished: boolean = false;
     _gameIsRestoring: boolean = false;
     _useStaticFrameForPictures: boolean = false;
-    _fileData: string;
+    _fileData: string = "";
     _fileDataPos: number = 0;
     _questionResponse: boolean = false;
     _fileFetcher: FileFetcher;
