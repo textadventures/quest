@@ -167,7 +167,7 @@ class Player {
         quest.ui.show(element);
     }
     SetStatusText(text: string) {
-        
+        quest.ui.updateStatus(text.replace("\n", "<br />"));
     }
     UpdateInventoryList(items: ListData[]) {
         quest.ui.updateList("inventory", items);
@@ -4681,7 +4681,8 @@ class LegacyGame {
             this._collectables[id].Value = val;
         }
         this.CheckCollectable(id);
-        this.UpdateInventory(ctx);
+        this.UpdateItems(ctx);
+        this.UpdateCollectables();
     }
     async ExecuteWait(waitLine: string, ctx: Context): Promise<void> {
         if (waitLine != "") {
@@ -10275,25 +10276,28 @@ class LegacyGame {
         }
         this._player.UpdateInventoryList(invList);
     }
+    UpdateCollectables(): void {
+        if (this._numCollectables > 0) {
+            var status: string = "";
+            for (var j = 1; j <= this._numCollectables; j++) {
+                var k = this.DisplayCollectableInfo(j);
+                if (k != "<null>") {
+                    if (status.length > 0) {
+                        status += "\n";
+                    }
+                    status += k;
+                }
+            }
+            this._player.SetStatusText(status);
+        }
+    }
     async UpdateItems(ctx: Context): Promise<void> {
         // displays the items a player has
         this.UpdateInventory(ctx);
         if (this._gameAslVersion >= 284) {
             await this.UpdateStatusVars(ctx);
         } else {
-            if (this._numCollectables > 0) {
-                var status: string = "";
-                for (var j = 1; j <= this._numCollectables; j++) {
-                    var k = this.DisplayCollectableInfo(j);
-                    if (k != "<null>") {
-                        if (status.length > 0) {
-                            status += "\n";
-                        }
-                        status += k;
-                    }
-                }
-                this._player.SetStatusText(status);
-            }
+            this.UpdateCollectables();
         }
     }
     async FinishGame(stopType: StopType, ctx: Context): Promise<void> {
