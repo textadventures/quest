@@ -103,9 +103,8 @@ class Player {
     constructor(textFormatter: TextFormatter) {
         this.TextFormatter = textFormatter;
     }
-    
     ShowMenu(menuData: MenuData) {
-        
+        quest.ui.showMenu(menuData.Caption, menuData.Options, menuData.AllowCancel);
     }
     DoWait() {
         quest.ui.beginWait();
@@ -205,6 +204,10 @@ interface Callback {
 
 interface BooleanCallback {
     (data: boolean): void;
+}
+
+interface StringCallback {
+    (data: string): void;
 }
 
 interface FileFetcherCallback {
@@ -503,6 +506,7 @@ class LegacyGame {
     _commandOverrideVariable: string;
     _waitResolve: Callback;
     _askResolve: BooleanCallback;
+    _menuResolve: StringCallback;
     _afterTurnScript: string;
     _beforeTurnScript: string;
     _outPutOn: boolean = false;
@@ -3854,7 +3858,7 @@ class LegacyGame {
                 menuItems[i.toString()] = descriptionText[i];
             }
             var mnu: MenuData = new MenuData(question, menuItems, false);
-            var response: string = this.ShowMenu(mnu);
+            var response: string = await this.ShowMenu(mnu);
             this._choiceNumber = parseInt(response);
             await this.SetStringContents("quest.lastobject", this._objs[idNumbers[this._choiceNumber]].ObjectName, ctx);
             this._thisTurnIt = idNumbers[this._choiceNumber];
@@ -5974,7 +5978,7 @@ class LegacyGame {
         }
         await this.Print("- |i" + prompt + "|xi", ctx);
         var mnu: MenuData = new MenuData(prompt, menuOptions, false);
-        var choice: string = this.ShowMenu(mnu);
+        var choice: string = await this.ShowMenu(mnu);
         await this.Print("- " + menuOptions[choice] + "|n", ctx);
         return menuScript[choice];
     }
@@ -10826,13 +10830,17 @@ class LegacyGame {
         this._player.UpdateExitsList(mergedList);
     }
     
-    async Begin() : Promise<void> {
+    async Begin(): Promise<void> {
         await this.DoBegin();
     }
     
-    ShowMenu(menuData: MenuData) : string {
-        // TODO
-        return null;
+    async ShowMenu(menuData: MenuData): Promise<string> {
+        this._player.ShowMenu(menuData);
+        return new Promise<string>(resolve => this._menuResolve = resolve);
+    }
+    
+    SetMenuResponse(response: string) {
+        this._menuResolve(response);
     }
     
     DecryptString(input: Uint8Array): string {

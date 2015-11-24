@@ -43,12 +43,24 @@ define room <room>
 	end define
 
 	define object <book>
-		look <Just an ordinary book.>
+		look <Just an ordinary red book.>
 		take
+		prefix <a red>
 		displaytype <Object>
+		detail <the red book>
 		article <it>
 		gender <it>
 		properties <read = A very interesting read.>
+	end define
+
+	define object <book2>
+		alias <book>
+		look <It's the blue book.>
+		prefix <a blue>
+		displaytype <Object>
+		detail <the blue book>
+		article <it>
+		gender <it>
 	end define
 
 end define

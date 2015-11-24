@@ -120,10 +120,7 @@ function dialogSelect() {
     _menuSelection = $("#dialogOptions").val();
     if (_menuSelection.length > 0) {
         $("#dialog").dialog("close");
-        window.setTimeout(function () {
-            $("#fldUIMsg").val("choice " + _menuSelection);
-            $("#cmdSubmit").click();
-        }, 100);
+        quest.setMenuResponse(_menuSelection);
     }
 }
 
