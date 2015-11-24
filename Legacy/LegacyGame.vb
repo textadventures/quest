@@ -1831,6 +1831,7 @@ Public Class LegacyGame
         End If
 
         _log.Add(err)
+        _player.Log(err)
     End Sub
 
     Friend Function GetParameter(s As String, ctx As Context, Optional convertStringVariables As Boolean = True) As String
