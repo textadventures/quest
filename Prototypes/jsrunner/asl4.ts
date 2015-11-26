@@ -154,9 +154,6 @@ class Player {
     LocationUpdated(location: string) {
         quest.ui.locationUpdated(location);
     }
-    Speak(text: string) {
-        
-    }
     GetNewGameFile(originalFilename: string, extensions: string) {
         
     }
@@ -6932,9 +6929,6 @@ class LegacyGame {
             await this.Print(lookString, this._nullContext);
         }
     }
-    Speak(text: string): void {
-        this._player.Speak(text);
-    }
     AddToObjectList(objList: ListData[], exitList: ListData[], name: string, type: Thing): void {
         name = this.CapFirst(name);
         if (type == Thing.Room) {
@@ -9254,7 +9248,7 @@ class LegacyGame {
             } else if (this.BeginsWith(scriptLine, "msg ")) {
                 await this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (this.BeginsWith(scriptLine, "speak ")) {
-                this.Speak(await this.GetParameter(scriptLine, ctx));
+                this.LogASLError("'speak' is not supported in this version of Quest", LogType.WarningError);
             } else if (this.BeginsWith(scriptLine, "helpmsg ")) {
                 await this.Print(await this.GetParameter(scriptLine, ctx), ctx);
             } else if (Trim(LCase(scriptLine)) == "helpclose") {
