@@ -140,9 +140,6 @@ class Player {
     SetPanelContents(html: string) {
         
     }
-    SetWindowMenu(menuData: MenuData) {
-        
-    }
     SetPanesVisible(data: string) {
         
     }
@@ -6101,41 +6098,6 @@ class LegacyGame {
             }
         }
     }
-    SetUpMenus(): void {
-        var exists: boolean = false;
-        var menuTitle: string = "";
-        var menuOptions: StringDictionary = {};
-        for (var i = 1; i <= this._numberSections; i++) {
-            if (this.BeginsWith(this._lines[this._defineBlocks[i].StartLine], "define menu ")) {
-                if (exists) {
-                    this.LogASLError("Can't load menu '" + this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]) + "' - only one menu can be added.", LogType.WarningError);
-                } else {
-                    menuTitle = this.GetSimpleParameter(this._lines[this._defineBlocks[i].StartLine]);
-                    for (var j = this._defineBlocks[i].StartLine + 1; j <= this._defineBlocks[i].EndLine - 1; j++) {
-                        if (Trim(this._lines[j]) != "") {
-                            var scp = InStr(this._lines[j], ":");
-                            if (scp == 0 && this._lines[j] != "-") {
-                                this.LogASLError("No menu command specified in menu '" + menuTitle + "', item '" + this._lines[j], LogType.WarningError);
-                            } else {
-                                if (this._lines[j] == "-") {
-                                    menuOptions["k" + j] = "-";
-                                } else {
-                                    menuOptions[Trim(Mid(this._lines[j], scp + 1))] = Trim(Left(this._lines[j], scp - 1));
-                                }
-                            }
-                        }
-                    }
-                    if (Object.keys(menuOptions).length > 0) {
-                        exists = true;
-                    }
-                }
-            }
-        }
-        if (exists) {
-            var windowMenu: MenuData = new MenuData(menuTitle, menuOptions, false);
-            this._player.SetWindowMenu(windowMenu);
-        }
-    }
     SetUpOptions(): void {
         var opt: string;
         for (var i = this.GetDefineBlock("options").StartLine + 1; i <= this.GetDefineBlock("options").EndLine - 1; i++) {
@@ -9720,7 +9682,6 @@ class LegacyGame {
             self.SetUpDefaultFonts();
             self.SetUpTurnScript();
             self.SetUpTimers();
-            self.SetUpMenus();
             self._gameFileName = filename;
             self.LogASLError("Finished loading file.", LogType.Init);
             self._defaultRoomProperties = self.GetPropertiesInType("defaultroom", false);
