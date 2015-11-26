@@ -138,7 +138,7 @@ class Player {
         this.TextFormatter.defaultFontSize = fontSize;
     }
     SetPanelContents(html: string) {
-        
+        quest.ui.setPanelContents(html);
     }
     SetPanesVisible(data: string) {
         
@@ -149,7 +149,7 @@ class Player {
         quest.print(html);
     }
     GetURL(file: string) {
-        
+        return this.ResourceRoot + file;
     }
     LocationUpdated(location: string) {
         quest.ui.locationUpdated(location);

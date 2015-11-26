@@ -47,4 +47,5 @@
     quest.ui.clearScreen = clearScreen;
     quest.ui.updateStatus = updateStatus;
     quest.ui.setGameName = setGameName;
+    quest.ui.setPanelContents = setPanelContents;
 })();
