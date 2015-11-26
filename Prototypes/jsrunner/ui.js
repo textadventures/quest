@@ -46,4 +46,5 @@
     quest.ui.requestNextTimerTick = requestNextTimerTick;
     quest.ui.clearScreen = clearScreen;
     quest.ui.updateStatus = updateStatus;
+    quest.ui.setGameName = setGameName;
 })();

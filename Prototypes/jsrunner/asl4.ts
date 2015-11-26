@@ -164,7 +164,8 @@ class Player {
         
     }
     UpdateGameName(name: string) {
-        
+        if (name.length == 0) name = "Untitled Game";
+        quest.ui.setGameName(name);
     }
     Show(element: string) {
         quest.ui.show(element);
