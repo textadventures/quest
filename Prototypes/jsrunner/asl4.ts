@@ -100,8 +100,12 @@ class MenuData {
 
 class Player {
     TextFormatter: TextFormatter;
+    ResourceRoot: string;
     constructor(textFormatter: TextFormatter) {
         this.TextFormatter = textFormatter;
+    }
+    SetResourceRoot(resourceRoot: string) {
+        this.ResourceRoot = resourceRoot;
     }
     ShowMenu(menuData: MenuData) {
         quest.ui.showMenu(menuData.Caption, menuData.Options, menuData.AllowCancel);
@@ -143,7 +147,9 @@ class Player {
         
     }
     ShowPicture(filename: string) {
-        
+        var url = this.ResourceRoot + filename;
+        var html = `<img src="${url}" onload="scrollToEnd();" /><br />`
+        quest.print(html);
     }
     GetURL(file: string) {
         
@@ -560,7 +566,12 @@ class LegacyGame {
     _fileFetcher: FileFetcher;
     _binaryFileFetcher: BinaryFileFetcher;
     
-    constructor(filename: string, originalFilename: string, data: InitGameData, fileFetcher: FileFetcher, binaryFileFetcher: BinaryFileFetcher) {
+    constructor(filename: string,
+        originalFilename: string,
+        data: InitGameData,
+        fileFetcher: FileFetcher,
+        binaryFileFetcher: BinaryFileFetcher,
+        resourceRoot: string) {
         this.LoadCASKeywords();
         this._gameLoadMethod = "normal";
         this._filename = filename;
@@ -568,6 +579,7 @@ class LegacyGame {
         this._data = data;
         this._fileFetcher = fileFetcher;
         this._binaryFileFetcher = binaryFileFetcher;
+        this._player.SetResourceRoot(resourceRoot);
     }
     RemoveFormatting(s: string): string {
         var code: string;

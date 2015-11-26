@@ -38,7 +38,7 @@
 			}
 			else {
 				var file = result.PlayUrl;
-				var game = new LegacyGame(file, file, null, fileFetcher, binaryFileFetcher);
+				var game = new LegacyGame(file, file, null, fileFetcher, binaryFileFetcher, result.ResourceRoot);
 				var onSuccess = function () {
 					game.Begin();
 				};
