@@ -2774,7 +2774,7 @@ class LegacyGame {
         //       E O E O EEEEE O EE      where E=Element, O=Operator
         var numElements = 1;
         var elements: string[];
-        elements = [];
+        elements = ["", ""];
         var numOperators = 0;
         var operators: string[] = [];
         var newElement: boolean = false;
@@ -2802,9 +2802,8 @@ class LegacyGame {
             }
             if (newElement) {
                 numElements = numElements + 1;
-                if (!elements) elements = [];
+                elements[numElements] = "";
                 numOperators = numOperators + 1;
-                if (!operators) operators = [];
                 operators[numOperators] = Mid(expr, i, 1);
             } else {
                 elements[numElements] = elements[numElements] + Mid(expr, i, 1);
