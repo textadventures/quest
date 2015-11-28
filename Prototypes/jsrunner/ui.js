@@ -34,6 +34,15 @@
         updateCompass(directions);
     }
     
+    var playSound = function (filename, synchronous, looped) {
+        if (filename.toLowerCase().substr(-4) == ".mp3") {
+            playMp3(filename, synchronous, looped);
+        }
+        else if (filename.toLowerCase().substr(-4) == ".wav") {
+            playWav(filename, synchronous, looped);
+        }
+    }
+    
     quest.ui = quest.ui || {};
     quest.ui.show = show;
     quest.ui.hide = hide;
@@ -48,4 +57,7 @@
     quest.ui.updateStatus = updateStatus;
     quest.ui.setGameName = setGameName;
     quest.ui.setPanelContents = setPanelContents;
+    quest.ui.playSound = playSound;
+    quest.ui.stopSound = stopAudio;
+    quest.ui.setBackground = setBackground;
 })();

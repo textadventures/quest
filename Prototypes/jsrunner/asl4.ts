@@ -117,16 +117,16 @@ class Player {
         quest.ui.showQuestion(caption);
     }
     PlaySound(filename: string, synchronous: boolean, looped: boolean) {
-        
+        quest.ui.playSound(this.ResourceRoot + filename, synchronous, looped);
     }
     StopSound() {
-        
+        quest.ui.stopSound;
     }
     ClearScreen() {
         quest.ui.clearScreen();
     }
     SetBackground(colour: string) {
-        
+        quest.ui.setBackground(colour);
     }
     SetForeground(colour: string) {
         this.TextFormatter.foreground = colour;
@@ -11521,6 +11521,9 @@ class TextFormatter {
         output += '<span style="font-family:' + this.fontFamily +  ';font-size:' + fontSize.toString() + 'pt">';
         if (this.colour.length > 0) {
             output += '<span style="color:' + this.colour + '">';
+        }
+        else if (this.foreground.length > 0) {
+            output += '<span style="color:' + this.foreground + '">';
         }
         if (this.bold) {
             output += "<b>";
