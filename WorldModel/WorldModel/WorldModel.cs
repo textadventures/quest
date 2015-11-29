@@ -1802,7 +1802,13 @@ namespace TextAdventures.Quest
             get
             {
                 string gameId = m_game.Fields[FieldDefinitions.GameID];
-                return gameId ?? TextAdventures.Utility.Utility.FileMD5Hash(m_filename);
+                if (gameId != null) return gameId;
+                if (Config.ReadGameFileFromAzureBlob)
+                {
+                    var parts = m_filename.Split('/');
+                    return parts[parts.Length - 2];
+                }
+                return TextAdventures.Utility.Utility.FileMD5Hash(m_filename);
             }
         }
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
