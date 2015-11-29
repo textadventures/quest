@@ -11221,13 +11221,14 @@ class RoomExits {
         var list = "";
         var description = "";
         count = 0;
-        this.AllExits().forEach(function (roomExit) {
+        var allExits = this.AllExits();
+        allExits.forEach(function (roomExit) {
             count = count + 1;
             list = list + this.GetDirectionToken(roomExit.GetDirection());
             description = description + this.GetDirectionNameDisplay(roomExit);
-            if (count < this.AllExits.Count - 1) {
+            if (count < allExits.length - 1) {
                 description = description + ", ";
-            } else if (count == this.AllExits.Count - 1) {
+            } else if (count == allExits.length - 1) {
                 description = description + " " + orString + " ";
             }
         }, this);
