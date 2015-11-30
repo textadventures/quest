@@ -550,7 +550,7 @@ class LegacyGame {
     _listVerbs: ListVerbs = {};
     _filename: string = "";
     _originalFilename: string = "";
-    _data: InitGameData;
+    _data: string;
     _player: Player = new Player(this._textFormatter);
     _gameFinished: boolean = false;
     _gameIsRestoring: boolean = false;
@@ -563,7 +563,7 @@ class LegacyGame {
     
     constructor(filename: string,
         originalFilename: string,
-        data: InitGameData,
+        data: string,
         fileFetcher: FileFetcher,
         binaryFileFetcher: BinaryFileFetcher,
         resourceRoot: string) {
@@ -7312,12 +7312,7 @@ class LegacyGame {
         var lines: string[] = null;
         this._gameLoadMethod = "loaded";
         var prevQsgVersion = false;
-        // TODO
-        //if (this._data == null) {
-        //    fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
-        //} else {
-        //    fileData = System.Text.Encoding.GetEncoding(1252).GetString(this._data.Data);
-        //}
+        var fileData = this._data;
         // Check version
         savedQsgVersion = Left(fileData, 10);
         if (this.BeginsWith(savedQsgVersion, "QUEST200.1")) {
@@ -7332,12 +7327,9 @@ class LegacyGame {
         } else {
             this.InitFileData(fileData);
             this.GetNextChunk();
-            if (this._data == null) {
-                this._gameFileName = this.GetNextChunk();
-            } else {
-                this.GetNextChunk();
-                this._gameFileName = this._data.SourceFile;
-            }
+            // TODO: For desktop version, game file to load is stored in next chunk
+            this.GetNextChunk();   //this._gameFileName = this.GetNextChunk();
+            this._gameFileName = filename;
         }
         // TODO
         //if (this._data == null && !System.IO.File.Exists(this._gameFileName)) {
@@ -7346,15 +7338,16 @@ class LegacyGame {
         //        return false;
         //    }
         //}
+        var self = this;
         await this.InitialiseGame(this._gameFileName, true, async function () : Promise<void> {
             if (!prevQsgVersion) {
                 // Open Quest 3.0 saved game file
-                this._gameLoading = true;
-                await this.RestoreGameData(fileData);
-                this._gameLoading = false;
+                self._gameLoading = true;
+                await self.RestoreGameData(fileData);
+                self._gameLoading = false;
             } else {
                 // Open Quest 2.x saved game file
-                this._currentRoom = lines[3];
+                self._currentRoom = lines[3];
                 // Start at line 5 as line 4 is always "!c"
                 var lineNumber: number = 5;
                 do {
@@ -7364,10 +7357,10 @@ class LegacyGame {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
                         cdat = parseInt(Right(data, Len(data) - scp));
-                        for (var i = 1; i <= this._numCollectables; i++) {
-                            if (this._collectables[i].Name == name) {
-                                this._collectables[i].Value = cdat;
-                                i = this._numCollectables;
+                        for (var i = 1; i <= self._numCollectables; i++) {
+                            if (self._collectables[i].Name == name) {
+                                self._collectables[i].Value = cdat;
+                                i = self._numCollectables;
                             }
                         }
                     }
@@ -7378,11 +7371,11 @@ class LegacyGame {
                     if (data != "!o") {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
-                        cdatb = this.IsYes(Right(data, Len(data) - scp));
-                        for (var i = 1; i <= this._numberItems; i++) {
-                            if (this._items[i].Name == name) {
-                                this._items[i].Got = cdatb;
-                                i = this._numberItems;
+                        cdatb = self.IsYes(Right(data, Len(data) - scp));
+                        for (var i = 1; i <= self._numberItems; i++) {
+                            if (self._items[i].Name == name) {
+                                self._items[i].Got = cdatb;
+                                i = self._numberItems;
                             }
                         }
                     }
@@ -7395,16 +7388,16 @@ class LegacyGame {
                         scp2 = InStrFrom(scp + 1, data, ";");
                         scp3 = InStrFrom(scp2 + 1, data, ";");
                         name = Trim(Left(data, scp - 1));
-                        cdatb = this.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
-                        visible = this.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
+                        cdatb = self.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
+                        visible = self.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
                         room = Trim(Mid(data, scp3 + 1));
-                        for (var i = 1; i <= this._numberObjs; i++) {
-                            if (this._objs[i].ObjectName == name && !this._objs[i].Loaded) {
-                                this._objs[i].Exists = cdatb;
-                                this._objs[i].Visible = visible;
-                                this._objs[i].ContainerRoom = room;
-                                this._objs[i].Loaded = true;
-                                i = this._numberObjs;
+                        for (var i = 1; i <= self._numberObjs; i++) {
+                            if (self._objs[i].ObjectName == name && !self._objs[i].Loaded) {
+                                self._objs[i].Exists = cdatb;
+                                self._objs[i].Visible = visible;
+                                self._objs[i].ContainerRoom = room;
+                                self._objs[i].Loaded = true;
+                                i = self._numberObjs;
                             }
                         }
                     }
@@ -7417,15 +7410,15 @@ class LegacyGame {
                         scp2 = InStrFrom(scp + 1, data, ";");
                         scp3 = InStrFrom(scp2 + 1, data, ";");
                         name = Trim(Left(data, scp - 1));
-                        cdatb = this.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
-                        visible = this.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
+                        cdatb = self.IsYes(Mid(data, scp + 1, (scp2 - scp) - 1));
+                        visible = self.IsYes(Mid(data, scp2 + 1, (scp3 - scp2) - 1));
                         room = Trim(Mid(data, scp3 + 1));
-                        for (var i = 1; i <= this._numberChars; i++) {
-                            if (this._chars[i].ObjectName == name) {
-                                this._chars[i].Exists = cdatb;
-                                this._chars[i].Visible = visible;
-                                this._chars[i].ContainerRoom = room;
-                                i = this._numberChars;
+                        for (var i = 1; i <= self._numberChars; i++) {
+                            if (self._chars[i].ObjectName == name) {
+                                self._chars[i].Exists = cdatb;
+                                self._chars[i].Visible = visible;
+                                self._chars[i].ContainerRoom = room;
+                                i = self._numberChars;
                             }
                         }
                     }
@@ -7437,7 +7430,7 @@ class LegacyGame {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
                         data = Right(data, Len(data) - scp);
-                        await this.SetStringContents(name, data, this._nullContext);
+                        await self.SetStringContents(name, data, self._nullContext);
                     }
                 } while (!(data == "!n"));
                 do {
@@ -7447,11 +7440,11 @@ class LegacyGame {
                         scp = InStr(data, ";");
                         name = Trim(Left(data, scp - 1));
                         data = Right(data, Len(data) - scp);
-                        await this.SetNumericVariableContents(name, Val(data), this._nullContext);
+                        await self.SetNumericVariableContents(name, Val(data), self._nullContext);
                     }
                 } while (!(data == "!e"));
             }
-            this._saveGameFile = filename;
+            self._saveGameFile = filename;
             onSuccess();
         }, onFailure);
     }
