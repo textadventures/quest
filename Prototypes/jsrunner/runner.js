@@ -23,7 +23,6 @@
 		xhr.send();
 	};
 	
-	// quest.js will want a base url for image resources
 	window.gridApi = window.gridApi || {};
 	window.gridApi.onLoad = function () {
 		var id = $_GET['id'];
