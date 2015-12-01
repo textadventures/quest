@@ -169,9 +169,10 @@ function goUrl(href) {
 
 function saveGame() {
     window.setTimeout(function () {
-        var saveData = $("#divOutput").html().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        $("#fldUIMsg").val("save " + saveData);
-        $("#cmdSubmit").click();
+        var saveData = $("#divOutput").html();
+        quest.save(saveData, function (data) {
+            saveGameResponse(btoa(data));
+        });
     }, 100);
 }
 

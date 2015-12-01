@@ -498,7 +498,6 @@ class LegacyGame {
     _collectables: Collectable[];
     _numCollectables: number = 0;
     _gameFileName: string = "";
-    _saveGameFile: string = "";
     _defaultFontName: string = "";
     _defaultFontSize: number = 0;
     _autoIntro: boolean = false;
@@ -1884,7 +1883,6 @@ class LegacyGame {
             if (hasErrors) {
                 throw "Errors found in game file.";
             }
-            self._saveGameFile = "";
             onSuccess();
         };
         
@@ -7444,14 +7442,14 @@ class LegacyGame {
                     }
                 } while (!(data == "!e"));
             }
-            self._saveGameFile = filename;
             onSuccess();
         }, onFailure);
     }
-    async SaveGame(filename: string, saveFile: boolean = true): Promise<number[]> {
-        var ctx: Context = new Context();
+    async SaveGame(html: string, callback: StringCallback): Promise<void> {
+        // html parameter is ignored for ASL4 
         var saveData: string;
         if (this._gameAslVersion >= 391) {
+            var ctx: Context = new Context();
             await this.ExecuteScript(this._beforeSaveScript, ctx);
         }
         if (this._gameAslVersion >= 280) {
@@ -7459,13 +7457,8 @@ class LegacyGame {
         } else {
             saveData = this.MakeRestoreDataV2();
         }
-        // TODO
-        //if (saveFile) {
-        //    System.IO.File.WriteAllText(filename, saveData, System.Text.Encoding.GetEncoding(1252));
-        //}
-        this._saveGameFile = filename;
-        //return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData);
-        return new Promise<number[]>((resolve) => null);
+        
+        callback(saveData);
     }
     MakeRestoreDataV2(): string {
         var lines: string[] = [];

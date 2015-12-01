@@ -66,6 +66,7 @@
 					quest.endWait = game.EndWait.bind(game);
 					quest.setQuestionResponse = game.SetQuestionResponse.bind(game);
 					quest.setMenuResponse = game.SetMenuResponse.bind(game);
+					quest.save = game.SaveGame.bind(game);
 					quest.tick = game.Tick.bind(game);
 					game.Initialise(onSuccess, onFailure);
 				}
