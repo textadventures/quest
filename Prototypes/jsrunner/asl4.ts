@@ -9683,6 +9683,7 @@ class LegacyGame {
         
         this.LogASLError("Opening file " + filename, LogType.Init);
         await this.ParseFile(filename, doInitialise, onParseFailure);
+        await this.UpdateItems(this._nullContext);
     }
     PlaceExist(placeName: string, ctx: Context): string {
         // Returns actual name of an available "place" exit, and if
