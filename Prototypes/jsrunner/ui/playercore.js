@@ -10,6 +10,8 @@ var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
 $(function () {
+    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
+    
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {

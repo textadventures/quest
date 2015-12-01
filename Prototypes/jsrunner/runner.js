@@ -23,6 +23,20 @@
 		xhr.send();
 	};
 	
+	var checkCanSave = function () {
+		$.ajax({
+			url: apiRoot + "games/cansave",
+			success: function (result) {
+				if (result) {
+					$("#cmdSave").show();
+				}
+			},
+			xhrFields: {
+				withCredentials: true
+			}
+		});
+	};
+	
 	window.gridApi = window.gridApi || {};
 	window.gridApi.onLoad = function () {
 		var id = $_GET['id'];
@@ -31,6 +45,8 @@
 		
 		var load = function () {
 			$.get('http://textadventures.co.uk/api/game/' + id, function (result) {
+				checkCanSave();
+				
 				if (result.ASLVersion >= 500) {
 					$.get(result.PlayUrl, function (data) {
 						quest.load(data);
@@ -77,4 +93,21 @@
 			});
 		}
 	};
+	
+	// TODO: Game session logging for ActiveLit
+	// if (gameSessionLogId) {
+    //     $.ajax({
+    //         url: apiRoot + "games/startsession/?gameId=" + $_GET["id"] + "&blobId=" + gameSessionLogId,
+    //         success: function (result) {
+    //             if (result) {
+    //                 gameSessionLogData = result;
+    //                 setUpSessionLog();
+    //             }
+    //         },
+    //         type: "POST",
+    //         xhrFields: {
+    //             withCredentials: true
+    //         }
+    //     });
+    // }
 })();

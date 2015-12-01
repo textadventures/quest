@@ -21,40 +21,6 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     $_GET[decode(arguments[1])] = decode(arguments[2]);
 });
 
-function init(url, gameSessionLogId) {
-    apiRoot = url;
-    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-    setInterval(keepSessionAlive, 60000);
-
-    $.ajax({
-        url: apiRoot + "games/cansave",
-        success: function (result) {
-            if (result) {
-                $("#cmdSave").show();
-            }
-        },
-        xhrFields: {
-            withCredentials: true
-        }
-    });
-
-    if (gameSessionLogId) {
-        $.ajax({
-            url: apiRoot + "games/startsession/?gameId=" + $_GET["id"] + "&blobId=" + gameSessionLogId,
-            success: function (result) {
-                if (result) {
-                    gameSessionLogData = result;
-                    setUpSessionLog();
-                }
-            },
-            type: "POST",
-            xhrFields: {
-                withCredentials: true
-            }
-        });
-    }
-}
-
 function setOutputBufferId(id) {
     outputBufferId = id;
     setUpSessionLog();
@@ -64,10 +30,6 @@ function setUpSessionLog() {
     if (outputBufferId && gameSessionLogData) {
         $.post("/GameSession/Init/?userId=" + gameSessionLogData.UserId + "&sessionId=" + gameSessionLogData.SessionId + "&bufferId=" + outputBufferId);
     }
-}
-
-function keepSessionAlive() {
-    $.post("KeepAlive.ashx");
 }
 
 var _waitingForSoundToFinish = false;
