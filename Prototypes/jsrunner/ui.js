@@ -60,4 +60,5 @@
     quest.ui.playSound = playSound;
     quest.ui.stopSound = stopAudio;
     quest.ui.setBackground = setBackground;
+    quest.ui.panesVisible = panesVisible;
 })();

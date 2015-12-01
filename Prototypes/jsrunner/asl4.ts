@@ -141,7 +141,7 @@ class Player {
         quest.ui.setPanelContents(html);
     }
     SetPanesVisible(data: string) {
-        
+        quest.ui.panesVisible(data == "on");
     }
     ShowPicture(filename: string) {
         var url = this.ResourceRoot + filename;
