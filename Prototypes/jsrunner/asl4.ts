@@ -61,8 +61,17 @@ function Asc(input: string): number {
     return input.charCodeAt(0);
 }
 
+var windows1252mapping = ['\u20AC','','\u201A','\u0192','\u201E','\u2026',
+    '\u2020','\u2021','\u02C6','\u2030','\u0160','\u2039','\u0152','',
+    '\u017D','','','\u2018','\u2019','\u201C','\u201D','\u2022','\u2013',
+    '\u2014','\u02DC','\u2122','\u0161','\u203A','\u0153','','\u017E',
+    '\u0178'];
+
 function Chr(input: number): string {
-    return String.fromCharCode(input);
+    if (input < 128 || input > 159) {
+        return String.fromCharCode(input);
+    }
+    return windows1252mapping[input - 128];
 }
 
 function Len(input: string): number {
@@ -2079,7 +2088,7 @@ class LegacyGame {
                                     j = j + 1;
                                     d = fileData[j];
                                     if (d != 254) {
-                                        curLin = curLin + String.fromCharCode(d);
+                                        curLin = curLin + Chr(d);
                                     } else {
                                         exitTheLoop = true;
                                     }
@@ -10806,13 +10815,15 @@ class LegacyGame {
     }
     
     DecryptString(input: Uint8Array): string {
-        var decoded = input.map(e => e ^ 255);
-        return String.fromCharCode.apply(null, decoded);
+        var result: string[] = [];
+        for (var i = 0; i < input.length; i++) {           
+            result.push(Chr(input[i] ^ 255));
+        }
+        return result.join("");        
     }
     
     DecryptItem(input: number): string {
-        var decoded = input ^ 255;
-        return String.fromCharCode(decoded);
+        return Chr(input ^ 255);
     }
 }
 class ChangeLog {
