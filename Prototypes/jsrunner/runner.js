@@ -60,10 +60,12 @@ require(['quest', 'ui', 'loader', 'attributes', 'scripts'], function () {
 		// Local testing only =========
 		
 		var filename = $_GET['file'];
-		$.get(filename, function (data) {
-			launchV6(data);
-			return;
-		});
+		if (filename) {
+			$.get(filename, function (data) {
+				launchV6(data);
+				return;
+			});
+		}
 		
 		// End local testing only =====
 		
