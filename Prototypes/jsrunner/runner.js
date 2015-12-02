@@ -37,10 +37,26 @@
 		});
 	};
 	
+	var launchV6 = function (data) {
+		quest.load(data);
+		quest.begin();
+	};
+	
 	window.gridApi = window.gridApi || {};
 	window.gridApi.onLoad = function () {
 		var id = $_GET['id'];
 		var resume = $_GET['resume'];
+		
+		// Local testing only =========
+		
+		var filename = $_GET['file'];
+		$.get(filename, function (data) {
+			launchV6(data);
+			return;
+		});
+		
+		// End local testing only =====
+		
 		if (!id) return;
 		
 		var load = function () {
@@ -49,8 +65,8 @@
 				
 				if (result.ASLVersion >= 500) {
 					$.get(result.PlayUrl, function (data) {
-						quest.load(data);
-						quest.begin();
+						// TODO: Pass result.ResourceRoot
+						launchV6(data);
 					});
 				}
 				else {
