@@ -1,4 +1,14 @@
-(function () {
+require(['quest', 'ui', 'loader', 'attributes', 'scripts'], function () {
+	var paperScript = document.createElement('script');
+	paperScript.setAttribute('src', 'ui/grid.js');
+	paperScript.setAttribute('type', 'text/paperscript');
+	paperScript.setAttribute('canvas', 'gridCanvas');
+	document.head.appendChild(paperScript);
+	
+	var paperJs = document.createElement('script');
+	paperJs.setAttribute('src', 'ui/paper.js');
+	document.head.appendChild(paperJs);
+	
 	var fileFetcher = function (filename, onSuccess, onFailure) {
 		$.ajax({
 			url: filename,
@@ -127,4 +137,4 @@
     //         }
     //     });
     // }
-})();
+});

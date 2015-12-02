@@ -1,6 +1,6 @@
 /* global jsep */
 
-(function () {
+define(function () {
     window.quest = window.quest || {};
     var quest = window.quest;
     
@@ -1077,4 +1077,4 @@
     
     quest.parseScript = parseScript;
     quest.executeScript = executeScript;
-})();
+});

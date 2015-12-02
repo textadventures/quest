@@ -1,4 +1,4 @@
-(function () {
+define(function () {
 	window.quest = window.quest || {};
 	
 	var elements = {};
@@ -67,4 +67,4 @@
 	quest.getFunction = getFunction;
 	quest.getFunctionDefinition = getFunctionDefinition;
 	quest.dump = dump;
-})();
+});

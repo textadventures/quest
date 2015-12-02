@@ -1,6 +1,6 @@
 /* global quest */
 
-(function () {
+define(function () {
     window.quest = window.quest || {};
     
     var begin = function () {
@@ -49,4 +49,4 @@
     quest.begin = begin;
     quest.sendCommand = sendCommand;
     quest.print = print;
-})();
+});

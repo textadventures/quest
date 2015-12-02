@@ -3,7 +3,7 @@
 
 // UI functions based on the IPlayer interface in WorldModel and implementation in PlayerHandler
 
-(function () {
+define(function () {
     window.quest = window.quest || {};
     
     var elementMap = {
@@ -61,4 +61,4 @@
     quest.ui.stopSound = stopAudio;
     quest.ui.setBackground = setBackground;
     quest.ui.panesVisible = panesVisible;
-})();
+});

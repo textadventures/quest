@@ -1,6 +1,6 @@
 /* global quest */
 
-(function () {
+define(function () {
     window.quest = window.quest || {};
     
     var allowedVersions = [500, 510, 520, 530, 540, 550];
@@ -66,4 +66,4 @@
         
         quest.dump();
     };
-})();
+});
