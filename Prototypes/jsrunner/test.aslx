@@ -34,6 +34,11 @@
         else if (command = "js") {
             JS.alert ("Hello world!")
         }
+        else if (command = "invoke") {
+            scriptfn (2) {
+                msg ("This was passed as a script argument.")
+            }
+        }
         else {
             msg (command)
         }
@@ -67,5 +72,12 @@
     
     <function name="nestfn" parameters="arg" type="int">
         return (arg + 1)
+    </function>
+    
+    <function name="scriptfn" parameters="arg, script">
+        msg ("arg: " + arg)
+        msg ("running script...")
+        invoke (script)
+        msg ("done invoke")
     </function>
 </asl>

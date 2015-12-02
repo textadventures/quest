@@ -242,6 +242,20 @@
                     ctx.complete();
                 });
             }
+        },
+        'invoke': {
+            parameters: [1],
+            execute: function (ctx) {
+                evaluateExpression(ctx.parameters[0], function (result) {
+                    callstack.push({
+                        script: result,
+                        locals: {},
+                        index: 0,
+                        onReturn: ctx.complete
+                    });
+                    executeNext();
+                });
+            }
         }
     };
 
@@ -376,19 +390,17 @@
     var getFunctionCallScript = function (line) {
         // based on FunctionCallScriptConstructor
         
-        var paramExpressions, procName;
+        var paramExpressions, procName, paramScript = null;
         
-        var param = getParameterInternal(line, '(', ')');
-        // param.parameter, .after        
+        var param = getParameterInternal(line, '(', ')');        
         
         if (param && param.after) {
-            // TODO: Handle functions of the form
-            //    SomeFunction (parameter) { script }
-            console.log("Not currently handled - functions with script parameters: " + line);
-            return null;
+            // Handle functions of the form
+            //    SomeFunction (parameter) { script }            
+            paramScript = parseScript(param.after);
         }
         
-        if (!param) {
+        if (!param && !paramScript) {
             procName = line;
         }
         else {
@@ -406,6 +418,9 @@
                     var index = 0;
                     var evaluateArgs = function () {
                         if (typeof ctx.parameters.expressions === 'undefined' || index === ctx.parameters.expressions.length) {
+                            if (paramScript) {
+                                args.push(paramScript);
+                            }
                             callFunction(procName, args, function () {
                                 ctx.complete();
                             });
@@ -421,7 +436,8 @@
                 }
             },
             parameters: {
-                expressions: paramExpressions
+                expressions: paramExpressions,
+                script: paramScript
             }
         };
     };
