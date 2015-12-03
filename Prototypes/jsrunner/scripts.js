@@ -1,4 +1,17 @@
-define(['jsep', 'state', 'ui', 'scriptparser', 'scriptrunner'], function (jsep, state, ui, scriptParser, scriptRunner) {
+define(['jsep',
+    'state',
+    'ui',
+    'scriptparser',
+    'scriptrunner',
+    'scripts/msg',
+    'scripts/set',
+    'scripts/setscript',
+    'scripts/request',
+    'scripts/return',
+    'scripts/invoke'
+    ],
+    function (jsep, state, ui, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke) {
+        
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
         
@@ -27,15 +40,6 @@ define(['jsep', 'state', 'ui', 'scriptparser', 'scriptrunner'], function (jsep, 
     var getCallstack = scriptRunner.getCallstack;
     
     var commands = {
-        'msg': {
-            parameters: [1],
-            execute: function (ctx) {               
-                evaluateExpression(ctx.parameters[0], function (result) {
-                    ui.print(result);
-                    ctx.complete();
-                });
-            }
-        },
         'if': {
             create: function (line) {
                 var parameters = scriptParser.getParameterInternal(line, '(', ')');
@@ -171,59 +175,6 @@ define(['jsep', 'state', 'ui', 'scriptparser', 'scriptrunner'], function (jsep, 
                 });
             }
         },
-        '=': {
-            execute: function (ctx) {
-                evaluateExpression(ctx.parameters.value, function (result) {
-                    if (ctx.parameters.elementExpr) {
-                        evaluateExpression(ctx.parameters.elementExpr, function (element) {
-                            if (element.type !== 'element') {
-                                throw 'Expected element, got ' + element;
-                            }
-                            state.set(element.name, ctx.parameters.variable, result);
-                            ctx.complete();
-                        });
-                    }
-                    else {
-                        ctx.locals[ctx.parameters.variable] = result;
-                        ctx.complete();
-                    }
-                });
-            }
-        },
-        '=>': {
-            execute: function (ctx) {
-                console.log(ctx.parameters.appliesTo + " => " + ctx.parameters.value);
-                ctx.complete();
-            }
-        },
-        'request': {
-            parameters: [2],
-            execute: function (ctx) {               
-                evaluateExpression(ctx.parameters[1], function (data) {
-                    var request = ctx.parameters[0].expr;
-                    switch (request) {
-                        case 'Show':
-                            ui.show(data);
-                            break;
-                        case 'Hide':
-                            ui.hide(data);
-                            break;
-                        default:
-                            console.log('Unhandled request type ' + request);
-                    }
-                    
-                    ctx.complete();
-                });
-            }
-        },
-        'return': {
-            parameters: [1],
-            execute: function (ctx) {
-                evaluateExpression(ctx.parameters[0], function (result) {
-                    ctx.onReturn(result);
-                });
-            }
-        },
         'JS.': {
             create: function (line) {
                 var parameters = parseParameters(scriptParser.getAndSplitParameters(line));
@@ -242,21 +193,14 @@ define(['jsep', 'state', 'ui', 'scriptparser', 'scriptrunner'], function (jsep, 
                 });
             }
         },
-        'invoke': {
-            parameters: [1],
-            execute: function (ctx) {
-                evaluateExpression(ctx.parameters[0], function (result) {
-                    getCallstack().push({
-                        script: result,
-                        locals: {},
-                        index: 0,
-                        onReturn: ctx.complete
-                    });
-                    scriptRunner.executeNext();
-                });
-            }
-        }
     };
+    
+    commands.msg = msg;
+    commands['='] = set;
+    commands['=>'] = setscript;
+    commands.request = request;
+    commands['return'] = returnScript;
+    commands.invoke = invoke;
     
     var getSetScript = function (line) {
         // based on SetScriptConstuctor
