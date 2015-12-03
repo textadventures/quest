@@ -36,7 +36,6 @@ define(['attributes', 'scripts'], function (attributes, scripts) {
             }
         }
         var asl = doc.childNodes[firstNode];
-        window.asl = asl;
         if (asl.nodeName !== 'asl') {
             throw 'File must begin with an ASL element';
         }
