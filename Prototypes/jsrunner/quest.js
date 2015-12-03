@@ -1,6 +1,6 @@
 /* global quest */
 
-define(function () {
+define(['attributes'], function (attributes) {
     window.quest = window.quest || {};
     
     var begin = function () {
@@ -9,12 +9,12 @@ define(function () {
         // TODO: Init timer runner
         // TODO: Show Panes, Location, Command for ASL <= 540
         
-        if (quest.functionExists('InitInterface')) {
-            quest.executeScript(quest.getFunction('InitInterface'));
+        if (attributes.functionExists('InitInterface')) {
+            quest.executeScript(attributes.getFunction('InitInterface'));
         }
         
         // TODO: Only call StartGame if not loaded from saved game
-        quest.executeScript(quest.getFunction('StartGame'));
+        quest.executeScript(attributes.getFunction('StartGame'));
         
         
         // TODO: Run on finally scripts
@@ -28,7 +28,7 @@ define(function () {
         // TODO: Check if command override mode is on
         // TODO: Echo input for ASL <= 520
         
-        quest.executeScript(quest.getFunction('HandleCommand'), {
+        quest.executeScript(attributes.getFunction('HandleCommand'), {
             command: command,
             metadata: metadata
         });

@@ -1,6 +1,6 @@
 /* global jsep */
 
-define(['jsep'], function () {
+define(['jsep', 'attributes'], function (jsep, attributes) {
     window.quest = window.quest || {};
     var quest = window.quest;
     
@@ -180,7 +180,7 @@ define(['jsep'], function () {
                             if (element.type !== 'element') {
                                 throw 'Expected element, got ' + element;
                             };
-                            quest.set(element.name, ctx.parameters.variable, result);
+                            attributes.set(element.name, ctx.parameters.variable, result);
                             ctx.complete();
                         });
                     }
@@ -798,7 +798,7 @@ define(['jsep'], function () {
                 if (tree.name in locals) {
                     expressionFrame.complete(locals[tree.name]);                
                 }
-                else if (quest.isElement(tree.name)) {
+                else if (attributes.isElement(tree.name)) {
                     expressionFrame.complete({
                         'type': 'element',
                         'name': tree.name
@@ -863,7 +863,7 @@ define(['jsep'], function () {
                         if (result.type !== 'element') {
                             throw 'Expected element, got ' + result;
                         }
-                        expressionFrame.complete(quest.get(result.name, tree.property.name));
+                        expressionFrame.complete(attributes.get(result.name, tree.property.name));
                     }
                 });
                 evaluateNext();
@@ -1040,18 +1040,18 @@ define(['jsep'], function () {
     var callFunction = function (name, args, complete) {
         var fn;
         
-        if (quest.functionExists(name)) {
-            fn = quest.getFunctionDefinition(name);
-            var arguments = {};
+        if (attributes.functionExists(name)) {
+            fn = attributes.getFunctionDefinition(name);
+            var argumentValues = {};
             if (fn.parameters) {
                 for (var i = 0; i < fn.parameters.length; i++) {
                     if (i >= args.length) break;
-                    arguments[fn.parameters[i]] = args[i];
+                    argumentValues[fn.parameters[i]] = args[i];
                 }
             }
             callstack.push({
                 script: fn.script,
-                locals: arguments,
+                locals: argumentValues,
                 index: 0,
                 onReturn: complete
             });

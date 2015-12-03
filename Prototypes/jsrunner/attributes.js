@@ -1,6 +1,4 @@
 define(function () {
-	window.quest = window.quest || {};
-	
 	var elements = {};
 	var functions = {};
 	
@@ -58,13 +56,15 @@ define(function () {
 		console.log(functions);
 	};
 	
-	quest.set = set;
-	quest.get = get;
-	quest.isElement = isElement;
-	quest.create = create;
-	quest.addFunction = addFunction;
-	quest.functionExists = functionExists;
-	quest.getFunction = getFunction;
-	quest.getFunctionDefinition = getFunctionDefinition;
-	quest.dump = dump;
+	return {
+		set: set,
+		get: get,
+		isElement: isElement,
+		create: create,
+		addFunction: addFunction,
+		functionExists: functionExists,
+		getFunction: getFunction,
+		getFunctionDefinition: getFunctionDefinition,
+		dump: dump
+	}
 });

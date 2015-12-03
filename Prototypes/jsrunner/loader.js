@@ -1,6 +1,6 @@
 /* global quest */
 
-define(function () {
+define(['attributes'], function (attributes) {
     window.quest = window.quest || {};
     
     var allowedVersions = [500, 510, 520, 530, 540, 550];
@@ -13,9 +13,9 @@ define(function () {
     
     var loaders = {
         'game': function (node) {
-            quest.create('game');
+            attributes.create('game');
             var name = getAttribute(node, 'name');
-            quest.set('game', 'name', name);
+            attributes.set('game', 'name', name);
         },
         'function': function (node) {
             var paramList;
@@ -23,7 +23,7 @@ define(function () {
             if (parameters) {
                 paramList = parameters.split(/, ?/);
             }
-            quest.addFunction(getAttribute(node, 'name'),
+            attributes.addFunction(getAttribute(node, 'name'),
                 quest.parseScript(node.textContent),
                 paramList);
         }
@@ -64,6 +64,6 @@ define(function () {
             }
         }
         
-        quest.dump();
+        attributes.dump();
     };
 });
