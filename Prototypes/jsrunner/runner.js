@@ -9,7 +9,9 @@ requirejs.config({
 	}
 });
 
-require(['quest', 'ui', 'loader', 'attributes', 'scripts'], function () {
+require(['asl6', 'ui'], function (asl6, ui) {
+	window.quest = window.quest || {};
+	
 	var paperScript = document.createElement('script');
 	paperScript.setAttribute('src', 'ui/grid.js');
 	paperScript.setAttribute('type', 'text/paperscript');
@@ -59,8 +61,9 @@ require(['quest', 'ui', 'loader', 'attributes', 'scripts'], function () {
 	};
 	
 	var launchV6 = function (data) {
-		quest.load(data);
-		quest.begin();
+		quest.sendCommand = asl6.sendCommand;
+		asl6.load(data);
+		asl6.begin();
 	};
 	
 	window.gridApi = window.gridApi || {};

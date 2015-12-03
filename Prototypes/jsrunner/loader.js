@@ -1,8 +1,4 @@
-/* global quest */
-
-define(['attributes'], function (attributes) {
-    window.quest = window.quest || {};
-    
+define(['attributes', 'scripts'], function (attributes, scripts) {   
     var allowedVersions = [500, 510, 520, 530, 540, 550];
     
     var getAttribute = function (node, attributeName) {
@@ -24,12 +20,12 @@ define(['attributes'], function (attributes) {
                 paramList = parameters.split(/, ?/);
             }
             attributes.addFunction(getAttribute(node, 'name'),
-                quest.parseScript(node.textContent),
+                scripts.parseScript(node.textContent),
                 paramList);
         }
     };
     
-    quest.load = function (data) {
+    var load = function (data) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(data, 'application/xml');
         var firstNode = 0;
@@ -65,5 +61,9 @@ define(['attributes'], function (attributes) {
         }
         
         attributes.dump();
+    };
+    
+    return {
+        load: load
     };
 });

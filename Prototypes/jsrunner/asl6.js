@@ -1,8 +1,6 @@
 /* global quest */
 
-define(['attributes'], function (attributes) {
-    window.quest = window.quest || {};
-    
+define(['attributes', 'loader'], function (attributes, loader) {
     var begin = function () {
         // Based on WorldModel.Begin
         
@@ -38,15 +36,13 @@ define(['attributes'], function (attributes) {
         // TODO: Send next timer request
     };
     
-    var print = function (text, linebreak) {
-        if (typeof linebreak === 'undefined') linebreak = true;
-        
-        // TODO: If ASL >= 540 and there is an OutputText function, use that
-        if (linebreak) text += '<br/>';
-        addTextAndScroll(text);
+    var load = function (data) {
+        loader.load(data)
     };
     
-    quest.begin = begin;
-    quest.sendCommand = sendCommand;
-    quest.print = print;
+    return {
+        begin: begin,
+        sendCommand: sendCommand,
+        load: load
+    }
 });

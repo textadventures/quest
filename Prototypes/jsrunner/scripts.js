@@ -1077,4 +1077,9 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
     
     quest.parseScript = parseScript;
     quest.executeScript = executeScript;
+    
+    return {
+        parseScript: parseScript,
+        executeScript: executeScript
+    };
 });

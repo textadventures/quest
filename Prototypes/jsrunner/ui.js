@@ -43,6 +43,14 @@ define(function () {
         }
     }
     
+    var print = function (text, linebreak) {
+        if (typeof linebreak === 'undefined') linebreak = true;
+        
+        // TODO: If ASL >= 540 and there is an OutputText function, use that
+        if (linebreak) text += '<br/>';
+        addTextAndScroll(text);
+    };
+    
     quest.ui = quest.ui || {};
     quest.ui.show = show;
     quest.ui.hide = hide;
@@ -61,4 +69,5 @@ define(function () {
     quest.ui.stopSound = stopAudio;
     quest.ui.setBackground = setBackground;
     quest.ui.panesVisible = panesVisible;
+    quest.print = print;
 });
