@@ -1,3 +1,14 @@
+requirejs.config({
+	paths: {
+		'jsep': 'jsep.min'
+	},
+	shim: {
+		'jsep': {
+			exports: 'jsep'
+		}
+	}
+});
+
 require(['quest', 'ui', 'loader', 'attributes', 'scripts'], function () {
 	var paperScript = document.createElement('script');
 	paperScript.setAttribute('src', 'ui/grid.js');

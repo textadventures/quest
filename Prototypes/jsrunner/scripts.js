@@ -1,6 +1,6 @@
 /* global jsep */
 
-define(function () {
+define(['jsep'], function () {
     window.quest = window.quest || {};
     var quest = window.quest;
     
