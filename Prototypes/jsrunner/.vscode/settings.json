@@ -1,6 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-	"editor.fontSize": 14,
-	
-	"typescript.tsdk": "/usr/local/lib/node_modules/typescript/lib"
+	"editor.fontSize": 14,	
+	"typescript.tsdk": "/usr/local/lib/node_modules/typescript/lib",
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"node_modules": true,
+		"asl4.js": true,
+		"asl4.js.map": true
+	}
 }

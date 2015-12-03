@@ -1,3 +1,5 @@
+/* global LegacyGame */
+/* global $ */
 /* global quest */
 
 require.config({
