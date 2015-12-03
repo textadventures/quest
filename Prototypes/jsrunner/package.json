@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "package": "node node_modules/requirejs/bin/r.js -o build.js"
   },
   "dependencies": {
     "finalhandler": "^0.4.0",
@@ -15,6 +16,7 @@
     "gulp-babel": "^5.2.1",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-typescript": "^2.9.2",
-    "gulp-uglify": "^1.4.0"
+    "gulp-uglify": "^1.4.0",
+    "requirejs": "^2.1.22"
   }
 }
