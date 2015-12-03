@@ -1,5 +1,5 @@
 ({
-	mainConfigFile: 'runner.js',
-	name: 'runner',
-	out: 'runner-built.js'
+	mainConfigFile: 'quest.js',
+	name: 'quest',
+	out: 'quest-built.js'
 })
