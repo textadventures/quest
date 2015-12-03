@@ -179,7 +179,7 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
                         evaluateExpression(ctx.parameters.elementExpr, function (element) {
                             if (element.type !== 'element') {
                                 throw 'Expected element, got ' + element;
-                            };
+                            }
                             attributes.set(element.name, ctx.parameters.variable, result);
                             ctx.complete();
                         });
@@ -287,8 +287,8 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
         }
 
         for (var candidate in commands) {
-            if (line.substring(0, candidate.length) === candidate
-                && (line.length === candidate.length || line.substr(candidate.length).match(/^\W/) || candidate === 'JS.')) {
+            if (line.substring(0, candidate.length) === candidate &&
+                (line.length === candidate.length || line.substr(candidate.length).match(/^\W/) || candidate === 'JS.')) {
                 keyword = candidate;
                 command = commands[candidate];
             }
@@ -380,7 +380,7 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
             keyword: keyword,
             command: commands[keyword],
             parameters: {
-                elementExpr: elementExpr == null ? null : parseExpression(elementExpr),
+                elementExpr: elementExpr === null ? null : parseExpression(elementExpr),
                 variable: variable,
                 value: value
             } 

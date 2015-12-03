@@ -47,12 +47,12 @@ define(function () {
 	
 	var getFunctionDefinition = function (functionName) {
 		return functions[functionName];
-	}
+	};
 	
 	var dump = function () {
-		console.log("Elements:")
+		console.log("Elements:");
 		console.log(elements);
-		console.log("Functions:")
+		console.log("Functions:");
 		console.log(functions);
 	};
 	
@@ -66,5 +66,5 @@ define(function () {
 		getFunction: getFunction,
 		getFunctionDefinition: getFunctionDefinition,
 		dump: dump
-	}
+	};
 });

@@ -32,7 +32,7 @@ define(function () {
             return item.Text;
         });
         updateCompass(directions);
-    }
+    };
     
     var playSound = function (filename, synchronous, looped) {
         if (filename.toLowerCase().substr(-4) == ".mp3") {
@@ -41,7 +41,7 @@ define(function () {
         else if (filename.toLowerCase().substr(-4) == ".wav") {
             playWav(filename, synchronous, looped);
         }
-    }
+    };
     
     var print = function (text, linebreak) {
         if (typeof linebreak === 'undefined') linebreak = true;

@@ -37,12 +37,12 @@ define(['attributes', 'loader'], function (attributes, loader) {
     };
     
     var load = function (data) {
-        loader.load(data)
+        loader.load(data);
     };
     
     return {
         begin: begin,
         sendCommand: sendCommand,
         load: load
-    }
+    };
 });
