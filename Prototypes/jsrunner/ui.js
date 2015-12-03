@@ -1,5 +1,27 @@
+/* global panesVisible */
+/* global setBackground */
+/* global stopAudio */
+/* global setPanelContents */
+/* global setGameName */
+/* global updateStatus */
+/* global clearScreen */
+/* global requestNextTimerTick */
+/* global showMenu */
+/* global showQuestion */
+/* global beginWait */
+/* global updateList */
+/* global updateLocation */
+/* global quest */
+/* global addTextAndScroll */
+/* global playWav */
+/* global playMp3 */
+/* global updateCompass */
 /* global uiHide */
 /* global uiShow */
+
+// Globals are all in ui/player.js
+// TODO: Remove globals, move player.js stuff in here
+// For Quest 5 games, may need to put existing globals back so games can call them
 
 // UI functions based on the IPlayer interface in WorldModel and implementation in PlayerHandler
 
@@ -47,6 +69,7 @@ define(function () {
         if (typeof linebreak === 'undefined') linebreak = true;
         
         // TODO: If ASL >= 540 and there is an OutputText function, use that
+        // (should be within msg script probably, not here)
         if (linebreak) text += '<br/>';
         addTextAndScroll(text);
     };
@@ -70,4 +93,25 @@ define(function () {
     quest.ui.setBackground = setBackground;
     quest.ui.panesVisible = panesVisible;
     quest.print = print;
+    
+    return {
+        show: show,
+        hide: hide,
+        locationUpdated: updateLocation,
+        updateList: updateList,
+        updateCompass: updateCompassDirections,
+        beginWait: beginWait,
+        showQuestion: showQuestion,
+        showMenu: showMenu,
+        requestNextTimerTick: requestNextTimerTick,
+        clearScreen: clearScreen,
+        updateStatus: updateStatus,
+        setGameName: setGameName,
+        setPanelContents: setPanelContents,
+        playSound: playSound,
+        stopSound: stopAudio,
+        setBackground: setBackground,
+        panesVisible: panesVisible,
+        print: print
+    };
 });

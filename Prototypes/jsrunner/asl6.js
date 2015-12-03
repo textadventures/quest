@@ -1,6 +1,4 @@
-/* global quest */
-
-define(['attributes', 'loader'], function (attributes, loader) {
+define(['attributes', 'loader', 'scripts'], function (attributes, loader, scripts) {
     var begin = function () {
         // Based on WorldModel.Begin
         
@@ -8,11 +6,11 @@ define(['attributes', 'loader'], function (attributes, loader) {
         // TODO: Show Panes, Location, Command for ASL <= 540
         
         if (attributes.functionExists('InitInterface')) {
-            quest.executeScript(attributes.getFunction('InitInterface'));
+            scripts.executeScript(attributes.getFunction('InitInterface'));
         }
         
         // TODO: Only call StartGame if not loaded from saved game
-        quest.executeScript(attributes.getFunction('StartGame'));
+        scripts.executeScript(attributes.getFunction('StartGame'));
         
         
         // TODO: Run on finally scripts
@@ -26,7 +24,7 @@ define(['attributes', 'loader'], function (attributes, loader) {
         // TODO: Check if command override mode is on
         // TODO: Echo input for ASL <= 520
         
-        quest.executeScript(attributes.getFunction('HandleCommand'), {
+        scripts.executeScript(attributes.getFunction('HandleCommand'), {
             command: command,
             metadata: metadata
         });

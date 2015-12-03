@@ -1,4 +1,6 @@
-requirejs.config({
+/* global quest */
+
+require.config({
 	paths: {
 		'jsep': 'jsep.min'
 	},

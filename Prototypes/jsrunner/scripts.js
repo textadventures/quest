@@ -1,9 +1,4 @@
-/* global jsep */
-
-define(['jsep', 'attributes'], function (jsep, attributes) {
-    window.quest = window.quest || {};
-    var quest = window.quest;
-    
+define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
         
@@ -32,7 +27,7 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
             parameters: [1],
             execute: function (ctx) {               
                 evaluateExpression(ctx.parameters[0], function (result) {
-                    quest.print(result);
+                    ui.print(result);
                     ctx.complete();
                 });
             }
@@ -204,10 +199,10 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
                     var request = ctx.parameters[0].expr;
                     switch (request) {
                         case 'Show':
-                            quest.ui.show(data);
+                            ui.show(data);
                             break;
                         case 'Hide':
-                            quest.ui.hide(data);
+                            ui.hide(data);
                             break;
                         default:
                             console.log('Unhandled request type ' + request);
@@ -1074,9 +1069,6 @@ define(['jsep', 'attributes'], function (jsep, attributes) {
         
         complete(fn(args));
     };
-    
-    quest.parseScript = parseScript;
-    quest.executeScript = executeScript;
     
     return {
         parseScript: parseScript,
