@@ -1,4 +1,4 @@
-define(['attributes', 'scripts'], function (attributes, scripts) {   
+define(['state', 'scripts'], function (state, scripts) {   
     var allowedVersions = [500, 510, 520, 530, 540, 550];
     
     var getAttribute = function (node, attributeName) {
@@ -9,9 +9,9 @@ define(['attributes', 'scripts'], function (attributes, scripts) {
     
     var loaders = {
         'game': function (node) {
-            attributes.create('game');
+            state.create('game');
             var name = getAttribute(node, 'name');
-            attributes.set('game', 'name', name);
+            state.set('game', 'name', name);
         },
         'function': function (node) {
             var paramList;
@@ -19,7 +19,7 @@ define(['attributes', 'scripts'], function (attributes, scripts) {
             if (parameters) {
                 paramList = parameters.split(/, ?/);
             }
-            attributes.addFunction(getAttribute(node, 'name'),
+            state.addFunction(getAttribute(node, 'name'),
                 scripts.parseScript(node.textContent),
                 paramList);
         }
@@ -59,7 +59,7 @@ define(['attributes', 'scripts'], function (attributes, scripts) {
             }
         }
         
-        attributes.dump();
+        state.dump();
     };
     
     return {

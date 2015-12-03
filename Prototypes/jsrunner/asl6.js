@@ -1,16 +1,16 @@
-define(['attributes', 'loader', 'scripts'], function (attributes, loader, scripts) {
+define(['state', 'loader', 'scripts'], function (state, loader, scripts) {
     var begin = function () {
         // Based on WorldModel.Begin
         
         // TODO: Init timer runner
         // TODO: Show Panes, Location, Command for ASL <= 540
         
-        if (attributes.functionExists('InitInterface')) {
-            scripts.executeScript(attributes.getFunction('InitInterface'));
+        if (state.functionExists('InitInterface')) {
+            scripts.executeScript(state.getFunction('InitInterface'));
         }
         
         // TODO: Only call StartGame if not loaded from saved game
-        scripts.executeScript(attributes.getFunction('StartGame'));
+        scripts.executeScript(state.getFunction('StartGame'));
         
         
         // TODO: Run on finally scripts
@@ -24,7 +24,7 @@ define(['attributes', 'loader', 'scripts'], function (attributes, loader, script
         // TODO: Check if command override mode is on
         // TODO: Echo input for ASL <= 520
         
-        scripts.executeScript(attributes.getFunction('HandleCommand'), {
+        scripts.executeScript(state.getFunction('HandleCommand'), {
             command: command,
             metadata: metadata
         });

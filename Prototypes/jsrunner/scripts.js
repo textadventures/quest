@@ -1,4 +1,4 @@
-define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
+define(['jsep', 'state', 'ui'], function (jsep, state, ui) {
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
         
@@ -175,7 +175,7 @@ define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
                             if (element.type !== 'element') {
                                 throw 'Expected element, got ' + element;
                             }
-                            attributes.set(element.name, ctx.parameters.variable, result);
+                            state.set(element.name, ctx.parameters.variable, result);
                             ctx.complete();
                         });
                     }
@@ -793,7 +793,7 @@ define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
                 if (tree.name in locals) {
                     expressionFrame.complete(locals[tree.name]);                
                 }
-                else if (attributes.isElement(tree.name)) {
+                else if (state.isElement(tree.name)) {
                     expressionFrame.complete({
                         'type': 'element',
                         'name': tree.name
@@ -858,7 +858,7 @@ define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
                         if (result.type !== 'element') {
                             throw 'Expected element, got ' + result;
                         }
-                        expressionFrame.complete(attributes.get(result.name, tree.property.name));
+                        expressionFrame.complete(state.get(result.name, tree.property.name));
                     }
                 });
                 evaluateNext();
@@ -1035,8 +1035,8 @@ define(['jsep', 'attributes', 'ui'], function (jsep, attributes, ui) {
     var callFunction = function (name, args, complete) {
         var fn;
         
-        if (attributes.functionExists(name)) {
-            fn = attributes.getFunctionDefinition(name);
+        if (state.functionExists(name)) {
+            fn = state.getFunctionDefinition(name);
             var argumentValues = {};
             if (fn.parameters) {
                 for (var i = 0; i < fn.parameters.length; i++) {
