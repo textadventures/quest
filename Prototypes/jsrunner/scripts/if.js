@@ -1,4 +1,4 @@
-define(['require', 'scriptrunner', 'scriptparser'], function (require, scriptrunner, scriptParser) {
+define(['require', 'scriptrunner', 'scriptparser', 'expressions'], function (require, scriptrunner, scriptParser, expressions) {
     return {
         create: function (line) {
             var scripts = require('scripts');
@@ -6,7 +6,7 @@ define(['require', 'scriptrunner', 'scriptparser'], function (require, scriptrun
             var thenScript = scripts.parseScript(parameters.after);
 
             return {
-                expression: scripts.parseExpression(parameters.parameter),
+                expression: expressions.parseExpression(parameters.parameter),
                 then: thenScript
             };
         },

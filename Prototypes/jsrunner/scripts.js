@@ -1,6 +1,7 @@
 define(['jsep',
     'state',
     'ui',
+    'expressions',
     'scriptparser',
     'scriptrunner',
     'scripts/msg',
@@ -11,31 +12,8 @@ define(['jsep',
     'scripts/invoke',
     'scripts/if'
     ],
-    function (jsep, state, ui, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript) {
-        
-    jsep.removeUnaryOp('~');
-    jsep.addUnaryOp('not');
-        
-    jsep.removeBinaryOp('>>>');
-    jsep.removeBinaryOp('<<');
-    jsep.removeBinaryOp('>>');
-    
-    jsep.removeBinaryOp('==');
-    jsep.removeBinaryOp('===');
-    jsep.removeBinaryOp('!==');
-    jsep.addBinaryOp('=', 6);
-    jsep.addBinaryOp('<>');
-    
-    jsep.addBinaryOp('^', 10);
-    
-    jsep.removeBinaryOp('||');
-    jsep.removeBinaryOp('|');
-    jsep.addBinaryOp('or', 1);
-    
-    jsep.removeBinaryOp('&&');
-    jsep.removeBinaryOp('&');
-    jsep.addBinaryOp('and', 2);
-    
+    function (jsep, state, ui, expressions, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript) {
+
     var evaluateExpression = scriptRunner.evaluateExpression;
     var evaluateExpressions = scriptRunner.evaluateExpressions;
     var getCallstack = scriptRunner.getCallstack;
@@ -53,9 +31,9 @@ define(['jsep',
 
                 return {
                     variable: parameters[0],
-                    from: parseExpression(parameters[1]),
-                    to: parseExpression(parameters[2]),
-                    step: parameters.length === 3 ? null : parseExpression(parameters[3]),
+                    from: expressions.parseExpression(parameters[1]),
+                    to: expressions.parseExpression(parameters[2]),
+                    step: parameters.length === 3 ? null : expressions.parseExpression(parameters[3]),
                     loopScript: loopScript
                 };
             },
@@ -179,14 +157,14 @@ define(['jsep',
             value = parseScript(line.substr(eqPos + 2).trim());
         }
         else {
-            value = parseExpression(line.substr(eqPos + 1).trim());
+            value = expressions.parseExpression(line.substr(eqPos + 1).trim());
         }
 
         return {
             keyword: keyword,
             command: commands[keyword],
             parameters: {
-                elementExpr: elementExpr === null ? null : parseExpression(elementExpr),
+                elementExpr: elementExpr === null ? null : expressions.parseExpression(elementExpr),
                 variable: variable,
                 value: value
             } 
@@ -262,7 +240,7 @@ define(['jsep',
             if (line.substring(0, 7) === 'else if') {
                 if (!lastIf.elseIf) lastIf.elseIf = [];
                 var elseIfParameters = scriptParser.getParameterInternal(line, '(', ')');
-                var elseIfExpression = parseExpression(elseIfParameters.parameter);
+                var elseIfExpression = expressions.parseExpression(elseIfParameters.parameter);
                 var elseIfScript = parseScript(elseIfParameters.after);
                 lastIf.elseIf.push({
                     expression: elseIfExpression,
@@ -351,21 +329,13 @@ define(['jsep',
         return result;
     };
     
-    var parseExpression = function (expr) {
-        return {
-            expr: expr,
-            tree: jsep(expr)
-        };
-    };
-    
     var parseParameters = function (parameters) {
-        return parameters.map(parseExpression);
+        return parameters.map(expressions.parseExpression);
     };
     
     return {
         parseScript: parseScript,
         executeScript: scriptRunner.executeScript,
-        getScript: getScript,
-        parseExpression: parseExpression
+        getScript: getScript
     };
 });
