@@ -1,5 +1,4 @@
-define(['jsep',
-    'state',
+define(['state',
     'ui',
     'expressions',
     'scriptparser',
@@ -10,107 +9,13 @@ define(['jsep',
     'scripts/request',
     'scripts/return',
     'scripts/invoke',
-    'scripts/if'
+    'scripts/if',
+    'scripts/for',
+    'scripts/js'
     ],
-    function (jsep, state, ui, expressions, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript) {
-
-    var evaluateExpression = scriptRunner.evaluateExpression;
-    var evaluateExpressions = scriptRunner.evaluateExpressions;
-    var getCallstack = scriptRunner.getCallstack;
+    function (state, ui, expressions, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript, forScript, js) {
     
-    var commands = {
-        'for': {
-            create: function (line) {
-                var parameterAndScript = scriptParser.getParameterInternal(line, '(', ')');
-                var loopScript = parseScript(parameterAndScript.after);
-                var parameters = scriptParser.splitParameters(parameterAndScript.parameter);
-                
-                if (parameters.length !== 3 && parameters.length !== 4) {
-                    throw '"for" script should have 3 or 4 parameters: ' + line;
-                }
-
-                return {
-                    variable: parameters[0],
-                    from: expressions.parseExpression(parameters[1]),
-                    to: expressions.parseExpression(parameters[2]),
-                    step: parameters.length === 3 ? null : expressions.parseExpression(parameters[3]),
-                    loopScript: loopScript
-                };
-            },
-            execute: function (ctx) {
-                var go = function (fromResult, toResult, stepResult) {
-                    if (toResult < fromResult) {
-                        ctx.complete();
-                        return;
-                    }
-                    
-                    ctx.locals[ctx.parameters.variable] = fromResult;
-                    var iterations = 0;
-                    
-                    var runLoop = function () {
-                        if (ctx.locals[ctx.parameters.variable] <= toResult) {
-                            var script = [].concat(ctx.parameters.loopScript);
-                            script.push({
-                                command: {
-                                    execute: function () {
-                                        ctx.locals[ctx.parameters.variable] = ctx.locals[ctx.parameters.variable] + stepResult;
-                                        iterations++;
-                                        if (iterations < 1000) {
-                                            runLoop();
-                                        }
-                                        else {
-                                            setTimeout(function () {
-                                                iterations = 0;
-                                                runLoop();
-                                            }, 0);
-                                        }
-                                    }
-                                }
-                            });
-                            getCallstack().push({
-                                script: script,
-                                index: 0,
-                            });
-                        }
-                        ctx.complete();
-                    };
-                    
-                    runLoop();
-                };
-                
-                evaluateExpression(ctx.parameters.from, function (fromResult) {
-                    evaluateExpression(ctx.parameters.to, function (toResult) {
-                        if (ctx.parameters.step) {
-                            evaluateExpression(ctx.parameters.step, function (stepResult) {
-                                go (fromResult, toResult, stepResult);
-                            });
-                        }
-                        else {
-                            go (fromResult, toResult, 1);
-                        }
-                    });
-                });
-            }
-        },
-        'JS.': {
-            create: function (line) {
-                var parameters = parseParameters(scriptParser.getAndSplitParameters(line));
-                var jsFunction = line.match(/^JS\.([\w\.\@]*)/)[1];
-
-                return {
-                    arguments: parameters,
-                    jsFunction: jsFunction
-                };
-            },
-            execute: function (ctx) {
-                evaluateExpressions(ctx.parameters.arguments, function (results) {
-                    var fn = window[ctx.parameters.jsFunction];
-                    fn.apply(window, results);
-                    ctx.complete();
-                });
-            }
-        },
-    };
+    var commands = {};
     
     commands.msg = msg;
     commands['='] = set;
@@ -119,6 +24,8 @@ define(['jsep',
     commands['return'] = returnScript;
     commands.invoke = invoke;
     commands['if'] = ifScript;
+    commands['for'] = forScript;
+    commands['JS.'] = js;
     
     var getSetScript = function (line) {
         // based on SetScriptConstuctor
@@ -210,7 +117,7 @@ define(['jsep',
                             });
                             return;
                         }
-                        evaluateExpression(ctx.parameters.expressions[index], function (result) {
+                        scriptRunner.evaluateExpression(ctx.parameters.expressions[index], function (result) {
                             index++;
                             args.push(result);
                             evaluateArgs();
@@ -336,6 +243,7 @@ define(['jsep',
     return {
         parseScript: parseScript,
         executeScript: scriptRunner.executeScript,
-        getScript: getScript
+        getScript: getScript,
+        parseParameters: parseParameters
     };
 });

@@ -39,6 +39,11 @@
                 msg ("This was passed as a script argument.")
             }
         }
+        else if (command = "for") {
+            for (i, 1, 10) {
+                msg (i)
+            }
+        }
         else {
             msg (command)
         }
