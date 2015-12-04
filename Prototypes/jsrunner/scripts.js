@@ -1,4 +1,5 @@
-define(['state',
+define([
+    'state',
     'ui',
     'expressions',
     'scriptparser',
@@ -13,19 +14,19 @@ define(['state',
     'scripts/for',
     'scripts/js'
     ],
-    function (state, ui, expressions, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript, forScript, js) {
+function (state, ui, expressions, scriptParser, scriptRunner) {
     
-    var commands = {};
-    
-    commands.msg = msg;
-    commands['='] = set;
-    commands['=>'] = setscript;
-    commands.request = request;
-    commands['return'] = returnScript;
-    commands.invoke = invoke;
-    commands['if'] = ifScript;
-    commands['for'] = forScript;
-    commands['JS.'] = js;
+    var commands = {
+        'msg': require('scripts/msg'),
+        '=': require('scripts/set'),
+        '=>': require('scripts/setscript'),
+        'request': require('scripts/request'),
+        'return': require('scripts/return'),
+        'invoke': require('scripts/invoke'),
+        'if': require('scripts/if'),
+        'for': require('scripts/for'),
+        'JS.': require('scripts/js')
+    };
     
     var getSetScript = function (line) {
         // based on SetScriptConstuctor
