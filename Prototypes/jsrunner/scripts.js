@@ -8,9 +8,10 @@ define(['jsep',
     'scripts/setscript',
     'scripts/request',
     'scripts/return',
-    'scripts/invoke'
+    'scripts/invoke',
+    'scripts/if'
     ],
-    function (jsep, state, ui, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke) {
+    function (jsep, state, ui, scriptParser, scriptRunner, msg, set, setscript, request, returnScript, invoke, ifScript) {
         
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
@@ -40,68 +41,6 @@ define(['jsep',
     var getCallstack = scriptRunner.getCallstack;
     
     var commands = {
-        'if': {
-            create: function (line) {
-                var parameters = scriptParser.getParameterInternal(line, '(', ')');
-                var thenScript = parseScript(parameters.after);
-
-                return {
-                    expression: parseExpression(parameters.parameter),
-                    then: thenScript
-                };
-            },
-            execute: function (ctx) {
-                evaluateExpression(ctx.parameters.expression, function (result) {
-                    if (result) {
-                        getCallstack().push({
-                            script: ctx.parameters.then,
-                            index: 0,
-                        });
-                        ctx.complete();
-                    }
-                    else {
-                        var evaluateElse = function () {
-                            if (ctx.parameters.else) {
-                                getCallstack().push({
-                                    script: ctx.parameters.else,
-                                    index: 0,
-                                });
-                            }
-                            ctx.complete();
-                        };
-                        
-                        if (ctx.parameters.elseIf) {
-                            var index = 0;
-                            
-                            var evaluateElseIf = function () {
-                                evaluateExpression(ctx.parameters.elseIf[index].expression, function (result) {
-                                    if (result) {
-                                        getCallstack().push({
-                                            script: ctx.parameters.elseIf[index].script,
-                                            index: 0,
-                                        });
-                                        ctx.complete();
-                                    }
-                                    else {
-                                        index++;
-                                        if (index < ctx.parameters.elseIf.length) {
-                                            evaluateElseIf();
-                                        }
-                                        else {
-                                            evaluateElse();
-                                        }
-                                    }
-                                });
-                            };
-                            evaluateElseIf();
-                        }
-                        else {
-                            evaluateElse();
-                        }
-                    }
-                });
-            }
-        },
         'for': {
             create: function (line) {
                 var parameterAndScript = scriptParser.getParameterInternal(line, '(', ')');
@@ -201,6 +140,7 @@ define(['jsep',
     commands.request = request;
     commands['return'] = returnScript;
     commands.invoke = invoke;
+    commands['if'] = ifScript;
     
     var getSetScript = function (line) {
         // based on SetScriptConstuctor
@@ -424,6 +364,8 @@ define(['jsep',
     
     return {
         parseScript: parseScript,
-        executeScript: scriptRunner.executeScript
+        executeScript: scriptRunner.executeScript,
+        getScript: getScript,
+        parseExpression: parseExpression
     };
 });
