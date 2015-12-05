@@ -11,6 +11,7 @@ define([
     'scripts/return',
     'scripts/invoke',
     'scripts/if',
+    'scripts/switch',
     'scripts/for',
     'scripts/js'
     ],
@@ -24,6 +25,7 @@ function (state, ui, expressions, scriptParser, scriptRunner) {
         'return': require('scripts/return'),
         'invoke': require('scripts/invoke'),
         'if': require('scripts/if'),
+        'switch': require('scripts/switch'),
         'for': require('scripts/for'),
         'JS.': require('scripts/js')
     };
