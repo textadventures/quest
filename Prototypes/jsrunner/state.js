@@ -17,7 +17,9 @@ define(function () {
 	
 	var get = function (elementName, attribute) {
 		var element = getElement(elementName);
-		return element[attribute];
+		var result = element[attribute]
+		if (typeof result === 'undefined') result = null;
+		return result;
 	};
 	
 	var isElement = function (elementName) {

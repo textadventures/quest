@@ -1,4 +1,4 @@
-define(['jsep'], function (require, scriptrunner, scriptParser) {
+define(['jsep'], function (jsep) {
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
         
