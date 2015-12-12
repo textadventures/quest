@@ -92,6 +92,7 @@ define(['state'], function (state) {
         }
         var frame = callstack[callstack.length - 1];
         frame.expressionStack = [{
+           expr: expr.expr,
            tree: expr.tree,
            complete: function (result) {
                 complete(result);
@@ -119,103 +120,117 @@ define(['state'], function (state) {
         go();
     };
     
+    var lastExpr = null;
+    
     var evaluateNext = function () {
         var frame = callstack[callstack.length - 1];
         var expressionFrame = frame.expressionStack[frame.expressionStack.length - 1];
         var tree = expressionFrame.tree;
-        switch (tree.type) {
-            case 'Literal':
-                expressionFrame.complete(tree.value);
-                break;
-            case 'Identifier':
-                var locals = getParentFrame().locals;
-                if (tree.name in locals) {
-                    expressionFrame.complete(locals[tree.name]);                
-                }
-                else if (state.isElement(tree.name)) {
-                    expressionFrame.complete({
-                        'type': 'element',
-                        'name': tree.name
-                    });
-                }
-                else {
-                    throw 'Unknown variable ' + tree.name;
-                }
-                
-                break;
-            case 'BinaryExpression':
-                frame.expressionStack.push({
-                    tree: tree.left,
-                    complete: function (leftResult) {
-                        frame.expressionStack.push({
-                            tree: tree.right,
-                            complete: function (rightResult) {
-                                expressionFrame.complete(binaryOperator(tree.operator, leftResult, rightResult));
-                            }
-                        });
-                        evaluateNext();
+        if (expressionFrame.expr) lastExpr = expressionFrame.expr;
+        try {
+            switch (tree.type) {
+                case 'Literal':
+                    expressionFrame.complete(tree.value);
+                    break;
+                case 'Identifier':
+                    var locals = getParentFrame().locals;
+                    if (tree.name in locals) {
+                        expressionFrame.complete(locals[tree.name]);                
                     }
-                });
-                evaluateNext();
-                break;
-            case 'CallExpression':
-                if (tree.callee.type !== 'Identifier') {
-                    throw 'Function name must be an identifier';
-                }
-                var index = 0;
-                var args = [];
-                var evaluateArgs = function () {
-                    if (index == tree.arguments.length) {
-                        callFunction(tree.callee.name, args, function (result) {
-                            expressionFrame.complete(result);
+                    else if (state.isElement(tree.name)) {
+                        expressionFrame.complete({
+                            'type': 'element',
+                            'name': tree.name
                         });
-                        return;
                     }
+                    else {
+                        throw 'Unknown variable ' + tree.name;
+                    }
+                    
+                    break;
+                case 'BinaryExpression':
                     frame.expressionStack.push({
-                        tree: tree.arguments[index],
-                        complete: function (result) {
-                            index++;
-                            args.push(result);
-                            evaluateArgs();
+                        tree: tree.left,
+                        complete: function (leftResult) {
+                            frame.expressionStack.push({
+                                tree: tree.right,
+                                complete: function (rightResult) {
+                                    expressionFrame.complete(binaryOperator(tree.operator, leftResult, rightResult));
+                                }
+                            });
+                            evaluateNext();
                         }
                     });
                     evaluateNext();
-                };
-                evaluateArgs();
-                
-                break;
-            case 'MemberExpression':
-                if (tree.computed) {
-                    throw 'Unsupported expression';
-                }
-                if (tree.property.type !== 'Identifier') {
-                    throw 'Attribute name must be an identifier';
-                }
-                frame.expressionStack.push({
-                    tree: tree.object,
-                    complete: function (result) {
-                        if (result.type !== 'element') {
-                            throw 'Expected element, got ' + result;
+                    break;
+                case 'CallExpression':
+                    if (tree.callee.type !== 'Identifier') {
+                        throw 'Function name must be an identifier';
+                    }
+                    var index = 0;
+                    var args = [];
+                    var evaluateArgs = function () {
+                        if (index == tree.arguments.length) {
+                            callFunction(tree.callee.name, args, function (result) {
+                                expressionFrame.complete(result);
+                            });
+                            return;
                         }
-                        expressionFrame.complete(state.get(result.name, tree.property.name));
+                        frame.expressionStack.push({
+                            tree: tree.arguments[index],
+                            complete: function (result) {
+                                index++;
+                                args.push(result);
+                                evaluateArgs();
+                            }
+                        });
+                        evaluateNext();
+                    };
+                    evaluateArgs();
+                    
+                    break;
+                case 'MemberExpression':
+                    if (tree.computed) {
+                        throw 'Unsupported expression';
                     }
-                });
-                evaluateNext();
-                break;
-            case 'UnaryExpression':
-                if (tree.operator != 'not') {
-                    throw 'Unrecognised operator: ' + tree.operator;
-                }
-                frame.expressionStack.push({
-                    tree: tree.argument,
-                    complete: function (result) {
-                        expressionFrame.complete(!result);
+                    if (tree.property.type !== 'Identifier') {
+                        throw 'Attribute name must be an identifier';
                     }
-                });
-                evaluateNext();
-                break;
-            default:
-                throw 'Unknown expression tree type: ' + tree.type;
+                    frame.expressionStack.push({
+                        tree: tree.object,
+                        complete: function (result) {
+                            if (result.type !== 'element') {
+                                throw 'Expected element, got ' + result;
+                            }
+                            expressionFrame.complete(state.get(result.name, tree.property.name));
+                        }
+                    });
+                    evaluateNext();
+                    break;
+                case 'UnaryExpression':
+                    if (tree.operator != 'not') {
+                        throw 'Unrecognised operator: ' + tree.operator;
+                    }
+                    frame.expressionStack.push({
+                        tree: tree.argument,
+                        complete: function (result) {
+                            expressionFrame.complete(!result);
+                        }
+                    });
+                    evaluateNext();
+                    break;
+                default:
+                    throw 'Unknown expression tree type: ' + tree.type;
+            }
+        }
+        catch (e) {
+            if (lastExpr) {
+                console.log('Error evaluating expression: ' + lastExpr);
+                console.log(e);
+                lastExpr = null;
+            }
+            
+            throw e;
         }
     };
     
