@@ -288,7 +288,7 @@ define(['state'], function (state) {
         },
         'LengthOf': function (args, complete) {
             var input = args[0];
-            if (typeof input === 'undefined') return 0;
+            if (typeof input === 'undefined' || input === null) return 0;
             return input.length;
         },
         'CapFirst': function (args, complete) {
