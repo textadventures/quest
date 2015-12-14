@@ -176,6 +176,9 @@
     else if (StartsWith(section, "once:")) {
       return (ProcessTextCommand_Once(section, data))
     }
+    else if (StartsWith(section, "notfirst:")) {
+      return (ProcessTextCommand_NotFirst(section, data))
+    }
     else if (StartsWith(section, "random:")) {
       return (ProcessTextCommand_Random(section, data))
     }
@@ -341,6 +344,27 @@
     }
     else {
       return ("")
+    }
+  </function>
+
+  <function name="ProcessTextCommand_NotFirst" parameters="section, data" type="string">
+    if (not HasAttribute(game, "textprocessor_seen")) {
+      game.textprocessor_seen = NewDictionary()
+    }
+    fulltext = StringDictionaryItem(data, "fulltext")
+    if (not DictionaryContains(game.textprocessor_seen, fulltext)) {
+      onceSectionsInThisText = NewList()
+      dictionary add (game.textprocessor_seen, fulltext, onceSectionsInThisText)
+    }
+    else {
+      onceSectionsInThisText = DictionaryItem(game.textprocessor_seen, fulltext)
+    }
+    if (not ListContains(onceSectionsInThisText, section)) {
+      list add (onceSectionsInThisText, section)
+      return ("")
+    }
+    else {
+      return (ProcessTextSection(Mid(section, 10), data))
     }
   </function>
   
