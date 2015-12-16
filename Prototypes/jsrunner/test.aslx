@@ -1,5 +1,7 @@
 <asl version="550">
     <game name="Test Game">
+        <testattr>Test attribute value</testattr>
+        <testattr2>Test another attribute value</testattr2>
     </game>
 
     <function name="ScopeInventory" type="objectlist">
@@ -56,6 +58,7 @@
     <function name="StartGame">
         Testing(123, 456)
         Test2()
+        TestAttributes()
     </function>
     
     <function name="Testing" parameters="value1, value2">
@@ -64,6 +67,12 @@
     
     <function name="Test2">
         msg ("Welcome")
+    </function>
+    
+    <function name="TestAttributes">
+        msg ("Test attributes...")
+        msg ("game.testattr = " + game.testattr)
+        msg ("game.testattr2 = " + game.testattr2)
     </function>
     
     <function name="testfn" parameters="arg1, arg2" type="int">

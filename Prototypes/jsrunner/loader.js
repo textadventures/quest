@@ -1,25 +1,35 @@
 define(['state', 'scripts'], function (state, scripts) {   
     var allowedVersions = [500, 510, 520, 530, 540, 550];
     
-    var getAttribute = function (node, attributeName) {
+    var getXmlAttribute = function (node, attributeName) {
         var attribute = node.attributes[attributeName];
         if (!attribute) return null;
         return attribute.value;
     };
     
+    var loadElementAttributes = function (element, nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].nodeType !== 1) continue;
+            var attributeName = nodes[i].nodeName;
+            var attributeValue = nodes[i].textContent; 
+            state.set(element, attributeName, attributeValue);
+        }
+    };
+    
     var loaders = {
         'game': function (node) {
             state.create('game');
-            var name = getAttribute(node, 'name');
+            var name = getXmlAttribute(node, 'name');
             state.set('game', 'name', name);
+            loadElementAttributes('game', node.childNodes);
         },
         'function': function (node) {
             var paramList;
-            var parameters = getAttribute(node, 'parameters');
+            var parameters = getXmlAttribute(node, 'parameters');
             if (parameters) {
                 paramList = parameters.split(/, ?/);
             }
-            state.addFunction(getAttribute(node, 'name'),
+            state.addFunction(getXmlAttribute(node, 'name'),
                 scripts.parseScript(node.textContent),
                 paramList);
         }
