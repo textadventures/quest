@@ -141,7 +141,7 @@
 
   <template name="InventoryLabel">Inventário</template>
   <template name="PlacesObjectsLabel">Lugares e Objetos</template>
-  <template name="CompassLabel">Bússula</template>
+  <template name="CompassLabel">Bússola</template>
   <template name="InButtonLabel">entrar</template>
   <template name="OutButtonLabel">sair</template>
   <template name="EmptyListLabel">(vazio)</template>
@@ -446,7 +446,7 @@
   <template name="DefaultHelp"><![CDATA[<u>Ajuda rápida</u><br/><br/>
 <b>- Objetos:</b>  Tente EXAMINAR..., FALAR COM..., PEGAR..., LARGAR..., ABRIR..., DAR... PARA..., USAR... NO/NA/COM...<br/>
 <b>- Inventário:</b>  Veja que ítens você está carregando digitando I, INV ou INVENTÁRIO.<br/>
-<b>- Movendo-se:</b>  Pressione os botões da bússula, ou digite NORTE, SUL, LE, OE, IR PARA...<br/>
+<b>- Movendo-se:</b>  Pressione os botões da bússola, ou digite NORTE, SUL, LE, OE, IR PARA...<br/>
 <b>- Atalhos:</b>  Pressione as teclas direcionais para cima e para baixo para rever os comandos que você já digitou. Tente X... como um atalho para EXAMINAR...<br/>
 <b>- Conselho:</b> Dê preferência a comandos no INFINITIVO pois, embora muitos deles admitam o imperativo, e até o uso informal na terceira pessoa, isso não é regra geral.]]></template>
 
