@@ -1,6 +1,6 @@
-<asl version="550" template="Português (Brasil)">
+<asl version="550" template="Português (Portugal)">
 
-  <include ref="Portugues.aslx"/>
+  <include ref="Portugues-Portugal.aslx"/>
   <include ref="Core.aslx"/>
 
   <game name="$NAME$">
