@@ -211,11 +211,6 @@ namespace TextAdventures.Quest
 
         private void ItemAdded(T item, UpdateSource source, int index)
         {
-            if (Config.StorageLog)
-            {
-                System.Diagnostics.Debug.WriteLine("LIST ADD ({0}) @{1} = {2}", Owner == null ? "none" : Owner.Name, index, item);
-            }
-
             UndoLogAdd(item, index);
 
             if (Added != null)
@@ -226,11 +221,6 @@ namespace TextAdventures.Quest
 
         private void ItemRemoved(T item, UpdateSource source, int index)
         {
-            if (Config.StorageLog)
-            {
-                System.Diagnostics.Debug.WriteLine("LIST REMOVE ({0}) @{1}", Owner == null ? "none" : Owner.Name, index);
-            }
-
             if (Removed != null)
             {
                 Removed(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });

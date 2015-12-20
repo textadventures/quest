@@ -372,11 +372,6 @@ namespace TextAdventures.Quest
 
         private void ItemAdded(string key, T value, UpdateSource source, int index)
         {
-            if (Config.StorageLog)
-            {
-                System.Diagnostics.Debug.WriteLine("DICTIONARY ADD ({0}) ['{1}'] = {2}", Owner == null ? "none" : Owner.Name, key, value);
-            }
-
             UndoLogAdd(key);
 
             if (Added != null)
@@ -387,11 +382,6 @@ namespace TextAdventures.Quest
 
         private void ItemRemoved(string key, T value, UpdateSource source, int index)
         {
-            if (Config.StorageLog)
-            {
-                System.Diagnostics.Debug.WriteLine("DICTIONARY REMOVE ({0}) ['{1}']", Owner == null ? "none" : Owner.Name, key);
-            }
-
             UndoLogRemove(key);
 
             if (Removed != null)

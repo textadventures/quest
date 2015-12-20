@@ -4,11 +4,6 @@ namespace TextAdventures.Quest
 {
     static class Config
     {
-        public static bool StorageLog
-        {
-            get { return false; }
-        }
-
         public static bool ReadGameFileFromAzureBlob
         {
             // TODO: Fix this ugliness
