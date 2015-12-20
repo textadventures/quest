@@ -25,7 +25,7 @@ namespace TextAdventures.Quest
                 string data = m_worldModel.Save(SaveMode.Package, includeWalkthrough);
                 string baseFolder = Path.GetDirectoryName(m_worldModel.Filename);
 
-                using (ZipFile zip = new ZipFile())
+                using (ZipFile zip = new ZipFile(Encoding.UTF8))
                 {
                     zip.AddEntry("game.aslx", data, Encoding.UTF8);
 
