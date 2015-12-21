@@ -13,12 +13,16 @@
     format = GetCurrentTextFormat("")
     JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
     if (GetString(game, "commandbarformat") <> format) {
-      format = format + ";background:" + game.defaultbackground
-      game.commandbarformat = format
-      JS.setCommandBarStyle(format)
+      ResetCommandBarFormat
     }
     request (Speak, text)
     ]]>
+  </function>
+
+  <function name="ResetCommandBarFormat">
+    format = GetCurrentTextFormat("") + ";background:" + game.defaultbackground
+    game.commandbarformat = format
+    JS.setCommandBarStyle(format)
   </function>
 
   <function name="OutputTextNoBr" parameters="text">

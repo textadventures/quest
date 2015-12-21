@@ -78,6 +78,7 @@
     else {
       request (Hide, "Panes")
     }
+    ResetCommandBarFormat
     if (game.showcommandbar) {
       request (Show, "Command")
     }
