@@ -189,7 +189,7 @@
       <caption>[EditorObjectContainerKey]</caption>
       <attribute>key</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <onlydisplayif>this.keycount > 0</onlydisplayif>
+      <onlydisplayif>GetInt(this, "keycount") > 0</onlydisplayif>
     </control>
 
     <control>
@@ -197,7 +197,7 @@
       <caption>[EditorObjectContainerKey] 2</caption>
       <attribute>key2</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <onlydisplayif>this.keycount > 1</onlydisplayif>
+      <onlydisplayif>GetInt(this, "keycount") > 1</onlydisplayif>
     </control>
 
     <control>
@@ -205,7 +205,7 @@
       <caption>[EditorObjectContainerKey] 3</caption>
       <attribute>key3</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <onlydisplayif>this.keycount > 2</onlydisplayif>
+      <onlydisplayif>GetInt(this, "keycount") > 2</onlydisplayif>
     </control>
 
     <control>
@@ -213,7 +213,7 @@
       <caption>[EditorObjectContainerKey] 4</caption>
       <attribute>key4</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <onlydisplayif>this.keycount > 3</onlydisplayif>
+      <onlydisplayif>GetInt(this, "keycount") > 3</onlydisplayif>
     </control>
 
     <control>
@@ -221,9 +221,8 @@
       <caption>[EditorObjectContainerKey] 5</caption>
       <attribute>key5</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <onlydisplayif>this.keycount > 4</onlydisplayif>
+      <onlydisplayif>GetInt(this, "keycount") > 4</onlydisplayif>
     </control>
-
 
     <control>
       <controltype>checkbox</controltype>
