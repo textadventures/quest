@@ -62,7 +62,7 @@ Public Class Editor
                             Application.DoEvents()
                             Dim path As String = System.IO.Path.GetDirectoryName(m_filename)
                             Dim filter As String = System.IO.Path.GetFileName(m_filename)
-                            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
+                            m_fileWatcher = New System.IO.FileSystemWatcher(path, "*.aslx")
                             m_fileWatcher.EnableRaisingEvents = True
                             m_simpleMode = False
                             SetUpTree()
@@ -998,7 +998,10 @@ Public Class Editor
     End Sub
 
     Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed
-        BeginInvoke(Sub() ctlReloadBanner.Visible = True)
+        BeginInvoke(Sub()
+                        ctlReloadBanner.AlertText = String.Format("{0} has been modified outside Quest.", e.Name)
+                        ctlReloadBanner.Visible = True
+                    End Sub)
     End Sub
 
     Private Sub ctlReloadBanner_ButtonClicked() Handles ctlReloadBanner.ButtonClicked
