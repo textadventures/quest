@@ -2348,6 +2348,7 @@ namespace TextAdventures.Quest
                 result = result.Replace(invalidChar, "");
             }
             if (result.Length == 0) return string.Empty;
+            result = result.TrimStart(new[] { '.' });
             return result;
         }
 

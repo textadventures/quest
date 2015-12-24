@@ -36,8 +36,10 @@ Public Class NewGameWindow
         If m_manualFilename Then Return
         Dim myDocsFolder As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         Dim gamesFolder As String = System.IO.Path.Combine(myDocsFolder, "Quest Games")
-        Dim filename As String = System.IO.Path.Combine(gamesFolder, GenerateFilename(txtGameName.Text))
-        txtFilename.Text = filename
+        Dim filename = GenerateFilename(txtGameName.Text)
+        Dim path = IO.Path.Combine(gamesFolder, filename)
+        txtFilename.Text = path
+        cmdOK.Enabled = filename.Length > 0
     End Sub
 
     Private Function GenerateFilename(gameName As String) As String
@@ -88,7 +90,6 @@ Public Class NewGameWindow
 
     Private Sub txtGameName_TextChanged(sender As Object, e As System.EventArgs) Handles txtGameName.TextChanged
         SetFilename()
-        cmdOK.Enabled = txtGameName.Text.Length > 0
     End Sub
 
     Private Sub cmdBrowse_Click(sender As System.Object, e As System.EventArgs) Handles cmdBrowse.Click
