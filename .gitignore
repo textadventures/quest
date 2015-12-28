@@ -18,6 +18,7 @@ Setup/Setup/
 WebPlayer/LogConfig.xml
 WebEditor/WebEditor/WebEditorSettings.xml
 WebPlayer/App_Data/Log.txt
+WebPlayer/App_Data/51Degrees.dat
 WebEditor/WebEditor/WebEditor.Publish.xml
 WebEditor/WebEditor/LogConfig.xml
 WebPlayer/paper.js

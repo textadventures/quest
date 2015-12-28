@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <meta name="viewport" content="width=device-width; maximum-scale=1.0; minimum-scale=1.0;" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1.0" />
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/jquery.jplayer.min.js"></script>
