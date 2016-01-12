@@ -107,6 +107,7 @@
   <template name="NoObjectsAvailable">Não há objeto disponível para isso.</template>
   <template name="Yes">Sim</template>
   <template name="No">Não</template>
+  <template name="By">Por</template>
   
   <template name="CompassNW">noroeste</template>
   <template name="CompassN">norte</template>
