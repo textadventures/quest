@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EditorController")]
-[assembly: AssemblyCopyright("Copyright © 2015 Alex Warren")]
+[assembly: AssemblyCopyright("Copyright © 2016 Alex Warren")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

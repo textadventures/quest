@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Alex Warren")> 
 <Assembly: AssemblyProduct("Quest")> 
-<Assembly: AssemblyCopyright("Copyright © 2015 Alex Warren")> 
+<Assembly: AssemblyCopyright("Copyright © 2016 Alex Warren")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
