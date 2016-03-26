@@ -1761,6 +1761,7 @@ namespace TextAdventures.Quest
                 var url = GetExternalURL(filename);
                 using (var client = new WebClient())
                 {
+                    client.Encoding = System.Text.Encoding.UTF8;
                     return client.DownloadString(url);
                 }
             }

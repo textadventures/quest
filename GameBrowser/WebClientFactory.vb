@@ -8,6 +8,7 @@
     Public Shared Function GetNewWebClient() As System.Net.WebClient
 
         Dim client As New System.Net.WebClient
+        client.Encoding = System.Text.Encoding.UTF8
         client.Headers.Add(Net.HttpRequestHeader.UserAgent, "Quest " + m_questVersion)
 
         ' Setting Proxy to Nothing massively speeds up how quickly the data is fetched
