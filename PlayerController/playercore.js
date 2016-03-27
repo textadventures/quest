@@ -937,30 +937,38 @@ function getCSSRule(ruleName, deleteFlag) {
             var styleSheet = document.styleSheets[i];
             var ii = 0;
             var cssRule = false;
-            do {
-                if (styleSheet.cssRules) {
-                    cssRule = styleSheet.cssRules[ii];
-                } else if (styleSheet.rules) {
-                    cssRule = styleSheet.rules[ii];
-                }
-                if (cssRule) {
-                    if (typeof cssRule.selectorText != "undefined") {
-                        if (cssRule.selectorText.toLowerCase() == ruleName) {
-                            if (deleteFlag == 'delete') {
-                                if (styleSheet.cssRules) {
-                                    styleSheet.deleteRule(ii);
+            try {
+                do {
+                    if (styleSheet.cssRules) {
+                        cssRule = styleSheet.cssRules[ii];
+                    } else if (styleSheet.rules) {
+                        cssRule = styleSheet.rules[ii];
+                    }
+                    if (cssRule) {
+                        if (typeof cssRule.selectorText != "undefined") {
+                            if (cssRule.selectorText.toLowerCase() == ruleName) {
+                                if (deleteFlag == 'delete') {
+                                    if (styleSheet.cssRules) {
+                                        styleSheet.deleteRule(ii);
+                                    } else {
+                                        styleSheet.removeRule(ii);
+                                    }
+                                    return true;
                                 } else {
-                                    styleSheet.removeRule(ii);
+                                    return cssRule;
                                 }
-                                return true;
-                            } else {
-                                return cssRule;
                             }
                         }
                     }
+                    ii++;
+                } while (cssRule)
+            } catch (e) {
+                // Firefox throws a SecurityError if you try reading
+                // a cross-domain stylesheet
+                if (e.name !== "SecurityError") {
+                    throw e;
                 }
-                ii++;
-            } while (cssRule)
+            }
         }
     }
     return false;
