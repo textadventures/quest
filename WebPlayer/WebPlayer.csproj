@@ -301,7 +301,6 @@
     <Content Include="Mobile\KeepAlive.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\51Degrees.dat" />
     <Content Include="51Degrees.config" />
     <None Include="Properties\PublishProfiles\*.pubxml" />
     <Content Include="Views\Resume\Index.cshtml" />
@@ -311,6 +310,9 @@
     <Folder Include="Views\GameSession\" />
     <Folder Include="Views\Home\" />
     <Folder Include="Views\Redirect\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
