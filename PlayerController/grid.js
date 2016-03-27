@@ -1,26 +1,26 @@
-var scale, gridX, gridY, player;
-var playerVector, playerDestination;
-var offsetVector, offsetDestination;
-var allPaths = new Array();
-var customLayerPaths = new Array();
-var customLayerObjects = {};
-var customLayerSvg = {};
-var customLayerImages = {};
-var layers = new Array();
-var maxLayer = 3;
-var currentLayer = 0;
-var offset = new Point(0, 0);
-var symbols = new Object();
-var newShapePoints = new Array();
+var scale, gridX, gridY, player,
+    playerVector, playerDestination,
+    offsetVector, offsetDestination,
+    allPaths = [],
+    customLayerPaths = [],
+    customLayerObjects = {},
+    customLayerSvg = {},
+    customLayerImages = {},
+    layers = [],
+    maxLayer = 7,
+    currentLayer = 0,
+    offset = new Point(0, 0),
+    symbols = {},
+    newShapePoints = [];
 
 for (var i = -maxLayer; i <= maxLayer; i++) {
     var layer = new Layer();
     layers.push(project.activeLayer);
 }
 
-var customLayer = new Layer();
-var customLayerOffset = new Point(0, 0);
-customLayer.visible = false;
+var customLayer = new Layer(),
+    customLayerOffset = new Point(0, 0),
+    customLayer.visible = false;
 
 function activateLayer(index) {
     showCustomLayer(false);
