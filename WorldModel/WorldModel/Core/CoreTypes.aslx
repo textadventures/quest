@@ -206,6 +206,7 @@
     <feature_edible type="boolean">false</feature_edible>
     <feature_player type="boolean">false</feature_player>
     <feature_lightdark type="boolean">false</feature_lightdark>
+    <visited type="boolean">false</visited>
   </type>
 
   <type name="defaultexit">
