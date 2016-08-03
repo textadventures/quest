@@ -363,6 +363,7 @@
 
   <type name="openable">
     <displayverbs type="listextend">[Open];[Close]</displayverbs>
+    <inventoryverbs type="listextend">[Open];[Close]</inventoryverbs>
     <open/>
     <close/>
   </type>
@@ -374,6 +375,7 @@
   <type name="container_closed">
     <inherit name="container_base"/>
     <displayverbs type="listextend">[Open];[Close]</displayverbs>
+    <inventoryverbs type="listextend">[Open];[Close]</inventoryverbs>
     <open/>
     <close/>
   </type>
@@ -381,6 +383,7 @@
   <type name="container_open">
     <inherit name="container_base"/>
     <displayverbs type="listextend">[Open];[Close]</displayverbs>
+    <inventoryverbs type="listextend">[Open];[Close]</inventoryverbs>
     <isopen/>
     <open/>
     <close/>
@@ -515,6 +518,7 @@
 
   <type name="switchable">
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
+    <inventoryverbs type="listextend">[SwitchOn];[SwitchOff]</inventoryverbs>
     <switchedon type="boolean">false</switchedon>
     <turnon type="script">
       if (ListContains(ScopeReachable(), this)){
@@ -558,6 +562,7 @@
 
   <type name="edible">
     <displayverbs type="listextend">[Eat]</displayverbs>
+    <inventoryverbs type="listextend">[Eat]</inventoryverbs>
     <eat type="script">
       if (HasString(this, "eatmsg")) {
         msg (this.eatmsg)
