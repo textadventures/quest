@@ -1,0 +1,359 @@
+<library>
+  <include ref="EditorEnglish.aslx"/>
+  <template name="LanguageId">da</template>
+  
+  <template name="UnresolvedObject">Det kan jeg ikke se.</template>
+  <template name="UnresolvedLocation">Der kan du ikke komme hen.</template>
+  <template name="DefaultObjectDescription">Der er ikke noget usædvanligt at se.</template>
+  <template name="DefaultSelfDescription">Du ser godt ud.</template>
+  <dynamictemplate name="TakeSuccessful">"Du tager " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">"Du kan ikke ta´ " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " for tung til at tage med."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Du kan ikke bære mere."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Der kan ikke være mere i " + object.article + "."</dynamictemplate>
+  <template name="SeeListHeader">Du kan se</template>
+  <template name="GoListHeader">Du kan gå mod</template>
+  <template name="And">og</template>
+  <template name="Or">eller</template>
+  <template name="NothingToUndo">Der er ikke noget at fortryde!</template>
+  <template name="NotCarryingAnything">Du bærer ikke på noget.</template>
+  <template name="CarryingListHeader">Du bærer</template>
+  <dynamictemplate name="DropSuccessful">"Du lægger " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Du kan ikke lægge " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Du bærer allerede " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"Du bærer ikke " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantUse">"Du kan ikke bruge " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Du kan ikke give " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "sig") + " ingenting."</dynamictemplate>
+  <template name="UnrecognisedCommand">Det forstår jeg ikke.</template>
+  <template name="YouAreIn">Du er i</template>
+  <template name="LookAt">Se på</template>
+  <template name="Take">Tag</template>
+  <template name="SpeakTo">Tal til</template>
+  <template name="Use">Brug</template>
+  <template name="Drop">Læg</template>
+  <template name="GoTo">Gå til</template>
+  <template name="Go">Gå</template>
+  <template name="SwitchOn">Tænd</template>
+  <template name="SwitchOff">Sluk</template>
+  <template name="Open">Åben</template>
+  <template name="Close">luk</template>
+  <template name="Eat">Spis</template>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " " + Conjugate(object, "be") + " ikke åbne."</dynamictemplate>
+  <template name="NeutralGender">den</template>
+  <template name="MaleGender">han</template>
+  <template name="FemaleGender">hun</template>
+  <template name="SelfGender">du</template>
+  <template name="NeutralPluralGender">de</template>
+  <template name="MalePluralGender">de</template>
+  <template name="FemalePluralGender">de</template>
+  <template name="NeutralArticle">det</template>
+  <template name="MaleArticle">ham</template>
+  <template name="FemaleArticle">hende</template>
+  <template name="SelfArticle">dig selv</template>
+  <template name="NeutralPluralArticle">dem</template>
+  <template name="MalePluralArticle">dem</template>
+  <template name="FemalePluralArticle">dem</template>
+  <template name="SelfAlias">mig</template>
+  <template name="SelfAlt">mig selv; mig</template>
+  <template name="AllObjects">alt; det hele</template>
+  <template name="ParserIgnorePrefixes">the; a; an</template>
+  <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " allerede åben."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " allerede lukket."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"Du kan ikke åbne " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantClose">"Du kan ikke lukke " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"Du åbner " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"Du lukker " + object.article + "."</dynamictemplate>
+  <template name="CannotDoThat">Det kan du ikke.</template>
+  <dynamictemplate name="AlreadyThere">WriteVerb(object, "be") + " er der allerede."</dynamictemplate>
+  <template name="Done">Færdig.</template>
+  <template name="ContainerContentsPrefix">indeholdende</template>
+  <template name="SurfaceContentsPrefix">på hvilket der er</template>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "indeholder")</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "be") + " fyldt."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Vælg venligst hvilken '" + text + "' du mener:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Fortryd: " + text</dynamictemplate>
+  <template name="LockedExit">Den vej er låst.</template>
+  <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " svarer ikke."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">WriteVerb(object, "do") + " svarer ikke."</dynamictemplate>
+  <template name="NoKey">Du har ikke nøglen.</template>
+  <template name="UnlockMessage">Ulåst.</template>
+  <template name="LockMessage">Låst.</template>
+  <dynamictemplate name="LockedObject">WriteVerb(object, "be") + " låst."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " allerede låst."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " allerede låst op."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Du kan ikke låse " + object.article + " når " + object.gender + " " + Conjugate(object, "be") + " åben."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " allerede tændt."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " allerede slukket."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">"Du tænder " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">"Du slukker " + object.article + " ."</dynamictemplate>
+  <dynamictemplate name="Eaten">"Du spiser " + object.article + "."</dynamictemplate>
+  <template name="DefaultOops">Der er ikke noget at rette.</template>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " indeholder ikke " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Du ser på " + text +"."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"Det er for mørkt til at se."</dynamictemplate>
+  <template name="VerbObjectSeparator">med; using</template>
+  <template name="DefaultMultiObjectVerb">Det virker ikke.</template>
+  <template name="MultiObjectVerbMenu">Med hvad?</template>
+  <template name="UseOnMenu">På hvad?</template>
+  <template name="GiveToMenu">Til hvad?</template>
+  <template name="NoObjectsAvailable">Der er ikke noget at gøre det med.</template>
+  <template name="Yes">Ja</template>
+  <template name="No">Nej</template>
+  <template name="By">med</template>
+
+  <template name="CompassNW">nordvest</template>
+  <template name="CompassN">nord</template>
+  <template name="CompassNE">nordøst</template>
+  <template name="CompassW">vest</template>
+  <template name="CompassE">øst</template>
+  <template name="CompassSW">sydvest</template>
+  <template name="CompassS">syd</template>
+  <template name="CompassSE">sydøst</template>
+  <template name="CompassUp">op</template>
+  <template name="CompassDown">ned</template>
+  <template name="CompassIn">ind</template>
+  <template name="CompassOut">ud</template>
+  <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
+  <template name="CompassNWShort">nv</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">nø</template>
+  <template name="CompassWShort">v</template>
+  <template name="CompassEShort">ø</template>
+  <template name="CompassSWShort">sv</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">sø</template>
+  <template name="CompassUpShort">o</template>
+  <template name="CompassDownShort">n</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort">u</template>
+
+  <template name="InventoryLabel">Grej</template>
+  <template name="StatusLabel">Status</template>
+  <template name="PlacesObjectsLabel">Steder og Ting</template>
+  <template name="CompassLabel">Kompas</template>
+  <template name="InButtonLabel">ind</template>
+  <template name="OutButtonLabel">ud</template>
+  <template name="EmptyListLabel">(tom)</template>
+  <template name="NothingSelectedLabel">(intet valgt)</template>
+  <template name="TypeHereLabel">Skriv her...</template>
+  <template name="ContinueLabel">Fortsæt...</template>
+
+  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="look">^look$|^l$</template>
+  <verbtemplate name="lookat">se på</verbtemplate>
+  <verbtemplate name="lookat">x</verbtemplate>
+  <verbtemplate name="lookat">undersøg</verbtemplate>
+  <verbtemplate name="lookat">exam</verbtemplate>
+  <verbtemplate name="lookat">se</verbtemplate>
+  <verbtemplate name="take">tag</verbtemplate>
+  <verbtemplate name="take">hent</verbtemplate>
+  <verbtemplate name="take">snup</verbtemplate>
+  <template templatetype="command" name="undo">^undo$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
+  <template templatetype="command" name="quit">^quit$</template>
+  <verbtemplate name="drop">læg</verbtemplate>
+  <verbtemplate name="use">brug</verbtemplate>
+  <verbtemplate name="speakto">tal til</verbtemplate>
+ <verbtemplate name="speakto">tal med</verbtemplate>
+  <verbtemplate name="speakto">tal</verbtemplate>
+  <verbtemplate name="speakto">tal til</verbtemplate>
+  <verbtemplate name="speakto">tal</verbtemplate>
+  <verbtemplate name="open">åben</verbtemplate>
+  <verbtemplate name="close">luk</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (på|i) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="fjernfra"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template templatetype="command" name="spørg"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="fortæl"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="ups"><![CDATA[^oops (?<text>.*)$]]></template>
+
+  <verbtemplate name="buy">køb</verbtemplate>
+  <dynamictemplate name="DefaultBuy">"Du kan ikke købe " + object.article + "."</dynamictemplate>
+  <verbtemplate name="climb">klatre</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"Du kan ikke klatre " + object.article + "."</dynamictemplate>
+  <verbtemplate name="drink">drik</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"Du kan ikke drikke " + object.article + "."</dynamictemplate>
+  <verbtemplate name="eat">spis</verbtemplate>
+  <dynamictemplate name="DefaultEat">"Du kan ikke spise " + object.article + "."</dynamictemplate>
+  <verbtemplate name="givesingle">giv</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) til (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">WriteVerb(object1, "do") + " ikke have " + object2.article + "."</dynamictemplate>
+  <verbtemplate name="hit">slå</verbtemplate>
+  <dynamictemplate name="DefaultHit">"Du kan ikke slå " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kill">dræb</verbtemplate>
+  <dynamictemplate name="DefaultKill">"Du kan ikke dræbe " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kiss">kys</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"Du kan ikke kysse " + object.article + "."</dynamictemplate>
+  <verbtemplate name="knock">bank</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"Du kan ikke banke på " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lick">slik</verbtemplate>
+  <dynamictemplate name="DefaultLick">"Du kan ikke slikke " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lie">lig på</verbtemplate>
+  <verbtemplate name="lie">lig på</verbtemplate>
+  <verbtemplate name="lie">lig på</verbtemplate>
+  <verbtemplate name="lie">lig på</verbtemplate>
+  <dynamictemplate name="DefaultLie">"Du kan ikke ligge på " + object.article + "."</dynamictemplate>
+  <verbtemplate name="listento">lyt til</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">"Du lytter, men " + object.article + " laver ingen lyd."</dynamictemplate>
+  <verbtemplate name="lock">lås</verbtemplate>
+  <dynamictemplate name="DefaultLock">"Du kan ikke låse " + object.article + "."</dynamictemplate>
+  <verbtemplate name="move">flyt</verbtemplate>
+  <dynamictemplate name="DefaultMove">"Du kan ikke flytte " + object.article + "."</dynamictemplate>
+  <verbtemplate name="pull">træk</verbtemplate>
+  <dynamictemplate name="DefaultPull">"Du kan ikke trække " + object.article + "."</dynamictemplate>
+  <verbtemplate name="push">skub</verbtemplate>
+  <dynamictemplate name="DefaultPush">"Du kan ikke skubbe " + object.article + "."</dynamictemplate>
+  <verbtemplate name="read">læs</verbtemplate>
+  <dynamictemplate name="DefaultRead">"Du kan ikke læse " + object.article + "."</dynamictemplate>
+  <verbtemplate name="search">led i</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"Du kan ikke lede " + object.article + "."</dynamictemplate>
+  <verbtemplate name="show">vis</verbtemplate>
+  <dynamictemplate name="DefaultShow">"Du kan ikke vise " + object.article + "."</dynamictemplate>
+  <verbtemplate name="sit">sid på</verbtemplate>
+  <verbtemplate name="sit">sid ovenpå</verbtemplate>
+  <verbtemplate name="sit">sid på</verbtemplate>
+  <verbtemplate name="sit">sæt dig på</verbtemplate>
+  <dynamictemplate name="DefaultSit">"Du kan ikke sidde " + object.article + "."</dynamictemplate>
+  <verbtemplate name="smell">lugt</verbtemplate>
+  <verbtemplate name="smell">duft</verbtemplate>
+  <dynamictemplate name="DefaultSmell">"Du dufter, men " + object.article + " dufter ikke af meget."</dynamictemplate>
+  <verbtemplate name="taste">smag</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"Du kan ikke smage på " + object.article + "."</dynamictemplate>
+  <verbtemplate name="throw">kast</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"Du kan ikke kaste " + object.article + "."</dynamictemplate>
+  <verbtemplate name="tie">bind</verbtemplate>
+  <dynamictemplate name="DefaultTie">"Du kan ikke binde " + object.article + "."</dynamictemplate>
+  <verbtemplate name="touch">rør</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"Du kan ikke røre " + object.article + "."</dynamictemplate>
+  <verbtemplate name="turnon">tænd</verbtemplate>
+  <verbtemplate name="turnon">tænd #object#</verbtemplate>
+  <verbtemplate name="turnon">tænd</verbtemplate>
+  <verbtemplate name="turnon">tænd #object#</verbtemplate>
+  <dynamictemplate name="DefaultTurnOn">"Du kan ikke tænde " + object.article + " on."</dynamictemplate>
+  <verbtemplate name="turnoff">sluk</verbtemplate>
+  <verbtemplate name="turnoff">sluk #object#</verbtemplate>
+  <verbtemplate name="turnoff">sluk</verbtemplate>
+  <verbtemplate name="turnoff">sluk #object#</verbtemplate>
+  <dynamictemplate name="DefaultTurnOff">"Du kan ikke slukke " + object.article + " off."</dynamictemplate>
+  <verbtemplate name="turn">drej</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"Du kan ikke dreje " + object.article + "."</dynamictemplate>
+  <verbtemplate name="unlock">ulås</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"Du kan ikke åbne " + object.article + "."</dynamictemplate>
+  <verbtemplate name="untie">befri</verbtemplate>
+  <dynamictemplate name="DefaultUntie">"Du kan ikke befri " + object.article + "."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) (på|med) (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"Du kan ikke bruge " + object2.article + " sådan."</dynamictemplate>
+  <verbtemplate name="wear">bær</verbtemplate>
+  <dynamictemplate name="DefaultWear">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
+  <template templatetype="command" name="listen">^lyt$</template>
+  <template name="DefaultListen">Du kan ikke høre noget særligt.</template>
+  <template templatetype="command" name="jump">^hop$</template>
+  <template name="DefaultJump">Du hopper.</template>
+  <template templatetype="command" name="sitdown">^sid$|^sid ned$</template>
+  <template name="DefaultSitDown">Der er ikke tid til at slappe af nu.</template>
+  <template templatetype="command" name="liedown">^lig$|^lig ned$</template>
+  <template name="DefaultLieDown">Der er ikke tid til at slappe af nu.</template>
+  <template templatetype="command" name="sleep">^sov$|^hvil$</template>
+  <template name="DefaultSleep">Der er ikke tid til at slappe af nu.</template>
+  <template templatetype="command" name="wait">^vent$|^z$</template>
+  <template name="DefaultWait">Tiden går.</template>
+  <template templatetype="command" name="xyzzy">^xyzzy$</template>
+  <template name="DefaultXyzzy">Overraskende nok sker der ikke noget som helst.</template>
+  <template templatetype="command" name="help">^hjælp$|^\?$</template>
+  <template templatetype="command" name="save">^gem$</template>
+
+  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
+<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
+<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
+<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
+<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+
+  <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
+  
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
+      return ("an")
+    }
+    else {
+      return ("a")
+    }
+  </function>
+
+  <function name="WriteVerb" type="string" parameters="obj, verb">
+    return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
+  </function>
+
+  <function name="Conjugate" type="string" parameters="obj, verb">
+    gender = obj.gender
+    if (gender = "he" or gender = "she") {
+      gender = "it"
+    }
+    switch (verb) {
+      case ("be") {
+        switch (gender) {
+          case ("i") {
+            return ("am")
+          }
+          case ("you") {
+            return ("are")
+          }
+          case ("it") {
+            return ("is")
+          }
+          case ("we") {
+            return ("are")
+          }
+          case ("they") {
+            return ("are")
+          }
+          default {
+            return ("is")
+          }
+        }
+      }
+      case ("do") {
+        switch (gender) {
+          case ("i") {
+            return ("do")
+          }
+          case ("you") {
+            return ("do")
+          }
+          case ("it") {
+            return ("does")
+          }
+          case ("we") {
+            return ("do")
+          }
+          case ("they") {
+            return ("do")
+          }
+          default {
+            return ("do")
+          }       
+        }
+      }
+      default {
+        if (gender = "it") {
+          return (verb + "s")
+        }
+        else {
+          return (verb)
+        }
+      }
+    }
+  </function>
+
+</library>

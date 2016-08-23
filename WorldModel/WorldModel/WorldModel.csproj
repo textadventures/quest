@@ -334,6 +334,10 @@
     <None Include="Core\GamebookCoreEditorScriptsPages.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\Languages\Dansk.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Core\Languages\EditorEnglish.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -364,6 +368,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Romana.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\Templates\Dansk.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Templates\English.template">
