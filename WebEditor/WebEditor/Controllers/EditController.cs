@@ -56,7 +56,7 @@ namespace WebEditor.Controllers
             return Json(new {
                 tree = editor.GetElementTreeForJson(),
                 editorstyle = editor.Style,
-                playurl = ConfigurationManager.AppSettings["PlayURL"] + "?id=editor/" + playFilename,
+                playurl = ConfigurationManager.AppSettings["PlayURL"] + "?id=editor/" + HttpUtility.UrlEncode(playFilename),
             }, JsonRequestBehavior.AllowGet);
         }
 
