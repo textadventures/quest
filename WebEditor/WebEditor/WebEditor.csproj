@@ -671,16 +671,28 @@
       <Link>Core\Templates\Romana.template</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Norsk.aslx">
       <Link>Core\Languages\Norsk.aslx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Norsk.template">
       <Link>Core\Templates\Norsk.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Dansk.aslx">
+      <Link>Core\Languages\Dansk.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Portugues-Portugal.aslx">
+      <Link>Core\Languages\Portugues-Portugal.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Dansk.template">
+      <Link>Core\Templates\Dansk.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Portugues-Portugal.template">
+      <Link>Core\Templates\Portugues-Portugal.template</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
