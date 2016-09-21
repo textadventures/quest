@@ -19,8 +19,9 @@ for (var i = -maxLayer; i <= maxLayer; i++) {
 }
 
 var customLayer = new Layer(),
-    customLayerOffset = new Point(0, 0),
-    customLayer.visible = false;
+    customLayerOffset = new Point(0, 0);
+
+customLayer.visible = false;
 
 function activateLayer(index) {
     showCustomLayer(false);
