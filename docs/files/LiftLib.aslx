@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<library>
+
+  <!--
+  Using this library you can easily implement one or more lifts in your game. Each lift can stop at any number
+  of floors.
+
+  Of course, you could apply this to any transport system that involves pressing a button to get to a destination.
+
+
+  Instructions
+
+  To implement, create a room that will be the lift, and in it put a number of objects that will be buttons. You
+  will obviously need one button per floor. For each floor, create an exit that goes to the lift room (but not the other way),
+  also create a single exit for the lift room (does not matter where to).
+
+  On the lift tab, set all the exits from each floor to the lift to be "Lift Entance" (do not do this for the exit in the lift room).
+  Still on the lift tab, set the buttons to be "Lift Button", assign a floor number and a destination for each.
+  For the lift room itself, set it to be a "Lift", and type in messages the player will see when buttons are pressed.
+  You can use ### in these strings and this will be replaced by the destination floor.
+
+
+  Limitations:
+
+  Note that as implemented the player does not have to press a button to call the lift - the lift is automatically
+  at whatever floor the player wants to get on at. You might want to have the lift entrances locked, and require the
+  player to press a button to call the lift, which then unlocks the exit. Have the exit lock when the player goes that way.
+
+  Floors must be numbers (so no "ground" and "basement" I am afraid), as the system compares the current floor
+  to the destination floor to decide if it is going up or down. Feel free to modify this if you prefer it otherwise.
+
+  Do not start the player in the lift!
+
+  If PrintLib is used, it must come after this library.
+
+  Versions:
+
+  1.1 Updated for Quest 5.3 (player -> game.pov), added "Print" function, so PixLib no longer required
+
+  By The Pixie
+  -->
+
+
+  <object name="lift_struct">
+    <library_comment>LiftLib by Pixie, V1.1</library_comment>
+  </object>
+
+  <!-- 
+  This function makes the library work nicely with PrintLib, but allows it to also
+  work properly if PrintLib is not used.
+  -->
+  <function name="Print" parameters="s">
+    msg (s)
+  </function>
+
+
+  <verb>
+    <property>press</property>
+    <pattern>press;push</pattern>
+    <defaultexpression>"You can't press " + object.article + "."</defaultexpression>
+  </verb>
+
+  <type name="liftroom">
+  </type>
+
+  <type name="liftbutton">
+    <displayverbs type="list">Press</displayverbs>
+    <floor type="int">1</floor>
+    <press type="script">
+      exit = ObjectListItem (ScopeExitsForRoom (this.parent), 0)
+      if (exit.to = this.to) {
+        s = this.parent.samefloor
+      }
+      else {
+        exit.to = this.to
+        if (this.parent.current_floor > this.floor) {
+          s = this.parent.goingdown
+        }
+        else {
+          s = this.parent.goingup
+        }
+        this.parent.current_floor = this.floor
+      }
+      Print (Replace (s, "###", ToString (this.floor)))
+    </press>
+  </type>
+
+  <type name="liftentrance">
+    <script type="script">
+      exit = ObjectListItem (ScopeExitsForRoom (this.to), 0)
+      exit.to = game.pov.parent
+      MoveObject (game.pov, this.to)
+      foreach (obj, GetDirectChildren (this.to)) {
+        if (DoesInherit (obj, "liftbutton")) {
+          if (obj.to = this.parent) {
+            this.to.current_floor = obj.floor
+          }
+        }
+      }
+    </script>
+  </type>
+
+
+ <!-- =================================================== -->
+  <!-- Tabs -->
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Lift</caption>
+    <mustnotinherit>defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; liftroom=Lift; liftbutton=Lift Button; liftentrance=Lift Entrance</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Same floor message</caption>
+      <attribute>samefloor</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The going up message</caption>
+      <attribute>goingup</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The going down message</caption>
+      <attribute>goingdown</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+
+    <control>
+      <controltype>objects</controltype>
+      <caption>Destination</caption>
+      <attribute>to</attribute>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Floor</caption>
+      <attribute>floor</attribute>
+      <width>100</width>
+      <mustinherit>liftbutton</mustinherit>
+      <minimum>1</minimum>
+    </control>
+
+  </tab>
+</library>

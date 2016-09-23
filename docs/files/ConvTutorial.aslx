@@ -1,0 +1,22 @@
+<!--Saved by Quest 5.6.5510.29036-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Conversation Tutorial">
+    <gameid>0be5c6ce-c7a0-43fb-836c-6ce248a2ef4d</gameid>
+    <version>1.0</version>
+    <turn type="int">0</turn>
+    <feature_asktell />
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <usedefaultprefix />
+    <alias>Conversation Testing Room</alias>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="boris">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+</asl>

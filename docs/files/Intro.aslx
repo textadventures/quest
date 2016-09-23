@@ -1,0 +1,83 @@
+<!--Saved by Quest 5.2.4487.32262-->
+<asl version="520">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="intro">
+    <gameid>0f6ee65b-2970-4c09-a32b-3590766e9022</gameid>
+    <version>2.0</version>
+    <description type="string"></description>
+    <author>Pertex</author>
+    <category>Educational</category>
+    <autodescription />
+    <showdescriptiononenter />
+    <firstname type="string"></firstname>
+    <surname type="string"></surname>
+    <namecomplete type="boolean">false</namecomplete>
+    <start type="script">
+      SetFramePicture ("Intro.jpg")
+      msg ("press any key to continue...")
+      wait {
+        ClearFramePicture
+        ClearScreen
+        PrintCentered ("once upon a time...")
+        msg ("")
+        msg ("a brave knight  started his quest lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
+        msg ("")
+        msg ("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
+        msg ("")
+        msg ("Here you can tell the story of your game")
+        msg ("")
+        msg ("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
+        msg ("")
+        msg ("press any key to continue...")
+        wait {
+          ClearScreen
+          msg ("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
+          msg ("")
+          questionname
+        }
+      }
+    </start>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>You are standing in a wonderful room with a golden thrown...</description>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <prefix>a wonderful</prefix>
+    <alias>room</alias>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <function name="questionname"><![CDATA[
+    msg ("\"So would you tell me your first name please?\"")
+    get input {
+      game.firstname = result
+      msg ("> " + game.firstname)
+      msg ("\"Thank you. And now your noble surname?\"")
+      get input {
+        game.surname = result
+        msg ("> " + game.surname)
+        msg ("\"Then you are called " + game.firstname + " " + game.surname + "?\"")
+        ask ("\"Then you are called " + game.firstname + " " + game.surname + "?\"") {
+          if (result=false) {
+            msg ("> no")
+            msg ("")
+            msg ("\"In this case I must ask again.\"")
+            questionname
+          }
+          else {
+            msg ("> yes")
+            msg ("")
+            msg ("\"So let the game begin...\"")
+            msg ("")
+            msg ("press any key to continue...")
+            wait {
+              ClearScreen
+            }
+          }
+        }
+      }
+    }
+  ]]></function>
+</asl>
