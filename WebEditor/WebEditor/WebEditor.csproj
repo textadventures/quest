@@ -191,6 +191,14 @@
     <Content Include="Scripts\FileUpload.js" />
     <Content Include="Scripts\GameEdit.js" />
     <Content Include="Scripts\GameNew.js" />
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Russian.aslx">
+      <Link>Core\Languages\Russian.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Russian.template">
+      <Link>Core\Templates\Russian.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />

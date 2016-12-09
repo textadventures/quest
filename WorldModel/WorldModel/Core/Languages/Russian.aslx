@@ -1,0 +1,552 @@
+<library>
+
+<!--
+This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declination of nouns in Russian by GetSkl function, call it passing the object and the proper case (Nom for Nominative, Gen for Genitive, Dat for Dative, Acc for Accusative, Cre for Creative, Pre for Prepositional).
+
+ Notice that name of the object should be written without ending (word stem), alias must be in Nominative (ex. name: мам alias: мама). Every object need also to be properly specified as type, in accordance with declination type and gender; we adopt the convention of listing nine options (I склонение (м,-я); I склонение (м,-а); I склонение (ж,-я); I склонение (ж,-а); II склонение (муж, -0); II склонение (муж,-ь); II склонение (ср,-о); II склонение (ср, -е);  III склонение). Nevertheless there may be errors due to large number of exceptions in how substuntives decline in Russian.
+
+ Moreover to accept natural language commands in Russian refering to a specific object is advisable to add more names, for instance in Accusative declination, when we open object "открыть коробка" would be not natural, gamer would rather type "открыть коробку".
+
+ Keep in mind that Cyrillic may create problems with internal procedures, therefore it is advisable to keep names in Latin. For example to create verb for object you should name it in Russian, but give Attribute in Latin. 
+-->
+
+  <include ref="English.aslx"/>
+  <template name="LanguageId">ru</template>
+  
+  <template name="UnresolvedObject">Я не вижу ничего с таким названием</template>
+  <template name="UnresolvedLocation">Ты не можешь туда пойти</template>
+  <template name="DefaultObjectDescription">Ничего из ряда вон выходящего</template>
+  <template name="DefaultSelfDescription">Хорошо выглядишь</template>
+  <dynamictemplate name="TakeSuccessful">"Отлично. Теперь у тебя есть " + object.alias +"."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">CapFirst(object.article) + " нельзя взять."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " слишком много весит, чтобы брать с собой."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Ты не можешь забрать больше предметов"</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Ты не можешь положить еще больше вещей в н" + object.article + "."</dynamictemplate>
+  <template name="SeeListHeader">Вокруг тебя находятся:</template>
+  <template name="GoListHeader">Можешь пойти</template>
+  <template name="And">и</template>
+  <template name="Or">или</template>
+  <template name="NothingToUndo">Нечего отменять!</template>
+  <template name="NotCarryingAnything">У тебя с собой ничего нет</template>
+  <template name="CarryingListHeader">У тебя с собой</template>
+  <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Ты " + object.article + "уже взял."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"У тебя пока " + object.article + "нет."</dynamictemplate>
+  <dynamictemplate name="CantUse">"Ты не можешь " + object.article + " использовать."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Ты не можешь дать " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nothing."</dynamictemplate>
+  <template name="UnrecognisedCommand">Извини, не понимаю твою команду</template>
+  <template name="YouAreIn">Перед тобой</template>
+  <template name="LookAt">Посмотреть на</template>
+   <template name="Take">Взять</template>
+  <template name="SpeakTo">Поговорить с</template>
+  <template name="Use">Использовать</template>
+  <template name="Drop">Оставить</template>
+  <template name="GoTo">Идти на</template>
+  <template name="Go">Идти</template>
+  <template name="SwitchOn">Включить</template>
+  <template name="SwitchOff">Выключить</template>
+  <template name="Open">Открыть</template>
+  <template name="Close">Закрыть</template>
+  <template name="Eat">Съесть</template>
+  <!--<dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " " + Conjugate(object, "be") + " не открыт" + GetString(object,"suffix") + "."</dynamictemplate>-->
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " не открыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <template name="NeutralGender">оно</template>
+  <template name="MaleGender">он</template>
+  <template name="FemaleGender">она</template>
+  <template name="SelfGender">ты</template>
+  <template name="NeutralPluralGender">они</template>
+  <template name="MalePluralGender">они</template>
+  <template name="FemalePluralGender">они</template>
+  <template name="NeutralArticle">это</template>
+  <template name="MaleArticle">его</template>
+  <template name="FemaleArticle">ее</template>
+  <template name="SelfArticle">себя</template>
+  <template name="NeutralPluralArticle">их</template>
+  <template name="MalePluralArticle">их</template>
+  <template name="FemalePluralArticle">их</template>
+  <template name="SelfAlias">меня</template>
+  <template name="SelfAlt">меня самого; себя самого</template>
+  <template name="AllObjects">все; все на свете</template>
+  <template name="ParserIgnorePrefixes">the; a; an</template>
+  <!-- <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate> -->
+  <dynamictemplate name="AlreadyOpen">CapFirst(object.name) + GetSkl(object,"Nom") + " уже открыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <!--<dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>-->
+  <dynamictemplate name="AlreadyClosed">CapFirst(object.name) + GetSkl(object,"Nom") + " уже закрыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="CantOpen">CapFirst(object.article) + " нельзя открыть."</dynamictemplate>
+  <dynamictemplate name="CantClose">"Ты не можешь " + object.article + "закрыть."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"Сделано. " + CapFirst(object.name) + GetSkl(object,"Nom") + " открыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"ОК. " + CapFirst(object.name) + GetSkl(object,"Nom") + " закрыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <template name="CannotDoThat">Ты не можешь это сделать</template>
+  <dynamictemplate name="AlreadyThere">"Уже там."</dynamictemplate>
+  <template name="Done">Сделано.</template>
+  <template name="ContainerContentsPrefix">cодержит</template>
+  <template name="SurfaceContentsPrefix">на которой есть</template>
+  <!--<dynamictemplate name="ObjectContains">WriteVerb(object, "contain")</dynamictemplate>-->
+  <dynamictemplate name="ObjectContains">"В " + object.name + GetSkl(object,"Pre")+ " находится"</dynamictemplate>
+  <dynamictemplate name="ContainerFull">CapFirst(object.alias) + " наполнен" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Пожалуйста, выбери какой '" + text + "' ты имеешь в виду:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Отменено: " + text</dynamictemplate>
+  <template name="LockedExit">Этот путь закрыт.</template>
+  <dynamictemplate name="DefaultAsk">CapFirst(object.gender) + " не отвечает."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">CapFirst(object.gender) + " не отвечает."</dynamictemplate>
+  <template name="NoKey">У тебя нет ключей</template>
+  <template name="UnlockMessage">Отперто</template>
+  <template name="LockMessage">Заперто</template>
+  <dynamictemplate name="LockedObject">CapFirst(object.gender) + " заперт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">CapFirst(object.gender) + " уже заперт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">CapFirst(object.gender) + "уже отперт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Ты не можешь запереть " + object.article + " когда " + object.gender + " открыт" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " уже включен" + GetString(object,"suffix") + "."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " уже выключен" + GetString(object,"suffix") + "."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">CapFirst(object.alias) + " теперь включен" + GetString(object,"suffix") + "."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">CapFirst(object.alias) + " теперь выключен" + GetString(object,"suffix") + "."</dynamictemplate>g
+  <dynamictemplate name="Eaten">CapFirst(object.alias) + " был" + GetString(object,"suffix") + " тобой съеден" + GetString(object,"suffix") + "."</dynamictemplate>
+  <template name="DefaultOops">Нечего исправлять.</template>
+  <dynamictemplate name="ObjectDoesNotContain">"B " + GetDisplayAlias(object2) + GetSkl(object, "Pre") " нет " + GetDisplayAlias(object1) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"Слишком темно, чтобы хоть что-то разобрать."</dynamictemplate>
+  <template name="VerbObjectSeparator">with; using</template>
+  <template name="DefaultMultiObjectVerb">Не работает</template>
+  <template name="MultiObjectVerbMenu">С каким предметом?</template>
+  <template name="UseOnMenu">С чем?</template>
+  <template name="GiveToMenu">Относительно каких предметов?</template>
+  <template name="NoObjectsAvailable">Нет никаких предметов, с которыми можно было бы сделать что-то подобное.</template>
+  <template name="Yes">Да</template>
+  <template name="No">Нет</template>
+  <template name="By">by</template>
+
+  <template name="CompassNW">северо-запад</template>
+  <template name="CompassN">север</template>
+  <template name="CompassNE">северо-восток</template>
+  <template name="CompassW">запад</template>
+  <template name="CompassE">восток</template>
+  <template name="CompassSW">юго-запад</template>
+  <template name="CompassS">юг</template>
+  <template name="CompassSE">юго-восток</template>
+  <template name="CompassUp">вверх</template>
+  <template name="CompassDown">вниз</template>
+  <template name="CompassIn">в</template>
+  <template name="CompassOut">из</template>
+  <template name="CompassDirectionPrefix">на</template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
+  <template name="CompassNWShort">сз</template>
+  <template name="CompassNShort">с</template>
+  <template name="CompassNEShort">св</template>
+  <template name="CompassWShort">з</template>
+  <template name="CompassEShort">в</template>
+  <template name="CompassSWShort">юв</template>
+  <template name="CompassSShort">ю</template>
+  <template name="CompassSEShort">юв</template>
+  <template name="CompassUpShort">вверх</template>
+  <template name="CompassDownShort">вниз</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort">o</template>
+
+  <template name="InventoryLabel">Инвентарь</template>
+  <template name="StatusLabel">Статус</template>
+  <template name="PlacesObjectsLabel">Места и Предметы</template>
+  <template name="CompassLabel">Компас</template>
+  <template name="InButtonLabel">в</template>
+  <template name="OutButtonLabel">из</template>
+  <template name="EmptyListLabel">(пусто)</template>
+  <template name="NothingSelectedLabel">(ничего не выбрано)</template>
+  <template name="TypeHereLabel">Пиши здесь...</template>
+  <template name="ContinueLabel">Продолжай...</template>
+
+  <template templatetype="command" name="go"><![CDATA[^пойти на (?<exit>.*)$|^пойти (?<exit>.*)$|^(?<exit>север|восток|юг|запад|северо-восток|северо-запад|юго-восток|юго-запад|в|из|вверх|вниз|с|в|ю|з|св|сз|юв|юз|из|вх|вз)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^посмотреть (?<exit>север|восток|юг|запад|северо-восток|северо-запад|юго-восток|юго-запад|из|вверх|вниз|с|в|ю|з|св|сз|юв|юз|из|вх|вз)$]]></template>
+  <template templatetype="command" name="посмотреть">^look$|^l$</template>
+  <verbtemplate name="lookat">посмотреть на</verbtemplate>
+  <verbtemplate name="lookat">x</verbtemplate>
+  <verbtemplate name="lookat">изучить</verbtemplate>
+  <verbtemplate name="lookat">изуч</verbtemplate>
+  <verbtemplate name="lookat">эксп</verbtemplate>
+  <verbtemplate name="take">взять</verbtemplate>
+  <verbtemplate name="take">схватить</verbtemplate>
+  <verbtemplate name="take">забрать</verbtemplate>
+  <verbtemplate name="take">поднять</verbtemplate>
+  <template templatetype="command" name="undo">^отмена$</template>
+  <template templatetype="command" name="inventory">^и$|^инв$|^инвентарь$</template>
+  <template templatetype="command" name="quit">^конец$</template>
+  <verbtemplate name="drop">бросить</verbtemplate>
+  <verbtemplate name="drop">положить</verbtemplate>
+  <verbtemplate name="drop">оставить</verbtemplate>
+  <verbtemplate name="drop">снять</verbtemplate>
+  <verbtemplate name="drop">поставить</verbtemplate>
+  <verbtemplate name="use">использовать</verbtemplate>
+  <verbtemplate name="speakto">поговорить с</verbtemplate>
+  <verbtemplate name="speakto">поговорить</verbtemplate>
+  <verbtemplate name="speakto">поболтать с</verbtemplate>
+  <verbtemplate name="speakto">поболтать</verbtemplate>
+    <verbtemplate name="speakto">пообщаться с</verbtemplate>
+  <verbtemplate name="speakto">поговорить</verbtemplate>
+   <verbtemplate name="speakto">поговорить с</verbtemplate>
+  <verbtemplate name="open">открыть</verbtemplate>
+  <verbtemplate name="close">закрыть</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^положить (?<object1>.*) (на|в) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^убрать (?<object1>.*) (из|c) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^спросить (?<object>.*) (о|об) (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^сказать (?<object>.*) (о|об) (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^упс (?<text>.*)$]]></template>
+
+  <verbtemplate name="buy">купить</verbtemplate>
+  <dynamictemplate name="DefaultBuy">CapFirst(object.article) + "нельзя купить."</dynamictemplate>
+  <verbtemplate name="climb">забраться на</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"На" + "н"+object.article + "нельзя забраться."</dynamictemplate>
+  <verbtemplate name="drink">выпить</verbtemplate>
+  <dynamictemplate name="DefaultDrink">CapFirst(object.article) + "нельзя выпить."</dynamictemplate>
+  <verbtemplate name="eat">съесть</verbtemplate>
+  <dynamictemplate name="DefaultEat">CapFirst(object.article) + "нельзя съесть."</dynamictemplate>
+  <verbtemplate name="givesingle">дать</verbtemplate>
+  <verbtemplate name="givesingle">передать</verbtemplate>
+  <verbtemplate name="givesingle">отдать</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^дать (?<object1>.*) (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.alias) + " не хочет " + object2.article + "."</dynamictemplate>
+  <verbtemplate name="hit">ударить</verbtemplate>
+  <dynamictemplate name="DefaultHit">"Ты не можешь " + object.article + "ударить."</dynamictemplate>
+  <verbtemplate name="kill">убить</verbtemplate>
+  <dynamictemplate name="DefaultKill">"Ты не можешь " + object.article + "убить."</dynamictemplate>
+  <verbtemplate name="kiss">поцеловать</verbtemplate>
+  <verbtemplate name="kiss">чмокнуть</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"Ты не можешь " + object.article + "поцеловать."</dynamictemplate>
+  <verbtemplate name="knock">постучать</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"Ты не можешь в н" + object.article + " постучать."</dynamictemplate>
+  <verbtemplate name="lick">лизнуть</verbtemplate>
+  <dynamictemplate name="DefaultLick">"Ты не можешь " + object.article + "лизнуть."</dynamictemplate>
+  <verbtemplate name="lie">лечь на</verbtemplate>
+  <verbtemplate name="lie">прилечь на</verbtemplate>
+  <verbtemplate name="lie">лечь</verbtemplate>
+  <verbtemplate name="lie">прилечь</verbtemplate>
+  <dynamictemplate name="DefaultLie">"Ты не можешь на н" + object.article + "лечь."</dynamictemplate>
+  <verbtemplate name="listento">послушать</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">"Ты случаешь " + object.article + ", но " + object.gender + " не издает ни звука."</dynamictemplate>
+  <verbtemplate name="lock">запереть</verbtemplate>
+  <dynamictemplate name="DefaultLock">"Ты не можешь " + object.article + " запереть."</dynamictemplate>
+  <verbtemplate name="move">подвинуть</verbtemplate>
+  <dynamictemplate name="DefaultMove">"Ты не можешь " + object.article + " подвинуть."</dynamictemplate>
+  <verbtemplate name="pull">вытянуть</verbtemplate>
+  <dynamictemplate name="DefaultPull">"Ты не можешь " + object.article + " вытянуть."</dynamictemplate>
+  <verbtemplate name="push">толкнуть</verbtemplate>
+  <dynamictemplate name="DefaultPush">"Ты не можешь " + object.article + " толкнуть."</dynamictemplate>
+  <verbtemplate name="read">прочитать</verbtemplate>
+  <dynamictemplate name="DefaultRead">"Ты не можешь " + object.article + " прочитать."</dynamictemplate>
+  <verbtemplate name="search">искать</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"Ты не можешь " + object.article + " искать."</dynamictemplate>
+  <verbtemplate name="show">показать</verbtemplate>
+  <dynamictemplate name="DefaultShow">"Ты не можешь " + object.article + " показать."</dynamictemplate>
+  <verbtemplate name="sit">сесть на</verbtemplate>
+  <verbtemplate name="sit">приземлиться на</verbtemplate>
+  <verbtemplate name="sit">присесть</verbtemplate>
+  <verbtemplate name="sit">присесть на</verbtemplate>
+  <dynamictemplate name="DefaultSit">"Ты не можешь на н" + object.article + " сесть."</dynamictemplate>
+  <verbtemplate name="smell">понюхать</verbtemplate>
+  <verbtemplate name="smell">нюхать</verbtemplate>
+  <dynamictemplate name="DefaultSmell">"Ты нюхаешь " + object.article + ", но не то чтобы " + object.gender + " издавал" +object.suffix + " какой-то запах."</dynamictemplate>
+  <verbtemplate name="taste">попробовать</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"Ты не можешь " + object.article + " попробовать."</dynamictemplate>
+  <verbtemplate name="throw">бросить</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"Ты не можешь " + object.article + " бросить."</dynamictemplate>
+  <verbtemplate name="tie">связать</verbtemplate>
+  <dynamictemplate name="DefaultTie">"Ты не можешь " + object.article + " связать."</dynamictemplate>
+  <verbtemplate name="touch">потрогать</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"Ты не можешь " + object.article + " потрогать."</dynamictemplate>
+  <verbtemplate name="turnon">включить</verbtemplate>
+  <verbtemplate name="turnon">включить #object# </verbtemplate>
+  <verbtemplate name="turnon">зажечь</verbtemplate>
+  <verbtemplate name="turnon">зажечь #object# </verbtemplate>
+  <dynamictemplate name="DefaultTurnOn">"Ты не можешь " + object.article + " включить."</dynamictemplate>
+  <verbtemplate name="turnoff">выключить</verbtemplate>
+  <verbtemplate name="turnoff">выключить #object#</verbtemplate>
+  <verbtemplate name="turnoff">заглушить</verbtemplate>
+  <verbtemplate name="turnoff">погасить</verbtemplate>
+  <dynamictemplate name="DefaultTurnOff">"Ты не можешь " + object.article + " выключить."</dynamictemplate>
+  <verbtemplate name="turn">повернуть</verbtemplate>
+  <verbtemplate name="turn">перевернуть</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"Ты не можешь " + object.article + "повернуть."</dynamictemplate>
+  <verbtemplate name="unlock">отпереть</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"Ты не можешь " + object.article + " отпереть."</dynamictemplate>
+  <verbtemplate name="untie">развязать</verbtemplate>
+  <dynamictemplate name="DefaultUntie">"Ты не можешь " + object.article + " развязать."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^использовать (?<object1>.*) (с|на) (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"Так нельзя " + object2.article + " использовать."</dynamictemplate>
+  <verbtemplate name="wear">одеть</verbtemplate>
+  <dynamictemplate name="DefaultWear">"Ты не можешь " + object.article + " одеть."</dynamictemplate>
+  <template templatetype="command" name="listen">^послушать$</template>
+  <template name="DefaultListen">Ничего такого не слышно.</template>
+  <template templatetype="command" name="jump">^прыгнуть$</template>
+  <template name="DefaultJump">Ты прыгаешь, но ничего такого не происходит.</template>
+  <template templatetype="command" name="sitdown">^сесть$|^присесть$</template>
+  <template name="DefaultSitDown">У тебя сейчас нет времени расслабляться.</template>
+  <template templatetype="command" name="liedown">^лечь$|^прилечь$</template>
+  <template name="DefaultLieDown">У тебя сейчас нет времени расслабляться.</template>
+  <template templatetype="command" name="sleep">^спать$|^отдохнуть$</template>
+  <template name="DefaultSleep">У тебя сейчас нет времени расслабляться.</template>
+  <template templatetype="command" name="wait">^подождать$|^ждать$</template>
+  <template name="DefaultWait">Время проходит.</template>
+  <template templatetype="command" name="xyzzy">^фыва$</template>
+  <template name="DefaultXyzzy">Как ни странно, ничего не происходит.</template>
+  <template templatetype="command" name="help">^помощь$|^\?$</template>
+  <template templatetype="command" name="save">^сохранить$</template>
+
+  <template name="DefaultHelp"><![CDATA[<u>Скорая Помощь</u><br/><br/>
+<b>- Предметы:</b>  Попробуй ПОСМОТРЕТЬ НА..., ПОГОВОРИТЬ С..., ВЗЯТЬ..., ПОЛОЖИТЬ..., ОТКРЫТЬ..., ДАТЬ... К..., ИСПОЛЬЗОВАТЬ... НА/С...<br/>
+<b>- Иивентарь:</b>  Посмотри какие предметы у тебя с собой, набирая И, ИНВ или ИНВЕНТАРЬ.<br/>
+<b>- Двигаться вокруг:</b>  Нажми кнопки компаса или напечатай ИДТИ НА СЕВЕР, ЮГ, ЮВ, ВЗ, ПОЙТИ К...<br/>
+<b>- Горячие клавиши:</b>  Нажми стрелки вниз и вверх, чтобы прокрутить команды, которые уже были набраны. Попробуй Х.... как вызов команды ПОСМОТРЕТЬ НА...]]></template>
+
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+   <template name="LanguageSpecificObjectTypes">skl11=I склонение (м,-я);skl12=I склонение (м,-а);skl13=I склонение (ж,-я);skl14=I склонение (ж,-а);skl21=II склонение (муж, -0);skl22=II склонение (муж,-ь);skl23=II склонение (ср,-о);skl24=II склонение (ср, -е); skl31=III склонение;</template>
+
+<!-- For each declination type endings of each of 6 (Nominative, Genitive, Dative, Accusative, Creative, Preposition) declination, suffix, article and gender are deifned-->
+<!--Первое склонение - существительные мужского с окончанием -я -->
+  <type name="skl11">
+  <gender>он</gender>
+  <article>его</article>
+  <suffix></suffix>
+  <sNom>я</sNom><pNom>и</pNom>
+  <sGen>и</sGen><pGen></pGen>
+  <sDat>е</sDat><pDat>ям</pDat>
+  <sAcc>ю</sAcc><pAcc>и</pAcc>
+  <sCre>ёй</sCre><pCre>ями</pCre>
+  <sPre>е</sPre><pPre>ях</pPre>
+  </type>
+ <!--Первое склонение - существительные мужского рода с окончанием -а --> 
+  <type name="skl12">
+  <gender>он</gender>
+  <article>его</article>
+  <suffix></suffix>
+  <sNom>а</sNom><pNom>ы</pNom>
+  <sGen>ы</sGen><pGen></pGen>
+  <sDat>е</sDat><pDat>ам</pDat>
+  <sAcc>у</sAcc><pAcc>ы</pAcc>
+  <sCre>ой</sCre><pCre>ами</pCre>
+  <sPre>е</sPre><pPre>ах</pPre>
+  </type>
+<!--Первое склонение - существительные женского рода с окончанием -я --> 
+  <type name="skl13">
+  <gender>она</gender>
+  <article>ее</article>
+  <suffix>а</suffix>
+  <sNom>я</sNom><pNom>и</pNom>
+  <sGen>и</sGen><pGen></pGen>
+  <sDat>е</sDat><pDat>ям</pDat>
+  <sAcc>ю</sAcc><pAcc>и</pAcc>
+  <sCre>ёй</sCre><pCre>ями</pCre>
+  <sPre>е</sPre><pPre>ях</pPre>
+  </type>
+<!--Первое склонение - существительные женского рода с окончанием -а --> 
+  <type name="skl14">
+  <gender>она</gender>
+  <article>ее</article>
+  <suffix>а</suffix>
+  <sNom>а</sNom><pNom>ы</pNom>
+  <sGen>ы</sGen><pGen></pGen>
+  <sDat>е</sDat><pDat>ам</pDat>
+  <sAcc>у</sAcc><pAcc>ы</pAcc>
+  <sCre>ой</sCre><pCre>ами</pCre>
+  <sPre>е</sPre><pPre>ах</pPre>
+  </type>
+<!--Второе склонение - существительные мужского рода с нулевым окончанием--> 
+<type name="skl21">
+  <gender>он</gender>
+  <article>его</article>
+  <suffix></suffix>
+  <sNom></sNom><pNom>и</pNom>
+  <sGen>а</sGen><pGen>ов</pGen>
+  <sDat>у</sDat><pDat>ам</pDat>
+  <sAcc></sAcc><pAcc>и</pAcc>
+  <sCre>ом</sCre><pCre>ами</pCre>
+  <sPre>е</sPre><pPre>х</pPre>
+  </type>
+<!--Второе склонение - существительные мужского рода с окончанием на мягкий знак--> 
+<type name="skl22">
+  <gender>он</gender>
+  <article>его</article>
+  <suffix></suffix>
+  <sNom>ь</sNom><pNom>и</pNom>
+  <sGen>я</sGen><pGen>ей</pGen>
+  <sDat>ю</sDat><pDat>ям</pDat>
+  <sAcc>я</sAcc><pAcc>ей</pAcc>
+  <sCre>ем</sCre><pCre>ями</pCre>
+  <sPre>е</sPre><pPre>ях</pPre>
+  </type>
+<!--Второе склонение - существительные среднего рода с окончанием -о--> 
+<type name="skl23">
+  <gender>оно</gender>
+  <article>его</article>
+  <suffix>о</suffix>
+  <sNom>о</sNom><pNom>а</pNom>
+  <sGen>а</sGen><pGen></pGen>
+  <sDat>у</sDat><pDat>ам</pDat>
+  <sAcc>о</sAcc><pAcc>а</pAcc>
+  <sCre>ом</sCre><pCre>ами</pCre>
+  <sPre>е</sPre><pPre>ах</pPre>
+  </type>
+<!--Второе склонение - существительные среднего рода с окончанием -е--> 
+<type name="skl24">
+  <gender>оно</gender>
+  <article>его</article>
+  <suffix>о</suffix>
+  <sNom>е</sNom><pNom>я</pNom>
+  <sGen>я</sGen><pGen>ей</pGen>
+  <sDat>ю</sDat><pDat>ям</pDat>
+  <sAcc>е</sAcc><pAcc>я</pAcc>
+  <sCre>ем</sCre><pCre>ями</pCre>
+  <sPre>е</sPre><pPre>ях</pPre>
+  </type>
+<!--Второе склонение - существительные женского рода, оканчивающиеся на ь--> 
+<type name="skl31">
+  <gender>она</gender>
+  <article>ее</article>
+  <suffix>а</suffix>
+  <sNom>ь</sNom><pNom>и</pNom>
+  <sGen>и</sGen><pGen>ей</pGen>
+  <sDat>и</sDat><pDat>ям</pDat>
+  <sAcc></sAcc><pAcc>и</pAcc>
+  <sCre>ю</sCre><pCre>ями</pCre>
+  <sPre>и</sPre><pPre>ях</pPre>
+  </type>
+
+<!--
+<type name="skl00">
+  <gender></gender>
+  <article></article>
+  <suffix></suffix>
+  <sNom></sNom><pNom></pNom>
+  <sGen></sGen><pGen></pGen>
+  <sDat></sDat><pDat></pDat>
+  <sAcc></sAcc><pAcc></pAcc>
+  <sCre></sCre><pCre></pCre>
+  <sPre></sPre><pPre></pPre>
+  </type>
+-->
+
+  <template name="EditorVerbDefaultExpression">"Ты не можешь " + object.article + " #verb# ."</template>
+  
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
+      return ("")
+    }
+    else {
+      return ("")
+    }
+  </function>
+
+  <function name="WriteVerb" type="string" parameters="obj, verb">
+    return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
+  </function>
+
+  <function name="Conjugate" type="string" parameters="obj, verb">
+    gender = obj.gender
+    if (gender = "he" or gender = "she") {
+      gender = "it"
+    }
+    switch (verb) {
+      case ("be") {
+        switch (gender) {
+          case ("я") {
+            return ("")
+          }
+          case ("ты") {
+            return ("")
+          }
+          case ("оно") {
+            return ("")
+          }
+          case ("мы") {
+            return ("")
+          }
+          case ("они") {
+            return ("")
+          }
+          default {
+            return ("")
+          }
+        }
+      }
+      case ("do") {
+        switch (gender) {
+          case ("i") {
+            return ("do")
+          }
+          case ("you") {
+            return ("do")
+          }
+          case ("it") {
+            return ("does")
+          }
+          case ("we") {
+            return ("do")
+          }
+          case ("they") {
+            return ("do")
+          }
+          default {
+            return ("do")
+          }       
+        }
+      }
+      default {
+        if (gender = "it") {
+          return (verb + "s")
+        }
+        else {
+          return (verb)
+        }
+      }
+    }
+  </function>
+<!-- GetSkl function return noun ending depending on the most common type of declination-->
+  <function name="GetSkl" type="string" parameters="obj,dec">
+          if ( DoesInherit (obj, "skl11") or DoesInherit (obj, "skl12") or DoesInherit (obj, "skl13") or DoesInherit (obj, "skl14") or DoesInherit (obj, "skl21") or DoesInherit (obj, "skl22") or DoesInherit (obj, "skl23") or DoesInherit (obj, "skl24") or DoesInherit (obj, "skl31")) {
+            switch (dec) {
+              case("Nom") {
+              return (obj.sNom)
+              }
+              case("Gen") {
+              return (obj.sGen)
+              }
+              case("Dat") {
+              return (obj.sDat)
+              }
+              case("Acc") {
+              return (obj.sAcc)
+              }
+              case("Cre") {
+              return (obj.sCre)
+              }
+              case("Pre") {
+              return (obj.sPre)
+              }
+            }
+          <!-- plural ? -->  
+          } else {
+             return ("")
+          }
+  </function> 
+
+  <function name="GetSuffix" type="string" parameters="obj">
+          if ( DoesInherit (obj, "male") ) {
+             return (" ")
+          } else if ( DoesInherit (obj, "female") ) {
+             return ("а")
+          } else if ( DoesInherit (obj, "maleplural") ) {
+             return ("ы")
+          } else if ( DoesInherit (obj, "femaleplural") ) {
+             return ("ы")
+          } else {
+             return ("")
+          }
+  </function>   
+
+</library>
