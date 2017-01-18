@@ -712,7 +712,9 @@
     
     if (not handled) {
       if (HasScript(object, defaultscript)) {
-        do (object, defaultscript)
+        d = NewDictionary()
+        dictionary add(d, "text", text)
+        do (object, defaultscript, d)
       } else {
         msg (DynamicTemplate(defaulttemplate, object))
       }
