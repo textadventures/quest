@@ -30,6 +30,17 @@
     <showpanes/>
     <showcommandbar/>
     <showlocation/>
+    
+    <statusandcompassattop type="boolean">false</statusandcompassattop>
+    <turnoffcompass type="boolean">false</turnoffcompass>
+    <turnoffinventory type="boolean">false</turnoffinventory>
+    <turnoffpeopleandobjects type="boolean">false</turnoffpeopleandobjects>
+    <borderlesscursor />
+    <bordercolour>yellow</bordercolour>
+    <colourblend type="boolean">false</colourblend>
+    <commandpane type="boolean">false</commandpane>
+    <panestheme>Classic</panestheme>
+    
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
     <setcustompadding type="boolean">false</setcustompadding>
@@ -130,6 +141,7 @@
     <drop/>
     <gender>[NeutralGender]</gender>
     <article>[NeutralArticle]</article>
+    <possessive>[NeutralPossessive]</possessive>
     <isopen type="boolean">false</isopen>
     <open type="boolean">false</open>
     <close type="boolean">false</close>
@@ -200,6 +212,7 @@
     <pov_look>[DefaultSelfDescription]</pov_look>
     <pov_gender>[SelfGender]</pov_gender>
     <pov_article>[SelfArticle]</pov_article>
+    <pov_possessive>[SelfPossessive]</pov_possessive>
     <feature_usegive type="boolean">false</feature_usegive>
     <feature_container type="boolean">false</feature_container>
     <feature_switchable type="boolean">false</feature_switchable>
@@ -326,6 +339,7 @@
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
+    <possessive>[MalePossessive]</possessive>
   </type>
   
   <type name="namedmale">
@@ -337,6 +351,7 @@
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
+    <possessive>[FemalePossessive]</possessive>
   </type>
   
   <type name="namedfemale">
@@ -347,18 +362,21 @@
   <type name="plural">
     <gender>[NeutralPluralGender]</gender>
     <article>[NeutralPluralArticle]</article>
+    <possessive>[NeutralPluralPossessive]</possessive>
   </type>
 
   <type name="maleplural">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
+    <possessive>[MalePluralPossessive]</possessive>
   </type>
 
   <type name="femaleplural">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
+    <possessive>[FemalePluralPossessive]</possessive>
   </type>
 
   <type name="openable">

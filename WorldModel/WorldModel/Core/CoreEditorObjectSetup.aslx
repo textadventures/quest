@@ -85,6 +85,14 @@
     </control>
 
     <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <caption>[EditorObjectSetupPossessive]</caption>
+      <controltype>textbox</controltype>
+      <attribute>possessive</attribute>
+      <advanced/>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>[EditorObjectSetupDescription]</caption>
       <mustnotinherit>editor_room</mustnotinherit>

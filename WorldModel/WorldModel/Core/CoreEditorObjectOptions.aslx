@@ -168,6 +168,14 @@
 
     <control>
       <mustinherit>editor_player</mustinherit>
+      <caption>[EditorObjectOptionsPossessive]</caption>
+      <controltype>textbox</controltype>
+      <attribute>pov_possessive</attribute>
+      <advanced/>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
       <caption>[EditorObjectOptionsOthernames]</caption>
       <controltype>list</controltype>
       <attribute>pov_alt</attribute>
