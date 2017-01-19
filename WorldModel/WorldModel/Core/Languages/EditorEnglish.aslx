@@ -118,6 +118,21 @@
   <template name="EditorGameHeightpixels">Height (pixels)</template>
   <template name="EditorGameLayout">Layout</template>
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
+  <template name="EditorGameTurnOffCompass">Turn off compass</template>
+  <template name="EditorGameTurnOffInventory">Turn off inventory</template>
+  <template name="EditorGameTurnOffPeopleAndObjects">Turn off people and objects</template>
+  <template name="EditorGameAltPaneOrder">Alternative pane order (status and compass at top)</template>
+  <template name="EditorGameShowCommandPane">Show a command pane</template>
+  <template name="EditorGamePanesTheme">Colour scheme for panes</template>
+  <template name="EditorGameLocationColour">Location bar colour</template>
+  <template name="EditorGameLocationTextColour">Location text colour</template>
+  <template name="EditorGameBorderlessCommand">Use a cursor instead of a box for commands?</template>
+  <template name="EditorGameCommandCursor">Cursor for commands</template>
+  <template name="EditorGameColourBlend">Colour blend for background?</template>
+  <template name="EditorGameColourBlendTop">Colour at top</template>
+  <template name="EditorGameColourBlendBottom">Colour at bottom</template>
+  <template name="EditorGameMarginColour">Margin colour</template>
+  <template name="EditorGameBorderColour">Border colour</template>
   <template name="EditorGameShowcommand">Show command bar</template>
   <template name="EditorGameShowlocation">Show location bar</template>
   <template name="EditorGameShowborder">Show border</template>
@@ -296,6 +311,7 @@
   <template name="EditorObjectOptionsAlias">Alias</template>
   <template name="EditorObjectOptionsGender">Gender</template>
   <template name="EditorObjectOptionsArticle">Article</template>
+  <template name="EditorObjectOptionsPossessive">Possessive</template>
   <template name="EditorObjectOptionsOthernames">Other names</template>
   <template name="EditorObjectRoomRoom">Room</template>
   <template name="EditorObjectRoomRoompicture">Room picture</template>
@@ -321,6 +337,7 @@
   <template name="EditorObjectSetupSuffix">Suffix</template>
   <template name="EditorObjectSetupGender">Gender</template>
   <template name="EditorObjectSetupArticle">Article</template>
+  <template name="EditorObjectSetupPossessive">Possessive</template>
   <template name="EditorObjectSetupDescription">Description</template>
   <template name="EditorObjectSetupInroomdescription">In-room description</template>
   <template name="EditorObjectUseGiveUse/Give">Use/Give</template>

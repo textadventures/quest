@@ -54,8 +54,15 @@
   <template name="NeutralPluralArticle">them</template>
   <template name="MalePluralArticle">them</template>
   <template name="FemalePluralArticle">them</template>
+  <template name="NeutralPossessive">its</template>
+  <template name="MalePossessive">his</template>
+  <template name="FemalePossessive">her</template>
+  <template name="SelfPossessive">your</template>
+  <template name="NeutralPluralPossessive">their</template>
+  <template name="MalePluralPossessive">their</template>
+  <template name="FemalePluralPossessive">their</template>
   <template name="SelfAlias">me</template>
-  <template name="SelfAlt">myself; self</template>
+  <template name="SelfAlt">me; myself; self</template>
   <template name="AllObjects">all; everything</template>
   <template name="ParserIgnorePrefixes">the; a; an</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
