@@ -25,6 +25,7 @@ By now you should be able to create a simple game. Read on in the tutorial to di
 6.  [More things to do with objects](more_things_to_do_with_objects.html)
 7.  [Using containers](using_containers.html)
 8.  [Moving objects during the game](moving_objects_during_the_game.html)
+9.  [Status attributes](status_attributes.html)
 
 Advanced
 --------
@@ -33,22 +34,23 @@ Now you're able to create a pretty sophisticated game, you probably don't *need*
 
 1.  [Changing the player object](changing_the_player_object.html)
 2.  [Using timers and turn scripts](using_timers_and_turn_scripts.html)
-3.  [Changing templates](changing_templates.html)
-4.  [Text formatting](text_formatting.html)
-5.  [Using lockable exits](using_lockable_exits.html)
-6.  [Using lockable containers](using_lockable_containers.html)
-7.  [Using walkthroughs](using_walkthroughs.html)
-8.  [Multiple choices - using a "switch" script](multiple_choices___using_a_switch_script.html)
+3.  [Using lockable containers](using_lockable_containers.html)
+4.  [Using lockable exits](using_lockable_exits.html)
+5.  [Multiple choices - using a "switch" script](multiple_choices___using_a_switch_script.html)
+6.  [Changing the user experience](changing_the_user_experience.html)
+7.  [Multimedia](multimedia.html)
+8.  [Using walkthroughs](using_walkthroughs.html)
 9.  [Debugging your game](debugging_your_game.html)
-10. [Releasing your game](releasing_your_game.html)
+10.  [Releasing your game](releasing_your_game.html)
 
 Elite
 -----
 
 Most people probably won't need these features, unless you're creating something very special or very big!
 
-1.  [Creating functions which return a value](creating_functions_which_return_a_value.html)
-2.  [Using inherited types](using_inherited_types.html)
-3.  [Using libraries](using_libraries.html)
-4.  [Using Javascript](using_javascript.html)
+1.  [Creating functions that return a value](creating_functions_which_return_a_value.html)
+2.  [Changing templates](changing_templates.html)
+3.  [Using inherited types](using_inherited_types.html)
+4.  [Using libraries](using_libraries.html)
+5.  [Using Javascript](using_javascript.html)
 

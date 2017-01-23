@@ -8,12 +8,12 @@ As your game unfolds and the player interacts with your world, you may want to b
 Creating a Hidden Object
 ------------------------
 
-First, let's create the "bee" object. We don't want this object to appear anywhere when the game starts, so create it outside of a room - set the parent to "none" when you add the new object. Give the bee a suitable description.
+First, let's create the "bee" object. We don't want this object to appear anywhere when the game starts, so create it outside of a room. If using the desktop version, you can set the parent to "none" when you add the new object, but it may be better to create a special room, perhaps called "nowhere" or "limbo" or "offstage", and keep all your hidden objects there. Give the bee a suitable description.
 
 Bringing the Object into Play
 -----------------------------
 
-Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it's not a container, as you can't put things in a window. We can't add "open" as a verb though, because the "open" command is handled by Quest's container logic. The solution is to go to the Container tab and select "Openable/Closable" from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn't do anything else.
+Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it's not a container, as you can't put things in a window. We can't add "open" as a verb though, because the "open" command is handled by Quest's container logic. The solution is to go to the Container tab (via the Features tab, of course) and select "Openable/Closable" from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn't do anything else.
 
 Choose "Openable/Closable", and now add script commands to the "Script to run when opening object":
 
@@ -46,6 +46,6 @@ Removing an Object during Play
 
 As well as bringing an object into play, you can also remove an object from play using the "Remove object" command from the Objects category. This will set the object's parent to "null", so you can always bring it back into play again later. To destroy an object entirely, use the "Destroy an object" command - the object will be completely removed from the game. It is more efficient to simply remove the object from play though - it is less work for Quest to simply unset the object's parent than it is to remove *all* the object's attributes and destroy it - so it is recommended that you use "remove" in preference to "destroy".
 
-As an exercise, add an "apple" object, with a sensible description. Add an "eat" verb to the object which will print a message saying "You eat the apple. Tasty." and then remove the apple from play.
+As an exercise, add an "apple" object, with a sensible description. Add an "eat" verb to the object which will print a message saying "You eat the apple. Tasty." and then remove the apple from play (though it is worth noting that items can be set to be edible via the Edible tab).
 
-[Next: Changing the player object](changing_the_player_object.html)
+[Next: Status attributes](status_attributes.html)

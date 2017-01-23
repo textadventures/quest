@@ -21,19 +21,21 @@ Exits connect objects (usually rooms) together. The exit has a parent, so our si
 Commands and Verbs  
 Commands handle player input. They can exist globally, in which case the command will work everywhere. Commands can also exist inside a particular room, in which case that command will only work in that room. Commands have a pattern, such as "look at \#object\#". When the player types something, it is compared to all the available command patterns. The best match is then used to process what the player typed in. So if the player typed "look at cat", the "look at" command is matched, and it performs whatever action is necessary to print the description of the cat.
 
+Verbs are a shortcut for commands. Many commands follow the same pattern, and it is easier to have the verb mechanism handle that for us, so we can concentrate on what makes ours special.
+
 Game  
 The game itself is a special kind of object - it contains attributes such as the name of the game, options such as how to print room descriptions, and display settings.
 
 Attributes
 ----------
 
-All element data is stored in **attributes**. An element can have an unlimited number of attributes. Attributes can store things such as the object description, alternative object names, the behaviour when an object is taken, which objects can be used on the object, and much more. The attribute can be of many types:
+All element data (that is, all information about objects, commands, etc.) are stored in **attributes**. An element can have an unlimited number of attributes. Attributes can store things such as the object description, alternative object names, the behaviour when an object is taken, which objects can be used on the object, and much more. The attribute can be of many types:
 
 String  
 A sequence of letters/numbers, for example "The cat is sitting quietly on the table". Obviously, strings are very common in text adventure games!
 
 Integer  
-A whole number, such as 1, 2, 3, 42 or 1 billion.
+A whole number, such as 1, 2, 3, 42 or -1 billion.
 
 Script  
 One or more script commands, which are instructions for Quest to carry out. Everything that happens in a game is controlled by script commands. Script commands can print messages, move objects around, show videos, start timers, change attributes, and much more.
@@ -43,10 +45,5 @@ Lists of strings or objects
 
 Dictionary  
 A look-up table of strings or objects
-
-Libraries
----------
-
-Libraries are used to include common functionality in a game. There is a standard "Core" library that is included by default with all Quest games. This is made up of the elements above - commands, scripts and so on - and provides a lot of the standard functionality that players will expect in your game, such as the "look at" command, printing room descriptions, and so on.
 
 [Next: Using scripts](using_scripts.html)

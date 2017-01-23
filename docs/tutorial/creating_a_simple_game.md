@@ -99,7 +99,7 @@ If you play the game at this point, you'll see the player is still trapped in th
 
 ### Adding an exit
 
-To do this, click back to the "lounge" room and go to the Exits tab. Then click the "South" exit:
+To do this, click back to the "lounge" room and go to the Exits tab (this looks a little different in the web version due to the limitations of HTML, but is basically the same). Then click the "South" exit:
 
 ![](Addexit1.png "Addexit1.png")
 
@@ -111,7 +111,7 @@ When you click the "Create" button, actually *two* exits are created - one exit 
 
 It is helpful to think of exits as "one way". Each exit is "in" only one parent room (the "from" room), and points "to" one other room. That is why we have one exit in the lounge, pointing to the kitchen. A separate exit is in the kitchen, pointing to the lounge.
 
-Exits, like every object in Quest, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north". (We could give our exits any alias - it doesn't have to be a compass direction. If we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard".)
+Exits, like every object in Quest, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north" (if using the desktop version, we could give our exits any alias - it doesn't have to be a compass direction; if we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard").
 
 Play the game and verify that the player can go south and north between the lounge and kitchen.
 

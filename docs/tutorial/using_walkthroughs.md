@@ -32,4 +32,4 @@ Creating sub-walkthroughs
 
 Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
 
-[Next: Multiple choices - using a "switch" script](multiple_choices___using_a_switch_script.html)
+[Next: Debugging your game](debugging_your_game.html)

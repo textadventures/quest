@@ -10,7 +10,7 @@ Creating the Fridge
 
 Create a "fridge" object in the kitchen and give it a description like "A big old refrigerator sits in the corner, humming quietly."
 
-Now let's set the fridge up as a container. Click the Container tab. By default, "Not a container" is selected. Change this to "Closed container". The Container options will now appear.
+Now let's set the fridge up as a container. Click the Features tab, tick Container, and then go to the new Container tab. By default, "Not a container" is selected. Change this to "Closed container". The Container options will now appear.
 
 ![](Container.png "Container.png")
 

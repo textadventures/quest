@@ -9,9 +9,9 @@ In this example, we'll use a script to customise the "watch" verb we added to th
 
 Select the TV object and go to the Verbs tab. If you've been following all the steps in this tutorial, you should already have a "watch" verb which prints a message. If you've already got a "watch" verb, change it from "Print a message" to "Run a script" (or add a new "watch" verb if you don't already have one).
 
-Click the "Add new script" header and you'll see a list of all the commands you can add to a script. The commands are in broad categories - Output, Objects, Variables and so on - but you can also find a command by typing in the Search box, if you don't know the category.
+Click the "Add new script" header and you'll see a list of all the commands you can add to a script. The commands are in broad categories - Output, Objects, Variables and so on - but you can also find a command in the desktop version by typing in the Search box, if you don't know the category.
 
-Go to the Scripts category and add the "If" command (you can click the "Add" button, or just double-click the command).
+Go to the Scripts category and add the "If" command. You can click the "Add" button, or just double-click the command in the desktop version. In the web version, click the "Okay" button. The most used scripts have their own buttons across the top of the dialogue, so you can also click that.
 
 ![](Addif.png "Addif.png")
 
@@ -36,6 +36,8 @@ We're not done yet - what if the TV is *not* switched on? Fortunately we don't n
 Your screen should now look like this:
 
 ![](Addif4.png "Addif4.png")
+
+Note that both the "Then" part and the "Else" part are indented; this lets you know exactly what scripts are included - you might have many scripts there (and even other "If" scripts). 
 
 Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type "watch tv".
 

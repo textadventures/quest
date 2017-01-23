@@ -87,9 +87,9 @@ The "Object can be dropped" box is ticked by default, so the player can take and
 Switching the TV on and off
 ---------------------------
 
-Let's make it possible to turn the TV off. To do this, select the TV and go to the Options tab. You'll see a dropdown labelled "Switchable" - select "Can be switched on/off" and various options will appear.
+Let's make it possible to turn the TV off. To do this, select the TV and go to the Features tab. Tick the "Switchable" option, and a new tab wil appear - also called "Switchable". You'll see a dropdown labelled "Switchable" - select "Can be switched on/off" and various options will appear.
 
-The options should be fairly self-explanatory - you can choose whether the object is switched on when the game begins, and the text to print when switching on/off. Finally, you can choose some extra text to add to the object description. This lets you have show text depending on whether the object is switched on or off.
+The options should be fairly self-explanatory - you can choose whether the object is switched on when the game begins, and the text to print when switching on/off. Finally, you can choose some extra text to add to the object description. This lets you have the description change depending on whether the object is switched on or off.
 
 Enter some sensible text for these, for example as shown below.
 

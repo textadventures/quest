@@ -33,4 +33,4 @@ This is much easier to read, edit and add to than if we had used lots of "if" an
 
 Launch the game and dial a few numbers to check that you see the correct response.
 
-[Next: Debugging your game](debugging_your_game.html)
+[Next: Changing the user experience](changing_the_user_experience.html)

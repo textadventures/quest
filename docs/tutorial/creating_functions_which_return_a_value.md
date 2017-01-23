@@ -1,11 +1,11 @@
 ---
 layout: index
-title: Creating functions which return a value
+title: Creating functions that return a value
 ---
 
 We've already covered [Using Functions](more_things_to_do_with_objects.html#Using_Functions) earlier in this tutorial, where we created a function so that we could call the same script from multiple places.
 
-We can also create functions which return a value. Previously, we called our function from a script command, but when a function returns a value, we can call it from an expression. The function will run, and the **return value** will be used in the expression.
+We can also create functions that return a value. Previously, we called our function from a script command, but when a function returns a value, we can call it from an expression. The function will run, and the **return value** will be used in the expression.
 
 Hopefully an example will make things clear. Let's make a simple function that will add two numbers together.
 
@@ -34,4 +34,4 @@ Run the game and type "test". You should get the correct output:
      > test
      1 + 2 = 3
 
-[Next: Using inherited types](using_inherited_types.html)
+[Next: Changing templates](changing_templates.html)

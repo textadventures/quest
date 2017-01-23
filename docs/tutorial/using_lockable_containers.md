@@ -45,4 +45,4 @@ It might be a good idea to tick the "List children when object is looked at or o
      You open it.
      It contains a defibrillator.
 
-[Next: Using walkthroughs](using_walkthroughs.html)
+[Next: Using lockable exits](using_lockable_exits.html)     

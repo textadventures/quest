@@ -98,7 +98,7 @@ Launch the game and verify that you now get a sensible response for "weigh bob" 
 Additional example
 ------------------
 
-Quest can handle text and objects in the same command. Here the say command is extended to allow the plaer to specify who she is talking to.
+Quest can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
 
 ![](Say_to_troll.png "Say_to_troll.png")
 

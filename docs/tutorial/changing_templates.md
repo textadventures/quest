@@ -37,4 +37,4 @@ These Dynamic Templates often take advantage of some functions which are defined
 
 This means it will correctly write "It is already open", "They are already open" etc.
 
-[Next: Text formatting](text_formatting.html)
+[Next: Using inherited types](using_inherited_types.html)

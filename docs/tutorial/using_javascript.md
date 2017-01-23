@@ -4,70 +4,67 @@ title: Using Javascript
 ---
 
 <div class="alert alert-info">
-Note: The Javascript editor is currently only available in the Windows desktop version of Quest.
+Note: As the `InitUserInterface` can only be overriden in the desktop version, using JavaScript in the web version will be problematic..
 
 </div>
-<div class="alert alert-info">
-Note: This page is out of date - it contains references to an example source code file which is not part of the current code.
 
-</div>
 Introduction
 ------------
 
-Quest's interface is customisable with the power of HTML and Javascript. If you don't like Quest's standard layout, you can create your own - create the interface using HTML, and use Javascript as the bridge between your interface and your game.
+Quest's interface is customisable with the power of HTML/CSS and Javascript. If you don't like Quest's standard layout, you can modify it how you like with HTML and CSS, and use Javascript as the bridge between your interface and your game.
 
-For an example, look at [the latest code on CodePlex](http://quest.codeplex.com/SourceControl/BrowseLatest). Navigate to WebPlayer/Examples/twohalves.
+Quest has a special object called "JS" (for JavaScript), and you can use this to send JavaScript code to the interface. There are several built-in methods, such as:
+```
+  JS.hideBorder()
+  JS.showBorder()
+  JS.addText("Here is some text")
+```
 
-The current versions at the time of writing this article are:
+### Using JavaScript, CSS and JQuery
 
--   [twohalves.aslx](http://quest.codeplex.com/SourceControl/changeset/view/2ac3e5c8eff3#WebPlayer%2fExamples%2ftwohalves%2ftwohalves.aslx) - game file
--   [twohalves.htm](http://quest.codeplex.com/SourceControl/changeset/view/2ac3e5c8eff3#WebPlayer%2fExamples%2ftwohalves%2ftwohalves.htm) - HTML interface
--   [twohalves.js](http://quest.codeplex.com/SourceControl/changeset/view/2ac3e5c8eff3#WebPlayer%2fExamples%2ftwohalves%2ftwohalves.js) - Javascript bridging the ASLX and HTML.
+When you have exhausted those possibilities you are delving into the murky would of CSS and JQuery (which is an extension of JavaScript, and is already in your game), via the eval method of JS. To understand how that fits together, we will look at each technology in turn.
 
-HTML
-----
 
-To embed the HTML, the [insert](../scripts/insert.html) script command is used in the game's start script.
+#### Using CSS
 
-The HTML file is just a snippet - it should not include surrounding
+Cascading style sheets (CSS) is the primary way for web pages to define the style, as opposed to the content; what font to use, colours, etc. An example might looks like this:
+```
+#gameBorder {
+  background-color: #800080;
+}
+```
 
-<html>
-tags, as the file will be inserted into the existing HTML output. You can define CSS styling in a \<style\> tag.
+The first line determines what is controlled - in this case an element with the ID gameBorder (the # indicates ID rather than a class or element type). The second line defines the settings. There can be several lines, before we get to the close brace (this is the conventional way to layout CSS). For the second line, there are two parts, the name, in this case "background-color", and the value, "#800080" (which is a dark magenta).
 
-Javascript
-----------
+In summary, then, this CSS code will set the background colour of something with the ID "gameBorder" to be dark magenta.
 
-All Javascript references must be included using a [javascript element](../elements/javascript.html). You can add these in the Editor by going to "Javascript" under the "Advanced" section in the tree. The Editor features a built-in file editor so you can edit your .js file directly.
 
-Turning off standard interface elements
----------------------------------------
+#### Using JQuery
 
-If you're using a custom HTML/JS interface, you may want to get rid of some or all of Quest's standard interface elements. You can turn off the panes on the right of the screen by going to "game" in the tree, then on the Display tab turn off the "Show panes" option.
+Static web pages use CSS like that, but if you want things to change, you need JavaScript, and JQuery is a quick way to access an element in JavaScript. To do the above in JavaScript/JQuery, you would do this:
+```
+  $('#gameBorder').css('background-color', '#800080');
+```
+Notice that all the same information is there, just arranged differently, according to the syntax of JavaScript/JQuery. The `$` at the start is a shortcut to a special JQuery function that will get our HTML, and so `$('#gameBorder')` will grab the thing with the ID "gameBorder" (again, the # indicates this is an ID). Once we have that we call a method (function) called "css", and send it two parameters, the thing we want to change and the new value.
 
-If you want to go even further, you can turn off the Location bar at the top of the screen, and even the input textbox at the bottom of the screen. See twohalves.aslx for an example - all you need to do is call the [request](../scripts/request.html) command in your start script to turn these elements off.
+#### Using JQuery in Quest
 
-Sending messages from the game to Javascript
---------------------------------------------
+To do it is Quest, you have to send that as a string to the JS.eval function:
+```
+  JS.eval("$('#gameBorder').css('background-color', '#800080');")
+```
+Once you have that template, you can change a shed load of setting, you just need to know what each bit (like "gameBorder") is called, what the CSS property (like "background-color") is called and what value (like "#800080") is allowed. 
 
-So, we have our interface set up - now we just need to get the game to talk to our Javascript. In twohalves.aslx, we have a special Print function that takes two parameters - the first parameter is either 1 or 2, to specify which half of the screen to print on. The second parameter is the text to print.
-
-This works by calling a SetSide function, also defined in the ASLX file. This function is where we call the Javascript in our .js file, and we do this using the [request](../scripts/request.html) script command:
-
-     request (RunScript, "setCurrentSide; " + side)
-
-This is how we can call Javascript functions directly from our Quest game. In this case we calling the setCurrentSide function defined in twohalves.js, and passing it one parameter, the value of our "side" variable.
-
-(Internally in twohalves.js, we override the addText function. The default addText function is defined in playercore.js, and is called by Quest to print text to the screen, so by overriding it, we gain full control over Quest's output).
 
 Sending messages from Javascript to the game
 --------------------------------------------
 
-What about in the other direction? The twohalves.aslx example not only overrides Quest's output, but it also handles input itself.
+What about in the other direction? How do we get something from the interface, to your game - for example, when the player clicks on a special button.
 
-To do this, the textboxes it defines in the HTML call an inputKeydown function when a button is pressed. When the user presses Enter, this function sends a message to Quest via this line of Javascript:
+To do this, the button must have an attribute, "onclick", with some Javascript code, using the special function `ASLEvent`:
 
-     ASLEvent("ProcessInput", id + ";" + text);
+     ASLEvent("ProcessButtonClick", id);
 
-This is Javascript calling a ProcessInput function which is defined in twohalves.aslx. It passes two parameters - an id of 1 or 2 to indicate which of the two textboxes was used, and the text entered.
+This is Javascript calling a `ProcessButtonClick` function which should be defined in the Quest game. It passes a parameter - the id of the button clicked - to indicate which button the player clicked.
 
-In the twohalves.aslx file, this function makes a note of which side was used, and then calls Core.aslx's [HandleCommand](../functions/corelibrary/handlecommand.html) function to handle the player's command in the usual way.
+For more on how to use JavaScript oin your game, yoyu might like to look [here](https://github.com/ThePix/quest/wiki#ui).
