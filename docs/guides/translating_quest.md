@@ -99,7 +99,7 @@ If your language has more than two genders, you can add more types and add them 
 Releasing your translation
 --------------------------
 
-When you have finished your translation, if you'd like it to be included with Quest so that other game authors can use it, please email it to <alex@axeuk.com> for it to be included in the next release.
+When you have finished your translation, if you'd like it to be included with Quest so that other game authors can use it, please [create a new issue on GitHub](https://github.com/textadventures/quest/issues) and attach the file for it to be included in the next release.
 
 Keeping the translation up to date
 ----------------------------------
