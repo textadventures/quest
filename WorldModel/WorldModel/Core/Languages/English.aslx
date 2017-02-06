@@ -14,6 +14,7 @@
   <template name="SeeListHeader">You can see</template>
   <template name="GoListHeader">You can go</template>
   <template name="And">and</template>
+  <template name="Nothing">nothing</template>
   <template name="Or">or</template>
   <template name="NothingToUndo">Nothing to undo!</template>
   <template name="NotCarryingAnything">You are not carrying anything.</template>
@@ -109,6 +110,29 @@
   <template name="No">No</template>
   <template name="By">by</template>
 
+	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
+	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
+	<dynamictemplate name="CannotWearOver">"You cannot wear that over " + object.display + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + object.display + "."</dynamictemplate>
+	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
+	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing "+object.display+"."</dynamictemplate>
+  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+	<template name="Wear">Wear</template>
+	<template name="WearCommand">put #object# on</template>
+	<verbtemplate name="wear">wear</verbtemplate>
+	<verbtemplate name="wear">put on</verbtemplate>
+	<verbtemplate name="wear">don</verbtemplate>
+	<template name="Remove">Remove</template>
+  <template name="RemoveCommand">take #object# off</template>
+	<verbtemplate name="remove">remove</verbtemplate>
+	<verbtemplate name="remove">take off</verbtemplate>
+	<verbtemplate name="remove">doff</verbtemplate>
+
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
   <template name="CompassNE">northeast</template>
@@ -155,6 +179,7 @@
   <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="look">^look$|^l$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
+  <verbtemplate name="lookat">look</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
   <verbtemplate name="lookat">examine</verbtemplate>
   <verbtemplate name="lookat">exam</verbtemplate>
