@@ -167,7 +167,7 @@ If a room is dark, the game will return a message saying it is too dark to see a
 # Language support
 
 If you have a language file for the game, these templates should be added. 
- 
+``` 
   <template name="NeutralPossessive">its</template>
   <template name="MalePossessive">his</template>
   <template name="FemalePossessive">her</template>
@@ -201,5 +201,5 @@ If you have a language file for the game, these templates should be added.
 	<verbtemplate name="remove">remove</verbtemplate>
 	<verbtemplate name="remove">take off</verbtemplate>
 	<verbtemplate name="remove">doff</verbtemplate>
-
+```
 There are considerably more for the editor.
