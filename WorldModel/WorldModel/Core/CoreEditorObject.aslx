@@ -15,6 +15,7 @@
   <include ref="CoreEditorObjectFeatures.aslx"/>
   <include ref="CoreEditorObjectUseGive.aslx"/>
   <include ref="CoreEditorObjectContainer.aslx"/>
+  <include ref="CoreEditorObjectWearable.aslx"/>
   <include ref="CoreEditorObjectOptions.aslx"/>
   <include ref="CoreEditorObjectAskTell.aslx"/>
   <include ref="CoreEditorObjectAttributes.aslx"/>

@@ -30,6 +30,12 @@
 
     <control>
       <controltype>checkbox</controltype>
+      <caption>[EditorObjectFeaturesWearableobject]</caption>
+      <attribute>feature_wearable</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
       <caption>[EditorObjectFeaturesLightnessand]</caption>
       <attribute>feature_lightdark</attribute>
       <onlydisplayif>game.feature_lightdark</onlydisplayif>

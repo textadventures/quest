@@ -35,11 +35,14 @@
     <turnoffcompass type="boolean">false</turnoffcompass>
     <turnoffinventory type="boolean">false</turnoffinventory>
     <turnoffpeopleandobjects type="boolean">false</turnoffpeopleandobjects>
-    <borderlesscursor />
-    <bordercolour>yellow</bordercolour>
+    <borderlesscursor type="boolean">false</borderlesscursor>
     <colourblend type="boolean">false</colourblend>
     <commandpane type="boolean">false</commandpane>
     <panestheme>Classic</panestheme>
+    <shadowbox type="boolean">false</shadowbox>
+    <classiclocation/>
+    <turnoffsavebutton type="boolean">false</turnoffsavebutton>
+    
     
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>

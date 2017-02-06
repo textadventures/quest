@@ -31,6 +31,12 @@
     </control>
 
     <control>
+      <controltype>objects</controltype>
+      <caption>[EditorObjectRoomDropDestination]</caption>
+      <attribute>dropdestination</attribute>
+    </control>
+
+    <control>
       <controltype>multi</controltype>
       <caption>[EditorObjectRoomDescription]</caption>
       <attribute>description</attribute>

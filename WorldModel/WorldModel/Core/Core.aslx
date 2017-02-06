@@ -26,21 +26,19 @@
   <include ref="CoreCombat.aslx"/>
   <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
+  <include ref="CoreAnnotation.aslx"/>
+  <include ref="CoreWearable.aslx"/>
 
-  <function name="InitInterface">
-    <![CDATA[
+  <function name="InitInterface"><![CDATA[
     if (game.setcustomwidth) {
-      JS.setGameWidth(game.customwidth)
-    }
-    if (not game.showborder) {
-      JS.hideBorder()
+      JS.setGameWidth (game.customwidth)
     }
     if (game.setcustompadding) {
-      JS.setGamePadding(game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+      JS.setGamePadding (game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
     }
     if (game.externalstylesheets <> null) {
       foreach (stylesheet, game.externalstylesheets) {
-        JS.addExternalStylesheet(stylesheet)
+        JS.addExternalStylesheet (stylesheet)
       }
     }
     if (game.setbackgroundopacity) {
@@ -53,30 +51,24 @@
       SetBackgroundImage (game.backgroundimage)
     }
     request (SetCompassDirections, Join(game.compassdirections, ";"))
-    request (SetInterfaceString, "InventoryLabel=[InventoryLabel]")
-    request (SetInterfaceString, "StatusLabel=[StatusLabel]")
-    request (SetInterfaceString, "PlacesObjectsLabel=[PlacesObjectsLabel]")
-    request (SetInterfaceString, "CompassLabel=[CompassLabel]")
-    request (SetInterfaceString, "InButtonLabel=[InButtonLabel]")
-    request (SetInterfaceString, "OutButtonLabel=[OutButtonLabel]")
-    request (SetInterfaceString, "EmptyListLabel=[EmptyListLabel]")
-    request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
-    request (SetInterfaceString, "TypeHereLabel=[TypeHereLabel]")
-    request (SetInterfaceString, "ContinueLabel=[ContinueLabel]")
-    JS.SetMenuBackground(game.menubackground)
-    JS.SetMenuForeground(game.menuforeground)
-    JS.SetMenuHoverBackground(game.menuhoverbackground)
-    JS.SetMenuHoverForeground(game.menuhoverforeground)
-    JS.SetMenuFontName(game.menufont)
-    JS.SetMenuFontSize(game.menufontsize + "pt")
+    request (SetInterfaceString, "InventoryLabel=Inventory")
+    request (SetInterfaceString, "StatusLabel=Status")
+    request (SetInterfaceString, "PlacesObjectsLabel=Places and Objects")
+    request (SetInterfaceString, "CompassLabel=Compass")
+    request (SetInterfaceString, "InButtonLabel=in")
+    request (SetInterfaceString, "OutButtonLabel=out")
+    request (SetInterfaceString, "EmptyListLabel=(empty)")
+    request (SetInterfaceString, "NothingSelectedLabel=(nothing selected)")
+    request (SetInterfaceString, "TypeHereLabel=Type here...")
+    request (SetInterfaceString, "ContinueLabel=Continue...")
+    JS.SetMenuBackground (game.menubackground)
+    JS.SetMenuForeground (game.menuforeground)
+    JS.SetMenuHoverBackground (game.menuhoverbackground)
+    JS.SetMenuHoverForeground (game.menuhoverforeground)
+    JS.SetMenuFontName (game.menufont)
+    JS.SetMenuFontSize (game.menufontsize + "pt")
     if (not game.underlinehyperlinks) {
-      JS.TurnOffHyperlinksUnderline()
-    }
-    if (game.showpanes) {
-      request (Show, "Panes")
-    }
-    else {
-      request (Hide, "Panes")
+      JS.TurnOffHyperlinksUnderline ()
     }
     ResetCommandBarFormat
     if (game.showcommandbar) {
@@ -85,19 +77,12 @@
     else {
       request (Hide, "Command")
     }
-    if (game.showlocation) {
-      request (Show, "Location")
-    }
-    else {
-      request (Hide, "Location")
-    }
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
     }
     if (game.gridmap) {
-      JS.ShowGrid(game.mapsize)
+      JS.ShowGrid (game.mapsize)
       Grid_SetScale (game.mapscale)
-      
       if (game.pov <> null) {
         if (game.pov.parent <> null) {
           Grid_Redraw
@@ -105,9 +90,121 @@
         }
       }
     }
+    // Added by the Pixie
+    // Note that panesVisible in playercore.js must be updated too
+    // Makes the panel under the panes transparent
+    JS.eval ("$('#gamePanes').css('background', 'transparent')")
+    // This line will get the save confirmation to appear in the right font and colour
+    JS.setCss ("body", "color:" + game.defaultforeground + ";font-family:" + game.defaultfont + ";font-size:" + game.defaultfontsize + "pt;")
+    // various new options
+    if (HasString(game, "bordercolour")) {
+      JS.eval ("$('#gameBorder').css('border-left', '1px solid " + game.bordercolour + "')")
+      JS.eval ("$('#gameBorder').css('border-right', '1px solid " + game.bordercolour + "')")
+    }
+    if (not game.classiclocation) {
+      JS.eval ("$('#status').css('background-image', 'none')")
+      if (HasString(game, "customlocationcolour")) {
+        JS.eval ("$('#status').css('background-color', '" + game.customlocationcolour + "')")
+      }
+      else {
+        JS.eval ("$('#status').css('background', 'transparent')")
+      }
+      if (HasString(game, "customlocationtextcolour")) {
+        JS.eval ("$('#status').css('color', '" + game.customlocationtextcolour + "')")
+      }
+      if (HasString(game, "customlocationbordercolour")) {
+        JS.eval ("$('#status').css('border', '1px solid " + game.customlocationbordercolour + "')")
+      }
+      else {
+        JS.eval ("$('#status').css('border', 'none')")
+      }
+    }
+    request (Show, "Location")
+    if (game.showlocation) {
+      JS.eval ("$('#status').css('display', 'block')")
+    }
+    else {
+      JS.eval ("$('#status').css('display', 'none')")
+    }
+    if (HasString(game, "marginscolour")) {
+      JS.eval ("$('body').css('background-color', '" + game.marginscolour + "')")
+    }
+    if (game.turnoffsavebutton) {
+      JS.eval ("$('#controlButtons').css('display', 'none')")
+    }
+    if (game.turnoffcompass) {
+      JS.eval ("$('#compassLabel').css('display', 'none')")
+      JS.eval ("$('#compassAccordion').css('display', 'none')")
+    }
+    if (game.turnoffinventory) {
+      JS.eval ("$('#inventoryLabel').css('display', 'none')")
+      JS.eval ("$('#inventoryAccordion').css('display', 'none')")
+    }
+    if (game.turnoffpeopleandobjects) {
+      JS.eval ("$('#compassLabel').css('display', 'none')")
+      JS.eval ("$('#compassAccordion').css('display', 'none')")
+    }
+    if (game.statusandcompassattop) {
+      JS.eval ("$('#statusVarsLabel').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#statusVarsAccordion').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#compassLabel').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#compassAccordion').insertBefore('#inventoryLabel')")
+    }
+    if (game.showpanes and game.commandpane) {
+      JS.eval ("$('#compassLabel').before('<div id=\"commandPane\" class=\"ui-helper-reset ui-widget ui-state-active ui-accordion-header ui-accordion\" style=\"border-radius: 5px;text-align:center;\"><h3>Commands</h3></div>');")
+    }
+    if (game.colourblend) {
+      JS.colourBlend (game.colourblendtop, game.colourblendbottom)
+    }
+    if (game.borderlesscursor) {
+      if (HasString(game, "commandcursor")) {
+        cursor = game.commandcursor
+      }
+      else {
+        cursor = "&gt;"
+      }
+      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100 px;}</style>")
+      JS.eval ("$('#txtCommandDiv').prepend('<span id=\"txtCommandPrompt\" style=\"color:" + game.defaultforeground + ";\">" + cursor + "</span>')")
+      request (SetInterfaceString, "TypeHereLabel=")
+    }
+    else if (game.shadowbox) {
+      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
+    }
+    if (game.panestheme = "Midnight") {
+      JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")
+    }
+    if (game.panestheme = "Nature") {
+      JS.setPanes ("#A1C935", "#254117", "#306754", "#A1C935", "green")
+    }
+    if (game.panestheme = "Parchment") {
+      JS.setPanes ("#493D26", "#FAEBD7", "#FAEBD7", "#493D26", "#C88141")
+    }
+    if (game.panestheme = "Vanilla") {
+      JS.setPanes ("black", "white")
+    }
+    if (game.panestheme = "Black") {
+      JS.setPanes ("orange", "black", "black", "orange")
+    }
+    if (game.panestheme = "Blood") {
+      JS.setPanes ("orange", "#800000", "#800000", "orange", "yellow")
+    }
+    if (game.panestheme = "Tranquil") {
+      JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
+    }
+    //
+    // -----------------------------------------------------------------------
+    // This is in the original, but must come last
+    if (not game.showborder) {
+      JS.hideBorder ()
+    }
+    if (game.showpanes) {
+      request (Show, "Panes")
+    }
+    else {
+      request (Hide, "Panes")
+    }
     InitUserInterface
-    ]]>
-  </function>
+  ]]></function>
 
   <function name="InitUserInterface">
   </function>
@@ -153,6 +250,9 @@
     UpdateStatusAttributes
     InitVerbsList
     if (HasScript(game, "start")) do (game, "start")
+    foreach (obj, AllObjects()) {
+      if (HasScript(obj, "_initialise_")) do (obj, "_initialise_")
+    }
     UpdateStatusAttributes
     UpdateObjectLinks
     on ready {
@@ -251,6 +351,12 @@
   <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
     newobject = CloneObject(object)
     newobject.parent = newparent
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndMoveHere" parameters="object" type="object">
+    newobject = CloneObject(object)
+    newobject.parent = game.pov.parent
     return (newobject)
   </function>
 
@@ -550,5 +656,15 @@
       }
     }  
     return (true)
+  </function>
+  
+  <function name="IndexOf" type="int" parameters="lst, item">
+    for (i, 0, ListCount(lst) - 1) {
+      x = ListItem(lst, i)
+      if (x = item) {
+        return (i)
+      }
+    }
+    return (-1)
   </function>
 </library>

@@ -92,24 +92,6 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameFeaturesHyperlinks]</caption>
-        <attribute>enablehyperlinks</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameMapadynamically]</caption>
-        <attribute>gridmap</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGamePictureframe]</caption>
-        <attribute>feature_pictureframe</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
         <caption>[EditorGameScore]</caption>
         <attribute>showscore</attribute>
       </control>
@@ -141,17 +123,44 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameAnnotations]</caption>
+        <attribute>feature_annotations</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAdvancedWearables]</caption>
+        <attribute>feature_advancedwearables</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameInroomdescriptions]</caption>
         <attribute>appendobjectdescription</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameAllowLookDirections]</caption>
+        <attribute>allowlookdirections</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>	  
+
+
     </tab>
 
+    
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameDisplay]</caption>
 
@@ -165,6 +174,14 @@
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameFont]</caption>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameForeground]</caption>
+        <attribute>defaultforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
       </control>
 
       <control>
@@ -207,23 +224,15 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>[EditorGameYoucanuseany]</caption>
+        <caption>[EditorGameBackgroundExplained]</caption>
       </control>
+
       <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGameBackgroundColour]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
-      </control>
-
-      <control>
-        <controltype>file</controltype>
-        <caption>[EditorGameBackground2]</caption>
-        <attribute>backgroundimage</attribute>
-        <source>[EditorImageFormats]</source>
-        <filefiltername>Picture Files</filefiltername>
-        <preview/>
       </control>
 
       <control>
@@ -244,16 +253,58 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>[EditorGameForeground]</caption>
-        <attribute>defaultforeground</attribute>
+        <caption>[EditorGameMarginColour]</caption>
+        <attribute>marginscolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+        <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <attribute>colourblend</attribute>
+        <caption>[EditorGameColourBlend]</caption>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameColourBlendTop]</caption>
+        <attribute>colourblendtop</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.colourblend</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameColourBlendBottom]</caption>
+        <attribute>colourblendbottom</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.colourblend</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameBackground2]</caption>
+        <attribute>backgroundimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+        <preview/>
+        <onlydisplayif>not game.colourblend</onlydisplayif>
+      </control>
+
+
+      
+      <control>
         <controltype>title</controltype>
         <caption>[EditorGameHyperlinks]</caption>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameFeaturesHyperlinks]</caption>
+        <attribute>enablehyperlinks</attribute>
       </control>
 
       <control>
@@ -339,13 +390,28 @@
 
     </tab>
 
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameInterface]</caption>
 
       <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameYoucanuseany]</caption>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>[EditorGameMap]</caption>
-        <onlydisplayif>game.gridmap</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameMapadynamically]</caption>
+        <attribute>gridmap</attribute>
       </control>
 
       <control>
@@ -364,9 +430,11 @@
         <minimum>1</minimum>
       </control>
 
+      
+      
       <control>
         <controltype>title</controltype>
-        <caption>[EditorGameLayout]</caption>
+        <caption>[EditorGamePanesCaption]</caption>
       </control>
 
       <control>
@@ -377,10 +445,89 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffCompass]</caption>
+        <attribute>turnoffcompass</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffInventory]</caption>
+        <attribute>turnoffinventory</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameTurnOffPeopleAndObjects]</caption>
+        <attribute>turnoffpeopleandobjects</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameAltPaneOrder]</caption>
+        <attribute>statusandcompassattop</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowCommandPane]</caption>
+        <attribute>commandpane</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGamePanesTheme]</caption>
+        <attribute>panestheme</attribute>
+        <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+
+
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameCommandBarCaption]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameShowcommand]</caption>
         <attribute>showcommandbar</attribute>
       </control>
 
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameBorderlessCommand]</caption>
+        <attribute>borderlesscursor</attribute>
+        <onlydisplayif>game.showcommandbar</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameCommandCursor]</caption>
+        <attribute>commandcursor</attribute>
+        <onlydisplayif>game.showcommandbar and game.borderlesscursor</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShadowBox]</caption>
+        <attribute>shadowbox</attribute>
+        <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
+      </control>
+
+      
+      
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameLocationCaption]</caption>
+      </control>
+      
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowlocation]</caption>
@@ -389,8 +536,73 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameClassiclocation]</caption>
+        <attribute>classiclocation</attribute>
+        <onlydisplayif>game.showlocation</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationColour]</caption>
+        <attribute>customlocationcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationTextColour]</caption>
+        <attribute>customlocationtextcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameLocationBorderColour]</caption>
+        <attribute>customlocationbordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameHideSaveButton]</caption>
+        <attribute>turnoffsavebutton</attribute>
+        <onlydisplayif>game.showlocation</onlydisplayif>
+      </control>	  
+      
+      
+      
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameBorderCaption]</caption>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameShowborder]</caption>
         <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameBorderColour]</caption>
+        <attribute>bordercolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.showborder</onlydisplayif>
+      </control>
+      
+      
+      
+      
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameLayout]</caption>
       </control>
 
       <control>
@@ -452,10 +664,16 @@
         <advanced/>
       </control>
 
+      
       <control>
         <controltype>title</controltype>
-        <caption>[EditorGameOptions]</caption>
-        <onlydisplayif>game.feature_pictureframe</onlydisplayif>
+        <caption>[EditorGamePictureOptions]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGamePictureframe]</caption>
+        <attribute>feature_pictureframe</attribute>
       </control>
 
       <control>
@@ -466,6 +684,14 @@
       </control>
     </tab>
 
+    
+    
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameScript]</caption>
       <advanced/>
@@ -490,6 +716,14 @@
       </control>
 
     </tab>
+    
+    
+    
+    
+    
+    
+    
+    
 
     <tab>
       <caption>[EditorGameRoomDescriptions]</caption>
@@ -615,6 +849,7 @@
         <caption>[EditorGamePutanewline4]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
+      
     </tab>
 
     <tab>

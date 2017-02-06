@@ -21,4 +21,46 @@
       }
     }
   </function>
+  
+  <function name="PickOneObject" parameters="lst" type="object">
+    n = ListCount(lst)
+    if (n = 0) return (null)
+    index = GetRandomInt(0, n - 1)
+    return (ObjectListItem(lst, index))
+  </function>
+  
+  <function name="PickOneString" parameters="lst" type="string">
+    if (TypeOf(lst) = "string") {
+      lst = Split(lst, ";")
+    }
+    n = ListCount(lst)
+    if (n = 0) return ("")
+    index = GetRandomInt(0, n - 1)
+    return (StringListItem(lst, index))
+  </function>
+  
+  <function name="PickOneChild" parameters="obj" type="object">
+    return (PickOneObject(GetDirectChildren(obj)))
+  </function>
+  
+  <function name="PickOneChildOfType" parameters="room, typename" type="object">
+    l = NewObjectList()
+    foreach (o, GetDirectChildren(room)) {
+      if (DoesInherit(o, typename)) {
+        list add (l, o)
+      }
+    }
+    return (PickOneObject(l))
+  </function>
+    
+  <function name="PickOneExit" parameters="room" type="object">
+    return (PickOneObject(ScopeExitsForRoom (room)))
+  </function> 
+  
+  <function name="PickOneUnlockedExit" parameters="room" type="object">
+    return (PickOneObject(ScopeUnlockedExitsForRoom (room)))
+  </function> 
+  
+    
+  
 </library>

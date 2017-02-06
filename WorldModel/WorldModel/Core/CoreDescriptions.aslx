@@ -107,6 +107,8 @@
           fulldesc = game.pov.parent.darkroomdescription
         }
       }
+      // Added by The Pixie to correct what appears to be a bug
+      if (fulldesc = "") fulldesc = DynamicTemplate("LookAtDarkness", game.pov.parent)
     }
     else {
        if (HasString(game.pov.parent, "description")) {

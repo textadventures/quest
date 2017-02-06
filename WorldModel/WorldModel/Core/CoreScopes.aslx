@@ -124,7 +124,7 @@
         list add(result, obj)
       }
     }
-    return (result)
+    return (result + SecondaryScopeReachableForRoom(room))
   ]]>
   </function>
 
@@ -164,7 +164,26 @@
     return (result)
     ]]>
   </function>
-
+  
+  <function name="ScopeUnlockedExitsForRoom" parameters="room" type="objectlist">
+    result = NewObjectList()
+    foreach (exit, AllExits()) {
+      if (exit.parent = room) {
+        if (exit.visible and not exit.locked) {
+          if (GetBoolean(room, "darklevel")) {
+            if (GetBoolean(exit, "lightsource")) {
+              list add (result, exit)
+            }
+          }
+          else {
+            list add (result, exit)
+          }
+        }
+      }
+    }
+    return (result)
+  </function>  
+  
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()
     foreach (command, AllCommands()) {
@@ -282,5 +301,10 @@
       }
       JS.updateCommandLinks(commands)
     }
+  </function>
+  
+  <!-- To be overriden by authors to do something useful -->
+  <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
+    return (NewObjectList())
   </function>
 </library>

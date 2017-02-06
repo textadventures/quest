@@ -210,13 +210,21 @@
     else {
       found = true
       dropmsg = object.dropmsg
+      if (HasObject(game.pov.parent, "dropdestination")) {
+        destination = game.pov.parent.dropdestination
+      }
+      else {
+        destination = game.pov.parent
+      }
       
       switch (TypeOf(object, "drop")) {
         case ("script") {
           if (ismultiple) {
             OutputTextNoBr (prefix)
           }
-          do (object, "drop")
+          d = NewDictionary()
+          dictionary add (d, "destination", destination)
+          do (object, "drop", d)
           dropmsg = ""
         }
         case ("boolean") {
@@ -363,7 +371,10 @@
          msg ("[UnresolvedLocation]")
       } 
       else {
-       game.pov.parent = exit.to
+        if (HasString(exit, "message")) {
+          if (not exit.message = "") msg(exit.message)
+        }
+        game.pov.parent = exit.to
       }   
     } 
     else {   
@@ -457,13 +468,22 @@
 
   <command name="put" pattern="[put]">
     // put object1 in/on object 2
-    
+    canbedropped = true
+    if (HasBoolean(object1, "drop")) {
+      if (not object1.drop) {
+        canbedropped = false
+      }
+    }
     if (object1.parent = object2) {
       msg (DynamicTemplate("AlreadyThere", object1))
     }
     // must be carrying object1
     else if (not ListContains(ScopeInventory(), object1)) {
       msg (DynamicTemplate("NotCarrying", object1))
+    }
+    // item cannot be dropped
+    else if (not canbedropped) {
+      msg (DynamicTemplate("ObjectCannotBeStored", object1))
     }
     // object1 must not be inside a closed container
     else if (not ListContains(ScopeReachable(), object1)) {
@@ -489,8 +509,15 @@
         rundelegate (object2, "addscript", object1)
       }
       else {
-        object1.parent = object2
-        msg (Template("Done"))
+        if (HasScript(object1, "drop")) {
+          d = NewDictionary()
+          dictionary add (d, "destination", object2)
+          do (object1, "drop", d)
+        }
+        else {
+          object1.parent = object2
+          msg (Template("Done"))
+        }
       }
     }
     
