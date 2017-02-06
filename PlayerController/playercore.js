@@ -289,11 +289,13 @@ function isElementVisible(element) {
 function panesVisible(visible) {
     var screenWidth = $("#gameBorder").width();
     var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
+    var prompt = $("#txtCommandPrompt");
+    var promptSpacing = prompt ? prompt.width() + 5 : 0;
 
     if (visible) {
         $("#gamePanes").show();
         $("#gameContent").width(screenWidth - 250);
-        $("#txtCommand").width(screenWidth - gameContentPadding - 230);
+        $("#txtCommand").width(screenWidth - gameContentPadding - promptSpacing - 250);
         $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
         $("#gamePanel").width(screenWidth - 250);
         $("#gridPanel").width(screenWidth - 250);
@@ -307,7 +309,7 @@ function panesVisible(visible) {
     else {
         $("#gamePanes").hide();
         $("#gameContent").width(screenWidth - gameContentPadding);
-        $("#txtCommand").width(screenWidth - 60);
+        $("#txtCommand").width(screenWidth - promptSpacing - 60);
         $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
         $("#gamePanel").width(screenWidth - 40);
         $("#gridPanel").width(screenWidth - 40);
@@ -1000,6 +1002,110 @@ function ShowGrid(height) {
     $("#gamePanelSpacer").height(height);
 }
 
+
+// ----------------------------------        
+// Section added by The Pixie
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function setCss(element, cssString) {
+  el = $(element);
+  ary = cssString.split(";");
+  for (i = 0; i < ary.length; i++) {
+    ary2 = ary[i].split(':');
+    el.css(ary2[0], ary2[1]);
+  }
+}
+
+
+function colourBlend(colour1, colour2) {
+  $('#gamePanes').css('background-color', 'transparent');
+  $('#gameBorder').css('background-color', 'transparent');
+  body = $('body');
+  body.css('background-color', colour1);
+  body.css('background-image', 'linear-gradient(to bottom,  ' + colour1 + ', ' + colour2 + ')');
+  body.css('background-image', '-webkit-linear-gradient(top,  ' + colour1 + ', ' + colour2 + ')');
+  body.css('background-attachment', 'fixed');
+  body.css('background-position', 'left bottom');
+}
+
+
+
+elements = [
+  '#statusVarsLabel', '#statusVarsAccordion',// '#statusVars',
+  '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
+  '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
+  '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
+  '#commandPane'
+];
+
+dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
+
+commandColour = 'orange'
+
+function setElement(name, fore, back) {
+  el = $(name);
+  el.css('background', back);
+  el.css('color', fore);
+  el.css('border', 'solid 1px ' + fore);
+  if (endsWith(name, "Accordion")) {
+    el.css('border-top', 'none');
+  }
+}
+
+function setCompass(name, fore, back) {
+  el = $('#cmdCompass' + name);
+  el.css('background', back);
+  el.css('border', '2px solid ' + fore);
+}
+
+function setPanes(fore, back, secFore, secBack, highlight) {
+  if (arguments.length == 2) {
+    secFore = back;
+    secBack = fore;
+  }
+  if (arguments.length < 5) {
+    highlight = 'orange'
+  }
+  commandColour = fore;
+  for (i = 0; i < elements.length; i++) {
+    setElement(elements[i], fore, back);
+  }
+  for (i = 0; i < dirs.length; i++) {
+    setElement(dirs[i], fore, back);
+  }
+
+  var head = $('head');
+  head.append('<style>.ui-button-text { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-state-active { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-widget-content { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-widget-header .ui-state-default { background-color: ' + secBack + ';}</style>');
+  head.append('<style>.ui-selecting { color: ' + secFore + '; background-color: ' + highlight + ';}</style>');
+  head.append('<style>.ui-selected { color: ' + secFore + '; background-color: ' + secBack + ';}</style>');
+
+  //$('.ui-button-text').css('color', fore);
+  //$('.ui-state-active').css('color', fore);
+  //$('.ui-widget-content').css('color', fore);
+  
+}
+
+function setCommands(s, colour) {
+  if (arguments.length == 2) commandColour = colour;
+  ary = s.split(";");
+  el = $('#commandPane');
+  el.empty();
+  for (i = 0; i < ary.length; i++) {
+    el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="ui-widget"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
+  }
+}
+
+
+        
+// ----------------------------------        
+        
+        
 $(function () {
     $("#gridPanel").mousewheel(function (e, delta) {
         gridApi.zoomIn(delta);
