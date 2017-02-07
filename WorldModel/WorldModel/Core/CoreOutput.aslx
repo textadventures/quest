@@ -224,14 +224,14 @@
     else {
       dot = Instr(section, ".")
       if (dot = 0) {
-        return ("{" + ProcessTextSection(section, data) + "}")
+        return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
       else {
         objectname = Left(section, dot - 1)
         attributename = Mid(section, dot + 1)
         object = GetObject(objectname)
         if (object = null) {
-          return ("{" + ProcessTextSection(section, data) + "}")
+          return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
         }
         else {
           if (HasAttribute(object, attributename)) {
