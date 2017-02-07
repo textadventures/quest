@@ -6,25 +6,26 @@ title: Quest 5.7
 
 This file documents changes to quest as of version 5.7.
 
-# New UI Options
+New UI Options
+--------------
 
 Customisation of the UI is now much easier. There are a number of new JavaScript functions, but more importantly a lot of options can be set from the tabs of the game object, so you should not have to do any JavaScript.
 
-## Game panes
+### Game panes
 
 You can now select different colour schemes for the panes on the right (or invent your own with a JavaScript function, JS.setPanes)
 
 You can turn off individual panes, and add a new command pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands).
 
-## Command bar
+### Command bar
 
 New options for the command bar; borderless cursor or shadow box.
 
-## Colours
+### Colours
 
 You can now set the background to blend from one colour at the top to another at the bottom. You can set both the margins and the page background colour, as well as the status bar and game border.
 
-## Other changes
+### Other changes
 
 The body element is now given the default font, color and background-color. This means the save confirmation text will be in the standard style for your game. This has the potential to have far-reaching effects, given the body element is the fundamental HTML element of your game, but it seems to have no side effects, and if there are some I would expect them to be improvements anyway.
 
@@ -38,21 +39,25 @@ There is now a JS.setCss junction that takes an element name and a set of CSS st
 
 There is an option to hide the save button in the web player (it does not stop players saving via the command bar).
 
-NOTE: These changes include the playercore.js file, and that makes them impossible to test in the on-line player (for me anyway!) before the update goes live. I have tested that changes survive save and re-load in the desktop player.
 
 
 
 
 
-# Text Processor
+Text Processor
+--------------
 
 This has been updated so that it has a few extra commands (incorporating most of the TextProcessorPlus library); "colour" (or "color") will get the text to display in that colour. Similarly, "back" will change the background colour. The "popup" command creates a link, clicking on it will display an information box, which can be dismissed by clicking.
 
 The "either" command is similar to "if", but has a second (optional) part that is printed if the condition fails, and is more flexible with its conditions, as these now evaluated as Quest code (this does mean that strings need to go in quotes which is different to how this was in TextProcessorPlus library). 
 
-There is also an "eval" command which will run the rest of the text as Quest code. You can also use an equals sign as a short cut. This means you can put anything into curly braces, such as function calls and complex calculations. If you actually want curly braces as curly braces and there is a chance Quest will try to interpret it as a text processor command, you can use @@@open@@@ and @@@close@@@:
+There is also an "eval" command which will run the rest of the text as Quest code. You can also use an equals sign as a short cut. This means you can put anything into curly braces, such as function calls and complex calculations. If you actually want curly braces as curly braces and there is a chance Quest will try to interpret it as a text processor command, you can use `@@@open@@@` and `@@@close@@@`.
 
+It also works recursively, so the output text will then get processed again. We have yet to work out when that will be useful...
 
+A new function, `ProcessText` is used by the output functions. You could use this elsewhere, say to set an attribute with text that has gone through the text processor. You could also override to do your own stuff here.
+
+```
 // This is the same as version 5.6
 "player.count = {player.count}"
  -> "player.count = 5"
@@ -85,45 +90,48 @@ There is also an "eval" command which will run the rest of the text as Quest cod
  -> "You are the player",
 "'Oh, {either player.male_flag:he:she} is not worth it.'"
  -> "'Oh, he is not worth it.'",
-
+```
 
  
  
  
-# New functions
-
+New functions
+-------------
+```
 ScopeUnlockedExitsForRoom
 CloneObjectAndMoveHere
-
-_String utilities_
-
+```
+### String utilities
+```
 FormatList (Split("one;two;three") -> "one, two and three")
 Spaces (5 -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 ToWords (42 -> "forty two")
 ToRoman (42 -> "XLII")
-
-_Gets the index of a string or object in a list_
-
+```
+### Index of string or object in list
+```
 IndexOf
-
-_The PickOne functions pick a single instance at random_
-
+```
+### Get one at random
+```
 PickOneString
 PickOneObject
 PickOneChild
 PickOneChildOfType
 PickOneExit
 PickOneUnlockedExit
+```
 
 
-
-# Annotations
+Annotations
+-----------
 
 This allows authors to add notes for their own purposes to rooms (names of attributes, what happens here, things to do, etc.). This can be activated by ticking the box on the Features tab of the game object, and adds a new tab to rooms. It has no effect on game play.
 
 
 
-# Clothing
+Clothing
+--------
 
 This is my clothing library, which is itself an extension of Chase's wearables library. Set an object to be Wearable on the features tab to see the new Wearable tab. Advanced options will appear if you tick the box on the Features tab of the game object.
 
@@ -131,13 +139,13 @@ If you already use either my library or Chase's you should find this works with 
  
  
  
-# Minor Changes
+Minor Changes
+-------------
 
 DoAskTell now adds a local variable, "text", set to the text value, for the script that runs for an unknown topic so we can now do:
 msg("Mary says, 'I don't know about anything about " + text + ".")
 
-Added a "possessive" attribute to Inanimate object, Male character, etc, with the value "its", "his", etc. This will complement the "gender" and "article" attributes. 
-http://textadventures.co.uk/forum/samples/topic/3556/possessive-pronoun
+Added a "possessive" attribute to Inanimate object, Male character, etc, with the value "its", "his", etc. This will complement the "gender" and "article" attributes. See [here](http://textadventures.co.uk/forum/samples/topic/3556/possessive-pronoun).
 
 Added "me" as an alternative alias of the player, so if the author changes the player alias, LOOK AT ME will still work.
 
@@ -147,24 +155,24 @@ Added an object attribute, "dropdestination", to the Room tab of rooms. If this 
 
 Modified the "put" command so that objects that cannot be dropped also cannot be put inside containers.
 
-The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room).
-http://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff
+The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room). See [here](http://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff).
 
 The ScopeReachableNotHeldForRoom function now also returns the object list returned by SecondaryScopeReachableForRoom, which is empty by default. The SecondaryScopeReachableForRoom function can be overridden (takes the room as a parameter, returns an object list) to return backdrop items, such as wall, ceiling, sky and sun, to make these present in every room (or selectively in some rooms and not others; it is a function, do what you like with it).
 
-Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE.
-http://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at
+Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE. See [here](http://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at).
 
-If an exit has a "message" attribute, this will be displayed before the player is moved (unless the exit runs a script).
-http://textadventures.co.uk/forum/quest/topic/pzotaae1x0qc91bvnlua9q/displaying-a-message-after-choosing-an-exit
+If an exit has a "message" attribute, this will be displayed before the player is moved (unless the exit runs a script). See [here](http://textadventures.co.uk/forum/quest/topic/pzotaae1x0qc91bvnlua9q/displaying-a-message-after-choosing-an-exit).
 
-Look directions are rarely used, so this is now a feature that must be turned on in the game object (this only changes the editor, so no effect on existing games)
-https://github.com/textadventures/quest/issues/681
+Look directions are rarely used, so this is now a feature that must be turned on in the game object (this only changes the editor, so no effect on existing games). See [here](
+https://github.com/textadventures/quest/issues/681).
 
 If a room is dark, the game will return a message saying it is too dark to see anything. Previously it said nothing (if there was no message set), which I think was a bug. Note that the message is the same one that is seen when examining an object and it is too dark to see it. It works in English, it might not in other languages.
  
  
-# Language support
+ 
+ 
+Language support
+----------------
 
 If you have a language file for the game, these templates should be added. 
 ``` 
