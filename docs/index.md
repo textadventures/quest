@@ -77,6 +77,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](tutorial/showing_a_map.html)
+-  [Overriding functions](overriding.html)
 
 
 
@@ -86,8 +87,8 @@ Quest has a whole range of features built in and ready to use. You probably won'
 Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
 
 -  [Game-play](ui-game-play.html)
--  Style
--  Further options with JavaScript
+-  [UI Style](ui-style.html)
+-  [Further options with JavaScript](ui-javascript.html)
 
 
 
@@ -98,16 +99,15 @@ A look at some of the more technical features of Quest.
 
 -  [Using a "switch" script](tutorial/multiple_choices___using_a_switch_script.html)
 -  [Creating functions](tutorial/creating_functions_which_return_a_value.html)
--  [Lists](guides/using_lists.html)
+-  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
 -  [Using types](tutorial/using_inherited_types.html)
 -  [Changing templates](tutorial/changing_templates.html)
--  Translating Quest
+-  [Translating Quest](translating_quest.html)
 -  [Using libraries](tutorial/using_libraries.html)
 -  [Creating Libraries](creating_libraries.html)
 -  [Using Javascript](tutorial/using_javascript.html)
--  Compiling Quest from the source code
 
 
     
@@ -115,7 +115,6 @@ A look at some of the more technical features of Quest.
 ---------------------------------
 
 -   [WebEditor](webeditor.html)
--   Common problems
 -   [Notes for users of previous versions of Quest](upgrade_notes.html)
 -   [ASL Requirements](asl_requirements.html)
 -   ["Undo" support](undo_support.html)
