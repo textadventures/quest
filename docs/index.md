@@ -47,6 +47,7 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 1.  [Using containers](tutorial/using_containers.html)
 1.  [Lockable containers](tutorial/using_lockable_containers.html)
 1.  [Moving objects during the game](tutorial/moving_objects_during_the_game.html)
+1.  [Status attributes](tutorial/status_attributes.html)
 1.  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html)
 
 
@@ -72,8 +73,8 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Text formatting](tutorial/text_formatting.html)
 -  [Using lockable exits](tutorial/using_lockable_exits.html)
 -  [Using walkthroughs](tutorial/using_walkthroughs.html)
--  [Light and dark](tutorial/handling_light_and_dark.html)
--  [Ask/Tell](tutorial/ask_about.html)
+-  [Light and dark](handling_light_and_dark.html)
+-  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](tutorial/showing_a_map.html)
 
@@ -90,20 +91,19 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 
 
 
-<a name="Advanced Topics"></a>Advanced Topics
+<a name="AdvancedTopics"></a>Advanced Topics
 ---------------------------------------------
 
 A look at some of the more technical features of Quest.
 
 -  [Using a "switch" script](tutorial/multiple_choices___using_a_switch_script.html)
--  [Creating functions that return a value](tutorial/creating_functions_which_return_a_value.html)
--  [Changing templates](tutorial/changing_templates.html)
--  [Translating Quest](translating_quest.html)
--  [Using inherited types](tutorial/using_inherited_types.html)
--  [Types](types.html)
+-  [Creating functions](tutorial/creating_functions_which_return_a_value.html)
 -  [Lists](guides/using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
+-  [Using types](tutorial/using_inherited_types.html)
+-  [Changing templates](tutorial/changing_templates.html)
+-  Translating Quest
 -  [Using libraries](tutorial/using_libraries.html)
 -  [Creating Libraries](creating_libraries.html)
 -  [Using Javascript](tutorial/using_javascript.html)
@@ -125,8 +125,6 @@ A look at some of the more technical features of Quest.
 -   [Elements](elements/)
 -   [ASLX File Format](aslx.html)
 -   [Expressions](expressions.html)
--   [Status Attributes](status_attributes.html)
--   [Notes](notes.html)
 -   [Configuring Quest](configuring_quest.html)
 -   [User contributed libraries](libraries.html)
 -   [User contributed guides](guides/)
