@@ -39,4 +39,4 @@ Your screen should now look like this:
 
 Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type "watch tv".
 
-[Next: Custom attributes](tutorial/custom_attributes.html)
+[Next: Custom attributes](custom_attributes.html)
