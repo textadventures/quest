@@ -10,7 +10,7 @@ Creating the Fridge
 
 Create a "fridge" object in the kitchen and give it a description like "A big old refrigerator sits in the corner, humming quietly."
 
-Now let's set the fridge up as a container. Click the Features tab, tick Container, and then go to the new Container tab. By default, "Not a container" is selected. Change this to "Closed container". The Container options will now appear.
+Now let's set the fridge up as a container. Click the Container tab. By default, "Not a container" is selected. Change this to "Closed container". The Container options will now appear.
 
 ![](Container.png "Container.png")
 
@@ -50,4 +50,4 @@ Surfaces
 
 Surfaces act very much like containers - they act as an always-open container, and objects that are on a surface are visible in a room description even before the player has looked at the surface. For this reason they’re a good choice for implementing things like tables. As an exercise, change the table object in the lounge to make it a surface (or create it if you haven't already). Then move the newspaper so that it is on the table - in the Windows version, you can drag the newspaper object in the tree, and drop it on to the table to move it there. In the web version, select the newspaper object and click the Move button in the top right of the screen.
 
-[Next: Moving objects during the game](moving_objects_during_the_game.html)
+[Next: Lockable containers](using_lockable_containers.html)

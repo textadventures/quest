@@ -36,11 +36,3 @@ Run the game and verify that the exit now works correctly:
      > south
      You are in a garden.
      You can go north.
-
-Hmm, perhaps we should require a key to unlock it. Create a new object called "doorkey", perhaps in the lounge. We will require an if/else script command that tests if the player is carrying the key. 
-
-![](exit_and_key.png "exit_and_key"]
-
-You might also want to add a "lock" verb to the door, so the exit can be locked again, and perhaps a door in the garden, and add the verbs to that too, so the door can also be locked and unlocked from outside. 
-     
-[Next: Multiple choices - using a "switch" script](multiple_choices___using_a_switch_script.html)

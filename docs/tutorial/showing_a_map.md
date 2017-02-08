@@ -19,6 +19,4 @@ Here you can change the size and colour of the grid square. You can change what 
 
 ![](Map2.png "Map2.png")
 
-Exits are shown with a "length" of 1 grid pixel. You can change this by selecting the exit in the tree, and going to its Map tab. A length of 0 means that rooms will be displayed right next to each other, without a line (be aware that it will not be obvious to the player if there is an exit there). If you change the length of one exit, make sure you change the exit in the other direction too, or the layout engine may draw the map incorrectly.
-
-[Next: Custom attributes](custom_attributes.html)
+Exits are shown with a "length" of 1 grid pixel. You can change this by selecting the exit in the tree, and going to its Map tab. A length of 0 means that rooms will be displayed right next to each other, without a line. If you change the length of one exit, make sure you change the exit in the other direction too, or the layout engine may draw the map incorrectly.

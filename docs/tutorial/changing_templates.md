@@ -36,5 +36,3 @@ These Dynamic Templates often take advantage of some functions which are defined
      WriteVerb(object, "be") + " already open."
 
 This means it will correctly write "It is already open", "They are already open" etc.
-
-[Next: Using inherited types](using_inherited_types.html)

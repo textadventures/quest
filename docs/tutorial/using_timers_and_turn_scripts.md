@@ -3,7 +3,7 @@ layout: index
 title: Using timers and turn scripts
 ---
 
-In a previous section, we made a bee fly into the kitchen after the player opened a window. We'll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.
+In the previous section, we made a bee fly into the kitchen after the player opened a window. We'll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.
 
 To do this, we will use a timer. This timer will only be activated when the player opens the window in the kitchen. When the timer is activated, every 20 seconds it will print the message "The bee buzzes past you. Pesky bee". This message will only be printed if the player is in the kitchen.
 
@@ -25,7 +25,7 @@ For the timer script, add a "print a message" command to display "The bee buzzes
 Activating the Timer
 --------------------
 
-Go back to the "window" object and edit the script that runs when the bee enters the kitchen - this will be the "Else" script if you've followed the tutorial so far. Add a command after the "move object" command - from the Timers category, choose "Enable timer". Select "bee timer" from the list.
+Go back to the "window" object and edit the script which runs when the bee enters the kitchen - this will be the "Else" script if you've followed the tutorial so far. Add a command after the "move object" command - from the Timers category, choose "Enable timer". Select "bee timer" from the list.
 
 Launch the game, go to the kitchen and open the window. Wait for a while and verify that the message is printed every 20 seconds.
 
@@ -38,7 +38,15 @@ You've already seen how to do this - an "if" command can check "player is in roo
 Creating a turn counter
 -----------------------
 
-In this section, we'll look at running a script after each turn in the game - **turn scripts**
+<div class="alert alert-info">
+Note: The attributes editor is currently only available in the Windows desktop version of Quest.
+
+</div>
+In this section, we'll look at three new concepts and use them to create an on-screen turn counter:
+
+-   running a script after each turn in the game - **turn scripts**
+-   storing numbers - **integer** attributes
+-   displaying values in a status area on the right of the screen - **status attributes**
 
 Here's how we’re going to do it:
 
@@ -49,23 +57,19 @@ Here's how we’re going to do it:
 
 ### Setting up the turn counter
 
-We have already discussed status attributes, so this should be easy... In the desktop version, select the "player" object and go to the Attributes tab. Add a new attribute, "turns", and make this an integer. 
+To set up our "turns" attribute, select the "player" object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name "turns" and make this an integer.
 
-To turn this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add "turns" to the list. We can leave the second part blank, as the default is fine.
+To turn this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add "turns" to the list.
+
+You'll be prompted for a format string. If you leave this blank, Quest will display "Turns: 0", "Turns: 1", "Turns: 2" etc. as the game progresses. This is fine so you can leave this blank for now (if you want to customise the display, you can simply enter any text you like, and use a "!" character where you want the value to appear)
 
 ![](Turncounter1.png "Turncounter1.png")
-
-If you are doing this on the web version, it will, again, be tricky; you need to set it up like this:
-
-![](turns.png "turns.png")
 
 If you launch the game now, you should see the status variable displayed on the right-hand side of the Quest window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
 
 ### Increasing the turn counter after each turn
 
-A turn script can apply to a specific room, or it can apply to the entire game. To make a turn script apply for just one room, you simply need to create it in that room. If you create a turn script outside of a room, it will apply to the entire game. For the desktop version, right-click the tree menu or use the Add button to create a turn script. You can drag it to the "Objects" label at the top of the tree to move it outside of all rooms.
-
-Alternatively, go to the Scripts tab of a room (for a turn script for that room only) or the Scripts tab of the game object (for a turn script that applies to the entire game), and at the bottom you will see a section for turn scripts. In this case, we want the game object. Just click Add to create a new turn script.
+A turn script can apply to a specific room, or it can apply to the entire game. To make a turn script apply for just one room, you simply need to create it in that room. If you create a turn script outside of a room, it will apply to the entire game. So, right-click the tree menu or use the Add button to create a turn script. You can drag it to the "Objects" label at the top of the tree to move it outside of all rooms.
 
 You can optionally specify a name for your turn script. You can use this if you want to be able to switch your turn script on and off using script commands, in a similar way to how we switched a timer on and off in the previous section. You can leave the name blank for this turn script, as this will always be running.
 
@@ -89,4 +93,4 @@ This will add 1 each time the script is called.
 
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
 
-[Next: Using lockable containers](using_lockable_containers.html)
+Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game!

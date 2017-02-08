@@ -19,5 +19,3 @@ If you've created some functionality in your game that you think would be useful
 See [Creating Libraries](../creating_libraries.html) for more information.
 
 You can find libraries at the [Libraries and Code Samples forum](http://textadventures.co.uk/forum/samples). When you've downloaded a library, go to Included Libraries in the tree (under the Advanced section) and click Add to add it to your game.
-
-[Next: Using Javascript](using_javascript.html)

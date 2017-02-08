@@ -6,6 +6,8 @@ title: Releasing your game
 Creating a .quest file
 ----------------------
 
+### Windows version
+
 When your game is ready to release:
 
 -   on the Windows version, go to the Tools menu and choose Publish.
@@ -34,25 +36,19 @@ Here are some things to think about before unleashing your game on an unsuspecti
 
 ### Uploading the game
 
-If you created your game in the desktop version, there are various places you can upload your game, so that other people can get hold of it:
+There are various places you can upload your game, so that other people can get hold of it:
 
 -   [textadventures.co.uk](http://textadventures.co.uk/) - Hundreds of people visit this website every day, looking for text adventure games. They'll be able to play your game in their web browser - no matter what operating system they're using.
 -   [The IF Archive](http://www.ifarchive.org/).
 -   Or of course, you can upload it to your own webspace if you have any.
 
-If you used the web version, you will have to publish to [textadventures.co.uk](http://textadventures.co.uk/), but you could then download the game as a .quest file, and then upload it to another site.
-
 ### Announcing your game
 
 Once you have uploaded your game, you will want people to know where to get hold of it, and how to play it.
 
-You can announce your game on various sites (some are more forgining than others!):
+You can announce your game on:
 
 -   the [textadventures.co.uk Game Announcements and Feedback forum](http://textadventures.co.uk/forum/games)
 -   the [intfiction.org forums](http://www.intfiction.org/forum/viewforum.php?f=19)
 -   [IFDB](http://ifdb.tads.org/)
 -   [rec.games.int-fiction newsgroup](http://groups.google.com/group/rec.games.int-fiction)
-
-Social media is also an excellent way to let people know about your game.
-
-[Next: Creating functions which return a value](creating_functions_which_return_a_value.html)

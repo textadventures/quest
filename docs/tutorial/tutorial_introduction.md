@@ -20,13 +20,8 @@ What is a text adventure?
 
 Text adventure games were the earliest type of computer game, from a time when computers could only display text - there were no graphics, so everything was described with text. You would play the game by typing commands with the keyboard such as "go north" or "hit troll". Quest lets you make this kind of game - you can include graphics now though, and play the game by clicking hyperlinks instead of having to type everything.
 
-What is a gamebook?
--------------------
-
-A gamebook is a book that you don't read from beginning to end - instead, you make choices as you go along. In a physical book, you would be asked to turn to different pages for different choices. Examples include the [Choose Your Own Adventure](http://en.wikipedia.org/wiki/Choose_Your_Own_Adventure) books. Quest lets you make this kind of game, where clicking hyperlinks takes the player to the different pages.
-
-Why create text adventures and gamebooks now?
----------------------------------------------
+Why create text adventures
+--------------------------
 
 Here are some reasons why interactive text games are great:
 
@@ -45,7 +40,7 @@ You can find another great introduction for beginners at [Brass Lantern](http://
 Programming without Programming
 -------------------------------
 
-Quest is a powerful system with a gentle learning curve - you can get started very easily without doing any programming at all, and build up from there. The point and click editor means there's no need to remember syntax, type in strange punctuation or even remember commands. But there is a lot of power underneath - a full programming language in fact. You never need to see any code to access the full power of Quest, but it is there behind the scenes, and you can click the "Code View" button on any script if you want to see it.
+Quest is a powerful system with a gentle learning curve - you can get started very easily without doing any programming at all, and build up from there. The point and click editor means there's no need to remember syntax, type in strange punctuation or even remember commands. But there is a lot of power underneath - a full programming language in fact. You never need to see any code to access the full power of Quest, but the Windows version includes a "Code View" feature so it's there if you need it.
 
 Let's Begin
 -----------

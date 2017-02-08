@@ -3,54 +3,18 @@ layout: index
 title: Tutorial
 ---
 
-Beginners
----------
+New to Quest? The tutorial will guide you through creating your first game, and is an excellent way to understand what Quest is about.
 
-You will definitely want to read these sections before starting on your own games.
-
-1.  [Introduction](tutorial_introduction.html)
-2.  [Creating a simple game](creating_a_simple_game.html)
-3.  [Interacting with objects](interacting_with_objects.html)
-
-Intermediate
-------------
-
-By now you should be able to create a simple game. Read on in the tutorial to discover how to make it more interactive.
-
-1.  [Anatomy of a Quest game](anatomy_of_a_quest_game.html)
-2.  [Using scripts](using_scripts.html)
-3.  [Showing a map](showing_a_map.html)
-4.  [Custom attributes](custom_attributes.html)
-5.  [Custom commands](custom_commands.html)
-6.  [More things to do with objects](more_things_to_do_with_objects.html)
-7.  [Using containers](using_containers.html)
-8.  [Moving objects during the game](moving_objects_during_the_game.html)
-9.  [Status attributes](status_attributes.html)
-
-Advanced
---------
-
-Now you're able to create a pretty sophisticated game, you probably don't *need* to read all of these sections - but Quest is a very powerful system, and if you want to master it, read on!
-
-1.  [Changing the player object](changing_the_player_object.html)
-2.  [Using timers and turn scripts](using_timers_and_turn_scripts.html)
-3.  [Using lockable containers](using_lockable_containers.html)
-4.  [Using lockable exits](using_lockable_exits.html)
-5.  [Multiple choices - using a "switch" script](multiple_choices___using_a_switch_script.html)
-6.  [Changing the user experience](changing_the_user_experience.html)
-7.  [Multimedia](multimedia.html)
-8.  [Using walkthroughs](using_walkthroughs.html)
-9.  [Debugging your game](debugging_your_game.html)
-10.  [Releasing your game](releasing_your_game.html)
-
-Elite
------
-
-Most people probably won't need these features, unless you're creating something very special or very big!
-
-1.  [Creating functions that return a value](creating_functions_which_return_a_value.html)
-2.  [Changing templates](changing_templates.html)
-3.  [Using inherited types](using_inherited_types.html)
-4.  [Using libraries](using_libraries.html)
-5.  [Using Javascript](using_javascript.html)
+1.  [Introduction](tutorial/tutorial_introduction.html)
+1.  [Creating a simple game](tutorial/creating_a_simple_game.html)
+1.  [Interacting with objects](tutorial/interacting_with_objects.html)
+1.  [Anatomy of a Quest game](tutorial/anatomy_of_a_quest_game.html)
+1.  [Using scripts](tutorial/using_scripts.html)
+1.  [Custom attributes](tutorial/custom_attributes.html)
+1.  [Custom commands](tutorial/custom_commands.html)
+1.  [More things to do with objects](tutorial/more_things_to_do_with_objects.html)
+1.  [Using containers](tutorial/using_containers.html)
+1.  [Lockable containers](tutorial/using_lockable_containers.html)
+1.  [Moving objects during the game](tutorial/moving_objects_during_the_game.html)
+1.  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html)
 

@@ -45,4 +45,4 @@ It might be a good idea to tick the "List children when object is looked at or o
      You open it.
      It contains a defibrillator.
 
-[Next: Using lockable exits](using_lockable_exits.html)     
+[Next: Moving objects during the game](moving_objects_during_the_game.html)
