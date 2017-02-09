@@ -1,0 +1,379 @@
+<!--Saved by Quest 5.6.6108.15891-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
+  <delegate name="textprocessor" parameters="" type="string" />
+  <game name="Unit testing">
+    <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
+    <version>1.0</version>
+    <firstpublished>2017</firstpublished>
+    <defaultforeground>Black</defaultforeground>
+    <showpanes type="boolean">false</showpanes>
+    <testcount type="int">0</testcount>
+    <testfailures type="stringlist" />
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <feature_annotations />
+    <attr name="feature_advancedwearables" type="boolean">false</attr>
+    <attr name="autodescription_youarein" type="int">0</attr>
+    <attr name="autodescription_youcansee" type="int">0</attr>
+    <attr name="autodescription_youcango" type="int">0</attr>
+    <attr name="autodescription_description" type="int">0</attr>
+    <showcommandbar />
+    <showlocation type="boolean">false</showlocation>
+    <showborder type="boolean">false</showborder>
+    <roomenter type="script">
+    </roomenter>
+    <start type="script"><![CDATA[
+      // Test FormatList and IndexOf
+      list = Split("one;two;three", ";")
+      Assert ("one, two or three", FormatList(list, ",", "or", "nothing"))
+      Assert ("one; two; and three", FormatList(list, ";", "; and", "nothing"))
+      Assert (0, IndexOf(list, "one"))
+      Assert (-1, IndexOf(list, "zero"))
+      list = NewStringList()
+      Assert ("nothing", FormatList(list, ",", "and", "nothing"))
+      Assert (-1, IndexOf(list, "one"))
+      //
+      // -------------------------------------------------------------------------
+      // Test ToWords and ToRoman
+      Assert ("fourteen", ToWords(14))
+      Assert ("one hundred and forty", ToWords(140))
+      Assert ("fourteen hundred and nine", ToWords(1409))
+      Assert ("minus fourteen", ToWords(-14))
+      Assert ("1400000", ToWords(1400000))
+      Assert ("XIV", ToRoman(14))
+      Assert ("", ToRoman(0))
+      Assert ("CXL", ToRoman(140))
+      Assert ("MCDIX", ToRoman(1409))
+      //
+      // -------------------------------------------------------------------------
+      // Test Spaces
+      Assert ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Spaces(5))
+      Assert ("", Spaces(-1))
+      //
+      // -------------------------------------------------------------------------
+      // Test ScopeUnlockedExitsForRoom
+      Assert (2, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitsecond.locked = true
+      Assert (1, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitthird.visible = false
+      Assert (0, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitsecond.locked = false
+      exitthird.visible = true
+      //
+      // -------------------------------------------------------------------------
+      // Test CloneObjectAndMoveHere
+      cl = CloneObjectAndMoveHere (tiger)
+      Assert (room, cl.parent)
+      Assert ("tiger", cl.alias)
+      //
+      // -------------------------------------------------------------------------
+      // Test PickOne...
+      Assert ("", PickOneString(NewStringList()))
+      list = Split("one;two;three", ";")
+      for (i, 1, 20) {
+        AssertIn (list, PickOneString(list))
+      }
+      for (i, 1, 20) {
+        AssertIn (list, PickOneString("one;two;three"))
+      }
+      ol = NewObjectList()
+      Assert (null, PickOneObject(ol))
+      list add (ol, hat)
+      list add (ol, teapot)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneChildOfType(third, "specialtype"))
+      }
+      list add (ol, tiger)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneObject(ol))
+      }
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneChild(third))
+      }
+      ol = NewObjectList()
+      list add (ol, exitsecond)
+      list add (ol, exitthird)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneExit(room))
+      }
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneUnlockedExit(room))
+      }
+      exitsecond.locked = true
+      list remove (ol, exitsecond)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneUnlockedExit(room))
+      }
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: colours
+      Assert ("This is in <span style=\"color:red;\">red</span>", ProcessText("This is in {colour:red:red}"))
+      Assert ("This is in <span style=\"color:red;\">red</span>", ProcessText("This is in {color:red:red}"))
+      Assert ("This is in <span style=\"background-color:red;\">red</span>", ProcessText("This is in {back:red:red}"))
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: either
+      player.count = 5
+      player.flag = true
+      Assert ("1 You don't have enough", ProcessText("1 You {either player.count < 10:don't }have enough"))
+      Assert ("2 You have enough", ProcessText("2 You {either player.count<3:don't }have enough"))
+      Assert ("3 You don't have enough", ProcessText("3 You {either player.flag:don't }have enough"))
+      Assert ("4 You have enough", ProcessText("4 You {either not player.flag:don't }have enough"))
+      player.flag = false
+      Assert ("5 You have enough", ProcessText("5 You {either player.flag:don't }have enough"))
+      Assert ("6 You don't have enough", ProcessText("6 You {either not player.flag:don't }have enough"))
+      Assert ("7 You have more than 4", ProcessText("7 You have {either player.count > 4:more than 4:less than 5}"))
+      Assert ("8 You have less than 6", ProcessText("8 You have {either player.count > 5:more than 5:less than 6}"))
+      Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\"):are the player}"))
+      Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"))
+      Assert ("You are the player", ProcessText("You {if player.alias=me:are the player}"))
+      Assert ("You are the player", ProcessText("You {if player.alias<>you:are the player}"))
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: eval
+      Assert ("player.count = 5", ProcessText("player.count = {=player.count}"))
+      Assert ("You are in the room", ProcessText("You are in the {=player.parent.name}"))
+      Assert ("You are in the Room", ProcessText("You are in the {=CapFirst(player.parent.name)}"))
+      Assert ("player.count = 5", ProcessText("player.count = {eval:player.count}"))
+      Assert ("You are in the room", ProcessText("You are in the {eval:player.parent.name}"))
+      Assert ("You are in the Room", ProcessText("You are in the {eval:CapFirst(player.parent.name)}"))
+      Assert ("This is from test", ProcessText("This is {=Test}"))
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: curly brace
+      Assert ("player.count = {player.count}", ProcessText("player.count = @@@open@@@player.count@@@close@@@"))
+      Assert ("player.count = {}", ProcessText("player.count = @@@open@@@@@@close@@@"))
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: failing text
+      Assert ("1 You don't have enough", ProcessText("1 You {if player.count<10:don't }have enough"))
+      Assert ("2 You {if player2.count<10:don't }have enough", ProcessText("2 You {if player2.count<10:don't }have enough"))
+      //
+      // -------------------------------------------------------------------------
+      // Text processor: old error handling
+      Assert ("player.count = {unknown.count}", ProcessText("player.count = {unknown.count}"))
+      Results
+    ]]></start>
+  </game>
+  <command name="put">
+    <pattern type="string"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></pattern>
+    <script>
+      // put object1 in/on object 2
+      canbedropped = true
+      if (HasBoolean(object1, "drop")) {
+        if (not object1.drop) {
+          canbedropped = false
+        }
+      }
+      if (object1.parent = object2) {
+        msg (DynamicTemplate("AlreadyThere", object1))
+      }
+      else if (not ListContains(ScopeInventory(), object1)) {
+        msg (DynamicTemplate("NotCarrying", object1))
+      }
+      else if (not canbedropped) {
+        msg (DynamicTemplate("ObjectCannotBeStored", object1))
+      }
+      else if (not ListContains(ScopeReachable(), object1)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+      }
+      else if (not ListContains(ScopeReachable(), object2)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+      }
+      else if (not object2.container) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not object2.isopen) {
+        msg (DynamicTemplate("ObjectNotOpen", object2))
+      }
+      else {
+        if (GetBoolean(object2, "hidechildren")) {
+          object2.hidechildren = false
+        }
+        if (HasDelegateImplementation(object2, "addscript")) {
+          rundelegate (object2, "addscript", object1)
+        }
+        else {
+          if (HasScript(object1, "drop")) {
+            d = NewDictionary()
+            dictionary add (d, "destination", object2)
+            do (object1, "drop", d)
+          }
+          else {
+            object1.parent = object2
+            msg (Template("Done"))
+          }
+        }
+      }
+      // must be carrying object1
+      // object1 must not be inside a closed container
+      // object2 must not be inside a closed container
+      // object2 must be an open container or surface
+    </script>
+  </command>
+  <object name="room">
+    <inherit name="editor_room" />
+    <attr name="implementation_notes">This is just a test of new features for Quest 5.7</attr>
+    <usedefaultprefix />
+    <customtp type="script">
+      msg ("here1")
+      msg ("section=" + section)
+      game.textprocessorresult = "@" + section + "@"
+      msg ("here2")
+      msg ("game.textprocessorresult=" + game.textprocessorresult)
+    </customtp>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <object name="backpack">
+        <inherit name="editor_object" />
+        <inherit name="container_open" />
+        <feature_container />
+      </object>
+    </object>
+    <exit name="exitsecond" alias="southeast" to="second">
+      <inherit name="southeastdirection" />
+    </exit>
+    <exit name="exitthird" alias="southwest" to="third">
+      <inherit name="southwestdirection" />
+    </exit>
+    <object name="door">
+      <inherit name="editor_object" />
+      <unlock type="string"></unlock>
+    </object>
+  </object>
+  <object name="second">
+    <inherit name="editor_room" />
+    <exit alias="northwest" to="room">
+      <inherit name="northwestdirection" />
+    </exit>
+  </object>
+  <object name="third">
+    <inherit name="editor_room" />
+    <exit alias="northeast" to="room">
+      <inherit name="northeastdirection" />
+    </exit>
+    <object name="hat">
+      <inherit name="editor_object" />
+      <inherit name="specialtype" />
+      <inherit name="wearable" />
+      <feature_wearable />
+      <multistate />
+    </object>
+    <object name="teapot">
+      <inherit name="editor_object" />
+      <inherit name="specialtype" />
+      <inherit name="container_closed" />
+      <inherit name="container_lockable" />
+      <take />
+      <drop type="boolean">false</drop>
+      <feature_container />
+      <transparent />
+    </object>
+    <object name="tiger">
+      <inherit name="editor_object" />
+    </object>
+    <exit alias="west" to="fourth">
+      <inherit name="westdirection" />
+      <runscript type="boolean">false</runscript>
+      <message>You sneak down the dark passage...</message>
+    </exit>
+  </object>
+  <object name="fourth">
+    <inherit name="editor_room" />
+    <dropdestination type="object">third</dropdestination>
+    <object name="droppable object">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="undroppable object">
+      <inherit name="editor_object" />
+      <take />
+      <drop type="boolean">false</drop>
+    </object>
+    <object name="script drop object">
+      <inherit name="editor_object" />
+      <take />
+      <drop type="script">
+        msg ("you are trying to drop this object to " + GetDisplayName(destination))
+      </drop>
+    </object>
+    <exit alias="east" to="third">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="backdrop">
+    <inherit name="editor_room" />
+    <object name="wall">
+      <inherit name="editor_object" />
+    </object>
+    <object name="sky">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+  <type name="specialtype" />
+  <function name="Assert" parameters="expected, actual"><![CDATA[
+    if (not expected = actual) {
+      Result (">" + actual + "< was expected to be >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertIn" parameters="list, actual"><![CDATA[
+    if (not ListContains(list, actual)) {
+      Result (">" + actual + "< expected to be in " + list)
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="Result" parameters="message"><![CDATA[
+    if (message = null) {
+      JS.addText (".")
+    }
+    else {
+      JS.addText ("F")
+      list add (game.testfailures, message)
+    }
+    game.testcount = game.testcount + 1
+    if (game.testcount = 50) {
+      JS.addText ("<br/>")
+      game.testcount = 0
+    }
+  ]]></function>
+  <function name="Results">
+    msg (" ")
+    msg (" ")
+    if (ListCount(game.testfailures) = 0) {
+      msg ("No failures!")
+    }
+    else {
+      msg (ListCount(game.testfailures) + " failure(s):")
+      foreach (s, game.testfailures) {
+        OutputTextRaw (s)
+      }
+    }
+    msg (" ")
+    msg (" ")
+  </function>
+  <function name="Test" type="string">
+    return ("from test")
+  </function>
+  <walkthrough name="test_put_in">
+    <steps type="simplestringlist">
+      southwest
+      west
+      get all
+      drop droppable
+      get droppable
+      drop undroppable
+      drop script
+      put droppable in backpack
+      put undroppable in backpack
+      put script in backpack
+    </steps>
+  </walkthrough>
+</asl>
