@@ -47,7 +47,13 @@ There is an option to hide the save button in the web player (it does not stop p
 Text Processor
 --------------
 
-This has been updated so that it has a few extra commands (incorporating most of the TextProcessorPlus library); "colour" (or "color") will get the text to display in that colour. Similarly, "back" will change the background colour. The "popup" command creates a link, clicking on it will display an information box, which can be dismissed by clicking.
+This has been updated so that it has a few extra commands (incorporating most of the TextProcessorPlus library); "colour" (or "color") will get the text to display in that colour. Similarly, "back" will change the background colour. You can also use "i", "b", "u" or "s" for italic, bold, underline or strike-through.
+
+> Here is some text with {colour:red:this} in red, and {b:{back:blue:that}} in bold with a blue background.
+
+The "popup" command creates a link, clicking on it will display an information box, which can be dismissed by clicking.
+
+> The man is carrying a {popup:spade:A spade is a tool commonly used for digging holes.} over his back.
 
 The "either" command is similar to "if", but has a second (optional) part that is printed if the condition fails, and is more flexible with its conditions, as these now evaluated as Quest code (this does mean that strings need to go in quotes which is different to how this was in TextProcessorPlus library). 
 

@@ -27,7 +27,7 @@ Contents
 
 [Search](#Search)
 
-NOTE: The Quest documentation is undergoing a review; pages listed here without links are planned, but as yet unwritten. Please bear with us!
+NOTE: The Quest documentation is undergoing a review, with pages being moved around and re-written. Please bear with us!
 
 
 
@@ -49,16 +49,9 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 1.  [Moving objects during the game](tutorial/moving_objects_during_the_game.html)
 1.  [Status attributes](tutorial/status_attributes.html)
 1.  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html)
+1.  [Releasing your game](tutorial/releasing_your_game.html)
 
 
-
-<a name="Publishing"></a>Publishing
------------------------------------
-
-Steps to take to get your game released to the public.
-
--  [Debugging your game](tutorial/debugging_your_game.html)
--  [Releasing your game](tutorial/releasing_your_game.html)
 
 
 
@@ -70,15 +63,12 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Text Processor](text_processor.html)
 -  [Complex commands](complex_commands.html)
 -  [Changing the player object](tutorial/changing_the_player_object.html)
--  [Text formatting](tutorial/text_formatting.html)
 -  [Using lockable exits](tutorial/using_lockable_exits.html)
--  [Using walkthroughs](tutorial/using_walkthroughs.html)
 -  [Light and dark](handling_light_and_dark.html)
 -  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](tutorial/showing_a_map.html)
--  [Overriding functions](overriding.html)
-
+-  [Handling water](handling_water.html)
 
 
 <a name="TheUserExperience"></a>The User Experience
@@ -102,12 +92,20 @@ A look at some of the more technical features of Quest.
 -  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
+-  [Change scripts](change_scripts.html)
+-  [Pattern matching](pattern_matching.html)
+
+Due to restrictions in the wev editor, the following are only applicable to the desktop version.
+
+-  [Using walkthroughs](tutorial/using_walkthroughs.html)
+-  [Overriding functions](overriding.html)
 -  [Using types](tutorial/using_inherited_types.html)
 -  [Changing templates](tutorial/changing_templates.html)
 -  [Translating Quest](translating_quest.html)
 -  [Using libraries](tutorial/using_libraries.html)
 -  [Creating Libraries](creating_libraries.html)
 -  [Using Javascript](tutorial/using_javascript.html)
+-  [Debugging your game](tutorial/debugging_your_game.html)
 
 
     

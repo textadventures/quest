@@ -3,7 +3,7 @@ layout: index
 title: Handling water
 ---
 
-There is more than one way to do this, but this is what I recommend. This will involve setting attributes, so you will struggle with the on-line editor.
+There is more than one way to do this, but this is what I recommend. This will involve setting attributes, so you will struggle with the on-line editor, but it is certainly doable!
 
 What we will do is to create a waterskin that can be filled and drunk from, and then set up a room with a pool of water and another with a tap.
 
