@@ -110,6 +110,7 @@ The way to write the code here is going to be the same for most commands. Think 
 As Quest will only match an object if it is present, so we do not need to check if the hook is present, it must be if Quest found it (and you may choose not to check number 1; does the player need the cord in his inventory or should the command work if the cord is lying on the ground?).
 
 For these four conditions, we convert them to a if/else if/else cascade, at each step testing if it is not so (lines starting with two slashes are comments, by the way):
+
 ```
   // 1. The player has the first object
   if (not object1.parent = player) {
@@ -142,6 +143,7 @@ More General
 Suppose there are several objects the cord might be tied to, what is the best way to handle that? What we want is a command that can handle tying the cord to any such object, so the first thing to do is to flag an object as attachable. Go to the Attributes tab of each object, and add a new attribute, "attachable", set it to be a Boolean, and tick it. Now our command can check if the object has that set, and if it does, the cord can be tied to it.
 
 The code here has two changes. Condition number 3 now checks the attachable flag, instead of checking the object in the hook. Also, at the end, an attribute on the cord gets set to the object it is attached to, so you can test what that was if necessary.
+
 ```
   // 1. The player has the first object
   if (not object1.parent = player) {
