@@ -215,9 +215,6 @@
   <template name="EditorObjectAskTellTellabout">Tell about</template>
   <template name="EditorObjectTellScripttorun">Script to run when told about an unknown topic</template>
   <template name="EditorObjectAnnotationAnnotation">Notes</template>
-  
-  
-  
   <template name="EditorObjectAttributesAttributes">Attributes</template>
   <template name="EditorObjectAttributesStatusattributes">Status attributes</template>
   <template name="EditorObjectChildrenObjects">Objects</template>
@@ -253,6 +250,11 @@
   <template name="EditorObjectContainerCanbelocked">Can be locked open</template>
   <template name="EditorObjectContainerAfterlocking">After locking the object</template>
   <template name="EditorObjectContainerAfterunlocking">After unlocking the object</template>
+
+  <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in.</template>
+  <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
+  <template name="EditorObjectContainerLockNote">These scripts will run after the object is locked or unlocked. You can check the "locked" flag on this object at any time in your game to see state the object is in.</template>
+
   <template name="EditorObjectExitsExits">Exits</template>
   <template name="EditorObjectExitsExitslistprefix">Exits list prefix</template>
   <template name="EditorObjectFeaturesFeatures">Features</template>
