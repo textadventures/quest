@@ -16,3 +16,14 @@ Format dicetype: [number of dice]d[number of sides]
       } 
 
 This function was added in Quest 5.3.
+
+As of Quest 5.7, this can also handle strings like "d6+1" and "3d8-2", using these formats:
+
+```
+d[number of sides]
+[number of dice]d[number of sides]
+d[number of sides]+[bonus]
+[number of dice]d[number of sides]+[bonus]
+d[number of sides]-[penalty]
+[number of dice]d[number of sides]-[penalty]
+```
