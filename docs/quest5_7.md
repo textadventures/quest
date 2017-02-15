@@ -16,6 +16,7 @@ Customisation of the UI is now much easier. There are a number of new JavaScript
 You can now select different colour schemes for the panes on the right (or invent your own with a JavaScript function, JS.setPanes)
 
 You can turn off individual panes, and add a new command pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands).
+https://github.com/textadventures/quest/issues/752
 
 ### Command bar
 
@@ -82,6 +83,8 @@ A new function, `ProcessText` is used by the output functions. You could use thi
 // ... or a number
 "There are {=ListCount(AllObjects())} objects"
 -> "There are 6 objects"
+"Carry capacity remaining: {=player.maxvolume - GetVolume(player, false)} kg"
+-> "Carry capacity remaining: 5 kg"
 
  // And it will add brackets if it is ONLY a function call with no parameters.
 "You look out the window: {=LookOutWindow}"
@@ -98,7 +101,10 @@ A new function, `ProcessText` is used by the output functions. You could use thi
  -> "'Oh, he is not worth it.'",
 ```
 
- 
+Icelandic
+---------
+
+We are indebted to Kaspar Jan for providing a translation into Icelandic.
  
  
 New functions
@@ -173,7 +179,12 @@ Look directions are rarely used, so this is now a feature that must be turned on
 https://github.com/textadventures/quest/issues/681).
 
 If a room is dark, the game will return a message saying it is too dark to see anything. Previously it said nothing (if there was no message set), which I think was a bug. Note that the message is the same one that is seen when examining an object and it is too dark to see it. It works in English, it might not in other languages.
- 
+
+The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but will still work with existing code). A good use of `DiceRoll` is to determine the effect of an attack in an RPG-style game, and the characteristics of the attack can be stored as strings in this form (which is standard in the RPG world).
+
+The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
+
+
  
  
  

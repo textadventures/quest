@@ -96,10 +96,24 @@ This will add two entries in the object "Type" dropdown, allowing the game autho
 
 If your language has more than two genders, you can add more types and add them to the same LanguageSpecificObjectTypes template.
 
+
+Adding the translation to your game
+-----------------------------------
+
+These are standard library files so can be added as such.
+
+To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest will then tell you to save and re-load your game.
+
+More on using libraries [here](tutorial/using_libraries.html).
+
+
 Releasing your translation
 --------------------------
 
-When you have finished your translation, if you'd like it to be included with Quest so that other game authors can use it, please email it to <alex@axeuk.com> for it to be included in the next release.
+When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation.
+
+[Github Issue Tracker](https://github.com/textadventures/quest/issues)
+
 
 Keeping the translation up to date
 ----------------------------------
