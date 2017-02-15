@@ -26,7 +26,6 @@
   <include ref="CoreCombat.aslx"/>
   <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
-  <include ref="CoreAnnotation.aslx"/>
   <include ref="CoreWearable.aslx"/>
 
   <function name="InitInterface"><![CDATA[

@@ -218,5 +218,6 @@
   <include ref="CoreEditorJavascript.aslx"/>
   <include ref="CoreEditorTimer.aslx"/>
   <include ref="CoreEditorTurnScript.aslx"/>
+  <include ref="CoreEditorAnnotation.aslx"/>
 
 </library>

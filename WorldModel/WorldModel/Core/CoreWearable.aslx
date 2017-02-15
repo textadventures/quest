@@ -1,28 +1,6 @@
 <library>
   
-  
-  <!--  OBJECTS  -->
-  
-  <object name="_verblists">
-    <lookat type="stringlist">
-      <value>Look at</value>
-    </lookat>
-    <drop type="stringlist">
-      <value>Look at</value>
-      <value>Drop</value>
-    </drop>
-    <remove type="stringlist">
-      <value>Look at</value>
-      <value>Remove</value>
-    </remove>
-    <wear type="stringlist">
-      <value>Look at</value>
-      <value>Drop</value>
-      <value>Wear</value>
-    </wear>
-  </object>
  
-  
   <!--  COMMANDS  -->
 
 	
@@ -569,34 +547,34 @@
     outer = _GetOuterForGarment(game.pov, garment)
     if (not garment.worn) {
       if (outer = null) {
-        _SetVerbList (garment, _verblists.wear, garment.invverbs)
+        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
       }
       else if (outer.wear_layer < garment.wear_layer) {
-        _SetVerbList (garment, _verblists.wear, garment.invverbs)
+        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
       }
       else {
-        _SetVerbList (garment, _verblists.drop, garment.invverbs)
+        _SetVerbList (garment, Split("Look at;Drop", ";"), garment.invverbs)
       }
     }
     else {
       if (outer = null) {
         if (garment.removeable) {
-          _SetVerbList (garment, _verblists.remove, garment.wornverbs)
+          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, _verblists.lookat, garment.wornverbs)
+          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
         }
       }
       else if (outer.wear_layer < garment.wear_layer) {
         if (garment.removeable) {
-          _SetVerbList (garment, _verblists.remove, garment.wornverbs)
+          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, _verblists.lookat, garment.wornverbs)
+          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
         }
       }
       else {
-        garment.inventoryverbs = _verblists.lookat
+        garment.inventoryverbs = Split("Look at", ";")
       }
     }
 	]]></function>
@@ -722,7 +700,7 @@
 		<wornverbs type="string"></wornverbs>
     <take type="script">
       msg (DynamicTemplate("TakeSuccessful", this))
-      this.inventoryverbs = if(game.pov.headwearslot = null, _verblists.wear, _verblists.drop)
+      this.inventoryverbs = if(game.pov.headwearslot = null, Split("Look at;Drop;Wear", ";"), Split("Look at;Drop", ";"))
       this.parent = game.pov
     </take>
 		<removeable type="boolean">true</removeable>

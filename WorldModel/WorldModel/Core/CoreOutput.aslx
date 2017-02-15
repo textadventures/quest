@@ -170,8 +170,26 @@
     else if (StartsWith(section, "either ")) {
       return (ProcessTextCommand_Either(section, data))
     }
+    else if (StartsWith(section, "here ")) {
+      return (ProcessTextCommand_Here(section, data, true))
+    }
+    else if (StartsWith(section, "nothere ")) {
+      return (ProcessTextCommand_Here(section, data, false))
+    }
     else if (StartsWith(section, "popup:")) {
       return (ProcessTextCommand_Popup(Mid(section, 7), data))
+    }
+    else if (StartsWith(section, "i:")) {
+      return (ProcessTextCommand_Format(Mid(section, 3), data, "i"))
+    }
+    else if (StartsWith(section, "u:")) {
+      return (ProcessTextCommand_Format(Mid(section, 3), data, "u"))
+    }
+    else if (StartsWith(section, "b:")) {
+      return (ProcessTextCommand_Format(Mid(section, 3), data, "b"))
+    }
+    else if (StartsWith(section, "s:")) {
+      return (ProcessTextCommand_Format(Mid(section, 3), data, "s"))
     }
     else if (StartsWith(section, "color:")) {
       return (ProcessTextCommand_Colour(Mid(section, 7), data))
@@ -304,7 +322,35 @@
   ]]>
   </function>
 
- 
+  <function name="ProcessTextCommand_Here" parameters="section, data, flag" type="string">
+    len = 9
+    if (flag) {
+      len = 6
+    }
+    command = Mid(section, len)
+    colon = Instr(command, ":")
+    if (colon = 0) {
+      return ("@@@open@@@" + section + "@@@close@@@")
+    }
+    else {
+      text = Mid(command, colon + 1)
+      condition = Left(command, colon - 1)
+      object = Eval(condition)
+      if (object = null) {
+        return ("@@@open@@@" + section + "@@@close@@@")
+      }
+      if (object.parent = game.pov.parent and flag) {
+        return (ProcessTextSection(text, data))
+      }
+      else if (not object.parent = game.pov.parent and not flag) {
+        return (ProcessTextSection(text, data))
+      }
+      else {
+        return ("")
+      }
+    }
+  </function>
+
   <function name="ProcessTextCommand_If" type="string" parameters="section, data">
   <![CDATA[
     command = Mid(section, 4)
@@ -463,6 +509,14 @@
 
 
   
+  <function name="ProcessTextCommand_Format" parameters="section, data, html" type="string"><![CDATA[
+    return(ProcessTextSection("<" + html + ">" + section + "</" + html + ">", data))
+  ]]></function> 
+
+
+
+
+
   <function name="ProcessTextCommand_Colour" parameters="section, data" type="string"><![CDATA[
     ary = Split(section, ":")
     c = StringListItem(ary, 0)

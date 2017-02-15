@@ -63,6 +63,12 @@
     </control>
 
     <control>
+      <controltype>label</controltype>
+      <caption>[EditorObjectContainerOpenableNote]</caption>
+      <mustinherit>openable</mustinherit>
+    </control>    
+    
+    <control>
       <controltype>checkbox</controltype>
       <caption>[EditorObjectContainerTransparent]</caption>
       <attribute>transparent</attribute>
@@ -161,6 +167,12 @@
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorObjectContainerContainerNote]</caption>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+    </control>    
+    
     <control>
       <controltype>title</controltype>
       <caption>[EditorObjectContainerLocking]</caption>
@@ -287,5 +299,11 @@
       <mustinherit>container_lockable</mustinherit>
     </control>
 
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorObjectContainerLockNote]</caption>
+      <mustinherit>container_lockable</mustinherit>
+    </control>    
+    
   </tab>
 </library>

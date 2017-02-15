@@ -1,25 +1,35 @@
 ﻿<library>
-  <function name="DiceRoll" parameters="dicetype" type="int">
-    dpos = Instr(dicetype, "d")
-    if (dpos = 0) {
-      error ("Invalid dice type: " + dicetype)
+  <function name="DiceRoll" parameters="dice" type="int">
+    p1 = Instr(dice, "d")
+    p2 = Instr(dice, "+")
+    p4 = Instr(dice, "-")
+    p3 = LengthOf(dice)
+    if (p1 = 0) {
+      error ("Invalid dice type: " + dice)
+    }
+    number_str = Mid(dice, 1, p1 - 1)
+    if (LengthOf(number_str) = 0) {
+      number = 1
     }
     else {
-      number_string = Left(dicetype, dpos - 1)
-      sides_string = Mid(dicetype, dpos + 1)
-      if (not (IsNumeric(number_string) and IsNumeric(sides_string))) {
-        error ("Invalid dice type: " + dicetype)
-      }
-      else {
-        number = ToInt(number_string)
-        sides = ToInt(sides_string)
-        total = 0
-        for (i, 1, number) {
-          total = total + GetRandomInt(1, sides)
-        }
-        return (total)
-      }
+      number = ToInt(number_str)
     }
+    if (p2 > 0) {
+      sides = ToInt(Mid(dice, p1 + 1, p2 - p1 - 1))
+      total = ToInt(Mid(dice, p2 + 1, p3 - p2))
+    }
+    else if (p4 > 0) {
+      sides = ToInt(Mid(dice, p1 + 1, p4 - p1 - 1))
+      total = -ToInt(Mid(dice, p4 + 1, p3 - p2))
+    }
+    else {
+      sides = ToInt(Mid(dice, p1 + 1, p3 - p1))
+      total = 0
+    }
+    for (i, 1, number) {
+      total = total + GetRandomInt(1, sides)
+    }
+    return (total)    
   </function>
   
   <function name="PickOneObject" parameters="lst" type="object">
