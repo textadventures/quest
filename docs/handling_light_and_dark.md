@@ -47,13 +47,17 @@ Implementing a Light Switch
 ---------------------------
 
 Create an object, lightswitch, inside the dark room. On the Features tab, make it switchable. On the Switchable tab, also make it Switchable, and fill in the message boxes. Then in the script to run when turned on, put in this (not sure what to do with code? See [here](copy_and_paste_code.html)):
+
 ```
   darkroom.dark=false
 ```
+
 For the other script, you need this:
+
 ```
   darkroom.dark=true
 ```
+
 Very simple, they just alter the "dark" attribute of your dark room.
 
 If you try it out, you will find the light switch now controls the darkness of the room (you will need the torch to find the switch, but then leave the torch elsewhere to confirm the room is now lit). You could, of course, set the switch to be a weak light source, so it can be found in the dark.
@@ -63,10 +67,13 @@ Implementing a Switchable Torch
 -------------------------------
 
 We should be able to turn the torch off, to save the battery. Pretty similar to before - on the torch object, first set it to not be a light source, as it is initially turned off (but keep it as a Strong light source!), then go to the Features tab, and make it switchable. On the Switchable tab, make it Switchable (the default messages are good enough). Then in the script to run when turned on, put in this:
+
 ```
   this.lightsource=true
 ```
+
 For the other script, you need this:
+
 ```
   this.lightsource=false
 ```
@@ -75,12 +82,15 @@ A Torch that Fails
 ------------------
 
 No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". If working offline, you can do that by going to the Attributes tab to create it, and Set it to be an integer, with a value of 5. If online, you have no Attributes tab, so go to the Script tab of the game object, and add this code:
+
 ```
   torch.battery = 5
 ```
+
 We now need a turn script. We could do this two ways: have the turn script enabled and disabled when the torch is turned on and off, or have it running all the time, but only use the battery when turned on. I am going to do the former.
 
 Create a turn script, and make sure it is under the Object object (i.e., it is vertically aligned with your rooms, not the stuff in the rooms). Give the turn script a name, torchturnscript, and paste in this code:
+
 ```
   torch.battery = torch.battery - 1
   if (torch.battery < 1) {
@@ -90,9 +100,11 @@ Create a turn script, and make sure it is under the Object object (i.e., it is v
     msg ("You torch flickers and dies.")
   }
 ```
+
 The first line reduces the life of the battery. If it gets to zero the rest of the script kicks (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to the fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
 
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
+
 ```
   this.lightsource = false
   DisableTurnScript (torchturnscript)
@@ -108,8 +120,23 @@ The turn on script is more complicated, as we have to test if the battery is dea
     this.switchedon = false
   }
 ```
+
 If the battery is good, the torch becomes a light source, and the turn script goes on.
 
 If the battery is dead, we need to turn the torch off again, and give a message. The turning on message will fire every time, that is just how Quest works, so the fail message needs to be crafted around that.
 
 Want to recharge the battery? Just set torch.battery.
+
+Is it dark?
+-----------
+
+If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a SEARCH command, the code might look like this:
+
+```
+if (CheckDarkness()) {
+  msg("It is too dark to search.")
+}
+else {
+  msg("You search but find nothing of interest.")
+}
+```
