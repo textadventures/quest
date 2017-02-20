@@ -81,7 +81,7 @@ For the other script, you need this:
 A Torch that Fails
 ------------------
 
-No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". If working offline, you can do that by going to the Attributes tab to create it, and Set it to be an integer, with a value of 5. If online, you have no Attributes tab, so go to the Script tab of the game object, and add this code:
+No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". If working offline, you can do that by going to the Attributes tab to create it, and Set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). If using the web version, you have no Attributes tab, so go to the Script tab of the game object, and add this code:
 
 ```
   torch.battery = 5
@@ -92,16 +92,19 @@ We now need a turn script. We could do this two ways: have the turn script enabl
 Create a turn script, and make sure it is under the Object object (i.e., it is vertically aligned with your rooms, not the stuff in the rooms). Give the turn script a name, torchturnscript, and paste in this code:
 
 ```
-  torch.battery = torch.battery - 1
-  if (torch.battery < 1) {
-    torch.switchedon = false
-    torch.lightsource = false
-    DisableTurnScript (torchturnscript)
-    msg ("You torch flickers and dies.")
-  }
+torch.battery = torch.battery - 1
+if (torch.battery < 1) {
+  torch.switchedon = false
+  torch.lightsource = false
+  DisableTurnScript (torchturnscript)
+  msg ("You torch flickers and dies.")
+  torch.cannotswitchon = "You cannot turn the torch on, the battery is dead."
+}
 ```
 
-The first line reduces the life of the battery. If it gets to zero the rest of the script kicks (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to the fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
+The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to the fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
+
+The last line sets a special attribute that (as of version 5.7) Quest will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
 
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
 
@@ -125,7 +128,12 @@ If the battery is good, the torch becomes a light source, and the turn script go
 
 If the battery is dead, we need to turn the torch off again, and give a message. The turning on message will fire every time, that is just how Quest works, so the fail message needs to be crafted around that.
 
-Want to recharge the battery? Just set torch.battery.
+Want to recharge or replace the battery? Here is the code:
+
+```
+torch.battery = 5
+torch.cannotswitchon = null
+```
 
 Is it dark?
 -----------
