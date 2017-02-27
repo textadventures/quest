@@ -12,7 +12,7 @@ title: Functions
 *  [AllObjects](allobjects.html)
 *  [AllTurnScripts](allturnscripts.html)
 *  [Asc](string/asc.html)
-*  [Ask](ask.html)
+*  [Ask](../scripts/ask.html)
 
 ## C
 
@@ -29,6 +29,10 @@ title: Functions
 *  [Clone](clone.html)
 *  [CommandLink](corelibrary/commandlink.html)
 *  [Contains](contains.html)
+*  [Create](../scripts/ask.html)
+*  [Create exit](../scripts/create_exit.html)
+*  [Create timer](../scripts/create_timer.html)
+*  [Create turnscript](../scripts/create_turnscript.html)
 
 ## D
 
