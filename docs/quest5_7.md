@@ -161,7 +161,7 @@ Added a "possessive" attribute to Inanimate object, Male character, etc, with th
 
 Added "me" as an alternative alias of the player, so if the author changes the player alias, LOOK AT ME will still work.
 
-An object initialisation is now done directly after the game.start script runs; for any object with a script called _initialise_, the script will be run. This will allow library authors to automatically initialise libraries, among other things.
+An object initialisation is now done directly after the game.start script runs; for any object with a script called \_initialise\_, the script will be run. This will allow library authors to automatically initialise libraries. For objects, you can turn on a new tab on the Features tab; the new tab will show this script. This will be a great way for users of the web version to set up attributes, given they have no attribute tab; attributes for an object can be set up in the \_initialise\_ script for that object, instead of having everything in the game start script.
 
 Added an object attribute, "dropdestination", to the Room tab of rooms. If this is set, then when an item is dropped in the room it ends up at that object, rather than the room. E.g., if the player is up a tree, dropped items end up at the bottom of the tree.
 
@@ -183,6 +183,10 @@ If a room is dark, the game will return a message saying it is too dark to see a
 The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but will still work with existing code). A good use of `DiceRoll` is to determine the effect of an attack in an RPG-style game, and the characteristics of the attack can be stored as strings in this form (which is standard in the RPG world).
 
 The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
+
+If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way.
+
+
 
 
  
