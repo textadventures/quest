@@ -12,4 +12,19 @@
       <expand/>
     </control>
   </tab>    
+
+  
+  
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>[EditorObjectStartscriptStartscript]</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_startscript</onlydisplayif>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>[EditorObjectScriptsInitial]</caption>
+      <attribute>_initialise_</attribute>
+    </control>
+  </tab>    
 </library>
