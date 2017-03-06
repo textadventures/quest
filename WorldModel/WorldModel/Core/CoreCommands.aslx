@@ -229,7 +229,7 @@
         }
         case ("boolean") {
           if (object.drop = true) {
-            object.parent = game.pov.parent
+            object.parent = destination
             if (dropmsg = null) {
               dropmsg = DynamicTemplate("DropSuccessful", object)
             }
