@@ -29,12 +29,9 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li {% if page.url == '/index.html' %}class="active"{% endif %}><a href="{{site.baseurl}}/">Home</a></li>
+            <li {% if page.url == '/quest/' || page.url == '/quest/index.html' %}class="active"{% endif %}><a href="{{site.baseurl}}/">Home</a></li>
             <li {% if page.url contains '/tutorial/' %}class="active"{% endif %}><a href="{{site.baseurl}}/tutorial/">Tutorial</a></li>
-            <li {% if page.url contains '/scripts/' %}class="active"{% endif %}><a href="{{site.baseurl}}/scripts/">Scripts</a></li>
             <li {% if page.url contains '/functions/' %}class="active"{% endif %}><a href="{{site.baseurl}}/functions/">Functions</a></li>
-            <li {% if page.url contains '/types/' %}class="active"{% endif %}><a href="{{site.baseurl}}/types/">Types</a></li>
-            <li {% if page.url contains '/elements/' %}class="active"{% endif %}><a href="{{site.baseurl}}/elements/">Elements</a></li>
           </ul>
         </div>
       </div>
