@@ -38,15 +38,19 @@ title: Functions
 
 *  [DecreaseHealth](corelibrary/decreasehealth.html)
 *  [DecreaseScore](corelibrary/decreasescore.html)
+*  [Destroy](../scripts/destroy.html)
 *  [DiceRoll](corelibrary/diceroll.html)
 *  [DictionaryContains](dictionarycontains.html)
 *  [DictionaryCount](dictionarycount.html)
 *  [DictionaryItem](dictionaryitem.html)
+*  [Dictionary add](../scripts/dictionary_add.html)
+*  [Dictionary remove](../scripts/dictionary_remove.html)
 *  [DisableTimer](corelibrary/disabletimer.html)
 *  [DisableTurnScript](corelibrary/disableturnscript.html)
 *  [DisplayHttpLink](corelibrary/displayhttplink.html)
 *  [DisplayList](corelibrary/displaylist.html)
 *  [DisplayMailtoLink](corelibrary/displaymailtolink.html)
+*  [Do](../scripts/do.html)
 *  [DoesInherit](doesinherit.html)
 *  [DynamicTemplate](dynamictemplate.html)
 
@@ -55,10 +59,15 @@ title: Functions
 *  [EnableTimer](corelibrary/enabletimer.html)
 *  [EnableTurnScript](corelibrary/enableturnscript.html)
 *  [EndsWith](string/endswith.html)
+*  [Error](../scripts/error.html)
 *  [Eval](eval.html)
 
 ## F
 
+*  [Finish](../scripts/finish.html)
+*  [Firsttime](../scripts/firsttime.html)
+*  [For](../scripts/for.html)
+*  [Foreach](../scripts/foreach.html)
 *  [FormatExitList](corelibrary/formatexitlist.html)
 *  [FormatObjectList](corelibrary/formatobjectlist.html)
 
@@ -81,6 +90,7 @@ title: Functions
 *  [GetFileData](getfiledata.html)
 *  [GetFileURL](getfileurl.html)
 *  [GetInput](getinput.html)
+*  [Get Input](../scripts/get_input.html)
 *  [GetInt](getint.html)
 *  [GetListDisplayAlias](corelibrary/getlistdisplayalias.html)
 *  [GetMatchStrength](getmatchstrength.html)
@@ -122,11 +132,14 @@ title: Functions
 
 ## I
 
+*  [If](../scripts/if.html)
 *  [IncreaseHealth](corelibrary/increasehealth.html)
 *  [IncreaseScore](corelibrary/increasescore.html)
 *  [InitUserInterface](corelibrary/inituserinterface.html)
+*  [Insert](../scripts/insert.html)
 *  [InstrRev](string/instrrev.html)
 *  [Instr](string/instr.html)
+*  [Invoke](../scripts/invoke.html)
 *  [IsDefined](isdefined.html)
 *  [IsDouble](isdouble.html)
 *  [IsGameRunning](isgamerunning.html)
@@ -151,6 +164,8 @@ title: Functions
 *  [ListExclude](listexclude.html)
 *  [ListItem](listitem.html)
 *  [ListParents](corelibrary/listparents.html)
+*  [List add](../scripts/list_add.html)
+*  [List remove](../scripts/list_remove.html)
 *  [LockExit](corelibrary/lockexit.html)
 *  [Log](corelibrary/log.html)
 
@@ -162,6 +177,7 @@ title: Functions
 *  [MakeObjectVisible](corelibrary/makeobjectvisible.html)
 *  [Mid](string/mid.html)
 *  [MoveObject](corelibrary/moveobject.html)
+*  [Msg](../scripts/msg.html)
 
 ## N
 
@@ -180,21 +196,27 @@ title: Functions
 *  [ObjectListItem](objectlistitem.html)
 *  [ObjectListSortDescending](objectlistsortdescending.html)
 *  [ObjectListSort](objectlistsort.html)
+*  [On ready](../scripts/on_ready.html)
 
 ## P
 
 *  [Pause](corelibrary/pause.html)
+*  [Picture](../scripts/picture.html)
+*  [Play sound](../scripts/play_sound.html)
 *  [Populate](populate.html)
 *  [PrintCentered](corelibrary/printcentered.html)
 
 ## R
 
-*  [RTrim](string/rtrim.html)
 *  [RandomChance](corelibrary/randomchance.html)
+*  [Request](../scripts/request.html)
 *  [RemoveObject](corelibrary/removeobject.html)
 *  [RemoveSceneryObjects](corelibrary/removesceneryobjects.html)
 *  [Replace](string/replace.html)
+*  [Return](../scripts/return.html)
 *  [Right](string/right.html)
+*  [RTrim](string/rtrim.html)
+*  [Rundelegate](../scripts/rundelegate.html)
 *  [RunDelegateFunction](rundelegatefunction.html)
 
 ## S
@@ -220,6 +242,7 @@ title: Functions
 *  [ScopeVisibleNotReachable](corelibrary/scopevisiblenotreachable.html)
 *  [ScopeVisible](corelibrary/scopevisible.html)
 *  [ScriptDictionaryItem](scriptdictionaryitem.html)
+*  [Set](../scripts/set.html)
 *  [SetAlignment](corelibrary/setalignment.html)
 *  [SetBackgroundColour](corelibrary/setbackgroundcolour.html)
 *  [SetBackgroundImage](corelibrary/setbackgroundimage.html)
@@ -243,15 +266,19 @@ title: Functions
 *  [SetTurnTimeout](corelibrary/setturntimeout.html)
 *  [SetWebFontName](corelibrary/setwebfontname.html)
 *  [ShowMenu](showmenu.html)
+*  [Show menu](../scripts/show_menu.html)
 *  [ShowRoomDescription](corelibrary/showroomdescription.html)
 *  [ShowVimeo](corelibrary/showvimeo.html)
 *  [ShowYouTube](corelibrary/showyoutube.html)
 *  [Split](string/split.html)
+*  [Start transaction](../scripts/start_transaction.html)
 *  [StartsWith](string/startswith.html)
 *  [StringDictionaryItem](stringdictionaryitem.html)
 *  [StringListItem](stringlistitem.html)
 *  [StringListSortDescending](stringlistsortdescending.html)
 *  [StringListSort](stringlistsort.html)
+*  [Stop sound](../scripts/stop_sound.html)
+*  [Switch](../scripts/switch.html)
 *  [SwitchOff](corelibrary/switchoff.html)
 *  [SwitchOn](corelibrary/switchon.html)
 
@@ -269,9 +296,12 @@ title: Functions
 ## U
 
 *  [UCase](string/ucase.html)
+*  [Undo](../scripts/undo.html)
 *  [UnlockExit](corelibrary/unlockexit.html)
 *  [UpdateStatusAttributes](corelibrary/updatestatusattributes.html)
 
 ## W
 
+*  [Wait](../scripts/wait.html)
 *  [WaitForKeyPress](corelibrary/waitforkeypress.html)
+*  [While](../scripts/while.html)
