@@ -109,22 +109,29 @@ We are indebted to Kaspar Jan for providing a translation into Icelandic.
  
 New functions
 -------------
+
 ```
 ScopeUnlockedExitsForRoom
 CloneObjectAndMoveHere
 ```
+
 ### String utilities
+
 ```
 FormatList (Split("one;two;three") -> "one, two and three")
 Spaces (5 -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 ToWords (42 -> "forty two")
 ToRoman (42 -> "XLII")
 ```
+
 ### Index of string or object in list
+
 ```
 IndexOf
 ```
+
 ### Get one at random
+
 ```
 PickOneString
 PickOneObject
@@ -196,39 +203,42 @@ Language support
 ----------------
 
 If you have a language file for the game, these templates should be added. 
+
 ``` 
-  <template name="NeutralPossessive">its</template>
-  <template name="MalePossessive">his</template>
-  <template name="FemalePossessive">her</template>
-  <template name="SelfPossessive">your</template>
-  <template name="NeutralPluralPossessive">their</template>
-  <template name="MalePluralPossessive">their</template>
-  <template name="FemalePluralPossessive">their</template>
-  <template name="Nothing">nothing</template>
+<template name="NeutralPossessive">its</template>
+<template name="MalePossessive">his</template>
+<template name="FemalePossessive">her</template>
+<template name="SelfPossessive">your</template>
+<template name="NeutralPluralPossessive">their</template>
+<template name="MalePluralPossessive">their</template>
+<template name="FemalePluralPossessive">their</template>
+<template name="Nothing">nothing</template>
 
-  <template name="SelfAlt">me; myself; self</template>
+<template name="SelfAlt">me; myself; self</template>
 
-	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
-	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
-	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
-	<dynamictemplate name="CannotWearOver">"You cannot wear that over " + object.display + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + object.display + "."</dynamictemplate>
-	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
-	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing "+object.display+"."</dynamictemplate>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
-	<template name="Wear">Wear</template>
-	<template name="WearCommand">put #object# on</template>
-	<verbtemplate name="wear">wear</verbtemplate>
-	<verbtemplate name="wear">put on</verbtemplate>
-	<verbtemplate name="wear">don</verbtemplate>
-	<template name="Remove">Remove</template>
-  <template name="RemoveCommand">take #object# off</template>
-	<verbtemplate name="remove">remove</verbtemplate>
-	<verbtemplate name="remove">take off</verbtemplate>
-	<verbtemplate name="remove">doff</verbtemplate>
+<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
+<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
+<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
+<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
+<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
+<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
+<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
+<dynamictemplate name="CannotWearOver">"You cannot wear that over " + GetDisplayGarment(object) + "."</dynamictemplate>
+<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
+<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+<template name="wornmodifier">worn</template>
+<!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+<template name="Wear">Wear</template>
+<template name="WearCommand">put #object# on</template>
+<verbtemplate name="wear">wear</verbtemplate>
+<verbtemplate name="wear">put on</verbtemplate>
+<verbtemplate name="wear">don</verbtemplate>
+<template name="Remove">Remove</template>
+<template name="RemoveCommand">take #object# off</template>
+<verbtemplate name="remove">remove</verbtemplate>
+<verbtemplate name="remove">take off</verbtemplate>
+<verbtemplate name="remove">doff</verbtemplate>
 ```
+
 There are considerably more for the editor.
