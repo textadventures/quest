@@ -255,6 +255,7 @@
   <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
   <template name="EditorObjectContainerLockNote">These scripts will run after the object is locked or unlocked. You can check the "locked" flag on this object at any time in your game to see state the object is in.</template>
 
+  
   <template name="EditorObjectExitsExits">Exits</template>
   <template name="EditorObjectExitsExitslistprefix">Exits list prefix</template>
   <template name="EditorObjectFeaturesFeatures">Features</template>
@@ -773,6 +774,12 @@
   <template name="TypeNone">None</template>
   <template name="TypeIndividually">Handle objects individually</template>
   <template name="TypePrintMessage">Print a message</template>
+  <template name="EditorObjectScriptsInitial">This script will run once, as the game starts</template>
+  <template name="EditorObjectStartscriptStartscript">Initialisation script</template>
+  <template name="EditorObjectFeaturesStartScript">Run an initialisation script for this object</template>
+  
+  
+  
   <template name="EditorObjectWearableWearable">Wearable</template>
   <template name="EditorObjectWearableCanBeWorn">Can be worn?</template>
   <template name="EditorObjectWearableWearLayer">Wear Layer</template>

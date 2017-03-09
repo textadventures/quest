@@ -46,6 +46,12 @@
       <caption>[EditorObjectFeaturesPlayerplayer]</caption>
       <attribute>feature_player</attribute>
     </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>[EditorObjectFeaturesStartScript]</caption>
+      <attribute>feature_startscript</attribute>
+    </control>
   </tab>
 
 </library>

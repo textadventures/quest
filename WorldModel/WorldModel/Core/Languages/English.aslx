@@ -117,10 +117,11 @@
 	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
-	<dynamictemplate name="CannotWearOver">"You cannot wear that over " + object.display + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + object.display + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearOver">"You cannot wear that over " + GetDisplayGarment(object) + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
 	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
-	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing "+object.display+"."</dynamictemplate>
+	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+	<template name="wornmodifier">worn</template>
   <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
 	<template name="Wear">Wear</template>
 	<template name="WearCommand">put #object# on</template>

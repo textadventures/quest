@@ -109,22 +109,29 @@ We are indebted to Kaspar Jan for providing a translation into Icelandic.
  
 New functions
 -------------
+
 ```
 ScopeUnlockedExitsForRoom
 CloneObjectAndMoveHere
 ```
+
 ### String utilities
+
 ```
 FormatList (Split("one;two;three") -> "one, two and three")
 Spaces (5 -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 ToWords (42 -> "forty two")
 ToRoman (42 -> "XLII")
 ```
+
 ### Index of string or object in list
+
 ```
 IndexOf
 ```
+
 ### Get one at random
+
 ```
 PickOneString
 PickOneObject
@@ -161,7 +168,7 @@ Added a "possessive" attribute to Inanimate object, Male character, etc, with th
 
 Added "me" as an alternative alias of the player, so if the author changes the player alias, LOOK AT ME will still work.
 
-An object initialisation is now done directly after the game.start script runs; for any object with a script called _initialise_, the script will be run. This will allow library authors to automatically initialise libraries, among other things.
+An object initialisation is now done directly after the game.start script runs; for any object with a script called \_initialise\_, the script will be run. This will allow library authors to automatically initialise libraries. For objects, you can turn on a new tab on the Features tab; the new tab will show this script. This will be a great way for users of the web version to set up attributes, given they have no attribute tab; attributes for an object can be set up in the \_initialise\_ script for that object, instead of having everything in the game start script.
 
 Added an object attribute, "dropdestination", to the Room tab of rooms. If this is set, then when an item is dropped in the room it ends up at that object, rather than the room. E.g., if the player is up a tree, dropped items end up at the bottom of the tree.
 
@@ -184,6 +191,10 @@ The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but wi
 
 The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
 
+If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way.
+
+
+
 
  
  
@@ -192,39 +203,42 @@ Language support
 ----------------
 
 If you have a language file for the game, these templates should be added. 
+
 ``` 
-  <template name="NeutralPossessive">its</template>
-  <template name="MalePossessive">his</template>
-  <template name="FemalePossessive">her</template>
-  <template name="SelfPossessive">your</template>
-  <template name="NeutralPluralPossessive">their</template>
-  <template name="MalePluralPossessive">their</template>
-  <template name="FemalePluralPossessive">their</template>
-  <template name="Nothing">nothing</template>
+<template name="NeutralPossessive">its</template>
+<template name="MalePossessive">his</template>
+<template name="FemalePossessive">her</template>
+<template name="SelfPossessive">your</template>
+<template name="NeutralPluralPossessive">their</template>
+<template name="MalePluralPossessive">their</template>
+<template name="FemalePluralPossessive">their</template>
+<template name="Nothing">nothing</template>
 
-  <template name="SelfAlt">me; myself; self</template>
+<template name="SelfAlt">me; myself; self</template>
 
-	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
-	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
-	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
-	<dynamictemplate name="CannotWearOver">"You cannot wear that over " + object.display + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + object.display + "."</dynamictemplate>
-	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
-	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing "+object.display+"."</dynamictemplate>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
-	<template name="Wear">Wear</template>
-	<template name="WearCommand">put #object# on</template>
-	<verbtemplate name="wear">wear</verbtemplate>
-	<verbtemplate name="wear">put on</verbtemplate>
-	<verbtemplate name="wear">don</verbtemplate>
-	<template name="Remove">Remove</template>
-  <template name="RemoveCommand">take #object# off</template>
-	<verbtemplate name="remove">remove</verbtemplate>
-	<verbtemplate name="remove">take off</verbtemplate>
-	<verbtemplate name="remove">doff</verbtemplate>
+<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
+<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
+<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
+<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
+<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
+<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
+<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
+<dynamictemplate name="CannotWearOver">"You cannot wear that over " + GetDisplayGarment(object) + "."</dynamictemplate>
+<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
+<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+<template name="wornmodifier">worn</template>
+<!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+<template name="Wear">Wear</template>
+<template name="WearCommand">put #object# on</template>
+<verbtemplate name="wear">wear</verbtemplate>
+<verbtemplate name="wear">put on</verbtemplate>
+<verbtemplate name="wear">don</verbtemplate>
+<template name="Remove">Remove</template>
+<template name="RemoveCommand">take #object# off</template>
+<verbtemplate name="remove">remove</verbtemplate>
+<verbtemplate name="remove">take off</verbtemplate>
+<verbtemplate name="remove">doff</verbtemplate>
 ```
+
 There are considerably more for the editor.

@@ -1,10 +1,12 @@
 ﻿<library>
   <function name="DiceRoll" parameters="dice" type="int">
+    if (TypeOf(dice) = "int") return (dice)
     p1 = Instr(dice, "d")
     p2 = Instr(dice, "+")
     p4 = Instr(dice, "-")
     p3 = LengthOf(dice)
     if (p1 = 0) {
+      if (IsInt(dice)) return (ToInt(dice))
       error ("Invalid dice type: " + dice)
     }
     number_str = Mid(dice, 1, p1 - 1)

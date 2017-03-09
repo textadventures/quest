@@ -547,6 +547,9 @@
         if (this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
+        else if (HasString(this, "cannotswitchon")) {
+          msg (this.cannotswitchon)
+        }
         else {
           if (HasString(this, "switchonmsg")) {
             msg (this.switchonmsg)

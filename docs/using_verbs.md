@@ -15,13 +15,13 @@ There are actually two parts to a verb. The verb object and the script on our ob
 The Verb Object
 ---------------
 
-The text Quest uses to match against goes into the verb object, and as Quest quietly creates these for you it is easy to miss they even exist. Look for them under the game object, if using the desktop version. In the web version, they are not displayed, so cannot be deleted or edited, but they are still there.
+The text Quest uses to match against goes into the verb object, and as Quest quietly creates these for you it is easy to miss they even exist. Look for them under the game object, if using the desktop version. In the web version it is especially easy to miss them, as they are not displayed! This does mean they cannot be deleted or edited, but they are still there.
 
 Here is one for our ROTATE verb.
 
 ![](verb_object.png "verb_object.png")
 
-As you can see, there are several parts to it. The first is the pattern, and is just like like a command, except the #object# is omitted. This is where you would put synonyms, perhaps "turn" or "twist", separated by semi-colons.
+As you can see, there are several parts to it. The first is the pattern, and is just like like a command, except the #object# is omitted. This is where you would put synonyms, perhaps "turn" or "twist", separated by semi-colons (users of the web editor are advised to avoid using synonyms; see [here](use_verbs.html)).
 
 Then there is the "Attribute" attribute element; this is the name of the attribute on the object.
 
@@ -93,6 +93,5 @@ Notes
 -----
 
 Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. If this is the case, check what the attribute name is. If you add "talk to" as a verb, it will get added as an attribute called "speak", for example.
-
 
 A few verbs cannot be implements, as they already mean something in Quest. Open and close, lock and unlock, and switch/turn on/off are the main examples.

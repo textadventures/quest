@@ -299,12 +299,7 @@
   <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
   
   <function name="GetDefaultPrefix" type="string" parameters="obj">
-    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
-      return ("an")
-    }
-    else {
-      return ("a")
-    }
+    return ("")
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
