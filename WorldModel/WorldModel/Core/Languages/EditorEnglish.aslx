@@ -134,6 +134,7 @@
   <template name="EditorGameTurnOffPeopleAndObjects">Turn off people and objects</template>
   <template name="EditorGameAltPaneOrder">Alternative pane order (status and compass at top)</template>
   <template name="EditorGameShowCommandPane">Show a command pane (use JS.setCommands to set)</template>
+  <template name="EditorGameShowCustomStatusPane">Show a custom status pane (use JS.setCustomStatus to set)</template>
   <template name="EditorGamePanesTheme">Colour scheme for panes</template>
   <template name="EditorGameClassiclocation">Classic location style</template>
   <template name="EditorGameLocationColour">Location bar colour</template>
