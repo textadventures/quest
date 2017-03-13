@@ -4,7 +4,7 @@ title: Quest 5.7
 ---
 
 
-This file documents changes to quest as of version 5.7.
+This file documents changes to Quest as of version 5.7.
 
 New UI Options
 --------------
@@ -15,7 +15,7 @@ Customisation of the UI is now much easier. There are a number of new JavaScript
 
 You can now select different colour schemes for the panes on the right (or invent your own with a JavaScript function, JS.setPanes)
 
-You can turn off individual panes, and add a new command pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands).
+You can turn off individual panes, and add a new command pane and a new status pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands). The status pane can have any HTML put in it (with JS.setCustomStatus), so could display indicators bars as well as text.
 https://github.com/textadventures/quest/issues/752
 
 ### Command bar
@@ -62,7 +62,7 @@ There is also an "eval" command which will run the rest of the text as Quest cod
 
 It also works recursively, so the output text will then get processed again. We have yet to work out when that will be useful...
 
-A new function, `ProcessText` is used by the output functions. You could use this elsewhere, say to set an attribute with text that has gone through the text processor. You could also override to do your own stuff here.
+A new function, `ProcessText` is used by the output functions. You could use this elsewhere, say to set an attribute with text that has gone through the text processor. You could also override it to do your own stuff.
 
 ```
 // This is the same as version 5.6
@@ -118,10 +118,14 @@ CloneObjectAndMoveHere
 ### String utilities
 
 ```
-FormatList (Split("one;two;three") -> "one, two and three")
-Spaces (5 -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-ToWords (42 -> "forty two")
-ToRoman (42 -> "XLII")
+FormatList (Split("one;two;three"))
+ -> "one, two and three"
+Spaces (5)
+ -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+ToWords (42)
+ -> "forty two"
+ToRoman (42)
+ -> "XLII"
 ```
 
 ### Index of string or object in list
@@ -176,7 +180,7 @@ Modified the "put" command so that objects that cannot be dropped also cannot be
 
 The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room). See [here](http://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff).
 
-The ScopeReachableNotHeldForRoom function now also returns the object list returned by SecondaryScopeReachableForRoom, which is empty by default. The SecondaryScopeReachableForRoom function can be overridden (takes the room as a parameter, returns an object list) to return backdrop items, such as wall, ceiling, sky and sun, to make these present in every room (or selectively in some rooms and not others; it is a function, do what you like with it).
+The `ScopeReachableNotHeldForRoom` function now also returns the object list returned by `SecondaryScopeReachableForRoom`, which is empty by default. The `SecondaryScopeReachableForRoom` function can be overridden (takes the room as a parameter, returns an object list) to return backdrop items, such as wall, ceiling, sky and sun, to make these present in every room (or selectively in some rooms and not others; it is a function, do what you like with it).
 
 Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE. See [here](http://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at).
 
@@ -241,4 +245,4 @@ If you have a language file for the game, these templates should be added.
 <verbtemplate name="remove">doff</verbtemplate>
 ```
 
-There are considerably more for the editor.
+There are considerably more for the editor. Do a compare on Github to see what the changes are (or contact me).
