@@ -38,8 +38,10 @@
     <borderlesscursor type="boolean">false</borderlesscursor>
     <colourblend type="boolean">false</colourblend>
     <commandpane type="boolean">false</commandpane>
+    <customstatuspane type="boolean">false</customstatuspane>
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
+    <commandcursor>&gt;</commandcursor>
     <classiclocation/>
     <turnoffsavebutton type="boolean">false</turnoffsavebutton>
     

@@ -479,6 +479,13 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowCustomStatusPane]</caption>
+        <attribute>customstatuspane</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGamePanesTheme]</caption>
         <attribute>panestheme</attribute>
