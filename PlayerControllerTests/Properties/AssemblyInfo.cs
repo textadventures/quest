@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PlayerControllerTests")]
-[assembly: AssemblyCopyright("Copyright © 2016 Alex Warren")]
+[assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
