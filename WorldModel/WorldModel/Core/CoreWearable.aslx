@@ -645,34 +645,34 @@
     outer = _GetOuterForGarment(game.pov, garment)
     if (not garment.worn) {
       if (outer = null) {
-        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
       }
       else if (outer.wear_layer < garment.wear_layer) {
-        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
       }
       else {
-        _SetVerbList (garment, Split("Look at;Drop", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop]", ";"), garment.invverbs)
       }
     }
     else {
       if (outer = null) {
         if (garment.removeable) {
-          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
         }
       }
       else if (outer.wear_layer < garment.wear_layer) {
         if (garment.removeable) {
-          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
         }
       }
       else {
-        garment.inventoryverbs = Split("Look at", ";")
+        garment.inventoryverbs = Split("[LookAt]", ";")
       }
     }
 	]]></function>
