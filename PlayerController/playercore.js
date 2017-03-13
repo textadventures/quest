@@ -289,8 +289,7 @@ function isElementVisible(element) {
 function panesVisible(visible) {
     var screenWidth = $("#gameBorder").width();
     var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
-    var prompt = $("#txtCommandPrompt");
-    var promptSpacing = prompt ? prompt.width() + 5 : 0;
+    var promptSpacing = $("#txtCommandPrompt").width() + 5;
 
     if (visible) {
         $("#gamePanes").show();
@@ -1097,10 +1096,14 @@ function setCommands(s, colour) {
   el = $('#commandPane');
   el.empty();
   for (i = 0; i < ary.length; i++) {
-    el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="ui-widget"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
+    el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="ui-widget" style="padding:5px;"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
   }
 }
 
+function setCustomStatus(s) {
+    el = $('#customStatusPane');
+    el.html(s);
+}
 
         
 // ----------------------------------        
