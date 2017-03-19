@@ -89,16 +89,16 @@
 			
     WearGarment(object)
     if(object.wearmsg = null) {
-      msg (DynamicTemplate("WearSuccessful",object))
+      P (DynamicTemplate("WearSuccessful",object))
     } else {
-      msg (object.wearmsg)
+      P (object.wearmsg)
     }
     
     //do after
     if (HasScript(object, "onafterwear")) {
       do(object, "onafterwear")
     } else if(HasString(object, "onafterwear")) {
-      msg (object.onafterwear)
+      P (object.onafterwear)
     }
     AfterWear
     return(true)
@@ -192,19 +192,22 @@
       }
     }
 
-    if(object.removemsg = null) {
-      msg (DynamicTemplate("RemoveSuccessful",object))
-    } else {
-      msg (object.removemsg)
+    if (not TestRemove(object)) {
+      return (false)
     }
-    
+			
     RemoveGarment(object)
+    if(object.removemsg = null) {
+      P (DynamicTemplate("RemoveSuccessful",object))
+    } else {
+      P (object.removemsg)
+    }
     
     //do after
     if (HasScript(object, "onafterremove")) {
       do(object, "onafterremove")
     } else if(HasString(object, "onafterremove")) {
-      msg (object.onafterremove)
+      P (object.onafterremove)
     }
     AfterRemove
     return(true)
@@ -728,6 +731,10 @@
 	<function name="AfterWear">
 	</function>
 
+	<function name="P" parameters="s">
+    msg(s)
+	</function>
+
 
   <!--
   Override this in your combat library
@@ -741,6 +748,14 @@
   example to check the size is suitable.
   -->
   <function name="TestGarment" type="boolean" parameters="object"><![CDATA[
+    return (true)
+	]]></function>
+
+
+  <!--
+  Override this in your game for custom testing, for removing the item.
+  -->
+  <function name="TestRemove" type="boolean" parameters="object"><![CDATA[
     return (true)
 	]]></function>
 
