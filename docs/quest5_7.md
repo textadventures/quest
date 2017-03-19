@@ -180,8 +180,6 @@ Modified the "put" command so that objects that cannot be dropped also cannot be
 
 The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room). See [here](http://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff).
 
-The `ScopeReachableNotHeldForRoom` function now also returns the object list returned by `SecondaryScopeReachableForRoom`, which is empty by default. The `SecondaryScopeReachableForRoom` function can be overridden (takes the room as a parameter, returns an object list) to return backdrop items, such as wall, ceiling, sky and sun, to make these present in every room (or selectively in some rooms and not others; it is a function, do what you like with it).
-
 Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE. See [here](http://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at).
 
 If an exit has a "message" attribute, this will be displayed before the player is moved (unless the exit runs a script). See [here](http://textadventures.co.uk/forum/quest/topic/pzotaae1x0qc91bvnlua9q/displaying-a-message-after-choosing-an-exit).
@@ -196,6 +194,8 @@ The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but wi
 The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
 
 If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way.
+
+A new tab can be turned on for the game object with advanced scripts. This has `inituserinterface`, an alternative to `InitUserInterface` that can be used in the web version, `unresolvedcommandhandler`, which has been around forever, but can now be used easily, and `scopebackdrop`, which can be used to add backdrop items, such as wall, ceiling, sky and sun, to ScopeReachable, to make these present in every room (or selectively in some rooms and not others; it is a script, do what you like with it).
 
 
 
