@@ -87,6 +87,12 @@
 
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameFeatures]</caption>
 
@@ -135,6 +141,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameAdvancedScripts]</caption>
+        <attribute>feature_advancedscripts</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameInroomdescriptions]</caption>
         <attribute>appendobjectdescription</attribute>
       </control>
@@ -151,10 +163,8 @@
         <attribute>multiplecommands</attribute>
       </control>	  
 
-
     </tab>
 
-    
     
     
     
@@ -294,8 +304,6 @@
         <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
-
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameHyperlinks]</caption>
@@ -394,6 +402,7 @@
     
     
     
+
     
     <tab>
       <caption>[EditorGameInterface]</caption>
@@ -430,7 +439,6 @@
         <minimum>1</minimum>
       </control>
 
-      
       
       <control>
         <controltype>title</controltype>
@@ -494,8 +502,6 @@
       </control>
 
 
-
-
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameCommandBarCaption]</caption>
@@ -528,7 +534,6 @@
         <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
       </control>
 
-      
       
       <control>
         <controltype>title</controltype>
@@ -583,7 +588,6 @@
       </control>	  
       
       
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameBorderCaption]</caption>
@@ -603,8 +607,6 @@
         <freetext/>
         <onlydisplayif>game.showborder</onlydisplayif>
       </control>
-      
-      
       
       
       <control>
@@ -689,10 +691,9 @@
         <attribute>clearframe</attribute>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
+      
     </tab>
 
-    
-    
     
     
     
@@ -727,8 +728,37 @@
     
     
     
+
+
+    
+    <tab>
+      <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
+      <caption>[EditorGameAdvancedScript]</caption>
+      <advanced/>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameInitUIscript]</caption>
+        <attribute>inituserinterface</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameUnresolvedscript]</caption>
+        <attribute>unresolvedcommandhandler</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameBackdropscript]</caption>
+        <attribute>scopebackdrop</attribute>
+      </control>
+
+    </tab>
     
     
+
+
     
     
 
@@ -859,6 +889,12 @@
       
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGamePlayer]</caption>
       <advanced/>
@@ -894,6 +930,12 @@
       </control>
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameAttributes]</caption>
       <advanced/>
@@ -911,7 +953,6 @@
         <controltype>attributes</controltype>
         <expand/>
       </control>
-
      
     </tab>
 
