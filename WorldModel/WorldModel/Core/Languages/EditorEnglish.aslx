@@ -89,6 +89,7 @@
   <template name="EditorGameLightnessand">Lightness and darkness: rooms can be dark, and objects can light them up</template>
   <template name="EditorGameAsk/Tellplayers">Ask/Tell: players can ask or tell characters about selected topics</template>
   <template name="EditorGameAdvancedWearables">Show advanced options for wearables</template>
+  <template name="EditorGameAdvancedScripts">Show advanced scripts for the game object</template>
   <template name="EditorGameAnnotations">Annotations: adds a tab to rooms where authors notes can be made, not seen by players</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
   <template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
@@ -160,10 +161,14 @@
   <template name="EditorGameRight">Right</template>
   <template name="EditorGameOptions">Options</template>
   <template name="EditorGameClearpicture">Clear picture panel if room has no picture</template>
-  <template name="EditorGameScript">Script</template>
+  <template name="EditorGameScript">Scripts</template>
+  <template name="EditorGameAdvancedScript">Advanced Scripts</template>
   <template name="EditorGameStartscript">Start script</template>
   <template name="EditorGameRoomscript">Script when entering a room</template>
   <template name="EditorGameTurnscripts">Turn scripts - run after every turn the player takes in this game</template>
+  <template name="EditorGameInitUIscript">User interface initialisation script (run at start and also when loading a saved game)</template>
+  <template name="EditorGameUnresolvedscript">Unresolved command script (player's text will be in a string variable called "command")</template>
+  <template name="EditorGameBackdropscript">Backdrop scope script (add objects to the "items" object list variable)</template>
   <template name="EditorGameRoomDescriptions">Room Descriptions</template>
   <template name="EditorGameAutomatically">Automatically generate room descriptions</template>
   <template name="EditorGameShowroomdescription">Show room description when entering a room</template>
