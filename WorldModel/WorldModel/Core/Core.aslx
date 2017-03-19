@@ -159,7 +159,7 @@
       JS.colourBlend (game.colourblendtop, game.colourblendbottom)
     }
     if (game.borderlesscursor) {
-      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100 px;}</style>")
+      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
       JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
       JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
       request (SetInterfaceString, "TypeHereLabel=")
@@ -201,6 +201,9 @@
       request (Hide, "Panes")
     }
     InitUserInterface
+    if (HasScript(game, "inituserinterface")) {
+      do (game, "inituserinterface")
+    }
   ]]></function>
 
   <function name="InitUserInterface">
