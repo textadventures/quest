@@ -331,6 +331,8 @@ function scrollToEnd() {
         if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
         var distance = scrollTo - currentScrollTop;
         var duration = _animateScroll ? distance / 0.4 : 1;
+        // Added by The Pixie on behalf of alexandretorres
+        if (duration>2000) duration=2000;
         $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
     $("#txtCommand").focus();
