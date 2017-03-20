@@ -1,10 +1,10 @@
-<!--Saved by Quest 5.6.6108.15891-->
+<!--Saved by Quest 5.7.6281.27484-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
   <delegate name="textprocessor" parameters="" type="string" />
-  <game name="Unit testing">
+  <game name="Unit testing for 5.7">
     <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
     <version>1.0</version>
     <firstpublished>2017</firstpublished>
@@ -195,7 +195,6 @@
       Assert (coat, GetOuter("torso"))
       Assert (overalls, GetOuter("legs"))
       Assert (null, GetOuter("head"))
-      OutputTextRawNoBr ("@1")
       Assert ("an overcoat (worn) and overalls (worn)", FormatList(ListWornFor(player), ",", "and", "nothing"))
       Assert ("an overcoat and overalls", ListClothes())
       Assert (24, GetArmour())
@@ -207,13 +206,10 @@
       RemoveGarment (overalls)
       Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
       Assert (2, player.bonus1)
-      OutputTextRawNoBr ("@2")
       Assert (4, player.bonus2)
       Assert ("overalls", overalls.alias)
-      OutputTextRawNoBr ("@3")
       Assert ("overcoat", coat.alias)
       Assert (0, GetArmour())
-      OutputTextRawNoBr ("@4")
       //
       Testing ("Clothing - NPCs")
       Assert (null, GetOuterFor(mary, "torso"))
@@ -349,12 +345,23 @@
       Testing ("Text processor: failing text")
       Assert ("1 You don't have enough", ProcessText("1 You {if player.count<10:don't }have enough"))
       Assert ("2 You {if player2.count<10:don't }have enough", ProcessText("2 You {if player2.count<10:don't }have enough"))
+      Assert ("3 You have {if player.notset<10:nothing}.", ProcessText("3 You have {if player.notset<10:nothing}."))
+      Assert ("4 You have .", ProcessText("4 You have {if player.notset:nothing}."))
+      Assert ("5 You have {if player.notset=True:nothing}.", ProcessText("5 You have {if player.notset=True:nothing}."))
+      Assert ("6 You have enough", ProcessText("6 You {if player.name=10:don't }have enough"))
+      Assert ("6 You don't have enough", ProcessText("6 You {if player.name<>10:don't }have enough"))
       //
       // -------------------------------------------------------------------------
       Testing ("Text processor: old error handling")
       Assert ("player.count = {unknown.count}", ProcessText("player.count = {unknown.count}"))
       Results
     ]]></start>
+    <feature_advancedscripts />
+    <scopebackdrop type="script">
+      foreach (o, GetDirectChildren(backdrop)) {
+        list add (items, o)
+      }
+    </scopebackdrop>
   </game>
   <object name="room">
     <inherit name="editor_room" />
@@ -599,14 +606,17 @@
     <defaultexpression>"You can't unfasten " + object.article + "."</defaultexpression>
   </verb>
   <type name="specialtype" />
-  <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
-    return (GetDirectChildren(backdrop))
+  <function name="Testing" parameters="s">
+    game.testingtitle = s
   </function>
   <function name="OutputText" parameters="text">
     game.lastoutputtext = ProcessText(text)
     if (not GetBoolean(game, "hideoutput")) {
       OutputTextRaw (game.lastoutputtext)
     }
+  </function>
+  <function name="AssertOutput" parameters="s">
+    Assert (s, game.lastoutputtext)
   </function>
   <function name="Assert" parameters="expected, actual"><![CDATA[
     if (not TypeOf(expected) = TypeOf(actual)) {
@@ -619,6 +629,29 @@
       Result (null)
     }
   ]]></function>
+  <function name="AssertMatch" parameters="expected, actual"><![CDATA[
+    if (not "string" = TypeOf(actual)) {
+      Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to match >" + expected + "< (" + TypeOf(expected) + ")")
+    }
+    else if (not IsRegexMatch(expected, actual)) {
+      Result (">" + actual + "< was expected to match >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertCommand" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    Assert (s, game.lastoutputtext)
+  </function>
+  <function name="AssertCommandMatch" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    AssertMatch (s, game.lastoutputtext)
+  </function>
   <function name="AssertIn" parameters="list, actual"><![CDATA[
     if (not ListContains(list, actual)) {
       Result (">" + actual + "< expected to be in " + list)
@@ -670,16 +703,7 @@
   <function name="Test" type="string">
     return ("from test")
   </function>
-  <function name="Testing" parameters="s">
-    game.testingtitle = s
-  </function>
-  <function name="AssertOutput" parameters="s">
-    Assert (s, game.lastoutputtext)
-  </function>
-  <function name="AssertCommand" parameters="com, s">
-    game.hideoutput = true
-    HandleSingleCommand (com)
-    game.hideoutput = false
-    Assert (s, game.lastoutputtext)
+  <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
+    return (GetDirectChildren(backdrop))
   </function>
 </asl>
