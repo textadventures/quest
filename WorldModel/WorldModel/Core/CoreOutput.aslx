@@ -447,9 +447,11 @@
         if (object = null) {
           return ("@@@open@@@if " + command + "@@@close@@@")
         }
+        else if (not HasAttribute(object, attributename)) {
+          return ("@@@open@@@if " + command + "@@@close@@@")
+        }
         else {
           value = GetAttribute(object, attributename)
-          // The next three lines added by The Pixie
           if (TypeOf(value) = "object") {
             value = value.name
           }
