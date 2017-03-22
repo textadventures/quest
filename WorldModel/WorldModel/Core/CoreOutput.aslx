@@ -298,13 +298,13 @@
     }
 
     text = Mid(command, colon + 1)
-    colon2 = Instr(colon + 1, command, ":")
+    colon2 = Instr(colon + 1, command, "|")
     if (colon2 = 0) {
       text2 = ""
     }
     else {
       text2 = Mid(command, colon2 + 1)
-      text = Replace(text, ":" + text2, "")
+      text = Replace(text, "|" + text2, "")
     }
     condition = Left(command, colon - 1)
     result = eval(condition) 
@@ -749,8 +749,8 @@
       return ("0")
     }  
   </function>
-  <function name="ProcessTextCommand_Select" parameters="section, data" type="string">
-    <![CDATA[
+  
+  <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
     elements = Mid(section, 8)
     elementslist = Split(elements, ":")
     objectandatt = StringListItem (elementslist, 0)
@@ -768,6 +768,9 @@
         return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
       else {
+        if (Instr(elements, "|") > 0) {
+          elementslist = Split(Join(elementslist, ":"), "|")
+        }
         index = GetInt(object, StringListItem(objectandattlist, 1))
         if ((0 > index) or (index >= Listcount(elementslist))) {
           return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
@@ -777,8 +780,7 @@
         }
       }
     }
-  ]]>
-  </function>
+  ]]></function>
   
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
