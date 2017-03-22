@@ -3,9 +3,9 @@ layout: index
 title: Text processor
 ---
 
-Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object lnks, show text only once, and more.
+Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object links, show text only once, and more.
 
-To use the text processor, you can simply add a command in curly braces in any text that gets displayed. In this simple example, a room description is set to say that rom smells only the first time the text is printed:
+To use the text processor, you can simply add a command in curly braces in any text that gets displayed. In this simple example, a room description is set to say that room smells only the first time the text is printed:
 
 ![](text_processor_text.png "text_processor_text.png")
 
@@ -89,7 +89,8 @@ Display text only if game attribute is true
 Display text only if game attribute is false
 
 {select:**object.attribute**:**text 0:text 1:text 2**}  
-Selects one text to display, based on the value of the object attribute (you can have as many sections as you like). Note that the attribute must be an integer (whole number), and the sections number from zero.
+{select:**object.attribute**:**text 0|text 1|text 2**}  
+Selects one text to display, based on the value of the object attribute (you can have as many sections as you like). Note that the attribute must be an integer (whole number), and the sections number from zero. The second form, with texts separated by vertical bars, allows additional text processor directives to be nested inside the **select** directive. This is new to Quest 5.7.
 
 
 
@@ -123,38 +124,39 @@ Displays the text only if the given object is in the current room (but not if in
 Displays the text only if the given object is NOT in the current room.
 
 {popup:**text**:**long text**}
-Displays a link, withthe first text. When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.
+Displays a link, with the first text (which cannot have text processor directives nested in it). When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.
 
 
 {either **condition**:**text**}
 This works similar to the if command above, but with two important differences. The first is the the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
 
-{either **condition**:**text**:**text**}
-As before, but the second text is only seen when the condition fails.
+{either **condition**:**text**|**text**}
+As before, but the second text is only seen when the condition fails. Note that the two texts are separated by a vertical bar, to ensure nesting works properly.
 
-    "You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
-    -> "You are the player",
-    "'Oh, {either player.male**flag:he:she} is not worth it.'"
-    -> "'Oh, he is not worth it.'",
+```
+"You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
+ -> "You are the player",
+"'Oh, {either player.male**flag:he|she} is not worth it.'"
+ -> "'Oh, he is not worth it.'",
+```
 
- 
 {eval:**code**}
 The code is evaluated, just as normal Quest code is, and the result displayed.
 
 {=**code**}
 This is a short cut for eval, and works just the same. The samples below show the potential, though by its nature this is rather less forgiving that the other commands available.
-
-    "You are in the {eval:player.parent.name}"
-    -> "You are in the kitchen"
-    "You are in the {=player.parent.name}"
-    -> "You are in the kitchen"
-    "You are in the {=CapFirst(player.parent.name)}"
-    -> "You are in the Kitchen"
-    "There are {=ListCount(AllObjects())} objects"
-    -> "There are 6 objects"
-    "You look out the window: {=LookOutWindow}"
-    -> "You look out the window: A figure is moving by the bushes"
-
+```
+"You are in the {eval:player.parent.name}"
+ -> "You are in the kitchen"
+"You are in the {=player.parent.name}"
+ -> "You are in the kitchen"
+"You are in the {=CapFirst(player.parent.name)}"
+ -> "You are in the Kitchen"
+"There are {=ListCount(AllObjects())} objects"
+-> "There are 6 objects"
+"You look out the window: {=LookOutWindow}"
+ -> "You look out the window: A figure is moving by the bushes"
+```
  
 
 
@@ -197,6 +199,6 @@ Curly braces
 ------------
 
 Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. As of Quest 5.7, if you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
-
-    "player.count = @@@open@@@player.count@@@close@@@"
-    -> "player.count = {player.count}"
+```
+"player.count = @@@open@@@player.count@@@close@@@"
+ -> "player.count = {player.count}"
