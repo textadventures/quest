@@ -1095,10 +1095,10 @@ function setPanes(fore, back, secFore, secBack, highlight) {
 function setCommands(s, colour) {
   if (arguments.length == 2) commandColour = colour;
   ary = s.split(";");
-  el = $('#commandPane');
+  el = $('#commandPaneHeading');
   el.empty();
   for (i = 0; i < ary.length; i++) {
-    el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="ui-widget" style="padding:5px;"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
+      el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
   }
 }
 
