@@ -544,12 +544,13 @@
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <inventoryverbs type="listextend">[SwitchOn];[SwitchOff]</inventoryverbs>
     <switchedon type="boolean">false</switchedon>
+    <cannotswitchon type="string"></cannotswitchon>
     <turnon type="script">
       if (ListContains(ScopeReachable(), this)){
         if (this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
-        else if (HasString(this, "cannotswitchon")) {
+        else if (not this.cannotswitchon = "")) {
           msg (this.cannotswitchon)
         }
         else {
