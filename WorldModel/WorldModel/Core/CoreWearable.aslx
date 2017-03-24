@@ -28,23 +28,6 @@
 		</script>
 	</command>
 	
-  <command name="wear2">
-    <pattern>[WearCommand]</pattern>
-    <script>
-      _DoWear (object)
-      UpdateArmour
-    </script>
-  </command>
-
-  <command name="remove2">
-    <pattern>[RemoveCommand]</pattern>
-    <script>
-      _DoRemove (object)
-      UpdateArmour
-    </script>
-  </command>
-  
-  
   
   
   
