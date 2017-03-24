@@ -112,8 +112,8 @@
 
 	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
+	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get " + object.article + " before you can put " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get " + object.article + " before you can take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
@@ -122,14 +122,15 @@
 	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
 	<template name="wornmodifier">worn</template>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
-	<template name="Wear">Wear</template>
-	<template name="WearCommand">put #object# on</template>
+
+  <template name="Wear">Wear</template>
+  <verbtemplate name="wear">put #object# on</verbtemplate>
 	<verbtemplate name="wear">wear</verbtemplate>
 	<verbtemplate name="wear">put on</verbtemplate>
 	<verbtemplate name="wear">don</verbtemplate>
-	<template name="Remove">Remove</template>
-  <template name="RemoveCommand">take #object# off</template>
+
+  <template name="Remove">Remove</template>
+  <verbtemplate name="remove">take #object# off</verbtemplate>
 	<verbtemplate name="remove">remove</verbtemplate>
 	<verbtemplate name="remove">take off</verbtemplate>
 	<verbtemplate name="remove">doff</verbtemplate>
@@ -387,5 +388,6 @@
       }
     }
   </function>
+
 
 </library>
