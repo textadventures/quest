@@ -37,6 +37,14 @@
 
     <control>
       <controltype>textbox</controltype>
+      <attribute>cannotswitchon</attribute>
+      <caption>[EditorObjectOptionsCannotswitchon]</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
       <attribute>switchedondesc</attribute>
       <caption>[EditorObjectOptionsExtraobject]</caption>
       <nullable/>
