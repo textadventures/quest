@@ -821,7 +821,6 @@
   <verb template="turn" property="turn" response="DefaultTurn"/>
   <verb template="unlock" property="unlock" response="DefaultUnlock"/>
   <verb template="untie" property="untie" response="DefaultUntie"/>
-  <verb template="wear" property="wear" response="DefaultWear"/>
 
   <command name="listen" pattern="[listen]">msg (Template("DefaultListen"))</command>
   <command name="jump" pattern="[jump]">msg (Template("DefaultJump"))</command>
