@@ -76,7 +76,7 @@
   <dynamictemplate name="CantClose">"Du kannst " + object.article + " nicht schließen."</dynamictemplate>
   <dynamictemplate name="OpenSuccessful">"Du öffnest " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CloseSuccessful">"Du schließt " + object.article + "."</dynamictemplate>
-  <template name="CannotDoThat">Das kannst Du nicht machen.</template>
+  <template name="CannotDoThat">Das kannst du nicht machen.</template>
   <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " " + GetPrefix (object,"sein") +" bereits dort."</dynamictemplate>
   <template name="Done">Erledigt.</template>
   <template name="ContainerContentsPrefix">enthält</template>
@@ -117,23 +117,26 @@
 
   <dynamictemplate name="WearSuccessful">"Du ziehst " + object.article + " an."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
-  <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor Du es anziehen kannst."</dynamictemplate>
-  <dynamictemplate name="CannotRemoveIfNotHeld">"Du musst " + object.article + " erst haben bevor Du es ausziehen kannst"</dynamictemplate>
+  <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " anziehen kannst."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " ausziehen kannst"</dynamictemplate>
   <dynamictemplate name="AlreadyWearing">"Du trägst " + object.article + " schon."</dynamictemplate>
   <dynamictemplate name="CannotRemoveIfNotWearing">"Du kannst " + object.article + " nicht ausziehen."</dynamictemplate>
   <dynamictemplate name="NotRemovable">"Du kannst " + object.article + " nicht ausziehen!"</dynamictemplate>
-  <dynamictemplate name="CannotWearOver">"Du kannst das nicht über " + GetDisplayGarment(object) + " anziehen."</dynamictemplate>
-  <dynamictemplate name="CannotWearWith">"Du kannst dies nicht anziehen solange Du  " + GetDisplayGarment(object) + " trägst."</dynamictemplate>
+  <dynamictemplate name="CannotWearOver">"Du kannst das nicht über " + GetDefaultPrefix (object) + " " + object.display + " anziehen."</dynamictemplate>
+  <dynamictemplate name="CannotWearWith">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
   <dynamictemplate name="RemoveSuccessful">"Du ziehst " + object.article + " aus."</dynamictemplate>
-  <dynamictemplate name="RemoveFirst">"Du kannst dies nicht anziehen solange Du  " + GetDisplayGarment(object) + " trägst."</dynamictemplate>
-  <template name="wornmodifier">angezogen</template>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+  <dynamictemplate name="RemoveFirst">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
+  <template name="wornmodifier">getragen</template>
+
   <template name="Wear">Anziehen</template>
-  <template name="WearCommand">ziehe #object# an</template>
+  <verbtemplate name="wear">anziehen</verbtemplate>
+  <verbtemplate name="wear">ziehe #object# an</verbtemplate>
   <verbtemplate name="wear">trage</verbtemplate>
   <verbtemplate name="wear">ziehe an</verbtemplate>
+
   <template name="Remove">Ausziehen</template>
-  <template name="RemoveCommand">ziehe #object# aus</template>
+  <verbtemplate name="remove">ausziehen</verbtemplate>
+  <verbtemplate name="remove">ziehe #object# aus</verbtemplate>
   <verbtemplate name="remove">lege ab</verbtemplate>
   <verbtemplate name="remove">ziehe aus</verbtemplate>
 
