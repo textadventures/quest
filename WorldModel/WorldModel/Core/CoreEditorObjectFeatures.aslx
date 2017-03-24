@@ -5,6 +5,11 @@
     <mustnotinherit>editor_room</mustnotinherit>
 
     <control>
+			<controltype>label</controltype>
+      <caption>[EditorObjectFeaturesExplanation]</caption>
+    </control>
+
+    <control>
       <controltype>checkbox</controltype>
       <caption>[EditorObjectFeaturesUse/Giveobject]</caption>
       <attribute>feature_usegive</attribute>
