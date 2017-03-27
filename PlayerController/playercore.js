@@ -1098,7 +1098,12 @@ function setCommands(s, colour) {
   el = $('#commandPaneHeading');
   el.empty();
   for (i = 0; i < ary.length; i++) {
-      el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
+      ary2 = ary[i].split(":");
+      comm = ary2[0];
+      commLower = ary2[0].toLowerCase().replace(/ /g, "_");
+      commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
+      //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
+      el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
   }
 }
 
