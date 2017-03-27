@@ -550,7 +550,7 @@
         if (this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
-        else if (not this.cannotswitchon = "")) {
+        else if (not this.cannotswitchon = "") {
           msg (this.cannotswitchon)
         }
         else {
