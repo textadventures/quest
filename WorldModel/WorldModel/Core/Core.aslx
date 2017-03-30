@@ -524,11 +524,9 @@
     }
   </function>
 
-  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
-    <![CDATA[
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
-    
     count = 0
     game.menuoptionskeys = NewStringList()
     foreach (option, options) {
@@ -540,28 +538,38 @@
       else {
         optionText = StringDictionaryItem(options, option)
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentLinkTextFormat() + "\" onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentLinkTextFormat() + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(option) + "')\">" + optionText + "</a>")
     }
-    EndOutputSection(outputsection)
-    
+    EndOutputSection (outputsection)
     game.menuoptions = options
     game.menuallowcancel = allowCancel
     game.menucallback = callback
     game.menuoutputsection = outputsection
-    ]]>
-  </function>
-
+  ]]></function>
+  
   <function name="ShowMenuResponse" parameters="option">
     if (game.menucallback = null) {
       error ("Unexpected menu response")
     }
     else {
       parameters = NewStringDictionary()
-      dictionary add (parameters, "result", option)
+      dictionary add (parameters, "result", UnescapeQuotes(option))
       script = game.menucallback
       ClearMenu
       invoke (script, parameters)
     }
+  </function>
+  
+  <function name="EscapeQuotes" parameters="s" type="string">
+    s = Replace(s, "\"", "@@@doublequote@@@")
+    s = Replace(s, "\'", "@@@singlequote@@@")
+    return (s)
+  </function>
+  
+  <function name="UnescapeQuotes" parameters="s" type="string">
+    s = Replace(s, "@@@doublequote@@@", "\"")
+    s = Replace(s, "@@@singlequote@@@", "\'")
+    return (s)
   </function>
 
   <function name="HandleMenuTextResponse" parameters="input" type="boolean">
