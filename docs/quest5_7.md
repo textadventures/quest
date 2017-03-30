@@ -6,6 +6,16 @@ title: Quest 5.7
 
 This file documents changes to Quest as of version 5.7.
 
+
+Preamble
+--------
+
+This is my first update in charge of Quest, and makes a lot of changes that I have felt would be useful both from my own use of Quest and from seeing what people want and struggle with on the forum. I hope all but the most basic users will find at least some of these changes useful.
+
+The changes are restricted to the .aslx files in WorldModel/Worldmodel/Core; I have not made changes to the C# or Visual Basic code at all as this is not an area I am competent in - perhaps for 5.8. There are also changes to playercore.htm and playercore.js (and these will not be present in the web player until that is updated to Quest 5.7).
+
+
+
 New UI Options
 --------------
 
@@ -160,7 +170,19 @@ This is my clothing library, which is itself an extension of Chase's wearables l
 
 If you already use either my library or Chase's you should find this works with no effect on your part, you just need to delete the library from your game. 
  
- 
+
+Advanced scripts
+----------------
+
+On the Features tab of the game object, you can turn on "Advanced scripts". This will show a new tab, with three scripts. 
+
+The first is run directly after `InitUserInterface`, and does exactly the same thing. Making it a script allows users of the web version to use it (as they cannot override existing functions), giving web users the opportunity to customise the interface as much as desktop users have in the past.
+
+The second runs when Quest does not understand a command. The unresolvedcommandhandler script has been around for ages; this just promotes it to the editor interface, so it will be easy to use.
+
+The third is used by `ScopeReachable` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
+
+
  
 Minor Changes
 -------------
@@ -193,9 +215,9 @@ The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but wi
 
 The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
 
-If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way.
+If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
 
-A new tab can be turned on for the game object with advanced scripts. This has `inituserinterface`, an alternative to `InitUserInterface` that can be used in the web version, `unresolvedcommandhandler`, which has been around forever, but can now be used easily, and `scopebackdrop`, which can be used to add backdrop items, such as wall, ceiling, sky and sun, to ScopeReachable, to make these present in every room (or selectively in some rooms and not others; it is a script, do what you like with it).
+You can now have single and double quotes in options when using the ShowMenu function.
 
 
 
