@@ -265,6 +265,7 @@
   <template name="EditorObjectExitsExits">Exits</template>
   <template name="EditorObjectExitsExitslistprefix">Exits list prefix</template>
   <template name="EditorObjectFeaturesFeatures">Features</template>
+  <template name="EditorObjectFeaturesExplanation">Select an option here to have a new tab display. Go to the tab to set up the object.</template>
   <template name="EditorObjectFeaturesUse/Giveobject">Use/Give: object can be used on its own or with other objects/characters, or given to other objects/characters</template>
   <template name="EditorObjectFeaturesContainer">Container: object is a container or surface, or can be opened and closed</template>
   <template name="EditorObjectFeaturesSwitchable">Switchable: object can be switched on and off</template>
@@ -319,6 +320,7 @@
   <template name="EditorObjectOptionsSwitchable2">Switchable</template>
   <template name="EditorObjectOptionsMessagetoprint">Message to print when switching on (leave blank for default)</template>
   <template name="EditorObjectOptionsMessagetoprint2">Message to print when switching off (leave blank for default)</template>  
+  <template name="EditorObjectOptionsCannotswitchon">Leave blank to allow the object to be turned on; give a message if it cannot be turned on (eg requires power or repair)</template>  
   <template name="EditorObjectOptionsSwitchedon">Switched on at the start of the game</template>
   <template name="EditorObjectOptionsMessageSwitchon">Message to print when switching on (leave blank for default)</template>
   <template name="EditorObjectOptionsMessageSwitchoff">Message to print when switching off (leave blank for default)</template>
