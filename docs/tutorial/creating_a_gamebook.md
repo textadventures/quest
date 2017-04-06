@@ -3,7 +3,7 @@ layout: index
 title: Creating a gamebook
 ---
 
-NOTE: _Rather than using the Game Book feature of Quest, we would suggest you use either the full product (and turn off the game panes and command bar so the player just uses hyperlinks), or use [Squiffy](http://docs.textadventures.co.uk/squiffy/). Quest Text Adventurers have a full world model, where objects and rooms relate to each other in a meaningful way, and have numerous features not supported by Game Books. Squiffy has no world model, but is great for creating multiple choice games that focus on text and story, and will produce a game that can be run in any browser, without the need for a dedicated server. Quest Game Books represent the worst of both worlds._
+NOTE: _Rather than using the Game Book feature of Quest, we would suggest you use either the full product (and turn off the game panes and command bar so the player just uses hyperlinks), or use [Squiffy](http://docs.textadventures.co.uk/squiffy/). Quest Text Adventures have a full world model, where objects and rooms relate to each other in a meaningful way, and have numerous features not supported by Game Books. Squiffy has no world model, but is great for creating multiple choice games that focus on text and story, and will produce a game that can be run in any browser, without the need for a dedicated server. Quest Game Books represent the worst of both worlds._
 
 
 Creating a blank game

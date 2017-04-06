@@ -22,11 +22,13 @@ The exclamation mark is a stand-in for the actual number, so when the score is z
 Status Attributes - Web Version
 -------------------------------
 
-on-line we have no _Attributes_ tab, so we have to do this in the start script, as we did with the weight attributes earlier. Go to the Scripts tab of the game object; you should see the script commands setting the weight attributes. You need to add three new script commands like this:
+On the web version, we have no _Attributes_ tab, so we have to do this in the start script, as we did with the weight attributes earlier. Go to the Scripts tab of the game object; you should see the script commands setting the weight attributes (only one is done in the image below). You need to add three new script commands like this:
 
 ![](status_attribute.png "status_attribute.png")
 
-The first line is obviously setting up the "score" attribute, just as before.
+The first line, highlighted in yellow, is obviously setting up the "score" attribute, just as before.
+
+The two lines to set up the status attribute are marked in red.
 
 Quest stores information about status attributes in dictionary attributes called "statusattributes", and the second line creates one on the player object (Quest does this automatically in the desktop editor). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
 

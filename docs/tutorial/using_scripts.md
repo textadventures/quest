@@ -7,7 +7,7 @@ We'll now start to play with the real power behind Quest – scripts. Scripts le
 
 In this example, we'll use a script to customise the "watch" verb we added to the TV in the previous section. We want to update it to provide a sensible response depending on whether the TV is switched on or not.
 
-Select the TV object and go to the Verbs tab. If you've been following all the steps in this tutorial, you should already have a "watch" verb which prints a message. If you've already got a "watch" verb, change it from "Print a message" to "Run a script" (or add a new "watch" verb if you don't already have one).
+Select the TV object and go to the _Verbs_ tab. If you've been following all the steps in this tutorial, you should already have a "watch" verb which prints a message. If you've already got a "watch" verb, change it from "Print a message" to "Run a script" (or add a new "watch" verb if you don't already have one).
 
 Click the "Add new script" header and you'll see a list of all the commands you can add to a script. The commands are in broad categories - Output, Objects, Variables and so on - but you can also find a command by typing in the Search box, if you don't know the category.
 

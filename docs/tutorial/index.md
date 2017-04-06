@@ -18,4 +18,5 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 1.  [Moving objects during the game](moving_objects_during_the_game.html)
 1.  [Status attributes](status_attributes.html)
 1.  [Using timers and turn scripts](using_timers_and_turn_scripts.html)
+1.  [Releasing your game](releasing_your_game.html)
 

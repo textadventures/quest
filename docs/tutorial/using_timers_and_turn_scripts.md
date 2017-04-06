@@ -3,7 +3,7 @@ layout: index
 title: Using timers and turn scripts
 ---
 
-In the previous section, we made a bee fly into the kitchen after the player opened a window. We'll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.
+In a previous section, we made a bee fly into the kitchen after the player opened a window. We'll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.
 
 To do this, we will use a timer. This timer will only be activated when the player opens the window in the kitchen. When the timer is activated, every 20 seconds it will print the message "The bee buzzes past you. Pesky bee". This message will only be printed if the player is in the kitchen.
 
@@ -38,24 +38,12 @@ You've already seen how to do this - an "if" command can check "player is in roo
 Creating a turn counter
 -----------------------
 
-<div class="alert alert-info">
-Note: The attributes editor is currently only available in the Windows desktop version of Quest.
-
-</div>
-In this section, we'll look at three new concepts and use them to create an on-screen turn counter:
-
--   running a script after each turn in the game - **turn scripts**
--   storing numbers - **integer** attributes
--   displaying values in a status area on the right of the screen - **status attributes**
-
-Here's how we’re going to do it:
-
--   we'll store the number of turns a player has taken in an attribute called "turns" on the player object
+In this section, we'll look at running a script after each turn in the game - **turn scripts**. We'll store the number of turns a player has taken in an attribute called "turns" on the player object
 -   this attribute will be added to the list of status attributes, so it is always displayed on-screen
 -   we'll create a turn script which will increase the "turns" attribute after each turn
 -   so, every time the player takes a turn, the number is increased and the display is automatically updated
 
-### Setting up the turn counter
+### Setting up the turn counter (desktop version)
 
 To set up our "turns" attribute, select the "player" object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name "turns" and make this an integer.
 
@@ -64,6 +52,12 @@ To turn this into a status attribute, we need to add it to the Status Attributes
 You'll be prompted for a format string. If you leave this blank, Quest will display "Turns: 0", "Turns: 1", "Turns: 2" etc. as the game progresses. This is fine so you can leave this blank for now (if you want to customise the display, you can simply enter any text you like, and use a "!" character where you want the value to appear)
 
 ![](Turncounter1.png "Turncounter1.png")
+
+### Setting up the turn counter (web version)
+
+We already did the hard work in the last section. Go to the _Stripts_ tab of the "game" object, where we set the player score as a status attribute. Now we need to add a new attribute to the player called turn, and a new entry in the dictionary for that attribute. It'll look like this: 
+
+![](Turncounter1.png "Turncounter.png")
 
 If you launch the game now, you should see the status variable displayed on the right-hand side of the Quest window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
 
@@ -93,4 +87,6 @@ This will add 1 each time the script is called.
 
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
 
-Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game!
+Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game! The last part of the tutorial is about how to release your masterpiece.
+
+[Next: Releasing your game](releasing_your_game.html)

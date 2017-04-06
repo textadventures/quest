@@ -6,7 +6,7 @@ title: Interacting with objects
 Object Types
 ------------
 
-An object's "Setup" tab lets you choose the type of object. Select the "TV" object we created in the last section.
+An object's _Setup_ tab lets you choose the type of object. Select the "TV" object we created in the last section.
 
 The first "Type" dropdown at the top of the screen lets you select from:
 
@@ -73,10 +73,11 @@ Taking the newspaper
 
 You should have added a newspaper object as an exercise at the end of the previous section. If you didn't, add one now. We're going to make this an object that the player can take.
 
-This is very easy to do - simply go to the "Inventory" tab. You have a couple of different options for "Take":
+This is very easy to do - simply go to the _Inventory_ tab. You have a couple of different options for "Take":
 
-Default behaviour: You'll want to use this for most of your take-able objects. This option gives you the "Object can be taken" checkbox, and the ability to specify a "take message" which is printed when the player takes (or attempts to take) the object.
-Run script: If you want full control over what happens when the player attempts to take the object, choose this option. We will cover scripts later on in the tutorial, so don't choose this for now.  
+- Default behaviour: You'll want to use this for most of your take-able objects. This option gives you the "Object can be taken" checkbox, and the ability to specify a "take message" which is printed when the player takes (or attempts to take) the object.
+
+- Run script: If you want full control over what happens when the player attempts to take the object, choose this option. We will cover scripts later on in the tutorial, so don't choose this for now.  
 
 To let the player take the newspaper, we just need to tick the "Object can be taken" box. If you don't specify a message, you'll get a default message - "You pick it up". If you want something a bit more imaginative, you can enter a Take Message such as "You fold the newspaper and place it neatly under your arm".
 
@@ -87,9 +88,15 @@ The "Object can be dropped" box is ticked by default, so the player can take and
 Switching the TV on and off
 ---------------------------
 
-Let's make it possible to turn the TV off. To do this, select the TV and go to the Features tab. Tick the "Switchable" option, and a new tab wil appear - also called "Switchable". You'll see a dropdown labelled "Switchable" - select "Can be switched on/off" and various options will appear.
+Let's make it possible to turn the TV off.
 
-The options should be fairly self-explanatory - you can choose whether the object is switched on when the game begins, and the text to print when switching on/off. Finally, you can choose some extra text to add to the object description. This lets you have the description change depending on whether the object is switched on or off.
+Quest has a whole bunch of features built in that you can add to your objects. To keep them manageable, objects have a _Features_ tab, and you can select the ones you want for each object. Ticking a feature here will make the appropriate tab display, and you can then go to that tab to turn the feature on, and set it up as you like. Settings on the _Features_ tab only determine what other tabs are shown, they have no effect themselves on the object when playing the game.
+
+Switchable is one such feature, so the first step is to go to the _Features_ tab, and tick "Switchable". This will display the _Switchable_ tab for the TV.
+
+Now go to the _Switchable_ tab. You'll see a dropdown labelled "Switchable" - select "Can be switched on/off" and various options will appear.
+
+The options should be fairly self-explanatory - you can choose whether the object is switched on when the game begins, and the text to print when switching on/off. Finally, you can choose some extra text to add to the object description. This lets you have show text depending on whether the object is switched on or off.
 
 Enter some sensible text for these, for example as shown below.
 
