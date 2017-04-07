@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Text formatting
+title: Changing the user experience
 ---
 
 Up until now, our Quest game has been entirely plain text. In this section, we'll look at jazzing things up a bit, and, on the next section, including pictures, sounds and video.
