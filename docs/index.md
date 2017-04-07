@@ -3,17 +3,15 @@ layout: index
 title: Quest 5 - Documentation
 ---
 
-Quest 5 is free, [open source](open_source.html) software for creating text adventure games. It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest currently has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Romanian and Esperanto.
+Quest 5 is free, [open source](open_source.html) software for creating text adventure games. It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest currently has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Romanian, Esperanto, Russian and Icelandic.
 
-You can [use Quest in your web browser](http://textadventures.co.uk/create), or [download a version for Windows](http://textadventures.co.uk/quest/desktop).
+You can [use Quest in your web browser](http://textadventures.co.uk/create), or [download a version for Windows](http://textadventures.co.uk/quest/desktop) (or start with the web, and if you like it, download the game you are working on, and finish it on the desktop version).
 
 
 Contents
 --------
 
 [Tutorial](#Tutorial)
-
-[Publishing](#Publishing)
 
 [Other features](#Otherfeatures)
 
@@ -27,7 +25,6 @@ Contents
 
 [Search](#Search)
 
-NOTE: The Quest documentation is undergoing a review, with pages being moved around and re-written. Please bear with us!
 
 
 
@@ -62,13 +59,12 @@ Quest has a whole range of features built in and ready to use. You probably won'
 
 -  [Text Processor](text_processor.html)
 -  [Complex commands](complex_commands.html)
--  [Changing the player object](tutorial/changing_the_player_object.html)
--  [Using lockable exits](tutorial/using_lockable_exits.html)
+-  [Changing the player object](changing_the_player_object.html)
+-  [Using lockable exits](using_lockable_exits.html)
 -  [Light and dark](handling_light_and_dark.html)
 -  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
--  [Showing a map](tutorial/showing_a_map.html)
--  [Handling water](handling_water.html)
+-  [Showing a map](showing_a_map.html)
 
 
 <a name="TheUserExperience"></a>The User Experience
@@ -85,27 +81,30 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 <a name="AdvancedTopics"></a>Advanced Topics
 ---------------------------------------------
 
-A look at some of the more technical features of Quest.
+A look at some of the more technical features of Quest. These articles assume you can at least copy-and-paste code.
 
--  [Using a "switch" script](tutorial/multiple_choices___using_a_switch_script.html)
--  [Creating functions](tutorial/creating_functions_which_return_a_value.html)
+-  [Handling water](handling_water.html)
+-  [Asking a question](asking_a_question.html)
+-  [Keeping a journal](keeping_a_journal.html)
+-  [Using a "switch" script](multiple_choices___using_a_switch_script.html)
+-  [Creating functions](creating_functions_which_return_a_value.html)
 -  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
 -  [Change scripts](change_scripts.html)
 -  [Pattern matching](pattern_matching.html)
+-  [Using Javascript](using_javascript.html)
 
-Due to restrictions in the wev editor, the following are only applicable to the desktop version.
+Due to restrictions in the web editor, the following are only applicable to the desktop version.
 
--  [Using walkthroughs](tutorial/using_walkthroughs.html)
+-  [Using walkthroughs](using_walkthroughs.html)
 -  [Overriding functions](overriding.html)
--  [Using types](tutorial/using_inherited_types.html)
--  [Changing templates](tutorial/changing_templates.html)
+-  [Using types](using_inherited_types.html)
+-  [Changing templates](changing_templates.html)
 -  [Translating Quest](translating_quest.html)
--  [Using libraries](tutorial/using_libraries.html)
+-  [Using libraries](using_libraries.html)
 -  [Creating Libraries](creating_libraries.html)
--  [Using Javascript](tutorial/using_javascript.html)
--  [Debugging your game](tutorial/debugging_your_game.html)
+-  [Debugging your game](debugging_your_game.html)
 
 
     
@@ -133,9 +132,9 @@ Due to restrictions in the wev editor, the following are only applicable to the 
 
 If you would like to help with developing Quest, please see the [Developers](developers.html) page.
 
-If you find a bug, please log it on the [Issue Tracker](https://github.com/textadventures/quest/issues).
+If you find a bug in Quest (as opposed to your own game), please log it on the [Issue Tracker](https://github.com/textadventures/quest/issues), or if there is a feature you would like included. We cannot guarantee all bugs and feature requests will be addressed, but they are more likely to be if reported here. Try to include as much detail as possible, includiong a same game that illustrates the issue if at all possible.
 
-You can also discuss Quest at [the forum](http://textadventures.co.uk/forum/quest).
+You can also discuss Quest at [the forum](http://textadventures.co.uk/forum/quest). If you have an issue with your game, this is the place to go!
 
 Quest is completely open source, including this documentation! The source code and documentation both live [on GitHub](https://github.com/textadventures/quest) (documentation is in the `docs` folder).
 
