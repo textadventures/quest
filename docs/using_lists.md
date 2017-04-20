@@ -4,13 +4,6 @@ title: Using Lists
 ---
 
 
-Quest is a bit limited for data structures compared to fully-fledge programming languages, supporting only lists and [dictionaries](using_dictionaries.html), though it is worth considering using an object as a data structure in some situations.
-
-
-
-
-Lists
------
 
 A list is a sequence of entries in a prescribed order. Each entry is associated with a number, which is its position in the list.
 
@@ -24,7 +17,7 @@ mylist = NewList()
 ```
 It is best practice to use string lists or object lists wherever possible, rather than general lists.
 
-If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists.
+If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes.
 
 
 
@@ -113,35 +106,15 @@ By the way, the `Join` function goes the other way; it converts from a string li
 Quick object lists
 ------------------
 
-There are various scope and other functions that will return a list of objects, and should be used where possible:
-```
-AllExits
-AllObjects
-AllTurnScripts
-GetAllChildObjects
-GetDirectChildren
-ScopeAllExitsForRoom
-ScopeCommands
-ScopeExits
-ScopeExitsAll
-ScopeExitsForRoom
-ScopeInventory
-ScopeReachable
-ScopeReachableForRoom
-ScopeReachableInventory
-ScopeReachableNotHeld
-ScopeReachableNotHeldForRoom
-ScopeVisible
-ScopeVisibleForRoom
-ScopeVisibleNotHeld
-ScopeVisibleNotHeldForRoom
-ScopeVisibleNotHeldNotScenery
-ScopeVisibleNotHeldNotSceneryForRoom
-ScopeVisibleNotReachable
-ScopeVisibleNotReachableForRoom
-```
-See here for more details
-http://docs.textadventures.co.uk/quest/functions/
+There are various scope and other functions that will return a list of objects, and should be used where possible. See the [Scopes](scopes.html) page for more details.
+
+Some other useful functions that return object lists:
+
+-   [AllObjects](functions/allobjects.html)
+-   [GetAllChildObjects](functions/getallchildobjects.html)
+-   [GetDirectChildren](functions/getdirectchildren.html)
+
+
 
 
 
@@ -150,7 +123,7 @@ Iterating
 
 Often you will want to go through each member of a list. Use the `foreach` command to do this. It takes two parameters, the first being a variable to store an entry in, and the second being the list. It also requires a script.
 
-This example will output each member of the list. The script will be run once for each entry in the list `l`, and when it runs `x` will have the value of that entry.
+This example will output each member of the list. The script will be run once for each entry in the list `l`, and for each iteration, `x` will have the value of that entry.
 ```
 foreach(x, l) {
   msg("Entry: " + x)
@@ -204,7 +177,7 @@ msg (ListExclude(l, player))
 ```
 Note that `ListCombine` and `ListExclude` do not change the original lists at all.
 
-As of Quest 5.7, the `IndexOf` function canbe used to get the position of an element in a list (or -1 if it is not in the list).
+As of Quest 5.7, the `IndexOf` function can be used to get the position of an element in a list (or -1 if it is not in the list).
 
 You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list of objects according to a certain attribute.
 http://docs.textadventures.co.uk/quest/functions/objectlistsort.html

@@ -3,13 +3,10 @@ layout: index
 title: Scopes
 ---
 
-Core.aslx defines various "scope" functions. Each of these will return an object list (possible emtpty). Scope functions that end "ForRoom" must be given a room as a parameter (other functions will default to the current room).
+Core.aslx defines various "scope" functions. Each of these will return an object list (possible empty). Scope functions that end "ForRoom" must be given a room as a parameter (other functions will default to the current room).
 
-* [ScopeAllExitsForRoom](functions/corelibrary/scopeallexitsforroom.html)
 * [ScopeExits](functions/corelibrary/scopeexits.html)
 Exits that the player can use from the current location
-* [ScopeExitsAll](functions/corelibrary/scopeexitsall.html)
-Replaced in 5.4 by ScopeExits
 * [ScopeExitsForRoom](functions/corelibrary/scopeexitsforroom.html)
 * [ScopeUnlockedExitsForRoom](functions/corelibrary/scopeunlockedexitsforroom.html)
 From Quest 5.7.

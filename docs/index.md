@@ -102,8 +102,8 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -  [Using types](using_inherited_types.html)
 -  [Changing templates](changing_templates.html)
 -  [Translating Quest](translating_quest.html)
--  [Using libraries](using_libraries.html)
--  [Creating Libraries](creating_libraries.html)
+-  [Using and creating libraries](using_libraries.html)
+-  [Editor User Interface Elements](editor_user_interface_elements.html)
 -  [Debugging your game](debugging_your_game.html)
 
 

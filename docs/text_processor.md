@@ -17,6 +17,8 @@ You can use as many sections as you like within the same text, and even nest the
 
      msg ("You can {command:go to shop:go into the shop}. {if player.coins>10:You have {player.coins} coins, which is more than enough.}")
 
+Note that the text processor does not support the use of "this" (if that means nothing to you, then you do not need to worry about it).
+     
 Supported processor commands are:
 
 Text adventure mode and Gamebook mode
@@ -29,16 +31,22 @@ Displays the text only once. The text will not be printed on subsequent occasion
 Does not displays the text the first time it is printed; the text will only be printed on subsequent occasions.
 
 {random:**text 1:text 2:text 3**}  
-Choose text at random (you can have as many sections as you like).
+Choose text at random (you can have as many sections as you like). This is a great way to add some movement to a character.
+
+    You can see Mary {random:paddling in the sea:building a sand castle:running in the sand}.
 
 {img:**filename.png**}  
 Insert the specified image.
 
 {**object.attribute**}  
-Displays the value of an object's attribute.
+Displays the value of an object's attribute. A great example of this is where the player can set the name of the main character, you can use `{player.alias}` as a stand-in for the character's name.
 
+    'Hi, {player.alias},' says Mary, 'I've not seen you in a while!'
+    
 {if **object.attribute**:**text**}  
-Display text only if object attribute is true.
+Display text only if object attribute is true (so requires a flag, otherwise known as a Boolean attribute). Containers have a flag called "isopen", and you could use that to modify the description, for instance.
+
+    The chest is old, and almost falling apart. {if chest.isopen:The lid is open.}
 
 {if not **object.attribute**:**text**}  
 Display text only if object attribute is false.
@@ -120,8 +128,12 @@ Displays the given text with the colour specified as the background. To show tex
 {here **object**:**text**}
 Displays the text only if the given object is in the current room (but not if in the player's inventory or in a container in the room).
 
+    The beach is long, and the sand almost white. {here mary:You can see Mary, building a sand castle.}
+
 {nothere **object**:**text**}
 Displays the text only if the given object is NOT in the current room.
+
+    The beach is long, and the sand almost white. {nothere mary:You wonder where Mary could be.}
 
 {popup:**text**:**long text**}
 Displays a link, with the first text (which cannot have text processor directives nested in it). When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.

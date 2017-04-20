@@ -1,9 +1,9 @@
 ---
 layout: index
-title: Creating functions which return a value
+title: Creating functions that return a value
 ---
 
-We've already covered [Using Functions](more_things_to_do_with_objects.html#Using_Functions) earlier in this tutorial, where we created a function so that we could call the same script from multiple places.
+We've already covered [Using Functions](more_things_to_do_with_objects.html#Using_Functions) in the tutorial, where we created a function so that we could call the same script from multiple places.
 
 We can also create functions which return a value. Previously, we called our function from a script command, but when a function returns a value, we can call it from an expression. The function will run, and the **return value** will be used in the expression.
 

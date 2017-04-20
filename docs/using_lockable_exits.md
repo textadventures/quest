@@ -8,7 +8,7 @@ Creating the exit
 
 You can create an exit which is impassable until something else happens in your game. This could be a locked door, or perhaps something like a guard blocking the way.
 
-Let's create a locked door in the kitchen, leading to a back garden. Create the following three elements:
+Let's create a locked door in the kitchen of the [tutorial](tutorial/index.html) game, leading to a back garden. Create the following three elements:
 
 -   a new room, "garden"
 -   an object in the kitchen, "door"
