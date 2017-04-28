@@ -87,6 +87,7 @@ _NOTE:_ The point of creating your own libraries is you can quickly get to the c
 
 _NOTE:_ There is an issue with creating objects in libraries that have a parent attribute set to an object in the main file, so avoid  doing that!
 
+_NOTE:_ If you make your library publicly available, make sure all the elements have names, so users can override them. In particular, check your verb elements.
 
 
 File name and location

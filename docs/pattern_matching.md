@@ -109,9 +109,24 @@ Text matching
 Text will match anything, and so is useful if you want to relate a command to an object outside the normal scope. You could also use text matching for open-ended commands, such as SAY, as is done in the basic tutorial. You then need to work out what you will do with the text.
 
 You can limit the text that will be matched. In the following example, a cheat command is set up; the player (presumably the author while testing) can type CHEAT followed by either MOVE, SET or GET, followed by further text. Quest will hand two variables to the command's script, `text1` and `text2`.
+
 ```
 ^cheat (?<text1>move|set|get) (?<text2>.+)$
 ```
+
+Here is another example that would allow you to handle violent commands peacefully:
+
+```
+^(?<text>hit|strike|slap|punch|kick|headbutt|kill|murder) (?<object>.+)$
+```
+
+If the player types KICK BORIS, Quest will match it to this command, putting "KICK" in the `text` variable, the object `Boris` in the `object` variable, so you could have have a message like this:
+
+> "For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
+
+By the way, to get HIT to work, you will need to disable the built-in verb. You can do that in the desktop version only, by copying the verb into your game, and then typing a load of nonsense into the pattern. The player will never type in that nonsense, so the verb will never get matched.
+
+
 
 More on Regex
 -------------

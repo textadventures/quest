@@ -15,6 +15,8 @@ Contents
 
 [Other features](#Otherfeatures)
 
+[Commands (and Verbs)](#Commands)
+
 [The User Experience](#TheUserExperience)
 
 [Advanced Topics](#AdvancedTopics)
@@ -50,21 +52,31 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 
 
 
-
-
 <a name="Otherfeatures"></a>Other features
 ---------------------------------------
 
 Quest has a whole range of features built in and ready to use. You probably won't be using them all, so just dip in as you need to.
 
 -  [Text Processor](text_processor.html)
--  [Complex commands](complex_commands.html)
 -  [Changing the player object](changing_the_player_object.html)
 -  [Using lockable exits](using_lockable_exits.html)
 -  [Light and dark](handling_light_and_dark.html)
 -  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](showing_a_map.html)
+
+
+
+<a name="Commands"></a>Commands (and Verbs)
+---------------------------------------------------
+
+Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
+
+-  [Using Verbs](using_verbs.html)
+-  [Complex commands](complex_commands.html)
+-  [Pattern matching](pattern_matching.html)
+-  [Commands With Unusual Scope](commands_with_unusual.html)
+
 
 
 <a name="TheUserExperience"></a>The User Experience
@@ -92,7 +104,6 @@ A look at some of the more technical features of Quest. These articles assume yo
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
 -  [Change scripts](change_scripts.html)
--  [Pattern matching](pattern_matching.html)
 -  [Using Javascript](using_javascript.html)
 
 Due to restrictions in the web editor, the following are only applicable to the desktop version.
