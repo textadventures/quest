@@ -13,13 +13,19 @@ Contents
 
 [Tutorial](#Tutorial)
 
-[Other features](#Otherfeatures)
+[More Features of Quest](#Otherfeatures)
+
+[How to...](#Howto)
 
 [Commands (and Verbs)](#Commands)
 
 [The User Experience](#TheUserExperience)
 
-[Advanced Topics](#AdvancedTopics)
+[Handling Characters (NPCs)](#Npcs)
+
+[Guides to Coding With Quest](#Coding)
+
+[Advanced Topics for Desktop Only](#AdvancedTopics)
 
 [Reference](#Reference)
 
@@ -44,7 +50,6 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 1.  [Custom commands](tutorial/custom_commands.html)
 1.  [More things to do with objects](tutorial/more_things_to_do_with_objects.html)
 1.  [Using containers](tutorial/using_containers.html)
-1.  [Lockable containers](tutorial/using_lockable_containers.html)
 1.  [Moving objects during the game](tutorial/moving_objects_during_the_game.html)
 1.  [Status attributes](tutorial/status_attributes.html)
 1.  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html)
@@ -52,18 +57,32 @@ New to Quest? The tutorial will guide you through creating your first game, and 
 
 
 
-<a name="Otherfeatures"></a>Other features
+<a name="Otherfeatures"></a>More Features of Quest
 ---------------------------------------
 
 Quest has a whole range of features built in and ready to use. You probably won't be using them all, so just dip in as you need to.
 
--  [Text Processor](text_processor.html)
--  [Changing the player object](changing_the_player_object.html)
--  [Using lockable exits](using_lockable_exits.html)
+-  [The Text Processor](text_processor.html)
+-  [Lockable exits](using_lockable_exits.html)
 -  [Light and dark](handling_light_and_dark.html)
--  [Ask/Tell](ask_about.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](showing_a_map.html)
+-  [Important attributes](important_attributes.html)
+
+
+
+<a name="Howto"></a>How to...
+---------------------------------------
+
+Some of these will involve some simple coding. _It's not that bad!_ We will walk you through and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the first guide to learn how to copy-and-paste code.
+
+-  [Copy-and-paste Code](copy_and_paste_code.html)
+-  [Change the player object](changing_the_player_object.html)
+-  [Handle water](handling_water.html)
+-  [Ask a question](asking_a_question.html)
+-  [Keep a journal](keeping_a_journal.html)
+-  [Keep score](keeping_score.html)
+-  [Implement a transit system](transit_system.md)
 
 
 
@@ -89,31 +108,41 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 -  [Further options with JavaScript](ui-javascript.html)
 
 
-
-<a name="AdvancedTopics"></a>Advanced Topics
+<a name="Npcs"></a>Handling Characters (NPCs)
 ---------------------------------------------
+
+Adding people that the player can interactive with can help bring your game to life, but is hard to do well. These pages will get you started.
+
+-  [Following the player](follow.html)
+-  [Introduction to Conversations](conversations.html)
+-  [Ask/Tell](ask_about.html)
+  
+
+
+<a name="Coding"></a>Guides to Coding With Quest
+---------------------------------------
 
 A look at some of the more technical features of Quest. These articles assume you can at least copy-and-paste code.
 
--  [Handling water](handling_water.html)
--  [Asking a question](asking_a_question.html)
--  [Keeping a journal](keeping_a_journal.html)
--  [Using a "switch" script](multiple_choices___using_a_switch_script.html)
--  [Creating functions](creating_functions_which_return_a_value.html)
+-  [Functions](creating_functions_which_return_a_value.html)
 -  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
 -  [Change scripts](change_scripts.html)
--  [Using Javascript](using_javascript.html)
+-  [Javascript](using_javascript.html)
+
+
+<a name="AdvancedTopics"></a>Advanced Topics for Desktop Only
+---------------------------------------------
 
 Due to restrictions in the web editor, the following are only applicable to the desktop version.
 
--  [Using walkthroughs](using_walkthroughs.html)
+-  [Walkthroughs](using_walkthroughs.html)
 -  [Overriding functions](overriding.html)
--  [Using types](using_inherited_types.html)
--  [Changing templates](changing_templates.html)
+-  [Types](using_inherited_types.html)
+-  [Templates](changing_templates.html)
 -  [Translating Quest](translating_quest.html)
--  [Using and creating libraries](using_libraries.html)
+-  [Libraries](using_libraries.html)
 -  [Editor User Interface Elements](editor_user_interface_elements.html)
 -  [Debugging your game](debugging_your_game.html)
 
