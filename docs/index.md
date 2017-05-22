@@ -82,7 +82,8 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Ask a question](asking_a_question.html)
 -  [Keep a journal](keeping_a_journal.html)
 -  [Keep score](keeping_score.html)
--  [Implement a transit system](transit_system.md)
+-  [Implement a transit system](transit_system.html)
+-  [Transform one thing to another](convert.html)
 
 
 
