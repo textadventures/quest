@@ -173,6 +173,7 @@
           MergePOVCoordinates
         }
       }
+      this.hasbeenmoved = true
     </changedparent>
     <changedisopen type="script">
       if (this.isopen and HasScript(this, "onopen")) {
@@ -226,6 +227,7 @@
     <feature_player type="boolean">false</feature_player>
     <feature_lightdark type="boolean">false</feature_lightdark>
     <visited type="boolean">false</visited>
+    <hasbeenmoved type="boolean">false</hasbeenmoved>
   </type>
 
   <type name="defaultexit">
@@ -428,7 +430,7 @@
     <inherit name="container"/>
     <maxobjects type="int">1</maxobjects>
     <maxvolume type="int">100</maxvolume>
-    <addscript type="AddScript">
+    <addscript type="script">
       activecontainer = this
       correct = true
       while (DoesInherit(activecontainer, "container_base")) {
