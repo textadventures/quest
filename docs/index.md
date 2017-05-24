@@ -68,6 +68,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Multimedia](multimedia.html)
 -  [Showing a map](showing_a_map.html)
 -  [Important attributes](important_attributes.html)
+-  [Using a switch script](multiple_choices___using_a_switch_script.html)
 
 
 
