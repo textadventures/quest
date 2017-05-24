@@ -10,7 +10,7 @@ This file documents changes to Quest as of version 5.7.
 Preamble
 --------
 
-This is my first update in charge of Quest, and makes a lot of changes that I have felt would be useful both from my own use of Quest and from seeing what people want and struggle with on the forum. I hope all but the most basic users will find at least some of these changes useful.
+This is my first update in charge of Quest, and makes a lot of changes that I have felt would be useful both from my own use of Quest and from seeing what people want and struggle with on the forum. I hope all but the most basic users will find at least some of these changes useful (but I doubt any one persn will find it all useful).
 
 The changes are restricted to the .aslx files in WorldModel/Worldmodel/Core; I have not made changes to the C# or Visual Basic code at all as this is not an area I am competent in - perhaps for 5.8. There are also changes to playercore.htm and playercore.js (and these will not be present in the web player until that is updated to Quest 5.7).
 
@@ -34,7 +34,7 @@ New options for the command bar; borderless cursor or shadow box.
 
 ### Colours
 
-You can now set the background to blend from one colour at the top to another at the bottom. You can set both the margins and the page background colour, as well as the status bar and game border.
+You can now set the background to blend from one colour at the top to another at the bottom (but it does not look so good with a borderless command bar). You can set both the margins and the page background colour, as well as the status bar and game border.
 
 ### Other changes
 
@@ -111,6 +111,9 @@ A new function, `ProcessText` is used by the output functions. You could use thi
  -> "'Oh, he is not worth it.'",
 ```
 
+Historically, the text process cannot cope with "this" in the embedded code. Now it can, at least to some degree. You do have to tell it what "this" refers to first, by setting game.text_processor_this.
+
+
 Icelandic
 ---------
 
@@ -136,13 +139,26 @@ ToWords (42)
  -> "forty two"
 ToRoman (42)
  -> "XLII"
+PadString ("34", 5, "0")
+ -> "00034"
+ReverseDirection ("southeast")
+ -> "northwest"
 ```
 
-### Index of string or object in list
+### List utilities
 
 ```
 IndexOf
+FilterByType
+FilterByAttribute
+FilterByNotAttribute
+ObjectListToStringList
 ```
+
+
+
+
+
 
 ### Get one at random
 
@@ -153,6 +169,15 @@ PickOneChild
 PickOneChildOfType
 PickOneExit
 PickOneUnlockedExit
+```
+
+
+### Also
+
+```
+CreateBiExits: Creates an exit in the given direction, between the given rooms, and a second exit coming back.
+Equal: Compares any two things (comparing 4 and null will otherwise throw an error).
+ProcessScopeCommand: For help with handling commands with unusual scope.
 ```
 
 
@@ -219,8 +244,11 @@ If you set a string attribute on a switchable object called "cannotswitchon", th
 
 You can now have single and double quotes in options when using the ShowMenu function.
 
+Restricted containers (limit to number of items or volume of item) use a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
+This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum). This really is the point; by making it a script, it becomes far more accessible.
+The editor GUI has been modified to include the "addscript" for containers that are not restricted, so now anyone can put their own custom restrictions on what can go in an item.
 
-
+The attribute hasbeenmoved will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
 
  
  
