@@ -259,6 +259,8 @@
 
   <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in.</template>
   <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
+  <template name="EditorObjectContainerAddScript">Script to run when trying to add an object</template>
+  <template name="EditorObjectContainerAddScriptNote">By default, any object can be added; use this script to restrict that. The object being added will be called "object", and should be moved to this object if successfully added.</template>
   <template name="EditorObjectContainerLockNote">These scripts will run after the object is locked or unlocked. You can check the "locked" flag on this object at any time in your game to see state the object is in.</template>
 
   
