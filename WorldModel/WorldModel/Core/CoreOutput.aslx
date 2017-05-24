@@ -307,6 +307,7 @@
       text = Replace(text, "|" + text2, "")
     }
     condition = Left(command, colon - 1)
+    if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
     result = eval(condition) 
     if (result) {
       return (ProcessTextSection(text, data))
@@ -335,6 +336,7 @@
     else {
       text = Mid(command, colon + 1)
       condition = Left(command, colon - 1)
+      if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
       object = Eval(condition)
       if (object = null) {
         return ("@@@open@@@" + section + "@@@close@@@")
@@ -361,6 +363,7 @@
     else {
       text = Mid(command, colon + 1)
       condition = Left(command, colon - 1)
+      if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
       operator = Instr(condition, "<=")
       if (operator <> 0) {
         operatorlength = 2
@@ -564,6 +567,7 @@
       text = Mid(objectname, colon + 1)
       objectname = Left(objectname, colon - 1)
     }
+    if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
     object = GetObject(objectname)
     if (object = null) {
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
@@ -719,6 +723,7 @@
   
   <function name="ProcessTextCommand_RandomAlias" type="string" parameters="section, data">
     objectname = Mid(section, 8)
+    if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
     object = GetObject(objectname)
     if (object = null) {
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
@@ -760,7 +765,9 @@
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
     }
     else {
-      object = GetObject(StringListItem(objectandattlist, 0))
+      objectname = StringListItem(objectandattlist, 0)
+      if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
+      object = GetObject(objectname)
       if (object = null) {
         return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
@@ -977,45 +984,7 @@
 
 
   
-  <function name="ToWords" parameters="number" type="string"><![CDATA[
-    if (not TypeOf(number) = "int") error ("ToWords can only handle ints")
-    
-    number_units = Split("zero;one;two;three;four;five;six;seven;eight;nine;ten;eleven;twelve;thirteen;fourteen;fifteen;sixteen;seventeen;eighteen;nineteen;twenty", ";")
-    number_tens = Split("twenty;thirty;forty;fifty;sixty;seventy;eighty;ninety", ";")
 
-    s = ""
-    if (number < 0) {
-      s = "minus "
-      number = -number
-    }
-    if (number < 2000) {
-      hundreds = number / 100
-      number = number % 100
-      if (hundreds > 0) {
-        s = s + StringListItem(number_units, hundreds) + " hundred "
-        if (number > 0) {
-          s = s + "and "
-        }
-      }
-      if (number < 20) {
-        if (not number = 0 or s = "") {
-          s = s + StringListItem(number_units, number)
-        }
-      }
-      else {
-        units = number % 10
-        tens = (number / 10) % 10
-        s = s + StringListItem(number_tens, tens - 2)
-        if (not units = 0) {
-          s = s + StringListItem(number_units, units)
-        }
-      }
-    }
-    else {
-      s = ToString(number)
-    }
-    return (Trim(s))
-  ]]></function>
   
   <function name="ToRoman" parameters="n" type="string">
     if (not TypeOf(n) = "int") error ("ToRoman can only handle ints")
