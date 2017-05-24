@@ -505,8 +505,13 @@
         object2.hidechildren = false
       }
 
-      if (HasDelegateImplementation(object2, "addscript")) {
-        rundelegate (object2, "addscript", object1)
+      //if (HasDelegateImplementation(object2, "addscript")) {
+      //  rundelegate (object2, "addscript", object1)
+      //}
+      if (HasScript(object2, "addscript")) {
+        params = NewDictionary()
+        dictionary add (params, "object", object1)
+        do (object2, "addscript", params)
       }
       else {
         if (HasScript(object1, "drop")) {
