@@ -675,4 +675,133 @@
     }
     return (-1)
   </function>
+  
+  
+  <function name="PadString" parameters="str, n, pad" type="string"><![CDATA[
+    s = ""
+    str = "" + str
+    pad = "" + pad
+    step = LengthOf(pad)
+    if (step = 0) {
+      error ("Zero length pad in PadString")
+    }
+    if (pad = " ") {
+      pad = "&nbsp;"
+    }
+    for (i, 1, n - LengthOf(str), step) {
+      s = s + pad
+    }
+    return (s + str)
+  ]]></function>
+
+
+  <function name="ReverseDirection" parameters="dir" type="string">
+    list1 = Split("[CompassN];[CompassNE];[CompassE];[CompassSE];[CompassS];[CompassSW];[CompassW];[CompassNW];[CompassUp];[CompassDown];[CompassIn];[CompassOut]", ";")
+    list2 = Split("[CompassS];[CompassSW];[CompassW];[CompassNW];[CompassN];[CompassNE];[CompassE];[CompassSE];[CompassDown];[CompassUp];[CompassOut];[CompassIn]", ";")
+    n = IndexOf(list1, dir)
+    if (not n = -1) return (StringListItem(list2, n))
+    return (dir)
+  </function>
+
+
+  <function name="CreateBiExits" parameters="direction, from, to">
+    create exit (dir, from, to)
+    create exit (ReverseDirection(dir), to, from)
+  </function>
+
+  
+  <function name="ObjectListToStringList" parameters="list, att" type="stringlist">
+    l = NewStringList()
+    foreach (o, list) {
+      if (HasString(o, att)) {
+        list add (l, GetString(o, att))
+      }
+    }
+    return (l)
+  </function>
+  
+  
+  <function name="FilterByType" parameters="lst, t" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      if (DoesInherit(o, t)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  
+  <function name="FilterByAttribute" parameters="lst, name, value" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      val = GetAttribute(o, name)
+      if (Equal(val, value)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  <function name="FilterByNotAttribute" parameters="lst, name, value" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      val = GetAttribute(o, name)
+      if (not Equal(val, value)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  <function name="Equal" parameters="value1, value2" type="boolean">
+    if (not TypeOf(value1) = TypeOf(value2)) return (false)
+    if (not value1 = value2) return (false)
+    return (true)
+  </function>
+
+  <function name="ProcessScopeCommand" parameters="func, scope, text" type="boolean"><![CDATA[
+    value = Trim (LCase (text))
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
+    foreach (obj, scope) {
+      name = LCase(GetDisplayAlias(obj))
+      CompareNames (name, value, obj, fullmatches, partialmatches)
+      if (obj.alt <> null) {
+        foreach (altname, obj.alt) {
+          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
+        }
+      }
+    }
+    if (game.lastobjects <> null) {
+      foreach (obj, game.lastobjects) {
+        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+      }
+    }
+    if (ListCount(fullmatches) = 1) {
+      game.scopecommandpending = ListItem(fullmatches, 0)
+    }
+    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
+      game.scopecommandpending = ListItem(partialmatches, 0)
+    }
+    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      return (false)
+    }
+    else {
+      menu = NewStringDictionary()
+      GenerateMenuChoices (menu, fullmatches)
+      GenerateMenuChoices (menu, partialmatches)
+      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        if (result <> null) {
+          game.scopecommandpending = GetObject(result)
+        }
+        else {
+          return (false)
+        }
+      }
+    }
+    on ready {
+      if (game.scopecommandpending = null) {
+        return (false)
+      }
+      else {
+        return (eval (func + "(" + game.scopecommandpending.name + ")"))
+      }
+    }
+  ]]></function>
 </library>
