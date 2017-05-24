@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.7.6281.27484-->
+<!--Saved by Quest 5.7.6332.15118-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -26,6 +26,7 @@
     <classiclocation />
     <attr name="feature_pictureframe" type="boolean">false</attr>
     <shadowbox />
+    <feature_advancedscripts />
     <roomenter type="script">
     </roomenter>
     <start type="script"><![CDATA[
@@ -312,12 +313,16 @@
       player.flag = false
       Assert ("5 You have enough", ProcessText("5 You {either player.flag:don't }have enough"))
       Assert ("6 You don't have enough", ProcessText("6 You {either not player.flag:don't }have enough"))
-      Assert ("7 You have more than 4", ProcessText("7 You have {either player.count > 4:more than 4:less than 5}"))
-      Assert ("8 You have less than 6", ProcessText("8 You have {either player.count > 5:more than 5:less than 6}"))
+      Assert ("7 You have more than 4", ProcessText("7 You have {either player.count > 4:more than 4|less than 5}"))
+      Assert ("8 You have less than 6", ProcessText("8 You have {either player.count > 5:more than 5|less than 6}"))
+      Assert ("9 You have less <i>than</i> 6", ProcessText("9 You have {either player.count > 5:more {i:than} 5|less {i:than} 6}"))
       Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\"):are the player}"))
       Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"))
       Assert ("You are the player", ProcessText("You {if player.alias=Boris:are the player}"))
       Assert ("You are the player", ProcessText("You {if player.alias<>you:are the player}"))
+      game.text_processor_this = player
+      Assert ("You are the player", ProcessText("You {either StartsWith(this.name, \"play\") and not player.flag:are the player}"))
+      Assert ("You are the player", ProcessText("You {if this.alias<>you:are the player}"))
       //
       // -------------------------------------------------------------------------
       Testing ("Text processor: eval")
@@ -335,6 +340,10 @@
       Assert ("You can not see the tiger", ProcessText("You can not see {nothere tiger:the tiger}"))
       Assert ("You can see ", ProcessText("You can see {nothere player:the player}"))
       Assert ("You can not see ", ProcessText("You can not see {here tiger:the tiger}"))
+      game.text_processor_this = tiger
+      Assert ("You can not see ", ProcessText("You can not see {here this:the tiger}"))
+      game.text_processor_this = player
+      Assert ("You can see the player", ProcessText("You can see {here this:the player}"))
       //
       // -------------------------------------------------------------------------
       Testing ("Text processor: curly brace")
@@ -352,11 +361,83 @@
       Assert ("6 You don't have enough", ProcessText("6 You {if player.name<>10:don't }have enough"))
       //
       // -------------------------------------------------------------------------
+      Testing ("Text processor: select")
+      player.count = 2
+      Assert ("player is two", ProcessText("player is {select:player.count:zero:one:two:three}"))
+      Assert ("player is <i>two</i>", ProcessText("player is {select:player.count:{u:zero}|{b:one}|{i:two}|three}"))
+      game.text_processor_this = player
+      Assert ("player is <i>two</i>", ProcessText("player is {select:this.count:{u:zero}|{b:one}|{i:two}|three}"))
+      //
+      // -------------------------------------------------------------------------
       Testing ("Text processor: old error handling")
       Assert ("player.count = {unknown.count}", ProcessText("player.count = {unknown.count}"))
+      //
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Equal")
+      Assert (false, Equal("23", 6))
+      Assert (false, Equal("1234567", null))
+      Assert (false, Equal(null, 6))
+      Assert (true, Equal(23, 23))
+      Assert (true, Equal(null, null))
+      Assert (true, Equal(null, tiger.unknownatt))
+      Assert (true, Equal("23", "23"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("PadString")
+      Assert ("000023", PadString("23", 6, "0"))
+      Assert ("1234567", PadString("1234567", 6, "0"))
+      Assert ("[][]23", PadString("23", 6, "[]"))
+      Assert ("000023", PadString(23, 6, 0))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("ReverseDirection")
+      Assert ("west", ReverseDirection("east"))
+      Assert ("southeast", ReverseDirection("northwest"))
+      Assert ("down", ReverseDirection("up"))
+      Assert ("out", ReverseDirection("in"))
+      Assert ("up", ReverseDirection("down"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("FilterBy... and ObjectListToStringList")
+      ol = NewObjectList()
+      list add (ol, hat)
+      list add (ol, teapot)
+      list add (ol, socks)
+      list add (ol, shoes)
+      list add (ol, casual jacket)
+      Assert (4, ListCount(FilterByType(ol, "wearable")))
+      Assert (0, ListCount(FilterByType(ol, "female")))
+      Assert (5, ListCount(FilterByType(ol, "defaultobject")))
+      Assert (1, ListCount(FilterByAttribute(ol, "flag", "set")))
+      Assert (4, ListCount(FilterByNotAttribute(ol, "flag", "set")))
+      Assert (1, ListCount(FilterByAttribute(ol, "flag", true)))
+      Assert (4, ListCount(FilterByNotAttribute(ol, "flag", true)))
+      Assert (3, ListCount(FilterByAttribute(ol, "parent", player)))
+      Assert (2, ListCount(FilterByNotAttribute(ol, "parent", player)))
+      Assert ("hat|teapot|socks|shoes|casual jacket", Join(ObjectListToStringList(ol, "name"), "|"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("ProcessScopeCommand")
+      // nothing if text not recognised
+      ProcessScopeCommand ("BuySomething", ol, "unknown object")
+      Assert (null, game.purchasedobject)
+      // text is object not in list
+      ProcessScopeCommand ("BuySomething", ol, "tiger")
+      Assert (null, game.purchasedobject)
+      // text should be recognised, and attribute set
+      ProcessScopeCommand ("BuySomething", ol, "teapot")
+      Assert (teapot, game.purchasedobject)
+      // should recognise alias
+      shoes.alias = "boots"
+      ProcessScopeCommand ("BuySomething", ol, "boots")
+      Assert (shoes, game.purchasedobject)
+      // should recognise alts
+      shoes.alias = "boots"
+      ProcessScopeCommand ("BuySomething", ol, "kettle")
+      Assert (teapot, game.purchasedobject)
       Results
     ]]></start>
-    <feature_advancedscripts />
     <scopebackdrop type="script">
       foreach (o, GetDirectChildren(backdrop)) {
         list add (items, o)
@@ -465,6 +546,7 @@
       <inherit name="wearable" />
       <feature_wearable />
       <multistate />
+      <flag />
     </object>
     <object name="teapot">
       <inherit name="editor_object" />
@@ -475,6 +557,10 @@
       <drop type="boolean">false</drop>
       <feature_container />
       <transparent />
+      <flag>set</flag>
+      <alt type="stringlist">
+        <value>kettle</value>
+      </alt>
     </object>
     <object name="tiger">
       <inherit name="editor_object" />
@@ -705,5 +791,9 @@
   </function>
   <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
     return (GetDirectChildren(backdrop))
+  </function>
+  <function name="BuySomething" parameters="obj" type="boolean">
+    game.purchasedobject = obj
+    return (true)
   </function>
 </asl>
