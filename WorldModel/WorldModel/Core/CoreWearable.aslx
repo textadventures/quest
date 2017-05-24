@@ -98,13 +98,16 @@
   Sets aliases, verbs, etc.
   This is unit tested.
   -->
-	<function name="WearGarment" parameters="object"><![CDATA[
+	<function name="WearGarment" parameters="object">
+      <![CDATA[
     if (GetBoolean(object, "multistate")) {
       object.multistate_status = 1
     }
     else {
       object.multistate_status = 0
     }
+    if (object.alias = null) object.alias = object.name
+    if (object.listalias = null) object.alias = object.alias
     
     if (object.original_alias = null) {
       object.original_drop = object.drop
