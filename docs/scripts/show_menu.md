@@ -26,5 +26,3 @@ This command was added in Quest 5.1.
                msg ("You have chosen to press cancel")
             }
           }
-
-<image:Show_menu.jpg>

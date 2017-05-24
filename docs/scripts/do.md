@@ -9,4 +9,4 @@ Runs an object's script attribute.
 
     do (object, string attribute name, dictionary parameters)
 
-Runs an object's script attribute, passing in parameters via dictionary. The key/value pairs in the dictionary will be turned into local variables for the script.
+Runs an object's script attribute, passing in parameters via dictionary. The key/value pairs in the dictionary will be turned into local variables for the script. The special variable "this" can be used in the script to reference the object.
