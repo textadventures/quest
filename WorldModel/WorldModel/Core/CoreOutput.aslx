@@ -886,7 +886,7 @@
 
   <function name="CommandLink" type="string" parameters="cmd, text">
     <![CDATA[
-    return ("@@@open@@@command:" + cmd + ":" + text + "@@@close@@@")
+    return ("{command:" + cmd + ":" + text + "}")
     ]]>
   </function>
   
