@@ -69,6 +69,24 @@ Display text only if an object attribute is less than a certain value.
 {if **object.attribute\<=value**:**text**}  
 Display text only if an object attribute is less than or equal to a certain value.
 
+
+
+{command:**command**}  
+Displays a link that will run a command, displaying the command itself as the text. The command will be parsed as normal, so could be as simple as {command:HELP} or as complicated as {command:put the ball in the chest}. For a gamebook, the command should be the name of a page.
+
+{command:**command**:**text**}  
+Displays a link that will run a command, as before, but displaying some different text.
+
+{page:**command**}  
+As `command` (an alternative name that may be prefered for game books).
+
+{page:**command**:**text**}  
+As `command` (an alternative name that may be prefered for game books).
+
+
+
+
+
 Additional text adventure commands
 ----------------------------------
 
@@ -80,12 +98,6 @@ Displays an object hyperlink, using text you specify.
 
 {exit:**name**}  
 Displays an exit hyperlink. The name is the name you give to the exit (by default exits do not have names; you will need to give it a name yourself). The link will appear as the exit's alias ("north", "up", etc.)
-
-{command:**command**}  
-Displays a link that will run a command, displaying the command itself as the text. The command will be parsed as normal, so could be as simple as {command:HELP} or as complicated as {command:put the ball in the chest}.
-
-{command:**command**:**text**}  
-Displays a link that will run a command, as before, but displaying some different text.
 
 {rndalt:**object**}  
 Display a randomly chosen name from an object's [alt](attributes/alt.html) list.
@@ -175,12 +187,6 @@ This is a short cut for eval, and works just the same. The samples below show th
 
 Additional gamebook commands
 ----------------------------
-
-{page:**name**}  
-Displays a page hyperlink (displaying the page name)
-
-{page:**name**:**link text**}  
-Displays a page hyperlink (using text you specify)
 
 {counter:**countername**}  
 Displays the value of an counter
