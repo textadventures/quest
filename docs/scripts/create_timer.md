@@ -14,6 +14,6 @@ o.script => {
   msg ("timer=" + this.name)
 }
 o.interval = 10
-o.enabled = true
+EnableTimer(o)
 
 It is generally easier to create the timer in the editor, but have it disabled, and then enable it when required.
