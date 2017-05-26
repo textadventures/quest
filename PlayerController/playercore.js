@@ -336,6 +336,9 @@ function scrollToEnd() {
         $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
     $("#txtCommand").focus();
+    // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
+    // In fact it may be the all the rest of this can deleted
+    $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
 function SetAnimateScroll(value) {
