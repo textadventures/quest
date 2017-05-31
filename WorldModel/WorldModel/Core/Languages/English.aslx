@@ -207,6 +207,7 @@
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
+  <verbtemplate name="buy">purchase</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
   <verbtemplate name="climb">climb</verbtemplate>
   <dynamictemplate name="DefaultClimb">"You can't climb " + object.article + "."</dynamictemplate>
