@@ -44,7 +44,8 @@
     <commandcursor>&gt;</commandcursor>
     <classiclocation/>
     <turnoffsavebutton type="boolean">false</turnoffsavebutton>
-    
+    <mapexitwidth type="int">1</mapexitwidth>
+    <mapexitcolour>black</mapexitcolour>
     
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
@@ -81,6 +82,10 @@
     <feature_pictureframe type="boolean">false</feature_pictureframe>
     <feature_limitinventory type="boolean">false</feature_limitinventory>
     <feature_asktell type="boolean">false</feature_asktell>
+    <feature_annotations type="boolean">false</feature_annotations>
+    <feature_prices type="boolean">false</feature_prices>
+    <feature_advancedwearables type="boolean">false</feature_advancedwearables>
+    <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
@@ -200,6 +205,7 @@
       }
     </changedswitchedon>
     <volume type="int">0</volume>
+    <price type="int">0</price>
     <dark type="boolean">false</dark>
     <lightstrength type="string"></lightstrength>
     <darklevel type="boolean">false</darklevel>
@@ -540,6 +546,7 @@
   <type name="defaultplayer">
     <inherit name="editor_player"/>
     <inherit name="editor_object"/>
+    <money type="int">0</money>
   </type>
 
   <type name="switchable">

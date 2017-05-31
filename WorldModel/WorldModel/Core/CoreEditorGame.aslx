@@ -135,6 +135,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGamePrices]</caption>
+        <attribute>feature_prices</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameAdvancedWearables]</caption>
         <attribute>feature_advancedwearables</attribute>
       </control>	  
@@ -438,6 +444,24 @@
         <caption>[EditorGameHeightpixels]</caption>
         <minimum>1</minimum>
       </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapexitwidth</attribute>
+        <caption>[EditorGameExitwidth]</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameExitcolour]</caption>
+        <attribute>mapexitcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
 
       
       <control>

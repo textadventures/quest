@@ -192,6 +192,15 @@
     </control>
 
     <control>
+      <controltype>number</controltype>
+      <caption>[EditorObjectOptionsStartingmoney]</caption>
+      <attribute>money</attribute>
+      <width>100</width>
+      <minimum>0</minimum>
+      <onlydisplayif>game.feature_prices</onlydisplayif>
+    </control>
+
+    <control>
       <mustinherit>editor_player</mustinherit>
       <selfcaption>[EditorObjectOptionsLookatobject]</selfcaption>
       <controltype>multi</controltype>

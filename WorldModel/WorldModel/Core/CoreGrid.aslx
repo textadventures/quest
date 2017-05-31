@@ -169,7 +169,7 @@
       
         foreach (exit, AllExits()) {
           if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
-            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), "black", 1)
+            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), game.mapexitcolour, game.mapexitwidth)
           }
         }
 
