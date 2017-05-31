@@ -91,6 +91,7 @@
   <template name="EditorGameAdvancedWearables">Show advanced options for wearables</template>
   <template name="EditorGameAdvancedScripts">Show advanced scripts for the game object</template>
   <template name="EditorGameAnnotations">Annotations: adds a tab to rooms where authors notes can be made, not seen by players</template>
+  <template name="EditorGamePrices">Prices: adds a number box to the Inventory tab for the price of the item</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
   <template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
   <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
@@ -123,6 +124,8 @@
   <template name="EditorGameMap">Map</template>
   <template name="EditorGameScale">Scale</template>
   <template name="EditorGameHeightpixels">Height (pixels)</template>
+  <template name="EditorGameExitwidth">Exit width</template>
+  <template name="EditorGameExitcolour">Exit colour</template>
   <template name="EditorGameLayout">Layout</template>
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
@@ -284,6 +287,7 @@
   <template name="EditorObjectInventoryDrop2">Drop</template>
   <template name="EditorObjectInventoryDropmessage">Drop message (leave blank for default)</template>
   <template name="EditorObjectInventoryAfterdropping">After dropping the object</template>
+  <template name="EditorObjectInventoryPrice">Price</template>
   <template name="EditorObjectInventoryInventorylimitation">Inventory limitation</template>
   <template name="EditorObjectInventorySetmaximum">Set "maximum objects" to 0 to allow unlimited inventory items.</template>
   <template name="EditorObjectInventoryMaximumobjects">Maximum objects</template>
@@ -345,6 +349,7 @@
   <template name="EditorObjectOptionsArticle">Article</template>
   <template name="EditorObjectOptionsPossessive">Possessive</template>
   <template name="EditorObjectOptionsOthernames">Other names</template>
+  <template name="EditorObjectOptionsStartingmoney">Starting money</template>
   <template name="EditorObjectRoomRoom">Room</template>
   <template name="EditorObjectRoomRoompicture">Room picture</template>
   <template name="EditorObjectRoomDescriptionPrefix">Description prefix</template>
