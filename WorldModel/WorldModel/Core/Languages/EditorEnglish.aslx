@@ -85,6 +85,8 @@
   <template name="EditorGamePictureframe">Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</template>
   <template name="EditorGameScore">Score</template>
   <template name="EditorGameHealth">Health</template>
+  <template name="EditorGameMoney">Money</template>
+  <template name="EditorGameMoneyformat">Format for money</template>
   <template name="EditorGameInventorylimits">Inventory limits: limit items that can be carried or contained by specifying a volume</template>
   <template name="EditorGameLightnessand">Lightness and darkness: rooms can be dark, and objects can light them up</template>
   <template name="EditorGameAsk/Tellplayers">Ask/Tell: players can ask or tell characters about selected topics</template>
@@ -575,6 +577,10 @@
   <template name="EditorScriptsPlayerIncreasehealth">Increase health by</template>
   <template name="EditorScriptsPlayerDecreasehealthTitle">Decrease health</template>
   <template name="EditorScriptsPlayerDecreasehealth">Decrease health by</template>
+  <template name="EditorScriptsPlayerIncreasemoneyTitle">Increase money</template>
+  <template name="EditorScriptsPlayerIncreasemoney">Increase money by</template>
+  <template name="EditorScriptsPlayerDecreasemoneyTitle">Decrease money</template>
+  <template name="EditorScriptsPlayerDecreasemoney">Decrease money by</template>
   <template name="EditorScriptsScriptsScripts">Scripts</template>
   <template name="EditorScriptsScriptsFailedtoload">Failed to load script:</template>
   <template name="EditorScriptsScriptsComment">Comment</template>
