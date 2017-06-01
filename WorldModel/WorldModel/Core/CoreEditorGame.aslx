@@ -110,6 +110,20 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameMoney]</caption>
+        <attribute>showmoney</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameMoneyformat]</caption>
+        <attribute>moneyformat</attribute>
+        <onlydisplayif>game.showmoney</onlydisplayif>
+        <width>50</width>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameInventorylimits]</caption>
         <attribute>feature_limitinventory</attribute>
       </control>
@@ -131,12 +145,6 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameAnnotations]</caption>
         <attribute>feature_annotations</attribute>
-      </control>	  
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGamePrices]</caption>
-        <attribute>feature_prices</attribute>
       </control>	  
 
       <control>

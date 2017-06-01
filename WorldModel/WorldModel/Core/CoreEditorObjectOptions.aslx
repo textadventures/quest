@@ -197,7 +197,7 @@
       <attribute>money</attribute>
       <width>100</width>
       <minimum>0</minimum>
-      <onlydisplayif>game.feature_prices</onlydisplayif>
+      <onlydisplayif>game.showmoney</onlydisplayif>
     </control>
 
     <control>

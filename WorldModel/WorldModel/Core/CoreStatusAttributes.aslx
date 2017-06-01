@@ -26,10 +26,13 @@
     if (LengthOf(format) = 0) {
       return (CapFirst(attr) + ": " + value)
     } else {
-      if (TypeOf(value) = "int" or TypeOf(value) = "double") {
+      if (TypeOf(value) = "int" and attr = "money" and HasString(game, "moneyformat")) {
+        value = DisplayMoney(value)
+      }
+      else if (TypeOf(value) = "int" or TypeOf(value) = "double") {
         value = ToString(value)
       }
-      if (TypeOf(value) = "null") {
+      else if (TypeOf(value) = "null") {
         value = ""
       }
       return (Replace(format, "!", value))
@@ -43,14 +46,21 @@
       if (game.statusattributes = null) {
         game.statusattributes = NewStringDictionary()
       }
-      dictionary add (game.statusattributes, "score", "Score: !")
+      dictionary add (game.statusattributes, "score", "[Score]: !")
     }
 
     if (game.showhealth) {
       if (game.povstatusattributes = null) {
         game.povstatusattributes = NewStringDictionary()
       }
-      dictionary add (game.povstatusattributes, "health", "Health: !%")
+      dictionary add (game.povstatusattributes, "health", "[Health]: !%")
+    }
+
+    if (game.showmoney) {
+      if (game.povstatusattributes = null) {
+        game.povstatusattributes = NewStringDictionary()
+      }
+      dictionary add (game.povstatusattributes, "money", "[Money]: !")
     }
     ]]>
   </function>
@@ -81,6 +91,20 @@
       error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
     }
     game.pov.health = game.pov.health - amount
+  </function>
+
+  <function name="IncreaseMoney" parameters="amount">
+    if (not HasInt(game.pov, "money")) {
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+    }
+    game.pov.money = game.pov.money + amount
+  </function>
+
+  <function name="DecreaseMoney" parameters="amount">
+    if (not HasInt(game.pov, "money")) {
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+    }
+    game.pov.money = game.pov.money - amount
   </function>
 
 </library>

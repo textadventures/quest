@@ -42,6 +42,7 @@
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
     <commandcursor>&gt;</commandcursor>
+    <moneyformat>$!</moneyformat>
     <classiclocation/>
     <turnoffsavebutton type="boolean">false</turnoffsavebutton>
     <mapexitwidth type="int">1</mapexitwidth>
@@ -57,6 +58,7 @@
     <showborder/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
+    <showmoney type="boolean">false</showmoney>
     <showtitle/>
     <autodisplayverbs/>
     <autodescription_youarein type="int">1</autodescription_youarein>
@@ -83,7 +85,6 @@
     <feature_limitinventory type="boolean">false</feature_limitinventory>
     <feature_asktell type="boolean">false</feature_asktell>
     <feature_annotations type="boolean">false</feature_annotations>
-    <feature_prices type="boolean">false</feature_prices>
     <feature_advancedwearables type="boolean">false</feature_advancedwearables>
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
