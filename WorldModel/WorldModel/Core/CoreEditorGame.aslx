@@ -115,14 +115,6 @@
       </control>
 
       <control>
-        <controltype>textbox</controltype>
-        <caption>[EditorGameMoneyformat]</caption>
-        <attribute>moneyformat</attribute>
-        <onlydisplayif>game.showmoney</onlydisplayif>
-        <width>50</width>
-      </control>
-      
-      <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameInventorylimits]</caption>
         <attribute>feature_limitinventory</attribute>
@@ -952,6 +944,14 @@
         <caption>[EditorGameScripttorun]</caption>
       </control>
 
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameMoneyformat]</caption>
+        <attribute>moneyformat</attribute>
+        <onlydisplayif>game.showmoney</onlydisplayif>
+        <width>50</width>
+      </control>
+      
       <control>
         <controltype>stringdictionary</controltype>
         <caption>[EditorGamePlayerobjectStatus]</caption>
