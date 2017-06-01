@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.7.6332.15118-->
+<!--Saved by Quest 5.7.6360.25881-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -32,6 +32,42 @@
     <start type="script"><![CDATA[
       player.changedparent => {
       }
+      Testing ("Forming numbers")
+      Assert ("12.34", Decimalise(1234, 2))
+      Assert ("123.4", Decimalise(1234, 1))
+      Assert ("-123.4", Decimalise(-1234, 1))
+      Assert ("1234", Decimalise(1234, 0))
+      
+      Assert ("+123.4", DisplayNumber(1234, "+1.1"))
+      Assert ("012.34", DisplayNumber(1234, "3.2"))
+      Assert ("(123.4)", DisplayNumber(1234, "(1.1)"))
+      Assert ("(001,234)", DisplayNumber(1234, "(3,3)"))
+
+      game.moneyformat = "! credits"
+      Assert ("1234 credits", DisplayMoney(1234))
+      Assert ("-1234 credits", DisplayMoney(-1234))
+
+      game.moneyformat = "!3.2! credits"
+      Assert ("012.34 credits", DisplayMoney(1234))
+      Assert ("-012.34 credits", DisplayMoney(-1234))
+
+      game.moneyformat = "!+3,2! credits"
+      Assert ("+012,34 credits", DisplayMoney(1234))
+      Assert ("-012,34 credits", DisplayMoney(-1234))
+
+      game.moneyformat = "!+3.2!-3.2! credits"
+      Assert ("+012.34 credits", DisplayMoney(1234))
+      Assert ("-012.34 credits", DisplayMoney(-1234))
+
+      game.moneyformat = "!$1,2!($1,2)!"
+      Assert ("$12,34", DisplayMoney(1234))
+      Assert ("($12,34)", DisplayMoney(-1234))
+
+
+
+
+      //
+      // -------------------------------------------------------------------------
       Testing ("FormatList and IndexOf")
       list = Split("one;two;three", ";")
       Assert ("one, two or three", FormatList(list, ",", "or", "nothing"))
@@ -443,6 +479,7 @@
         list add (items, o)
       }
     </scopebackdrop>
+    <showmoney type="boolean">false</showmoney>
   </game>
   <object name="room">
     <inherit name="editor_room" />

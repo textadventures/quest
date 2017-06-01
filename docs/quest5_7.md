@@ -194,6 +194,15 @@ Clothing
 This is my clothing library, which is itself an extension of Chase's wearables library. Set an object to be Wearable on the features tab to see the new Wearable tab. Advanced options will appear if you tick the box on the Features tab of the game object.
 
 If you already use either my library or Chase's you should find this works with no effect on your part, you just need to delete the library from your game. 
+
+
+Money
+-----
+
+Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
+
+All objects can be given a price too.
+
  
 
 Advanced scripts
@@ -250,6 +259,10 @@ The editor GUI has been modified to include the "addscript" for containers that 
 
 The attribute hasbeenmoved will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
 
+Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, in particular how to display money, so the rest is up to you). Also added "purchase" as a synonym of "buy".
+
+You can now set the width and colour of exits for the map grid.
+http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved
  
  
  
@@ -269,6 +282,11 @@ If you have a language file for the game, these templates should be added.
 <template name="Nothing">nothing</template>
 
 <template name="SelfAlt">me; myself; self</template>
+
+<template name="Score">Score</template>
+<template name="Health">Health</template>
+<template name="Money">Money</template>
+
 
 <dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 <dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
@@ -294,5 +312,7 @@ If you have a language file for the game, these templates should be added.
 <verbtemplate name="remove">take off</verbtemplate>
 <verbtemplate name="remove">doff</verbtemplate>
 ```
+
+Also the `ToWords` function.
 
 There are considerably more for the editor. Do a compare on Github to see what the changes are (or contact me).
