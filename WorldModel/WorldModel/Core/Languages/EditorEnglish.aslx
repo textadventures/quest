@@ -3,6 +3,7 @@
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
   <template name="EditorCommandUnresolved">Unresolved object text</template>
+  <template name="EditorCommandScope">Scope ("inventory", "notheld", room name or object attribute)</template>
   <template name="EditorCommandScript">Script</template>
   <template name="EditorCommandAttributes">Attributes</template>
   <template name="EditorDynamicTemplateDynamicTemplate">Dynamic Template</template>
