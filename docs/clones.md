@@ -60,6 +60,8 @@ Note that the text processor does not currently support `this`, so cannot be use
 
 Verbs use scripts, so again should be using `this`, not the name of the prototype.
 
+
+
 Got a clone?
 ------------
 
@@ -83,7 +85,7 @@ This assumes the prototype has an alias set; it is up to you to ensure that is s
 So now if we want to check if the player has the short sword, or a clone of it, we can check if this function does not return null.
 
 ```
-if (not (PlayersClone(short sword)) {
+if (not (PlayersClone(short sword) = null) {
   msg ("Lucky you have that short sword with you.")
 }
 ```
