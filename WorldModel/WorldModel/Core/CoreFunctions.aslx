@@ -302,60 +302,9 @@
     return (true)
   </function>
 
-  <function name="ProcessScopeCommand" parameters="func, scope, text" type="boolean"><![CDATA[
-    value = Trim (LCase (text))
-    fullmatches = NewObjectList()
-    partialmatches = NewObjectList()
-    foreach (obj, scope) {
-      name = LCase(GetDisplayAlias(obj))
-      CompareNames (name, value, obj, fullmatches, partialmatches)
-      if (obj.alt <> null) {
-        foreach (altname, obj.alt) {
-          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
-        }
-      }
-    }
-    if (game.lastobjects <> null) {
-      foreach (obj, game.lastobjects) {
-        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
-        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
-      }
-    }
-    if (ListCount(fullmatches) = 1) {
-      game.scopecommandpending = ListItem(fullmatches, 0)
-    }
-    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
-      game.scopecommandpending = ListItem(partialmatches, 0)
-    }
-    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
-      return (false)
-    }
-    else {
-      menu = NewStringDictionary()
-      GenerateMenuChoices (menu, fullmatches)
-      GenerateMenuChoices (menu, partialmatches)
-      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
-        if (result <> null) {
-          game.scopecommandpending = GetObject(result)
-        }
-        else {
-          return (false)
-        }
-      }
-    }
-    on ready {
-      if (game.scopecommandpending = null) {
-        return (false)
-      }
-      else {
-        return (eval (func + "(" + game.scopecommandpending.name + ")"))
-      }
-    }
-  ]]></function>
-
 
   
-  <!--  STRINg UTILITIES -->
+  <!--  STRING UTILITIES -->
 
   <function name="ReverseDirection" parameters="dir" type="string">
     list1 = Split("[CompassN];[CompassNE];[CompassE];[CompassSE];[CompassS];[CompassSW];[CompassW];[CompassNW];[CompassUp];[CompassDown];[CompassIn];[CompassOut]", ";")
