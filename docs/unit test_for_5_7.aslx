@@ -452,26 +452,6 @@
       Assert (3, ListCount(FilterByAttribute(ol, "parent", player)))
       Assert (2, ListCount(FilterByNotAttribute(ol, "parent", player)))
       Assert ("hat|teapot|socks|shoes|casual jacket", Join(ObjectListToStringList(ol, "name"), "|"))
-      //
-      // -------------------------------------------------------------------------
-      Testing ("ProcessScopeCommand")
-      // nothing if text not recognised
-      ProcessScopeCommand ("BuySomething", ol, "unknown object")
-      Assert (null, game.purchasedobject)
-      // text is object not in list
-      ProcessScopeCommand ("BuySomething", ol, "tiger")
-      Assert (null, game.purchasedobject)
-      // text should be recognised, and attribute set
-      ProcessScopeCommand ("BuySomething", ol, "teapot")
-      Assert (teapot, game.purchasedobject)
-      // should recognise alias
-      shoes.alias = "boots"
-      ProcessScopeCommand ("BuySomething", ol, "boots")
-      Assert (shoes, game.purchasedobject)
-      // should recognise alts
-      shoes.alias = "boots"
-      ProcessScopeCommand ("BuySomething", ol, "kettle")
-      Assert (teapot, game.purchasedobject)
       Results
     ]]></start>
     <scopebackdrop type="script">

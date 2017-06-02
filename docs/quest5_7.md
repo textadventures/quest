@@ -177,7 +177,6 @@ PickOneUnlockedExit
 ```
 CreateBiExits: Creates an exit in the given direction, between the given rooms, and a second exit coming back.
 Equal: Compares any two things (comparing 4 and null will otherwise throw an error).
-ProcessScopeCommand: For help with handling commands with unusual scope.
 ```
 
 
@@ -215,6 +214,28 @@ The first is run directly after `InitUserInterface`, and does exactly the same t
 The second runs when Quest does not understand a command. The unresolvedcommandhandler script has been around for ages; this just promotes it to the editor interface, so it will be easy to use.
 
 The third is used by `ScopeReachable` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
+
+
+
+Scope attribute for commands
+----------------------------
+
+There are two motivations for this.
+
+_More intelligent TAKE and DROP:_ Suppose there is a hat in your inventory, and there is another in the room. If the player types WEAR HAT, the parser should guess that the hat to wear is the one the player is carrying, whilst GET HAT refers to the hat in the room.
+
+_Alternative scopes:_ It would be great to be able to interact with objects in other rooms in certain situations. For example, cast a spell object, from a spellbook room (CAST FIREBOLT, when firebolt is an object in a room called "spellbook"), or buy objects from a shop stock room (player can BUY BALL from a shop; the ball is held in another room, and a clone is moved to the player inventory).
+
+To support both these, there is now an optional attribute to commands, called "scope". If this exists, Quest will look for the object in the indicated location. The scope attribute is a string, and can be set to:
+
+"inventory"  ScopeInventory
+"not held"   ScopeVisibleNotHeld
+objectname   GetAllChildObjects(GetObject(objectname))
+attrname     GetAllChildObjects(GetAttribute(player.parent, attrname))
+
+If the string is not recognised (or not there), it falls back to ScopeVisible as usual.
+
+The default behaviour should be unchanged. The only commands I have applied this to are TAKE, DROP, WEAR and REMOVE, as it does not seem applicable to the rest. Note that the scope will apply to all objects for a command, so for GIVE HAT TO MARY, Quest would use the same scope for HAT as MARY.
 
 
  
