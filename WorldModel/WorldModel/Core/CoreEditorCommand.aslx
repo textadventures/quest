@@ -27,6 +27,12 @@
       </control>
 
       <control>
+        <caption>[EditorCommandScope]</caption>
+        <controltype>textbox</controltype>
+        <attribute>scope</attribute>
+      </control>
+
+      <control>
         <caption>[EditorCommandScript]</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>

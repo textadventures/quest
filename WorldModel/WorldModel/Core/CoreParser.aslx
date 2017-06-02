@@ -80,18 +80,64 @@
   
   <function name="ResolveNameInternal" parameters="variable, value, objtype" type="object">
     <![CDATA[
-    fullmatches = NewObjectList()
-    partialmatches = NewObjectList()
     game.pov.currentcommandmultiobjectpending = false
     
-    if (objtype = "object") {
-      scope = ScopeVisible()
+    scope = GetScope(objtype)
+    if (HasString(game.pov.currentcommandpattern, "scope")) {
+      secondaryscope = ScopeVisible()
     }
-    else if (objtype = "exit") {
-      scope = ScopeExits()
+    else {
+      secondaryscope = null
     }
     
-    value = Trim(value)
+    return (ResolveNameFromList(variable, value, objtype, scope, secondaryscope))
+    ]]>
+  </function>
+
+
+  
+  <function name="GetScope" parameters="objtype" type="objectlist">
+    if (HasString(game.pov.currentcommandpattern, "scope")) {
+      //msg("game.pov.currentcommandpattern.scope=" + game.pov.currentcommandpattern.scope)
+      if (game.pov.currentcommandpattern.scope = "inventory") {
+        return (ScopeInventory())
+      }
+      if (game.pov.currentcommandpattern.scope = "notheld") {
+        return (ScopeVisibleNotHeld())
+      }
+      if (game.pov.currentcommandpattern.scope = "all") {
+        return (ScopeVisible())
+      }
+      obj = GetObject(game.pov.currentcommandpattern.scope)
+      if (not obj = null) {
+        return (GetAllChildObjects(obj))
+      }
+      if (HasObject(player.parent, game.pov.currentcommandpattern.scope)) {
+        obj = GetAttribute(player.parent, game.pov.currentcommandpattern.scope)
+        return (GetAllChildObjects(obj))
+      }      
+    }
+    if (objtype = "object") {
+      return(ScopeVisible())
+    }
+    else if (objtype = "exit") {
+      return(ScopeExits())
+    }
+    else {
+      // Should never get here!
+      return (null)
+    }
+  </function>
+
+  
+  <function name="ResolveNameFromList" parameters="variable, value, objtype, scope, secondaryscope" type="object">
+    <![CDATA[
+    //msg("value=" + value)
+    //msg("scope=" + scope)
+    //msg("secondaryscope=" + secondaryscope)
+    value = Trim(LCase(value))
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
     
     foreach (obj, scope) {
       name = LCase(GetDisplayAlias(obj))
@@ -111,6 +157,27 @@
         CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
       }
     }
+
+    // Also check the secondary scope, but only if we have not found anything yet
+    
+    //msg("fullmatches=" + fullmatches)
+    //msg("partialmatches=" + partialmatches)
+
+    if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 0 and not secondaryscope = null) {
+      //msg("secondaryscope=" + secondaryscope)
+      foreach (obj, secondaryscope) {
+        name = LCase(GetDisplayAlias(obj))
+        CompareNames (name, value, obj, fullmatches, partialmatches)
+        if (obj.alt <> null) {
+          foreach (altname, obj.alt) {
+            CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
+          }
+        }
+      }
+    }    
+    
+    //msg("fullmatches=" + fullmatches)
+    //msg("partialmatches=" + partialmatches)
     
     if (ListCount(fullmatches) = 1) {
       return (ListItem(fullmatches, 0))

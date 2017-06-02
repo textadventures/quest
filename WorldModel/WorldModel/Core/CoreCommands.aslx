@@ -72,6 +72,7 @@
       }
       return (takeList)
     </multiple>
+    <scope>notheld</scope>
     <script>
       foreach (obj, object) {
         DoTake(obj, multiple)
@@ -188,6 +189,7 @@
     <multiple>
       return (GetDirectChildren(game.pov))
     </multiple>
+    <scope>inventory</scope>
     <script>
       foreach (obj, object) {
         DoDrop(obj, multiple)
