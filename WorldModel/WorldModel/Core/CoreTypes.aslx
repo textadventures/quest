@@ -458,8 +458,8 @@
       children = GetDirectChildren(this)
       if (listcount(children) >= this.maxobjects) {
         correct = false
-        if (HasString(this, "containerfullmessage")) {
-          message = this.containerfullmessage
+        if (HasString(this, "containermaxobjects")) {
+          message = this.containermaxobjects
         }
         else {
           message=DynamicTemplate("MaxObjectsInContainer", this)
