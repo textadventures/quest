@@ -70,6 +70,9 @@
   <template name="SelfAlt">mich</template>
   <template name="AllObjects">alles</template>
   <template name="ParserIgnorePrefixes">der; die; das; ein; eine; einen; den;</template>
+  <template name="Score">Punkte</template>
+  <template name="Health">Gesundheit</template>
+  <template name="Money">Geld</template>  
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " " + GetPrefix (object,"sein") +" bereits offen."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits geschlossen."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kannst " + object.article + " nicht öffnen."</dynamictemplate>
@@ -430,5 +433,111 @@
 	} else {
 		return(CapFirst(GetPrefix (obj,"er")) + " enthält")
 	}
-	</function>		
+	</function>	
+
+
+  <function name="ToWords" parameters="number" type="string"><![CDATA[
+	if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten") 
+	
+	getZahl_in_Worten = getZehner(Right(ToString(number), 2))
+    if (number > 99) {
+		getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
+	} ]]>
+	return (getZahl_in_Worten)
+	</function>
+	
+<function name="getEiner" parameters="curEiner" type="string">
+    getEiner = ""
+	switch (ToInt(curEiner)) {
+		case (1) {
+			getEiner = "ein"}
+		case (2) {
+			getEiner = "zwei"}
+		case (3) {
+			getEiner = "drei"}
+		case (4) {
+			getEiner = "vier"}
+		case (5) {
+			getEiner = "fünf"}
+		case (6) {
+			getEiner = "sechs"}
+		case (7) {
+			getEiner = "sieben"}
+		case (8) {
+			getEiner = "acht"}
+		case (9) {
+			getEiner = "neun"}
+    }
+	return (getEiner)
+</function>
+
+<function name="getZehner" parameters="curZehner" type="string"><![CDATA[	
+	switch (ToInt(curZehner)) {
+        case (1) {
+            getZehner = "eins"}
+        case (2) {
+            getZehner = "zwei"}
+        case (3) {
+            getZehner = "drei"}
+        case (4) {
+            getZehner = "vier"}
+        case (5) {
+            getZehner = "fünf"}
+        case (6) {
+            getZehner = "sechs"}
+        case (7) {
+            getZehner = "sieben"}
+        case (8) {
+            getZehner = "acht"}
+        case (9) {
+            getZehner = "neun"}
+        case (10) {
+            getZehner = "zehn"}
+        case (11) {
+            getZehner = "elf"}
+        case (12) {
+            getZehner = "zwölf"}
+        case (13) {
+            getZehner = "dreizehn"}
+        case (14) {
+            getZehner = "vierzehn"}
+        case (15) {
+            getZehner = "fünfzehn"}
+        case (16) {
+            getZehner = "sechzehn"}
+        case (17) {
+            getZehner = "siebzehn"}
+        case (18) {
+            getZehner = "achtzehn"}
+        case (19) {
+            getZehner = "neunzehn"}
+        default {
+			tmpEiner = getEiner(Right(curZehner, 1))
+            if (tmpEiner <> "") {
+				tmpEiner = tmpEiner + "und"
+			}
+			switch (ToInt(Left(curZehner, 1)) * 10) {    
+				case (20) {
+					getZehner = tmpEiner + "zwanzig"}
+				case (30) {
+					getZehner = tmpEiner + "dreißig"}
+				case (40) {
+					getZehner = tmpEiner + "vierzig"}
+				case (50) {
+					getZehner = tmpEiner + "fünfzig"}
+				case (60) {
+					getZehner = tmpEiner + "sechzig"}
+				case (70) {
+					getZehner = tmpEiner + "siebzig"}
+				case (80) {
+					getZehner = tmpEiner + "achtzig"}
+				case (90) {
+					getZehner = tmpEiner + "neunzig"}
+				}
+		}
+	}
+	return (getZehner)
+	]]>
+</function>	
+  
 </library>
