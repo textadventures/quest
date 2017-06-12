@@ -12,7 +12,7 @@ To change the values, use one of these script commands (they will only be presen
 
 Here you can see the "Increase score" script command, set to add 5 to the player score:
 
-![](increase_decrease.png "increase_decrease.png")
+![](increase.png "increase.png")
 
 It you prefer to do this in code, you just need to add to or subtract from the attribute.
 
