@@ -226,6 +226,9 @@
   <template name="EditorObjectAskTellTell">Tell</template>
   <template name="EditorObjectAskTellTellabout">Tell about</template>
   <template name="EditorObjectTellScripttorun">Script to run when told about an unknown topic</template>
+  <template name="EditorObjectAskTellTellto">Order</template>
+  <template name="EditorObjectAskTellTelltoabout">Tell to</template>
+  <template name="EditorObjectTelltoScripttorun">Script to run when keywords not recognised</template>
   <template name="EditorObjectAnnotationAnnotation">Notes</template>
   <template name="EditorObjectAttributesAttributes">Attributes</template>
   <template name="EditorObjectAttributesStatusattributes">Status attributes</template>

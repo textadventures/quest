@@ -207,6 +207,8 @@
   <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
