@@ -10,16 +10,22 @@ This file documents changes to Quest as of version 5.7.
 Preamble
 --------
 
-This is my first update in charge of Quest, and makes a lot of changes that I have felt would be useful both from my own use of Quest and from seeing what people want and struggle with on the forum. I hope all but the most basic users will find at least some of these changes useful (but I doubt any one persn will find it all useful).
+This is my first update in charge of Quest, and makes a lot of changes that I have felt would be useful both from my own use of Quest and from seeing what people want and struggle with on the forum. I hope all but the most basic users will find at least some of these changes useful (but I doubt any one person will find it all useful).
 
-The changes are restricted to the .aslx files in WorldModel/Worldmodel/Core; I have not made changes to the C# or Visual Basic code at all as this is not an area I am competent in - perhaps for 5.8. There are also changes to playercore.htm and playercore.js (and these will not be present in the web player until that is updated to Quest 5.7).
+The changes are virtually all restricted to the .aslx files in WorldModel/Worldmodel/Core; I have made very limited changes to the C# code as this is not an area I am competent in (perhaps for 5.8!). There are some changes to playercore.htm and playercore.js (and these will not be present in the web player until that is updated to Quest 5.7).
+
+Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the werb player is updated.
 
 
 
 New UI Options
 --------------
 
-Customisation of the UI is now much easier. There are a number of new JavaScript functions, but more importantly a lot of options can be set from the tabs of the game object, so you should not have to do any JavaScript.
+Customisation of the user interface (UI) is now much easier. There are a number of new JavaScript functions, but more importantly a lot of options can be set from the tabs of the game object, so you should not have to do any JavaScript.
+
+This is our starting point
+
+![](ui-classic.png "ui-classic.png")
 
 ### Game panes
 
@@ -28,9 +34,13 @@ You can now select different colour schemes for the panes on the right (or inven
 You can turn off individual panes, and add a new command pane and a new status pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands). The status pane can have any HTML put in it (with JS.setCustomStatus), so could display indicators bars as well as text.
 https://github.com/textadventures/quest/issues/752
 
+![](ui-no-cursor.png "ui-no-cursor.png")
+
 ### Command bar
 
 New options for the command bar; borderless cursor or shadow box.
+
+![](ui-cursor.png "ui-cursor.png")
 
 ### Colours
 
@@ -38,7 +48,7 @@ You can now set the background to blend from one colour at the top to another at
 
 ### Other changes
 
-The body element is now given the default font, color and background-color. This means the save confirmation text will be in the standard style for your game. This has the potential to have far-reaching effects, given the body element is the fundamental HTML element of your game, but it seems to have no side effects, and if there are some I would expect them to be improvements anyway.
+The body element is now given the default font, colour and background-color. This means the save confirmation text will be in the standard style for your game. This has the potential to have far-reaching effects, given the body element is the fundamental HTML element of your game, but it seems to have no side effects, and if there are some I would expect them to be improvements anyway.
 
 Note that this means the text in the status bar at the top is now in the default font (in 5.6 it is Arial/Helvetica) (no effect on its colour).
 
@@ -48,7 +58,10 @@ The Features, Display and Interface tabs of the game object have been rearranged
 
 There is now a JS.setCss junction that takes an element name and a set of CSS stylings. This will make changing styles much easier (though the above will mean it should rarely be necessary).
 
-There is an option to hide the save button in the web player (it does not stop players saving via the command bar).
+There is an option to hide the save button in the web player (it does not stop players saving, for example via the command bar).
+
+You can now set the width and colour of exits for the map grid (see [here](http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved).
+
 
 
 
@@ -68,11 +81,15 @@ The "popup" command creates a link, clicking on it will display an information b
 
 The "either" command is similar to "if", but has a second (optional) part that is printed if the condition fails, and is more flexible with its conditions, as these now evaluated as Quest code (this does mean that strings need to go in quotes which is different to how this was in TextProcessorPlus library). 
 
-There is also an "eval" command which will run the rest of the text as Quest code. You can also use an equals sign as a short cut. This means you can put anything into curly braces, such as function calls and complex calculations. If you actually want curly braces as curly braces and there is a chance Quest will try to interpret it as a text processor command, you can use `@@@open@@@` and `@@@close@@@`.
+There is also an "eval" command which will run the rest of the text as Quest code. You can also use an equals sign as a short cut. This means you can put anything into curly braces, such as function calls and complex calculations.
+
+If you actually want curly braces as curly braces and there is a chance Quest will try to interpret it as a text processor command, you can use `@@@open@@@` and `@@@close@@@`.
 
 It also works recursively, so the output text will then get processed again. We have yet to work out when that will be useful...
 
 A new function, `ProcessText` is used by the output functions. You could use this elsewhere, say to set an attribute with text that has gone through the text processor. You could also override it to do your own stuff.
+
+Some examples:
 
 ```
 // This is the same as version 5.6
@@ -124,40 +141,45 @@ New functions
 -------------
 
 ```
-ScopeUnlockedExitsForRoom
-CloneObjectAndMoveHere
+[ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
+[CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
+[CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
+[Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
 ```
 
 ### String utilities
 
 ```
-FormatList (Split("one;two;three"))
+[FormatList](functions/string/formatlist.html) (Split("one;two;three"))
  -> "one, two and three"
-Spaces (5)
+[Spaces](functions/string/spaces.html) (5)
  -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-ToWords (42)
+[ToWords](functions/string/towords.html) (42)
  -> "forty two"
-ToRoman (42)
+[ToRoman](functions/string/toroman.html) (42)
  -> "XLII"
-PadString ("34", 5, "0")
+[PadString](functions/string/padstring.html) ("34", 5, "0")
  -> "00034"
-ReverseDirection ("southeast")
+[Decimalise](functions/string/decimalise.html) (1234, 2)
+ -> "12.34" 
+game.moneyformat = "!$1,2!($1,2)!"
+[DisplayMoney](functions/string/displaymoney.html) (1234)
+ -> "$12,34"
+[DisplayMoney](functions/string/displaymoney.html) (-1234)
+ -> "($12,34)"
+[ReverseDirection](functions/string/reversedirection.html) ("southeast")
  -> "northwest"
 ```
 
 ### List utilities
 
 ```
-IndexOf
-FilterByType
-FilterByAttribute
-FilterByNotAttribute
-ObjectListToStringList
+[IndexOf](functions/indexof.html)
+[FilterByType](functions/filterbytype.html)
+[FilterByAttribute](functions/filterbyattribute.html)
+[FilterByNotAttribute](functions/filterbynotattribute.html)
+[ObjectListToStringList](functions/objectlisttostringlist.html)
 ```
-
-
-
-
 
 
 ### Get one at random
@@ -172,27 +194,21 @@ PickOneUnlockedExit
 ```
 
 
-### Also
-
-```
-CreateBiExits: Creates an exit in the given direction, between the given rooms, and a second exit coming back.
-Equal: Compares any two things (comparing 4 and null will otherwise throw an error).
-```
 
 
 Annotations
 -----------
 
-This allows authors to add notes for their own purposes to rooms (names of attributes, what happens here, things to do, etc.). This can be activated by ticking the box on the Features tab of the game object, and adds a new tab to rooms. It has no effect on game play.
+This allows authors to add notes for their own purposes to rooms (names of attributes, what happens here, things to do, etc.). This can be activated by ticking the box on the _Features_ tab of the game object, and adds a new tab to rooms. It has no effect on game play.
 
 
 
 Clothing
 --------
 
-This is my clothing library, which is itself an extension of Chase's wearables library. Set an object to be Wearable on the features tab to see the new Wearable tab. Advanced options will appear if you tick the box on the Features tab of the game object.
+This is my clothing library, which is itself an extension of Chase's wearables library. Set an object to be Wearable on the features tab to see the new _Wearable_ tab. Advanced options will appear if you tick the box on the Features tab of the game object.
 
-If you already use either my library or Chase's you should find this works with no effect on your part, you just need to delete the library from your game. 
+If you already use either my library or Chase's you should find this works with no effort on your part, you just need to delete the library from your game. 
 
 
 Money
@@ -200,8 +216,7 @@ Money
 
 Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
 
-All objects can be given a price too.
-
+Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, so the rest is up to you). Also added "purchase" as a synonym of "buy".
  
 
 Advanced scripts
@@ -213,7 +228,7 @@ The first is run directly after `InitUserInterface`, and does exactly the same t
 
 The second runs when Quest does not understand a command. The unresolvedcommandhandler script has been around for ages; this just promotes it to the editor interface, so it will be easy to use.
 
-The third is used by `ScopeReachable` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
+The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, a list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
 
 
 
@@ -268,23 +283,29 @@ If a room is dark, the game will return a message saying it is too dark to see a
 
 The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but will still work with existing code). A good use of `DiceRoll` is to determine the effect of an attack in an RPG-style game, and the characteristics of the attack can be stored as strings in this form (which is standard in the RPG world).
 
-The Containers tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
+The _Containers_ tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
 
 If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
 
 You can now have single and double quotes in options when using the ShowMenu function.
 
-Restricted containers (limit to number of items or volume of item) use a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
+Restricted containers (limit to number of items or volume of item) used a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
 This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum). This really is the point; by making it a script, it becomes far more accessible.
 The editor GUI has been modified to include the "addscript" for containers that are not restricted, so now anyone can put their own custom restrictions on what can go in an item.
 
-The attribute hasbeenmoved will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
+The attribute "hasbeenmoved" will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
 
-Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, in particular how to display money, so the rest is up to you). Also added "purchase" as a synonym of "buy".
+The Ask/Tell tab now has a third section, allowing you to tell an NPC to do something. It works just like ask/tell (and uses the same code), but allows the player to do ASK NPC TO  DO STUFF, TELL NPC TO DO STUFF and NPC, DO STUFF. This will still require a lot of work by authors to work well, but at least the framework is there.
 
-You can now set the width and colour of exits for the map grid.
-http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved
+When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected). This (plus two new unit tests to support it) is the only change to the C# code.
  
+
+Testing
+-------
+
+Many of the changes have been unit tested in a Quest game made for that purpose; it can be found [here](unit test_for_5_7.aslx). The start script will test each feature in turn, and compare the result against an expected value, outputing a dot if it passes and an 'F' otherwise. There are over 500 such tests.
+
+Some features, such as those related to the interface, do not lend themselves to testing in this way.
  
  
 Language support
