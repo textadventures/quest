@@ -140,58 +140,76 @@ We are indebted to Kaspar Jan for providing a translation into Icelandic.
 New functions
 -------------
 
-```
-[ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
-[CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
-[CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
-[Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
-```
+-  [ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
+-  [CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
+-  [CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
+-  [Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
+
 
 ### String utilities
 
+[FormatList](functions/string/formatlist.html)
 ```
-[FormatList](functions/string/formatlist.html) (Split("one;two;three"))
+FormatList (Split("one;two;three"))
  -> "one, two and three"
-[Spaces](functions/string/spaces.html) (5)
+```
+[Spaces](functions/string/spaces.html)
+```
+Spaces (5)
  -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-[ToWords](functions/string/towords.html) (42)
+ ```
+[ToWords](functions/string/towords.html)
+```
+ToWords (42)
  -> "forty two"
-[ToRoman](functions/string/toroman.html) (42)
+ ```
+[ToRoman](functions/string/toroman.html)
+```
+ToRoman (42)
  -> "XLII"
-[PadString](functions/string/padstring.html) ("34", 5, "0")
+ ```
+[PadString](functions/string/padstring.html)
+```
+PadString ("34", 5, "0")
  -> "00034"
-[Decimalise](functions/string/decimalise.html) (1234, 2)
- -> "12.34" 
+ ```
+[Decimalise](functions/string/decimalise.html)
+```
+Decimalise (1234, 2)
+ -> "12.34"
+ ```
+[DisplayMoney](functions/string/displaymoney.html)
+```
 game.moneyformat = "!$1,2!($1,2)!"
-[DisplayMoney](functions/string/displaymoney.html) (1234)
+DisplayMoney (1234)
  -> "$12,34"
 [DisplayMoney](functions/string/displaymoney.html) (-1234)
  -> "($12,34)"
-[ReverseDirection](functions/string/reversedirection.html) ("southeast")
+ ```
+[ReverseDirection](functions/string/reversedirection.html)
+```
+ReverseDirection ("southeast")
  -> "northwest"
 ```
 
 ### List utilities
 
-```
-[IndexOf](functions/indexof.html)
-[FilterByType](functions/filterbytype.html)
-[FilterByAttribute](functions/filterbyattribute.html)
-[FilterByNotAttribute](functions/filterbynotattribute.html)
-[ObjectListToStringList](functions/objectlisttostringlist.html)
-```
+-  [IndexOf](functions/indexof.html)
+-  [FilterByType](functions/filterbytype.html)
+-  [FilterByAttribute](functions/filterbyattribute.html)
+-  [FilterByNotAttribute](functions/filterbynotattribute.html)
+-  [ObjectListToStringList](functions/objectlisttostringlist.html)
+
 
 
 ### Get one at random
 
-```
-PickOneString
-PickOneObject
-PickOneChild
-PickOneChildOfType
-PickOneExit
-PickOneUnlockedExit
-```
+-  [PickOneString](functions/pickonestring.html)
+-  [PickOneObject](functions/pickoneobject.html)
+-  [PickOneChild](functions/pickonechild.html)
+-  [PickOneChildOfType](functions/pickonechildoftype.html)
+-  [PickOneExit](functions/pickoneexit.html)
+-  [PickOneUnlockedExit](functions/pickoneunlockedexit.html)
 
 
 
