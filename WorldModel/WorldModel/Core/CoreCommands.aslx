@@ -717,6 +717,14 @@
     DoAskTell (object, text, "tell", "telldefault", "DefaultTell")
   </command>
 
+  <command name="tellto" pattern="[tellto]">
+    DoAskTell (object, text, "tellto", "telltodefault", "DefaultTellTo")
+  </command>
+
+  <command name="alttellto" pattern="[alttellto]">
+    DoAskTell (object, text, "tellto", "telltodefault", "DefaultTellTo")
+  </command>
+
   <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate">
     <![CDATA[
     handled = false
