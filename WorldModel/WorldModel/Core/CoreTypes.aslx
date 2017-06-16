@@ -34,7 +34,7 @@
     <statusandcompassattop type="boolean">false</statusandcompassattop>
     <turnoffcompass type="boolean">false</turnoffcompass>
     <turnoffinventory type="boolean">false</turnoffinventory>
-    <turnoffpeopleandobjects type="boolean">false</turnoffpeopleandobjects>
+    <turnoffplacesandobjects type="boolean">false</turnoffplacesandobjects>
     <borderlesscursor type="boolean">false</borderlesscursor>
     <colourblend type="boolean">false</colourblend>
     <commandpane type="boolean">false</commandpane>
@@ -61,6 +61,7 @@
     <showmoney type="boolean">false</showmoney>
     <showtitle/>
     <autodisplayverbs/>
+    <clearscreenonroomenter type="boolean">false</clearscreenonroomenter>
     <autodescription_youarein type="int">1</autodescription_youarein>
     <autodescription_youcansee type="int">2</autodescription_youcansee>
     <autodescription_youcango type="int">3</autodescription_youcango>

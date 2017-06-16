@@ -137,6 +137,9 @@
     game.displayroomdescriptiononstart = false
     if (IsDefined("oldRoom")) {
       if (oldRoom <> null) {
+        if (game.clearscreenonroomenter) {
+          ClearScreen
+        }
         if (HasScript(oldRoom, "onexit")) {
           do (oldRoom, "onexit")
         }

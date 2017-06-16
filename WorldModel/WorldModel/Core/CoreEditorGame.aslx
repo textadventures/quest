@@ -491,8 +491,8 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameTurnOffPeopleAndObjects]</caption>
-        <attribute>turnoffpeopleandobjects</attribute>
+        <caption>[EditorGameTurnOffPlacesAndObjects]</caption>
+        <attribute>turnoffplacesandobjects</attribute>
         <onlydisplayif>game.showpanes</onlydisplayif>
       </control>
 
@@ -826,6 +826,11 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameAutomaticallyObjectList]</caption>
         <attribute>autodisplayverbs</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameClearscreenonroomenter]</caption>
+        <attribute>clearscreenonroomenter</attribute>
       </control>
 
       <control>

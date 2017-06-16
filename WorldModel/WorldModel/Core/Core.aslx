@@ -138,9 +138,9 @@
       JS.setCss ("#inventoryLabel", "display:none")
       JS.setCss ("#inventoryAccordion", "display:none")
     }
-    if (game.turnoffpeopleandobjects) {
-      JS.setCss ("#compassLabel", "display:none")
-      JS.setCss ("#compassAccordion", "display:none")
+    if (game.turnoffplacesandobjects) {
+      JS.setCss ("#placesObjectsLabel", "display:none")
+      JS.setCss ("#placesObjectsAccordion", "display:none")
     }
     if (game.statusandcompassattop) {
       JS.eval ("$('#commandPane').insertBefore('#inventoryLabel')")
