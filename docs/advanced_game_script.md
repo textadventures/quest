@@ -21,7 +21,7 @@ For a starting point as to what you can do, see [here](ui-javascript.html).
 
 
 
-The 'unresolvedcommandhandler' script
+The `unresolvedcommandhandler` script
 -------------------------------------
 
 This has been in Quest for even longer, but in Quest 5.7 you can add it via the GUI.
