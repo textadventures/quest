@@ -14,7 +14,7 @@ This is my first update in charge of Quest, and makes a lot of changes that I ha
 
 The changes are virtually all restricted to the .aslx files in WorldModel/Worldmodel/Core; I have made very limited changes to the C# code as this is not an area I am competent in (perhaps for 5.8!). There are some changes to playercore.htm and playercore.js (and these will not be present in the web player until that is updated to Quest 5.7).
 
-Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the werb player is updated.
+Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the web player is updated.
 
 
 
@@ -36,6 +36,8 @@ https://github.com/textadventures/quest/issues/752
 
 ![](ui-no-cursor.png "ui-no-cursor.png")
 
+[Cusom panes](custom_panes.html)
+
 ### Command bar
 
 New options for the command bar; borderless cursor or shadow box.
@@ -44,13 +46,13 @@ New options for the command bar; borderless cursor or shadow box.
 
 ### Colours
 
-You can now set the background to blend from one colour at the top to another at the bottom (but it does not look so good with a borderless command bar). You can set both the margins and the page background colour, as well as the status bar and game border.
+You can now set the background to blend from one colour at the top to another at the bottom, as in the middle image above (but it does not look so good with a borderless command bar). You can set both the margins and the page background colour, as well as the status bar and game border.
 
 ### Other changes
 
 The body element is now given the default font, colour and background-color. This means the save confirmation text will be in the standard style for your game. This has the potential to have far-reaching effects, given the body element is the fundamental HTML element of your game, but it seems to have no side effects, and if there are some I would expect them to be improvements anyway.
 
-Note that this means the text in the status bar at the top is now in the default font (in 5.6 it is Arial/Helvetica) (no effect on its colour).
+Note that this means the text in the status bar at the top is now in the default font (in 5.6 it is Arial/Helvetica), as seen above (no effect on its colour).
 
 The gamePanes div is now transparent. Again, this could affect many games, but I cannot imagine why anyone would want it a different colour to #gameBorder.
 
@@ -150,7 +152,7 @@ New functions
 
 [FormatList](functions/string/formatlist.html)
 ```
-FormatList (Split("one;two;three"))
+FormatList (Split("one;two;three"), ",", " and", "nothing")
  -> "one, two and three"
 ```
 [Spaces](functions/string/spaces.html)
@@ -248,7 +250,8 @@ The second runs when Quest does not understand a command. The unresolvedcommandh
 
 The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, a list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
 
-
+[Advanced scripts](advanced_game_script.html)
+[Advanced scope](advanced_scope.html)
 
 Scope attribute for commands
 ----------------------------
