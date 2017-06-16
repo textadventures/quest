@@ -138,7 +138,7 @@
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
   <template name="EditorGameTurnOffCompass">Turn off compass</template>
   <template name="EditorGameTurnOffInventory">Turn off inventory</template>
-  <template name="EditorGameTurnOffPeopleAndObjects">Turn off people and objects</template>
+  <template name="EditorGameTurnOffPlacesAndObjects">Turn off places and objects</template>
   <template name="EditorGameAltPaneOrder">Alternative pane order (status and compass at top)</template>
   <template name="EditorGameShowCommandPane">Show a command pane (use JS.setCommands to set)</template>
   <template name="EditorGameShowCustomStatusPane">Show a custom status pane (use JS.setCustomStatus to set)</template>
@@ -183,6 +183,7 @@
   <template name="EditorGamePutanextraBeforeTurn">Put an extra newline before each turn</template>
   <template name="EditorGameDisplayhyperlinks">Display hyperlinks in commands</template>
   <template name="EditorGameAutomaticallyObjectList">Automatically generate object display verbs list</template>
+  <template name="EditorGameClearscreenonroomenter">Clear screen when entering a room</template>
   <template name="EditorGameRoomdescription">Room description layout</template>
   <template name="EditorGameUsethenumbers">Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</template>
   <template name="EditorGameRoomname">Room name</template>
