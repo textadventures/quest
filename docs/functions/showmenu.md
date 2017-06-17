@@ -13,5 +13,22 @@ If the "allow ignore" parameter is set to **true**, the player can ignore the me
 
 Use the [show menu](../scripts/show_menu.html) script command for a popup menu.
 
+The [Split](string/split.html) function can be useful to quickly get a list of options, whilst [switch](../scripts/switch.html) canm be useful for dealing with the result. For example:
+
+    options = Split("Red;Green;Blue;Yellow", ";")
+    ShowMenu ("What is your favourite colour?", options, false) {
+      switch (result) {
+        case ("Red") {
+          msg ("You must be very passionate. Or like a teamthat play in red.")
+        }
+        case ("Yellow") {
+          msg ("What a bright, cheerful colour!.")
+        }
+        case ("Green", "Blue") {
+          msg (result + "? Seriously?")
+        }
+      }
+    }
+
 Note that the variable "this" becomes undefined when running the nested script (this is different to the "show menu" script command, when "this" keeps its value inside the nested script).
 
