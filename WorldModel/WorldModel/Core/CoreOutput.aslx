@@ -550,7 +550,6 @@
     id = s1 + GetRandomInt(0, 999999999)
     link = game.defaultlinkforeground
     if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
-    msg(link)
     s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
     s = s + s2 + "</p></div>"
     return(ProcessTextSection(s, data))
