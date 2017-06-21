@@ -82,7 +82,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlNumber_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (!ctlNumber.Value.HasValue)
+            if (!ctlNumber.Value.HasValue || ctlNumber.Value < 0.0001)
             {
                 ctlNumber.Value = 0;
             }
