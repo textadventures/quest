@@ -247,7 +247,12 @@
       else {
         objectname = Left(section, dot - 1)
         attributename = Mid(section, dot + 1)
-        object = GetObject(objectname)
+        if (objectname = "this") {
+          object = game.text_processor_this
+        }
+        else {
+          object = GetObject(objectname)
+        }
         if (object = null) {
           return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
         }

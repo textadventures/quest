@@ -192,7 +192,7 @@
     <control>
       <controltype>title</controltype>
       <caption>[EditorObjectContainerLocking]</caption>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -200,7 +200,7 @@
       <caption>[EditorObjectContainerLocktype]</caption>
       <types>*=[TypeContainerNotLockable]; container_lockable=[TypeContainerLockable]</types>
       <width>150</width>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>

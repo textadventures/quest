@@ -374,7 +374,14 @@
       } 
       else {
         if (HasString(exit, "message")) {
-          if (not exit.message = "") msg(exit.message)
+          if (not exit.message = "") {
+            if (game.clearscreenonroomenter) {
+              game.currentexitmessage = exit.message
+            }
+            else {
+              msg(exit.message)
+            }
+          }
         }
         game.pov.parent = exit.to
       }   

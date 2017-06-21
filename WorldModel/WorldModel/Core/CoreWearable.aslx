@@ -109,7 +109,7 @@
       object.multistate_status = 0
     }
     if (object.alias = null) object.alias = object.name
-    if (object.listalias = null) object.alias = object.alias
+    if (object.listalias = null) object.listalias = object.alias
     
     if (object.original_alias = null) {
       object.original_drop = object.drop
