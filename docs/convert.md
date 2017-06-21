@@ -1,6 +1,7 @@
-
-
-Using some things to create others
+---
+layout: index
+title: Using some things to create others
+---
 
 
 In your game, you might want to have the player use one or more things to make or otherwise convert into one or more other things. For example:
@@ -17,7 +18,7 @@ By the way, you might also want to do something like use a tap to fill cup. Tran
 The Bow
 -------
 
-*** MAKE BOW
+### MAKE BOW
 
 So let's implement a command for making a bow.
 
@@ -55,7 +56,7 @@ else {
 For any toxophilites out there, I appreciate there is more to bows that tying string to a branch!
 
 
-*** USE STRING WITH BRANCH
+### USE STRING WITH BRANCH
 
 A general problem with text adventures is that player can type all sorts of things and hope the game will understand. This is one instance where there are a lot of possibilities.
 
@@ -74,7 +75,7 @@ Close the dialogue box, and do exactly the same in the "Use this on (other objec
 [make3.png]
 
 
-*** TIE STRING TO BOW
+### TIE STRING TO BOW
 
 Can we handle other commands too? The difference with these commands is that they reference the objects that are present. The command pattern will be this (the string will be object1, the branch object2):
 
