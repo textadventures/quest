@@ -191,6 +191,16 @@ The `RemoveGarment` function works similar;y, taking the garment to be removed a
   }
 ```
 
+### Changing the name of clothing
+
+Quest handles changing the name of a garment, so when it is worn, its alias has "(worn)" added to it. However, that means that if the name of a garment changes, just setting the alias is going to confuse Quest. There are, therefore, two functions to do this. The `SetAlias` function takes the name of the object and the new alias, whilst `SetListAlias` takes the name of the object, the new alias and the new list alias. For example:
+
+```
+SetAlias (trendy_jacket, "unfashionable jacket", "Unfashionable jacket")
+```
+
+You can use this with any object, by the way; they will just change the alias and list alias.
+
 
 ### Appropriate clothing?
 
