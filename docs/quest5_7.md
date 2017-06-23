@@ -38,7 +38,7 @@ https://github.com/textadventures/quest/issues/752
 
 ![](ui-no-cursor.png "ui-no-cursor.png")
 
-[Cusom panes](custom_panes.html)
+[Custom panes](custom_panes.html)
 
 ### Command bar
 
