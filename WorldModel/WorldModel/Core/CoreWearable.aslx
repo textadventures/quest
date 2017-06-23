@@ -535,6 +535,26 @@
 
   
   
+  
+	<function name="SetAlias" parameters="object, alias"><![CDATA[
+    SetListAlias(object, alias, alias)
+	]]></function>
+
+
+	<function name="SetListAlias" parameters="object, alias, listalias"><![CDATA[
+    object.alias = alias
+    object.listalias = listalias
+    if (Equal(object.worn, true)) {
+      object.original_alias = object.alias
+      object.original_listalias = object.listalias
+      object.display = GetDisplayAlias(object)
+      _SetGarmentAlias(object)
+    }
+	]]></function>
+
+
+  
+  
   <!-- INTERNAL FUNCTIONS -->
   <!-- There should be no reason to use these in a game -->
   
