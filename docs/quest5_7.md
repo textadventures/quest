@@ -230,6 +230,8 @@ This is my clothing library, which is itself an extension of Chase's wearables l
 
 If you already use either my library or Chase's you should find this works with no effort on your part, you just need to delete the library from your game. 
 
+[See here](wearables.html)
+
 
 Money
 -----
@@ -237,6 +239,8 @@ Money
 Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
 
 Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, so the rest is up to you). Also added "purchase" as a synonym of "buy".
+
+[See here](score_health_money.html)
  
 
 Advanced scripts
@@ -252,6 +256,7 @@ The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses t
 
 [Advanced scripts](advanced_game_script.html)
 [Advanced scope](advanced_scope.html)
+
 
 Scope attribute for commands
 ----------------------------
