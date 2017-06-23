@@ -16,6 +16,8 @@ The changes are virtually all restricted to the .aslx files in WorldModel/Worldm
 
 Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the web player is updated.
 
+Thanks to people who beta-tested Quest 5.7: Anony NN, chaosdagger, Dcoder, Doctr Agon, Pertex.
+
 
 
 New UI Options
