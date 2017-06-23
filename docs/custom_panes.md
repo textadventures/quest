@@ -75,6 +75,7 @@ We are going to have two attributes here, the player's "hitpoints" and their max
 
 Here is the code:
 
+```
 s = "<table width=\"100%\"><tr>"
 s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"
 s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"hits-span\">---</span></td>"
@@ -95,6 +96,7 @@ player.changedhitpoints => {
 
 player.maxhitpoints = 70
 player.hitpoints = 70
+```
 
 The first ten lines set up the HTML (each line is adding a bit more to the string, `s`). There are two `span` elements, called "hits-span" and "hits-indicator", and these are what will get updated.
 
