@@ -65,3 +65,41 @@ html = html + "</td></tr></table>"
 JS.setCustomStatus (html)
 ```
 
+### Indicator bar
+
+So how about a graphical representation of the player's hits, a horizontal bar that shows the proportion of her hits she has remaining... We can do that!
+
+![](indicator-bar.png "indicator-bar.png")
+
+We are going to have two attributes here, the player's "hitpoints" and their maximum, "maxhitpoints". We will set up an HTML table again, but the second row will be the indicator; a `span` element with a `padding-right` attribute that will be adjusted as hits change.
+
+Here is the code:
+
+s = "<table width=\"100%\"><tr>"
+s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"
+s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"hits-span\">---</span></td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;\">"
+s = s + "   <span id=\"hits-indicator\" style=\"background-color:black;padding-right:200px;\"></span>"
+s = s + "   </td>"
+s = s + " </tr>"
+s = s + "</table>"
+
+JS.setCustomStatus (s)
+
+player.changedhitpoints => {
+  JS.eval ("$('#hits-span').html('" + game.pov.hitpoints + "/" + game.pov.maxhitpoints + "');")
+  JS.eval ("$('#hits-indicator').css('padding-right', '" + (200 * game.pov.hitpoints / game.pov.maxhitpoints) + "px');")
+}
+
+player.maxhitpoints = 70
+player.hitpoints = 70
+
+The first ten lines set up the HTML (each line is adding a bit more to the string, `s`). There are two `span` elements, called "hits-span" and "hits-indicator", and these are what will get updated.
+
+The next line dumps the HTML in the custom status pane.
+
+The next four lines add a change script to the "hitpoints" attribute of the player. This will fire whenever the hits change (you might want to add a bit that makes the player die if they dip below zero). The "hits-span" part just changes the text, but the "hits-indicator" sets a new value for the right padding of the `span`, making it wider or narrower as required.
+
+The last two lines set the hit points and the maximum. Note that the hit points must be set last so that when they change, the custom status pane will be updated correctly.
