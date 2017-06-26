@@ -793,7 +793,7 @@ namespace TextAdventures.Quest
         internal void UpdateObjectsList()
         {
             UpdateObjectsList("GetPlacesObjectsList", ListType.ObjectsList);
-            UpdateObjectsList("ScopeInventory", ListType.InventoryList);
+            UpdateObjectsList("ScopeInventoryNotScenery", ListType.InventoryList);
         }
 
         internal void UpdateObjectsList(string scope, ListType listType)
