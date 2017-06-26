@@ -471,8 +471,15 @@
         msg (message)
       }
       else {
-        object.parent = this
-        msg (Template("Done"))
+        if (HasScript(object, "drop")) {
+          params = NewDictionary()
+          dictionary add (params, "destination", this)
+          do (object, "drop", params)
+        }
+        else {
+          object.parent = this
+          msg (Template("Done"))
+        }      
       }
     </addscript>
   </type>

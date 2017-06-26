@@ -517,21 +517,18 @@
       //if (HasDelegateImplementation(object2, "addscript")) {
       //  rundelegate (object2, "addscript", object1)
       //}
+      params = NewDictionary()
+      dictionary add (params, "object", object1)
+      dictionary add (params, "destination", object2)
       if (HasScript(object2, "addscript")) {
-        params = NewDictionary()
-        dictionary add (params, "object", object1)
         do (object2, "addscript", params)
       }
+      else if (HasScript(object1, "drop")) {
+        do (object1, "drop", params)
+      }
       else {
-        if (HasScript(object1, "drop")) {
-          d = NewDictionary()
-          dictionary add (d, "destination", object2)
-          do (object1, "drop", d)
-        }
-        else {
-          object1.parent = object2
-          msg (Template("Done"))
-        }
+        object1.parent = object2
+        msg (Template("Done"))
       }
     }
     
