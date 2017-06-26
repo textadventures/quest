@@ -16,8 +16,6 @@ The changes are virtually all restricted to the .aslx files in WorldModel/Worldm
 
 Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the web player is updated.
 
-Thanks to people who beta-tested Quest 5.7: Anony NN, chaosdagger, Dcoder, Doctr Agon, Pertex.
-
 
 
 New UI Options
@@ -38,7 +36,7 @@ https://github.com/textadventures/quest/issues/752
 
 ![](ui-no-cursor.png "ui-no-cursor.png")
 
-[Custom panes](custom_panes.html)
+[Cusom panes](custom_panes.html)
 
 ### Command bar
 
@@ -145,6 +143,7 @@ New functions
 -------------
 
 -  [ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
+-  [ScopeInventoryNotScenery](functions/scopeinventorynotscenery.html)
 -  [CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
 -  [CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
 -  [Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
@@ -232,8 +231,6 @@ This is my clothing library, which is itself an extension of Chase's wearables l
 
 If you already use either my library or Chase's you should find this works with no effort on your part, you just need to delete the library from your game. 
 
-[See here](wearables.html)
-
 
 Money
 -----
@@ -241,8 +238,6 @@ Money
 Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
 
 Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, so the rest is up to you). Also added "purchase" as a synonym of "buy".
-
-[See here](score_health_money.html)
  
 
 Advanced scripts
@@ -258,7 +253,6 @@ The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses t
 
 [Advanced scripts](advanced_game_script.html)
 [Advanced scope](advanced_scope.html)
-
 
 Scope attribute for commands
 ----------------------------
@@ -324,6 +318,8 @@ The editor GUI has been modified to include the "addscript" for containers that 
 The attribute "hasbeenmoved" will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
 
 The Ask/Tell tab now has a third section, allowing you to tell an NPC to do something. It works just like ask/tell (and uses the same code), but allows the player to do ASK NPC TO  DO STUFF, TELL NPC TO DO STUFF and NPC, DO STUFF. This will still require a lot of work by authors to work well, but at least the framework is there.
+
+There is not an option on the _Room Descriptions_ tab to clear the screen when the player enters a room. This will happen before running the script for leaving the old room, so any messages from that will still be seen (but messages about using the exit will not).
 
 When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected). This (plus two new unit tests to support it) is the only change to the C# code.
  

@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.7.6360.25881-->
+<!--Saved by Quest 5.7.6360.27113-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -27,45 +27,39 @@
     <attr name="feature_pictureframe" type="boolean">false</attr>
     <shadowbox />
     <feature_advancedscripts />
+    <showmoney type="boolean">false</showmoney>
+    <feature_asktell />
+    <author>The Pixie</author>
+    <feature_limitinventory />
     <roomenter type="script">
     </roomenter>
     <start type="script"><![CDATA[
       player.changedparent => {
       }
-      Testing ("Forming numbers")
+      Testing ("Formating numbers")
       Assert ("12.34", Decimalise(1234, 2))
       Assert ("123.4", Decimalise(1234, 1))
       Assert ("-123.4", Decimalise(-1234, 1))
       Assert ("1234", Decimalise(1234, 0))
-      
       Assert ("+123.4", DisplayNumber(1234, "+1.1"))
       Assert ("012.34", DisplayNumber(1234, "3.2"))
       Assert ("(123.4)", DisplayNumber(1234, "(1.1)"))
       Assert ("(001,234)", DisplayNumber(1234, "(3,3)"))
-
       game.moneyformat = "! credits"
       Assert ("1234 credits", DisplayMoney(1234))
       Assert ("-1234 credits", DisplayMoney(-1234))
-
       game.moneyformat = "!3.2! credits"
       Assert ("012.34 credits", DisplayMoney(1234))
       Assert ("-012.34 credits", DisplayMoney(-1234))
-
       game.moneyformat = "!+3,2! credits"
       Assert ("+012,34 credits", DisplayMoney(1234))
       Assert ("-012,34 credits", DisplayMoney(-1234))
-
       game.moneyformat = "!+3.2!-3.2! credits"
       Assert ("+012.34 credits", DisplayMoney(1234))
       Assert ("-012.34 credits", DisplayMoney(-1234))
-
       game.moneyformat = "!$1,2!($1,2)!"
       Assert ("$12,34", DisplayMoney(1234))
       Assert ("($12,34)", DisplayMoney(-1234))
-
-
-
-
       //
       // -------------------------------------------------------------------------
       Testing ("FormatList and IndexOf")
@@ -86,8 +80,8 @@
       list add (list, coat)
       Assert ("overalls or an overcoat", FormatList(list, ",", "or", "nothing"))
       list add (list, tiger)
-      Assert ("overalls, an overcoat and a tiger", FormatList(list, ",", "and", "nothing"))
-      Assert ("overalls, an overcoat, and a tiger", FormatList(list, ",", ", and", "nothing"))
+      Assert ("overalls, an overcoat and a Tiger", FormatList(list, ",", "and", "nothing"))
+      Assert ("overalls, an overcoat, and a Tiger", FormatList(list, ",", ", and", "nothing"))
       //
       // -------------------------------------------------------------------------
       Testing ("ToWords and ToRoman")
@@ -118,9 +112,9 @@
       //
       // -------------------------------------------------------------------------
       Testing ("CloneObjectAndMoveHere")
-      cl = CloneObjectAndMoveHere (tiger)
+      cl = CloneObjectAndMoveHere (teapot)
       Assert (room, cl.parent)
-      Assert ("tiger", cl.alias)
+      Assert ("teapot", cl.alias)
       //
       // -------------------------------------------------------------------------
       Testing ("DiceRoll")
@@ -194,6 +188,28 @@
       AssertCommand ("drop script", "you are trying to drop this object to a third")
       AssertCommand ("put script in backpack", "you are trying to drop this object to a backpack")
       Assert (player, script drop object.parent)
+      // check inventory limits work
+      player.parent = sixth
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item1 in bag", "Done.")
+      AssertCommand ("put item2 in bag", "Done.")
+      AssertCommand ("put item3 in bag", "You can't put more items in it.")
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item1 in box", "Done.")
+      AssertCommand ("put item2 in box", "Done.")
+      AssertCommand ("put item3 in box", "It is full.")
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item3 in box", "Done.")
+      AssertCommand ("put item1 in box", "It is full.")
+      item1.parent = null
+      item2.parent = null
+      item3.parent = null
       player.parent = room
       //
       // -------------------------------------------------------------------------
@@ -248,14 +264,29 @@
       Assert ("overcoat", coat.alias)
       Assert (0, GetArmour())
       //
+      Testing ("Clothing - aliases")
+      // Testing an issue that the alias disappeared after repeated wearing
+      WearGarment (coat)
+      Assert ("overcoat (worn)", coat.alias)
+      Assert ("overcoat (worn)", coat.listalias)
+      RemoveGarment (coat)
+      Assert ("overcoat", coat.alias)
+      Assert ("overcoat", coat.listalias)
+      WearGarment (coat)
+      Assert ("overcoat (worn)", coat.alias)
+      Assert ("overcoat (worn)", coat.listalias)
+      RemoveGarment (coat)
+      Assert ("overcoat", coat.alias)
+      Assert ("overcoat", coat.listalias)
+      //
       Testing ("Clothing - NPCs")
       Assert (null, GetOuterFor(mary, "torso"))
       underwear.worn = true
       Assert ("underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
       Assert (underwear, GetOuterFor(mary, "torso"))
       dress.worn = true
-      Assert ("a dress and underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
-      Assert ("a dress", FormatList(ListVisibleFor(mary), ",", "and", "nothing"))
+      Assert ("a Dress and underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
+      Assert ("a Dress", FormatList(ListVisibleFor(mary), ",", "and", "nothing"))
       Assert (dress, GetOuterFor(mary, "legs"))
       Assert (null, GetOuterFor(mary, "head"))
       //
@@ -321,6 +352,16 @@
       Assert (3, player.warm)
       Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
       //
+      Testing ("Clothing - set alias")
+      SetAlias (casual jacket, "smart jacket")
+      Assert ("a smart jacket (worn unfastened)", GetDisplayName(casual jacket))
+      RemoveGarment (casual jacket)
+      SetAlias (casual jacket, "shabby jacket")
+      Assert ("a shabby jacket", GetDisplayName(casual jacket))
+      SetAlias (tiger, "Lion")
+      Assert ("Lion", tiger.alias)
+      SetAlias (tiger, "Tiger")
+      //
       //
       //
       // -------------------------------------------------------------------------
@@ -356,9 +397,6 @@
       Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"))
       Assert ("You are the player", ProcessText("You {if player.alias=Boris:are the player}"))
       Assert ("You are the player", ProcessText("You {if player.alias<>you:are the player}"))
-      game.text_processor_this = player
-      Assert ("You are the player", ProcessText("You {either StartsWith(this.name, \"play\") and not player.flag:are the player}"))
-      Assert ("You are the player", ProcessText("You {if this.alias<>you:are the player}"))
       //
       // -------------------------------------------------------------------------
       Testing ("Text processor: eval")
@@ -376,10 +414,6 @@
       Assert ("You can not see the tiger", ProcessText("You can not see {nothere tiger:the tiger}"))
       Assert ("You can see ", ProcessText("You can see {nothere player:the player}"))
       Assert ("You can not see ", ProcessText("You can not see {here tiger:the tiger}"))
-      game.text_processor_this = tiger
-      Assert ("You can not see ", ProcessText("You can not see {here this:the tiger}"))
-      game.text_processor_this = player
-      Assert ("You can see the player", ProcessText("You can see {here this:the player}"))
       //
       // -------------------------------------------------------------------------
       Testing ("Text processor: curly brace")
@@ -401,6 +435,19 @@
       player.count = 2
       Assert ("player is two", ProcessText("player is {select:player.count:zero:one:two:three}"))
       Assert ("player is <i>two</i>", ProcessText("player is {select:player.count:{u:zero}|{b:one}|{i:two}|three}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: this")
+      game.text_processor_this = player
+      Assert ("You are the player", ProcessText("You {either StartsWith(this.name, \"play\") and not player.flag:are the player}"))
+      Assert ("You are the player", ProcessText("You {if this.alias<>you:are the player}"))
+      game.text_processor_this = tiger
+      Assert ("You can not see ", ProcessText("You can not see {here this:the tiger}"))
+      Assert ("You can not see a tiger", ProcessText("You can not see a {this.name}"))
+      game.text_processor_this = null
+      Assert ("You can not see a {this.name}", ProcessText("You can not see a {this.name}"))
+      game.text_processor_this = player
+      Assert ("You can see the player", ProcessText("You can see {here this:the player}"))
       game.text_processor_this = player
       Assert ("player is <i>two</i>", ProcessText("player is {select:this.count:{u:zero}|{b:one}|{i:two}|three}"))
       //
@@ -452,6 +499,21 @@
       Assert (3, ListCount(FilterByAttribute(ol, "parent", player)))
       Assert (2, ListCount(FilterByNotAttribute(ol, "parent", player)))
       Assert ("hat|teapot|socks|shoes|casual jacket", Join(ObjectListToStringList(ol, "name"), "|"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Tell to")
+      player.parent = second
+      AssertCommand ("ask mary to jump", "Mary jumps.")
+      AssertCommand ("mary, jump", "Mary jumps.")
+      AssertCommand ("tell mary about jump", "You tell Mary about the jump.")
+      // names with spaces
+      AssertCommand ("ask polly sue to jump up and down", "Mary jumps.")
+      AssertCommand ("polly sue, jump around a it", "Mary jumps.")
+      AssertCommand ("tell polly sue about the jump", "You tell Mary about the jump.")
+      // check the second form does not mess up all commas in commands
+      player.parent = third
+      AssertCommand ("get teapot, tiger", "Tiger: You can't take it.")
+      //
       Results
     ]]></start>
     <scopebackdrop type="script">
@@ -459,7 +521,6 @@
         list add (items, o)
       }
     </scopebackdrop>
-    <showmoney type="boolean">false</showmoney>
   </game>
   <object name="room">
     <inherit name="editor_room" />
@@ -482,8 +543,10 @@
       <warm type="int">3</warm>
       <object name="backpack">
         <inherit name="editor_object" />
-        <inherit name="container_open" />
+        <inherit name="container_limited" />
         <feature_container />
+        <maxobjects type="int">3</maxobjects>
+        <maxvolume type="int">10</maxvolume>
       </object>
       <object name="coat">
         <inherit name="editor_object" />
@@ -527,6 +590,19 @@
     </exit>
     <object name="mary">
       <inherit name="editor_object" />
+      <alt type="stringlist">
+        <value>polly sue</value>
+      </alt>
+      <tellto type="scriptdictionary">
+        <item key="jump">
+          msg ("Mary jumps.")
+        </item>
+      </tellto>
+      <tell type="scriptdictionary">
+        <item key="jump">
+          msg ("You tell Mary about the jump.")
+        </item>
+      </tell>
       <object name="dress">
         <inherit name="editor_object" />
         <inherit name="wearable" />
@@ -537,6 +613,7 @@
         </wear_slots>
         <display>dress</display>
         <take />
+        <alias>Dress</alias>
       </object>
       <object name="underwear">
         <inherit name="editor_object" />
@@ -581,6 +658,7 @@
     </object>
     <object name="tiger">
       <inherit name="editor_object" />
+      <alias>Tiger</alias>
     </object>
     <exit alias="west" to="fourth">
       <inherit name="westdirection" />
@@ -708,6 +786,39 @@
     <pattern>unfasten</pattern>
     <defaultexpression>"You can't unfasten " + object.article + "."</defaultexpression>
   </verb>
+  <object name="sixth">
+    <inherit name="editor_room" />
+    <object name="bag">
+      <inherit name="editor_object" />
+      <inherit name="container_limited" />
+      <take />
+      <feature_container />
+      <maxobjects type="int">2</maxobjects>
+      <close type="boolean">false</close>
+    </object>
+    <object name="item1">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">4</volume>
+    </object>
+    <object name="item2">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">6</volume>
+    </object>
+    <object name="item3">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">8</volume>
+    </object>
+    <object name="box">
+      <inherit name="editor_object" />
+      <inherit name="container_limited" />
+      <feature_container />
+      <maxobjects type="int">100</maxobjects>
+      <maxvolume type="int">10</maxvolume>
+    </object>
+  </object>
   <type name="specialtype" />
   <function name="Testing" parameters="s">
     game.testingtitle = s
