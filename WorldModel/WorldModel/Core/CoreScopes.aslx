@@ -17,6 +17,10 @@
     return (result)
   </function>
 
+  <function name="ScopeInventoryNotScenery" type="objectlist">
+    return (RemoveSceneryObjects(ScopeInventory()))
+  </function>
+
   <function name="ScopeReachableInventory" type="objectlist">
     result = NewObjectList()
     foreach (obj, GetAllChildObjects(game.pov)) {
