@@ -16,6 +16,7 @@ The changes are virtually all restricted to the .aslx files in WorldModel/Worldm
 
 Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the web player is updated.
 
+Thanks to beta-testers: Anony NN, chaosdagger, Dcoder, Doctor Agon, Pertex
 
 
 New UI Options
@@ -36,7 +37,7 @@ https://github.com/textadventures/quest/issues/752
 
 ![](ui-no-cursor.png "ui-no-cursor.png")
 
-[Cusom panes](custom_panes.html)
+[Custom panes](custom_panes.html)
 
 ### Command bar
 
@@ -48,6 +49,13 @@ New options for the command bar; borderless cursor or shadow box.
 
 You can now set the background to blend from one colour at the top to another at the bottom, as in the middle image above (but it does not look so good with a borderless command bar). You can set both the margins and the page background colour, as well as the status bar and game border.
 
+Use the new `JS.setPanes` function to create your own colour scheme for the game panes. This can be used with two, four or five parameters, the text colour, the background, the secondary text colour, the secondary background and the highlight colour. Experiment to see exactly what each does.
+
+```
+JS.setPanes("black", "orange")
+```
+
+
 ### Other changes
 
 The body element is now given the default font, colour and background-color. This means the save confirmation text will be in the standard style for your game. This has the potential to have far-reaching effects, given the body element is the fundamental HTML element of your game, but it seems to have no side effects, and if there are some I would expect them to be improvements anyway.
@@ -58,11 +66,11 @@ The gamePanes div is now transparent. Again, this could affect many games, but I
 
 The Features, Display and Interface tabs of the game object have been rearranged and extended to support these features, and to make their placement (hopefully) more logical.
 
-There is now a JS.setCss junction that takes an element name and a set of CSS stylings. This will make changing styles much easier (though the above will mean it should rarely be necessary).
+There is now a JS.setCss function that takes an element name and a set of CSS stylings. This will make changing styles much easier (though the above will mean it should rarely be necessary).
 
 There is an option to hide the save button in the web player (it does not stop players saving, for example via the command bar).
 
-You can now set the width and colour of exits for the map grid (see [here](http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved).
+You can now set the width and colour of exits for the map grid (see [here](http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved)).
 
 
 
@@ -229,7 +237,9 @@ Clothing
 
 This is my clothing library, which is itself an extension of Chase's wearables library. Set an object to be Wearable on the features tab to see the new _Wearable_ tab. Advanced options will appear if you tick the box on the Features tab of the game object.
 
-If you already use either my library or Chase's you should find this works with no effort on your part, you just need to delete the library from your game. 
+If you already use either my library or Chase's you should find this works with no effort on your part, you just need to delete the library from your game.
+
+[Clothing](wearables.html)
 
 
 Money
@@ -238,7 +248,8 @@ Money
 Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
 
 Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, so the rest is up to you). Also added "purchase" as a synonym of "buy".
- 
+
+[Score, health and money](score_health_money.html)
 
 Advanced scripts
 ----------------
@@ -252,7 +263,6 @@ The second runs when Quest does not understand a command. The unresolvedcommandh
 The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, a list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
 
 [Advanced scripts](advanced_game_script.html)
-[Advanced scope](advanced_scope.html)
 
 Scope attribute for commands
 ----------------------------
@@ -274,6 +284,7 @@ If the string is not recognised (or not there), it falls back to ScopeVisible as
 
 The default behaviour should be unchanged. The only commands I have applied this to are TAKE, DROP, WEAR and REMOVE, as it does not seem applicable to the rest. Note that the scope will apply to all objects for a command, so for GIVE HAT TO MARY, Quest would use the same scope for HAT as MARY.
 
+[Advanced scope](advanced_scope.html)
 
  
 Minor Changes
@@ -312,16 +323,21 @@ If you set a string attribute on a switchable object called "cannotswitchon", th
 You can now have single and double quotes in options when using the ShowMenu function.
 
 Restricted containers (limit to number of items or volume of item) used a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
-This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum). This really is the point; by making it a script, it becomes far more accessible.
+This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum?). This really is the point; by making it a script, it becomes far more accessible.
 The editor GUI has been modified to include the "addscript" for containers that are not restricted, so now anyone can put their own custom restrictions on what can go in an item.
 
 The attribute "hasbeenmoved" will get set to true whenever an object is moved (no matter how). One use of this would be to track what to save if anyone is considering a custom game saving system (say that allows games to be re-loaded after an update).
 
-The Ask/Tell tab now has a third section, allowing you to tell an NPC to do something. It works just like ask/tell (and uses the same code), but allows the player to do ASK NPC TO  DO STUFF, TELL NPC TO DO STUFF and NPC, DO STUFF. This will still require a lot of work by authors to work well, but at least the framework is there.
+The Ask/Tell tab now has a third section, allowing you to tell an NPC to do something. It works just like ask/tell (and uses the same code), but allows the player to do ASK NPC TO  DO STUFF, TELL NPC TO DO STUFF and NPC, DO STUFF. This will still require a lot of work by authors to work well, but at least the framework is there. There is an issue here that script dictionary widgets do not display properly when they scroll off the top of the screen, as they get drawn over the top of the outer window. This was also an issue in previous versions of Quest, but was not apparent because of the way script dictionary widgets were placed.
 
-There is not an option on the _Room Descriptions_ tab to clear the screen when the player enters a room. This will happen before running the script for leaving the old room, so any messages from that will still be seen (but messages about using the exit will not).
+There is now an option on the _Room Descriptions_ tab to clear the screen when the player enters a room. This will happen before running the script for leaving the old room, so any messages from that will still be seen, including messages about using the exit.
 
-When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected). This (plus two new unit tests to support it) is the only change to the C# code.
+The inventory pane will now not list items with scenery set to true. Note that when an item is picked up, the scenery attribute is automatically set to false, so this will only affect items that start in the player inventory or are moved there by a script. This now is consistent with the INVENTORY command, which already ignored scenery items.
+
+When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected).
+
+These last two (plus two new unit tests to support the latter) are the only change to the C# code.
+
  
 
 Testing
@@ -352,7 +368,6 @@ If you have a language file for the game, these templates should be added.
 <template name="Score">Score</template>
 <template name="Health">Health</template>
 <template name="Money">Money</template>
-
 
 <dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 <dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
