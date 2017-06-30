@@ -91,8 +91,9 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 <a name="Commands"></a>Commands (and Verbs)
 ---------------------------------------------------
 
-Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
+Commands are the heart of a text adventure.
 
+-  [Commands for specific rooms](commands_for_room.html)
 -  [Using Verbs](using_verbs.html)
 -  [Complex commands](complex_commands.html)
 -  [Pattern matching](pattern_matching.html)
