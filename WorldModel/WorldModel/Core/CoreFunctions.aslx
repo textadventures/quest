@@ -148,28 +148,51 @@
 
 
 
-  <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
+    <![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
     count = 0
     game.menuoptionskeys = NewStringList()
     foreach (option, options) {
-      list add (game.menuoptionskeys, option)
       count = count + 1
-      if (TypeOf(options) = "stringlist") {
+      if (TypeOf(options) = "stringdictionary") {
+        optionText = StringDictionaryItem(options, option)
+        optiontag = option
+        style = GetCurrentLinkTextFormat()
+        list add (game.menuoptionskeys, option)
+      }
+      else if (TypeOf(option) = "string") {
         optionText = option
+        optiontag = option
+        style = GetCurrentLinkTextFormat()
+        list add (game.menuoptionskeys, option)
+      }
+      else if (TypeOf(option) = "object") {
+        optionText = GetDisplayAlias(option)
+        optiontag = option.name
+        colour = ""
+        if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+          colour = option.linkcolour
+        }
+        else {
+          colour = GetLinkTextColour()
+        }
+        style = GetCurrentTextFormat(colour)
+        list add (game.menuoptionskeys, option.name)
       }
       else {
-        optionText = StringDictionaryItem(options, option)
+        error ("ShowMenu cannot handle a " + TypeOf(option))
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentLinkTextFormat() + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(option) + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
     }
     EndOutputSection (outputsection)
     game.menuoptions = options
     game.menuallowcancel = allowCancel
     game.menucallback = callback
     game.menuoutputsection = outputsection
-  ]]></function>
+  ]]>
+  </function>
   
   <function name="ShowMenuResponse" parameters="option">
     if (game.menucallback = null) {
@@ -449,6 +472,16 @@
     foreach (o, lst) {
       val = GetAttribute(o, name)
       if (not Equal(val, value)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  <function name="ListCompact" parameters="lst" type="list">
+    l = NewList()
+    foreach (o, lst) {
+      if (not Equal(o, null)) {
+        if (IndexOf(l, o) = -1) list add (l, o)
+      }
     }
     return (l)
   </function>

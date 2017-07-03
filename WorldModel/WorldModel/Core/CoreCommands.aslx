@@ -279,14 +279,11 @@
     }
     else {
       if (GetBoolean(object, "use")) {
-        menu = NewStringDictionary()
-        candidates = NewObjectList()
         candidates = CreateUseMenuList (object)
         if (ListCount(candidates) = 0) {
           msg (Template("NoObjectsAvailable"))
         }
         else {
-          GenerateMenuChoices(menu, candidates)
           game.pov.usemenuobject = object
           if (HasString(object, "usemenuprompt")) {
             menucaption = object.usemenuprompt
@@ -294,7 +291,7 @@
           else {
             menucaption = Template("UseOnMenu")
           }
-          ShowMenu (menucaption, menu, true) {
+          ShowMenu (menucaption, candidates, true) {
             if (result <> null) {
               HandleUseOn (game.pov.usemenuobject, GetObject(result))
               game.pov.usemenuobject = null
@@ -565,14 +562,11 @@
     }
     else {
       if (GetBoolean(object, "givesingle")) {
-        menu = NewStringDictionary()
-        candidates = NewObjectList()
         candidates = CreateGiveMenuList (object)
         if (ListCount(candidates) = 0) {
           msg (Template("NoObjectsAvailable"))
         }
         else {
-          GenerateMenuChoices(menu, candidates)
           game.pov.givemenuobject = object
           if (HasString(object, "givemenuprompt")) {
             menucaption = object.givemenuprompt
@@ -580,7 +574,7 @@
           else {
             menucaption = Template("GiveToMenu")
           }
-          ShowMenu (menucaption, menu, true) {
+          ShowMenu (menucaption, candidates, true) {
             if (result <> null) {
               HandleGiveTo (game.pov.givemenuobject, GetObject(result))
               game.pov.givemenuobject = null

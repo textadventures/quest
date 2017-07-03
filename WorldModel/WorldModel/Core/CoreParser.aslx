@@ -22,6 +22,11 @@
     }
   </function>
   
+  <!--
+  This was previously used in disambiguation, but is no longer, as ShowMenu
+  can now take an object list. This makes it obsolete, as I cannot imagine
+  anyone using it anywhere else. It is therefore deprecated as of Quest 5.7.
+  -->
   <function name="GenerateMenuChoices" parameters="dictionary, objects">
     foreach (obj, objects) {
       if (not DictionaryContains(dictionary, obj.name)) {
@@ -132,9 +137,6 @@
   
   <function name="ResolveNameFromList" parameters="variable, value, objtype, scope, secondaryscope" type="object">
     <![CDATA[
-    //msg("value=" + value)
-    //msg("scope=" + scope)
-    //msg("secondaryscope=" + secondaryscope)
     value = Trim(LCase(value))
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
@@ -160,11 +162,7 @@
 
     // Also check the secondary scope, but only if we have not found anything yet
     
-    //msg("fullmatches=" + fullmatches)
-    //msg("partialmatches=" + partialmatches)
-
     if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 0 and not secondaryscope = null) {
-      //msg("secondaryscope=" + secondaryscope)
       foreach (obj, secondaryscope) {
         name = LCase(GetDisplayAlias(obj))
         CompareNames (name, value, obj, fullmatches, partialmatches)
@@ -176,9 +174,6 @@
       }
     }    
     
-    //msg("fullmatches=" + fullmatches)
-    //msg("partialmatches=" + partialmatches)
-    
     if (ListCount(fullmatches) = 1) {
       return (ListItem(fullmatches, 0))
     }
@@ -189,15 +184,13 @@
       return (null)
     }
     else {
-      menu = NewStringDictionary()
-      GenerateMenuChoices(menu, fullmatches)
-      GenerateMenuChoices(menu, partialmatches)
+      candidates = ListCompact(fullmatches + partialmatches)
       
       if (LengthOf(variable) > 0) {
         // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
         game.pov.currentcommandpendingvariable = variable
       
-        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        ShowMenu(DynamicTemplate("DisambiguateMenu", value), candidates, true) {
           varname = game.pov.currentcommandpendingvariable
           game.pov.currentcommandpendingvariable = null
           if (result <> null) {
@@ -210,7 +203,7 @@
         
         game.pov.currentcommandmultiobjectpending = true
         
-        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        ShowMenu(DynamicTemplate("DisambiguateMenu", value), candidates, true) {
           if (result <> null) {
             list add (game.pov.currentcommandpendingobjectlist, GetObject(result))
             ResolveNextNameListItem
@@ -670,7 +663,6 @@
             HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
           }
           else {
-            menu = NewStringDictionary()
             objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
             excludelist = NewObjectList()
             list add (excludelist, game.pov)
@@ -680,11 +672,10 @@
               msg (this.multiobjectmenuempty)
             }
             else {
-              GenerateMenuChoices(menu, candidates)
               game.pov.multiverb = this.property
               game.pov.multiverbobject = object
               game.pov.multiverbobjectdefault = this.multiobjectdefault
-              ShowMenu (this.multiobjectmenu, menu, true) {
+              ShowMenu (this.multiobjectmenu, candidates, true) {
                 if (result <> null) {
                   HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
                   game.pov.multiverb = null
