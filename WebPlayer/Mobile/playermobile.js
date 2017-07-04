@@ -10,9 +10,14 @@ function scrollToEnd() {
         if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
         var distance = scrollTo - currentScrollTop;
         var duration = distance / 0.4;
+        // Added by The Pixie on behalf of alexandretorres
+        if (duration>2000) duration=2000;
         $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
     $("#txtCommand").focus();
+    // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
+    // This is tested is playercore.js, but not here!
+    $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
 function setBackground(col) {
@@ -286,3 +291,114 @@ function finishSync() {
 
 function setGameWidth() {
 }
+
+// ----------------------------------        
+// Section added by The Pixie
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function setCss(element, cssString) {
+  el = $(element);
+  ary = cssString.split(";");
+  for (i = 0; i < ary.length; i++) {
+    ary2 = ary[i].split(':');
+    el.css(ary2[0], ary2[1]);
+  }
+}
+
+
+function colourBlend(colour1, colour2) {
+  $('#gamePanes').css('background-color', 'transparent');
+  $('#gameBorder').css('background-color', 'transparent');
+  body = $('body');
+  body.css('background-color', colour1);
+  body.css('background-image', 'linear-gradient(to bottom,  ' + colour1 + ', ' + colour2 + ')');
+  body.css('background-image', '-webkit-linear-gradient(top,  ' + colour1 + ', ' + colour2 + ')');
+  body.css('background-attachment', 'fixed');
+  body.css('background-position', 'left bottom');
+}
+
+
+
+elements = [
+  '#statusVarsLabel', '#statusVarsAccordion',// '#statusVars',
+  '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
+  '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
+  '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
+  '#commandPane'
+];
+
+dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
+
+commandColour = 'orange'
+
+function setElement(name, fore, back) {
+  el = $(name);
+  el.css('background', back);
+  el.css('color', fore);
+  el.css('border', 'solid 1px ' + fore);
+  if (endsWith(name, "Accordion")) {
+    el.css('border-top', 'none');
+  }
+}
+
+function setCompass(name, fore, back) {
+  el = $('#cmdCompass' + name);
+  el.css('background', back);
+  el.css('border', '2px solid ' + fore);
+}
+
+function setPanes(fore, back, secFore, secBack, highlight) {
+  if (arguments.length == 2) {
+    secFore = back;
+    secBack = fore;
+  }
+  if (arguments.length < 5) {
+    highlight = 'orange'
+  }
+  commandColour = fore;
+  for (i = 0; i < elements.length; i++) {
+    setElement(elements[i], fore, back);
+  }
+  for (i = 0; i < dirs.length; i++) {
+    setElement(dirs[i], fore, back);
+  }
+
+  var head = $('head');
+  head.append('<style>.ui-button-text { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-state-active { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-widget-content { color: ' + fore + ';}</style>');
+  head.append('<style>.ui-widget-header .ui-state-default { background-color: ' + secBack + ';}</style>');
+  head.append('<style>.ui-selecting { color: ' + secFore + '; background-color: ' + highlight + ';}</style>');
+  head.append('<style>.ui-selected { color: ' + secFore + '; background-color: ' + secBack + ';}</style>');
+
+  //$('.ui-button-text').css('color', fore);
+  //$('.ui-state-active').css('color', fore);
+  //$('.ui-widget-content').css('color', fore);
+  
+}
+
+function setCommands(s, colour) {
+  if (arguments.length == 2) commandColour = colour;
+  ary = s.split(";");
+  el = $('#commandPaneHeading');
+  el.empty();
+  for (i = 0; i < ary.length; i++) {
+      ary2 = ary[i].split(":");
+      comm = ary2[0];
+      commLower = ary2[0].toLowerCase().replace(/ /g, "_");
+      commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
+      //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
+      el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
+  }
+}
+
+function setCustomStatus(s) {
+    el = $('#customStatusPane');
+    el.html(s);
+}
+
+        
+// ----------------------------------        
