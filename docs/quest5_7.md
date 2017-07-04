@@ -320,7 +320,7 @@ The _Containers_ tab in the editor now has comments under the scripts that expla
 
 If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
 
-You can now have single and double quotes in options when using the ShowMenu function.
+You can now have single and double quotes in options when using the [ShowMenu](functions/showmenu.html) function. ShowMenu will now accept any list of strings or objects, not just string lists. Links for objects will be displayed in the objects link colour, if used. This will also apply to disambiguation menus too.
 
 Restricted containers (limit to number of items or volume of item) used a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
 This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum?). This really is the point; by making it a script, it becomes far more accessible.
