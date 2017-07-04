@@ -32,3 +32,19 @@ The [Split](string/split.html) function can be useful to quickly get a list of o
 
 Note that the variable "this" becomes undefined when running the nested script (this is different to the "show menu" script command, when "this" keeps its value inside the nested script).
 
+_Prior to Quest 5.7_
+
+Strings used for options cannot contain single or double quotes (the option will not be selectable).
+
+_As of Quest 5.7_
+
+ShowMenu will also take an object list, or a list of objects and strings. If the object has a link colour specified, this will be used. Note that `result` will always be a string, in the case of an object, it will be the object's name.
+
+```
+ShowMenu ("Select", ScopeInventory(), true) {
+  obj = GetObject(result)
+  RemoveObject(obj)
+  msg ("You smash the " + obj.name + " to bits.")
+}
+
+
