@@ -9,8 +9,8 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("Quest")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Alex Warren")> 
+<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyCompany("Textadventures.co.uk")>
 <Assembly: AssemblyProduct("Quest")>
 <Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")>
 <Assembly: AssemblyTrademark("")> 
