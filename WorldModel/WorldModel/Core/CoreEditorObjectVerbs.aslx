@@ -59,6 +59,10 @@
           <key>tell</key>
           <value>Use the Ask/Tell tab to configure topics (you may need to turn this on in game features).</value>
         </item>
+        <item>
+          <key>enter</key>
+          <value>Use a command, rather than a verb, to allow the player to enter this object.</value>
+        </item>
       </clashmessages>
       <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>
       <expand/>
