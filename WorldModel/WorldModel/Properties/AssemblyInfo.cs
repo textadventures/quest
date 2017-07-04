@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Quest ASL WorldModel")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Alex Warren")]
+[assembly: AssemblyCompany("Textadventures.co.uk")]
 [assembly: AssemblyProduct("Quest")]
 [assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")]
 [assembly: AssemblyTrademark("")]
