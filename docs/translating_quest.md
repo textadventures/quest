@@ -107,6 +107,14 @@ To add a library, go the bottom of the left pane in the GUI, and expand Advanced
 More on using libraries [here](tutorial/using_libraries.html).
 
 
+Display Verbs
+-------------
+
+Quest uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; "wear" plus "hat" gives "wear hat", and Quest will understand that. That may not be the case in your language. If not, them just add that as an alternative.
+
+For example, in German, the verb to display to allow the player to wear something is "Anziehen", but the full phrase for "wear hat" would be "ziehe hut an". The solution is to add "anziehen #object#" as an alternative, even though it is bad German.
+
+
 Releasing your translation
 --------------------------
 

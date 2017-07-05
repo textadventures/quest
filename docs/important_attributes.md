@@ -126,6 +126,10 @@ However, when the ornament is picked up, scenery will be set to false, and there
 Setting an exit to scenery can be a good idea if there are two ways it could be used. If there are stairs going down to the east, you would want to have both EAST and DOWN going to the same destination, but you might want to set one to scenery so only one appears on the compass rose (otherwise the player might think there are exits to two different locations).
 
 
+The visited attribute
+---------------------
+
+The visited attribute gets set to true when the player visits a room. This is how Quest tracks whether to use the scripts that only happen when the player first visits a room, but can also be used by your own scripts to track the player's progress.
 
 
 

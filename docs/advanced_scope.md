@@ -4,7 +4,7 @@ title: Advanced Scope For Items
 ---
 
 
-Sometimes you wan the player to be able to access items in other rooms. For example:
+Sometimes you want the player to be able to access items in other rooms. For example:
 
 -  background objects, such as walls and sky, that are common to a lot or all rooms
 -  items in adjacent rooms, perhaps behind the counter is another room, but the player can still talk to the barmaid there

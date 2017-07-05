@@ -13,7 +13,7 @@ Just for the sake of testing, we will set up a new command, with the pattern JUM
 ```
   msg("You jump into the air. Hurrah!")
 ```
-The plan is to have the plan get 1 point for jumping, using this command.
+The plan is to have the player get 1 point for jumping, using this command.
 
 By the way, quest does have a "score", which will do some of this for us. I am not going to use that because I want to show how status attributes are used.
 

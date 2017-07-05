@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Using some things to create others
+title: Converting One Thing Into Another
 ---
 
 
@@ -10,7 +10,7 @@ In your game, you might want to have the player use one or more things to make o
 
 - Use machine to convert objects from one thing to another
 
-The best way to do these transformations is to move the original parts elsewhere and to bring the new objects here.
+The best way to do these transformations is to quietly move the original parts elsewhere and to bring the new objects (which you created earlier) here.
 
 By the way, you might also want to do something like use a tap to fill cup. Transformations like that are better handled using attribute; in this case an attribute on the cup tracks how much water is in it. That sort of system is described in the section on [handling water](handling_water.html).
 
