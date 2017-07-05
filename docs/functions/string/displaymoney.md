@@ -52,3 +52,5 @@ DisplayMoney(-1234)
 ```  
   
 It will throw an error if game.moneyformat is not set or not understood.
+
+The easiest way to set game.moneyformat, is to tick "Money" on the _Features_ tab of the game object, and to set the format on the _Player_ tab. If you do not want the built-in money statis attribute displayed, untick "Money" on the _Features_ tab of the game object - the format will still be set, but money will not be shown as a status attribute.
