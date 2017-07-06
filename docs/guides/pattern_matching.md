@@ -86,16 +86,22 @@ This is the template for English.
 A Note About Verb Templates
 ---------------------------
 
-Verb templates seem to offer another simple method for matching. Instead of defining a pattern, you specify a template (might have been better called a verbtemplate?), and in the language file you specify your verb templates.
+Verb templates offer another simple method for matching. Instead of defining a pattern, you specify a template (might have been better called a verbtemplate?), and in the language file you specify your verb templates.
 
-I would guess that Quest attempts to match against each verbtemplate with the objects present, and if it finds a match, it links that back to the command. You can have several verbtempates for one command. Here is an example from the Quest library.
+Quest attempts to match against each verbtemplate, and if it finds a match, it will accept that command and attempt to process it. You can have several verbtempates for one command. Here is an example from the Quest library (note how the `multiple` attribute is used to get a list of objects from the relevant location, in this case the inventory).
 
-      <command name="lookat" template="lookat">
-        ...
-      </command>
+```
+	<command name="wear" template="wear">
+		<multiple>
+			return (ScopeInventory())
+		</multiple>
+		<script>
+      ...
+		</script>
+	</command>
 
-      <verbtemplate name="lookat">look at</verbtemplate>
-      <verbtemplate name="lookat">x</verbtemplate>
-      <verbtemplate name="lookat">examine</verbtemplate>
-      <verbtemplate name="lookat">exam</verbtemplate>
-      <verbtemplate name="lookat">ex</verbtemplate>
+	<verbtemplate name="wear">wear</verbtemplate>
+	<verbtemplate name="wear">put on</verbtemplate>
+	<verbtemplate name="wear">put #object# on</verbtemplate>
+	<verbtemplate name="wear">don</verbtemplate>
+```
