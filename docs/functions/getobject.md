@@ -9,4 +9,4 @@ Returns the [object](../types/object.html) of the specified name (or exit, or co
 
 See also [HasObject](hasobject.html)
 
-NOTE: This function is hard-coded and cannot be overridden.
+NOTE: This a [hard-coded function](hardcoded.html).

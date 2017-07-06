@@ -26,3 +26,5 @@ Now we could add a message expesssion to the script in an exit, something like:
     msg (DynamicTemplate("BlockedExit",this))
 
 NOTE: As the script is defined in the *script* attribute of the *exit*, we use the "this" keyword to reference the current *exit* object
+
+NOTE: This a [hard-coded function](hardcoded.html).

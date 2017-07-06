@@ -22,3 +22,5 @@ For example, given this regex which matches the text "put (object name) on (obje
 Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](../types/stringdictionary.html) where object1="book" and object2="shelf".
 
 See also [GetMatchStrength](getmatchstrength.html), [IsRegexMatch](isregexmatch.html)
+
+NOTE: This a [hard-coded function](hardcoded.html).

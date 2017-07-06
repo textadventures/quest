@@ -10,3 +10,5 @@ Returns a [boolean](../types/boolean.html) - **true** if the object *has* a doub
 See also [GetDouble](getdouble.html) and [ToDouble](todouble.html)
 
 This function was added in Quest 5.3.
+
+NOTE: This a [hard-coded function](hardcoded.html).

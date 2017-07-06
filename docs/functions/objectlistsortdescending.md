@@ -8,3 +8,5 @@ title: ObjectListSortDescending
 Returns the reversed version of [ObjectListSort](objectlistsort.html) - see that page for usage.
 
 This function was added in Quest 5.3.
+
+NOTE: This a [hard-coded function](hardcoded.html).

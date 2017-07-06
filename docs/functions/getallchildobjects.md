@@ -10,3 +10,5 @@ Returns an [objectlist](../types/objectlist.html) containing all objects directl
 For example, if object A contains object B, and object B contains object C, then GetAllChildObjects(A) returns a list containing B and C.
 
 Use [GetDirectChildren](getdirectchildren.html) instead if you only want children directly contained (in the above example, only B).
+
+NOTE: This a [hard-coded function](hardcoded.html).

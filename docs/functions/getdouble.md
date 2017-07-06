@@ -10,3 +10,5 @@ Returns an [double](../types/double.html) if the object has that double attribut
 See also [HasDouble](hasdouble.html) and [ToDouble](todouble.html)
 
 This function was added in Quest 5.3.
+
+NOTE: This a [hard-coded function](hardcoded.html).
