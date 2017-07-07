@@ -25,11 +25,14 @@ Finally, the player can specify both the person to talk to and the subject:
 
 You should also consider whether you want both sides of the conversation in the output. Which you chose is up to you, but it will look better if you are consistent, so I suggest decided now, before you start typing.
 
-> >TALK TO BORIS
+> \>TALK TO BORIS
+>
 > 'Hi,' you say to Boris, 'can you help me find the key to this door?'
+>
 > 'Sure, you need to look in the bedroom.'
 
-> >TALK TO BORIS
+> \>TALK TO BORIS
+>
 > 'Hi,' says Boris, 'do you need to find the key to this door? You need to look in the bedroom.'
 
 
@@ -48,12 +51,18 @@ SPEAK TO and a menu of responses
 
 In play this might look like this:
 
-> >TALK TO BORIS
+> \>TALK TO BORIS
+>
 > 1. Where is key
+>
 > 2. Who is the Queen
+>
 > 3. How do I defeat the troll
-> >1
+>
+> \>1
+>
 > 'Hi,' you say to Boris, 'can you help me find the key to this door?'
+>
 > 'Sure, you need to look in the bedroom.'
 
 Quest handles menus well, and it would actually look rather more slick than that.
@@ -89,8 +98,10 @@ ASK ABOUT
 
 In play this might look like this:
 
-> >ASK BORIS ABOUT KEY
+> \>ASK BORIS ABOUT KEY
+>
 > 'Hi,' you say to Boris, 'can you help me find the key to this door?'
+>
 > 'Sure, you need to look in the bedroom.'
 
 This is the most open-ended approach, though in reality that flexibility is an illusion - the player is limited to asking about only the topics you have included, he just does not know it. This is also the major downfall of this method - the player might not guess the subjects you have coded for, and just get frustrated as the character fails to respond to guess after guess. This system is probably best suited to when you have a large number of topics you will include for every character in the game, as a menu will soon get unwieldly, and thematically, it feels right for a mystery.
