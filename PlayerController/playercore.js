@@ -1042,7 +1042,7 @@ elements = [
   '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
   '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
   '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
-  '#commandPane'
+  '#commandPane', '#customStatusPane'
 ];
 
 dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
