@@ -151,7 +151,6 @@ New functions
 -------------
 
 -  [ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
--  [ScopeInventoryNotScenery](functions/scopeinventorynotscenery.html)
 -  [CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
 -  [CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
 -  [Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
@@ -332,11 +331,7 @@ The Ask/Tell tab now has a third section, allowing you to tell an NPC to do some
 
 There is now an option on the _Room Descriptions_ tab to clear the screen when the player enters a room. This will happen before running the script for leaving the old room, so any messages from that will still be seen, including messages about using the exit.
 
-The inventory pane will now not list items with scenery set to true. Note that when an item is picked up, the scenery attribute is automatically set to false, so this will only affect items that start in the player inventory or are moved there by a script. This now is consistent with the INVENTORY command, which already ignored scenery items.
-
-When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected).
-
-These last two (plus two new unit tests to support the latter) are the only change to the C# code.
+When adding a new verb, Quest will check if it will clash with an existing command (especially important for users of the web editor, as they cannot edit verb elements). It will now also object if you use "enter", as this will clash with the room script. It will also flag a clash if the conflicting verb is in a list (so for example "enquire;ask" will now be rejected). This (plus two new unit tests to support it) is the only change to the C# code.
 
  
 
