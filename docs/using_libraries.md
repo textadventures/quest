@@ -12,11 +12,19 @@ Libraries allow you to reuse elements in multiple games. That might be [object t
 
 To see what these libraries add to your game, go to the bottom left of the Quest GUI, click on Filter, and select Show Library Elements. You will see that a shed load of stuff appears in the hierarchy on the left. Everything in grey has come from a library, and if you click on it, Quest will tell you what library in a yellow banner across the top. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
 
+![](Showlibraryelements.png "Showlibraryelements.png")
+
 
 Where to find libraries
 -----------------------
 
-You can find libraries at the [Libraries and Code Samples forum](http://textadventures.co.uk/forum/samples).
+You can find libraries:
+
+- [User submitted libraries](libriries.html)
+
+- [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
+
+- [Libraries and Code Samples forum](http://textadventures.co.uk/forum/samples).
 
 
 How to Add a Library to Your Game
@@ -37,6 +45,8 @@ Conflicts and The Order of Libraries
 In general, if there are several things with the same name in your game, later ones will overwrite former ones. This is good as it allows libraries to change the fundamentals of Quest. 
 
 The upshot of this is that your libraries should be after the standard libraries, and you may need to be careful exactly what order they come in.
+
+An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here(translating_quest.html)] if yoyu are).
 
 
 Your own libraries?
@@ -78,6 +88,8 @@ And ends
   </function>
 ```
 And make sure you get whole lines.
+
+In both the Quest full code view and Notepad++ you will see minus signs in boxes down the left side. If you click on these, the XML element will be collapsed into a single line. Now you just need to copy-and-paste that one line, and you can be sure you have the whole element.
 
 Personally, I like to move all turn scripts, functions, verbs, commands and types into libraries, and leave objects (rooms and items) in the main game. For one thing, objects are a lot easier to edit in the proper editor, while functions and commands not so much. An important point here is that you do not need to plan to use libraries from the start. In fact, there is not much point until you have a fair number of functions in your game.
 
