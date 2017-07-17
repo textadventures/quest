@@ -24,6 +24,33 @@ If you have been following the tutorial, you will already have some scripts in y
 The important point here is that this is just text, so it can be copy-and-pasted from one place to another just like any other text - even if you never type a single line yourself.
 
 
+
+### Create a new function (commands are similar)
+
+Right click in the left pane, and select add function. Give it the right name (same capitalisation, etc.). Bottom of the stuff on the right is Script. Click on the seventh icon (_Code view_) if off-line. If you are working on-line, click the "Code view" button at the bottom. You should now get a text box below. Just paste the code into this box.
+
+Click on _Code view_ again, and you should see the normal Quest view. If you see some red text, something has gone wrong. Check that you copy-and-pasted the whole code and nothing but the code (though it could even be a mistake in the code).
+
+You may need to set the return type or add parameters - see what the forum post says. To add a parameter, just click on the plus by the word "Parameters". Make sure you give the exact names specified and in the same order.
+
+
+### The start script
+
+Go to the "game" object, and the Script tab. At the top is the Script section. As before, click on the _Code view_ icon. You should now get a text box below. Just paste the code into this box. If there is already some text there, paste the new text underneath it.
+
+
+### Verb on an object
+
+Go to the specific object, and the Verbs tab. Click "Add", and type in the verb. Make sure the verb is selected, under the box, click on "Print a message" and select instead "Run a script". As before, click on the _Code view_ icon. You should now get a text box below. Just paste the code into this box.
+
+
+### Script as attribute
+
+Go to the specific object, and the Attributes tab. Click "Add" in the lower section, and type in the name of the attribute. Make sure the attribute is selected, under the box, click on "String" and select instead "Script". As before, click on the _Code view_ button. You should now get a text box below. Just paste the code into this box.
+
+_You cannot do this when editing on-line._
+
+
 The GUI vs Code
 ---------------
 
