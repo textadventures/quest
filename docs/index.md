@@ -67,6 +67,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Light and dark](handling_light_and_dark.html)
 -  [Multimedia](multimedia.html)
 -  [Showing a map](showing_a_map.html)
+-  [Adding clothing to your game](wearables.html)
 -  [Important attributes](important_attributes.html)
 -  [Using a switch script](multiple_choices___using_a_switch_script.html)
 
@@ -97,7 +98,7 @@ Commands are the heart of a text adventure.
 -  [Using Verbs](using_verbs.html)
 -  [Complex commands](complex_commands.html)
 -  [Pattern matching](pattern_matching.html)
--  [Commands With Unusual Scope](commands_with_unusual.html)
+-  [Commands With Unusual Scope](advanced_scope.html)
 
 
 
