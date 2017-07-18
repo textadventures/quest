@@ -13,7 +13,7 @@ Contents
 
 [Tutorial](#Tutorial)
 
-[More Features of Quest](#Otherfeatures)
+[Features of Quest](#Otherfeatures)
 
 [How to...](#Howto)
 
@@ -39,25 +39,16 @@ Contents
 <a name="Tutorial"></a>Tutorial
 -------------------------------
 
-New to Quest? The tutorial will guide you through creating your first game, and is an excellent way to understand what Quest is about.
+New to Quest? The [tutorial](tutorial/index.html) will guide you through creating your first game, and is an excellent way to understand what Quest is about.
 
-1.  [Introduction](tutorial/tutorial_introduction.html)
-1.  [Creating a simple game](tutorial/creating_a_simple_game.html)
-1.  [Interacting with objects](tutorial/interacting_with_objects.html)
-1.  [Anatomy of a Quest game](tutorial/anatomy_of_a_quest_game.html)
-1.  [Using scripts](tutorial/using_scripts.html)
-1.  [Custom attributes](tutorial/custom_attributes.html)
-1.  [Custom commands](tutorial/custom_commands.html)
-1.  [More things to do with objects](tutorial/more_things_to_do_with_objects.html)
-1.  [Using containers](tutorial/using_containers.html)
-1.  [Moving objects during the game](tutorial/moving_objects_during_the_game.html)
-1.  [Status attributes](tutorial/status_attributes.html)
-1.  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html)
-1.  [Releasing your game](tutorial/releasing_your_game.html)
+The Quest Tutorial starts here:
+
+[Introduction](tutorial/tutorial_introduction.html)
 
 
 
-<a name="Otherfeatures"></a>More Features of Quest
+
+<a name="Otherfeatures"></a>Features of Quest
 ---------------------------------------
 
 Quest has a whole range of features built in and ready to use. You probably won't be using them all, so just dip in as you need to.
@@ -69,7 +60,10 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Showing a map](showing_a_map.html)
 -  [Adding clothing to your game](wearables.html)
 -  [Important attributes](important_attributes.html)
+-  [Status attributes](tutorial/status_attributes.html) (link to the tutorial page)
 -  [Using a switch script](multiple_choices___using_a_switch_script.html)
+-  [Using containers](tutorial/using_containers.html) (link to the tutorial page)
+-  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html) (link to the tutorial page)
 
 
 
@@ -94,6 +88,7 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 
 Commands are the heart of a text adventure.
 
+-  [Custom attributes](tutorial/custom_attributes.html) (link to the tutorial page)
 -  [Commands for specific rooms](commands_for_room.html)
 -  [Using Verbs](using_verbs.html)
 -  [Complex commands](complex_commands.html)
@@ -109,6 +104,7 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 
 -  [Game-play](ui-game-play.html)
 -  [UI Style](ui-style.html)
+-  [Custom commands and status pane](custom_panes.html)
 -  [Further options with JavaScript](ui-javascript.html)
 
 
