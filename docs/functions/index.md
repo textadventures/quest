@@ -7,30 +7,31 @@ This is a list of most of the functions built in to Quest, grouped by type. For 
 
 
 
-[General Functions](#general)
+- [General Functions](#general)
 
-[Core.aslx Functions](#core)
+- [Core.aslx Functions](#core)
 
-[User Interface Functions](#ui)
+- [User Interface Functions](#ui)
 
-[List Functions](#list)
+- [List Functions](#list)
 
-[Scope Functions](#scope)
+- [Scope Functions](#scope)
 
-[Dictionary Functions](#dictionary)
+- [Dictionary Functions](#dictionary)
 
-[String Functions](#string)
+- [String Functions](#string)
 
-[Clothing Functions](#clothing)
+- [Clothing Functions](#clothing)
 
-[Randomising Functions](#random)
+- [Randomising Functions](#random)
 
-[Internal Functions](#internal)
-
-
+- [Internal Functions](#internal)
 
 
-<a name="general"></a>## General Functions
+
+
+<a name="general"></a>General Functions
+---------------------------------------
 
 * [Clone](clone.html)
 * [CloneObject](corelibrary/cloneobject.html)
@@ -79,7 +80,8 @@ This is a list of most of the functions built in to Quest, grouped by type. For 
 * [TypeOf](typeof.html)
 
 
-<a name="core"></a>## Core.aslx Functions
+<a name="core"></a>Core.aslx Functions
+--------------------------------------
 
 * [AddToInventory](corelibrary/addtoinventory.html)
 * [CanReachThrough](corelibrary/canreachthrough.html)
@@ -145,7 +147,7 @@ This is a list of most of the functions built in to Quest, grouped by type. For 
 
 
 <a name="ui"></a>User Interface Functions 
------------------------------------
+-----------------------------------------
 
 Functions that change what is displayed or how it is displayed or require the player to do something, rather than affecting the game world.
 
@@ -173,7 +175,8 @@ Functions that change what is displayed or how it is displayed or require the pl
 
 
 
-<a name="list"></a>List Functions 
+<a name="list"></a>List Functions
+---------------------------------
 
 Functions for manipulating lists. For a discussion on how to use lists, see [here](../using_lists.html).
 
