@@ -47,4 +47,4 @@ ShowMenu ("Select", ScopeInventory(), true) {
 ```
 
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](blocks_and_scripts.html).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](../blocks_and_scripts.html).
