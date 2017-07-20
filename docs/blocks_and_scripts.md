@@ -22,7 +22,7 @@ Probably the most common use is with the `if` script command. This example has t
 
 ![](tutorial/Addif4.png "tutorial/Addif4.png")
 
-Or
+In code it looks like this:
 
 ```
 if (IsSwitchedOn(TV)) {
@@ -58,7 +58,7 @@ The `on ready` script command is there specifically to ensure Quest waits for an
 Functions with scripts
 ----------------------
 
-So now we are considering the script for a function, a script within a script. This will look just like a block. In the GUI view, it will be indented to the right; in code view it is indented and further denoted by `{` and `}` at the start and end. There will be some sort of script command before it that controls it.
+So now we are considering the script for a function, a script within a script. This will look just like a block. In the GUI view, it will be indented to the right; in code view it is indented and further denoted by `{` and `}` at the start and end. There will be some sort of function before it that controls it.
 
 ```
 options = Split("Red;Green;Blue;Yellow", ";")
