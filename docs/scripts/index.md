@@ -21,7 +21,6 @@ title: Script commands
 -   [foreach](foreach.html)
 -   [get input](get_input.html)
 -   [if](if.html)
--   [insert](insert.html)
 -   [invoke](invoke.html)
 -   [list add](list_add.html)
 -   [list remove](list_remove.html)
