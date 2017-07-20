@@ -156,7 +156,6 @@ Functions that change what is displayed or how it is displayed or require the pl
 * [ClearScreen](corelibrary/clearscreen.html)
 * [GetCurrentFontFamily](corelibrary/getcurrentfontfamily.html)
 * [GetInput](getinput.html)
-* [Pause](corelibrary/pause.html)
 * [PrintCentered](corelibrary/printcentered.html)
 * [SetAlignment](corelibrary/setalignment.html)
 * [SetBackgroundColour](corelibrary/setbackgroundcolour.html)
