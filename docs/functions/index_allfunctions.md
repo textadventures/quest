@@ -216,7 +216,6 @@ title: Functions
 ## P
 
 *  [PadString](string/padstring.html)
-*  [Pause](corelibrary/pause.html)
 *  [PickOneChild](pickonechild.html)
 *  [PickOneChildOfType](pickonechildoftype.html)
 *  [PickOneExit](pickoneexit.html)
