@@ -51,7 +51,11 @@ ShowMenu ("Select", ScopeInventory(), true) {
 
     ShowMenu (string caption, stringdictionary or stringlist options, boolean allow ignore, script scr) 
 
-This is quite different to script commands such as `show menu` or indeed `for` or `if`, where the script is actually a block. An important consequence of this is that local variables will not be available inside the ShowMenu script (while they are inside the `show menu` block). You will not be able to use the `this` variable, nor will you be able to access parameters if this is inside a function, nor will you have access to `object` or `text` (or whatever) inside a command.
+This is quite different to script commands such as `show menu` or indeed `for` or `if`, which use a block (though they look identical). For `show menu`, Quest stops, waits for the player to make a choice, then runs the block, then continues with the rest of the code.
+
+`ShowMenu`  (like `Ask` and `SetTimeout`) is a function, so behind the scenes works very differently. Quest will display the options, but will then put the script to one side for when it is required, and will immediately continue with the rest of the code. Later, when the player makes a choice, Quest will run the script.
+
+An important consequence of this is that local variables will not be available inside the `ShowMenu` script (while they are inside the `show menu` block). You will not be able to use the `this` variable, nor will you be able to access parameters if this is inside a function, nor will you have access to `object` or `text` (or whatever) inside a command.
 
 Let us suppose this is inside a command, with the pattern "paint #object#". This will fail; Quest will complain: "Unknown object or variable 'object'."
 
