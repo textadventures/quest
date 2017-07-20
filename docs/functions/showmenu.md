@@ -47,31 +47,4 @@ ShowMenu ("Select", ScopeInventory(), true) {
 ```
 
 
-**Note:** The script you give to ShowMenu is in fact a parameter, and you could use it in this manner:
-
-    ShowMenu (string caption, stringdictionary or stringlist options, boolean allow ignore, script scr) 
-
-This is quite different to script commands such as `show menu` or indeed `for` or `if`, which use a block (though they look identical). For `show menu`, Quest stops, waits for the player to make a choice, then runs the block, then continues with the rest of the code.
-
-`ShowMenu`  (like `Ask` and `SetTimeout`) is a function, so behind the scenes works very differently. Quest will display the options, but will then put the script to one side for when it is required, and will immediately continue with the rest of the code. Later, when the player makes a choice, Quest will run the script.
-
-An important consequence of this is that local variables will not be available inside the `ShowMenu` script (while they are inside the `show menu` block). You will not be able to use the `this` variable, nor will you be able to access parameters if this is inside a function, nor will you have access to `object` or `text` (or whatever) inside a command.
-
-Let us suppose this is inside a command, with the pattern "paint #object#". This will fail; Quest will complain: "Unknown object or variable 'object'."
-
-    options = Split("Red;Green;Blue;Yellow", ";")
-    ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) {
-      msg("You paint " + GetDisplayAlias(object) + " " + LCase(result) + ".")
-      object.colour = result
-    }
-
-The way to get around this limitation is to set an attribute of the game object before the `ShowMenu`, and to access that inside the script.
-
-```
-options = Split("Red;Green;Blue;Yellow", ";")
-game.objecttopaint = object
-ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) {
-  msg ("You paint " + GetDisplayAlias(game.objecttopaint) + " " + LCase(result) + ".")
-  game.objecttopaint.colour = result
-}
-```
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](blocks_and_scripts.html).
