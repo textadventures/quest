@@ -13,11 +13,11 @@ Contents
 
 [Tutorial](#Tutorial)
 
+[Commands (and Verbs)](#Commands)
+
 [Features of Quest](#Otherfeatures)
 
 [How to...](#Howto)
-
-[Commands (and Verbs)](#Commands)
 
 [The User Experience](#TheUserExperience)
 
@@ -43,8 +43,21 @@ New to Quest? The [tutorial](tutorial/index.html) will guide you through creatin
 
 The Quest Tutorial starts here:
 
-[Introduction](tutorial/tutorial_introduction.html)
+-  [Introduction](tutorial/tutorial_introduction.html)
 
+
+
+<a name="Commands"></a>Commands (and Verbs)
+---------------------------------------------------
+
+Commands are the heart of a text adventure.
+
+-  [Commands](commands.html)
+-  [Commands for specific rooms](commands_for_room.html)
+-  [Using Verbs](using_verbs.html)
+-  [Complex commands](complex_commands.html)
+-  [Pattern matching](pattern_matching.html)
+-  [Commands With Unusual Scope](advanced_scope.html)
 
 
 
@@ -82,18 +95,6 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Transform one thing to another](convert.html)
 
 
-
-<a name="Commands"></a>Commands (and Verbs)
----------------------------------------------------
-
-Commands are the heart of a text adventure.
-
--  [Custom attributes](tutorial/custom_attributes.html) (link to the tutorial page)
--  [Commands for specific rooms](commands_for_room.html)
--  [Using Verbs](using_verbs.html)
--  [Complex commands](complex_commands.html)
--  [Pattern matching](pattern_matching.html)
--  [Commands With Unusual Scope](advanced_scope.html)
 
 
 
