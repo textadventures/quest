@@ -54,6 +54,12 @@ This example uses a cursor with the panes turned off to give a minimalist look.
 
 ![](ui-cursor.png "ui-cursor.png")
 
+You can use any HTML character as the cursor (or several), and there are some [pretty funky ones](https://www.w3schools.com/charsets/ref_utf_symbols.asp) in UTF-8, from a pointing hand to the yin yang symbol (though they may not be available in every font in every browser, so do test thoughly).
+
+To get these symbols in your game, you need to use the decimal value, with `&#` before it and `;` after. This will give a heart cursor, for example:
+
+> &amp;#9829;
+
 ### Location bar
 
 You can turn off the classic location bar style, and set your own colours. You can also hide the save button (for the web player; players can still save via the SAVE command).
