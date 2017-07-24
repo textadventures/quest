@@ -73,7 +73,9 @@ So how about a graphical representation of the player's hits, a horizontal bar t
 
 We are going to have two attributes here, the player's "hitpoints" and their maximum, "maxhitpoints". We will set up an HTML table again, but the second row will be the indicator; a `span` element with a `padding-right` attribute that will be adjusted as hits change.
 
-Here is the code:
+We need this to happen when the game starts and when reloaded, so this needs to go in the "inituserinterface" script. However, we only want to set the hitpoints once, so that needs to go into the "start" script. 
+
+Here is the code for the "inituserinterface" script:
 
 ```
 s = "<table width=\"100%\"><tr>"
@@ -81,14 +83,27 @@ s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"
 s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"hits-span\">---</span></td>"
 s = s + " </tr>"
 s = s + " <tr>"
-s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;\">"
+s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;text-align:left;\">"
 s = s + "   <span id=\"hits-indicator\" style=\"background-color:black;padding-right:200px;\"></span>"
 s = s + "   </td>"
 s = s + " </tr>"
 s = s + "</table>"
 
 JS.setCustomStatus (s)
+if (HasScript(player, "changedhitpoints")) {
+  do (player, "changedhitpoints")
+}
+```
 
+The first ten lines set up the HTML (each line is adding a bit more to the string, `s`). There are two `span` elements, called "hits-span" and "hits-indicator", and these are what will get updated.
+
+The next line dumps the HTML in the custom status pane.
+
+The last three rooms update the values - but only if player.changedhitpoints has been set, i.e., when reloading.
+
+And then in the "start script":
+
+```
 player.changedhitpoints => {
   JS.eval ("$('#hits-span').html('" + game.pov.hitpoints + "/" + game.pov.maxhitpoints + "');")
   JS.eval ("$('#hits-indicator').css('padding-right', '" + (200 * game.pov.hitpoints / game.pov.maxhitpoints) + "px');")
@@ -98,10 +113,6 @@ player.maxhitpoints = 70
 player.hitpoints = 70
 ```
 
-The first ten lines set up the HTML (each line is adding a bit more to the string, `s`). There are two `span` elements, called "hits-span" and "hits-indicator", and these are what will get updated.
-
-The next line dumps the HTML in the custom status pane.
-
-The next four lines add a change script to the "hitpoints" attribute of the player. This will fire whenever the hits change (you might want to add a bit that makes the player die if they dip below zero). The "hits-span" part just changes the text, but the "hits-indicator" sets a new value for the right padding of the `span`, making it wider or narrower as required.
+The first four lines here add a change script to the "hitpoints" attribute of the player. This will fire whenever the hits change (you might want to add a bit that makes the player die if they dip below zero). The "hits-span" part just changes the text, but the "hits-indicator" sets a new value for the right padding of the `span`, making it wider or narrower as required.
 
 The last two lines set the hit points and the maximum. Note that the hit points must be set last so that when they change, the custom status pane will be updated correctly.
