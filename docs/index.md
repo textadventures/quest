@@ -105,7 +105,8 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
 
 -  [Game-play](ui-game-play.html)
--  [UI Style](ui-style.html)
+-  [UI style](ui-style.html)
+-  [Display verbs](display_verbs.html)
 -  [Custom commands and status pane](custom_panes.html)
 -  [Further options with JavaScript](ui-javascript.html)
 
