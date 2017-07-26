@@ -83,6 +83,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 
 Some of these will involve some simple coding. _It's not that bad!_ We will walk you through and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the first guide to learn how to copy-and-paste code.
 
+-  [Introduction to coding](quest_code.html)
 -  [Copy-and-paste Code](copy_and_paste_code.html)
 -  [Change the player object](changing_the_player_object.html)
 -  [Light and dark](handling_light_and_dark.html)
@@ -93,7 +94,9 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Keep a journal](keeping_a_journal.html)
 -  [Keep score](keeping_score.html)
 -  [Implement a transit system](transit_system.html)
--  [Transform one thing to another](convert.html)
+-  [Transform one (or more) thing to another](convert.html)
+-  [Tracking time](time.html)
+-  [Setting up a shop](shop.md)
 
 
 
