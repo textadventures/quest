@@ -1,5 +1,0 @@
-ChangeLog
-
-../Menus
-../Quest
-../Editor
