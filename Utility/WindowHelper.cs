@@ -14,6 +14,8 @@ namespace TextAdventures.Utility
         private string m_leftKey;
         private string m_heightKey;
         private string m_widthKey;
+        // Added by SoonGames
+        private string m_maximizedKey;
 
         public WindowHelper(System.Windows.Forms.Form form, string product, string keyPrefix)
         {
@@ -24,6 +26,8 @@ namespace TextAdventures.Utility
             m_leftKey = keyPrefix + "Left";
             m_heightKey = keyPrefix + "Height";
             m_widthKey = keyPrefix + "Width";
+            // Added by SoonGames
+            m_maximizedKey = keyPrefix + "Maximized";
 
             form.Load += new EventHandler(form_Load);
         }
@@ -34,11 +38,15 @@ namespace TextAdventures.Utility
             object left = m_key.GetValue(m_leftKey, null);
             object height = m_key.GetValue(m_heightKey, null);
             object width = m_key.GetValue(m_widthKey, null);
+            // Added by SoonGames
+            object maximized = m_key.GetValue(m_maximizedKey, null);
 
             if (top != null) m_form.Top = (int)top;
             if (left != null) m_form.Left = (int)left;
             if (height != null) m_form.Height = (int)height;
             if (width != null) m_form.Width = (int)width;
+            // Added by SoonGames
+            if (maximized != null && (int)maximized == 1) m_form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
             m_form.ResizeEnd += SavePosition;
             m_form.Move += SavePosition;
@@ -46,11 +54,19 @@ namespace TextAdventures.Utility
 
         void SavePosition(object sender, EventArgs e)
         {
-            if (m_form.WindowState != System.Windows.Forms.FormWindowState.Normal) return;
-            m_key.SetValue(m_topKey, m_form.Top);
-            m_key.SetValue(m_leftKey, m_form.Left);
-            m_key.SetValue(m_heightKey, m_form.Height);
-            m_key.SetValue(m_widthKey, m_form.Width);
+            // Chanched by SoonGames
+            if (m_form.WindowState == System.Windows.Forms.FormWindowState.Normal) {
+                m_key.SetValue(m_topKey, m_form.Top);
+                m_key.SetValue(m_leftKey, m_form.Left);
+                m_key.SetValue(m_heightKey, m_form.Height);
+                m_key.SetValue(m_widthKey, m_form.Width);
+                m_key.SetValue(m_maximizedKey, 0);
+            }
+            else if (m_form.WindowState == System.Windows.Forms.FormWindowState.Maximized)
+            {
+                m_key.SetValue(m_maximizedKey, 1);
+            }
+            else return;
         }
     }
 
