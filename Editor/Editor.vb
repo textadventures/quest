@@ -29,6 +29,17 @@ Public Class Editor
     Public Event InitialiseFinished(success As Boolean)
 
     Public Sub New()
+        ' ----------------------------------------------------------------------------------------------------
+        ' Added by SoonGames
+        ' ----------------------------------------------------------------------------------------------------
+        Try
+            Dim Culture As New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+            Threading.Thread.CurrentThread.CurrentUICulture = Culture
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+        ' ----------------------------------------------------------------------------------------------------
+
         ' This call is required by the designer.
         InitializeComponent()
 
@@ -107,6 +118,7 @@ Public Class Editor
                         End If
 
                         ctlLoading.Clear()
+
                     End Sub)
     End Sub
 
@@ -1111,6 +1123,13 @@ Public Class Editor
         ctlTree.SetMenuVisible("adddynamictemplate", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
         ctlTree.SetMenuVisible("addobjecttype", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
         ctlTree.SetMenuVisible("addjavascript", Not SimpleMode)
+        ' Added by SoonGames
+        ctlTree.SetMenuSeparatorVisible("separator1", True)
+        ctlTree.SetMenuSeparatorVisible("separator2", True)
+        ctlTree.SetMenuSeparatorVisible("separator3", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuSeparatorVisible("separator4", ((EditorStyle = EditorStyle.GameBook) Or (EditorStyle = EditorStyle.TextAdventure)) And Not SimpleMode)
+        ctlTree.SetMenuSeparatorVisible("separator5", ((EditorStyle = EditorStyle.GameBook) Or (EditorStyle = EditorStyle.TextAdventure)) And Not SimpleMode)
+        ' ----------------------------------------------------------------------------------------------------
     End Sub
 
     Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus

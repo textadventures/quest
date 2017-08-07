@@ -12,7 +12,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("Editor")>
-<Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")>
+' Changed by SoonGames
+<Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE. Icons by https://de.icons8.com/ is licensed under CC BY-ND 3.0")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

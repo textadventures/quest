@@ -117,58 +117,569 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ctlSaveDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="&gt;&gt;picGamebook.Name" xml:space="preserve">
+    <value>picGamebook</value>
+  </data>
+  <data name="&gt;&gt;lstTemplate.Name" xml:space="preserve">
+    <value>lstTemplate</value>
+  </data>
+  <data name="&gt;&gt;Label3.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Label1.ZOrder" xml:space="preserve">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;txtGameName.Name" xml:space="preserve">
+    <value>txtGameName</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventureBorder.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="picTextAdventure.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAHIAAAAsCAIAAAA2O3utAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRy
-        oQAAA6BJREFUaEPtmjty6zAMRbUuLUh11pFKa8giVKRK7fLNpHKTMpM+tUKIIAmQlARYn2eP4Ulh0yBI
-        Hl5eOiM0o70OINAckNNSjob1EBFErEPXNG1/JYNASzccMup9Jf332bx+0ZWPZYtyxkSt175NYNkHZc5H
-        C98I8furzXZlzEzACXRS7DNBHbdqcx3rOE5e0Lbk9ANi//KO4CKCNZC3qNBKMHYOFgM713U+JTMdGJmO
-        4zKmbCGybMEpSUeB8Ov7pXn5gL+3H/gMar20vsXrjug3BQdJ8u6//SvpGA5qeWXBzJOlBv16nrC6Baxl
-        MLdqSEs8nO6KGxXRxXfka2wrWwq/wZCZUQJEdNLh7aN9/wWIL5f+e9qg2BL5evTTZmBw4IvBErVOEkkq
-        IqCCTuexsuCw4CRCL3eOnu0fORJ+F9mrG8qWSFU6SgTnezqgjhr1Vt7iwKGug7oRJd3O87FS5ScdhV0r
-        PSSc+4w/LqK6begVmS/NbZ4eKyiUnjkv541YM3EBkKTm4hdYYQJE+YHwzIIrzSQ9di5b/PFM52tllFkT
-        yM511C/4w6f/kQmWyqV9uwmgFthVEq+Nrku3F25ffmXxo7xkAiQyepD0ylKMEgBlV5b/yC4x9N+1K8sl
-        /Omgr6Ofjp/9l8UONH7wDrvh9XRY2RUURbrHG7oLT4d1gwQVXQ2rApY81LDKWSkiDasCljzUsMpZKSIN
-        qwKWPNSwylkpIg2rApY81LDKWSkiDasCljzUsMpZKSINqwKWPNSwylkpIg2rApY81LDKWSkiDasCljxU
-        hnXu4Vx1HFXw8kzLVDsml0PSR/5XrOzZeW3uGyGu5tfzEvYgWIeOl7aRDKrlyYNXly1PVV3uan4hJH0Y
-        U6t/0lmpEiTLK56tkpKeWE0UC7loNloigU/G85KhSq0RVC6RsOpMylIimElINisWPS1xj4oJTMsvajJ9
-        Q1EJMNuyKDR88pupqZo8zAS/jDGkdiOVEpHCDl7SIOaxU+Cct177jhS7hsUwVtPCypb40L5UPdUr6ols
-        Xz1VDPAcyUzKUqJcl3diAn6rFtQqxerWxyvkXNpK4RBfthZrBrFyPO4E67q3yk2AGQbsVqWkR2IC2bmm
-        JhBugVRKdI8mIPslIL+yWNFlPAasiNW7QnKLypUVjzq/D1H+9Daj9bCYMs+/k3Oup5H9bl3Pc1YEuanO
-        GvKWcR4Ka8X1b1nzCX0eCusJPHYawrDuBJKnMayHYP0DYWrAigrnbPsAAAAASUVORK5CYII=
-</value>
+  <data name="$this.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>1594, 481</value>
+  </data>
+  <data name="picGamebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 110</value>
+  </data>
+  <data name="optTextAdventure.Text" xml:space="preserve">
+    <value>&amp;Text adventure</value>
+  </data>
+  <data name="Label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>27, 281</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;optGamebook.Name" xml:space="preserve">
+    <value>optGamebook</value>
   </data>
   <data name="picGamebook.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
+        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
+        RK5CYII=
 </value>
   </data>
+  <data name="&gt;&gt;cmdCancel.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="picTextAdventure.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAHIAAAAsCAIAAAA2O3utAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vgAADr4B6kKxwAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAADCElEQVRoQ+2Z
+        MW7rMAyGcy4fyHPO0cln6CE8ZOqc8QGdsnQsunfOI01SokQ5sZvSTVp+KBrpF0WRf1SnQHbnwIGw1YWw
+        1YVk69jvdt1w4hmCSj/y5Dfz73X39KY7bygrUbf1NHTZ2GLyy7nRxPe3zmwvHwJwQScv/5KpG9jKz4Ku
+        U3/9aDFBGkTIohoyjeAEvU/4zvU9RRXvXA5NOXM2ibQKsuIU5HQ47vYv+PP8gXO09diRQgYpo3OwVXD7
+        5/BUrBL2Iwsrz2ZhfVwWD+FlzlYbrOBgeJEVvR1OZTWN1DJrVjFcPgVRlo3PL93hE5X9cXgvleQvWQ8n
+        Ho7FUgpeclurgqGmYgIFqjKriotgAcQENyxBxXaJS4reiPSjVTh0+SkwJS8Ick05VSkQzBdTrmexndje
+        VshVB6ugavsE7jDOMFYhVp2y1tbKxO+xtaoPh3kdhNIXE6xySe9lTNrekOFV1nmzVWS88BREmcgeXVBg
+        sH/lE+GRWr4HHPwVW6lSQnVE876quBGMTiQuNpwj0/E5m7atVCaWn4I0PrLUnzkr4tS1jyzgo8cpuJ+P
+        srYG8ii4gT9nK180hx8+YCJuqwthqwthqwthqwthqwthqwthqwthqwthqwthqwthqwthqwthqwthqwth
+        qwthqwvLbFXfYVxnVfBlbKpvTO7Jj9p6qr42M9xo4tX8bihbx362hrB1JcVtpe81q+8pEdUexSASVysS
+        XGcDPYEBsk913krVsURhzUqsgtsb+Tej8RCY2i9rSc2orng4pyjdAovcuI5pphIpKyTAQN4xTpOWUnCV
+        f0Pmnq2noVcFScWqcm7MKvh7QrrOyApibW2nSlKpwGtBVQlxV7ZOFZflqGbyAkzmbAUJWsJJRgsUeKOt
+        aitilXuxFTtv3bJcsqqdh/OKWkFUj+Jw1fZ8qoYCA6mU09ngKv+GKFuX/SeAPRBif63kYGxd5cRpYool
+        RRI1UyXq5Cp4trY6/2bMPVvvFTDqB1xazUPZOl0+df3vl0e7rQ9C2OpC2OrA+fwfYWrAigZZ7wkAAAAA
+        SUVORK5CYII=
+</value>
+  </data>
+  <data name="&gt;&gt;cmdBrowse.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="optGamebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 22</value>
+  </data>
+  <data name="&gt;&gt;optGamebook.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdOK.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;txtFilename.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="txtFilename.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="optGamebook.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cmdBrowse.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>617, 385</value>
+  </data>
+  <data name="Label3.Text" xml:space="preserve">
+    <value>File name:</value>
+  </data>
+  <data name="&gt;&gt;optTextAdventure.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtFilename.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 278</value>
+  </data>
+  <data name="Label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>106, 171</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Create New Game</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventureBorder.Name" xml:space="preserve">
+    <value>picTextAdventureBorder</value>
+  </data>
+  <data name="&gt;&gt;cmdBrowse.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Label2.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="picTextAdventure.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 43</value>
+  </data>
+  <data name="picTextAdventureBorder.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="picTextAdventure.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;cmdCancel.Name" xml:space="preserve">
+    <value>cmdCancel</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>8, 16</value>
+  </data>
+  <data name="cmdBrowse.Text" xml:space="preserve">
+    <value>&amp;Browse...</value>
+  </data>
+  <data name="Label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cmdCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;optTextAdventure.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventure.Name" xml:space="preserve">
+    <value>picTextAdventure</value>
+  </data>
+  <data name="cmdBrowse.Location" type="System.Drawing.Point, System.Drawing">
+    <value>501, 275</value>
+  </data>
+  <data name="cmdOK.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;optGamebook.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;Label1.Name" xml:space="preserve">
+    <value>Label1</value>
+  </data>
+  <data name="&gt;&gt;Label4.Name" xml:space="preserve">
+    <value>Label4</value>
+  </data>
+  <data name="txtFilename.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 22</value>
+  </data>
+  <data name="txtGameName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>492, 22</value>
+  </data>
+  <data name="&gt;&gt;optGamebook.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;optTextAdventure.Name" xml:space="preserve">
+    <value>optTextAdventure</value>
+  </data>
+  <data name="&gt;&gt;lstTemplate.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Label4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventure.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="optGamebook.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;picGamebookBorder.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="picTextAdventureBorder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 42</value>
+  </data>
+  <data name="lstTemplate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 192</value>
+  </data>
+  <data name="optTextAdventure.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;txtGameName.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="optTextAdventure.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cmdCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;Label3.Name" xml:space="preserve">
+    <value>Label3</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventure.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cmdCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;cmdCancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cmdOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>393, 342</value>
+  </data>
+  <data name="cmdCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;cmdOK.Name" xml:space="preserve">
+    <value>cmdOK</value>
+  </data>
+  <data name="txtGameName.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>NewGameWindow</value>
+  </data>
+  <data name="Label1.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="txtGameName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;Label2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventureBorder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Label2.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="txtFilename.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;Label2.Name" xml:space="preserve">
+    <value>Label2</value>
+  </data>
+  <data name="cmdOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 28</value>
+  </data>
+  <data name="picGamebookBorder.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>527, 223</value>
+  </data>
+  <data name="cmdBrowse.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 28</value>
+  </data>
+  <data name="&gt;&gt;cmdOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtGameName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="txtGameName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 240</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;cmdOK.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="picGamebookBorder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>360, 43</value>
+  </data>
+  <data name="cmdBrowse.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;Label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lstTemplate.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="cmdOK.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="picGamebook.Location" type="System.Drawing.Point, System.Drawing">
+    <value>360, 42</value>
+  </data>
+  <data name="&gt;&gt;picGamebookBorder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Label1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cmdCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>501, 342</value>
+  </data>
+  <data name="optGamebook.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="optGamebook.Location" type="System.Drawing.Point, System.Drawing">
+    <value>360, 14</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventure.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmdBrowse.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="picTextAdventure.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>CenterImage</value>
+  </data>
+  <data name="&gt;&gt;lstTemplate.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cmdBrowse.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;optTextAdventure.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ctlSaveDialog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SaveFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="picTextAdventureBorder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 110</value>
+  </data>
+  <data name="picGamebook.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="optGamebook.Text" xml:space="preserve">
+    <value>&amp;Gamebook</value>
+  </data>
+  <data name="&gt;&gt;picGamebook.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;Label4.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="Label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>27, 243</value>
+  </data>
+  <data name="&gt;&gt;picGamebook.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtFilename.Name" xml:space="preserve">
+    <value>txtFilename</value>
+  </data>
+  <data name="&gt;&gt;cmdBrowse.Name" xml:space="preserve">
+    <value>cmdBrowse</value>
+  </data>
+  <data name="picGamebookBorder.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;picGamebookBorder.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>76, 17</value>
+  </data>
+  <data name="&gt;&gt;txtFilename.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Label1.Text" xml:space="preserve">
+    <value>&amp;Language:</value>
+  </data>
+  <data name="&gt;&gt;Label4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="picGamebook.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="Label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>20, 16</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtGameName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtGameName.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;txtFilename.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="optTextAdventure.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="picGamebookBorder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 110</value>
+  </data>
+  <data name="&gt;&gt;picGamebookBorder.Name" xml:space="preserve">
+    <value>picGamebookBorder</value>
+  </data>
+  <data name="optGamebook.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;Label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="&gt;&gt;picTextAdventureBorder.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Label3.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;cmdCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmdOK.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="picTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 109</value>
+  </data>
+  <data name="picTextAdventureBorder.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="Label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="Label4.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="lstTemplate.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="optTextAdventure.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 14</value>
+  </data>
+  <data name="Label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 17</value>
+  </data>
+  <data name="picGamebook.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>CenterImage</value>
+  </data>
+  <data name="lstTemplate.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="cmdOK.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="cmdOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="Label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>81, 17</value>
+  </data>
+  <data name="&gt;&gt;ctlSaveDialog.Name" xml:space="preserve">
+    <value>ctlSaveDialog</value>
+  </data>
+  <data name="&gt;&gt;Label4.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Label2.Text" xml:space="preserve">
+    <value>&amp;Name:</value>
+  </data>
+  <data name="cmdOK.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="Label4.Text" xml:space="preserve">
+    <value>Game type:</value>
+  </data>
+  <data name="Label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="cmdCancel.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="Label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>73, 17</value>
+  </data>
+  <data name="cmdCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 28</value>
+  </data>
+  <data name="txtFilename.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;picGamebook.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lstTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 24</value>
+  </data>
+  <data name="Label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="optTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
+    <value>127, 22</value>
+  </data>
+  <data name="picTextAdventure.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="ctlSaveDialog.Filter" xml:space="preserve">
+    <value>Quest Games|*.aslx</value>
+  </data>
+  <data name="cmdBrowse.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="Label3.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="optTextAdventure.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lstTemplate.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>de</value>
+  </metadata>
+  <metadata name="ctlSaveDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

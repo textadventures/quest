@@ -457,4 +457,5 @@ Public Class MainToolbar
         ToolStripSeparator8.Visible = Not CodeView
         ToolStripSeparator2.Visible = Not CodeView
     End Sub
+
 End Class
