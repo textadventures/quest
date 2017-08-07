@@ -22,7 +22,7 @@ Partial Class Main
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
@@ -36,62 +36,51 @@ Partial Class Main
         'dlgOpenFile
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
+        resources.ApplyResources(Me.dlgOpenFile, "dlgOpenFile")
         '
         'ctlPlayer
         '
-        Me.ctlPlayer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlPlayer.Location = New System.Drawing.Point(0, 24)
+        resources.ApplyResources(Me.ctlPlayer, "ctlPlayer")
         Me.ctlPlayer.Name = "ctlPlayer"
+        Me.ctlPlayer.PlaySounds = True
         Me.ctlPlayer.PostLaunchAction = Nothing
         Me.ctlPlayer.PreLaunchAction = Nothing
         Me.ctlPlayer.RecordWalkthrough = Nothing
-        Me.ctlPlayer.Size = New System.Drawing.Size(734, 464)
-        Me.ctlPlayer.TabIndex = 0
         Me.ctlPlayer.UseGameColours = True
         Me.ctlPlayer.UseGameFont = True
+        Me.ctlPlayer.UseSAPI = False
         '
         'ctlEditor
         '
-        Me.ctlEditor.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlEditor.Location = New System.Drawing.Point(0, 24)
+        resources.ApplyResources(Me.ctlEditor, "ctlEditor")
         Me.ctlEditor.Name = "ctlEditor"
         Me.ctlEditor.SimpleMode = False
-        Me.ctlEditor.Size = New System.Drawing.Size(734, 464)
-        Me.ctlEditor.TabIndex = 3
-        Me.ctlEditor.Visible = False
         '
         'ctlMenu
         '
-        Me.ctlMenu.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlMenu.Location = New System.Drawing.Point(0, 0)
+        resources.ApplyResources(Me.ctlMenu, "ctlMenu")
+        Me.ctlMenu.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlMenu.ForeColor = System.Drawing.SystemColors.ControlText
         Me.ctlMenu.Mode = TextAdventures.Quest.Controls.Menu.MenuMode.GameBrowser
         Me.ctlMenu.Name = "ctlMenu"
-        Me.ctlMenu.Size = New System.Drawing.Size(734, 24)
-        Me.ctlMenu.TabIndex = 5
         '
         'ctlLauncherHost
         '
-        Me.ctlLauncherHost.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlLauncherHost.Location = New System.Drawing.Point(0, 24)
+        resources.ApplyResources(Me.ctlLauncherHost, "ctlLauncherHost")
+        Me.ctlLauncherHost.BackColor = System.Drawing.Color.GhostWhite
         Me.ctlLauncherHost.Name = "ctlLauncherHost"
-        Me.ctlLauncherHost.Size = New System.Drawing.Size(734, 464)
-        Me.ctlLauncherHost.TabIndex = 6
-        Me.ctlLauncherHost.Text = "ElementHost1"
         Me.ctlLauncherHost.Child = Me.ctlLauncher
         '
         'Main
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(734, 488)
         Me.Controls.Add(Me.ctlLauncherHost)
         Me.Controls.Add(Me.ctlEditor)
         Me.Controls.Add(Me.ctlPlayer)
         Me.Controls.Add(Me.ctlMenu)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.Name = "Main"
-        Me.Text = "Quest"
         Me.ResumeLayout(False)
 
     End Sub

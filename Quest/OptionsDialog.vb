@@ -135,7 +135,7 @@ Public Class OptionsDialog
         End If
 
         If chkUseDefaultFont.Checked Then
-            lblFontSample.Font = New Font("Arial", 9, fontStyle.Regular)
+            lblFontSample.Font = New Font("Arial", 9, FontStyle.Regular)
         Else
             lblFontSample.Font = New Font(fontFamily, fontSize, fontStyle)
         End If

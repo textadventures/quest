@@ -9,6 +9,7 @@ Public Class Main
     Private m_editorSimpleMode As Boolean
 
     Public Sub New()
+
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
