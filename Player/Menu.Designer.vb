@@ -32,18 +32,21 @@ Partial Class Menu
         'lblCaption
         '
         Me.lblCaption.AutoSize = True
-        Me.lblCaption.Location = New System.Drawing.Point(9, 9)
+        Me.lblCaption.Location = New System.Drawing.Point(13, 9)
+        Me.lblCaption.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblCaption.Name = "lblCaption"
-        Me.lblCaption.Size = New System.Drawing.Size(28, 13)
+        Me.lblCaption.Size = New System.Drawing.Size(35, 17)
         Me.lblCaption.TabIndex = 0
         Me.lblCaption.Text = "Text"
         '
         'cmdSelect
         '
         Me.cmdSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSelect.Location = New System.Drawing.Point(266, 253)
+        Me.cmdSelect.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdSelect.Location = New System.Drawing.Point(358, 310)
+        Me.cmdSelect.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdSelect.Name = "cmdSelect"
-        Me.cmdSelect.Size = New System.Drawing.Size(75, 23)
+        Me.cmdSelect.Size = New System.Drawing.Size(100, 28)
         Me.cmdSelect.TabIndex = 1
         Me.cmdSelect.Text = "Select"
         Me.cmdSelect.UseVisualStyleBackColor = True
@@ -52,9 +55,11 @@ Partial Class Menu
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(185, 253)
+        Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdCancel.Location = New System.Drawing.Point(250, 310)
+        Me.cmdCancel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
+        Me.cmdCancel.Size = New System.Drawing.Size(100, 28)
         Me.cmdCancel.TabIndex = 2
         Me.cmdCancel.Text = "Cancel"
         Me.cmdCancel.UseVisualStyleBackColor = True
@@ -66,10 +71,11 @@ Partial Class Menu
         Me.lstOptions.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lstOptions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lstOptions.HideSelection = False
-        Me.lstOptions.Location = New System.Drawing.Point(12, 30)
+        Me.lstOptions.Location = New System.Drawing.Point(13, 30)
+        Me.lstOptions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.lstOptions.MultiSelect = False
         Me.lstOptions.Name = "lstOptions"
-        Me.lstOptions.Size = New System.Drawing.Size(329, 216)
+        Me.lstOptions.Size = New System.Drawing.Size(445, 270)
         Me.lstOptions.TabIndex = 0
         Me.lstOptions.UseCompatibleStateImageBehavior = False
         Me.lstOptions.View = System.Windows.Forms.View.Details
@@ -81,17 +87,19 @@ Partial Class Menu
         'Menu
         '
         Me.AcceptButton = Me.cmdSelect
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.Color.GhostWhite
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(353, 285)
+        Me.ClientSize = New System.Drawing.Size(471, 351)
         Me.Controls.Add(Me.lstOptions)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdSelect)
         Me.Controls.Add(Me.lblCaption)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(300, 300)
+        Me.MinimumSize = New System.Drawing.Size(394, 358)
         Me.Name = "Menu"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

@@ -33,56 +33,47 @@ Partial Class Toolbar
         '
         'ctlToolStrip
         '
+        resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
+        Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
+        Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butDebugger, Me.butLog, Me.butHTML})
-        Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        Me.ctlToolStrip.Size = New System.Drawing.Size(601, 25)
-        Me.ctlToolStrip.TabIndex = 0
-        Me.ctlToolStrip.Text = "ToolStrip1"
         '
         'butStop
         '
-        Me.butStop.Image = CType(resources.GetObject("butStop.Image"), System.Drawing.Image)
-        Me.butStop.ImageTransparentColor = System.Drawing.Color.Magenta
+        resources.ApplyResources(Me.butStop, "butStop")
+        Me.butStop.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Stop_32
         Me.butStop.Name = "butStop"
-        Me.butStop.Size = New System.Drawing.Size(85, 22)
         Me.butStop.Tag = "stop"
-        Me.butStop.Text = "Stop Game"
         '
         'butDebugger
         '
-        Me.butDebugger.Image = CType(resources.GetObject("butDebugger.Image"), System.Drawing.Image)
-        Me.butDebugger.ImageTransparentColor = System.Drawing.Color.Magenta
+        resources.ApplyResources(Me.butDebugger, "butDebugger")
+        Me.butDebugger.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Fehler_32
         Me.butDebugger.Name = "butDebugger"
-        Me.butDebugger.Size = New System.Drawing.Size(79, 22)
         Me.butDebugger.Tag = "debugger"
-        Me.butDebugger.Text = "Debugger"
         '
         'butLog
         '
-        Me.butLog.Image = CType(resources.GetObject("butLog.Image"), System.Drawing.Image)
-        Me.butLog.ImageTransparentColor = System.Drawing.Color.Magenta
+        resources.ApplyResources(Me.butLog, "butLog")
+        Me.butLog.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Test_absolviert_32
         Me.butLog.Name = "butLog"
-        Me.butLog.Size = New System.Drawing.Size(47, 22)
         Me.butLog.Tag = "log"
-        Me.butLog.Text = "Log"
         '
         'butHTML
         '
-        Me.butHTML.Image = CType(resources.GetObject("butHTML.Image"), System.Drawing.Image)
-        Me.butHTML.ImageTransparentColor = System.Drawing.Color.Magenta
+        resources.ApplyResources(Me.butHTML, "butHTML")
+        Me.butHTML.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Detailansicht_32
         Me.butHTML.Name = "butHTML"
-        Me.butHTML.Size = New System.Drawing.Size(92, 22)
         Me.butHTML.Tag = "htmldevtools"
-        Me.butHTML.Text = "HTML Tools"
         '
         'Toolbar
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.Color.GhostWhite
         Me.Controls.Add(Me.ctlToolStrip)
         Me.Name = "Toolbar"
-        Me.Size = New System.Drawing.Size(601, 33)
         Me.ctlToolStrip.ResumeLayout(False)
         Me.ctlToolStrip.PerformLayout()
         Me.ResumeLayout(False)

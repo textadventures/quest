@@ -201,6 +201,9 @@
     <EmbeddedResource Include="PlayerHTML.resx">
       <DependentUpon>PlayerHTML.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Toolbar.de.resx">
+      <DependentUpon>Toolbar.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Toolbar.resx">
       <DependentUpon>Toolbar.vb</DependentUpon>
     </EmbeddedResource>
@@ -307,6 +310,10 @@
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\icons8-Detailansicht-32.png" />
+    <None Include="Resources\icons8-Test absolviert-32.png" />
+    <None Include="Resources\icons8-Fehler-32.png" />
+    <None Include="Resources\icons8-Stop-32.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
