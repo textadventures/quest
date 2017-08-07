@@ -116,7 +116,7 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 
 Adding people that the player can interactive with can help bring your game to life, but is hard to do well. These pages will get you started.
 
--  [Following the player](follow.html)
+-  [Following the player](follower.html)
 -  [Introduction to Conversations](conversations.html)
 -  [Ask/Tell](ask_about.html)
   

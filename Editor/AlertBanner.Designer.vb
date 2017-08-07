@@ -22,40 +22,32 @@ Partial Class AlertBanner
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AlertBanner))
         Me.lblAlertText = New System.Windows.Forms.Label()
         Me.cmdAction = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lblAlertText
         '
-        Me.lblAlertText.AutoSize = True
+        resources.ApplyResources(Me.lblAlertText, "lblAlertText")
         Me.lblAlertText.ForeColor = System.Drawing.Color.Black
-        Me.lblAlertText.Location = New System.Drawing.Point(3, 5)
         Me.lblAlertText.Name = "lblAlertText"
-        Me.lblAlertText.Size = New System.Drawing.Size(28, 13)
-        Me.lblAlertText.TabIndex = 0
-        Me.lblAlertText.Text = "Text"
         '
         'cmdAction
         '
-        Me.cmdAction.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        resources.ApplyResources(Me.cmdAction, "cmdAction")
         Me.cmdAction.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdAction.Location = New System.Drawing.Point(231, 0)
         Me.cmdAction.Name = "cmdAction"
-        Me.cmdAction.Size = New System.Drawing.Size(75, 23)
-        Me.cmdAction.TabIndex = 1
-        Me.cmdAction.Text = "Action"
-        Me.cmdAction.UseVisualStyleBackColor = True
+        Me.cmdAction.UseVisualStyleBackColor = False
         '
         'AlertBanner
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.Controls.Add(Me.cmdAction)
         Me.Controls.Add(Me.lblAlertText)
         Me.Name = "AlertBanner"
-        Me.Size = New System.Drawing.Size(309, 23)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

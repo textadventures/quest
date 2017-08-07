@@ -6,8 +6,7 @@ title: Path library
 Created by jaynabonne
 ---------------------
 
-[Download](http://textadventures.co.uk/attachment/610)
-[Discussion](http://textadventures.co.uk/forum/samples/topic/3214/path-library)
+[Download](http://textadventures.co.uk/attachment/610) | [Discussion](http://textadventures.co.uk/forum/samples/topic/3214/path-library)
 
 Have you ever wanted to know how to get from point A to point B in a game? Have you ever wondered how far away something is, or which direction to go to find it?
 

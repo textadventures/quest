@@ -85,14 +85,9 @@ Helpsheets for beginner
 
 
 
-Libraries
+See also
 ---------
 
-User contibuted libraries that expand the capabilities of Quest.
+More guides can be found here:
 
--   [Dynamic Menus for Conversations](../libraries/dynamic_menus_for_conversations.html)
--   [Elevator](../libraries/elevator.html) (or any simple transport system)
--   [Clock/Time](../libraries/clock_library.html)
--   [Path finding](../libraries/path_library.html)
--   [Shopping](../libraries/shopping_library.html)
-
+[https://github.com/ThePix/quest/wiki](https://github.com/ThePix/quest/wiki)

@@ -33,7 +33,8 @@ Public Class Editor
         ' Added by SoonGames
         ' ----------------------------------------------------------------------------------------------------
         Try
-            Dim Culture As New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+            Dim Culture As New System.Globalization.CultureInfo("en")
+            'Dim Culture As New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
             Threading.Thread.CurrentThread.CurrentUICulture = Culture
         Catch ex As Exception
             MsgBox(ex.Message)
