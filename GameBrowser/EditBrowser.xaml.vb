@@ -56,4 +56,8 @@
     Private Sub DoTutorial()
         RaiseEvent Tutorial()
     End Sub
+
+    Private Sub ctlEditorWelcome_Loaded(sender As Object, e As Windows.RoutedEventArgs) Handles ctlEditorWelcome.Loaded
+
+    End Sub
 End Class
