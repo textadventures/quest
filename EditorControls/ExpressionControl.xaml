@@ -25,8 +25,21 @@
         </Grid.RowDefinitions>
         <ComboBox Name="lstType" SelectionChanged="lstType_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Top" />
         <ComboBox Name="lstTemplate" SelectionChanged="lstTemplate_SelectionChanged" Margin="0,0,10,0" Visibility="Collapsed" VerticalAlignment="Top" />
-        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" HorizontalScrollBarVisibility="Auto" MinWidth="40" MinHeight="20" VerticalContentAlignment="Center"></TextBox>
-        <Button Name="cmdInsert" Click="cmdInsert_Click"  Grid.Column="2" Padding="1,0,1,0" Margin="0,0,0,0" Background="{StaticResource InsertButtonBackground}" Foreground="White" ToolTip="Insert..." VerticalAlignment="Top" Height="{Binding ElementName=lstType, Path=ActualHeight}" MinHeight="22" >
+        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" HorizontalScrollBarVisibility="Auto" MinWidth="40" MinHeight="20" VerticalContentAlignment="Center" Background="White" SelectionBrush="#FF1D1B61">
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="#FFB4B4B4"/>
+            </TextBox.BorderBrush>
+        </TextBox>
+        <Button Name="cmdInsert" Click="cmdInsert_Click"  Grid.Column="2" Padding="1,0,1,0" Margin="0,0,0,0" Foreground="#FF606060" ToolTip="Insert..." VerticalAlignment="Top" Height="{Binding ElementName=lstType, Path=ActualHeight}" MinHeight="22" >
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="#FFB4B4B4"/>
+            </Button.BorderBrush>
             <Button.FontFamily>Marlett</Button.FontFamily>
             <Button.Content>u</Button.Content>
             <Button.ContextMenu>

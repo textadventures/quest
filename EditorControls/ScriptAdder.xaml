@@ -20,7 +20,21 @@
         <WindowsFormsHost Name="treeHost" Grid.ColumnSpan="2" Grid.Row="1">
             <this:WFEditorTree />
         </WindowsFormsHost>
-        <Button Grid.Row="2" Name="addButton" Click="addButton_Click" HorizontalAlignment="Left" Padding="10,3,10,3" Margin="2">Add</Button>
-        <Button Grid.Row="2" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2" IsCancel="True">Cancel</Button>
+        <Button Grid.Row="2" Name="addButton" Click="addButton_Click" HorizontalAlignment="Left" Padding="10,3,10,3" Margin="2" BorderBrush="#FFACACAC" Foreground="Black">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background> Add
+        </Button>
+        <Button Grid.Row="2" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2" IsCancel="True" BorderBrush="#FFACACAC" Foreground="Black">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background> Cancel
+        </Button>
     </Grid>
 </UserControl>

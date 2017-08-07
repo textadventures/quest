@@ -7,6 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <xctk:IntegerUpDown Width="60" HorizontalAlignment="Left" ValueChanged="ctlNumber_ValueChanged" Name="ctlNumber"/>
+        <xctk:IntegerUpDown Width="60" HorizontalAlignment="Left" ValueChanged="ctlNumber_ValueChanged" Name="ctlNumber">
+            <xctk:IntegerUpDown.BorderBrush>
+                <SolidColorBrush Color="#FFACACAC"/>
+            </xctk:IntegerUpDown.BorderBrush>
+        </xctk:IntegerUpDown>
     </Grid>
 </UserControl>

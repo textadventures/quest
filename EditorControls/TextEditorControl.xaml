@@ -17,6 +17,10 @@
             Name="textEditor"
             FontFamily="Consolas, Courier New"
             FontSize="10pt" Text=""
-            Grid.Row="1" />
+            Grid.Row="1" >
+            <avalonEdit:TextEditor.BorderBrush>
+                <SolidColorBrush Color="#FFACACAC"/>
+            </avalonEdit:TextEditor.BorderBrush>
+        </avalonEdit:TextEditor>
     </Grid>
 </UserControl>

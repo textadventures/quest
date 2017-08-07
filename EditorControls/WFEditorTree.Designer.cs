@@ -31,38 +31,43 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WFEditorTree));
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.AddJavascriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddObjectTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddDelegateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.mnuFilter = new System.Windows.Forms.ToolStripDropDownButton();
             this.lstSearchResults = new System.Windows.Forms.ListView();
             this.colSearchResults = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pnlSearchContainer = new System.Windows.Forms.Panel();
             this.cmdClose = new System.Windows.Forms.Button();
             this.cmdSearch = new System.Windows.Forms.Button();
-            this.pnlSearchContainer = new System.Windows.Forms.Panel();
-            this.AddDynamicTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddImpliedTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddVerbToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addTurnScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddVerbToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.addTurnScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddDynamicTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddObjectTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddJavascriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddImpliedTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddDelegateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
+            this.roomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctlImageList = new System.Windows.Forms.ImageList(this.components);
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -72,49 +77,25 @@
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.BackColor = System.Drawing.Color.White;
+            this.txtSearch.ForeColor = System.Drawing.Color.Black;
             this.txtSearch.Location = new System.Drawing.Point(0, 0);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(269, 20);
+            this.txtSearch.Size = new System.Drawing.Size(357, 22);
             this.txtSearch.TabIndex = 1;
-            // 
-            // AddJavascriptToolStripMenuItem
-            // 
-            this.AddJavascriptToolStripMenuItem.Name = "AddJavascriptToolStripMenuItem";
-            this.AddJavascriptToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddJavascriptToolStripMenuItem.Tag = "addjavascript";
-            this.AddJavascriptToolStripMenuItem.Text = "Add Javascript";
-            // 
-            // AddEditorToolStripMenuItem
-            // 
-            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
-            this.AddEditorToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddEditorToolStripMenuItem.Tag = "addeditor";
-            this.AddEditorToolStripMenuItem.Text = "Add Editor";
-            this.AddEditorToolStripMenuItem.Visible = false;
-            // 
-            // AddObjectTypeToolStripMenuItem
-            // 
-            this.AddObjectTypeToolStripMenuItem.Name = "AddObjectTypeToolStripMenuItem";
-            this.AddObjectTypeToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddObjectTypeToolStripMenuItem.Tag = "addobjecttype";
-            this.AddObjectTypeToolStripMenuItem.Text = "Add Object Type";
-            // 
-            // AddDelegateToolStripMenuItem
-            // 
-            this.AddDelegateToolStripMenuItem.Name = "AddDelegateToolStripMenuItem";
-            this.AddDelegateToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddDelegateToolStripMenuItem.Tag = "adddelegate";
-            this.AddDelegateToolStripMenuItem.Text = "Add Delegate";
-            this.AddDelegateToolStripMenuItem.Visible = false;
             // 
             // ctlToolStrip
             // 
+            this.ctlToolStrip.BackColor = System.Drawing.Color.GhostWhite;
             this.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFilter});
-            this.ctlToolStrip.Location = new System.Drawing.Point(0, 312);
+            this.ctlToolStrip.Location = new System.Drawing.Point(0, 388);
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(289, 25);
+            this.ctlToolStrip.Size = new System.Drawing.Size(385, 27);
             this.ctlToolStrip.TabIndex = 5;
             this.ctlToolStrip.Text = "ToolStrip1";
             // 
@@ -124,7 +105,7 @@
             this.mnuFilter.Image = ((System.Drawing.Image)(resources.GetObject("mnuFilter.Image")));
             this.mnuFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFilter.Name = "mnuFilter";
-            this.mnuFilter.Size = new System.Drawing.Size(46, 22);
+            this.mnuFilter.Size = new System.Drawing.Size(56, 24);
             this.mnuFilter.Text = "Filter";
             // 
             // lstSearchResults
@@ -134,10 +115,11 @@
             this.lstSearchResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstSearchResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstSearchResults.HideSelection = false;
-            this.lstSearchResults.Location = new System.Drawing.Point(0, 20);
+            this.lstSearchResults.Location = new System.Drawing.Point(0, 25);
+            this.lstSearchResults.Margin = new System.Windows.Forms.Padding(4);
             this.lstSearchResults.MultiSelect = false;
             this.lstSearchResults.Name = "lstSearchResults";
-            this.lstSearchResults.Size = new System.Drawing.Size(289, 317);
+            this.lstSearchResults.Size = new System.Drawing.Size(385, 390);
             this.lstSearchResults.TabIndex = 8;
             this.lstSearchResults.UseCompatibleStateImageBehavior = false;
             this.lstSearchResults.View = System.Windows.Forms.View.Details;
@@ -147,27 +129,6 @@
             // 
             this.colSearchResults.Text = "Search Results";
             // 
-            // cmdClose
-            // 
-            this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdClose.Image = ((System.Drawing.Image)(resources.GetObject("cmdClose.Image")));
-            this.cmdClose.Location = new System.Drawing.Point(249, 0);
-            this.cmdClose.Name = "cmdClose";
-            this.cmdClose.Size = new System.Drawing.Size(20, 20);
-            this.cmdClose.TabIndex = 2;
-            this.cmdClose.UseVisualStyleBackColor = true;
-            this.cmdClose.Visible = false;
-            // 
-            // cmdSearch
-            // 
-            this.cmdSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdSearch.Image = ((System.Drawing.Image)(resources.GetObject("cmdSearch.Image")));
-            this.cmdSearch.Location = new System.Drawing.Point(269, 0);
-            this.cmdSearch.Name = "cmdSearch";
-            this.cmdSearch.Size = new System.Drawing.Size(20, 20);
-            this.cmdSearch.TabIndex = 3;
-            this.cmdSearch.UseVisualStyleBackColor = true;
-            // 
             // pnlSearchContainer
             // 
             this.pnlSearchContainer.Controls.Add(this.cmdClose);
@@ -175,199 +136,323 @@
             this.pnlSearchContainer.Controls.Add(this.txtSearch);
             this.pnlSearchContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlSearchContainer.Location = new System.Drawing.Point(0, 0);
+            this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSearchContainer.Name = "pnlSearchContainer";
-            this.pnlSearchContainer.Size = new System.Drawing.Size(289, 20);
+            this.pnlSearchContainer.Size = new System.Drawing.Size(385, 25);
             this.pnlSearchContainer.TabIndex = 6;
             // 
-            // AddDynamicTemplateToolStripMenuItem
+            // cmdClose
             // 
-            this.AddDynamicTemplateToolStripMenuItem.Name = "AddDynamicTemplateToolStripMenuItem";
-            this.AddDynamicTemplateToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddDynamicTemplateToolStripMenuItem.Tag = "adddynamictemplate";
-            this.AddDynamicTemplateToolStripMenuItem.Text = "Add Dynamic Template";
+            this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
+            this.cmdClose.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_16__1_;
+            this.cmdClose.Location = new System.Drawing.Point(332, 0);
+            this.cmdClose.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdClose.Name = "cmdClose";
+            this.cmdClose.Size = new System.Drawing.Size(27, 25);
+            this.cmdClose.TabIndex = 2;
+            this.cmdClose.UseVisualStyleBackColor = false;
+            this.cmdClose.Visible = false;
             // 
-            // AddTemplateToolStripMenuItem
+            // cmdSearch
             // 
-            this.AddTemplateToolStripMenuItem.Name = "AddTemplateToolStripMenuItem";
-            this.AddTemplateToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddTemplateToolStripMenuItem.Tag = "addtemplate";
-            this.AddTemplateToolStripMenuItem.Text = "Add Template";
-            // 
-            // AddImpliedTypeToolStripMenuItem
-            // 
-            this.AddImpliedTypeToolStripMenuItem.Name = "AddImpliedTypeToolStripMenuItem";
-            this.AddImpliedTypeToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddImpliedTypeToolStripMenuItem.Tag = "addimpliedtype";
-            this.AddImpliedTypeToolStripMenuItem.Text = "Add Implied Type";
-            this.AddImpliedTypeToolStripMenuItem.Visible = false;
-            // 
-            // AddRoomToolStripMenuItem
-            // 
-            this.AddRoomToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("AddRoomToolStripMenuItem.Image")));
-            this.AddRoomToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.AddRoomToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver;
-            this.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem";
-            this.AddRoomToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddRoomToolStripMenuItem.Tag = "addroom";
-            this.AddRoomToolStripMenuItem.Text = "Add Room";
-            // 
-            // AddObjectToolStripMenuItem
-            // 
-            this.AddObjectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("AddObjectToolStripMenuItem.Image")));
-            this.AddObjectToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.AddObjectToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver;
-            this.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem";
-            this.AddObjectToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddObjectToolStripMenuItem.Tag = "addobject";
-            this.AddObjectToolStripMenuItem.Text = "Add Object";
+            this.cmdSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
+            this.cmdSearch.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Suche_16;
+            this.cmdSearch.Location = new System.Drawing.Point(359, 0);
+            this.cmdSearch.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdSearch.Name = "cmdSearch";
+            this.cmdSearch.Size = new System.Drawing.Size(27, 25);
+            this.cmdSearch.TabIndex = 3;
+            this.cmdSearch.UseVisualStyleBackColor = false;
             // 
             // ctlContextMenu
             // 
+            this.ctlContextMenu.BackColor = System.Drawing.Color.White;
+            this.ctlContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ctlContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addPageToolStripMenuItem,
-            this.AddObjectToolStripMenuItem,
-            this.AddRoomToolStripMenuItem,
-            this.AddExitToolStripMenuItem,
-            this.AddVerbToolStripMenuItem,
-            this.AddCommandToolStripMenuItem,
-            this.AddFunctionToolStripMenuItem,
-            this.addTimerToolStripMenuItem,
-            this.addTurnScriptToolStripMenuItem,
-            this.AddWalkthroughToolStripMenuItem,
-            this.AddLibraryToolStripMenuItem,
-            this.AddImpliedTypeToolStripMenuItem,
-            this.AddTemplateToolStripMenuItem,
-            this.AddDynamicTemplateToolStripMenuItem,
-            this.AddDelegateToolStripMenuItem,
-            this.AddObjectTypeToolStripMenuItem,
-            this.AddEditorToolStripMenuItem,
-            this.AddJavascriptToolStripMenuItem,
+            this.expandAllToolStripMenuItem,
+            this.collapseAllToolStripMenuItem,
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.toolStripSeparator2,
-            this.expandAllToolStripMenuItem,
-            this.collapseAllToolStripMenuItem});
+            this.AddVerbToolStripMenuItem,
+            this.AddCommandToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.addPageToolStripMenuItem,
+            this.AddEditorToolStripMenuItem,
+            this.AddRoomToolStripMenuItem,
+            this.AddObjectToolStripMenuItem,
+            this.AddExitToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.addTurnScriptToolStripMenuItem,
+            this.AddFunctionToolStripMenuItem,
+            this.addTimerToolStripMenuItem,
+            this.AddWalkthroughToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.AddLibraryToolStripMenuItem,
+            this.AddTemplateToolStripMenuItem,
+            this.AddDynamicTemplateToolStripMenuItem,
+            this.AddObjectTypeToolStripMenuItem,
+            this.AddJavascriptToolStripMenuItem,
+            this.AddImpliedTypeToolStripMenuItem,
+            this.AddDelegateToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
-            this.ctlContextMenu.Size = new System.Drawing.Size(200, 500);
+            this.ctlContextMenu.Size = new System.Drawing.Size(283, 580);
             // 
-            // addPageToolStripMenuItem
+            // expandAllToolStripMenuItem
             // 
-            this.addPageToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPageToolStripMenuItem.Image")));
-            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
-            this.addPageToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addPageToolStripMenuItem.Tag = "addpage";
-            this.addPageToolStripMenuItem.Text = "Add Page";
-            this.addPageToolStripMenuItem.Visible = false;
+            this.expandAllToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Erweitern_32;
+            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+            this.expandAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.expandAllToolStripMenuItem.Tag = "expandall";
+            this.expandAllToolStripMenuItem.Text = "Expand All";
             // 
-            // AddExitToolStripMenuItem
+            // collapseAllToolStripMenuItem
             // 
-            this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
-            this.AddExitToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddExitToolStripMenuItem.Tag = "addexit";
-            this.AddExitToolStripMenuItem.Text = "Add Exit";
-            // 
-            // AddVerbToolStripMenuItem
-            // 
-            this.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem";
-            this.AddVerbToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddVerbToolStripMenuItem.Tag = "addverb";
-            this.AddVerbToolStripMenuItem.Text = "Add Verb";
-            // 
-            // AddCommandToolStripMenuItem
-            // 
-            this.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem";
-            this.AddCommandToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddCommandToolStripMenuItem.Tag = "addcommand";
-            this.AddCommandToolStripMenuItem.Text = "Add Command";
-            // 
-            // AddFunctionToolStripMenuItem
-            // 
-            this.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem";
-            this.AddFunctionToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddFunctionToolStripMenuItem.Tag = "addfunction";
-            this.AddFunctionToolStripMenuItem.Text = "Add Function";
-            // 
-            // addTimerToolStripMenuItem
-            // 
-            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
-            this.addTimerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addTimerToolStripMenuItem.Tag = "addtimer";
-            this.addTimerToolStripMenuItem.Text = "Add Timer";
-            // 
-            // addTurnScriptToolStripMenuItem
-            // 
-            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
-            this.addTurnScriptToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
-            this.addTurnScriptToolStripMenuItem.Text = "Add Turn Script";
-            // 
-            // AddWalkthroughToolStripMenuItem
-            // 
-            this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
-            this.AddWalkthroughToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough";
-            this.AddWalkthroughToolStripMenuItem.Text = "Add Walkthrough";
-            // 
-            // AddLibraryToolStripMenuItem
-            // 
-            this.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem";
-            this.AddLibraryToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.AddLibraryToolStripMenuItem.Tag = "addlibrary";
-            this.AddLibraryToolStripMenuItem.Text = "Add Library";
+            this.collapseAllToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Verkleinern_32;
+            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+            this.collapseAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Left)));
+            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.collapseAllToolStripMenuItem.Tag = "collapseall";
+            this.collapseAllToolStripMenuItem.Text = "Collapse All";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator1.Tag = "separator1";
             // 
             // deleteToolStripMenuItem
             // 
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_32;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
             this.deleteToolStripMenuItem.Tag = "delete";
             this.deleteToolStripMenuItem.Text = "Delete";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator2.Tag = "separator2";
             // 
-            // expandAllToolStripMenuItem
+            // AddVerbToolStripMenuItem
             // 
-            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.expandAllToolStripMenuItem.Tag = "expandall";
-            this.expandAllToolStripMenuItem.Text = "Expand All";
+            this.AddVerbToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Verb_32;
+            this.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem";
+            this.AddVerbToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddVerbToolStripMenuItem.Tag = "addverb";
+            this.AddVerbToolStripMenuItem.Text = "+ Verb";
             // 
-            // collapseAllToolStripMenuItem
+            // AddCommandToolStripMenuItem
             // 
-            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
-            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.collapseAllToolStripMenuItem.Tag = "collapseall";
-            this.collapseAllToolStripMenuItem.Text = "Collapse All";
+            this.AddCommandToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Konsole_32;
+            this.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem";
+            this.AddCommandToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddCommandToolStripMenuItem.Tag = "addcommand";
+            this.AddCommandToolStripMenuItem.Text = "+ Command";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator3.Tag = "separator3";
+            // 
+            // addPageToolStripMenuItem
+            // 
+            this.addPageToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Datei_hinzufügen_32;
+            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
+            this.addPageToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
+            this.addPageToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.addPageToolStripMenuItem.Tag = "addpage";
+            this.addPageToolStripMenuItem.Text = "+ Site";
+            this.addPageToolStripMenuItem.Visible = false;
+            // 
+            // AddEditorToolStripMenuItem
+            // 
+            this.AddEditorToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bearbeiten_32;
+            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
+            this.AddEditorToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddEditorToolStripMenuItem.Tag = "addeditor";
+            this.AddEditorToolStripMenuItem.Text = "+ Editor";
+            this.AddEditorToolStripMenuItem.Visible = false;
+            // 
+            // AddRoomToolStripMenuItem
+            // 
+            this.AddRoomToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Zimmer_32;
+            this.AddRoomToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver;
+            this.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem";
+            this.AddRoomToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Insert)));
+            this.AddRoomToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddRoomToolStripMenuItem.Tag = "addroom";
+            this.AddRoomToolStripMenuItem.Text = "+ Room";
+            // 
+            // AddObjectToolStripMenuItem
+            // 
+            this.AddObjectToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Topfpflanze_32;
+            this.AddObjectToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver;
+            this.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem";
+            this.AddObjectToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
+            this.AddObjectToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddObjectToolStripMenuItem.Tag = "addobject";
+            this.AddObjectToolStripMenuItem.Text = "+ Object";
+            // 
+            // AddExitToolStripMenuItem
+            // 
+            this.AddExitToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Ausgang_32;
+            this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
+            this.AddExitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
+            this.AddExitToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddExitToolStripMenuItem.Tag = "addexit";
+            this.AddExitToolStripMenuItem.Text = "+ Exit";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator4.Tag = "separator4";
+            // 
+            // addTurnScriptToolStripMenuItem
+            // 
+            this.addTurnScriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bauer_32;
+            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
+            this.addTurnScriptToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
+            this.addTurnScriptToolStripMenuItem.Text = "+ Turn Script";
+            // 
+            // AddFunctionToolStripMenuItem
+            // 
+            this.AddFunctionToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Variable_32;
+            this.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem";
+            this.AddFunctionToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddFunctionToolStripMenuItem.Tag = "addfunction";
+            this.AddFunctionToolStripMenuItem.Text = "+ Function";
+            // 
+            // addTimerToolStripMenuItem
+            // 
+            this.addTimerToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Timer_32;
+            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
+            this.addTimerToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.addTimerToolStripMenuItem.Tag = "addtimer";
+            this.addTimerToolStripMenuItem.Text = "+ Timer";
+            // 
+            // AddWalkthroughToolStripMenuItem
+            // 
+            this.AddWalkthroughToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Gehen_32;
+            this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
+            this.AddWalkthroughToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough";
+            this.AddWalkthroughToolStripMenuItem.Text = "+ Walkthrough";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator5.Tag = "separator5";
+            // 
+            // AddLibraryToolStripMenuItem
+            // 
+            this.AddLibraryToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bücherregal_32;
+            this.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem";
+            this.AddLibraryToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddLibraryToolStripMenuItem.Tag = "addlibrary";
+            this.AddLibraryToolStripMenuItem.Text = "+ Library";
+            // 
+            // AddTemplateToolStripMenuItem
+            // 
+            this.AddTemplateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Lebenslauf_Muster_32;
+            this.AddTemplateToolStripMenuItem.Name = "AddTemplateToolStripMenuItem";
+            this.AddTemplateToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddTemplateToolStripMenuItem.Tag = "addtemplate";
+            this.AddTemplateToolStripMenuItem.Text = "+ Template";
+            // 
+            // AddDynamicTemplateToolStripMenuItem
+            // 
+            this.AddDynamicTemplateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Lebenslauf_Vorlage_laden_32;
+            this.AddDynamicTemplateToolStripMenuItem.Name = "AddDynamicTemplateToolStripMenuItem";
+            this.AddDynamicTemplateToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddDynamicTemplateToolStripMenuItem.Tag = "adddynamictemplate";
+            this.AddDynamicTemplateToolStripMenuItem.Text = "+ Dynamic Template";
+            // 
+            // AddObjectTypeToolStripMenuItem
+            // 
+            this.AddObjectTypeToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Typ_32;
+            this.AddObjectTypeToolStripMenuItem.Name = "AddObjectTypeToolStripMenuItem";
+            this.AddObjectTypeToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddObjectTypeToolStripMenuItem.Tag = "addobjecttype";
+            this.AddObjectTypeToolStripMenuItem.Text = "+ Object Type";
+            // 
+            // AddJavascriptToolStripMenuItem
+            // 
+            this.AddJavascriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_JS_32;
+            this.AddJavascriptToolStripMenuItem.Name = "AddJavascriptToolStripMenuItem";
+            this.AddJavascriptToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddJavascriptToolStripMenuItem.Tag = "addjavascript";
+            this.AddJavascriptToolStripMenuItem.Text = "+ Javascript";
+            // 
+            // AddImpliedTypeToolStripMenuItem
+            // 
+            this.AddImpliedTypeToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Gleich_32;
+            this.AddImpliedTypeToolStripMenuItem.Name = "AddImpliedTypeToolStripMenuItem";
+            this.AddImpliedTypeToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddImpliedTypeToolStripMenuItem.Tag = "addimpliedtype";
+            this.AddImpliedTypeToolStripMenuItem.Text = "+ Implied Type";
+            this.AddImpliedTypeToolStripMenuItem.Visible = false;
+            // 
+            // AddDelegateToolStripMenuItem
+            // 
+            this.AddDelegateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Helfende_Hand_32;
+            this.AddDelegateToolStripMenuItem.Name = "AddDelegateToolStripMenuItem";
+            this.AddDelegateToolStripMenuItem.Size = new System.Drawing.Size(282, 26);
+            this.AddDelegateToolStripMenuItem.Tag = "adddelegate";
+            this.AddDelegateToolStripMenuItem.Text = "+ Delegate";
+            this.AddDelegateToolStripMenuItem.Visible = false;
             // 
             // ctlTreeView
             // 
             this.ctlTreeView.AllowDrop = true;
+            this.ctlTreeView.BackColor = System.Drawing.Color.White;
             this.ctlTreeView.ContextMenuStrip = this.ctlContextMenu;
             this.ctlTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ctlTreeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ctlTreeView.ForeColor = System.Drawing.Color.Black;
             this.ctlTreeView.HideSelection = false;
-            this.ctlTreeView.Location = new System.Drawing.Point(0, 20);
+            this.ctlTreeView.ImageIndex = 0;
+            this.ctlTreeView.ImageList = this.ctlImageList;
+            this.ctlTreeView.LineColor = System.Drawing.Color.Silver;
+            this.ctlTreeView.Location = new System.Drawing.Point(0, 25);
+            this.ctlTreeView.Margin = new System.Windows.Forms.Padding(4);
             this.ctlTreeView.Name = "ctlTreeView";
-            this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
+            this.ctlTreeView.SelectedImageIndex = 0;
+            this.ctlTreeView.Size = new System.Drawing.Size(385, 363);
             this.ctlTreeView.TabIndex = 7;
+            // 
+            // roomToolStripMenuItem
+            // 
+            this.roomToolStripMenuItem.Name = "roomToolStripMenuItem";
+            this.roomToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.roomToolStripMenuItem.Text = "Room";
+            // 
+            // ctlImageList
+            // 
+            this.ctlImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ctlImageList.ImageStream")));
+            this.ctlImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.ctlImageList.Images.SetKeyName(0, "icons8-Mappe-16.png");
             // 
             // WFEditorTree
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ctlTreeView);
             this.Controls.Add(this.ctlToolStrip);
             this.Controls.Add(this.lstSearchResults);
             this.Controls.Add(this.pnlSearchContainer);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "WFEditorTree";
-            this.Size = new System.Drawing.Size(289, 337);
+            this.Size = new System.Drawing.Size(385, 415);
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
             this.pnlSearchContainer.ResumeLayout(false);
@@ -381,10 +466,6 @@
         #endregion
 
         internal System.Windows.Forms.TextBox txtSearch;
-        internal System.Windows.Forms.ToolStripMenuItem AddJavascriptToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddEditorToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddObjectTypeToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddDelegateToolStripMenuItem;
         internal System.Windows.Forms.ToolStrip ctlToolStrip;
         internal System.Windows.Forms.ToolStripDropDownButton mnuFilter;
         internal System.Windows.Forms.ListView lstSearchResults;
@@ -392,26 +473,35 @@
         internal System.Windows.Forms.Button cmdClose;
         internal System.Windows.Forms.Button cmdSearch;
         internal System.Windows.Forms.Panel pnlSearchContainer;
-        internal System.Windows.Forms.ToolStripMenuItem AddDynamicTemplateToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddTemplateToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddImpliedTypeToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddRoomToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddObjectToolStripMenuItem;
-        internal System.Windows.Forms.ContextMenuStrip ctlContextMenu;
-        internal System.Windows.Forms.ToolStripMenuItem AddExitToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddVerbToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddCommandToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddFunctionToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddWalkthroughToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem AddLibraryToolStripMenuItem;
         internal System.Windows.Forms.TreeView ctlTreeView;
-        private System.Windows.Forms.ToolStripMenuItem addTimerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addTurnScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        internal System.Windows.Forms.ToolStripMenuItem AddWalkthroughToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addPageToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem roomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        internal System.Windows.Forms.ToolStripMenuItem AddCommandToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddVerbToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddRoomToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddObjectToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddExitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        internal System.Windows.Forms.ToolStripMenuItem AddFunctionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addTimerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addTurnScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        internal System.Windows.Forms.ToolStripMenuItem AddLibraryToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddTemplateToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddDynamicTemplateToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddObjectTypeToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddJavascriptToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddImpliedTypeToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem AddDelegateToolStripMenuItem;
+        internal System.Windows.Forms.ContextMenuStrip ctlContextMenu;
+        private System.Windows.Forms.ImageList ctlImageList;
     }
 }

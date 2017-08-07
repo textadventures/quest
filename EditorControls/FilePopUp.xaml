@@ -8,8 +8,22 @@
         <StackPanel>
             <EditorControls:FileDropDown x:Name="fileDropDown" HorizontalAlignment="Stretch" Margin="10" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
-                <Button x:Name="ok" Click="ok_OnClick" Margin="10,0,0,0" Padding="12,3">OK</Button>
-                <Button x:Name="cancel" Click="cancel_OnClick" Margin="10,0" Padding="12,3" IsCancel="True">Cancel</Button>
+                <Button x:Name="ok" Click="ok_OnClick" Margin="10,0,0,0" Padding="12,3" BorderBrush="#FFACACAC" Foreground="Black">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                            <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background> OK
+                </Button>
+                <Button x:Name="cancel" Click="cancel_OnClick" Margin="10,0" Padding="12,3" IsCancel="True" BorderBrush="#FFACACAC" Foreground="Black">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                            <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background> Cancel
+                </Button>
             </StackPanel>
         </StackPanel>
     </Grid>

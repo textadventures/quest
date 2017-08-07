@@ -6,6 +6,24 @@
              xmlns:this="clr-namespace:TextAdventures.Quest.EditorControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="Button1" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFEDEDED" Offset="0"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="btn_background1" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFEDEDED" Offset="0"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="btn_borderbrush1" Color="#FFD4D4D4"/>
+        <SolidColorBrush x:Key="btn_foreground1" Color="#FF282828"/>
+        <LinearGradientBrush x:Key="btnbackground2" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF1D1B61" Offset="0"/>
+            <GradientStop Color="#FF1D1B61" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="btnborderbrush2" Color="#FFD0D0D0"/>
+        <SolidColorBrush x:Key="btnforeground2" Color="White"/>
+    </UserControl.Resources>
     <Grid x:Name="scriptEditorGrid">
         <Grid x:Name="scriptEditor">
             <Grid.RowDefinitions>
@@ -18,8 +36,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <this:ScriptToolbar x:Name="ctlToolbar" IsTabStop="False"/>
-            <Border BorderThickness="1" Padding="4,2,4,4" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Grid.Row="1" Name="textEditorBorder" Visibility="Collapsed" Background="White">
-                <avalonEdit:TextEditor
+                <Border BorderThickness="1" Padding="4,2,4,4" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Grid.Row="1" Name="textEditorBorder" Visibility="Collapsed" Background="White">
+                    <avalonEdit:TextEditor
                     xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
                     Name="textEditor"
                     FontFamily="Consolas, Courier New"
@@ -27,7 +45,7 @@
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto"
                     MaxHeight="500" />
-            </Border>
+                </Border>
                 <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.Resources>
                         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,0.5" SpreadMethod="Reflect">
@@ -73,7 +91,12 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-                <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click" HorizontalAlignment="Left" Padding="10,5">Add new script</Button>
+                <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click" HorizontalAlignment="Left" Padding="0" Foreground="White" Background="White" ToolTip="Add new script" Width="75" Height="25" Margin="0,0.2,0,-0.4">
+                    <Button.BorderBrush>
+                        <SolidColorBrush Color="#FFB4B4B4"/>
+                    </Button.BorderBrush>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" SnapsToDevicePixels="True" Stretch="None" Source="./Images/AddScript.png"/>
+                </Button>
             </Grid>
         </Grid>
     </Grid>

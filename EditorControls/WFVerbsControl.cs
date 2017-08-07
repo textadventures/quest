@@ -55,9 +55,10 @@ namespace TextAdventures.Quest.EditorControls
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
-            ctlSplitContainer.SplitterDistance = 125;
+            // Changed by SoonGames
+            // ctlSplitContainer.SplitterDistance = 810;
             lblAttributesTitle.Text = "Verbs";
-            lblAttributesTitle.Width = 60;
+            // lblAttributesTitle.Width = 60;
             cmdOnChange.Available = false;
         }
 
@@ -167,6 +168,31 @@ namespace TextAdventures.Quest.EditorControls
         {
             string displayName = Controller.GetDisplayVerbPatternForAttribute(attr.AttributeName);
             return displayName ?? attr.AttributeName;
+        }
+
+        private void InitializeComponent()
+        {
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
+            this.ctlSplitContainerMain.Panel2.SuspendLayout();
+            this.ctlSplitContainerMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainer)).BeginInit();
+            this.ctlSplitContainer.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // ctlSplitContainerMain
+            // 
+            // 
+            // WFVerbsControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.Name = "WFVerbsControl";
+            this.ctlSplitContainerMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).EndInit();
+            this.ctlSplitContainerMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainer)).EndInit();
+            this.ctlSplitContainer.ResumeLayout(false);
+            this.ResumeLayout(false);
+
         }
     }
 }
