@@ -16,6 +16,16 @@
     Private m_handlers As New Dictionary(Of String, MenuClickHandler)
 
     Public Sub New()
+        ' ----------------------------------------------------------------------------------------------------
+        ' Added by SoonGames
+        ' ----------------------------------------------------------------------------------------------------
+        Try
+            Dim Culture As New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
+            Threading.Thread.CurrentThread.CurrentUICulture = Culture
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+        ' ----------------------------------------------------------------------------------------------------
 
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
