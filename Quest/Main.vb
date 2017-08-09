@@ -7,11 +7,40 @@ Public Class Main
     Private m_cmdLineLaunch As String = Nothing
     Private m_fromEditor As Boolean
     Private m_editorSimpleMode As Boolean
+    ' Added by SoonGames
+    Private m_languages As New Dictionary(Of String, String)
 
     Public Sub New()
+        ' ----------------------------------------------------------------------------------------------------
+        ' Added by SoonGames
+        ' ----------------------------------------------------------------------------------------------------
+        m_languages.Add("English", "en")
+        m_languages.Add("Deutsch", "de")
+
+        Dim language As String = Registry.GetSetting("Quest", "Settings", "Language", "").ToString()
+
+        If Not m_languages.ContainsKey(language) Then
+            Dim currentculture As String = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName
+            If m_languages.ContainsValue(currentculture) Then
+                language = FindKey(currentculture, m_languages)
+            Else
+                language = "English"
+            End If
+        End If
+        Try
+            Dim Culture As New System.Globalization.CultureInfo(m_languages(language))
+            Threading.Thread.CurrentThread.CurrentUICulture = Culture
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+        ' ----------------------------------------------------------------------------------------------------
 
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
+
+        ' Added by SoonGames
+        ctlMenu.MenuChecked(language.ToLower) = True
+        ctlMenu.MenuEnabled(language.ToLower) = False
 
         AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
 
@@ -57,7 +86,35 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
         ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
+        ' Added by SoonGames
+        ctlMenu.AddMenuClickHandler("english", AddressOf English)
+        ctlMenu.AddMenuClickHandler("deutsch", AddressOf Deutsch)
     End Sub
+
+    ' Added by SoonGames
+    Private Sub English()
+        Language("English")
+    End Sub
+
+    Private Sub Deutsch()
+        Language("Deutsch")
+    End Sub
+
+    Private Sub Language(language As String)
+        Dim Result As Integer = MsgBox("Zur Änderung der Sprache muss die Anwendung neu gestartet werden. Fortfahren?", MsgBoxStyle.OkCancel)
+        If Result = 1 Then
+            TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "Language", language)
+            Application.Restart()
+        End If
+    End Sub
+
+    Private Function FindKey(value As String, dic As Dictionary(Of String, String)) As String
+        For Each kvp As KeyValuePair(Of String, String) In dic
+            If kvp.Value = value Then Return kvp.Key
+        Next kvp
+        Return ""
+    End Function
+    ' ----------------------------------------------------------------------------------------------------
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
         ctlLauncher.AddToRecent(filename, name)

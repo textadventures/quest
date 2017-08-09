@@ -58,10 +58,10 @@ Partial Class Menu
         Me.LogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HTMLDeveloperToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+        Me.PageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -70,6 +70,15 @@ Partial Class Menu
         Me.FunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TimerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WalkthroughToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AdvancedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TemplateToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DynamicTemplateToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ObjectTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.JavascriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DelegateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PublishToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -78,6 +87,9 @@ Partial Class Menu
         Me.CodeViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WordWrapToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OptionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LanguageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EnglishToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeutschToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewHelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
@@ -86,15 +98,6 @@ Partial Class Menu
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AdvancedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DelegateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.JavascriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ObjectTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DynamicTemplateToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TemplateToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.EditorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -102,7 +105,7 @@ Partial Class Menu
         '
         Me.ctlMenuStrip.BackColor = System.Drawing.Color.Transparent
         Me.ctlMenuStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.ctlMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ViewToolStripMenuItem, Me.AddMenuItem, Me.ToolsToolStripMenuItem, Me.HelpToolStripMenuItem, Me.WindowMenuToolStripMenuItem})
+        Me.ctlMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ViewToolStripMenuItem, Me.AddMenuItem, Me.ToolsToolStripMenuItem, Me.LanguageToolStripMenuItem, Me.HelpToolStripMenuItem, Me.WindowMenuToolStripMenuItem})
         resources.ApplyResources(Me.ctlMenuStrip, "ctlMenuStrip")
         Me.ctlMenuStrip.Name = "ctlMenuStrip"
         '
@@ -327,13 +330,6 @@ Partial Class Menu
         resources.ApplyResources(Me.AddMenuItem, "AddMenuItem")
         Me.AddMenuItem.Tag = "add"
         '
-        'PageToolStripMenuItem
-        '
-        Me.PageToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Datei_hinzufügen_32
-        Me.PageToolStripMenuItem.Name = "PageToolStripMenuItem"
-        resources.ApplyResources(Me.PageToolStripMenuItem, "PageToolStripMenuItem")
-        Me.PageToolStripMenuItem.Tag = "addpage"
-        '
         'VerbToolStripMenuItem
         '
         Me.VerbToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Verb_32
@@ -353,6 +349,13 @@ Partial Class Menu
         Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
         resources.ApplyResources(Me.ToolStripSeparator10, "ToolStripSeparator10")
         Me.ToolStripSeparator10.Tag = ""
+        '
+        'PageToolStripMenuItem
+        '
+        Me.PageToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Datei_hinzufügen_32
+        Me.PageToolStripMenuItem.Name = "PageToolStripMenuItem"
+        resources.ApplyResources(Me.PageToolStripMenuItem, "PageToolStripMenuItem")
+        Me.PageToolStripMenuItem.Tag = "addpage"
         '
         'RoomToolStripMenuItem
         '
@@ -409,6 +412,69 @@ Partial Class Menu
         resources.ApplyResources(Me.WalkthroughToolStripMenuItem1, "WalkthroughToolStripMenuItem1")
         Me.WalkthroughToolStripMenuItem1.Tag = "addwalkthrough"
         '
+        'AdvancedToolStripMenuItem
+        '
+        Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditorToolStripMenuItem, Me.LibraryToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.ObjectTypeToolStripMenuItem, Me.JavascriptToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.DelegateToolStripMenuItem})
+        Me.AdvancedToolStripMenuItem.Name = "AdvancedToolStripMenuItem"
+        resources.ApplyResources(Me.AdvancedToolStripMenuItem, "AdvancedToolStripMenuItem")
+        Me.AdvancedToolStripMenuItem.Tag = "advanced"
+        '
+        'EditorToolStripMenuItem
+        '
+        Me.EditorToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Bearbeiten_32
+        Me.EditorToolStripMenuItem.Name = "EditorToolStripMenuItem"
+        resources.ApplyResources(Me.EditorToolStripMenuItem, "EditorToolStripMenuItem")
+        Me.EditorToolStripMenuItem.Tag = "addeditor"
+        '
+        'LibraryToolStripMenuItem
+        '
+        Me.LibraryToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Bücherregal_32
+        Me.LibraryToolStripMenuItem.Name = "LibraryToolStripMenuItem"
+        resources.ApplyResources(Me.LibraryToolStripMenuItem, "LibraryToolStripMenuItem")
+        Me.LibraryToolStripMenuItem.Tag = "addlibrary"
+        '
+        'TemplateToolStripMenuItem1
+        '
+        Me.TemplateToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Lebenslauf_Muster_32
+        Me.TemplateToolStripMenuItem1.Name = "TemplateToolStripMenuItem1"
+        resources.ApplyResources(Me.TemplateToolStripMenuItem1, "TemplateToolStripMenuItem1")
+        Me.TemplateToolStripMenuItem1.Tag = "addtemplate"
+        '
+        'DynamicTemplateToolStripMenuItem1
+        '
+        Me.DynamicTemplateToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Lebenslauf_Vorlage_laden_32
+        Me.DynamicTemplateToolStripMenuItem1.Name = "DynamicTemplateToolStripMenuItem1"
+        resources.ApplyResources(Me.DynamicTemplateToolStripMenuItem1, "DynamicTemplateToolStripMenuItem1")
+        Me.DynamicTemplateToolStripMenuItem1.Tag = "adddynamictemplate"
+        '
+        'ObjectTypeToolStripMenuItem
+        '
+        Me.ObjectTypeToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Typ_32
+        Me.ObjectTypeToolStripMenuItem.Name = "ObjectTypeToolStripMenuItem"
+        resources.ApplyResources(Me.ObjectTypeToolStripMenuItem, "ObjectTypeToolStripMenuItem")
+        Me.ObjectTypeToolStripMenuItem.Tag = "addobjecttype"
+        '
+        'JavascriptToolStripMenuItem
+        '
+        Me.JavascriptToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_JS_32
+        Me.JavascriptToolStripMenuItem.Name = "JavascriptToolStripMenuItem"
+        resources.ApplyResources(Me.JavascriptToolStripMenuItem, "JavascriptToolStripMenuItem")
+        Me.JavascriptToolStripMenuItem.Tag = "addjavascript"
+        '
+        'ImpliedTypeToolStripMenuItem
+        '
+        Me.ImpliedTypeToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Gleich_32
+        Me.ImpliedTypeToolStripMenuItem.Name = "ImpliedTypeToolStripMenuItem"
+        resources.ApplyResources(Me.ImpliedTypeToolStripMenuItem, "ImpliedTypeToolStripMenuItem")
+        Me.ImpliedTypeToolStripMenuItem.Tag = "addimpliedtype"
+        '
+        'DelegateToolStripMenuItem
+        '
+        Me.DelegateToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Helfende_Hand_32
+        Me.DelegateToolStripMenuItem.Name = "DelegateToolStripMenuItem"
+        resources.ApplyResources(Me.DelegateToolStripMenuItem, "DelegateToolStripMenuItem")
+        Me.DelegateToolStripMenuItem.Tag = "adddelegate"
+        '
         'ToolsToolStripMenuItem
         '
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PublishToolStripMenuItem, Me.WalkthroughToolStripMenuItem, Me.ToolStripSeparator8, Me.SimpleModeToolStripMenuItem, Me.CodeViewToolStripMenuItem, Me.WordWrapToolStripMenuItem, Me.OptionsToolStripMenuItem})
@@ -460,6 +526,25 @@ Partial Class Menu
         resources.ApplyResources(Me.OptionsToolStripMenuItem, "OptionsToolStripMenuItem")
         Me.OptionsToolStripMenuItem.Tag = "options"
         '
+        'LanguageToolStripMenuItem
+        '
+        Me.LanguageToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnglishToolStripMenuItem, Me.DeutschToolStripMenuItem})
+        Me.LanguageToolStripMenuItem.Name = "LanguageToolStripMenuItem"
+        resources.ApplyResources(Me.LanguageToolStripMenuItem, "LanguageToolStripMenuItem")
+        Me.LanguageToolStripMenuItem.Tag = ""
+        '
+        'EnglishToolStripMenuItem
+        '
+        Me.EnglishToolStripMenuItem.Name = "EnglishToolStripMenuItem"
+        resources.ApplyResources(Me.EnglishToolStripMenuItem, "EnglishToolStripMenuItem")
+        Me.EnglishToolStripMenuItem.Tag = "english"
+        '
+        'DeutschToolStripMenuItem
+        '
+        Me.DeutschToolStripMenuItem.Name = "DeutschToolStripMenuItem"
+        resources.ApplyResources(Me.DeutschToolStripMenuItem, "DeutschToolStripMenuItem")
+        Me.DeutschToolStripMenuItem.Tag = "deutsch"
+        '
         'HelpToolStripMenuItem
         '
         Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ViewHelpToolStripMenuItem, Me.toolStripSeparator5, Me.QuestForumsToolStripMenuItem, Me.ReportABugToolStripMenuItem, Me.ToolStripSeparator6, Me.AboutToolStripMenuItem})
@@ -507,69 +592,6 @@ Partial Class Menu
         Me.WindowMenuToolStripMenuItem.Name = "WindowMenuToolStripMenuItem"
         resources.ApplyResources(Me.WindowMenuToolStripMenuItem, "WindowMenuToolStripMenuItem")
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
-        '
-        'AdvancedToolStripMenuItem
-        '
-        Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditorToolStripMenuItem, Me.LibraryToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.ObjectTypeToolStripMenuItem, Me.JavascriptToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.DelegateToolStripMenuItem})
-        Me.AdvancedToolStripMenuItem.Name = "AdvancedToolStripMenuItem"
-        resources.ApplyResources(Me.AdvancedToolStripMenuItem, "AdvancedToolStripMenuItem")
-        Me.AdvancedToolStripMenuItem.Tag = "advanced"
-        '
-        'DelegateToolStripMenuItem
-        '
-        Me.DelegateToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Helfende_Hand_32
-        Me.DelegateToolStripMenuItem.Name = "DelegateToolStripMenuItem"
-        resources.ApplyResources(Me.DelegateToolStripMenuItem, "DelegateToolStripMenuItem")
-        Me.DelegateToolStripMenuItem.Tag = "adddelegate"
-        '
-        'ImpliedTypeToolStripMenuItem
-        '
-        Me.ImpliedTypeToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Gleich_32
-        Me.ImpliedTypeToolStripMenuItem.Name = "ImpliedTypeToolStripMenuItem"
-        resources.ApplyResources(Me.ImpliedTypeToolStripMenuItem, "ImpliedTypeToolStripMenuItem")
-        Me.ImpliedTypeToolStripMenuItem.Tag = "addimpliedtype"
-        '
-        'JavascriptToolStripMenuItem
-        '
-        Me.JavascriptToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_JS_32
-        Me.JavascriptToolStripMenuItem.Name = "JavascriptToolStripMenuItem"
-        resources.ApplyResources(Me.JavascriptToolStripMenuItem, "JavascriptToolStripMenuItem")
-        Me.JavascriptToolStripMenuItem.Tag = "addjavascript"
-        '
-        'ObjectTypeToolStripMenuItem
-        '
-        Me.ObjectTypeToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Typ_32
-        Me.ObjectTypeToolStripMenuItem.Name = "ObjectTypeToolStripMenuItem"
-        resources.ApplyResources(Me.ObjectTypeToolStripMenuItem, "ObjectTypeToolStripMenuItem")
-        Me.ObjectTypeToolStripMenuItem.Tag = "addobjecttype"
-        '
-        'DynamicTemplateToolStripMenuItem1
-        '
-        Me.DynamicTemplateToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Lebenslauf_Vorlage_laden_32
-        Me.DynamicTemplateToolStripMenuItem1.Name = "DynamicTemplateToolStripMenuItem1"
-        resources.ApplyResources(Me.DynamicTemplateToolStripMenuItem1, "DynamicTemplateToolStripMenuItem1")
-        Me.DynamicTemplateToolStripMenuItem1.Tag = "adddynamictemplate"
-        '
-        'TemplateToolStripMenuItem1
-        '
-        Me.TemplateToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Lebenslauf_Muster_32
-        Me.TemplateToolStripMenuItem1.Name = "TemplateToolStripMenuItem1"
-        resources.ApplyResources(Me.TemplateToolStripMenuItem1, "TemplateToolStripMenuItem1")
-        Me.TemplateToolStripMenuItem1.Tag = "addtemplate"
-        '
-        'LibraryToolStripMenuItem
-        '
-        Me.LibraryToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Bücherregal_32
-        Me.LibraryToolStripMenuItem.Name = "LibraryToolStripMenuItem"
-        resources.ApplyResources(Me.LibraryToolStripMenuItem, "LibraryToolStripMenuItem")
-        Me.LibraryToolStripMenuItem.Tag = "addlibrary"
-        '
-        'EditorToolStripMenuItem
-        '
-        Me.EditorToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.icons8_Bearbeiten_32
-        Me.EditorToolStripMenuItem.Name = "EditorToolStripMenuItem"
-        resources.ApplyResources(Me.EditorToolStripMenuItem, "EditorToolStripMenuItem")
-        Me.EditorToolStripMenuItem.Tag = "addeditor"
         '
         'Menu
         '
@@ -656,4 +678,7 @@ Partial Class Menu
     Friend WithEvents JavascriptToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImpliedTypeToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DelegateToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LanguageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EnglishToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DeutschToolStripMenuItem As ToolStripMenuItem
 End Class

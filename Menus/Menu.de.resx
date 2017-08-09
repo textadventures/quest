@@ -292,12 +292,6 @@
   <data name="ViewToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Ansicht</value>
   </data>
-  <data name="PageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
-  <data name="PageToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Seite</value>
-  </data>
   <data name="VerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 26</value>
   </data>
@@ -309,6 +303,12 @@
   </data>
   <data name="ToolStripSeparator10.Size" type="System.Drawing.Size, System.Drawing">
     <value>180, 6</value>
+  </data>
+  <data name="PageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>183, 26</value>
+  </data>
+  <data name="PageToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Seite</value>
   </data>
   <data name="RoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 26</value>
@@ -348,9 +348,6 @@
   </data>
   <data name="WalkthroughToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 26</value>
-  </data>
-  <data name="ToolStripSeparator12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 6</value>
   </data>
   <data name="EditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>219, 26</value>
@@ -420,6 +417,12 @@
   </data>
   <data name="OptionsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Optionen...</value>
+  </data>
+  <data name="LanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 24</value>
+  </data>
+  <data name="LanguageToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Sprache</value>
   </data>
   <data name="ViewHelpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>187, 26</value>

@@ -29,18 +29,6 @@ Public Class Editor
     Public Event InitialiseFinished(success As Boolean)
 
     Public Sub New()
-        ' ----------------------------------------------------------------------------------------------------
-        ' Added by SoonGames
-        ' ----------------------------------------------------------------------------------------------------
-        Try
-            Dim Culture As New System.Globalization.CultureInfo("en")
-            'Dim Culture As New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
-            Threading.Thread.CurrentThread.CurrentUICulture = Culture
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-        ' ----------------------------------------------------------------------------------------------------
-
         ' This call is required by the designer.
         InitializeComponent()
 
