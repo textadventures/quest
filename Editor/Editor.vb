@@ -18,6 +18,8 @@ Public Class Editor
     Private m_editorStyle As EditorStyle = EditorStyle.TextAdventure
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
+    ' Added  by SoonGames
+    Private m_splitHelper As TextAdventures.Utility.SplitterHelper
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -73,6 +75,10 @@ Public Class Editor
                             EditorStyle = m_controller.EditorStyle
                             SimpleMode = (CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
                             SetWordWrap(CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
+                            ' Added by SoonGames
+                            m_splitHelper = New TextAdventures.Utility.SplitterHelper(splitMain, "Quest", "EditorSplitter")
+                            m_splitHelper.LoadSplitterPositions()
+                            ' ----------------------------------------------------------------------------------------------------
                             m_menu.Visible = True
                             m_uiHidden = False
                             Me.SuspendLayout()

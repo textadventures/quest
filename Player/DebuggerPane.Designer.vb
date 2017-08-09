@@ -40,7 +40,7 @@ Partial Class DebuggerPane
         Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.splitMain.Location = New System.Drawing.Point(0, 0)
-        Me.splitMain.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.splitMain.Margin = New System.Windows.Forms.Padding(4)
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
@@ -52,6 +52,7 @@ Partial Class DebuggerPane
         Me.splitMain.Panel2.Controls.Add(Me.lstAttributes)
         Me.splitMain.Size = New System.Drawing.Size(911, 368)
         Me.splitMain.SplitterDistance = 144
+        Me.splitMain.SplitterIncrement = 50
         Me.splitMain.SplitterWidth = 5
         Me.splitMain.TabIndex = 2
         '
@@ -63,7 +64,7 @@ Partial Class DebuggerPane
         Me.lstObjects.GridLines = True
         Me.lstObjects.HideSelection = False
         Me.lstObjects.Location = New System.Drawing.Point(0, 0)
-        Me.lstObjects.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.lstObjects.Margin = New System.Windows.Forms.Padding(4)
         Me.lstObjects.Name = "lstObjects"
         Me.lstObjects.Size = New System.Drawing.Size(144, 368)
         Me.lstObjects.TabIndex = 0
@@ -82,7 +83,7 @@ Partial Class DebuggerPane
         Me.lstAttributes.FullRowSelect = True
         Me.lstAttributes.GridLines = True
         Me.lstAttributes.Location = New System.Drawing.Point(0, 0)
-        Me.lstAttributes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.lstAttributes.Margin = New System.Windows.Forms.Padding(4)
         Me.lstAttributes.Name = "lstAttributes"
         Me.lstAttributes.Size = New System.Drawing.Size(762, 368)
         Me.lstAttributes.TabIndex = 0
@@ -109,7 +110,7 @@ Partial Class DebuggerPane
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.splitMain)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "DebuggerPane"
         Me.Size = New System.Drawing.Size(911, 368)
         Me.splitMain.Panel1.ResumeLayout(False)
