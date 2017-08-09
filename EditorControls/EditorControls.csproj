@@ -294,8 +294,14 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WindowHelpers.cs" />
+    <EmbeddedResource Include="InputWindow.de.resx">
+      <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InputWindow.resx">
       <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFAttributesControl.de.resx">
+      <DependentUpon>WFAttributesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFAttributesControl.resx">
       <DependentUpon>WFAttributesControl.cs</DependentUpon>
@@ -319,11 +325,17 @@
     <EmbeddedResource Include="WFGamebookOptions.resx">
       <DependentUpon>WFGamebookOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WFListEditor.de.resx">
+      <DependentUpon>WFListEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WFListEditor.resx">
       <DependentUpon>WFListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFMultiControl.resx">
       <DependentUpon>WFMultiControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFToolbar.de.resx">
+      <DependentUpon>WFToolbar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFToolbar.resx">
       <DependentUpon>WFToolbar.cs</DependentUpon>

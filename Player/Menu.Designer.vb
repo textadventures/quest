@@ -22,6 +22,7 @@ Partial Class Menu
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Menu))
         Me.lblCaption = New System.Windows.Forms.Label()
         Me.cmdSelect = New System.Windows.Forms.Button()
         Me.cmdCancel = New System.Windows.Forms.Button()
@@ -31,79 +32,52 @@ Partial Class Menu
         '
         'lblCaption
         '
-        Me.lblCaption.AutoSize = True
-        Me.lblCaption.Location = New System.Drawing.Point(13, 9)
-        Me.lblCaption.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        resources.ApplyResources(Me.lblCaption, "lblCaption")
         Me.lblCaption.Name = "lblCaption"
-        Me.lblCaption.Size = New System.Drawing.Size(35, 17)
-        Me.lblCaption.TabIndex = 0
-        Me.lblCaption.Text = "Text"
         '
         'cmdSelect
         '
-        Me.cmdSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSelect.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdSelect.Location = New System.Drawing.Point(358, 310)
-        Me.cmdSelect.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        resources.ApplyResources(Me.cmdSelect, "cmdSelect")
         Me.cmdSelect.Name = "cmdSelect"
-        Me.cmdSelect.Size = New System.Drawing.Size(100, 28)
-        Me.cmdSelect.TabIndex = 1
-        Me.cmdSelect.Text = "Select"
         Me.cmdSelect.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        resources.ApplyResources(Me.cmdCancel, "cmdCancel")
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdCancel.Location = New System.Drawing.Point(250, 310)
-        Me.cmdCancel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(100, 28)
-        Me.cmdCancel.TabIndex = 2
-        Me.cmdCancel.Text = "Cancel"
         Me.cmdCancel.UseVisualStyleBackColor = True
         '
         'lstOptions
         '
-        Me.lstOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        resources.ApplyResources(Me.lstOptions, "lstOptions")
         Me.lstOptions.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lstOptions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lstOptions.HideSelection = False
-        Me.lstOptions.Location = New System.Drawing.Point(13, 30)
-        Me.lstOptions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.lstOptions.MultiSelect = False
         Me.lstOptions.Name = "lstOptions"
-        Me.lstOptions.Size = New System.Drawing.Size(445, 270)
-        Me.lstOptions.TabIndex = 0
         Me.lstOptions.UseCompatibleStateImageBehavior = False
         Me.lstOptions.View = System.Windows.Forms.View.Details
         '
         'colName
         '
-        Me.colName.Text = "Name"
+        resources.ApplyResources(Me.colName, "colName")
         '
         'Menu
         '
         Me.AcceptButton = Me.cmdSelect
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.GhostWhite
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(471, 351)
         Me.Controls.Add(Me.lstOptions)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdSelect)
         Me.Controls.Add(Me.lblCaption)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(394, 358)
         Me.Name = "Menu"
         Me.ShowIcon = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Menu"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

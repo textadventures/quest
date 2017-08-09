@@ -18,7 +18,7 @@ Public Class Editor
     Private m_editorStyle As EditorStyle = EditorStyle.TextAdventure
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
-    ' Added  by SoonGames
+    ' Added by SoonGames
     Private m_splitHelper As TextAdventures.Utility.SplitterHelper
 
     Public Event AddToRecent(filename As String, name As String)

@@ -117,11 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cmdBrowse.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
   <data name="&gt;&gt;picGamebook.Name" xml:space="preserve">
     <value>picGamebook</value>
-  </data>
-  <data name="&gt;&gt;lstTemplate.Name" xml:space="preserve">
-    <value>lstTemplate</value>
   </data>
   <data name="&gt;&gt;Label3.Parent" xml:space="preserve">
     <value>$this</value>
@@ -139,8 +140,8 @@
   <data name="$this.MaximumSize" type="System.Drawing.Size, System.Drawing">
     <value>1594, 481</value>
   </data>
-  <data name="picGamebook.Size" type="System.Drawing.Size, System.Drawing">
-    <value>243, 110</value>
+  <data name="&gt;&gt;picTextAdventureBorder.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="optTextAdventure.Text" xml:space="preserve">
     <value>&amp;Text adventure</value>
@@ -207,10 +208,6 @@
   <data name="&gt;&gt;cmdBrowse.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="optGamebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>101, 22</value>
   </data>
@@ -223,8 +220,8 @@
   <data name="&gt;&gt;txtFilename.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="txtFilename.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
+  <data name="&gt;&gt;picTextAdventureBorder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="optGamebook.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -232,8 +229,8 @@
   <data name="cmdBrowse.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>617, 385</value>
+  <data name="txtFilename.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
   </data>
   <data name="Label3.Text" xml:space="preserve">
     <value>File name:</value>
@@ -256,6 +253,9 @@
   <data name="&gt;&gt;cmdBrowse.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="optTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
+    <value>127, 22</value>
+  </data>
   <data name="&gt;&gt;Label2.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
@@ -265,26 +265,20 @@
   <data name="picTextAdventureBorder.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 4, 4, 4</value>
   </data>
-  <data name="picTextAdventure.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
   <data name="&gt;&gt;cmdCancel.Name" xml:space="preserve">
     <value>cmdCancel</value>
   </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>8, 16</value>
   </data>
+  <data name="ctlSaveDialog.Filter" xml:space="preserve">
+    <value>Quest Games|*.aslx</value>
+  </data>
   <data name="cmdBrowse.Text" xml:space="preserve">
     <value>&amp;Browse...</value>
   </data>
   <data name="Label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="cmdCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
-  <data name="&gt;&gt;optTextAdventure.ZOrder" xml:space="preserve">
-    <value>5</value>
   </data>
   <data name="&gt;&gt;picTextAdventure.Name" xml:space="preserve">
     <value>picTextAdventure</value>
@@ -294,9 +288,6 @@
   </data>
   <data name="cmdOK.Text" xml:space="preserve">
     <value>OK</value>
-  </data>
-  <data name="&gt;&gt;optGamebook.ZOrder" xml:space="preserve">
-    <value>4</value>
   </data>
   <data name="&gt;&gt;Label1.Name" xml:space="preserve">
     <value>Label1</value>
@@ -327,9 +318,6 @@
   </data>
   <data name="optGamebook.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
-  </data>
-  <data name="&gt;&gt;picGamebookBorder.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="picTextAdventureBorder.Location" type="System.Drawing.Point, System.Drawing">
     <value>109, 42</value>
@@ -385,8 +373,8 @@
   <data name="&gt;&gt;Label2.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;picTextAdventureBorder.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;picGamebookBorder.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="Label2.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -409,8 +397,8 @@
   <data name="cmdBrowse.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 28</value>
   </data>
-  <data name="&gt;&gt;cmdOK.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;Label1.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="txtGameName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -439,14 +427,14 @@
   <data name="cmdOK.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
   </data>
-  <data name="picGamebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>360, 42</value>
+  <data name="picTextAdventure.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
   </data>
   <data name="&gt;&gt;picGamebookBorder.Type" xml:space="preserve">
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;Label1.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="cmdBrowse.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
   </data>
   <data name="cmdCancel.Location" type="System.Drawing.Point, System.Drawing">
     <value>501, 342</value>
@@ -460,8 +448,8 @@
   <data name="&gt;&gt;picTextAdventure.Type" xml:space="preserve">
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="cmdBrowse.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+  <data name="&gt;&gt;txtFilename.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="picTextAdventure.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>CenterImage</value>
@@ -478,6 +466,9 @@
   <data name="&gt;&gt;ctlSaveDialog.Type" xml:space="preserve">
     <value>System.Windows.Forms.SaveFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="cmdCancel.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
   <data name="picTextAdventureBorder.Size" type="System.Drawing.Size, System.Drawing">
     <value>243, 110</value>
   </data>
@@ -486,6 +477,9 @@
   </data>
   <data name="optGamebook.Text" xml:space="preserve">
     <value>&amp;Gamebook</value>
+  </data>
+  <data name="picGamebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 110</value>
   </data>
   <data name="&gt;&gt;picGamebook.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -496,29 +490,32 @@
   <data name="Label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>27, 243</value>
   </data>
+  <data name="picGamebook.Location" type="System.Drawing.Point, System.Drawing">
+    <value>360, 42</value>
+  </data>
   <data name="&gt;&gt;picGamebook.Type" xml:space="preserve">
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;txtFilename.Name" xml:space="preserve">
     <value>txtFilename</value>
   </data>
-  <data name="&gt;&gt;cmdBrowse.Name" xml:space="preserve">
-    <value>cmdBrowse</value>
-  </data>
-  <data name="picGamebookBorder.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
   <data name="&gt;&gt;picGamebookBorder.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>76, 17</value>
+    <value>155, 17</value>
   </data>
-  <data name="&gt;&gt;txtFilename.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;optTextAdventure.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="Label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="Label1.Text" xml:space="preserve">
-    <value>&amp;Language:</value>
+    <value>&amp;Language of the game:</value>
+  </data>
+  <data name="&gt;&gt;Label4.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="&gt;&gt;Label4.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -538,11 +535,11 @@
   <data name="&gt;&gt;txtGameName.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="&gt;&gt;txtFilename.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
   <data name="optTextAdventure.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
+  </data>
+  <data name="&gt;&gt;lstTemplate.ZOrder" xml:space="preserve">
+    <value>14</value>
   </data>
   <data name="picGamebookBorder.Size" type="System.Drawing.Size, System.Drawing">
     <value>243, 110</value>
@@ -559,9 +556,6 @@
   <data name="Label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 0, 4, 0</value>
   </data>
-  <data name="&gt;&gt;picTextAdventureBorder.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="&gt;&gt;Label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -574,8 +568,8 @@
   <data name="cmdOK.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
-  <data name="picTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
-    <value>243, 109</value>
+  <data name="optTextAdventure.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 14</value>
   </data>
   <data name="picTextAdventureBorder.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -583,14 +577,17 @@
   <data name="Label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 0, 4, 0</value>
   </data>
+  <data name="lstTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 24</value>
+  </data>
   <data name="Label4.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="lstTemplate.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="optTextAdventure.Location" type="System.Drawing.Point, System.Drawing">
-    <value>109, 14</value>
+  <data name="&gt;&gt;cmdBrowse.Name" xml:space="preserve">
+    <value>cmdBrowse</value>
   </data>
   <data name="Label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>49, 17</value>
@@ -613,8 +610,8 @@
   <data name="&gt;&gt;ctlSaveDialog.Name" xml:space="preserve">
     <value>ctlSaveDialog</value>
   </data>
-  <data name="&gt;&gt;Label4.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>617, 385</value>
   </data>
   <data name="Label2.Text" xml:space="preserve">
     <value>&amp;Name:</value>
@@ -628,41 +625,44 @@
   <data name="Label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 0, 4, 0</value>
   </data>
-  <data name="cmdCancel.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>System</value>
+  <data name="picGamebookBorder.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
   </data>
   <data name="Label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>73, 17</value>
   </data>
+  <data name="&gt;&gt;picGamebook.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="cmdCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 28</value>
   </data>
-  <data name="txtFilename.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+  <data name="cmdCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
   </data>
-  <data name="&gt;&gt;picGamebook.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;optGamebook.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="Label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="lstTemplate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>243, 24</value>
+  <data name="txtFilename.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
   </data>
-  <data name="Label4.AutoSize" type="System.Boolean, mscorlib">
+  <data name="Label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="optTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
-    <value>127, 22</value>
+  <data name="picTextAdventure.Size" type="System.Drawing.Size, System.Drawing">
+    <value>243, 109</value>
   </data>
   <data name="picTextAdventure.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
   </data>
-  <data name="ctlSaveDialog.Filter" xml:space="preserve">
-    <value>Quest Games|*.aslx</value>
+  <data name="&gt;&gt;lstTemplate.Name" xml:space="preserve">
+    <value>lstTemplate</value>
   </data>
-  <data name="cmdBrowse.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
+  <data name="&gt;&gt;cmdOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Label3.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -670,14 +670,11 @@
   <data name="optTextAdventure.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;lstTemplate.ZOrder" xml:space="preserve">
-    <value>14</value>
+  <data name="&gt;&gt;txtFilename.ZOrder" xml:space="preserve">
+    <value>10</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>de</value>
   </metadata>
   <metadata name="ctlSaveDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

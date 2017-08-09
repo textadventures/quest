@@ -9,6 +9,7 @@ Public Class Main
     Private m_editorSimpleMode As Boolean
     ' Added by SoonGames
     Private m_languages As New Dictionary(Of String, String)
+    Private m_language As String
 
     Public Sub New()
         ' ----------------------------------------------------------------------------------------------------
@@ -17,18 +18,21 @@ Public Class Main
         m_languages.Add("English", "en")
         m_languages.Add("Deutsch", "de")
 
-        Dim language As String = Registry.GetSetting("Quest", "Settings", "Language", "").ToString()
+        m_language = Registry.GetSetting("Quest", "Settings", "Language", "").ToString()
 
-        If Not m_languages.ContainsKey(language) Then
+        If Not m_languages.ContainsKey(m_language) Then
             Dim currentculture As String = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName
             If m_languages.ContainsValue(currentculture) Then
-                language = FindKey(currentculture, m_languages)
+                m_language = FindKey(currentculture, m_languages)
+                SaveLanguage(m_language)
             Else
-                language = "English"
+                m_language = "English"
+                SaveLanguage(m_language)
             End If
         End If
+
         Try
-            Dim Culture As New System.Globalization.CultureInfo(m_languages(language))
+            Dim Culture As New System.Globalization.CultureInfo(m_languages(m_language))
             Threading.Thread.CurrentThread.CurrentUICulture = Culture
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -39,8 +43,8 @@ Public Class Main
         InitializeComponent()
 
         ' Added by SoonGames
-        ctlMenu.MenuChecked(language.ToLower) = True
-        ctlMenu.MenuEnabled(language.ToLower) = False
+        ctlMenu.MenuChecked(m_language.ToLower) = True
+        ctlMenu.MenuEnabled(m_language.ToLower) = False
 
         AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
 
@@ -93,19 +97,23 @@ Public Class Main
 
     ' Added by SoonGames
     Private Sub English()
-        Language("English")
+        ChangeLanguage("English")
     End Sub
 
     Private Sub Deutsch()
-        Language("Deutsch")
+        ChangeLanguage("Deutsch")
     End Sub
 
-    Private Sub Language(language As String)
-        Dim Result As Integer = MsgBox("Zur Änderung der Sprache muss die Anwendung neu gestartet werden. Fortfahren?", MsgBoxStyle.OkCancel)
-        If Result = 1 Then
-            TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "Language", language)
+    Private Sub ChangeLanguage(lang As String)
+        Dim Result As Integer = MsgBox("Zur Änderung der Sprache muss Quest neu gestartet werden. Wollen Sie fortfahren?", MsgBoxStyle.YesNo Or MsgBoxStyle.Exclamation, "Quest-Neustart")
+        If Result = 6 Then
+            SaveLanguage(lang)
             Application.Restart()
         End If
+    End Sub
+
+    Private Sub SaveLanguage(lang As String)
+        TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "Language", lang)
     End Sub
 
     Private Function FindKey(value As String, dic As Dictionary(Of String, String)) As String
@@ -167,7 +175,7 @@ Public Class Main
     End Sub
 
     Private Sub Browse()
-        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder",
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder
@@ -306,7 +314,7 @@ Public Class Main
     End Sub
 
     Private Sub BrowseEdit()
-        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder",
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder

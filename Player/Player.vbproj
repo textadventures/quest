@@ -180,11 +180,20 @@
     <EmbeddedResource Include="Debugger.resx">
       <DependentUpon>Debugger.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DebuggerPane.de.resx">
+      <DependentUpon>DebuggerPane.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DebuggerPane.resx">
       <DependentUpon>DebuggerPane.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Log.de.resx">
+      <DependentUpon>Log.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Log.resx">
       <DependentUpon>Log.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.de.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.vb</DependentUpon>

@@ -190,6 +190,9 @@
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ErrorHandler.de.resx">
+      <DependentUpon>ErrorHandler.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorHandler.resx">
       <DependentUpon>ErrorHandler.vb</DependentUpon>
     </EmbeddedResource>
@@ -204,6 +207,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsDialog.de.resx">
+      <DependentUpon>OptionsDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsDialog.resx">
       <DependentUpon>OptionsDialog.vb</DependentUpon>

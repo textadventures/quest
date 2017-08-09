@@ -126,10 +126,10 @@
     <value>106, 180</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 17</value>
+    <value>134, 17</value>
   </data>
   <data name="Label1.Text" xml:space="preserve">
-    <value>&amp;Sprache:</value>
+    <value>&amp;Sprache des Spiels:</value>
   </data>
   <data name="lstTemplate.Location" type="System.Drawing.Point, System.Drawing">
     <value>109, 201</value>

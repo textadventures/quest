@@ -196,7 +196,7 @@
     <value>2</value>
   </data>
   <data name="cmdBrowse.Text" xml:space="preserve">
-    <value>Browse...</value>
+    <value>&amp;Browse...</value>
   </data>
   <data name="&gt;&gt;cmdBrowse.Name" xml:space="preserve">
     <value>cmdBrowse</value>
