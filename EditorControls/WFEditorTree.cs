@@ -53,9 +53,7 @@ namespace TextAdventures.Quest.EditorControls
         private Action<string, string> m_doDragDelegate;
         public delegate void MenuClickHandler();
         private Dictionary<string, ToolStripMenuItem> m_menus = new Dictionary<string, ToolStripMenuItem>();
-        // Added by SoonGames
         private Dictionary<string, ToolStripSeparator> m_separators = new Dictionary<string, ToolStripSeparator>();
-
         private Dictionary<string, MenuClickHandler> m_handlers = new Dictionary<string, MenuClickHandler>();
         public event FiltersUpdatedEventHandler FiltersUpdated;
         public delegate void FiltersUpdatedEventHandler();
@@ -651,7 +649,6 @@ namespace TextAdventures.Quest.EditorControls
                     }
                 }
 
-                // Added by SoonGames
                 ToolStripSeparator menuSep = item as ToolStripSeparator;
                 if (menuSep != null)
                 {
@@ -661,7 +658,6 @@ namespace TextAdventures.Quest.EditorControls
                         m_separators.Add(tag, menuSep);
                     }
                 }
-                // ----------------------------------------------------------------------------------------------------
             }
         }
 
@@ -722,11 +718,9 @@ namespace TextAdventures.Quest.EditorControls
             m_menus[key].Enabled = enabled;
         }
 
-        // Added by SoonGames
         public void SetMenuSeparatorVisible(string key, bool visible)
         {
             m_separators[key].Visible = visible;
         }
-        // ----------------------------------------------------------------------------------------------------
     }
 }

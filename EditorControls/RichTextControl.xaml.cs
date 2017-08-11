@@ -68,7 +68,6 @@ namespace TextAdventures.Quest.EditorControls
                                 Padding = new Thickness(5),
                                 Margin = new Thickness(3),
                                 Tag = command,
-                                // Added by SoonGames
                                 Foreground = System.Windows.Media.Brushes.Black,
                                 Background = System.Windows.Media.Brushes.White,
                                 BorderBrush = System.Windows.Media.Brushes.Silver

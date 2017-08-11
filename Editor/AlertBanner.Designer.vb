@@ -22,34 +22,47 @@ Partial Class AlertBanner
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AlertBanner))
         Me.lblAlertText = New System.Windows.Forms.Label()
         Me.cmdAction = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lblAlertText
         '
-        resources.ApplyResources(Me.lblAlertText, "lblAlertText")
+        Me.lblAlertText.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblAlertText.ForeColor = System.Drawing.Color.Black
+        Me.lblAlertText.Location = New System.Drawing.Point(1, 1)
+        Me.lblAlertText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAlertText.Name = "lblAlertText"
+        Me.lblAlertText.Size = New System.Drawing.Size(306, 28)
+        Me.lblAlertText.TabIndex = 0
+        Me.lblAlertText.Text = "Text"
+        Me.lblAlertText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cmdAction
         '
-        resources.ApplyResources(Me.cmdAction, "cmdAction")
         Me.cmdAction.BackColor = System.Drawing.SystemColors.Control
+        Me.cmdAction.Dock = System.Windows.Forms.DockStyle.Right
+        Me.cmdAction.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdAction.Location = New System.Drawing.Point(307, 1)
+        Me.cmdAction.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdAction.Name = "cmdAction"
+        Me.cmdAction.Size = New System.Drawing.Size(100, 28)
+        Me.cmdAction.TabIndex = 1
+        Me.cmdAction.Text = "Action"
         Me.cmdAction.UseVisualStyleBackColor = False
         '
         'AlertBanner
         '
-        resources.ApplyResources(Me, "$this")
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.Controls.Add(Me.cmdAction)
         Me.Controls.Add(Me.lblAlertText)
+        Me.Controls.Add(Me.cmdAction)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "AlertBanner"
+        Me.Padding = New System.Windows.Forms.Padding(1, 1, 5, 1)
+        Me.Size = New System.Drawing.Size(412, 30)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Private WithEvents lblAlertText As System.Windows.Forms.Label

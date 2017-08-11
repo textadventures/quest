@@ -55,7 +55,6 @@ namespace TextAdventures.Quest.EditorControls
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
-            // Changed by SoonGames
             // ctlSplitContainer.SplitterDistance = 810;
             lblAttributesTitle.Text = "Verbs";
             // lblAttributesTitle.Width = 60;

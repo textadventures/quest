@@ -122,34 +122,46 @@
     <value>None</value>
   </data>
   <data name="butNew.Text" xml:space="preserve">
-    <value>&amp;Neu</value>
+    <value>Neu</value>
   </data>
   <data name="butOpen.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="butOpen.Text" xml:space="preserve">
-    <value>Ö&amp;ffnen</value>
+    <value>Öffnen</value>
   </data>
   <data name="butSave.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="butSave.Text" xml:space="preserve">
-    <value>&amp;Speichern</value>
+    <value>Speichern</value>
   </data>
   <data name="butCut.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="butCut.Text" xml:space="preserve">
-    <value>&amp;Ausschneiden</value>
+    <value>Ausschneiden</value>
   </data>
   <data name="butCopy.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="butCopy.Text" xml:space="preserve">
-    <value>&amp;Kopieren</value>
+    <value>Kopieren</value>
   </data>
   <data name="butPaste.Text" xml:space="preserve">
-    <value>&amp;Einfügen</value>
+    <value>Einfügen</value>
+  </data>
+  <data name="butUndoSimple.Text" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="butUndoSimple.ToolTipText" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="butRedoSimple.Text" xml:space="preserve">
+    <value>Wiederholen</value>
+  </data>
+  <data name="butRedoSimple.ToolTipText" xml:space="preserve">
+    <value>Wiederholen</value>
   </data>
   <data name="butUndo.Text" xml:space="preserve">
     <value>Rückgängig</value>
@@ -159,37 +171,64 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="butAddPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 36</value>
+    <value>78, 47</value>
   </data>
   <data name="butAddPage.Text" xml:space="preserve">
+    <value>Seite</value>
+  </data>
+  <data name="butAddPage.ToolTipText" xml:space="preserve">
     <value>Seite hinzufügen</value>
   </data>
   <data name="butAddRoom.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 36</value>
+    <value>83, 47</value>
   </data>
   <data name="butAddRoom.Text" xml:space="preserve">
     <value>Raum</value>
   </data>
+  <data name="butAddRoom.ToolTipText" xml:space="preserve">
+    <value>Raum hinzufügen</value>
+  </data>
   <data name="butAddObject.Text" xml:space="preserve">
     <value>Objekt</value>
   </data>
+  <data name="butAddObject.ToolTipText" xml:space="preserve">
+    <value>Objekt hinzufügen</value>
+  </data>
+  <data name="butDelete.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="butDelete.ToolTipText" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
   <data name="butBack.Size" type="System.Drawing.Size, System.Drawing">
-    <value>104, 36</value>
+    <value>108, 47</value>
   </data>
   <data name="butBack.Text" xml:space="preserve">
     <value>Zurück</value>
   </data>
+  <data name="butForward.Text" xml:space="preserve">
+    <value>Vor</value>
+  </data>
+  <data name="butForward.ToolTipText" xml:space="preserve">
+    <value>Vor</value>
+  </data>
   <data name="butPlay.Size" type="System.Drawing.Size, System.Drawing">
-    <value>92, 36</value>
+    <value>92, 47</value>
   </data>
   <data name="butPlay.Text" xml:space="preserve">
     <value>Starten</value>
   </data>
   <data name="butCode.Text" xml:space="preserve">
-    <value>Quellcode</value>
+    <value>Quelltext</value>
+  </data>
+  <data name="butCode.ToolTipText" xml:space="preserve">
+    <value>Quelltextansicht</value>
+  </data>
+  <data name="butHelp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>36, 47</value>
   </data>
   <data name="butHelp.Text" xml:space="preserve">
-    <value>Hi&amp;lfe</value>
+    <value>Hilfe</value>
   </data>
   <data name="butLogError.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -206,14 +245,19 @@
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1341, 39</value>
+  <data name="butLogError.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 47</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="lblHeader.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 47</value>
+  </data>
+  <data name="lblHeader.ToolTipText" xml:space="preserve">
+    <value>Aktuelle Auswahl</value>
+  </data>
+  <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1341, 50</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1341, 66</value>
+    <value>1341, 50</value>
   </data>
 </root>

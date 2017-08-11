@@ -71,23 +71,21 @@
             // 
             // ctlSplitContainerMain.Panel1
             // 
-            resources.ApplyResources(this.ctlSplitContainerMain.Panel1, "ctlSplitContainerMain.Panel1");
             this.ctlSplitContainerMain.Panel1.Controls.Add(this.lstTypes);
             this.ctlSplitContainerMain.Panel1.Controls.Add(this.ctlTypesToolStrip);
             // 
             // ctlSplitContainerMain.Panel2
             // 
-            resources.ApplyResources(this.ctlSplitContainerMain.Panel2, "ctlSplitContainerMain.Panel2");
             this.ctlSplitContainerMain.Panel2.Controls.Add(this.ctlSplitContainer);
             // 
             // lstTypes
             // 
-            resources.ApplyResources(this.lstTypes, "lstTypes");
             this.lstTypes.BackColor = System.Drawing.Color.White;
             this.lstTypes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader1,
             this.ColumnHeader2,
             this.ColumnHeader3});
+            resources.ApplyResources(this.lstTypes, "lstTypes");
             this.lstTypes.ForeColor = System.Drawing.Color.Black;
             this.lstTypes.FullRowSelect = true;
             this.lstTypes.GridLines = true;
@@ -112,7 +110,6 @@
             // 
             // ctlTypesToolStrip
             // 
-            resources.ApplyResources(this.ctlTypesToolStrip, "ctlTypesToolStrip");
             this.ctlTypesToolStrip.BackColor = System.Drawing.Color.Transparent;
             this.ctlTypesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlTypesToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -120,6 +117,7 @@
             this.ToolStripLabel2,
             this.cmdAddType,
             this.cmdDeleteType});
+            resources.ApplyResources(this.ctlTypesToolStrip, "ctlTypesToolStrip");
             this.ctlTypesToolStrip.Name = "ctlTypesToolStrip";
             // 
             // ToolStripLabel2
@@ -129,15 +127,15 @@
             // 
             // cmdAddType
             // 
-            resources.ApplyResources(this.cmdAddType, "cmdAddType");
             this.cmdAddType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            resources.ApplyResources(this.cmdAddType, "cmdAddType");
             this.cmdAddType.Name = "cmdAddType";
             this.cmdAddType.Click += new System.EventHandler(this.cmdAddType_Click);
             // 
             // cmdDeleteType
             // 
-            resources.ApplyResources(this.cmdDeleteType, "cmdDeleteType");
             this.cmdDeleteType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            resources.ApplyResources(this.cmdDeleteType, "cmdDeleteType");
             this.cmdDeleteType.Name = "cmdDeleteType";
             this.cmdDeleteType.Click += new System.EventHandler(this.cmdDeleteType_Click);
             // 
@@ -148,24 +146,22 @@
             // 
             // ctlSplitContainer.Panel1
             // 
-            resources.ApplyResources(this.ctlSplitContainer.Panel1, "ctlSplitContainer.Panel1");
             this.ctlSplitContainer.Panel1.Controls.Add(this.lstAttributes);
             this.ctlSplitContainer.Panel1.Controls.Add(this.ctlToolStrip);
             // 
             // ctlSplitContainer.Panel2
             // 
-            resources.ApplyResources(this.ctlSplitContainer.Panel2, "ctlSplitContainer.Panel2");
             this.ctlSplitContainer.Panel2.Controls.Add(this.ctlMultiControl);
             this.ctlSplitContainer.Panel2.Controls.Add(this.toolStrip);
             // 
             // lstAttributes
             // 
-            resources.ApplyResources(this.lstAttributes, "lstAttributes");
             this.lstAttributes.BackColor = System.Drawing.Color.White;
             this.lstAttributes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
             this.colValue,
             this.colSource});
+            resources.ApplyResources(this.lstAttributes, "lstAttributes");
             this.lstAttributes.ForeColor = System.Drawing.Color.Black;
             this.lstAttributes.FullRowSelect = true;
             this.lstAttributes.GridLines = true;
@@ -191,7 +187,6 @@
             // 
             // ctlToolStrip
             // 
-            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.BackColor = System.Drawing.Color.Transparent;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -200,6 +195,7 @@
             this.cmdAdd,
             this.cmdDelete,
             this.cmdOnChange});
+            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.Name = "ctlToolStrip";
             // 
             // lblAttributesTitle
@@ -209,39 +205,39 @@
             // 
             // cmdAdd
             // 
-            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
             // cmdDelete
             // 
-            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdOnChange
             // 
-            resources.ApplyResources(this.cmdOnChange, "cmdOnChange");
             this.cmdOnChange.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Joyent;
+            resources.ApplyResources(this.cmdOnChange, "cmdOnChange");
             this.cmdOnChange.Name = "cmdOnChange";
             this.cmdOnChange.Click += new System.EventHandler(this.cmdOnChange_Click);
             // 
             // ctlMultiControl
             // 
-            resources.ApplyResources(this.ctlMultiControl, "ctlMultiControl");
             this.ctlMultiControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.ctlMultiControl, "ctlMultiControl");
             this.ctlMultiControl.Name = "ctlMultiControl";
             // 
             // toolStrip
             // 
-            resources.ApplyResources(this.toolStrip, "toolStrip");
             this.toolStrip.BackColor = System.Drawing.Color.Transparent;
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1});
+            resources.ApplyResources(this.toolStrip, "toolStrip");
             this.toolStrip.Name = "toolStrip";
             // 
             // toolStripLabel1

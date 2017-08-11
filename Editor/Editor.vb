@@ -18,8 +18,8 @@ Public Class Editor
     Private m_editorStyle As EditorStyle = EditorStyle.TextAdventure
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
-    ' Added by SoonGames
     Private m_splitHelper As TextAdventures.Utility.SplitterHelper
+    Public T As New Dictionary(Of String, String)
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -75,10 +75,9 @@ Public Class Editor
                             EditorStyle = m_controller.EditorStyle
                             SimpleMode = (CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
                             SetWordWrap(CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
-                            ' Added by SoonGames
                             m_splitHelper = New TextAdventures.Utility.SplitterHelper(splitMain, "Quest", "EditorSplitter")
                             m_splitHelper.LoadSplitterPositions()
-                            ' ----------------------------------------------------------------------------------------------------
+                            ReadTemplates()
                             m_menu.Visible = True
                             m_uiHidden = False
                             Me.SuspendLayout()
@@ -115,6 +114,33 @@ Public Class Editor
                         ctlLoading.Clear()
 
                     End Sub)
+    End Sub
+
+    Private Sub ReadTemplates()
+        Try
+            Dim reader As New System.Xml.XmlTextReader(".\Core\Languages\EditorEnglish.aslx")
+            Const nodeTemplate = "template"
+            Const nodeName = "name"
+            Dim key As String = ""
+            Dim value As String = ""
+            While reader.Read()
+                reader.MoveToContent()
+                If reader.NodeType = Xml.XmlNodeType.Element And reader.Name = nodeTemplate And reader.GetAttribute(nodeName) IsNot Nothing Then
+                    key = reader.GetAttribute(nodeName)
+                End If
+                If reader.NodeType = Xml.XmlNodeType.Text Then
+                    value = reader.Value
+                End If
+                If key <> "" And value <> "" Then
+                    T(key) = value
+                    key = ""
+                    value = ""
+                End If
+            End While
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+            Process.GetCurrentProcess.Kill()
+        End Try
     End Sub
 
     Private Sub InitialiseEditorControlsList()
@@ -383,8 +409,8 @@ Public Class Editor
                 m_currentEditorData = extendedData
                 BannerVisible = extendedData.IsLibraryElement
                 Dim filename As String = System.IO.Path.GetFileName(extendedData.Filename)
-                ctlBanner.AlertText = String.Format("From library {0}", filename)
-                ctlBanner.ButtonText = "Copy"
+                ctlBanner.AlertText = String.Format(T("EditorFromLibrary"), filename)
+                ctlBanner.ButtonText = T("EditorFromLibraryCopy")
             Else
                 BannerVisible = False
             End If
@@ -430,7 +456,7 @@ Public Class Editor
             m_unsavedChanges = False
             Return True
         Catch ex As Exception
-            MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
+            MsgBox(T("EditorUnableToSave") + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
             Return False
         Finally
             m_fileWatcher.EnableRaisingEvents = True
@@ -506,7 +532,7 @@ Public Class Editor
     End Function
 
     Private Sub AddNewElement(typeName As String, action As Action(Of String))
-        Dim result = PopupEditors.EditString(String.Format("Please enter a name for the new {0}", typeName), "")
+        Dim result = PopupEditors.EditString(String.Format(T("EditorNewElement"), typeName), "")
         If result.Cancelled Then Return
         If Not ValidateInput(result.Result).IsValid Then Return
 
@@ -516,7 +542,7 @@ Public Class Editor
 
     Private Sub AddNewObject()
         Dim possibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(ctlTree.SelectedItem)
-        Dim result = GetNameAndParent("Please enter a name for the new object", possibleParents, True)
+        Dim result = GetNameAndParent(T("EditorNewObject"), possibleParents, True)
 
         If result Is Nothing Then Return
 
@@ -525,7 +551,7 @@ Public Class Editor
     End Sub
 
     Private Sub AddNewRoom()
-        Dim result = PopupEditors.EditString("Please enter a name for the new room", "")
+        Dim result = PopupEditors.EditString(T("EditorNewRoom"), "")
         If result.Cancelled Then Return
         If Not ValidateInput(result.Result).IsValid Then Return
 
@@ -563,7 +589,7 @@ Public Class Editor
 
     Private Sub AddNewWalkthrough()
         Dim possibleParents = m_controller.GetPossibleNewParentsForCurrentSelection(ctlTree.SelectedItem, "walkthrough")
-        Dim result = GetNameAndParent("Please enter a name for the new walkthrough", possibleParents, False)
+        Dim result = GetNameAndParent(T("EditorNewWalkthrough"), possibleParents, False)
 
         If result Is Nothing Then Return
 
@@ -577,7 +603,7 @@ Public Class Editor
     End Sub
 
     Private Sub AddNewTemplate()
-        Dim result = PopupEditors.EditString("Please enter a name for the new template", "")
+        Dim result = PopupEditors.EditString(T("EditorNewTemplate"), "")
         If result.Cancelled Then Return
 
         If Not ValidateInputTemplateName(result.Result) Then Return
@@ -615,7 +641,7 @@ Public Class Editor
     End Sub
 
     Private Sub AddNewPage()
-        Dim result = PopupEditors.EditString("Please enter a name for the new page", m_controller.GetUniqueElementName("Page1"))
+        Dim result = PopupEditors.EditString(T("EditorNewPage"), m_controller.GetUniqueElementName("Page1"))
         If result.Cancelled Then Return
         If Not ValidateInput(result.Result).IsValid Then Return
 
@@ -624,7 +650,7 @@ Public Class Editor
     End Sub
 
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String), allowAlias As Boolean) As PopupEditors.EditStringResult?
-        Const noParent As String = "(none)"
+        Dim noParent As String = T("EditorNotParents")
 
         Dim result As PopupEditors.EditStringResult
 
@@ -635,7 +661,7 @@ Public Class Editor
             parentOptions.Add(noParent)
             parentOptions.AddRange(possibleParents)
 
-            result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, parentOptions(1))
+            result = PopupEditors.EditStringWithDropdown(prompt, "", T("EditorParent"), parentOptions, parentOptions(1))
         End If
 
         If result.Cancelled Then Return Nothing
@@ -679,7 +705,7 @@ Public Class Editor
             Return result
         End If
 
-        PopupEditors.DisplayValidationError(validationResult, input, "Unable to add element")
+        PopupEditors.DisplayValidationError(validationResult, input, T("EditorUnableToAddEmement"))
         result.IsValid = False
         Return result
     End Function
@@ -688,7 +714,7 @@ Public Class Editor
         Dim result = m_controller.CanAddTemplate(input)
         If result.Valid Then Return True
 
-        PopupEditors.DisplayValidationError(result, input, "Unable to add template")
+        PopupEditors.DisplayValidationError(result, input, T("EditorUnableToAddTemplate"))
         Return False
     End Function
 
@@ -722,7 +748,7 @@ Public Class Editor
     End Sub
 
     Public Function CloseEditor(raiseCloseEvent As Boolean, appIsExiting As Boolean) As Boolean
-        If Not CheckGameIsSaved("Do you wish to save your changes before closing?") Then Return False
+        If Not CheckGameIsSaved(T("EditorSaveBeforeClosing")) Then Return False
 
         If raiseCloseEvent Then RaiseEvent Close()
 
@@ -794,8 +820,8 @@ Public Class Editor
 
     Private Sub ToggleCodeView()
         Dim unsavedPrompt = If(m_codeView,
-                               "Do you wish to save your changes before leaving the code view?",
-                               "Do you wish to save your changes before editing this game in the code view?")
+                               T("EditorSaveBeforeLeavingCodeView"),
+                               T("EditorSaveBeforeEditingThisGame"))
 
         If Not CheckGameIsSaved(unsavedPrompt) Then Return
 
@@ -912,7 +938,7 @@ Public Class Editor
 
     Private Sub ctlBanner_ButtonClicked() Handles ctlBanner.ButtonClicked
         Dim thisElement As String = m_currentElement
-        m_controller.StartTransaction(String.Format("Create local copy of '{0}'", m_currentElement))
+        m_controller.StartTransaction(String.Format(T("EditorCreateLocalCopy"), m_currentElement))
         m_currentEditorData.MakeElementLocal()
         m_controller.EndTransaction()
 
@@ -965,7 +991,7 @@ Public Class Editor
             If prompt Is Nothing Then
                 result = MsgBoxResult.Yes
             Else
-                result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+                result = MsgBox(T("EditorUnsavedChangesContent") + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, T("EditorUnsavedChangesTitle"))
             End If
 
             If result = MsgBoxResult.Yes Then
@@ -995,7 +1021,7 @@ Public Class Editor
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format(T("EditorErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 
@@ -1006,7 +1032,7 @@ Public Class Editor
 
     Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed
         BeginInvoke(Sub()
-                        ctlReloadBanner.AlertText = String.Format("{0} has been modified outside Quest.", e.Name)
+                        ctlReloadBanner.AlertText = String.Format(T("EditorModifiedOutside"), e.Name)
                         ctlReloadBanner.Visible = True
                     End Sub)
     End Sub
@@ -1118,13 +1144,11 @@ Public Class Editor
         ctlTree.SetMenuVisible("adddynamictemplate", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
         ctlTree.SetMenuVisible("addobjecttype", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
         ctlTree.SetMenuVisible("addjavascript", Not SimpleMode)
-        ' Added by SoonGames
         ctlTree.SetMenuSeparatorVisible("separator1", True)
         ctlTree.SetMenuSeparatorVisible("separator2", True)
         ctlTree.SetMenuSeparatorVisible("separator3", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
         ctlTree.SetMenuSeparatorVisible("separator4", ((EditorStyle = EditorStyle.GameBook) Or (EditorStyle = EditorStyle.TextAdventure)) And Not SimpleMode)
         ctlTree.SetMenuSeparatorVisible("separator5", ((EditorStyle = EditorStyle.GameBook) Or (EditorStyle = EditorStyle.TextAdventure)) And Not SimpleMode)
-        ' ----------------------------------------------------------------------------------------------------
     End Sub
 
     Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
@@ -1133,7 +1157,7 @@ Public Class Editor
 
     Private Sub m_controller_LibrariesUpdated(sender As Object, e As EditorController.LibrariesUpdatedEventArgs) Handles m_controller.LibrariesUpdated
         BeginInvoke(Sub()
-                        ctlReloadBanner.AlertText = "Save this game and then click Reload to apply changes from updating Included Libraries."
+                        ctlReloadBanner.AlertText = T("EditorSaveGameAndClickReload")
                         ctlReloadBanner.Visible = True
                     End Sub)
     End Sub

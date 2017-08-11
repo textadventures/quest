@@ -7,14 +7,10 @@ Public Class Main
     Private m_cmdLineLaunch As String = Nothing
     Private m_fromEditor As Boolean
     Private m_editorSimpleMode As Boolean
-    ' Added by SoonGames
     Private m_languages As New Dictionary(Of String, String)
     Private m_language As String
 
     Public Sub New()
-        ' ----------------------------------------------------------------------------------------------------
-        ' Added by SoonGames
-        ' ----------------------------------------------------------------------------------------------------
         m_languages.Add("English", "en")
         m_languages.Add("Deutsch", "de")
 
@@ -37,12 +33,10 @@ Public Class Main
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
-        ' ----------------------------------------------------------------------------------------------------
 
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
-        ' Added by SoonGames
         ctlMenu.MenuChecked(m_language.ToLower) = True
         ctlMenu.MenuEnabled(m_language.ToLower) = False
 
@@ -90,12 +84,10 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
         ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
-        ' Added by SoonGames
         ctlMenu.AddMenuClickHandler("english", AddressOf English)
         ctlMenu.AddMenuClickHandler("deutsch", AddressOf Deutsch)
     End Sub
 
-    ' Added by SoonGames
     Private Sub English()
         ChangeLanguage("English")
     End Sub
@@ -122,7 +114,6 @@ Public Class Main
         Next kvp
         Return ""
     End Function
-    ' ----------------------------------------------------------------------------------------------------
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
         ctlLauncher.AddToRecent(filename, name)

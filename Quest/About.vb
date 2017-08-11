@@ -8,13 +8,8 @@
         Else
             ApplicationTitle = System.IO.Path.GetFileNameWithoutExtension(My.Application.Info.AssemblyName)
         End If
-        '----------------------------------------------------------------------------------------------------
-        'Added by SoonGames
         Dim Abouttext As String = Me.Text
-        'Changed by SoonGames
         Me.Text = String.Format(Abouttext + " {0}", ApplicationTitle)
-        '----------------------------------------------------------------------------------------------------
-
         lblTitle.Text = String.Format("{0} {1}", My.Application.Info.ProductName, Constants.QuestVersion)
         lblBuild.Text = String.Format("Build {0}", My.Application.Info.Version.ToString)
         lblCopyright.Text = My.Application.Info.Copyright

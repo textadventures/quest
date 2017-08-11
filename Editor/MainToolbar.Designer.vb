@@ -2,12 +2,12 @@ Option Strict On
 Imports System.Windows.Forms
 Imports System.ComponentModel
 
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class MainToolbar
     Inherits System.Windows.Forms.UserControl
 
     'InteropUserControl overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -21,7 +21,7 @@ Partial Class MainToolbar
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainToolbar))
@@ -59,196 +59,200 @@ Partial Class MainToolbar
         '
         'ctlToolStrip
         '
-        resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
+        resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.ToolStripSeparator6, Me.butLogError})
         Me.ctlToolStrip.Name = "ctlToolStrip"
         '
         'butNew
         '
-        resources.ApplyResources(Me.butNew, "butNew")
         Me.butNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butNew.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Datei_32
+        resources.ApplyResources(Me.butNew, "butNew")
         Me.butNew.Name = "butNew"
         Me.butNew.Tag = "new"
         '
         'butOpen
         '
-        resources.ApplyResources(Me.butOpen, "butOpen")
         Me.butOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butOpen.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Ordner_öffnen_32
+        resources.ApplyResources(Me.butOpen, "butOpen")
         Me.butOpen.Name = "butOpen"
         Me.butOpen.Tag = "open"
         '
         'butSave
         '
-        resources.ApplyResources(Me.butSave, "butSave")
         Me.butSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butSave.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Speichern_32
+        resources.ApplyResources(Me.butSave, "butSave")
         Me.butSave.Name = "butSave"
         Me.butSave.Tag = "save"
         '
         'ToolStripSeparator1
         '
-        resources.ApplyResources(Me.ToolStripSeparator1, "ToolStripSeparator1")
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        resources.ApplyResources(Me.ToolStripSeparator1, "ToolStripSeparator1")
         '
         'butCut
         '
-        resources.ApplyResources(Me.butCut, "butCut")
         Me.butCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butCut.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Ausschneiden_32
+        resources.ApplyResources(Me.butCut, "butCut")
         Me.butCut.Name = "butCut"
         Me.butCut.Tag = "cut"
         '
         'butCopy
         '
-        resources.ApplyResources(Me.butCopy, "butCopy")
         Me.butCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butCopy.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Kopieren_32
+        resources.ApplyResources(Me.butCopy, "butCopy")
         Me.butCopy.Name = "butCopy"
         Me.butCopy.Tag = "copy"
         '
         'butPaste
         '
-        resources.ApplyResources(Me.butPaste, "butPaste")
         Me.butPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butPaste.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Paste_32
+        resources.ApplyResources(Me.butPaste, "butPaste")
         Me.butPaste.Name = "butPaste"
         Me.butPaste.Tag = "paste"
         '
         'ToolStripSeparator4
         '
-        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
         '
         'butUndoSimple
         '
-        resources.ApplyResources(Me.butUndoSimple, "butUndoSimple")
         Me.butUndoSimple.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butUndoSimple.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Rückgängig_machen_32
+        resources.ApplyResources(Me.butUndoSimple, "butUndoSimple")
         Me.butUndoSimple.Name = "butUndoSimple"
         Me.butUndoSimple.Tag = "undo"
         '
         'butRedoSimple
         '
-        resources.ApplyResources(Me.butRedoSimple, "butRedoSimple")
         Me.butRedoSimple.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butRedoSimple.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Wiederholen_32
+        resources.ApplyResources(Me.butRedoSimple, "butRedoSimple")
         Me.butRedoSimple.Name = "butRedoSimple"
         Me.butRedoSimple.Tag = "redo"
         '
         'butUndo
         '
-        resources.ApplyResources(Me.butUndo, "butUndo")
         Me.butUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butUndo.DropDownButtonWidth = 16
         Me.butUndo.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Rückgängig_machen_32
+        resources.ApplyResources(Me.butUndo, "butUndo")
         Me.butUndo.Name = "butUndo"
         Me.butUndo.Tag = ""
         '
         'butRedo
         '
-        resources.ApplyResources(Me.butRedo, "butRedo")
         Me.butRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butRedo.DropDownButtonWidth = 16
         Me.butRedo.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Wiederholen_32
+        resources.ApplyResources(Me.butRedo, "butRedo")
         Me.butRedo.Name = "butRedo"
         Me.butRedo.Tag = ""
         '
         'ToolStripSeparator3
         '
-        resources.ApplyResources(Me.ToolStripSeparator3, "ToolStripSeparator3")
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        resources.ApplyResources(Me.ToolStripSeparator3, "ToolStripSeparator3")
         '
         'butAddPage
         '
-        resources.ApplyResources(Me.butAddPage, "butAddPage")
         Me.butAddPage.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Datei_hinzufügen_32
+        resources.ApplyResources(Me.butAddPage, "butAddPage")
         Me.butAddPage.Name = "butAddPage"
         Me.butAddPage.Tag = "addpage"
         '
         'butAddRoom
         '
-        resources.ApplyResources(Me.butAddRoom, "butAddRoom")
         Me.butAddRoom.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Zimmer_32
+        resources.ApplyResources(Me.butAddRoom, "butAddRoom")
         Me.butAddRoom.Name = "butAddRoom"
         Me.butAddRoom.Tag = "addroom"
         '
         'butAddObject
         '
-        resources.ApplyResources(Me.butAddObject, "butAddObject")
         Me.butAddObject.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Topfpflanze_32
+        resources.ApplyResources(Me.butAddObject, "butAddObject")
         Me.butAddObject.Name = "butAddObject"
         Me.butAddObject.Tag = "addobject"
         '
         'butDelete
         '
-        resources.ApplyResources(Me.butDelete, "butDelete")
         Me.butDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butDelete.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Löschen_32
+        resources.ApplyResources(Me.butDelete, "butDelete")
         Me.butDelete.Name = "butDelete"
         Me.butDelete.Tag = "delete"
         '
         'ToolStripSeparator2
         '
-        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
         '
         'butBack
         '
-        resources.ApplyResources(Me.butBack, "butBack")
+        Me.butBack.DropDownButtonWidth = 16
         Me.butBack.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Zurückspulen_32
+        resources.ApplyResources(Me.butBack, "butBack")
         Me.butBack.Name = "butBack"
         '
         'butForward
         '
-        resources.ApplyResources(Me.butForward, "butForward")
         Me.butForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butForward.DropDownButtonWidth = 16
         Me.butForward.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Schnellvorlauf_32
+        resources.ApplyResources(Me.butForward, "butForward")
         Me.butForward.Name = "butForward"
         '
         'ToolStripSeparator8
         '
-        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
         '
         'butPlay
         '
-        resources.ApplyResources(Me.butPlay, "butPlay")
         Me.butPlay.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Spielen_32
+        resources.ApplyResources(Me.butPlay, "butPlay")
         Me.butPlay.Name = "butPlay"
         Me.butPlay.Tag = "play"
         '
         'butCode
         '
-        resources.ApplyResources(Me.butCode, "butCode")
         Me.butCode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butCode.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Quellcode_32
+        resources.ApplyResources(Me.butCode, "butCode")
         Me.butCode.Name = "butCode"
         Me.butCode.Tag = "code"
         '
         'ToolStripSeparator5
         '
-        resources.ApplyResources(Me.ToolStripSeparator5, "ToolStripSeparator5")
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        resources.ApplyResources(Me.ToolStripSeparator5, "ToolStripSeparator5")
         '
         'butHelp
         '
-        resources.ApplyResources(Me.butHelp, "butHelp")
         Me.butHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butHelp.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Hilfe_32
+        resources.ApplyResources(Me.butHelp, "butHelp")
         Me.butHelp.Name = "butHelp"
         Me.butHelp.Tag = "help"
         '
         'ToolStripSeparator6
         '
-        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
         '
         'butLogError
         '
-        resources.ApplyResources(Me.butLogError, "butLogError")
         Me.butLogError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        resources.ApplyResources(Me.butLogError, "butLogError")
         Me.butLogError.Name = "butLogError"
         Me.butLogError.Tag = "logbug"
         '

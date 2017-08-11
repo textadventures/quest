@@ -396,6 +396,12 @@
   <ItemGroup>
     <None Include="Resources\icons8-Datei hinzufügen-32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-Mappe-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-Ordner öffnen-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"

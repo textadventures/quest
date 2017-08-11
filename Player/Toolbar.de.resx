@@ -119,15 +119,19 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="butStop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>136, 36</value>
+    <value>136, 47</value>
   </data>
   <data name="butStop.Text" xml:space="preserve">
     <value>Spiel stoppen</value>
   </data>
   <data name="butLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 36</value>
+    <value>105, 47</value>
   </data>
   <data name="butLog.Text" xml:space="preserve">
     <value>Protokoll</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ctlToolStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
   </data>
 </root>

@@ -66,8 +66,8 @@
             this.AddImpliedTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddDelegateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
-            this.roomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlImageList = new System.Windows.Forms.ImageList(this.components);
+            this.roomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -75,27 +75,28 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.BackColor = System.Drawing.Color.White;
+            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSearch.ForeColor = System.Drawing.Color.Black;
             this.txtSearch.Location = new System.Drawing.Point(0, 0);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(357, 22);
+            this.txtSearch.Size = new System.Drawing.Size(385, 22);
             this.txtSearch.TabIndex = 1;
             // 
             // ctlToolStrip
             // 
+            this.ctlToolStrip.AutoSize = false;
             this.ctlToolStrip.BackColor = System.Drawing.Color.GhostWhite;
             this.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFilter});
-            this.ctlToolStrip.Location = new System.Drawing.Point(0, 388);
+            this.ctlToolStrip.Location = new System.Drawing.Point(0, 390);
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(385, 27);
+            this.ctlToolStrip.Padding = new System.Windows.Forms.Padding(0);
+            this.ctlToolStrip.Size = new System.Drawing.Size(385, 25);
             this.ctlToolStrip.TabIndex = 5;
             this.ctlToolStrip.Text = "ToolStrip1";
             // 
@@ -105,21 +106,23 @@
             this.mnuFilter.Image = ((System.Drawing.Image)(resources.GetObject("mnuFilter.Image")));
             this.mnuFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFilter.Name = "mnuFilter";
-            this.mnuFilter.Size = new System.Drawing.Size(56, 24);
+            this.mnuFilter.Size = new System.Drawing.Size(56, 22);
             this.mnuFilter.Text = "Filter";
             // 
             // lstSearchResults
             // 
+            this.lstSearchResults.BackColor = System.Drawing.Color.White;
             this.lstSearchResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSearchResults});
             this.lstSearchResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstSearchResults.ForeColor = System.Drawing.Color.Black;
             this.lstSearchResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstSearchResults.HideSelection = false;
-            this.lstSearchResults.Location = new System.Drawing.Point(0, 25);
+            this.lstSearchResults.Location = new System.Drawing.Point(0, 20);
             this.lstSearchResults.Margin = new System.Windows.Forms.Padding(4);
             this.lstSearchResults.MultiSelect = false;
             this.lstSearchResults.Name = "lstSearchResults";
-            this.lstSearchResults.Size = new System.Drawing.Size(385, 390);
+            this.lstSearchResults.Size = new System.Drawing.Size(385, 395);
             this.lstSearchResults.TabIndex = 8;
             this.lstSearchResults.UseCompatibleStateImageBehavior = false;
             this.lstSearchResults.View = System.Windows.Forms.View.Details;
@@ -138,31 +141,35 @@
             this.pnlSearchContainer.Location = new System.Drawing.Point(0, 0);
             this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSearchContainer.Name = "pnlSearchContainer";
-            this.pnlSearchContainer.Size = new System.Drawing.Size(385, 25);
+            this.pnlSearchContainer.Size = new System.Drawing.Size(385, 20);
             this.pnlSearchContainer.TabIndex = 6;
             // 
             // cmdClose
             // 
-            this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
-            this.cmdClose.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_16__1_;
-            this.cmdClose.Location = new System.Drawing.Point(332, 0);
+            this.cmdClose.BackgroundImage = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_16__1_;
+            this.cmdClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.cmdClose.Dock = System.Windows.Forms.DockStyle.Right;
+            this.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdClose.Location = new System.Drawing.Point(345, 0);
             this.cmdClose.Margin = new System.Windows.Forms.Padding(4);
             this.cmdClose.Name = "cmdClose";
-            this.cmdClose.Size = new System.Drawing.Size(27, 25);
+            this.cmdClose.Size = new System.Drawing.Size(20, 20);
             this.cmdClose.TabIndex = 2;
             this.cmdClose.UseVisualStyleBackColor = false;
             this.cmdClose.Visible = false;
             // 
             // cmdSearch
             // 
-            this.cmdSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
-            this.cmdSearch.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Suche_16;
-            this.cmdSearch.Location = new System.Drawing.Point(359, 0);
+            this.cmdSearch.BackgroundImage = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Suche_16;
+            this.cmdSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.cmdSearch.Dock = System.Windows.Forms.DockStyle.Right;
+            this.cmdSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdSearch.Location = new System.Drawing.Point(365, 0);
             this.cmdSearch.Margin = new System.Windows.Forms.Padding(4);
             this.cmdSearch.Name = "cmdSearch";
-            this.cmdSearch.Size = new System.Drawing.Size(27, 25);
+            this.cmdSearch.Size = new System.Drawing.Size(20, 20);
             this.cmdSearch.TabIndex = 3;
             this.cmdSearch.UseVisualStyleBackColor = false;
             // 
@@ -423,12 +430,19 @@
             this.ctlTreeView.ImageIndex = 0;
             this.ctlTreeView.ImageList = this.ctlImageList;
             this.ctlTreeView.LineColor = System.Drawing.Color.Silver;
-            this.ctlTreeView.Location = new System.Drawing.Point(0, 25);
+            this.ctlTreeView.Location = new System.Drawing.Point(0, 20);
             this.ctlTreeView.Margin = new System.Windows.Forms.Padding(4);
             this.ctlTreeView.Name = "ctlTreeView";
-            this.ctlTreeView.SelectedImageIndex = 0;
-            this.ctlTreeView.Size = new System.Drawing.Size(385, 363);
+            this.ctlTreeView.SelectedImageIndex = 1;
+            this.ctlTreeView.Size = new System.Drawing.Size(385, 370);
             this.ctlTreeView.TabIndex = 7;
+            // 
+            // ctlImageList
+            // 
+            this.ctlImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ctlImageList.ImageStream")));
+            this.ctlImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.ctlImageList.Images.SetKeyName(0, "icons8-Mappe-16.png");
+            this.ctlImageList.Images.SetKeyName(1, "icons8-Ordner öffnen-16.png");
             // 
             // roomToolStripMenuItem
             // 
@@ -436,16 +450,11 @@
             this.roomToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
             this.roomToolStripMenuItem.Text = "Room";
             // 
-            // ctlImageList
-            // 
-            this.ctlImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ctlImageList.ImageStream")));
-            this.ctlImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.ctlImageList.Images.SetKeyName(0, "icons8-Mappe-16.png");
-            // 
             // WFEditorTree
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.GhostWhite;
             this.Controls.Add(this.ctlTreeView);
             this.Controls.Add(this.ctlToolStrip);
             this.Controls.Add(this.lstSearchResults);
@@ -459,7 +468,6 @@
             this.pnlSearchContainer.PerformLayout();
             this.ctlContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

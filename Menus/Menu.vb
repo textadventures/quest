@@ -61,7 +61,6 @@
         AddMenuData("codeview", MenuMode.Editor)
         AddMenuData("wordwrap", MenuMode.Editor)
         AddMenuData("htmldevtools", MenuMode.Player)
-        ' Added by SoonGames
         AddMenuData("english", MenuMode.GameBrowser, MenuMode.Editor)
         AddMenuData("deutsch", MenuMode.GameBrowser, MenuMode.Editor)
     End Sub

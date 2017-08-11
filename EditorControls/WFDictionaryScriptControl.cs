@@ -42,7 +42,6 @@ namespace TextAdventures.Quest.EditorControls
             string keyName = "Key";
             if (controlData != null) keyName = controlData.GetString("keyname") ?? keyName;
             m_manager.Initialise(controller, controlData, keyName, "Script");
-			// Changed by SoonGames
             // ctlListEditor.SetEditKeyButtonText("Edit " + keyName);
             // ctlListEditor.SetEditButtonText("Edit Script");
         }

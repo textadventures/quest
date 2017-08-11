@@ -120,9 +120,6 @@
   <data name="cmdCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="TabPage1.Text" xml:space="preserve">
-    <value>Spieler</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="chkUseSAPI.Size" type="System.Drawing.Size, System.Drawing">
     <value>273, 22</value>
@@ -160,8 +157,8 @@
   <data name="chkUseDefaultColours.Text" xml:space="preserve">
     <value>Standard-Spiel-&amp;Farben verwenden</value>
   </data>
-  <data name="TabPage2.Text" xml:space="preserve">
-    <value>Game-Browser</value>
+  <data name="TabPage1.Text" xml:space="preserve">
+    <value>Spieler</value>
   </data>
   <data name="lnkShowAdultHelp.Location" type="System.Drawing.Point, System.Drawing">
     <value>233, 100</value>
@@ -188,9 +185,12 @@
     <value>Ä&amp;ndern...</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>185, 17</value>
+    <value>205, 17</value>
   </data>
   <data name="Label1.Text" xml:space="preserve">
-    <value>Heruntergeladene Spiele in:</value>
+    <value>Heruntergeladene Spiele nach:</value>
+  </data>
+  <data name="TabPage2.Text" xml:space="preserve">
+    <value>Game-Browser</value>
   </data>
 </root>

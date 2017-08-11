@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputWindow));
             this.lstInputAutoComplete = new System.Windows.Forms.ComboBox();
             this.lblDropdownCaption = new System.Windows.Forms.Label();
             this.txtInput = new System.Windows.Forms.TextBox();
@@ -39,84 +40,56 @@
             // 
             // lstInputAutoComplete
             // 
-            this.lstInputAutoComplete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.lstInputAutoComplete, "lstInputAutoComplete");
             this.lstInputAutoComplete.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.lstInputAutoComplete.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.lstInputAutoComplete.FormattingEnabled = true;
-            this.lstInputAutoComplete.Location = new System.Drawing.Point(11, 29);
             this.lstInputAutoComplete.Name = "lstInputAutoComplete";
-            this.lstInputAutoComplete.Size = new System.Drawing.Size(334, 21);
-            this.lstInputAutoComplete.TabIndex = 6;
-            this.lstInputAutoComplete.Visible = false;
             // 
             // lblDropdownCaption
             // 
-            this.lblDropdownCaption.AutoSize = true;
-            this.lblDropdownCaption.Location = new System.Drawing.Point(8, 61);
+            resources.ApplyResources(this.lblDropdownCaption, "lblDropdownCaption");
             this.lblDropdownCaption.Name = "lblDropdownCaption";
-            this.lblDropdownCaption.Size = new System.Drawing.Size(56, 13);
-            this.lblDropdownCaption.TabIndex = 10;
-            this.lblDropdownCaption.Text = "Dropdown";
             // 
             // txtInput
             // 
-            this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtInput.Location = new System.Drawing.Point(11, 29);
+            resources.ApplyResources(this.txtInput, "txtInput");
             this.txtInput.Name = "txtInput";
-            this.txtInput.Size = new System.Drawing.Size(334, 20);
-            this.txtInput.TabIndex = 4;
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmdCancel, "cmdCancel");
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(270, 58);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 9;
-            this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(189, 58);
+            resources.ApplyResources(this.cmdOK, "cmdOK");
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
-            this.cmdOK.TabIndex = 8;
-            this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblPrompt
             // 
-            this.lblPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPrompt.Location = new System.Drawing.Point(8, 7);
+            resources.ApplyResources(this.lblPrompt, "lblPrompt");
             this.lblPrompt.Name = "lblPrompt";
-            this.lblPrompt.Size = new System.Drawing.Size(337, 40);
-            this.lblPrompt.TabIndex = 5;
-            this.lblPrompt.Text = "Prompt";
             // 
             // lstDropdown
             // 
+            resources.ApplyResources(this.lstDropdown, "lstDropdown");
             this.lstDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.lstDropdown.FormattingEnabled = true;
-            this.lstDropdown.Location = new System.Drawing.Point(71, 58);
             this.lstDropdown.Name = "lstDropdown";
-            this.lstDropdown.Size = new System.Drawing.Size(274, 21);
-            this.lstDropdown.TabIndex = 7;
             // 
             // InputWindow
             // 
             this.AcceptButton = this.cmdOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.GhostWhite;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(352, 89);
             this.Controls.Add(this.lstInputAutoComplete);
             this.Controls.Add(this.lblDropdownCaption);
             this.Controls.Add(this.txtInput);
@@ -130,8 +103,6 @@
             this.Name = "InputWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Quest";
             this.ResumeLayout(false);
             this.PerformLayout();
 

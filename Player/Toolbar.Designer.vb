@@ -77,7 +77,6 @@ Partial Class Toolbar
         Me.ctlToolStrip.ResumeLayout(False)
         Me.ctlToolStrip.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip

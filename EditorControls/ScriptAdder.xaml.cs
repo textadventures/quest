@@ -81,7 +81,6 @@ namespace TextAdventures.Quest.EditorControls
                             Margin = new Thickness(3, 2, 3, 2),
                             Content = data.Value.CommonButton,
                             Tag = data.Value.CreateString,
-                            // Added by SoonGames
                             Foreground = System.Windows.Media.Brushes.Black,
                             Background = System.Windows.Media.Brushes.White,
                             BorderBrush = System.Windows.Media.Brushes.Silver
