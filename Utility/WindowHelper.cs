@@ -50,7 +50,6 @@ namespace TextAdventures.Utility
 
         void SavePosition(object sender, EventArgs e)
         {
-            // Chanched by SoonGames
             if (m_form.WindowState == System.Windows.Forms.FormWindowState.Normal) {
                 m_key.SetValue(m_topKey, m_form.Top);
                 m_key.SetValue(m_leftKey, m_form.Left);

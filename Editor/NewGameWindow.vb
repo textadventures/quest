@@ -1,10 +1,10 @@
 ﻿Imports Microsoft.Win32
+Imports TextAdventures.Utility.UseLanguage
 
 Public Class NewGameWindow
 
     Private Const k_regPath As String = "Software\Quest\Settings"
     Private Const k_regName As String = "LastTemplate"
-    Private Const k_regNameLang As String = "Language"
 
     Public Cancelled As Boolean
     Private m_templates As Dictionary(Of String, TemplateData)
@@ -82,7 +82,7 @@ Public Class NewGameWindow
         If lstTemplate.Items.Count > 0 Then
             Dim key As RegistryKey = Registry.CurrentUser.CreateSubKey(k_regPath)
             Dim lastTemplate As String = TryCast(key.GetValue(k_regName), String)
-            If lastTemplate Is Nothing Then lastTemplate = TryCast(key.GetValue(k_regNameLang), String)
+            If lastTemplate Is Nothing Then lastTemplate = CurrentLanguage
 
             Dim index As Integer = lstTemplate.Items.IndexOf(lastTemplate)
             lstTemplate.SelectedIndex = If(index = -1, 0, index)

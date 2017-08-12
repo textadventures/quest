@@ -1,5 +1,6 @@
 ﻿Imports TextAdventures.Quest.EditorControls
 Imports TextAdventures.Quest.EditorController
+Imports TextAdventures.Utility.UseLanguage
 
 Public Class Editor
 
@@ -19,7 +20,6 @@ Public Class Editor
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
     Private m_splitHelper As TextAdventures.Utility.SplitterHelper
-    Public T As New Dictionary(Of String, String)
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -77,7 +77,6 @@ Public Class Editor
                             SetWordWrap(CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
                             m_splitHelper = New TextAdventures.Utility.SplitterHelper(splitMain, "Quest", "EditorSplitter")
                             m_splitHelper.LoadSplitterPositions()
-                            ReadTemplates()
                             m_menu.Visible = True
                             m_uiHidden = False
                             Me.SuspendLayout()
@@ -114,33 +113,6 @@ Public Class Editor
                         ctlLoading.Clear()
 
                     End Sub)
-    End Sub
-
-    Private Sub ReadTemplates()
-        Try
-            Dim reader As New System.Xml.XmlTextReader(".\Core\Languages\EditorEnglish.aslx")
-            Const nodeTemplate = "template"
-            Const nodeName = "name"
-            Dim key As String = ""
-            Dim value As String = ""
-            While reader.Read()
-                reader.MoveToContent()
-                If reader.NodeType = Xml.XmlNodeType.Element And reader.Name = nodeTemplate And reader.GetAttribute(nodeName) IsNot Nothing Then
-                    key = reader.GetAttribute(nodeName)
-                End If
-                If reader.NodeType = Xml.XmlNodeType.Text Then
-                    value = reader.Value
-                End If
-                If key <> "" And value <> "" Then
-                    T(key) = value
-                    key = ""
-                    value = ""
-                End If
-            End While
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical)
-            Process.GetCurrentProcess.Kill()
-        End Try
     End Sub
 
     Private Sub InitialiseEditorControlsList()
@@ -991,7 +963,7 @@ Public Class Editor
             If prompt Is Nothing Then
                 result = MsgBoxResult.Yes
             Else
-                result = MsgBox(T("EditorUnsavedChangesContent") + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, T("EditorUnsavedChangesTitle"))
+                result = MsgBox(T("EditorUnsavedChanges") + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation)
             End If
 
             If result = MsgBoxResult.Yes Then

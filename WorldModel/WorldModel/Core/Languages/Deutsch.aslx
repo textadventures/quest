@@ -4,9 +4,7 @@
   <include ref="English.aslx"/>
   
   <!-- Contributed by SoonGames -->
-  <!-- Deutscher Editor wird geladen und nicht übersetzte Templates aus dem Englischen übernommen -->
-  <include ref="EditorEnglish.aslx"/>
-  <!-- <include ref="EditorDeutsch.aslx"/> -->
+  <include ref="EditorDeutsch.aslx"/>
   
   <template name="LanguageId">de</template>
 

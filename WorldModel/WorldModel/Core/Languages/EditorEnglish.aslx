@@ -1,4 +1,36 @@
 <library type="editor">
+  <!-- VB-Templates -->
+  <template name="EditorFromLibrary">From library {0}</template>
+  <template name="EditorFromLibraryCopy">Copy</template>
+  <template name="EditorUnableToSave">Unable to save the file due to the following error:</template>
+  <template name="EditorNewElement">Please enter a name for the new {0}</template>
+  <template name="EditorNewObject">Please enter a name for the new object</template>
+  <template name="EditorNewRoom">Please enter a name for the new room</template>
+  <template name="EditorNewWalkthrough">Please enter a name for the new walkthrough</template>
+  <template name="EditorNewTemplate">Please enter a name for the new template</template>
+  <template name="EditorNewPage">Please enter a name for the new page</template>
+  <template name="EditorUnableToAddEmement">Unable to add element</template>
+  <template name="EditorUnableToAddTemplate">Unable to add template</template>
+  <template name="EditorSaveBeforeClosing">Do you wish to save your changes before closing?</template>
+  <template name="EditorSaveBeforeLeavingCodeView">Do you wish to save your changes before leaving the code view?</template>
+  <template name="EditorSaveBeforeEditingThisGame">Do you wish to save your changes before editing this game in the code view?</template>
+  <template name="EditorCreateLocalCopy">Create local copy of '{0}'</template>
+  <template name="EditorUnsavedChanges">You have unsaved changes.</template>
+  <template name="EditorErrorLaunching">Error launching {0}{1}{2}</template>
+  <template name="EditorModifiedOutside">{0} has been modified outside Quest.</template>
+  <template name="EditorSaveGameAndClickReload">Save this game and then click Reload to apply changes from updating Included Libraries.</template>
+  <template name="EditorParent">Parent</template>
+  <template name="EditorNotParents">(none)</template>
+  <template name="EditorChangeLangRestartContinue">To change the language, Quest must be restarted. Would you like to continue?</template>
+  <template name="EditorBrowseFilter">Quest Games|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|All files|*.*</template>
+  <template name="EditorUnrecognisedFileType">Unrecognised file type. This game cannot be loaded in Quest.</template>
+  <template name="EditorSaveChangesBeforeOpening">Do you wish to save your changes before opening a new game?</template>
+  <template name="EditorSaveChangesBeforeCreating">Do you wish to save your changes before creating a new game?</template>
+  <template name="EditorBrowseEditFilter">Quest Games (*.aslx)|*.aslx|All files|*.*</template>
+  <template name="ErrorLaunching">Error launching {0}{1}{2}</template>
+  <!-- END OF PART -->
+  
+  <!-- XML-Templates -->
   <template name="EditorCommandCommand">Command</template>
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
@@ -266,13 +298,11 @@
   <template name="EditorObjectContainerCanbelocked">Can be locked open</template>
   <template name="EditorObjectContainerAfterlocking">After locking the object</template>
   <template name="EditorObjectContainerAfterunlocking">After unlocking the object</template>
-
   <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in. If you set the object to be lockable, the default scripts will be used, which will do that for you, taking account of the lock/key state.</template>
   <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
   <template name="EditorObjectContainerAddScript">Script to run when trying to add an object</template>
   <template name="EditorObjectContainerAddScriptNote">By default, any object can be added; use this script to restrict that. The object being added will be called "object", and should be moved to this object if successfully added.</template>
   <template name="EditorObjectContainerLockNote">These scripts will run after the object is locked or unlocked. You can check the "locked" flag on this object at any time in your game to see state the object is in.</template>
-  
   <template name="EditorObjectExitsExits">Exits</template>
   <template name="EditorObjectExitsExitslistprefix">Exits list prefix</template>
   <template name="EditorObjectFeaturesFeatures">Features</template>
@@ -655,8 +685,6 @@
   <template name="EditorScriptsTurnScriptsName">Name:</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Create a turn script</template>   
   <template name="EditorScriptsTurnScriptsCreateturn">Create turn script</template>
-   
-
   <template name="EditorScriptsVariablesVariables">Variables</template>
   <template name="EditorScriptsVariablesSetobjectflag">Set object flag</template>
   <template name="EditorScriptsVariablesSetflag">Set flag</template>
@@ -750,7 +778,6 @@
   <template name="EditorExpressionstheinventory">the inventory</template>
   <template name="EditorExpressionsallexits">all exits</template>
   <template name="EditorExpressionsallcommands">all commands</template> 
-  
   <template name="TypePatternCommand">Command pattern</template>
   <template name="TypePatternRegular">Regular expression</template> 
   <template name="TypeExitNon">Non-directional exit</template> 
@@ -802,9 +829,6 @@
   <template name="EditorObjectScriptsInitial">This script will run once, as the game starts</template>
   <template name="EditorObjectStartscriptStartscript">Initialisation script</template>
   <template name="EditorObjectFeaturesStartScript">Run an initialisation script for this object</template>
-  
-  
-  
   <template name="EditorObjectWearableWearable">Wearable</template>
   <template name="EditorObjectWearableCanBeWorn">Can be worn?</template>
   <template name="EditorObjectWearableWearLayer">Wear Layer</template>
@@ -836,61 +860,4 @@
   <template name="EditorObjectWearableStateBonuses">Bonus to attributes (or * for default)</template>
   <template name="EditorObjectWearableStateBonusesPrompt">Please enter all the additional bonuses for this state, separated by semi-colons</template>
   <template name="EditorObjectWearableInstructionsLink">Instructions for use</template>
-
-  <template name="EditorFromLibrary">From library {0}</template>
-  <template name="EditorFromLibraryCopy">Copy</template>
-  <template name="EditorUnableToSave">Unable to save the file due to the following error:</template>
-  <template name="EditorNewElement">Please enter a name for the new {0}</template>
-  <template name="EditorNewObject">Please enter a name for the new object</template>
-  <template name="EditorNewRoom">Please enter a name for the new room</template>
-  <template name="EditorNewWalkthrough">Please enter a name for the new walkthrough</template>
-  <template name="EditorNewTemplate">Please enter a name for the new template</template>
-  <template name="EditorNewPage">Please enter a name for the new page</template>
-  <template name="EditorUnableToAddEmement">Unable to add element</template>
-  <template name="EditorUnableToAddTemplate">Unable to add template</template>
-  <template name="EditorSaveBeforeClosing">Do you wish to save your changes before closing?</template>
-  <template name="EditorSaveBeforeLeavingCodeView">Do you wish to save your changes before leaving the code view?</template>
-  <template name="EditorSaveBeforeEditingThisGame">Do you wish to save your changes before editing this game in the code view?</template>
-  <template name="EditorCreateLocalCopy">Create local copy of '{0}'</template>
-  <template name="EditorUnsavedChangesContent">You have unsaved changes.</template>
-  <template name="EditorUnsavedChangesTitle">Unsaved Changes</template>
-  <template name="EditorErrorLaunching">Error launching {0}{1}{2}</template>
-  <template name="EditorModifiedOutside">{0} has been modified outside Quest.</template>
-  <template name="EditorSaveGameAndClickReload">Save this game and then click Reload to apply changes from updating Included Libraries.</template>
-  <template name="EditorParent">Parent</template>
-  <template name="EditorNotParents">(none)</template>
-  <!--<template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>
-  <template name=""></template>-->
 </library>

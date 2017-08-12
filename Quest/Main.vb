@@ -1,4 +1,5 @@
 ﻿Imports TextAdventures.Utility
+Imports TextAdventures.Utility.UseLanguage
 
 Public Class Main
 
@@ -11,34 +12,13 @@ Public Class Main
     Private m_language As String
 
     Public Sub New()
-        m_languages.Add("English", "en")
-        m_languages.Add("Deutsch", "de")
-
-        m_language = Registry.GetSetting("Quest", "Settings", "Language", "").ToString()
-
-        If Not m_languages.ContainsKey(m_language) Then
-            Dim currentculture As String = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName
-            If m_languages.ContainsValue(currentculture) Then
-                m_language = FindKey(currentculture, m_languages)
-                SaveLanguage(m_language)
-            Else
-                m_language = "English"
-                SaveLanguage(m_language)
-            End If
-        End If
-
-        Try
-            Dim Culture As New System.Globalization.CultureInfo(m_languages(m_language))
-            Threading.Thread.CurrentThread.CurrentUICulture = Culture
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        LoadLanguage()
 
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
-        ctlMenu.MenuChecked(m_language.ToLower) = True
-        ctlMenu.MenuEnabled(m_language.ToLower) = False
+        ctlMenu.MenuChecked(CurrentLanguage.ToLower) = True
+        ctlMenu.MenuEnabled(CurrentLanguage.ToLower) = False
 
         AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
 
@@ -97,23 +77,12 @@ Public Class Main
     End Sub
 
     Private Sub ChangeLanguage(lang As String)
-        Dim Result As Integer = MsgBox("Zur Änderung der Sprache muss Quest neu gestartet werden. Wollen Sie fortfahren?", MsgBoxStyle.YesNo Or MsgBoxStyle.Exclamation, "Quest-Neustart")
+        Dim Result As Integer = MsgBox(T("EditorChangeLangRestartContinue"), MsgBoxStyle.YesNo Or MsgBoxStyle.Exclamation, "Quest")
         If Result = 6 Then
             SaveLanguage(lang)
             Application.Restart()
         End If
     End Sub
-
-    Private Sub SaveLanguage(lang As String)
-        TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "Language", lang)
-    End Sub
-
-    Private Function FindKey(value As String, dic As Dictionary(Of String, String)) As String
-        For Each kvp As KeyValuePair(Of String, String) In dic
-            If kvp.Value = value Then Return kvp.Key
-        Next kvp
-        Return ""
-    End Function
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
         ctlLauncher.AddToRecent(filename, name)
@@ -171,12 +140,11 @@ Public Class Main
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Quest Games|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|All files|*.*"
+        dlgOpenFile.Filter = T("EditorBrowseFilter")
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then
             Registry.SaveSetting("Quest", "Settings", "StartFolder", System.IO.Path.GetDirectoryName(dlgOpenFile.FileName))
-
             Launch(dlgOpenFile.FileName)
         End If
     End Sub
@@ -196,7 +164,7 @@ Public Class Main
             game = GameLauncher.GetGame(filename, String.Empty)
 
             If game Is Nothing Then
-                MsgBox("Unrecognised file type. This game cannot be loaded in Quest.", MsgBoxStyle.Critical)
+                MsgBox(T("EditorUnrecognisedFileType"), MsgBoxStyle.Critical)
             Else
                 Me.SuspendLayout()
                 ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Player
@@ -291,12 +259,12 @@ Public Class Main
     End Sub
 
     Private Sub OpenEditMenuClick()
-        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before opening a new game?") Then Return
+        If Not ctlEditor.CheckGameIsSaved(T("EditorSaveChangesBeforeOpening")) Then Return
         BrowseEdit()
     End Sub
 
     Private Sub CreateNewMenuClick()
-        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before creating a new game?") Then Return
+        If Not ctlEditor.CheckGameIsSaved(T("EditorSaveChangesBeforeCreating")) Then Return
 
         Dim newFile = ctlEditor.CreateNewGame()
         If String.IsNullOrEmpty(newFile) Then Return
@@ -310,7 +278,7 @@ Public Class Main
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Quest Games (*.aslx)|*.aslx|All files|*.*"
+        dlgOpenFile.Filter = T("EditorBrowseEditFilter")
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then
@@ -437,7 +405,7 @@ Public Class Main
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format(T("ErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 
