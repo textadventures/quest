@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -51,7 +52,7 @@ namespace TextAdventures.Quest
                 {
                     return Expression;
                 }
-                throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
+                throw new ArgumentOutOfRangeException("attribute", L.T("EditorUnrecognisedElseIfAttribute"));
             }
 
             public ValidationResult SetAttribute(string attribute, object value)
@@ -62,7 +63,7 @@ namespace TextAdventures.Quest
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
+                    throw new ArgumentOutOfRangeException("attribute", L.T("EditorUnrecognisedElseIfAttribute"));
                 }
 
                 return new ValidationResult { Valid = true };
@@ -180,7 +181,7 @@ namespace TextAdventures.Quest
                     m_elseIfScripts.Remove(e.Data.Script);
                     break;
                 default:
-                    throw new Exception("Unhandled event");
+                    throw new Exception(L.T("EditorUnhandledEvent"));
             }
 
             RaiseUpdated(new EditableScriptUpdatedEventArgs(DisplayString()));
@@ -290,7 +291,7 @@ namespace TextAdventures.Quest
             {
                 return m_ifScript.ExpressionString;
             }
-            throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
+            throw new ArgumentOutOfRangeException("attribute", L.T("EditorUnrecogniseIfAttribute"));
         }
 
         public ValidationResult SetAttribute(string attribute, object value)
@@ -301,7 +302,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
+                throw new ArgumentOutOfRangeException("attribute", L.T("EditorUnrecogniseIfAttribute"));
             }
 
             return new ValidationResult { Valid = true };

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -12,9 +13,9 @@ namespace TextAdventures.Quest.EditorControls
         private class VerbsSubEditorControlData : AttributeSubEditorControlData
         {
             private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
-                {"string", "Print a message"},
-                {"script", "Run a script"},
-                {"scriptdictionary", "Require another object"},
+                {"string", L.T("EditorPrintMessage")},
+                {"script", L.T("EditorRunScript")},
+                {"scriptdictionary", L.T("EditorRequireAnotherObject")},
             };
 
             public VerbsSubEditorControlData(string attribute)
@@ -32,9 +33,9 @@ namespace TextAdventures.Quest.EditorControls
                 switch (tag)
                 {
                     case "keyname":
-                        return "Object";
+                        return L.T("EditorKeynameObject");
                     case "keyprompt":
-                        return "Please enter the object name";
+                        return L.T("EditorKeypromptEnterObjectName");
                     case "source":
                         return "object";
                 }
@@ -91,7 +92,7 @@ namespace TextAdventures.Quest.EditorControls
             IDictionary<string, string> availableVerbs = Controller.GetVerbProperties();
 
             PopupEditors.EditStringResult result = PopupEditors.EditString(
-                "Please enter a name for the new verb",
+                L.T("EditorEnterNameForNewVerb"),
                 string.Empty,
                 availableVerbs.Values);
 
@@ -121,7 +122,7 @@ namespace TextAdventures.Quest.EditorControls
                 ValidationResult setAttrResult = Data.SetAttribute(selectedAttribute, String.Empty);
                 if (!setAttrResult.Valid)
                 {
-                    PopupEditors.DisplayValidationError(setAttrResult, selectedAttribute, "Unable to add verb");
+                    PopupEditors.DisplayValidationError(setAttrResult, selectedAttribute, L.T("EditorUnableToAddVerb"));
                     setSelection = false;
                 }
                 Controller.EndTransaction();
@@ -141,12 +142,12 @@ namespace TextAdventures.Quest.EditorControls
                 TextAdventures.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(selectedPattern);
                 if (!canAddResult.CanAdd)
                 {
-                    string clashMessage = "Verb would clash with command: " + canAddResult.ClashingCommandDisplay;
+                    string clashMessage = L.T("EditorVerbWithCommand") + canAddResult.ClashingCommandDisplay;
                     if (m_clashMessages.ContainsKey(canAddResult.ClashingCommand))
                     {
                         clashMessage += Environment.NewLine + Environment.NewLine + m_clashMessages[canAddResult.ClashingCommand];
                     }
-                    MessageBox.Show(clashMessage, "Unable to add verb", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(clashMessage, L.T("EditorUnableToAddVerb"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return false;
                 }
             }

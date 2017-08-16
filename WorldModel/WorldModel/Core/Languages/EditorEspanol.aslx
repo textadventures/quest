@@ -1,5 +1,5 @@
 ﻿<library type="editor">
-  <!-- VB-Templates -->
+  <!-- Visual-Basic- and C-Templates -->
   <template name="EditorFromLibrary">From library {0}</template>
   <template name="EditorFromLibraryCopy">Copy</template>
   <template name="EditorUnableToSave">Unable to save the file due to the following error:</template>
@@ -23,8 +23,7 @@
   <template name="EditorNotParents">(none)</template>
   <template name="EditorChangeLangRestartContinue">To change the language, Quest must be restarted. Would you like to continue?</template>
   <!-- END OF PART -->
-
-  <!-- XML-Templates -->
+  <!-- ASLX-Templates -->
   <template name="EditorCommandCommand">Comando</template>
   <template name="EditorCommandPattern">Patrón</template>
   <template name="EditorCommandName">Nombre</template>

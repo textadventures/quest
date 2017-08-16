@@ -5,6 +5,7 @@ using System.Text;
 using TextAdventures.Quest.Scripts;
 using System.Text.RegularExpressions;
 using System.Collections;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -79,7 +80,7 @@ namespace TextAdventures.Quest
                 }
                 else
                 {
-                    System.Diagnostics.Debug.Assert(false, "Unknown attribute type for DisplayString");
+                    System.Diagnostics.Debug.Assert(false, L.T("EditorUnknownAttributeTypeDisplayString"));
                     attributeValue = "<unknown>";
                 }
 

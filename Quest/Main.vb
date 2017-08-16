@@ -1,5 +1,5 @@
 ﻿Imports TextAdventures.Utility
-Imports TextAdventures.Utility.UseLanguage
+Imports TextAdventures.Utility.Language.L
 
 Public Class Main
 
@@ -405,7 +405,7 @@ Public Class Main
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format(T("ErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format(T("EditorErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 

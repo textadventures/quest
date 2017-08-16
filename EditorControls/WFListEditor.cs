@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -141,7 +142,7 @@ namespace TextAdventures.Quest.EditorControls
                     newListViewItem.SubItems.Add(EditorUtility.FormatAsOneLine(item.Value));
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid column style");
+                    throw new InvalidOperationException(L.T("EditorInvalidColumnStyle"));
             }
 
             m_listItems.Add(item.Key, newListViewItem);
@@ -171,7 +172,7 @@ namespace TextAdventures.Quest.EditorControls
                     lstList.Columns[1].Width = lstList.Width - SystemInformation.VerticalScrollBarWidth - lstList.Margin.Horizontal - lstList.Columns[0].Width;
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid column style");
+                    throw new InvalidOperationException(L.T("EditorInvalidColumnStyle"));
             }
         }
 

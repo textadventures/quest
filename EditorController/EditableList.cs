@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using System.Collections;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -90,7 +91,7 @@ namespace TextAdventures.Quest
 
             if (undoEntry == null)
             {
-                throw new InvalidOperationException("Unknown list type");
+                throw new InvalidOperationException(L.T("EditorUnknownListType"));
             }
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
@@ -131,7 +132,7 @@ namespace TextAdventures.Quest
 
             if (undoEntry == null)
             {
-                throw new InvalidOperationException("Unknown list type");
+                throw new InvalidOperationException(L.T("EditorUnknownListType"));
             }
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
@@ -154,7 +155,7 @@ namespace TextAdventures.Quest
 
             if (undoEntry == null)
             {
-                throw new InvalidOperationException("Unknown list type");
+                throw new InvalidOperationException(L.T("EditorUnknownListType"));
             }
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);

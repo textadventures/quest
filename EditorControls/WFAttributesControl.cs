@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -341,7 +342,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             if (attributeName.Length == 0)
             {
-                PopupEditors.EditStringResult result = PopupEditors.EditString("Please enter a name for the new attribute", string.Empty);
+                PopupEditors.EditStringResult result = PopupEditors.EditString(L.T("EditorEnterNameAttribute"), string.Empty);
                 if (result.Cancelled) return;
                 attributeName = result.Result;
             }
@@ -355,7 +356,7 @@ namespace TextAdventures.Quest.EditorControls
                 ValidationResult setAttrResult = m_data.SetAttribute(attributeName, createAttributeValue());
                 if (!setAttrResult.Valid)
                 {
-                    PopupEditors.DisplayValidationError(setAttrResult, attributeName, "Unable to add attribute");
+                    PopupEditors.DisplayValidationError(setAttrResult, attributeName, L.T("EditorUnableAddAttribute"));
                     setSelection = false;
                 }
 
@@ -392,7 +393,7 @@ namespace TextAdventures.Quest.EditorControls
                                              .Where(t => !m_controller.IsDefaultTypeName(t))
                                              .OrderBy(t => t);
 
-            var result = PopupEditors.EditStringWithDropdown("Please choose a type to add", string.Empty, null, null,
+            var result = PopupEditors.EditStringWithDropdown(L.T("EditorChooseTypeToAdd"), string.Empty, null, null,
                                                              string.Empty, availableTypes);
 
             if (result.Cancelled) return;
@@ -401,19 +402,19 @@ namespace TextAdventures.Quest.EditorControls
             {
                 if (lstTypes.Items.ContainsKey(result.Result))
                 {
-                    MessageBox.Show(string.Format("Type '{0}' is already inherited", result.Result), "Invalid type",
+                    MessageBox.Show(string.Format(L.T("EditorTypAlreadyInherited"), result.Result), "Quest",
                                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Type '{0}' does not exist", result.Result), "Invalid type",
+                    MessageBox.Show(string.Format(L.T("EditorTypNotExists"), result.Result), "Quest",
                                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 return;
             }
 
             var addResult = m_controller.AddInheritedTypeToElement(m_data.Name, result.Result, true);
-            if (!addResult.Valid) PopupEditors.DisplayValidationError(addResult, null, "Unable to add type");
+            if (!addResult.Valid) PopupEditors.DisplayValidationError(addResult, null, L.T("EditorUnableToAddType"));
         }
 
         private void lstTypes_SelectedIndexChanged(System.Object sender, System.EventArgs e)

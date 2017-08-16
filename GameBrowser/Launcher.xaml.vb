@@ -1,4 +1,6 @@
-﻿Public Class Launcher
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class Launcher
     Public Event BrowseForGame()
     Public Event LaunchGame(filename As String)
     Public Event EditGame(filename As String)
@@ -140,7 +142,7 @@
         If ctlPlayBrowser.DownloadingCount = 0 Then
             Return True
         Else
-            Dim result = MsgBox(String.Format("{0} games are still downloading. Are you sure you wish to exit?", ctlPlayBrowser.DownloadingCount), MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNo)
+            Dim result = MsgBox(String.Format(T("EditorGamesDownloadingSureToExit"), ctlPlayBrowser.DownloadingCount), MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNo)
             If result = MsgBoxResult.Yes Then
                 ctlPlayBrowser.CancelDownloads()
                 Return True

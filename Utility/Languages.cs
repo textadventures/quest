@@ -5,12 +5,17 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace TextAdventures.Utility
+namespace TextAdventures.Utility.Language
 {
-    public class UseLanguage
+    public class L
     {
         public static string CurrentLanguage;
-        private static Dictionary<string, string> Languages = new Dictionary<string, string>();
+        private static Dictionary<string, string> Languages = new Dictionary<string, string>
+        {
+            { "English", "en" },
+            { "Deutsch", "de" }
+        };
+
         private static Dictionary<string, string> Templates = new Dictionary<string, string>();
         
         private const string DefaultLanguage = "English";
@@ -18,9 +23,6 @@ namespace TextAdventures.Utility
 
         public static void LoadLanguage()
         {
-            Languages.Add("English", "en");
-            Languages.Add("Deutsch", "de");
-
             CurrentLanguage = Registry.GetSetting("Quest", "Settings", "Language", "").ToString();
 
             if (!Languages.ContainsKey(CurrentLanguage))

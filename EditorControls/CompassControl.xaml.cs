@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -79,7 +80,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             foreach (CompassDirectionControl ctl in m_directionControl)
             {
-                ctl.NoLinkDestination = "(none)";
+                ctl.NoLinkDestination = L.T("EditorNoLinkDestinationNone");
             }
             SelectedDirection = null;
         }
@@ -92,7 +93,7 @@ namespace TextAdventures.Quest.EditorControls
             }
             else
             {
-                m_directionControl[direction].NoLinkDestination = "look";
+                m_directionControl[direction].NoLinkDestination = L.T("EditorNoLinkDestinationLook");
             }
         }
     }

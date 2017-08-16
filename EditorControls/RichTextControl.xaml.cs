@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -122,7 +123,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
             var result = PopupEditors.EditStringWithDropdown(
-                "Please choose an object",
+                L.T("EditorPleaseChooseObject"),
                 string.Empty, null, null, string.Empty, objects);
 
             if (!result.Cancelled)
@@ -145,7 +146,7 @@ namespace TextAdventures.Quest.EditorControls
         private void InsertPage(TextProcessorCommand command)
         {
             var pages = m_helper.Controller.GetObjectNames("object", true).Where(n => n != "player").OrderBy(n => n);
-            var result = PopupEditors.EditStringWithDropdown("Link text", string.Empty, "Add link to", pages, pages.First(), allowEmptyString: true);
+            var result = PopupEditors.EditStringWithDropdown(L.T("EditorLinkText"), string.Empty, L.T("EditorAddLinkTo"), pages, pages.First(), allowEmptyString: true);
 
             if (!result.Cancelled)
             {

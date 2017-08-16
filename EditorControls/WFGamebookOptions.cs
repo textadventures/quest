@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -28,7 +29,7 @@ namespace TextAdventures.Quest.EditorControls
             m_manager.ExtraToolbarItemClicked += m_manager_ExtraToolbarItemClicked;
             ctlListEditor.ShowExtraToolstripItems(new[] { "addpage", "link", "goto" });
             ctlListEditor.HideAddButton();
-            ctlListEditor.SetEditButtonText("Edit Link Text");
+            //ctlListEditor.SetEditButtonText("Edit Link Text");
         }
 
         private void m_manager_RequestParentElementEditorSave()
@@ -66,7 +67,7 @@ namespace TextAdventures.Quest.EditorControls
                 ValidationResult result = m_controller.CanAdd(newKey);
                 if (!result.Valid)
                 {
-                    PopupEditors.DisplayValidationError(result, newKey, "Unable to add page");
+                    PopupEditors.DisplayValidationError(result, newKey, L.T("EditorUnableToAddPage"));
                     return false;
                 }
                 m_controller.CreateNewObject(newKey, null, null);

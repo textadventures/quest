@@ -1,4 +1,6 @@
-﻿Public Class EditorWelcome
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class EditorWelcome
 
     Public Event CreateNewGame()
     Public Event OpenGame()
@@ -24,7 +26,7 @@
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format(T("EditorErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 

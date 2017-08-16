@@ -1,6 +1,6 @@
 ﻿<!-- '???' Does not mean quite sure in the translation -->
 <library type="editor">
-  <!-- VB-Templates -->
+  <!-- Visual-Basic- and C-Templates -->
   <template name="EditorFromLibrary">Von Bibliothek {0}</template>
   <template name="EditorFromLibraryCopy">Kopieren</template>
   <template name="EditorUnableToSave">Die Datei konnte aufgrund des folgenden Fehlers nicht gespeichert werden:</template>
@@ -30,7 +30,7 @@
   <template name="EditorBrowseEditFilter">Quest-Spiele (*.aslx)|*.aslx|Alle Dateien|*.*</template>
   <template name="ErrorLaunching">Fehler beim Starten {0}{1}{2}</template>
   <!-- END OF PART -->
-
+  <!-- ASLX-Templates -->
   <template name="EditorCommandCommand">Kommando</template>
   <template name="EditorCommandPattern">Muster</template>
   <template name="EditorCommandName">Name</template>

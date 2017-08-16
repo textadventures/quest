@@ -78,8 +78,8 @@
             // 
             // lstDropdown
             // 
-            resources.ApplyResources(this.lstDropdown, "lstDropdown");
             this.lstDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.lstDropdown, "lstDropdown");
             this.lstDropdown.FormattingEnabled = true;
             this.lstDropdown.Name = "lstDropdown";
             // 
@@ -97,6 +97,7 @@
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.lblPrompt);
             this.Controls.Add(this.lstDropdown);
+            this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

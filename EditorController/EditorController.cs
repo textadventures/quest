@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -98,19 +99,19 @@ namespace TextAdventures.Quest
         };
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
-            {ValidationMessage.OK, "No error"},
-            {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
-            {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
-            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
-            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
-            {ValidationMessage.InvalidElementName, "Invalid element name"},
-            {ValidationMessage.CircularTypeReference, "Circular type reference"},
-            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
-            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
-            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
-            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."},
-            {ValidationMessage.MismatchingBrackets, "The number of opening brackets \"(\" does not match the number of closing brackets \")\"."},
-            {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"},
+            {ValidationMessage.OK, L.T("EditorValMsgOK")},
+            {ValidationMessage.ItemAlreadyExists, L.T("EditorValMsgItemAlreadyExists")},
+            {ValidationMessage.ElementAlreadyExists,L.T("EditorValMsgElementAlreadyExists")},
+            {ValidationMessage.InvalidAttributeName, L.T("EditorValMsgInvalidAttributeName1")},
+            {ValidationMessage.InvalidAttributeName, L.T("EditorValMsgInvalidAttributeName2")},
+            {ValidationMessage.InvalidElementName, L.T("EditorValMsgInvalidElementName")},
+            {ValidationMessage.CircularTypeReference, L.T("EditorValMsgCircularTypeReference")},
+            {ValidationMessage.InvalidElementNameMultipleSpaces, L.T("EditorValMsgInvalidElementNameMultipleSpaces")},
+            {ValidationMessage.InvalidElementNameInvalidWord, L.T("EditorValMsgInvalidElementNameInvalidWord") + string.Join(", ", EditorController.ExpressionKeywords)},
+            {ValidationMessage.CannotRenamePlayerElement, L.T("EditorValMsgCannotRenamePlayerElement")},
+            {ValidationMessage.InvalidElementNameStartsWithNumber, L.T("EditorValMsgInvalidElementNameStartsWithNumber")},
+            {ValidationMessage.MismatchingBrackets, L.T("EditorValMsgMismatchingBrackets")},
+            {ValidationMessage.MismatchingQuotes, L.T("EditorValMsgMismatchingQuotes")},
         };
 
         private WorldModel m_worldModel;
@@ -372,7 +373,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                string message = "Failed to load game due to the following errors:" + Environment.NewLine;
+                string message = L.T("EditorFailedLoadGameFollowingErrors") + Environment.NewLine;
                 foreach (string error in m_worldModel.Errors)
                 {
                     message += "* " + error + Environment.NewLine;
@@ -936,7 +937,7 @@ namespace TextAdventures.Quest
             {
                 if (element == null || attribute == null)
                 {
-                    throw new InvalidOperationException("Parent element and attribute must be specified to wrap object reference");
+                    throw new InvalidOperationException(L.T("EditorParentElementSpecifiedObjectReference"));
                 }
                 return new EditableObjectReference(this, (Element)value, element, attribute);
             }
@@ -945,7 +946,7 @@ namespace TextAdventures.Quest
             {
                 if (element == null || attribute == null)
                 {
-                    throw new InvalidOperationException("Parent element and attribute must be specified to wrap command pattern");
+                    throw new InvalidOperationException(L.T("EditorParentElementSpecifiedCommandPattern"));
                 }
                 return new EditableCommandPattern(this, (EditorCommandPattern)value, element, attribute);
             }
@@ -1762,7 +1763,7 @@ namespace TextAdventures.Quest
                 {
                     if (m_clipboardElementType != e.ElemType)
                     {
-                        throw new InvalidOperationException("Cannot mix element types in the clipboard");
+                        throw new InvalidOperationException(L.T("EditorCannotMixElementTypesInClipboard"));
                     }
                 }
             }
@@ -1791,7 +1792,7 @@ namespace TextAdventures.Quest
                 }
                 else
                 {
-                    throw new NotImplementedException("Paste not implemented for this editor type");
+                    throw new NotImplementedException(L.T("EditorPasteNotImplementedForThisType"));
                 }
                 newElement.Parent = parent;
                 lastPastedElement = newElement.Name;

@@ -17,6 +17,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -421,7 +422,7 @@ namespace TextAdventures.Quest.EditorControls
             }
             if (!match.Success)
             {
-                MessageBox.Show(string.Format("Text not found: {0}", findText));
+                MessageBox.Show(string.Format(L.T("EditorTextNotFound"), findText));
             }
             else
             {
@@ -462,13 +463,13 @@ namespace TextAdventures.Quest.EditorControls
 
             if (matches.Count <= 0)
             {
-                MessageBox.Show(string.Format("Text not found: {0}", findText));
+                MessageBox.Show(string.Format(L.T("EditorTextNotFound"), findText));
             }
             else
             {
                 UndoActionStepCounts.Push(matches.Count);
                 UpdateUndoRedoEnabled();
-                MessageBox.Show(string.Format("Replaced {0} occurrences.", matches.Count));
+                MessageBox.Show(string.Format(L.T("EditorReplacedOccurrences"), matches.Count));
             }
             _isReplacing = false;
         }

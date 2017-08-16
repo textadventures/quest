@@ -1,5 +1,6 @@
 ﻿Imports System.Windows
 Imports System.Windows.Media
+Imports TextAdventures.Utility.Language.L
 
 Public Class GameListItem
     Public Enum State
@@ -68,16 +69,16 @@ Public Class GameListItem
 
             Select Case m_state
                 Case State.ReadyToPlay
-                    cmdLaunch.Content = "Play"
-                    info.Text = "Download complete"
+                    cmdLaunch.Content = T("EditorPlay")
+                    info.Text = T("EditorDownloadComplete")
                     mnuDelete.IsEnabled = True
                 Case State.NotDownloaded
-                    cmdLaunch.Content = "Download"
-                    info.Text = "Not downloaded"
+                    cmdLaunch.Content = T("EditorDownload")
+                    info.Text = T("EditorNotDownloaded")
                     mnuDelete.IsEnabled = False
                 Case State.Downloading
-                    cmdLaunch.Content = "Cancel"
-                    info.Text = "Downloading..."
+                    cmdLaunch.Content = T("EditorCancel")
+                    info.Text = T("EditorDownloading") + "..."
                     mnuDelete.IsEnabled = False
             End Select
 
@@ -228,10 +229,10 @@ Public Class GameListItem
                                    Else
                                        If Not e.Cancelled Then
                                            MsgBox(String.Format(
-                                                  "Failed to download file. The following error occurred:{0}{1}{2}",
+                                                  T("EditorFailedToDownloadFile"),
                                                   Environment.NewLine,
                                                   Environment.NewLine,
-                                                  e.Error.Message), MsgBoxStyle.Critical, "Download Failed")
+                                                  e.Error.Message), MsgBoxStyle.Critical, "Quest")
                                        End If
                                        CurrentState = State.NotDownloaded
                                        DeleteDownloadedFile()
@@ -243,7 +244,7 @@ Public Class GameListItem
         Dispatcher.BeginInvoke(Sub()
                                    progressBar.Value = e.ProgressPercentage
                                    If Not m_setDownloadTooltip Then
-                                       SetToolTipText(String.Format("Downloading ({0} bytes)", e.TotalBytesToReceive))
+                                       SetToolTipText(String.Format(T("EditorDownloading") + " ({0} bytes)", e.TotalBytesToReceive))
                                        m_setDownloadTooltip = True
                                    End If
                                End Sub)

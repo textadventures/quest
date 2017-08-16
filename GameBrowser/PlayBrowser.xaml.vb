@@ -1,4 +1,6 @@
-﻿Public Class PlayBrowser
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class PlayBrowser
     Private m_recentItems As RecentItems
     Private WithEvents m_onlineGames As New OnlineGames
     Private m_initialised As Boolean = False
@@ -11,6 +13,8 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        lblGetGames.Content = T("EditorGetGames")
+        lblRecent.Content = T("EditorRecent")
         m_recentItems = New RecentItems("Recent")
         ctlGameList.LaunchCaption = "Play"
         ctlOnlineGameList.LaunchCaption = "Play"

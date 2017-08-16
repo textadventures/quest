@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -399,7 +400,7 @@ namespace TextAdventures.Quest.EditorControls
 
             if (!result.Valid)
             {
-                PopupEditors.DisplayValidationError(result, newValue as string, "Unable to set attribute value");
+                PopupEditors.DisplayValidationError(result, newValue as string, L.T("EditorUnableSetAttributeValue"));
             }
 
             m_controller.EndTransaction();

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -30,7 +31,8 @@ namespace TextAdventures.Quest.EditorControls
         public IfEditor()
         {
             InitializeComponent();
-
+            cmdAddElseIf.Content = L.T("EditorAddElseIf");
+            cmdAddElse.Content = L.T("EditorAddElse");
             ctlChild.Dirty += RaiseDirtyEvent;
             ctlChild.RequestParentElementEditorSave += RaiseRequestParentElementEditorSaveEvent;
             ctlElse.Dirty += RaiseDirtyEvent;

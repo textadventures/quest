@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using Microsoft.Win32;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -85,7 +86,7 @@ namespace TextAdventures.Quest.EditorControls
 
                 if (string.IsNullOrEmpty(item.Filename))
                 {
-                    item.Title = "None";
+                    item.Title = L.T("EditorFilenameNone");
                 }
                 else
                 {
@@ -132,7 +133,7 @@ namespace TextAdventures.Quest.EditorControls
             var dialog = (SaveFileDialog)sender;
             if (Path.GetDirectoryName(dialog.FileName) != BasePath)
             {
-                System.Windows.Forms.MessageBox.Show("Files can only be created in the game folder.");
+                System.Windows.Forms.MessageBox.Show(L.T("EditorFilesOnlyInGameFolder"));
                 e.Cancel = true;
             }
         }
@@ -156,9 +157,9 @@ namespace TextAdventures.Quest.EditorControls
                     var result =
                         MessageBox.Show(
                             string.Format(
-                                "A different file called {0} already exists in the game folder.\n\nWould you like to overwrite it?",
+                                L.T("EditorDifferentFileOverrideIt"),
                                 filename),
-                            "Overwrite file?",
+                            "Quest",
                             MessageBoxButton.YesNoCancel,
                             MessageBoxImage.Exclamation);
 
@@ -185,9 +186,9 @@ namespace TextAdventures.Quest.EditorControls
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(string.Format("Unable to create file. The following error occurred:{0}",
+                    MessageBox.Show(string.Format(L.T("EditorUnableCreateFileErrorOccured"),
                                                   Environment.NewLine + Environment.NewLine + ex.Message),
-                                    "Error creating file",
+                                    "Quest",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                     return;
@@ -201,9 +202,9 @@ namespace TextAdventures.Quest.EditorControls
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(string.Format("Unable to copy file. The following error occurred:{0}",
+                    MessageBox.Show(string.Format(L.T("EditorUnableCopyFileErrorOccurred"),
                                                   Environment.NewLine + Environment.NewLine + ex.Message),
-                                    "Error copying file",
+                                    "Quest",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                     return;

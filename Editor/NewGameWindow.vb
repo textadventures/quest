@@ -1,5 +1,5 @@
 ﻿Imports Microsoft.Win32
-Imports TextAdventures.Utility.UseLanguage
+Imports TextAdventures.Utility.Language.L
 
 Public Class NewGameWindow
 
@@ -51,7 +51,7 @@ Public Class NewGameWindow
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
         If System.IO.File.Exists(txtFilename.Text) Then
-            Dim result = MsgBox(String.Format("The file {0} already exists.{1}Would you like to overwrite it?", txtFilename.Text, Environment.NewLine + Environment.NewLine),
+            Dim result = MsgBox(String.Format(T("EditorFileOverwrite"), txtFilename.Text, Environment.NewLine + Environment.NewLine),
                                 MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel)
             If result = MsgBoxResult.Yes Then
                 ' do nothing, file will be overwritten

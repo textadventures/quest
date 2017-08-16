@@ -1,6 +1,6 @@
 ﻿Imports TextAdventures.Quest.EditorControls
 Imports TextAdventures.Quest.EditorController
-Imports TextAdventures.Utility.UseLanguage
+Imports TextAdventures.Utility.Language.L
 
 Public Class Editor
 
