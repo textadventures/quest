@@ -35,7 +35,7 @@
   <template name="EditorCommandPattern">Muster</template>
   <template name="EditorCommandName">Name</template>
   <template name="EditorCommandUnresolved">Bei ergebnisloser Kommandoverarbeitung</template>
-  <template name="EditorCommandScope">Objekt muss sich im Bereich befinden ("inventory", "notheld", Raumname oder Objektattribut, Ohne Eingabe = Überall)</template>
+  <template name="EditorCommandScope">Objekt muss sich im Bereich befinden ("inventory" = Im Inventar, "notheld" = Nicht im Inventar, Raumname oder Objektattribut, Ohne Eingabe = Überall)</template>
   <template name="EditorCommandScript">Kommandoverarbeitung</template>
   <template name="EditorCommandAttributes">Attribut</template>
   <template name="EditorDynamicTemplateDynamicTemplate">Dynamische Vorlage</template>
@@ -68,11 +68,11 @@
   <template name="EditorExitLocked">Verschlossen</template>
   <template name="EditorExitPrintmessage">Bei gesperrtem Ausgang</template>
   <template name="EditorExitMessage">Bei schonmaliger Benutzung des Ausgangs</template>
-  <template name="EditorExitRunascript">Führe Skript aus (Anstatt den Spieler automatisch zu bewegen)</template>
-  <template name="EditorExitScripttorun">Auszuführendes Skript</template>
+  <template name="EditorExitRunascript">Skript ausführen (Anstatt den Spieler automatisch zu bewegen)</template>
+  <template name="EditorExitScripttorun">Wenn in diese Richtung gewechselt werden soll</template>
   <template name="EditorExitLookinthis">Schaue (in diese Richtung)</template>
   <template name="EditorExitExitisalook">Es kann nur in die Richtung geschaut werden (Der Spieler kann nicht in die Richtung gehen)</template>
-  <template name="EditorExitLook">Schau</template>
+  <template name="EditorExitLook">Beschreibung beim Betrachten</template>
   <template name="EditorExitMap">Karte</template>
   <template name="EditorExitLength">Länge</template>
   <template name="EditorExitOffsetX">Versatz X</template>
@@ -115,21 +115,21 @@
   <template name="EditorGameFeatures">Eigenschaften</template>
   <template name="EditorGameFeaturesHyperlinks">Hyperlinks aktivieren: Der Spieler kann auf die Verben der Objekte zugreifen, indem er auf die Objektnamen klickt</template>
   <template name="EditorGameMapadynamically">Karten- und Zeichnungsebene: Eine Karte, in der jeder Raum bei Betreten des Spielers dynamisch generiert wird. Enthält zusätzlich Funktionen für benutzerdefinierte Zeichnungen</template>
-  <template name="EditorGamePictureframe">Bilderrahmen: Ein statisches Bild, das über dem Text erscheint. Bilder können pro Raum eingestellt oder per Skript zugeteilt werden.</template>
-  <template name="EditorGameScore">Punkte: Der Spieler kann je nach Erfolg Punkte erhalten.</template>
-  <template name="EditorGameHealth">Gesundheit: Der Spieler besitzt eine Gesundheit, die sich faktorenabhängig verschlechtern, sowie verbessern kann.</template>
-  <template name="EditorGameMoney">Geld: Der Spieler kann Geld erwerben und ausgeben.</template>
+  <template name="EditorGamePictureframe">Bilderrahmen: Ein statisches Bild, das über dem Text erscheint. Bilder können pro Raum eingestellt oder per Skript zugeteilt werden</template>
+  <template name="EditorGameScore">Punkte: Der Spieler kann je nach Erfolg Punkte erhalten</template>
+  <template name="EditorGameHealth">Gesundheit: Der Spieler besitzt eine Gesundheit, die sich faktorenabhängig verschlechtern, sowie verbessern kann</template>
+  <template name="EditorGameMoney">Geld: Der Spieler kann Geld erwerben und ausgeben</template>
   <template name="EditorGameMoneyformat">Geldformat</template>
-  <template name="EditorGameInventorylimits">Inventarbegrenzung: Das Inventar oder auserwählte Behälter besitzen nur ein begrenztes Volumen.</template>
-  <template name="EditorGameLightnessand">Helligkeit und Dunkelheit: Räume können dunkel sein und Objekte (z. B. eine Taschenlampe) können sie erhellen.</template>
-  <template name="EditorGameAsk/Tellplayers">Fragen / Reden: Spieler können zu ausgewählten Themen fragen stellen oder darüber reden.</template>
-  <template name="EditorGameAdvancedWearables">Bekleidung: Erweiterte Optionen für Bekleidung anzeigen.</template>
-  <template name="EditorGameAdvancedScripts">Erweiterte Skripte: U. a. zum Initialisieren der Benutzeroberfläche.</template>
-  <template name="EditorGameAnnotations">Notizen: Eine Registerkarte für "Notizen" wird jedem Raum hinzugefügt (Nicht sichtbar für den Spieler).</template>
-  <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt.</template>
+  <template name="EditorGameInventorylimits">Inventarbegrenzung: Das Inventar oder auserwählte Behälter besitzen nur ein begrenztes Volumen</template>
+  <template name="EditorGameLightnessand">Helligkeit und Dunkelheit: Räume können dunkel sein und Objekte (z. B. eine Taschenlampe) können sie erhellen</template>
+  <template name="EditorGameAsk/Tellplayers">Fragen / Reden: Spieler können zu ausgewählten Themen fragen stellen oder darüber reden</template>
+  <template name="EditorGameAdvancedWearables">Bekleidung: Erweiterte Optionen für Bekleidung anzeigen</template>
+  <template name="EditorGameAdvancedScripts">Erweiterte Skripte: U. a. zum Initialisieren der Benutzeroberfläche</template>
+  <template name="EditorGameAnnotations">Notizen: Eine Registerkarte für "Notizen" wird jedem Raum hinzugefügt (Nicht sichtbar für den Spieler)</template>
+  <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
   <template name="EditorGameAllowLookDirections">??? Directional exits can be look only - Es kann nur in die Richtungen geschaut werden (Der Spieler kann nicht in die Richtungen gehen)</template>
-  <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt).</template>
+  <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
   <template name="EditorGameHideSaveButton">Speichern-Schaltfläche im Webplayer entfernen</template>
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameTheme">Thema</template>
@@ -230,7 +230,7 @@
   <template name="EditorGamePlayerobject">Spielerobjekt</template>
   <template name="EditorGameIfnoplayer">Wenn kein Spielerobjekt angegeben ist, verwendet Quest das Objekt "player" (Es wird im ersten Raum erstellt, sofern es nicht bereits existiert)</template>
   <template name="EditorGameScripttorun">Nachdem die Gesundheit bei Null angelangt ist</template>
-  <template name="EditorGamePlayerobjectStatus">Statusattribute des Spielerobjekts (Werte aus dem aktuellen Spielerobjekt lesen)</template>
+  <template name="EditorGamePlayerobjectStatus">Statusattribute des Spielerobjektes (Werte aus dem aktuellen Spielerobjekt lesen)</template>
   <template name="EditorGameAttributes">Attribute</template>
   <template name="EditorGameStatusattributes">Statusattribute</template>
   <template name="EditorIncludedLibraryLibrary">Bibliothek</template>
@@ -242,9 +242,9 @@
   <template name="EditorObjectUseGivePleaseenter">Bitte geben Sie den Objektnamen ein</template>
   <template name="EditorObjectUseGiveAction">Aktion</template>
   <template name="EditorObjectLightDarkDescription">Beschreibung, wenn der Raum dunkel ist</template>
-  <template name="EditorObjectOptionsLookatobject">Objektbeschreibung beim Betrachten</template>
+  <template name="EditorObjectOptionsLookatobject">Beschreibung beim Betrachten</template>
   <template name="EditorObjectOptionsPleaseenter">Bitte geben Sie einen zusätzlichen Namen für dieses Objekt ein</template>
-  <template name="EditorObjectSetupLookatobject">Objektbeschreibung beim Betrachten</template>
+  <template name="EditorObjectSetupLookatobject">Beschreibung beim Betrachten</template>
   <template name="EditorFunctionPleaseenter">Bitte geben Sie einen Parameternamen ein</template>
   <template name="EditorWalkthroughPleaseenter">Bitte geben Sie das Kommando für diesen Walkthrough-Schritt ein</template>
   <template name="EditorObjectAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
@@ -268,24 +268,24 @@
   <template name="EditorObjectChildrenObjects">Objekte</template>
   <template name="EditorObjectContainerContainer">Container</template>
   <template name="EditorObjectContainerContainertype">Containertyp</template>
-  <template name="EditorObjectContainerTurnonInventory">??? Aktivieren Sie "Inventarbegrenzung" aus dem Feature-Tab des Game-Objekts zum aktivieren der Containerbegrenzung.</template>
+  <template name="EditorObjectContainerTurnonInventory">??? Aktivieren Sie "Inventarbegrenzung" aus dem Feature-Tab des Game-Objektes zum aktivieren der Containerbegrenzung.</template>
   <template name="EditorObjectContainerContentsprefix">??? Contents prefix</template>
   <template name="EditorObjectContainerCanbeopened">Kann geöffnet werden</template>
   <template name="EditorObjectContainerCanbeclosed">Kann geschlossen werden</template>
   <template name="EditorObjectContainerIsopen">Ist offen</template>
-  <template name="EditorObjectContainerScripttorun">Beim Öffnen des Objekts</template>
-  <template name="EditorObjectContainerScripttorun2">Beim Schließen des Objekts</template>
+  <template name="EditorObjectContainerScripttorun">Beim Öffnen des Objektes</template>
+  <template name="EditorObjectContainerScripttorun2">Beim Schließen des Objektes</template>
   <template name="EditorObjectContainerTransparent">Transparent</template>
   <template name="EditorObjectContainerHidechildren">Solange Kinderobjekte ausblenden, bis Objekt betrachtet wird</template>
   <template name="EditorObjectContainerListchildren">Liste der Kinderobjekte, wenn Objekt betrachtet oder geöffnet wird</template>
   <template name="EditorObjectContainerListprefix">??? Liste Präfix (e.g. "Es beinhaltet")</template>
   <template name="EditorObjectContainerMaximumnumber">Maximale Anzahl von Objekten</template>
-  <template name="EditorObjectContainerFullcontainer">Vollständige Container-Nachricht (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectContainerFullcontainer">Vollständige Container-Nachricht (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerMaximumvolume">Maximale Menge an Objekten</template>
-  <template name="EditorObjectContainerMessagetoprint">Beim Öffnen (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectContainerMessagetoprint2">Beim Schließen (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectContainerAfteropening">Nach dem Öffnen des Objekts</template>
-  <template name="EditorObjectContainerAfterclosing">Nach dem Schließen des Objekts</template>
+  <template name="EditorObjectContainerMessagetoprint">Beim Öffnen (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectContainerMessagetoprint2">Beim Schließen (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectContainerAfteropening">Nach dem Öffnen des Objektes</template>
+  <template name="EditorObjectContainerAfterclosing">Nach dem Schließen des Objektes</template>
   <template name="EditorObjectContainerLocking">Verriegeln</template>
   <template name="EditorObjectContainerLocktype">Schlosstyp</template>
   <template name="EditorObjectContainerKey">Schlüssel</template>
@@ -296,10 +296,10 @@
   <template name="EditorObjectContainerUnlockmessage">Bei entsperrt</template>
   <template name="EditorObjectContainerLockmessage">Bei versperrt</template>
   <template name="EditorObjectContainerCanbelocked">Kann aufgeschlossen werden</template>
-  <template name="EditorObjectContainerAfterlocking">Nach dem Sperren des Objekts</template>
-  <template name="EditorObjectContainerAfterunlocking">Nach dem Entsperren des Objekts</template>
-  <template name="EditorObjectContainerOpenableNote">Diese Skripte sollten den Zustand "isopen" aktivieren, wenn das Objekt geöffnet ist und es deaktivieren, wenn es geschlossen ist, um sicherzustellen, dass Quest den Zustand des Objekts erkennt. Wenn Sie das Objekt abschließbar machen, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
-  <template name="EditorObjectContainerContainerNote">Diese Skripte werden nach dem Öffnen oder Schließen des Objekts ausgeführt. Sie können den "isopen"-Zustand von diesem Objekt jederzeit in Ihrem Spiel in Erfahrung bringen.</template>
+  <template name="EditorObjectContainerAfterlocking">Nach dem Sperren des Objektes</template>
+  <template name="EditorObjectContainerAfterunlocking">Nach dem Entsperren des Objektes</template>
+  <template name="EditorObjectContainerOpenableNote">Diese Skripte sollten den Zustand "isopen" aktivieren, wenn das Objekt geöffnet ist und es deaktivieren, wenn es geschlossen ist, um sicherzustellen, dass Quest den Zustand des Objektes erkennt. Wenn Sie das Objekt abschließbar machen, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
+  <template name="EditorObjectContainerContainerNote">Diese Skripte werden nach dem Öffnen oder Schließen des Objektes ausgeführt. Sie können den "isopen"-Zustand von diesem Objekt jederzeit in Ihrem Spiel in Erfahrung bringen.</template>
   <template name="EditorObjectContainerAddScript">Beim Versuch ein Objekt in den Container zu geben</template>
   <template name="EditorObjectContainerAddScriptNote">Standardmäßig kann jedes Objekt hinzugefügt werden. Verwenden Sie dieses Skript, um dies zu beschränken. Das hinzuzufügende Objekt wird als "object" bezeichnet und sollte bei erfolgreichem Hinzufügen in den Container verschoben werden.</template>
   <template name="EditorObjectContainerLockNote">Diese Skripte werden ausgeführt, nachdem das Objekt gesperrt oder entsperrt wurde. Sie können den "locked"-Zustand in diesem Objekt jederzeit in Ihrem Spiel in Erfahrung bringen.</template>
@@ -313,21 +313,21 @@
   <template name="EditorObjectFeaturesEdibleobject">Essbar: Objekt kann gegessen werden (Daraufhin erhält der Spieler Gesundheit, wenn die "Gesundheit"-Funktion auf der Spiel-Features-Registerkarte aktiviert ist)</template>
   <template name="EditorObjectFeaturesWearableobject">Kleidung: Objekt kann an- und ausgezogen werden</template>
   <template name="EditorObjectFeaturesLightnessand">Helligkeit und Dunkelheit: Objekte können Räume erhellen</template>
-  <template name="EditorObjectFeaturesPlayerplayer">??? Spieler: Dieses Objekt ist ein Spieler</template>
+  <template name="EditorObjectFeaturesPlayerplayer">Spieler: Dieses Objekt ist der Spieler</template>
   <template name="EditorObjectInventoryInventory">Inventar</template>
   <template name="EditorObjectInventoryTake">Nimm</template>
   <template name="EditorObjectInventoryTake2">Nimm</template>
-  <template name="EditorObjectInventoryTakemessage">Beim nehmen des Objekts (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectInventoryTakemessage">Beim nehmen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryAftertaking">Nachdem das Objekt genommen wurde</template>
   <template name="EditorObjectInventoryDrop">Lege</template>
   <template name="EditorObjectInventoryDrop2">Lege</template>
-  <template name="EditorObjectInventoryDropmessage">Beim ablegen des Objekts (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectInventoryDropmessage">Beim ablegen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryAfterdropping">Nachdem das Objekt abgelegt wurde</template>
   <template name="EditorObjectInventoryPrice">Preis</template>
   <template name="EditorObjectInventoryInventorylimitation">Inventarbegrenzung</template>
   <template name="EditorObjectInventorySetmaximum">Steht "maximale Objekte" auf 0, kann der Spieler/Container unbegrenzt Objekte aufnehmen/enthalten.</template>
   <template name="EditorObjectInventoryMaximumobjects">Maximale Objekte</template>
-  <template name="EditorObjectInventoryFullcontainer">Nachdem Maximum erreicht wurde (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectInventoryFullcontainer">Nachdem Maximum erreicht wurde (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryVolume">Volumen</template>
   <template name="EditorObjectInventoryVolume2">Volumen</template>
   <template name="EditorObjectInventoryMaximumvolume">Maximales Inventarvolumen</template>
@@ -347,32 +347,32 @@
   <template name="EditorObjectMapOffsetY">Versatz Y</template>
   <template name="EditorObjectObjectObject">Objekt</template>
   <template name="EditorObjectObjectOthernames">Alternative Namen</template>
-  <template name="EditorObjectObjectAliastodisplay">Alias zur Anzeige im Bereich "Inventar" oder "Räume und Objekte"</template>
+  <template name="EditorObjectObjectAliastodisplay">Alias zur Anzeige in der Inventar- und Räume-und-Objekte-Leiste</template>
   <template name="EditorObjectObjectHyperlinkoptions">Hyperlink-Optionen</template>
   <template name="EditorObjectObjectIfyouspecify">Wenn Sie hier eine Link-Farbe angeben, wird die Standardfarbe unter der Registerkarte "Oberfläche" im Game-Objekt überschrieben.</template>
   <template name="EditorObjectObjectLinkcolour">Linkfarbe</template>
   <template name="EditorObjectObjectDisplayverbs">Verbmenü</template>
   <template name="EditorObjectObjectDisplayverbs2">Das Verbmenü erscheint, wenn das Objekt angeklickt wird (In der Räume-und-Objekte-Leiste als entsprechende Schaltflächen).</template>
-  <template name="EditorObjectObjectVerbsadded">Verben, die der Registerkarte "Verben" hinzugefügt wurden landen automatisch in der Liste. Um dies zu unterbinden deaktivieren Sie im Game-Objekt unter "Raumbeschreibungen" die "Automatische Generierung der Verbenliste". Es besteht auch die Möglichkeit die Automatische Generierung nur für dieses Objekt zu deaktivieren, indem Sie eine der folgenden Optionen wählen</template>
+  <template name="EditorObjectObjectVerbsadded">Verben, die der Registerkarte "Verben" hinzugefügt wurden landen automatisch in der Liste. Um dies zu unterbinden deaktivieren Sie im Game-Objekt unter "Raumbeschreibungen" die "Automatische Generierung der Verbenliste". Es besteht auch die Möglichkeit die Automatische Generierung nur für dieses Objekt zu deaktivieren, indem Sie eine der folgenden Optionen wählen.</template>
   <template name="EditorObjectObjectDisableautomatically">Die automatisch generierten Verben für dieses Objekt deaktivieren</template>
-  <template name="EditorObjectObjectOnlydisplay">Nur selbst erstellte Verben aus der Verben-Registerkarte des Objekts anzeigen</template>
+  <template name="EditorObjectObjectOnlydisplay">Nur selbst erstellte Verben aus der Verben-Registerkarte des Objektes anzeigen</template>
   <template name="EditorObjectObjectInventoryverbs">Inventarverben erscheinen, wenn das Kommando "inventar" aufgerufen wurde (In der Inventarleiste als entsprechende Schaltflächen).</template>
   <template name="EditorObjectObjectInventoryverbs2">Inventarverben</template>
   <template name="EditorObjectOptionsSwitchable">Umschaltbar</template>
   <template name="EditorObjectOptionsSwitchable2">Umschaltbar</template>
-  <template name="EditorObjectOptionsMessagetoprint">Beim einschalten des Objekts (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectOptionsMessagetoprint2">Beim ausschalten des Objekts (Für Voreinstellung leer lassen)</template>  
+  <template name="EditorObjectOptionsMessagetoprint">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectOptionsMessagetoprint2">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>  
   <template name="EditorObjectOptionsCannotswitchon">Falls das Objekt nicht eingeschaltet werden kann, weil es z. B. defekt ist (Für normale Funktionalität leer lassen) </template>  
   <template name="EditorObjectOptionsSwitchedon">Bei Spielstart eingeschaltet</template>
-  <template name="EditorObjectOptionsMessageSwitchon">Beim einschalten des Objekts (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectOptionsMessageSwitchoff">Beim ausschalten des Objekts (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectOptionsMessageSwitchon">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectOptionsMessageSwitchoff">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsExtraobject">Zusätzliche Objektbeschreibung bei eingeschaltetem Zustand</template>
   <template name="EditorObjectOptionsExtraobject2">Zusätzliche Objektbeschreibung bei ausgeschaltetem Zustand</template>
-  <template name="EditorObjectOptionsAfterswitching">Nach dem Einschalten des Objekts</template>
-  <template name="EditorObjectOptionsAfterswitching2">Nach dem Ausschalten des Objekts</template>
+  <template name="EditorObjectOptionsAfterswitching">Nach dem Einschalten des Objektes</template>
+  <template name="EditorObjectOptionsAfterswitching2">Nach dem Ausschalten des Objektes</template>
   <template name="EditorObjectOptionsEdible">Essbar</template>
   <template name="EditorObjectOptionsEdible2">Essbar</template>
-  <template name="EditorObjectOptionsMessageEat">Beim essen (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectOptionsMessageEat">Beim essen (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsChangehealth">Gesundheit verbessert von</template>
   <template name="EditorObjectOptionsLight/Dark">Licht/Dunkel</template>
   <template name="EditorObjectOptionsThisobject">Dieses Objekt ist eine Lichtquelle</template>
@@ -415,25 +415,25 @@
   <template name="EditorObjectSetupDescription">Beschreibung</template>
   <template name="EditorObjectSetupInroomdescription">Beschreibung, während sich das Objekt in einem Raum befindet</template>
   <template name="EditorObjectUseGiveUse/Give">Benutzen/Geben</template>
-  <template name="EditorObjectUseGiveUseonitsown">Benutze (ohne zusätzliches Objekt)</template>
+  <template name="EditorObjectUseGiveUseonitsown">Benutze (ohne Zusatzobjekt)</template>
   <template name="EditorObjectUseGiveAction">Aktion</template>
-  <template name="EditorObjectUseGiveMenucaption">??? Menübeschriftung (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectUseGiveUseotherobject">Benutze (zusätzliches Objekt) mit diesem Objekt</template>
-  <template name="EditorObjectUseGiveUseanyother">??? Use any other object on this</template>
-  <template name="EditorObjectUseGiveUsethisonother">??? Use this on (other object)</template>
-  <template name="EditorObjectUseGiveUseonanyother">??? Use on any other object</template>
-  <template name="EditorObjectUseGiveGiveonits">Gebe (ohne zusätzliches Objekt)</template>
-  <template name="EditorObjectUseGiveGiveother">Gebe (zusätzliches Objekt) zu diesem Objekt</template>
-  <template name="EditorObjectUseGiveGiveanyother">??? Give any other object to this</template>
-  <template name="EditorObjectUseGiveGivethisto">??? Give this to (other object)</template>
-  <template name="EditorObjectUseGiveGivetoanyother">??? Give to any other object</template>
+  <template name="EditorObjectUseGiveMenucaption">Überschrift des Auswahlmenüs der verwendbaren Objekte (Ohne Eingabe = Standardüberschrift)</template>
+  <template name="EditorObjectUseGiveUseotherobject">Benutze (Zusatzobjekt) mit diesem Objekt</template>
+  <template name="EditorObjectUseGiveUseanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
+  <template name="EditorObjectUseGiveUsethisonother">Benutze dieses Objekt mit (Zusatzobjekt)</template>
+  <template name="EditorObjectUseGiveUseonanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
+  <template name="EditorObjectUseGiveGiveonits">Gebe (ohne Zusatzobjekt)</template>
+  <template name="EditorObjectUseGiveGiveother">Gebe (Zusatzobjekt) zu diesem Objekt</template>
+  <template name="EditorObjectUseGiveGiveanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
+  <template name="EditorObjectUseGiveGivethisto">Gebe dieses Objekt zu (Zusatzobjekt)</template>
+  <template name="EditorObjectUseGiveGivetoanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
   <template name="EditorObjectVerbsVerbs">Verben</template>
   <template name="EditorScriptsDarknessDarkness">Dunkelheit</template>
   <template name="EditorScriptsDarknessMakeroomdark">Einen Raum abdunkeln</template>
   <template name="EditorScriptsDarknessMakedark">Dunkle Raum ab</template>
   <template name="EditorScriptsDarknessMakeroomlight">Einen Raum aufhellen</template>
   <template name="EditorScriptsDarknessMakelight">Erhelle Raum</template>
-  <template name="EditorScriptsDarknessSetobjectbrightness">Die Stärke der Lichtabstrahlung eines Objekts festlegen</template>
+  <template name="EditorScriptsDarknessSetobjectbrightness">Die Stärke der Lichtabstrahlung eines Objektes festlegen</template>
   <template name="EditorScriptsDarknessSetexitbrightness">Die Stärke der Lichteinstrahlung eines Ausgangs festlegen</template>
   <template name="EditorScriptsDarknessSetbrightness">Lichtstrahl von</template>
   <template name="EditorScriptsDarknessto">mit der Intensität</template>
@@ -741,7 +741,7 @@
   <template name="EditorVerbName">Name</template>
   <template name="EditorVerbMultipleobjects">Mehrere Objekte</template>
   <template name="EditorVerbObjectseparator">Präposition(en)</template>
-  <template name="EditorVerbMenucaption">Bei fehlendem Akkusativ</template>
+  <template name="EditorVerbMenucaption">Überschrift des Auswahlmenüs der verwendbaren Objekte</template>
   <template name="EditorVerbDefaulttext">Nach ergebnisloser Kommandoverarbeitung</template>
   <template name="EditorVerbIfnoobjects">Bei unverfügbaren Objekten</template>
   <template name="EditorVerbAttributes">Attribute</template>
@@ -823,20 +823,20 @@
   <template name="TypeInanimateObjects">Leblose Objekte (Plural)</template>
   <template name="TypeMaleCharacters">Männlicher Charakter (Plural)</template>
   <template name="TypeFemaleCharacters">Weiblicher Charakter (Plural)</template>
-  <template name="TypeNone">Kein</template>
-  <template name="TypeIndividually">Behandeln Sie Objekte individuell</template>
+  <template name="TypeNone">Keine</template>
+  <template name="TypeIndividually">Objekte individuell behandeln</template>
   <template name="TypePrintMessage">Text anzeigen</template>
-  <template name="EditorObjectScriptsInitial">Skript zum Initialisieren des Objekts (Wird vor Spielbeginn aufgerufen)</template>
+  <template name="EditorObjectScriptsInitial">Initialisierung des Objektes (Wird vor Spielbeginn aufgerufen)</template>
   <template name="EditorObjectStartscriptStartscript">Initialisierungsskript</template>
-  <template name="EditorObjectFeaturesStartScript">Starte Initialisierungsskript für dieses Objekt</template>
+  <template name="EditorObjectFeaturesStartScript">Initialisierungsskript für dieses Objekt verwenden</template>
   <template name="EditorObjectWearableWearable">Kleidung</template>
   <template name="EditorObjectWearableCanBeWorn">Kann getragen werden?</template>
   <template name="EditorObjectWearableWearLayer">Kleidungsschichten</template>
   <template name="EditorObjectWearableWearSlot">??? Wear Slot</template>
   <template name="EditorObjectWearableWearSlotPrompt">??? Please enter the name for the wear location</template>
   <template name="EditorObjectWearableWearSlotExplained">??? If two objects have the same wear location and slot, they will not be able to be worn at a same time. Any number of items without wear locations can be worn.</template>
-  <template name="EditorObjectWearableWearMessage">Beim Anziehen (Für Voreinstellung leer lassen)</template>
-  <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen (Für Voreinstellung leer lassen)</template>
+  <template name="EditorObjectWearableWearMessage">Beim Anziehen (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Features?</template>
   <template name="EditorObjectWearableMultistateOption">??? Multistate?</template>
   <template name="EditorObjectWearableAdvancedFeatures">Advanced features</template>
@@ -847,9 +847,9 @@
   <template name="EditorObjectWearableAdditionalInventory">Inventar</template>
   <template name="EditorObjectWearableAdditionalWorn">Getragen</template>
   <template name="EditorObjectWearableAfterWearing">Nach dem tragen</template>
-  <template name="EditorObjectWearableAfterWearing2">Nach dem Tragen des Objekts</template>
+  <template name="EditorObjectWearableAfterWearing2">Nach dem Tragen des Objektes</template>
   <template name="EditorObjectWearableAfterRemoving">Nach dem Entfernen</template>
-  <template name="EditorObjectWearableAfterRemoving2">Nach dem Entfernen des Objekts</template>
+  <template name="EditorObjectWearableAfterRemoving2">Nach dem Entfernen des Objektes</template>
   <template name="EditorObjectWearableMultistate">??? Multi-state</template>
   <template name="EditorObjectWearableState">??? Descriptor for each state (or * for none)</template>
   <template name="EditorObjectWearableStatePrompt">??? Please enter the descriptor to use in the item name for this state</template>
