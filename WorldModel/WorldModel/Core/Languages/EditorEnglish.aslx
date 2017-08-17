@@ -1,5 +1,5 @@
 <library type="editor">
-  <!-- Visual-Basic- and C-Templates -->
+  <!-- Hardcode-Templates -->
   <template name="EditorFromLibrary">From library {0}</template>
   <template name="EditorFromLibraryCopy">Copy</template>
   <template name="EditorUnableToSave">Unable to save the file due to the following error:</template>
@@ -172,11 +172,8 @@
   <template name="EditorRequireAnotherObject">Require another object</template>
   <template name="EditorKeypromptEnterObjectName">Please enter the object name</template>
   <template name="EditorLaunchCaptionPlay">Play</template>
-  <!--<template name="Editor"></template>
-  <template name="Editor"></template>
-  <template name="Editor"></template>-->
   <!-- END OF PART -->
-  <!-- ASLX-Templates -->
+  <!-- Softcode-Templates -->
   <template name="EditorCommandCommand">Command</template>
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
