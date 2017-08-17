@@ -33,7 +33,7 @@ namespace TextAdventures.Quest.EditorControls
                 switch (tag)
                 {
                     case "keyname":
-                        return L.T("EditorKeynameObject");
+                        return "Object";
                     case "keyprompt":
                         return L.T("EditorKeypromptEnterObjectName");
                     case "source":

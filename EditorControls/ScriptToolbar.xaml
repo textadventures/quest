@@ -16,7 +16,9 @@
     </UserControl.Resources>
     <Grid UseLayoutRounding="False">
         <DockPanel HorizontalAlignment="Left" Height="25" LastChildFill="False" VerticalAlignment="Top" Width="269">
-            <Button Name="cmdMakeEditable" Click="cmdMakeEditable_Click" Visibility="Collapsed">Make Editable Copy</Button>
+            <Button x:Name="cmdMakeEditable" Click="cmdMakeEditable_Click" Visibility="Visible" Background="White" BorderBrush="#FFB4B4B4" Foreground="White" Width="25" ToolTip="Make editable copy">
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="Images/MakeEditCopy.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
             <Button Name="cmdDelete" ToolTip="Delete" Click="cmdDelete_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White">
                 <Button.BorderBrush>
                     <SolidColorBrush Color="#FFB4B4B4"/>

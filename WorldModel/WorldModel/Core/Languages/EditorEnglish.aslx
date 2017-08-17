@@ -104,7 +104,7 @@
   <template name="EditorRecent">Recent</template>
   <template name="EditorReview">Review</template>
   <template name="EditorComment">Comment</template>
-  <template name="EditorStars">({0} stars)</template>
+  <template name="EditorStars">stars</template>
   <template name="EditorNewVersionAvailable">New version available</template>
   <template name="EditorClickHereToUpdate">Click here to update</template>
   <template name="EditorChooseAWalktroughToRun">Please choose a walkthrough to run:</template>
@@ -170,15 +170,18 @@
   <template name="EditorPrintMessage">Print a message</template>
   <template name="EditorRunScript">Run a script</template>
   <template name="EditorRequireAnotherObject">Require another object</template>
-  <template name="EditorKeynameObject">Object</template>
   <template name="EditorKeypromptEnterObjectName">Please enter the object name</template>
+  <template name="EditorLaunchCaptionPlay">Play</template>
+  <!--<template name="Editor"></template>
+  <template name="Editor"></template>
+  <template name="Editor"></template>-->
   <!-- END OF PART -->
   <!-- ASLX-Templates -->
   <template name="EditorCommandCommand">Command</template>
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
   <template name="EditorCommandUnresolved">Unresolved object text</template>
-  <template name="EditorCommandScope">Scope ("inventory", "notheld", room name or object attribute)</template>
+  <template name="EditorCommandScope">Scope ("inventory", "notheld", room name or object attribute, Blank for everywhere)</template>
   <template name="EditorCommandScript">Script</template>
   <template name="EditorCommandAttributes">Attributes</template>
   <template name="EditorDynamicTemplateDynamicTemplate">Dynamic Template</template>

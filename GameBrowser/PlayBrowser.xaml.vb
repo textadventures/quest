@@ -16,8 +16,8 @@ Public Class PlayBrowser
         lblGetGames.Content = T("EditorGetGames")
         lblRecent.Content = T("EditorRecent")
         m_recentItems = New RecentItems("Recent")
-        ctlGameList.LaunchCaption = "Play"
-        ctlOnlineGameList.LaunchCaption = "Play"
+        ctlGameList.LaunchCaption = T("EditorLaunchCaptionPlay")
+        ctlOnlineGameList.LaunchCaption = T("EditorLaunchCaptionPlay")
         ctlOnlineGameList.IsOnlineList = True
         Populate()
     End Sub

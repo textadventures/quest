@@ -292,7 +292,7 @@ Public Class GameListItem
             m_rating = value
             If value > 0 Then
                 Helper.OutputStars(stars, CInt(value))
-                ratingValue.Text = String.Format("({0:F1} stars)", value)
+                ratingValue.Text = String.Format("({0:F1} " + T("EditorStars") + ")", value)
                 ratingBlock.Visibility = Windows.Visibility.Visible
                 notRatedBlock.Visibility = Windows.Visibility.Collapsed
             Else

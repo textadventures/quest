@@ -7,7 +7,7 @@ Public Class ReviewItem
         If rating > 0 Then
             ratingBlock.Visibility = Windows.Visibility.Visible
             Helper.OutputStars(stars, rating)
-            ratingValue.Text = String.Format(T("EditorStars"), rating)
+            ratingValue.Text = String.Format("({0} " + T("EditorStars") + ")", rating)
         Else
             ratingBlock.Visibility = Windows.Visibility.Collapsed
         End If

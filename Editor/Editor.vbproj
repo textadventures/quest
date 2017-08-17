@@ -69,11 +69,35 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CefSharp">
+      <HintPath>..\packages\CefSharp.Common.39.0.1\build\..\CefSharp\x86\CefSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.Core">
+      <HintPath>..\packages\CefSharp.Common.39.0.1\build\..\CefSharp\x86\CefSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.WinForms">
+      <HintPath>..\packages\CefSharp.WinForms.39.0.1\build\..\CefSharp\x86\CefSharp.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="IASL, Version=5.7.6437.26202, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IASL\bin\x86\Debug\IASL.dll</HintPath>
+    </Reference>
+    <Reference Include="JawsApi">
+      <HintPath>..\JawsApi\bin\Debug\JawsApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayerController">
+      <HintPath>..\PlayerController\bin\Debug\PlayerController.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -252,6 +276,10 @@
     <ProjectReference Include="..\Menus\Menus.vbproj">
       <Project>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</Project>
       <Name>Menus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Player\Player.vbproj">
+      <Project>{F383D1E8-2883-420D-9CAB-223A2B72B1DE}</Project>
+      <Name>Player</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
