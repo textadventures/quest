@@ -31,6 +31,8 @@
   <template name="ErrorLaunching">Fehler beim Starten {0}{1}{2}</template>
   <!-- END OF PART -->
   <!-- Softcode-Templates -->
+  <template name="EditorObjectCanBeTaken">Objekt kann getragen werden</template>
+  <template name="EditorObjectCanBeDropped">Objekt kann abgelegt werden</template>
   <template name="EditorCommandCommand">Kommando</template>
   <template name="EditorCommandPattern">Muster</template>
   <template name="EditorCommandName">Name</template>
@@ -388,8 +390,8 @@
   <template name="EditorObjectOptionsStartingmoney">Startgeld</template>
   <template name="EditorObjectRoomRoom">Raum</template>
   <template name="EditorObjectRoomRoompicture">Raumbild</template>
-  <template name="EditorObjectRoomDescriptionPrefix">Beschreibung Präfix</template>
-  <template name="EditorObjectRoomObjectslist">Objektliste Präfix</template>
+  <template name="EditorObjectRoomDescriptionPrefix">Dem Raum vorangestellt</template>
+  <template name="EditorObjectRoomObjectslist">Den Objekten vorangestellt</template>
   <template name="EditorObjectRoomDropDestination">Fallen gelassene Objekte hier her verschieben</template>
   <template name="EditorObjectRoomDescription">Beschreibung</template>
   <template name="EditorObjectScriptsScripts">Skripte</template>
@@ -798,9 +800,9 @@
   <template name="TypeContainerNotLockable">Nicht abschließbar</template>   
   <template name="TypeContainerLockable">Abschließbar</template>   
   <template name="TypeDefaultBehaviour">Standardverhalten</template>   
-  <template name="TypeUseDefaultRoom">Verwende die Standard-Raumbeschreibung</template>   
+  <template name="TypeUseDefaultRoom">Standardbeschreibung</template>   
   <template name="TypePathNormal">Normal</template>   
-  <template name="TypePathEastWest">Pfad Ost-West</template>   
+  <template name="TypePathEastWest">Pfad Ost-West</template>
   <template name="TypePathEast">Pfad Ost</template>   
   <template name="TypePathWest">Pfad West</template>   
   <template name="TypePathNorthSouth">Pfad Nord-Süd</template>   

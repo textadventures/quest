@@ -16,7 +16,7 @@
       <types>
         boolean=[TypeDefaultBehaviour]; script=[TypeRunScript]
       </types>
-      <checkbox>Object can be taken</checkbox>
+      <checkbox>[EditorObjectCanBeTaken]</checkbox>
     </control>
 
     <control>
@@ -49,7 +49,7 @@
       <types>
         boolean=[TypeDefaultBehaviour]; script=[TypeRunScript]
       </types>
-      <checkbox>Object can be dropped</checkbox>
+      <checkbox>[EditorObjectCanBeDropped]</checkbox>
     </control>
 
     <control>

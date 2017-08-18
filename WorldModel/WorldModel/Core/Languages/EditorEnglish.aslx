@@ -172,8 +172,11 @@
   <template name="EditorRequireAnotherObject">Require another object</template>
   <template name="EditorKeypromptEnterObjectName">Please enter the object name</template>
   <template name="EditorLaunchCaptionPlay">Play</template>
+  <template name="EditorGenerate">Generate...</template>
   <!-- END OF PART -->
   <!-- Softcode-Templates -->
+  <template name="EditorObjectCanBeTaken">Object can be taken</template>
+  <template name="EditorObjectCanBeDropped">Object can be dropped</template>
   <template name="EditorCommandCommand">Command</template>
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
