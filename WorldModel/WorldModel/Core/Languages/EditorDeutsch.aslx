@@ -69,7 +69,7 @@
   <template name="EditorExitPrintmessage">Bei gesperrtem Ausgang</template>
   <template name="EditorExitMessage">Bei schonmaliger Benutzung des Ausgangs</template>
   <template name="EditorExitRunascript">Skript ausführen (Anstatt den Spieler automatisch zu bewegen)</template>
-  <template name="EditorExitScripttorun">Wenn in diese Richtung gewechselt werden soll</template>
+  <template name="EditorExitScripttorun">Beim Versuch in diese Richtung zu wechseln</template>
   <template name="EditorExitLookinthis">Schaue (in diese Richtung)</template>
   <template name="EditorExitExitisalook">Es kann nur in die Richtung geschaut werden (Der Spieler kann nicht in die Richtung gehen)</template>
   <template name="EditorExitLook">Beschreibung beim Betrachten</template>
@@ -261,7 +261,7 @@
   <template name="EditorObjectTellScripttorun">Falls über ein unbekanntes Thema gesprochen wird</template>
   <template name="EditorObjectAskTellTellto">??? Order</template>
   <template name="EditorObjectAskTellTelltoabout">??? Tell to</template>
-  <template name="EditorObjectTelltoScripttorun">Falls keine Schlüsselwörter erkannt werden</template>
+  <template name="EditorObjectTelltoScripttorun">Falls keine Schlüsselwörter erkannt wurden</template>
   <template name="EditorObjectAnnotationAnnotation">Notizen</template>
   <template name="EditorObjectAttributesAttributes">Attribute</template>
   <template name="EditorObjectAttributesStatusattributes">Statusattribute</template>
@@ -290,7 +290,7 @@
   <template name="EditorObjectContainerLocktype">Schlosstyp</template>
   <template name="EditorObjectContainerKey">Schlüssel</template>
   <template name="EditorObjectContainerLocked">Objekt ist verschlossen</template>
-  <template name="EditorObjectContainerAutomatically">Objekt automatisch aufschliessen, wenn der Spieler den/die Schlüssel hat</template>
+  <template name="EditorObjectContainerAutomatically">Objekt automatisch aufschliessen, wenn der Spieler den oder die Schlüssel besitzt</template>
   <template name="EditorObjectContainerAutomatically2">Objekt automatisch öffnen, wenn aufgeschlossen wurde</template>
   <template name="EditorObjectContainerIftheplayer">Beim Versuch das Objekt ohne passenden Schlüssel aufzuschliessen</template>
   <template name="EditorObjectContainerUnlockmessage">Ist Objekt aufgeschlossen</template>
@@ -298,7 +298,7 @@
   <template name="EditorObjectContainerCanbelocked">Objekt kann aufgeschlossen werden</template>
   <template name="EditorObjectContainerAfterlocking">Nach dem Abschliessen des Objektes</template>
   <template name="EditorObjectContainerAfterunlocking">Nach dem Aufschliessen des Objektes</template>
-  <template name="EditorObjectContainerOpenableNote">Diese Skripte sollten den Zustand "isopen" aktivieren, wenn das Objekt geöffnet ist und es deaktivieren, wenn es geschlossen ist, um sicherzustellen, dass Quest den Zustand des Objektes erkennt. Wenn Sie das Objekt abschließbar machen, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
+  <template name="EditorObjectContainerOpenableNote">Diese Skripte setzen die "isopen"-Variable um sicherzustellen, dass Quest den Zustand des Objektes erkennt. Wenn Sie das Objekt abschliessbar machen, werden die Standard-Skripte verwendet, jene die Aufgabe übernehmen werden.</template>
   <template name="EditorObjectContainerContainerNote">Diese Skripte werden nach dem Öffnen oder Schließen des Objektes ausgeführt. Sie können den "isopen"-Zustand von diesem Objekt jederzeit in Ihrem Spiel in Erfahrung bringen.</template>
   <template name="EditorObjectContainerAddScript">Beim Versuch ein Objekt in den Container zu geben</template>
   <template name="EditorObjectContainerAddScriptNote">Standardmäßig kann jedes Objekt hinzugefügt werden. Verwenden Sie dieses Skript, um dies zu beschränken. Das hinzuzufügende Objekt wird als "object" übergeben und sollte bei erfolgreichem Hinzufügen in den Container verschoben werden.</template>
@@ -313,7 +313,7 @@
   <template name="EditorObjectFeaturesEdibleobject">Essbar: Objekt kann gegessen werden (Daraufhin erhält der Spieler Gesundheit, wenn die "Gesundheit"-Funktion auf der Spiel-Features-Registerkarte aktiviert ist)</template>
   <template name="EditorObjectFeaturesWearableobject">Kleidung: Objekt kann an- und ausgezogen werden</template>
   <template name="EditorObjectFeaturesLightnessand">Helligkeit und Dunkelheit: Objekte können Räume erhellen</template>
-  <template name="EditorObjectFeaturesPlayerplayer">Spieler: Dieses Objekt ist der Spieler</template>
+  <template name="EditorObjectFeaturesPlayerplayer">Spieler: Dieses Objekt kann der Spieler sein</template>
   <template name="EditorObjectInventoryInventory">Inventar</template>
   <template name="EditorObjectInventoryTake">Nimm</template>
   <template name="EditorObjectInventoryTake2">Nimm</template>
@@ -362,7 +362,7 @@
   <template name="EditorObjectOptionsSwitchable2">Umschaltbar</template>
   <template name="EditorObjectOptionsMessagetoprint">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsMessagetoprint2">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>  
-  <template name="EditorObjectOptionsCannotswitchon">Falls das Objekt nicht eingeschaltet werden kann, weil es z. B. defekt ist (Für normale Funktionalität leer lassen) </template>  
+  <template name="EditorObjectOptionsCannotswitchon">Falls das Objekt nicht eingeschaltet werden kann, weil es z. B. defekt ist (Ohne Eingabe = Standardverhalten)</template>  
   <template name="EditorObjectOptionsSwitchedon">Bei Spielstart eingeschaltet</template>
   <template name="EditorObjectOptionsMessageSwitchon">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsMessageSwitchoff">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
@@ -373,7 +373,7 @@
   <template name="EditorObjectOptionsEdible">Essbar</template>
   <template name="EditorObjectOptionsEdible2">Essbar</template>
   <template name="EditorObjectOptionsMessageEat">Beim essen (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectOptionsChangehealth">Gesundheit verbessert von</template>
+  <template name="EditorObjectOptionsChangehealth">Gesundheit verbessert sich auf</template>
   <template name="EditorObjectOptionsLight/Dark">Licht/Dunkel</template>
   <template name="EditorObjectOptionsThisobject">Dieses Objekt ist eine Lichtquelle</template>
   <template name="EditorObjectOptionsBrightness">Helligkeit</template>
@@ -415,17 +415,17 @@
   <template name="EditorObjectSetupDescription">Beschreibung</template>
   <template name="EditorObjectSetupInroomdescription">Beschreibung, während sich das Objekt in einem Raum befindet</template>
   <template name="EditorObjectUseGiveUse/Give">Benutzen/Geben</template>
-  <template name="EditorObjectUseGiveUseonitsown">Benutze (ohne Zusatzobjekt)</template>
+  <template name="EditorObjectUseGiveUseonitsown">Benutze Objekt</template>
   <template name="EditorObjectUseGiveAction">Aktion</template>
   <template name="EditorObjectUseGiveMenucaption">Überschrift des Auswahlmenüs der verwendbaren Objekte (Ohne Eingabe = Standardüberschrift)</template>
-  <template name="EditorObjectUseGiveUseotherobject">Benutze (Zusatzobjekt) mit diesem Objekt</template>
-  <template name="EditorObjectUseGiveUseanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
-  <template name="EditorObjectUseGiveUsethisonother">Benutze dieses Objekt mit (Zusatzobjekt)</template>
-  <template name="EditorObjectUseGiveUseonanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
-  <template name="EditorObjectUseGiveGiveonits">Gebe (ohne Zusatzobjekt)</template>
-  <template name="EditorObjectUseGiveGiveother">Gebe (Zusatzobjekt) zu diesem Objekt</template>
+  <template name="EditorObjectUseGiveUseotherobject">Benutze (Kombinierobjekt) mit Objekt</template>
+  <template name="EditorObjectUseGiveUseanyother">Bei Verwendung anderer Kombinierobjekte als oben angegeben</template>
+  <template name="EditorObjectUseGiveUsethisonother">Benutze Objekt mit (Kombinierobjekt)</template>
+  <template name="EditorObjectUseGiveUseonanyother">Bei Verwendung anderer Kombinierobjekte als oben angegeben</template>
+  <template name="EditorObjectUseGiveGiveonits">Gebe Objekt</template>
+  <template name="EditorObjectUseGiveGiveother">Gebe (Kombinierobjekt) zu Objekt</template>
   <template name="EditorObjectUseGiveGiveanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
-  <template name="EditorObjectUseGiveGivethisto">Gebe dieses Objekt zu (Zusatzobjekt)</template>
+  <template name="EditorObjectUseGiveGivethisto">Gebe Objekt zu (Kombinierobjekt)</template>
   <template name="EditorObjectUseGiveGivetoanyother">Bei Verwendung anderer Objekte als oben angegeben</template>
   <template name="EditorObjectVerbsVerbs">Verben</template>
   <template name="EditorScriptsDarknessDarkness">Dunkelheit</template>
@@ -810,8 +810,8 @@
   <template name="TypeCanSwitched">Ein- und ausschaltbar</template>
   <template name="TypeCannotEaten">Kann nicht gegessen werden</template>
   <template name="TypeCanEaten">Kann gegessen werden</template>
-  <template name="TypeCannotPlayer">Kann kein Spieler sein</template>
-  <template name="TypeCanPlayer">Kann ein Spieler sein</template>
+  <template name="TypeCannotPlayer">Kann nicht der Spieler sein</template>
+  <template name="TypeCanPlayer">Kann der Spieler sein</template>
   <template name="TypeObjectRoom">Raum</template>
   <template name="TypeObjectObject">Objekt</template>
   <template name="TypeObjectAndOr">Objekt und/oder Raum</template>
