@@ -12,7 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -380,7 +379,7 @@ namespace TextAdventures.Quest.EditorControls
             {
                 return m_compassTypes[direction];
             }
-            throw new ArgumentOutOfRangeException(string.Format(L.T("EditorUnknownDirection"), direction));
+            throw new ArgumentOutOfRangeException(string.Format("Unknown direction {0}", direction));
         }
 
         private static List<int> s_oppositeDirs = new List<int> { 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 11, 10 };

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -95,9 +94,9 @@ namespace TextAdventures.Quest
                     return "True";
                 case "editprompt":
                 case "valueprompt":
-                    return L.T("EditorPleaseEnterValue");
+                    return "Please enter a value";
                 case "keyprompt":
-                    return L.T("EditorPleaseEnterKey");
+                    return "Please enter a key";
                 default:
                     return null;
             }

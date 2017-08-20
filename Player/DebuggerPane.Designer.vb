@@ -22,7 +22,6 @@ Partial Class DebuggerPane
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DebuggerPane))
         Me.splitMain = New System.Windows.Forms.SplitContainer()
         Me.lstObjects = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -38,63 +37,74 @@ Partial Class DebuggerPane
         '
         'splitMain
         '
-        resources.ApplyResources(Me.splitMain, "splitMain")
+        Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
+        Me.splitMain.Location = New System.Drawing.Point(0, 0)
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
         '
-        resources.ApplyResources(Me.splitMain.Panel1, "splitMain.Panel1")
         Me.splitMain.Panel1.Controls.Add(Me.lstObjects)
         '
         'splitMain.Panel2
         '
-        resources.ApplyResources(Me.splitMain.Panel2, "splitMain.Panel2")
         Me.splitMain.Panel2.Controls.Add(Me.lstAttributes)
+        Me.splitMain.Size = New System.Drawing.Size(683, 299)
+        Me.splitMain.SplitterDistance = 144
+        Me.splitMain.TabIndex = 2
         '
         'lstObjects
         '
-        resources.ApplyResources(Me.lstObjects, "lstObjects")
         Me.lstObjects.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
+        Me.lstObjects.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstObjects.FullRowSelect = True
-        Me.lstObjects.GridLines = True
         Me.lstObjects.HideSelection = False
+        Me.lstObjects.Location = New System.Drawing.Point(0, 0)
         Me.lstObjects.Name = "lstObjects"
+        Me.lstObjects.Size = New System.Drawing.Size(144, 299)
+        Me.lstObjects.TabIndex = 0
         Me.lstObjects.UseCompatibleStateImageBehavior = False
         Me.lstObjects.View = System.Windows.Forms.View.Details
         '
         'ColumnHeader1
         '
-        resources.ApplyResources(Me.ColumnHeader1, "ColumnHeader1")
+        Me.ColumnHeader1.Text = "Name"
+        Me.ColumnHeader1.Width = 158
         '
         'lstAttributes
         '
-        resources.ApplyResources(Me.lstAttributes, "lstAttributes")
         Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
+        Me.lstAttributes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstAttributes.FullRowSelect = True
-        Me.lstAttributes.GridLines = True
+        Me.lstAttributes.Location = New System.Drawing.Point(0, 0)
         Me.lstAttributes.Name = "lstAttributes"
+        Me.lstAttributes.Size = New System.Drawing.Size(535, 299)
+        Me.lstAttributes.TabIndex = 0
         Me.lstAttributes.UseCompatibleStateImageBehavior = False
         Me.lstAttributes.View = System.Windows.Forms.View.Details
         '
         'ColumnHeader2
         '
-        resources.ApplyResources(Me.ColumnHeader2, "ColumnHeader2")
+        Me.ColumnHeader2.Text = "Attribute"
+        Me.ColumnHeader2.Width = 138
         '
         'ColumnHeader3
         '
-        resources.ApplyResources(Me.ColumnHeader3, "ColumnHeader3")
+        Me.ColumnHeader3.Text = "Value"
+        Me.ColumnHeader3.Width = 164
         '
         'ColumnHeader4
         '
-        resources.ApplyResources(Me.ColumnHeader4, "ColumnHeader4")
+        Me.ColumnHeader4.Text = "Source"
+        Me.ColumnHeader4.Width = 130
         '
         'DebuggerPane
         '
-        resources.ApplyResources(Me, "$this")
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.splitMain)
         Me.Name = "DebuggerPane"
+        Me.Size = New System.Drawing.Size(683, 299)
         Me.splitMain.Panel1.ResumeLayout(False)
         Me.splitMain.Panel2.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()

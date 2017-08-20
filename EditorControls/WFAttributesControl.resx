@@ -427,7 +427,7 @@
     <value>ctlMultiControl</value>
   </data>
   <data name="&gt;&gt;ctlMultiControl.Type" xml:space="preserve">
-    <value>TextAdventures.Quest.EditorControls.WFMultiControl, EditorControls, Version=5.6.6431.30279, Culture=neutral, PublicKeyToken=null</value>
+    <value>TextAdventures.Quest.EditorControls.WFMultiControl, EditorControls, Version=5.6.6441.26494, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ctlMultiControl.Parent" xml:space="preserve">
     <value>ctlSplitContainer.Panel2</value>
@@ -492,9 +492,6 @@
   <data name="ctlSplitContainer.SplitterDistance" type="System.Int32, mscorlib">
     <value>810</value>
   </data>
-  <data name="ctlSplitContainer.SplitterIncrement" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
   <data name="ctlSplitContainer.SplitterWidth" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
@@ -530,9 +527,6 @@
   </data>
   <data name="ctlSplitContainerMain.SplitterDistance" type="System.Int32, mscorlib">
     <value>175</value>
-  </data>
-  <data name="ctlSplitContainerMain.SplitterIncrement" type="System.Int32, mscorlib">
-    <value>50</value>
   </data>
   <data name="ctlSplitContainerMain.SplitterWidth" type="System.Int32, mscorlib">
     <value>5</value>

@@ -144,7 +144,7 @@
 		
 		<control>
 			<mustinherit>wearable</mustinherit>
-			<selfcaption>[EditorObjectWearableAfterRemoving]</selfcaption>
+			<selfcaption>[EditorObjectWearableAfterRemoving2]</selfcaption>
 			<controltype>multi</controltype>
 			<attribute>onafterremove</attribute>
 			<types>null=None; string=Text; script=Run script</types>

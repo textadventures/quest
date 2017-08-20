@@ -180,9 +180,6 @@
     <EmbeddedResource Include="Debugger.resx">
       <DependentUpon>Debugger.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DebuggerPane.de.resx">
-      <DependentUpon>DebuggerPane.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="DebuggerPane.resx">
       <DependentUpon>DebuggerPane.vb</DependentUpon>
     </EmbeddedResource>
@@ -191,9 +188,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Log.resx">
       <DependentUpon>Log.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Menu.de.resx">
-      <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.vb</DependentUpon>
@@ -319,10 +313,10 @@
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\icons8-Detailansicht-32.png" />
-    <None Include="Resources\icons8-Test absolviert-32.png" />
-    <None Include="Resources\icons8-Fehler-32.png" />
-    <None Include="Resources\icons8-Stop-32.png" />
+    <Content Include="Resources\icons8-Detailansicht-32.png" />
+    <Content Include="Resources\icons8-Fehler-32.png" />
+    <Content Include="Resources\icons8-Stop-32.png" />
+    <Content Include="Resources\icons8-Test absolviert-32.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />

@@ -41,7 +41,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AvalonEdit.5.0.2\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -316,9 +315,6 @@
     <EmbeddedResource Include="WFDictionaryStringControl.resx">
       <DependentUpon>WFDictionaryStringControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="WFEditorTree.de-BE.resx">
-      <DependentUpon>WFEditorTree.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="WFEditorTree.de.resx">
       <DependentUpon>WFEditorTree.cs</DependentUpon>
     </EmbeddedResource>
@@ -531,10 +527,6 @@
       <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
       <Name>EditorController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Menus\Menus.vbproj">
-      <Project>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</Project>
-      <Name>Menus</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
       <Name>Utility</Name>
@@ -559,115 +551,47 @@
     <Resource Include="Images\EditCodeHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-16 %281%29.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suche-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Minus-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Plus-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Joyent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Datei hinzufügen-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Domain-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Eigenschaft bearbeiten-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Link hinzufügen-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Oben-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Umbenennen-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Unten-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Aufzeichnen-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Spielen-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\AddScript.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Datei hinzufügen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Topfpflanze-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Zimmer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Löschen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Verkleinern-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Erweitern-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-JS-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Typ-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Helfende Hand-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Lebenslauf-Vorlage laden-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Lebenslauf Muster-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Gleich-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Bücherregal-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Gehen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Bauer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Timer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Variable-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Konsole-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Verb-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Ausgang-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Bearbeiten-32.png" />
+    <Resource Include="Resources\icons8-Aufzeichnen-16.png" />
+    <Resource Include="Resources\icons8-Ausgang-32.png" />
+    <Resource Include="Resources\icons8-Bauer-32.png" />
+    <Resource Include="Resources\icons8-Bearbeiten-32.png" />
+    <Resource Include="Resources\icons8-Bücherregal-32.png" />
+    <Resource Include="Resources\icons8-Datei hinzufügen-16.png" />
+    <Resource Include="Resources\icons8-Datei hinzufügen-32.png" />
+    <Resource Include="Resources\icons8-Domain-16.png" />
+    <Resource Include="Resources\icons8-Eigenschaft bearbeiten-16.png" />
+    <Resource Include="Resources\icons8-Erweitern-32.png" />
+    <Resource Include="Resources\icons8-Gehen-32.png" />
+    <Resource Include="Resources\icons8-Gleich-32.png" />
+    <Resource Include="Resources\icons8-Helfende Hand-32.png" />
+    <Resource Include="Resources\icons8-Joyent.png" />
+    <Resource Include="Resources\icons8-JS-32.png" />
+    <Resource Include="Resources\icons8-Konsole-32.png" />
+    <Resource Include="Resources\icons8-Lebenslauf Muster-32.png" />
+    <Resource Include="Resources\icons8-Lebenslauf-Vorlage laden-32.png" />
+    <Resource Include="Resources\icons8-Link hinzufügen-16.png" />
+    <Resource Include="Resources\icons8-Löschen-16 %281%29.png" />
+    <Resource Include="Resources\icons8-Löschen-32.png" />
+    <Resource Include="Resources\icons8-Minus-16.png" />
+    <Resource Include="Resources\icons8-Oben-16.png" />
+    <Resource Include="Resources\icons8-Plus-16.png" />
+    <Resource Include="Resources\icons8-Spielen-16.png" />
+    <Resource Include="Resources\icons8-Suche-16.png" />
+    <Resource Include="Resources\icons8-Timer-32.png" />
+    <Resource Include="Resources\icons8-Topfpflanze-32.png" />
+    <Resource Include="Resources\icons8-Typ-32.png" />
+    <Resource Include="Resources\icons8-Umbenennen-16.png" />
+    <Resource Include="Resources\icons8-Unten-16.png" />
+    <Resource Include="Resources\icons8-Variable-32.png" />
+    <Resource Include="Resources\icons8-Verb-32.png" />
+    <Resource Include="Resources\icons8-Verkleinern-32.png" />
+    <Resource Include="Resources\icons8-Zimmer-32.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\MakeEditCopy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AddScript.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

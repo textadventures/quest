@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using TextAdventures.Quest;
 using TextAdventures.Quest.Scripts;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -205,7 +204,7 @@ namespace TextAdventures.Quest
         {
             if (!IsLibraryElement)
             {
-                throw new InvalidOperationException(L.T("EditorElementIsNotDefinedInLibrary"));
+                throw new InvalidOperationException("Element is not defined in a library");
             }
 
             m_element.MetaFields[MetaFieldDefinitions.Library] = false;

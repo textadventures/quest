@@ -68,8 +68,7 @@ namespace TextAdventures.Utility.Language
         {
             const string nodeTemplate = "template";
             const string nodeName = "name";
-            const string endOfPart = "END OF PART";
-            string languageFile = @".\Core\Languages\Editor" + lang + ".aslx";
+            string languageFile = Application.StartupPath + @"\Core\Languages\HCEditor" + lang + ".aslx";
             string key = null;
             string value = null;
 
@@ -80,12 +79,6 @@ namespace TextAdventures.Utility.Language
                 {
                     switch (reader.NodeType)
                     {
-                        case System.Xml.XmlNodeType.Comment:
-                            if (reader.Value.Trim() == endOfPart)
-                            {
-                                return;
-                            }
-                            break;
                         case System.Xml.XmlNodeType.Element:
                             if (reader.Name == nodeTemplate && reader.GetAttribute(nodeName) != null)
                             {

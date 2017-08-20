@@ -45,8 +45,8 @@
             // 
             // lstList
             // 
-            this.lstList.BackColor = System.Drawing.Color.White;
             resources.ApplyResources(this.lstList, "lstList");
+            this.lstList.BackColor = System.Drawing.Color.White;
             this.lstList.ForeColor = System.Drawing.Color.Black;
             this.lstList.GridLines = true;
             this.lstList.HideSelection = false;
@@ -56,6 +56,7 @@
             // 
             // ctlToolStrip
             // 
+            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.BackColor = System.Drawing.Color.White;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -69,74 +70,73 @@
             this.cmdGoToPage,
             this.cmdMoveUp,
             this.cmdMoveDown});
-            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.Name = "ctlToolStrip";
             // 
             // cmdAdd
             // 
+            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.AutoToolTip = false;
             this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
-            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             // 
             // cmdDelete
             // 
+            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.AutoToolTip = false;
             this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
-            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             // 
             // cmdAddNewPage
             // 
+            resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.AutoToolTip = false;
             this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Datei_hinzufügen_16;
-            resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.Name = "cmdAddNewPage";
             this.cmdAddNewPage.Tag = "addpage";
             // 
             // cmdLink
             // 
+            resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.AutoToolTip = false;
             this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Link_hinzufügen_16;
-            resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.Name = "cmdLink";
             this.cmdLink.Tag = "link";
             // 
             // cmdEditKey
             // 
+            resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.AutoToolTip = false;
             this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Umbenennen_16;
-            resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.Name = "cmdEditKey";
             // 
             // cmdEdit
             // 
+            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.AutoToolTip = false;
             this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Eigenschaft_bearbeiten_16;
-            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.Name = "cmdEdit";
             // 
             // cmdGoToPage
             // 
+            resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.AutoToolTip = false;
             this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Domain_16;
-            resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.Name = "cmdGoToPage";
             this.cmdGoToPage.Tag = "goto";
             // 
             // cmdMoveUp
             // 
+            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.AutoToolTip = false;
             this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Oben_16;
-            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
             // cmdMoveDown
             // 
+            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.AutoToolTip = false;
             this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Unten_16;
-            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 

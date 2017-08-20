@@ -1,6 +1,4 @@
-﻿Imports TextAdventures.Utility.Language.L
-
-Public Class VersionInfo
+﻿Public Class VersionInfo
     Private m_updateData As UpdatesData
     Private m_currentVersion As Version
 
@@ -11,11 +9,7 @@ Public Class VersionInfo
         Set(value As UpdatesData)
             m_updateData = value
             If value IsNot Nothing Then
-                Dispatcher.BeginInvoke(Sub()
-                                           lblNewVersionDesc.Content = value.Description
-                                           lblNewVersion.Content = T("EditorNewVersionAvailable")
-                                           cmdDownload.Content = T("EditorClickHereToUpdate")
-                                       End Sub)
+                Dispatcher.BeginInvoke(Sub() lblNewVersionDesc.Content = value.Description)
             End If
         End Set
     End Property
@@ -28,7 +22,7 @@ Public Class VersionInfo
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format(T("EditorErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 End Class

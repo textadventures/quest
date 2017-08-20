@@ -33,26 +33,22 @@
             // 
             // ctlListEditor
             // 
-            this.ctlListEditor.BackColor = System.Drawing.Color.White;
             this.ctlListEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ctlListEditor.EditorDelegate = null;
-            this.ctlListEditor.ForeColor = System.Drawing.Color.Black;
             this.ctlListEditor.IsReadOnly = false;
             this.ctlListEditor.Location = new System.Drawing.Point(0, 0);
-            this.ctlListEditor.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ctlListEditor.Name = "ctlListEditor";
-            this.ctlListEditor.Size = new System.Drawing.Size(511, 315);
+            this.ctlListEditor.Size = new System.Drawing.Size(383, 256);
             this.ctlListEditor.Style = TextAdventures.Quest.EditorControls.WFListEditor.ColumnStyle.OneColumn;
             this.ctlListEditor.TabIndex = 0;
             // 
             // WFDictionaryStringControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ctlListEditor);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "WFDictionaryStringControl";
-            this.Size = new System.Drawing.Size(511, 315);
+            this.Size = new System.Drawing.Size(383, 256);
             this.ResumeLayout(false);
 
         }

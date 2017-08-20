@@ -1,7 +1,6 @@
 ﻿Imports System.Xml
 Imports System.Threading
 Imports System.Globalization
-Imports TextAdventures.Utility.Language.L
 
 Public Class Player
 
@@ -212,7 +211,7 @@ Public Class Player
             End If
             ClearBuffer()
         Catch ex As Exception
-            WriteLine(String.Format(T("EditorErrorRunningCommand") + " '{0}':<br>{1}", command, ex.Message))
+            WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
 
     End Sub
@@ -242,7 +241,7 @@ Public Class Player
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
         If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub()
-                        WriteLine("<output><b>" + T("EditorSorryErrorOccurred") + "</b></output>")
+                        WriteLine("<output><b>Sorry, an error occurred.</b></output>")
                         WriteLine("<output>" + errorMessage + "</output>")
                         ClearBuffer()
                     End Sub)
@@ -368,7 +367,7 @@ Public Class Player
             m_walkthroughRunner.Run()
 
         Catch ex As Exception
-            BeginInvoke(Sub() WriteLine(String.Format(T("EditorErrorWalkthroughHalted") + "<br>{0}", ex.Message)))
+            BeginInvoke(Sub() WriteLine(String.Format("Error - walkthrough halted:<br>{0}", ex.Message)))
 
         Finally
             m_walkthroughRunner = Nothing
@@ -392,7 +391,7 @@ Public Class Player
             menuOptions.Add(item.Key, item.Key)
         Next
 
-        menuForm.Caption = T("EditorChooseAWalktroughToRun")
+        menuForm.Caption = "Please choose a walkthrough to run:"
         menuForm.Options = menuOptions
         menuForm.AllowCancel = True
         menuForm.ShowDialog()
@@ -437,14 +436,14 @@ Public Class Player
 
     Private Sub SaveAs()
         ctlSaveFile.DefaultExt = m_game.SaveExtension
-        ctlSaveFile.Filter = T("EditorFilterSavedGames") + m_game.SaveExtension + T("EditorFilterAllFiles")
+        ctlSaveFile.Filter = "Saved Games|*." + m_game.SaveExtension + "|All files|*.*"
         ctlSaveFile.FileName = m_saveFile
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
 
             If Not ctlSaveFile.FileName.EndsWith("." + m_game.SaveExtension) Then
-                Dim message As String = T("EditorInvalidSaveFileName") + " '." + m_game.SaveExtension.ToUpper() + "'."
+                Dim message As String = "Invalid save file name. Save file names must end with the extension '." + m_game.SaveExtension.ToUpper() + "'."
                 If m_fromEditor Then
-                    message += Environment.NewLine + Environment.NewLine + T("EditorSaveItFromEditorScreen")
+                    message += Environment.NewLine + Environment.NewLine + "If you are editing your game, you must save it from the Editor screen. The Save command in a game is for saving your play progress."
                 End If
                 MsgBox(message, MsgBoxStyle.Exclamation)
                 Return
@@ -470,7 +469,7 @@ Public Class Player
             WriteLine("Saved: " + m_saveFile)
             ClearBuffer()
         Catch ex As Exception
-            MsgBox(T("EditorUnableSaveFileError") + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
+            MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
 
@@ -578,7 +577,7 @@ Public Class Player
         End If
         BeginInvoke(Sub()
                         If synchronous And looped Then
-                            Throw New Exception(T("EditorCantPlaySound"))
+                            Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
 
                         filename = m_game.GetResourcePath(filename)
@@ -651,8 +650,8 @@ Public Class Player
     End Sub
 
     Public Function GetNewGameFile(originalFilename As String, extensions As String) As String Implements IPlayer.GetNewGameFile
-        If MsgBox(String.Format(T("EditorGameFileNotExistLikeFind"), originalFilename, vbCrLf + vbCrLf), MsgBoxStyle.Question Or MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-            ctlOpenFile.Filter = T("EditorFilterGameFiles") + extensions
+        If MsgBox(String.Format("The game file {0} does not exist.{1}Would you like to find the file yourself?", originalFilename, vbCrLf + vbCrLf), MsgBoxStyle.Question Or MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+            ctlOpenFile.Filter = "Game files|" + extensions
             ctlOpenFile.ShowDialog()
             Return ctlOpenFile.FileName
         Else
@@ -772,9 +771,9 @@ Public Class Player
                             BeginGame()
                         End Sub)
         Else
-            WriteLine("<b>" + T("EditorFailedToLoadGame") + "</b>")
+            WriteLine("<b>Failed to load game.</b>")
             If (m_game.Errors.Count > 0) Then
-                WriteLine(T("EditorFollowingErrorsOccurred"))
+                WriteLine("The following errors occurred:")
                 For Each loadError As String In m_game.Errors
                     WriteLine(loadError.Replace(Chr(10), "<br/>"))
                 Next

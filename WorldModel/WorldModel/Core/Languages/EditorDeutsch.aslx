@@ -1,36 +1,11 @@
 ﻿<!-- '???' Does not mean quite sure in the translation -->
 <library type="editor">
-  <!-- Hardcode-Templates -->
-  <template name="EditorFromLibrary">Von Bibliothek {0}</template>
-  <template name="EditorFromLibraryCopy">Kopieren</template>
-  <template name="EditorUnableToSave">Die Datei konnte aufgrund des folgenden Fehlers nicht gespeichert werden:</template>
-  <template name="EditorNewElement">Bitte geben Sie einen Namen für das neue Element '{0}' ein</template>
-  <template name="EditorNewObject">Bitte geben Sie einen Namen für das neue Objekt ein</template>
-  <template name="EditorNewRoom">Bitte geben Sie einen Namen für den neuen Raum ein</template>
-  <template name="EditorNewWalkthrough">Bitte geben Sie einen Namen für den neuen Walkthrough ein</template>
-  <template name="EditorNewTemplate">Bitte geben Sie einen Namen für die neue Vorlage ein</template>
-  <template name="EditorNewPage">Bitte geben Sie einen Namen für die neue Seite ein</template>
-  <template name="EditorUnableToAddEmement">Element kann nicht hinzugefügt werden</template>
-  <template name="EditorUnableToAddTemplate">Kann keine Vorlage hinzufügen</template>
-  <template name="EditorSaveBeforeClosing">Möchten Sie Ihre Änderungen vor dem Schließen speichern?</template>
-  <template name="EditorSaveBeforeLeavingCodeView">Möchten Sie Ihre Änderungen speichern, bevor Sie die Codeansicht verlassen?</template>
-  <template name="EditorSaveBeforeEditingThisGame">Möchten Sie Ihre Änderungen speichern, bevor Sie dieses Spiel in der Codeansicht bearbeiten?</template>
-  <template name="EditorCreateLocalCopy">Erstellen Sie eine lokale Kopie von '{0}'</template>
-  <template name="EditorUnsavedChanges">Sie haben nicht gespeicherte Änderungen.</template>
-  <template name="EditorErrorLaunching">Fehler beim Starten {0}{1}{2}</template>
-  <template name="EditorModifiedOutside">{0} wurde außerhalb von Quest geändert.</template>
-  <template name="EditorSaveGameAndClickReload">Speichern Sie dieses Spiel und klicken Sie dann auf 'Neu laden', um Änderungen von der Aktualisierung der enthaltenen Bibliotheken zu übernehmen.</template>
-  <template name="EditorParent">Elternteil</template>
-  <template name="EditorNotParents">(keins)</template>
-  <template name="EditorChangeLangRestartContinue">Zur Änderung der Sprache muss Quest neu gestartet werden. Wollen Sie fortfahren?</template>
-  <template name="EditorBrowseFilter">Quest-Spiele|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|Alle Dateien|*.*</template>
-  <template name="EditorUnrecognisedFileType">Unbekannter Dateityp. Dieses Spiel kann nicht in Quest geladen werden.</template>
-  <template name="EditorSaveChangesBeforeOpening">Möchten Sie Ihre Änderungen vor dem öffnen eines neuen Spiels speichern?</template>
-  <template name="EditorSaveChangesBeforeCreating">Möchten Sie Ihre Änderungen vor dem Erstellen eines neuen Spiels speichern?</template>
-  <template name="EditorBrowseEditFilter">Quest-Spiele (*.aslx)|*.aslx|Alle Dateien|*.*</template>
-  <template name="ErrorLaunching">Fehler beim Starten {0}{1}{2}</template>
-  <!-- END OF PART -->
-  <!-- Softcode-Templates -->
+  <template name="EditorWeakShownWhenRoomDark">Schwaches Licht (Wird nur gesehen, wenn der Raum dunkel ist)</template>
+  <template name="EditorStrongIlluminatesRoom">Starkes Licht (Beleuchtet kompletten Raum)</template>
+  <template name="EditorNumberKeysUnlockContainer">Anzahl der Schlüssel zum Entsperren des Containers</template>
+  <template name="EditorDisplayMenuObjectsCanUsedOn">Ein Auswahlmenü der verwendbaren Objekte anzeigen</template>
+  <template name="EditorDisplayMenuObjectsCanGivenTo">Ein Auswahlmenü der verwendbaren Objekte anzeigen</template>
+  <template name="EditorPleaseEnterObjectName">Bitte geben Sie einen Objektnamen ein</template>
   <template name="EditorObjectCanBeTaken">Objekt kann getragen werden</template>
   <template name="EditorObjectCanBeDropped">Objekt kann abgelegt werden</template>
   <template name="EditorCommandCommand">Kommando</template>
@@ -279,13 +254,13 @@
   <template name="EditorObjectContainerScripttorun2">Beim Schließen des Objektes</template>
   <template name="EditorObjectContainerTransparent">Ist transparent (z. B. Glas)</template>
   <template name="EditorObjectContainerHidechildren">Solange Unterobjekte ausblenden, bis Objekt betrachtet wird</template>
-  <template name="EditorObjectContainerListchildren">Liste der Unterobjekte, wenn Objekt betrachtet oder geöffnet wird</template>
+  <template name="EditorObjectContainerListchildren">Eine Liste der Unterobjekte erscheint, wenn Objekt betrachtet oder geöffnet wird</template>
   <template name="EditorObjectContainerListprefix">Den Unterobjekten vorangestellt (z .B. "Es beinhaltet")</template>
   <template name="EditorObjectContainerMaximumnumber">Maximale Anzahl von Objekten</template>
   <template name="EditorObjectContainerFullcontainer">Vollständige Container-Nachricht (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerMaximumvolume">Maximale Menge an Objekten</template>
-  <template name="EditorObjectContainerMessagetoprint">Beim Öffnen (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectContainerMessagetoprint2">Beim Schließen (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectContainerMessagetoprint">Beim Öffnen des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectContainerMessagetoprint2">Beim Schließen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerAfteropening">Nach dem Öffnen des Objektes</template>
   <template name="EditorObjectContainerAfterclosing">Nach dem Schließen des Objektes</template>
   <template name="EditorObjectContainerLocking">Verriegeln</template>
@@ -365,7 +340,7 @@
   <template name="EditorObjectOptionsMessagetoprint">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsMessagetoprint2">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>  
   <template name="EditorObjectOptionsCannotswitchon">Falls das Objekt nicht eingeschaltet werden kann, weil es z. B. defekt ist (Ohne Eingabe = Standardverhalten)</template>  
-  <template name="EditorObjectOptionsSwitchedon">Bei Spielstart eingeschaltet</template>
+  <template name="EditorObjectOptionsSwitchedon">Objekt ist bei Spielstart eingeschaltet</template>
   <template name="EditorObjectOptionsMessageSwitchon">Beim einschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsMessageSwitchoff">Beim ausschalten des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectOptionsExtraobject">Zusätzliche Objektbeschreibung bei eingeschaltetem Zustand</template>
@@ -374,14 +349,14 @@
   <template name="EditorObjectOptionsAfterswitching2">Nach dem Ausschalten des Objektes</template>
   <template name="EditorObjectOptionsEdible">Essbar</template>
   <template name="EditorObjectOptionsEdible2">Essbar</template>
-  <template name="EditorObjectOptionsMessageEat">Beim essen (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectOptionsChangehealth">Gesundheit verbessert sich auf</template>
+  <template name="EditorObjectOptionsMessageEat">Beim essen des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectOptionsChangehealth">Die Gesundheit verbessert sich auf</template>
   <template name="EditorObjectOptionsLight/Dark">Licht/Dunkel</template>
   <template name="EditorObjectOptionsThisobject">Dieses Objekt ist eine Lichtquelle</template>
   <template name="EditorObjectOptionsBrightness">Helligkeit</template>
   <template name="EditorObjectOptionsPlayer">Spieler</template>
   <template name="EditorObjectOptionsPlayer2">Spieler</template>
-  <template name="EditorObjectOptionsWhenthisobject">Ist dieses Objekt der Spieler, werden die unten aufgeführten Einstellungen die auf anderen Registerkarten angegebenen Einstellungen überschreiben.</template>
+  <template name="EditorObjectOptionsWhenthisobject">Ist dieses Objekt der Spieler überschreiben die folgenden Einstellungen die der anderen Registerkarten.</template>
   <template name="EditorObjectOptionsAlias">Alias</template>
   <template name="EditorObjectOptionsGender">Geschlecht</template>
   <template name="EditorObjectOptionsArticle">Artikel</template>
@@ -401,7 +376,7 @@
   <template name="EditorObjectScriptsBeforeenteringFirst">Vor dem ersten Betreten des Raumes</template>
   <template name="EditorObjectScriptsAfterenteringFirst">Nach dem ersten Betreten des Raumes</template>
   <template name="EditorObjectScriptsTurnscripts">Nach jedem Zug in diesem Raum</template>
-  <template name="EditorObjectScriptsCommands">Kommandos</template>
+  <template name="EditorObjectScriptsCommands">Kommandos in diesem Raum</template>
   <template name="EditorObjectSetupSetup">Konfiguration</template>
   <template name="EditorObjectSetupType">Typ</template>
   <template name="EditorObjectSetupName">Name</template>
@@ -739,7 +714,7 @@
   <template name="EditorVerbDefault">Standardaussage</template>
   <template name="EditorVerbText">Text anzeigen</template>
   <template name="EditorVerbTemplate">Vorlage</template>
-  <template name="EditorVerbExpression">Ausdruck</template>
+  <template name="EditorVerbExpression">Anweisung</template>
   <template name="EditorVerbName">Name</template>
   <template name="EditorVerbMultipleobjects">Mehrere Objekte</template>
   <template name="EditorVerbObjectseparator">Präposition(en)</template>
@@ -808,7 +783,7 @@
   <template name="TypePathNorthSouth">Pfad Nord-Süd</template>   
   <template name="TypePathNorth">Pfad Nord</template>   
   <template name="TypePathSouth">Pfad Süden</template>   
-  <template name="TypeCannotSwitched">Kann nicht ein- und ausgeschaltet werden</template>
+  <template name="TypeCannotSwitched">Nicht ein- und ausschaltbar</template>
   <template name="TypeCanSwitched">Ein- und ausschaltbar</template>
   <template name="TypeCannotEaten">Kann nicht gegessen werden</template>
   <template name="TypeCanEaten">Kann gegessen werden</template>
@@ -832,34 +807,34 @@
   <template name="EditorObjectStartscriptStartscript">Initialisierungsskript</template>
   <template name="EditorObjectFeaturesStartScript">Initialisierungsskript für dieses Objekt verwenden</template>
   <template name="EditorObjectWearableWearable">Kleidung</template>
-  <template name="EditorObjectWearableCanBeWorn">Kann getragen werden?</template>
+  <template name="EditorObjectWearableCanBeWorn">Kleidungsstück:</template>
   <template name="EditorObjectWearableWearLayer">Kleidungsschichten</template>
   <template name="EditorObjectWearableWearSlot">??? Wear Slot</template>
   <template name="EditorObjectWearableWearSlotPrompt">??? Please enter the name for the wear location</template>
   <template name="EditorObjectWearableWearSlotExplained">??? If two objects have the same wear location and slot, they will not be able to be worn at a same time. Any number of items without wear locations can be worn.</template>
-  <template name="EditorObjectWearableWearMessage">Beim Anziehen (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Features?</template>
-  <template name="EditorObjectWearableMultistateOption">??? Multistate?</template>
-  <template name="EditorObjectWearableAdvancedFeatures">Advanced features</template>
-  <template name="EditorObjectWearableRemoveable">Ausziehbar?</template>
-  <template name="EditorObjectWearableProtection">Schutz (Wenn umgesetzt!)</template>
-  <template name="EditorObjectWearableBonusAtts">Das Tragen gibt diesen Attributen einen Bonus (Getrennt mit Semikolons)</template>
-  <template name="EditorObjectWearableAdditionalVerbs">Zusätzliche Anzeigeverben (Getrennt mit Semikolons)</template>
+  <template name="EditorObjectWearableWearMessage">Beim Anziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
+  <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Funktionen</template>
+  <template name="EditorObjectWearableMultistateOption">??? Multi-state</template>
+  <template name="EditorObjectWearableAdvancedFeatures">Erweiterte Funktionen</template>
+  <template name="EditorObjectWearableRemoveable">Das Objekt ist ausziehbar</template>
+  <template name="EditorObjectWearableProtection">Das Objekt schützt den Spieler bis (Nur wenn umgesetzt!)</template>
+  <template name="EditorObjectWearableBonusAtts">Das Tragen des Objektes gibt folgenden Attributen einen Bonus (Getrennt durch Semikolons)</template>
+  <template name="EditorObjectWearableAdditionalVerbs">Zusätzliche Anzeigeverben (Getrennt durch Semikolons)</template>
   <template name="EditorObjectWearableAdditionalInventory">Inventar</template>
   <template name="EditorObjectWearableAdditionalWorn">Getragen</template>
-  <template name="EditorObjectWearableAfterWearing">Nach dem tragen</template>
+  <template name="EditorObjectWearableAfterWearing">Nach dem Tragen</template>
   <template name="EditorObjectWearableAfterWearing2">Nach dem Tragen des Objektes</template>
-  <template name="EditorObjectWearableAfterRemoving">Nach dem Entfernen</template>
-  <template name="EditorObjectWearableAfterRemoving2">Nach dem Entfernen des Objektes</template>
+  <template name="EditorObjectWearableAfterRemoving">Nach dem Ausziehen</template>
+  <template name="EditorObjectWearableAfterRemoving2">Nach dem Ausziehen des Objektes</template>
   <template name="EditorObjectWearableMultistate">??? Multi-state</template>
   <template name="EditorObjectWearableState">??? Descriptor for each state (or * for none)</template>
   <template name="EditorObjectWearableStatePrompt">??? Please enter the descriptor to use in the item name for this state</template>
   <template name="EditorObjectWearableStateSlots">??? Wear slots for each state (or * for none)</template>
   <template name="EditorObjectWearableStateSlotsPrompt">??? Please enter all the wear locations for this state, separated by semi-colons</template>
-  <template name="EditorObjectWearableStateVerbs">Zusätzliche Verben für jeden Zustand (oder * für Keine)</template>
-  <template name="EditorObjectWearableStateVerbsPrompt">Bitte geben Sie alle zusätzlichen Verben für diesen Zustand ein (Getrennt durch Semikolons)</template>
-  <template name="EditorObjectWearableStateBonuses">Bonus auf Attribute (oder * für Standard)</template>
-  <template name="EditorObjectWearableStateBonusesPrompt">Bitte geben Sie alle zusätzlichen Boni für diesen Zustand ein (Getrennt durch Semikolons)</template>
+  <template name="EditorObjectWearableStateVerbs">??? Additional verbs for each state (or * for none)</template>
+  <template name="EditorObjectWearableStateVerbsPrompt">??? Please enter all the additional verbs for this state, separated by semi-colons</template>
+  <template name="EditorObjectWearableStateBonuses">??? Bonus to attributes (or * for default)</template>
+  <template name="EditorObjectWearableStateBonusesPrompt">??? Please enter all the additional bonuses for this state, separated by semi-colons</template>
   <template name="EditorObjectWearableInstructionsLink">Gebrauchsanweisung</template>
 </library>

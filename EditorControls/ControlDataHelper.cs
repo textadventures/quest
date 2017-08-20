@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -149,7 +148,7 @@ namespace TextAdventures.Quest.EditorControls
             if (!result.Valid)
             {
                 string errorValue = newValue as string;
-                PopupEditors.DisplayValidationError(result, errorValue, string.Format(L.T("EditorUnableToSet"), caption));
+                PopupEditors.DisplayValidationError(result, errorValue, string.Format("Unable to set '{0}'", caption));
             }
 
             if (directlySaveable)

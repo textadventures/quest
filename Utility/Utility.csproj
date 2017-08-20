@@ -74,8 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes.cs" />
-    <Compile Include="Languages.cs" />
     <Compile Include="JSInterop.cs" />
+    <Compile Include="Languages.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="Utility.cs" />

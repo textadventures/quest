@@ -1,5 +1,4 @@
 ﻿Imports System.Net
-Imports TextAdventures.Utility.Language.L
 
 Public Class GameDescription
     Public Event Close()
@@ -20,9 +19,6 @@ Public Class GameDescription
     End Sub
 
     Public Sub Populate(data As GameListItemData, control As GameListItem)
-        cmdAction.Content = T("EditorAction")
-        expander.Header = T("EditorReviewsAndComments")
-        linkBlock.Text = T("EditorViewAtTextadventures")
         m_data = data
         author.Text = data.Author
         title.Text = data.GameName
@@ -72,13 +68,13 @@ Public Class GameDescription
     Private Sub UpdateState()
         Select Case m_listItemControl.CurrentState
             Case GameListItem.State.ReadyToPlay
-                cmdAction.Content = T("EditorPlay")
+                cmdAction.Content = "Play"
                 cmdAction.IsEnabled = True
             Case GameListItem.State.NotDownloaded
-                cmdAction.Content = T("EditorDownload")
+                cmdAction.Content = "Download"
                 cmdAction.IsEnabled = True
             Case GameListItem.State.Downloading
-                cmdAction.Content = T("EditorDownloading")
+                cmdAction.Content = "Downloading"
                 cmdAction.IsEnabled = False
         End Select
     End Sub
@@ -154,7 +150,7 @@ Public Class GameDescription
         Try
             System.Diagnostics.Process.Start(url)
         Catch ex As Exception
-            MsgBox(String.Format(T("EditorErrorLaunching"), url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
     End Sub
 
@@ -220,7 +216,7 @@ Public Class GameDescription
         Catch
             Dispatcher.BeginInvoke(Sub()
                                        Dim textBlock As New Windows.Controls.TextBlock
-                                       textBlock.Text = T("EditorFailedToDownloadReviewData")
+                                       textBlock.Text = "Failed to download review data"
                                        reviewsStack.Children.Add(textBlock)
                                    End Sub)
         End Try
@@ -240,7 +236,7 @@ Public Class GameDescription
         If Not data.Any Then
             Dim textBlock As New Windows.Controls.TextBlock
             textBlock.Margin = New Windows.Thickness(5)
-            textBlock.Text = T("EditorNoReviewsOrComments")
+            textBlock.Text = "No reviews or comments"
             reviewsStack.Children.Add(textBlock)
         End If
     End Sub

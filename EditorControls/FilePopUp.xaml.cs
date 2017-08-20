@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -17,7 +16,7 @@ namespace TextAdventures.Quest.EditorControls
             const string source = "*.jpg;*.jpeg;*.png;*.gif";
             fileDropDown.Source = source;
             fileDropDown.BasePath = System.IO.Path.GetDirectoryName(controller.Filename);
-            fileDropDown.FileFilter = string.Format("{0} ({1})|{1}", L.T("EditorPictureFiles"), source);
+            fileDropDown.FileFilter = string.Format("{0} ({1})|{1}", "Picture Files", source);
             fileDropDown.Preview = true;
             fileDropDown.RefreshFileList();
             fileDropDown.Filename = null;

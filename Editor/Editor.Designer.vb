@@ -62,7 +62,6 @@ Partial Class Editor
         Me.splitMain.Panel2.Controls.Add(Me.StatusStrip1)
         Me.splitMain.Size = New System.Drawing.Size(824, 325)
         Me.splitMain.SplitterDistance = 300
-        Me.splitMain.SplitterIncrement = 50
         Me.splitMain.SplitterWidth = 5
         Me.splitMain.TabIndex = 0
         '

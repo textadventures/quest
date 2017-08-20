@@ -205,7 +205,7 @@
 
     <control>
       <controltype>number</controltype>
-      <caption>Number of keys to unlock container</caption>
+      <caption>[EditorNumberKeysUnlockContainer]</caption>
       <attribute>keycount</attribute>
       <mustinherit>container_lockable</mustinherit>
       <minimum>0</minimum>

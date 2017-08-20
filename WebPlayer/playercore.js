@@ -337,6 +337,7 @@ function scrollToEnd() {
     }
     $("#txtCommand").focus();
     // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
+    // In fact it may be the all the rest of this can deleted
     $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
@@ -1041,7 +1042,7 @@ elements = [
   '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
   '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
   '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
-  '#commandPane'
+  '#commandPane', '#customStatusPane'
 ];
 
 dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];

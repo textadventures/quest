@@ -127,7 +127,7 @@
     <value>Neue Seite hinzufügen</value>
   </data>
   <data name="cmdLink.ToolTipText" xml:space="preserve">
-    <value>Link zu vorhandener Seite hinzufügen</value>
+    <value>Link zu existierender Seite</value>
   </data>
   <data name="cmdEditKey.ToolTipText" xml:space="preserve">
     <value>Schlüssel bearbeiten</value>
@@ -136,12 +136,12 @@
     <value>Bearbeiten</value>
   </data>
   <data name="cmdGoToPage.ToolTipText" xml:space="preserve">
-    <value>Zur Seite gehen</value>
+    <value>Gehe zur Seite</value>
   </data>
   <data name="cmdMoveUp.ToolTipText" xml:space="preserve">
-    <value>Nach oben schieben</value>
+    <value>Nach oben</value>
   </data>
   <data name="cmdMoveDown.ToolTipText" xml:space="preserve">
-    <value>Nach unten schieben</value>
+    <value>Nach unten</value>
   </data>
 </root>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -13,9 +12,9 @@ namespace TextAdventures.Quest.EditorControls
         private class VerbsSubEditorControlData : AttributeSubEditorControlData
         {
             private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
-                {"string", L.T("EditorPrintMessage")},
-                {"script", L.T("EditorRunScript")},
-                {"scriptdictionary", L.T("EditorRequireAnotherObject")},
+                {"string", "Print a message"},
+                {"script", "Run a script"},
+                {"scriptdictionary", "Require another object"},
             };
 
             public VerbsSubEditorControlData(string attribute)
@@ -35,7 +34,7 @@ namespace TextAdventures.Quest.EditorControls
                     case "keyname":
                         return "Object";
                     case "keyprompt":
-                        return L.T("EditorKeypromptEnterObjectName");
+                        return "Please enter the object name";
                     case "source":
                         return "object";
                 }
@@ -56,7 +55,7 @@ namespace TextAdventures.Quest.EditorControls
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
-            // ctlSplitContainer.SplitterDistance = 810;
+            // ctlSplitContainer.SplitterDistance = 125;
             lblAttributesTitle.Text = "Verbs";
             // lblAttributesTitle.Width = 60;
             cmdOnChange.Available = false;
@@ -92,7 +91,7 @@ namespace TextAdventures.Quest.EditorControls
             IDictionary<string, string> availableVerbs = Controller.GetVerbProperties();
 
             PopupEditors.EditStringResult result = PopupEditors.EditString(
-                L.T("EditorEnterNameForNewVerb"),
+                "Please enter a name for the new verb",
                 string.Empty,
                 availableVerbs.Values);
 
@@ -122,7 +121,7 @@ namespace TextAdventures.Quest.EditorControls
                 ValidationResult setAttrResult = Data.SetAttribute(selectedAttribute, String.Empty);
                 if (!setAttrResult.Valid)
                 {
-                    PopupEditors.DisplayValidationError(setAttrResult, selectedAttribute, L.T("EditorUnableToAddVerb"));
+                    PopupEditors.DisplayValidationError(setAttrResult, selectedAttribute, "Unable to add verb");
                     setSelection = false;
                 }
                 Controller.EndTransaction();
@@ -142,12 +141,12 @@ namespace TextAdventures.Quest.EditorControls
                 TextAdventures.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(selectedPattern);
                 if (!canAddResult.CanAdd)
                 {
-                    string clashMessage = L.T("EditorVerbWithCommand") + canAddResult.ClashingCommandDisplay;
+                    string clashMessage = "Verb would clash with command: " + canAddResult.ClashingCommandDisplay;
                     if (m_clashMessages.ContainsKey(canAddResult.ClashingCommand))
                     {
                         clashMessage += Environment.NewLine + Environment.NewLine + m_clashMessages[canAddResult.ClashingCommand];
                     }
-                    MessageBox.Show(clashMessage, L.T("EditorUnableToAddVerb"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(clashMessage, "Unable to add verb", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return false;
                 }
             }
@@ -181,6 +180,10 @@ namespace TextAdventures.Quest.EditorControls
             // 
             // ctlSplitContainerMain
             // 
+            // 
+            // ctlSplitContainer
+            // 
+            this.ctlSplitContainer.SplitterDistance = 660;
             // 
             // WFVerbsControl
             // 

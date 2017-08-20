@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -231,7 +230,7 @@ namespace TextAdventures.Quest.EditorControls
             var result = m_list.CanAdd(input);
             if (result.Valid) return true;
 
-            PopupEditors.DisplayValidationError(result, input, L.T("EditorUnableToAddItem"));
+            PopupEditors.DisplayValidationError(result, input, "Unable to add item");
             return false;
         }
 

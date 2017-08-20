@@ -130,12 +130,12 @@
     <value>Starten</value>
   </data>
   <data name="cmdRecord.ToolTipText" xml:space="preserve">
-    <value>Aufnehmen</value>
+    <value>Aufzeichnen</value>
   </data>
   <data name="cmdMoveUp.ToolTipText" xml:space="preserve">
-    <value>Nach oben schieben</value>
+    <value>Nach oben</value>
   </data>
   <data name="cmdMoveDown.ToolTipText" xml:space="preserve">
-    <value>Nach unten schieben</value>
+    <value>Nach unten</value>
   </data>
 </root>

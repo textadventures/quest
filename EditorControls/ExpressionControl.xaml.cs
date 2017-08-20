@@ -12,7 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
-using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -144,7 +143,7 @@ namespace TextAdventures.Quest.EditorControls
                     m_simpleEditor = newDropDown;
                     break;
                 default:
-                    throw new InvalidOperationException(L.T("EditorInvalidControlTypeExpression"));
+                    throw new InvalidOperationException("Invalid control type for expression");
             }
 
             if (m_simpleEditor != null)
@@ -357,7 +356,7 @@ namespace TextAdventures.Quest.EditorControls
             save = result.Valid;
             if (!result.Valid)
             {
-                PopupEditors.DisplayValidationError(result, saveValue, L.T("EditorInvalidExpression"));
+                PopupEditors.DisplayValidationError(result, saveValue, "Invalid expression");
             }
             if (m_helper.ControlDefinition.GetBool("nullable") && string.IsNullOrEmpty(saveValue))
             {
@@ -587,7 +586,7 @@ namespace TextAdventures.Quest.EditorControls
                 {
                     return ((NumberDoubleControl)m_simpleEditor).StringValue;
                 }
-                throw new InvalidOperationException(L.T("EditorUnknownControlType"));
+                throw new InvalidOperationException("Unknown control type");
             }
             set
             {
@@ -634,7 +633,7 @@ namespace TextAdventures.Quest.EditorControls
                 }
                 else
                 {
-                    throw new InvalidOperationException(L.T("EditorUnknownControlType"));
+                    throw new InvalidOperationException("Unknown control type");
                 }
             }
         }
@@ -693,23 +692,23 @@ namespace TextAdventures.Quest.EditorControls
 
         private void InitialiseInsertMenu()
         {
-            AddInsertMenuItem(L.T("EditorMenuItemClear"), ClearText);
+            AddInsertMenuItem("(Clear)", ClearText);
             mnuInsertMenu.Items.Add(new Separator());
-            AddInsertMenuItem(L.T("EditorMenuItemVariable"), InsertVariable);
-            AddInsertMenuItem(L.T("EditorMenuItemObject"), InsertObject);
-            AddInsertMenuItem(L.T("EditorMenuItemAttribute"), InsertProperty);
-            AddInsertMenuItem(L.T("EditorMenuItemFunction"), InsertFunction);
+            AddInsertMenuItem("Variable", InsertVariable);
+            AddInsertMenuItem("Object", InsertObject);
+            AddInsertMenuItem("Attribute", InsertProperty);
+            AddInsertMenuItem("Function", InsertFunction);
             mnuInsertMenu.Items.Add(new Separator());
-            AddInsertMenuItem(L.T("EditorMenuItemAnd"), () => InsertString(" and "));
-            AddInsertMenuItem(L.T("EditorMenuItemOr"), () => InsertString(" or "));
-            AddInsertMenuItem(L.T("EditorMenuItemAdd"), () => InsertString(" + "));
-            AddInsertMenuItem(L.T("EditorMenuItemSubtract"), () => InsertString(" - "));
-            AddInsertMenuItem(L.T("EditorMenuItemMultiply"), () => InsertString(" * "));
-            AddInsertMenuItem(L.T("EditorMenuItemDivide"), () => InsertString(" / "));
-            AddInsertMenuItem(L.T("EditorMenuItemEquals"), () => InsertString(" = "));
-            AddInsertMenuItem(L.T("EditorMenuItemNotEquals"), () => InsertString(" <> "));
-            AddInsertMenuItem(L.T("EditorMenuItemGreaterThan"), () => InsertString(" > "));
-            AddInsertMenuItem(L.T("EditorMenuItemlessThan"), () => InsertString(" < "));
+            AddInsertMenuItem("and", () => InsertString(" and "));
+            AddInsertMenuItem("or", () => InsertString(" or "));
+            AddInsertMenuItem("+ add", () => InsertString(" + "));
+            AddInsertMenuItem("- subtract", () => InsertString(" - "));
+            AddInsertMenuItem("* multiply", () => InsertString(" * "));
+            AddInsertMenuItem("/ divide", () => InsertString(" / "));
+            AddInsertMenuItem("= equals", () => InsertString(" = "));
+            AddInsertMenuItem("<> not equals", () => InsertString(" <> "));
+            AddInsertMenuItem("> greater than", () => InsertString(" > "));
+            AddInsertMenuItem("< less than", () => InsertString(" < "));
         }
 
         private void AddInsertMenuItem(string caption, Action insertAction)
@@ -722,17 +721,17 @@ namespace TextAdventures.Quest.EditorControls
 
         private void InsertVariable()
         {
-            InsertFromList(L.T("EditorPleaseEnterNameVariable"), m_data.GetVariablesInScope());
+            InsertFromList("a variable", m_data.GetVariablesInScope());
         }
 
         private void InsertObject()
         {
-            InsertFromList(L.T("EditorPleaseEnterNameObject"), m_helper.Controller.GetObjectNames("object", true));
+            InsertFromList("an object", m_helper.Controller.GetObjectNames("object", true));
         }
 
         private void InsertProperty()
         {
-            InsertFromList(L.T("EditorPleaseEnterNameAttribute"), m_helper.Controller.GetPropertyNames().OrderBy(n => n));
+            InsertFromList("an attribute", m_helper.Controller.GetPropertyNames().OrderBy(n => n));
         }
 
         private void InsertFunction()
@@ -741,13 +740,13 @@ namespace TextAdventures.Quest.EditorControls
             IEnumerable<string> builtInFunctions = m_helper.Controller.GetBuiltInFunctionNames();
             IEnumerable<string> allFunctions = coreFunctions.Union(builtInFunctions);
 
-            InsertFromList(L.T("EditorPleaseEnterNameFunction"), allFunctions.OrderBy(n => n));
+            InsertFromList("a function", allFunctions.OrderBy(n => n));
         }
 
         private void InsertFromList(string itemName, IEnumerable<string> items)
         {
             var result = PopupEditors.EditStringWithDropdown(
-                string.Format(L.T("EditorPleaseEnterName"), itemName),
+                string.Format("Please enter {0} name", itemName),
                 string.Empty, null, null, "",
                 items);
 

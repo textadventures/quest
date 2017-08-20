@@ -42,6 +42,7 @@
             // 
             // ctlToolStrip
             // 
+            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.BackColor = System.Drawing.Color.White;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -53,62 +54,61 @@
             this.cmdRecord,
             this.cmdMoveUp,
             this.cmdMoveDown});
-            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.Name = "ctlToolStrip";
             // 
             // cmdAdd
             // 
+            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.AutoToolTip = false;
             this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
-            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
             // cmdDelete
             // 
+            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.AutoToolTip = false;
             this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
-            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdEdit
             // 
+            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.AutoToolTip = false;
             this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Eigenschaft_bearbeiten_16;
-            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.Name = "cmdEdit";
             this.cmdEdit.Click += new System.EventHandler(this.cmdEdit_Click);
             // 
             // cmdPlay
             // 
+            resources.ApplyResources(this.cmdPlay, "cmdPlay");
             this.cmdPlay.AutoToolTip = false;
             this.cmdPlay.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Spielen_16;
-            resources.ApplyResources(this.cmdPlay, "cmdPlay");
             this.cmdPlay.Name = "cmdPlay";
             this.cmdPlay.Click += new System.EventHandler(this.cmdPlay_Click);
             // 
             // cmdRecord
             // 
+            resources.ApplyResources(this.cmdRecord, "cmdRecord");
             this.cmdRecord.AutoToolTip = false;
             this.cmdRecord.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Aufzeichnen_16;
-            resources.ApplyResources(this.cmdRecord, "cmdRecord");
             this.cmdRecord.Name = "cmdRecord";
             this.cmdRecord.Click += new System.EventHandler(this.cmdRecord_Click);
             // 
             // cmdMoveUp
             // 
+            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.AutoToolTip = false;
             this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Oben_16;
-            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
             // cmdMoveDown
             // 
+            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.AutoToolTip = false;
             this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Unten_16;
-            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 

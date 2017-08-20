@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ColumnHeader2.Text" xml:space="preserve">
-    <value>Wert</value>
-  </data>
-  <data name="ColumnHeader3.Text" xml:space="preserve">
-    <value>Quelle</value>
-  </data>
   <data name="ToolStripLabel2.Text" xml:space="preserve">
     <value>Geerbte Typen</value>
   </data>
@@ -131,12 +125,6 @@
   </data>
   <data name="cmdDeleteType.ToolTipText" xml:space="preserve">
     <value>Löschen</value>
-  </data>
-  <data name="colValue.Text" xml:space="preserve">
-    <value>Wert</value>
-  </data>
-  <data name="colSource.Text" xml:space="preserve">
-    <value>Quelle</value>
   </data>
   <data name="lblAttributesTitle.Text" xml:space="preserve">
     <value>Attribute</value>
@@ -148,7 +136,7 @@
     <value>Löschen</value>
   </data>
   <data name="cmdOnChange.ToolTipText" xml:space="preserve">
-    <value>Änderungsskript hinzufügen</value>
+    <value>Skript bei Attributänderung hinzufügen</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="toolStripLabel1.Size" type="System.Drawing.Size, System.Drawing">
