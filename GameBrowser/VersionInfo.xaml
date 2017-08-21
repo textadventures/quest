@@ -19,6 +19,6 @@
                     <GradientStop Color="#FFF0F0F0" Offset="0"/>
                     <GradientStop Color="#FFE5E5E5" Offset="1"/>
                 </LinearGradientBrush>
-            </Button.Background> Click here to update</Button>
+            </Button.Background>Click here to update</Button>
     </Grid>
 </UserControl>

@@ -15,7 +15,6 @@
   <template name="EditorSaveBeforeEditingThisGame">Do you wish to save your changes before editing this game in the code view?</template>
   <template name="EditorCreateLocalCopy">Create local copy of '{0}'</template>
   <template name="EditorUnsavedChanges">You have unsaved changes.</template>
-  <template name="EditorErrorLaunching">Error launching {0}{1}{2}</template>
   <template name="EditorModifiedOutside">{0} has been modified outside Quest.</template>
   <template name="EditorSaveGameAndClickReload">Save this game and then click Reload to apply changes from updating Included Libraries.</template>
   <template name="EditorParent">Parent</template>
@@ -85,7 +84,7 @@
   <template name="EditorEnterNameForNewVerb">Please enter a name for the new verb</template>
   <template name="EditorUnableToAddVerb">Unable to add verb</template>
   <template name="EditorVerbWithCommand">Verb would clash with command: </template>
-  <template name="EditorPlay">Play</template>
+  <!--<template name="EditorPlay">Play</template>
   <template name="EditorDownload">Download</template>
   <template name="EditorDownloading">Downloading</template>
   <template name="EditorCancel">Cancel</template>
@@ -105,7 +104,7 @@
   <template name="EditorComment">Comment</template>
   <template name="EditorStars">stars</template>
   <template name="EditorNewVersionAvailable">New version available</template>
-  <template name="EditorClickHereToUpdate">Click here to update</template>
+  <template name="EditorClickHereToUpdate">Click here to update</template>-->
   <template name="EditorChooseAWalktroughToRun">Please choose a walkthrough to run:</template>
   <template name="EditorFilterSavedGames">Saved Games|*."</template>
   <template name="EditorFilterGameFiles">Game files|</template>
@@ -172,4 +171,23 @@
   <template name="EditorKeypromptEnterObjectName">Please enter the object name</template>
   <template name="EditorLaunchCaptionPlay">Play</template>
   <template name="EditorGenerate">Generate...</template>
+  <template name="LauncherPlay">Play</template>
+  <template name="LauncherCreate">Create</template>
+  <template name="LauncherCreateNewGame">Create a new game</template>
+  <template name="LauncherOpenExistingGame">Open an existing game</template>
+  <template name="LauncherReadTutorial">Read the Tutorial</template>
+  <template name="LauncherGetHelpInForums">Get help in the forums</template>
+  <template name="LauncherRecent">Recent</template>
+  <template name="LauncherPlay">Play</template>
+  <template name="LauncherDownload">Download</template>
+  <template name="LauncherDownloading">Downloading...</template>
+  <template name="LauncherDownloadComplete">Download complete</template>
+  <template name="LauncherNotDownloaded">Not downloaded</template>
+  <template name="LauncherCancel">Cancel</template>
+  <template name="LauncherNoReviewsOrComments">No reviews or comments</template>
+  <template name="LauncherReviewsAndComments">Reviews and comments</template>
+  <template name="LauncherGetGames">Get Games</template>
+  <template name="LauncherEdit">Edit</template>
+  <template name="LauncherNewVersion">New version available</template>
+  <template name="LauncherClickHereToUpdate">Click here to update</template>
 </library>

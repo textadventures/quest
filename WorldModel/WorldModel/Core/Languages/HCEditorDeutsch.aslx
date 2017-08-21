@@ -15,7 +15,6 @@
   <template name="EditorSaveBeforeEditingThisGame">Möchten Sie Ihre Änderungen speichern, bevor Sie dieses Spiel in der Codeansicht bearbeiten?</template>
   <template name="EditorCreateLocalCopy">Erstellen Sie eine lokale Kopie von '{0}'</template>
   <template name="EditorUnsavedChanges">Sie haben nicht gespeicherte Änderungen.</template>
-  <template name="EditorErrorLaunching">Fehler beim Starten {0}{1}{2}</template>
   <template name="EditorModifiedOutside">{0} wurde außerhalb von Quest geändert.</template>
   <template name="EditorSaveGameAndClickReload">Speichern Sie dieses Spiel und klicken Sie dann auf 'Neu laden', um Änderungen von der Aktualisierung der enthaltenen Bibliotheken zu übernehmen.</template>
   <template name="EditorParent">Elternteil</template>
@@ -33,4 +32,22 @@
   <template name="EditorAddElseIf">Ansonsten, wenn</template>
   <template name="EditorAddElse">Ansonsten</template>
   <template name="EditorCmdDelete">Löschen</template>
+  <template name="LauncherCreate">Erstellen</template>
+  <template name="LauncherCreateNewGame">Ein neues Spiel erstellen</template>
+  <template name="LauncherOpenExistingGame">Ein existierendes Spiel öffnen</template>
+  <template name="LauncherReadTutorial">Das Tutorial lesen</template>
+  <template name="LauncherGetHelpInForums">Im Forum nach Hilfe suchen</template>
+  <template name="LauncherRecent">Kürzlich geöffnet</template>
+  <template name="LauncherPlay">Starten</template>
+  <template name="LauncherDownload">Herunterladen</template>
+  <template name="LauncherDownloading">Herunterladen...</template>
+  <template name="LauncherDownloadComplete">Herunterladen komplett</template>
+  <template name="LauncherNotDownloaded">Nicht heruntergeladen</template>
+  <template name="LauncherCancel">Abbrechen</template>
+  <template name="LauncherNoReviewsOrComments">Keine Bewertungen oder Kommentare</template>
+  <template name="LauncherReviewsAndComments">Bewertungen und Kommentare</template>
+  <template name="LauncherGetGames">Spiele laden</template>
+  <template name="LauncherEdit">Bearbeiten</template>
+  <template name="LauncherNewVersion">Neue Version verfügbar</template>
+  <template name="LauncherClickHereToUpdate">Zum aktualisieren hier klicken</template>
 </library>

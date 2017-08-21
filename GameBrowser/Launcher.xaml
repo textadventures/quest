@@ -19,7 +19,7 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <TabItem.Header>
-                    <TextBlock FontSize="18">Play</TextBlock>
+                    <TextBlock x:Name="lblPlay" FontSize="18">Play</TextBlock>
                 </TabItem.Header>
                 <my:PlayBrowser x:Name="ctlPlayBrowser" >
                     <my:PlayBrowser.Background>
@@ -38,7 +38,7 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <TabItem.Header>
-                    <TextBlock FontSize="18">Create</TextBlock>
+                    <TextBlock x:Name="lblCreate" FontSize="18">Create</TextBlock>
                 </TabItem.Header>
                 <my:EditBrowser x:Name="ctlEditBrowser" >
                     <my:EditBrowser.Background>

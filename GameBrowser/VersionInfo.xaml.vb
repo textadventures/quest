@@ -1,4 +1,6 @@
-﻿Public Class VersionInfo
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class VersionInfo
     Private m_updateData As UpdatesData
     Private m_currentVersion As Version
 
@@ -24,5 +26,13 @@
         Catch ex As Exception
             MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
+    End Sub
+
+    Private Sub lblNewVersion_Initialized(sender As Object, e As EventArgs) Handles lblNewVersion.Initialized
+        lblNewVersion.Content = T("LauncherNewVersion")
+    End Sub
+
+    Private Sub cmdDownload_Initialized(sender As Object, e As EventArgs) Handles cmdDownload.Initialized
+        cmdDownload.Content = T("LauncherClickHereToUpdate")
     End Sub
 End Class
