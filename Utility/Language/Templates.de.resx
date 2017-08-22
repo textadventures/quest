@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EditorFromLibrary" xml:space="preserve">
+<value>Von Bibliothek {0}</value>
+</data>
+  <data name="EditorFromLibraryCopy" xml:space="preserve">
+<value>Kopieren</value>
+</data>
+  <data name="EditorUnableToSave" xml:space="preserve">
+<value>Die Datei konnte aufgrund des folgenden Fehlers nicht gespeichert werden:</value>
+</data>
+  <data name="EditorNewElement" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für das neue Element '{0}' ein</value>
+</data>
+  <data name="EditorNewObject" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für das neue Objekt ein</value>
+</data>
+  <data name="EditorNewRoom" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für den neuen Raum ein</value>
+</data>
+  <data name="EditorNewWalkthrough" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für den neuen Walkthrough ein</value>
+</data>
+  <data name="EditorNewdata" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für die neue Vorlage ein</value>
+</data>
+  <data name="EditorNewPage" xml:space="preserve">
+<value>Bitte geben Sie einen Namen für die neue Seite ein</value>
+</data>
+  <data name="EditorUnableToAddEmement" xml:space="preserve">
+<value>Element kann nicht hinzugefügt werden</value>
+</data>
+  <data name="EditorUnableToAdddata" xml:space="preserve">
+<value>Kann keine Vorlage hinzufügen</value>
+</data>
+  <data name="EditorSaveBeforeClosing" xml:space="preserve">
+<value>Möchten Sie Ihre Änderungen vor dem Schließen speichern?</value>
+</data>
+  <data name="EditorSaveBeforeLeavingCodeView" xml:space="preserve">
+<value>Möchten Sie Ihre Änderungen speichern, bevor Sie die Codeansicht verlassen?</value>
+</data>
+  <data name="EditorSaveBeforeEditingThisGame" xml:space="preserve">
+<value>Möchten Sie Ihre Änderungen speichern, bevor Sie dieses Spiel in der Codeansicht bearbeiten?</value>
+</data>
+  <data name="EditorCreateLocalCopy" xml:space="preserve">
+<value>Erstellen Sie eine lokale Kopie von '{0}'</value>
+</data>
+  <data name="EditorUnsavedChanges" xml:space="preserve">
+<value>Sie haben nicht gespeicherte Änderungen.</value>
+</data>
+  <data name="EditorModifiedOutside" xml:space="preserve">
+<value>{0} wurde außerhalb von Quest geändert.</value>
+</data>
+  <data name="EditorSaveGameAndClickReload" xml:space="preserve">
+<value>Speichern Sie dieses Spiel und klicken Sie dann auf 'Neu laden', um Änderungen von der Aktualisierung der enthaltenen Bibliotheken zu übernehmen.</value>
+</data>
+  <data name="EditorParent" xml:space="preserve">
+<value>Elternteil</value>
+</data>
+  <data name="EditorNotParents" xml:space="preserve">
+<value>(keins)</value>
+</data>
+  <data name="EditorChangeLangRestartContinue" xml:space="preserve">
+<value>Zur Änderung der Sprache muss Quest neu gestartet werden. Wollen Sie fortfahren?</value>
+</data>
+  <data name="EditorBrowseFilter" xml:space="preserve">
+<value>Quest-Spiele|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|Alle Dateien|*.*</value>
+</data>
+  <data name="EditorUnrecognisedFileType" xml:space="preserve">
+<value>Unbekannter Dateityp. Dieses Spiel kann nicht in Quest geladen werden.</value>
+</data>
+  <data name="EditorSaveChangesBeforeOpening" xml:space="preserve">
+<value>Möchten Sie Ihre Änderungen vor dem öffnen eines neuen Spiels speichern?</value>
+</data>
+  <data name="EditorSaveChangesBeforeCreating" xml:space="preserve">
+<value>Möchten Sie Ihre Änderungen vor dem Erstellen eines neuen Spiels speichern?</value>
+</data>
+  <data name="EditorBrowseEditFilter" xml:space="preserve">
+<value>Quest-Spiele (*.aslx)|*.aslx|Alle Dateien|*.*</value>
+</data>
+  <data name="EditorIf" xml:space="preserve">
+<value>Wenn</value>
+</data>
+  <data name="EditorElseIf" xml:space="preserve">
+<value>Ansonsten, wenn</value>
+</data>
+  <data name="EditorElse" xml:space="preserve">
+<value>Ansonsten</value>
+</data>
+  <data name="EditorThen" xml:space="preserve">
+<value>Dann</value>
+</data>
+  <data name="EditorAddElseIf" xml:space="preserve">
+<value>Ansonsten, wenn</value>
+</data>
+  <data name="EditorAddElse" xml:space="preserve">
+<value>Ansonsten</value>
+</data>
+  <data name="EditorCmdDelete" xml:space="preserve">
+<value>Löschen</value>
+</data>
+  <data name="LauncherCreate" xml:space="preserve">
+<value>Erstellen</value>
+</data>
+  <data name="LauncherCreateNewGame" xml:space="preserve">
+<value>Ein neues Spiel erstellen</value>
+</data>
+  <data name="LauncherOpenExistingGame" xml:space="preserve">
+<value>Ein existierendes Spiel öffnen</value>
+</data>
+  <data name="LauncherReadTutorial" xml:space="preserve">
+<value>Das Tutorial lesen</value>
+</data>
+  <data name="LauncherGetHelpInForums" xml:space="preserve">
+<value>Im Forum nach Hilfe suchen</value>
+</data>
+  <data name="LauncherRecent" xml:space="preserve">
+<value>Kürzlich geöffnet</value>
+</data>
+  <data name="LauncherPlay" xml:space="preserve">
+<value>Starten</value>
+</data>
+  <data name="LauncherDownload" xml:space="preserve">
+<value>Herunterladen</value>
+</data>
+  <data name="LauncherDownloading" xml:space="preserve">
+<value>Herunterladen...</value>
+</data>
+  <data name="LauncherDownloadComplete" xml:space="preserve">
+<value>Herunterladen komplett</value>
+</data>
+  <data name="LauncherNotDownloaded" xml:space="preserve">
+<value>Nicht heruntergeladen</value>
+</data>
+  <data name="LauncherCancel" xml:space="preserve">
+<value>Abbrechen</value>
+</data>
+  <data name="LauncherNoReviewsOrComments" xml:space="preserve">
+<value>Keine Bewertungen oder Kommentare</value>
+</data>
+  <data name="LauncherReviewsAndComments" xml:space="preserve">
+<value>Bewertungen und Kommentare</value>
+</data>
+  <data name="LauncherGetGames" xml:space="preserve">
+<value>Spiele laden</value>
+</data>
+  <data name="LauncherEdit" xml:space="preserve">
+<value>Bearbeiten</value>
+</data>
+  <data name="LauncherNewVersion" xml:space="preserve">
+<value>Neue Version verfügbar</value>
+</data>
+  <data name="LauncherClickHereToUpdate" xml:space="preserve">
+<value>Zum aktualisieren hier klicken</value>
+</data>
+</root>

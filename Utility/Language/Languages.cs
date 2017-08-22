@@ -15,11 +15,8 @@ namespace TextAdventures.Utility.Language
             { "English", "en" },
             { "Deutsch", "de" }
         };
-
-        private static Dictionary<string, string> Templates = new Dictionary<string, string>();
-        
+               
         private const string DefaultLanguage = "English";
-        private static Dictionary<string, string> TemplatesDefault = new Dictionary<string, string>();
 
         public static void LoadLanguage()
         {
@@ -46,9 +43,6 @@ namespace TextAdventures.Utility.Language
             {
                 MessageBox.Show(ex.Message, "Quest", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            ReadTemplates(Templates, CurrentLanguage);
-            if (CurrentLanguage != DefaultLanguage) ReadTemplates(TemplatesDefault, DefaultLanguage);
         }
         private static string FindKey(string value, Dictionary<string, string> dic)
         {
@@ -64,48 +58,9 @@ namespace TextAdventures.Utility.Language
             TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "Language", lang);
         }
 
-        private static void ReadTemplates(Dictionary<string, string> temp, string lang)
-        {
-            const string nodeTemplate = "template";
-            const string nodeName = "name";
-            string languageFile = Application.StartupPath + @"\Core\Languages\HCEditor" + lang + ".aslx";
-            string key = null;
-            string value = null;
-
-            try
-            {
-                System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(languageFile);
-                while (reader.Read())
-                {
-                    switch (reader.NodeType)
-                    {
-                        case System.Xml.XmlNodeType.Element:
-                            if (reader.Name == nodeTemplate && reader.GetAttribute(nodeName) != null)
-                            {
-                                key = reader.GetAttribute(nodeName);
-                            }
-                            break;
-                        case System.Xml.XmlNodeType.Text:
-                            value = reader.Value;
-                            break;
-                    }
-                    if (key != null && value != null)
-                    {
-                        temp[key] = value;
-                        key = null; value = null;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Quest", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         public static string T(string key)
         {
-            if (Templates.ContainsKey(key)) return Templates[key];
-            else return TemplatesDefault[key];
+            return Templates.ResourceManager.GetString(key, Thread.CurrentThread.CurrentUICulture);
         }
     }
 }

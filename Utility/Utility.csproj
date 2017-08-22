@@ -75,7 +75,17 @@
   <ItemGroup>
     <Compile Include="Classes.cs" />
     <Compile Include="JSInterop.cs" />
-    <Compile Include="Languages.cs" />
+    <Compile Include="Language\Languages.cs" />
+    <Compile Include="Language\Templates.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Templates.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Language\Templates.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Templates.resx</DependentUpon>
+    </Compile>
     <Compile Include="Registry.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="Utility.cs" />
@@ -84,6 +94,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Language\Templates.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Templates.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Language\Templates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Templates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
