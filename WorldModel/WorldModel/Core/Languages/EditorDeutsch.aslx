@@ -808,6 +808,11 @@
   <template name="EditorObjectFeaturesStartScript">Initialisierungsskript für dieses Objekt verwenden</template>
   <template name="EditorObjectWearableWearable">Kleidung</template>
   <template name="EditorObjectWearableCanBeWorn">Kleidungsstück:</template>
+  <template name="EditorObjectWearableTypCanBeWorn">Kann getragen werden</template>
+  <template name="EditorObjectWearableTypCannotBeWorn">Kann nicht getragen werden</template>
+  <template name="EditorObjectWearableTypNone">Nichts tun</template>
+  <template name="EditorObjectWearableTypText">Text anzeigen</template>
+  <template name="EditorObjectWearableTypRunScript">Skript starten</template>
   <template name="EditorObjectWearableWearLayer">Kleidungsschichten</template>
   <template name="EditorObjectWearableWearSlot">??? Wear Slot</template>
   <template name="EditorObjectWearableWearSlotPrompt">??? Please enter the name for the wear location</template>

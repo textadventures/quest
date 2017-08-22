@@ -807,6 +807,11 @@
   <template name="EditorObjectFeaturesStartScript">Run an initialisation script for this object</template>
   <template name="EditorObjectWearableWearable">Wearable</template>
   <template name="EditorObjectWearableCanBeWorn">Can be worn?</template>
+  <template name="EditorObjectWearableTypCanBeWorn">Can be worn</template>
+  <template name="EditorObjectWearableTypCannotBeWorn">Cannot be worn</template>
+  <template name="EditorObjectWearableTypNone">None</template>
+  <template name="EditorObjectWearableTypText">Text</template>
+  <template name="EditorObjectWearableTypRunScript">Run script</template>
   <template name="EditorObjectWearableWearLayer">Wear Layer</template>
   <template name="EditorObjectWearableWearSlot">Wear Slot</template>
   <template name="EditorObjectWearableWearSlotPrompt">Please enter the name for the wear location</template>
