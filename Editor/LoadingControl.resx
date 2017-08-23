@@ -154,7 +154,7 @@
     <value>Fill</value>
   </data>
   <data name="lblStatus.Location" type="System.Drawing.Point, System.Drawing">
-    <value>10, 20</value>
+    <value>15, 25</value>
   </data>
   <data name="lblStatus.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 4, 4, 4</value>
@@ -163,7 +163,7 @@
     <value>True</value>
   </data>
   <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
-    <value>791, 182</value>
+    <value>781, 172</value>
   </data>
   <data name="lblStatus.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -190,13 +190,13 @@
     <value>NoControl</value>
   </data>
   <data name="ctlProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>10, 10</value>
+    <value>15, 15</value>
   </data>
   <data name="ctlProgress.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 4, 4, 4</value>
   </data>
   <data name="ctlProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>791, 10</value>
+    <value>781, 10</value>
   </data>
   <data name="ctlProgress.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -220,7 +220,7 @@
     <value>0, 475</value>
   </data>
   <data name="Panel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>10, 10, 10, 10</value>
+    <value>15, 15, 15, 15</value>
   </data>
   <data name="Panel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>811, 212</value>

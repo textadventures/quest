@@ -37,7 +37,7 @@
                 </LinearGradientBrush>
             </Button.Background> Edit
         </Button>
-        <CheckBox Style="{StaticResource item}" Name="chkCorresponding" BorderBrush="#FFACACAC">Also create exit in the other direction</CheckBox>
+        <CheckBox Style="{StaticResource item}" Name="chkCorresponding" BorderBrush="#FFACACAC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">Also create exit in the other direction</CheckBox>
         <TextBlock Style="{StaticResource item}" Name="corresponding">Exit in the other direction already exists</TextBlock>
         <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left" Click="createCorresponding_Click" Foreground="Black" BorderBrush="#FFACACAC">
             <Button.Background>

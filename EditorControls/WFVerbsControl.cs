@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -91,7 +92,7 @@ namespace TextAdventures.Quest.EditorControls
             IDictionary<string, string> availableVerbs = Controller.GetVerbProperties();
 
             PopupEditors.EditStringResult result = PopupEditors.EditString(
-                "Please enter a name for the new verb",
+                L.T("EditorEnterNameForNewVerb"),
                 string.Empty,
                 availableVerbs.Values);
 

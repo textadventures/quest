@@ -624,4 +624,34 @@
   <data name="LauncherClickHereToUpdate" xml:space="preserve">
     <value>Click here to update</value>
   </data>
+  <data name="EditorToolBarAddScript" xml:space="preserve">
+    <value>Add Script</value>
+  </data>
+  <data name="EditorToolBarCodeView" xml:space="preserve">
+    <value>Code View</value>
+  </data>
+  <data name="EditorToolBarCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="EditorToolBarCut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="EditorToolBarDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="EditorToolBarMakeEditable" xml:space="preserve">
+    <value>Make editable copy</value>
+  </data>
+  <data name="EditorToolBarMoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="EditorToolBarMoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="EditorToolBarPaste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="EditorToolBarPopOut" xml:space="preserve">
+    <value>Pop out</value>
+  </data>
 </root>

@@ -73,6 +73,8 @@
   <template name="EditorFunctionReturntype">Rückgabetyp</template>
   <template name="EditorFunctionParameters">Parameter</template>
   <template name="EditorFunctionScript">Skript</template>
+  <template name="EditorGameAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
+  <template name="EditorGameAttributesPleaseenter2">??? Please enter the format string (blank for default)</template>
   <template name="EditorGameSetup">Konfiguration</template>
   <template name="EditorGameGamename">Spielname</template>
   <template name="EditorGameSubtitle">Untertitel</template>

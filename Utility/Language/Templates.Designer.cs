@@ -1042,6 +1042,96 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add Script ähnelt.
+        /// </summary>
+        internal static string EditorToolBarAddScript {
+            get {
+                return ResourceManager.GetString("EditorToolBarAddScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Code View ähnelt.
+        /// </summary>
+        internal static string EditorToolBarCodeView {
+            get {
+                return ResourceManager.GetString("EditorToolBarCodeView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Copy ähnelt.
+        /// </summary>
+        internal static string EditorToolBarCopy {
+            get {
+                return ResourceManager.GetString("EditorToolBarCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cut ähnelt.
+        /// </summary>
+        internal static string EditorToolBarCut {
+            get {
+                return ResourceManager.GetString("EditorToolBarCut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        internal static string EditorToolBarDelete {
+            get {
+                return ResourceManager.GetString("EditorToolBarDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Make editable copy ähnelt.
+        /// </summary>
+        internal static string EditorToolBarMakeEditable {
+            get {
+                return ResourceManager.GetString("EditorToolBarMakeEditable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move down ähnelt.
+        /// </summary>
+        internal static string EditorToolBarMoveDown {
+            get {
+                return ResourceManager.GetString("EditorToolBarMoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Move up ähnelt.
+        /// </summary>
+        internal static string EditorToolBarMoveUp {
+            get {
+                return ResourceManager.GetString("EditorToolBarMoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Paste ähnelt.
+        /// </summary>
+        internal static string EditorToolBarPaste {
+            get {
+                return ResourceManager.GetString("EditorToolBarPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Pop out ähnelt.
+        /// </summary>
+        internal static string EditorToolBarPopOut {
+            get {
+                return ResourceManager.GetString("EditorToolBarPopOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Type &apos;{0}&apos; is already inherited ähnelt.
         /// </summary>
         internal static string EditorTypAlreadyInherited {

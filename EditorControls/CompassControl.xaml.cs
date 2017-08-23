@@ -95,5 +95,10 @@ namespace TextAdventures.Quest.EditorControls
                 m_directionControl[direction].NoLinkDestination = "look";
             }
         }
+
+        private void chkCorresponding_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

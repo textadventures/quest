@@ -91,7 +91,7 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-                <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click" HorizontalAlignment="Left" Padding="0" Foreground="White" Background="White" ToolTip="Add new script" Width="75" Height="25" Margin="0,0.2,0,-0.4">
+                <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click" HorizontalAlignment="Left" Padding="0" Foreground="White" Background="White" ToolTip="Add new script" Width="75" Height="25" Margin="0,0.2,0,-0.4" Initialized="cmdAddScript_Initialized">
                     <Button.BorderBrush>
                         <SolidColorBrush Color="#FFB4B4B4"/>
                     </Button.BorderBrush>
