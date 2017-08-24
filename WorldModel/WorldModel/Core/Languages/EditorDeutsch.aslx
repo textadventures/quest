@@ -1,4 +1,6 @@
-﻿<!-- '???' Does not mean quite sure in the translation -->
+﻿<!-- Translated by SoonGames -->
+<!-- For the templates with prefixed comment "no translation" the function is unknown to me, therefore these are not translated. -->
+
 <library type="editor">
   <template name="EditorWeakShownWhenRoomDark">Schwaches Licht (Wird nur gesehen, wenn der Raum dunkel ist)</template>
   <template name="EditorStrongIlluminatesRoom">Starkes Licht (Beleuchtet kompletten Raum)</template>
@@ -74,7 +76,7 @@
   <template name="EditorFunctionParameters">Parameter</template>
   <template name="EditorFunctionScript">Skript</template>
   <template name="EditorGameAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
-  <template name="EditorGameAttributesPleaseenter2">??? Please enter the format string (blank for default)</template>
+  <template name="EditorGameAttributesPleaseenter2">Bitte geben Sie den Attributinhalt ein (Ohne Eingabe = Standard)</template>
   <template name="EditorGameSetup">Konfiguration</template>
   <template name="EditorGameGamename">Spielname</template>
   <template name="EditorGameSubtitle">Untertitel</template>
@@ -107,7 +109,7 @@
   <template name="EditorGameAnnotations">Notizen: Eine Registerkarte für "Notizen" wird jedem Raum hinzugefügt (Nicht sichtbar für den Spieler)</template>
   <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
-  <template name="EditorGameAllowLookDirections">??? Directional exits can be look only</template>
+  <!-- no translation --><template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
   <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
   <template name="EditorGameHideSaveButton">Speichern-Schaltfläche im Webplayer entfernen</template>
   <template name="EditorGameDisplay">Oberfläche</template>
@@ -129,7 +131,7 @@
   <template name="EditorGameHyperlinks">Hyperlinks</template>
   <template name="EditorGameLinkcolour">Standardfarbe der Hyperlinks</template>
   <template name="EditorGameUnderlinehyperlinks">Hyperlinks unterstreichen</template>
-  <template name="EditorGameAfterusing">??? After using a command hyperlink, deactivate it</template>
+  <!-- no translation --><template name="EditorGameAfterusing">After using a command hyperlink, deactivate it</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe, während Maus sich über Menüpunkt befindet</template>
@@ -227,8 +229,8 @@
   <template name="EditorFunctionPleaseenter">Bitte geben Sie einen Parameternamen ein</template>
   <template name="EditorWalkthroughPleaseenter">Bitte geben Sie das Kommando für diesen Walkthrough-Schritt ein</template>
   <template name="EditorObjectAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
-  <template name="EditorObjectAttributesPleaseenter2">??? Please enter the format string (blank for default)</template>
-  <template name="EditorScriptsScriptsPleaseenter">??? Please enter the case expression</template>
+  <template name="EditorObjectAttributesPleaseenter2">Bitte geben Sie den Attributinhalt ein (Ohne Eingabe = Standard)</template>
+  <template name="EditorScriptsScriptsPleaseenter">Bitte geben Sie den abzufragenden Inhalt ein</template>
   <template name="EditorScriptsScriptsPleaseenter2">Bitte geben Sie den Parameter ein</template>
   <template name="EditorObjectAskTellAskTell">Fragen/Reden</template>
   <template name="EditorObjectAskTellPleaseenter">Bitte geben Sie die Stichworte ein, die durch Leerzeichen getrennt sind</template>
@@ -238,8 +240,8 @@
   <template name="EditorObjectAskTellTell">Reden</template>
   <template name="EditorObjectAskTellTellabout">Reden über</template>
   <template name="EditorObjectTellScripttorun">Falls über ein unbekanntes Thema gesprochen wird</template>
-  <template name="EditorObjectAskTellTellto">??? Order</template>
-  <template name="EditorObjectAskTellTelltoabout">??? Tell to</template>
+  <!-- no translation --><template name="EditorObjectAskTellTellto">Order</template>
+  <!-- no translation --><template name="EditorObjectAskTellTelltoabout">Tell to</template>
   <template name="EditorObjectTelltoScripttorun">Falls keine Schlüsselwörter erkannt wurden</template>
   <template name="EditorObjectAnnotationAnnotation">Notizen</template>
   <template name="EditorObjectAttributesAttributes">Attribute</template>
@@ -441,15 +443,15 @@
   <template name="EditorScriptsDrawingCentercustom">Zentrierte benutzerdefinierte Ebene</template>
   <template name="EditorScriptsDrawingCentercustomX">Zentrierte benutzerdefinierte Ebene bei X</template>
   <template name="EditorScriptsDrawingCentercustomY">, Y</template>
-  <template name="EditorScriptsDrawingDrawcustom">??? Zeichne quatratisches Gitter auf benutzerdefinierter Ebene</template>
-  <template name="EditorScriptsDrawingDrawcustomID">??? Zeichne quatratisches Gitter auf benutzerdefinierter Ebene mit ID</template>
+  <template name="EditorScriptsDrawingDrawcustom">Zeichne quatratisches Gitter auf benutzerdefinierter Ebene</template>
+  <template name="EditorScriptsDrawingDrawcustomID">Zeichne quatratisches Gitter auf benutzerdefinierter Ebene mit ID</template>
   <template name="EditorScriptsDrawingDrawSquareatX">bei X</template>
   <template name="EditorScriptsDrawingDrawSquareatY">, Y</template>
   <template name="EditorScriptsDrawingDrawSquarewidth">Breite</template>
   <template name="EditorScriptsDrawingDrawSquareheight">Höhe</template>
   <template name="EditorScriptsDrawingDrawSquareLabel">Beschriftung</template> 
-  <template name="EditorScriptsDrawingAddcustomshape">??? Füge benutzerdefinierten Formpunkt hinzu</template>
-  <template name="EditorScriptsDrawingAddNewShapePointAtX">??? Füge benutzerdefinierten Formpunkt hinzu bei X</template>
+  <template name="EditorScriptsDrawingAddcustomshape">Füge benutzerdefinierten Formpunkt hinzu</template>
+  <template name="EditorScriptsDrawingAddNewShapePointAtX">Füge benutzerdefinierten Formpunkt hinzu bei X</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtY">, Y</template>
   <template name="EditorScriptsDrawingLoadSvgData">Lade SVG-Daten</template>
   <template name="EditorScriptsDrawingLoadSvgId">mit ID</template>
@@ -485,7 +487,7 @@
   <template name="EditorScriptsGameStateFinishthegame">Das komplette Spiel beenden</template>
   <template name="EditorScriptsGameStateUndo">Eine Transaktion rückgängig machen</template>
   <template name="EditorScriptsGameStateUndoonetransaction">Mache die letzte Transaktion rückgängig</template>
-  <template name="EditorScriptsGameStateStarttransaction">??? Starten Sie die Transaktion für das Kommando</template>
+  <template name="EditorScriptsGameStateStarttransaction">Starte die Transaktion für das Kommando</template>
   <template name="EditorScriptsObjectsObjects">Objekte</template>  
   <template name="EditorScriptsObjectsAddtoinventory">Objekt zum Inventar hinzufügen</template>
   <template name="EditorScriptsObjectsMoveobject">Objekt verschieben</template>
@@ -576,8 +578,8 @@
   <template name="EditorScriptsOutputAskquestion">Stelle die Frage</template>
   <template name="EditorScriptsOutputInsertHTML">Füge HTML ein von</template>
   <template name="EditorScriptsOutputLog">Schreibe ins Protokoll</template>
-  <template name="EditorScriptsOutputRaiseUIrequest">??? Raise UI request</template>
-  <template name="EditorScriptsOutputRequest">??? Request</template>
+  <!-- no translation --><template name="EditorScriptsOutputRaiseUIrequest">Raise UI request</template>
+  <!-- no translation --><template name="EditorScriptsOutputRequest">Request</template>
   <template name="EditorScriptsOutputwithparameter">mit Parameter</template>
   <template name="EditorScriptsOutputRunJavascript">Javascript-Code benutzen</template>
   <template name="EditorScriptsOutputJavaScript">JavaScript-Code</template>
@@ -615,8 +617,8 @@
   <template name="EditorScriptsScriptsCases">einen der folgenden Werte, dann starte das jeweilige Skript</template>
   <template name="EditorScriptsScriptsCases2">einen der folgenden Werte, dann starte das jeweilige Skript</template>
   <template name="EditorScriptsScriptsDefault">ansonsten dieses Skript starten</template>
-  <template name="EditorScriptsScriptsWhile">Solange der Zustand einer Booleschen Variable wahr ist, dann... (While)</template>
-  <template name="EditorScriptsScriptsWhile2">Solange der Zustand der Booleschen Variablen</template>
+  <template name="EditorScriptsScriptsWhile">Solange der Zustand einer Bool-Variable wahr ist, dann... (While)</template>
+  <template name="EditorScriptsScriptsWhile2">Solange der Zustand der Bool-Variablen</template>
   <template name="EditorScriptsScriptsistrue">wahr ist,</template>
   <template name="EditorScriptsScriptsCallfunction">Eine Funktion aufrufen</template>
   <template name="EditorScriptsScriptsParameters">Parameter</template>
@@ -630,7 +632,7 @@
   <template name="EditorScriptsScriptsRaiseerror">Folgenden Fehler anzeigen</template>
   <template name="EditorScriptsScriptsSetthisfunctions">Den Rückgabewert einer Funktion setzen</template>  
   <template name="EditorScriptsScriptsSetthisfunctionsTo">Setze den Rückgabewert dieser Funktion auf</template>
-  <template name="EditorScriptsScriptsRundelegate">??? Run delegate implementation of object</template>
+  <!-- no translation --><template name="EditorScriptsScriptsRundelegate">Run delegate implementation of object</template>
   <template name="EditorScriptsScriptsAttribute">Attribute</template>
   <template name="EditorScriptsScriptsWithparameters">mit folgenden Parametern</template>
   <template name="EditorScriptsScriptsWhenready">Wenn bereit,</template>
@@ -645,8 +647,8 @@
   <template name="EditorScriptsTimersscriptto">folgendes Skript nach Ablauf der Zeit starten lassen</template>
   <template name="EditorScriptsTimersAfter">Nach</template>
   <template name="EditorScriptsTimersRunscript">folgendendes Skript starten</template>
-  <template name="EditorScriptsTimersRunscriptafter">Starte Skript nach angegebenen Sekunden</template>
-  <template name="EditorScriptsTimersRunscriptafterName">Starte Skript nach angegebenen Sekunden (mit Namen)</template>    
+  <template name="EditorScriptsTimersRunscriptafter">Skript nach angegebenen Sekunden starten</template>
+  <template name="EditorScriptsTimersRunscriptafterName">Skript nach angegebenen Sekunden starten (mit Namen)</template>    
   <template name="EditorScriptsTimersName">Name</template>
   <template name="EditorScriptsTimersPausefor">Pause für</template>
   <template name="EditorScriptsTimersCreateatimer">Erstelle einen Timer</template>
@@ -658,9 +660,9 @@
   <template name="EditorScriptsTurnScriptsscriptto">das währenddessen ausgeführt wird</template>
   <template name="EditorScriptsTurnScriptsAfter">Nach</template>
   <template name="EditorScriptsTurnScriptsturns">Turns</template>
-  <template name="EditorScriptsTurnScriptsRunscriptafter">Nach einer bestimmten Anzahl von Turns Skript starten</template>  
+  <template name="EditorScriptsTurnScriptsRunscriptafter">Nach bestimmter Anzahl von Turns Skript starten</template>  
   <template name="EditorScriptsTurnScriptsRunscript">folgendendes Skript starten</template>
-  <template name="EditorScriptsTurnScriptsRunscriptafterName">Nach einer bestimmten Anzahl von Turns Skript starten (mit Namen)</template>  
+  <template name="EditorScriptsTurnScriptsRunscriptafterName">Nach bestimmter Anzahl von Turns Skript starten (mit Namen)</template>  
   <template name="EditorScriptsTurnScriptsName">Name</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Ein Turn-Skript erstellen</template>   
   <template name="EditorScriptsTurnScriptsCreateturn">Erstelle Turn-Skript</template>
@@ -759,7 +761,7 @@
   <template name="EditorExpressionsallcommands">Alle Kommandos</template> 
   <template name="TypePatternCommand">Kommandomuster</template>
   <template name="TypePatternRegular">Regulärer Ausdruck</template> 
-  <template name="TypeExitNon">??? Non-directional exit</template> 
+  <template name="TypeExitNon">Ausgang ohne Richtungsangabe</template> 
   <template name="TypeNoDescription">Keine Beschreibung</template> 
   <template name="TypeText">Text anzeigen</template> 
   <template name="TypeRunScript">Skript starten</template> 
@@ -816,13 +818,13 @@
   <template name="EditorObjectWearableTypText">Text anzeigen</template>
   <template name="EditorObjectWearableTypRunScript">Skript starten</template>
   <template name="EditorObjectWearableWearLayer">Kleidungsschichten</template>
-  <template name="EditorObjectWearableWearSlot">??? Wear Slot</template>
-  <template name="EditorObjectWearableWearSlotPrompt">??? Please enter the name for the wear location</template>
-  <template name="EditorObjectWearableWearSlotExplained">??? If two objects have the same wear location and slot, they will not be able to be worn at a same time. Any number of items without wear locations can be worn.</template>
+  <!-- no translation --><template name="EditorObjectWearableWearSlot">Wear Slot</template>
+  <!-- no translation --><template name="EditorObjectWearableWearSlotPrompt">Please enter the name for the wear location</template>
+  <!-- no translation --><template name="EditorObjectWearableWearSlotExplained">If two objects have the same wear location and slot, they will not be able to be worn at a same time. Any number of items without wear locations can be worn.</template>
   <template name="EditorObjectWearableWearMessage">Beim Anziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Funktionen</template>
-  <template name="EditorObjectWearableMultistateOption">??? Multi-state</template>
+  <!-- no translation --><template name="EditorObjectWearableMultistateOption">Multi-state</template>
   <template name="EditorObjectWearableAdvancedFeatures">Erweiterte Funktionen</template>
   <template name="EditorObjectWearableRemoveable">Das Objekt ist ausziehbar</template>
   <template name="EditorObjectWearableProtection">Das Objekt schützt den Spieler bis (Nur wenn umgesetzt!)</template>
@@ -834,14 +836,29 @@
   <template name="EditorObjectWearableAfterWearing2">Nach dem Tragen des Objektes</template>
   <template name="EditorObjectWearableAfterRemoving">Nach dem Ausziehen</template>
   <template name="EditorObjectWearableAfterRemoving2">Nach dem Ausziehen des Objektes</template>
-  <template name="EditorObjectWearableMultistate">??? Multi-state</template>
-  <template name="EditorObjectWearableState">??? Descriptor for each state (or * for none)</template>
-  <template name="EditorObjectWearableStatePrompt">??? Please enter the descriptor to use in the item name for this state</template>
-  <template name="EditorObjectWearableStateSlots">??? Wear slots for each state (or * for none)</template>
-  <template name="EditorObjectWearableStateSlotsPrompt">??? Please enter all the wear locations for this state, separated by semi-colons</template>
-  <template name="EditorObjectWearableStateVerbs">??? Additional verbs for each state (or * for none)</template>
-  <template name="EditorObjectWearableStateVerbsPrompt">??? Please enter all the additional verbs for this state, separated by semi-colons</template>
-  <template name="EditorObjectWearableStateBonuses">??? Bonus to attributes (or * for default)</template>
-  <template name="EditorObjectWearableStateBonusesPrompt">??? Please enter all the additional bonuses for this state, separated by semi-colons</template>
+  <!-- no translation --><template name="EditorObjectWearableMultistate">Multi-state</template>
+  <!-- no translation --><template name="EditorObjectWearableState">Descriptor for each state (or * for none)</template>
+  <!-- no translation --><template name="EditorObjectWearableStatePrompt">Please enter the descriptor to use in the item name for this state</template>
+  <!-- no translation --><template name="EditorObjectWearableStateSlots">Wear slots for each state (or * for none)</template>
+  <!-- no translation --><template name="EditorObjectWearableStateSlotsPrompt">Please enter all the wear locations for this state, separated by semi-colons</template>
+  <!-- no translation --><template name="EditorObjectWearableStateVerbs">Additional verbs for each state (or * for none)</template>
+  <!-- no translation --><template name="EditorObjectWearableStateVerbsPrompt">Please enter all the additional verbs for this state, separated by semi-colons</template>
+  <!-- no translation --><template name="EditorObjectWearableStateBonuses">Bonus to attributes (or * for default)</template>
+  <!-- no translation --><template name="EditorObjectWearableStateBonusesPrompt">Please enter all the additional bonuses for this state, separated by semi-colons</template>
   <template name="EditorObjectWearableInstructionsLink">Gebrauchsanweisung</template>
+  <template name="EditorTextProcessorBold">Fett</template>
+  <template name="EditorTextProcessorItalic">Kursiv</template>
+  <template name="EditorTextProcessorUnderline">Unterstrichen</template>
+  <template name="EditorTextProcessorOnce">Einmal</template>
+  <template name="EditorTextProcessorObjectLink">Objekt-Link</template>
+  <template name="EditorTextProcessorCommandLink">Kommando-Link</template>
+  <template name="EditorTextProcessorIf">Wenn...</template>
+  <template name="EditorTextProcessorRandomText">Zufallstext</template>
+  <template name="EditorTextProcessorImage">Bild</template>
+  <template name="EditorScriptObjectsInventory">Inventar</template>
+  <template name="EditorScriptObjectsMove">Verschieben</template>
+  <template name="EditorScriptObjectsShow">Zeigen</template>
+  <template name="EditorScriptObjectsHide">Verstecken</template>
+  <template name="EditorScriptObjectsPrint">Text</template>
+  <template name="EditorScriptObjectsIf">Wenn</template>
 </library>

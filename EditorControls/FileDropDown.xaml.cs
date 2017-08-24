@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using Microsoft.Win32;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -85,7 +86,7 @@ namespace TextAdventures.Quest.EditorControls
 
                 if (string.IsNullOrEmpty(item.Filename))
                 {
-                    item.Title = "None";
+                    item.Title = L.T("EditorFileNone");
                 }
                 else
                 {
@@ -282,6 +283,16 @@ namespace TextAdventures.Quest.EditorControls
             {
                 return lstFiles; 
             }
+        }
+
+        private void BrowseButton_Initialized(object sender, EventArgs e)
+        {
+            BrowseButton.Content = L.T("EditorBrowseButton");
+        }
+
+        private void newFileButton_Initialized(object sender, EventArgs e)
+        {
+            newFileButton.Content = L.T("EditorNewFileButton");
         }
     }
 }

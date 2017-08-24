@@ -88,6 +88,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Browse... ähnelt.
+        /// </summary>
+        internal static string EditorBrowseButton {
+            get {
+                return ResourceManager.GetString("EditorBrowseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Quest Games (*.aslx)|*.aslx|All files|*.* ähnelt.
         /// </summary>
         internal static string EditorBrowseEditFilter {
@@ -102,6 +111,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorBrowseFilter {
             get {
                 return ResourceManager.GetString("EditorBrowseFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        internal static string EditorCancelButton {
+            get {
+                return ResourceManager.GetString("EditorCancelButton", resourceCulture);
             }
         }
         
@@ -156,6 +174,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorChooseTypeToAdd {
             get {
                 return ResourceManager.GetString("EditorChooseTypeToAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear all items ähnelt.
+        /// </summary>
+        internal static string EditorClearAllItems {
+            get {
+                return ResourceManager.GetString("EditorClearAllItems", resourceCulture);
             }
         }
         
@@ -237,6 +264,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorCreateLookOnlyTitle {
             get {
                 return ResourceManager.GetString("EditorCreateLookOnlyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete downloaded file ähnelt.
+        /// </summary>
+        internal static string EditorDeleteDownloadedFile {
+            get {
+                return ResourceManager.GetString("EditorDeleteDownloadedFile", resourceCulture);
             }
         }
         
@@ -376,6 +412,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die None ähnelt.
+        /// </summary>
+        internal static string EditorFileNone {
+            get {
+                return ResourceManager.GetString("EditorFileNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die The file {0} already exists.{1}Would you like to overwrite it? ähnelt.
         /// </summary>
         internal static string EditorFileOverwrite {
@@ -417,6 +462,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorFilterSavedGames {
             get {
                 return ResourceManager.GetString("EditorFilterSavedGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show Library Elements ähnelt.
+        /// </summary>
+        internal static string EditorFilterShowLibraryElements {
+            get {
+                return ResourceManager.GetString("EditorFilterShowLibraryElements", resourceCulture);
             }
         }
         
@@ -471,6 +525,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorIf {
             get {
                 return ResourceManager.GetString("EditorIf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose an image ähnelt.
+        /// </summary>
+        internal static string EditorImageSelectionWindowTitle {
+            get {
+                return ResourceManager.GetString("EditorImageSelectionWindowTitle", resourceCulture);
             }
         }
         
@@ -700,6 +763,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New... ähnelt.
+        /// </summary>
+        internal static string EditorNewFileButton {
+            get {
+                return ResourceManager.GetString("EditorNewFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a name for the new object ähnelt.
         /// </summary>
         internal static string EditorNewObject {
@@ -723,6 +795,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorNewRoom {
             get {
                 return ResourceManager.GetString("EditorNewRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a name for the new template ähnelt.
+        /// </summary>
+        internal static string EditorNewTemplate {
+            get {
+                return ResourceManager.GetString("EditorNewTemplate", resourceCulture);
             }
         }
         
@@ -768,6 +849,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorNotParents {
             get {
                 return ResourceManager.GetString("EditorNotParents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die OK ähnelt.
+        /// </summary>
+        internal static string EditorOkButton {
+            get {
+                return ResourceManager.GetString("EditorOkButton", resourceCulture);
             }
         }
         
@@ -916,6 +1006,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove this item ähnelt.
+        /// </summary>
+        internal static string EditorRemoveThisItem {
+            get {
+                return ResourceManager.GetString("EditorRemoveThisItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Replaced {0} occurrences. ähnelt.
         /// </summary>
         internal static string EditorReplacedOccurrences {
@@ -1024,6 +1123,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add Script Command ähnelt.
+        /// </summary>
+        internal static string EditorScriptAdderWindowTitle {
+            get {
+                return ResourceManager.GetString("EditorScriptAdderWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, an error occurred. ähnelt.
         /// </summary>
         internal static string EditorSorryErrorOccurred {
@@ -1038,6 +1146,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorTextNotFound {
             get {
                 return ResourceManager.GetString("EditorTextNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Text Processor help ähnelt.
+        /// </summary>
+        internal static string EditorTextProcessorHelp {
+            get {
+                return ResourceManager.GetString("EditorTextProcessorHelp", resourceCulture);
             }
         }
         

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -289,7 +290,7 @@ namespace TextAdventures.Quest
         public EditorController()
         {
             m_availableFilters = new AvailableFilters();
-            m_availableFilters.Add("libraries", "Show Library Elements");
+            m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
 
             m_filterOptions = new FilterOptions();
             // set default filters here

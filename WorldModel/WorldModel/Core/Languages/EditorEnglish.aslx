@@ -843,4 +843,19 @@
   <template name="EditorObjectWearableStateBonuses">Bonus to attributes (or * for default)</template>
   <template name="EditorObjectWearableStateBonusesPrompt">Please enter all the additional bonuses for this state, separated by semi-colons</template>
   <template name="EditorObjectWearableInstructionsLink">Instructions for use</template>
+  <template name="EditorTextProcessorBold">Bold</template>
+  <template name="EditorTextProcessorItalic">Italic</template>
+  <template name="EditorTextProcessorUnderline">Underline</template>
+  <template name="EditorTextProcessorOnce">Once</template>
+  <template name="EditorTextProcessorObjectLink">Object Link</template>
+  <template name="EditorTextProcessorCommandLink">Command Link</template>
+  <template name="EditorTextProcessorIf">If...</template>
+  <template name="EditorTextProcessorRandomText">Random text</template>
+  <template name="EditorTextProcessorImage">Image</template>
+  <template name="EditorScriptObjectsInventory">Inventory</template>
+  <template name="EditorScriptObjectsMove">Move</template>
+  <template name="EditorScriptObjectsShow">Show</template>
+  <template name="EditorScriptObjectsHide">Hide</template>
+  <template name="EditorScriptObjectsPrint">Print</template>
+  <template name="EditorScriptObjectsIf">If</template>
 </library>

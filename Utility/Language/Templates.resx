@@ -669,4 +669,43 @@
   <data name="TypeRunScript" xml:space="preserve">
     <value>Run script</value>
   </data>
+  <data name="EditorBrowseButton" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="EditorCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="EditorClearAllItems" xml:space="preserve">
+    <value>Clear all items</value>
+  </data>
+  <data name="EditorDeleteDownloadedFile" xml:space="preserve">
+    <value>Delete downloaded file</value>
+  </data>
+  <data name="EditorFileNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="EditorFilterShowLibraryElements" xml:space="preserve">
+    <value>Show Library Elements</value>
+  </data>
+  <data name="EditorImageSelectionWindowTitle" xml:space="preserve">
+    <value>Choose an image</value>
+  </data>
+  <data name="EditorNewFileButton" xml:space="preserve">
+    <value>New...</value>
+  </data>
+  <data name="EditorNewTemplate" xml:space="preserve">
+    <value>Please enter a name for the new template</value>
+  </data>
+  <data name="EditorOkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="EditorRemoveThisItem" xml:space="preserve">
+    <value>Remove this item</value>
+  </data>
+  <data name="EditorScriptAdderWindowTitle" xml:space="preserve">
+    <value>Add Script Command</value>
+  </data>
+  <data name="EditorTextProcessorHelp" xml:space="preserve">
+    <value>Text Processor help</value>
+  </data>
 </root>

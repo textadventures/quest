@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -38,6 +39,11 @@ namespace TextAdventures.Quest.EditorControls
         void ScriptAdderPopOut_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelpers.DisableMinimize(this);
+        }
+
+        private void ScriptAdderWindow_Initialized(object sender, System.EventArgs e)
+        {
+            ScriptAdderWindow.Title = L.T("EditorScriptAdderWindowTitle");
         }
     }
 }

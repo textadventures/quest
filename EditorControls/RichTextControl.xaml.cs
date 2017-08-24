@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -204,6 +205,11 @@ namespace TextAdventures.Quest.EditorControls
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             Utility.Utility.LaunchURL("http://docs.textadventures.co.uk/quest/text_processor.html");
+        }
+
+        private void txtProcessorHelp_Initialized(object sender, EventArgs e)
+        {
+            txtProcessorHelp.Text = L.T("EditorTextProcessorHelp");
         }
     }
 }

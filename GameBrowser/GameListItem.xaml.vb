@@ -366,4 +366,15 @@ Public Class GameListItem
         CurrentState = State.NotDownloaded
     End Sub
 
+    Private Sub mnuClear_Initialized(sender As Object, e As EventArgs) Handles mnuClear.Initialized
+        mnuClear.Header = T("EditorClearAllItems")
+    End Sub
+
+    Private Sub mnuRemove_Initialized(sender As Object, e As EventArgs) Handles mnuRemove.Initialized
+        mnuRemove.Header = T("EditorRemoveThisItem")
+    End Sub
+
+    Private Sub mnuDelete_Initialized(sender As Object, e As EventArgs) Handles mnuDelete.Initialized
+        mnuDelete.Header = T("EditorDeleteDownloadedFile")
+    End Sub
 End Class

@@ -307,7 +307,7 @@
     <value>Bitte geben Sie einen Namen für das neue Attribut ein</value>
   </data>
   <data name="EditorGenerate" xml:space="preserve">
-    <value>Generiere...</value>
+    <value>Generieren...</value>
   </data>
   <data name="EditorNoLinkDestinationLook" xml:space="preserve">
     <value>schauen</value>
@@ -431,5 +431,44 @@
   </data>
   <data name="TypeRunScript" xml:space="preserve">
     <value>Skript starten</value>
+  </data>
+  <data name="EditorBrowseButton" xml:space="preserve">
+    <value>Durchsuchen...</value>
+  </data>
+  <data name="EditorCancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="EditorClearAllItems" xml:space="preserve">
+    <value>Alle Einträge löschen</value>
+  </data>
+  <data name="EditorDeleteDownloadedFile" xml:space="preserve">
+    <value>Heruntergeladene Datei löschen</value>
+  </data>
+  <data name="EditorFileNone" xml:space="preserve">
+    <value>Ohne</value>
+  </data>
+  <data name="EditorFilterShowLibraryElements" xml:space="preserve">
+    <value>Bibliothekselemente anzeigen</value>
+  </data>
+  <data name="EditorImageSelectionWindowTitle" xml:space="preserve">
+    <value>Bild auswählen</value>
+  </data>
+  <data name="EditorNewFileButton" xml:space="preserve">
+    <value>Neu...</value>
+  </data>
+  <data name="EditorNewTemplate" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für die neue Vorlage ein</value>
+  </data>
+  <data name="EditorOkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="EditorRemoveThisItem" xml:space="preserve">
+    <value>Diesen Eintrag löschen</value>
+  </data>
+  <data name="EditorScriptAdderWindowTitle" xml:space="preserve">
+    <value>Skript hinzufügen</value>
+  </data>
+  <data name="EditorTextProcessorHelp" xml:space="preserve">
+    <value>Hilfe zum Text-Prozessor</value>
   </data>
 </root>
