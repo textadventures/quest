@@ -13,9 +13,9 @@ namespace TextAdventures.Quest.EditorControls
         private class VerbsSubEditorControlData : AttributeSubEditorControlData
         {
             private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
-                {"string", "Print a message"},
-                {"script", "Run a script"},
-                {"scriptdictionary", "Require another object"},
+                {"string", L.T("TypePrintMessage")},
+                {"script", L.T("TypeRunScript")},
+                {"scriptdictionary", L.T("TypeRequireAnotherObject")},
             };
 
             public VerbsSubEditorControlData(string attribute)
@@ -35,7 +35,7 @@ namespace TextAdventures.Quest.EditorControls
                     case "keyname":
                         return "Object";
                     case "keyprompt":
-                        return "Please enter the object name";
+                        return L.T("EditorKeypromptEnterObjectName");
                     case "source":
                         return "object";
                 }

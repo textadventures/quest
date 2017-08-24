@@ -408,4 +408,28 @@
   <data name="EditorToolBarPopOut" xml:space="preserve">
     <value>Popout-Fenster</value>
   </data>
+  <data name="EditorKeypromptEnterObjectName" xml:space="preserve">
+    <value>Bitte geben Sie den Objektnamen ein</value>
+  </data>
+  <data name="EditorPleaseEnterKey" xml:space="preserve">
+    <value>Bitte geben Sie einen Schlüssel ein</value>
+  </data>
+  <data name="EditorPleaseEnterValue" xml:space="preserve">
+    <value>Bitte geben Sie einen Wert ein</value>
+  </data>
+  <data name="EditorScriptAdderAdd" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="EditorScriptAdderClose" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="TypePrintMessage" xml:space="preserve">
+    <value>Text anzeigen</value>
+  </data>
+  <data name="TypeRequireAnotherObject" xml:space="preserve">
+    <value>Require another object</value>
+  </data>
+  <data name="TypeRunScript" xml:space="preserve">
+    <value>Skript starten</value>
+  </data>
 </root>

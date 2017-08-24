@@ -91,7 +91,7 @@
   <template name="EditorGameCoverart">Titelbild</template>
   <template name="EditorGameRecommended">Empfohlenes Format für ein Titelbild ist eine 512x512 PNG-Datei.</template>
   <template name="EditorGameDescription">Beschreibung</template>
-  <template name="EditorGameFeatures">Eigenschaften</template>
+  <template name="EditorGameFeatures">Features</template>
   <template name="EditorGameFeaturesHyperlinks">Hyperlinks aktivieren: Der Spieler kann auf die Verben der Objekte zugreifen, indem er auf die Objektnamen klickt</template>
   <template name="EditorGameMapadynamically">Karten- und Zeichnungsebene: Eine Karte, in der jeder Raum bei Betreten des Spielers dynamisch generiert wird. Enthält zusätzlich Funktionen für benutzerdefinierte Zeichnungen</template>
   <template name="EditorGamePictureframe">Bilderrahmen: Ein statisches Bild, das über dem Text erscheint. Bilder können pro Raum eingestellt oder per Skript zugeteilt werden</template>
@@ -107,7 +107,7 @@
   <template name="EditorGameAnnotations">Notizen: Eine Registerkarte für "Notizen" wird jedem Raum hinzugefügt (Nicht sichtbar für den Spieler)</template>
   <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
-  <template name="EditorGameAllowLookDirections">??? Directional exits can be look only - Es kann nur in die Richtungen geschaut werden (Der Spieler kann nicht in die Richtungen gehen)</template>
+  <template name="EditorGameAllowLookDirections">??? Directional exits can be look only</template>
   <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
   <template name="EditorGameHideSaveButton">Speichern-Schaltfläche im Webplayer entfernen</template>
   <template name="EditorGameDisplay">Oberfläche</template>
@@ -129,7 +129,7 @@
   <template name="EditorGameHyperlinks">Hyperlinks</template>
   <template name="EditorGameLinkcolour">Standardfarbe der Hyperlinks</template>
   <template name="EditorGameUnderlinehyperlinks">Hyperlinks unterstreichen</template>
-  <template name="EditorGameAfterusing">??? Nachdem ein Kommando-Hyperlink verwendet wurde, wird er deaktiviert</template>
+  <template name="EditorGameAfterusing">??? After using a command hyperlink, deactivate it</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe, während Maus sich über Menüpunkt befindet</template>
@@ -185,7 +185,7 @@
   <template name="EditorGameTurnscripts">Nach jedem getätigten Zug</template>
   <template name="EditorGameInitUIscript">Initialisierung der Benutzeroberfläche (Wird beim Start, sowie beim Laden eines gespeicherten Spiels aufgerufen)</template>
   <template name="EditorGameUnresolvedscript">Nachdem die Kommandoverarbeitung kein Ergebnis brachte (Der Text des Kommandofeldes wird in der Variable "command" gespeichert)</template>
-  <template name="EditorGameBackdropscript">??? Backdrop scope script (add objects to the "items" object list variable)</template>
+  <template name="EditorGameBackdropscript">Skript für Umgebungsobjekte (Füge die Umgebungsobjekte der "items"-Liste hinzu)</template>
   <template name="EditorGameRoomDescriptions">Raumbeschreibungen</template>
   <template name="EditorGameAutomatically">Automatische Erstellung von Raumbeschreibungen</template>
   <template name="EditorGameShowroomdescription">Beim Betreten eines Raumes die Raumbeschreibung anzeigen</template>
@@ -247,7 +247,7 @@
   <template name="EditorObjectChildrenObjects">Objekte</template>
   <template name="EditorObjectContainerContainer">Container</template>
   <template name="EditorObjectContainerContainertype">Containertyp</template>
-  <template name="EditorObjectContainerTurnonInventory">??? Aktivieren Sie "Inventarbegrenzung" aus dem Feature-Tab des Game-Objektes zum aktivieren der Containerbegrenzung.</template>
+  <template name="EditorObjectContainerTurnonInventory">Aktivieren Sie die "Inventarbegrenzung" aus dem Feature-Tab des Game-Objektes zum aktivieren der Containerbegrenzung.</template>
   <template name="EditorObjectContainerContentsprefix">Den Unterobjekten vorangestellt</template>
   <template name="EditorObjectContainerCanbeopened">Kann geöffnet werden</template>
   <template name="EditorObjectContainerCanbeclosed">Kann geschlossen werden</template>
@@ -757,7 +757,7 @@
   <template name="EditorExpressionstheinventory">Das Inventar</template>
   <template name="EditorExpressionsallexits">Alle Ausgänge</template>
   <template name="EditorExpressionsallcommands">Alle Kommandos</template> 
-  <template name="TypePatternCommand">Objektplatzhalter</template>
+  <template name="TypePatternCommand">Kommandomuster</template>
   <template name="TypePatternRegular">Regulärer Ausdruck</template> 
   <template name="TypeExitNon">??? Non-directional exit</template> 
   <template name="TypeNoDescription">Keine Beschreibung</template> 

@@ -1006,6 +1006,24 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add ähnelt.
+        /// </summary>
+        internal static string EditorScriptAdderAdd {
+            get {
+                return ResourceManager.GetString("EditorScriptAdderAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        internal static string EditorScriptAdderClose {
+            get {
+                return ResourceManager.GetString("EditorScriptAdderClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, an error occurred. ähnelt.
         /// </summary>
         internal static string EditorSorryErrorOccurred {
@@ -1668,6 +1686,33 @@ namespace TextAdventures.Utility.Language {
         internal static string LauncherReviewsAndComments {
             get {
                 return ResourceManager.GetString("LauncherReviewsAndComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Print a message ähnelt.
+        /// </summary>
+        internal static string TypePrintMessage {
+            get {
+                return ResourceManager.GetString("TypePrintMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Require another object ähnelt.
+        /// </summary>
+        internal static string TypeRequireAnotherObject {
+            get {
+                return ResourceManager.GetString("TypeRequireAnotherObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Run script ähnelt.
+        /// </summary>
+        internal static string TypeRunScript {
+            get {
+                return ResourceManager.GetString("TypeRunScript", resourceCulture);
             }
         }
     }

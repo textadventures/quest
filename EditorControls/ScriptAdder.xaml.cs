@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -137,6 +138,16 @@ namespace TextAdventures.Quest.EditorControls
         private void m_controller_SimpleModeChanged(object sender, EventArgs e)
         {
             PopulateTree();
+        }
+
+        private void addButton_Initialized(object sender, EventArgs e)
+        {
+            addButton.Content = L.T("EditorScriptAdderAdd");
+        }
+
+        private void closeButton_Initialized(object sender, EventArgs e)
+        {
+            closeButton.Content = L.T("EditorScriptAdderClose");
         }
     }
 }
