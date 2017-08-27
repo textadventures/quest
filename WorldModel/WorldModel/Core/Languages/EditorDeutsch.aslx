@@ -239,10 +239,10 @@
   <template name="EditorObjectAskScripttorun">Bei einer Frage nach einem unbekannten Thema</template>
   <template name="EditorObjectAskTellTell">Reden</template>
   <template name="EditorObjectAskTellTellabout">Rede über</template>
-  <template name="EditorObjectTellScripttorun">Falls über ein unbekanntes Thema gesprochen wird</template>
+  <template name="EditorObjectTellScripttorun">Bei einem Gespräch über ein unbekanntes Thema</template>
   <template name="EditorObjectAskTellTellto">Befehle</template>
   <template name="EditorObjectAskTellTelltoabout">Befehle zu</template>
-  <template name="EditorObjectTelltoScripttorun">Falls keine Schlüsselwörter erkannt wurden</template>
+  <template name="EditorObjectTelltoScripttorun">Bei unbekannten Befehlen</template>
   <template name="EditorObjectAnnotationAnnotation">Notizen</template>
   <template name="EditorObjectAttributesAttributes">Attribute</template>
   <template name="EditorObjectAttributesStatusattributes">Statusattribute</template>
