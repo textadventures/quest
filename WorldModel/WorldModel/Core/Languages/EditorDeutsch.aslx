@@ -61,9 +61,9 @@
   <template name="EditorExitThisobject">Dieses Objekt ist eine Lichtquelle</template>
   <template name="EditorExitBrightness">Helligkeit</template>
   <template name="EditorExitAttributes">Attribute</template>
-  <template name="EditorExpressionsParent">Elternteil</template>
-  <template name="EditorExpressionsContainschild">Enthält Kind</template>
-  <template name="EditorExpressionsDoesnotcontain">Enthält kein Kind</template>
+  <template name="EditorExpressionsParent">Oberobjekt</template>
+  <template name="EditorExpressionsContainschild">Enthält Unterobjekt</template>
+  <template name="EditorExpressionsDoesnotcontain">Enthält kein Unterobjekt</template>
   <template name="EditorExpressionsObject">Objekt</template>
   <template name="EditorExpressionsAttribute">Attribut</template>
   <template name="EditorExpressions">stimmt überein mit</template>
