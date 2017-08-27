@@ -109,7 +109,7 @@
   <template name="EditorGameAnnotations">Notizen: Eine Registerkarte für "Notizen" wird jedem Raum hinzugefügt (Nicht sichtbar für den Spieler)</template>
   <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
-  <!-- no translation --><template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
+  <template name="EditorGameAllowLookDirections">Die Ausgänge können in Richtungen nur zum Betrachten umgewandelt werden</template>
   <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
   <template name="EditorGameHideSaveButton">Speichern-Schaltfläche im Webplayer entfernen</template>
   <template name="EditorGameDisplay">Oberfläche</template>
@@ -131,7 +131,7 @@
   <template name="EditorGameHyperlinks">Hyperlinks</template>
   <template name="EditorGameLinkcolour">Standardfarbe der Hyperlinks</template>
   <template name="EditorGameUnderlinehyperlinks">Hyperlinks unterstreichen</template>
-  <!-- no translation --><template name="EditorGameAfterusing">After using a command hyperlink, deactivate it</template>
+  <template name="EditorGameAfterusing">Nachdem ein Kommando-Link benutzt wurde, wird er deaktiviert (Nur selbstgenerierte aus dem Textprozessor)</template>
   <template name="EditorGameVerbMenus">Verbmenüs</template>
   <template name="EditorGameBackground">Hintergrundfarbe</template>
   <template name="EditorGameHoverbackground">Hintergrundfarbe, während Maus sich über Menüpunkt befindet</template>
@@ -235,13 +235,13 @@
   <template name="EditorObjectAskTellAskTell">Fragen/Reden</template>
   <template name="EditorObjectAskTellPleaseenter">Bitte geben Sie die Stichworte ein, die durch Leerzeichen getrennt sind</template>
   <template name="EditorObjectAskTellAsk">Fragen</template>
-  <template name="EditorObjectAskTellAskabout">Fragen über</template>
+  <template name="EditorObjectAskTellAskabout">Frage über</template>
   <template name="EditorObjectAskScripttorun">Bei einer Frage nach einem unbekannten Thema</template>
   <template name="EditorObjectAskTellTell">Reden</template>
-  <template name="EditorObjectAskTellTellabout">Reden über</template>
+  <template name="EditorObjectAskTellTellabout">Rede über</template>
   <template name="EditorObjectTellScripttorun">Falls über ein unbekanntes Thema gesprochen wird</template>
-  <!-- no translation --><template name="EditorObjectAskTellTellto">Order</template>
-  <!-- no translation --><template name="EditorObjectAskTellTelltoabout">Tell to</template>
+  <template name="EditorObjectAskTellTellto">Befehle</template>
+  <template name="EditorObjectAskTellTelltoabout">Befehle zu</template>
   <template name="EditorObjectTelltoScripttorun">Falls keine Schlüsselwörter erkannt wurden</template>
   <template name="EditorObjectAnnotationAnnotation">Notizen</template>
   <template name="EditorObjectAttributesAttributes">Attribute</template>
@@ -818,9 +818,9 @@
   <template name="EditorObjectWearableTypText">Text anzeigen</template>
   <template name="EditorObjectWearableTypRunScript">Skript starten</template>
   <template name="EditorObjectWearableWearLayer">Kleidungsschichten</template>
-  <!-- no translation --><template name="EditorObjectWearableWearSlot">Wear Slot</template>
-  <!-- no translation --><template name="EditorObjectWearableWearSlotPrompt">Please enter the name for the wear location</template>
-  <!-- no translation --><template name="EditorObjectWearableWearSlotExplained">If two objects have the same wear location and slot, they will not be able to be worn at a same time. Any number of items without wear locations can be worn.</template>
+  <template name="EditorObjectWearableWearSlot">Tragebereich</template>
+  <template name="EditorObjectWearableWearSlotPrompt">Bitte geben Sie einen Namen für den Tragebereich ein</template>
+  <template name="EditorObjectWearableWearSlotExplained">Mit dem Tragebereich kann man angeben, wo der Gegenstand getragen werden kann z.B. "Kopf" oder "Beine". Haben mehrere Gegenstände den gleichen Tragebereich, kann nur einer von ihnen gleichzeitig getragen werden, außer man erhöht die Zahl der Kleidungsschichten.</template>
   <template name="EditorObjectWearableWearMessage">Beim Anziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Funktionen</template>
