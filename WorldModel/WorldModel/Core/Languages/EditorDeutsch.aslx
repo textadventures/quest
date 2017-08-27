@@ -260,9 +260,9 @@
   <template name="EditorObjectContainerHidechildren">Solange Unterobjekte ausblenden, bis Objekt betrachtet wird</template>
   <template name="EditorObjectContainerListchildren">Eine Liste der Unterobjekte erscheint, wenn Objekt betrachtet oder geöffnet wird</template>
   <template name="EditorObjectContainerListprefix">Den Unterobjekten vorangestellt (z .B. "Es beinhaltet")</template>
-  <template name="EditorObjectContainerMaximumnumber">Maximale Anzahl von Objekten</template>
-  <template name="EditorObjectContainerFullcontainer">Vollständige Container-Nachricht (Ohne Eingabe = Standardverhalten)</template>
-  <template name="EditorObjectContainerMaximumvolume">Maximale Menge an Objekten</template>
+  <template name="EditorObjectContainerMaximumnumber">Maximale Anzahl an Objekten</template>
+  <template name="EditorObjectContainerFullcontainer">Bei Erreichen des Maximums (Ohne Eingabe = Standardaussage)</template>
+  <template name="EditorObjectContainerMaximumvolume">Maximales Volumen</template>
   <template name="EditorObjectContainerMessagetoprint">Beim Öffnen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerMessagetoprint2">Beim Schließen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectContainerAfteropening">Nach dem Öffnen des Objektes</template>
