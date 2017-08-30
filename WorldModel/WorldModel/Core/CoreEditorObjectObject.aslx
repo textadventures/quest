@@ -91,7 +91,7 @@
       <caption>[EditorObjectObjectInventoryverbs2]</caption>
       <controltype>list</controltype>
       <attribute>inventoryverbs</attribute>
-      <editprompt>Please enter a verb</editprompt>
+      <editprompt>[EditorObjectObjectPleaseenterVerb]</editprompt>
       <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
