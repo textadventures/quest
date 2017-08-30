@@ -853,7 +853,11 @@
   <template name="EditorTextProcessorOnce">Einmal</template>
   <template name="EditorTextProcessorObjectLink">Objekt-Link</template>
   <template name="EditorTextProcessorCommandLink">Kommando-Link</template>
+  <template name="EditorTextProcessorExit">Ausgang-Link</template>
   <template name="EditorTextProcessorIf">Wenn...</template>
+  <template name="EditorTextProcessorIfNot">Wenn nicht...</template>
+  <template name="EditorTextProcessorHere">Wenn im Raum</template>
+  <template name="EditorTextProcessorNotHere">Wenn nicht im Raum</template>
   <template name="EditorTextProcessorRandomText">Zufallstext</template>
   <template name="EditorTextProcessorImage">Bild</template>
   <template name="EditorScriptObjectsInventory">Inventar</template>

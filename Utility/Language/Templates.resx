@@ -708,4 +708,10 @@
   <data name="EditorTextProcessorHelp" xml:space="preserve">
     <value>Text Processor help</value>
   </data>
+  <data name="dd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EditorKeypromptEnterExitName" xml:space="preserve">
+    <value>Please enter the exit name</value>
+  </data>
 </root>

@@ -61,6 +61,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die  ähnelt.
+        /// </summary>
+        internal static string dd {
+            get {
+                return ResourceManager.GetString("dd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Add Else ähnelt.
         /// </summary>
         internal static string EditorAddElse {
@@ -570,6 +579,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorInvalidSaveFileName {
             get {
                 return ResourceManager.GetString("EditorInvalidSaveFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter the exit name ähnelt.
+        /// </summary>
+        internal static string EditorKeypromptEnterExitName {
+            get {
+                return ResourceManager.GetString("EditorKeypromptEnterExitName", resourceCulture);
             }
         }
         

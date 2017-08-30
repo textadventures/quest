@@ -139,6 +139,28 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
+          <value>[EditorTextProcessorExit]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{exit:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{exit}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>exits</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
           <value>[EditorTextProcessorIf]</value>
         </item>
         <item>
@@ -152,6 +174,68 @@
         <item>
           <key>info</key>
           <value>{if}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorIfNot]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if not </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>object.attribute=value:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if not}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{here </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{here}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorNotHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{nothere </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{nothere}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
         </item>
       </value>
       <value type="stringdictionary">

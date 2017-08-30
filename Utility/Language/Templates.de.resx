@@ -471,4 +471,7 @@
   <data name="EditorTextProcessorHelp" xml:space="preserve">
     <value>Hilfe zum Text-Prozessor</value>
   </data>
+  <data name="EditorKeypromptEnterExitName" xml:space="preserve">
+    <value>Bitte geben Sie den Namen des Ausgangs ein</value>
+  </data>
 </root>

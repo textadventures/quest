@@ -849,9 +849,14 @@
   <template name="EditorTextProcessorOnce">Once</template>
   <template name="EditorTextProcessorObjectLink">Object Link</template>
   <template name="EditorTextProcessorCommandLink">Command Link</template>
+  <template name="EditorTextProcessorExit">Exit Link</template>
   <template name="EditorTextProcessorIf">If...</template>
+  <template name="EditorTextProcessorIfNot">If not...</template>
+  <template name="EditorTextProcessorHere">If in room</template>
+  <template name="EditorTextProcessorNotHere">If not in room</template>
   <template name="EditorTextProcessorRandomText">Random text</template>
   <template name="EditorTextProcessorImage">Image</template>
+  <template name="EditorTextProcessorImage">Bild</template>
   <template name="EditorScriptObjectsInventory">Inventory</template>
   <template name="EditorScriptObjectsMove">Move</template>
   <template name="EditorScriptObjectsShow">Show</template>
