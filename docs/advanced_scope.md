@@ -77,9 +77,20 @@ What this does is check if the player is in the bar, and if so, it adds all the 
 Alternative scope
 -----------------
 
-You can set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have four options:
+You can set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
 
+```
+"all"        ScopeVisible()
 "inventory"  ScopeInventory
-"not held"   ScopeVisibleNotHeld
+"notheld"   ScopeVisibleNotHeld
 objectname   GetAllChildObjects(GetObject(objectname))
 attrname     GetAllChildObjects(GetAttribute(player.parent, attrname))
+```
+
+The first is the default. The second tells Quest to look in the inventory; if the players is carrying a hat and there is another on the ground, typing WEAR HAT will put on the one being held, because WEAR is set to "inventory". Conversely, "notheld" makes Quest look in the room first.
+
+If the text is set to the name of an object, Quest will look at the children of that object; that might be the objects in another room. This could be used for a spellbook, containing spells.
+
+If the text is an object attribute of the current location, Quest will look at the children of that object. This could be used for a stockroom of a shop.
+
+
