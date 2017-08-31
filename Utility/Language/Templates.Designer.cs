@@ -745,6 +745,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This Object ähnelt.
+        /// </summary>
+        internal static string EditorMenuItemThis {
+            get {
+                return ResourceManager.GetString("EditorMenuItemThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Variable ähnelt.
         /// </summary>
         internal static string EditorMenuItemVariable {

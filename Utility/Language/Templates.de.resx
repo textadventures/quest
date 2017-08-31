@@ -474,4 +474,7 @@
   <data name="EditorKeypromptEnterExitName" xml:space="preserve">
     <value>Bitte geben Sie den Namen des Ausgangs ein</value>
   </data>
+  <data name="EditorMenuItemThis" xml:space="preserve">
+    <value>Dieses Objekt</value>
+  </data>
 </root>

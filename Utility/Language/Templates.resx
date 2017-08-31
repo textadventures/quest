@@ -714,4 +714,7 @@
   <data name="EditorKeypromptEnterExitName" xml:space="preserve">
     <value>Please enter the exit name</value>
   </data>
+  <data name="EditorMenuItemThis" xml:space="preserve">
+    <value>This Object</value>
+  </data>
 </root>

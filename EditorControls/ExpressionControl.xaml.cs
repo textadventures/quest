@@ -695,17 +695,20 @@ namespace TextAdventures.Quest.EditorControls
         {
             AddInsertMenuItem(L.T("EditorMenuItemClear"), ClearText);
             mnuInsertMenu.Items.Add(new Separator());
-            AddInsertMenuItem(L.T("EditorMenuItemVariable"), InsertVariable);
+            AddInsertMenuItem(L.T("EditorMenuItemThis"), () => InsertString("this"));
             AddInsertMenuItem(L.T("EditorMenuItemObject"), InsertObject);
             AddInsertMenuItem(L.T("EditorMenuItemAttribute"), InsertProperty);
+            AddInsertMenuItem(L.T("EditorMenuItemVariable"), InsertVariable);
             AddInsertMenuItem(L.T("EditorMenuItemFunction"), InsertFunction);
             mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem(L.T("EditorMenuItemAnd"), () => InsertString(" and "));
             AddInsertMenuItem(L.T("EditorMenuItemOr"), () => InsertString(" or "));
+            mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem(L.T("EditorMenuItemAdd"), () => InsertString(" + "));
             AddInsertMenuItem(L.T("EditorMenuItemSubtract"), () => InsertString(" - "));
             AddInsertMenuItem(L.T("EditorMenuItemMultiply"), () => InsertString(" * "));
             AddInsertMenuItem(L.T("EditorMenuItemDivide"), () => InsertString(" / "));
+            mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem(L.T("EditorMenuItemEquals"), () => InsertString(" = "));
             AddInsertMenuItem(L.T("EditorMenuItemNotEquals"), () => InsertString(" <> "));
             AddInsertMenuItem(L.T("EditorMenuItemGreaterThan"), () => InsertString(" > "));
