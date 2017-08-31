@@ -388,6 +388,12 @@
   <data name="OptionsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Optionen...</value>
   </data>
+  <data name="EnglishToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>181, 26</value>
+  </data>
+  <data name="DeutschToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>181, 26</value>
+  </data>
   <data name="LanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>74, 24</value>
   </data>
@@ -395,31 +401,31 @@
     <value>&amp;Sprache</value>
   </data>
   <data name="ViewHelpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 26</value>
+    <value>199, 26</value>
   </data>
   <data name="ViewHelpToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Hilfe aufrufen</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>184, 6</value>
+    <value>196, 6</value>
   </data>
   <data name="QuestForumsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 26</value>
+    <value>199, 26</value>
   </data>
   <data name="QuestForumsToolStripMenuItem.Text" xml:space="preserve">
     <value>Quest &amp;Forum</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 26</value>
+    <value>199, 26</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Text" xml:space="preserve">
     <value>Fehler &amp;mitteilen</value>
   </data>
   <data name="ToolStripSeparator6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>184, 6</value>
+    <value>196, 6</value>
   </data>
   <data name="AboutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 26</value>
+    <value>199, 26</value>
   </data>
   <data name="AboutToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Über...</value>

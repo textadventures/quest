@@ -172,7 +172,7 @@
     <value>Speichern Sie dieses Spiel und klicken Sie dann auf 'Neu laden', um Änderungen von der Aktualisierung der enthaltenen Bibliotheken zu übernehmen.</value>
   </data>
   <data name="EditorParent" xml:space="preserve">
-    <value>Elternteil</value>
+    <value>Überobjekt</value>
   </data>
   <data name="EditorNotParents" xml:space="preserve">
     <value>(keins)</value>

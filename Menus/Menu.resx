@@ -252,7 +252,7 @@
     <value>CopyToolStripMenuItem</value>
   </data>
   <data name="AboutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 26</value>
+    <value>181, 26</value>
   </data>
   <data name="ViewToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;View</value>
@@ -264,7 +264,7 @@
     <value>Strg+Y</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 26</value>
+    <value>181, 26</value>
   </data>
   <data name="VerbToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+V</value>
@@ -402,7 +402,7 @@
     <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ViewHelpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 26</value>
+    <value>181, 26</value>
   </data>
   <data name="&gt;&gt;ViewToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -414,7 +414,7 @@
     <value>AboutToolStripMenuItem</value>
   </data>
   <data name="QuestForumsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 26</value>
+    <value>181, 26</value>
   </data>
   <data name="&gt;&gt;ToolStripSeparator6.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -557,6 +557,9 @@
   <data name="PageToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <data name="ctlMenuStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
   <data name="ReplaceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>203, 26</value>
   </data>
@@ -630,7 +633,7 @@
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>171, 6</value>
+    <value>178, 6</value>
   </data>
   <data name="&gt;&gt;ExitToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -705,7 +708,7 @@
     <value>208, 26</value>
   </data>
   <data name="ToolStripSeparator6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>171, 6</value>
+    <value>178, 6</value>
   </data>
   <data name="TimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>220, 26</value>
@@ -869,8 +872,8 @@
   <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ctlMenuStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="ViewHelpToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F1</value>
   </data>
   <data name="ToolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
     <value>258, 6</value>
