@@ -825,7 +825,7 @@
   <template name="EditorObjectWearableWearMessage">Beim Anziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableRemoveMessage">Beim ausziehen oder beim versuchten ausziehen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectWearableAdvancedFeaturesOption">Erweiterte Funktionen</template>
-  <!-- no translation --><template name="EditorObjectWearableMultistateOption">Multi-state</template>
+  <template name="EditorObjectWearableMultistateOption">Erweiterte Zustände</template>
   <template name="EditorObjectWearableAdvancedFeatures">Erweiterte Funktionen</template>
   <template name="EditorObjectWearableRemoveable">Das Objekt ist ausziehbar</template>
   <template name="EditorObjectWearableProtection">Das Objekt schützt den Spieler bis (Nur wenn umgesetzt!)</template>
@@ -837,15 +837,15 @@
   <template name="EditorObjectWearableAfterWearing2">Nach dem Tragen des Objektes</template>
   <template name="EditorObjectWearableAfterRemoving">Nach dem Ausziehen</template>
   <template name="EditorObjectWearableAfterRemoving2">Nach dem Ausziehen des Objektes</template>
-  <!-- no translation --><template name="EditorObjectWearableMultistate">Multi-state</template>
-  <!-- no translation --><template name="EditorObjectWearableState">Descriptor for each state (or * for none)</template>
-  <!-- no translation --><template name="EditorObjectWearableStatePrompt">Please enter the descriptor to use in the item name for this state</template>
-  <!-- no translation --><template name="EditorObjectWearableStateSlots">Wear slots for each state (or * for none)</template>
-  <!-- no translation --><template name="EditorObjectWearableStateSlotsPrompt">Please enter all the wear locations for this state, separated by semi-colons</template>
-  <!-- no translation --><template name="EditorObjectWearableStateVerbs">Additional verbs for each state (or * for none)</template>
-  <!-- no translation --><template name="EditorObjectWearableStateVerbsPrompt">Please enter all the additional verbs for this state, separated by semi-colons</template>
-  <!-- no translation --><template name="EditorObjectWearableStateBonuses">Bonus to attributes (or * for default)</template>
-  <!-- no translation --><template name="EditorObjectWearableStateBonusesPrompt">Please enter all the additional bonuses for this state, separated by semi-colons</template>
+  <template name="EditorObjectWearableMultistate">Erweiterte Zustände</template>
+  <template name="EditorObjectWearableState">Bezeichnung der jeweiligen Zustände (oder * für keine)</template>
+  <template name="EditorObjectWearableStatePrompt">Bitte geben Sie eine Bezeichnung des Zustandes ein</template>
+  <template name="EditorObjectWearableStateSlots">Tragebereiche der jeweiligen Zustände (oder * für keine)</template>
+  <template name="EditorObjectWearableStateSlotsPrompt">Bitte geben Sie alle Tragebereiche für diesen Zustand ein (Getrennt durch Semikolons)</template>
+  <template name="EditorObjectWearableStateVerbs">Zusätzliche Verben der jeweiligen Zustände (oder * für keine)</template>
+  <template name="EditorObjectWearableStateVerbsPrompt">Bitte geben Sie alle zusätzlichen Verben für diesen Zustand ein (Getrennt durch Semikolons)</template>
+  <template name="EditorObjectWearableStateBonuses">Bonus auf Attribute der jeweiligen Zustände (oder * für keine)</template>
+  <template name="EditorObjectWearableStateBonusesPrompt">Bitte geben Sie alle zusätzlichen Boni für diesen Zustand ein (Getrennt durch Semikolons)</template>
   <template name="EditorObjectWearableInstructionsLink">Gebrauchsanweisung</template>
   <template name="EditorTextProcessorBold">Fett</template>
   <template name="EditorTextProcessorItalic">Kursiv</template>

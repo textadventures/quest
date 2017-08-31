@@ -78,8 +78,8 @@
             // 
             // lstDropdown
             // 
-            resources.ApplyResources(this.lstDropdown, "lstDropdown");
             this.lstDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.lstDropdown, "lstDropdown");
             this.lstDropdown.FormattingEnabled = true;
             this.lstDropdown.Name = "lstDropdown";
             // 
