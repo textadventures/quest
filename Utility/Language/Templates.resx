@@ -717,4 +717,10 @@
   <data name="EditorMenuItemThis" xml:space="preserve">
     <value>This object</value>
   </data>
+  <data name="EditorMenuItemFalse" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="EditorMenuItemTrue" xml:space="preserve">
+    <value>True</value>
+  </data>
 </root>

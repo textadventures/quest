@@ -673,6 +673,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
+        /// </summary>
+        internal static string EditorMenuItemFalse {
+            get {
+                return ResourceManager.GetString("EditorMenuItemFalse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Function ähnelt.
         /// </summary>
         internal static string EditorMenuItemFunction {
@@ -750,6 +759,15 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorMenuItemThis {
             get {
                 return ResourceManager.GetString("EditorMenuItemThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
+        /// </summary>
+        internal static string EditorMenuItemTrue {
+            get {
+                return ResourceManager.GetString("EditorMenuItemTrue", resourceCulture);
             }
         }
         

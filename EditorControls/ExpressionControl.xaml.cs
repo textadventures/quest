@@ -701,6 +701,8 @@ namespace TextAdventures.Quest.EditorControls
             AddInsertMenuItem(L.T("EditorMenuItemVariable"), InsertVariable);
             AddInsertMenuItem(L.T("EditorMenuItemFunction"), InsertFunction);
             mnuInsertMenu.Items.Add(new Separator());
+            AddInsertMenuItem(L.T("EditorMenuItemTrue"), () => InsertString("true"));
+            AddInsertMenuItem(L.T("EditorMenuItemFalse"), () => InsertString("false"));
             AddInsertMenuItem(L.T("EditorMenuItemAnd"), () => InsertString(" and "));
             AddInsertMenuItem(L.T("EditorMenuItemOr"), () => InsertString(" or "));
             mnuInsertMenu.Items.Add(new Separator());
