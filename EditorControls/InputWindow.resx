@@ -316,7 +316,7 @@
     <value>4, 4, 4, 4</value>
   </data>
   <data name="lstDropdown.Size" type="System.Drawing.Size, System.Drawing">
-    <value>474, 24</value>
+    <value>574, 24</value>
   </data>
   <data name="lstDropdown.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>

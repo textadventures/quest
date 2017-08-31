@@ -343,7 +343,7 @@
     <value>Strg+Right</value>
   </data>
   <data name="expandAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="expandAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Expand All</value>
@@ -352,70 +352,67 @@
     <value>Strg+Left</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Collapse All</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 6</value>
+    <value>231, 6</value>
   </data>
   <data name="deleteToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Entf</value>
   </data>
   <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 6</value>
+    <value>231, 6</value>
+  </data>
+  <data name="AddVerbToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+V</value>
   </data>
   <data name="AddVerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddVerbToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Verb</value>
   </data>
+  <data name="AddCommandToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+C</value>
+  </data>
   <data name="AddCommandToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddCommandToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Command</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 6</value>
+    <value>231, 6</value>
   </data>
   <data name="addPageToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Einfg</value>
+    <value>Alt+P</value>
   </data>
   <data name="addPageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="addPageToolStripMenuItem.Text" xml:space="preserve">
-    <value>+ Site</value>
+    <value>+ Page</value>
   </data>
   <data name="addPageToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="AddEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
-  </data>
-  <data name="AddEditorToolStripMenuItem.Text" xml:space="preserve">
-    <value>+ Editor</value>
-  </data>
-  <data name="AddEditorToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
   <data name="AddRoomToolStripMenuItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
     <value>Silver</value>
   </data>
   <data name="AddRoomToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Umschalttaste+Einfg</value>
+    <value>Alt+R</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Room</value>
@@ -424,85 +421,106 @@
     <value>Silver</value>
   </data>
   <data name="AddObjectToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Einfg</value>
+    <value>Alt+O</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Object</value>
   </data>
   <data name="AddExitToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Strg+Einfg</value>
+    <value>Alt+E</value>
   </data>
   <data name="AddExitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddExitToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Exit</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 6</value>
+    <value>231, 6</value>
+  </data>
+  <data name="addTurnScriptToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+U</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Turn Script</value>
   </data>
+  <data name="AddFunctionToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+F</value>
+  </data>
   <data name="AddFunctionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddFunctionToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Function</value>
   </data>
+  <data name="addTimerToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+T</value>
+  </data>
   <data name="addTimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="addTimerToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Timer</value>
   </data>
+  <data name="AddWalkthroughToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+W</value>
+  </data>
   <data name="AddWalkthroughToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddWalkthroughToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Walkthrough</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 6</value>
+    <value>231, 6</value>
+  </data>
+  <data name="AddEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 26</value>
+  </data>
+  <data name="AddEditorToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Editor</value>
+  </data>
+  <data name="AddEditorToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Library</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Template</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Dynamic Template</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Object Type</value>
   </data>
   <data name="AddJavascriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddJavascriptToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Javascript</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Implied Type</value>
@@ -511,7 +529,7 @@
     <value>False</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>282, 26</value>
+    <value>234, 26</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Delegate</value>
@@ -520,7 +538,7 @@
     <value>False</value>
   </data>
   <data name="ctlContextMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>283, 580</value>
+    <value>235, 608</value>
   </data>
   <data name="&gt;&gt;ctlContextMenu.Name" xml:space="preserve">
     <value>ctlContextMenu</value>
@@ -544,47 +562,47 @@
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABS
-        CQAAAk1TRnQBSQFMAgEBAgEAAYQBAAGEAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABQ
+        CQAAAk1TRnQBSQFMAgEBAgEAAaQBAAGkAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABEAMAAQEBAAEgBgABEP8A/wAcAAMqAUADKgFAAyoBQAMqAUADKgFAAyoBQAMqAUADKgFAAyoBQAMq
         AUADKgFAAyoBQBAAAyoBQAMqAUADKgFAAyoBQAMqAUADKgFAAyoBQAMqAUADKgFAAyoBQAMhATCQAAFH
-        AkYBgAFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/
-        AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFHAkYBgAgAAUcCRgGAAVoBFAEW
-        Af8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFa
-        ARQBFgH/AVoBFAEWAf8BWgEUARYB/wMyAVCMAAFaAlgBwAFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFV
-        AQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwER
-        Af8BVQEPAREB/wFaAlgBwAgAAVoCWAHAAVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEU
-        ARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaAlgBwIwA
-        AVoCWAHAAVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwER
-        Af8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVoCWAHACAABWgJYAcABWgEU
-        ARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/
-        AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf+MAAFaAlgBwAFVAQ8BEQH/AVUBDwERAf8BVQEP
-        AREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/
-        AVUBDwERAf8BVQEPAREB/wFaAlgBwAgAAVoCWAHAAVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEW
-        Af8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFa
-        ARQBFgH/AyoBQIgAAVoCWAHAAVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFV
-        AQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVoCWAHA
-        CAABWgJYAcABWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEU
-        ARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BRwJGAYCIAAFaAlgBwAFV
-        AQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwER
-        Af8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFaAlgBwAgAAVoCWAHAAVoBFAEWAf8BWgEU
-        ARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/
-        AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/A1EBoIgAAVoCWAHAAVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/
-        AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEP
-        AREB/wFVAQ8BEQH/AVoCWAHACAABWgJYAcABWgEUARYB/wFaARQBFgH/AykBPwMpAT8DKQE/AykBPwMp
-        AT8DKQE/AykBPwMpAT8DKQE/AykBPwMMARCIAAFaAlgBwAFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFV
-        AQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwER
-        Af8BVQEPAREB/wFVAlMBsAgAAVoCWAHAAVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEU
-        ARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wMqAUCMAAFa
-        AlgBwAFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/
-        AVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwERAf8BVQEPAREB/wMyAVAIAAFaAlgBwAFaARQBFgH/
-        AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEU
-        ARYB/wFaARQBFgH/AVwCUQHfAwwBEIwAAUcCRgGAAVUBDwERAf8BVQEPAREB/wFVAQ8BEQH/AVUBDwER
-        Af8BXAJZAc8DDAEQJAABRwJGAYABWgEUARYB/wFaARQBFgH/AVoBFAEWAf8BWgEUARYB/wFcAVgBWQHP
-        AwwBEKgAAyoBQAMpAT8DKQE/AykBPwMMARAsAAMqAUADKQE/AykBPwMpAT8DDAEQ/wD/AKYAAUIBTQE+
-        BwABPgMAASgDAAFAAwABEAMAAQEBAAEBBQABgBcAA/8BAAT/BAAE/wQAAcABAwHAAQcEAAGAAQEBgAED
-        BAABgAEBAYABAwQAAYABAQGAAQMEAAGAAQEBgAEBBAABgAEBAYABAQQAAYABAQGAAQEEAAGAAQEBgAEB
-        BAABgAEBAYABAwQAAYABAQGAAQMEAAGAAf8BgAH/BAABwQH/AcEB/wQABP8EAAT/BAAL
+        AkYBgAFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/
+        AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFHAkYBgAgAAUcCRgGAAVcBEQET
+        Af8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFX
+        AREBEwH/AVcBEQETAf8BVwERARMB/wMyAVCMAAFaAlgBwAFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFS
+        AQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEO
+        Af8BUgEMAQ4B/wFaAlgBwAgAAVoCWAHAAVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwER
+        ARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFaAlgBwIwA
+        AVoCWAHAAVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEO
+        Af8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVoCWAHACAABWgJYAcABVwER
+        ARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/
+        AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf+MAAFaAlgBwAFSAQwBDgH/AVIBDAEOAf8BUgEM
+        AQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/
+        AVIBDAEOAf8BUgEMAQ4B/wFaAlgBwAgAAVoCWAHAAVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQET
+        Af8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFX
+        AREBEwH/AyoBQIgAAVoCWAHAAVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFS
+        AQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVoCWAHA
+        CAABWgJYAcABVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwER
+        ARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BRwJGAYCIAAFaAlgBwAFS
+        AQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEO
+        Af8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFaAlgBwAgAAVoCWAHAAVcBEQETAf8BVwER
+        ARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/
+        AVcBEQETAf8BVwERARMB/wFXAREBEwH/A1EBoIgAAVoCWAHAAVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/
+        AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEM
+        AQ4B/wFSAQwBDgH/AVoCWAHACAABWgJYAcABVwERARMB/wFXAREBEwH/AykBPwMpAT8DKQE/AykBPwMp
+        AT8DKQE/AykBPwMpAT8DKQE/AykBPwMMARCIAAFaAlgBwAFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFS
+        AQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEO
+        Af8BUgEMAQ4B/wFVAlMBsAgAAVoCWAHAAVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwER
+        ARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wMqAUCMAAFa
+        AlgBwAFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/
+        AVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEOAf8BUgEMAQ4B/wMyAVAIAAFaAlgBwAFXAREBEwH/
+        AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwER
+        ARMB/wFXAREBEwH/AVwCVwHfAwwBEIwAAUcCRgGAAVIBDAEOAf8BUgEMAQ4B/wFSAQwBDgH/AVIBDAEO
+        Af8BXAJZAc8DDAEQJAABRwJGAYABVwERARMB/wFXAREBEwH/AVcBEQETAf8BVwERARMB/wFcAlkBzwMM
+        ARCoAAMqAUADKQE/AykBPwMpAT8DDAEQLAADKgFAAykBPwMpAT8DKQE/AwwBEP8A/wCmAAFCAU0BPgcA
+        AT4DAAEoAwABQAMAARADAAEBAQABAQUAAYAXAAP/AQAE/wQABP8EAAHAAQMBwAEHBAABgAEBAYABAwQA
+        AYABAQGAAQMEAAGAAQEBgAEDBAABgAEBAYABAQQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAQQA
+        AYABAQGAAQMEAAGAAQEBgAEDBAABgAH/AYAB/wQAAcEB/wHBAf8EAAT/BAAE/wQACw==
 </value>
   </data>
   <data name="ctlTreeView.Location" type="System.Drawing.Point, System.Drawing">
@@ -701,12 +719,6 @@
   <data name="&gt;&gt;addPageToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;AddEditorToolStripMenuItem.Name" xml:space="preserve">
-    <value>AddEditorToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;AddEditorToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;AddRoomToolStripMenuItem.Name" xml:space="preserve">
     <value>AddRoomToolStripMenuItem</value>
   </data>
@@ -760,6 +772,12 @@
   </data>
   <data name="&gt;&gt;toolStripSeparator5.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AddEditorToolStripMenuItem.Name" xml:space="preserve">
+    <value>AddEditorToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;AddEditorToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;AddLibraryToolStripMenuItem.Name" xml:space="preserve">
     <value>AddLibraryToolStripMenuItem</value>

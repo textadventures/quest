@@ -292,62 +292,35 @@
   <data name="ViewToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Ansicht</value>
   </data>
-  <data name="VerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
-  <data name="CommandToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
+  <data name="CommandToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+K</value>
   </data>
   <data name="CommandToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Kommando</value>
   </data>
-  <data name="ToolStripSeparator10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 6</value>
-  </data>
-  <data name="PageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
+  <data name="PageToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+S</value>
   </data>
   <data name="PageToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Seite</value>
   </data>
-  <data name="RoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
   <data name="RoomToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Raum</value>
-  </data>
-  <data name="ObjectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
   </data>
   <data name="ObjectToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Objekt</value>
   </data>
-  <data name="ExitToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
+  <data name="ExitToolStripMenuItem1.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+A</value>
   </data>
   <data name="ExitToolStripMenuItem1.Text" xml:space="preserve">
     <value>&amp;Ausgang</value>
   </data>
-  <data name="ToolStripSeparator11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 6</value>
-  </data>
-  <data name="TurnScriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
   <data name="TurnScriptToolStripMenuItem.Text" xml:space="preserve">
     <value>T&amp;urn-Skript</value>
   </data>
-  <data name="FunctionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
   <data name="FunctionToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Funktion</value>
-  </data>
-  <data name="TimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
-  </data>
-  <data name="WalkthroughToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
   </data>
   <data name="EditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>219, 26</value>
@@ -390,9 +363,6 @@
   </data>
   <data name="DelegateToolStripMenuItem.Text" xml:space="preserve">
     <value>Dele&amp;gieren</value>
-  </data>
-  <data name="AdvancedToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 26</value>
   </data>
   <data name="AdvancedToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Fortgeschritten</value>

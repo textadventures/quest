@@ -48,7 +48,6 @@
             this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +57,7 @@
             this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.AddEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddDynamicTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,7 +152,6 @@
             this.AddCommandToolStripMenuItem,
             this.toolStripSeparator3,
             this.addPageToolStripMenuItem,
-            this.AddEditorToolStripMenuItem,
             this.AddRoomToolStripMenuItem,
             this.AddObjectToolStripMenuItem,
             this.AddExitToolStripMenuItem,
@@ -162,6 +161,7 @@
             this.addTimerToolStripMenuItem,
             this.AddWalkthroughToolStripMenuItem,
             this.toolStripSeparator5,
+            this.AddEditorToolStripMenuItem,
             this.AddLibraryToolStripMenuItem,
             this.AddTemplateToolStripMenuItem,
             this.AddDynamicTemplateToolStripMenuItem,
@@ -232,13 +232,6 @@
             resources.ApplyResources(this.addPageToolStripMenuItem, "addPageToolStripMenuItem");
             this.addPageToolStripMenuItem.Tag = "addpage";
             // 
-            // AddEditorToolStripMenuItem
-            // 
-            this.AddEditorToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bearbeiten_32;
-            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
-            resources.ApplyResources(this.AddEditorToolStripMenuItem, "AddEditorToolStripMenuItem");
-            this.AddEditorToolStripMenuItem.Tag = "addeditor";
-            // 
             // AddRoomToolStripMenuItem
             // 
             this.AddRoomToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Zimmer_32;
@@ -299,6 +292,13 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
             this.toolStripSeparator5.Tag = "separator5";
+            // 
+            // AddEditorToolStripMenuItem
+            // 
+            this.AddEditorToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bearbeiten_32;
+            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
+            resources.ApplyResources(this.AddEditorToolStripMenuItem, "AddEditorToolStripMenuItem");
+            this.AddEditorToolStripMenuItem.Tag = "addeditor";
             // 
             // AddLibraryToolStripMenuItem
             // 
