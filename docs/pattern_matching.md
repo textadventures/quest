@@ -133,7 +133,7 @@ More on Regex
 
 Quest is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
 
-https://msdn.microsoft.com/en-us/library/az24scfc.aspx
+[https://msdn.microsoft.com/en-us/library/az24scfc.aspx](https://msdn.microsoft.com/en-us/library/az24scfc.aspx)
 
 A lot of regex options start with a backslash, and this is a bit of a problem, because Quest is using strings to handle them, and in Quest (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest, you actually need to have two of them.
 ```
