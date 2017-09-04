@@ -84,7 +84,7 @@ That will handle any of these:
 >
 > using the hook take the hat
 
-There is more on regular expressions [here](pattern-matching.html).
+There is more on regular expressions [here](pattern_matching.html).
 
 
 Script
