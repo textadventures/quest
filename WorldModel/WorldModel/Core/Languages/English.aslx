@@ -2,6 +2,7 @@
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
   
+  <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayAlias(object) + " there."</dynamictemplate>
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
