@@ -75,6 +75,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Using a switch script](multiple_choices___using_a_switch_script.html)
 -  [Using containers](tutorial/using_containers.html) (link to the tutorial page)
 -  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html) (link to the tutorial page)
+-  [Using score, health and money](score_health_money.html)
 
 
 
