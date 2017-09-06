@@ -70,7 +70,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Lockable exits](using_lockable_exits.html)
 -  [Multimedia](multimedia.html)
 -  [Important attributes](important_attributes.html)
--  [Status attributes](tutorial/status_attributes.html) (link to the tutorial page)
+-  [Custom attributes](using_attributes.html) (including status attributes and change scripts)
 -  [Using functions](functions.html)
 -  [Using a switch script](multiple_choices___using_a_switch_script.html)
 -  [Using containers](tutorial/using_containers.html) (link to the tutorial page)
