@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Customising the UI: Part 2
+title: Customising the UI - Part 2
 ---
 
 Elements
