@@ -12,7 +12,7 @@ You can look at those elements as you play a game. In the off-line editor, click
 
 Most of the interesting elements are of the type "div", and each is identified by an "id". The gameBorder one looks like this:
 
-![The DevTools facility](https://raw.githubusercontent.com/ThePix/quest/master/devtools.png)
+![](devtools.png "devtools.png")
 
 
 CSS Properties and Values
@@ -128,3 +128,4 @@ This example will alter the background colour when an item is selected.
     ]]></css>
 ```
 
+In [part 3](ui-javascript3.html) we will discuss testing and look at some specific tricks.
