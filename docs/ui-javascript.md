@@ -1,6 +1,6 @@
 ---
 layout: index
-title: The UI and JavaScript
+title: Customising the UI: Part 1
 ---
 
 
@@ -129,3 +129,4 @@ JS.setPanes ("orange", "black", "black", "orange")
 JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
 ```
 
+In [part 2](ui-javascript2.html) we will look in more depth at using HTML elements and CSS.
