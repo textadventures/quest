@@ -128,4 +128,3 @@ This example will alter the background colour when an item is selected.
     ]]></css>
 ```
 
-In [part 3](ui-javascript3.html) we will look at adding a sophisticated dialogue panel to your game.
