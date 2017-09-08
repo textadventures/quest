@@ -6,7 +6,56 @@ title: Customising the UI - Part 1
 
 The Quest user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
 
-Potentially this means you can set up your game to look like _anything_. In practice, this is not trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital. That said, we can make a lot of changes without knowing too much about any of them, but we do need the basics!
+Potentially this means you can set up your game to look like _anything_. In practice, this is not trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. That said, we can make a lot of changes without knowing too much about any of them.
+
+
+The JS Object
+-------------
+
+The `JS` object is a quick way to use JavaSript in your game. You can use it to access the built-in JavaScript functions (and your own too), and there are several that can be used to change the UI. 
+
+```
+  // Use these two to turn features on and off during play
+  // Valid element names include "#txtCommandDiv", "#location"
+  JS.uiShow(element)
+  JS.uiHide(element)
+  // For the panes on the right, use this:
+  JS.panesVisible(Boolean)
+
+  // Use these to modify the texts on the UI
+  JS.setInterfaceString ("InventoryLabel", "You are holding")
+  JS.setInterfaceString ("StatusLabel", "How you are doing")
+  JS.setInterfaceString ("PlacesObjectsLabel", "Things you can see")
+  JS.setInterfaceString ("CompassLabel", "Directions you can go")
+  JS.setInterfaceString ("InButtonLabel", "In")
+  JS.setInterfaceString ("OutButtonLabel", "out")
+  JS.setInterfaceString ("EmptyListLabel", "Stuff all")
+  JS.setInterfaceString ("NothingSelectedLabel", "-")
+  JS.setInterfaceString ("TypeHereLabel", "Now what?")
+  JS.setInterfaceString ("ContinueLabel", "Just press a button to get on with it")
+
+  // Others that may or may not be useful
+  JS.setGameWidth(width)
+  JS.hideBorder()
+  JS.showBorder()
+  JS.setGamePadding(top, bottom, left, right)
+  JS.addExternalStyleheet(stylesheet)
+  // I think the stylesheet should be a file name (or perhaps a URL) as the parameter
+  JS.SetMenuBackground(colour)
+  JS.SetMenuForeground(colour)
+  JS.SetMenuHoverBackground(colour)
+  JS.SetMenuHoverForeground(colour)
+  JS.SetMenuFontName(fontname)
+  // these refer to the menu that appears when the player clicks on a hyperlink in the text
+  JS.SetMenuFontSize(size)
+  // the size must be a string that is a number followed by "pt"
+  JS.TurnOffHyperlinksUnderline()
+  JS.TurnOnHyperlinksUnderline()
+  JS.showStatusVisible(Boolean)
+  JS.setBackground(colour)
+```
+
+If you want to do more than that, you need to learn a little about HTML and CSS...
 
 HTML
 ----
