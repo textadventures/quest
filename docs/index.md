@@ -112,7 +112,10 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 -  [UI style](ui-style.html)
 -  [Display verbs](display_verbs.html)
 -  [Custom commands and status pane](custom_panes.html)
--  [Further options with JavaScript](ui-javascript.html)
+-  [Customisation part 1](ui-javascript.html)
+-  [Customisation part 2](ui-javascript2.html)
+-  [Customisation part 3](ui-javascript3.html)
+-  [Dialogue panels](ui-dialogue.html)
 
 
 <a name="Npcs"></a>Handling Characters (NPCs)
@@ -147,6 +150,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -  [Walkthroughs](using_walkthroughs.html)
 -  [Overriding functions](overriding.html)
 -  [Types](using_inherited_types.html)
+-  [Tabs for types](tabs_for_types.html)
 -  [Templates](changing_templates.html)
 -  [Translating Quest](translating_quest.html)
 -  [Libraries](using_libraries.html)
