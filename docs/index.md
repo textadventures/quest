@@ -115,6 +115,7 @@ Quest allows you to customise the user interface (UI) to suit the style and mood
 -  [Customisation part 1](ui-javascript.html)
 -  [Customisation part 2](ui-javascript2.html)
 -  [Customisation part 3](ui-javascript3.html)
+-  [ASLEvent: Handling events in JavaScript](ui-callback.html)
 -  [Dialogue panels](ui-dialogue.html)
 
 
