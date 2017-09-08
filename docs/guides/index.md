@@ -3,7 +3,7 @@ layout: index
 title: How to
 ---
 
-This page is for "how to" guides which don't fit in to the tutorial.
+This page is for "how to" guides which don't fit in to the tutorial (and may be out of date).
 
 
 General Advice
@@ -30,7 +30,6 @@ Basic
 Be prepared to see code - but not write it. Most of these have blocks of code, but do not let that put you off; it is pretty easy to copy-and-paste a chunk of code straight into your game, then go back to the GUI view to look at it or change it, as the first link in this section explains.
 
 -   [Character Creation](character_creation.html)
--   [Conversations](conversations.html)
 -   [Immobilise the player](immobilise_the_player.html)
 -   [Make a text adventure look like a game book](text_adventure_gamebook.html)
 -   [Use InvisiClues for Help](invisiclues.html)
@@ -44,19 +43,11 @@ Advanced
 -------------
 For those happy to use code.
 
--   [Add Ambience](ambience.html) (random background text)
 -   [A Hint System](a_hint_system.html)
 -   [Turn-based events](turn_based_events.html)
 -   [Use and code functions](using_functions.html)
--   [Use Display Verbs and Inventory Verbs Effectively](display_verbs.html)
--   [Use Types](using_types.html)
--   [Use Types and Tabs](using_types_and_tabs__advanced_.html)
--   [More on Tabs](more_on_tabs__advanced_.html) (implementing a magic system)
--   [Simple Combat System](simple_combat_system__advanced_.html)
 -   [Second Inventory Pane](second_inventory_pane__advanced_.html) (listing spells for your magic system)
--   [Modifying the UI](modifying_the_ui__advanced_.html)
 -   [Javascript](javascript.html)
--   [Use maths functionality](use_maths_functionality.html)
 
 
 
