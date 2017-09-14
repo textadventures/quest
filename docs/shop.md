@@ -17,15 +17,15 @@ Quest has some features built in to help us, so the first step is to turn these 
 
 Now you need to think about what currency you want to use. If you are using pounds sterling, you should consider if you want to track the pennies, or just the pounds (the system will only be using whole numbers, so think carefully!).
 
-Now go to the _Player_tab, and the "Format for money" bit. By default it is "$!". The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are [a lot of options](http://docs.textadventures.co.uk/quest/functions/string/displaymoney.html).
+Now go to the _Player_ tab, and the "Format for money" bit. By default it is "$!". The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are [a lot of options](http://docs.textadventures.co.uk/quest/functions/string/displaymoney.html).
 
-Clearly everything will need a price, so it can be bought and sold.  On the _Inventory_ tab of each object, you can set the price. You should also set the starting money for the player on the _Player_ tab of the player object.
+Clearly everything will need a price, so it can be bought and sold.  On the _Inventory_ tab of each object, you can set the price. You must also set the starting money for the player on the _Player_ tab of the player object (you will get errors if this is not set).
 
 ### Functions...
 
 There are several functions we need to create. To create a function, select functions from the left pane, then click "Add" in the right pane.
 
-The `SetUpShop` function has no return type, and two parameters, "shop" and "stock" (in that order!). It will be called at the start to set up each shop. Paste in this code:
+The `SetUpShop` function has no return type, and two parameters, "shop" and "stock" (in that order!). It will be called at the start to set up each shop. Paste in this code (you will need to click on the "Code view" button first):
 
 ```
 shop.stock = stock
@@ -33,6 +33,10 @@ foreach (o, GetDirectChildren(stock)) {
   SetUpMerchandise (o)
 }
 ```
+
+It should like like this it all went well:
+
+![](SetUpShop.png "SetUpShop.png")
 
 The `BuyingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants sell at (i.e., the player is buying), based on the object's price, and in the example below, it is just double. Paste in this code:
 
@@ -109,7 +113,7 @@ Another complicated one. The first three lines handle the player not having enou
 
 ### One Command
 
-The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command, and put this as the pattern:
+The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command (go to "Commands" in the left pane, then click "Add" in the right pane), and put this as the pattern:
 
 > sell #object#
 
@@ -151,7 +155,7 @@ This checks if the room is a shop, then checks if the object is being carried. I
 
 ### Game Scripts
 
-We need to add a script on the game object. On the _Features_ tab, tick to display "Advanced scripts",then on the _Advanced scripts_ tab, paste this in at the bottom ("backdrop scope script..."):
+We need to add a script on the game object. On the _Features_ tab, tick to display "Advanced scripts", then on the _Advanced scripts_ tab, paste this in at the bottom ("backdrop scope script..."):
 
 ```
 if (HasAttribute(game.pov.parent, "stock")) {
@@ -166,9 +170,9 @@ This will add the contents of the shop's stock room to the scope, so the player 
 Creating A Shop
 ---------------
 
-So now we have put in the infrastructure, we have done the hard work. Now you can create your shop - or however many you like. For each shop you need to also create a stockroom, which is just a rom with no exits going to it, that contains everything for sale in that shop.
+So now we have put in the infrastructure, we have done the hard work. Now you can create your shop - or however many you like. For each shop you need to also create a stockroom, which is just a room with no exits going to it, that contains everything for sale in that shop.
 
-Finally, you need to initialise each shop. Go to the _Scripts_ tab of the game object, and add a line for each shop in your game to the start script at the top. The code will look like this:
+You need to initialise each shop. Go to the _Scripts_ tab of the game object, and add a line for each shop in your game to the start script at the top. The code will look like this:
 
 ```
 SetUpShop (shop, stock)
@@ -176,3 +180,16 @@ SetUpShop (shop, stock)
 
 You will need to replace "shop" with the name of the shop object in your game, and "stock" with the name of it's stock room.
 
+### A Cake Shop...
+
+As an example, we will create a shop called "Cake Shop". Add exits so the player can get to and from it, and a description as usual. Then create a second room, "Cake Shop Stock". This should have no exits and needs no description. However, it does need some cake objects, so put a lamington, a Victoria sponge and a fairy cake in there. Make sure each has a price set.
+
+Now go to the _Scripts_ tab of the game object, and in the start script at the top, add this line:
+
+```
+SetUpShop (Cake Shop, Cake Shop Stock)
+```
+
+It should look like this:
+
+![](StartShop.png "StartShop.png")
