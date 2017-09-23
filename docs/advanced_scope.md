@@ -22,15 +22,15 @@ The first is an extended scope. On the _Features_ tab of the game object, tick "
 
 ### Scenery
 
-The simplest way to use this is to set up a room, let us say it is called "scenery") of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "list":
+The simplest way to use this is to set up a room, let us say it is called "scenery") of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "items":
 
 ```
 foreach (obj, GetDirectChildren(scenery)) {
-  list add (list, obj)
+  list add (items, obj)
 }
 ```
 
-Note that each item has to be added individually to ensure the `list` variable is not lost; using the `ListCombine` will fail.
+Note that each item has to be added individually to ensure the `items` variable is not lost; using the `ListCombine` function will fail.
 
 Because we tagged the items as scenery, they will not show up in room lists, but the player can still examine them.
 
@@ -39,34 +39,34 @@ We can go further, and add scenery items according to the type of room. How you 
 ```
 if (StartsWith(game.pov.parent.name, "Forest")) {
   foreach (obj, GetDirectChildren(forest_scenery)) {
-    list add (list, obj)
+    list add (items, obj)
   }
 }
 else if (StartsWith(game.pov.parent.name, "Dungeon")) {
   foreach (obj, GetDirectChildren(dungeon_scenery)) {
-    list add (list, obj)
+    list add (items, obj)
   }
 }
 else {
   foreach (obj, GetDirectChildren(default_scenery)) {
-    list add (list, obj)
+    list add (items, obj)
   }
 }
 ```
 
 ### Adjacent rooms
 
-We can use the same system to allow the player to access objects in an adjacent room. This is fully compatible with the above; the code just needs to go after it. here is an example:
+We can use the same system to allow the player to access objects in an adjacent room. This is fully compatible with the above; the code just needs to go after it. Here is an example:
 
 ```
 if (game.pov.parent = bar room) {
   foreach (obj, GetDirectChildren(behind the counter)) {
-    list add (list, obj)
+    list add (items, obj)
   }
 }
 if (game.pov.parent = behind the counter) {
   foreach (obj, GetDirectChildren(bar room)) {
-    list add (list, obj)
+    list add (items, obj)
   }
 }
 ```
