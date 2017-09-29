@@ -17,7 +17,7 @@
       <types>
         boolean=[TypeDefaultBehaviour];script=[TypeRunScript]
       </types>
-      <checkbox>Display menu of objects this can be used on</checkbox>
+      <checkbox>[EditorDisplayMenuObjectsCanUsedOn]</checkbox>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
-      <keyprompt>Please enter the object name</keyprompt>
+      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
       <advanced/>
     </control>
@@ -91,7 +91,7 @@
       <types>
         boolean=[TypeDefaultBehaviour];script=[TypeRunScript]
       </types>
-      <checkbox>Display menu of objects this can be given to</checkbox>
+      <checkbox>[EditorDisplayMenuObjectsCanGivenTo]</checkbox>
     </control>
 
     <control>
@@ -114,7 +114,7 @@
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
-      <keyprompt>Please enter the object name</keyprompt>
+      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
     </control>
 
@@ -140,7 +140,7 @@
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
-      <keyprompt>Please enter the object name</keyprompt>
+      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
       <advanced/>
     </control>

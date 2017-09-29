@@ -146,6 +146,15 @@
     ]]>
   </function>
 
+  
+  <function name="RequestSave">
+    request(RequestSave, "")
+  </function>
+
+  <function name="RequestSpeak" parameters="s">
+    request(RequestSpeak, s)
+  </function>
+
 
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
@@ -219,6 +228,26 @@
     return (s)
   </function>
 
+  <function name="JSSafe" parameters="s" type="string"><![CDATA[
+    s = Replace(s, "\"", "")
+    s = Replace(s, "\'", "")
+    s = Replace(s, " ", "")
+    s = Replace(s, ".", "")
+    s = Replace(s, ",", "")
+    s = Replace(s, "!", "")
+    s = Replace(s, "?", "")
+    s = Replace(s, "-", "")
+    s = Replace(s, "/", "")
+    s = Replace(s, "(", "")
+    s = Replace(s, ")", "")
+    s = Replace(s, "$", "")
+    s = Replace(s, "%", "")
+    s = Replace(s, "&", "")
+    s = Replace(s, "*", "")
+    s = Replace(s, "@", "")
+    return (s)
+  ]]></function>
+  
   <function name="HandleMenuTextResponse" parameters="input" type="boolean">
     <![CDATA[
     handled = false

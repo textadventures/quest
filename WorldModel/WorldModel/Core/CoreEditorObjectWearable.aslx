@@ -8,7 +8,7 @@
 		<control>
 			<controltype>dropdowntypes</controltype>
 			<caption>[EditorObjectWearableCanBeWorn]</caption>
-			<types>*=Cannot be worn; wearable=Can be worn</types>
+			<types>*=[EditorObjectWearableTypCannotBeWorn]; wearable=[EditorObjectWearableTypCanBeWorn]</types>
 			<width>150</width>
 		</control>
 		
@@ -129,7 +129,7 @@
 			<selfcaption>[EditorObjectWearableAfterWearing2]</selfcaption>
 			<controltype>multi</controltype>
 			<attribute>onafterwear</attribute>
-			<types>null=None; string=Text; script=Run script</types>
+			<types>null=[EditorObjectWearableTypNone]; string=[EditorObjectWearableTypText]; script=[EditorObjectWearableTypRunScript]</types>
 			<editors>string=textbox</editors>
 			<expand/>
       <onlydisplayif>game.feature_advancedwearables</onlydisplayif>
@@ -144,11 +144,11 @@
 		
 		<control>
 			<mustinherit>wearable</mustinherit>
-			<selfcaption>[EditorObjectWearableAfterRemoving]</selfcaption>
+			<selfcaption>[EditorObjectWearableAfterRemoving2]</selfcaption>
 			<controltype>multi</controltype>
 			<attribute>onafterremove</attribute>
-			<types>null=None; string=Text; script=Run script</types>
-			<editors>string=textbox</editors>
+      <types>null=[EditorObjectWearableTypNone]; string=[EditorObjectWearableTypText]; script=[EditorObjectWearableTypRunScript]</types>
+      <editors>string=textbox</editors>
 			<expand/>
       <onlydisplayif>game.feature_advancedwearables</onlydisplayif>
 		</control>
@@ -215,7 +215,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>https://github.com/ThePix/quest/wiki/Clothing-Library</href>
+      <href>http://docs.textadventures.co.uk/quest/wearables.html</href>
     </control>
 
 	</tab>

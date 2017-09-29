@@ -160,13 +160,13 @@
       JS.colourBlend (game.colourblendtop, game.colourblendbottom)
     }
     if (game.borderlesscursor) {
-      JS.eval ("$('head').append('<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>');")
+      JS.addScript("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
       JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
       JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
       request (SetInterfaceString, "TypeHereLabel=")
     }
     else if (game.shadowbox) {
-      JS.eval ("$('head').append('<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>');")
+      JS.addScript ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
     }
     if (game.panestheme = "Midnight") {
       JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")

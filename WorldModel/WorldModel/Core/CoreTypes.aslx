@@ -219,6 +219,7 @@
     <grid_bordersides type="int">15</grid_bordersides>
     <grid_render type="boolean">false</grid_render>
     <grid_label type="string"></grid_label>
+    <grid_label_colour type="string">black</grid_label_colour>
     <grid_parent_offset_auto/>
     <grid_parent_offset_x type="int">0</grid_parent_offset_x>
     <grid_parent_offset_y type="int">0</grid_parent_offset_y>
@@ -351,8 +352,12 @@
     <pattern type="simplepattern"></pattern>
   </type>
 
-  <type name="male">
+  <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
+  </type>
+
+  <type name="male">
+    <inherit name="npc_type" />
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
     <possessive>[MalePossessive]</possessive>
@@ -364,6 +369,7 @@
   </type>
 
   <type name="female">
+    <inherit name="npc_type" />
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>

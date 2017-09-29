@@ -23,7 +23,7 @@
       <control>
         <caption>[EditorVerbDefault]</caption>
         <controltype>filter</controltype>
-        <filters>text=Text; template=Template; expression=Expression</filters>
+        <filters>text=[EditorVerbText]; template=[EditorVerbTemplate]; expression=[EditorVerbExpression]</filters>
         <width>150</width>
         <filtergroupname>responsetype</filtergroupname>
       </control>

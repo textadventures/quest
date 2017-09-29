@@ -552,7 +552,7 @@
     s1 = StringListItem(ary, 0)
     list remove(ary, s1)
     s2 = Join (ary, ":")
-    id = s1 + GetRandomInt(0, 999999999)
+    id = JSSafe(s1) + GetRandomInt(0, 999999999)
     link = game.defaultlinkforeground
     if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
     s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;left:50px;top:40%;width:40%;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
@@ -817,6 +817,11 @@
   <function name="SetBackgroundColour" parameters="colour">
     request (Background, colour)
     game.defaultbackground = colour
+  </function>
+
+  <function name="SetLinkForegroundColour" parameters="colour">
+    request (LinkForeground, colour)
+    game.defaultlinkforeground = colour
   </function>
 
   <function name="SetFontName" parameters="font">
