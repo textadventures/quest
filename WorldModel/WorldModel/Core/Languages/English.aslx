@@ -21,6 +21,7 @@
   <template name="CarryingListHeader">You are carrying</template>
   <dynamictemplate name="DropSuccessful">"You drop " + object.article + "."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="ObjectCannotBeStored">"You can't put " + object.article + " there."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
@@ -239,7 +240,7 @@
   <verbtemplate name="lie">lie down upon</verbtemplate>
   <dynamictemplate name="DefaultLie">"You can't lie on " + object.article + "."</dynamictemplate>
   <verbtemplate name="listento">listen to</verbtemplate>
-  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.article + " makes no sound."</dynamictemplate>
+  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.gender + " makes no sound."</dynamictemplate>
   <verbtemplate name="lock">lock</verbtemplate>
   <dynamictemplate name="DefaultLock">"You can't lock " + object.article + "."</dynamictemplate>
   <verbtemplate name="move">move</verbtemplate>
@@ -261,7 +262,7 @@
   <dynamictemplate name="DefaultSit">"You can't sit on " + object.article + "."</dynamictemplate>
   <verbtemplate name="smell">smell</verbtemplate>
   <verbtemplate name="smell">sniff</verbtemplate>
-  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.article + " doesn't smell of much."</dynamictemplate>
+  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.gender + " doesn't smell of much."</dynamictemplate>
   <verbtemplate name="taste">taste</verbtemplate>
   <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
   <verbtemplate name="throw">throw</verbtemplate>

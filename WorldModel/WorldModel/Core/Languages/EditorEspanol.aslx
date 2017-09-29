@@ -249,6 +249,7 @@
   <template name="EditorObjectMapWidth">Ancho</template>
   <template name="EditorObjectMapLength">Longitud</template>
   <template name="EditorObjectMapFillcolour">Color de relleno</template>
+  <template name="EditorObjectMapLabelcolour">Color de la etiqueta</template>
   <template name="EditorObjectMapBordercolour">Color de borde</template>
   <template name="EditorObjectMapBorderwidth">Ancho del borde</template>
   <template name="EditorObjectMapBordertype">Tipo de borde</template>

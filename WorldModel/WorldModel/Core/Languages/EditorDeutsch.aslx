@@ -318,6 +318,7 @@
   <template name="EditorObjectMapWidth">Breite</template>
   <template name="EditorObjectMapLength">Länge</template>
   <template name="EditorObjectMapFillcolour">Füllfarbe</template>
+  <template name="EditorObjectMapLabelcolour">Etikettenfarbe</template>
   <template name="EditorObjectMapBordercolour">Randfarbe</template>
   <template name="EditorObjectMapBorderwidth">Randbreite</template>
   <template name="EditorObjectMapBordertype">Randart</template>
