@@ -1,8 +1,11 @@
 ﻿<library>  
   <!-- Contributed by Pertex -->
-
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
+  
+  <!-- Contributed by SoonGames -->
+  <include ref="EditorDeutsch.aslx"/>
+  
   <template name="LanguageId">de</template>
 
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
@@ -374,19 +377,11 @@
     <article>[FemalePluralArticle]</article>
   </type>
   
-  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
-  <template name="LanguageSpecificObjectTypes">maleobject=Inanimate object (male);femaleobject=Inanimate object (female);maleobjectplural=Inanimate object (male, plural);femaleobjectplural=Inanimate object (female, plural);</template>
-  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
-  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
-  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
-
   <template name="EditorVerbDefaultExpression">"Das kannst Du nicht machen."</template>
-
   
-    <function name="GetDefaultPrefix" type="string" parameters="obj">
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
 		return(GetPrefix(obj,"ein"))
   </function>
-  
   
 	<function name="GetPrefix" type="string" parameters="obj,type">
 	<!-- type: 	"der" 	für der, die das

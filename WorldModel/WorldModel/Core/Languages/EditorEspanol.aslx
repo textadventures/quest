@@ -581,8 +581,6 @@
   <template name="EditorScriptsTurnScriptsName">Nombre:</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Crear un guión por turnos</template>  
   <template name="EditorScriptsTurnScriptsCreateturn">Crear guión por turnos</template>
-
-
   <template name="EditorScriptsVariablesVariables">Variables</template>
   <template name="EditorScriptsVariablesSetobjectflag">Poner una bandera a un objeto</template>
   <template name="EditorScriptsVariablesSetflag">Poner bandera</template>
@@ -675,7 +673,6 @@
   <template name="EditorExpressionstheinventory">el inventario</template>
   <template name="EditorExpressionsallexits">todas las salidas</template>
   <template name="EditorExpressionsallcommands">todos los comandos</template> 
-  
   <template name="TypePatternCommand">Patrón de comando</template>
   <template name="TypePatternRegular">Expresión regulada</template> 
   <template name="TypeExitNon">Salida no-direccional</template> 
@@ -724,20 +721,4 @@
   <template name="TypeNone">Ninguna</template>
   <template name="TypeIndividually">Manipular objetos individualmente</template>
   <template name="TypePrintMessage">Imprimir un mensaje</template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  
-  
-  
 </library>
