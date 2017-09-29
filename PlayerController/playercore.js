@@ -461,7 +461,11 @@ function setForeground(col) {
 }
 
 function setCompassDirections(directions) {
-    _compassDirs = directions;
+    if (typeof directions === "string") {
+      _compassDirs = directions.split(";")
+    } else {
+      _compassDirs = directions;
+    }
     $("#cmdCompassNW").attr("title", _compassDirs[0]);
     $("#cmdCompassN").attr("title", _compassDirs[1]);
     $("#cmdCompassNE").attr("title", _compassDirs[2]);
@@ -1023,6 +1027,9 @@ function setCss(element, cssString) {
   }
 }
 
+function addScript(text) {
+    $('body').prepend(text);
+}
 
 function colourBlend(colour1, colour2) {
   $('#gamePanes').css('background-color', 'transparent');
@@ -1167,9 +1174,10 @@ function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
 
-function Grid_DrawLabel(x, y, z, text) {
+function Grid_DrawLabel(x, y, z, text, col) {
+    if (col === undefined) col = "black";
     if (!_canvasSupported) return;
-    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text, col);
 }
 
 function Grid_ShowCustomLayer(visible) {
