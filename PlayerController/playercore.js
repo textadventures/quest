@@ -873,6 +873,9 @@ function HideOutputSection(name) {
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
         $("." + name).hide(250, function () { $(this).remove(); });
+        // Added by The Pixie, 04/Oct/17
+        // This should close the gap when the menu is hidden
+        $("#divOutput").animate({'min-height':0}, 250);
     }, 250);
 }
 
