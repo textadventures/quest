@@ -201,6 +201,10 @@
     else {
       request (Hide, "Panes")
     }
+    JS.getDivCount ()
+    if (not game.pov = null) {
+      JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
+    }    
     InitUserInterface
     if (HasScript(game, "inituserinterface")) {
       do (game, "inituserinterface")
@@ -381,5 +385,14 @@
     newPOV.article = newPOV.pov_article
     ]]>
   </function>  
+
+
+
+  <function name="FinishTurn">
+    RunTurnScripts
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
+  </function>
 
 </library>

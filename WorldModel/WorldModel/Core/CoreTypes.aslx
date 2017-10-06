@@ -352,6 +352,86 @@
     <pattern type="simplepattern"></pattern>
   </type>
 
+  <type name="defaultverb">
+    <separator>[VerbObjectSeparator]</separator>
+    <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
+    <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
+    <multiobjectmenuempty>[NoObjectsAvailable]</multiobjectmenuempty>
+    <script type="script">
+      <![CDATA[
+      if (not IsDefined("object2")) {
+        object2 = null
+      }
+      
+      switch (TypeOf(object, this.property)) {
+        case ("script") {
+          if (object2 = null) {
+            do (object, this.property)
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("string") {
+          if (object2 = null) {
+            msg (GetString(object, this.property))
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("scriptdictionary") {
+          if (object2 <> null) {
+            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
+          }
+          else {
+            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
+            excludelist = NewObjectList()
+            list add (excludelist, game.pov)
+            list add (excludelist, object)
+            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+            if (ListCount(candidates) = 0) {
+              msg (this.multiobjectmenuempty)
+            }
+            else {
+              game.pov.multiverb = this.property
+              game.pov.multiverbobject = object
+              game.pov.multiverbobjectdefault = this.multiobjectdefault
+              ShowMenu (this.multiobjectmenu, candidates, true) {
+                if (result <> null) {
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
+                  game.pov.multiverb = null
+                  game.pov.multiverbobject = null
+                  game.pov.multiverbobjectdefault = null
+                }
+              }
+            }
+          }
+        }
+        case ("null") {
+          if (this.defaulttext <> null) {
+            msg (this.defaulttext)
+          }
+          else if (this.defaulttemplate <> null) {
+            msg (DynamicTemplate(this.defaulttemplate, object))
+          }
+          else if (this.defaultexpression <> null) {
+            params = NewDictionary()
+            dictionary add (params, "object", object)
+            msg (Eval(this.defaultexpression, params))
+          }
+          else {
+            error ("No verb response defined")
+          }
+        }
+        default {
+          error ("No verb response defined")
+        }
+      }
+      ]]>
+    </script>
+  </type>
+
   <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
   </type>

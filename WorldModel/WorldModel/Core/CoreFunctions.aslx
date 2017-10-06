@@ -85,6 +85,14 @@
     return (newobject)
   </function>
 
+  <function name="CloneObjectAndInitialise" parameters="object" type="object">
+    newobject = CloneObject(object)
+    if (HasScript(newobject, "_initialise_")) {
+      do (newobject, "_initialise_")
+    }
+    return (newobject)
+  </function>
+
   <function name="CloneObjectAndMoveHere" parameters="object" type="object">
     newobject = CloneObject(object)
     newobject.parent = game.pov.parent
@@ -152,7 +160,7 @@
   </function>
 
   <function name="RequestSpeak" parameters="s">
-    request(RequestSpeak, s)
+    request(Speak, s)
   </function>
 
 

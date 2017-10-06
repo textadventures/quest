@@ -5,26 +5,36 @@
 
 	
 	<command name="wear" template="wear">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoWear(obj)
-			}
-      UpdateArmour
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToWear]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoWear(obj)
+        }
+        UpdateArmour
+      }
 		</script>
     <scope>inventory</scope>
 	</command>
 
 	<command name="remove" template="remove">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoRemove(obj)
-			}
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToRemove]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoRemove(obj)
+        }
+      }
       UpdateArmour
 		</script>
     <scope>inventory</scope>

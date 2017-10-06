@@ -63,6 +63,14 @@
   </function>
 
   <command name="take" template="take">
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = NewObjectList()
+      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
+        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
+          list add(game.pov.currentcommandpendingobjectscope, obj)
+        }
+      }
+    </multipleobjects>
     <multiple>
       takeList = NewObjectList()
       foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
@@ -74,8 +82,13 @@
     </multiple>
     <scope>notheld</scope>
     <script>
-      foreach (obj, object) {
-        DoTake(obj, multiple)
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToTake]")
+      }
+      else{
+        foreach (obj, object) {
+          DoTake(obj, multiple)
+        }
       }
     </script>
   </command>
@@ -186,13 +199,21 @@
   </function>
 
   <command name="drop" template="drop">
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = GetDirectChildren(game.pov)
+    </multipleobjects>
     <multiple>
       return (GetDirectChildren(game.pov))
     </multiple>
     <scope>inventory</scope>
     <script>
-      foreach (obj, object) {
-        DoDrop(obj, multiple)
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToTake]")
+      }
+      else{
+        foreach (obj, object) {
+          DoDrop(obj, multiple)
+        }
       }
     </script>
   </command>
@@ -473,74 +494,76 @@
   </command>
 
   <command name="put" pattern="[put]">
-    // put object1 in/on object 2
-    canbedropped = true
-    if (HasBoolean(object1, "drop")) {
-      if (not object1.drop) {
-        canbedropped = false
+    <scope>object1=inventory|object2=container</scope>
+    <script>
+      // put object1 in/on object 2
+      canbedropped = true
+      if (HasBoolean(object1, "drop")) {
+        if (not object1.drop) {
+          canbedropped = false
+        }
       }
-    }
-    if (object1.parent = object2) {
-      msg (DynamicTemplate("AlreadyThere", object1))
-    }
-    // must be carrying object1
-    else if (not ListContains(ScopeInventory(), object1)) {
-      msg (DynamicTemplate("NotCarrying", object1))
-    }
-    // item cannot be dropped
-    else if (not canbedropped) {
-      msg (DynamicTemplate("ObjectCannotBeStored", object1))
-    }
-    // object1 must not be inside a closed container
-    else if (not ListContains(ScopeReachable(), object1)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
-    }
-    // object2 must not be inside a closed container
-    else if (not ListContains(ScopeReachable(), object2)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
-    }
-    // object2 must be an open container or surface
-    else if (not object2.container) {
-      msg (Template("CannotDoThat"))
-    }
-    else if (not object2.isopen) {
-      msg (DynamicTemplate("ObjectNotOpen", object2))
-    }
-    else {
-      if (GetBoolean(object2, "hidechildren")) {
-        object2.hidechildren = false
+      if (object1.parent = object2) {
+        msg (DynamicTemplate("AlreadyThere", object1))
       }
-
-      //if (HasDelegateImplementation(object2, "addscript")) {
-      //  rundelegate (object2, "addscript", object1)
-      //}
-      params = NewDictionary()
-      dictionary add (params, "object", object1)
-      dictionary add (params, "destination", object2)
-      if (HasScript(object2, "addscript")) {
-        do (object2, "addscript", params)
+      // must be carrying object1
+      else if (not ListContains(ScopeInventory(), object1)) {
+        msg (DynamicTemplate("NotCarrying", object1))
       }
-      else if (HasScript(object1, "drop")) {
-        do (object1, "drop", params)
+      // item cannot be dropped
+      else if (not canbedropped) {
+        msg (DynamicTemplate("ObjectCannotBeStored", object1))
+      }
+      // object1 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object1)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+      }
+      // object2 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object2)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+      }
+      // object2 must be an open container or surface
+      else if (not object2.container) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not object2.isopen) {
+        msg (DynamicTemplate("ObjectNotOpen", object2))
       }
       else {
-        object1.parent = object2
-        msg (Template("Done"))
+        if (GetBoolean(object2, "hidechildren")) {
+          object2.hidechildren = false
+        }
+
+        params = NewDictionary()
+        dictionary add (params, "object", object1)
+        dictionary add (params, "destination", object2)
+        if (HasScript(object2, "addscript")) {
+          do (object2, "addscript", params)
+        }
+        else if (HasScript(object1, "drop")) {
+          do (object1, "drop", params)
+        }
+        else {
+          object1.parent = object2
+          msg (Template("Done"))
+        }
       }
-    }
-    
+    </script>
   </command>
 
   <command name="removefrom" pattern="[removefrom]">
-    // remove object1 from object2
-    // if object2 does indeed contain object1, this is a synonym for "take object1"
-    
-    if (not Contains(object2, object1)) {
-      msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
-    }
-    else {
-      DoTake (object1, false)
-    }
+    <scope>object1=contents|object2=container</scope>
+    <script>
+      // remove object1 from object2
+      // if object2 does indeed contain object1, this is a synonym for "take object1"
+      
+      if (not Contains(object2, object1)) {
+        msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
+      }
+      else {
+        DoTake (object1, false)
+      }
+    </script>
   </command>
 
   <function name="CreateGiveMenuList" parameters="object" type="objectlist">
