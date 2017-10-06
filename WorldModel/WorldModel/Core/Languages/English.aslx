@@ -2,6 +2,9 @@
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
   
+  <template name="Again1">again</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">There is nothing to repeat.</template>
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
@@ -114,6 +117,11 @@
   <template name="No">No</template>
   <template name="By">by</template>
 
+  <template name="NothingToTake">Nothing here to take.</template>
+  <template name="NothingToDrop">You've nothing to drop.</template>
+  <template name="NothingToWear">You've nothing to wear.</template>
+  <template name="NothingToRemove">You've nothing to take off.</template>
+
 	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get " + object.article + " before you can put " + object.article + " on."</dynamictemplate>
@@ -205,7 +213,7 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^(remove|take) (?<object1>.*) (from|out of|off) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
