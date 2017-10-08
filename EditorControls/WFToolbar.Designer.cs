@@ -60,7 +60,7 @@
             // 
             resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.AutoToolTip = false;
-            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
@@ -68,7 +68,7 @@
             // 
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.AutoToolTip = false;
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
@@ -76,7 +76,7 @@
             // 
             resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.AutoToolTip = false;
-            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Eigenschaft_bearbeiten_16;
+            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
             this.cmdEdit.Name = "cmdEdit";
             this.cmdEdit.Click += new System.EventHandler(this.cmdEdit_Click);
             // 
@@ -84,7 +84,7 @@
             // 
             resources.ApplyResources(this.cmdPlay, "cmdPlay");
             this.cmdPlay.AutoToolTip = false;
-            this.cmdPlay.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Spielen_16;
+            this.cmdPlay.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_play;
             this.cmdPlay.Name = "cmdPlay";
             this.cmdPlay.Click += new System.EventHandler(this.cmdPlay_Click);
             // 
@@ -92,7 +92,7 @@
             // 
             resources.ApplyResources(this.cmdRecord, "cmdRecord");
             this.cmdRecord.AutoToolTip = false;
-            this.cmdRecord.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Aufzeichnen_16;
+            this.cmdRecord.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_record;
             this.cmdRecord.Name = "cmdRecord";
             this.cmdRecord.Click += new System.EventHandler(this.cmdRecord_Click);
             // 
@@ -100,7 +100,7 @@
             // 
             resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.AutoToolTip = false;
-            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Oben_16;
+            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_up;
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
@@ -108,7 +108,7 @@
             // 
             resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.AutoToolTip = false;
-            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Unten_16;
+            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_down;
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 

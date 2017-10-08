@@ -127,14 +127,14 @@
             // 
             // cmdAddType
             // 
-            this.cmdAddType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            this.cmdAddType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             resources.ApplyResources(this.cmdAddType, "cmdAddType");
             this.cmdAddType.Name = "cmdAddType";
             this.cmdAddType.Click += new System.EventHandler(this.cmdAddType_Click);
             // 
             // cmdDeleteType
             // 
-            this.cmdDeleteType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            this.cmdDeleteType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             resources.ApplyResources(this.cmdDeleteType, "cmdDeleteType");
             this.cmdDeleteType.Name = "cmdDeleteType";
             this.cmdDeleteType.Click += new System.EventHandler(this.cmdDeleteType_Click);
@@ -205,21 +205,21 @@
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdOnChange
             // 
-            this.cmdOnChange.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Joyent;
+            this.cmdOnChange.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_change_add;
             resources.ApplyResources(this.cmdOnChange, "cmdOnChange");
             this.cmdOnChange.Name = "cmdOnChange";
             this.cmdOnChange.Click += new System.EventHandler(this.cmdOnChange_Click);

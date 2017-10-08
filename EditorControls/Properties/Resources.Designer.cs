@@ -19,7 +19,7 @@ namespace TextAdventures.Quest.EditorControls.Properties {
     // -Klasse über ein Tool wie ResGen oder Visual Studio automatisch generiert.
     // Um einen Member hinzuzufügen oder zu entfernen, bearbeiten Sie die .ResX-Datei und führen dann ResGen
     // mit der /str-Option erneut aus, oder Sie erstellen Ihr VS-Projekt neu.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,9 +63,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Aufzeichnen_16 {
+        internal static System.Drawing.Bitmap s_add_page {
             get {
-                object obj = ResourceManager.GetObject("icons8-Aufzeichnen-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_add_page", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Ausgang_32 {
+        internal static System.Drawing.Bitmap s_command {
             get {
-                object obj = ResourceManager.GetObject("icons8-Ausgang-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_command", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Bauer_32 {
+        internal static System.Drawing.Bitmap s_delete {
             get {
-                object obj = ResourceManager.GetObject("icons8-Bauer-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Bearbeiten_32 {
+        internal static System.Drawing.Bitmap s_exit {
             get {
-                object obj = ResourceManager.GetObject("icons8-Bearbeiten-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_exit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Bücherregal_32 {
+        internal static System.Drawing.Bitmap s_function {
             get {
-                object obj = ResourceManager.GetObject("icons8-Bücherregal-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_function", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Datei_hinzufügen_16 {
+        internal static System.Drawing.Bitmap s_object {
             get {
-                object obj = ResourceManager.GetObject("icons8-Datei hinzufügen-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_object", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Datei_hinzufügen_32 {
+        internal static System.Drawing.Bitmap s_room {
             get {
-                object obj = ResourceManager.GetObject("icons8-Datei hinzufügen-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_room", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +133,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Domain_16 {
+        internal static System.Drawing.Bitmap s_timer {
             get {
-                object obj = ResourceManager.GetObject("icons8-Domain-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_timer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +143,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Eigenschaft_bearbeiten_16 {
+        internal static System.Drawing.Bitmap s_turn {
             get {
-                object obj = ResourceManager.GetObject("icons8-Eigenschaft bearbeiten-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_turn", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +153,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Erweitern_32 {
+        internal static System.Drawing.Bitmap s_tv_delete {
             get {
-                object obj = ResourceManager.GetObject("icons8-Erweitern-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_tv_delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +163,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Gehen_32 {
+        internal static System.Drawing.Bitmap s_tv_search {
             get {
-                object obj = ResourceManager.GetObject("icons8-Gehen-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_tv_search", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +173,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Gleich_32 {
+        internal static System.Drawing.Bitmap s_verb {
             get {
-                object obj = ResourceManager.GetObject("icons8-Gleich-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_verb", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -183,9 +183,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Helfende_Hand_32 {
+        internal static System.Drawing.Bitmap s_walk {
             get {
-                object obj = ResourceManager.GetObject("icons8-Helfende Hand-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_walk", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +193,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Joyent {
+        internal static System.Drawing.Bitmap s_wf_add {
             get {
-                object obj = ResourceManager.GetObject("icons8-Joyent", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +203,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_JS_32 {
+        internal static System.Drawing.Bitmap s_wf_add_page {
             get {
-                object obj = ResourceManager.GetObject("icons8-JS-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_add_page", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +213,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Konsole_32 {
+        internal static System.Drawing.Bitmap s_wf_change_add {
             get {
-                object obj = ResourceManager.GetObject("icons8-Konsole-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_change_add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +223,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Lebenslauf_Muster_32 {
+        internal static System.Drawing.Bitmap s_wf_code {
             get {
-                object obj = ResourceManager.GetObject("icons8-Lebenslauf Muster-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_code", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,9 +233,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Lebenslauf_Vorlage_laden_32 {
+        internal static System.Drawing.Bitmap s_wf_code_win {
             get {
-                object obj = ResourceManager.GetObject("icons8-Lebenslauf-Vorlage laden-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_code_win", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,9 +243,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Link_hinzufügen_16 {
+        internal static System.Drawing.Bitmap s_wf_copy {
             get {
-                object obj = ResourceManager.GetObject("icons8-Link hinzufügen-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,9 +253,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Löschen_16__1_ {
+        internal static System.Drawing.Bitmap s_wf_copy_code {
             get {
-                object obj = ResourceManager.GetObject("icons8-Löschen-16 (1)", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_copy_code", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,9 +263,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Löschen_32 {
+        internal static System.Drawing.Bitmap s_wf_cut {
             get {
-                object obj = ResourceManager.GetObject("icons8-Löschen-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_cut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -273,9 +273,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Minus_16 {
+        internal static System.Drawing.Bitmap s_wf_delete {
             get {
-                object obj = ResourceManager.GetObject("icons8-Minus-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -283,9 +283,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Oben_16 {
+        internal static System.Drawing.Bitmap s_wf_domain {
             get {
-                object obj = ResourceManager.GetObject("icons8-Oben-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_domain", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -293,9 +293,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Plus_16 {
+        internal static System.Drawing.Bitmap s_wf_down {
             get {
-                object obj = ResourceManager.GetObject("icons8-Plus-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_down", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -303,9 +303,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Spielen_16 {
+        internal static System.Drawing.Bitmap s_wf_link {
             get {
-                object obj = ResourceManager.GetObject("icons8-Spielen-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_link", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -313,9 +313,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Suche_16 {
+        internal static System.Drawing.Bitmap s_wf_options {
             get {
-                object obj = ResourceManager.GetObject("icons8-Suche-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_options", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -323,9 +323,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Timer_32 {
+        internal static System.Drawing.Bitmap s_wf_paste {
             get {
-                object obj = ResourceManager.GetObject("icons8-Timer-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_paste", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -333,9 +333,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Topfpflanze_32 {
+        internal static System.Drawing.Bitmap s_wf_play {
             get {
-                object obj = ResourceManager.GetObject("icons8-Topfpflanze-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_play", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -343,9 +343,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Typ_32 {
+        internal static System.Drawing.Bitmap s_wf_record {
             get {
-                object obj = ResourceManager.GetObject("icons8-Typ-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_record", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -353,9 +353,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Umbenennen_16 {
+        internal static System.Drawing.Bitmap s_wf_rename_key {
             get {
-                object obj = ResourceManager.GetObject("icons8-Umbenennen-16", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_rename_key", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -363,49 +363,9 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_Unten_16 {
+        internal static System.Drawing.Bitmap s_wf_up {
             get {
-                object obj = ResourceManager.GetObject("icons8-Unten-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icons8_Variable_32 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-Variable-32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icons8_Verb_32 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-Verb-32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icons8_Verkleinern_32 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-Verkleinern-32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icons8_Zimmer_32 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-Zimmer-32", resourceCulture);
+                object obj = ResourceManager.GetObject("s_wf_up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

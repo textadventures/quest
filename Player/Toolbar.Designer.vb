@@ -41,29 +41,29 @@ Partial Class Toolbar
         '
         'butStop
         '
+        Me.butStop.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_stop
         resources.ApplyResources(Me.butStop, "butStop")
-        Me.butStop.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Stop_32
         Me.butStop.Name = "butStop"
         Me.butStop.Tag = "stop"
         '
         'butDebugger
         '
+        Me.butDebugger.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_debug
         resources.ApplyResources(Me.butDebugger, "butDebugger")
-        Me.butDebugger.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Fehler_32
         Me.butDebugger.Name = "butDebugger"
         Me.butDebugger.Tag = "debugger"
         '
         'butLog
         '
+        Me.butLog.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_log
         resources.ApplyResources(Me.butLog, "butLog")
-        Me.butLog.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Test_absolviert_32
         Me.butLog.Name = "butLog"
         Me.butLog.Tag = "log"
         '
         'butHTML
         '
+        Me.butHTML.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_html
         resources.ApplyResources(Me.butHTML, "butHTML")
-        Me.butHTML.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Detailansicht_32
         Me.butHTML.Name = "butHTML"
         Me.butHTML.Tag = "htmldevtools"
         '

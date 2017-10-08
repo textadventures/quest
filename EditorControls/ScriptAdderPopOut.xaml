@@ -4,6 +4,6 @@
         x:Name="ScriptAdderWindow"
         Title="Add Script Command" Height="600" Width="450" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="/EditorControls;component/q2_48x48c.ico" Initialized="ScriptAdderWindow_Initialized">
     <Grid TextOptions.TextFormattingMode="Display">
-        <my:ScriptAdder x:Name="ctlScriptAdder" Background="GhostWhite" />
+        <my:ScriptAdder x:Name="ctlScriptAdder" Background="White" />
     </Grid>
 </Window>

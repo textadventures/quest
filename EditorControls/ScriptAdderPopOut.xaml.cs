@@ -45,5 +45,10 @@ namespace TextAdventures.Quest.EditorControls
         {
             ScriptAdderWindow.Title = L.T("EditorScriptAdderWindowTitle");
         }
+
+        private void ctlScriptAdder_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

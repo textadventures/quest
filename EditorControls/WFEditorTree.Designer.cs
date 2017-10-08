@@ -36,8 +36,8 @@
             this.lstSearchResults = new System.Windows.Forms.ListView();
             this.colSearchResults = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pnlSearchContainer = new System.Windows.Forms.Panel();
-            this.cmdClose = new System.Windows.Forms.Button();
             this.cmdSearch = new System.Windows.Forms.Button();
+            this.cmdClose = new System.Windows.Forms.Button();
             this.ctlContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,9 +76,11 @@
             // txtSearch
             // 
             this.txtSearch.BackColor = System.Drawing.Color.White;
+            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.txtSearch, "txtSearch");
             this.txtSearch.ForeColor = System.Drawing.Color.Black;
             this.txtSearch.Name = "txtSearch";
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // ctlToolStrip
             // 
@@ -98,7 +100,8 @@
             // 
             // lstSearchResults
             // 
-            this.lstSearchResults.BackColor = System.Drawing.Color.White;
+            this.lstSearchResults.BackColor = System.Drawing.Color.GhostWhite;
+            this.lstSearchResults.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstSearchResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSearchResults});
             resources.ApplyResources(this.lstSearchResults, "lstSearchResults");
@@ -116,27 +119,32 @@
             // 
             // pnlSearchContainer
             // 
-            this.pnlSearchContainer.Controls.Add(this.cmdClose);
+            this.pnlSearchContainer.BackColor = System.Drawing.Color.GhostWhite;
             this.pnlSearchContainer.Controls.Add(this.cmdSearch);
+            this.pnlSearchContainer.Controls.Add(this.cmdClose);
             this.pnlSearchContainer.Controls.Add(this.txtSearch);
             resources.ApplyResources(this.pnlSearchContainer, "pnlSearchContainer");
             this.pnlSearchContainer.Name = "pnlSearchContainer";
             // 
-            // cmdClose
-            // 
-            this.cmdClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
-            this.cmdClose.BackgroundImage = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_16__1_;
-            resources.ApplyResources(this.cmdClose, "cmdClose");
-            this.cmdClose.Name = "cmdClose";
-            this.cmdClose.UseVisualStyleBackColor = false;
-            // 
             // cmdSearch
             // 
-            this.cmdSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(27)))), ((int)(((byte)(97)))));
-            this.cmdSearch.BackgroundImage = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Suche_16;
+            this.cmdSearch.BackColor = System.Drawing.Color.White;
             resources.ApplyResources(this.cmdSearch, "cmdSearch");
+            this.cmdSearch.FlatAppearance.BorderSize = 0;
+            this.cmdSearch.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_tv_search;
             this.cmdSearch.Name = "cmdSearch";
+            this.cmdSearch.TabStop = false;
             this.cmdSearch.UseVisualStyleBackColor = false;
+            // 
+            // cmdClose
+            // 
+            this.cmdClose.BackColor = System.Drawing.Color.White;
+            resources.ApplyResources(this.cmdClose, "cmdClose");
+            this.cmdClose.FlatAppearance.BorderSize = 0;
+            this.cmdClose.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_tv_delete;
+            this.cmdClose.Name = "cmdClose";
+            this.cmdClose.TabStop = false;
+            this.cmdClose.UseVisualStyleBackColor = false;
             // 
             // ctlContextMenu
             // 
@@ -171,19 +179,18 @@
             this.AddDelegateToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
             resources.ApplyResources(this.ctlContextMenu, "ctlContextMenu");
+            this.ctlContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ctlContextMenu_Opening);
             // 
             // expandAllToolStripMenuItem
             // 
-            this.expandAllToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Erweitern_32;
-            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
             resources.ApplyResources(this.expandAllToolStripMenuItem, "expandAllToolStripMenuItem");
+            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
             this.expandAllToolStripMenuItem.Tag = "expandall";
             // 
             // collapseAllToolStripMenuItem
             // 
-            this.collapseAllToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Verkleinern_32;
-            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
             resources.ApplyResources(this.collapseAllToolStripMenuItem, "collapseAllToolStripMenuItem");
+            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
             this.collapseAllToolStripMenuItem.Tag = "collapseall";
             // 
             // toolStripSeparator1
@@ -194,9 +201,9 @@
             // 
             // deleteToolStripMenuItem
             // 
-            this.deleteToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Löschen_32;
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_delete;
             resources.ApplyResources(this.deleteToolStripMenuItem, "deleteToolStripMenuItem");
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Tag = "delete";
             // 
             // toolStripSeparator2
@@ -207,16 +214,16 @@
             // 
             // AddVerbToolStripMenuItem
             // 
-            this.AddVerbToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Verb_32;
-            this.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem";
+            this.AddVerbToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_verb;
             resources.ApplyResources(this.AddVerbToolStripMenuItem, "AddVerbToolStripMenuItem");
+            this.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem";
             this.AddVerbToolStripMenuItem.Tag = "addverb";
             // 
             // AddCommandToolStripMenuItem
             // 
-            this.AddCommandToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Konsole_32;
-            this.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem";
+            this.AddCommandToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_command;
             resources.ApplyResources(this.AddCommandToolStripMenuItem, "AddCommandToolStripMenuItem");
+            this.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem";
             this.AddCommandToolStripMenuItem.Tag = "addcommand";
             // 
             // toolStripSeparator3
@@ -227,30 +234,30 @@
             // 
             // addPageToolStripMenuItem
             // 
-            this.addPageToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Datei_hinzufügen_32;
-            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
+            this.addPageToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_add_page;
             resources.ApplyResources(this.addPageToolStripMenuItem, "addPageToolStripMenuItem");
+            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
             this.addPageToolStripMenuItem.Tag = "addpage";
             // 
             // AddRoomToolStripMenuItem
             // 
-            this.AddRoomToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Zimmer_32;
+            this.AddRoomToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_room;
             resources.ApplyResources(this.AddRoomToolStripMenuItem, "AddRoomToolStripMenuItem");
             this.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem";
             this.AddRoomToolStripMenuItem.Tag = "addroom";
             // 
             // AddObjectToolStripMenuItem
             // 
-            this.AddObjectToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Topfpflanze_32;
+            this.AddObjectToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_object;
             resources.ApplyResources(this.AddObjectToolStripMenuItem, "AddObjectToolStripMenuItem");
             this.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem";
             this.AddObjectToolStripMenuItem.Tag = "addobject";
             // 
             // AddExitToolStripMenuItem
             // 
-            this.AddExitToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Ausgang_32;
-            this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
+            this.AddExitToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_exit;
             resources.ApplyResources(this.AddExitToolStripMenuItem, "AddExitToolStripMenuItem");
+            this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
             this.AddExitToolStripMenuItem.Tag = "addexit";
             // 
             // toolStripSeparator4
@@ -261,30 +268,30 @@
             // 
             // addTurnScriptToolStripMenuItem
             // 
-            this.addTurnScriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bauer_32;
-            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
+            this.addTurnScriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_turn;
             resources.ApplyResources(this.addTurnScriptToolStripMenuItem, "addTurnScriptToolStripMenuItem");
+            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
             this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
             // 
             // AddFunctionToolStripMenuItem
             // 
-            this.AddFunctionToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Variable_32;
-            this.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem";
+            this.AddFunctionToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_function;
             resources.ApplyResources(this.AddFunctionToolStripMenuItem, "AddFunctionToolStripMenuItem");
+            this.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem";
             this.AddFunctionToolStripMenuItem.Tag = "addfunction";
             // 
             // addTimerToolStripMenuItem
             // 
-            this.addTimerToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Timer_32;
-            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
+            this.addTimerToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_timer;
             resources.ApplyResources(this.addTimerToolStripMenuItem, "addTimerToolStripMenuItem");
+            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
             this.addTimerToolStripMenuItem.Tag = "addtimer";
             // 
             // AddWalkthroughToolStripMenuItem
             // 
-            this.AddWalkthroughToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Gehen_32;
-            this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
+            this.AddWalkthroughToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_walk;
             resources.ApplyResources(this.AddWalkthroughToolStripMenuItem, "AddWalkthroughToolStripMenuItem");
+            this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
             this.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough";
             // 
             // toolStripSeparator5
@@ -295,64 +302,57 @@
             // 
             // AddEditorToolStripMenuItem
             // 
-            this.AddEditorToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bearbeiten_32;
-            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
             resources.ApplyResources(this.AddEditorToolStripMenuItem, "AddEditorToolStripMenuItem");
+            this.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem";
             this.AddEditorToolStripMenuItem.Tag = "addeditor";
             // 
             // AddLibraryToolStripMenuItem
             // 
-            this.AddLibraryToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Bücherregal_32;
-            this.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem";
             resources.ApplyResources(this.AddLibraryToolStripMenuItem, "AddLibraryToolStripMenuItem");
+            this.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem";
             this.AddLibraryToolStripMenuItem.Tag = "addlibrary";
             // 
             // AddTemplateToolStripMenuItem
             // 
-            this.AddTemplateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Lebenslauf_Muster_32;
-            this.AddTemplateToolStripMenuItem.Name = "AddTemplateToolStripMenuItem";
             resources.ApplyResources(this.AddTemplateToolStripMenuItem, "AddTemplateToolStripMenuItem");
+            this.AddTemplateToolStripMenuItem.Name = "AddTemplateToolStripMenuItem";
             this.AddTemplateToolStripMenuItem.Tag = "addtemplate";
             // 
             // AddDynamicTemplateToolStripMenuItem
             // 
-            this.AddDynamicTemplateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Lebenslauf_Vorlage_laden_32;
-            this.AddDynamicTemplateToolStripMenuItem.Name = "AddDynamicTemplateToolStripMenuItem";
             resources.ApplyResources(this.AddDynamicTemplateToolStripMenuItem, "AddDynamicTemplateToolStripMenuItem");
+            this.AddDynamicTemplateToolStripMenuItem.Name = "AddDynamicTemplateToolStripMenuItem";
             this.AddDynamicTemplateToolStripMenuItem.Tag = "adddynamictemplate";
             // 
             // AddObjectTypeToolStripMenuItem
             // 
-            this.AddObjectTypeToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Typ_32;
-            this.AddObjectTypeToolStripMenuItem.Name = "AddObjectTypeToolStripMenuItem";
             resources.ApplyResources(this.AddObjectTypeToolStripMenuItem, "AddObjectTypeToolStripMenuItem");
+            this.AddObjectTypeToolStripMenuItem.Name = "AddObjectTypeToolStripMenuItem";
             this.AddObjectTypeToolStripMenuItem.Tag = "addobjecttype";
             // 
             // AddJavascriptToolStripMenuItem
             // 
-            this.AddJavascriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_JS_32;
-            this.AddJavascriptToolStripMenuItem.Name = "AddJavascriptToolStripMenuItem";
             resources.ApplyResources(this.AddJavascriptToolStripMenuItem, "AddJavascriptToolStripMenuItem");
+            this.AddJavascriptToolStripMenuItem.Name = "AddJavascriptToolStripMenuItem";
             this.AddJavascriptToolStripMenuItem.Tag = "addjavascript";
             // 
             // AddImpliedTypeToolStripMenuItem
             // 
-            this.AddImpliedTypeToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Gleich_32;
-            this.AddImpliedTypeToolStripMenuItem.Name = "AddImpliedTypeToolStripMenuItem";
             resources.ApplyResources(this.AddImpliedTypeToolStripMenuItem, "AddImpliedTypeToolStripMenuItem");
+            this.AddImpliedTypeToolStripMenuItem.Name = "AddImpliedTypeToolStripMenuItem";
             this.AddImpliedTypeToolStripMenuItem.Tag = "addimpliedtype";
             // 
             // AddDelegateToolStripMenuItem
             // 
-            this.AddDelegateToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Helfende_Hand_32;
-            this.AddDelegateToolStripMenuItem.Name = "AddDelegateToolStripMenuItem";
             resources.ApplyResources(this.AddDelegateToolStripMenuItem, "AddDelegateToolStripMenuItem");
+            this.AddDelegateToolStripMenuItem.Name = "AddDelegateToolStripMenuItem";
             this.AddDelegateToolStripMenuItem.Tag = "adddelegate";
             // 
             // ctlTreeView
             // 
             this.ctlTreeView.AllowDrop = true;
-            this.ctlTreeView.BackColor = System.Drawing.Color.White;
+            this.ctlTreeView.BackColor = System.Drawing.Color.GhostWhite;
+            this.ctlTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ctlTreeView.ContextMenuStrip = this.ctlContextMenu;
             resources.ApplyResources(this.ctlTreeView, "ctlTreeView");
             this.ctlTreeView.ForeColor = System.Drawing.Color.Black;
@@ -365,8 +365,8 @@
             // 
             this.ctlImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ctlImageList.ImageStream")));
             this.ctlImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.ctlImageList.Images.SetKeyName(0, "icons8-Mappe-16.png");
-            this.ctlImageList.Images.SetKeyName(1, "icons8-Ordner öffnen-16.png");
+            this.ctlImageList.Images.SetKeyName(0, "s_object_close.png");
+            this.ctlImageList.Images.SetKeyName(1, "s_object_open.png");
             // 
             // roomToolStripMenuItem
             // 
@@ -379,9 +379,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.GhostWhite;
             this.Controls.Add(this.ctlTreeView);
-            this.Controls.Add(this.ctlToolStrip);
             this.Controls.Add(this.lstSearchResults);
+            this.Controls.Add(this.ctlToolStrip);
             this.Controls.Add(this.pnlSearchContainer);
+            this.ForeColor = System.Drawing.Color.Black;
             this.Name = "WFEditorTree";
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
@@ -399,8 +400,6 @@
         internal System.Windows.Forms.ToolStripDropDownButton mnuFilter;
         internal System.Windows.Forms.ListView lstSearchResults;
         internal System.Windows.Forms.ColumnHeader colSearchResults;
-        internal System.Windows.Forms.Button cmdClose;
-        internal System.Windows.Forms.Button cmdSearch;
         internal System.Windows.Forms.Panel pnlSearchContainer;
         internal System.Windows.Forms.TreeView ctlTreeView;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -432,5 +431,7 @@
         internal System.Windows.Forms.ToolStripMenuItem AddDelegateToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip ctlContextMenu;
         private System.Windows.Forms.ImageList ctlImageList;
+        internal System.Windows.Forms.Button cmdSearch;
+        internal System.Windows.Forms.Button cmdClose;
     }
 }

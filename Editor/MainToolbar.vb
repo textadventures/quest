@@ -458,4 +458,7 @@ Public Class MainToolbar
         ToolStripSeparator2.Visible = Not CodeView
     End Sub
 
+    Private Sub butPaste_Click(sender As Object, e As EventArgs) Handles butPaste.Click
+
+    End Sub
 End Class

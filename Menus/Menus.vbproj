@@ -132,9 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -162,187 +162,109 @@
     <None Include="Resources\DocumentHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Aufzeichnen-32.png" />
+    <None Include="Resources\s_about.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Ausschneiden-32.png" />
+    <None Include="Resources\s_add_page.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Bearbeiten-32.png" />
+    <None Include="Resources\s_code.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Datei-32.png" />
+    <None Include="Resources\s_command.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Detailansicht-32.png" />
+    <None Include="Resources\s_copy.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Einstellungen-32.png" />
+    <None Include="Resources\s_cut.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Ersetzen-32.png" />
+    <None Include="Resources\s_debug.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fehler-32.png" />
+    <None Include="Resources\s_delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fenster schließen-32.png" />
+    <None Include="Resources\s_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fragen-32.png" />
+    <None Include="Resources\s_exit.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Häkchen-32.png" />
+    <None Include="Resources\s_forum.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Herunterfahren-32.png" />
+    <None Include="Resources\s_fullscreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Hilfe-32.png" />
+    <None Include="Resources\s_function.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Info-32.png" />
+    <None Include="Resources\s_help.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Inhalte einfügen-32.png" />
+    <None Include="Resources\s_log.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Kopieren-32.png" />
+    <None Include="Resources\s_new.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-16 %281%29.png" />
+    <None Include="Resources\s_object.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-32 %281%29.png" />
+    <None Include="Resources\s_open.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-32.png" />
+    <None Include="Resources\s_options.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Minus-32.png" />
+    <None Include="Resources\s_paste.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neu erstellen-32.png" />
+    <None Include="Resources\s_play.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neues Dokument-32.png" />
+    <None Include="Resources\s_public.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neustart-32.png" />
+    <None Include="Resources\s_redo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Ordner öffnen-32.png" />
+    <None Include="Resources\s_restart.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Paste-32.png" />
+    <None Include="Resources\s_room.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Pause-32.png" />
+    <None Include="Resources\s_save.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Plus-32.png" />
+    <None Include="Resources\s_save_as.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Quellcode-32.png" />
+    <None Include="Resources\s_search.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Rückgängig machen-32.png" />
+    <None Include="Resources\s_stop.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Schnellvorlauf-32.png" />
+    <None Include="Resources\s_timer.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Speichern als-32.png" />
+    <None Include="Resources\s_turn.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Speichern-32.png" />
+    <None Include="Resources\s_undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Spielen-32.png" />
+    <None Include="Resources\s_verb.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Stop-32.png" />
+    <None Include="Resources\s_walk.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Suche-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suche-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suchen und ersetzen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Test absolviert-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Topfpflanze-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Vollbild-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Wiederholen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Zimmer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Zurückspulen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Datei hinzufügen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Verkleinern-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Erweitern-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-JS-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Typ-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Helfende Hand-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Lebenslauf-Vorlage laden-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Lebenslauf Muster-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Gleich-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Bücherregal-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Gehen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Bauer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Timer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Variable-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Konsole-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Verb-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Ausgang-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Datei hinzufügen-321.png" />
+    <None Include="Resources\s_html.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

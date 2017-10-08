@@ -293,142 +293,73 @@
     <None Include="Resources\addroom.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Aufzeichnen-32.png" />
+    <None Include="Resources\b_add_page.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Ausschneiden-32.png" />
+    <None Include="Resources\b_back.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Bearbeiten-32.png" />
+    <None Include="Resources\b_code.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Datei-32.png" />
+    <None Include="Resources\b_copy.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Detailansicht-32.png" />
+    <None Include="Resources\b_cut.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Einstellungen-32.png" />
+    <None Include="Resources\b_debug.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Ersetzen-32.png" />
+    <None Include="Resources\b_delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fehler-32.png" />
+    <None Include="Resources\b_forward.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fenster schließen-32.png" />
+    <None Include="Resources\b_help.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Fragen-32.png" />
+    <None Include="Resources\b_html.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Häkchen-32.png" />
+    <None Include="Resources\b_log.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Herunterfahren-32.png" />
+    <None Include="Resources\b_object.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Hilfe-32.png" />
+    <None Include="Resources\b_open.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Info-32.png" />
+    <None Include="Resources\b_paste.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Inhalte einfügen-32.png" />
+    <None Include="Resources\b_play.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Kopieren-32.png" />
+    <None Include="Resources\b_repeat.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-16 %281%29.png" />
+    <None Include="Resources\b_room.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-32 %281%29.png" />
+    <None Include="Resources\b_save.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Löschen-32.png" />
+    <None Include="Resources\b_stop.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Minus-32.png" />
+    <None Include="Resources\b_undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neu erstellen-32.png" />
+    <None Include="Resources\b_new.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neues Dokument-32.png" />
+    <None Include="Resources\s_object_close.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons8-Neustart-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Ordner öffnen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Paste-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Pause-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Plus-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Quellcode-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Rückgängig machen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Schnellvorlauf-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Speichern als-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Speichern-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Spielen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Stop-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suche-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suche-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Suchen und ersetzen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Test absolviert-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Topfpflanze-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Vollbild-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Wiederholen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Zimmer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Zurückspulen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Datei hinzufügen-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Mappe-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons8-Ordner öffnen-16.png" />
+    <None Include="Resources\s_object_open.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\questlogo.png" />

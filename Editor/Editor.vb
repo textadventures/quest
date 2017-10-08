@@ -1143,4 +1143,16 @@ Public Class Editor
     Private Sub ToggleWordWrap()
         SetWordWrap(Not m_menu.MenuChecked("wordwrap"))
     End Sub
+
+    Private Sub ctlTree_Load(sender As Object, e As EventArgs) Handles ctlTree.Load
+
+    End Sub
+
+    Private Sub StatusStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles StatusStrip1.ItemClicked
+
+    End Sub
+
+    Private Sub ctlReloadBanner_Load(sender As Object, e As EventArgs) Handles ctlReloadBanner.Load
+
+    End Sub
 End Class

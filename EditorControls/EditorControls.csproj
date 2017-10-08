@@ -551,47 +551,103 @@
     <Resource Include="Images\EditCodeHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\icons8-Aufzeichnen-16.png" />
-    <Resource Include="Resources\icons8-Ausgang-32.png" />
-    <Resource Include="Resources\icons8-Bauer-32.png" />
-    <Resource Include="Resources\icons8-Bearbeiten-32.png" />
-    <Resource Include="Resources\icons8-Bücherregal-32.png" />
-    <Resource Include="Resources\icons8-Datei hinzufügen-16.png" />
-    <Resource Include="Resources\icons8-Datei hinzufügen-32.png" />
-    <Resource Include="Resources\icons8-Domain-16.png" />
-    <Resource Include="Resources\icons8-Eigenschaft bearbeiten-16.png" />
-    <Resource Include="Resources\icons8-Erweitern-32.png" />
-    <Resource Include="Resources\icons8-Gehen-32.png" />
-    <Resource Include="Resources\icons8-Gleich-32.png" />
-    <Resource Include="Resources\icons8-Helfende Hand-32.png" />
-    <Resource Include="Resources\icons8-Joyent.png" />
-    <Resource Include="Resources\icons8-JS-32.png" />
-    <Resource Include="Resources\icons8-Konsole-32.png" />
-    <Resource Include="Resources\icons8-Lebenslauf Muster-32.png" />
-    <Resource Include="Resources\icons8-Lebenslauf-Vorlage laden-32.png" />
-    <Resource Include="Resources\icons8-Link hinzufügen-16.png" />
-    <Resource Include="Resources\icons8-Löschen-16 %281%29.png" />
-    <Resource Include="Resources\icons8-Löschen-32.png" />
-    <Resource Include="Resources\icons8-Minus-16.png" />
-    <Resource Include="Resources\icons8-Oben-16.png" />
-    <Resource Include="Resources\icons8-Plus-16.png" />
-    <Resource Include="Resources\icons8-Spielen-16.png" />
-    <Resource Include="Resources\icons8-Suche-16.png" />
-    <Resource Include="Resources\icons8-Timer-32.png" />
-    <Resource Include="Resources\icons8-Topfpflanze-32.png" />
-    <Resource Include="Resources\icons8-Typ-32.png" />
-    <Resource Include="Resources\icons8-Umbenennen-16.png" />
-    <Resource Include="Resources\icons8-Unten-16.png" />
-    <Resource Include="Resources\icons8-Variable-32.png" />
-    <Resource Include="Resources\icons8-Verb-32.png" />
-    <Resource Include="Resources\icons8-Verkleinern-32.png" />
-    <Resource Include="Resources\icons8-Zimmer-32.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\MakeEditCopy.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\AddScript.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_tv_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_tv_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_command.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_room.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_turn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_verb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_change_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_code_win.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_copy_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_domain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_link.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_record.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_rename_key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

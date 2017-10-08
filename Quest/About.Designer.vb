@@ -25,19 +25,19 @@ Partial Class About
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(About))
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.lblTitle = New System.Windows.Forms.TextBox()
-        Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.lblBuild = New System.Windows.Forms.TextBox()
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.lblCopyright = New System.Windows.Forms.TextBox()
+        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.lblBuild = New System.Windows.Forms.TextBox()
+        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lblTitle = New System.Windows.Forms.TextBox()
         Me.Panel5 = New System.Windows.Forms.Panel()
         Me.btnClose = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
-        Me.Panel2.SuspendLayout()
-        Me.Panel3.SuspendLayout()
         Me.Panel4.SuspendLayout()
+        Me.Panel3.SuspendLayout()
+        Me.Panel2.SuspendLayout()
         Me.Panel5.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -45,7 +45,7 @@ Partial Class About
         '
         Me.PictureBox1.BackColor = System.Drawing.Color.GhostWhite
         resources.ApplyResources(Me.PictureBox1, "PictureBox1")
-        Me.PictureBox1.Image = Global.TextAdventures.Quest.My.Resources.Resources.quest
+        Me.PictureBox1.Image = Global.TextAdventures.Quest.My.Resources.Resources.questlogo
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.TabStop = False
         '
@@ -57,20 +57,19 @@ Partial Class About
         resources.ApplyResources(Me.Panel1, "Panel1")
         Me.Panel1.Name = "Panel1"
         '
-        'Panel2
+        'Panel4
         '
-        Me.Panel2.Controls.Add(Me.lblTitle)
-        resources.ApplyResources(Me.Panel2, "Panel2")
-        Me.Panel2.Name = "Panel2"
+        Me.Panel4.Controls.Add(Me.lblCopyright)
+        resources.ApplyResources(Me.Panel4, "Panel4")
+        Me.Panel4.Name = "Panel4"
         '
-        'lblTitle
+        'lblCopyright
         '
-        Me.lblTitle.BackColor = System.Drawing.Color.GhostWhite
-        Me.lblTitle.BorderStyle = System.Windows.Forms.BorderStyle.None
-        resources.ApplyResources(Me.lblTitle, "lblTitle")
-        Me.lblTitle.Name = "lblTitle"
-        Me.lblTitle.ReadOnly = True
-        Me.lblTitle.TabStop = False
+        Me.lblCopyright.BackColor = System.Drawing.Color.GhostWhite
+        Me.lblCopyright.BorderStyle = System.Windows.Forms.BorderStyle.None
+        resources.ApplyResources(Me.lblCopyright, "lblCopyright")
+        Me.lblCopyright.Name = "lblCopyright"
+        Me.lblCopyright.TabStop = False
         '
         'Panel3
         '
@@ -88,19 +87,20 @@ Partial Class About
         Me.lblBuild.ReadOnly = True
         Me.lblBuild.TabStop = False
         '
-        'Panel4
+        'Panel2
         '
-        Me.Panel4.Controls.Add(Me.lblCopyright)
-        resources.ApplyResources(Me.Panel4, "Panel4")
-        Me.Panel4.Name = "Panel4"
+        Me.Panel2.Controls.Add(Me.lblTitle)
+        resources.ApplyResources(Me.Panel2, "Panel2")
+        Me.Panel2.Name = "Panel2"
         '
-        'lblCopyright
+        'lblTitle
         '
-        Me.lblCopyright.BackColor = System.Drawing.Color.GhostWhite
-        Me.lblCopyright.BorderStyle = System.Windows.Forms.BorderStyle.None
-        resources.ApplyResources(Me.lblCopyright, "lblCopyright")
-        Me.lblCopyright.Name = "lblCopyright"
-        Me.lblCopyright.TabStop = False
+        Me.lblTitle.BackColor = System.Drawing.Color.GhostWhite
+        Me.lblTitle.BorderStyle = System.Windows.Forms.BorderStyle.None
+        resources.ApplyResources(Me.lblTitle, "lblTitle")
+        Me.lblTitle.Name = "lblTitle"
+        Me.lblTitle.ReadOnly = True
+        Me.lblTitle.TabStop = False
         '
         'Panel5
         '
@@ -129,12 +129,12 @@ Partial Class About
         Me.Name = "About"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
-        Me.Panel2.ResumeLayout(False)
-        Me.Panel2.PerformLayout()
-        Me.Panel3.ResumeLayout(False)
-        Me.Panel3.PerformLayout()
         Me.Panel4.ResumeLayout(False)
         Me.Panel4.PerformLayout()
+        Me.Panel3.ResumeLayout(False)
+        Me.Panel3.PerformLayout()
+        Me.Panel2.ResumeLayout(False)
+        Me.Panel2.PerformLayout()
         Me.Panel5.ResumeLayout(False)
         Me.ResumeLayout(False)
 

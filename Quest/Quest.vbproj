@@ -286,13 +286,13 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Quest_TemporaryKey.pfx" />
-    <None Include="Resources\quest.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="jfwapi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="q2_48x48c.ico" />
+    <None Include="Resources\questlogo.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -22,8 +22,10 @@ Partial Class Editor
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Editor))
         Me.splitMain = New System.Windows.Forms.SplitContainer()
         Me.ctlTree = New TextAdventures.Quest.EditorControls.WFEditorTree()
+        Me.Splitter1 = New System.Windows.Forms.Splitter()
         Me.pnlContent = New System.Windows.Forms.Panel()
         Me.pnlHeader = New System.Windows.Forms.Panel()
         Me.ctlBanner = New TextAdventures.Quest.AlertBanner()
@@ -45,107 +47,81 @@ Partial Class Editor
         'splitMain
         '
         Me.splitMain.BackColor = System.Drawing.Color.GhostWhite
-        Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
+        resources.ApplyResources(Me.splitMain, "splitMain")
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
-        Me.splitMain.Location = New System.Drawing.Point(0, 80)
-        Me.splitMain.Margin = New System.Windows.Forms.Padding(4)
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
         '
         Me.splitMain.Panel1.Controls.Add(Me.ctlTree)
+        Me.splitMain.Panel1.Controls.Add(Me.Splitter1)
         '
         'splitMain.Panel2
         '
         Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
         Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
         Me.splitMain.Panel2.Controls.Add(Me.StatusStrip1)
-        Me.splitMain.Size = New System.Drawing.Size(824, 325)
-        Me.splitMain.SplitterDistance = 300
-        Me.splitMain.SplitterWidth = 5
-        Me.splitMain.TabIndex = 0
         '
         'ctlTree
         '
         Me.ctlTree.BackColor = System.Drawing.Color.GhostWhite
-        Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
+        resources.ApplyResources(Me.ctlTree, "ctlTree")
+        Me.ctlTree.ForeColor = System.Drawing.Color.Black
         Me.ctlTree.IncludeRootLevelInSearchResults = True
-        Me.ctlTree.Location = New System.Drawing.Point(0, 0)
-        Me.ctlTree.Margin = New System.Windows.Forms.Padding(5)
         Me.ctlTree.Name = "ctlTree"
         Me.ctlTree.ShowFilterBar = True
-        Me.ctlTree.Size = New System.Drawing.Size(300, 325)
-        Me.ctlTree.TabIndex = 0
+        '
+        'Splitter1
+        '
+        Me.Splitter1.Cursor = System.Windows.Forms.Cursors.Default
+        resources.ApplyResources(Me.Splitter1, "Splitter1")
+        Me.Splitter1.Name = "Splitter1"
+        Me.Splitter1.TabStop = False
         '
         'pnlContent
         '
         Me.pnlContent.BackColor = System.Drawing.Color.GhostWhite
-        Me.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlContent.Location = New System.Drawing.Point(0, 30)
-        Me.pnlContent.Margin = New System.Windows.Forms.Padding(4)
+        resources.ApplyResources(Me.pnlContent, "pnlContent")
         Me.pnlContent.Name = "pnlContent"
-        Me.pnlContent.Size = New System.Drawing.Size(519, 270)
-        Me.pnlContent.TabIndex = 1
         '
         'pnlHeader
         '
-        Me.pnlHeader.AutoSize = True
+        resources.ApplyResources(Me.pnlHeader, "pnlHeader")
         Me.pnlHeader.Controls.Add(Me.ctlBanner)
-        Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
-        Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
-        Me.pnlHeader.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlHeader.Name = "pnlHeader"
-        Me.pnlHeader.Size = New System.Drawing.Size(519, 30)
-        Me.pnlHeader.TabIndex = 0
         '
         'ctlBanner
         '
         Me.ctlBanner.AlertText = "Text"
         Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlBanner.ButtonText = "Action"
-        Me.ctlBanner.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlBanner.Location = New System.Drawing.Point(0, 0)
-        Me.ctlBanner.Margin = New System.Windows.Forms.Padding(5)
+        resources.ApplyResources(Me.ctlBanner, "ctlBanner")
         Me.ctlBanner.Name = "ctlBanner"
-        Me.ctlBanner.Padding = New System.Windows.Forms.Padding(1, 1, 5, 1)
-        Me.ctlBanner.Size = New System.Drawing.Size(519, 30)
-        Me.ctlBanner.TabIndex = 1
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.AutoSize = False
+        resources.ApplyResources(Me.StatusStrip1, "StatusStrip1")
         Me.StatusStrip1.BackColor = System.Drawing.Color.GhostWhite
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblHeader})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 300)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(519, 25)
-        Me.StatusStrip1.TabIndex = 3
-        Me.StatusStrip1.Text = "StatusStrip1"
         '
         'lblHeader
         '
-        Me.lblHeader.Image = Global.TextAdventures.Quest.My.Resources.Resources.icons8_Ordner_öffnen_16
-        Me.lblHeader.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.lblHeader.Image = Global.TextAdventures.Quest.My.Resources.Resources.s_object_open
+        resources.ApplyResources(Me.lblHeader, "lblHeader")
         Me.lblHeader.Name = "lblHeader"
-        Me.lblHeader.Size = New System.Drawing.Size(68, 20)
-        Me.lblHeader.Text = "(none)"
         '
         'ctlSaveFile
         '
         Me.ctlSaveFile.DefaultExt = "aslx"
-        Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
+        resources.ApplyResources(Me.ctlSaveFile, "ctlSaveFile")
         '
         'ctlTextEditor
         '
-        Me.ctlTextEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        resources.ApplyResources(Me.ctlTextEditor, "ctlTextEditor")
         Me.ctlTextEditor.EditText = ""
-        Me.ctlTextEditor.Location = New System.Drawing.Point(0, 80)
-        Me.ctlTextEditor.Margin = New System.Windows.Forms.Padding(5)
         Me.ctlTextEditor.Name = "ctlTextEditor"
-        Me.ctlTextEditor.Size = New System.Drawing.Size(824, 325)
-        Me.ctlTextEditor.TabIndex = 3
-        Me.ctlTextEditor.Visible = False
         Me.ctlTextEditor.WordWrap = False
         '
         'ctlReloadBanner
@@ -154,43 +130,29 @@ Partial Class Editor
     " of the file."
         Me.ctlReloadBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlReloadBanner.ButtonText = "Reload"
-        Me.ctlReloadBanner.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlReloadBanner.Location = New System.Drawing.Point(0, 50)
-        Me.ctlReloadBanner.Margin = New System.Windows.Forms.Padding(5)
+        resources.ApplyResources(Me.ctlReloadBanner, "ctlReloadBanner")
         Me.ctlReloadBanner.Name = "ctlReloadBanner"
-        Me.ctlReloadBanner.Padding = New System.Windows.Forms.Padding(1, 1, 5, 1)
-        Me.ctlReloadBanner.Size = New System.Drawing.Size(824, 30)
-        Me.ctlReloadBanner.TabIndex = 4
-        Me.ctlReloadBanner.Visible = False
         '
         'ctlLoading
         '
         Me.ctlLoading.BackColor = System.Drawing.Color.White
-        Me.ctlLoading.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlLoading.Location = New System.Drawing.Point(0, 0)
-        Me.ctlLoading.Margin = New System.Windows.Forms.Padding(5)
+        resources.ApplyResources(Me.ctlLoading, "ctlLoading")
         Me.ctlLoading.Name = "ctlLoading"
-        Me.ctlLoading.Size = New System.Drawing.Size(824, 405)
-        Me.ctlLoading.TabIndex = 9
         '
         'ctlToolbar
         '
         Me.ctlToolbar.BackColor = System.Drawing.Color.GhostWhite
         Me.ctlToolbar.CodeView = False
-        Me.ctlToolbar.Dock = System.Windows.Forms.DockStyle.Top
+        resources.ApplyResources(Me.ctlToolbar, "ctlToolbar")
         Me.ctlToolbar.EditorStyle = TextAdventures.Quest.EditorStyle.TextAdventure
-        Me.ctlToolbar.Location = New System.Drawing.Point(0, 0)
-        Me.ctlToolbar.Margin = New System.Windows.Forms.Padding(5)
         Me.ctlToolbar.Name = "ctlToolbar"
         Me.ctlToolbar.RedoButtonEnabled = False
         Me.ctlToolbar.SimpleMode = False
-        Me.ctlToolbar.Size = New System.Drawing.Size(824, 50)
-        Me.ctlToolbar.TabIndex = 2
         Me.ctlToolbar.UndoButtonEnabled = False
         '
         'Editor
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.GhostWhite
         Me.Controls.Add(Me.splitMain)
@@ -198,9 +160,7 @@ Partial Class Editor
         Me.Controls.Add(Me.ctlReloadBanner)
         Me.Controls.Add(Me.ctlToolbar)
         Me.Controls.Add(Me.ctlLoading)
-        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "Editor"
-        Me.Size = New System.Drawing.Size(824, 405)
         Me.splitMain.Panel1.ResumeLayout(False)
         Me.splitMain.Panel2.ResumeLayout(False)
         Me.splitMain.Panel2.PerformLayout()
@@ -224,4 +184,5 @@ Partial Class Editor
     Friend WithEvents ctlToolbar As MainToolbar
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents lblHeader As ToolStripStatusLabel
+    Friend WithEvents Splitter1 As Splitter
 End Class

@@ -76,21 +76,21 @@
             // 
             resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.AutoToolTip = false;
-            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Plus_16;
+            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             this.cmdAdd.Name = "cmdAdd";
             // 
             // cmdDelete
             // 
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.AutoToolTip = false;
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Minus_16;
+            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             this.cmdDelete.Name = "cmdDelete";
             // 
             // cmdAddNewPage
             // 
             resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.AutoToolTip = false;
-            this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Datei_hinzufügen_16;
+            this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add_page;
             this.cmdAddNewPage.Name = "cmdAddNewPage";
             this.cmdAddNewPage.Tag = "addpage";
             // 
@@ -98,7 +98,7 @@
             // 
             resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.AutoToolTip = false;
-            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Link_hinzufügen_16;
+            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
             this.cmdLink.Name = "cmdLink";
             this.cmdLink.Tag = "link";
             // 
@@ -106,21 +106,21 @@
             // 
             resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.AutoToolTip = false;
-            this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Umbenennen_16;
+            this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_rename_key;
             this.cmdEditKey.Name = "cmdEditKey";
             // 
             // cmdEdit
             // 
             resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.AutoToolTip = false;
-            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Eigenschaft_bearbeiten_16;
+            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
             this.cmdEdit.Name = "cmdEdit";
             // 
             // cmdGoToPage
             // 
             resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.AutoToolTip = false;
-            this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Domain_16;
+            this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_domain;
             this.cmdGoToPage.Name = "cmdGoToPage";
             this.cmdGoToPage.Tag = "goto";
             // 
@@ -128,7 +128,7 @@
             // 
             resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.AutoToolTip = false;
-            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Oben_16;
+            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_up;
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
@@ -136,7 +136,7 @@
             // 
             resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.AutoToolTip = false;
-            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.icons8_Unten_16;
+            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_down;
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 

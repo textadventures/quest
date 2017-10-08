@@ -118,6 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="FileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 24</value>
+  </data>
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Datei</value>
+  </data>
+  <data name="EditToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 24</value>
+  </data>
+  <data name="EditToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Bearbeiten</value>
+  </data>
+  <data name="ViewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 24</value>
+  </data>
+  <data name="ViewToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Ansicht</value>
+  </data>
+  <data name="AddMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>97, 24</value>
+  </data>
+  <data name="AddMenuItem.Text" xml:space="preserve">
+    <value>Hinzu&amp;fügen</value>
+  </data>
+  <data name="LanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 24</value>
+  </data>
+  <data name="LanguageToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Sprache</value>
+  </data>
+  <data name="HelpToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Hilfe</value>
+  </data>
   <data name="OpenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>249, 26</value>
   </data>
@@ -132,20 +165,6 @@
   </data>
   <data name="ToolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
     <value>246, 6</value>
-  </data>
-  <data name="CreateNewGameToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAd9JREFUWEfF
-        VkFOwzAQzBN6rOJW4gn8BCTK3YEPID5Aj72AKs5I9Nqe+AGVgHKEG/wi+UHYcZwqOGvXjhN1pJGieL07
-        XtvrTUIwTeU58Xki5OsklV9TkZUgvvEPY9M0O9Pm/WA8lifKsZB5HfAwyZbmjEZypN10A61sHhbYpMzJ
-        x13lLQBQ3kxxLOHLOxtCyNO4Vdsoc/jWYXhApRn8+uqxXK/fyt3Hj5O3N0+NYDbK3JoJLu2Xs0UZAh8R
-        iKFD/gcNzE3jh/sX7doNBK7hKWJeRdVQV43Zd18BsA0TYWwFFY8VZxgiAAwSkWYrHZ4EiKxoGRBDBYD+
-        ImReBUd5ZQ26CQCbInCLzPE9KbY1/aCvgNnFokVcXQA+ON8gvR/LZCKyLTcI+gpwwS0g20LANzcIDi4A
-        NYEbqDm0APD4Ao66BRT7+Iewj2voglsAXcM+CpELLgGqEKlqGFmKXXAIKFRwIPYxcsEqIG08RlUn1M7C
-        gAKKVmcU05C4wAloNSQ1zJoQ2pJxgI+mT3X3beC2As/pZvNefu5+g4g5zFPcTr2Jqi3nb0Uki4NteQ2o
-        NLcjhvB1cOUc9MGMyUZhPXC+UOciVXUiREiBOZ1W7YIq2+QYj0hzi/Bd/ZPLfXn1QpL8AaC+GScOhQ3/
-        AAAAAElFTkSuQmCC
-</value>
   </data>
   <data name="CreateNewGameToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>249, 26</value>
@@ -203,12 +222,6 @@
   </data>
   <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>Been&amp;den</value>
-  </data>
-  <data name="FileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 24</value>
-  </data>
-  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Datei</value>
   </data>
   <data name="UndoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>223, 26</value>
@@ -270,12 +283,6 @@
   <data name="ReplaceToolStripMenuItem.Text" xml:space="preserve">
     <value>Ersetzen...</value>
   </data>
-  <data name="EditToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 24</value>
-  </data>
-  <data name="EditToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Bearbeiten</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="FullScreenToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Strg+Alt+V</value>
@@ -285,12 +292,6 @@
   </data>
   <data name="LogToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Protokoll</value>
-  </data>
-  <data name="ViewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 24</value>
-  </data>
-  <data name="ViewToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Ansicht</value>
   </data>
   <data name="CommandToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+K</value>
@@ -321,6 +322,9 @@
   </data>
   <data name="FunctionToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Funktion</value>
+  </data>
+  <data name="AdvancedToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Fortgeschritten</value>
   </data>
   <data name="EditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>219, 26</value>
@@ -364,15 +368,6 @@
   <data name="DelegateToolStripMenuItem.Text" xml:space="preserve">
     <value>Dele&amp;gieren</value>
   </data>
-  <data name="AdvancedToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Fortgeschritten</value>
-  </data>
-  <data name="AddMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 24</value>
-  </data>
-  <data name="AddMenuItem.Text" xml:space="preserve">
-    <value>Hinzu&amp;fügen</value>
-  </data>
   <data name="PublishToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Veröffentlichen...</value>
   </data>
@@ -389,16 +384,10 @@
     <value>&amp;Optionen...</value>
   </data>
   <data name="EnglishToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 26</value>
+    <value>137, 26</value>
   </data>
   <data name="DeutschToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 26</value>
-  </data>
-  <data name="LanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 24</value>
-  </data>
-  <data name="LanguageToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Sprache</value>
+    <value>137, 26</value>
   </data>
   <data name="ViewHelpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 26</value>
@@ -429,8 +418,5 @@
   </data>
   <data name="AboutToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Über...</value>
-  </data>
-  <data name="HelpToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Hilfe</value>
   </data>
 </root>

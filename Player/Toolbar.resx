@@ -117,74 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="butStop.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
-    <value>Magenta</value>
-  </data>
-  <data name="&gt;&gt;ctlToolStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>8, 16</value>
-  </data>
-  <data name="butHTML.Text" xml:space="preserve">
-    <value>HTML Tools</value>
-  </data>
-  <data name="butDebugger.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 47</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>Toolbar</value>
+  <metadata name="ctlToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ctlToolStrip.AutoSize" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="butDebugger.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+  <data name="butStop.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
-  <data name="&gt;&gt;ctlToolStrip.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="butHTML.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
-    <value>None</value>
-  </data>
-  <data name="&gt;&gt;butDebugger.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;butStop.Name" xml:space="preserve">
-    <value>butStop</value>
-  </data>
-  <data name="butHTML.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 47</value>
-  </data>
-  <data name="butStop.Text" xml:space="preserve">
-    <value>Stop Game</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ctlToolStrip.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="butDebugger.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="butStop.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
     <value>Magenta</value>
   </data>
   <data name="butStop.Size" type="System.Drawing.Size, System.Drawing">
     <value>119, 47</value>
   </data>
-  <data name="ctlToolStrip.Text" xml:space="preserve">
-    <value>ToolStrip1</value>
+  <data name="butStop.Text" xml:space="preserve">
+    <value>Stop Game</value>
   </data>
-  <data name="ctlToolStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="butDebugger.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
   </data>
-  <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>801, 50</value>
-  </data>
-  <data name="butHTML.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+  <data name="butDebugger.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
     <value>Magenta</value>
   </data>
-  <data name="butLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 47</value>
+  <data name="butDebugger.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 47</value>
+  </data>
+  <data name="butDebugger.Text" xml:space="preserve">
+    <value>Debugger</value>
   </data>
   <data name="butLog.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
@@ -192,52 +156,88 @@
   <data name="butLog.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
     <value>Magenta</value>
   </data>
+  <data name="butLog.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 47</value>
+  </data>
+  <data name="butLog.Text" xml:space="preserve">
+    <value>Log</value>
+  </data>
+  <data name="butHTML.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="butHTML.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="butHTML.Size" type="System.Drawing.Size, System.Drawing">
+    <value>123, 47</value>
+  </data>
+  <data name="butHTML.Text" xml:space="preserve">
+    <value>HTML Tools</value>
+  </data>
+  <data name="ctlToolStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>801, 50</value>
+  </data>
+  <data name="ctlToolStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="ctlToolStrip.Text" xml:space="preserve">
+    <value>ToolStrip1</value>
+  </data>
   <data name="&gt;&gt;ctlToolStrip.Name" xml:space="preserve">
     <value>ctlToolStrip</value>
   </data>
-  <data name="&gt;&gt;butLog.Name" xml:space="preserve">
-    <value>butLog</value>
+  <data name="&gt;&gt;ctlToolStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;ctlToolStrip.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;butDebugger.Name" xml:space="preserve">
-    <value>butDebugger</value>
+  <data name="&gt;&gt;ctlToolStrip.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="butDebugger.Text" xml:space="preserve">
-    <value>Debugger</value>
-  </data>
-  <data name="butStop.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
-    <value>None</value>
-  </data>
-  <data name="ctlToolStrip.AutoSize" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>8, 16</value>
   </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 4, 4, 4</value>
   </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>801, 50</value>
+  </data>
+  <data name="&gt;&gt;butStop.Name" xml:space="preserve">
+    <value>butStop</value>
+  </data>
   <data name="&gt;&gt;butStop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;butDebugger.Name" xml:space="preserve">
+    <value>butDebugger</value>
+  </data>
+  <data name="&gt;&gt;butDebugger.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;butLog.Name" xml:space="preserve">
+    <value>butLog</value>
+  </data>
+  <data name="&gt;&gt;butLog.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;butHTML.Name" xml:space="preserve">
     <value>butHTML</value>
   </data>
-  <data name="&gt;&gt;butLog.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="butLog.Text" xml:space="preserve">
-    <value>Log</value>
-  </data>
   <data name="&gt;&gt;butHTML.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>801, 50</value>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Toolbar</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ctlToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

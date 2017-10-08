@@ -722,5 +722,15 @@ namespace TextAdventures.Quest.EditorControls
         {
             m_separators[key].Visible = visible;
         }
+
+        private void ctlContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
