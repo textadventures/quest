@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.7.6360.27113-->
+<!--Saved by Quest 5.7.6404.15496-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -31,11 +31,39 @@
     <feature_asktell />
     <author>The Pixie</author>
     <feature_limitinventory />
+    <terminate type="boolean">false</terminate>
+    <finished type="boolean">false</finished>
     <roomenter type="script">
     </roomenter>
+    <changecommandscope type="script">
+      sl = NewStringList()
+      foreach (o, items) {
+        list add (sl, o.name)
+      }
+      game.lastscopefound = Join(sl, "|")
+    </changecommandscope>
     <start type="script"><![CDATA[
       player.changedparent => {
       }
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Oddball commands")
+      AssertCommand ("again", "There is nothing to repeat.")
+      AssertCommand ("x backpack", "A small backpack.")
+      AssertCommand ("again", "A small backpack.")
+      AssertCommand ("again", "A small backpack.")
+      game.dropcount = 0
+      AssertCommand ("drop backpack", "You drop it.")
+      Assert (player.parent, backpack.parent)
+      Assert (1, game.dropcount)
+      AssertCommand ("undo", "A small backpack.")
+      Assert (player, backpack.parent)
+      game.testcount = game.testcount + 3
+      Assert (0, game.dropcount)
+      AssertCommand ("x bakpack", "I can't see that.")
+      AssertCommand ("oops backpack", "A small backpack.")
+      //
+      // -------------------------------------------------------------------------
       Testing ("Formating numbers")
       Assert ("12.34", Decimalise(1234, 2))
       Assert ("123.4", Decimalise(1234, 1))
@@ -224,144 +252,7 @@
       //
       //
       // -------------------------------------------------------------------------
-      Testing ("Clothing - baseline")
-      SetVerbs
-      Assert (2, player.bonus1)
-      Assert (4, player.bonus2)
-      Assert (0, GetArmour())
-      Assert ("nothing", FormatList(ListWornFor(player), ",", "and", "nothing"))
-      Assert ("nothing", ListClothes())
-      Assert (0, WornCount())
-      //
-      Testing ("Clothing - Putting things on")
-      Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
-      WearGarment (overalls)
-      Assert (1, WornCount())
-      Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
-      WearGarment (coat)
-      Assert (2, WornCount())
-      Assert ("Look at", Join(overalls.inventoryverbs, ";"))
-      Assert ("overalls (worn)", overalls.alias)
-      Assert ("overcoat (worn)", coat.alias)
-      Assert (3, player.bonus1)
-      Assert (2, player.bonus2)
-      Assert (coat, GetOuter("torso"))
-      Assert (overalls, GetOuter("legs"))
-      Assert (null, GetOuter("head"))
-      Assert ("an overcoat (worn) and overalls (worn)", FormatList(ListWornFor(player), ",", "and", "nothing"))
-      Assert ("an overcoat and overalls", ListClothes())
-      Assert (24, GetArmour())
-      Assert (8, _GetSlotArmour(player, "torso"))
-      //
-      Testing ("Clothing - Removing items")
-      RemoveGarment (coat)
-      Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
-      RemoveGarment (overalls)
-      Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
-      Assert (2, player.bonus1)
-      Assert (4, player.bonus2)
-      Assert ("overalls", overalls.alias)
-      Assert ("overcoat", coat.alias)
-      Assert (0, GetArmour())
-      //
-      Testing ("Clothing - aliases")
-      // Testing an issue that the alias disappeared after repeated wearing
-      WearGarment (coat)
-      Assert ("overcoat (worn)", coat.alias)
-      Assert ("overcoat (worn)", coat.listalias)
-      RemoveGarment (coat)
-      Assert ("overcoat", coat.alias)
-      Assert ("overcoat", coat.listalias)
-      WearGarment (coat)
-      Assert ("overcoat (worn)", coat.alias)
-      Assert ("overcoat (worn)", coat.listalias)
-      RemoveGarment (coat)
-      Assert ("overcoat", coat.alias)
-      Assert ("overcoat", coat.listalias)
-      //
-      Testing ("Clothing - NPCs")
-      Assert (null, GetOuterFor(mary, "torso"))
-      underwear.worn = true
-      Assert ("underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
-      Assert (underwear, GetOuterFor(mary, "torso"))
-      dress.worn = true
-      Assert ("a Dress and underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
-      Assert ("a Dress", FormatList(ListVisibleFor(mary), ",", "and", "nothing"))
-      Assert (dress, GetOuterFor(mary, "legs"))
-      Assert (null, GetOuterFor(mary, "head"))
-      //
-      Testing ("Clothing - commands")
-      AssertCommand ("wear overcoat", "You put it on.")
-      AssertCommand ("put overcoat on", "You are already wearing it.")
-      AssertCommand ("put on overalls", "You cannot wear that over an overcoat.")
-      AssertCommand ("doff overcoat", "You take it off.")
-      AssertCommand ("don overalls", "You put them on.")
-      AssertCommand ("wear overcoat", "You put it on.")
-      AssertCommand ("take overalls off", "You can't remove that while wearing an overcoat.")
-      AssertCommand ("take overcoat off", "You take it off.")
-      AssertCommand ("take off overalls", "You take them off.")
-      //
-      Testing ("Clothing - commands 2")
-      player.parent = fifth
-      AssertCommand ("get shoes", "You pick them up.")
-      Assert ("Look at;Drop;Wear", Join(shoes.inventoryverbs, ";"))
-      AssertCommand ("don shoes", "You put them on.")
-      Assert ("Look at;Remove", Join(shoes.inventoryverbs, ";"))
-      AssertCommand ("get socks", "You pick them up.")
-      Assert ("Look at;Drop", Join(socks.inventoryverbs, ";"))
-      //
-      Testing ("Clothing - multistate")
-      AssertCommand ("get jacket", "You pick it up.")
-      Assert ("Look at;Drop;Wear", Join(casual jacket.inventoryverbs, ";"))
-      Assert (2, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket", GetDisplayName(casual jacket))
-      AssertCommand ("don jacket", "You put it on.")
-      Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (3, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
-      AssertCommand ("fasten jacket", "You button up the jacket.")
-      Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (2, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
-      AssertCommand ("fasten jacket", "You button up the jacket.")
-      Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (1, player.cool)
-      Assert (5, player.warm)
-      Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
-      AssertCommand ("fasten jacket", "It already is.")
-      Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (1, player.cool)
-      Assert (5, player.warm)
-      Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
-      AssertCommand ("unfasten jacket", "You unfasten it.")
-      Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (2, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
-      AssertCommand ("unfasten jacket", "You unfasten it.")
-      Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (3, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
-      AssertCommand ("unfasten jacket", "It already is.")
-      Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
-      Assert (3, player.cool)
-      Assert (3, player.warm)
-      Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
-      //
-      Testing ("Clothing - set alias")
-      SetAlias (casual jacket, "smart jacket")
-      Assert ("a smart jacket (worn unfastened)", GetDisplayName(casual jacket))
-      RemoveGarment (casual jacket)
-      SetAlias (casual jacket, "shabby jacket")
-      Assert ("a shabby jacket", GetDisplayName(casual jacket))
-      SetAlias (tiger, "Lion")
-      Assert ("Lion", tiger.alias)
-      SetAlias (tiger, "Tiger")
-      //
+      TestClothing
       //
       //
       // -------------------------------------------------------------------------
@@ -514,6 +405,46 @@
       player.parent = third
       AssertCommand ("get teapot, tiger", "Tiger: You can't take it.")
       //
+      // -------------------------------------------------------------------------
+      Testing ("Scopes")
+      AssertCommand ("cast spell", "You cast the spell!")
+      AssertCommand ("x spell", "I can't see that.")
+      AssertCommand ("phone mary", "'Hi!' says Mary.")
+      AssertCommand ("x mary", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("buy item4", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      player.parent = seventh
+      AssertCommand ("buy item4", "You buy item4")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("x item4", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("get blue ball", "You pick it up.")
+      Assert ("chest|yellow ball|red ball|blue ball|wall|sky", game.lastscopefound)
+      AssertCommand ("put ball in the chest", "Done.")
+      Assert ("chest|backpack", game.lastscopefound)
+      AssertCommand ("remove blue ball from chest", "You pick it up.")
+      Assert (player, blue ball.parent)
+      // scope is none, but secondary will catch chest
+      AssertCommand ("test chest", "Test chest")
+      Assert ("", game.lastscopefound)
+      CmdScopeTest.scope = "container"
+      AssertCommand ("test chest", "Test chest")
+      Assert ("chest|backpack", game.lastscopefound)
+      CmdScopeTest.scope = "contents"
+      AssertCommand ("test chest", "Test chest")
+      Assert ("yellow ball", game.lastscopefound)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Take all")
+      mary.parent = seventh
+      chest.parent = null
+      teapot.parent = null
+      undroppable object.parent = null
+      script drop object.parent = null
+      shoes.parent = null
+      AssertCommand ("take all", "red ball: You pick it up.")
+      
       Results
     ]]></start>
     <scopebackdrop type="script">
@@ -526,6 +457,7 @@
     <inherit name="editor_room" />
     <attr name="implementation_notes">This is just a test of new features for Quest 5.7</attr>
     <usedefaultprefix />
+    <description>This is a big room.</description>
     <customtp type="script">
       msg ("here1")
       msg ("section=" + section)
@@ -547,6 +479,10 @@
         <feature_container />
         <maxobjects type="int">3</maxobjects>
         <maxvolume type="int">10</maxvolume>
+        <look>A small backpack.</look>
+        <ondrop type="script">
+          game.dropcount = game.dropcount + 1
+        </ondrop>
       </object>
       <object name="coat">
         <inherit name="editor_object" />
@@ -590,6 +526,7 @@
     </exit>
     <object name="mary">
       <inherit name="editor_object" />
+      <inherit name="namedfemale" />
       <alt type="stringlist">
         <value>polly sue</value>
       </alt>
@@ -645,7 +582,6 @@
     <object name="teapot">
       <inherit name="editor_object" />
       <inherit name="specialtype" />
-      <inherit name="container_closed" />
       <inherit name="container_lockable" />
       <take />
       <drop type="boolean">false</drop>
@@ -819,13 +755,80 @@
       <maxvolume type="int">10</maxvolume>
     </object>
   </object>
+  <command name="CmdPhone">
+    <pattern>phone #object#</pattern>
+    <scope>none</scope>
+    <changecommandscope type="script">
+      foreach (o, FilterByType(AllObjects(), "npc_type")) {
+        list add (items, o)
+      }
+    </changecommandscope>
+    <script>
+      msg ("'Hi!' says Mary.")
+    </script>
+  </command>
+  <verb>
+    <property>cast</property>
+    <pattern>cast</pattern>
+    <defaultexpression>"You can't cast " + object.article + "."</defaultexpression>
+    <scope>spellbook</scope>
+  </verb>
+  <object name="spellbook">
+    <inherit name="editor_room" />
+    <object name="spell">
+      <inherit name="editor_object" />
+      <cast type="script">
+        msg ("You cast the spell!")
+      </cast>
+    </object>
+  </object>
+  <object name="stockroom">
+    <inherit name="editor_room" />
+    <object name="item4">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+  <command name="CmdPurchase">
+    <pattern>purchase #object#;buy #object#</pattern>
+    <scope>stock</scope>
+    <script>
+      msg ("You buy " + object.name)
+    </script>
+  </command>
+  <object name="seventh">
+    <inherit name="editor_room" />
+    <stock type="object">stockroom</stock>
+    <object name="chest">
+      <inherit name="editor_object" />
+      <inherit name="container_open" />
+      <feature_container />
+      <object name="yellow ball">
+        <inherit name="editor_object" />
+      </object>
+    </object>
+    <object name="red ball">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="blue ball">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+  </object>
+  <command name="CmdScopeTest">
+    <pattern>test #object#</pattern>
+    <scope>none</scope>
+    <script>
+      msg ("Test " + object.name)
+    </script>
+  </command>
   <type name="specialtype" />
   <function name="Testing" parameters="s">
     game.testingtitle = s
   </function>
   <function name="OutputText" parameters="text">
     game.lastoutputtext = ProcessText(text)
-    if (not GetBoolean(game, "hideoutput")) {
+    if (not GetBoolean(game, "hideoutput") or game.finished) {
       OutputTextRaw (game.lastoutputtext)
     }
   </function>
@@ -912,7 +915,14 @@
     }
     msg (" ")
     msg (" ")
-    finish
+    if (game.terminate) {
+      finish
+    }
+    else {
+      game.finished = true
+      JS.uiShow ("#txtCommandDiv")
+      JS.panesVisible (true)
+    }
   </function>
   <function name="Test" type="string">
     return ("from test")
@@ -923,5 +933,144 @@
   <function name="BuySomething" parameters="obj" type="boolean">
     game.purchasedobject = obj
     return (true)
+  </function>
+  <function name="TestClothing">
+    Testing ("Clothing - baseline")
+    SetVerbs
+    Assert (2, player.bonus1)
+    Assert (4, player.bonus2)
+    Assert (0, GetArmour())
+    Assert ("nothing", FormatList(ListWornFor(player), ",", "and", "nothing"))
+    Assert ("nothing", ListClothes())
+    Assert (0, WornCount())
+    //
+    Testing ("Clothing - Putting things on")
+    Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
+    WearGarment (overalls)
+    Assert (1, WornCount())
+    Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
+    WearGarment (coat)
+    Assert (2, WornCount())
+    Assert ("Look at", Join(overalls.inventoryverbs, ";"))
+    Assert ("overalls (worn)", overalls.alias)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert (3, player.bonus1)
+    Assert (2, player.bonus2)
+    Assert (coat, GetOuter("torso"))
+    Assert (overalls, GetOuter("legs"))
+    Assert (null, GetOuter("head"))
+    Assert ("an overcoat (worn) and overalls (worn)", FormatList(ListWornFor(player), ",", "and", "nothing"))
+    Assert ("an overcoat and overalls", ListClothes())
+    Assert (24, GetArmour())
+    Assert (8, _GetSlotArmour(player, "torso"))
+    //
+    Testing ("Clothing - Removing items")
+    RemoveGarment (coat)
+    Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
+    RemoveGarment (overalls)
+    Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
+    Assert (2, player.bonus1)
+    Assert (4, player.bonus2)
+    Assert ("overalls", overalls.alias)
+    Assert ("overcoat", coat.alias)
+    Assert (0, GetArmour())
+    //
+    Testing ("Clothing - aliases")
+    // Testing an issue that the alias disappeared after repeated wearing
+    WearGarment (coat)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert ("overcoat (worn)", coat.listalias)
+    RemoveGarment (coat)
+    Assert ("overcoat", coat.alias)
+    Assert ("overcoat", coat.listalias)
+    WearGarment (coat)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert ("overcoat (worn)", coat.listalias)
+    RemoveGarment (coat)
+    Assert ("overcoat", coat.alias)
+    Assert ("overcoat", coat.listalias)
+    //
+    Testing ("Clothing - NPCs")
+    Assert (null, GetOuterFor(mary, "torso"))
+    underwear.worn = true
+    Assert ("underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
+    Assert (underwear, GetOuterFor(mary, "torso"))
+    dress.worn = true
+    Assert ("a Dress and underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
+    Assert ("a Dress", FormatList(ListVisibleFor(mary), ",", "and", "nothing"))
+    Assert (dress, GetOuterFor(mary, "legs"))
+    Assert (null, GetOuterFor(mary, "head"))
+    //
+    Testing ("Clothing - commands")
+    AssertCommand ("wear overcoat", "You put it on.")
+    AssertCommand ("put overcoat on", "You are already wearing it.")
+    AssertCommand ("put on overalls", "You cannot wear that over an overcoat.")
+    AssertCommand ("doff overcoat", "You take it off.")
+    AssertCommand ("don overalls", "You put them on.")
+    AssertCommand ("wear overcoat", "You put it on.")
+    AssertCommand ("take overalls off", "You can't remove that while wearing an overcoat.")
+    AssertCommand ("take overcoat off", "You take it off.")
+    AssertCommand ("take off overalls", "You take them off.")
+    //
+    Testing ("Clothing - commands 2")
+    player.parent = fifth
+    AssertCommand ("get shoes", "You pick them up.")
+    Assert ("Look at;Drop;Wear", Join(shoes.inventoryverbs, ";"))
+    AssertCommand ("don shoes", "You put them on.")
+    Assert ("Look at;Remove", Join(shoes.inventoryverbs, ";"))
+    AssertCommand ("get socks", "You pick them up.")
+    Assert ("Look at;Drop", Join(socks.inventoryverbs, ";"))
+    //
+    Testing ("Clothing - multistate")
+    AssertCommand ("get jacket", "You pick it up.")
+    Assert ("Look at;Drop;Wear", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket", GetDisplayName(casual jacket))
+    AssertCommand ("don jacket", "You put it on.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "You button up the jacket.")
+    Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "You button up the jacket.")
+    Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (1, player.cool)
+    Assert (5, player.warm)
+    Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "It already is.")
+    Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (1, player.cool)
+    Assert (5, player.warm)
+    Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "You unfasten it.")
+    Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "You unfasten it.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "It already is.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    //
+    Testing ("Clothing - set alias")
+    SetAlias (casual jacket, "smart jacket")
+    Assert ("a smart jacket (worn unfastened)", GetDisplayName(casual jacket))
+    RemoveGarment (casual jacket)
+    SetAlias (casual jacket, "shabby jacket")
+    Assert ("a shabby jacket", GetDisplayName(casual jacket))
+    SetAlias (tiger, "Lion")
+    Assert ("Lion", tiger.alias)
+    SetAlias (tiger, "Tiger")
   </function>
 </asl>
