@@ -97,8 +97,8 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Implement a transit system](transit_system.html)
 -  [Transform one (or more) thing to another](convert.html)
 -  [Tracking time](time.html)
--  [Setting up a shop](shop.md)
-
+-  [Setting up a shop](shop.html)
+-  [Setting up a door](setting_up_door.html)
 
 
 
