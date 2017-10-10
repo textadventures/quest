@@ -4,7 +4,7 @@
   <include ref="Core.aslx" />
   <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
   <delegate name="textprocessor" parameters="" type="string" />
-  <game name="Unit testing for 5.7">
+  <game name="Unit testing for 5.8">
     <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
     <version>1.0</version>
     <firstpublished>2017</firstpublished>
@@ -31,7 +31,7 @@
     <feature_asktell />
     <author>The Pixie</author>
     <feature_limitinventory />
-    <terminate type="boolean">false</terminate>
+    <terminate />
     <finished type="boolean">false</finished>
     <roomenter type="script">
     </roomenter>
@@ -444,7 +444,6 @@
       script drop object.parent = null
       shoes.parent = null
       AssertCommand ("take all", "red ball: You pick it up.")
-      
       Results
     ]]></start>
     <scopebackdrop type="script">
