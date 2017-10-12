@@ -106,13 +106,11 @@ if (ListCount(sticks) < 4) {
 }
 else {
   for (i, 1, 4) {
-    list remove (ListItem(sticks, 0))
+    RemoveObject (ListItem(sticks, i))
   }
   msg ("You use four sticks to do that thing.")
 }
 ```
-
-Note that we are removing the object at position zero each time - in Quest, when you take away the first item in a list, everything shuffles down to fill the space.
 
 
 
