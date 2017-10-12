@@ -17,7 +17,18 @@ newgoblin = CloneObjectAndMoveHere(goblin)
 newgoblin.look = "This goblin has a wooden leg."
 ```
 
-Once the player is interacting with a clone, you need to ensure that it is the clone that things happen to, not the prototype. And this is where it gets complicated...
+
+It can be useful to note what the prototype was when an object was cloned so you can refer to it later. You can set it like this:
+
+
+```
+newgoblin = CloneObjectAndMoveHere(goblin)
+newgoblin.look = "This goblin has a wooden leg."
+newgoblin.prototype = goblin
+```
+
+
+Once the player is interacting with a clone, you need to ensure that it is the clone that things happen to. And this is where it gets complicated...
 
 In the code above, `goblin` is an object that has the name "goblin", and this is the way of all objects in Quest. However, `newgoblin` is quite different; it is a _local variable_, which is a kind of temporary container. The first line above puts the clone into the container, and we can then use it as though it is the real thing, as you see above. That is fine in that script, but as soon as the script ends, the container is gone. The clone still exists; that is now a part of the game world, but we have lost the container called "newgoblin".
 
@@ -29,7 +40,7 @@ Commands
 
 In commands, we have a system built-in. Say there is an ATTACK command, the pattern could be:
 
-> attack #object#
+> attack #oject#
 
 In the command script, we now have a _local variable_ called "object". It has a different name, but this is just a container like `newgoblin`, and just as with `newgoblin`, we can change it around in our script.
 
@@ -48,7 +59,7 @@ Scripts are attached to an object, and when the object is cloned, the clone has 
 msg("The goblin is green, small and looks nasty. It currently has " + goblin.hitpoints + " hit points.")
 ```
 
-Now every time the player looks at the clone, she will be told how many hits the _prototype_ has! The solution is to use the special variable `this`, which refers to the owner of the script:
+Now every time the player looks at the clone, she will be told how many hits the prototype has! The solution is to use the special variable `this`, which refers to the owner of the script:
 
 ```
 msg("The goblin is green, small and looks nasty. It currently has " + this.hitpoints + " hit points.")
@@ -62,33 +73,47 @@ Verbs use scripts, so again should be using `this`, not the name of the prototyp
 
 
 
-Got a clone?
-------------
+Finding and checking for clones
+-------------------------------
 
-Sometimes you want to check if the player has a specific item. What if you want to check if the player has a clone of a specific item? Clearly the standard `Got` function will not work here - that will check if the player has the prototype.
+Note that neither of these techniques will flag up the prototype; it is generally best to keep the prototypes somewhere the player will never find them.
 
-So let's create a new function. Call it `PlayersClone`, give it a single parameter, "obj", and have it return an object.
+Back at the start we set the "prototype" attribute on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
 
-Paste in this code:
-
-```
-    foreach (o, ScopeInventory()) {
-      if (obj.alias = o.alias) {
-        return (o)
-      }
-    }
-    return (null)
-```
-
-This assumes the prototype has an alias set; it is up to you to ensure that is so. It goes through the player's inventory until it finds an object with the same alias, and retuirns that object.
-
-So now if we want to check if the player has the short sword, or a clone of it, we can check if this function does not return null.
 
 ```
-if (not PlayersClone(short sword) = null) {
-  msg ("Lucky you have that short sword with you.")
+if (obj.prototype = goblin) {
+  msg("The is a clone of the goblin")
 }
 ```
+
+If you want to find all the clones in the current room, you can use ScopeVisible to get everything here, and filter that to get the clones:
+
+
+```
+goblin_clone_list = FilterByAttribute(ScopeVisible(), "prototype", goblin)
+```
+
+If you just want to get the clones the player is actually carrying use `ScopeInventory`.
+
+To remove a set number of clones from the player, you might do something like this:
+
+
+```
+sticks = FilterByAttribute(ScopeInventory(), "prototype", stick)
+if (ListCount(sticks) < 4) {
+  msg("You need at least four sticks to do that.")
+}
+else {
+  for (i, 1, 4) {
+    list remove (ListItem(sticks, 0))
+  }
+  msg ("You use four sticks to do that thing.")
+}
+```
+
+Note that we are removing the object at position zero each time - in Quest, when you take away the first item in a list, everything shuffles down to fill the space.
+
 
 
 Specialised Functions
@@ -100,6 +125,7 @@ The first is `CreateTreasure`. It is going to create a clone of a given object, 
 
 ```
     o = CloneObjectAndMove(obj, room)
+    o.prototype = obj
     if (HasString(o, "look")) o.look = ProcessText(o.look)
     o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```
@@ -114,6 +140,7 @@ The next one, `CreateProtectionPotion` is a bit more specialised, but could read
 
 ```
     o = CloneObjectAndMove(masterpotionprotection, room)
+    o.prototype = masterpotionprotection
     o.element = GetObject(PickOneStr("fire|frost|necrotic"))
     o.alias = "Potion of Protection from " + CapFirst(o.element.name)
     o.listalias = o.alias
@@ -129,10 +156,8 @@ msg ("An inky black liquid in a small glass phial. You can see the word \"" + th
 This is a more involved example, but the principle is the same. `CreateScroll` has two parameters, level and room. The prototype, masterscroll, is cloned, and various attributes set.
 
 ```
-    if (1 > level) level = 1
-    if (level > 18) level = 18
-    level = level - 1
     o = CloneObjectAndMove(masterscroll, room)
+    o.prototype = masterscroll
     o.element = GetObject(PickOneStr("fire|frost|divine|storm|earthmight"))
     qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
     o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + Roman(level / 3 + 1)
@@ -152,6 +177,7 @@ Finally, `CreateArmour`, which has two parameters, level and room. In this case 
       prototype = PickFromObject(garments)
     }
     o = CloneObjectAndMove(prototype, room)
+    o.prototype = prototype
     o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```  
 
