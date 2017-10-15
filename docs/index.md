@@ -173,6 +173,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Elements](elements/)
 -   [ASLX File Format](aslx.html)
 -   [Expressions](expressions.html)
+-   [Competition entries](competition_entry.html)
 -   [Configuring Quest](configuring_quest.html)
 -   [User contributed libraries](libraries.html)
 -   [User contributed guides](guides/)
