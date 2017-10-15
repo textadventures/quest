@@ -29,6 +29,8 @@ Contents
 
 [Reference](#Reference)
 
+[Other Guides](#Other)
+
 [Contributing](#Contributing)
 
 [Search](#Search)
@@ -177,6 +179,13 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Configuring Quest](configuring_quest.html)
 -   [User contributed libraries](libraries.html)
 -   [User contributed guides](guides/)
+
+
+<a name="Other"></a>Other Guides
+---------------------------------
+
+-   [Helpsheets for beginners](guides/helpsheets.html) by gideonwilliams
+-   [The Pixie's tutorials and librarys](https://github.com/ThePix/quest/wiki)
 
 
 
