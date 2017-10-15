@@ -11,6 +11,8 @@ If the "allow cancel" parameter is set to **true**, the Cancel button is availab
 
 This command was added in Quest 5.1.
 
+For an in-line menu, use the [ShowMenu](../functions/showmenu.html) function.
+
 **example:**
 
           menulist = NewStringList()
