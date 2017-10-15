@@ -7,10 +7,7 @@ Competitions are a good way to reach a wider audience for your Quest adventure, 
 
 Probably the most significant Interactive Fiction competition is [IfComp](http://www.ifcomp.org/), run during October each year, and this page is mostly geared towards that. It will not guarantee your game is a winner, but hopefully will improve its ranking to some degree.
 
-Who Am I?
----------
-
-Why should you take my advice? Well, my game The Myothian Falcon was placed 24th in IFComp 2011 (hey, it was high enough to get offered a prize), and I beta-tested three out of the top five games from IFComp 2012, including the winner, so I have at least *some* experience. That said, obviously, this is just my opinion. If you think otherwise or have more ideas, then add your comments, have your say.
+I originally wrote this in 2013, and have pdated it slightly. My game The Myothian Falcon was placed 24th in IFComp 2011 (hey, it was high enough to get offered a prize), and I beta-tested three out of the top five games from IFComp 2012, including the winner, so I have at least *some* experience. That said, obviously, this is just my opinion.
 
 
 Starting Out
@@ -43,9 +40,6 @@ Include some in-game system to help players get to the end. They only have two h
 
 IFComp requires a walk-through to prove the game is winnable, but a long list of commands is actually pretty useless to the player. Providing a walk-through that tells the player what to do, rather than what to type, will ensure they can get to the end and hopefully still enjoy the trip.
 
-[A Hint System](a_hint_system.html) |
-[Help using InvisiClues](invisiclues.html)
-
 ### About
 
 Include an "about" command, so you can tell people who wrote the game, and give thanks to anyone who helped you. Include a version number.
@@ -56,22 +50,31 @@ Credit beta-testers here; you may be marked down otherwise.
 
 Every object mentioned in the text should be implemented as an object that can be looked at in the game. Also aim to implement all the common commands such as "jump", "xyzzy", etc., even if they are not relevant. Default and error responses are *bad*.
 
+Or submit a game without a command line, such as a CYOA or gamebook.
+
 ### Feelies
 
 Some games include feelies. Back in the day, commercial adventure games included posters, comic books, scratch-and-sniff cards, etc. to limit piracy as much as anything. Nowadays, these feelies are virtual... so you cannot actually feel them. Nevertheless, they seem to be popular, and can help to give a game a profession touch.
 
-Unfortunately, it is easy for players to miss feelies; if they play on line, they just will not know they exist. Happily Quest handles this well, as you can insert images, videos and audio right into your game, and Quest 5.3 has support for cover art built in.
+Unfortunately, it is easy for players to miss feelies; if they play on line, they just will not know they exist. Happily Quest handles this well, as you can insert images, videos and audio right into your game, and Quest has support for cover art built in.
 
-### Other Considerations
+### The User Interface
 
-It has been suggested that you might be better submitting your game as an "on-line game" rather than a "Quest game", as Quest does not have a great reputation. I doubt many competition judges will down load Quest to play your game off-line, and the play on-line web page does make it clear that you can download the game anyway, so might be worth considering.
+Bear in mind that the vast majority of players will be playing on-line, so bear that in mind.
 
-It has also been said that you are better off turning off hyperlinks and the right hand panes, and not using menus; giving the player a much more traditional game experience. I think there is something in this, some people will be turned off by the unconventional look of the game, but personally I would keep these features. I think if done well they enhance the game experience (that is the point of them), and more people will appreciate that than will dislike it (but that is just my guess).
+Think carefully what elemenbts of the user interface (UI) you want to include. By default, Quest includes a command line, hyperlinks in the text and the panes on the right. Are they all appropriate to your game?
+
+Turning off the command bar will make it much easier to build your game, as you very much limit what the player can do, but at the cost of destroying the illusion of freedom for the player. For a traditional game, you might prefer to have only the command line.
+
+Also think about the colours and the font. Be sure to pick a font that reflects the style of your game, and is easy to read.
+
+The important message here is to think about the UI, and make a choice for what is right for your game, and not just use the Quest defaults.
+
 
 Testing
 -------
 
-Beta-testing is getting other people to play your game before you release it. It is absolutely vital; with the best will in the world, they are sure to find spelling mistakes, objects you have not implement, verbs you have not thought of, routes through the game you have not considered. Better these things are found during beta-testing than after a release, and especially during a competition.
+Beta-testing is getting other people to play your game before you release it. It is absolutely vital; with the best will in the world, they are sure to find spelling mistakes, objects you have not implemented, verbs you have not thought of, routes through the game you have not considered. Better these things are found during beta-testing than after a release, and especially during a competition.
 
 ### Before Beta-Testing
 
@@ -79,38 +82,25 @@ It is tempting to get the game to beta-testers fast, but you are really just was
 
 1. Play the game through and correct any mistakes you can find.
 
-2. Back up the game, then copy the entire code into a word processor; check and correct spelling, paste back into Quest. Check it still plays okay. Do this with custom libraries too if they include text the player will see.
+2. If using the desktop editor, open the game up in Notepad++ and use it to check the spelling (you will need to install a plug in). For the web editor, hopefully your browser has a spell checker, and you were checking the spelling as you typed.
 
-3. Check:
+3. Some things you might want to check, depending on your game:
 
--   Every room and object has an alias (if required) and a description
+-   Every room and object has an alias and a description
 -   Everything mentioned in a description is actually implemented
 -   The appropriate display and inventory verbs are there, and inappropriate ones are absent
 
+4. Play the game, then try to save it. When Quest saves it does some extra error checking it does not do any other time, so this a quick test of your code. If it saved successful, you should now try to load the game. Loading will stress test you UI, so check that the game still looks the same, and the various parts of the UI still work.
 
-### Making Beta-Testing Easy
 
-A few simple steps will make testing easier for both you and the testers.
+### Beta-Testing
 
-1. Allow comments.
+When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on the Text Adventurers web site, but you will be able to give your tests a link to the game.
 
-Testing is easiest if the player can just type stuff into Quest, but you really do not want Quest to try to parse that as a command. Happily, Quest handles this for you. If the player starts a command with *, the text is ignored.
+Have a statement at the start of your game explaining that this is a beta version, what version it is and how testers can send you comments. When you upload a new version, make sure you have changed the text. Hopefully your testers will tell you which version they were looking at.
 
-2. Add "Boiler Plate" text
+Obviously when you release, this text should be modified or deleted!
 
-Have a statement at the start of your game explaining that this is a beta version, what version it is and how testers can add comments.
-
-3. Update the version number
-
-The introductory text will tell you, the author, which version the player was using, but it is up to you to change the version number with each beta release. If you release updates during the competition, again remember to update the version (and beta-test each update!). If this is a beta release, include the word "beta" in the version. When someone tells you of an error, you need to know what version she was using.
-
-4. Load to the Quest web site
-
-You can have beta-versions on the Quest web site, but make sure you flag it as unlisted (if it gets listed you will not be allowed to enter it into a competition). Write a comment there that this is a beta-version. Having it on the web site allows people without Windows to test it, and means players do not need to download Quest. Most players will see it this way, so this is the version that has to be perfect.
-
-5. Transcripts
-
-Ask Alex to save transcripts of the game, and send them to you (there is a plan to make this automatic, and has been for some years). Alternatively, if your game never clears the screen, your testers can select all the text, and send you that.
 
 ### Several Rounds, Many Testers
 
