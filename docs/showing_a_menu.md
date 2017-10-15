@@ -9,7 +9,7 @@ First, you need to create a string list of options - see [Using Lists](using_lis
 
 Here is an example how to create a menu (in this case a pop-up menu). A new list is created, and then the entries 'female' and 'male' are added. If the player chooses an entry from the menu, that value goes into a variable called "result", and from that the variables playername and gender are set.
 
-![](Menu.jpg "Menu.jpg")
+![](ShowMenu.png "ShowMenu.png")
 
 ### Further reading
 
