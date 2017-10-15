@@ -133,66 +133,81 @@
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="cmdClose.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="expandAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="expandAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Alle erweitern</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Alle zusammenklappen</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 6</value>
+    <value>229, 6</value>
+  </data>
+  <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="cutToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ausschneiden</value>
+  </data>
+  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="copyToolStripMenuItem.Text" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Einfügen</value>
   </data>
   <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
     <value>Löschen</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 6</value>
+    <value>229, 6</value>
   </data>
   <data name="AddVerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AddCommandToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+K</value>
   </data>
   <data name="AddCommandToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddCommandToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Kommando</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 6</value>
+    <value>229, 6</value>
   </data>
   <data name="addPageToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+S</value>
   </data>
   <data name="addPageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="addPageToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Seite</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Raum</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Objekt</value>
@@ -201,127 +216,127 @@
     <value>Alt+A</value>
   </data>
   <data name="AddExitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddExitToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Ausgang</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 6</value>
+    <value>229, 6</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Turn-Skript</value>
   </data>
   <data name="AddFunctionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddFunctionToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Funktion</value>
   </data>
   <data name="addTimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddWalkthroughToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 6</value>
+    <value>229, 6</value>
   </data>
   <data name="AddEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Bibliothek</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Vorlage</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Dynamische Vorlage</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Objekt-Typ</value>
   </data>
   <data name="AddJavascriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Implizierter Typ</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>303, 24</value>
+    <value>232, 24</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Delegieren</value>
   </data>
   <data name="ctlContextMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>304, 538</value>
+    <value>233, 610</value>
   </data>
   <data name="ctlImageList.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACm
-        CQAAAk1TRnQBSQFMAgEBAgEAAaABAAGgAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACg
+        CQAAAk1TRnQBSQFMAgEBAgEAAbABAAGwAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABEAMAAQEBAAEgBgABEP8A/wAYAAMDAQQDLgFIAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFg
         AToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAzABTAMDAQQMAAMyAVABOgI5AWABOgI5AWABOgI5
-        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADJgE4kAABQgJBAXQBXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BRgJFAX8IAANAAXABXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AT0CPAFojAABUQJNAZ8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/
-        AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BVgJO
-        Aa8IAAFRAk0BnwFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BWgFNAU8BvowAAVECTQGfAV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AVYCTgGvCAABUQJNAZ8BXgEYARoB/wFeARgBGgH/
-        AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wFeARgBGgH/AWEBLwExAe8DFwEgiAABUQJNAZ8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/
-        AV4BGAEaAf8BVgJOAa8IAAFRAk0BnwFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wMy
-        AVCIAAFRAk0BnwFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFWAk4BrwgAAVECTQGf
-        AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AUcCRgGBiAABUQJNAZ8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BVgJOAa8IAAFRAk0BnwFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/
-        AV4BGAEaAf8BXgEYARoB/wFMAkkBjYgAAVECTQGfAV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AVYCTgGvCAABUQJNAZ8BXgEYARoB/wFeARgBGgH/AToCOQFgAToCOQFgAToCOQFgAToCOQFg
-        AToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAzIBUAMGAQiIAAFRAk0BnwFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFRAkwBmwgAAVECTQGfAV4BGAEaAf8BXgEYARoB/wFeARgBGgH/
-        AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wE2AjUBWIwAAVECTQGfAV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFhATgBOQHnAyoBQAgA
-        AVECTQGfAV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEYARoB/wFeARgBGgH/AV4BGAEa
-        Af8BXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BWwJMAccDDAEQjAADQQFyAV4BGAEaAf8BXgEYARoB/wFe
-        ARgBGgH/AV4BGAEaAf8BVgFOAU8BqwMgAS4kAANBAXIBXgEYARoB/wFeARgBGgH/AV4BGAEaAf8BXgEY
-        ARoB/wFWAU4BTwGrAyABLqgAAyoBQAE6AjkBYAE6AjkBYAE6AjkBYAMJAQwsAAMqAUABOgI5AWABOgI5
-        AWABOgI5AWADCQEM/wD/AKYAAUIBTQE+BwABPgMAASgDAAFAAwABEAMAAQEBAAEBBQABgBcAA/8BAAT/
-        BAAE/wQAAYABAQHAAQcEAAGAAQEBgAEDBAABgAEBAYABAwQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEB
-        AYABAQQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAwQAAYABAQGAAQMEAAGAAf8BgAH/BAABwQH/
-        AcEB/wQABP8EAAT/BAAL
+        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADJgE4kAADQgF0AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AUYCRQF/CAADQAFwAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wE9AjwBaIwAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVQCUwGv
+        CAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVkBVAFWAb6MAAFRAlABnwFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFUAlMBrwgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFhATkBPAHvAxcBIIgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVQCUwGvCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8DMgFQ
+        iAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BVAJTAa8IAAFRAlABnwFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFHAkYBgYgAAVECUAGfAVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVQCUwGvCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8DSgGNiAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BVAJTAa8IAAFRAlABnwFcARYBGAH/AVwBFgEYAf8BOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5
+        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADMgFQAwYBCIgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVACTwGbCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        ATYCNQFYjAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AWECRgHnAyoBQAgAAVECUAGf
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BWQJTAccDDAEQjAADQQFyAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BVgFSAVMBqwMgAS4kAANBAXIBXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFW
+        AVIBUwGrAyABLqgAAyoBQAE6AjkBYAE6AjkBYAE6AjkBYAMJAQwsAAMqAUABOgI5AWABOgI5AWABOgI5
+        AWADCQEM/wD/AKYAAUIBTQE+BwABPgMAASgDAAFAAwABEAMAAQEBAAEBBQABgBcAA/8BAAT/BAAE/wQA
+        AYABAQHAAQcEAAGAAQEBgAEDBAABgAEBAYABAwQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAQQA
+        AYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAwQAAYABAQGAAQMEAAGAAf8BgAH/BAABwQH/AcEB/wQA
+        BP8EAAT/BAAL
 </value>
   </data>
 </root>

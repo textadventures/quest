@@ -649,6 +649,15 @@
   <ItemGroup>
     <None Include="Resources\s_wf_up.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_paste.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"

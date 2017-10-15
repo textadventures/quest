@@ -46,26 +46,28 @@ Partial Class Editor
         '
         'splitMain
         '
-        Me.splitMain.BackColor = System.Drawing.Color.GhostWhite
         resources.ApplyResources(Me.splitMain, "splitMain")
+        Me.splitMain.BackColor = System.Drawing.Color.GhostWhite
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
         '
+        resources.ApplyResources(Me.splitMain.Panel1, "splitMain.Panel1")
         Me.splitMain.Panel1.Controls.Add(Me.ctlTree)
         Me.splitMain.Panel1.Controls.Add(Me.Splitter1)
         '
         'splitMain.Panel2
         '
+        resources.ApplyResources(Me.splitMain.Panel2, "splitMain.Panel2")
         Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
         Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
         Me.splitMain.Panel2.Controls.Add(Me.StatusStrip1)
         '
         'ctlTree
         '
-        Me.ctlTree.BackColor = System.Drawing.Color.GhostWhite
         resources.ApplyResources(Me.ctlTree, "ctlTree")
+        Me.ctlTree.BackColor = System.Drawing.Color.GhostWhite
         Me.ctlTree.ForeColor = System.Drawing.Color.Black
         Me.ctlTree.IncludeRootLevelInSearchResults = True
         Me.ctlTree.Name = "ctlTree"
@@ -73,15 +75,15 @@ Partial Class Editor
         '
         'Splitter1
         '
-        Me.Splitter1.Cursor = System.Windows.Forms.Cursors.Default
         resources.ApplyResources(Me.Splitter1, "Splitter1")
+        Me.Splitter1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Splitter1.Name = "Splitter1"
         Me.Splitter1.TabStop = False
         '
         'pnlContent
         '
-        Me.pnlContent.BackColor = System.Drawing.Color.GhostWhite
         resources.ApplyResources(Me.pnlContent, "pnlContent")
+        Me.pnlContent.BackColor = System.Drawing.Color.GhostWhite
         Me.pnlContent.Name = "pnlContent"
         '
         'pnlHeader
@@ -92,10 +94,10 @@ Partial Class Editor
         '
         'ctlBanner
         '
+        resources.ApplyResources(Me.ctlBanner, "ctlBanner")
         Me.ctlBanner.AlertText = "Text"
         Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlBanner.ButtonText = "Action"
-        resources.ApplyResources(Me.ctlBanner, "ctlBanner")
         Me.ctlBanner.Name = "ctlBanner"
         '
         'StatusStrip1
@@ -108,8 +110,8 @@ Partial Class Editor
         '
         'lblHeader
         '
-        Me.lblHeader.Image = Global.TextAdventures.Quest.My.Resources.Resources.s_object_open
         resources.ApplyResources(Me.lblHeader, "lblHeader")
+        Me.lblHeader.Image = Global.TextAdventures.Quest.My.Resources.Resources.s_object_open
         Me.lblHeader.Name = "lblHeader"
         '
         'ctlSaveFile
@@ -126,24 +128,24 @@ Partial Class Editor
         '
         'ctlReloadBanner
         '
+        resources.ApplyResources(Me.ctlReloadBanner, "ctlReloadBanner")
         Me.ctlReloadBanner.AlertText = "This file has been modified outside Quest. Click Reload to get the latest version" &
     " of the file."
         Me.ctlReloadBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlReloadBanner.ButtonText = "Reload"
-        resources.ApplyResources(Me.ctlReloadBanner, "ctlReloadBanner")
         Me.ctlReloadBanner.Name = "ctlReloadBanner"
         '
         'ctlLoading
         '
-        Me.ctlLoading.BackColor = System.Drawing.Color.White
         resources.ApplyResources(Me.ctlLoading, "ctlLoading")
+        Me.ctlLoading.BackColor = System.Drawing.Color.White
         Me.ctlLoading.Name = "ctlLoading"
         '
         'ctlToolbar
         '
+        resources.ApplyResources(Me.ctlToolbar, "ctlToolbar")
         Me.ctlToolbar.BackColor = System.Drawing.Color.GhostWhite
         Me.ctlToolbar.CodeView = False
-        resources.ApplyResources(Me.ctlToolbar, "ctlToolbar")
         Me.ctlToolbar.EditorStyle = TextAdventures.Quest.EditorStyle.TextAdventure
         Me.ctlToolbar.Name = "ctlToolbar"
         Me.ctlToolbar.RedoButtonEnabled = False

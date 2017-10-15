@@ -20,6 +20,8 @@ Public Class Editor
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
     Private m_splitHelper As TextAdventures.Utility.SplitterHelper
+    Private m_isFind As Boolean
+    Private m_isReplace As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -40,6 +42,8 @@ Public Class Editor
     End Sub
 
     Public Sub Initialise(ByRef filename As String)
+        m_isFind = False
+        m_isReplace = False
         m_menu.Visible = False
         If Not m_uiHidden Then
             HideUI()
@@ -150,8 +154,8 @@ Public Class Editor
         menu.AddMenuClickHandler("paste", AddressOf Paste)
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
-        menu.AddMenuClickHandler("find", AddressOf Find)
-        menu.AddMenuClickHandler("replace", AddressOf Replace)
+        menu.AddMenuClickHandler("find", AddressOf ToggleFind)
+        menu.AddMenuClickHandler("replace", AddressOf ToggleReplace)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
         menu.AddMenuClickHandler("codeview", AddressOf ToggleCodeView)
         menu.AddMenuClickHandler("wordwrap", AddressOf ToggleWordWrap)
@@ -172,6 +176,8 @@ Public Class Editor
         ctlToolbar.AddButtonHandler("copy", AddressOf Copy)
         ctlToolbar.AddButtonHandler("paste", AddressOf Paste)
         ctlToolbar.AddButtonHandler("delete", AddressOf Delete)
+        ctlToolbar.AddButtonHandler("find", AddressOf ToggleFind)
+        ctlToolbar.AddButtonHandler("replace", AddressOf ToggleReplace)
         ctlToolbar.AddButtonHandler("code", AddressOf ToggleCodeView)
         ctlToolbar.AddButtonHandler("logbug", AddressOf LogBug)
         ctlToolbar.AddButtonHandler("help", AddressOf Help)
@@ -202,7 +208,34 @@ Public Class Editor
         ctlTree.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
         ctlTree.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         ctlTree.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
+        ctlTree.AddMenuClickHandler("cut", AddressOf Cut)
+        ctlTree.AddMenuClickHandler("copy", AddressOf Copy)
+        ctlTree.AddMenuClickHandler("paste", AddressOf Paste)
         ctlTree.AddMenuClickHandler("delete", AddressOf Delete)
+    End Sub
+
+    Private Sub ToggleFind()
+        m_isFind = Not m_isFind
+        ctlToolbar.SetToggle("find", m_isFind)
+        If (m_isFind) Then
+            m_isReplace = False
+            ctlToolbar.SetToggle("replace", m_isReplace)
+            Find()
+        Else
+            FindClose()
+        End If
+    End Sub
+
+    Private Sub ToggleReplace()
+        m_isReplace = Not m_isReplace
+        ctlToolbar.SetToggle("replace", m_isReplace)
+        If (m_isReplace) Then
+            m_isFind = False
+            ctlToolbar.SetToggle("find", m_isFind)
+            Replace()
+        Else
+            FindClose()
+        End If
     End Sub
 
     Private Sub SetUpEditors()
@@ -760,13 +793,12 @@ Public Class Editor
     End Sub
 
     Private Sub Cut()
-        ' Disabled. See Issue Tracker #1062
-        'If m_codeView Then
-        '    ctlTextEditor.Cut()
-        'Else
-        '    m_controller.CutElements({ctlTree.SelectedItem})
-        '    UpdateClipboardButtons()
-        'End If
+        If m_codeView Then
+            ctlTextEditor.Cut()
+        Else
+            m_controller.CutElements({ctlTree.SelectedItem})
+            UpdateClipboardButtons()
+        End If
     End Sub
 
     Private Sub Copy()
@@ -922,23 +954,25 @@ Public Class Editor
     Private Sub UpdateClipboardButtons()
         Dim canPaste As Boolean = m_codeView OrElse m_controller.CanPaste(ctlTree.SelectedItem)
         m_menu.MenuEnabled("paste") = canPaste
+        ctlTree.SetMenuEnabled("paste", canPaste)
         ctlToolbar.CanPaste = canPaste
 
         Dim canCopy As Boolean = m_codeView OrElse m_controller.CanCopy(ctlTree.SelectedItem)
         m_menu.MenuEnabled("copy") = canCopy
+        ctlTree.SetMenuEnabled("copy", canCopy)
         ctlToolbar.CanCopy = canCopy
 
-        Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
+        ' If the CodeView is activated you can cut, copy and paste. (SoonGames) (added m_codeView OrElse)
+        Dim canDelete As Boolean = m_codeView OrElse (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
         m_menu.MenuEnabled("delete") = canDelete
         ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete
 
-        ' "Cut" is disabled - see Issue Tracker #1062
-        'Dim canCut As Boolean = canCopy And canDelete
-        'm_menu.MenuEnabled("cut") = canCut
-        'ctlToolbar.CanCut = canCut
-
-        m_menu.MenuVisible("cut") = False
+        ' Cut works again. The object is not cut out until it is pasted again. (SoonGames) (prior notification: "Cut" is disabled - see Issue Tracker #1062)
+        Dim canCut As Boolean = canCopy And canDelete
+        m_menu.MenuEnabled("cut") = canCut
+        ctlTree.SetMenuEnabled("cut", canCut)
+        ctlToolbar.CanCut = canCut
     End Sub
 
     Public Sub SetWindowTitle()
@@ -1005,6 +1039,7 @@ Public Class Editor
     Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed
         BeginInvoke(Sub()
                         ctlReloadBanner.AlertText = String.Format(T("EditorModifiedOutside"), e.Name)
+                        ctlReloadBanner.ButtonText = T("EditorReload")
                         ctlReloadBanner.Visible = True
                     End Sub)
     End Sub
@@ -1032,6 +1067,10 @@ Public Class Editor
 
     Private Sub Replace()
         ctlTextEditor.Replace()
+    End Sub
+
+    Private Sub FindClose()
+        ctlTextEditor.FindClose()
     End Sub
 
     Private Sub m_controller_RequestRunWalkthrough(sender As Object, e As RequestRunWalkthroughEventArgs) Handles m_controller.RequestRunWalkthrough

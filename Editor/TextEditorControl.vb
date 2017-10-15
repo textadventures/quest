@@ -86,6 +86,10 @@
         wpfTextEditor.Replace()
     End Sub
 
+    Public Sub FindClose()
+        wpfTextEditor.FindClose()
+    End Sub
+
     Public Property WordWrap As Boolean
         Get
             Return wpfTextEditor.WordWrap

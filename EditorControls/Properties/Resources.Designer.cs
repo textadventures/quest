@@ -83,6 +83,26 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap s_copy {
+            get {
+                object obj = ResourceManager.GetObject("s_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap s_cut {
+            get {
+                object obj = ResourceManager.GetObject("s_cut", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap s_delete {
             get {
                 object obj = ResourceManager.GetObject("s_delete", resourceCulture);
@@ -116,6 +136,16 @@ namespace TextAdventures.Quest.EditorControls.Properties {
         internal static System.Drawing.Bitmap s_object {
             get {
                 object obj = ResourceManager.GetObject("s_object", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap s_paste {
+            get {
+                object obj = ResourceManager.GetObject("s_paste", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

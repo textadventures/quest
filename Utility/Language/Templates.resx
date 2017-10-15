@@ -708,9 +708,6 @@
   <data name="EditorTextProcessorHelp" xml:space="preserve">
     <value>Text Processor help</value>
   </data>
-  <data name="dd" xml:space="preserve">
-    <value />
-  </data>
   <data name="EditorKeypromptEnterExitName" xml:space="preserve">
     <value>Please enter the exit name</value>
   </data>
@@ -722,5 +719,29 @@
   </data>
   <data name="EditorMenuItemTrue" xml:space="preserve">
     <value>True</value>
+  </data>
+  <data name="FindControlchkBoxRegex" xml:space="preserve">
+    <value>Regex search</value>
+  </data>
+  <data name="FindControlcmdClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="FindControlcmdFind" xml:space="preserve">
+    <value>Find next</value>
+  </data>
+  <data name="FindControlcmdReplace" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="FindControlcmdReplaceAll" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="FindControllblFind" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="FindControllblReplace" xml:space="preserve">
+    <value>Replace with:</value>
+  </data>
+  <data name="EditorReload" xml:space="preserve">
+    <value>Reload</value>
   </data>
 </root>

@@ -151,6 +151,12 @@
   <data name="butPaste.Text" xml:space="preserve">
     <value>Einfügen</value>
   </data>
+  <data name="butFind.Text" xml:space="preserve">
+    <value>Finden</value>
+  </data>
+  <data name="butReplace.Text" xml:space="preserve">
+    <value>Ersetzen</value>
+  </data>
   <data name="butUndoSimple.Text" xml:space="preserve">
     <value>Rückgängig</value>
   </data>
@@ -201,7 +207,7 @@
     <value>Löschen</value>
   </data>
   <data name="butBack.Size" type="System.Drawing.Size, System.Drawing">
-    <value>108, 47</value>
+    <value>106, 47</value>
   </data>
   <data name="butBack.Text" xml:space="preserve">
     <value>Zurück</value>
@@ -224,9 +230,6 @@
   <data name="butCode.ToolTipText" xml:space="preserve">
     <value>Quelltextansicht</value>
   </data>
-  <data name="butHelp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>36, 47</value>
-  </data>
   <data name="butHelp.Text" xml:space="preserve">
     <value>Hilfe</value>
   </data>
@@ -247,12 +250,6 @@
   </data>
   <data name="butLogError.Size" type="System.Drawing.Size, System.Drawing">
     <value>176, 47</value>
-  </data>
-  <data name="lblHeader.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 47</value>
-  </data>
-  <data name="lblHeader.ToolTipText" xml:space="preserve">
-    <value>Aktuelle Auswahl</value>
   </data>
   <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>1341, 50</value>

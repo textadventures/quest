@@ -483,4 +483,34 @@
   <data name="EditorMenuItemTrue" xml:space="preserve">
     <value>Wahr</value>
   </data>
+  <data name="FindControlchkBoxRegex" xml:space="preserve">
+    <value>Reguläre Suche</value>
+  </data>
+  <data name="FindControlcmdClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="FindControlcmdFind" xml:space="preserve">
+    <value>Finde nächstes</value>
+  </data>
+  <data name="FindControlcmdReplace" xml:space="preserve">
+    <value>Ersetze</value>
+  </data>
+  <data name="FindControlcmdReplaceAll" xml:space="preserve">
+    <value>Ersetze alles</value>
+  </data>
+  <data name="FindControllblFind" xml:space="preserve">
+    <value>Finde:</value>
+  </data>
+  <data name="FindControllblReplace" xml:space="preserve">
+    <value>Ersetze mit:</value>
+  </data>
+  <data name="EditorReplacedOccurrences" xml:space="preserve">
+    <value>{0} Vorkommen ersetzt.</value>
+  </data>
+  <data name="EditorTextNotFound" xml:space="preserve">
+    <value>{0} wurde nicht gefunden.</value>
+  </data>
+  <data name="EditorReload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
 </root>

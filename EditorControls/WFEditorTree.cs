@@ -39,6 +39,7 @@ namespace TextAdventures.Quest.EditorControls
 
             AddMenuClickHandler("expandall", ExpandAll);
             AddMenuClickHandler("collapseall", CollapseAll);
+            
         }
 
         private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();

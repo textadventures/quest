@@ -61,15 +61,6 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die  ähnelt.
-        /// </summary>
-        internal static string dd {
-            get {
-                return ResourceManager.GetString("dd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Add Else ähnelt.
         /// </summary>
         internal static string EditorAddElse {
@@ -1051,6 +1042,15 @@ namespace TextAdventures.Utility.Language {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reload ähnelt.
+        /// </summary>
+        internal static string EditorReload {
+            get {
+                return ResourceManager.GetString("EditorReload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remove this item ähnelt.
         /// </summary>
         internal static string EditorRemoveThisItem {
@@ -1686,6 +1686,69 @@ namespace TextAdventures.Utility.Language {
         internal static string EditorVerbWithCommand {
             get {
                 return ResourceManager.GetString("EditorVerbWithCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Regex search ähnelt.
+        /// </summary>
+        internal static string FindControlchkBoxRegex {
+            get {
+                return ResourceManager.GetString("FindControlchkBoxRegex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Close ähnelt.
+        /// </summary>
+        internal static string FindControlcmdClose {
+            get {
+                return ResourceManager.GetString("FindControlcmdClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Find next ähnelt.
+        /// </summary>
+        internal static string FindControlcmdFind {
+            get {
+                return ResourceManager.GetString("FindControlcmdFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Replace ähnelt.
+        /// </summary>
+        internal static string FindControlcmdReplace {
+            get {
+                return ResourceManager.GetString("FindControlcmdReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Replace All ähnelt.
+        /// </summary>
+        internal static string FindControlcmdReplaceAll {
+            get {
+                return ResourceManager.GetString("FindControlcmdReplaceAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Find: ähnelt.
+        /// </summary>
+        internal static string FindControllblFind {
+            get {
+                return ResourceManager.GetString("FindControllblFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Replace with: ähnelt.
+        /// </summary>
+        internal static string FindControllblReplace {
+            get {
+                return ResourceManager.GetString("FindControllblReplace", resourceCulture);
             }
         }
         

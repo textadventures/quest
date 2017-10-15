@@ -25,51 +25,22 @@ Partial Class Menu
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Menu))
         Me.ctlMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RestartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.CreateNewGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OpenEditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.SaveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SaveAsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator = New System.Windows.Forms.ToolStripSeparator()
-        Me.PlayGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StopGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.CloseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.UndoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RedoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.SelectAllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
-        Me.FindToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReplaceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FullScreenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
-        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.HTMLDeveloperToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.VerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator10 = New System.Windows.Forms.ToolStripSeparator()
-        Me.PageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ExitToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator11 = New System.Windows.Forms.ToolStripSeparator()
-        Me.TurnScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TimerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.WalkthroughToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.AdvancedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -80,116 +51,89 @@ Partial Class Menu
         Me.ImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DelegateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PublishToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.WalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.SimpleModeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CodeViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WordWrapToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OptionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LanguageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EnglishToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeutschToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ViewHelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.QuestForumsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReportABugToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RestartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateNewGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenEditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveAsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PlayGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StopGameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UndoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RedoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FindToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FullScreenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HTMLDeveloperToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.VerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExitToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TurnScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TimerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WalkthroughToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PublishToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CodeViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OptionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewHelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.QuestForumsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlMenuStrip
         '
-        resources.ApplyResources(Me.ctlMenuStrip, "ctlMenuStrip")
         Me.ctlMenuStrip.BackColor = System.Drawing.Color.Transparent
+        resources.ApplyResources(Me.ctlMenuStrip, "ctlMenuStrip")
         Me.ctlMenuStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ctlMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ViewToolStripMenuItem, Me.AddMenuItem, Me.ToolsToolStripMenuItem, Me.LanguageToolStripMenuItem, Me.HelpToolStripMenuItem, Me.WindowMenuToolStripMenuItem})
         Me.ctlMenuStrip.Name = "ctlMenuStrip"
         '
         'FileToolStripMenuItem
         '
-        resources.ApplyResources(Me.FileToolStripMenuItem, "FileToolStripMenuItem")
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenToolStripMenuItem, Me.RestartToolStripMenuItem, Me.ToolStripSeparator2, Me.CreateNewGameToolStripMenuItem, Me.OpenEditToolStripMenuItem, Me.ToolStripSeparator4, Me.SaveToolStripMenuItem, Me.SaveAsToolStripMenuItem, Me.toolStripSeparator, Me.PlayGameToolStripMenuItem, Me.StopGameToolStripMenuItem, Me.toolStripSeparator1, Me.CloseToolStripMenuItem, Me.ExitToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        '
-        'OpenToolStripMenuItem
-        '
-        resources.ApplyResources(Me.OpenToolStripMenuItem, "OpenToolStripMenuItem")
-        Me.OpenToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_open
-        Me.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
-        Me.OpenToolStripMenuItem.Tag = "open"
-        '
-        'RestartToolStripMenuItem
-        '
-        resources.ApplyResources(Me.RestartToolStripMenuItem, "RestartToolStripMenuItem")
-        Me.RestartToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_restart
-        Me.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem"
-        Me.RestartToolStripMenuItem.Tag = "restart"
+        resources.ApplyResources(Me.FileToolStripMenuItem, "FileToolStripMenuItem")
         '
         'ToolStripSeparator2
         '
-        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        '
-        'CreateNewGameToolStripMenuItem
-        '
-        resources.ApplyResources(Me.CreateNewGameToolStripMenuItem, "CreateNewGameToolStripMenuItem")
-        Me.CreateNewGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_new
-        Me.CreateNewGameToolStripMenuItem.Name = "CreateNewGameToolStripMenuItem"
-        Me.CreateNewGameToolStripMenuItem.Tag = "createnew"
-        '
-        'OpenEditToolStripMenuItem
-        '
-        resources.ApplyResources(Me.OpenEditToolStripMenuItem, "OpenEditToolStripMenuItem")
-        Me.OpenEditToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_edit
-        Me.OpenEditToolStripMenuItem.Name = "OpenEditToolStripMenuItem"
-        Me.OpenEditToolStripMenuItem.Tag = "openedit"
+        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
         '
         'ToolStripSeparator4
         '
-        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        '
-        'SaveToolStripMenuItem
-        '
-        resources.ApplyResources(Me.SaveToolStripMenuItem, "SaveToolStripMenuItem")
-        Me.SaveToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_save
-        Me.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem"
-        Me.SaveToolStripMenuItem.Tag = "save"
-        '
-        'SaveAsToolStripMenuItem
-        '
-        resources.ApplyResources(Me.SaveAsToolStripMenuItem, "SaveAsToolStripMenuItem")
-        Me.SaveAsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_save_as
-        Me.SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem"
-        Me.SaveAsToolStripMenuItem.Tag = "saveas"
+        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
         '
         'toolStripSeparator
         '
-        resources.ApplyResources(Me.toolStripSeparator, "toolStripSeparator")
         Me.toolStripSeparator.Name = "toolStripSeparator"
-        '
-        'PlayGameToolStripMenuItem
-        '
-        resources.ApplyResources(Me.PlayGameToolStripMenuItem, "PlayGameToolStripMenuItem")
-        Me.PlayGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_play
-        Me.PlayGameToolStripMenuItem.Name = "PlayGameToolStripMenuItem"
-        Me.PlayGameToolStripMenuItem.Tag = "play"
-        '
-        'StopGameToolStripMenuItem
-        '
-        resources.ApplyResources(Me.StopGameToolStripMenuItem, "StopGameToolStripMenuItem")
-        Me.StopGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_stop
-        Me.StopGameToolStripMenuItem.Name = "StopGameToolStripMenuItem"
-        Me.StopGameToolStripMenuItem.Tag = "stop"
+        resources.ApplyResources(Me.toolStripSeparator, "toolStripSeparator")
         '
         'toolStripSeparator1
         '
-        resources.ApplyResources(Me.toolStripSeparator1, "toolStripSeparator1")
         Me.toolStripSeparator1.Name = "toolStripSeparator1"
+        resources.ApplyResources(Me.toolStripSeparator1, "toolStripSeparator1")
         '
         'CloseToolStripMenuItem
         '
@@ -205,28 +149,14 @@ Partial Class Menu
         '
         'EditToolStripMenuItem
         '
-        resources.ApplyResources(Me.EditToolStripMenuItem, "EditToolStripMenuItem")
         Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UndoToolStripMenuItem, Me.RedoToolStripMenuItem, Me.toolStripSeparator3, Me.SelectAllToolStripMenuItem, Me.CutToolStripMenuItem, Me.CopyToolStripMenuItem, Me.PasteToolStripMenuItem, Me.DeleteToolStripMenuItem, Me.ToolStripSeparator7, Me.FindToolStripMenuItem, Me.ReplaceToolStripMenuItem})
         Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        '
-        'UndoToolStripMenuItem
-        '
-        resources.ApplyResources(Me.UndoToolStripMenuItem, "UndoToolStripMenuItem")
-        Me.UndoToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_undo
-        Me.UndoToolStripMenuItem.Name = "UndoToolStripMenuItem"
-        Me.UndoToolStripMenuItem.Tag = "undo"
-        '
-        'RedoToolStripMenuItem
-        '
-        resources.ApplyResources(Me.RedoToolStripMenuItem, "RedoToolStripMenuItem")
-        Me.RedoToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_redo
-        Me.RedoToolStripMenuItem.Name = "RedoToolStripMenuItem"
-        Me.RedoToolStripMenuItem.Tag = "redo"
+        resources.ApplyResources(Me.EditToolStripMenuItem, "EditToolStripMenuItem")
         '
         'toolStripSeparator3
         '
-        resources.ApplyResources(Me.toolStripSeparator3, "toolStripSeparator3")
         Me.toolStripSeparator3.Name = "toolStripSeparator3"
+        resources.ApplyResources(Me.toolStripSeparator3, "toolStripSeparator3")
         '
         'SelectAllToolStripMenuItem
         '
@@ -234,186 +164,54 @@ Partial Class Menu
         Me.SelectAllToolStripMenuItem.Name = "SelectAllToolStripMenuItem"
         Me.SelectAllToolStripMenuItem.Tag = "selectall"
         '
-        'CutToolStripMenuItem
-        '
-        resources.ApplyResources(Me.CutToolStripMenuItem, "CutToolStripMenuItem")
-        Me.CutToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_cut
-        Me.CutToolStripMenuItem.Name = "CutToolStripMenuItem"
-        Me.CutToolStripMenuItem.Tag = "cut"
-        '
-        'CopyToolStripMenuItem
-        '
-        resources.ApplyResources(Me.CopyToolStripMenuItem, "CopyToolStripMenuItem")
-        Me.CopyToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_copy
-        Me.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem"
-        Me.CopyToolStripMenuItem.Tag = "copy"
-        '
-        'PasteToolStripMenuItem
-        '
-        resources.ApplyResources(Me.PasteToolStripMenuItem, "PasteToolStripMenuItem")
-        Me.PasteToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_paste
-        Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
-        Me.PasteToolStripMenuItem.Tag = "paste"
-        '
-        'DeleteToolStripMenuItem
-        '
-        resources.ApplyResources(Me.DeleteToolStripMenuItem, "DeleteToolStripMenuItem")
-        Me.DeleteToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_delete
-        Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        Me.DeleteToolStripMenuItem.Tag = "delete"
-        '
         'ToolStripSeparator7
         '
-        resources.ApplyResources(Me.ToolStripSeparator7, "ToolStripSeparator7")
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        resources.ApplyResources(Me.ToolStripSeparator7, "ToolStripSeparator7")
         Me.ToolStripSeparator7.Tag = ""
-        '
-        'FindToolStripMenuItem
-        '
-        resources.ApplyResources(Me.FindToolStripMenuItem, "FindToolStripMenuItem")
-        Me.FindToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_search
-        Me.FindToolStripMenuItem.Name = "FindToolStripMenuItem"
-        Me.FindToolStripMenuItem.Tag = "find"
         '
         'ReplaceToolStripMenuItem
         '
+        Me.ReplaceToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_replace
         resources.ApplyResources(Me.ReplaceToolStripMenuItem, "ReplaceToolStripMenuItem")
         Me.ReplaceToolStripMenuItem.Name = "ReplaceToolStripMenuItem"
         Me.ReplaceToolStripMenuItem.Tag = "replace"
         '
         'ViewToolStripMenuItem
         '
-        resources.ApplyResources(Me.ViewToolStripMenuItem, "ViewToolStripMenuItem")
         Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FullScreenToolStripMenuItem, Me.ToolStripSeparator9, Me.DebuggerToolStripMenuItem, Me.LogToolStripMenuItem, Me.HTMLDeveloperToolsToolStripMenuItem})
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
+        resources.ApplyResources(Me.ViewToolStripMenuItem, "ViewToolStripMenuItem")
         Me.ViewToolStripMenuItem.Tag = "view"
-        '
-        'FullScreenToolStripMenuItem
-        '
-        resources.ApplyResources(Me.FullScreenToolStripMenuItem, "FullScreenToolStripMenuItem")
-        Me.FullScreenToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_fullscreen
-        Me.FullScreenToolStripMenuItem.Name = "FullScreenToolStripMenuItem"
-        Me.FullScreenToolStripMenuItem.Tag = "fullscreen"
         '
         'ToolStripSeparator9
         '
-        resources.ApplyResources(Me.ToolStripSeparator9, "ToolStripSeparator9")
         Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        '
-        'DebuggerToolStripMenuItem
-        '
-        resources.ApplyResources(Me.DebuggerToolStripMenuItem, "DebuggerToolStripMenuItem")
-        Me.DebuggerToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_debug
-        Me.DebuggerToolStripMenuItem.Name = "DebuggerToolStripMenuItem"
-        Me.DebuggerToolStripMenuItem.Tag = "debugger"
-        '
-        'LogToolStripMenuItem
-        '
-        resources.ApplyResources(Me.LogToolStripMenuItem, "LogToolStripMenuItem")
-        Me.LogToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_log
-        Me.LogToolStripMenuItem.Name = "LogToolStripMenuItem"
-        Me.LogToolStripMenuItem.Tag = "log"
-        '
-        'HTMLDeveloperToolsToolStripMenuItem
-        '
-        resources.ApplyResources(Me.HTMLDeveloperToolsToolStripMenuItem, "HTMLDeveloperToolsToolStripMenuItem")
-        Me.HTMLDeveloperToolsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_html
-        Me.HTMLDeveloperToolsToolStripMenuItem.Name = "HTMLDeveloperToolsToolStripMenuItem"
-        Me.HTMLDeveloperToolsToolStripMenuItem.Tag = "htmldevtools"
+        resources.ApplyResources(Me.ToolStripSeparator9, "ToolStripSeparator9")
         '
         'AddMenuItem
         '
-        resources.ApplyResources(Me.AddMenuItem, "AddMenuItem")
         Me.AddMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VerbToolStripMenuItem, Me.CommandToolStripMenuItem, Me.ToolStripSeparator10, Me.PageToolStripMenuItem, Me.RoomToolStripMenuItem, Me.ObjectToolStripMenuItem, Me.ExitToolStripMenuItem1, Me.ToolStripSeparator11, Me.TurnScriptToolStripMenuItem, Me.FunctionToolStripMenuItem, Me.TimerToolStripMenuItem, Me.WalkthroughToolStripMenuItem1, Me.AdvancedToolStripMenuItem})
         Me.AddMenuItem.Name = "AddMenuItem"
+        resources.ApplyResources(Me.AddMenuItem, "AddMenuItem")
         Me.AddMenuItem.Tag = "add"
-        '
-        'VerbToolStripMenuItem
-        '
-        resources.ApplyResources(Me.VerbToolStripMenuItem, "VerbToolStripMenuItem")
-        Me.VerbToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_verb
-        Me.VerbToolStripMenuItem.Name = "VerbToolStripMenuItem"
-        Me.VerbToolStripMenuItem.Tag = "addverb"
-        '
-        'CommandToolStripMenuItem
-        '
-        resources.ApplyResources(Me.CommandToolStripMenuItem, "CommandToolStripMenuItem")
-        Me.CommandToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_command
-        Me.CommandToolStripMenuItem.Name = "CommandToolStripMenuItem"
-        Me.CommandToolStripMenuItem.Tag = "addcommand"
         '
         'ToolStripSeparator10
         '
-        resources.ApplyResources(Me.ToolStripSeparator10, "ToolStripSeparator10")
         Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
+        resources.ApplyResources(Me.ToolStripSeparator10, "ToolStripSeparator10")
         Me.ToolStripSeparator10.Tag = ""
-        '
-        'PageToolStripMenuItem
-        '
-        resources.ApplyResources(Me.PageToolStripMenuItem, "PageToolStripMenuItem")
-        Me.PageToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_add_page
-        Me.PageToolStripMenuItem.Name = "PageToolStripMenuItem"
-        Me.PageToolStripMenuItem.Tag = "addpage"
-        '
-        'RoomToolStripMenuItem
-        '
-        resources.ApplyResources(Me.RoomToolStripMenuItem, "RoomToolStripMenuItem")
-        Me.RoomToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_room
-        Me.RoomToolStripMenuItem.Name = "RoomToolStripMenuItem"
-        Me.RoomToolStripMenuItem.Tag = "addroom"
-        '
-        'ObjectToolStripMenuItem
-        '
-        resources.ApplyResources(Me.ObjectToolStripMenuItem, "ObjectToolStripMenuItem")
-        Me.ObjectToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_object
-        Me.ObjectToolStripMenuItem.Name = "ObjectToolStripMenuItem"
-        Me.ObjectToolStripMenuItem.Tag = "addobject"
-        '
-        'ExitToolStripMenuItem1
-        '
-        resources.ApplyResources(Me.ExitToolStripMenuItem1, "ExitToolStripMenuItem1")
-        Me.ExitToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_exit
-        Me.ExitToolStripMenuItem1.Name = "ExitToolStripMenuItem1"
-        Me.ExitToolStripMenuItem1.Tag = "addexit"
         '
         'ToolStripSeparator11
         '
-        resources.ApplyResources(Me.ToolStripSeparator11, "ToolStripSeparator11")
         Me.ToolStripSeparator11.Name = "ToolStripSeparator11"
+        resources.ApplyResources(Me.ToolStripSeparator11, "ToolStripSeparator11")
         Me.ToolStripSeparator11.Tag = ""
-        '
-        'TurnScriptToolStripMenuItem
-        '
-        resources.ApplyResources(Me.TurnScriptToolStripMenuItem, "TurnScriptToolStripMenuItem")
-        Me.TurnScriptToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_turn
-        Me.TurnScriptToolStripMenuItem.Name = "TurnScriptToolStripMenuItem"
-        Me.TurnScriptToolStripMenuItem.Tag = "addturnscript"
-        '
-        'FunctionToolStripMenuItem
-        '
-        resources.ApplyResources(Me.FunctionToolStripMenuItem, "FunctionToolStripMenuItem")
-        Me.FunctionToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_function
-        Me.FunctionToolStripMenuItem.Name = "FunctionToolStripMenuItem"
-        Me.FunctionToolStripMenuItem.Tag = "addfunction"
-        '
-        'TimerToolStripMenuItem
-        '
-        resources.ApplyResources(Me.TimerToolStripMenuItem, "TimerToolStripMenuItem")
-        Me.TimerToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_timer
-        Me.TimerToolStripMenuItem.Name = "TimerToolStripMenuItem"
-        Me.TimerToolStripMenuItem.Tag = "addtimer"
-        '
-        'WalkthroughToolStripMenuItem1
-        '
-        resources.ApplyResources(Me.WalkthroughToolStripMenuItem1, "WalkthroughToolStripMenuItem1")
-        Me.WalkthroughToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_walk
-        Me.WalkthroughToolStripMenuItem1.Name = "WalkthroughToolStripMenuItem1"
-        Me.WalkthroughToolStripMenuItem1.Tag = "addwalkthrough"
         '
         'AdvancedToolStripMenuItem
         '
-        resources.ApplyResources(Me.AdvancedToolStripMenuItem, "AdvancedToolStripMenuItem")
         Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditorToolStripMenuItem, Me.LibraryToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.ObjectTypeToolStripMenuItem, Me.JavascriptToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.DelegateToolStripMenuItem})
+        resources.ApplyResources(Me.AdvancedToolStripMenuItem, "AdvancedToolStripMenuItem")
         Me.AdvancedToolStripMenuItem.Name = "AdvancedToolStripMenuItem"
         Me.AdvancedToolStripMenuItem.Tag = "advanced"
         '
@@ -467,29 +265,15 @@ Partial Class Menu
         '
         'ToolsToolStripMenuItem
         '
-        resources.ApplyResources(Me.ToolsToolStripMenuItem, "ToolsToolStripMenuItem")
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PublishToolStripMenuItem, Me.WalkthroughToolStripMenuItem, Me.ToolStripSeparator8, Me.SimpleModeToolStripMenuItem, Me.CodeViewToolStripMenuItem, Me.WordWrapToolStripMenuItem, Me.OptionsToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
+        resources.ApplyResources(Me.ToolsToolStripMenuItem, "ToolsToolStripMenuItem")
         Me.ToolsToolStripMenuItem.Tag = "tools"
-        '
-        'PublishToolStripMenuItem
-        '
-        resources.ApplyResources(Me.PublishToolStripMenuItem, "PublishToolStripMenuItem")
-        Me.PublishToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_public
-        Me.PublishToolStripMenuItem.Name = "PublishToolStripMenuItem"
-        Me.PublishToolStripMenuItem.Tag = "publish"
-        '
-        'WalkthroughToolStripMenuItem
-        '
-        resources.ApplyResources(Me.WalkthroughToolStripMenuItem, "WalkthroughToolStripMenuItem")
-        Me.WalkthroughToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_walk
-        Me.WalkthroughToolStripMenuItem.Name = "WalkthroughToolStripMenuItem"
-        Me.WalkthroughToolStripMenuItem.Tag = "walkthrough"
         '
         'ToolStripSeparator8
         '
-        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
         '
         'SimpleModeToolStripMenuItem
         '
@@ -497,31 +281,17 @@ Partial Class Menu
         Me.SimpleModeToolStripMenuItem.Name = "SimpleModeToolStripMenuItem"
         Me.SimpleModeToolStripMenuItem.Tag = "simplemode"
         '
-        'CodeViewToolStripMenuItem
-        '
-        resources.ApplyResources(Me.CodeViewToolStripMenuItem, "CodeViewToolStripMenuItem")
-        Me.CodeViewToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_code
-        Me.CodeViewToolStripMenuItem.Name = "CodeViewToolStripMenuItem"
-        Me.CodeViewToolStripMenuItem.Tag = "codeview"
-        '
         'WordWrapToolStripMenuItem
         '
         resources.ApplyResources(Me.WordWrapToolStripMenuItem, "WordWrapToolStripMenuItem")
         Me.WordWrapToolStripMenuItem.Name = "WordWrapToolStripMenuItem"
         Me.WordWrapToolStripMenuItem.Tag = "wordwrap"
         '
-        'OptionsToolStripMenuItem
-        '
-        resources.ApplyResources(Me.OptionsToolStripMenuItem, "OptionsToolStripMenuItem")
-        Me.OptionsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_options
-        Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
-        Me.OptionsToolStripMenuItem.Tag = "options"
-        '
         'LanguageToolStripMenuItem
         '
-        resources.ApplyResources(Me.LanguageToolStripMenuItem, "LanguageToolStripMenuItem")
         Me.LanguageToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnglishToolStripMenuItem, Me.DeutschToolStripMenuItem})
         Me.LanguageToolStripMenuItem.Name = "LanguageToolStripMenuItem"
+        resources.ApplyResources(Me.LanguageToolStripMenuItem, "LanguageToolStripMenuItem")
         Me.LanguageToolStripMenuItem.Tag = ""
         '
         'EnglishToolStripMenuItem
@@ -538,28 +308,14 @@ Partial Class Menu
         '
         'HelpToolStripMenuItem
         '
-        resources.ApplyResources(Me.HelpToolStripMenuItem, "HelpToolStripMenuItem")
         Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ViewHelpToolStripMenuItem, Me.toolStripSeparator5, Me.QuestForumsToolStripMenuItem, Me.ReportABugToolStripMenuItem, Me.ToolStripSeparator6, Me.AboutToolStripMenuItem})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
-        '
-        'ViewHelpToolStripMenuItem
-        '
-        resources.ApplyResources(Me.ViewHelpToolStripMenuItem, "ViewHelpToolStripMenuItem")
-        Me.ViewHelpToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_help
-        Me.ViewHelpToolStripMenuItem.Name = "ViewHelpToolStripMenuItem"
-        Me.ViewHelpToolStripMenuItem.Tag = "viewhelp"
+        resources.ApplyResources(Me.HelpToolStripMenuItem, "HelpToolStripMenuItem")
         '
         'toolStripSeparator5
         '
-        resources.ApplyResources(Me.toolStripSeparator5, "toolStripSeparator5")
         Me.toolStripSeparator5.Name = "toolStripSeparator5"
-        '
-        'QuestForumsToolStripMenuItem
-        '
-        resources.ApplyResources(Me.QuestForumsToolStripMenuItem, "QuestForumsToolStripMenuItem")
-        Me.QuestForumsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_forum
-        Me.QuestForumsToolStripMenuItem.Name = "QuestForumsToolStripMenuItem"
-        Me.QuestForumsToolStripMenuItem.Tag = "forums"
+        resources.ApplyResources(Me.toolStripSeparator5, "toolStripSeparator5")
         '
         'ReportABugToolStripMenuItem
         '
@@ -569,21 +325,266 @@ Partial Class Menu
         '
         'ToolStripSeparator6
         '
-        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        '
-        'AboutToolStripMenuItem
-        '
-        resources.ApplyResources(Me.AboutToolStripMenuItem, "AboutToolStripMenuItem")
-        Me.AboutToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_about
-        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Tag = "about"
+        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
         '
         'WindowMenuToolStripMenuItem
         '
-        resources.ApplyResources(Me.WindowMenuToolStripMenuItem, "WindowMenuToolStripMenuItem")
         Me.WindowMenuToolStripMenuItem.Name = "WindowMenuToolStripMenuItem"
+        resources.ApplyResources(Me.WindowMenuToolStripMenuItem, "WindowMenuToolStripMenuItem")
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
+        '
+        'OpenToolStripMenuItem
+        '
+        Me.OpenToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_open
+        resources.ApplyResources(Me.OpenToolStripMenuItem, "OpenToolStripMenuItem")
+        Me.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
+        Me.OpenToolStripMenuItem.Tag = "open"
+        '
+        'RestartToolStripMenuItem
+        '
+        Me.RestartToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_restart
+        resources.ApplyResources(Me.RestartToolStripMenuItem, "RestartToolStripMenuItem")
+        Me.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem"
+        Me.RestartToolStripMenuItem.Tag = "restart"
+        '
+        'CreateNewGameToolStripMenuItem
+        '
+        Me.CreateNewGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_new
+        resources.ApplyResources(Me.CreateNewGameToolStripMenuItem, "CreateNewGameToolStripMenuItem")
+        Me.CreateNewGameToolStripMenuItem.Name = "CreateNewGameToolStripMenuItem"
+        Me.CreateNewGameToolStripMenuItem.Tag = "createnew"
+        '
+        'OpenEditToolStripMenuItem
+        '
+        Me.OpenEditToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_edit
+        resources.ApplyResources(Me.OpenEditToolStripMenuItem, "OpenEditToolStripMenuItem")
+        Me.OpenEditToolStripMenuItem.Name = "OpenEditToolStripMenuItem"
+        Me.OpenEditToolStripMenuItem.Tag = "openedit"
+        '
+        'SaveToolStripMenuItem
+        '
+        Me.SaveToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_save
+        resources.ApplyResources(Me.SaveToolStripMenuItem, "SaveToolStripMenuItem")
+        Me.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem"
+        Me.SaveToolStripMenuItem.Tag = "save"
+        '
+        'SaveAsToolStripMenuItem
+        '
+        Me.SaveAsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_save_as
+        resources.ApplyResources(Me.SaveAsToolStripMenuItem, "SaveAsToolStripMenuItem")
+        Me.SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem"
+        Me.SaveAsToolStripMenuItem.Tag = "saveas"
+        '
+        'PlayGameToolStripMenuItem
+        '
+        Me.PlayGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_play
+        resources.ApplyResources(Me.PlayGameToolStripMenuItem, "PlayGameToolStripMenuItem")
+        Me.PlayGameToolStripMenuItem.Name = "PlayGameToolStripMenuItem"
+        Me.PlayGameToolStripMenuItem.Tag = "play"
+        '
+        'StopGameToolStripMenuItem
+        '
+        Me.StopGameToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_stop
+        resources.ApplyResources(Me.StopGameToolStripMenuItem, "StopGameToolStripMenuItem")
+        Me.StopGameToolStripMenuItem.Name = "StopGameToolStripMenuItem"
+        Me.StopGameToolStripMenuItem.Tag = "stop"
+        '
+        'UndoToolStripMenuItem
+        '
+        Me.UndoToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_undo
+        resources.ApplyResources(Me.UndoToolStripMenuItem, "UndoToolStripMenuItem")
+        Me.UndoToolStripMenuItem.Name = "UndoToolStripMenuItem"
+        Me.UndoToolStripMenuItem.Tag = "undo"
+        '
+        'RedoToolStripMenuItem
+        '
+        Me.RedoToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_redo
+        resources.ApplyResources(Me.RedoToolStripMenuItem, "RedoToolStripMenuItem")
+        Me.RedoToolStripMenuItem.Name = "RedoToolStripMenuItem"
+        Me.RedoToolStripMenuItem.Tag = "redo"
+        '
+        'CutToolStripMenuItem
+        '
+        Me.CutToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_cut
+        resources.ApplyResources(Me.CutToolStripMenuItem, "CutToolStripMenuItem")
+        Me.CutToolStripMenuItem.Name = "CutToolStripMenuItem"
+        Me.CutToolStripMenuItem.Tag = "cut"
+        '
+        'CopyToolStripMenuItem
+        '
+        Me.CopyToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_copy
+        resources.ApplyResources(Me.CopyToolStripMenuItem, "CopyToolStripMenuItem")
+        Me.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem"
+        Me.CopyToolStripMenuItem.Tag = "copy"
+        '
+        'PasteToolStripMenuItem
+        '
+        Me.PasteToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_paste
+        resources.ApplyResources(Me.PasteToolStripMenuItem, "PasteToolStripMenuItem")
+        Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
+        Me.PasteToolStripMenuItem.Tag = "paste"
+        '
+        'DeleteToolStripMenuItem
+        '
+        Me.DeleteToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_delete
+        resources.ApplyResources(Me.DeleteToolStripMenuItem, "DeleteToolStripMenuItem")
+        Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
+        Me.DeleteToolStripMenuItem.Tag = "delete"
+        '
+        'FindToolStripMenuItem
+        '
+        Me.FindToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_search
+        resources.ApplyResources(Me.FindToolStripMenuItem, "FindToolStripMenuItem")
+        Me.FindToolStripMenuItem.Name = "FindToolStripMenuItem"
+        Me.FindToolStripMenuItem.Tag = "find"
+        '
+        'FullScreenToolStripMenuItem
+        '
+        Me.FullScreenToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_fullscreen
+        resources.ApplyResources(Me.FullScreenToolStripMenuItem, "FullScreenToolStripMenuItem")
+        Me.FullScreenToolStripMenuItem.Name = "FullScreenToolStripMenuItem"
+        Me.FullScreenToolStripMenuItem.Tag = "fullscreen"
+        '
+        'DebuggerToolStripMenuItem
+        '
+        Me.DebuggerToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_debug
+        resources.ApplyResources(Me.DebuggerToolStripMenuItem, "DebuggerToolStripMenuItem")
+        Me.DebuggerToolStripMenuItem.Name = "DebuggerToolStripMenuItem"
+        Me.DebuggerToolStripMenuItem.Tag = "debugger"
+        '
+        'LogToolStripMenuItem
+        '
+        Me.LogToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_log
+        resources.ApplyResources(Me.LogToolStripMenuItem, "LogToolStripMenuItem")
+        Me.LogToolStripMenuItem.Name = "LogToolStripMenuItem"
+        Me.LogToolStripMenuItem.Tag = "log"
+        '
+        'HTMLDeveloperToolsToolStripMenuItem
+        '
+        Me.HTMLDeveloperToolsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_html
+        resources.ApplyResources(Me.HTMLDeveloperToolsToolStripMenuItem, "HTMLDeveloperToolsToolStripMenuItem")
+        Me.HTMLDeveloperToolsToolStripMenuItem.Name = "HTMLDeveloperToolsToolStripMenuItem"
+        Me.HTMLDeveloperToolsToolStripMenuItem.Tag = "htmldevtools"
+        '
+        'VerbToolStripMenuItem
+        '
+        Me.VerbToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_verb
+        resources.ApplyResources(Me.VerbToolStripMenuItem, "VerbToolStripMenuItem")
+        Me.VerbToolStripMenuItem.Name = "VerbToolStripMenuItem"
+        Me.VerbToolStripMenuItem.Tag = "addverb"
+        '
+        'CommandToolStripMenuItem
+        '
+        Me.CommandToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_command
+        resources.ApplyResources(Me.CommandToolStripMenuItem, "CommandToolStripMenuItem")
+        Me.CommandToolStripMenuItem.Name = "CommandToolStripMenuItem"
+        Me.CommandToolStripMenuItem.Tag = "addcommand"
+        '
+        'PageToolStripMenuItem
+        '
+        Me.PageToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_add_page
+        resources.ApplyResources(Me.PageToolStripMenuItem, "PageToolStripMenuItem")
+        Me.PageToolStripMenuItem.Name = "PageToolStripMenuItem"
+        Me.PageToolStripMenuItem.Tag = "addpage"
+        '
+        'RoomToolStripMenuItem
+        '
+        Me.RoomToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_room
+        resources.ApplyResources(Me.RoomToolStripMenuItem, "RoomToolStripMenuItem")
+        Me.RoomToolStripMenuItem.Name = "RoomToolStripMenuItem"
+        Me.RoomToolStripMenuItem.Tag = "addroom"
+        '
+        'ObjectToolStripMenuItem
+        '
+        Me.ObjectToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_object
+        resources.ApplyResources(Me.ObjectToolStripMenuItem, "ObjectToolStripMenuItem")
+        Me.ObjectToolStripMenuItem.Name = "ObjectToolStripMenuItem"
+        Me.ObjectToolStripMenuItem.Tag = "addobject"
+        '
+        'ExitToolStripMenuItem1
+        '
+        Me.ExitToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_exit
+        resources.ApplyResources(Me.ExitToolStripMenuItem1, "ExitToolStripMenuItem1")
+        Me.ExitToolStripMenuItem1.Name = "ExitToolStripMenuItem1"
+        Me.ExitToolStripMenuItem1.Tag = "addexit"
+        '
+        'TurnScriptToolStripMenuItem
+        '
+        Me.TurnScriptToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_turn
+        resources.ApplyResources(Me.TurnScriptToolStripMenuItem, "TurnScriptToolStripMenuItem")
+        Me.TurnScriptToolStripMenuItem.Name = "TurnScriptToolStripMenuItem"
+        Me.TurnScriptToolStripMenuItem.Tag = "addturnscript"
+        '
+        'FunctionToolStripMenuItem
+        '
+        Me.FunctionToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_function
+        resources.ApplyResources(Me.FunctionToolStripMenuItem, "FunctionToolStripMenuItem")
+        Me.FunctionToolStripMenuItem.Name = "FunctionToolStripMenuItem"
+        Me.FunctionToolStripMenuItem.Tag = "addfunction"
+        '
+        'TimerToolStripMenuItem
+        '
+        Me.TimerToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_timer
+        resources.ApplyResources(Me.TimerToolStripMenuItem, "TimerToolStripMenuItem")
+        Me.TimerToolStripMenuItem.Name = "TimerToolStripMenuItem"
+        Me.TimerToolStripMenuItem.Tag = "addtimer"
+        '
+        'WalkthroughToolStripMenuItem1
+        '
+        Me.WalkthroughToolStripMenuItem1.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_walk
+        resources.ApplyResources(Me.WalkthroughToolStripMenuItem1, "WalkthroughToolStripMenuItem1")
+        Me.WalkthroughToolStripMenuItem1.Name = "WalkthroughToolStripMenuItem1"
+        Me.WalkthroughToolStripMenuItem1.Tag = "addwalkthrough"
+        '
+        'PublishToolStripMenuItem
+        '
+        Me.PublishToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_public
+        resources.ApplyResources(Me.PublishToolStripMenuItem, "PublishToolStripMenuItem")
+        Me.PublishToolStripMenuItem.Name = "PublishToolStripMenuItem"
+        Me.PublishToolStripMenuItem.Tag = "publish"
+        '
+        'WalkthroughToolStripMenuItem
+        '
+        Me.WalkthroughToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_walk
+        resources.ApplyResources(Me.WalkthroughToolStripMenuItem, "WalkthroughToolStripMenuItem")
+        Me.WalkthroughToolStripMenuItem.Name = "WalkthroughToolStripMenuItem"
+        Me.WalkthroughToolStripMenuItem.Tag = "walkthrough"
+        '
+        'CodeViewToolStripMenuItem
+        '
+        Me.CodeViewToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_code
+        resources.ApplyResources(Me.CodeViewToolStripMenuItem, "CodeViewToolStripMenuItem")
+        Me.CodeViewToolStripMenuItem.Name = "CodeViewToolStripMenuItem"
+        Me.CodeViewToolStripMenuItem.Tag = "codeview"
+        '
+        'OptionsToolStripMenuItem
+        '
+        Me.OptionsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_options
+        resources.ApplyResources(Me.OptionsToolStripMenuItem, "OptionsToolStripMenuItem")
+        Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
+        Me.OptionsToolStripMenuItem.Tag = "options"
+        '
+        'ViewHelpToolStripMenuItem
+        '
+        Me.ViewHelpToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_help
+        resources.ApplyResources(Me.ViewHelpToolStripMenuItem, "ViewHelpToolStripMenuItem")
+        Me.ViewHelpToolStripMenuItem.Name = "ViewHelpToolStripMenuItem"
+        Me.ViewHelpToolStripMenuItem.Tag = "viewhelp"
+        '
+        'QuestForumsToolStripMenuItem
+        '
+        Me.QuestForumsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_forum
+        resources.ApplyResources(Me.QuestForumsToolStripMenuItem, "QuestForumsToolStripMenuItem")
+        Me.QuestForumsToolStripMenuItem.Name = "QuestForumsToolStripMenuItem"
+        Me.QuestForumsToolStripMenuItem.Tag = "forums"
+        '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_about
+        resources.ApplyResources(Me.AboutToolStripMenuItem, "AboutToolStripMenuItem")
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Tag = "about"
         '
         'Menu
         '

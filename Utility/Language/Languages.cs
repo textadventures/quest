@@ -5,11 +5,25 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Xml;
 
+/* Languages (SoonGames)
+
+    The templates can be used as follows:
+
+    In VB source code, insert "Imports TextAdventures.Utility.Language.L".
+    Replace the corresponding texts with T ("Templatename") and add them to the templates.resx.
+
+    In C source code, insert "using TextAdventures.Utility.Language".
+    Replace the corresponding texts with L.T("Templatename") and add them to the templates.resx.
+
+*/
 namespace TextAdventures.Utility.Language
 {
     public class L
     {
         public static string CurrentLanguage;
+
+        // Additional languages can be added here. Create a corresponding template.**.resx for this purpose. **The extension is the TwoLetterISO-language-code.
+        // It is not necessary to replace all templates. Templates that have not been translated are displayed in English.
         private static Dictionary<string, string> Languages = new Dictionary<string, string>
         {
             { "English", "en" },

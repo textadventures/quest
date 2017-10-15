@@ -26,34 +26,37 @@ Partial Class MainToolbar
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainToolbar))
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.butNew = New System.Windows.Forms.ToolStripButton()
         Me.butOpen = New System.Windows.Forms.ToolStripButton()
         Me.butSave = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.butCut = New System.Windows.Forms.ToolStripButton()
         Me.butCopy = New System.Windows.Forms.ToolStripButton()
         Me.butPaste = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butFind = New System.Windows.Forms.ToolStripButton()
+        Me.butReplace = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.butUndoSimple = New System.Windows.Forms.ToolStripButton()
         Me.butRedoSimple = New System.Windows.Forms.ToolStripButton()
         Me.butUndo = New System.Windows.Forms.ToolStripSplitButton()
         Me.butRedo = New System.Windows.Forms.ToolStripSplitButton()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.butAddPage = New System.Windows.Forms.ToolStripButton()
         Me.butAddRoom = New System.Windows.Forms.ToolStripButton()
         Me.butAddObject = New System.Windows.Forms.ToolStripButton()
         Me.butDelete = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.butBack = New System.Windows.Forms.ToolStripSplitButton()
         Me.butForward = New System.Windows.Forms.ToolStripSplitButton()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.butPlay = New System.Windows.Forms.ToolStripButton()
         Me.butCode = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.butHelp = New System.Windows.Forms.ToolStripButton()
         Me.butLogError = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
+        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -62,47 +65,8 @@ Partial Class MainToolbar
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.ToolStripSeparator6, Me.butLogError})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.butDelete, Me.ToolStripSeparator4, Me.butFind, Me.butReplace, Me.ToolStripSeparator6, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.butLogError, Me.ToolStripSeparator7})
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        resources.ApplyResources(Me.ToolStripSeparator1, "ToolStripSeparator1")
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
-        '
-        'ToolStripSeparator3
-        '
-        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        resources.ApplyResources(Me.ToolStripSeparator3, "ToolStripSeparator3")
-        '
-        'ToolStripSeparator2
-        '
-        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
-        '
-        'ToolStripSeparator8
-        '
-        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
-        '
-        'ToolStripSeparator5
-        '
-        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        resources.ApplyResources(Me.ToolStripSeparator5, "ToolStripSeparator5")
-        '
-        'ToolStripSeparator6
-        '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
-        '
-        'tmrUndoTimer
-        '
-        Me.tmrUndoTimer.Interval = 20
         '
         'butNew
         '
@@ -128,6 +92,11 @@ Partial Class MainToolbar
         Me.butSave.Name = "butSave"
         Me.butSave.Tag = "save"
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        resources.ApplyResources(Me.ToolStripSeparator1, "ToolStripSeparator1")
+        '
         'butCut
         '
         Me.butCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -151,6 +120,32 @@ Partial Class MainToolbar
         resources.ApplyResources(Me.butPaste, "butPaste")
         Me.butPaste.Name = "butPaste"
         Me.butPaste.Tag = "paste"
+        '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        resources.ApplyResources(Me.ToolStripSeparator4, "ToolStripSeparator4")
+        '
+        'butFind
+        '
+        Me.butFind.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butFind.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_search
+        resources.ApplyResources(Me.butFind, "butFind")
+        Me.butFind.Name = "butFind"
+        Me.butFind.Tag = "find"
+        '
+        'butReplace
+        '
+        Me.butReplace.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butReplace.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_replace
+        resources.ApplyResources(Me.butReplace, "butReplace")
+        Me.butReplace.Name = "butReplace"
+        Me.butReplace.Tag = "replace"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        resources.ApplyResources(Me.ToolStripSeparator6, "ToolStripSeparator6")
         '
         'butUndoSimple
         '
@@ -186,6 +181,11 @@ Partial Class MainToolbar
         Me.butRedo.Name = "butRedo"
         Me.butRedo.Tag = ""
         '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        resources.ApplyResources(Me.ToolStripSeparator3, "ToolStripSeparator3")
+        '
         'butAddPage
         '
         Me.butAddPage.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_add_page
@@ -215,6 +215,11 @@ Partial Class MainToolbar
         Me.butDelete.Name = "butDelete"
         Me.butDelete.Tag = "delete"
         '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        resources.ApplyResources(Me.ToolStripSeparator2, "ToolStripSeparator2")
+        '
         'butBack
         '
         Me.butBack.DropDownButtonWidth = 16
@@ -229,6 +234,11 @@ Partial Class MainToolbar
         Me.butForward.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_forward
         resources.ApplyResources(Me.butForward, "butForward")
         Me.butForward.Name = "butForward"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        resources.ApplyResources(Me.ToolStripSeparator8, "ToolStripSeparator8")
         '
         'butPlay
         '
@@ -245,6 +255,11 @@ Partial Class MainToolbar
         Me.butCode.Name = "butCode"
         Me.butCode.Tag = "code"
         '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        resources.ApplyResources(Me.ToolStripSeparator5, "ToolStripSeparator5")
+        '
         'butHelp
         '
         Me.butHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -259,6 +274,15 @@ Partial Class MainToolbar
         resources.ApplyResources(Me.butLogError, "butLogError")
         Me.butLogError.Name = "butLogError"
         Me.butLogError.Tag = "logbug"
+        '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        resources.ApplyResources(Me.ToolStripSeparator7, "ToolStripSeparator7")
+        '
+        'tmrUndoTimer
+        '
+        Me.tmrUndoTimer.Interval = 20
         '
         'MainToolbar
         '
@@ -302,4 +326,7 @@ Partial Class MainToolbar
     Friend WithEvents butLogError As System.Windows.Forms.ToolStripButton
     Friend WithEvents butAddPage As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents butFind As ToolStripButton
+    Friend WithEvents butReplace As ToolStripButton
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
 End Class

@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <my:FindControl x:Name="ctlFind" Visibility="Collapsed" Find="ctlFind_Find" Close="ctlFind_Close" Replace="ctlFind_Replace" ReplaceAll="ctlFind_ReplaceAll" Focusable="True" />
+        <my:FindControl x:Name="ctlFind" Visibility="Collapsed" Find="ctlFind_Find" Close="ctlFind_Close" Replace="ctlFind_Replace" ReplaceAll="ctlFind_ReplaceAll" Focusable="True" Loaded="ctlFind_Loaded" />
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
             Name="textEditor"
