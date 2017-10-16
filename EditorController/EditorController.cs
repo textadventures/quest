@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
+using TextAdventures.Quest.Functions;
 using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
@@ -1788,13 +1789,11 @@ namespace TextAdventures.Quest
                 Element newElement;
                 if (m_editorStyle == Quest.EditorStyle.TextAdventure)
                 {
-                    newElement = e.Clone();
-                    if (m_lastelementscutout) DeleteElement(e.Name, false);
+                    newElement = e.Clone(el => true, m_lastelementscutout);
                 }
                 else if (m_editorStyle == Quest.EditorStyle.GameBook)
                 {
-                    newElement = e.Clone(el => el.Name != "player");
-                    if (m_lastelementscutout) DeleteElement(e.Name, false);
+                    newElement = e.Clone(el => el.Name != "player", m_lastelementscutout);
                 }
                 else
                 {
@@ -1816,17 +1815,19 @@ namespace TextAdventures.Quest
             m_worldModel.UndoLogger.StartTransaction("Cut");
             CopyElements(elementNames);
             m_lastelementscutout = true;
-            /*
+
+            /* 
+             * The cut out elements should be displayed in gray.
+             * Unfortunately, I have not yet been able to do this from the EditorController.cs.
+             * (SoonGames)
+
             foreach (string name in elementNames)
             {
-                // The cut out elements should be displayed in gray.
-                // Unfortunately, I have not yet been able to do this from the EditorController.cs.
-                // (SoonGames)
-                // Element element = m_worldModel.Elements.Get(name);
-                // element.Fields.Set("ForeColor", "color"); // With Set I was only able to change the element name.
-                // m_worldModel.GetElementFactory(element.ElemType).DestroyElement(element.Name);
+                Element element = m_worldModel.Elements.Get(name);
+                element.Fields.Set("forecolor", "color"); // ??? With Set I was only able to change the element name.
             }
             */
+
             m_worldModel.UndoLogger.EndTransaction();
         }
 

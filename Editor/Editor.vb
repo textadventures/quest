@@ -863,6 +863,8 @@ Public Class Editor
         m_menu.MenuVisible("add") = Not codeView
         m_menu.MenuVisible("find") = codeView
         m_menu.MenuVisible("replace") = codeView
+        m_menu.MenuVisible("delete") = Not codeView
+        m_menu.MenuVisible("cut") = Not codeView
         m_menu.MenuVisible("wordwrap") = codeView
         m_menu.MenuEnabled("simplemode") = Not codeView
         m_menu.MenuChecked("codeview") = codeView
@@ -962,8 +964,7 @@ Public Class Editor
         ctlTree.SetMenuEnabled("copy", canCopy)
         ctlToolbar.CanCopy = canCopy
 
-        ' If the CodeView is activated you can cut, copy and paste. (SoonGames) (added m_codeView OrElse)
-        Dim canDelete As Boolean = m_codeView OrElse (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
+        Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
         m_menu.MenuEnabled("delete") = canDelete
         ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete

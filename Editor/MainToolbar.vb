@@ -454,6 +454,7 @@ Public Class MainToolbar
         butBack.Visible = Not CodeView
         butForward.Visible = Not CodeView
         butDelete.Visible = Not CodeView
+        butCut.Visible = Not CodeView
         butFind.Visible = CodeView
         butReplace.Visible = CodeView
         ToolStripSeparator6.Visible = CodeView
