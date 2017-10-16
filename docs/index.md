@@ -165,6 +165,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 <a name="Reference"></a>Reference
 ---------------------------------
 
+-   [Common problems](problems.html)
 -   [WebEditor](webeditor.html)
 -   [Notes for users of previous versions of Quest](upgrade_notes.html)
 -   [ASL Requirements](asl_requirements.html)
