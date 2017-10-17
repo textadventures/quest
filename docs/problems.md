@@ -72,8 +72,8 @@ Occasionally you may see this error:
 This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).
 
 
-Reserved words
---------------
+Names you cannot use
+--------------------
 
 Sometimes Quest is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called "game" it will call it "game1"). However, there are other times it will not...
 
@@ -96,6 +96,10 @@ This only applies to local variables, you can give these names to objects and at
 ### `object`, `game`, `turnscript`, `command`, `exit`
 
 Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect. You can use them as local variable and object names, but I would advise against it.
+
+### Attribute names with spaces
+
+You can use attribute names with spaces in them for strings, number, objects and scripts, but not for lists or dictionaries.
 
 ### Other attributes
 
