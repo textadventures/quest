@@ -27,7 +27,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Bold</value>
+          <value>[EditorTextProcessorBold]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -45,7 +45,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Italic</value>
+          <value>[EditorTextProcessorItalic]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -63,7 +63,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Underline</value>
+          <value>[EditorTextProcessorUnderline]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -81,7 +81,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Page</value>
+          <value>[EditorTextProcessorPage]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -103,7 +103,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Once</value>
+          <value>[EditorTextProcessorOnce]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -121,7 +121,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>If...</value>
+          <value>[EditorTextProcessorIf]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -139,7 +139,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Random text</value>
+          <value>[EditorTextProcessorRandomText]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -157,7 +157,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Image</value>
+          <value>[EditorTextProcessorImage]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -190,44 +190,44 @@
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Game name</caption>
+        <caption>[EditorGameGamename]</caption>
         <attribute>gamename</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Subtitle</caption>
+        <caption>[EditorGameSubtitle]</caption>
         <attribute>subtitle</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Author</caption>
+        <caption>[EditorGameAuthor]</caption>
         <attribute>author</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Display title and author when the game begins</caption>
+        <caption>[EditorGameDisplaytitle]</caption>
         <attribute>showtitle</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Version</caption>
+        <caption>[EditorGameVersion]</caption>
         <attribute>version</attribute>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</caption>
+        <caption>[EditorGameTheGameIDbelow]</caption>
         <advanced/>
         <desktop/>
       </control>
 
       <control>
         <controltype>gameid</controltype>
-        <caption>Game ID</caption>
+        <caption>[EditorGameGameID]</caption>
         <attribute>gameid</attribute>
         <advanced/>
         <desktop/>
@@ -235,7 +235,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Category</caption>
+        <caption>[EditorGameCategory]</caption>
         <attribute>category</attribute>
         <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
@@ -243,22 +243,22 @@
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Year of release</caption>
+        <caption>[EditorGameYearofrelease]</caption>
         <attribute>firstpublished</attribute>
       </control>
 
       <control>
         <controltype>file</controltype>
-        <caption>Cover art</caption>
+        <caption>[EditorGameCoverart]</caption>
         <attribute>cover</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
-        <filefiltername>Picture Files</filefiltername>
+        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
         <preview/>
       </control>
 
       <control>
         <controltype>richtext</controltype>
-        <caption>Description</caption>
+        <caption>[EditorGameDescription]</caption>
         <attribute>description</attribute>
         <notextprocessor/>
         <expand/>
@@ -267,39 +267,39 @@
     </tab>
 
     <tab>
-      <caption>Script</caption>
+      <caption>[EditorGBPageTypeScript]</caption>
       <advanced/>
 
       <control>
         <controltype>script</controltype>
-        <caption>Script when entering page</caption>
+        <caption>[EditorGBScriptWhenEnteringPage]</caption>
         <attribute>roomenter</attribute>
       </control>
     </tab>   
     
 
     <tab>
-      <caption>Display</caption>
+      <caption>[EditorGameDisplay]</caption>
 
       <control>
         <controltype>checkbox</controltype>
         <attribute>clearlastpage</attribute>
-        <caption>Clear screen between each page</caption>
+        <caption>[EditorGBClearScreenBetweenEachPage]</caption>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Font</caption>
+        <caption>[EditorGameFont]</caption>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>The web font will override the base font if an internet connection is available, or the game is running in a web browser.</caption>
+        <caption>[EditorGameThewebfont]</caption>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Base font</caption>
+        <caption>[EditorGameBasefont]</caption>
         <attribute>defaultfont</attribute>
         <source>basefonts</source>
         <freetext/>
@@ -307,7 +307,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Web font</caption>
+        <caption>[EditorGameWebfont]</caption>
         <attribute>defaultwebfont</attribute>
         <source>webfonts</source>
         <freetext/>
@@ -315,42 +315,42 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>Browse available web fonts</caption>
+        <caption>[EditorGameBrowseavailable]</caption>
         <href>http://www.google.com/webfonts</href>
       </control>
 
       <control>
         <controltype>number</controltype>
-        <caption>Font size</caption>
+        <caption>[EditorGameFontsize]</caption>
         <attribute>defaultfontsize</attribute>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Colour</caption>
+        <caption>[EditorGBColour]</caption>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</caption>
+        <caption>[EditorGameYoucanuseany]</caption>
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Background</caption>
+        <caption>[EditorGBBackground]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Foreground</caption>
+        <caption>[EditorGBForeground]</caption>
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Link foreground</caption>
+        <caption>[EditorGBLinkForeground]</caption>
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -358,18 +358,18 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>Layout</caption>
+        <caption>[EditorGameLayout]</caption>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show border</caption>
+        <caption>[EditorGameShowborder]</caption>
         <attribute>showborder</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Set a custom display width</caption>
+        <caption>[EditorGameSetacustom]</caption>
         <attribute>setcustomwidth</attribute>
       </control>
 
@@ -377,13 +377,13 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustomwidth</onlydisplayif>
         <attribute>customwidth</attribute>
-        <caption>Width</caption>
+        <caption>[EditorGameWidth]</caption>
         <minimum>100</minimum>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Set custom padding</caption>
+        <caption>[EditorGameSetcustompadding]</caption>
         <attribute>setcustompadding</attribute>
       </control>
 
@@ -391,7 +391,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingtop</attribute>
-        <caption>Top</caption>
+        <caption>[EditorGameTop]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -399,7 +399,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingbottom</attribute>
-        <caption>Bottom</caption>
+        <caption>[EditorGameBottom]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -407,7 +407,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingleft</attribute>
-        <caption>Left</caption>
+        <caption>[EditorGameLeft]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -415,7 +415,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingright</attribute>
-        <caption>Right</caption>
+        <caption>[EditorGameRight]</caption>
         <minimum>0</minimum>
       </control>
     </tab>
@@ -426,21 +426,21 @@
     <appliesto>object</appliesto>
 
     <tab>
-      <caption>Player</caption>
+      <caption>[EditorGamePlayer]</caption>
       <mustinherit>defaultplayer</mustinherit>
 
       <control>
         <controltype>label</controltype>
-        <caption>You can change where the game starts by dragging "player" to a different page.</caption>
+        <caption>[EditorGBYouCanChange]</caption>
       </control>
     </tab>
 
     <tab>
-      <caption>Page</caption>
+      <caption>[EditorGBPage]</caption>
       <mustnotinherit>defaultplayer</mustnotinherit>
 
       <control>
-        <caption>Name</caption>
+        <caption>[EditorGBName]</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
         <advanced/>
@@ -448,17 +448,17 @@
 
       <control>
         <controltype>dropdowntypes</controltype>
-        <caption>Page type</caption>
-        <types>*=Text; picture=Picture; youtube=YouTube; link=External link; script=Script; scripttext = Script + Text</types>
+        <caption>[EditorGBPageType]</caption>
+        <types>*=Text; picture=[EditorGBPageTypePicture]; youtube=YouTube; link=[EditorGBPageTypeExternalLink]; script=[EditorGBPageTypeScript]; scripttext=[EditorGBPageTypeScriptText]</types>
         <width>150</width>
       </control>
 
       <control>
-        <caption>Picture</caption>
+        <caption>[EditorGBPageTypePicture]</caption>
         <controltype>file</controltype>
         <attribute>picture</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
-        <filefiltername>Picture Files</filefiltername>
+        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
         <mustinherit>picture</mustinherit>
         <preview/>
       </control>
@@ -471,14 +471,14 @@
       </control>
 
       <control>
-        <caption>Link</caption>
+        <caption>[EditorGBPageTypeExternalLink]</caption>
         <controltype>textbox</controltype>
         <attribute>address</attribute>
         <mustinherit>link</mustinherit>
       </control>
 
       <control>
-        <caption>Script</caption>
+        <caption>[EditorGBPageTypeScript]</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
         <mustinherit>script; scripttext</mustinherit>
@@ -486,7 +486,7 @@
 
       <control>
         <controltype>richtext</controltype>
-        <caption>Description</caption>
+        <caption>[EditorGameDescription]</caption>
         <attribute>description</attribute>
         <mustnotinherit>link; script</mustnotinherit>
         <expand/>
@@ -494,9 +494,9 @@
 
       <control>
         <controltype>gamebookoptions</controltype>
-        <caption>Options</caption>
-        <keyprompt>Please enter the page name</keyprompt>
-        <valueprompt>Please enter the link text</valueprompt>
+        <caption>[EditorGameOptions]</caption>
+        <keyprompt>[EditorGBOptionsPleaseEnterPageName]</keyprompt>
+        <valueprompt>[EditorGBOptionsPleaseEnterLinkText]</valueprompt>
         <attribute>options</attribute>
         <source>object</source>
         <sourceexclude>player</sourceexclude>
@@ -505,20 +505,20 @@
 
     </tab>
     <tab>
-      <caption>Action</caption>
+      <caption>[EditorGBAction]</caption>
       <mustnotinherit>defaultplayer; script</mustnotinherit>
 
       <control>
-        <caption>Play sound when entering page</caption>
+        <caption>[EditorGBPlaySoundWhenEnterPage]</caption>
         <controltype>file</controltype>
         <attribute>sound</attribute>
         <source>*.mp3;*.wav</source>
-        <filefiltername>Sound Files</filefiltername>
+        <filefiltername>[EditorGBPlaySoundFilterName]</filefiltername>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Continue to play sound after the player moves to another page</caption>
+        <caption>[EditorGBContinueToPlaySound]</caption>
         <attribute>continuesound</attribute>
         <onlydisplayif>LengthOf(GetString(this, "sound")) > 0</onlydisplayif>
       </control>
