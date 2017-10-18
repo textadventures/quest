@@ -3,6 +3,9 @@ layout: index
 title: How to use functions
 ---
 
+We looked at functions in the [tutorial](tutorial/more_things_to_do_with_objects.html#Using_Functions), and for a basic understanding, you are recommended looking at that. This document is going to go into more detail, and will be looking at using functions with code rather than the GUI.
+
+
 Quest has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
 
 [http://docs.textadventures.co.uk/quest/functions/](http://docs.textadventures.co.uk/quest/functions/)
@@ -11,9 +14,13 @@ Quest also has "script commands", which in many ways are like functions. One dif
 
 [http://docs.textadventures.co.uk/quest/scripts/](http://docs.textadventures.co.uk/quest/scripts/)
 
+Many of these can be accessed through the GUI; for example, when you select the "Print" script in the GUI, that is adding the `msg` script command to your game.
 
-Using Functions and Script Commands
------------------------------------
+
+Using Functions
+---------------
+
+Many script commands work just like functions, and this applies to them too.
 
 Some functions return a value, some require one or more values. The values it requires are called parameters. For example, the GetBoolean function requires an object and the name of an attribute, and it returns true if that attribute is present and set to true, and false if the attribute is set to false or missing.
 
@@ -47,7 +54,7 @@ So why would you want to use a function? The basic reason is because you want to
 
 So how do we create a function? Right-click in the left pane, and select "Add function". Your new function will appear. Set the return type; in this case the function will not return anything, so we can leave it as "None". Then you can add the parameters.
 
-You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs. In this case there is only one parameter, and I am going to call it "seat".
+You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs - however the order IS important! In this case there is only one parameter, and I am going to call it "seat".
 
 Then put in your script. In this example, all it does is print a message. Whatever values are sent as parameters will automatically go into the variables in the same order. In this function we are expecting to be sent some kind of seat, and whatever it is will be held in the "seat" variable. If this function is called by the "siton" verb of the bench, then the "seat" variable will contain the bench object.
 
@@ -59,6 +66,15 @@ You need to think about what will happen if the function is sent the wrong sort 
 In the example we are expecting an object, we are expecting it to be something that can be sat on and we are expecting it to be there. You might assume it has a certain attribute, such as "alias" (I used the GetDisplayAlias function to avoid that assumption). It is important to think carefully about those assumptions - and I would recommend putting a comment in your code so they are explicitly stated. Just because we called it seat is no guarantee it really is a seat.
 
 If we cannot be sure, then it may be a good idea to test what the thing is before doing anything else; otherwise you can end up with some obscure bugs. In this case, the assumptions are fair. There are four places the function is called, and in each case we can be sure the assumptions are sound. No need to do unnecessary testing.
+
+
+### Validation
+
+Once you have written your function, it is very important to test it. Go to the start script of the game object, and add some lines of code that will call your new function with a variety of parameters, and check it does what you expect. This can take some time to do properly, but can save hours later when you find a bug but have no idea where it is.
+
+Obviously you need to remove the test lines once the function is validated. It might be best to comment them out so if it changes later, you can test again.
+
+For how to how proper unit testing, see [here](https://github.com/ThePix/quest/wiki/Unit-Testing-Libraries).
 
 
 ### Overriding Functions
