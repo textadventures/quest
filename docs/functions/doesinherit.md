@@ -18,3 +18,5 @@ Returns a [boolean](../types/boolean.html) indicating whether the object inherit
     }
 
 Note that the types "editor_player", "editor_room" and "editor_object" are removed when you publish your game, so it is a bad idea to test for them.
+
+NOTE: This a [hard-coded function](hardcoded.html).

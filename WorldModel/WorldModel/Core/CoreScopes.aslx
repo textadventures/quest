@@ -124,7 +124,12 @@
         list add(result, obj)
       }
     }
-    return (result + SecondaryScopeReachableForRoom(room))
+    if (HasScript(game, "scopebackdrop")) {
+      dict = NewDictionary()
+      dictionary add (dict, "items", result)
+      do (game, "scopebackdrop", dict)
+    }
+    return (result)
   ]]>
   </function>
 
@@ -188,10 +193,15 @@
     result = NewObjectList()
     foreach (command, AllCommands()) {
       if (command.parent = null or command.parent = game.pov.parent) {
-        list add(result, command)
+        list add (result, command)
+      }
+      if (not game.pov.parent.parent = null) {
+        if (command.parent = game.pov.parent.parent) {
+          list add (result, command)
+        }
       }
     }
-    return (result)
+    return (result)    
   </function>
 
   <function name="GetBlockingObject" type="object" parameters="obj">

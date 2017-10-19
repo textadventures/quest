@@ -33,13 +33,32 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorObjectAskTellTellabout]</caption>
       <attribute>tell</attribute>
-      <keyprompt>Please enter the topic keywords, separated by spaces</keyprompt>
+      <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>telldefault</attribute>
       <caption>[EditorObjectTellScripttorun]</caption>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>[EditorObjectAskTellTellto]</caption>
+    </control>
+
+    <control>
+      <controltype>scriptdictionary</controltype>
+      <caption>[EditorObjectAskTellTelltoabout]</caption>
+      <attribute>tellto</attribute>
+      <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>telltodefault</attribute>
+      <caption>[EditorObjectTelltoScripttorun]</caption>
       <advanced/>
     </control>
 

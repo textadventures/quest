@@ -7,13 +7,13 @@ title: Multi-media
 Inserting Pictures
 ------------------
 
-You can show a picture using the "Show a picture" command. Let's make our "kitchen" room show a picture of a kitchen when we enter it.
+You can show a picture using the "Show a picture" command. Let's make our "kitchen" room in the [tutorial game](tutorial/index.html) show a picture of a kitchen when we enter it.
 
 First we need to find a picture of a kitchen.
 
 -   You could use [Google Images](http://images.google.com), which will be fine for our demonstration – but bear in mind if you want to distribute images with your game, they must be images you've created yourself, or at least you must have permission from the copyright owner.
--   You could do an [<http://www.flickr.com/search/advanced/>? advanced Flickr search] to find images which are released under a Creative Commons licence - this often means you can include the image in your game as long as you credit the original author. Check which variant the author has used before including the picture in your game though.
--   A good website for royalty free images is [iStockphoto.com](http://www.istockphoto.com).
+-   You could do an [advanced Flickr search](http://www.flickr.com/search/advanced/) to find images that are released under a Creative Commons licence - this often means you can include the image in your game as long as you credit the original author. Check which variant the author has used before including the picture in your game though.
+-   A good website for royalty free images is [Wiki commons](https://commons.wikimedia.org/wiki/Main_Page).
 -   Or you could just go to your own kitchen with a digital camera.
 -   Or, since this is just a demonstration which you won't be publishing anywhere, you could find a picture of anything else at all.
 

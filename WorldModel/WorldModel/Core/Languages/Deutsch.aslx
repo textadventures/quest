@@ -1,8 +1,11 @@
 ﻿<library>  
   <!-- Contributed by Pertex -->
-
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
+  
+  <!-- Contributed by SoonGames -->
+  <include ref="EditorDeutsch.aslx"/>
+  
   <template name="LanguageId">de</template>
 
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
@@ -70,13 +73,16 @@
   <template name="SelfAlt">mich</template>
   <template name="AllObjects">alles</template>
   <template name="ParserIgnorePrefixes">der; die; das; ein; eine; einen; den;</template>
+  <template name="Score">Punkte</template>
+  <template name="Health">Gesundheit</template>
+  <template name="Money">Geld</template>  
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " " + GetPrefix (object,"sein") +" bereits offen."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits geschlossen."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kannst " + object.article + " nicht öffnen."</dynamictemplate>
   <dynamictemplate name="CantClose">"Du kannst " + object.article + " nicht schließen."</dynamictemplate>
   <dynamictemplate name="OpenSuccessful">"Du öffnest " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CloseSuccessful">"Du schließt " + object.article + "."</dynamictemplate>
-  <template name="CannotDoThat">Das kannst Du nicht machen.</template>
+  <template name="CannotDoThat">Das kannst du nicht machen.</template>
   <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " " + GetPrefix (object,"sein") +" bereits dort."</dynamictemplate>
   <template name="Done">Erledigt.</template>
   <template name="ContainerContentsPrefix">enthält</template>
@@ -117,23 +123,26 @@
 
   <dynamictemplate name="WearSuccessful">"Du ziehst " + object.article + " an."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
-  <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor Du es anziehen kannst."</dynamictemplate>
-  <dynamictemplate name="CannotRemoveIfNotHeld">"Du musst " + object.article + " erst haben bevor Du es ausziehen kannst"</dynamictemplate>
+  <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " anziehen kannst."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " ausziehen kannst"</dynamictemplate>
   <dynamictemplate name="AlreadyWearing">"Du trägst " + object.article + " schon."</dynamictemplate>
   <dynamictemplate name="CannotRemoveIfNotWearing">"Du kannst " + object.article + " nicht ausziehen."</dynamictemplate>
   <dynamictemplate name="NotRemovable">"Du kannst " + object.article + " nicht ausziehen!"</dynamictemplate>
-  <dynamictemplate name="CannotWearOver">"Du kannst das nicht über " + GetDisplayGarment(object) + " anziehen."</dynamictemplate>
-  <dynamictemplate name="CannotWearWith">"Du kannst dies nicht anziehen solange Du  " + GetDisplayGarment(object) + " trägst."</dynamictemplate>
+  <dynamictemplate name="CannotWearOver">"Du kannst das nicht über " + GetDefaultPrefix (object) + " " + object.display + " anziehen."</dynamictemplate>
+  <dynamictemplate name="CannotWearWith">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
   <dynamictemplate name="RemoveSuccessful">"Du ziehst " + object.article + " aus."</dynamictemplate>
-  <dynamictemplate name="RemoveFirst">"Du kannst dies nicht anziehen solange Du  " + GetDisplayGarment(object) + " trägst."</dynamictemplate>
-  <template name="wornmodifier">angezogen</template>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+  <dynamictemplate name="RemoveFirst">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
+  <template name="wornmodifier">getragen</template>
+
   <template name="Wear">Anziehen</template>
-  <template name="WearCommand">ziehe #object# an</template>
+  <verbtemplate name="wear">anziehen</verbtemplate>
+  <verbtemplate name="wear">ziehe #object# an</verbtemplate>
   <verbtemplate name="wear">trage</verbtemplate>
   <verbtemplate name="wear">ziehe an</verbtemplate>
+
   <template name="Remove">Ausziehen</template>
-  <template name="RemoveCommand">ziehe #object# aus</template>
+  <verbtemplate name="remove">ausziehen</verbtemplate>
+  <verbtemplate name="remove">ziehe #object# aus</verbtemplate>
   <verbtemplate name="remove">lege ab</verbtemplate>
   <verbtemplate name="remove">ziehe aus</verbtemplate>
 
@@ -368,19 +377,11 @@
     <article>[FemalePluralArticle]</article>
   </type>
   
-  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
-  <template name="LanguageSpecificObjectTypes">maleobject=Inanimate object (male);femaleobject=Inanimate object (female);maleobjectplural=Inanimate object (male, plural);femaleobjectplural=Inanimate object (female, plural);</template>
-  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
-  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
-  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
-
   <template name="EditorVerbDefaultExpression">"Das kannst Du nicht machen."</template>
-
   
-    <function name="GetDefaultPrefix" type="string" parameters="obj">
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
 		return(GetPrefix(obj,"ein"))
   </function>
-  
   
 	<function name="GetPrefix" type="string" parameters="obj,type">
 	<!-- type: 	"der" 	für der, die das
@@ -427,5 +428,111 @@
 	} else {
 		return(CapFirst(GetPrefix (obj,"er")) + " enthält")
 	}
-	</function>		
+	</function>	
+
+
+  <function name="ToWords" parameters="number" type="string"><![CDATA[
+	if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten") 
+	
+	getZahl_in_Worten = getZehner(Right(ToString(number), 2))
+    if (number > 99) {
+		getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
+	} ]]>
+	return (getZahl_in_Worten)
+	</function>
+	
+<function name="getEiner" parameters="curEiner" type="string">
+    getEiner = ""
+	switch (ToInt(curEiner)) {
+		case (1) {
+			getEiner = "ein"}
+		case (2) {
+			getEiner = "zwei"}
+		case (3) {
+			getEiner = "drei"}
+		case (4) {
+			getEiner = "vier"}
+		case (5) {
+			getEiner = "fünf"}
+		case (6) {
+			getEiner = "sechs"}
+		case (7) {
+			getEiner = "sieben"}
+		case (8) {
+			getEiner = "acht"}
+		case (9) {
+			getEiner = "neun"}
+    }
+	return (getEiner)
+</function>
+
+<function name="getZehner" parameters="curZehner" type="string"><![CDATA[	
+	switch (ToInt(curZehner)) {
+        case (1) {
+            getZehner = "eins"}
+        case (2) {
+            getZehner = "zwei"}
+        case (3) {
+            getZehner = "drei"}
+        case (4) {
+            getZehner = "vier"}
+        case (5) {
+            getZehner = "fünf"}
+        case (6) {
+            getZehner = "sechs"}
+        case (7) {
+            getZehner = "sieben"}
+        case (8) {
+            getZehner = "acht"}
+        case (9) {
+            getZehner = "neun"}
+        case (10) {
+            getZehner = "zehn"}
+        case (11) {
+            getZehner = "elf"}
+        case (12) {
+            getZehner = "zwölf"}
+        case (13) {
+            getZehner = "dreizehn"}
+        case (14) {
+            getZehner = "vierzehn"}
+        case (15) {
+            getZehner = "fünfzehn"}
+        case (16) {
+            getZehner = "sechzehn"}
+        case (17) {
+            getZehner = "siebzehn"}
+        case (18) {
+            getZehner = "achtzehn"}
+        case (19) {
+            getZehner = "neunzehn"}
+        default {
+			tmpEiner = getEiner(Right(curZehner, 1))
+            if (tmpEiner <> "") {
+				tmpEiner = tmpEiner + "und"
+			}
+			switch (ToInt(Left(curZehner, 1)) * 10) {    
+				case (20) {
+					getZehner = tmpEiner + "zwanzig"}
+				case (30) {
+					getZehner = tmpEiner + "dreißig"}
+				case (40) {
+					getZehner = tmpEiner + "vierzig"}
+				case (50) {
+					getZehner = tmpEiner + "fünfzig"}
+				case (60) {
+					getZehner = tmpEiner + "sechzig"}
+				case (70) {
+					getZehner = tmpEiner + "siebzig"}
+				case (80) {
+					getZehner = tmpEiner + "achtzig"}
+				case (90) {
+					getZehner = tmpEiner + "neunzig"}
+				}
+		}
+	}
+	return (getZehner)
+	]]>
+</function>	
+  
 </library>

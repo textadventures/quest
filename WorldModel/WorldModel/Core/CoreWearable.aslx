@@ -5,46 +5,41 @@
 
 	
 	<command name="wear" template="wear">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoWear(obj)
-			}
-      UpdateArmour
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToWear]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoWear(obj)
+        }
+        UpdateArmour
+      }
 		</script>
+    <scope>inventory</scope>
 	</command>
 
 	<command name="remove" template="remove">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoRemove(obj)
-			}
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToRemove]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoRemove(obj)
+        }
+      }
       UpdateArmour
 		</script>
+    <scope>inventory</scope>
 	</command>
 	
-  <command name="wear2">
-    <pattern>[WearCommand]</pattern>
-    <script>
-      _DoWear (object)
-      UpdateArmour
-    </script>
-  </command>
-
-  <command name="remove2">
-    <pattern>[RemoveCommand]</pattern>
-    <script>
-      _DoRemove (object)
-      UpdateArmour
-    </script>
-  </command>
-  
-  
   
   
   
@@ -89,16 +84,16 @@
 			
     WearGarment(object)
     if(object.wearmsg = null) {
-      msg (DynamicTemplate("WearSuccessful",object))
+      P (DynamicTemplate("WearSuccessful",object))
     } else {
-      msg (object.wearmsg)
+      P (object.wearmsg)
     }
     
     //do after
     if (HasScript(object, "onafterwear")) {
       do(object, "onafterwear")
     } else if(HasString(object, "onafterwear")) {
-      msg (object.onafterwear)
+      P (object.onafterwear)
     }
     AfterWear
     return(true)
@@ -115,13 +110,16 @@
   Sets aliases, verbs, etc.
   This is unit tested.
   -->
-	<function name="WearGarment" parameters="object"><![CDATA[
+	<function name="WearGarment" parameters="object">
+      <![CDATA[
     if (GetBoolean(object, "multistate")) {
       object.multistate_status = 1
     }
     else {
       object.multistate_status = 0
     }
+    if (object.alias = null) object.alias = object.name
+    if (object.listalias = null) object.listalias = object.alias
     
     if (object.original_alias = null) {
       object.original_drop = object.drop
@@ -192,19 +190,22 @@
       }
     }
 
-    if(object.removemsg = null) {
-      msg (DynamicTemplate("RemoveSuccessful",object))
-    } else {
-      msg (object.removemsg)
+    if (not TestRemove(object)) {
+      return (false)
     }
-    
+			
     RemoveGarment(object)
+    if(object.removemsg = null) {
+      P (DynamicTemplate("RemoveSuccessful",object))
+    } else {
+      P (object.removemsg)
+    }
     
     //do after
     if (HasScript(object, "onafterremove")) {
       do(object, "onafterremove")
     } else if(HasString(object, "onafterremove")) {
-      msg (object.onafterremove)
+      P (object.onafterremove)
     }
     AfterRemove
     return(true)
@@ -544,6 +545,26 @@
 
   
   
+  
+	<function name="SetAlias" parameters="object, alias"><![CDATA[
+    SetListAlias(object, alias, alias)
+	]]></function>
+
+
+	<function name="SetListAlias" parameters="object, alias, listalias"><![CDATA[
+    object.alias = alias
+    object.listalias = listalias
+    if (Equal(object.worn, true)) {
+      object.original_alias = object.alias
+      object.original_listalias = object.listalias
+      object.display = GetDisplayAlias(object)
+      _SetGarmentAlias(object)
+    }
+	]]></function>
+
+
+  
+  
   <!-- INTERNAL FUNCTIONS -->
   <!-- There should be no reason to use these in a game -->
   
@@ -645,34 +666,34 @@
     outer = _GetOuterForGarment(game.pov, garment)
     if (not garment.worn) {
       if (outer = null) {
-        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
       }
       else if (outer.wear_layer < garment.wear_layer) {
-        _SetVerbList (garment, Split("Look at;Drop;Wear", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
       }
       else {
-        _SetVerbList (garment, Split("Look at;Drop", ";"), garment.invverbs)
+        _SetVerbList (garment, Split("[LookAt];[Drop]", ";"), garment.invverbs)
       }
     }
     else {
       if (outer = null) {
         if (garment.removeable) {
-          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
         }
       }
       else if (outer.wear_layer < garment.wear_layer) {
         if (garment.removeable) {
-          _SetVerbList (garment, Split("Look at;Remove", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
         }
         else {
-          _SetVerbList (garment, Split("Look at", ";"), garment.wornverbs)
+          _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
         }
       }
       else {
-        garment.inventoryverbs = Split("Look at", ";")
+        garment.inventoryverbs = Split("[LookAt]", ";")
       }
     }
 	]]></function>
@@ -728,6 +749,10 @@
 	<function name="AfterWear">
 	</function>
 
+	<function name="P" parameters="s">
+    msg(s)
+	</function>
+
 
   <!--
   Override this in your combat library
@@ -741,6 +766,14 @@
   example to check the size is suitable.
   -->
   <function name="TestGarment" type="boolean" parameters="object"><![CDATA[
+    return (true)
+	]]></function>
+
+
+  <!--
+  Override this in your game for custom testing, for removing the item.
+  -->
+  <function name="TestRemove" type="boolean" parameters="object"><![CDATA[
     return (true)
 	]]></function>
 

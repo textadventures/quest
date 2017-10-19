@@ -28,10 +28,23 @@ What Quest does is attempt to match the topic against each word in the topic's k
 
 Obviously you can change the script that runs by selecting the topic and clicking "Edit Script". However, I am not going to worry about that in this tutorial.
 
+
+More advanced...
+----------------
+
+We can make this system more sophisticated in a number of ways. However, we will be using code to do that. Why? Well, it is easier for me to show you, but it is easier for you to put in your game, as you can just copy-and-paste the code. We will keep it simple, and let you know what you need to change for your game, and what can be pasted in without any changes.
+
+For more on how to copy-and-paste code, see [here](copy_and_paste_code.html).
+
+
 Default replies
 ---------------
 
 Underneath the list of ASK topics, you can put a script to run when there is no topic for this character. Perhaps for Mary we could print a message that says "She looks at you, wondering what you are talking about."
+
+As of Quest 5.7, you can use a special variable, "text", which will contain the subject the player was asking about. You could have something like this:
+
+    msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
 
 
 Topics
@@ -49,7 +62,7 @@ game.topics = Split("Job;Alibi", ";")
 ```
 This will be shown to the player, so capitalise it nicely and bear in mind it needs to fit the ASK ... ABOUT ... format. Also, it makes the script for the topics command easier if there are at least two topics from the start.
 
-Now we need to create a new command. Go to _Commands_ in the left pane, the click "Add" in the right pane. For the command pattern, type in "topics", and paste in this code:
+Now we need to create a new command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in "topics", and paste in this code:
 ```
 msg ("Topics you might want to ask about include:")
 foreach (s, game.topics) {
@@ -65,7 +78,7 @@ list add(game.topics, "Forensic results")
 Ask about ...
 -------------
 
-If there is only one NPC in the room, we can save the player some typing by creating an ASK ABOUT ... command. Go to _Commands_ in the left pane, the click "Add" in the right pane. For the command pattern, type in "ask about #text#", and paste in this code:
+If there is only one NPC in the room, we can save the player some typing by creating an ASK ABOUT ... command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in "ask about #text#", and paste in this code:
 ```
 npcs = NewObjectList()
 opts = NewStringDictionary()
@@ -91,7 +104,7 @@ else {
   }
 }
 ```
-What the code does is firstly go through all the objects in the current room (which it gets using `GetDirectChildren(player.parent)`, and collects up all those with an "ask" attribute (this is where Quest stores the topics we set earlier, so this is a good test of whether the object is a character).
+What the code does is firstly go through all the objects in the current room (which it gets using `GetDirectChildren(player.parent)`), and collects up all those with an "ask" attribute (this is where Quest stores the topics we set earlier, so this is a good test of whether the object is a character).
 
 Then it looks at how many NPCs it found. If none, an error message; if one, then it calls the same function that the built-in ask/tell system uses, `DoAskTell`, using the one NPC it found.
 

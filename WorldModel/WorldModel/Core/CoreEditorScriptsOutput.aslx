@@ -5,7 +5,7 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>msg ("")</create>
     <add>[EditorScriptsOutputPrintamessage]</add>
-    <common>Print</common>
+    <common>[EditorScriptObjectsPrint]</common>
 
     <control>
       <controltype>label</controltype>

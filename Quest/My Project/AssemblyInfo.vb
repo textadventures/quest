@@ -9,16 +9,16 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("Quest")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Alex Warren")> 
-<Assembly: AssemblyProduct("Quest")> 
-<Assembly: AssemblyCopyright("Copyright © 2016 Alex Warren")> 
+<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyCompany("Textadventures.co.uk")>
+<Assembly: AssemblyProduct("Quest")>
+<Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("eb5b7aed-4886-4e58-87cf-af28bca25999")> 
+<Assembly: Guid("eb5b7aed-4886-4e58-87cf-af28bca25999")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,4 +31,4 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("5.6.*")> 
+<Assembly: AssemblyVersion("5.7.*")>

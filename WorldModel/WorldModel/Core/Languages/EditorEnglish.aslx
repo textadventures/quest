@@ -1,8 +1,17 @@
 <library type="editor">
+  <template name="EditorWeakShownWhenRoomDark">Weak (shown when room is dark)</template>
+  <template name="EditorStrongIlluminatesRoom">Strong (illuminates room)</template>
+  <template name="EditorNumberKeysUnlockContainer">Number of keys to unlock container</template>
+  <template name="EditorDisplayMenuObjectsCanUsedOn">Display menu of objects this can be used on</template>
+  <template name="EditorDisplayMenuObjectsCanGivenTo">Display menu of objects this can be given to</template>
+  <template name="EditorPleaseEnterObjectName">Please enter the object name</template>
+  <template name="EditorObjectCanBeTaken">Object can be taken</template>
+  <template name="EditorObjectCanBeDropped">Object can be dropped</template>
   <template name="EditorCommandCommand">Command</template>
   <template name="EditorCommandPattern">Pattern</template>
   <template name="EditorCommandName">Name</template>
   <template name="EditorCommandUnresolved">Unresolved object text</template>
+  <template name="EditorCommandScope">Scope ("inventory", "notheld", room name or object attribute, Blank for everywhere)</template>
   <template name="EditorCommandScript">Script</template>
   <template name="EditorCommandAttributes">Attributes</template>
   <template name="EditorDynamicTemplateDynamicTemplate">Dynamic Template</template>
@@ -63,6 +72,8 @@
   <template name="EditorFunctionReturntype">Return type</template>
   <template name="EditorFunctionParameters">Parameters</template>
   <template name="EditorFunctionScript">Script</template>
+  <template name="EditorGameAttributesPleaseenter">Please enter the attribute name</template>
+  <template name="EditorGameAttributesPleaseenter2">Please enter the format string (blank for default)</template>
   <template name="EditorGameSetup">Setup</template>
   <template name="EditorGameGamename">Game name</template>
   <template name="EditorGameSubtitle">Subtitle</template>
@@ -85,11 +96,15 @@
   <template name="EditorGamePictureframe">Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</template>
   <template name="EditorGameScore">Score</template>
   <template name="EditorGameHealth">Health</template>
+  <template name="EditorGameMoney">Money</template>
+  <template name="EditorGameMoneyformat">Format for money</template>
   <template name="EditorGameInventorylimits">Inventory limits: limit items that can be carried or contained by specifying a volume</template>
   <template name="EditorGameLightnessand">Lightness and darkness: rooms can be dark, and objects can light them up</template>
   <template name="EditorGameAsk/Tellplayers">Ask/Tell: players can ask or tell characters about selected topics</template>
   <template name="EditorGameAdvancedWearables">Show advanced options for wearables</template>
+  <template name="EditorGameAdvancedScripts">Show advanced scripts for the game object</template>
   <template name="EditorGameAnnotations">Annotations: adds a tab to rooms where authors notes can be made, not seen by players</template>
+  <template name="EditorGamePrices">Prices: adds a number box to the Inventory tab for the price of the item</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
   <template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
   <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
@@ -122,6 +137,8 @@
   <template name="EditorGameMap">Map</template>
   <template name="EditorGameScale">Scale</template>
   <template name="EditorGameHeightpixels">Height (pixels)</template>
+  <template name="EditorGameExitwidth">Exit width</template>
+  <template name="EditorGameExitcolour">Exit colour</template>
   <template name="EditorGameLayout">Layout</template>
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
@@ -131,9 +148,10 @@
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
   <template name="EditorGameTurnOffCompass">Turn off compass</template>
   <template name="EditorGameTurnOffInventory">Turn off inventory</template>
-  <template name="EditorGameTurnOffPeopleAndObjects">Turn off people and objects</template>
+  <template name="EditorGameTurnOffPlacesAndObjects">Turn off places and objects</template>
   <template name="EditorGameAltPaneOrder">Alternative pane order (status and compass at top)</template>
   <template name="EditorGameShowCommandPane">Show a command pane (use JS.setCommands to set)</template>
+  <template name="EditorGameShowCustomStatusPane">Show a custom status pane (use JS.setCustomStatus to set)</template>
   <template name="EditorGamePanesTheme">Colour scheme for panes</template>
   <template name="EditorGameClassiclocation">Classic location style</template>
   <template name="EditorGameLocationColour">Location bar colour</template>
@@ -159,10 +177,14 @@
   <template name="EditorGameRight">Right</template>
   <template name="EditorGameOptions">Options</template>
   <template name="EditorGameClearpicture">Clear picture panel if room has no picture</template>
-  <template name="EditorGameScript">Script</template>
+  <template name="EditorGameScript">Scripts</template>
+  <template name="EditorGameAdvancedScript">Advanced Scripts</template>
   <template name="EditorGameStartscript">Start script</template>
   <template name="EditorGameRoomscript">Script when entering a room</template>
   <template name="EditorGameTurnscripts">Turn scripts - run after every turn the player takes in this game</template>
+  <template name="EditorGameInitUIscript">User interface initialisation script (run at start and also when loading a saved game)</template>
+  <template name="EditorGameUnresolvedscript">Unresolved command script (player's text will be in a string variable called "command")</template>
+  <template name="EditorGameBackdropscript">Backdrop scope script (add objects to the "items" object list variable)</template>
   <template name="EditorGameRoomDescriptions">Room Descriptions</template>
   <template name="EditorGameAutomatically">Automatically generate room descriptions</template>
   <template name="EditorGameShowroomdescription">Show room description when entering a room</template>
@@ -171,6 +193,7 @@
   <template name="EditorGamePutanextraBeforeTurn">Put an extra newline before each turn</template>
   <template name="EditorGameDisplayhyperlinks">Display hyperlinks in commands</template>
   <template name="EditorGameAutomaticallyObjectList">Automatically generate object display verbs list</template>
+  <template name="EditorGameClearscreenonroomenter">Clear screen when entering a room</template>
   <template name="EditorGameRoomdescription">Room description layout</template>
   <template name="EditorGameUsethenumbers">Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</template>
   <template name="EditorGameRoomname">Room name</template>
@@ -214,6 +237,9 @@
   <template name="EditorObjectAskTellTell">Tell</template>
   <template name="EditorObjectAskTellTellabout">Tell about</template>
   <template name="EditorObjectTellScripttorun">Script to run when told about an unknown topic</template>
+  <template name="EditorObjectAskTellTellto">Order</template>
+  <template name="EditorObjectAskTellTelltoabout">Tell to</template>
+  <template name="EditorObjectTelltoScripttorun">Script to run when keywords not recognised</template>
   <template name="EditorObjectAnnotationAnnotation">Notes</template>
   <template name="EditorObjectAttributesAttributes">Attributes</template>
   <template name="EditorObjectAttributesStatusattributes">Status attributes</template>
@@ -250,15 +276,15 @@
   <template name="EditorObjectContainerCanbelocked">Can be locked open</template>
   <template name="EditorObjectContainerAfterlocking">After locking the object</template>
   <template name="EditorObjectContainerAfterunlocking">After unlocking the object</template>
-
-  <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in.</template>
+  <template name="EditorObjectContainerOpenableNote">These scripts should turn the "isopen" flag on when the object is opened and turn it off when it is closed to ensure Quest understands what state the object is in. If you set the object to be lockable, the default scripts will be used, which will do that for you, taking account of the lock/key state.</template>
   <template name="EditorObjectContainerContainerNote">These scripts will run after the object is opened or closed. You can check the "isopen" flag on this object at any time in your game to see state the object is in.</template>
+  <template name="EditorObjectContainerAddScript">Script to run when trying to add an object</template>
+  <template name="EditorObjectContainerAddScriptNote">By default, any object can be added; use this script to restrict that. The object being added will be called "object", and should be moved to this object if successfully added.</template>
   <template name="EditorObjectContainerLockNote">These scripts will run after the object is locked or unlocked. You can check the "locked" flag on this object at any time in your game to see state the object is in.</template>
-
-  
   <template name="EditorObjectExitsExits">Exits</template>
   <template name="EditorObjectExitsExitslistprefix">Exits list prefix</template>
   <template name="EditorObjectFeaturesFeatures">Features</template>
+  <template name="EditorObjectFeaturesExplanation">Select an option here to have a new tab display. Go to the tab to set up the object.</template>
   <template name="EditorObjectFeaturesUse/Giveobject">Use/Give: object can be used on its own or with other objects/characters, or given to other objects/characters</template>
   <template name="EditorObjectFeaturesContainer">Container: object is a container or surface, or can be opened and closed</template>
   <template name="EditorObjectFeaturesSwitchable">Switchable: object can be switched on and off</template>
@@ -275,6 +301,7 @@
   <template name="EditorObjectInventoryDrop2">Drop</template>
   <template name="EditorObjectInventoryDropmessage">Drop message (leave blank for default)</template>
   <template name="EditorObjectInventoryAfterdropping">After dropping the object</template>
+  <template name="EditorObjectInventoryPrice">Price</template>
   <template name="EditorObjectInventoryInventorylimitation">Inventory limitation</template>
   <template name="EditorObjectInventorySetmaximum">Set "maximum objects" to 0 to allow unlimited inventory items.</template>
   <template name="EditorObjectInventoryMaximumobjects">Maximum objects</template>
@@ -288,6 +315,7 @@
   <template name="EditorObjectMapWidth">Width</template>
   <template name="EditorObjectMapLength">Length</template>
   <template name="EditorObjectMapFillcolour">Fill colour</template>
+  <template name="EditorObjectMapLabelcolour">Label colour</template>
   <template name="EditorObjectMapBordercolour">Border colour</template>
   <template name="EditorObjectMapBorderwidth">Border width</template>
   <template name="EditorObjectMapBordertype">Border type</template>
@@ -313,6 +341,7 @@
   <template name="EditorObjectOptionsSwitchable2">Switchable</template>
   <template name="EditorObjectOptionsMessagetoprint">Message to print when switching on (leave blank for default)</template>
   <template name="EditorObjectOptionsMessagetoprint2">Message to print when switching off (leave blank for default)</template>  
+  <template name="EditorObjectOptionsCannotswitchon">Leave blank to allow the object to be turned on; give a message if it cannot be turned on (eg requires power or repair)</template>  
   <template name="EditorObjectOptionsSwitchedon">Switched on at the start of the game</template>
   <template name="EditorObjectOptionsMessageSwitchon">Message to print when switching on (leave blank for default)</template>
   <template name="EditorObjectOptionsMessageSwitchoff">Message to print when switching off (leave blank for default)</template>
@@ -335,6 +364,7 @@
   <template name="EditorObjectOptionsArticle">Article</template>
   <template name="EditorObjectOptionsPossessive">Possessive</template>
   <template name="EditorObjectOptionsOthernames">Other names</template>
+  <template name="EditorObjectOptionsStartingmoney">Starting money</template>
   <template name="EditorObjectRoomRoom">Room</template>
   <template name="EditorObjectRoomRoompicture">Room picture</template>
   <template name="EditorObjectRoomDescriptionPrefix">Description prefix</template>
@@ -560,6 +590,10 @@
   <template name="EditorScriptsPlayerIncreasehealth">Increase health by</template>
   <template name="EditorScriptsPlayerDecreasehealthTitle">Decrease health</template>
   <template name="EditorScriptsPlayerDecreasehealth">Decrease health by</template>
+  <template name="EditorScriptsPlayerIncreasemoneyTitle">Increase money</template>
+  <template name="EditorScriptsPlayerIncreasemoney">Increase money by</template>
+  <template name="EditorScriptsPlayerDecreasemoneyTitle">Decrease money</template>
+  <template name="EditorScriptsPlayerDecreasemoney">Decrease money by</template>
   <template name="EditorScriptsScriptsScripts">Scripts</template>
   <template name="EditorScriptsScriptsFailedtoload">Failed to load script:</template>
   <template name="EditorScriptsScriptsComment">Comment</template>
@@ -630,8 +664,6 @@
   <template name="EditorScriptsTurnScriptsName">Name:</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Create a turn script</template>   
   <template name="EditorScriptsTurnScriptsCreateturn">Create turn script</template>
-   
-
   <template name="EditorScriptsVariablesVariables">Variables</template>
   <template name="EditorScriptsVariablesSetobjectflag">Set object flag</template>
   <template name="EditorScriptsVariablesSetflag">Set flag</template>
@@ -725,7 +757,6 @@
   <template name="EditorExpressionstheinventory">the inventory</template>
   <template name="EditorExpressionsallexits">all exits</template>
   <template name="EditorExpressionsallcommands">all commands</template> 
-  
   <template name="TypePatternCommand">Command pattern</template>
   <template name="TypePatternRegular">Regular expression</template> 
   <template name="TypeExitNon">Non-directional exit</template> 
@@ -777,11 +808,13 @@
   <template name="EditorObjectScriptsInitial">This script will run once, as the game starts</template>
   <template name="EditorObjectStartscriptStartscript">Initialisation script</template>
   <template name="EditorObjectFeaturesStartScript">Run an initialisation script for this object</template>
-  
-  
-  
   <template name="EditorObjectWearableWearable">Wearable</template>
   <template name="EditorObjectWearableCanBeWorn">Can be worn?</template>
+  <template name="EditorObjectWearableTypCanBeWorn">Can be worn</template>
+  <template name="EditorObjectWearableTypCannotBeWorn">Cannot be worn</template>
+  <template name="EditorObjectWearableTypNone">None</template>
+  <template name="EditorObjectWearableTypText">Text</template>
+  <template name="EditorObjectWearableTypRunScript">Run script</template>
   <template name="EditorObjectWearableWearLayer">Wear Layer</template>
   <template name="EditorObjectWearableWearSlot">Wear Slot</template>
   <template name="EditorObjectWearableWearSlotPrompt">Please enter the name for the wear location</template>
@@ -811,4 +844,24 @@
   <template name="EditorObjectWearableStateBonuses">Bonus to attributes (or * for default)</template>
   <template name="EditorObjectWearableStateBonusesPrompt">Please enter all the additional bonuses for this state, separated by semi-colons</template>
   <template name="EditorObjectWearableInstructionsLink">Instructions for use</template>
+  <template name="EditorTextProcessorBold">Bold</template>
+  <template name="EditorTextProcessorItalic">Italic</template>
+  <template name="EditorTextProcessorUnderline">Underline</template>
+  <template name="EditorTextProcessorOnce">Once</template>
+  <template name="EditorTextProcessorObjectLink">Object Link</template>
+  <template name="EditorTextProcessorCommandLink">Command Link</template>
+  <template name="EditorTextProcessorExit">Exit Link</template>
+  <template name="EditorTextProcessorIf">If...</template>
+  <template name="EditorTextProcessorIfNot">If not...</template>
+  <template name="EditorTextProcessorHere">If in room</template>
+  <template name="EditorTextProcessorNotHere">If not in room</template>
+  <template name="EditorTextProcessorRandomText">Random text</template>
+  <template name="EditorTextProcessorImage">Image</template>
+  <template name="EditorTextProcessorImage">Bild</template>
+  <template name="EditorScriptObjectsInventory">Inventory</template>
+  <template name="EditorScriptObjectsMove">Move</template>
+  <template name="EditorScriptObjectsShow">Show</template>
+  <template name="EditorScriptObjectsHide">Hide</template>
+  <template name="EditorScriptObjectsPrint">Print</template>
+  <template name="EditorScriptObjectsIf">If</template>
 </library>

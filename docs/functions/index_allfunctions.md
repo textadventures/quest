@@ -24,6 +24,7 @@ title: Functions
 *  [Chr](string/chr.html)
 *  [ClearFramePicture](corelibrary/clearframepicture.html)
 *  [ClearScreen](corelibrary/clearscreen.html)
+*  [CloneObjectAndMoveHere](corelibrary/cloneobjectandmovehere.html)
 *  [CloneObjectAndMove](corelibrary/cloneobjectandmove.html)
 *  [CloneObject](corelibrary/cloneobject.html)
 *  [Clone](clone.html)
@@ -37,8 +38,10 @@ title: Functions
 ## D
 
 *  [DecreaseHealth](corelibrary/decreasehealth.html)
+*  [DecreaseMoney](corelibrary/decreasemoney.html)
 *  [DecreaseScore](corelibrary/decreasescore.html)
 *  [Destroy](../scripts/destroy.html)
+*  [Decimalise](string/decimalise.html)
 *  [DiceRoll](corelibrary/diceroll.html)
 *  [DictionaryContains](dictionarycontains.html)
 *  [DictionaryCount](dictionarycount.html)
@@ -50,6 +53,8 @@ title: Functions
 *  [DisplayHttpLink](corelibrary/displayhttplink.html)
 *  [DisplayList](corelibrary/displaylist.html)
 *  [DisplayMailtoLink](corelibrary/displaymailtolink.html)
+*  [DisplayMoney](string/displaymoney.html)
+*  [DisplayNumber](string/displaynumber.html)
 *  [Do](../scripts/do.html)
 *  [DoesInherit](doesinherit.html)
 *  [DynamicTemplate](dynamictemplate.html)
@@ -59,16 +64,21 @@ title: Functions
 *  [EnableTimer](corelibrary/enabletimer.html)
 *  [EnableTurnScript](corelibrary/enableturnscript.html)
 *  [EndsWith](string/endswith.html)
+*  [Equal](equal.html)
 *  [Error](../scripts/error.html)
 *  [Eval](eval.html)
 
 ## F
 
+*  [FilterByAttribute](filterbyattribute.html)
+*  [FilterByNotAttribute](filterbynotattribute.html)
+*  [FilterByType](filterbytype.html)
 *  [Finish](../scripts/finish.html)
 *  [Firsttime](../scripts/firsttime.html)
 *  [For](../scripts/for.html)
 *  [Foreach](../scripts/foreach.html)
 *  [FormatExitList](corelibrary/formatexitlist.html)
+*  [FormatList](string/formatlist.html)
 *  [FormatObjectList](corelibrary/formatobjectlist.html)
 
 ## G
@@ -96,6 +106,8 @@ title: Functions
 *  [GetMatchStrength](getmatchstrength.html)
 *  [GetNonTransparentParent](corelibrary/getnontransparentparent.html)
 *  [GetObject](getobject.html)
+*  [GetOuter](getouter.html)
+*  [GetOuterFor](getouterfor.html)
 *  [GetRandomDouble](getrandomdouble.html)
 *  [GetRandomInt](getrandomint.html)
 *  [GetString](getstring.html)
@@ -134,7 +146,9 @@ title: Functions
 
 *  [If](../scripts/if.html)
 *  [IncreaseHealth](corelibrary/increasehealth.html)
+*  [IncreaseMoney](corelibrary/increasemoney.html)
 *  [IncreaseScore](corelibrary/increasescore.html)
+*  [IndexOf](indexof.html)
 *  [InitUserInterface](corelibrary/inituserinterface.html)
 *  [Insert](../scripts/insert.html)
 *  [InstrRev](string/instrrev.html)
@@ -159,6 +173,7 @@ title: Functions
 *  [Left](string/left.html)
 *  [LengthOf](string/lengthof.html)
 *  [ListCombine](listcombine.html)
+*  [ListCompact](listcompact.html)
 *  [ListContains](listcontains.html)
 *  [ListCount](listcount.html)
 *  [ListExclude](listexclude.html)
@@ -200,7 +215,13 @@ title: Functions
 
 ## P
 
-*  [Pause](corelibrary/pause.html)
+*  [PadString](string/padstring.html)
+*  [PickOneChild](pickonechild.html)
+*  [PickOneChildOfType](pickonechildoftype.html)
+*  [PickOneExit](pickoneexit.html)
+*  [PickOneObject](pickoneobject.html)
+*  [PickOneString](pickonestring.html)
+*  [PickOneUnlockedExit](pickoneunlockedexit.html)
 *  [Picture](../scripts/picture.html)
 *  [Play sound](../scripts/play_sound.html)
 *  [Populate](populate.html)
@@ -209,7 +230,9 @@ title: Functions
 ## R
 
 *  [RandomChance](corelibrary/randomchance.html)
+*  [ReverseDirection](string/reversedirection.html)
 *  [Request](../scripts/request.html)
+*  [RemoveGarment](removegarment.html)
 *  [RemoveObject](corelibrary/removeobject.html)
 *  [RemoveSceneryObjects](corelibrary/removesceneryobjects.html)
 *  [Replace](string/replace.html)
@@ -233,6 +256,7 @@ title: Functions
 *  [ScopeReachableNotHeldForRoom](corelibrary/scopereachablenotheldforroom.html)
 *  [ScopeReachableNotHeld](corelibrary/scopereachablenotheld.html)
 *  [ScopeReachable](corelibrary/scopereachable.html)
+*  [ScopeUnlockedExitsForRoom](corelibrary/scopeunlockedexitsforroom.html)
 *  [ScopeVisibleForRoom](corelibrary/scopevisibleforroom.html)
 *  [ScopeVisibleNotHeldForRoom](corelibrary/scopevisiblenotheldforroom.html)
 *  [ScopeVisibleNotHeldNotSceneryForRoom](corelibrary/scopevisiblenotheldnotsceneryforroom.html)
@@ -270,6 +294,7 @@ title: Functions
 *  [ShowRoomDescription](corelibrary/showroomdescription.html)
 *  [ShowVimeo](corelibrary/showvimeo.html)
 *  [ShowYouTube](corelibrary/showyoutube.html)
+*  [Spaces](string/spaces.html)
 *  [Split](string/split.html)
 *  [Start transaction](../scripts/start_transaction.html)
 *  [StartsWith](string/startswith.html)
@@ -289,7 +314,9 @@ title: Functions
 *  [TextFX_Unscramble](corelibrary/textfx_unscramble.html)
 *  [ToDouble](todouble.html)
 *  [ToInt](toint.html)
+*  [ToRoman](string/toroman.html)
 *  [ToString](tostring.html)
+*  [ToWords](string/towords.html)
 *  [Trim](string/trim.html)
 *  [TypeOf](typeof.html)
 
@@ -305,3 +332,4 @@ title: Functions
 *  [Wait](../scripts/wait.html)
 *  [WaitForKeyPress](corelibrary/waitforkeypress.html)
 *  [While](../scripts/while.html)
+*  [WearGarment](weargarment.html)

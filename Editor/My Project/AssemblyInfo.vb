@@ -11,14 +11,14 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Editor")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("Editor")> 
-<Assembly: AssemblyCopyright("Copyright © 2016 Alex Warren")> 
+<Assembly: AssemblyProduct("Editor")>
+<Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("8c6b8104-148f-4a4f-a374-e94e1c8f2031")> 
+<Assembly: Guid("8c6b8104-148f-4a4f-a374-e94e1c8f2031")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -30,4 +30,4 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("5.6.*")> 
+<Assembly: AssemblyVersion("5.7.*")>

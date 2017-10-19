@@ -34,15 +34,19 @@
     <statusandcompassattop type="boolean">false</statusandcompassattop>
     <turnoffcompass type="boolean">false</turnoffcompass>
     <turnoffinventory type="boolean">false</turnoffinventory>
-    <turnoffpeopleandobjects type="boolean">false</turnoffpeopleandobjects>
+    <turnoffplacesandobjects type="boolean">false</turnoffplacesandobjects>
     <borderlesscursor type="boolean">false</borderlesscursor>
     <colourblend type="boolean">false</colourblend>
     <commandpane type="boolean">false</commandpane>
+    <customstatuspane type="boolean">false</customstatuspane>
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
+    <commandcursor>&gt;</commandcursor>
+    <moneyformat>$!</moneyformat>
     <classiclocation/>
     <turnoffsavebutton type="boolean">false</turnoffsavebutton>
-    
+    <mapexitwidth type="int">1</mapexitwidth>
+    <mapexitcolour>Black</mapexitcolour>
     
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
@@ -54,8 +58,10 @@
     <showborder/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
+    <showmoney type="boolean">false</showmoney>
     <showtitle/>
     <autodisplayverbs/>
+    <clearscreenonroomenter type="boolean">false</clearscreenonroomenter>
     <autodescription_youarein type="int">1</autodescription_youarein>
     <autodescription_youcansee type="int">2</autodescription_youcansee>
     <autodescription_youcango type="int">3</autodescription_youcango>
@@ -79,6 +85,9 @@
     <feature_pictureframe type="boolean">false</feature_pictureframe>
     <feature_limitinventory type="boolean">false</feature_limitinventory>
     <feature_asktell type="boolean">false</feature_asktell>
+    <feature_annotations type="boolean">false</feature_annotations>
+    <feature_advancedwearables type="boolean">false</feature_advancedwearables>
+    <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
@@ -171,6 +180,7 @@
           MergePOVCoordinates
         }
       }
+      this.hasbeenmoved = true
     </changedparent>
     <changedisopen type="script">
       if (this.isopen and HasScript(this, "onopen")) {
@@ -197,6 +207,7 @@
       }
     </changedswitchedon>
     <volume type="int">0</volume>
+    <price type="int">0</price>
     <dark type="boolean">false</dark>
     <lightstrength type="string"></lightstrength>
     <darklevel type="boolean">false</darklevel>
@@ -208,6 +219,7 @@
     <grid_bordersides type="int">15</grid_bordersides>
     <grid_render type="boolean">false</grid_render>
     <grid_label type="string"></grid_label>
+    <grid_label_colour type="string">Black</grid_label_colour>
     <grid_parent_offset_auto/>
     <grid_parent_offset_x type="int">0</grid_parent_offset_x>
     <grid_parent_offset_y type="int">0</grid_parent_offset_y>
@@ -224,6 +236,7 @@
     <feature_player type="boolean">false</feature_player>
     <feature_lightdark type="boolean">false</feature_lightdark>
     <visited type="boolean">false</visited>
+    <hasbeenmoved type="boolean">false</hasbeenmoved>
   </type>
 
   <type name="defaultexit">
@@ -339,8 +352,92 @@
     <pattern type="simplepattern"></pattern>
   </type>
 
-  <type name="male">
+  <type name="defaultverb">
+    <separator>[VerbObjectSeparator]</separator>
+    <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
+    <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
+    <multiobjectmenuempty>[NoObjectsAvailable]</multiobjectmenuempty>
+    <script type="script">
+      <![CDATA[
+      if (not IsDefined("object2")) {
+        object2 = null
+      }
+      
+      switch (TypeOf(object, this.property)) {
+        case ("script") {
+          if (object2 = null) {
+            do (object, this.property)
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("string") {
+          if (object2 = null) {
+            msg (GetString(object, this.property))
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("scriptdictionary") {
+          if (object2 <> null) {
+            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
+          }
+          else {
+            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
+            excludelist = NewObjectList()
+            list add (excludelist, game.pov)
+            list add (excludelist, object)
+            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+            if (ListCount(candidates) = 0) {
+              msg (this.multiobjectmenuempty)
+            }
+            else {
+              game.pov.multiverb = this.property
+              game.pov.multiverbobject = object
+              game.pov.multiverbobjectdefault = this.multiobjectdefault
+              ShowMenu (this.multiobjectmenu, candidates, true) {
+                if (result <> null) {
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
+                  game.pov.multiverb = null
+                  game.pov.multiverbobject = null
+                  game.pov.multiverbobjectdefault = null
+                }
+              }
+            }
+          }
+        }
+        case ("null") {
+          if (this.defaulttext <> null) {
+            msg (this.defaulttext)
+          }
+          else if (this.defaulttemplate <> null) {
+            msg (DynamicTemplate(this.defaulttemplate, object))
+          }
+          else if (this.defaultexpression <> null) {
+            params = NewDictionary()
+            dictionary add (params, "object", object)
+            msg (Eval(this.defaultexpression, params))
+          }
+          else {
+            error ("No verb response defined")
+          }
+        }
+        default {
+          error ("No verb response defined")
+        }
+      }
+      ]]>
+    </script>
+  </type>
+
+  <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
+  </type>
+
+  <type name="male">
+    <inherit name="npc_type" />
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
     <possessive>[MalePossessive]</possessive>
@@ -352,6 +449,7 @@
   </type>
 
   <type name="female">
+    <inherit name="npc_type" />
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
@@ -426,7 +524,7 @@
     <inherit name="container"/>
     <maxobjects type="int">1</maxobjects>
     <maxvolume type="int">100</maxvolume>
-    <addscript type="AddScript">
+    <addscript type="script">
       activecontainer = this
       correct = true
       while (DoesInherit(activecontainer, "container_base")) {
@@ -447,8 +545,8 @@
       children = GetDirectChildren(this)
       if (listcount(children) >= this.maxobjects) {
         correct = false
-        if (HasString(this, "containerfullmessage")) {
-          message = this.containerfullmessage
+        if (HasString(this, "containermaxobjects")) {
+          message = this.containermaxobjects
         }
         else {
           message=DynamicTemplate("MaxObjectsInContainer", this)
@@ -459,8 +557,15 @@
         msg (message)
       }
       else {
-        object.parent = this
-        msg (Template("Done"))
+        if (HasScript(object, "drop")) {
+          params = NewDictionary()
+          dictionary add (params, "destination", this)
+          do (object, "drop", params)
+        }
+        else {
+          object.parent = this
+          msg (Template("Done"))
+        }      
       }
     </addscript>
   </type>
@@ -536,18 +641,20 @@
   <type name="defaultplayer">
     <inherit name="editor_player"/>
     <inherit name="editor_object"/>
+    <money type="int">0</money>
   </type>
 
   <type name="switchable">
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <inventoryverbs type="listextend">[SwitchOn];[SwitchOff]</inventoryverbs>
     <switchedon type="boolean">false</switchedon>
+    <cannotswitchon type="string"></cannotswitchon>
     <turnon type="script">
       if (ListContains(ScopeReachable(), this)){
         if (this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
-        else if (HasString(this, "cannotswitchon")) {
+        else if (not this.cannotswitchon = "") {
           msg (this.cannotswitchon)
         }
         else {

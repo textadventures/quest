@@ -174,9 +174,25 @@
     </control>    
     
     <control>
+      <controltype>script</controltype>
+      <caption>[EditorObjectContainerAddScript]</caption>
+      <attribute>addscript</attribute>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "container_limited")</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorObjectContainerAddScriptNote]</caption>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "container_limited")</onlydisplayif>
+    </control>    
+    
+    
+    
+
+    <control>
       <controltype>title</controltype>
       <caption>[EditorObjectContainerLocking]</caption>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -184,12 +200,12 @@
       <caption>[EditorObjectContainerLocktype]</caption>
       <types>*=[TypeContainerNotLockable]; container_lockable=[TypeContainerLockable]</types>
       <width>150</width>
-      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>number</controltype>
-      <caption>Number of keys to unlock container</caption>
+      <caption>[EditorNumberKeysUnlockContainer]</caption>
       <attribute>keycount</attribute>
       <mustinherit>container_lockable</mustinherit>
       <minimum>0</minimum>

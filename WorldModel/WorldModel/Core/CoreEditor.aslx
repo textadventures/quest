@@ -27,7 +27,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Bold</value>
+          <value>[EditorTextProcessorBold]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -45,7 +45,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Italic</value>
+          <value>[EditorTextProcessorItalic]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -63,7 +63,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Underline</value>
+          <value>[EditorTextProcessorUnderline]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -81,7 +81,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Once</value>
+          <value>[EditorTextProcessorOnce]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -99,7 +99,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Object link</value>
+          <value>[EditorTextProcessorObjectLink]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -121,7 +121,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Command link</value>
+          <value>[EditorTextProcessorCommandLink]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -139,7 +139,29 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>If...</value>
+          <value>[EditorTextProcessorExit]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{exit:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{exit}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>exits</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorIf]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -157,7 +179,69 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Random text</value>
+          <value>[EditorTextProcessorIfNot]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if not </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>object.attribute=value:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if not}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{here </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{here}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorNotHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{nothere </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{nothere}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorRandomText]</value>
         </item>
         <item>
           <key>insertbefore</key>
@@ -175,7 +259,7 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
-          <value>Image</value>
+          <value>[EditorTextProcessorImage]</value>
         </item>
         <item>
           <key>insertbefore</key>

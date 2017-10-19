@@ -3,9 +3,9 @@ layout: index
 title: Custom commands
 ---
 
-In this section, we will add a **command** that lets the player "weigh" an object.
+In this section, we will add a **command** that lets the player "say" something, and another to "weigh" an object.
 
-Note that we will *not* be using a **verb** here, as we have done before. Why not? Verbs are good when you want to have a *separate* response for each object, what we want is *one* script that will return information about *any object*. For this, we need to use a **command**.
+Note that we will *not* be using a **verb** here, as we have done before. Why not? Verbs are good when you want to have a *separate* response for each object, what we want is *one* script that will return information about *any object* in the case of "weigh", or that has no object in the case of "say". For this, we need to use a **command**.
 
 Adding a Simple Command
 -----------------------
@@ -30,13 +30,13 @@ For example:
 
 We can read string variables within an expression, in exactly the same way as we read object attributes in the previous section.
 
-Whenever the player types in a command that matches the command template, the associated script will be run. Let's now add a script to print the required response. Add a "print a message" command and choose "expression". Then enter this expression:
+Whenever the player types in a command that matches the command template, the command's script will be run. Let's now add a script to print the required response. Add a "print a message" command and choose "expression". Then enter this expression:
 
      "You say \"" + text + "\", but nobody replies."
 
 What's with the backslashes in there? They let us use quotation marks inside an expression - if you put a backslash before a quote character, that quote character won't be interpreted as the end of a string.
 
-But if you don't want like the backslashes, you could use single quotes quite safely instead:
+But if you don't  like the backslashes, you could use single quotes quite safely instead:
 
      "You say '" + text + "', but nobody replies."
 
@@ -68,7 +68,7 @@ We can read the weight attribute in the same way as before:
 
 Previously, we put an actual object name before the dot. This time, we're putting a variable name there - so we'll read the "weight" attribute of the object that the player entered.
 
-Add the weight command using the command pattern above, and add a "print a message" command to print this expression:
+Add the "weigh" command using the command pattern above, and add a "print a message" command to print this expression:
 
      "It weighs " + object.weight + " grams."
 
@@ -95,7 +95,7 @@ The script should now look like this:
 
 Launch the game and verify that you now get a sensible response for "weigh bob" and "weigh sofa" in the lounge (it should say "You can't weigh that") and that you can still weigh the items in the kitchen.
 
-Additional example
+Additional Example (Advanced)
 ------------------
 
 Quest can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.

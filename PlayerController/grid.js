@@ -286,11 +286,13 @@ gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
     }
 };
 
-gridApi.drawLabel = function(x, y, z, text) {
+ 
+gridApi.drawLabel = function(x, y, z, text, col) {
+    if (col === undefined) col = "black";
     activateLayer(z);
     var pointText = new PointText(gridPoint(x, y));
     pointText.justification = "center";
-    pointText.fillColor = "black";
+    pointText.fillColor = col;
     pointText.content = text;
     allPaths.push(pointText);
 };

@@ -8,3 +8,5 @@ title: ToString
 Returns a [string](../types/string.html) - converts the integer/double to a string.
 
 See also [GetString](getstring.html) and [HasString](hasstring.html)
+
+NOTE: This a [hard-coded function](hardcoded.html).

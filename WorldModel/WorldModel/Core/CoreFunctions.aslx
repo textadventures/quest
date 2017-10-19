@@ -1,0 +1,526 @@
+<library>
+  <function name="RandomChance" parameters="percentile" type="boolean">
+    <![CDATA[
+    return (GetRandomInt(1,100) <= percentile)
+    ]]>
+  </function>
+
+  <function name="SetObjectFlagOn" parameters="object, flag">
+    set (object, flag, true)
+  </function>
+
+  <function name="SetObjectFlagOff" parameters="object, flag">
+    set (object, flag, false)
+  </function>
+
+  <function name="IncreaseObjectCounter" parameters="object, counter">
+    if (not HasInt(object, counter)) {
+      set (object, counter, 0)
+    }
+    set (object, counter, GetInt(object, counter) + 1)
+  </function>
+
+  <function name="DecreaseObjectCounter" parameters="object, counter">
+    if (not HasInt(object, counter)) {
+      set (object, counter, 0)
+    }
+    set (object, counter, GetInt(object, counter) - 1)
+  </function>
+  
+  <function name="IsSwitchedOn" parameters="object" type="boolean">
+    return (GetBoolean(object, "switchedon"))
+  </function>
+
+  <function name="AddToInventory" parameters="object">
+    object.parent = game.pov
+  </function>
+
+  <function name="MoveObject" parameters="object, parent">
+    object.parent = parent
+  </function>
+
+  <function name="MoveObjectHere" parameters="object">
+    object.parent = game.pov.parent
+  </function>
+
+  <function name="RemoveObject" parameters="object">
+    object.parent = null
+  </function>
+
+  <function name="MakeObjectVisible" parameters="object">
+    object.visible = true
+  </function>
+
+  <function name="MakeObjectInvisible" parameters="object">
+    object.visible = false
+  </function>
+
+  <function name="MakeExitVisible" parameters="object">
+    object.visible = true
+  </function>
+
+  <function name="MakeExitInvisible" parameters="object">
+    object.visible = false
+  </function>
+  
+  <function name="HelperOpenObject" parameters="object">
+    object.isopen = true
+  </function>
+
+  <function name="HelperCloseObject" parameters="object">
+    object.isopen = false
+  </function>
+
+  <function name="CloneObject" parameters="object" type="object">
+    newobject = Clone(object)
+    if (not HasString(object, "alias")) {
+      newobject.alias = object.name
+    }
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
+    newobject = CloneObject(object)
+    newobject.parent = newparent
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndInitialise" parameters="object" type="object">
+    newobject = CloneObject(object)
+    if (HasScript(newobject, "_initialise_")) {
+      do (newobject, "_initialise_")
+    }
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndMoveHere" parameters="object" type="object">
+    newobject = CloneObject(object)
+    newobject.parent = game.pov.parent
+    return (newobject)
+  </function>
+
+  <function name="LockExit" parameters="exit">
+    exit.locked = true
+  </function>
+
+  <function name="UnlockExit" parameters="exit">
+    exit.locked = false
+  </function>
+
+  <function name="SwitchOn" parameters="object">
+    object.switchedon = true
+  </function>
+
+  <function name="SwitchOff" parameters="object">
+    object.switchedon = false
+  </function>
+
+  <function name="SetDark" parameters="object">
+    object.dark = true
+  </function>  
+
+  <function name="SetLight" parameters="object">
+    object.dark = false
+  </function>
+
+  <function name="SetObjectLightstrength" parameters="object,strength">
+    if (LengthOf(strength) = 0) {
+      object.lightsource = false
+    } else {
+      object.lightsource = true
+    }
+    object.lightstrength = strength
+  </function>
+
+  <function name="SetExitLightstrength" parameters="exit,strength">
+    if (LengthOf(strength) = 0) {
+      exit.lightsource = false
+    } else {
+      exit.lightsource = true
+    }    
+    exit.lightstrength = strength
+  </function>
+  
+  <function name="ChangePOV" parameters="object">
+    <![CDATA[
+    if (game.pov <> object) {
+      game.pov = object
+      if (game.gridmap) {
+        JS.Grid_ClearAllLayers()
+        Grid_Redraw
+      }
+      OnEnterRoom (null)
+    }
+    ]]>
+  </function>
+
+  
+  <function name="RequestSave">
+    request(RequestSave, "")
+  </function>
+
+  <function name="RequestSpeak" parameters="s">
+    request(Speak, s)
+  </function>
+
+
+
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
+    <![CDATA[
+    outputsection = StartNewOutputSection()
+    msg (caption)
+    count = 0
+    game.menuoptionskeys = NewStringList()
+    foreach (option, options) {
+      count = count + 1
+      if (TypeOf(options) = "stringdictionary") {
+        optionText = StringDictionaryItem(options, option)
+        optiontag = option
+        style = GetCurrentLinkTextFormat()
+        list add (game.menuoptionskeys, option)
+      }
+      else if (TypeOf(option) = "string") {
+        optionText = option
+        optiontag = option
+        style = GetCurrentLinkTextFormat()
+        list add (game.menuoptionskeys, option)
+      }
+      else if (TypeOf(option) = "object") {
+        optionText = GetDisplayAlias(option)
+        optiontag = option.name
+        colour = ""
+        if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+          colour = option.linkcolour
+        }
+        else {
+          colour = GetLinkTextColour()
+        }
+        style = GetCurrentTextFormat(colour)
+        list add (game.menuoptionskeys, option.name)
+      }
+      else {
+        error ("ShowMenu cannot handle a " + TypeOf(option))
+      }
+      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+    }
+    EndOutputSection (outputsection)
+    game.menuoptions = options
+    game.menuallowcancel = allowCancel
+    game.menucallback = callback
+    game.menuoutputsection = outputsection
+  ]]>
+  </function>
+  
+  <function name="ShowMenuResponse" parameters="option">
+    if (game.menucallback = null) {
+      error ("Unexpected menu response")
+    }
+    else {
+      parameters = NewStringDictionary()
+      dictionary add (parameters, "result", UnescapeQuotes(option))
+      script = game.menucallback
+      ClearMenu
+      invoke (script, parameters)
+    }
+  </function>
+  
+  <function name="EscapeQuotes" parameters="s" type="string">
+    s = Replace(s, "\"", "@@@doublequote@@@")
+    s = Replace(s, "\'", "@@@singlequote@@@")
+    return (s)
+  </function>
+  
+  <function name="UnescapeQuotes" parameters="s" type="string">
+    s = Replace(s, "@@@doublequote@@@", "\"")
+    s = Replace(s, "@@@singlequote@@@", "\'")
+    return (s)
+  </function>
+
+  <function name="JSSafe" parameters="s" type="string"><![CDATA[
+    s = Replace(s, "\"", "")
+    s = Replace(s, "\'", "")
+    s = Replace(s, " ", "")
+    s = Replace(s, ".", "")
+    s = Replace(s, ",", "")
+    s = Replace(s, "!", "")
+    s = Replace(s, "?", "")
+    s = Replace(s, "-", "")
+    s = Replace(s, "/", "")
+    s = Replace(s, "(", "")
+    s = Replace(s, ")", "")
+    s = Replace(s, "$", "")
+    s = Replace(s, "%", "")
+    s = Replace(s, "&", "")
+    s = Replace(s, "*", "")
+    s = Replace(s, "@", "")
+    return (s)
+  ]]></function>
+  
+  <function name="HandleMenuTextResponse" parameters="input" type="boolean">
+    <![CDATA[
+    handled = false
+    if (IsInt(input)) {
+      number = ToInt(input)
+      if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
+        handled = true
+        ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
+      }
+    }
+    return (handled)
+    ]]>
+  </function>
+
+  <function name="ClearMenu">
+    HideOutputSection(game.menuoutputsection)
+    game.menuoutputsection = null
+    game.menuoptions = null
+    game.menucallback = null
+  </function>
+
+  <function name="StartNewOutputSection" type="string">
+    if (not HasInt(game, "lastoutputsection")) {
+      game.lastoutputsection = 0
+    }
+    game.lastoutputsection = game.lastoutputsection + 1
+    name = "section" + game.lastoutputsection
+    JS.StartOutputSection(name)
+    return (name)
+  </function>
+
+  <function name="EndOutputSection" parameters="name">
+    JS.EndOutputSection(name)
+  </function>
+
+  <function name="HideOutputSection" parameters="name">
+    JS.HideOutputSection(name)
+  </function>
+
+  <function name="StartTurnOutputSection">
+    if (HasString(game, "currentturnoutputsection")) {
+      game.lastturnoutputsection = game.currentturnoutputsection
+      EndOutputSection (game.currentturnoutputsection)
+    }
+    game.currentturnoutputsection = StartNewOutputSection()
+  </function>
+
+  <function name="HidePreviousTurnOutput">
+    if (HasString(game, "lastturnoutputsection")) {
+      HideOutputSection(game.lastturnoutputsection)
+    }
+  </function>
+
+  <function name="Ask" parameters="question, callback">
+    options = NewStringList()
+    list add (options, "[Yes]")
+    list add (options, "[No]")
+    game.askcallback = callback
+    ShowMenu (question, options, false) {
+      parameters = NewDictionary()
+      if (result = "[Yes]") {
+        boolresult = true
+      }
+      else {
+        boolresult = false
+      }
+      dictionary add (parameters, "result", boolresult)
+      callback = game.askcallback
+      game.askcallback = null
+      invoke (callback, parameters)
+    }
+  </function>
+
+  <function name="AllKeysAvailable" parameters="object" type="boolean">
+    if (HasObject(object, "key")) {
+      if (not HasInt(object,"keycount")) {
+        object.keycount = 1
+        object.key1 = object.key
+      }
+      if (not HasObject(object, "key1")) {	
+	    object.key1 = object.key
+	  }	
+    }
+    for (x, 1, object.keycount) {
+      keyname = "key" + ToString(x)
+      if (HasObject(object, keyname)) {
+        if (not ListContains(ScopeInventory(), GetAttribute(object, keyname))) {
+          return (false)
+        }
+      }
+    }  
+    return (true)
+  </function>
+  
+   <function name="CreateBiExits" parameters="direction, from, to">
+    create exit (dir, from, to)
+    create exit (ReverseDirection(dir), to, from)
+  </function>
+
+ 
+  <function name="Equal" parameters="value1, value2" type="boolean">
+    if (not TypeOf(value1) = TypeOf(value2)) return (false)
+    if (not value1 = value2) return (false)
+    return (true)
+  </function>
+
+
+  
+  <!--  STRING UTILITIES -->
+
+  <function name="ReverseDirection" parameters="dir" type="string">
+    list1 = Split("[CompassN];[CompassNE];[CompassE];[CompassSE];[CompassS];[CompassSW];[CompassW];[CompassNW];[CompassUp];[CompassDown];[CompassIn];[CompassOut]", ";")
+    list2 = Split("[CompassS];[CompassSW];[CompassW];[CompassNW];[CompassN];[CompassNE];[CompassE];[CompassSE];[CompassDown];[CompassUp];[CompassOut];[CompassIn]", ";")
+    n = IndexOf(list1, dir)
+    if (not n = -1) return (StringListItem(list2, n))
+    return (dir)
+  </function>
+
+  <function name="PadString" parameters="str, n, pad" type="string"><![CDATA[
+    s = ""
+    str = "" + str
+    pad = "" + pad
+    step = LengthOf(pad)
+    if (step = 0) {
+      error ("Zero length pad in PadString")
+    }
+    if (pad = " ") {
+      pad = "&nbsp;"
+    }
+    for (i, 1, n - LengthOf(str), step) {
+      s = s + pad
+    }
+    return (s + str)
+  ]]></function>
+
+
+  <function name="Decimalise" parameters="n, places" type="string"><![CDATA[
+    negative = (n < 0)
+    n = abs(n)
+    if (places = 0) {
+      return ("" + n)
+    }
+    factor = pow (10, places)
+    pounds = floor(n / factor)
+    pennies = n % factor
+    result = pounds + "." + PadString(pennies, places, 0)
+    if (negative) result = "-" + result
+    return (result)
+  ]]></function>
+
+  <function name="DisplayNumber" parameters="n, control" type="string"><![CDATA[
+    n = abs(n)
+    regex = "^(?<before>\\D*)(?<padding>\\d+)(?<sep>\\D)(?<places>\\d*)(?<after>\\D*)$"
+    if (not IsRegexMatch(regex, control, "DisplayNumber")) {
+      error ("Unexpected format in DisplayNumber (" + control + "). Should be a number, followed by a single character separator, followed by a number.")
+    }
+    options = Populate(regex, control, "DisplayNumber")
+    places = ToInt(StringDictionaryItem(options, "places"))
+    padding = ToInt(StringDictionaryItem(options, "padding"))
+    if (places > 0) {
+      padding = padding + 1 + places
+    }
+    decimal = Replace(Decimalise(n, places), ".", StringDictionaryItem(options, "sep"))
+    return (StringDictionaryItem(options, "before") + PadString(decimal, padding, 0) + StringDictionaryItem(options, "after"))
+  ]]></function>
+
+  <function name="DisplayMoney" parameters="n" type="string"><![CDATA[
+    // Returns the given number formatted according to game.moneyformat
+    if (not HasString(game, "moneyformat")) {
+      error ("No format for money set in game.moneyformat.")
+    }
+    ary = Split(game.moneyformat, "!")
+    if (ListCount(ary) = 2) {
+      return (Replace(game.moneyformat, "!", "" + n))
+    }
+    else if (ListCount(ary) = 3) {
+      negative = (n < 0)
+      n = abs(n)
+      options = StringListItem(ary, 1)
+      showsign = StartsWith(options, "+")
+      if (showsign) {
+        options = Mid(options, 2)
+      }
+      number = DisplayNumber(n, options)
+      if (negative) {
+        number = "-" + number
+      }
+      else if (not n = 0 and showsign) {
+        number = "+" + number
+      }
+      return (StringListItem(ary, 0) + number + StringListItem(ary, 2))
+    }
+    else if (ListCount(ary) = 4) {
+      if (n < 0) {
+        options = StringListItem(ary, 2)
+      }
+      else {
+        options = StringListItem(ary, 1)
+      }
+      number = DisplayNumber(n, options)
+      return (StringListItem(ary, 0) + number + StringListItem(ary, 3))
+    }
+    else {
+      error ("game.moneyformat expected to have either 1, 2 or 3 exclamation marks.")
+    }
+  ]]></function>
+  
+  <!--  LIST UTILITIES -->
+  
+  <function name="IndexOf" type="int" parameters="lst, item">
+    for (i, 0, ListCount(lst) - 1) {
+      x = ListItem(lst, i)
+      if (x = item) {
+        return (i)
+      }
+    }
+    return (-1)
+  </function>
+  
+  <function name="ObjectListToStringList" parameters="list, att" type="stringlist">
+    l = NewStringList()
+    foreach (o, list) {
+      if (HasString(o, att)) {
+        list add (l, GetString(o, att))
+      }
+    }
+    return (l)
+  </function>
+  
+  
+  <function name="FilterByType" parameters="lst, t" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      if (DoesInherit(o, t)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  
+  <function name="FilterByAttribute" parameters="lst, name, value" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      val = GetAttribute(o, name)
+      if (Equal(val, value)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  <function name="FilterByNotAttribute" parameters="lst, name, value" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      val = GetAttribute(o, name)
+      if (not Equal(val, value)) list add (l, o)
+    }
+    return (l)
+  </function>
+
+  <function name="ListCompact" parameters="lst" type="list">
+    l = NewList()
+    foreach (o, lst) {
+      if (not Equal(o, null)) {
+        if (IndexOf(l, o) = -1) list add (l, o)
+      }
+    }
+    return (l)
+  </function>
+
+</library>

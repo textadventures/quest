@@ -375,7 +375,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsVariablesvalue]</caption>
+      <caption>[EditorScriptsVariablesValue]</caption>
     </control>
 
     <control>
@@ -405,7 +405,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsVariablesvalue]</caption>
+      <caption>[EditorScriptsVariablesValue]</caption>
     </control>
 
     <control>
@@ -446,7 +446,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsVariablesvalue]</caption>
+      <caption>[EditorScriptsVariablesValue]</caption>
     </control>
 
     <control>

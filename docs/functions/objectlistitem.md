@@ -21,3 +21,5 @@ Now show the name of the second item in the list. Note that the second object is
      msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
 
 This could be used with [GetRandomInt](getrandomint.html) to remove an item from the players inventory ([ScopeInventory](../functions/corelibrary/scopeinventory.html)) and place it into the current room (for example, if you're creating a poltergeist or thief).
+
+NOTE: This a [hard-coded function](hardcoded.html).

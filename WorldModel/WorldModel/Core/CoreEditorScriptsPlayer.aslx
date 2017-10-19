@@ -82,4 +82,46 @@
       <simpleeditor>number</simpleeditor>
     </control>
   </editor>
+  
+  <editor>
+    <appliesto>(function)IncreaseMoney</appliesto>
+    <display>Increase money by #0</display>
+    <category>[EditorScriptsPlayerPlayer]</category>
+    <create>IncreaseMoney (0)</create>
+    <add>[EditorScriptsPlayerIncreasemoneyTitle]</add>
+    <onlydisplayif>game.showmoney</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPlayerIncreasemoney]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DecreaseMoney</appliesto>
+    <display>Decrease money by #0</display>
+    <category>[EditorScriptsPlayerPlayer]</category>
+    <create>DecreaseMoney (0)</create>
+    <add>[EditorScriptsPlayerDecreasemoneyTitle]</add>
+    <onlydisplayif>game.showmoney</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPlayerDecreasemoney]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
 </library>

@@ -289,8 +289,7 @@ function isElementVisible(element) {
 function panesVisible(visible) {
     var screenWidth = $("#gameBorder").width();
     var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
-    var prompt = $("#txtCommandPrompt");
-    var promptSpacing = prompt ? prompt.width() + 5 : 0;
+    var promptSpacing = $("#txtCommandPrompt").width() + 5;
 
     if (visible) {
         $("#gamePanes").show();
@@ -332,9 +331,14 @@ function scrollToEnd() {
         if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
         var distance = scrollTo - currentScrollTop;
         var duration = _animateScroll ? distance / 0.4 : 1;
+        // Added by The Pixie on behalf of alexandretorres
+        if (duration>2000) duration=2000;
         $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
     $("#txtCommand").focus();
+    // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
+    // In fact it may be the all the rest of this can deleted
+    $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
 function SetAnimateScroll(value) {
@@ -457,7 +461,11 @@ function setForeground(col) {
 }
 
 function setCompassDirections(directions) {
-    _compassDirs = directions;
+    if (typeof directions === "string") {
+      _compassDirs = directions.split(";")
+    } else {
+      _compassDirs = directions;
+    }
     $("#cmdCompassNW").attr("title", _compassDirs[0]);
     $("#cmdCompassN").attr("title", _compassDirs[1]);
     $("#cmdCompassNE").attr("title", _compassDirs[2]);
@@ -865,6 +873,9 @@ function HideOutputSection(name) {
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
         $("." + name).hide(250, function () { $(this).remove(); });
+        // Added by The Pixie, 04/Oct/17
+        // This should close the gap when the menu is hidden
+        $("#divOutput").animate({'min-height':0}, 250);
     }, 250);
 }
 
@@ -1019,6 +1030,9 @@ function setCss(element, cssString) {
   }
 }
 
+function addScript(text) {
+    $('body').prepend(text);
+}
 
 function colourBlend(colour1, colour2) {
   $('#gamePanes').css('background-color', 'transparent');
@@ -1038,7 +1052,7 @@ elements = [
   '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
   '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
   '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
-  '#commandPane'
+  '#commandPane', '#customStatusPane'
 ];
 
 dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
@@ -1094,13 +1108,22 @@ function setPanes(fore, back, secFore, secBack, highlight) {
 function setCommands(s, colour) {
   if (arguments.length == 2) commandColour = colour;
   ary = s.split(";");
-  el = $('#commandPane');
+  el = $('#commandPaneHeading');
   el.empty();
   for (i = 0; i < ary.length; i++) {
-    el.append(' <span id="' + ary[i].toLowerCase() + '_command_button"  class="ui-widget"><a id="verblink' + ary[i].toLowerCase() + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="' + ary[i].toLowerCase() + '" data-command="' + ary[i].toLowerCase() + '">' + ary[i] + '</a></span> ');
+      ary2 = ary[i].split(":");
+      comm = ary2[0];
+      commLower = ary2[0].toLowerCase().replace(/ /g, "_");
+      commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
+      //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
+      el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
   }
 }
 
+function setCustomStatus(s) {
+    el = $('#customStatusPane');
+    el.html(s);
+}
 
         
 // ----------------------------------        
@@ -1154,9 +1177,10 @@ function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
 
-function Grid_DrawLabel(x, y, z, text) {
+function Grid_DrawLabel(x, y, z, text, col) {
+    if (col === undefined) col = "black";
     if (!_canvasSupported) return;
-    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text, col);
 }
 
 function Grid_ShowCustomLayer(visible) {

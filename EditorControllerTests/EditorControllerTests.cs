@@ -21,7 +21,7 @@ namespace EditorControllerTests
         }
 
         [TestMethod]
-        public void TestInalidElementNames()
+        public void TestInvalidElementNames()
         {
             AssertInvalid("object>");
             AssertInvalid("object\"");
@@ -69,6 +69,24 @@ namespace EditorControllerTests
         {
             AssertInvalidExpression("\"no end quote");
             AssertInvalidExpression("\"this is in quotes\" + \"but this doesn't have an end quote");
+        }
+
+        [TestMethod]
+        public void TestCanAddVerb()
+        {
+            EditorController.CanAddVerbResult cavr = Controller.CanAddVerb("kick");
+            Assert.IsTrue(cavr.CanAdd);
+        }
+
+        [TestMethod]
+        public void TestCanAddVerb_Rejected()
+        {
+            EditorController.CanAddVerbResult cavr = Controller.CanAddVerb("enter");
+            Assert.AreEqual("enter", cavr.ClashingCommand);
+            cavr = Controller.CanAddVerb("kick;look");
+            Assert.AreEqual("look", cavr.ClashingCommand);
+            cavr = Controller.CanAddVerb("kick ; ask ; sing");
+            Assert.AreEqual("ask", cavr.ClashingCommand);
         }
 
         private void AssertValidExpression(string expression)

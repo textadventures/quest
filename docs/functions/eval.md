@@ -21,3 +21,5 @@ Example:
       msg(Eval ("x + y", params))
 
 This will result in "150" being printed.
+
+NOTE: This a [hard-coded function](hardcoded.html).

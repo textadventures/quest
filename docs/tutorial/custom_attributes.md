@@ -9,25 +9,23 @@ Enter a description like "The kitchen is cold and the stench of the overflowing 
 
 We're now going to look at **attributes**. Every time we've edited any aspect of an object or room so far, we've actually been editing an attribute. The prefix, description, "take" behaviour and so on are all attributes of an object. Whenever something changes in ther game, it is a change in an objects attribute. When the TV is turned on or off, the "switchedon" attribute is changing. Even when the player moves, this is actually just changing an attribute of the player object called "parent".
 
-The Attributes Tab
+In this example, we'll store the weights of various objects by creating a new "weight" attribute. Later we will create a "weigh" command which will tell us the weight of **any** object.
+
+First, let us create a few objects we can weigh. Create three objects – flour, eggs and sugar. Make sure the object types are set correctly (either "inanimate object" or "inanimate object (plural)"). We'll use units of grams, so we'll say the flour has a weight of 500, the eggs have a weight of 250, and the sugar has a weight of 1000.
+
+The Attributes Tab (Desktop Version Only)
 ------------------
 
-If you are using the desktop version, you can click an object and select the Attributes tab - you'll see all the underlying data for the object.
+If you are using the desktop version, you can click an object and select the Attributes tab - you'll see all the underlying data for the object. We can also use the Attributes tab to add our own custom data to any object. 
 
-We can also use the Attributes tab to add our own custom data to any object. In this example, we'll store the weights of various objects by creating a new "weight" attribute. Later we will create a "weigh" command which will tell us the weight of **any** object.
-
-First, let us create a few objects we can weigh. Create three objects – flour, eggs and sugar. Make sure the object types are set correctly (either "inanimate object" or "inanimate object (plural)").
-
-Now let's give them weights. We'll use units of grams, so we'll say the flour has a weight of 500, the eggs have a weight of 250, and the sugar has a weight of 1000.
-
-**Desktop version** First we'll set the flour's "weight" attribute to 500. To do this, select the flour object and go to the Attributes tab. We'll look at "Inherited Types" later - for now, go to the Attributes table and click the Add button. Enter the name "weight". We want to to use whole numbers for weight values, so select "Integer" from the list and enter the value "500".
+So let's give the new objects weights. First we'll set the flour's "weight" attribute to 500. To do this, select the flour object and go to the Attributes tab. We'll look at "Inherited Types" later - for now, go to the Attributes table and click the Add button. Enter the name "weight". We want to to use whole numbers for weight values, so select "Integer" from the list and enter the value "500".
 
 ![](Weightflour.png "Weightflour.png")
 
 Alternatively...
 -------------
 
-The Web version curently has no attributes tab, so we will have to use an alternative approach. Go to the Script tab of the game object. The bit at the top is a script that will run when the game starts, so we can set attributes there (the disadvantage is that this will get pretty messy if you have dozens of objects with a few attributes each, but for a handful, it is okay).
+The Web version currently has no attributes tab, so we will have to use an alternative approach. Go to the Script tab of the game object. The bit at the top is a script that will run when the game starts, so we can set attributes there (the disadvantage is that this will get pretty messy if you have dozens of objects with a few attributes each, but for a handful, it is okay).
 
 Click "Add new script", and select "Set a objects attribute (named by an expression)" from the "Variables" category. In the first line, keep "Name", and in the other box, select the flour. For the next line, set the attribute name to "weight" (note that for once you need quotes here, but there are already provided). In the third line, for the value type "500".
      

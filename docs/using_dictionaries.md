@@ -45,7 +45,7 @@ StringDictionaryItem
 ScriptDictionaryItem
 ObjectDictionaryItem
 ```
-Note that Quest will throw an error if the key is not found in the dictionary.
+Note that Quest will throw an error if the key is not found in the dictionary, so testing before hand is usually advised.
 
 
 
@@ -57,7 +57,7 @@ Often you will want to go through each member of a dictionary, and as with a lis
 This example will output each member of the dictionary. The script will be run once for each entry in the dictionary `d`, and when it runs `key` will have the key for that entry.
 ```
 foreach(key, d) {
-  msg("Entry: " + DictionaryItem(d, key))
+  msg("Entry: " + key + "=" + DictionaryItem(d, key))
 }
 ```
 Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries) will cause an error.
@@ -67,7 +67,7 @@ Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries
 `DictionaryContains`
 ---------------
 
-Dictionaries are fuissy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not. The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
+Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not. The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
 
 To check a key is not already in use before adding to the dictionary:
 ```
@@ -117,4 +117,4 @@ dictionary add (vars, "success", "You hit the monster")
 dictionary add (vars, "failure", "You missed!")
 do (monster, "attack", vars)
 ```
-In the attack script, you can now use three local variables, `weapon`, which is an object, and `success` and `failure`, two strings.
+In the attack script, you can now use three local variables; `weapon`, which is an object, and `success` and `failure`, two strings.

@@ -2079,104 +2079,97 @@ namespace TextAdventures.Quest
 
         public CanAddVerbResult CanAddVerb(string verbPattern)
         {
-            verbPattern = verbPattern.Trim();
-            if (verbPattern == "ask")
+            // Split into each verb, and trim
+            List<string> verbList = verbPattern.Split(';').Select(p => p.Trim()).ToList();
+
+
+            // Check against the disallowed list first
+            string[] disallowedList = "ask;tell;look;enter".Split(';');
+            foreach (string disallowed in disallowedList)
             {
-                return new CanAddVerbResult
+                if (verbList.Contains(disallowed))
                 {
-                    CanAdd = false,
-                    ClashingCommand = "ask",
-                    ClashingCommandDisplay = "ask"
-                };
-            }
-            
-            if (verbPattern == "tell")
-            {
-                return new CanAddVerbResult
-                {
-                    CanAdd = false,
-                    ClashingCommand = "tell",
-                    ClashingCommandDisplay = "tell"
-                };
+                    return new CanAddVerbResult
+                    {
+                        CanAdd = false,
+                        ClashingCommand = disallowed,
+                        ClashingCommandDisplay = disallowed
+                    };
+                }
             }
 
-            if (verbPattern == "look")
-            {
-                return new CanAddVerbResult
-                {
-                    CanAdd = false,
-                    ClashingCommand = "look",
-                    ClashingCommandDisplay = "look"
-                };
-            }
-
-            CanAddVerbResult result = new CanAddVerbResult();
-            verbPattern += " object";
 
             // Now see if "verb object" is a match for the regex of an existing command in the game
-
-            foreach (Element cmd in from e in m_worldModel.Objects
-                                    where e.Type == ObjectType.Command
-                                    where e.Parent == null
-                                    where !e.Fields[FieldDefinitions.IsVerb]
-                                    select e)
+            CanAddVerbResult result = new CanAddVerbResult();
+            // Iterate through each verb in the pattern the user offered
+            foreach (string matchVerb in verbList)
             {
-                string regexPattern = null;
+                string matchPattern = matchVerb + " object";
 
-                object pattern = cmd.Fields.Get(FieldDefinitions.Pattern.Property);
-                EditorCommandPattern editorCommandPattern = pattern as EditorCommandPattern;
-                string stringPattern = pattern as string;
+                // iterate through each command
+                foreach (Element cmd in from e in m_worldModel.Objects
+                                        where e.Type == ObjectType.Command
+                                        where e.Parent == null
+                                        where !e.Fields[FieldDefinitions.IsVerb]
+                                        select e)
+                {
+                    string regexPattern = null;
 
-                if (editorCommandPattern != null)
-                {
-                    regexPattern = Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern, null);
-                }
-                else
-                {
-                    regexPattern = stringPattern;
-                }
+                    object pattern = cmd.Fields.Get(FieldDefinitions.Pattern.Property);
+                    EditorCommandPattern editorCommandPattern = pattern as EditorCommandPattern;
+                    string stringPattern = pattern as string;
 
-                if (regexPattern != null)
-                {
-                    bool isClash = false;
-                    System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
-                    if (regex.IsMatch(verbPattern))
+                    if (editorCommandPattern != null)
                     {
-                        isClash = true;
-                        IDictionary<string, string> parseResult = Utility.Populate(regexPattern, verbPattern);
-
-                        // if verbPattern is "get in object", then it will match the regex for the "get" command -
-                        // but we still want to allow this to be added, as it's not "really" a clash. So, if the
-                        // potential clash only has one object group in its pattern, it's only a clash if the
-                        // match is the entire string "object". In the case of "get in", we will have object="in object",
-                        // so this can be allowed.
-
-                        if (parseResult.Count == 1)
-                        {
-                            var kvp = parseResult.First();
-                            if (kvp.Key.StartsWith("object") && kvp.Value != "object")
-                            {
-                                isClash = false;
-                            }
-                        }
+                        regexPattern = Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern, null);
                     }
-                    if (isClash)
+                    else
                     {
-                        result.ClashingCommand = cmd.Name;
-                        result.ClashingCommandDisplay = cmd.Name;
-                        if (cmd.Fields[FieldDefinitions.Anonymous])
+                        regexPattern = stringPattern;
+                    }
+
+                    if (regexPattern != null)
+                    {
+                        bool isClash = false;
+                        System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
+                        if (regex.IsMatch(matchPattern))
                         {
-                            if (editorCommandPattern != null)
+                            isClash = true;
+                            IDictionary<string, string> parseResult = Utility.Populate(regexPattern, matchPattern);
+
+                            // if verbPattern is "get in object", then it will match the regex for the "get" command -
+                            // but we still want to allow this to be added, as it's not "really" a clash. So, if the
+                            // potential clash only has one object group in its pattern, it's only a clash if the
+                            // match is the entire string "object". In the case of "get in", we will have object="in object",
+                            // so this can be allowed.
+
+                            if (parseResult.Count == 1)
                             {
-                                result.ClashingCommandDisplay = editorCommandPattern.Pattern;
-                            }
-                            else
-                            {
-                                result.ClashingCommandDisplay = stringPattern;
+                                var kvp = parseResult.First();
+                                if (kvp.Key.StartsWith("object") && kvp.Value != "object")
+                                {
+                                    isClash = false;
+                                }
                             }
                         }
-                        result.CanAdd = false;
-                        return result;
+                        if (isClash)
+                        {
+                            result.ClashingCommand = cmd.Name;
+                            result.ClashingCommandDisplay = cmd.Name;
+                            if (cmd.Fields[FieldDefinitions.Anonymous])
+                            {
+                                if (editorCommandPattern != null)
+                                {
+                                    result.ClashingCommandDisplay = editorCommandPattern.Pattern;
+                                }
+                                else
+                                {
+                                    result.ClashingCommandDisplay = stringPattern;
+                                }
+                            }
+                            result.CanAdd = false;
+                            return result;
+                        }
                     }
                 }
             }

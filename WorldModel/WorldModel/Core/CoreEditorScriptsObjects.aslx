@@ -5,7 +5,7 @@
     <category>[EditorScriptsObjectsObjects]</category>
     <create>AddToInventory ()</create>
     <add>[EditorScriptsObjectsAddtoinventory]</add>
-    <common>Inventory</common>
+    <common>[EditorScriptObjectsInventory]</common>
 
     <control>
       <controltype>label</controltype>
@@ -26,7 +26,7 @@
     <category>[EditorScriptsObjectsObjects]</category>
     <create>MoveObject (,)</create>
     <add>[EditorScriptsObjectsMoveobject]</add>
-    <common>Move</common>
+    <common>[EditorScriptObjectsMove]</common>
 
     <control>
       <controltype>label</controltype>
@@ -84,7 +84,7 @@
     <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeObjectVisible ()</create>
     <add>[EditorScriptsObjectsMakeobject]</add>
-    <common>Show</common>
+    <common>[EditorScriptObjectsShow]</common>
 
     <control>
       <controltype>label</controltype>
@@ -105,7 +105,7 @@
     <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeObjectInvisible ()</create>
     <add>[EditorScriptsObjectsMakeobjectinvisible]</add>
-    <common>Hide</common>
+    <common>[EditorScriptObjectsHide]</common>
 
     <control>
       <controltype>label</controltype>

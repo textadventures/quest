@@ -10,6 +10,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
  Keep in mind that Cyrillic may create problems with internal procedures, therefore it is advisable to keep names in Latin. For example to create verb for object you should name it in Russian, but give Attribute in Latin. 
 -->
 
+  <include ref="EditorEnglish.aslx"/>
   <include ref="English.aslx"/>
   <template name="LanguageId">ru</template>
   

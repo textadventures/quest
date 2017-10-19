@@ -87,6 +87,12 @@
 
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameFeatures]</caption>
 
@@ -100,6 +106,12 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameHealth]</caption>
         <attribute>showhealth</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameMoney]</caption>
+        <attribute>showmoney</attribute>
       </control>
 
       <control>
@@ -135,6 +147,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>[EditorGameAdvancedScripts]</caption>
+        <attribute>feature_advancedscripts</attribute>
+      </control>	  
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>[EditorGameInroomdescriptions]</caption>
         <attribute>appendobjectdescription</attribute>
       </control>
@@ -151,10 +169,8 @@
         <attribute>multiplecommands</attribute>
       </control>	  
 
-
     </tab>
 
-    
     
     
     
@@ -294,8 +310,6 @@
         <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
-
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameHyperlinks]</caption>
@@ -394,6 +408,7 @@
     
     
     
+
     
     <tab>
       <caption>[EditorGameInterface]</caption>
@@ -430,7 +445,24 @@
         <minimum>1</minimum>
       </control>
 
-      
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapexitwidth</attribute>
+        <caption>[EditorGameExitwidth]</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameExitcolour]</caption>
+        <attribute>mapexitcolour</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+
       
       <control>
         <controltype>title</controltype>
@@ -459,8 +491,8 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameTurnOffPeopleAndObjects]</caption>
-        <attribute>turnoffpeopleandobjects</attribute>
+        <caption>[EditorGameTurnOffPlacesAndObjects]</caption>
+        <attribute>turnoffplacesandobjects</attribute>
         <onlydisplayif>game.showpanes</onlydisplayif>
       </control>
 
@@ -479,14 +511,19 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowCustomStatusPane]</caption>
+        <attribute>customstatuspane</attribute>
+        <onlydisplayif>game.showpanes</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGamePanesTheme]</caption>
         <attribute>panestheme</attribute>
         <validvalues type="simplestringlist">Classic;Midnight;Nature;Vanilla;Black;Blood;Tranquil;Parchment</validvalues>
         <onlydisplayif>game.showpanes</onlydisplayif>
       </control>
-
-
 
 
       <control>
@@ -521,7 +558,6 @@
         <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
       </control>
 
-      
       
       <control>
         <controltype>title</controltype>
@@ -576,7 +612,6 @@
       </control>	  
       
       
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameBorderCaption]</caption>
@@ -596,8 +631,6 @@
         <freetext/>
         <onlydisplayif>game.showborder</onlydisplayif>
       </control>
-      
-      
       
       
       <control>
@@ -682,10 +715,9 @@
         <attribute>clearframe</attribute>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
+      
     </tab>
 
-    
-    
     
     
     
@@ -720,8 +752,37 @@
     
     
     
+
+
+    
+    <tab>
+      <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
+      <caption>[EditorGameAdvancedScript]</caption>
+      <advanced/>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameInitUIscript]</caption>
+        <attribute>inituserinterface</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameUnresolvedscript]</caption>
+        <attribute>unresolvedcommandhandler</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameBackdropscript]</caption>
+        <attribute>scopebackdrop</attribute>
+      </control>
+
+    </tab>
     
     
+
+
     
     
 
@@ -765,6 +826,11 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameAutomaticallyObjectList]</caption>
         <attribute>autodisplayverbs</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameClearscreenonroomenter]</caption>
+        <attribute>clearscreenonroomenter</attribute>
       </control>
 
       <control>
@@ -852,6 +918,12 @@
       
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGamePlayer]</caption>
       <advanced/>
@@ -878,15 +950,29 @@
       </control>
 
       <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameMoneyformat]</caption>
+        <attribute>moneyformat</attribute>
+        <onlydisplayif>game.showmoney</onlydisplayif>
+        <width>50</width>
+      </control>
+      
+      <control>
         <controltype>stringdictionary</controltype>
         <caption>[EditorGamePlayerobjectStatus]</caption>
-        <keyprompt>Please enter the attribute name</keyprompt>
-        <valueprompt>Please enter the format string (blank for default)</valueprompt>
+        <keyprompt>[EditorGameAttributesPleaseenter]</keyprompt>
+        <valueprompt>[EditorGameAttributesPleaseenter2]</valueprompt>
         <attribute>povstatusattributes</attribute>
         <advanced/>
       </control>
     </tab>
 
+    
+    
+    
+    
+    
+    
     <tab>
       <caption>[EditorGameAttributes]</caption>
       <advanced/>
@@ -895,8 +981,8 @@
       <control>
         <controltype>stringdictionary</controltype>
         <caption>[EditorGameStatusattributes]</caption>
-        <keyprompt>Please enter the attribute name</keyprompt>
-        <valueprompt>Please enter the format string (blank for default)</valueprompt>
+        <keyprompt>[EditorGameAttributesPleaseenter]</keyprompt>
+        <valueprompt>[EditorGameAttributesPleaseenter2]</valueprompt>
         <attribute>statusattributes</attribute>
       </control>
 
@@ -904,7 +990,6 @@
         <controltype>attributes</controltype>
         <expand/>
       </control>
-
      
     </tab>
 

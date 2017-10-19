@@ -14,6 +14,7 @@
   <implied element="turnscript" property="script" type="script"/>
 
   <include ref="CoreCommands.aslx"/>
+  <include ref="CoreFunctions.aslx"/>
   <include ref="CoreParser.aslx"/>
   <include ref="CoreScopes.aslx"/>
   <include ref="CoreTypes.aslx"/>
@@ -28,7 +29,8 @@
   <include ref="CoreEditor.aslx"/>
   <include ref="CoreWearable.aslx"/>
 
-  <function name="InitInterface"><![CDATA[
+  <function name="InitInterface">
+      <![CDATA[
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
@@ -91,83 +93,80 @@
     }
     // Added by the Pixie
     // Note that panesVisible in playercore.js must be updated too
-    // Makes the panel under the panes transparent
-    JS.eval ("$('#gamePanes').css('background', 'transparent')")
     // This line will get the save confirmation to appear in the right font and colour
     JS.setCss ("body", "color:" + game.defaultforeground + ";font-family:" + game.defaultfont + ";font-size:" + game.defaultfontsize + "pt;")
     // various new options
     if (HasString(game, "bordercolour")) {
-      JS.eval ("$('#gameBorder').css('border-left', '1px solid " + game.bordercolour + "')")
-      JS.eval ("$('#gameBorder').css('border-right', '1px solid " + game.bordercolour + "')")
+      JS.setCss ("#gameBorder", "border-left:1px solid " + game.bordercolour + ";border-right:1px solid " + game.bordercolour)
     }
     if (not game.classiclocation) {
-      JS.eval ("$('#status').css('background-image', 'none')")
+      JS.setCss ("#status", "background-image:none")
       if (HasString(game, "customlocationcolour")) {
-        JS.eval ("$('#status').css('background-color', '" + game.customlocationcolour + "')")
+        JS.setCss ("#status", "background-color:" + game.customlocationcolour)
       }
       else {
-        JS.eval ("$('#status').css('background', 'transparent')")
+        JS.setCss ("#status", "background:transparent")
       }
       if (HasString(game, "customlocationtextcolour")) {
-        JS.eval ("$('#status').css('color', '" + game.customlocationtextcolour + "')")
+        JS.setCss ("#status", "color:" + game.customlocationtextcolour)
       }
       if (HasString(game, "customlocationbordercolour")) {
-        JS.eval ("$('#status').css('border', '1px solid " + game.customlocationbordercolour + "')")
+        JS.setCss ("#status", "border:1px solid " + game.customlocationbordercolour)
       }
       else {
-        JS.eval ("$('#status').css('border', 'none')")
+        JS.setCss ("#status", "border:none")
       }
     }
     request (Show, "Location")
     if (game.showlocation) {
-      JS.eval ("$('#status').css('display', 'block')")
+      JS.setCss ("#status", "display:block")
     }
     else {
-      JS.eval ("$('#status').css('display', 'none')")
+      JS.setCss ("#status", "display:none")
     }
     if (HasString(game, "marginscolour")) {
-      JS.eval ("$('body').css('background-color', '" + game.marginscolour + "')")
+      JS.setCss ("body", "background-color:" + game.marginscolour)
     }
     if (game.turnoffsavebutton) {
-      JS.eval ("$('#controlButtons').css('display', 'none')")
+      JS.setCss ("#controlButtons", "display:none")
     }
     if (game.turnoffcompass) {
-      JS.eval ("$('#compassLabel').css('display', 'none')")
-      JS.eval ("$('#compassAccordion').css('display', 'none')")
+      JS.setCss ("#compassLabel", "display:none;")
+      JS.setCss ("#compassAccordion", "display:none;")
     }
     if (game.turnoffinventory) {
-      JS.eval ("$('#inventoryLabel').css('display', 'none')")
-      JS.eval ("$('#inventoryAccordion').css('display', 'none')")
+      JS.setCss ("#inventoryLabel", "display:none")
+      JS.setCss ("#inventoryAccordion", "display:none")
     }
-    if (game.turnoffpeopleandobjects) {
-      JS.eval ("$('#compassLabel').css('display', 'none')")
-      JS.eval ("$('#compassAccordion').css('display', 'none')")
+    if (game.turnoffplacesandobjects) {
+      JS.setCss ("#placesObjectsLabel", "display:none")
+      JS.setCss ("#placesObjectsAccordion", "display:none")
     }
     if (game.statusandcompassattop) {
+      JS.eval ("$('#commandPane').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#customStatusPane').insertBefore('#inventoryLabel')")
       JS.eval ("$('#statusVarsLabel').insertBefore('#inventoryLabel')")
       JS.eval ("$('#statusVarsAccordion').insertBefore('#inventoryLabel')")
       JS.eval ("$('#compassLabel').insertBefore('#inventoryLabel')")
       JS.eval ("$('#compassAccordion').insertBefore('#inventoryLabel')")
     }
     if (game.showpanes and game.commandpane) {
-      JS.eval ("$('#compassLabel').before('<div id=\"commandPane\" class=\"ui-helper-reset ui-widget ui-state-active ui-accordion-header ui-accordion\" style=\"border-radius: 5px;text-align:center;\"><h3>Commands</h3></div>');")
+      JS.setCss ("#commandPane", "display:block")
+    }
+    if (game.showpanes and game.customstatuspane) {
+      JS.setCss ("#customStatusPane", "display:block")
     }
     if (game.colourblend) {
       JS.colourBlend (game.colourblendtop, game.colourblendbottom)
     }
     if (game.borderlesscursor) {
-      if (HasString(game, "commandcursor")) {
-        cursor = game.commandcursor
-      }
-      else {
-        cursor = "&gt;"
-      }
-      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100 px;}</style>")
-      JS.eval ("$('#txtCommandDiv').prepend('<span id=\"txtCommandPrompt\" style=\"color:" + game.defaultforeground + ";\">" + cursor + "</span>')")
+      JS.addScript("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
+      JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
+      JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
       request (SetInterfaceString, "TypeHereLabel=")
     }
     else if (game.shadowbox) {
-      JS.addText ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
+      JS.addScript ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
     }
     if (game.panestheme = "Midnight") {
       JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")
@@ -202,7 +201,14 @@
     else {
       request (Hide, "Panes")
     }
+    JS.getDivCount ()
+    if (not game.pov = null) {
+      JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
+    }    
     InitUserInterface
+    if (HasScript(game, "inituserinterface")) {
+      do (game, "inituserinterface")
+    }
   ]]></function>
 
   <function name="InitUserInterface">
@@ -266,210 +272,7 @@
     }
     ]]>
   </function>
-
-  <function name="RandomChance" parameters="percentile" type="boolean">
-    <![CDATA[
-    return (GetRandomInt(1,100) <= percentile)
-    ]]>
-  </function>
-
-  <function name="SetObjectFlagOn" parameters="object, flag">
-    set (object, flag, true)
-  </function>
-
-  <function name="SetObjectFlagOff" parameters="object, flag">
-    set (object, flag, false)
-  </function>
-
-  <function name="IncreaseObjectCounter" parameters="object, counter">
-    if (not HasInt(object, counter)) {
-      set (object, counter, 0)
-    }
-    set (object, counter, GetInt(object, counter) + 1)
-  </function>
-
-  <function name="DecreaseObjectCounter" parameters="object, counter">
-    if (not HasInt(object, counter)) {
-      set (object, counter, 0)
-    }
-    set (object, counter, GetInt(object, counter) - 1)
-  </function>
   
-  <function name="IsSwitchedOn" parameters="object" type="boolean">
-    return (GetBoolean(object, "switchedon"))
-  </function>
-
-  <function name="AddToInventory" parameters="object">
-    object.parent = game.pov
-  </function>
-
-  <function name="MoveObject" parameters="object, parent">
-    object.parent = parent
-  </function>
-
-  <function name="MoveObjectHere" parameters="object">
-    object.parent = game.pov.parent
-  </function>
-
-  <function name="RemoveObject" parameters="object">
-    object.parent = null
-  </function>
-
-  <function name="MakeObjectVisible" parameters="object">
-    object.visible = true
-  </function>
-
-  <function name="MakeObjectInvisible" parameters="object">
-    object.visible = false
-  </function>
-
-  <function name="MakeExitVisible" parameters="object">
-    object.visible = true
-  </function>
-
-  <function name="MakeExitInvisible" parameters="object">
-    object.visible = false
-  </function>
-  
-  <function name="HelperOpenObject" parameters="object">
-    object.isopen = true
-  </function>
-
-  <function name="HelperCloseObject" parameters="object">
-    object.isopen = false
-  </function>
-
-  <function name="CloneObject" parameters="object" type="object">
-    newobject = Clone(object)
-    if (not HasString(object, "alias")) {
-      newobject.alias = object.name
-    }
-    return (newobject)
-  </function>
-
-  <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
-    newobject = CloneObject(object)
-    newobject.parent = newparent
-    return (newobject)
-  </function>
-
-  <function name="CloneObjectAndMoveHere" parameters="object" type="object">
-    newobject = CloneObject(object)
-    newobject.parent = game.pov.parent
-    return (newobject)
-  </function>
-
-  <function name="LockExit" parameters="exit">
-    exit.locked = true
-  </function>
-
-  <function name="UnlockExit" parameters="exit">
-    exit.locked = false
-  </function>
-
-  <function name="SwitchOn" parameters="object">
-    object.switchedon = true
-  </function>
-
-  <function name="SwitchOff" parameters="object">
-    object.switchedon = false
-  </function>
-
-  <function name="SetDark" parameters="object">
-    object.dark = true
-  </function>  
-
-  <function name="SetLight" parameters="object">
-    object.dark = false
-  </function>
-
-  <function name="SetObjectLightstrength" parameters="object,strength">
-    if (LengthOf(strength) = 0) {
-      object.lightsource = false
-    } else {
-      object.lightsource = true
-    }
-    object.lightstrength = strength
-  </function>
-
-  <function name="SetExitLightstrength" parameters="exit,strength">
-    if (LengthOf(strength) = 0) {
-      exit.lightsource = false
-    } else {
-      exit.lightsource = true
-    }    
-    exit.lightstrength = strength
-  </function>
-  
-  <function name="ChangePOV" parameters="object">
-    <![CDATA[
-    if (game.pov <> object) {
-      game.pov = object
-      if (game.gridmap) {
-        JS.Grid_ClearAllLayers()
-        Grid_Redraw
-      }
-      OnEnterRoom (null)
-    }
-    ]]>
-  </function>
-
-  <function name="InitPOV" parameters="oldPOV, newPOV">
-    <![CDATA[
-    if (oldPOV <> null) {
-      oldPOV.alias = oldPOV.external_alias
-      oldPOV.alt = oldPOV.external_alt
-      oldPOV.look = oldPOV.external_look
-      oldPOV.gender = oldPOV.external_gender
-      oldPOV.article = oldPOV.external_article
-    }
-
-    newPOV.external_alias = newPOV.alias
-    newPOV.external_alt = newPOV.alt
-    newPOV.external_look = newPOV.look
-    newPOV.external_gender = newPOV.gender
-    newPOV.external_article = newPOV.article
-    
-    if (not GetBoolean(newPOV, "pov_used")) {
-      if (newPOV.alt = null) {
-        newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
-      }
-      else {
-        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
-      }
-      if (newPOV.alias <> null) {
-        list add (newPOV.pov_alt, newPOV.alias)
-      }
-      
-      if (game.showhealth) {
-        newPOV.health = 100
-        newPOV.changedhealth => {
-          if (this.health > 100) {
-            this.health = 100
-          }
-          else if (this.health = 0) {
-            if (HasScript(game, "onhealthzero")) {
-              do (game, "onhealthzero")
-            }
-          }
-          else if (this.health < 0) {
-            this.health = 0
-            // changedhealth will be called again so the onhealthzero script will run
-          }
-        }
-      }
-
-      newPOV.pov_used = true
-    }
-
-    newPOV.alias = newPOV.pov_alias
-    newPOV.alt = newPOV.pov_alt
-    newPOV.look = newPOV.pov_look
-    newPOV.gender = newPOV.pov_gender
-    newPOV.article = newPOV.pov_article
-    ]]>
-  </function>
-
   <function name="InitVerbsList">
     game.verbattributes = NewStringList()
     game.verbattributeslookup = NewObjectDictionary()
@@ -523,147 +326,73 @@
     }
   </function>
 
-  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
+  <function name="InitPOV" parameters="oldPOV, newPOV">
     <![CDATA[
-    outputsection = StartNewOutputSection()
-    msg (caption)
+    if (oldPOV <> null) {
+      oldPOV.alias = oldPOV.external_alias
+      oldPOV.alt = oldPOV.external_alt
+      oldPOV.look = oldPOV.external_look
+      oldPOV.gender = oldPOV.external_gender
+      oldPOV.article = oldPOV.external_article
+    }
+
+    newPOV.external_alias = newPOV.alias
+    newPOV.external_alt = newPOV.alt
+    newPOV.external_look = newPOV.look
+    newPOV.external_gender = newPOV.gender
+    newPOV.external_article = newPOV.article
     
-    count = 0
-    game.menuoptionskeys = NewStringList()
-    foreach (option, options) {
-      list add (game.menuoptionskeys, option)
-      count = count + 1
-      if (TypeOf(options) = "stringlist") {
-        optionText = option
+    if (not GetBoolean(newPOV, "pov_used")) {
+      if (newPOV.alt = null) {
+        newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
       }
       else {
-        optionText = StringDictionaryItem(options, option)
+        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentLinkTextFormat() + "\" onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
-    }
-    EndOutputSection(outputsection)
-    
-    game.menuoptions = options
-    game.menuallowcancel = allowCancel
-    game.menucallback = callback
-    game.menuoutputsection = outputsection
-    ]]>
-  </function>
-
-  <function name="ShowMenuResponse" parameters="option">
-    if (game.menucallback = null) {
-      error ("Unexpected menu response")
-    }
-    else {
-      parameters = NewStringDictionary()
-      dictionary add (parameters, "result", option)
-      script = game.menucallback
-      ClearMenu
-      invoke (script, parameters)
-    }
-  </function>
-
-  <function name="HandleMenuTextResponse" parameters="input" type="boolean">
-    <![CDATA[
-    handled = false
-    if (IsInt(input)) {
-      number = ToInt(input)
-      if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
-        handled = true
-        ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
+      if (newPOV.alias <> null) {
+        list add (newPOV.pov_alt, newPOV.alias)
       }
-    }
-    return (handled)
-    ]]>
-  </function>
-
-  <function name="ClearMenu">
-    HideOutputSection(game.menuoutputsection)
-    game.menuoutputsection = null
-    game.menuoptions = null
-    game.menucallback = null
-  </function>
-
-  <function name="StartNewOutputSection" type="string">
-    if (not HasInt(game, "lastoutputsection")) {
-      game.lastoutputsection = 0
-    }
-    game.lastoutputsection = game.lastoutputsection + 1
-    name = "section" + game.lastoutputsection
-    JS.StartOutputSection(name)
-    return (name)
-  </function>
-
-  <function name="EndOutputSection" parameters="name">
-    JS.EndOutputSection(name)
-  </function>
-
-  <function name="HideOutputSection" parameters="name">
-    JS.HideOutputSection(name)
-  </function>
-
-  <function name="StartTurnOutputSection">
-    if (HasString(game, "currentturnoutputsection")) {
-      game.lastturnoutputsection = game.currentturnoutputsection
-      EndOutputSection (game.currentturnoutputsection)
-    }
-    game.currentturnoutputsection = StartNewOutputSection()
-  </function>
-
-  <function name="HidePreviousTurnOutput">
-    if (HasString(game, "lastturnoutputsection")) {
-      HideOutputSection(game.lastturnoutputsection)
-    }
-  </function>
-
-  <function name="Ask" parameters="question, callback">
-    options = NewStringList()
-    list add (options, "[Yes]")
-    list add (options, "[No]")
-    game.askcallback = callback
-    ShowMenu (question, options, false) {
-      parameters = NewDictionary()
-      if (result = "[Yes]") {
-        boolresult = true
+      
+      if (game.showmoney and not HasInt(newPOV, "money")) {
+        newPOV.money = 0
       }
-      else {
-        boolresult = false
-      }
-      dictionary add (parameters, "result", boolresult)
-      callback = game.askcallback
-      game.askcallback = null
-      invoke (callback, parameters)
-    }
-  </function>
-
-  <function name="AllKeysAvailable" parameters="object" type="boolean">
-    if (HasObject(object, "key")) {
-      if (not HasInt(object,"keycount")) {
-        object.keycount = 1
-        object.key1 = object.key
-      }
-      if (not HasObject(object, "key1")) {	
-	    object.key1 = object.key
-	  }	
-    }
-    for (x, 1, object.keycount) {
-      keyname = "key" + ToString(x)
-      if (HasObject(object, keyname)) {
-        if (not ListContains(ScopeInventory(), GetAttribute(object, keyname))) {
-          return (false)
+      
+      if (game.showhealth) {
+        newPOV.health = 100
+        newPOV.changedhealth => {
+          if (this.health > 100) {
+            this.health = 100
+          }
+          else if (this.health = 0) {
+            if (HasScript(game, "onhealthzero")) {
+              do (game, "onhealthzero")
+            }
+          }
+          else if (this.health < 0) {
+            this.health = 0
+            // changedhealth will be called again so the onhealthzero script will run
+          }
         }
       }
-    }  
-    return (true)
-  </function>
-  
-  <function name="IndexOf" type="int" parameters="lst, item">
-    for (i, 0, ListCount(lst) - 1) {
-      x = ListItem(lst, i)
-      if (x = item) {
-        return (i)
-      }
+
+      newPOV.pov_used = true
     }
-    return (-1)
+
+    newPOV.alias = newPOV.pov_alias
+    newPOV.alt = newPOV.pov_alt
+    newPOV.look = newPOV.pov_look
+    newPOV.gender = newPOV.pov_gender
+    newPOV.article = newPOV.pov_article
+    ]]>
+  </function>  
+
+
+
+  <function name="FinishTurn">
+    RunTurnScripts
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
   </function>
+
 </library>

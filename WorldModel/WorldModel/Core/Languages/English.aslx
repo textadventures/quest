@@ -2,6 +2,9 @@
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
   
+  <template name="Again1">again</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">There is nothing to repeat.</template>
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
@@ -21,6 +24,7 @@
   <template name="CarryingListHeader">You are carrying</template>
   <dynamictemplate name="DropSuccessful">"You drop " + object.article + "."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="ObjectCannotBeStored">"You can't put " + object.article + " there."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
@@ -66,6 +70,9 @@
   <template name="SelfAlt">me; myself; self</template>
   <template name="AllObjects">all; everything</template>
   <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="Score">Score</template>
+  <template name="Health">Health</template>
+  <template name="Money">Money</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
   <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
@@ -110,10 +117,15 @@
   <template name="No">No</template>
   <template name="By">by</template>
 
+  <template name="NothingToTake">Nothing here to take.</template>
+  <template name="NothingToDrop">You've nothing to drop.</template>
+  <template name="NothingToWear">You've nothing to wear.</template>
+  <template name="NothingToRemove">You've nothing to take off.</template>
+
 	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get it before you can put it on."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get it before you can take it off."</dynamictemplate>
+	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get " + object.article + " before you can put " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotHeld">"You would need to get " + object.article + " before you can take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="AlreadyWearing">"You are already wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="CannotRemoveIfNotWearing">"You are not wearing " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="NotRemovable">"You cannot remove " + object.article + "!"</dynamictemplate>
@@ -122,14 +134,15 @@
 	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
 	<template name="wornmodifier">worn</template>
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
-	<template name="Wear">Wear</template>
-	<template name="WearCommand">put #object# on</template>
+
+  <template name="Wear">Wear</template>
+  <verbtemplate name="wear">put #object# on</verbtemplate>
 	<verbtemplate name="wear">wear</verbtemplate>
 	<verbtemplate name="wear">put on</verbtemplate>
 	<verbtemplate name="wear">don</verbtemplate>
-	<template name="Remove">Remove</template>
-  <template name="RemoveCommand">take #object# off</template>
+
+  <template name="Remove">Remove</template>
+  <verbtemplate name="remove">take #object# off</verbtemplate>
 	<verbtemplate name="remove">remove</verbtemplate>
 	<verbtemplate name="remove">take off</verbtemplate>
 	<verbtemplate name="remove">doff</verbtemplate>
@@ -200,12 +213,15 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^(remove|take) (?<object1>.*) (from|out of|off) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
+  <verbtemplate name="buy">purchase</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
   <verbtemplate name="climb">climb</verbtemplate>
   <dynamictemplate name="DefaultClimb">"You can't climb " + object.article + "."</dynamictemplate>
@@ -232,7 +248,7 @@
   <verbtemplate name="lie">lie down upon</verbtemplate>
   <dynamictemplate name="DefaultLie">"You can't lie on " + object.article + "."</dynamictemplate>
   <verbtemplate name="listento">listen to</verbtemplate>
-  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.article + " makes no sound."</dynamictemplate>
+  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.gender + " makes no sound."</dynamictemplate>
   <verbtemplate name="lock">lock</verbtemplate>
   <dynamictemplate name="DefaultLock">"You can't lock " + object.article + "."</dynamictemplate>
   <verbtemplate name="move">move</verbtemplate>
@@ -254,7 +270,7 @@
   <dynamictemplate name="DefaultSit">"You can't sit on " + object.article + "."</dynamictemplate>
   <verbtemplate name="smell">smell</verbtemplate>
   <verbtemplate name="smell">sniff</verbtemplate>
-  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.article + " doesn't smell of much."</dynamictemplate>
+  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.gender + " doesn't smell of much."</dynamictemplate>
   <verbtemplate name="taste">taste</verbtemplate>
   <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
   <verbtemplate name="throw">throw</verbtemplate>
@@ -388,4 +404,46 @@
     }
   </function>
 
+  <function name="ToWords" parameters="number" type="string">
+    <![CDATA[
+    if (not TypeOf(number) = "int") error ("ToWords can only handle ints")
+    
+    number_units = Split("zero;one;two;three;four;five;six;seven;eight;nine;ten;eleven;twelve;thirteen;fourteen;fifteen;sixteen;seventeen;eighteen;nineteen;twenty", ";")
+    number_tens = Split("twenty;thirty;forty;fifty;sixty;seventy;eighty;ninety", ";")
+
+    s = ""
+    if (number < 0) {
+      s = "minus "
+      number = -number
+    }
+    if (number < 2000) {
+      hundreds = number / 100
+      number = number % 100
+      if (hundreds > 0) {
+        s = s + StringListItem(number_units, hundreds) + " hundred "
+        if (number > 0) {
+          s = s + "and "
+        }
+      }
+      if (number < 20) {
+        if (not number = 0 or s = "") {
+          s = s + StringListItem(number_units, number)
+        }
+      }
+      else {
+        units = number % 10
+        tens = (number / 10) % 10
+        s = s + StringListItem(number_tens, tens - 2)
+        if (not units = 0) {
+          s = s + StringListItem(number_units, units)
+        }
+      }
+    }
+    else {
+      s = ToString(number)
+    }
+    return (Trim(s))
+  ]]>
+  </function>
+  
 </library>

@@ -3,12 +3,13 @@ layout: index
 title: Creating a simple game
 ---
 
+This tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along. 
+
+This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](creating_a_gamebook.html).
+
 Creating a blank game
 ---------------------
 
-Most of the tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along.
-
-This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](creating_a_gamebook.html).
 
 ### Windows desktop version
 
@@ -16,7 +17,7 @@ To create a new game, open Quest and click the File menu, then Create New Game.
 
 ![](Newgamemenu.png "Newgamemenu.png")
 
-Alternatively, you can switch to the Create tab and click the "Create a new game" button.
+Alternatively, you can switch to the _Create_ tab and click the "Create a new game" button.
 
 You'll see a screen like this:
 
@@ -28,17 +29,6 @@ Enter a name like "Tutorial Game". Quest will create a folder and a game file fo
 
 Click OK and you'll see the main Editor screen:
 
-![](Blankgame.png "Blankgame.png")
-
-On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
-
-Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Play" button on the toolbar, or "Play Game" from the File menu. You can also press the F5 key.
-
-As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as "inventory" to see that Quest comes up with some default responses, but that's about all we can do at the moment.
-
-![](Playblankgame.png "Playblankgame.png")
-
-You can go back to the Editor by clicking "Stop Game" in the top left of the screen. (You can also type "quit" or hit the Escape key)
 
 ### Web version
 
@@ -46,19 +36,35 @@ To create a new game, [log in to Quest](http://textadventures.co.uk/create/). Yo
 
 ![](Webnewgame.png "Webnewgame.png")
 
+As you can see, the options are the same in both versions, just laid out a bit differently.
+
 Ensure that "Text adventure" is selected, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
 
 Enter a name like "Tutorial Game" and click the "Create" button. Click the link which appears, and you'll see the main Editor screen.
+
+
+The Editor Screen
+-----------------
+
+
+![](Blankgame.png "Blankgame.png")
 
 ![](Webblankgame.png "Webblankgame.png")
 
 On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
 
-Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Play" button at the top of the screen. The game will open in a new browser tab or window.
+Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Play" button. On the Windows version you can also select "Play Game" from the File menu or press the F5 key.
 
 As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as "inventory" to see that Quest comes up with some default responses, but that's about all we can do at the moment.
 
+![](Playblankgame.png "Playblankgame.png")
+
 ![](Webplayblankgame.png "Webplayblankgame.png")
+
+In the Windows version you can go back to the Editor by clicking "Stop Game" in the top left of the screen, or you can also type "quit" or hit the Escape key.
+
+If you are using the web version, you will probably have noticed that the game started in its own tab in your browser. Just close the tab when you have finished.
+
 
 Simple Mode
 -----------
@@ -77,7 +83,7 @@ Quest created a room called "room", which isn't a very good name. In this tutori
 
 ![](Renameroom.png "Renameroom.png")
 
-To create a room description, click the "Room" tab. Enter a Description in the text editor - something like "This is quite a plain lounge with an old beige carpet and peeling wallpaper."
+To create a room description, click the _Room_ tab. Enter a Description in the text editor - something like "This is quite a plain lounge with an old beige carpet and peeling wallpaper."
 
 ![](Editroomdescription.png "Editroomdescription.png")
 
@@ -99,7 +105,7 @@ If you play the game at this point, you'll see the player is still trapped in th
 
 ### Adding an exit
 
-To do this, click back to the "lounge" room and go to the Exits tab (this looks a little different in the web version due to the limitations of HTML, but is basically the same). Then click the "South" exit:
+To do this, click back to the "lounge" room and go to the _Exits_ tab. Then click the "South" exit:
 
 ![](Addexit1.png "Addexit1.png")
 
@@ -111,7 +117,7 @@ When you click the "Create" button, actually *two* exits are created - one exit 
 
 It is helpful to think of exits as "one way". Each exit is "in" only one parent room (the "from" room), and points "to" one other room. That is why we have one exit in the lounge, pointing to the kitchen. A separate exit is in the kitchen, pointing to the lounge.
 
-Exits, like every object in Quest, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north" (if using the desktop version, we could give our exits any alias - it doesn't have to be a compass direction; if we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard").
+Exits, like every object in Quest, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north". (We could give our exits any alias - it doesn't have to be a compass direction. If we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard".)
 
 Play the game and verify that the player can go south and north between the lounge and kitchen.
 
@@ -123,7 +129,7 @@ Now let's add some objects to the lounge, to give the player something to do.
 A lounge is barely a lounge without a TV in it, so let's add one now. With the lounge selected, you have four different ways of adding an object to the room. You can:
 
 -   Click the Add Object button on the toolbar
--   Go to the Objects tab and click the Add button
+-   Go to the _Objects_ tab and click the Add button
 -   Click the Add menu and choose Object (Windows desktop version only)
 -   Right-click "lounge" in the tree and select "Add Object" (Windows desktop version only)
 
@@ -146,7 +152,7 @@ So for now, we can leave the Alias box blank for the TV.
 
 ### Other Names
 
-If you go to the "Object" tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in "look at television", and would reasonably expect that to work.
+If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in "look at television", and would reasonably expect that to work.
 
 So, add "television" to the list of Other Names for this object. This will ensure that players can type in either "look at TV" or "look at television" to look at this object.
 
@@ -158,7 +164,7 @@ As an exercise, add any other alternative names you think that players might wan
 
 If you run the game and look at the TV, you’ll see that Quest doesn’t have much to say on the subject - it says "Nothing out of the ordinary".
 
-That's a bit boring - it's a sign of a bad game if you can't even be bothered to come up with descriptions for all your objects. We don't want to make a bad game, so let's add a description for this object. To do this, go to the Description drop-down in the bottom half of the object's Setup tab and select "Text".
+That's a bit boring - it's a sign of a bad game if you can't even be bothered to come up with descriptions for all your objects. We don't want to make a bad game, so let's add a description for this object. To do this, go to the Description drop-down in the bottom half of the object's _Setup_ tab and select "Text".
 
 ![](Objectdescription.png "Objectdescription.png")
 
@@ -172,7 +178,7 @@ It is a good idea to think about what kinds of things players might try to do to
 
 To do this, let's add the verb "watch" to our TV object. As you should remember from school, verbs are "doing words", and that's what they are in Quest – verbs let you say what things can be "done" to your object.
 
-Go to the Verbs tab, click the "Add" button and type "watch". You can choose either to print a message or run a script when the player watches the TV. Enter a message. For example, "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
+Go to the _Verbs_ tab, click the "Add" button and type "watch". You can choose either to print a message or run a script when the player watches the TV. Enter a message. For example, "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
 
 ![](Addverb.png "Addverb.png")
 

@@ -10,3 +10,5 @@ Returns a [boolean](../types/boolean.html) - **true** if the child object is con
      Contains(C, A)
 
 will return **true**.
+
+NOTE: This a [hard-coded function](hardcoded.html).

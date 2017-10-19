@@ -29,6 +29,14 @@
 
     <control>
       <controltype>dropdown</controltype>
+      <caption>[EditorObjectMapLabelcolour]</caption>
+      <attribute>grid_label_colour</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
       <caption>[EditorObjectMapBordercolour]</caption>
       <attribute>grid_border</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>

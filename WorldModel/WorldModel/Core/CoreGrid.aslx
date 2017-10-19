@@ -164,12 +164,12 @@
         if (LengthOf(room.grid_label) > 0) {
           label_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
           label_y = (Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0) - 0.5
-          JS.Grid_DrawLabel(label_x, label_y, Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_label)
+          JS.Grid_DrawLabel(label_x, label_y, Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_label, room.grid_label_colour)
         }
       
         foreach (exit, AllExits()) {
           if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
-            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), "black", 1)
+            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), game.mapexitcolour, game.mapexitwidth)
           }
         }
 

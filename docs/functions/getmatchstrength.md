@@ -30,3 +30,5 @@ This is calculated as follows:
 The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.
 
 See also [IsRegexMatch](isregexmatch.html), [Populate](populate.html)
+
+NOTE: This a [hard-coded function](hardcoded.html).

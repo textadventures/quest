@@ -37,6 +37,14 @@
 
     <control>
       <controltype>textbox</controltype>
+      <attribute>cannotswitchon</attribute>
+      <caption>[EditorObjectOptionsCannotswitchon]</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
       <attribute>switchedondesc</attribute>
       <caption>[EditorObjectOptionsExtraobject]</caption>
       <nullable/>
@@ -114,7 +122,7 @@
       <controltype>dropdown</controltype>
       <caption>[EditorObjectOptionsBrightness]</caption>
       <attribute>lightstrength</attribute>
-      <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+      <validvalues type="simplestringdictionary">weak=[EditorWeakShownWhenRoomDark]; strong=[EditorStrongIlluminatesRoom]</validvalues>
       <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
       <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
@@ -181,6 +189,15 @@
       <attribute>pov_alt</attribute>
       <editprompt>[EditorObjectOptionsPleaseenter]</editprompt>
       <advanced/>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>[EditorObjectOptionsStartingmoney]</caption>
+      <attribute>money</attribute>
+      <width>100</width>
+      <minimum>0</minimum>
+      <onlydisplayif>game.showmoney</onlydisplayif>
     </control>
 
     <control>

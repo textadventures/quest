@@ -10,3 +10,5 @@ title: NewList
 Returns an empty [list](../types/list.html). The list can contain any type of data, or a mixture - for example, both objects and strings.
 
 If the list will only contain one type of data (as will usually be the case), you should use [NewStringList](newstringlist.html) or [NewObjectList](newobjectlist.html) instead.
+
+NOTE: This a [hard-coded function](hardcoded.html).

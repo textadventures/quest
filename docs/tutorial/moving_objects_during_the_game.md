@@ -13,7 +13,7 @@ First, let's create the "bee" object. We don't want this object to appear anywhe
 Bringing the Object into Play
 -----------------------------
 
-Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it's not a container, as you can't put things in a window. We can't add "open" as a verb though, because the "open" command is handled by Quest's container logic. The solution is to go to the Container tab (via the Features tab, of course) and select "Openable/Closable" from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn't do anything else.
+Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it's not a container, as you can't put things in a window. We can't add "open" as a verb though, because the "open" command is handled by Quest's container logic. The solution is to go to the _Container_ tab (via the _Features_ tab, of course) and select "Openable/Closable" from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn't do anything else.
 
 Choose "Openable/Closable", and now add script commands to the "Script to run when opening object":
 

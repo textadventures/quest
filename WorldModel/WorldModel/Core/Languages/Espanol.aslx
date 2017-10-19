@@ -1,5 +1,6 @@
 ﻿<library>
     <!-- Contributed by Jhames and Mauricio Díaz -->
+    <!-- Additions for 5.7 by Luis Felipe Morales -->
     <include ref="English.aslx"/>
     <include ref="EditorEnglish.aslx"/>
     <include ref="EditorEspanol.aslx"/>
@@ -58,9 +59,17 @@
     <template name="NeutralPluralArticle">los</template>
     <template name="MalePluralArticle">los</template>
     <template name="FemalePluralArticle">las</template>
+    <template name="NeutralPossessive">su</template>
+    <template name="MalePossessive">suyo</template>
+    <template name="FemalePossessive">suyo</template>
+    <template name="SelfPossessive">mio</template>
+    <template name="NeutralPluralPossessive">sus</template>
+    <template name="MalePluralPossessive">sus</template>
+    <template name="FemalePluralPossessive">sus</template>
     <template name="SelfAlias">a mí</template>
-    <template name="SelfAlt">a mi; a mí mismo; yo; yo mismo</template>
+    <template name="SelfAlt">a mi; a mí mismo; yo; yo mismo; mio</template>
     <template name="AllObjects">todo; todas las cosas</template>
+    <template name="Nothing">nada</template>
     <template name="ParserIgnorePrefixes">el; la; los; las; uno; una; unos; unas</template>
     <dynamictemplate name="AlreadyOpen">CapFirst(object.article)+ " " + object.name + " ya " + WriteVerb(object, "estar") + " abiert" + GetSuffix(object) + "."</dynamictemplate>
     <dynamictemplate name="AlreadyClosed">CapFirst(object.article)+ " " + object.name + " ya " + WriteVerb(object, "estar") + " cerrad" + GetSuffix(object) + "."</dynamictemplate>
@@ -106,6 +115,30 @@
     <template name="No">No</template>
     <template name="By">Por</template>
 
+    <dynamictemplate name="WearSuccessful">"Te pones " + object.article + "."</dynamictemplate>
+    <dynamictemplate name="WearUnsuccessful">"No puedes ponerte " + object.article + "."</dynamictemplate>
+    <dynamictemplate name="CannotWearIfNotHeld">"Necesitas cogerlo antes para poder ponértelo."</dynamictemplate>
+    <dynamictemplate name="CannotRemoveIfNotHeld">"Necesitas cogerlo antes para poder quitártelo."</dynamictemplate>
+    <dynamictemplate name="AlreadyWearing">"Ya llevas puesto " + object.article + "."</dynamictemplate>
+    <dynamictemplate name="CannotRemoveIfNotWearing">"No llevas puesto " + object.article + "."</dynamictemplate>
+    <dynamictemplate name="NotRemovable">"¡Puedes quitarte " + object.article + "!"</dynamictemplate>
+    <dynamictemplate name="CannotWearOver">"No puedes ponerte eso encima de " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <dynamictemplate name="CannotWearWith">"No puedes ponerte eso mientras llevas puesto " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <dynamictemplate name="RemoveSuccessful">"Te quitas " + object.article + "."</dynamictemplate>
+    <dynamictemplate name="RemoveFirst">"No puedes quitarse eso mientras llevas puesto " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <template name="wornmodifier">usado</template>
+    <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+    <template name="Wear">Poner</template>
+    <template name="WearCommand">poner #object# en;poner #object#</template>
+    <verbtemplate name="wear">ponerse</verbtemplate>
+    <verbtemplate name="wear">poner en</verbtemplate>
+    <verbtemplate name="wear">pon</verbtemplate>
+    <template name="Remove">Quitar</template>
+    <template name="RemoveCommand">quitarse #object#;quitar #object#</template>
+    <verbtemplate name="remove">quitar</verbtemplate>
+    <verbtemplate name="remove">quitarse</verbtemplate>
+    <verbtemplate name="remove">quita</verbtemplate>    
+    
     <template name="CompassNW">noroeste</template>
     <template name="CompassN">norte</template>
     <template name="CompassNE">noreste</template>
