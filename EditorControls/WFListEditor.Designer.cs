@@ -32,8 +32,8 @@
             this.lstList = new System.Windows.Forms.ListView();
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
-            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
+            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdLink = new System.Windows.Forms.ToolStripButton();
             this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
@@ -45,8 +45,8 @@
             // 
             // lstList
             // 
-            resources.ApplyResources(this.lstList, "lstList");
             this.lstList.BackColor = System.Drawing.Color.White;
+            resources.ApplyResources(this.lstList, "lstList");
             this.lstList.ForeColor = System.Drawing.Color.Black;
             this.lstList.GridLines = true;
             this.lstList.HideSelection = false;
@@ -56,87 +56,87 @@
             // 
             // ctlToolStrip
             // 
-            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.BackColor = System.Drawing.Color.White;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
-            this.cmdDelete,
             this.cmdAddNewPage,
-            this.cmdLink,
+            this.cmdDelete,
             this.cmdEditKey,
             this.cmdEdit,
+            this.cmdLink,
             this.cmdGoToPage,
             this.cmdMoveUp,
             this.cmdMoveDown});
+            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.Name = "ctlToolStrip";
             // 
             // cmdAdd
             // 
-            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.AutoToolTip = false;
             this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
+            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
-            // 
-            // cmdDelete
-            // 
-            resources.ApplyResources(this.cmdDelete, "cmdDelete");
-            this.cmdDelete.AutoToolTip = false;
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
-            this.cmdDelete.Name = "cmdDelete";
             // 
             // cmdAddNewPage
             // 
-            resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.AutoToolTip = false;
             this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add_page;
+            resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.Name = "cmdAddNewPage";
             this.cmdAddNewPage.Tag = "addpage";
             // 
+            // cmdDelete
+            // 
+            this.cmdDelete.AutoToolTip = false;
+            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
+            resources.ApplyResources(this.cmdDelete, "cmdDelete");
+            this.cmdDelete.Name = "cmdDelete";
+            // 
             // cmdLink
             // 
-            resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.AutoToolTip = false;
             this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
+            resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.Name = "cmdLink";
             this.cmdLink.Tag = "link";
             // 
             // cmdEditKey
             // 
-            resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.AutoToolTip = false;
             this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_rename_key;
+            resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.Name = "cmdEditKey";
             // 
             // cmdEdit
             // 
-            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.AutoToolTip = false;
             this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
+            resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.Name = "cmdEdit";
             // 
             // cmdGoToPage
             // 
-            resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.AutoToolTip = false;
             this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_domain;
+            resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.Name = "cmdGoToPage";
             this.cmdGoToPage.Tag = "goto";
             // 
             // cmdMoveUp
             // 
-            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.AutoToolTip = false;
             this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_up;
+            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
             // cmdMoveDown
             // 
-            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.AutoToolTip = false;
             this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_down;
+            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 
