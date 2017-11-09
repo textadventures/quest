@@ -66,6 +66,13 @@ msg(ListItem(l, 3))
 ```
 The first `msg` prints the number 42, because that is the fourth entry, and 3 is the fourth position, counting zero as the first. When the object `fancy table` is removed from the list, the position of 42 changes; it is now third, and the number 9.23 is fourth.
 
+It is good practice to consider a list as either:
+
+- Static: The list will never have an element removed the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of exisyting elements).
+
+- Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
+
+
 #### Retrieving from string lists and object Lists
 
 If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.
@@ -75,8 +82,7 @@ If you know that what you are retrieving is a string, you can use `StringListIte
 
 
 
-Retrieving from other lists
-----------------------------
+#### Retrieving from other lists
 
 It can take Quest a moment to work out what the thing is with `ListItem`. Consider this code:
 ```
@@ -91,10 +97,12 @@ if (n = 42) msg("Here")
 ```
 
 
+
+
 Quick string lists
 -------------------
 
-A quick way to get a string list is the Split command (especially useful for menu options) (the second parameter is the separator, and you can choose anything suitable):
+A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable:
 ```
 l1 = Split("one|two|three", "|")
 msg(l1)
@@ -113,8 +121,6 @@ Some other useful functions that return object lists:
 -   [AllObjects](functions/allobjects.html)
 -   [GetAllChildObjects](functions/getallchildobjects.html)
 -   [GetDirectChildren](functions/getdirectchildren.html)
-
-
 
 
 
@@ -154,12 +160,21 @@ The `ListCount` function will return the number of entries in the list. Remember
 msg("My list has " + ListCount(myList) + " things in it.")
 msg("The last entry is at position " + (ListCount(myList) - 1))
 ```
+
 Use `ListContains` to determine if a list contains a specific entry.
 ```
 if (ListContains(myList, player) {
   list remove(myList, player)            
 }
 ```
+Alternatively, you can use the `in` operator:
+```
+if (player in myList) {
+  list remove(myList, player)            
+}
+```
+
+
 The `ListCombine` function will return a new list made up by combining the two given lists. The lists must be of the same type.
 ```
 myBigList = ListCombine(list1, list2)
