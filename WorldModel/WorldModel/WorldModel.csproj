@@ -355,6 +355,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\Languages\EditorDeutsch.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>	
     <None Include="Core\Languages\EditorEspanol.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
