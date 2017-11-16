@@ -1769,6 +1769,28 @@ namespace TextAdventures.Quest
             return File.ReadAllText(GetExternalPath(filename));
         }
 
+        public string GetResourceExternalData(string filename)
+        {
+            if (!IsUrlValid(filename))
+            {
+                return "";
+            }
+
+            using (var client = new WebClient())
+            {
+               client.Encoding = System.Text.Encoding.UTF8;
+               return client.DownloadString(filename);
+            }
+        }
+
+        private static bool IsUrlValid(string uriName)
+        {
+            Uri uriResult;
+            return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+
         public string GetResourcePath(string filename)
         {
             return TryGetExternalPath(filename);

@@ -1,5 +1,5 @@
 <library>
-  <include ref="EditorEnglish.aslx"/>
+  <include ref="English.aslx"/>
   <template name="LanguageId">da</template>
   
   <template name="UnresolvedObject">Det kan jeg ikke se.</template>
