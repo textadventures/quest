@@ -44,7 +44,7 @@
 
   <function name="ListObjectContents" parameters="object">
     <![CDATA[
-    if (GetBoolean(object, "isopen") and GetBoolean(object, "listchildren")) {
+    if ((GetBoolean(object, "isopen") or GetBoolean(object, "transparent")) and GetBoolean(object, "listchildren")) {
       if (GetBoolean(object, "hidechildren")) {
         object.hidechildren = false
       }
