@@ -292,7 +292,7 @@
       baselist = object.displayverbs
     }
     
-    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist")) {
+    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist") or not HasAttribute(game, "verbattributes")) {
       return (baselist)
     }
     else {
