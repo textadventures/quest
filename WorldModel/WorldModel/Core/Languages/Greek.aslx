@@ -1,0 +1,472 @@
+<library>
+    <!-- Contributed by Thanos Chrysos, Dec 11,2017-->
+	
+	<!-- Σημειώσεις: Τα scripts, π.χ. create exit, δεν δουλεύουν με ελληνικά ονόματα δωματίων. -->
+	
+    <include ref="English.aslx"/>
+    <include ref="EditorEnglish.aslx"/>
+    <!-- Get any undefined templates from the English library -->
+
+    <template name="LanguageId">el</template>
+
+    <template name="UnresolvedObject">Δεν βλέπω κάτι τέτοιο.</template>
+    <template name="UnresolvedLocation">Δεν μπορείς να πας προς τα εκεί.</template>
+    <template name="DefaultObjectDescription">Τίποτα το ιδιαίτερο.</template>
+    <template name="DefaultSelfDescription">Είσαι μια χαρά.</template>
+    <dynamictemplate name="TakeSuccessful">CapFirst(object.gender) + " παίρνεις."</dynamictemplate>
+    <dynamictemplate name="TakeUnsuccessful">"Δεν μπορείς να " + object.gender + " πάρεις."</dynamictemplate>
+    <dynamictemplate name="FullInventory">"Δεν μπορείς να σηκώσεις περισσότερο βάρος."</dynamictemplate>
+    <dynamictemplate name="MaxObjectsInInventory">"Δεν μπορείς να μεταφέρεις περισσότερα αντικείμενα."</dynamictemplate>
+    <dynamictemplate name="MaxObjectsInContainer">"Δεν μπορείς να βάλεις άλλα αντικείμενα μέσα."</dynamictemplate>
+    <template name="SeeListHeader">Μπορείς να δεις</template>
+    <template name="GoListHeader">Μπορείς να πας</template>
+    <template name="And">και</template>
+    <template name="Or">ή</template>
+    <template name="NothingToUndo">Δεν γίνεται τίποτα!</template>
+    <template name="NotCarryingAnything">Δεν κουβαλάς τίποτα.</template>
+    <template name="CarryingListHeader">Κουβαλάς</template>
+    <dynamictemplate name="DropSuccessful">CapFirst(object.gender) + " ρίχνεις."</dynamictemplate>
+    <dynamictemplate name="DropUnsuccessful">"Δεν μπορείς να " + object.gender + " ρίξεις."</dynamictemplate>
+    <dynamictemplate name="AlreadyTaken">CapFirst(object.gender) + " έχεις ήδη πάρει."</dynamictemplate>
+    <dynamictemplate name="NotCarrying">"Δεν " + object.gender + " έχεις."</dynamictemplate>
+    <dynamictemplate name="CantUse">"Δεν μπορείς να " + object.gender + " χρησιμοποιήσεις."</dynamictemplate>
+	<dynamictemplate name="CantGive">"Δεν μπορείς να " + object.gender + " δώσεις."</dynamictemplate>
+	<dynamictemplate name="DefaultSpeakTo">"Δεν μπορείς να σκεφτείς κάτι για να πεις."</dynamictemplate>
+    <template name="UnrecognisedCommand">Δεν καταλαβαίνω την εντολή σου.</template>
+    <template name="YouAreIn">Βρίσκεσαι σε</template>
+    <template name="LookAt">Εξέτασε</template>
+    <template name="Take">Πάρε</template>
+    <template name="SpeakTo">Μίλα</template>
+    <template name="Use">Χρησιμοποίησε</template>
+    <template name="Drop">Ρίξε</template>
+    <template name="GoTo">Πήγαινε</template>
+    <template name="Go">Πήγαινε</template>
+    <template name="SwitchOn">Ενεργοποίησε</template>
+    <template name="SwitchOff">Απενεργοποίησε</template>
+    <template name="Open">Άνοιξε</template>
+    <template name="Close">Κλείσε</template> 
+    <template name="Eat">Φάε</template>
+    <dynamictemplate name="ObjectNotOpen">CapFirst(object.article)+ " " + object.name + " δεν " + WriteVerb(object, "είμαι") + " ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
+    <template name="NeutralGender">το</template>
+    <template name="MaleGender">ο</template>
+    <template name="FemaleGender">η</template>
+    <template name="SelfGender">εσύ</template>
+    <template name="NeutralPluralGender">αυτά</template>
+    <template name="MalePluralGender">αυτοί</template>
+    <template name="FemalePluralGender">αυτές</template>
+    <template name="NeutralArticle">το</template>
+    <template name="MaleArticle">ο</template>
+    <template name="FemaleArticle">η</template>
+    <template name="SelfArticle">ο ίδιος</template>
+    <template name="NeutralPluralArticle">αυτά</template>
+    <template name="MalePluralArticle">αυτοί</template>
+    <template name="FemalePluralArticle">αυτές</template>
+    <template name="NeutralPossessive">του</template>
+    <template name="MalePossessive">του</template>
+    <template name="FemalePossessive">της</template>
+    <template name="SelfPossessive">σου</template>
+    <template name="NeutralPluralPossessive">τους</template>
+    <template name="MalePluralPossessive">τους</template>
+    <template name="FemalePluralPossessive">τους</template>
+    <template name="SelfAlias">εγώ</template>
+    <template name="SelfAlt">εγώ; ο ίδιος</template>
+    <template name="AllObjects">όλα; τα πάντα</template>
+    <template name="Nothing">τίποτα</template>
+    <template name="ParserIgnorePrefixes">το; τα; ένα; την; τον; έναν; μία</template>
+	<template name="Health">Υγεία</template>
+	<template name="Money">Χρήματα</template>
+    <dynamictemplate name="AlreadyOpen">CapFirst(object.article)+ " " + object.name + " " +  WriteVerb(object, "είμαι") + " ήδη ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
+    <dynamictemplate name="AlreadyClosed">CapFirst(object.article)+ " " + object.name + " " +  WriteVerb(object, "είμαι") + " ήδη κλειστ" + GetSuffix(object) + "."</dynamictemplate>
+    <dynamictemplate name="CantOpen">"Δεν μπορείς να " + object.gender + " ανοίξεις."</dynamictemplate>
+    <dynamictemplate name="CantClose">"Δεν μπορείς να " + object.gender + " κλείσεις."</dynamictemplate>
+    <dynamictemplate name="OpenSuccessful">CapFirst(object.gender) + " ανοίγεις."</dynamictemplate>
+    <dynamictemplate name="CloseSuccessful">CapFirst(object.gender) + " κλείνεις."</dynamictemplate>
+    <template name="CannotDoThat">Δεν μπορείς να το κάνεις αυτό.</template>
+    <dynamictemplate name="AlreadyThere">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "είμαι") + " εκεί."</dynamictemplate>
+    <template name="Done">Έγινε.</template>
+    <template name="ContainerContentsPrefix">έχει μέσα</template>
+    <template name="SurfaceContentsPrefix">πάνω στο οποίο έχει</template>
+    <dynamictemplate name="ObjectContains">CapFirst(object.article)+ " " + object.name + " έχει μέσα" </dynamictemplate>
+    <dynamictemplate name="ContainerFull">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "είμαι") + " γεμάτ" + GetSuffix(object) + "."</dynamictemplate>
+    <dynamictemplate name="DisambiguateMenu">"Παρακαλώ καθορίστε ποιό '" + text + "' εννοείτε:"</dynamictemplate>
+    <dynamictemplate name="UndoTurn">"Αναίρεση: " + text</dynamictemplate>
+    <template name="LockedExit">Αυτή η έξοδος είναι κλειδωμένη.</template>
+    <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
+    <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
+    <template name="NoKey">Δεν έχεις το κλειδί.</template>
+    <template name="UnlockMessage">Ξεκλειδώθηκε.</template>
+    <template name="LockMessage">Ξεκλειδώθηκε</template>
+    <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " κλειδώθηκε."</dynamictemplate>
+    <dynamictemplate name="AlreadyLocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη κλειδωμέν" + GetSuffix(object)</dynamictemplate>
+    <dynamictemplate name="AlreadyUnlocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη ξεκλείδωτ" + GetSuffix(object)</dynamictemplate>
+    <dynamictemplate name="CannotLockOpen">"Δεν μπορείς να κλειδώσεις " + object.article + object.name + " όσο " + Conjugate(object, "είμαι") + " ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
+    <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>"
+    <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "είμαι") + " ήδη σβηστ" + GetSuffix(object) + "."</dynamictemplate>"
+    <dynamictemplate name="SwitchedOn">CapFirst(object.gender) + " ανοίγεις."</dynamictemplate>
+    <dynamictemplate name="SwitchedOff">CapFirst(object.gender) + " κλείνεις."</dynamictemplate>
+    <dynamictemplate name="Eaten">"Τρως " + object.gender + " " + object.name + "."</dynamictemplate>
+    <template name="DefaultOops">Δεν υπάρχει κάτι να διορθώσω.</template>
+    <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " δεν περιλαμβάνει " + GetDisplayAlias(object2) + "."</dynamictemplate>
+    <dynamictemplate name="YouLooking">"Κοιτάζεις " + text +"."</dynamictemplate>
+    <dynamictemplate name="LookAtDarkness">"Είναι τόσο σκοτεινά που δεν βλέπεις τίποτα."</dynamictemplate>
+    <template name="VerbObjectSeparator">με</template>
+    <template name="DefaultMultiObjectVerb">Αυτό δεν δουλεύει.</template>
+    <template name="MultiObjectVerbMenu">Με ποιο αντικείμενο;</template>
+    <template name="UseOnMenu">Σε ποιο αντικείμενο;</template>
+    <template name="GiveToMenu">Σε ποιο αντικείμενο;</template>
+    <template name="NoObjectsAvailable">Δεν υπάρχουν αντικείμενα με τα οποία μπορείς να το κάνεις αυτό.</template>
+    <template name="Yes">Ναι</template>
+    <template name="No">Όχι</template>
+    <template name="By">με</template>
+
+    <dynamictemplate name="WearSuccessful">CapFirst(object.gender) + " φοράς."</dynamictemplate>
+    <dynamictemplate name="WearUnsuccessful">"Δεν μπορείς να " + object.gender + " φορέσεις."</dynamictemplate>
+    <dynamictemplate name="CannotWearIfNotHeld">"Πρέπει πρώτα να " + object.gender + " πάρεις για να " + object.gender + " φορέσεις."</dynamictemplate>
+    <dynamictemplate name="CannotRemoveIfNotHeld">"Πρέπει πρώτα να " + object.gender + " πάρεις για να " + object.gender + " βγάλεις."</dynamictemplate>
+    <dynamictemplate name="AlreadyWearing">CapFirst(object.gender) + " φοράς ήδη."</dynamictemplate>
+    <dynamictemplate name="CannotRemoveIfNotWearing">"Δεν " + object.gender + " φοράς."</dynamictemplate>
+    <dynamictemplate name="NotRemovable">"Δεν μπορείς να " + object.gender + " βγάλεις!"</dynamictemplate>
+    <dynamictemplate name="CannotWearOver">"Δεν μπορείς να το φορέσεις πάνω από το " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <dynamictemplate name="CannotWearWith">"Δεν μπορείς να το φορέσεις όσο φοράς το " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <dynamictemplate name="RemoveSuccessful">CapFirst(object.gender) + " βγάζεις."</dynamictemplate>
+    <dynamictemplate name="RemoveFirst">"Δεν μπορείς να το βγάλεις όσο φοράς το " + GetDisplayGarment(object) + "."</dynamictemplate>
+    <template name="wornmodifier">φορέθηκε</template>
+    <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+    <template name="Wear">Φόρεσε</template>
+    <template name="WearCommand">Φόρεσε #object#</template>
+    <verbtemplate name="wear">ντύσου</verbtemplate>
+    <verbtemplate name="wear">φόρα</verbtemplate>    
+	<verbtemplate name="wear">φόρεσε</verbtemplate>
+    <verbtemplate name="wear">βάλε</verbtemplate>
+    <template name="Remove">Βγάλε</template>
+    <template name="RemoveCommand">βγάλε #object#</template>
+    <verbtemplate name="remove">ξεντύσου</verbtemplate> 
+    <verbtemplate name="remove">βγάλε</verbtemplate>   
+	
+    
+    <template name="CompassNW">βορειοδυτικά</template>
+    <template name="CompassN">βόρεια</template>
+    <template name="CompassNE">βορειοανατολικά</template>
+    <template name="CompassW">δυτικά</template>
+    <template name="CompassE">ανατολικά</template>
+    <template name="CompassSW">νοτιοδυτικά</template>
+    <template name="CompassS">νότια</template>
+    <template name="CompassSE">νοτιοανατολικά</template>
+    <template name="CompassUp">πάνω</template>
+    <template name="CompassDown">κάτω</template>
+    <template name="CompassIn">μέσα</template>
+    <template name="CompassOut">έξω</template>
+    <template name="CompassDirectionPrefix">προς τα</template>
+    <template name="CompassDirectionSuffix"></template>
+    <template name="UpDownDirectionPrefix"></template>
+    <template name="UpDownDirectionSuffix"></template>
+    <template name="InOutDirectionPrefix"></template>
+    <template name="InOutDirectionSuffix"></template>
+    <template name="CompassNWShort">βδ</template>
+    <template name="CompassNShort">β</template>
+    <template name="CompassNEShort">βα</template>
+    <template name="CompassWShort">δ</template>
+    <template name="CompassEShort">α</template>
+    <template name="CompassSWShort">νδ</template>
+    <template name="CompassSShort">ν</template>
+    <template name="CompassSEShort">να</template>
+    <template name="CompassUpShort">π</template>
+    <template name="CompassDownShort">κ</template>
+    <template name="CompassInShort"></template>
+    <template name="CompassOutShort"></template>
+
+    <template name="InventoryLabel">Κατάλογος</template>
+    <template name="StatusLabel">Κατάσταση</template>
+    <template name="PlacesObjectsLabel">Μέρη και Αντικείμενα</template>
+    <template name="CompassLabel">Πυξίδα</template>
+    <template name="InButtonLabel">Μέσα</template>
+    <template name="OutButtonLabel">Έξω</template>
+    <template name="EmptyListLabel">(άδειο)</template>
+    <template name="NothingSelectedLabel">(καμία επιλογή)</template>
+    <template name="TypeHereLabel">Γράψε εδώ...</template>
+    <template name="ContinueLabel">Συνέχισε...</template>
+
+    <template templatetype="command" name="go"><![CDATA[^πήγαινε προς (?<exit>.*)$|^πήγαινε (?<exit>.*)$|^(?<exit>βόρεια|ανατολικά|νότια|δυτικά|νοτιοανατολικά|νοτιοδυτικά|βορειοανατολικά|βορειοδυτικά|μέσα|έξω|πάνω|κάτω|β|α|ν|δ|βα|βδ|να|νδ|μπες|βγες)$]]></template>
+    <template templatetype="command" name="lookdir"><![CDATA[^κοίτα προς (?<exit>.*)$|^κοίτα προς (?<exit>βόρεια|ανατολικά|νότια|δυτικά|νοτιοανατολικά|νοτιοδυτικά|βορειοανατολικά|βορειοδυτικά|μέσα|έξω|πάνω|κάτω|β|α|ν|δ|βα|βδ|να|νδ)$]]></template>
+    <template templatetype="command" name="look">^δες$|^κοίτα$|^l$</template>
+	<verbtemplate name="lookat">εξέτασε</verbtemplate>
+    <verbtemplate name="lookat">παρατήρησε</verbtemplate>
+    <verbtemplate name="lookat">κοίταξε</verbtemplate>
+    <verbtemplate name="lookat">δες</verbtemplate>
+    <verbtemplate name="take">πάρε</verbtemplate>
+    <verbtemplate name="take">παίρνω</verbtemplate>
+    <verbtemplate name="take">σήκωσε</verbtemplate>
+    <template templatetype="command" name="undo">^αναίρεση$</template>
+    <template templatetype="command" name="inventory">^κατ$|^κατάλογος$</template>
+    <template templatetype="command" name="quit">^τέλος$</template>
+    <verbtemplate name="drop">άσε</verbtemplate>
+    <verbtemplate name="drop">άσφησε</verbtemplate>
+    <verbtemplate name="drop">ρίξε</verbtemplate>
+    <verbtemplate name="use">χρησιμοποίησε</verbtemplate>
+    <verbtemplate name="speakto">μίλα με</verbtemplate>
+    <verbtemplate name="speakto">μίλα στον</verbtemplate>
+    <verbtemplate name="speakto">μίλα στην</verbtemplate>
+    <verbtemplate name="speakto">μίλα στο</verbtemplate>
+    <verbtemplate name="speakto">μίλησε</verbtemplate>
+    <verbtemplate name="speakto">μίλησε με</verbtemplate>
+	<verbtemplate name="speakto">συζήτησε με</verbtemplate>
+    <verbtemplate name="speakto">κουβέντιασε με</verbtemplate>
+    <verbtemplate name="speakto">συζήτησε</verbtemplate>
+    <verbtemplate name="speakto">κουβέντιασε</verbtemplate>
+    <verbtemplate name="open">άνοιξε</verbtemplate>
+    <verbtemplate name="close">κλείσε</verbtemplate>
+    <template templatetype="command" name="put"><![CDATA[^τοποθέτησε (?<object1>.*) (στο|στην|στον) (?<object2>.*)$|^βάλε (?<object1>.*) (στο|στην|στον) (?<object2>.*)$]]></template>
+    <template templatetype="command" name="removefrom"><![CDATA[^βγάλε (?<object1>.*) από (?<object2>.*)$]]></template>
+	<template templatetype="command" name="ask"><![CDATA[^ρώτα (?<object>.*) για (?<text>.*)$]]></template>
+	<template templatetype="command" name="tell"><![CDATA[^πες (?<object>.*) για (?<text>.*)$]]></template>
+	<template templatetype="command" name="tellto"><![CDATA[^(πες|ζήτα) (?<object>.*) να (?<text>.*)$]]></template>
+	<template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
+	<template templatetype="command" name="oops"><![CDATA[^ουπς (?<text>.*)$]]></template>
+
+    <verbtemplate name="buy">αγόρασε</verbtemplate>
+    <dynamictemplate name="DefaultBuy">"Δεν μπορείς να " + object.gender + " αγοράσεις."</dynamictemplate>
+    <verbtemplate name="climb">ανέβα</verbtemplate>
+    <verbtemplate name="climb">αναρριχήσου</verbtemplate>
+    <verbtemplate name="climb">σκαρφάλωσε</verbtemplate>
+    <dynamictemplate name="DefaultClimb">"Δεν μπορείς να " + object.gender + " σκαρφαλώσεις."</dynamictemplate>
+    <verbtemplate name="drink">πιες</verbtemplate>
+	<verbtemplate name="drink">ρούφα</verbtemplate>
+    <dynamictemplate name="DefaultDrink">"Δεν μπορείς να " + object.gender + " πιεις."</dynamictemplate>
+    <verbtemplate name="eat">φάε</verbtemplate>
+    <verbtemplate name="eat">μάσησε</verbtemplate>
+    <dynamictemplate name="DefaultEat">"Δεν μπορείς να " + object.gender + " φας."</dynamictemplate>
+	<verbtemplate name="givesingle">δώσε</verbtemplate>
+    <template templatetype="command" name="give"><![CDATA[^δώσε (?<object1>.*) (στον|στην|στο) (?<object2>.*)$]]></template>
+    <dynamictemplate name="DefaultGive">"Δεν " + object.gender + " θέλει."</dynamictemplate>
+    <verbtemplate name="hit">χτύπα</verbtemplate>
+	<verbtemplate name="hit">χτύπησε</verbtemplate>
+    <verbtemplate name="hit">κλώτσα</verbtemplate>
+    <verbtemplate name="hit">βάρα</verbtemplate>
+    <verbtemplate name="hit">κουτούλα</verbtemplate>
+    <verbtemplate name="hit">δείρε</verbtemplate>
+    <dynamictemplate name="DefaultHit">"Δεν μπορείς να " + object.gender + " χτυπήσεις."</dynamictemplate>
+	<verbtemplate name="kill">σκότωσε</verbtemplate>
+    <dynamictemplate name="DefaultKill">"Δεν μπορείς να " + object.gender + " σκοτώσεις."</dynamictemplate>
+    <verbtemplate name="kiss">φίλα</verbtemplate>
+	<verbtemplate name="kiss">φίλησε</verbtemplate>
+    <dynamictemplate name="DefaultKiss">"Δεν μπορείς να " + object.gender + " φιλήσεις."</dynamictemplate>
+	<verbtemplate name="knock">knock</verbtemplate>
+    <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate>
+    <verbtemplate name="lick">γλύψε</verbtemplate>
+    <dynamictemplate name="DefaultLick">"Δεν μπορείς να " + object.gender + " γλύψεις."</dynamictemplate>
+    <verbtemplate name="lie">ξάπλωσε</verbtemplate>
+    <dynamictemplate name="DefaultLie">"Δεν μπορείς να ξαπλώσεις " + object.article + " " + object.name + "."</dynamictemplate>
+    <verbtemplate name="listento">άκου</verbtemplate>
+    <verbtemplate name="listento">άκουσε</verbtemplate>
+    <dynamictemplate name="DefaultListenTo">CapFirst(object.gender) + " ακούς, αλλά δεν κάνει κανέναν ήχο."</dynamictemplate>
+    <verbtemplate name="lock">κλείδωσε</verbtemplate>
+    <dynamictemplate name="DefaultLock">"Δεν μπορείς να " + object.gender + " κλειδώσεις."</dynamictemplate>
+    <verbtemplate name="move">μετακίνησε</verbtemplate>
+    <dynamictemplate name="DefaultMove">"Δεν μπορείς να " + object.gender + " μετακινήσεις."</dynamictemplate>
+    <verbtemplate name="pull">τράβα</verbtemplate>
+    <verbtemplate name="pull">τράβηξε</verbtemplate>
+    <dynamictemplate name="DefaultPull">"Δεν μπορείς να " + object.gender + " τραβήξεις."</dynamictemplate>
+	<verbtemplate name="push">σπρώξε</verbtemplate>
+    <dynamictemplate name="DefaultPush">"Δεν μπορείς να " + object.gender + " σπρώξεις."</dynamictemplate>
+    <verbtemplate name="read">διάβασε</verbtemplate>
+    <dynamictemplate name="DefaultRead">"Δεν μπορείς να " + object.gender + " διαβάσεις."</dynamictemplate>
+	<verbtemplate name="search">ψάξε για</verbtemplate>
+    <verbtemplate name="search">ψάξε</verbtemplate>
+    <dynamictemplate name="DefaultSearch">"Δεν μπορείς να " + object.gender + " ψάξεις."</dynamictemplate>
+    <verbtemplate name="show">δείξε</verbtemplate>
+    <dynamictemplate name="DefaultShow">"Δεν μπορείς να " + object.gender + " δείξεις."</dynamictemplate>
+    <verbtemplate name="sit">κάτσε</verbtemplate>
+    <verbtemplate name="sit">κάθισε</verbtemplate>
+    <dynamictemplate name="DefaultSit">"Δεν μπορείς να καθίσεις σ" + object.gender + " " + object.name + "."</dynamictemplate>
+	<verbtemplate name="smell">μύρισε</verbtemplate>
+    <dynamictemplate name="DefaultSmell">CapFirst(object.gender) + " μυρίζεις, αλλά δεν " + WriteVerb(object, "έχω") + " κάποια μυρωδιά."</dynamictemplate>
+    <verbtemplate name="taste">γεύσου</verbtemplate>
+    <verbtemplate name="taste">δοκίμασε</verbtemplate>
+    <dynamictemplate name="DefaultTaste">"Δεν μπορείς να " + object.gender + " γευτείς."</dynamictemplate>
+    <verbtemplate name="throw">πέτα</verbtemplate>
+    <verbtemplate name="throw">πέταξε</verbtemplate>
+    <dynamictemplate name="DefaultThrow">"Δεν μπορείς να " + object.gender + " πετάξεις."</dynamictemplate>
+	<verbtemplate name="tie">δέσε</verbtemplate>
+    <dynamictemplate name="DefaultTie">"Δεν μπορείς να " + object.gender + " δέσεις."</dynamictemplate>
+	<verbtemplate name="touch">ακούμπησε</verbtemplate>
+    <verbtemplate name="touch">ακούμπα</verbtemplate>
+    <dynamictemplate name="DefaultTouch">"Δεν μπορείς να " + object.gender + " ακουμπήσεις."</dynamictemplate>
+    <verbtemplate name="turnon">άναψε</verbtemplate>
+    <dynamictemplate name="DefaultTurnOn">"Δεν μπορείς να " + object.gender + " ανάψεις."</dynamictemplate>
+    <verbtemplate name="turnoff">σβήσε</verbtemplate>
+    <dynamictemplate name="DefaultTurnOff">"Δεν μπορείς να " + object.gender + " σβήσεις."</dynamictemplate>
+    <verbtemplate name="turn">γύρνα</verbtemplate>
+    <verbtemplate name="turn">γύρισε</verbtemplate>
+    <verbtemplate name="turn">στρίψε</verbtemplate>
+    <dynamictemplate name="DefaultTurn">"Δεν μπορείς να " + object.gender + " στρίψεις."</dynamictemplate>
+    <verbtemplate name="unlock">ξεκλείδωσε</verbtemplate>
+    <dynamictemplate name="DefaultUnlock">"Δεν μπορείς να " + object.gender + " ξεκλειδώσεις."</dynamictemplate>
+	<verbtemplate name="untie">λύσε</verbtemplate>
+    <verbtemplate name="untie">ξέδεσε</verbtemplate>
+	<verbtemplate name="untie">ξέλυσε</verbtemplate>
+    <dynamictemplate name="DefaultUntie">"Δεν μπορείς να " + object.gender + " λύσεις."</dynamictemplate>
+    <template templatetype="command" name="useon"><![CDATA[^χρησιμοποίησε (?<object1>.*) (στο|στην|στο)  (?<object2>.*)$]]></template>
+    <dynamictemplate name="DefaultUseOn">"Δεν μπορείς να " + object2.gender + " χρησιμοποιήσεις έτσι."</dynamictemplate>
+    <verbtemplate name="wear">φόρα</verbtemplate>
+    <verbtemplate name="wear">φόρεσε</verbtemplate>
+    <verbtemplate name="wear">βάλε</verbtemplate>
+    <verbtemplate name="wear">ντύσου</verbtemplate>
+    <dynamictemplate name="DefaultWear">"Δεν μπορείς να " + object.gender + " φορέσεις."</dynamictemplate>
+    <template templatetype="command" name="listen">^άκου$</template>
+    <template name="DefaultListen">Δεν ακούς τίποτα.</template>
+    <template templatetype="command" name="jump">^πήδα$|^πήδηξε$</template>
+    <template name="DefaultJump">Πηδάς, αλλά δεν γίνεται τίποτα.</template>
+    <template templatetype="command" name="sitdown">^κάτσε$|^κάθισε$</template>
+    <template name="DefaultSitDown">Δεν είναι ώρα να κάθεσαι τώρα.</template>
+    <template templatetype="command" name="liedown">^ξάπλωσε$|^ξάπλα$</template>
+    <template name="DefaultLieDown">Δεν είναι ώρα για να ξαπλώσεις.</template>
+    <template templatetype="command" name="sleep">^κοιμήσου$</template>
+    <template name="DefaultSleep">Δεν είναι ώρα να κοιμηθείς.</template>
+    <template templatetype="command" name="wait">^περίμενε$</template>
+    <template name="DefaultWait">Ο χρόνος περνά...</template>
+    <template templatetype="command" name="xyzzy">^xyzzy$</template>
+    <template name="DefaultXyzzy">Δεν γίνεται απολύτως τίποτα.</template>
+    <template templatetype="command" name="help">^βοήθεια$|^\?$</template>
+    <template templatetype="command" name="save">^σώσε$|^αποθήκευσε$</template>
+    <template name="DefaultHelp"><![CDATA[<u>Σύντομη Βοήθεια</u><br/><br/>
+    <b>- Αντικείμενα:</b>  Δοκίμασε ΚΟΙΤΑ ... ΜΙΛΑ ΣΤΟΝ ... ΠΑΡΕ ... ΡΙΞΕ ... ΑΝΟΙΞΕ ... ΔΩΣΕ ... ΣΤΟΝ ... ΧΡΗΣΙΜΟΠΟΙΗΣΕ ... ΣΤΟ ... <br/>
+    <b>- Κατάλογος:</b>  Για να δεις τα αντικείμενα που κουβαλάς, γράψε ΚΑΤ ή ΚΑΤΑΛΟΓΟΣ.<br/>
+    <b>- Μετακίνηση:</b>  Πάτησε τα κουμπιά στην πυξίδα, ή γράψε ΒΟΡΕΙΑ, ΝΟΤΙΑ, ΝΔ, ...<br/>
+    <b>- Συντομεύσεις:</b>  Πάτησε το πάνω και το κάτω βέλος για να δεις τις εντολές που έχεις ήδη γράψει. ]]></template>
+
+    <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+    <template name="LanguageSpecificObjectTypes"></template>
+    <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+    <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+    <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+	
+	<template name="LanguageSpecificObjectTypes">masculine=Άψυχο αντικείμενο (αρσενικό); feminine=Άψυχο αντικείμενο (θηλυκό); neutral=Άψυχο αντικείμενο (ουδέτερο);</template>
+  
+	<type name="masculine">
+	  <gender>τον</gender>
+	  <article>ο</article>
+	</type>
+	  
+	<type name="feminine">
+	  <gender>την</gender>
+	  <article>η</article>
+	</type>
+
+	<type name="neutral">
+	  <gender>τo</gender>
+	  <article>το</article>
+	</type>
+	
+    <template name="EditorVerbDefaultExpression">"Δεν μπορείς να " + object.gender + " #verb#."</template>
+
+    <function name="GetDefaultPrefix" type="string" parameters="obj">
+      return(GetPrefix(obj,"ένα"))
+    </function>
+	
+	<function name="WriteVerb" type="string" parameters="obj, verb">
+	  return(Conjugate(obj, verb))
+    </function>
+	
+	<function name="Conjugate" type="string" parameters="obj, verb">
+	gender = obj.gender
+    if (gender = "τον" or gender = "την" or gender = "το") {
+      gender = "ο"
+    } else if (gender = "τους" or gender = "τις" or gender = "τα") {
+      gender = "οι"
+	}
+	
+    switch (verb) {
+      case ("είμαι") {
+        switch (gender) {
+          case ("εγώ") {
+            return ("είμαι")
+          }
+          case ("εσύ") {
+            return ("είσαι")
+          }
+          case ("αυτός") {
+            return ("είναι")
+          }
+          case ("εμείς") {
+            return ("είμαστε")
+          }
+          case ("εσείς") {
+            return ("είστε")
+          }
+		  case ("αυτοί") {
+            return ("είναι")
+          }
+          default {
+            return ("είναι")
+          }
+        }
+      }
+	  
+      case ("έχω") {
+        switch (gender) {
+          case ("εγώ") {
+            return ("έχω")
+          }
+          case ("εσύ") {
+            return ("έχεις")
+          }
+          case ("αυτός") {
+            return ("έχει")
+          }
+          case ("εμείς") {
+            return ("έχουμε")
+          }
+          case ("εσείς") {
+            return ("έχετε")
+          }
+		  case ("αυτοί") {
+            return ("έχουν")
+          }
+          default {
+            return ("έχει")
+          }       
+        }
+      }
+	
+      default {
+		return (verb)
+      }
+
+    }
+  </function>
+
+    <function name="GetPrefix" type="string" parameters="obj,type">
+		if ( DoesInherit (obj, "namedmale")) {
+			return ("τον")
+		} else if (DoesInherit (obj, "namedfemale") ) {
+            return ("την")
+        } else if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
+            return ("έναν")
+        } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
+            return ("μία")
+        } else if ( DoesInherit (obj, "plural") or  DoesInherit (obj, "maleplural") ) {
+            return ("κάποιους")
+        } else if ( DoesInherit (obj, "plural") or DoesInherit (obj, "femaleplural") ) {
+            return ("κάποιες")
+        } else { 
+            return ("ένα") 
+        }
+    </function>  
+	
+	<function name="GetSuffix" type="string" parameters="obj">
+		if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
+		  return ("ος")
+		} else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
+		  return ("η")
+		} else if (DoesInherit (obj, "neutral")) {
+		  return ("ο")
+		} else if ( DoesInherit (obj, "plural") and DoesInherit (obj, "femaleplural") ) {
+		  return ("οι")
+		} else if ( DoesInherit (obj, "plural") or  DoesInherit (obj, "maleplural") ) {
+		  return ("ες")
+		} else {
+		  return ("α")
+		}
+    </function>
+
+</library>
