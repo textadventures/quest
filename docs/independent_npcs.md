@@ -3,131 +3,15 @@ layout: index
 title: Making NPCs Act Independently
 ---
 
-An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. A simple way to do this is to add something to the room description for the location the NPC is in. Somethingf like this, may:
+An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. 
 
-> You are in a rather grubby lounge, with a tatty settee in the centre. Mary is here, {random:scratching her nose:looking at you expectantly:looking at her phone}.
+_NOTE:_ This page builds on the page about [patrolling NPCs](patrolling_npcs.html), and you should read that first. In particular, you should add a turn script to your game as described on that page (note that the script is updated in the pausing section) and a `PrintIfHere` function.
 
-However, we will look at doing something a bit more involved, allowing the NPCs to move from one room to another, and potentially to interact with objects in each room.
+_NOTE:_ For desktop users there is a library available that adds the turn script and all the functions to your game.
 
-I am going to describe a turn-based system, which means that each time the player does something, the NPCs get a chance to act too, but it could potentially be adapted to atime-based system. In either case, the under-lying system is the same; each NPC will have a script, called "takeaturn", and we run that each time.
+We have already discussed how to have an NPC explore or patrol, but perhaps you want your NPC to follow a series of actions. How would you do that?
 
-A Turnscript
-------------
-
-The first thing we need, then, is a turn script (go to the _Scripts_ tab of the game object, and click "Add" in the turn scripts section, at the bottom). Give it a suitable name, and tick the box so it is enabled from the start. The code is very simple; it just goes through every object, and if it has the script, it runs it.
-
-```
-foreach (o, AllObjects()) {
-  if (HasScript(o, "takeaturn")) {
-    do(o, "takeaturn")
-  }
-}
-```
-
-This will cause all the NPCs to act, whether the player is there to see it or not. That makes sense, we want it to seem as though they are living independent lives that go on even if the player is not there to see it. However, we only want to tell the player about it if the player _is_ present. As we will be checking that a lot, it is convenient to create a function, `PrintIfHere` (go to "Functions" in the left pane, then click "Add" in the right pane). Give it two parameters, "room" and "s", and no return type. Paste in this code:
-
-```
-if (game.pov.parent = room) {
-  msg(s)
-}
-```
-
-The message will only get shown if the player is in that room.
-
-The NPC Script - Patrolling
---------------
-
-So what about the "takeaturn" script? That depends on what you want the NPC to do. Let us look at a few examples. The easiest is to have the NPC patrol a circuit of rooms. For the benefit of uses of the on-line version, we will do this in the initialisation script of the NPC, so you will need to tick that option on the _Features_ tab first.
-
-```
-this.route = NewObjectList()
-list add (this.route, lounge)
-list add (this.route, kitchen)
-list add (this.route, hall)
-
-this.takeaturn => {
-  oldroom = this.parent
-  index = IndexOf(this.route, this.parent)
-  newindex = (index + 1) % ListCount(this.route)
-  this.parent = ObjectListItem(this.route, newindex)
-  if (not oldroom = this.parent) {
-    PrintIfHere (oldroom, "Mary leaves the room.")
-    PrintIfHere (this.parent, "Mary enters the room.")
-  }
-}
-```
-
-The first four lines set up the route. You can make this as long or as short as you like, and in fact you could add and remove rooms to the route during the game to make the route change. The rest of the code sets up the "takeaturn" script.
-
-First it notes the current room for the NPC, and then it works out what the next room is. The `IndexOf` function gets the position of the current room in the list of rooms, and then we add one to that to get the next one.
-
-We potentially have a problem here, as in three turns the value of newindex would be 3, and we only have three items in the list, numbered 0, 1 and 2. We need to limit `newindex` to those values, and we do that with the modulo operator, `%`; this gives the remainder after division. `ListCount` gives 3, so we are doing the remainder after dividing by 3. 2 divided by 3 is 0, with 2 left over. 3 divided by 3 is 1 with 0 left over. Thus, when `index` is 2, `newindex` will go to 0, and we go back to the start of the list.
-
-Now we have `newindex`, we can get the new room from the list. If the room is different, then we tell the player the NPC is moving, and we can use our `PrintIfHere` function to make the appropriate to where the player is.
-
-Note that `IndexOf` will return -1 if the item is not in the list, so if the NPC is not in any of the rooms in the list, then `index` will get set to -1, and the `index` will get to zero, so the NPC will be moved to the first room in the sequence. This means you can start the NPC in any room you like, not necessarily one on he route.
-
-If a room is added multiple times to the route, the NPC will stay there for a while. For example, we could have the NPC stay in the lounge for a while:
-
-```
-this.route = NewObjectList()
-list add (this.route, lounge)
-list add (this.route, lounge)
-list add (this.route, lounge)
-list add (this.route, kitchen)
-list add (this.route, hall)
-```
-
-Pausing
--------
-
-We might want the NPC to pause for a turn. If the player talks to her, then it would make sense that she has done that rather than than go to another room, and the player may get annoyed if he is chasing after her as they have a conversation.
-
-```
-foreach (o, AllObjects()) {
-  if (HasScript(o, "takeaturn")) {
-    if (GetBoolean(o, "paused")) {
-      o.paused = false
-    }
-    else {
-      do (o, "takeaturn")
-    }
-  }
-}
-```
-
-You do need to set the "paused" to `true` for your NPCs at the relevant points. For example, the script for speaking to the NPC might looik like this:
-
-```
-msg ("You chat to Mary for a while.")
-this.paused = true
-```
-
-Now the player can talk to Mary for any number of consecutive turns, and only when the player does something else will Mary go back to patrolling.
-
-Exploring
-----------------
-
-You can set the script on the NPC to do all sorts of things. In this example, the NPC will pick a random, unlocked exit and go that way.
-
-```
-this.takeaturn => {
-  oldroom = this.parent
-  exit = PickOneUnlockedExit (this.parent)
-  this.parent = exit.to
-  if (not oldroom = this.parent) {
-    PrintIfHere (oldroom, "Mary leaves the room, heading " + exit.alias + ".")
-    PrintIfHere (this.parent, "Mary enters the room, from " + ReverseDirection (exit.alias) + ".")
-  }
-}
-```
-
-More Complicated...
--------------------
-
-Perhaps you want your NPC to follow a series of actions. How would you do that?
-
-The first step is to consider how those steps will be incorporated into the game. What we will do is have each step defined by a string in a list. You might set it up like this:
+The first step is to consider how those steps will be incorporated into the game. What we will do is have each step defined by a string in a list. You might set it up like this on the initialisation script for the NPC:
 
 ```
 this.actions = NewStringList()
@@ -218,15 +102,244 @@ PrintIfHere (npc.parent, GetDisplayName(npc) + " drops the " + GetDisplayAlias(o
 return (true)
 ```
 
-And this is `NpcWait`:
+This is `NpcWait` (NPC will wait until the given object is present if it is the player or an NPC, the object is unlocked if it has "locked" attribute, or trhe object in held by the NPC otherwise):
 
 ```
-if (npc.parent = obj.parent) {
-  return (true)
+if (obj = game.pov or HasScript(obj, "takeaturn")) {
+  return (npc.parent = obj.parent)
+}
+else if (HasBoolean(obj, "locked")) {
+  return (not obj.locked)
 }
 else {
-  return (false)
+  return (npc = obj.parent)
 }
 ```
 
+NpcGive:
+
+```
+obj.parent = game.pov
+PrintIfHere (npc.parent, GetDisplayName(npc) + " gives you the " + GetDisplayAlias(obj) + ".")
+return (true)
+```
+
+NpcSearch (NPC keeps moving randomly until in the same room as the object):
+
+```
+exit = PickOneUnlockedExit (npc.parent)
+oldroom = npc.parent
+NpcMove(npc, exit.to)
+return (obj.parent = npc.parent)
+```
+
+NpcPause (NPC does nothing for 1 turn):
+
+```
+return (true)
+```
+
+Dynamic NPCs
+------------
+
+So far we have NPCs they act according to their own agenda, but do not react to what the player does. How do we address that? It is simply a case of giving the NPC a new string list.
+
+The simplest case is where the player has killed the NPC, so now the NPC does nothing. Just set the "actions" attribute to an empty list:
+
+```
+mary.actions = NewStringList()
+```
+
+However, you could give the NPC a new agenda. say when the player talks to her:
+
+```
+msg("'Hi,' says Mary.")
+msg("'Could you get the key for me?'")
+msg("'Sure!'")
+mary.actions = Split("Move:Apple Street;Move:Gate house;Get:gate key;Move:Gate house;Move:Apple Street;Wait:player", ";")
+```
+
+You could even give the player some options that he could ask:
+
+```
+msg("'Hi,' says Mary.")
+ShowMenu("Talk about?", Split("Get the key;Meet in the shop;Wait here", ";"), false) {
+  if (result = "Get the key") {
+    msg("'Could you get the key for me?'")
+    msg("'Sure!'")
+    mary.actions = Split("Move:Apple Street;Move:Gate house;Get:gate key;Move:Gate house;Move:Apple Street;Wait:player", ";")
+  }
+  if (result = "Meet in the shop") {
+    msg("'I'll meet you in the shop.'")
+    msg("'Sure!'")
+    mary.actions = Split("Move:Apple Street;Move:Potion shop;Wait:player", ";")
+  }
+  if (result = "Wait here") {
+    msg("'Just wait here for me?'")
+    msg("'Sure!'")
+    mary.actions = Split("Pause:player;Pause:player;Pause:player;Pause:player;Pause:player;Wait:player", ";")
+  }
+}
+```
+
+In the third option, note how the NPC will pause for five turns, hopefully long enough that the player will go away, and not enough time to have come back without doing whatever. This may not be ideal, so be aware of the limitations.
+
+
+
+Path finding
+------------
+
+If our NPCs are acting dynamically, it may not be possible to know in advance where they will be at the start of their agenda. In the example above, perhaps the player could talk to Mary when she at any number of locations, so how can we give Mary a route?
+
+Let her work it out for herself!
+
+Jay Nabonne write a path-finding library we can use.
+http://docs.textadventures.co.uk/quest/libraries/path_library.html
+
+We will copy two functions from there. Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
+
+```
+// From PathLib by Jay Nabonne
+// It is more efficient to mark the rooms rather than track them in lists.
+if (not HasInt(game, "pathID")) {
+  game.pathID = 0
+}
+// Bump the path ID for this path. This saves us from having to unmark all previously marked rooms.
+game.pathID = game.pathID + 1
+
+path = null
+current = NewList()
+entry = PathLib_AddEntry(current, start)
+dictionary add(entry, "path", NewObjectList())
+length = 0
+iterations = 0
+while (ListCount(current) <> 0 and path = null and (maxlength = -1 or length <= maxlength)) {
+  iterations = iterations + 1
+  entry = current[0]
+  list remove(current, entry)
+  room = entry["room"]
+  room.pathlib_visited = game.pathID
+  if (room = end) {
+    path = entry["path"]
+  } else {
+    foreach (exit, exits) {
+      toRoom = exit.to
+      if (toRoom <> null) {
+        if (exit.parent = room and not GetBoolean(exit, "excludeFromPaths")) {
+          // This is a room to be investigated.
+          if (GetInt(toRoom, "pathlib_current") <> game.pathID and GetInt(toRoom, "pathlib_visited") <> game.pathID) {
+            // We have not touched this room yet. Add its exit to the list.
+            newEntry = PathLib_AddEntry(current, toRoom)
+            // Assign to an object attribute to force a copy.
+            game.PathLib_pathtemp = entry["path"]
+            list add(game.PathLib_pathtemp, exit)
+            dictionary add(newEntry, "path", game.PathLib_pathtemp)
+            game.PathLib_pathtemp = null
+          }
+        }
+      }
+    }
+  }
+  length = ListCount(entry["path"])
+}
+return (path)
+```
+
+Then add a function called "PathLib_AddEntry", with the parameters parameters="list" and "room", and return type dictionary. Paste in the code:
+
+```
+// From PathLib by Jay Nabonne
+entry = NewDictionary()
+dictionary add(entry, "room", room)
+list add(list, entry)
+room.pathlib_current = game.pathID
+return (entry)
+```
+
+
+Now we can add a GoTo command. Create another function, NpcGoTo, and as usual give it two parameters, "npc" and "obj" and have it return a Boolean. Here is the code:
+
+```
+l = PathLib_GetPathExt(npc.parent, obj, AllExits(), -1)
+if (ListCount(l) = 0) {
+  return (true)
+}
+exit = ObjectListItem(l, 0)
+NpcMove (npc, exit.to)
+return (ListCount(l) = 1)
+```
+
+If the NPC is already in the room, nothing will happen this turn. Otherwise, the NPC will move one room closer to the destination. If that takes the NPC to the destination, this will return `true` and that will cause this entry to be removed from the list, otherwise it returns `false` so the entry will still be on the list next turn.
+
+Note that it calls `NpcMove` to actually move the player; this means if you change the text there, it will still be used.
+
+Now we can do something like this, giving the NPC a destination, rather than a route:
+
+```
+msg("'Hi,' says Mary.")
+msg("'Could you get the key for me?'")
+msg("'Sure!'")
+mary.actions = Split("GoTo:Gate house;Get:gate key;GoTo:Apple Street;Wait:player", ";")
+```
+
+
+Reactive NPCs
+-------------
+
+We can also have NPCs that react to what is going on. First we will add a new function, NpcScript, with the same set up as before. Here is the script:
+
+```
+npc.deletefromlist = true
+if (HasScript (npc, "npcscript")) {
+  d = NewDictionary()
+  dictionary add (d, "item", obj)
+  do (npc, "npcscript", d)
+}
+return (npc.deletefromlist)
+```
+
+Then you can give the NPC a script called "npcscript", and have that do, well, anything you like.
+
+For example, you could use this to have your NPC make a decision. Give the NPC a list of instructions that includes "Script:player". When it gets to that point, the "npcscript" will run, and it could check if a certain condition has been met (perhaps the player is present, or a door is open), and if so, it could give the NPC a new list of actions.
+
+Here is a simple example that extends a patrol route if a gateway is open:
+
+```
+if (gateway.isopen) {
+  this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Move:courtyard:Move:Gate houseScript:player", ";")
+}
+else {
+  this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Script:player", ";")
+}
+```
+
+You can set the "deletefromlist" attribute of an NPC to have the script repeat.
+
+
+### Coordinating NPCs
+
+Bear in mind that NPCs can get delayed, say if the player talks to them, and if you want to coordinate NPCs, the best way is to have each one wait until the other is present. For example, if you want Mary to give Bob a hat, have Mary go to the rendez-vous, and then wait for Bob, and likewise have Bob go there and wait for Mary. For Bob, you can just use the Wait command ("Wait:mary") and then pause one turn ("Pause:player"), but we could have a script on Mary that has her wait until Bob is there, and when he is, give the hat to him.
+
+```
+if (this.parent = bob.parent) {
+  hat.parent = bob
+  PrintIfHere(this.parent, "Mary hands the hat to Bob.")
+}
+else {
+  this.deletefromlist = false
+}
+```
+
+
+### Goals and agendas
+
+The script option gives the potential for NPCs to have goals that they will seek to achieve. The script could potentially select a goal, and then set the "actions" attribute accordingly.
+
+
+Desktop Users
+-------------
+
+All the above is available in a library for desktop users. You will find there is a new tab where you can set an object to be an NPC, and then you can add commands to a list to have the NPC do anything you like.
+
+[NpcLib.aslx](https://raw.githubusercontent.com/ThePix/quest/master/NpcLib.aslx)
 
