@@ -132,6 +132,7 @@ Adding people that the player can interactive with can help bring your game to l
 -  [Following the player](follower.html)
 -  [Introduction to Conversations](conversations.html)
 -  [Ask/Tell](ask_about.html)
+-  [Patrolling NPCs](patrolling_npcs.html)
 -  [Independent NPCs](independent_npcs.html)
   
 
