@@ -7,11 +7,11 @@ An NPC is going to feel more alive if he or she is doing things on their own ini
 
 _NOTE:_ This page builds on the page about [patrolling NPCs](patrolling_npcs.html), and you should read that first. In particular, you should add a turn script to your game as described on that page (note that the script is updated in the pausing section) and a `PrintIfHere` function.
 
-_NOTE:_ For desktop users there is a library available that adds the turn script and all the functions to your game.
+_NOTE:_ For desktop users there is a library available that adds the turn script and all the functions to your game, and is discussed more at the end.
 
 We have already discussed how to have an NPC explore or patrol, but perhaps you want your NPC to follow a series of actions. How would you do that?
 
-The first step is to consider how those steps will be incorporated into the game. What we will do is have each step defined by a string in a list. You might set it up like this on the initialisation script for the NPC:
+The first step is to consider how the NPC's itinerary will be incorporated into the game. What we will do is have each action defined by a string in a list. You might set it up like this on the initialisation script for the NPC:
 
 ```
 this.actions = NewStringList()
@@ -26,7 +26,9 @@ list add (this.actions, "Drop:knife")
 
 There are two types of entries here; text and commands. Each command consists of the command name, followed by the object name. Each turn we will go to the next item in the list; if it is text, print it, otherwise, do the command.
 
-### The `NpcAct` function
+
+The `NpcAct` function
+---------------------
 
 The heart of the system, then, is a function called `NpcAct`, which returns a boolean and has two parameters, "npc" and "s" (where "s" will be the string from the list above). Here is the code:
 
@@ -53,7 +55,9 @@ At this point it does something a bit sneaky! It uses the `Eval` function to cal
 
 Because we are using `Eval` we need to set the variable as attributes of game. We also need to return a value, in this case a Boolean. That will be useful later.
 
-### The "takeaturn" script
+
+The "takeaturn" script
+----------------------
 
 We are now ready to give the "takeaturn" script to the NPC.
 
@@ -70,7 +74,9 @@ this.takeaturn => {
 
 What this does is take the first entry in the list of actions and send it to `NpcAct` to handle. If `NpcAct` returns `true`, then that entry is removed from the list, so next time the next entry will get used. If `NpcAct` returns `false` the entry remains and will get used again next time.
 
-### The functions
+
+The functions
+-------------
 
 At this point we need to set up some functions to handle individual commands. They all have to follow certain rules; the name must be "Npc" plus the command, they must return a Boolean, and they must have two parameters, `npc`, and `obj`.
 
@@ -102,7 +108,7 @@ PrintIfHere (npc.parent, GetDisplayName(npc) + " drops the " + GetDisplayAlias(o
 return (true)
 ```
 
-This is `NpcWait` (NPC will wait until the given object is present if it is the player or an NPC, the object is unlocked if it has "locked" attribute, or trhe object in held by the NPC otherwise):
+This is `NpcWait`. The NPC will wait until the given object is present if it is the player or an NPC, the object is unlocked if it has "locked" attribute, or the object in held by the NPC otherwise):
 
 ```
 if (obj = game.pov or HasScript(obj, "takeaturn")) {
@@ -142,7 +148,7 @@ return (true)
 Dynamic NPCs
 ------------
 
-So far we have NPCs they act according to their own agenda, but do not react to what the player does. How do we address that? It is simply a case of giving the NPC a new string list.
+So far we have NPCs they act according to their own agenda, but do not react to what the player does. How do we address that? It is simply a case of giving the NPC a new string list based on the current state of the game.
 
 The simplest case is where the player has killed the NPC, so now the NPC does nothing. Just set the "actions" attribute to an empty list:
 
@@ -150,7 +156,7 @@ The simplest case is where the player has killed the NPC, so now the NPC does no
 mary.actions = NewStringList()
 ```
 
-However, you could give the NPC a new agenda. say when the player talks to her:
+However, you could give the NPC a new agenda, say when the player talks to her:
 
 ```
 msg("'Hi,' says Mary.")
@@ -159,7 +165,7 @@ msg("'Sure!'")
 mary.actions = Split("Move:Apple Street;Move:Gate house;Get:gate key;Move:Gate house;Move:Apple Street;Wait:player", ";")
 ```
 
-You could even give the player some options that he could ask:
+You could even give the player some options that he could ask Mary to do:
 
 ```
 msg("'Hi,' says Mary.")
@@ -193,10 +199,12 @@ If our NPCs are acting dynamically, it may not be possible to know in advance wh
 
 Let her work it out for herself!
 
-Jay Nabonne write a path-finding library we can use.
+Jay Nabonne wrote a path-finding library we can use.
 http://docs.textadventures.co.uk/quest/libraries/path_library.html
 
-We will copy two functions from there. Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
+### Copy a library function to your game
+
+If you are using the on-line version, you will need to copy two functions into your game, as libraries cannot be used on-line. Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
 
 ```
 // From PathLib by Jay Nabonne
@@ -245,16 +253,17 @@ while (ListCount(current) <> 0 and path = null and (maxlength = -1 or length <= 
 return (path)
 ```
 
-Then add a function called "PathLib_AddEntry", with the parameters parameters="list" and "room", and return type dictionary. Paste in the code:
+We also need a function called "PathLib_AddEntry". This has two parameters, "list" and "room", and should return a dictionary. Paste in this code:
 
 ```
 // From PathLib by Jay Nabonne
+<!-- msg ("Add entry: " + room.name + "(length:" + ListCount(list) + ")") -->
 entry = NewDictionary()
 dictionary add(entry, "room", room)
 list add(list, entry)
 room.pathlib_current = game.pathID
 return (entry)
-```
+```  
 
 
 Now we can add a GoTo command. Create another function, NpcGoTo, and as usual give it two parameters, "npc" and "obj" and have it return a Boolean. Here is the code:
@@ -302,7 +311,7 @@ Then you can give the NPC a script called "npcscript", and have that do, well, a
 
 For example, you could use this to have your NPC make a decision. Give the NPC a list of instructions that includes "Script:player". When it gets to that point, the "npcscript" will run, and it could check if a certain condition has been met (perhaps the player is present, or a door is open), and if so, it could give the NPC a new list of actions.
 
-Here is a simple example that extends a patrol route if a gateway is open:
+Here is a simple example that extends a patrol route if a gateway is open. Note that we flag that the item is not to be deleted from the list; this is vital, as the current action is getting deleted as part of the script, and it is the entry from the new list that would be deleted. You need to do this any time you replace the "actions" list in your script.
 
 ```
 if (gateway.isopen) {
@@ -311,12 +320,24 @@ if (gateway.isopen) {
 else {
   this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Script:player", ";")
 }
+this.deletefromlist = false
 ```
 
-You can set the "deletefromlist" attribute of an NPC to have the script repeat.
+
+Repeated actions
+----------------
+
+This also gives a way to have an NPC do the same thing repeatedly. In the list of actions, just put in "Script:player". For the script, set the "actions" to the sequence of actions to repeat. For a simple patrol route, it might look like this:
+
+```
+this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Script:player", ";")
+this.deletefromlist = false
+
+```
 
 
-### Coordinating NPCs
+Coordinating NPCs
+-----------------
 
 Bear in mind that NPCs can get delayed, say if the player talks to them, and if you want to coordinate NPCs, the best way is to have each one wait until the other is present. For example, if you want Mary to give Bob a hat, have Mary go to the rendez-vous, and then wait for Bob, and likewise have Bob go there and wait for Mary. For Bob, you can just use the Wait command ("Wait:mary") and then pause one turn ("Pause:player"), but we could have a script on Mary that has her wait until Bob is there, and when he is, give the hat to him.
 
@@ -331,7 +352,8 @@ else {
 ```
 
 
-### Goals and agendas
+Goals and agendas
+-----------------
 
 The script option gives the potential for NPCs to have goals that they will seek to achieve. The script could potentially select a goal, and then set the "actions" attribute accordingly.
 
@@ -342,4 +364,3 @@ Desktop Users
 All the above is available in a library for desktop users. You will find there is a new tab where you can set an object to be an NPC, and then you can add commands to a list to have the NPC do anything you like.
 
 [NpcLib.aslx](https://raw.githubusercontent.com/ThePix/quest/master/NpcLib.aslx)
-
