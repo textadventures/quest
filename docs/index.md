@@ -93,6 +93,7 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Handle water](handling_water.html)
 -  [Showing a map](showing_a_map.html)
 -  [Adding clothing to your game](wearables.html)
+-  [Ask a simple question](ask_simple_question.html) (showing a menu)
 -  [Ask a question](asking_a_question.html)
 -  [Keep a journal](keeping_a_journal.html)
 -  [Keep score](keeping_score.html)
