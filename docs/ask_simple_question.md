@@ -93,7 +93,7 @@ If you look through it you should see each set that we added is there, in the sa
 
 
 Yes or no?
----------_
+---------
 
 For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
 
