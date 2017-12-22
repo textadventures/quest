@@ -58,7 +58,9 @@ So now we need to handle the response. You will see you now have two "Add new sc
 
 When the player makes a choice, that option goes into a variable called "result", and we are going to check that to decide what to. The best way to do that is with a `switch`. Click "Add new script", and select "Switch". In the text box, type in "result".
 
-Click "Add" and type in the first of your options (or copy-and-paste it in). You will see you have yet another "Add new script" - this one specifically for this option. Add scripts as appropriate - exactly what is up to you. In the example below, it just prints some text.
+Click "Add" and type in the first of your options. Note that this must be exactly the same as you had it in the option, with the same capitalisation, otherwise it will not get matched, and copy-and-paste is a good idea. You also need to put double quotes at the start and end.
+
+You will see you have yet another "Add new script" - this one specifically for this option. Add scripts as appropriate - exactly what is up to you. In the example below, it just prints some text.
 
 ![](menu3.png "menu3.png")
 
@@ -79,10 +81,10 @@ list add (options, "Lavender")
 list add (options, "Lilies")
 ShowMenu ("What flowers do you want to buy?", options, true) {
   switch (result) {
-    case (Red roses) {
+    case ("Red roses") {
       msg ("You buy some red roses from Cindy.")
     }
-    case (Lavender) {
+    case ("Lavender") {
       msg ("You buy some lavender from Cindy.")
     }
   }
