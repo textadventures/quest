@@ -335,6 +335,23 @@ this.deletefromlist = false
 
 ```
 
+Here is a more involved example. The NPC is serving drinks at a party, and has an object, `tray_of_drinks`. This has an attribute, "count", representing the number of glasses on the tray. If the NPC is in the kitchen and the tray is not full, he will add another glass to the tray. If the tray is empty he will start a new sequence, going to the kitchen. Otherwiose he will start a new sequence, going to a randomly picked destination and waiting there three turns.
+
+```
+if (tray_of_drinks.count < 5 and this.parent = kitchen) {
+  PrintIfHere (this.parent, this.alias + " took a glass of Champagne from the replicator, and placed it on her tray.")
+  tray_of_drinks.count = tray_of_drinks.count + 1
+}
+else if (tray_of_drinks.count < 1) {
+  this.actions = Split("GoTo:kitchen;Script:player", ";")
+}
+else {
+  s = PickOneString("poolside;terrace;lounge;reception;den")
+  this.actions = Split("GoTo:" + s + ";Pause:player;Pause:player;Pause:player;Script:player", ";")
+}
+this.deletefromlist = false
+```
+
 
 Coordinating NPCs
 -----------------
