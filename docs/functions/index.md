@@ -384,7 +384,9 @@ Most games shouldn't need to call these directly.
 
 These will not be relevant to many games at all, but are available as a consequence of the .NET framework Quest is built on. They are included here for completeness; if you need them, you will know what they do. There is no further documentation.
 
-These all take a single foating point number, and return the corresponding floating point number.
+Quest has `e` and `pi` as built-in constants.
+
+These all take a single foating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
 
 * Abs
 * Acos
