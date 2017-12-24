@@ -180,6 +180,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Functions](functions/)
 -   [Attribute Types](types/)
 -   [Elements](elements/)
+-   [Using doubles](using_doubles.html)
 -   [ASLX File Format](aslx.html)
 -   [Expressions](expressions.html)
 -   [Competition entries](competition_entry.html)
