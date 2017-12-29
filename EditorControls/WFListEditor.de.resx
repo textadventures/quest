@@ -145,12 +145,9 @@
     <value>Nach unten</value>
   </data>
   <data name="expandAllToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Strg+Right</value>
   </data>
   <data name="collapseAllToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Strg+Left</value>
   </data>
     <data name="deleteToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Entf</value>
   </data>
 </root>

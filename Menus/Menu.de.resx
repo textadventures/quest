@@ -285,7 +285,6 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="FullScreenToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Strg+Alt+V</value>
   </data>
   <data name="FullScreenToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Vollbild</value>

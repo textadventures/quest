@@ -315,6 +315,9 @@
     <EmbeddedResource Include="WFDictionaryStringControl.resx">
       <DependentUpon>WFDictionaryStringControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WFEditorTree.de-DE.resx">
+      <DependentUpon>WFEditorTree.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WFEditorTree.de.resx">
       <DependentUpon>WFEditorTree.cs</DependentUpon>
     </EmbeddedResource>
