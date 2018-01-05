@@ -46,35 +46,43 @@ When to use doubles...
 I have been messing with Quest for over 6 years and besides experimenting for tutorials like this have never had to use anything other than integers. The only time I have seen it come up on the forum was for someone trying to track the progress of a ship across the ocean (or spaceship across space maybe), where the player specifies an angle and distance. For complex trigonmetric calculations, you are into the realm of doubles.
 
 
-Trigonometry, etc.
-------------------
+Trigonometry
+------------
 
-Quest supports all the usual trigonometric functions - and the obscure ones too - and others as well.
+Quest supports all the usual trigonometric functions - and the obscure ones too - and others functions as well.
 
-* Abs
 * Acos
 * Asin
 * Atan
 * Cos
-* Exp
-* Log
-* Log10
+* Cosh
 * Sin
 * Sinh
-* Sqrt
 * Tan
 * Tanh
 
-Note that the trigonometric functions all use radians rather than degrees. If you want to work in degrees, you will need to make your own functions. For example, you could add a function called `Sine`, returning a double and taking a single parameter, "angle", and have a convert the angle to radians that call the built in function.
+Note that the trigonometric functions all use radians rather than degrees. If you want to work in degrees, you will need to make your own functions. For example, you could add a function called `Sine`, returning a double and taking a single parameter, "angle", and have it convert the angle to radians before calling the built-in function.
 
 ```
 return (Sin(angle * pi / 180))
 ```
 
-Notes...
--------------
+Other Functions and Constants
+---------------
 
 The constants `e` and `pi` are built-in.
+
+Quest also has these other functions.
+
+* Abs
+* Exp
+* Log
+* Log10
+* Sqrt
+
+
+Notes...
+-------------
 
 If you do a calculation that mixes integers and doubles, Quest will convert the integers to doubles to do the maths, and the result will be a double.
 
