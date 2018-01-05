@@ -82,6 +82,11 @@ namespace TextAdventures.Quest.Functions
             return new QuestList<string>(input.Split(new string[] { splitChar }, StringSplitOptions.None));
         }
 
+        public static QuestList<string> Split(string input)
+        {
+            return new QuestList<string>(input.Split(new string[] { ";" }, StringSplitOptions.None));
+        }
+
         public static string Join(IEnumerable<string> input, string joinChar)
         {
             return string.Join(joinChar, input);
