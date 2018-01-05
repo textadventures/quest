@@ -147,6 +147,7 @@ A look at some of the more technical features of Quest. These articles assume yo
 -  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
 -  [Scopes](scopes.html)
+-  [Clones](clones.html)
 -  [Change scripts](change_scripts.html)
 -  [Javascript](using_javascript.html)
 
