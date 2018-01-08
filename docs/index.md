@@ -71,6 +71,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [The Text Processor](text_processor.html)
 -  [Lockable exits](using_lockable_exits.html)
 -  [Multimedia](multimedia.html)
+-  [Images](images.html)
 -  [Important attributes](important_attributes.html)
 -  [Custom attributes](using_attributes.html) (including status attributes and change scripts)
 -  [Using functions](functions.html)
@@ -149,6 +150,7 @@ A look at some of the more technical features of Quest. These articles assume yo
 -  [Scopes](scopes.html)
 -  [Clones](clones.html)
 -  [Change scripts](change_scripts.html)
+-  [Advanced game scripts](advanced_game_scripts.html)
 -  [Javascript](using_javascript.html)
 
 
@@ -174,6 +176,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 
 -   [Common problems](problems.html)
 -   [WebEditor](webeditor.html)
+-   [Code view](codeview.html)
 -   [Notes for users of previous versions of Quest](upgrade_notes.html)
 -   [ASL Requirements](asl_requirements.html)
 -   ["Undo" support](undo_support.html)
@@ -181,10 +184,12 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Functions](functions/)
 -   [Attribute Types](types/)
 -   [Elements](elements/)
+-   [Null](null.html)
 -   [Using doubles](using_doubles.html)
 -   [ASLX File Format](aslx.html)
 -   [Expressions](expressions.html)
 -   [Competition entries](competition_entry.html)
+-   [Publishing games(publishing.html)
 -   [Configuring Quest](configuring_quest.html)
 -   [User contributed libraries](libraries.html)
 -   [User contributed guides](guides/)
@@ -194,7 +199,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 ---------------------------------
 
 -   [Helpsheets for beginners](guides/helpsheets.html) by gideonwilliams
--   [The Pixie's tutorials and librarys](https://github.com/ThePix/quest/wiki)
+-   [The Pixie's tutorials and libraries](https://github.com/ThePix/quest/wiki)
 
 
 
