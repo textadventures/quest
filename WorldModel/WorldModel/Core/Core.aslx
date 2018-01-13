@@ -120,6 +120,7 @@
     request (Show, "Location")
     if (game.showlocation) {
       JS.setCss ("#status", "display:block")
+      JS.eval ("$('#location').text('" + GetDisplayAlias(game.pov.parent) + "')")
     }
     else {
       JS.setCss ("#status", "display:none")
