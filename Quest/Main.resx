@@ -142,7 +142,7 @@
     <value>1</value>
   </data>
   <data name="&gt;&gt;ctlPlayer.Type" xml:space="preserve">
-    <value>TextAdventures.Quest.Player, Player, Version=5.7.6422.35067, Culture=neutral, PublicKeyToken=null</value>
+    <value>TextAdventures.Quest.Player, Player, Version=5.8.6588.3315, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -382,7 +382,7 @@
 </value>
   </data>
   <data name="&gt;&gt;ctlMenu.Type" xml:space="preserve">
-    <value>TextAdventures.Quest.Controls.Menu, Menus, Version=5.7.6422.35066, Culture=neutral, PublicKeyToken=null</value>
+    <value>TextAdventures.Quest.Controls.Menu, Menus, Version=5.8.6588.3312, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ctlPlayer.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 30</value>
@@ -390,29 +390,20 @@
   <data name="ctlPlayer.Size" type="System.Drawing.Size, System.Drawing">
     <value>979, 571</value>
   </data>
-  <data name="ctlMenu.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Quest</value>
-  </data>
   <data name="&gt;&gt;ctlLauncher.Type" xml:space="preserve">
     <value>WindowsFormsIntegration.Design.HostedComponent, WindowsFormsIntegration.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ctlLauncherHost.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Main</value>
+  </data>
+  <data name="ctlPlayer.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
   <data name="ctlLauncherHost.Text" xml:space="preserve">
     <value>ElementHost1</value>
   </data>
   <data name="ctlLauncherHost.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 30</value>
-  </data>
-  <data name="ctlLauncherHost.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
   </data>
   <data name="&gt;&gt;ctlPlayer.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -423,17 +414,23 @@
   <data name="&gt;&gt;ctlLauncherHost.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="ctlEditor.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ctlEditor.Type" xml:space="preserve">
+    <value>TextAdventures.Quest.Editor, Editor, Version=5.8.6588.3317, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="ctlEditor.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>979, 601</value>
   </data>
-  <data name="ctlEditor.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
   <data name="&gt;&gt;ctlMenu.Name" xml:space="preserve">
     <value>ctlMenu</value>
+  </data>
+  <data name="&gt;&gt;ctlLauncherHost.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;dlgOpenFile.Name" xml:space="preserve">
     <value>dlgOpenFile</value>
@@ -441,8 +438,8 @@
   <data name="&gt;&gt;ctlMenu.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="ctlEditor.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
   </data>
   <data name="&gt;&gt;ctlEditor.Parent" xml:space="preserve">
     <value>$this</value>
@@ -459,14 +456,17 @@
   <data name="ctlMenu.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="&gt;&gt;ctlEditor.Type" xml:space="preserve">
-    <value>TextAdventures.Quest.Editor, Editor, Version=5.7.6422.35067, Culture=neutral, PublicKeyToken=null</value>
+  <data name="ctlLauncherHost.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="ctlPlayer.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
   </data>
   <data name="ctlMenu.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
-  <data name="ctlEditor.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="ctlLauncherHost.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 4, 4, 4</value>
@@ -474,7 +474,7 @@
   <data name="ctlEditor.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
-  <data name="ctlPlayer.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="ctlMenu.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>5, 5, 5, 5</value>
   </data>
   <data name="&gt;&gt;ctlPlayer.Name" xml:space="preserve">
@@ -483,14 +483,14 @@
   <data name="&gt;&gt;dlgOpenFile.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ctlPlayer.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ctlMenu.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;ctlLauncherHost.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Quest</value>
   </data>
   <data name="&gt;&gt;ctlMenu.Parent" xml:space="preserve">
     <value>$this</value>
@@ -501,13 +501,13 @@
   <data name="&gt;&gt;ctlPlayer.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>de</value>
+  <metadata name="dlgOpenFile.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>25, 16</value>
   </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="dlgOpenFile.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>25, 16</value>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>de</value>
   </metadata>
 </root>

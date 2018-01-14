@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Name="ImageSelectionWindow"
         Title="Choose an image" SizeToContent="WidthAndHeight" MinWidth="280" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
-        Icon="/EditorControls;component/q2_48x48c.ico" Initialized="ImageSelectionWindow_Initialized">
+        Icon="Resources/questicon16.ico" Initialized="ImageSelectionWindow_Initialized">
     <Grid>
         <StackPanel>
             <EditorControls:FileDropDown x:Name="fileDropDown" HorizontalAlignment="Stretch" Margin="10" />

@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>q2_48x48c.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
@@ -545,9 +546,6 @@
     <Resource Include="Images\Up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="q2_48x48c.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>
@@ -660,6 +658,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\s_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\questicon16.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("Editor")>
-<Assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE. Icons by https://de.icons8.com/ is licensed under CC BY-ND 3.0")>
+<Assembly: AssemblyCopyright("Copyright © 2017/2018 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE. All Icons by https://de.icons8.com/ are licensed under CC BY-ND 3.0.")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -30,4 +30,4 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("5.7.*")>
+<Assembly: AssemblyVersion("5.8.*")>

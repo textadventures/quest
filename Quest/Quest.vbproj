@@ -19,7 +19,7 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
-    <ApplicationIcon>q2_48x48c.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\questicon256.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -291,7 +291,7 @@
     <Content Include="jfwapi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="q2_48x48c.ico" />
+    <Content Include="Resources\questicon256.ico" />
     <None Include="Resources\questlogo.png" />
   </ItemGroup>
   <ItemGroup>

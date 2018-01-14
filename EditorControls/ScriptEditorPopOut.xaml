@@ -1,7 +1,7 @@
 ﻿<Window xmlns:my="clr-namespace:TextAdventures.Quest.EditorControls"  x:Class="TextAdventures.Quest.EditorControls.ScriptEditorPopOut"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Script Editor" Height="600" Width="700" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="/EditorControls;component/q2_48x48c.ico">
+        Title="Script Editor" Height="600" Width="700" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="Resources/questicon16.ico">
     <Grid TextOptions.TextFormattingMode="Display">
         <my:ScriptEditorControl x:Name="ctlScriptEditor" />
     </Grid>

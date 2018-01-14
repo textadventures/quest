@@ -53,6 +53,7 @@ Partial Class Main
         'ctlEditor
         '
         resources.ApplyResources(Me.ctlEditor, "ctlEditor")
+        Me.ctlEditor.BackColor = System.Drawing.Color.GhostWhite
         Me.ctlEditor.Name = "ctlEditor"
         Me.ctlEditor.SimpleMode = False
         '
