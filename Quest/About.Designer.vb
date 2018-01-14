@@ -127,6 +127,7 @@ Partial Class About
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "About"
+        Me.ShowIcon = False
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel4.ResumeLayout(False)

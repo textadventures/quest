@@ -23,26 +23,29 @@ Partial Class Debugger
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Debugger))
-        Me.tabsMain = New System.Windows.Forms.TabControl
+        Me.tabsMain = New System.Windows.Forms.TabControl()
         Me.SuspendLayout()
         '
         'tabsMain
         '
         Me.tabsMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tabsMain.Location = New System.Drawing.Point(0, 0)
+        Me.tabsMain.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabsMain.Name = "tabsMain"
         Me.tabsMain.SelectedIndex = 0
-        Me.tabsMain.Size = New System.Drawing.Size(497, 348)
+        Me.tabsMain.Size = New System.Drawing.Size(663, 428)
         Me.tabsMain.TabIndex = 1
         '
         'Debugger
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(497, 348)
+        Me.ClientSize = New System.Drawing.Size(663, 428)
         Me.Controls.Add(Me.tabsMain)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "Debugger"
+        Me.ShowIcon = False
         Me.Text = "Debugger"
         Me.ResumeLayout(False)
 
