@@ -28,6 +28,7 @@ Partial Class Toolbar
         Me.butDebugger = New System.Windows.Forms.ToolStripButton()
         Me.butLog = New System.Windows.Forms.ToolStripButton()
         Me.butHTML = New System.Windows.Forms.ToolStripButton()
+        Me.butWalkthrough = New System.Windows.Forms.ToolStripButton()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -36,7 +37,7 @@ Partial Class Toolbar
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butDebugger, Me.butLog, Me.butHTML})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butWalkthrough, Me.butDebugger, Me.butLog, Me.butHTML})
         Me.ctlToolStrip.Name = "ctlToolStrip"
         '
         'butStop
@@ -67,6 +68,13 @@ Partial Class Toolbar
         Me.butHTML.Name = "butHTML"
         Me.butHTML.Tag = "htmldevtools"
         '
+        'butWalkthrough
+        '
+        Me.butWalkthrough.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_walkthrough
+        resources.ApplyResources(Me.butWalkthrough, "butWalkthrough")
+        Me.butWalkthrough.Name = "butWalkthrough"
+        Me.butWalkthrough.Tag = "walkthrough"
+        '
         'Toolbar
         '
         resources.ApplyResources(Me, "$this")
@@ -84,5 +92,5 @@ Partial Class Toolbar
     Friend WithEvents butDebugger As System.Windows.Forms.ToolStripButton
     Friend WithEvents butLog As System.Windows.Forms.ToolStripButton
     Friend WithEvents butHTML As System.Windows.Forms.ToolStripButton
-
+    Friend WithEvents butWalkthrough As ToolStripButton
 End Class

@@ -189,6 +189,9 @@
     <EmbeddedResource Include="Log.resx">
       <DependentUpon>Log.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Menu.de.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>
@@ -313,6 +316,7 @@
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\b_walkthrough.png" />
     <None Include="Resources\b_stop.png" />
     <None Include="Resources\b_debug.png" />
     <None Include="Resources\b_log.png" />

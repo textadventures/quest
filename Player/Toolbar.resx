@@ -138,6 +138,18 @@
   <data name="butStop.Text" xml:space="preserve">
     <value>Stop Game</value>
   </data>
+  <data name="butWalkthrough.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="butWalkthrough.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="butWalkthrough.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 47</value>
+  </data>
+  <data name="butWalkthrough.Text" xml:space="preserve">
+    <value>Walkthrough</value>
+  </data>
   <data name="butDebugger.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
@@ -232,6 +244,12 @@
     <value>butHTML</value>
   </data>
   <data name="&gt;&gt;butHTML.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;butWalkthrough.Name" xml:space="preserve">
+    <value>butWalkthrough</value>
+  </data>
+  <data name="&gt;&gt;butWalkthrough.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
