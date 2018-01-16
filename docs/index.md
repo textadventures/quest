@@ -70,6 +70,7 @@ Quest has a whole range of features built in and ready to use. You probably won'
 
 -  [The Text Processor](text_processor.html)
 -  [Custom attributes](using_attributes.html) (including status attributes and change scripts)
+-  [Exits](exits.html)
 -  [Containers](containers.html)
 -  [Switchable objects](switchable.html)
 -  [Light and dark](handling_light_and_dark.html)
@@ -97,7 +98,6 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Keep a journal](keeping_a_journal.html)
 -  [Keep score](keeping_score.html)
 -  [Implement a transit system](transit_system.html)
--  [Make exits lockable](using_lockable_exits.html)
 -  [Transform one (or more) thing to another](convert.html)
 -  [Track time](time.html)
 -  [Set up a shop](shop.html)
