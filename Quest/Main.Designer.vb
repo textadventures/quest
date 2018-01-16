@@ -36,7 +36,6 @@ Partial Class Main
         'dlgOpenFile
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
-        resources.ApplyResources(Me.dlgOpenFile, "dlgOpenFile")
         '
         'ctlPlayer
         '
@@ -52,23 +51,23 @@ Partial Class Main
         '
         'ctlEditor
         '
-        resources.ApplyResources(Me.ctlEditor, "ctlEditor")
         Me.ctlEditor.BackColor = System.Drawing.Color.GhostWhite
+        resources.ApplyResources(Me.ctlEditor, "ctlEditor")
         Me.ctlEditor.Name = "ctlEditor"
         Me.ctlEditor.SimpleMode = False
         '
         'ctlMenu
         '
-        resources.ApplyResources(Me.ctlMenu, "ctlMenu")
         Me.ctlMenu.BackColor = System.Drawing.Color.GhostWhite
+        resources.ApplyResources(Me.ctlMenu, "ctlMenu")
         Me.ctlMenu.ForeColor = System.Drawing.SystemColors.ControlText
         Me.ctlMenu.Mode = TextAdventures.Quest.Controls.Menu.MenuMode.GameBrowser
         Me.ctlMenu.Name = "ctlMenu"
         '
         'ctlLauncherHost
         '
-        resources.ApplyResources(Me.ctlLauncherHost, "ctlLauncherHost")
         Me.ctlLauncherHost.BackColor = System.Drawing.Color.GhostWhite
+        resources.ApplyResources(Me.ctlLauncherHost, "ctlLauncherHost")
         Me.ctlLauncherHost.Name = "ctlLauncherHost"
         Me.ctlLauncherHost.Child = Me.ctlLauncher
         '
