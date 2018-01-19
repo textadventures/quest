@@ -40,7 +40,7 @@ Commands
 
 In commands, we have a system built-in. Say there is an ATTACK command, the pattern could be:
 
-> attack #oject#
+> attack #object#
 
 In the command script, we now have a _local variable_ called "object". It has a different name, but this is just a container like `newgoblin`, and just as with `newgoblin`, we can change it around in our script.
 
