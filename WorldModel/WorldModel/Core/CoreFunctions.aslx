@@ -76,6 +76,9 @@
     if (not HasString(object, "alias")) {
       newobject.alias = object.name
     }
+    if (not HasAttribute(object, "prototype")) {
+      newobject.prototype = object
+    }
     return (newobject)
   </function>
 
