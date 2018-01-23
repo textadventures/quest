@@ -47,6 +47,11 @@ msg ("You died!")
 finish
 ```
 
+You can set an object to be food (or a potion, or whatever) that will heal the player. Go to the _Features_ of the object and tick "Edible", then go to the _Edible_ tab, select "Can be eaten". You can then set how much health the food will give the player.
+
+
+_NOTE_ If you want a more flexible health system, for example you want to be able to set the maximum health, you are best starting from scratch with a custom attribute, not called "health", and turning off the health feature.
+
 
 Money
 -----

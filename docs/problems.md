@@ -4,7 +4,7 @@ title: Resolving Common Problems
 ---
 
 
-Note: _This is a work in progress..._
+Note: _This is a work in progress. It does not cover all errors, but is slowly getting closer to that state..._
 
 
 Problems when starting Quest
@@ -46,16 +46,6 @@ There are all sorts of problems that can arise as you code with Quest. Computer 
 - Functions must have exactly the right number of paramters in the right order
 
 
-### Understanding error messages
-
-The error messages usually come from deep in the Quest code, where things are not quite the same. If it is talking about an object, it probably means null. For example, if an attribute has not been set (so is null), you will see this:
-```
-Error running script: Object reference not set to an instance of an object.
-```
-
-If it means object, it may say "element". Or object.
-
-
 ### Room description appears twice
 
 This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
@@ -91,7 +81,7 @@ msg (e)
 -> 2.71828182845905
 ```
 
-This only applies to local variables, you can give these names to objects and attributes.
+This only applies to local variables, you can give these names to attributes.
 
 ### `object`, `game`, `turnscript`, `command`, `exit`
 
@@ -103,4 +93,88 @@ You can use attribute names with spaces in them for strings, number, objects and
 
 ### Other attributes
 
-Various attributes are already used by Quest. Do not do anything with "type" or "elementtype". Obviously "name", "parent", "alias", etc. have specific meanings in Quest, and trying to use them for something elkse will cause problems.
+Various attributes are already used by Quest. Do not do anything with "type" or "elementtype". Obviously "name", "parent", "alias", etc. have specific meanings in Quest, and trying to use them for something else will cause problems.
+
+
+
+Understanding runtime error messages
+----------------------------
+
+Runtime errors occur when playing the game. Quest has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
+
+```
+Error running script: Error compiling expression 'game.myflag': RootExpressionElement: Cannot convert type 'Object' to expression result of 'Boolean'
+```
+
+
+### Locating the error
+
+The first part is in this format:
+
+```
+Error running script: Error compiling expression '[whatever]':
+```
+
+The `[whatever]` is the important part, as that is the code that Quest cannot understand.
+
+If you are using the desktop version, copy the bit inside the single quotes (without the quotes) and go to _Tools - Code view_, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurance.
+
+If using the web version, it is not as easy, but you could download your game, open it in a text editor and then search for the error. You would have to then correct the on-line version, and it still may not be clear how to do that.
+
+Either way, it may be easier to check any scripts you have changed recently, and see if the text is there using "Code view" for each script.
+
+
+### Correcting the error
+
+The second part of the message indicates what the error actually is.
+
+```
+RootExpressionElement: Cannot convert type '[something]' to expression result of 'Boolean'
+```
+
+This occurs when the text inside an `if` condition, does not work out to a Boolean. If `[something]` is "Object", then the code has resulted in `null`, and may be because an attribute does not exist (or has been spelled wrongly).
+
+```
+ArithmeticElement: Operation 'Add' is not defined for types 'Int32' and 'Object'
+```
+
+This could be 'Subtract' or whatever, and the types may be different. Again "Object" indicates `null`, and this is telling you that you are trying to add (or whatever) a number and null. Again, this is probably because an attribute does not exist or has been misspelled.
+
+```
+Unknown object or variable '[something]'
+```
+
+In this case, Quest has found `[something]` in a script, but has no idea what it is. It could be an object that you misspelled or a local variable that you have not given a value to yet.
+
+
+
+### Errors calling functions
+
+If the function name is wrong, you will get something like this:
+
+```
+Error running script: Error compiling expression 'msg2("some text")': FunctionCallElement: Could find not function 'msg2(String)'
+```
+
+If you have the wrong number of arguments, you might one of these (first is for hard-coded functions):
+
+```
+Error running script: Expected 1 parameter(s) in script 'msg("some text", "more text")'
+Error running script: Too many parameters passed to OutputText function - 2 passed, but only 1 expected
+```
+
+If you try to set a value from a function that does not return a type, you might see one of these:
+
+```
+Error running script: Error compiling expression 'msg("some text")': FunctionCallElement: Could find not function 'msg(String)'
+Error running script: Error compiling expression 'OutputText("some text")': Value cannot be null.Parameter name: key
+```
+
+For hard-coded functions, you will get an error if you do not set a value and it has a return type, and if you send it the wrong type in the parameters:
+
+```
+The following errors occurred: Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
+Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
+```
+
+

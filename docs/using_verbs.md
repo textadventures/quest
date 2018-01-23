@@ -6,7 +6,7 @@ title: How to use verbs
 
 Verbs are an alternative to commands that can be simpler to use, but do seem to lead to some confusion. We did look at them in the [tutorial](tutorial/using_scripts.html), but it is worth looking at them in more depth.
 
-Verbs are always used in conjunction an object, so ROTATE KNOB could be set up as a verb, but STAND UP or JUMP will require commands. You could use a command for ROTATE KNOB, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, a command might be better; however there is no hard and fast rule.
+Verbs are always used in conjunction an object, so ROTATE KNOB could be set up as a verb, but STAND UP or JUMP will require commands. You could use a command for ROTATE KNOB, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a SELL command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
 
 To create a verb, select the appropriate object, and go to the _Verbs_ tab. Click add, and type in your verb. Your verb will appear in the upper box, and the response can be set in the section below, either "Print a message" or "Run a script". Let us suppose we set this up with a script to make things happen when the dial is turned (how to do scripts is not something I will be dealing with here).
 
@@ -54,7 +54,7 @@ In case you are wondering, Quest understands "this" to mean the object to which 
 Multiple Objects
 ----------------
 
-You can also set up verbs to handle multiple objects, so we could use them for ATTACK GOBLIN WITH KNIFE. Whether this is preferable to using a command is debatable (if there are several things you can attack the goblin with, all doing pretty much the same thing, use a command), but we will look at how it is done.
+You can also set up verbs to handle multiple objects, so we could use them for ATTACK GOBLIN WITH KNIFE. Whether this is preferable to using a command is debatable. Again it depends how specific it is. If there are several things you can attack the goblin with, all doing pretty much the same thing, use a command. If there are specific combinations that apply then a verb is probably easier.
 
 The first step is to add the verb to the object, in this case the goblin. However, instead of setting "attack" to use a script, set it to "Require another object". this will then put up a list of objects (currently empty) to which you can add the knife by clicking Add. You will then get a new dialogue box, into which you can put your script.
 
@@ -102,7 +102,7 @@ If the player just types ATTACK GOBLIN, she will be presented with a menu of app
 
 ### Complex verbs
 
-Verbs are a simple way to add commands to your game, but they only handle commands of the form `VERB OBJECT`, such as THROW BALL. Or so you might think. In fact, you can edit the verb element to cover a lot of possible commands.
+Verbs are a simple way to add commands to your game, but they only handle commands of the form `VERB OBJECT`, such as THROW BALL. Or so you might think. In fact, in the desktop version you can edit the verb element to cover a lot of possible commands.
 
 Say we have a HUG command. We can implement HUG MARY very easily, but what about GIVE MARY A HUG? Sure, just use this as the pattern:
 
@@ -110,7 +110,7 @@ Say we have a HUG command. We can implement HUG MARY very easily, but what about
 hug;give #object# a hug
 ```
 
-Each option is separated by a semi-colon. The second option includes `#object#` - just as commands do - as a stand-in for the object name. The above will handle HUG MARY and GIVE MARY A HUG, but not GIVE MARY HUG, but we can add that too:
+Each option is separated by a semi-colon. The second option includes `#object#` - just as commands do - as a stand-in for the object name (note that it has to be called "object"; with commands it can be anything that starts "object"). The above will handle HUG MARY and GIVE MARY A HUG, but not GIVE MARY HUG, but we can add that too:
 
 ```
 hug;give #object# a hug;give #object# hug
@@ -125,7 +125,7 @@ hug;give #object# hug;give #object# a hug
 ... Quest will get a match with the second option, then complain it cannot find a "mary a".
 
 
-As with commands, you can also use a Regex to match against (change "Pattern" to "Regulat expression"). 
+As with commands, you can also use a Regex to match against (change "Pattern" to "Regular expression"). 
 
 ```
 ^(hug (?<object>.*)|give (?<object>.*?) (a hug|hug))$
@@ -133,3 +133,4 @@ As with commands, you can also use a Regex to match against (change "Pattern" to
 
 By default, Regex matching is "greedy", and will try to grab as much as it can, so again will attempt to grab "mary a" as the object. The question mark after the asterisk makes that non-greedy so it takes the minimum, leaving the "a" out of the object name.
 
+For verbs that use two objects, Quest will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. That appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for ATTACK GOBLIN WITH KNIFE and USE KNIFE TO ATTACK GOBLIN) using the command pattern. In both cases you will need to use commands.

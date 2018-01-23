@@ -20,7 +20,7 @@ Where to find libraries
 
 You can find libraries:
 
-- [User submitted libraries](libriries.html)
+- [User submitted libraries](libraries.html)
 
 - [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
 
