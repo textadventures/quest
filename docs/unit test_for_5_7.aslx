@@ -4,7 +4,7 @@
   <include ref="Core.aslx" />
   <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
   <delegate name="textprocessor" parameters="" type="string" />
-  <game name="Unit testing for 5.8">
+  <game name="Unit testing for 5.7">
     <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
     <version>1.0</version>
     <firstpublished>2017</firstpublished>
@@ -444,6 +444,24 @@
       script drop object.parent = null
       shoes.parent = null
       AssertCommand ("take all", "red ball: You pick it up.")
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Split")
+      l = Split("one;two;three", ";")
+      Assert (3, ListCount(l))
+      l = Split("one|two|three", "|")
+      Assert (3, ListCount(l))
+      l = Split("one;two;three", "|")
+      Assert (1, ListCount(l))
+      l = Split("one;two;three")
+      Assert (3, ListCount(l))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Split")
+      tiger_clone = CloneObject(tiger)
+      Assert (tiger, tiger_clone.prototype)
+      tiger_clone2 = CloneObject(tiger_clone)
+      Assert (tiger, tiger_clone2.prototype)
       Results
     ]]></start>
     <scopebackdrop type="script">
