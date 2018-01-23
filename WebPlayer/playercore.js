@@ -645,8 +645,8 @@ function setCurrentDiv(div) {
 var _divCount = -1;
 
 function getDivCount() {
-    if (_divCount == -1) {
-        _divCount = parseInt($("#outputData").attr("data-divcount"));
+    if (_divCount < 1) {
+        _divCount = parseInt($("#outputData").attr("data-divcount")) || 0;
     }
     return _divCount;
 }
