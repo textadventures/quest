@@ -1,5 +1,4 @@
 <library>
-  <include ref="EditorEnglish.aslx"/>
   <include ref="English.aslx"/>
   <template name="LanguageId">da</template>
   
