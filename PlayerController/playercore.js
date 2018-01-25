@@ -745,9 +745,15 @@ function disableAllCommandLinks() {
     });
 }
 
+
+//Modified by mrangel and KV,and added by KV 10\20/2017
+//This keeps the divOutputAlign count in order after clearing the screen
+// and saves the cleared text, which can be accessed to print or save
+// a game transcript later.
 function clearScreen() {
+    $("#divOutput").append("<hr />");
+    $("#divOutput").children().css("display", "none");
     $("#divOutput").css("min-height", 0);
-    $("#divOutput").html("");
     createNewDiv("left");
     beginningOfCurrentTurnScrollPosition = 0;
     setTimeout(function () {
