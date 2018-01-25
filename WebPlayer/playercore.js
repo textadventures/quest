@@ -337,6 +337,7 @@ function scrollToEnd() {
     }
     $("#txtCommand").focus();
     // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
+    // In fact it may be the all the rest of this can deleted
     $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
@@ -460,7 +461,11 @@ function setForeground(col) {
 }
 
 function setCompassDirections(directions) {
-    _compassDirs = directions;
+    if (typeof directions === "string") {
+      _compassDirs = directions.split(";")
+    } else {
+      _compassDirs = directions;
+    }
     $("#cmdCompassNW").attr("title", _compassDirs[0]);
     $("#cmdCompassN").attr("title", _compassDirs[1]);
     $("#cmdCompassNE").attr("title", _compassDirs[2]);
@@ -868,6 +873,9 @@ function HideOutputSection(name) {
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
         $("." + name).hide(250, function () { $(this).remove(); });
+        // Added by The Pixie, 04/Oct/17
+        // This should close the gap when the menu is hidden
+        $("#divOutput").animate({'min-height':0}, 250);
     }, 250);
 }
 
@@ -1022,6 +1030,9 @@ function setCss(element, cssString) {
   }
 }
 
+function addScript(text) {
+    $('body').prepend(text);
+}
 
 function colourBlend(colour1, colour2) {
   $('#gamePanes').css('background-color', 'transparent');
@@ -1041,7 +1052,7 @@ elements = [
   '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
   '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
   '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
-  '#commandPane'
+  '#commandPane', '#customStatusPane'
 ];
 
 dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
@@ -1166,9 +1177,10 @@ function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
 
-function Grid_DrawLabel(x, y, z, text) {
+function Grid_DrawLabel(x, y, z, text, col) {
+    if (col === undefined) col = "black";
     if (!_canvasSupported) return;
-    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text, col);
 }
 
 function Grid_ShowCustomLayer(visible) {
