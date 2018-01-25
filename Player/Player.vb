@@ -1,6 +1,8 @@
-﻿Imports System.Xml
+Imports System.Xml
 Imports System.Threading
 Imports System.Globalization
+Imports System.IO
+Imports Microsoft.Win32
 
 Public Class Player
 
@@ -1070,6 +1072,15 @@ Public Class Player
                         m_log.txtLog.AppendText(DateTime.Now.ToString() + " " + text)
                         m_log.txtLog.Select(m_log.txtLog.Text.Length, 0)
                         m_log.txtLog.ScrollToCaret()
+                        Dim filePath As String
+                        Dim logNamePre As String
+                        Dim logDir As String
+                        logDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest_logs"
+                        My.Computer.FileSystem.CreateDirectory(logDir)
+                        logNamePre = "quest_log_" + Date.Now.ToString("yyyy-MM-dd_HH.mm.ss") + ".txt"
+                        filePath = System.IO.Path.Combine(
+                        logDir, logNamePre)
+                        My.Computer.FileSystem.WriteAllText(filePath, m_log.txtLog.Text, True)
                     End Sub)
 
     End Sub
