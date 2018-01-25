@@ -2,7 +2,7 @@
   <function name="RunTurnScripts">
     if (IsGameRunning()) {
       if (game.menucallback = null) {
-        foreach (turnscript, AllTurnScripts()) {
+        foreach (turnscript, ObjectListSort(AllTurnScripts(), "name")) {
           if (GetBoolean(turnscript, "enabled")) {
             inscope = false
             if (turnscript.parent = game or turnscript.parent = null) {
