@@ -353,7 +353,7 @@
     return (true)
   </function>
   
-   <function name="CreateBiExits" parameters="direction, from, to">
+  <function name="CreateBiExits" parameters="dir, from, to">
     create exit (dir, from, to)
     create exit (ReverseDirection(dir), to, from)
   </function>
