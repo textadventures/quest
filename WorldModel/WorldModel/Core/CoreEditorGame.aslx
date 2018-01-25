@@ -462,6 +462,12 @@
         <freetext/>
       </control>
 
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameRespondtogridclicks]</caption>
+        <attribute>respondtogridclicks</attribute>
+      </control>
+
 
       
       <control>

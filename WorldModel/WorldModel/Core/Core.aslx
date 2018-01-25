@@ -189,6 +189,9 @@
     if (game.panestheme = "Tranquil") {
       JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
     }
+    if (game.respondtogridclicks) {
+      JS.respondToGridClicks (true)
+    }
     //
     // -----------------------------------------------------------------------
     // This is in the original, but must come last

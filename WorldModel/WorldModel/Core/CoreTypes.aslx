@@ -41,6 +41,7 @@
     <customstatuspane type="boolean">false</customstatuspane>
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
+    <respondtogridclicks type="boolean">false</respondtogridclicks>
     <commandcursor>&gt;</commandcursor>
     <moneyformat>$!</moneyformat>
     <classiclocation/>
