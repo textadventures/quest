@@ -61,10 +61,13 @@ function onMouseDrag(event) {
     updateOffset(event.delta);
 }
 
+
 function onMouseUp(event) {
-    var x = getGridSquareX(event.point);
-    var y = getGridSquareY(event.point);
-    ASLEvent("JS_GridSquareClick", x + ";" + y);
+    if (_respondToGridClicks) {
+        var x = getGridSquareX(event.point);
+        var y = getGridSquareY(event.point);
+        ASLEvent("JS_GridSquareClick", x + ";" + y);
+    }
 }
 
 function updateOffset(delta) {
