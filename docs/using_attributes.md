@@ -146,3 +146,11 @@ Note that you should test if the `hits` attribute is zero _or less_, as you want
 
 You can do the same for the monsters, ensuring they die when they run out of hits (editing the script as required).
 
+
+
+Attribute names to avoid
+------------------------
+
+Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**.
+
+It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
