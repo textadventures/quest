@@ -462,6 +462,14 @@
       Assert (tiger, tiger_clone.prototype)
       tiger_clone2 = CloneObject(tiger_clone)
       Assert (tiger, tiger_clone2.prototype)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("CreateBiExits")
+      count6 = ListCount(ScopeExitsForRoom(sixth))
+      count7 = ListCount(ScopeExitsForRoom(seventh))
+      CreateBiExits("north", sixth, seventh)
+      Assert(1, ListCount(ScopeExitsForRoom(sixth)) - count6) 
+      Assert(1, ListCount(ScopeExitsForRoom(seventh)) - count7) 
       Results
     ]]></start>
     <scopebackdrop type="script">
