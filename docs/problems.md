@@ -83,9 +83,10 @@ msg (e)
 
 This only applies to local variables, you can give these names to attributes.
 
-### `object`, `game`, `turnscript`, `command`, `exit`
+### `object`, `game`, `turnscript`, `command`, `exit`,`type`
 
-Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect. You can use them as local variable and object names, but I would advise against it.
+Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect when you save your game and then load it (whether during player or when editing). The problem is that these all have special meaning for Quest when it is loading XML files, and it will, for example, assume your "object" attribute is a real object.
+
 
 ### Attribute names with spaces
 
@@ -177,4 +178,27 @@ The following errors occurred: Error: Error adding script attribute 'start' to e
 Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
 ```
 
+### Error modifying the content of a list
 
+You might see this error when you change the display or inventory verbs of an object during a game (it is possible with other lists too):
+
+```
+Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+```
+
+Somewhere in your game you will have a line like one of these:
+
+```
+list add (sword.inventoryverbs, "Equip")
+list remove (hat.displayverbs, "Flatten")
+```
+
+The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the listwhen it belongs to the type.
+
+There are two solutions. The easiest is to add something to the the list in the editor (bottom of the __ tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
+
+Alternatively, you can gve the object a new list. The `Split`function offers an easy way to do that:
+
+```
+sword.inventoryverbs = Split("Look at;Take;Equip", ";")
+```
