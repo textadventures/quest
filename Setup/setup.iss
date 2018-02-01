@@ -25,7 +25,7 @@ AllowNoIcons=yes
 SolidCompression=yes
 PrivilegesRequired=admin
 ChangesAssociations=yes
-MinVersion=5.1sp3
+MinVersion=6.0
 UsePreviousSetupType=no
 
 [Languages]
