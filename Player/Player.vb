@@ -793,6 +793,13 @@ Public Class Player
         m_game.SendEvent(eventName, param)
         ClearBuffer()
     End Sub
+    Private Sub ctlPlayerHtml_SendAttribute(eventName As String, param As String) Handles ctlPlayerHtml.SendAttribute
+        If RecordWalkthrough IsNot Nothing Then
+            m_recordedWalkthrough.Add("attr:" + eventName + ";" + param)
+        End If
+        m_game.SendAttribute(eventName, param)
+        ClearBuffer()
+    End Sub
 
     Private Sub ctlPlayerHtml_Speak(text As String) Handles ctlPlayerHtml.Speak
         Speak(text)

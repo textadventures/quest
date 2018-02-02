@@ -730,6 +730,33 @@ namespace TextAdventures.Quest
             }
         }
 
+        public void SendAttribute(string eventName, string param)
+        {
+            Element handler;
+            m_elements.TryGetValue(ElementType.Function, eventName, out handler);
+
+            if (handler == null)
+            {
+                Print(string.Format("Error - no handler for attribute '{0}'", eventName));
+                return;
+            }
+
+            Parameters parameters = new Parameters();
+            parameters.Add((string)handler.Fields[FieldDefinitions.ParamNames][0], param);
+
+            RunProcedure(eventName, parameters, false);
+            if (Version >= WorldModelVersion.v540)
+            {
+                //TryFinishTurn();
+                if (State != GameState.Finished)
+                {
+                    UpdateLists();
+                }
+                // Might need to lose this KV
+                SendNextTimerRequest();
+            }
+        }
+
         public string Filename
         {
             get { return m_filename; }

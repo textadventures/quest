@@ -312,6 +312,9 @@ namespace WebPlayer.Mobile
                     case "event":
                         SendEvent(args[1]);
                         break;
+                    case "attr":
+                        SendAttribute(args[1]);
+                        break;
                     case "tick":
                         m_player.Tick(tickCount);
                         break;
@@ -355,6 +358,12 @@ namespace WebPlayer.Mobile
         {
             string[] args = data.Split(new[] { ';' }, 2);
             m_player.SendEvent(args[0], args[1]);
+        }
+
+        void SendAttribute(string data)
+        {
+            string[] args = data.Split(new[] { ';' }, 2);
+            m_player.SendAttribute(args[0], args[1]);
         }
 
         private SessionResources Resources

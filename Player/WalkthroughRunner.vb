@@ -44,6 +44,11 @@
                     Dim eventName As String = eventData(0)
                     Dim param As String = eventData(1)
                     m_game.SendEvent(eventName, param)
+                ElseIf cmd.StartsWith("attr:") Then
+                    Dim eventData As String() = cmd.Substring(6).Split(New Char() {";"c}, 2)
+                    Dim eventName As String = eventData(0)
+                    Dim param As String = eventData(1)
+                    m_game.SendAttribute(eventName, param)
                 Else
                     m_game.SendCommand(cmd)
                 End If

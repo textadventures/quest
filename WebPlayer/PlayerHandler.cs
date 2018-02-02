@@ -340,6 +340,12 @@ namespace WebPlayer
             m_controller.Game.SendEvent(eventName, param);
         }
 
+        public void SendAttribute(string eventName, string param)
+        {
+            if (m_finished) return;
+            m_controller.Game.SendAttribute(eventName, param);
+        }
+
         private bool Finished
         {
             get { return m_finished; }

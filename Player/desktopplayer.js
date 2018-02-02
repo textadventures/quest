@@ -15,6 +15,10 @@ function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
 }
 
+function ASLAttribute(event, parameter) {
+    UIEvent("ASLAttribute", event + ";" + parameter);
+}
+
 function goUrl(href) {
     UIEvent("GoURL", href);
 }
