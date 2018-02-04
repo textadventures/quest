@@ -306,6 +306,7 @@
     </None>
     <None Include="Core\CoreFunctions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreGrid.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -328,6 +329,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreWearable.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\ClockLib.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\NpcLib.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\GamebookCore.aslx">
@@ -358,7 +365,7 @@
     <None Include="Core\Languages\EditorDeutsch.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </None>	
+    </None>
     <None Include="Core\Languages\EditorEspanol.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -390,6 +397,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Romana.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	<None Include="Core\libraries\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Russian.aslx">
@@ -538,6 +548,18 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorDynamicTemplate.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="docs\*\*\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="docs\*\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="docs\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	<None Include="wiki\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

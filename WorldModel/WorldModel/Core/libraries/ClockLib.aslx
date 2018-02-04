@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+
+  <!--
+  ClockLib v3.2
+  
+  Version 3.1 adds functionality for displaying dates.
+  Version 3.2 displays noon as "12 noon" and midnight as "1 midnight"
+  
+  Quest version: 5.6
+  Written by: The Pixie, 2011-2017
+
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Clock-Library
+  -->
+
+
+  <object name="game_clock">
+    <inherit name="editor_object" />
+    <time type="int">0</time>
+    <minutes type="int">0</minutes>
+    <hours24 type="int">0</hours24>
+    <days type="int">0</days>
+    <countdown type="int">0</countdown>
+    <increment type="int">1</increment>
+    <waittime type="int">15</waittime>
+    <testing type="boolean">false</testing>
+    <clockmsg>You take your fob watch from your pocket, and look at it. It's ###.</clockmsg>
+    <changedtime type="script">
+      JS.eval("$('#clock').html('" + TimeAsString() + "');")
+    </changedtime>
+    <startyear type="int">2000</startyear>
+  </object>
+  
+  <command name="clock">
+    <pattern>clock;time;watch</pattern>
+    <script>
+      P (Replace(game_clock.clockmsg, "###", TimeAsString()))
+    </script>
+  </command>
+  
+  <command name="wait">
+    <pattern type="string">^wait$|^z$</pattern>
+    <script>
+      count = game_clock.waittime
+      game_clock.event = false
+      while (count > 0 and not game_clock.event) {
+        //msg("count = " + count)
+        //msg("game_clock.event = " + game_clock.event)
+        count = count - 1
+        IncTime()
+      }
+      if (not game_clock.event) {
+        P ("You wait " + game_clock.waittime + " minutes, but nothing happens.")
+      }
+    </script>
+  </command>
+  
+  <turnscript>
+    <enabled type="boolean">true</enabled>
+    <script>
+      if (HasBoolean(game, "notarealturn")) {
+        if (not game.notarealturn) {
+          for (i, 1, game_clock.increment) {
+            IncTime ()
+          }	
+        }
+        game_clock.increment = 1
+        game.notarealturn = false
+      }
+      else {
+        this.enabled = false
+      }
+    </script>
+  </turnscript>
+
+  <function name="TimeAsString" type="string"><![CDATA[
+    if (game_clock.minutes = 0 and game_clock.hours24 = 0) {
+      return (" 12 midnight")
+    }
+    if (game_clock.minutes = 0 and game_clock.hours24 = 12) {
+      return (" 12 noon")
+    }
+    hours = game_clock.hours24 % 12
+    if (hours = 0) {
+      hours = 12
+    }
+    s = " " + hours + ":" + DD(game_clock.minutes)
+    if (game_clock.hours24 < 12) {
+      return (s + " am")
+    }
+    else {
+      return (s + " pm")
+    }
+  ]]></function>
+  
+  
+  <!--
+  Should only be called internally.
+  Moves time on 1 minute, and checks to see if any event is set for that minute.
+  -->
+  <function name="IncTime"><![CDATA[
+    on ready {
+      game_clock.time = game_clock.time + 1
+      //msg("game_clock.time = " + game_clock.time)
+      //msg("game_clock.event = " + game_clock.event)
+      game_clock.minutes = game_clock.time % 60
+      game_clock.hours24 = (game_clock.time / 60) % 24
+      game_clock.days = game_clock.time / (60 * 24)
+      name = "event_" + DD(game_clock.days) + "_" + DD(game_clock.hours24) + "_" + DD(game_clock.minutes)
+      game_clock.countdown = game_clock.countdown - 1
+      //msg("Looking for: " + name)
+      o = GetObject(name)
+      if (not o = null and HasScript(o, "look")) {
+        if (game_clock.testing) msg("Found: " + o + " (" + o.alias + ")")
+        // this is used by wait
+        game_clock.event = true
+        do(o, "look")
+      }
+      else if (game_clock.countdown < 0 and HasAttribute(game_clock, "nextstep")) {
+        if (game_clock.testing) msg("{colour:silver:Step found: " + game_clock.nextstep + " (" + game_clock.nextstep.alias + ")}")
+        // this is used by wait
+        game_clock.event = true
+        step = game_clock.nextstep
+        game_clock.nextstep = null
+        do(step, "look")
+      }
+      game.clock = TimeAsString()
+      IncUserTime
+    }
+  ]]></function>
+
+
+  <!--
+  Can be overridden to have stuff happened each minute.
+  This will fire after any event scheduled for this time.
+  -->  
+  <function name="IncUserTime">
+  </function>
+  
+
+
+  <!--
+  Set this during a command to have the given time expire during the command.
+  -->  
+  <function name="SetInc" parameters="minutes">
+    game_clock.increment = minutes
+  </function>
+  
+  
+  <!--
+  Creates a new event for the given time, or as soon after that where there is a slot free.
+  -->  
+  <function name="CreateEvent" parameters="time, alias, script">
+    time = game_clock.time + time
+    o = null
+    while (o = null) {
+      o = AttemptCreateEvent(time)
+      time = time + 1
+    }
+    o.look = script
+    o.alias = alias
+  </function>
+
+  <!--
+  Creates a new event for the given time, or as soon after that where there is a slot free.
+  -->  
+  <function name="NextStep" parameters="step, delay">
+    game_clock.nextstep = step
+    game_clock.countdown = delay
+    //msg("delay=" + delay)
+  </function>
+
+
+
+  <!--
+  Will try to create an event at the given time, returning said event if successful.
+  If another event is set for that time, it will return null.
+  -->  
+  <function name="AttemptCreateEvent" parameters="time" type="object">
+    minutes = time % 60
+    hours24 = (time / 60) % 24
+    days = time / (60 * 24)
+    name = "event_" + DD(days) + "_" + DD(hours24) + "_" + DD(minutes)
+    //msg("Setting for: " + name)
+    o = GetObject(name)
+    if (o = null) {
+      create(name)
+      return (GetObject(name))
+    }
+    else {
+      return (null)
+    }
+  </function>
+  
+  <!--
+  Sets the game time. This can either be sent as an integer, the number of minutes since midnight on day 1,
+  or as a string, in this format: 01:14:35 (i.e, 2:35 pm on day 1).
+  -->
+  <function name="SetTime" parameters="minutes">
+    if (TypeOf(minutes) = "string") {
+      l = Split(minutes, ":")
+      if (not ListCount(l) = 3) error("SetTime failed to understand " + minutes)
+      game_clock.days = ToInt(StringListItem(l, 0))
+      game_clock.hours24 = ToInt(StringListItem(l, 1))
+      game_clock.minutes = ToInt(StringListItem(l, 2))
+      game_clock.time = (game_clock.days * 24 + game_clock.hours24) * 60 + game_clock.minutes
+    }
+    else {
+      game_clock.time = minutes
+      game_clock.minutes = game_clock.time % 60
+      game_clock.hours24 = (game_clock.time / 60) % 24
+      game_clock.days = game_clock.time / (60 * 24) + 1
+    }
+    game.clock = TimeAsString()
+  </function>
+  
+  <!--
+  Returns true if the game time is after the given time.
+  -->
+  <function name="IsAfter" parameters="time" type="boolean"><![CDATA[
+    if (TypeOf(time) = "string") {
+      l = Split(time, ":")
+      if (not ListCount(l) = 3) error("SetTime failed to understand " + minutes)
+      days = ToInt(StringListItem(l, 0))
+      hours24 = ToInt(StringListItem(l, 1))
+      minutes = ToInt(StringListItem(l, 2))
+      time = (days * 24 + hours24) * 60 + minutes
+    }
+    return (game_clock.time > time)
+  ]]></function>
+  
+  <!--
+  Returns the number of minutes since midnight on day 1.
+  -->
+  <function name="GetTime" type="int">
+    return (game_clock.time)
+  </function>
+  
+  <!--
+  Pads the given number (or string) is a single digit, it will be padded with an extra leading zero.
+  -->
+  <function name="DD" parameters="s" type="string"><![CDATA[
+    return (Pad (s, 2, "0"))
+  ]]></function>
+  
+  
+  <!--
+  Pads the given number or string is returned, padded with extra characters to the right to make it up to the given length.
+  -->
+  <function name="Pad" parameters="string, number, pad" type="string"><![CDATA[
+    text = ""
+    string = ToString(string)
+    for (i, 1, number - LengthOf(string)) {
+      text = text + pad
+    }
+    return (text + string)
+  ]]></function>
+  
+  
+  <!--
+  Call this from an event to have it happen in the background. What that means is that
+  if the WAIT command will not terminate at this event.
+  -->
+  <function name="Quiet"><![CDATA[
+    game_clock.event = false
+  ]]></function>
+  
+
+  <!--
+  This gets called only when the action is successful; for text that is part of
+  the narrative. You can override this in your own code to flag that a command was successful
+  or to display narrative text differently to meta text.
+  -->
+  <function name="P" parameters="s">
+    msg(s)
+  </function> 
+
+  <!--
+  Displays the the date as a string. Dates are relative to the year game_clock.startyear, which is 2000 by default.
+  You can override DisplayDate to alter how the date is actually shown.
+  Day 1 is the first of January, 2000 (or whatever year you set game_clock.startyear to). This means you must set the day to 
+  greater than zero in set time.
+  Note that this is an approximation to the Gregorian Calendar; it will handle simple leap years, but is not perfect.
+  It will consider 1900, for example, to be a leap year, however, it is fine for 1901 to 2099, which should cover most games.
+  This could be readily adapted for a fantasy calender.
+  -->
+  <function name="Date" type="string">
+    year = game_clock.startyear
+    day = game_clock.days
+    if (1 > day) error("Date function cannot cope with a day of zero or less")
+    // what year is it?
+    flag = true
+    while (flag) {
+      if (year % 4 = 0) {
+        days_this_year = 366
+      }
+      else {
+        days_this_year = 365
+      }
+      if (day > days_this_year) {
+        year = year + 1
+        day = day - days_this_year
+      }
+      else {
+        flag = false
+      }
+    }
+    // days in month
+    if (year % 4 = 0) {
+      days_in_months = Split("31;29;31;30;31;30;31;31;30;31;30;31", ";")
+    }
+    else {
+      days_in_months = Split("31;28;31;30;31;30;31;31;30;31;30;31", ";")
+    }
+    // what month is it?
+    month = 1
+    for (i, 0, 11) {
+      days_in_month = ToInt(StringListItem(days_in_months, i))
+      if (day > days_in_month) {
+        month = month + 1
+        day = day - days_in_month
+      }
+      else {
+        return (DisplayDate(year, month, day))
+      }
+    }
+  </function>
+  
+  <!--
+  Shows the date, nicely formatted
+  -->
+  <function name="DisplayDate" parameters="year, month, day" type="string">
+    months = Split(";January;February;March;April;May;June;July;August;September;October;November;December", ";")
+    return ("" + day + "th of " + StringListItem(months, month) + ", " + year)
+  </function> 
+  
+  
+</library>

@@ -1,0 +1,658 @@
+<?xml version="1.0"?>
+<library>
+
+
+  <!-- =================================================== -->
+  <!-- Tabs for Combat -->
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Description</caption>
+    <mustinherit>editor_object</mustinherit>
+
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description</caption>
+      <attribute>desc</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Lore description</caption>
+      <attribute>loredesc</attribute>
+      <mustinherit>monster;merchandise</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>TrueSight desc.</caption>
+      <attribute>revealeddesc</attribute>
+      <mustinherit>monster;merchandise</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Look (when dead)</caption>
+      <attribute>lookwhendead</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Run this script when looked at</caption>
+      <attribute>descscript</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description when attacking (use % for the monster name)</caption>
+      <attribute>attackdesc</attribute>
+      <mustinherit>monster_attack</mustinherit>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on death</caption>
+      <attribute>death</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on injury from weapon</caption>
+      <attribute>hurtbyweapon</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on injury from spell</caption>
+      <attribute>hurtbyspell</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on injury by opposed element spell (optional)</caption>
+      <attribute>hurtbyelement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on death by opposed element spell (optional)</caption>
+      <attribute>deathbyelement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on ignore (optional)</caption>
+      <attribute>ignoreselement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+  </tab>
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Combat</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+
+    <!-- What is it? -->
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; nonattackspell=Instant spell; lastingspell=Lasting spell; banishingspell=Banishing spell; attackspell=Attack spell;  monster=Monster; multi_monster=Multi-attack monster; monster_attack=Monster attack;weapon=Weapon;shield=Shield;potion=Potion;healingpotion=Healing potion;magic_item=Magic item;talisman=Talisman;ring=Ring;scroll=Scroll;venom=Blade venom;merchandise=Merchandise</types>
+      <width>150</width>
+    </control>
+
+
+    <!-- Spells -->
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Non-Attack Spell</caption>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Spell effect</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Lasting Spell</caption>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Status when active</caption>
+      <attribute>status</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Spell effect</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Cancel spell effect</caption>
+      <attribute>terminate</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>objects</controltype>
+      <caption>Special attack</caption>
+      <attribute>specialattack</attribute>
+      <mustinherit>lastingspell</mustinherit>
+      <nullable/>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Cannot hold anything during effect?</caption>
+      <attribute>cannothold</attribute>
+      <mustinherit>lastingspell</mustinherit>
+      <nullable/>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Last for (turns)</caption>
+      <attribute>lastsfor</attribute>
+      <width>100</width>
+      <mustinherit>lastingspell</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Attack Spell</caption>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+    <control>
+      <controltype>objects</controltype>
+      <caption>Element</caption>
+      <attribute>element</attribute>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+        
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (% will be replaced with the creature name)</caption>
+      <attribute>description</attribute>
+      <mustinherit>banishingspell</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Target</caption>
+      <attribute>target</attribute>
+      <mustinherit>banishingspell</mustinherit>
+    </control>
+
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Level of spell</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <minimum>0</minimum>
+      <mustinherit>spell</mustinherit>
+    </control>
+
+
+
+
+    <!-- Shield -->
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Protection (1-3)</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <mustinherit>shield</mustinherit>
+      <minimum>1</minimum>
+      <maximum>3</maximum>
+    </control>
+
+
+
+    <!-- Potion -->
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when the potion is taken</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>potion</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when the effect has finished</caption>
+      <attribute>terminate</attribute>
+      <mustinherit>potion</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Cannot hold anything during effect?</caption>
+      <attribute>cannothold</attribute>
+      <mustinherit>potion</mustinherit>
+      <nullable/>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Last for (turns)</caption>
+      <attribute>lastsfor</attribute>
+      <width>100</width>
+      <mustinherit>potion</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+
+    <!-- Scroll -->
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>scroll</mustinherit>
+    </control>
+    <control>
+      <controltype>objects</controltype>
+      <caption>Element</caption>
+      <attribute>element</attribute>
+      <mustinherit>scroll</mustinherit>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Level of spell</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <minimum>0</minimum>
+      <mustinherit>scroll</mustinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when the scroll is used</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>scroll</mustinherit>
+    </control>
+
+
+
+
+
+    <!-- Magic item -->
+
+		<control>
+      <caption>How is this worn (ring, amulet, etc.)</caption>
+			<controltype>list</controltype>
+			<attribute>wear_slots</attribute>
+			<editprompt>Please enter the name for the wear location</editprompt>
+      <mustinherit>magic_item</mustinherit>
+      <mustnotinherit>talisman;ring</mustnotinherit>
+		</control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when the item is worn</caption>
+      <attribute>puttingon</attribute>
+      <mustinherit>magic_item</mustinherit>
+      <mustnotinherit>talisman;ring</mustnotinherit>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when the item in removed</caption>
+      <attribute>takingoff</attribute>
+      <mustinherit>magic_item</mustinherit>
+      <mustnotinherit>talisman;ring</mustnotinherit>
+    </control>
+
+
+
+    <!-- Talisman -->
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Level</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <mustinherit>talisman</mustinherit>
+      <minimum>1</minimum>
+    </control>
+    <control>
+      <caption>Affects</caption>
+      <controltype>dropdown</controltype>
+      <attribute>affects</attribute>
+      <validvalues type="simplestringlist">attackbonus;defencebonus;damagebonus;armourbonus;magicbonus</validvalues>
+      <width>200</width>
+      <mustinherit>talisman</mustinherit>
+      <advanced/>
+    </control>
+
+
+
+
+    <!-- Ring -->
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Level</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <mustinherit>ring</mustinherit>
+      <minimum>1</minimum>
+    </control>
+    <control>
+      <caption>Affects</caption>
+      <controltype>dropdown</controltype>
+      <attribute>affects</attribute>
+      <validvalues type="simplestringlist">attackbonus;defencebonus;damagebonus;armourbonus;magicbonus</validvalues>
+      <width>200</width>
+      <mustinherit>ring</mustinherit>
+      <advanced/>
+    </control>
+
+
+
+
+
+
+    <!-- Monster -->
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Monster</caption>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <caption>Type</caption>
+      <controltype>dropdown</controltype>
+      <attribute>monstertype</attribute>
+      <validvalues type="simplestringlist">Beast;Human;Goblinoid;Fey;Demon;Undead;Elemental;Created;Corrupted;Plant</validvalues>
+      <width>200</width>
+      <mustinherit>monster</mustinherit>
+      <advanced/>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Level</caption>
+      <attribute>level</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Hit points</caption>
+      <attribute>hitpoints</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>1</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Defence</caption>
+      <attribute>defence</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>XP</caption>
+      <attribute>xp</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+
+    <!-- Weapon -->
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Attack bonus</caption>
+      <attribute>attackbonus</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>0</minimum>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Dice No.</caption>
+      <attribute>damagedicenumber</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>1</minimum>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Dice Sides</caption>
+      <attribute>damagedicesides</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>4</minimum>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Bonus</caption>
+      <attribute>damagebonus</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>0</minimum>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>objects</controltype>
+      <caption>Element</caption>
+      <attribute>element</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Two-handed (no shield allowed)?</caption>
+      <attribute>twohanded</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>monster;multi_monster;monster_attack</mustnotinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Long reach?</caption>
+      <attribute>longreach</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>monster;multi_monster;monster_attack</mustnotinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Non-weapon attack (do not use "swing" in description)?</caption>
+      <attribute>nonweapon</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>multi_monster</mustnotinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Weapon can be rusted?</caption>
+      <attribute>canberusted</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>monster;multi_monster;monster_attack</mustnotinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Weapon can  have blade venom on it?</caption>
+      <attribute>canbevenomed</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>monster;multi_monster;monster_attack</mustnotinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>No venom message</caption>
+      <attribute>novenommsg</attribute>
+      <mustinherit>weapon</mustinherit>
+      <mustnotinherit>monster;multi_monster;monster_attack</mustnotinherit>
+    </control>
+    
+    
+    
+    <!-- monster continued -->
+    
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Immune to poison?</caption>
+      <attribute>poisonimmunity</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Absorbs magic (gains hits when attacked with magic)?</caption>
+      <attribute>absorbsmagic</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Reflects magic (player loses hits when monster is attacked with magic)?</caption>
+      <attribute>reflectsmagic</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Ignores magic?</caption>
+      <attribute>ignoresmagic</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Non-corporeal (immune to normal weapons)?</caption>
+      <attribute>noncorporeal</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>No corpse on death?</caption>
+      <attribute>nocorpse</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+    
+    
+    <control>
+      <controltype>title</controltype>
+      <caption>Behaviour</caption>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Attack on sight?</caption>
+      <attribute>attackonsight</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Attack as group?</caption>
+      <attribute>attackasgroup</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Does not attack even when player attacks it?</caption>
+      <attribute>doesnotattack</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Guarding (blocks locked exits)?</caption>
+      <attribute>guarding</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <caption>Movement (free to follow; constrained to one location; constrained and forgets player)</caption>
+      <controltype>dropdown</controltype>
+      <attribute>movetype</attribute>
+      <validvalues type="simplestringlist">Free;Constrained;Forgetful</validvalues>
+      <width>200</width>
+      <mustinherit>monster</mustinherit>
+      <advanced/>
+    </control>
+
+    
+ 
+    <control>
+      <controltype>number</controltype>
+      <caption>Potency (damage in hits)</caption>
+      <attribute>potency</attribute>
+      <width>100</width>
+      <mustinherit>venom</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Number of doses</caption>
+      <attribute>count</attribute>
+      <width>100</width>
+      <mustinherit>venom</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+    
+    
+    
+    <!-- merchandise -->
+    
+    <control>
+      <controltype>number</controltype>
+      <caption>Cost</caption>
+      <attribute>price</attribute>
+      <width>100</width>
+      <mustinherit>merchandise</mustinherit>
+      <mustnotinherit>monster;monster_attack</mustnotinherit>
+      <minimum>0</minimum>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Exclude from room descriptions</caption>
+      <attribute>notindescription</attribute>
+      <mustinherit>merchandise</mustinherit>
+      <mustnotinherit>monster;spell;monster_attack;magic_item;healingpotion;potion;scroll;weapon;shield;wearable</mustnotinherit>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Destroy this item when it is sold</caption>
+      <attribute>destroyonsale</attribute>
+      <mustinherit>merchandise</mustinherit>
+      <mustnotinherit>monster;spell;monster_attack;magic_item;healingpotion;potion;scroll;weapon;shield;wearable</mustnotinherit>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Single use spell?</caption>
+      <attribute>singleuse</attribute>
+      <mustinherit>spell</mustinherit>
+    </control>
+  </tab>
+
+
+
+  
+</library>

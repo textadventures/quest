@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ask and Tell</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Ask and Tell</h1>
+      <p><em>You can use Ask and Tell commands to interact with other objects in the game eg if you go into a room with a wizard, you could ask him questions and have answers programmed to come out?</em></p>
+
+<p><em>The <strong>Ask</strong> command works as part of a sequence - “<strong>Ask Object about…</strong>”</em> <em>The <strong>Tell</strong> command works as part of a sequence- “<strong>Tell Object about…</strong>”</em></p>
+
+<ol>
+  <li>
+    <p>I have set up a room with a character called ‘'’The Wizard ‘’ inside it</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell1.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>I want to ask him a question.</p>
+  </li>
+  <li>
+    <p>Select the Wizard and choose <strong>Ask/Tell</strong></p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell2.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Click the <strong>Add</strong> icon to get this box:</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell3.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Now enter some key words that are linked to what you want to ask the Wizard – remember it needs to be in a question – <strong>Ask Wizard about…</strong></p>
+  </li>
+  <li>
+    <p>For example, say I want to ask the wizard about the game, I could use key words like game, adventure, puzzle or story.</p>
+  </li>
+  <li>
+    <p>I enter these in the box separated by spaces:</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell4.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>When I press <strong>OK</strong> I can choose a script to add.</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell5.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>You can add a message so that the Wizard replies to you eg</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell6.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>When I close the script the key and script are there (you can Edit them)</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell7.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>You can add as many Keys and scripts as you want.</p>
+  </li>
+  <li>
+    <p>When it works it looks like this. I write in the message <strong>Ask wizard about game</strong></p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell8.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>The wizard replies:</p>
+
+    <p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell9.jpg" alt="" /></p>
+  </li>
+</ol>
+
+<p><strong>IMPROVEMENTS</strong> You can make the wizard human by selecting Wizard and Setup and choosing <strong>Male Character</strong></p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell10.jpg" alt="" /></p>
+
+<p>When you do this, the wizard has the verb <strong>Speak to</strong> in the Display menu:</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell11.jpg" alt="" /></p>
+
+<p>You can add in a command in <strong>Verbs</strong> to remind the player to ask the Wizard a clue eg   I go to Verb and type in “speak to”:</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell12.jpg" alt="" /></p>
+
+<p>I click <strong>OK</strong> and underneath I write a suitable message:</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell13.jpg" alt="" /></p>
+
+<p>This is now what it looks like when you select <strong>speak to</strong> in the game:</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell14.jpg" alt="" /></p>
+
+<p><strong>YOU CAN DO THE EXACT SAME THING WITH THE TELL COMMAND</strong></p>
+
+<p>Here is an example of a character where you can them lots of different <strong>Ask</strong> questions!</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/hsasktell15.jpg" alt="" /></p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

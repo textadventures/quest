@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Lists</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using Lists</h1>
+      <p>A list is a sequence of entries in a prescribed order. Each entry is associated with a number, which is its position in the list.</p>
+
+<p>There are three types of lists: string lists; object lists; and general lists. As you might expect, a string list can only hold strings, and an object list can only hold objects, but a general list can pretty much hold anything.</p>
+
+<p>To create a list, then, we have three functions:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mystringlist = NewStringList()
+myobjectlist = NewObjectList()
+mylist = NewList()
+</code></pre></div></div>
+<p>It is best practice to use string lists or object lists wherever possible, rather than general lists.</p>
+
+<p>If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).</p>
+
+<h2 id="adding-and-removing-items">Adding and removing items</h2>
+
+<p>To add items to a list, use the <code class="highlighter-rouge">list add</code> command. To remove something from a list, use <code class="highlighter-rouge">list remove</code>. Here is an example that illustrates how we can add various types to a list:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>l = NewList()
+l2 = NewList()
+list add (l, "one")
+list add (l, fancy table)
+list add (l, game.start)
+list add (l, 42)
+list add (l, 9.23)
+list add (l, l2)
+list remove(l, fancy table)
+</code></pre></div></div>
+<p>If you try to add something to a list that is already in the list, it will get added a second time.</p>
+
+<p>If you try to remove something from a list that is not there, nothing will happen (no error message or warning is given). If you remove something that is in the list multiple times, only one instance is removed (the first in the list).</p>
+
+<h3 id="when-adding-or-removing-fails">When adding or removing fails…</h3>
+
+<p>In a certain situation you may find you cannot add or remove an item from a list, and you get this error:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+</code></pre></div></div>
+
+<p>This typically happens when you try to modify the display or inventory verbs, but the list is actually an attribute of the type the object inherits from, rather than the object itself. If you are using the desktop version, you will be able to go to the <em>Attributes</em> tab of the object, and will see that the attribute in question is greyed out.</p>
+
+<p>There are two solutions.</p>
+
+<p>The simplest is to add something to the list in the editor (bottom of the <em>object</em> tab), and then delete it. This will force Quest to add the attribute to the object (you will find it is not in black on the <em>Attributes</em> tab).</p>
+
+<p>The alternative is to give the object a new list, using <code class="highlighter-rouge">NewStringList</code>, and then add all the values from scratch (or use the <code class="highlighter-rouge">Split</code> function discussed later).</p>
+
+<h2 id="retrieving-from-lists">Retrieving from lists</h2>
+
+<p>You can access an item in a list using the <code class="highlighter-rouge">ListItem</code> function. This takes the list and the position as parameters. Note that the positions count from zero, i.e, the first member of the list is at position 0.</p>
+
+<p>It is also important to note that removing an item from a list will change the position of all subsequent entries. So:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>l = NewList()
+l2 = NewList()
+list add (l, "one")
+list add (l, fancy table)
+list add (l, game.start)
+list add (l, 42)
+list add (l, 9.23)
+list add (l, l2)
+msg(ListItem(l, 3))
+// -&gt; 42
+list remove(l, fancy table)
+msg(ListItem(l, 3))
+// -&gt; 9.23
+</code></pre></div></div>
+<p>The first <code class="highlighter-rouge">msg</code> prints the number 42, because that is the fourth entry, and 3 is the fourth position, counting zero as the first. When the object <code class="highlighter-rouge">fancy table</code> is removed from the list, the position of 42 changes; it is now third, and the number 9.23 is fourth.</p>
+
+<p>It is good practice to consider a list as either:</p>
+
+<ul>
+  <li>
+    <p>Static: The list will never have an element removed over the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of exisyting elements).</p>
+  </li>
+  <li>
+    <p>Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.</p>
+  </li>
+</ul>
+
+<h4 id="retrieving-from-string-lists-and-object-lists">Retrieving from string lists and object Lists</h4>
+
+<p>If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.</p>
+
+<p>If you know that what you are retrieving is a string, you can use <code class="highlighter-rouge">StringListItem</code>, and similarly you can use <code class="highlighter-rouge">ObjectListItem</code> for an object. You <em>can</em> use these with general lists, but there will be a risk that what you retrieve is not what you thought it was (perhaps because something got removed from the list, and the positions all changed), and it is bad idea.</p>
+
+<h4 id="retrieving-from-other-lists">Retrieving from other lists</h4>
+
+<p>It can take Quest a moment to work out what the thing is with <code class="highlighter-rouge">ListItem</code>. Consider this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (ListItem(l, 2) = "one") {
+  msg("Here")
+}
+if (ListItem(l, 2) = 42) {
+  msg("Here")
+}
+</code></pre></div></div>
+<p>The first line is fine, but the second will through an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (ListItem(l, 2) = "one") {
+  msg("Here")
+}
+n = ListItem(l, 2)
+if (n = 42) {
+  msg("Here")
+}
+</code></pre></div></div>
+
+<h2 id="quick-string-lists">Quick string lists</h2>
+
+<p>A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (as of Quest 5.8, this is optional, and if omitted will default to a semi-colon):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>l1 = Split("one|two|three", "|")
+msg(l1)
+// -&gt; List: one; two; three; 
+</code></pre></div></div>
+<p>By the way, the <code class="highlighter-rouge">Join</code> function goes the other way; it converts from a string list to a string,</p>
+
+<h2 id="quick-object-lists">Quick object lists</h2>
+
+<p>There are various scope and other functions that will return a list of objects, and should be used where possible. See the <a href="scopes.html">Scopes</a> page for more details.</p>
+
+<p>Some other useful functions that return object lists:</p>
+
+<ul>
+  <li><a href="functions/allobjects.html">AllObjects</a></li>
+  <li><a href="functions/getallchildobjects.html">GetAllChildObjects</a></li>
+  <li><a href="functions/getdirectchildren.html">GetDirectChildren</a></li>
+</ul>
+
+<h2 id="iterating">Iterating</h2>
+
+<p>Often you will want to go through each member of a list. Use the <code class="highlighter-rouge">foreach</code> command to do this. It takes two parameters, the first being a variable to store an entry in, and the second being the list. It also requires a script.</p>
+
+<p>This example will output each member of the list. The script will be run once for each entry in the list <code class="highlighter-rouge">l</code>, and for each iteration, <code class="highlighter-rouge">x</code> will have the value of that entry.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foreach(x, l) {
+  msg("Entry: " + x)
+}
+</code></pre></div></div>
+<p>Changing a list whilst in a foreach loop (i.e., adding or removing entries) will cause an error:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Collection was modified; enumeration operation may not execute.
+</code></pre></div></div>
+
+<p>One way around that is to add entries you want to remove to another list while you iterate, and then to remove them later. For example, say we have a list of monsters and want to go through it and remove any that are dead, we could do this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>delete = NewObjectList()
+foreach(obj, listOfMonsters) {
+  if (obj.dead) {
+    list add(delete, obj)
+  }
+}
+foreach (obj, delete) {
+  list remove(listOfMonsters, obj)
+}
+</code></pre></div></div>
+
+<h2 id="other-functions">Other functions</h2>
+
+<p>The <code class="highlighter-rouge">ListCount</code> function will return the number of entries in the list. Remember that the entries will number from zero to <em>one less than</em> the number returned.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg("My list has " + ListCount(myList) + " things in it.")
+msg("The last entry is at position " + (ListCount(myList) - 1))
+</code></pre></div></div>
+
+<p>Use <code class="highlighter-rouge">ListContains</code> to determine if a list contains a specific entry.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (ListContains(myList, player) {
+  list remove(myList, player)            
+}
+</code></pre></div></div>
+<p>Alternatively, you can use the <code class="highlighter-rouge">in</code> operator:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (player in myList) {
+  list remove(myList, player)            
+}
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">ListCombine</code> function will return a new list made up by combining the two given lists. The lists must be of the same type.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>myBigList = ListCombine(list1, list2)
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">ListExclude</code> function is the reverse, it will return a new list made up by subtracting the second list from the first. For string lists and object lists, you can also use it to exclude a single string or object as appropriate. In this example, the two <code class="highlighter-rouge">msg</code> commands print the same list, for both the player object is excluded.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>l = NewObjectList()
+l2 = NewObjectList()
+list add (l, player)
+list add (l, fancy table)
+list add (l, bronze sword)
+list add (l2, player)
+msg (ListExclude(l, l2))
+msg (ListExclude(l, player))
+</code></pre></div></div>
+<p>Note that <code class="highlighter-rouge">ListCombine</code> and <code class="highlighter-rouge">ListExclude</code> do not change the original lists at all.</p>
+
+<p>As of Quest 5.7, the <code class="highlighter-rouge">IndexOf</code> function can be used to get the position of an element in a list (or -1 if it is not in the list).</p>
+
+<p>You can also use <code class="highlighter-rouge">ObjectListSort</code> and <code class="highlighter-rouge">ObjectListSortDescending</code> to sort a list of objects according to a certain attribute.
+http://docs.textadventures.co.uk/quest/functions/objectlistsort.html
+http://docs.textadventures.co.uk/quest/functions/objectlistsortdescending.html</p>
+
+<h2 id="list-arithmetic">List arithmetic</h2>
+
+<p>You can use <code class="highlighter-rouge">+</code> and <code class="highlighter-rouge">-</code> on lists. These can be used to add and remove single elements from a list.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>listOne = Split("one|two|three", "|")
+listTwo = "zero" + listOne + "four"
+msg(listTwo)
+-&gt; List: zero; one; two; three; four; 
+listThree = listTwo - "two"
+msg(listThree)
+-&gt; List: zero; one; three; four; 
+listFour = listOne + listThree
+msg(listFour)
+-&gt; List: one; two; three; zero; one; three; four; 
+</code></pre></div></div>
+
+<p>Also works for object lists:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objectListOne = NewObjectList()
+objectListTwo = objectListOne + player
+msg(objectListTwo)
+</code></pre></div></div>
+<p>And mixed lists, here in one step we add an object and a string:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>list1 = NewList()
+list2 = list1 + player + "player"
+</code></pre></div></div>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

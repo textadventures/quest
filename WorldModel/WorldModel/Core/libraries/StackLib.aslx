@@ -1,0 +1,272 @@
+﻿<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+
+  <!--
+  StackLib v1.1
+  
+  Quest version: 5.6 (ideally 5.7 for pile of cash)
+  Written by: The Pixie, 2016-2017
+  Inspired by Sora's stackable library
+
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/StackLibrary
+  -->
+  
+
+
+  <!--
+  This should be called each time the stack content changes to keep it up to date.
+  You can send either the stack itself of a member of the stack.
+  -->
+  <function name="SetStack" parameters="container"><![CDATA[
+    if (DoesInherit(container, "childstack_object")) {
+      container = container.stackparent
+    }
+    if (not HasString(container, "originalalias")) {
+      if (HasString(container, "listalias")) {
+        container.originalalias = container.listalias
+      }
+      else {
+        container.originalalias = container.alias
+      }
+    }
+
+    stacked_count = ListCount(GetDirectChildren(container))
+    if (stacked_count = 0) {
+      container.parent = Stack Containers
+    }
+    else if (stacked_count = 1) {
+      container.gender = "it"
+      container.article = "it"
+      if (container.parent = Stack Containers) {
+        container.parent = game.pov
+      }
+    }
+    else {
+      container.gender = "they"
+      container.article = "them"
+    }
+    container.listalias = container.originalalias + ": " + ToString(stacked_count)
+  ]]></function>
+  
+  
+  <!--
+  Remove an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  -->
+  <function name="Unstack" parameters="container"><![CDATA[
+    DoStackStuff(container, "_Unstack", null, "Drop which one?")
+  ]]></function>
+  
+  <!--
+  Use an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  -->
+  <function name="UseInStack" parameters="container"><![CDATA[
+    DoStackStuff(container, "_UseInStack", null, "Use which one?")
+  ]]></function>
+  
+  <!--
+  Use an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  -->
+  <function name="LookInStack" parameters="container"><![CDATA[
+    DoStackStuff(container, null, "look", "Look at which one?")
+  ]]></function>
+  
+  <!--
+  Use an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  -->
+  <function name="ConsumeInStack" parameters="container"><![CDATA[
+    DoStackStuff(container, null, "consume", "Consume which one?")
+  ]]></function>
+  
+  
+  <!--
+  Use an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  -->
+  <function name="DoStackVerb" parameters="container, verb"><![CDATA[
+    DoStackStuff(container, null, verb, CapFirst(verb) + " which one?")
+  ]]></function>
+  
+  
+  <!--
+  Do something with an item from the given stack. If there is more than one
+  there, the player will be asked to choose.
+  This will then call a script on the object, if script is not null, or
+  otherwise the given function.
+  s is the prompt.
+  -->
+  <function name="DoStackStuff" parameters="container, functionname, scriptname, s"><![CDATA[
+    //msg("container="+container)
+    //msg("functionname="+functionname)
+    //msg("scriptname="+scriptname)
+    //msg("s="+s)
+    if (container.homogeneous or ListCount(GetDirectChildren(container)) = 1) {
+      game.functionname_tmp = functionname
+      game.scriptname_tmp = scriptname
+      DoingStackStuff(ObjectListItem(GetDirectChildren(container), 0))
+    }
+    else {
+      dic = NewStringDictionary()
+      foreach (o, GetDirectChildren(container)) {
+        dictionary add (dic, o.name, o.alias)
+      }
+      game.functionname_tmp = functionname
+      game.scriptname_tmp = scriptname
+      ShowMenu (s, dic, true) {
+        if (not result = null) {
+          DoingStackStuff(GetObject(result))
+        }
+      }
+    }
+  ]]></function>
+  
+  <function name="DoingStackStuff" parameters="obj"><![CDATA[
+    stack = obj.parent
+    if (not game.scriptname_tmp = null) {
+      PrintOrRun(obj, game.scriptname_tmp)
+    }
+    else {
+      game.tempobj = obj
+      f = Eval (game.functionname_tmp + "(game.tempobj)")
+    }
+    SetStack(stack)
+  ]]></function>
+  
+  
+  
+  <function name="_Unstack" parameters="object" type="boolean"><![CDATA[
+    container = object.stackparent
+    object.parent = game.pov.parent
+    SetStack(container)
+    msg("You drop " + GetDisplayName(object) + ".")
+    if (HasScript(object, "ondrop")) do(object, "ondrop")
+    return(true)
+  ]]></function>
+  
+  <function name="_UseInStack" parameters="object" type="boolean"><![CDATA[
+    dic = NewDictionary()
+    dictionary add (dic, "object", object)
+    do(use, "script", dic)
+    SetStack(object)
+    return(true)
+  ]]></function>
+  
+  
+ 
+  
+  
+  
+  <!--
+  -->
+  <function name="PrintOrRun" parameters="obj, att">
+    if (HasScript(obj, att)) {
+      do (obj, att)
+    }
+    if (HasString(obj, att)) {
+      msg (GetString(obj, att))
+    }
+  </function>
+
+  
+  
+  <type name="stack_container">
+    <parent type="object">game</parent>
+    <homogeneous type="boolean">false</homogeneous>
+    <drop type="script">
+      Unstack (this)
+    </drop>
+    <use type="script">
+      UseInStack (this)
+    </use>
+    <consume type="script">
+      ConsumeInStack (this)
+    </consume>
+    <look type="script">
+      LookInStack (this)
+    </look>
+  </type>
+  
+  <type name="homo_stack_container">
+    <inherit name="stack_container" />
+    <homogeneous/>
+  </type>
+ 
+  <type name="childstack_object">
+    <isstackable />
+    <drop type="boolean">false</drop>
+    <takemsg>You take it.</takemsg>
+    <take type="script">
+      if (this.alias = null) {
+        this.alias = this.name
+      }
+      container = this.stackparent
+
+      this.parent = container
+      SetStack(container)
+      if (this.takemsg = null) {
+        msg(DynamicTemplate("TakeSuccessful", object))
+      }      
+      else {
+        msg (this.takemsg)
+      }
+    </take>
+  </type>
+  
+  <type name="cash_object">
+    <drop type="boolean">false</drop>
+    <money type="int">1</money>
+    <takemsg>You take it.</takemsg>
+    <take type="script">
+      this.parent = null
+      game.pov.money = game.pov.money + this.money
+      if (this.takemsg = null) {
+        msg(DynamicTemplate("TakeSuccessful", object))
+      }      
+      else {
+        msg (this.takemsg)
+      }
+    </take>
+  </type>
+  
+  
+  
+  
+  
+  
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Stackable</caption>
+    <mustnotinherit>editor_room; editor_player</mustnotinherit>
+    
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <types>*=Not stackable; stack_container=Heterogeneous stack; homo_stack_container=Homogeneous stack;childstack_object=Member of a stack;cash_object=Pile of cash</types>
+      <caption>Stack</caption>
+    </control>
+    
+    <control>
+      <controltype>objects</controltype>
+      <attribute>stackparent</attribute>
+      <mustinherit>childstack_object</mustinherit>
+      <caption>Stack container</caption>
+    </control>
+    
+    <control>
+      <controltype>number</controltype>
+      <attribute>money</attribute>
+      <mustinherit>cash_object</mustinherit>
+      <caption>Amount</caption>
+    </control>
+  </tab>
+
+  
+</library>

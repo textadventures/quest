@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The CASE Command</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>The CASE Command</h1>
+      <p><em>Using the CASE command is a much quicker alternative to lots of “nested” IF scripts. This example shows you how to set up a phone where you can dial different numbers and get different responses</em></p>
+
+<ol>
+  <li>
+    <p>I have made an object called telephone and added a Verb called <strong>Start Dialling</strong>:</p>
+
+    <p><img src="Hscase1.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>I then add a <em>‘Print Message</em> Script to the Verb to give a message with clear instructions:</p>
+
+    <p><img src="Hscase2.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Next Add the verb to the <strong>Display verbs</strong>:</p>
+
+    <p><img src="Hscase3.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Next I add a Command to the Room. The reason I do this is because I can “Dial” the number any time at all.</p>
+  </li>
+  <li>
+    <p>I click on Room and then press <strong>Add</strong> and <strong>Command</strong>:</p>
+
+    <p><img src="Hscase4.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>In the empty box below I type in <strong>Dial #text#</strong></p>
+
+    <p><img src="Hscase5.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>This means Dial followed by whatever number you want to add in (the variable) eg Dial 999</p>
+  </li>
+  <li>
+    <p>Move down to Script and choose the <strong>Switch…</strong> command and type in the variable name “<strong>text</strong>” in the line:</p>
+
+    <p><img src="Hscase6.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>In the Cases box I click <strong>Add</strong> and enter the first number you want to dial eg:</p>
+
+    <p><img src="Hscase7.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Click <strong>OK</strong> and select <strong>Print a message</strong>:</p>
+
+    <p><img src="Hscase8.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Type in the message you want to have when you type in “999”</p>
+
+    <p><img src="Hscase9.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Close the message to save it:</p>
+
+    <p><img src="Hscase10.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Repeat this for lots of different numbers eg</p>
+
+    <p><img src="Hscase11.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>When you are finished, click <strong>Default</strong> and choose <strong>Print a message</strong> and write something like:</p>
+
+    <p><img src="Hscase12.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>This means that any number not on the list will get this message.</p>
+  </li>
+  <li>
+    <p>Here is the final list:</p>
+
+    <p><img src="Hscase13.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Here is how it looks with different options in action:</p>
+
+    <p><img src="Hscase14.jpg" alt="" /></p>
+  </li>
+</ol>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

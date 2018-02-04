@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Setting Up a Door</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Setting Up a Door</h1>
+      <p>Generally in text adventures doors are implied. That means that when the player heads into the kitchen, it is assumed she first opens the door - the player will not be happy if she has to open a door each time she wants to go anywhere. That said, there may be occasions when it warranted. Perhaps this is a particular special door, or the state of the door determines whether the player is found or which way the guard goes.</p>
+
+<p>The problem with doors is that need to be usable from both sides. In Quest an object is in one room, but the door needs to be in two. But there is a way around that.</p>
+
+<p>Let us suppose we have two rooms; the lounge with the kitchen to the west, with exits going each way. We will say the door is closed to start with.</p>
+
+<h2 id="exits">Exits</h2>
+
+<p>To stop the player going through the closed door, tick the “Locked” option for each exit. You will also need to give them names, let us say “exit to kitchen” and “exit to lounge”. You should also change the locked message, perhaps to “The door is closed.”</p>
+
+<h2 id="the-door">The Door…</h2>
+
+<p>Create an object in the lounge; the door. Set it to be scenery. On the <em>Features</em> tab, set it to be a container, then on the <em>Container</em> tab, set it to be “Openable/Closeable”.</p>
+
+<p>Quest tracks the state of these things by an attribute called “isopen”, and while it will handle that for you for containers, for Openable/Closeables we need to do that ourself (this is because you might want to check if the object can be opened before hand, but that is not necessary in this case). We also need to change whether the exits are locked.</p>
+
+<p>The top script is the one that will be run when the door is opened. That needs to unlock the exits, and open the door:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit to kitchen.locked = false
+exit to lounge.locked = false
+this.isopen = true
+</code></pre></div></div>
+
+<p>The lower script is used when the door is closed:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit to kitchen.locked = true
+exit to lounge.locked = true
+this.isopen = false
+</code></pre></div></div>
+
+<h2 id="-in-both-rooms">… In Both Rooms</h2>
+
+<p>Now we need to have the door in both rooms. We will use a bit of trickery, and make it look like it is in the second room. Go to the <em>Features</em> tab of the game object, and tick “Show advanced scripts for the game object”. Then go to the <em>Advanced scripts</em> tab. The bottom script, “Backdrop scope script” is the one we are interested in.</p>
+
+<p>The way the script works is that anything we add to the “items” list will get added to things in the current room. Add this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (game.pov.parent = kitchen) {
+  list add (items, door)
+}
+</code></pre></div></div>
+
+<p>The first line checks in the player is in the kitchen, and if she is, the second line adds the door to the list. Now whenever the player is in the kitchen, it will seem as though the door is too.</p>
+
+<h2 id="rooms">Rooms</h2>
+
+<p>It is a good idea to keep the player informed, and in this case we want her to know whether the door is open or closed. You can do that in the room description using the text processor. For example:</p>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td>The lounge is very retro. The door west is {either door.isopen:open</td>
+        <td>closed}.</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p>This is again using the “isopen” attribute of the door object.</p>
+
+<h2 id="starts-open">Starts Open?</h2>
+
+<p>What if you want the door open at the start of the game? Just make sure the two exits are not locked, and tick the “Is open” box on the <em>Container</em> tab of the door.</p>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

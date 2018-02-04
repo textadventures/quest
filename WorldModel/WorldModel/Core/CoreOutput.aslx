@@ -2,6 +2,15 @@
   <function name="OutputText" parameters="text">
     <![CDATA[
     OutputTextRaw(ProcessText(text))
+    if(HasAttribute(game,"save_transcript")){
+      if(game.save_transcript){
+        if(not HasAttribute(game,"transcript_stringlist")){
+          game.transcript_stringlist = NewStringList()
+        }
+        game.transcript_stringlist = game.transcript_stringlist + text
+        Log("Transcript>>>"+ProcessText(text)+"<br/>")
+      }
+    }
     ]]>
   </function>
 
@@ -11,6 +20,17 @@
     JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
     if (GetString(game, "commandbarformat") <> format) {
       ResetCommandBarFormat
+    }
+    if (StartsWith(text,"&gt;")){
+      if(HasAttribute(game,"save_transcript")){
+        if(game.save_transcript){
+          if(not HasAttribute(game,"transcript_stringlist")){
+            game.transcript_stringlist = NewStringList()
+          }
+          game.transcript_stringlist = game.transcript_stringlist + text
+          Log("Transcript>>>"+ProcessText(text)+"<br/>")
+        }
+      }
     }
     request (Speak, text)
     ]]>
@@ -25,6 +45,15 @@
   <function name="OutputTextNoBr" parameters="text">
     <![CDATA[
     OutputTextRawNoBr(ProcessText(text))
+    if(HasAttribute(game,"save_transcript")){
+      if(game.save_transcript){
+        if(not HasAttribute(game,"transcript_stringlist")){
+          game.transcript_stringlist = NewStringList()
+        }
+        game.transcript_stringlist = game.transcript_stringlist + text
+        Log("Transcript>>>"+ProcessText(text))
+      }
+    }
     ]]>
   </function>
 
@@ -32,6 +61,17 @@
     <![CDATA[
     JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
     request (Speak, text)
+    if (StartsWith(text,"&gt;")){
+      if(HasAttribute(game,"save_transcript")){
+        if(game.save_transcript){
+          if(not HasAttribute(game,"transcript_stringlist")){
+            game.transcript_stringlist = NewStringList()
+          }
+          game.transcript_stringlist = game.transcript_stringlist + text
+          Log("Transcript>>>"+ProcessText(text))
+        }
+      }
+    }
     ]]>
   </function>
 
@@ -901,6 +941,7 @@
   
   <function name="Log" parameters="text">
     request (Log, text)
+    JS.eval ("if(typeof(addLogEntry)==='function'){ addLogEntry('"+text+"'); };")
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">
@@ -952,8 +993,9 @@
       }
     }
   </function>
-  
-  <function name="FormatList" parameters="list, joiner, lastjoiner, nothing" type="string"><![CDATA[
+
+  <function name="FormatList" parameters="list, joiner, lastjoiner, nothing" type="string">
+    <![CDATA[
     if (ListCount (list) = 0) {
       return (nothing)
     }
@@ -971,7 +1013,14 @@
         count = count + 1
         if (count = listLength - 1) {
           if (not IsRegexMatch("^\\W", lastjoiner)) result = result + " "
-          result = result + lastjoiner + " "
+          if(HasAttribute(game,"american_dialect")){
+            if(game.american_dialect){
+              result = result + ", " + lastjoiner + " "
+            }
+          }
+          else{
+            result = result + lastjoiner + " "
+          }
         }
         else if (count < listLength) {
           result = result + joiner + " "
@@ -979,7 +1028,8 @@
       }
       return (Trim (result))
     }
-  ]]></function>
+  ]]>
+  </function>
 
   <function name="Spaces" parameters="number" type="string"><![CDATA[
     game.command_successful = True

@@ -220,7 +220,7 @@ Public Class Main
 
     Private Sub SetWindowTitle(Optional gameName As String = "")
         Dim caption As String
-        caption = "Quest"
+        caption = "Quest (KVMod)"
         If Not String.IsNullOrEmpty(gameName) Then caption += " - " + gameName
         Me.Text = caption
     End Sub

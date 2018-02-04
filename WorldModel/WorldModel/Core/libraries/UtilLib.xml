@@ -1,0 +1,195 @@
+<library>
+  
+  <!--
+  Returns an ''objectlist'' contains those items for the given room that are visible, but not reachable.
+  This is different to the original version in that it will also include any objects in the room
+  linked to by the enviro" attribute to include ubiquitous items from the environment (walls, sky, etc.)
+  -->
+  <function name="ScopeVisibleNotReachableForRoom" parameters="room" type="objectlist">
+    //msg ("room = " + room.name)
+    result = NewObjectList()
+    exclude = ScopeReachableForRoom(room)
+    list add (exclude, game.pov)
+    newParent = GetNonTransparentParent(room)
+    foreach (obj, GetAllChildObjects(newParent)) {
+      if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
+        list add (result, obj)
+      }
+    }
+    // If the environment is set, look for more objects
+    if (HasObject (newParent, "enviro")) {
+      foreach (obj, GetAllChildObjects(newParent.enviro)) {
+        if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
+          list add (result, obj)
+        }
+      }
+    }
+    return (result)
+  </function>
+
+  
+  <!--
+  As HasString, but will also return false if the string is empty.
+  -->
+  <function name="HasFullString" parameters="obj, att" type="boolean">
+    if (not HasString(obj, att)) {
+      return (false)
+    }
+    return (not (GetString(obj, att) = ""))
+  </function>
+
+  
+  <!--
+  Gets the level of the given object, or 0 if not set..
+  -->
+  <function name="GetLevel" parameters="obj" type="int">
+    if (not HasInt(obj, "level")) return (0)
+    return (obj.level)
+  </function>
+  
+
+  <!--
+  Clones the given object, putting it in the given room, 
+  the object is returned.
+  This version sets the "original" attribute to the object cloned
+  -->
+  <function name="CloneObjectAndMove" parameters="obj, room" type="object">
+    newobject = CloneObject(obj)
+    newobject.parent = room
+    newobject.original = obj
+    return (newobject)
+  </function>
+  
+  
+  <!--
+  Deletes all items in the room "dead". Gets called when the player goes to a new level
+  of the dungeon. Moving items to dead is therefore a way to get them destroyed
+  without the issue of changing a list.
+  -->
+  <function name="PurgePurgatory">
+    sl = NewStringList()
+    foreach (o, GetDirectChildren(dead)) {
+      list add (sl, o.name)
+    }
+    foreach (s, sl) {
+      destroy (s)
+    }
+  </function>
+  
+  
+  <!--
+  Returns the given number as a Roman numeral (string).
+  Good for numbers from 1 to a bit over 1000
+  -->
+  <function name="Roman" parameters="n" type="string">
+    arabic = Split("1000,900,500,400,100,90,50,40,10,9,5,4,1", ",")
+    roman = Split("M,CM,D,CD,C,XC,L,XL,X,IX,V,IV,I", ",")
+    
+    result = ""
+    for(i, 0, 12) {
+      a = ToInt(StringListItem(arabic, i))
+      r = StringListItem(roman, i)
+      while (n >= a) {
+        result = result + r
+        n = n - a
+      }
+    }
+    return (result)
+  </function>
+  
+  
+  
+  <!--
+  Returns a [[string]] from a string list as a nicely formated string, with commas, etc.
+  Returns the nothingString if the list is empty.
+  -->
+  <function name="FormatStringList" parameters="list" type="string"><![CDATA[
+    if (ListCount (list) = 0) {
+      return ("nothing")
+    }
+    else {
+      result = ""
+      count = 0
+      listLength = ListCount(list)
+      foreach (item, list) {
+        result = result + item
+        count = count + 1
+        if (count = listLength - 1) {
+          result = result + " and "
+        }
+        else if (count < listLength) {
+          result = result + ", "
+        }
+      }
+      return (Trim (result))
+    }
+  ]]></function>
+  
+  
+  <!--   Random -->
+  
+  <!--
+  Returns a string based on the input string, using text substitutions as the text
+  processor.
+  Additional these substitutions will be made:
+  %gem%     a gem
+  %metal%   a precious metal
+  %stone%   an ornamental stone
+  -->
+  <function name="Randomise" parameters="s" type="string">
+    data = NewDictionary()
+    dictionary add (data, "fulltext", s)
+    s = ProcessTextSection(s, data)
+    s = Replace(s, "%gem%", PickOneStr("ruby|sapphire|crystal|amethyst|emerald|diamond|opal|moonstone|chrysoberyl|garnet|jade|onyx|sunstone|topaz|tourmaline|turquoise"))
+    s = Replace(s, "%metal%", PickOneStr("electrum|gold|silver|white gold|crown gold|meteorite iron|mithril|adamantine|blood alloy"))
+    s = Replace(s, "%stone%", PickOneStr("alabaster|soapstone|chlorite|wonderstone|limestone|onyx|obsidian|marble|moonstone|coral|amber"))
+    return (s)
+  </function>
+  
+
+  <!--
+  Randomly picks one object from the given object list.
+  -->
+  <function name="PickOneObj" parameters="lst" type="object">
+    index = GetRandomInt(0, ListCount(lst) - 1)
+    return (ObjectListItem(lst, index))
+  </function>
+  
+  
+  <!--
+  Randomly picks asubstring of the given string, or a string from a string list. Substrings should be separated by a vertical bar.
+  -->
+  <function name="PickOneStr" parameters="lst" type="string">
+    if (TypeOf(lst) = "string") {
+      lst = Split(lst, "|")
+    }
+    index = GetRandomInt(0, ListCount(lst) - 1)
+    return (StringListItem(lst, index))
+  </function>
+  
+  
+  <!--
+  Randomly picks one of the direct children objects of the given object.
+  -->
+  <function name="PickFromObject" parameters="obj" type="object">
+    return (PickOneObj(GetDirectChildren(obj)))
+  </function>
+  
+
+  <!--
+  Randomly picks one monster from the given room.
+  -->
+  <function name="PickOneMonster" parameters="room" type="object">
+    l = NewObjectList()
+    foreach (o, GetDirectChildren(room)) {
+      if (DoesInherit(o, "monster")) {
+        list add (l, o)
+      }
+    }
+    return (PickOneObj(l))
+  </function>
+    
+  
+  
+  
+</library>

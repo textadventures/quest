@@ -1,0 +1,652 @@
+<?xml version="1.0"?>
+<library>
+
+
+  <!--
+  game.pov.equipped         Current weapon
+  game.pov.shield           Current shield   
+  game.pov.armour           Current armour
+  game.pov.status           Name of the current spell effect
+  game.pov.currentspell     Current spell
+  
+  -->
+
+
+
+
+
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Turn Script -->
+
+
+  <turnscript name="attacktheplayerturnscript">
+    <enabled />
+    <script><![CDATA[
+		  // In an ideal world, this would only fire if the player has actually done something.
+		  // As it is, a mis-typed command will give monsters the opportunity to strike
+      // so we have thisL
+      if (game.command_successful) {
+        game.pov.turncount = game.pov.turncount + 1
+      
+        // Anything added to this list will later get removed from the attackers list
+        game.forgetme = NewObjectList ()
+        
+        // Any monsters here that need adding to the list of attacks because they attack on sight?
+        foreach (obj, GetDirectChildren (game.pov.parent)) {
+          if (DoesInherit(obj, "monster") and not ListContains(game.attackers, obj) and not ListContains(game.friends, obj)) {
+            do(obj, "initattack")
+          }
+        }
+          
+        // Go through each monster
+        monsters = ListCombine(game.attackers, game.friends)
+        list remove (monsters, player)
+        foreach (attacker, monsters) {
+          if (GetBoolean(attacker, "stunned")) {
+            if (attacker.parent = game.pov.parent) {
+              msg(attacker.alias + " is stunned for a moment, and does not attack.")
+            }
+            attacker.stunned = false
+          }
+          else if (attacker.parent = game.pov.parent) {
+            do(attacker, "selecttarget")
+            if (HasObject(attacker, "target")) {
+              do (attacker, "attackplayer")
+            }
+            else {
+              msg (CapFirst(GetDisplayName(attacker)) + " has no target to attack.")
+            }
+          }
+          else {
+            do (attacker, "searchforplayer")
+          }
+        }
+        
+        // These are no longer attackers or friends=
+        foreach (mon, game.forgetme) {
+          list remove (game.attackers, mon)
+          list remove (game.friends, mon)
+        }
+        
+        // Check for spell/potion expiring
+        if (not HasInt(game.pov, "magiccountdown")) {
+          game.pov.magiccountdown = 0
+        }
+        if (game.pov.magiccountdown > 0) {
+          game.pov.magiccountdown = game.pov.magiccountdown - 1
+          if (game.pov.magiccountdown < 1) {
+            do (game.pov.currentspell, "endmagiceffect")
+          }
+        }
+        
+        // Check sneaking
+        if (not HasInt(game.pov, "sneaklevel")) {
+          game.pov.sneaklevel = 0
+        }
+        game.pov.sneaklevel = game.pov.sneaklevel - 1
+        if (0 > game.pov.sneaklevel) game.pov.sneaklevel = 0
+        
+        // Some attacks give a bonus to OB next round
+        game.pov.ob_bonus = game.pov.next_round_ob_bonus
+        game.pov.next_round_ob_bonus = 0
+        game.pov.db_bonus = 0
+        game.pov.currectattack = null
+      }
+
+      else {
+        game.command_successful = true
+      }
+    ]]></script>
+  </turnscript>
+
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Built-in objects -->
+
+
+  <object name="scriptholder">
+    <unresolvedcommandhandler type="script">
+      game.command_successful = false
+      msg ("Sorry, that makes no sense to me.")
+    </unresolvedcommandhandler>
+    <changedhitpoints type="script">
+      if (0 >= game.pov.hitpoints) {
+        msg ("You are dead!")
+        finish
+      }
+      else {
+        UpdateStatus
+      }
+    </changedhitpoints>
+    <changedmoney type="script">
+      UpdateStatus
+    </changedmoney>
+    <changedequipped type="script">
+      if (IsDefined("oldvalue")) {
+        if (not oldvalue = null) {
+          oldvalue.venom = null
+          if (HasScript(oldvalue, "onunequip")) {
+            do (oldvalue, "onunequip")
+          }
+        }
+      }
+      if (HasScript(game.pov.equipped, "onequip")) {
+        do (game.pov.equipped, "onequip")
+      }
+      UpdateStatus
+    </changedequipped>
+    <changedshield type="script">
+      if (IsDefined("oldvalue")) {
+        if (not oldvalue = null) {
+          if (HasScript(oldvalue, "onunequip")) {
+            do (oldvalue, "onunequip")
+          }
+        }
+      }
+      if (not game.pov.shield = null) {
+        if (HasScript(game.pov.shield, "onequip")) {
+          do (game.pov.shield, "onequip")
+        }
+      }
+      UpdateStatus
+    </changedshield>
+  </object>
+
+
+
+  <object name="gold_pile_prototype">
+    <inherit name="editor_object" />
+    <alias>Pile of coins</alias>
+    <look type="script">
+      msg ("A pile of " + this.count + " coins.")
+    </look>
+    <count type="int">0</count>
+    <take type="script">
+      game.pov.money = game.pov.money + this.count
+      msg("You pick up " + this.count + " coins.")
+      this.parent = dead
+    </take>
+  </object>
+
+  <object name="activepotions">
+    <alias>Active potions are held here</alias>
+  </object>
+
+  <!--
+  Stuff here will hang around for a short time before getting destroyed.
+  -->
+  <object name="dead">
+    <alias>Purgatory</alias>
+  </object>
+
+  <object name="spells_known">
+    <alias>Spell book</alias>
+  </object>
+
+  <object name="fists">
+    <inherit name="weapon" />
+    <alias>Fists</alias>
+    <canberusted type="boolean">false</canberusted>
+    <canbevenomed type="boolean">false</canbevenomed>
+  </object>
+
+
+
+
+
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- General Functions -->
+
+ 
+  
+
+
+  <!--
+  Call this when a spell is cast or potion drunk, to ensure any on-going spells
+  are terminated.
+  -->
+  <function name="CancelSpell"><![CDATA[
+    if (HasObject (game.pov, "currentspell")) {
+      msg ("The <i>" + GetDisplayAlias(game.pov.currentspell) + "</i> effect ends.")
+      do (game.pov.currentspell, "endmagiceffect")
+    }
+  ]]></function>
+  
+  
+  
+  
+  <!--
+  Makes the player drop everything (useful for spells and potion that transform the player into
+  a form without hand, such as a shade or a wolf).
+  Armour is removed, coins are dropped, weapon unequiped, etc.
+  !!! magic item effects
+  -->
+  <function name="DropEverything"><![CDATA[
+    if (not game.pov.money = 0) {
+      pile = CloneObjectAndMove (gold_pile_prototype, game.pov.parent)
+      pile.count = game.pov.money
+      game.pov.money = 0
+      msg ("You drop " + DisplayMoney(pile.count) + ".")
+    }
+    foreach (obj, GetDirectChildren(game.pov)) {
+      if (GetBoolean(obj, "worn")) {
+        RemoveGarment(obj)
+      }
+      obj.parent = player.parent
+      msg ("You drop " + GetDisplayName(obj) + ".")
+    }
+    game.pov.equipped = fists
+    game.pov.shield = null
+    UpdateArmour
+    UpdateStatus
+  ]]></function>
+
+
+
+
+  <!--
+  This version of DoTake first checks to see if this is a spell and TAKE ALL,
+  and skips everything if it is
+  -->
+  <function name="DoTake" parameters="object, ismultiple"><![CDATA[
+    if (not ismultiple or not GetBoolean(object, "skipmultitake")) {
+      prefix = ""
+      if (ismultiple) {
+        prefix = GetDisplayAlias(object) + ": "
+      }
+      if (object.parent = game.pov) {
+        msg (prefix + DynamicTemplate("AlreadyTaken", object))
+      }
+      else if (not ListContains(ScopeReachable(), object)) {
+        msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      }
+      else {
+        volume = 0
+        continue = true
+        foreach (obj, GetAllChildObjects(game.pov)) {
+          if (HasInt(obj, "volume")) {
+            volume = volume + obj.volume
+          }
+        }
+        if (not Contains(game.pov, object)) {
+          volume = volume + GetVolume(object,true)
+        }
+        if (HasInt(game.pov, "maxvolume")) {
+          if (volume > game.pov.maxvolume) {
+            continue = false
+            if (HasString(game.pov, "containerfullmessage")) {
+              message = prefix + game.pov.containerfullmessage
+            }
+            else {
+              message = prefix + DynamicTemplate("FullInventory", object)
+            }
+          }
+        }
+        children = GetDirectChildren(game.pov)
+        if (HasInt(game.pov, "maxobjects")) {
+          if (game.pov.maxobjects > 0) {
+            if (ListCount(children) >= game.pov.maxobjects) {
+              continue = false
+              if (HasString(game.pov, "containermaxobjects")) {
+                message = prefix + game.pov.containermaxobjects
+              }
+              else {
+                message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+              }
+            }
+          }
+        }
+        if (continue = false) {
+          msg (message)
+        }
+        else {
+          found = true
+          takemsg = object.takemsg
+          switch (TypeOf(object, "take")) {
+            case ("script") {
+              if (ismultiple) {
+                OutputTextNoBr (prefix)
+              }
+              do (object, "take")
+              takemsg = ""
+            }
+            case ("boolean") {
+              if (object.take = true) {
+                object.parent = game.pov
+                if (takemsg = null) {
+                  takemsg = DynamicTemplate("TakeSuccessful", object)
+                }
+              }
+              else {
+                found = false
+              }
+            }
+            case ("string") {
+              object.parent = game.pov
+              takemsg = object.take
+            }
+            default {
+              found = false
+            }
+          }
+          if (not found and takemsg = null) {
+            takemsg = DynamicTemplate("TakeUnsuccessful", object)
+          }
+          if (LengthOf(takemsg) > 0) {
+            msg (prefix + takemsg)
+          }
+          if (HasScript(object, "ontake")) {
+            do (object, "ontake")
+          }
+          if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+            object.scenery = false
+          }
+        }
+      }
+    }
+  ]]></function>
+
+
+
+
+  
+  
+  <function name="OnEnterRoom" parameters="oldRoom"><![CDATA[
+    game.displayroomdescriptiononstart = false
+    if (IsDefined("oldRoom")) {
+      if (oldRoom <> null) {
+        if (HasScript(oldRoom, "onexit")) {
+          do (oldRoom, "onexit")
+        }
+      }
+    }
+    on ready {
+      if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
+        do (game.pov.parent, "beforefirstenter")
+      }
+      on ready {
+        if (HasScript(game.pov.parent, "beforeenter")) {
+          do (game.pov.parent, "beforeenter")
+        }
+        on ready {
+          if (IsDefined("oldRoom")) {
+            if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
+              msg ("")
+            }
+          }
+          //st = DisplayName(game.pov.parent)
+          //request (UpdateLocation, "- " + st + " -")
+          //Title (st, 14)
+          roomFrameExists = false
+          if (game.showdescriptiononenter) {
+            ShowRoomDescription
+          }
+          if (HasScript( game, "roomenter")) {
+            do (game, "roomenter")
+          }
+          on ready {
+            if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
+              do (game.pov.parent, "firstenter")
+            }
+            on ready {
+              if (HasScript(game.pov.parent, "enter")) {
+                do (game.pov.parent, "enter")
+              }
+            }
+            set (game.pov.parent, "visited", true)
+          }
+        }
+      }
+    }
+  ]]></function>
+  
+
+
+
+  <!-- =================================================== -->
+  <!-- Initialisation Functions -->
+
+
+
+  <function name="CombatInitialise">
+    game.attackers = NewObjectList()
+    game.friends = NewObjectList()
+    if (not HasInt (game, "elementaldamage")) game.elementaldamage = 150
+    if (not HasScript (game, "unresolvedcommandhandler")) game.unresolvedcommandhandler = scriptholder.unresolvedcommandhandler
+    if (not HasScript (game.pov, "changedhitpoints")) game.pov.changedhitpoints = scriptholder.changedhitpoints
+    if (not HasScript (game.pov, "changedmoney")) game.pov.changedmoney = scriptholder.changedmoney
+    if (not HasScript (game.pov, "changedequipped")) game.pov.changedequipped = scriptholder.changedequipped
+    if (not HasScript (game.pov, "changedshield")) game.pov.changedshield = scriptholder.changedshield
+    game.command_successful = true
+    list add (game.friends, game.pov)
+
+    atts = "money;turncount;armour;armour10;stamina;xp;ob_bonus;next_round_ob_bonus;db_bonus;defence;magiccurse;sneaklevel;magiccountdown"
+    atts = atts + ";attackbonus;defencebonus;armourbonus;magicbonus;damagebonus"
+    atts = atts + ";strength;agility;stamina;intelligence;pointsleft"
+    foreach (s, Split(atts, ";")) {    
+      if (not HasInt (game.pov, s)) set (game.pov, s, 0)
+    }
+
+    game.pov.hitpoints = CalcFullHits()
+    game.pov.status = ""
+    game.pov.immunities = NewStringList()
+    game.pov.equipped = fists
+    game.pov.dead = false
+
+    UpdateStatus
+  </function>
+
+
+  
+ <!--
+  This is called from the character creation JavaScript, and interprets the values set.
+  -->
+  <function name="HandleDialogue" parameters="answer">
+    l = Split(answer, "|")
+    game.pov.strength = ToInt(StringListItem(l, 2))
+    game.pov.agility = ToInt(StringListItem(l, 3))
+    game.pov.intelligence = ToInt(StringListItem(l, 4))
+    game.pov.stamina = ToInt(StringListItem(l, 5))
+    game.pov.pointsleft = game.pov.pointsleft - game.pov.strength - game.pov.agility - game.pov.intelligence - game.pov.stamina
+    game.pov.alias = StringListItem(l, 0)
+    game.pov.female = StringListItem(l, 1) = "Female"
+    game.pov.hitpoints = CalcFullHits()
+    AfterDialogue
+    UpdateArmour
+    UpdateStatus
+  </function>  
+
+  <function name="AfterDialogue">
+  </function>  
+
+  
+  <function name="LevelUp">
+    game.oldhitstotal = CalcFullHits ()
+    ShowMenu ("You can raise one of your stats!", Split("Strength|Agility|Stamina|Intelligence", "|"), false) {
+      n = GetInt(game.pov, LCase(result)) + 1
+      set (game.pov, LCase(result), n)
+      UpdateArmour
+      game.pov.hitpoints = game.pov.hitpoints * CalcFullHits () / game.oldhitstotal
+      UpdateStatus
+    }
+  </function>
+
+  
+
+
+
+  <!-- =================================================== -->
+  <!-- Combat Functions -->
+
+
+  <!--
+  Calculates the player's full hits from the stamina
+  -->
+  <function name="CalcFullHits" type="int"><![CDATA[
+    return (40 + 10 * game.pov.stamina)
+  ]]></function>
+
+
+
+  <!--
+  Called by a change script on player.hitpoints
+  -->  
+  <function name="UpdateHitPoints">
+    if (0 >= game.pov.hitpoints) {
+      msg ("You are dead!")
+      finish
+    }
+  </function>
+
+  <function name="UpdateArmour"><![CDATA[
+    armour = GetArmour() / 2 + game.pov.armourbonus * 10
+    game.pov.armour = armour / 10
+    game.pov.armour10 = armour
+    game.pov.defence = game.pov.agility / 2 - game.pov.armour
+    // ... but cannot be less than 0
+    if (game.pov.defence < 0) {
+      game.pov.defence = 0
+    }
+    if (not game.pov.shield = null) {
+      game.pov.defence = game.pov.defence + game.pov.shield.level
+    }
+    if (ArmourTooHeavy()) {
+      game.pov.defence = 0
+    }
+    game.pov.defence = game.pov.defence + game.pov.defencebonus
+  ]]></function>
+
+  <!--
+  Called by a change script on player.money
+  -->  
+  <function name="UpdateStatus">
+  </function>
+
+
+  <function name="ArmourTooHeavy" type="boolean"><![CDATA[
+    return (game.pov.armour * 4 > game.pov.strength)
+  ]]></function>
+
+
+
+
+  <function name="GetAttack" type="int" parameters="foe"><![CDATA[
+      // Basic attack is average of strength and agility, plus transient bonus from previous round
+      attack = (game.pov.agility + game.pov.strength) / 2 + game.pov.ob_bonus + game.pov.attackbonus
+      
+      // -5 penalty if armour too heavy
+      if (ArmourTooHeavy()) {
+        attack = attack - 5
+      }
+      game.pov.attack = attack
+      game.pov.next_round_ob_bonus = foe.temp_ob_next
+      game.pov.db_bonus = foe.temp_db
+      game.pov.currectattack = game.pov.equipped
+      return (attack - foe.defence)
+  ]]></function>
+
+
+
+
+  <!--
+  To help avoid rounding errors, do everything at x10
+  -->
+  <function name="GetDamage"  parameters="weapon, bonus, foe" type="int"><![CDATA[
+    if (HasInt(foe, "armour10")) {
+      armour = foe.armour10
+    }
+    else {
+      armour = foe.armour * 10
+    }
+    
+    // Base damage in the bonus for the weapon, plus the bonus for the attacker
+    damage = (weapon.damagebonus + bonus) * 10
+    // Add the dice damage, and subtract the armour from each roll
+    for (i, 1, weapon.damagedicenumber) {
+      damage = damage + 10 * GetRandomInt (1, weapon.damagedicesides) - armour
+    }
+    
+    // If the weapon is elemental, it does double damage against opposed elements,
+    // and half damage against like element
+    if (not DoesInherit(weapon, "monster_attack")) {
+      switch (GetElementalPosition (weapon, foe)) {
+        case (1) {
+          msg ("[Your weapon is not very effective against this creature]")
+          msg("weapon:" + weapon)
+          msg("weapon.element:" + weapon.element)
+          damage = damage / 2
+        }
+        case (-1) {
+          damage = damage * 2
+          msg ("[Your weapon is especially effective against this creature]")
+        }
+      }
+    }
+    
+    // Backstab does 4x damage
+    if (DoesInherit(foe, "monster")) {
+      if (game.pov.sneaklevel > foe.level) {
+        damage = damage * 4
+      }
+    }
+    
+    damage = damage / 10
+
+    // Always do at least 1 point of damage
+    if (damage < 1) damage = 1
+    return (damage)
+  ]]></function>
+
+
+
+
+  <!--
+  Sent 5 by a weapon attack, 4 by a spell attack, 2 by other spells
+  -->
+  <function name="SneakUpdate" parameters="by">
+    game.pov.sneaklevel = game.pov.sneaklevel - by
+    if (0 > game.pov.sneaklevel) game.pov.sneaklevel = 0
+  </function>
+
+
+
+
+  
+  <function name="GetDisplayAlias" parameters="obj" type="string">
+    if (HasString(obj, "alias")) {
+      result = obj.alias
+    }
+    else {
+      result = obj.name
+    }
+    if (DoesInherit(obj, "artefact") or DoesInherit(obj, "spell") or DoesInherit(obj, "scroll") or DoesInherit(obj, "potion") or DoesInherit(obj, "magic_item") or DoesInherit(obj, "namedmale") or DoesInherit(obj, "namedfemale")) {
+      return (result)
+    }
+    else {
+      return (LCase (result))
+    }
+  </function>
+  
+  
+  <function name="DisplayMoney" parameters="value" type="string">
+    return ("" + value + " gold pieces")
+  </function>
+
+  
+  
+
+</library>

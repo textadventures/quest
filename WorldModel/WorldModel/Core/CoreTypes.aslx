@@ -31,7 +31,7 @@
     <showcommandbar/>
     <showlocation/>
     
-    <statusandcompassattop type="boolean">false</statusandcompassattop>
+    <statusandcompassattop type="boolean">true</statusandcompassattop>
     <turnoffcompass type="boolean">false</turnoffcompass>
     <turnoffinventory type="boolean">false</turnoffinventory>
     <turnoffplacesandobjects type="boolean">false</turnoffplacesandobjects>
@@ -64,17 +64,17 @@
     <autodisplayverbs/>
     <clearscreenonroomenter type="boolean">false</clearscreenonroomenter>
     <autodescription_youarein type="int">1</autodescription_youarein>
-    <autodescription_youcansee type="int">2</autodescription_youcansee>
-    <autodescription_youcango type="int">3</autodescription_youcango>
-    <autodescription_description type="int">4</autodescription_description>
-    <autodescription_youarein_useprefix/>
+    <autodescription_youcansee type="int">3</autodescription_youcansee>
+    <autodescription_youcango type="int">4</autodescription_youcango>
+    <autodescription_description type="int">2</autodescription_description>
+    <autodescription_youarein_useprefix type="boolean">false</autodescription_youarein_useprefix>
     <autodescription_youarein_newline type="boolean">false</autodescription_youarein_newline>
     <autodescription_youcansee_newline type="boolean">false</autodescription_youcansee_newline>
     <autodescription_youcango_newline type="boolean">false</autodescription_youcango_newline>
     <autodescription_description_newline type="boolean">false</autodescription_description_newline>
     <changeroom_newline/>
     <command_newline type="boolean">false</command_newline>
-    <description type="string"></description>
+    <description type="string">A Quest adventure.</description>
     <languageid>[LanguageId]</languageid>
     <gridmap type="boolean">false</gridmap>
     <mapscale type="int">30</mapscale>
@@ -82,16 +82,28 @@
     <changedpov type="script">
       InitPOV (oldvalue, game.pov)
     </changedpov>
-    <feature_lightdark type="boolean">false</feature_lightdark>
+    <feature_lightdark type="boolean">true</feature_lightdark>
     <feature_pictureframe type="boolean">false</feature_pictureframe>
     <feature_limitinventory type="boolean">false</feature_limitinventory>
-    <feature_asktell type="boolean">false</feature_asktell>
-    <feature_annotations type="boolean">false</feature_annotations>
+    <feature_asktell type="boolean">true</feature_asktell>
+    <feature_annotations type="boolean">true</feature_annotations>
     <feature_advancedwearables type="boolean">false</feature_advancedwearables>
-    <feature_advancedscripts type="boolean">false</feature_advancedscripts>
+    <feature_advancedscripts type="boolean">true</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
-    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.txt;*.md;*.mp4;*.ogg;*.ogv*.pdf;*.css</publishfileextensions>
+    <questkvmod />
+    <american_dialect/>
+    <turns type="int">0</turns>
+    <save_transcript type="boolean">false</save_transcript>
+    <notarealturn type="boolean">false</notarealturn>
+    <debugging type="boolean">false</debugging>
+    <unresolvedcommandhandler type="script">
+      game.notarealturn = true
+      msg ("I didn't understand your command.")
+    </unresolvedcommandhandler>
+    <clock type="string"></clock>
+    <js_script type="string"></js_script>
   </type>
 
   <type name="theme_novella">
@@ -147,8 +159,8 @@
   <type name="defaultobject">
     <visible/>
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
-    <inventoryverbs type="simplestringlist">[LookAt];[Use];[Drop]</inventoryverbs>
-    <take type="boolean">false</take>
+    <inventoryverbs type="simplestringlist">[LookAt];[Drop]</inventoryverbs>
+    <take type="boolean">true</take>
     <use type="boolean">false</use>
     <givesingle type="boolean">false</givesingle>
     <drop/>
@@ -466,6 +478,7 @@
     <gender>[NeutralPluralGender]</gender>
     <article>[NeutralPluralArticle]</article>
     <possessive>[NeutralPluralPossessive]</possessive>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
   </type>
 
   <type name="maleplural">
@@ -473,6 +486,7 @@
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
     <possessive>[MalePluralPossessive]</possessive>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
   </type>
 
   <type name="femaleplural">
@@ -480,6 +494,7 @@
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
     <possessive>[FemalePluralPossessive]</possessive>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
   </type>
 
   <type name="openable">
@@ -734,5 +749,7 @@
   <type name="gridborder_path_s">
     <grid_bordersides type="int">13</grid_bordersides>
   </type>
+
+  <type name="room_type"></type>
 
 </library>

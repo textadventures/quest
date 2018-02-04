@@ -34,7 +34,12 @@
       if (isDark and not GetBoolean(object, "lightsource")) {
         lookdesc = DynamicTemplate("LookAtDarkness", object)
       }
-      
+      else{
+        if (not HasAttribute(object,"timesexamined")){
+          object.timesexamined = 0
+        }
+        object.timesexamined = object.timesexamined + 1
+      }
       msg (lookdesc)
     }
     
@@ -65,10 +70,12 @@
   <command name="take" template="take">
     <multipleobjects type="script">
       game.pov.currentcommandpendingobjectscope = NewObjectList()
-      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
-          list add(game.pov.currentcommandpendingobjectscope, obj)
-        }
+      objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
+      foreach (obj, objlist) {
+      if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
+      list add(game.pov.currentcommandpendingobjectscope, obj)
+      }
       }
     </multipleobjects>
     <multiple>
@@ -374,7 +381,14 @@
   </command>
 
   <command name="quit" pattern="[quit]">
-    request (Quit, "")
+    Ask("Are you sure you want to quit?"){
+      if (result){
+        request (Quit, "")
+      }
+      else{
+        game.notarealturn = true
+      }
+    }
   </command>
 
   <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
@@ -867,5 +881,72 @@
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
   <command name="save" pattern="[save]">request (RequestSave, "")</command>
+  <command name="restart" pattern="restart">msg ("Please press CTRL+R to restart.")</command>
+  
+  <command name="version_cmd">
+    <pattern>version;about;info;details</pattern>
+    <script>
+      <![CDATA[
+      if (not TypeOf(game,"author")="null") {
+        byLine = "<br/>Written by "+game.author
+      }
+      else {
+        byLine = ""
+      }
+      if (not TypeOf(game,"subtitle")="null") {
+        subTitle = "<br/>"+game.subtitle
+      }
+      else {
+        subTitle = ""
+      }
+      msg("<h3>"+game.gamename+"</h3>"+subTitle+"Version: "+game.version+""+byLine+"<br/>GameID: "+game.gameid+"<br/>Publication Date: "+game.firstpublished+"<br/>")
+    ]]>
+    </script>
+  </command>
+
+  <command name="log_cmd">
+    <pattern>log;view log;display log;view the log;display the log</pattern>
+    <script>
+      game.notarealturn = true
+      JS.showLog ()
+    </script>
+  </command>
+
+  <command name="view_transcript_cmd">
+    <pattern>view transcript;display transcript;view the transcript;display the transcript</pattern>
+    <script>
+      game.notarealturn = true
+      JS.showTranscript ()
+    </script>
+  </command>
+
+  <command name="transcript_on">
+    <pattern>script;transcript</pattern>
+    <script>
+      if(game.save_transcript){
+        msg("Transcripting is already on.")
+      }
+      else{
+        game.save_transcript = true
+        msg("Saving a transcript of:")
+        invoke(version_cmd.script)
+      }
+    </script>
+  </command>
+
+  <command name="transcript_off">
+    <pattern>script off;transcript off</pattern>
+    <script>
+      if(not game.save_transcript){
+        msg("The transcript is already off.")
+      }
+      else{
+        msg("End of transcript.")
+        game.save_transcript = false
+      }
+      
+    </script>
+  </command>
+  
 
 </library>

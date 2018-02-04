@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Dictionaries</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using Dictionaries</h1>
+      <p>A dictionary is a data set where each entry is accessed by a string, called a key. If you think about an actual dictionary, it contains words linked to definitions. To find a specific definition, you use the word to look it up. Quest dictionaries are the same, you use a word, called a key, to look up your information, called a value.</p>
+
+<p>A dictionary can never have two entries with the same key, just as a list can never have two entries with the same position. However, unlike a list, there is no order to the entries in a dictionary (in theory anyway).</p>
+
+<p>As with lists, there are various types, but with dictionaries you also get a version specifically for scripts. Note that whatever the type, the key must be a string.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mystringdict = NewStringDictionary()
+myobjectdict = NewObjectDictionary()
+myscriptdict = NewScriptDictionary()
+mydict = NewDictionary()
+</code></pre></div></div>
+<p>As with lists, you are better using a specific dictionary type, rather than a general one, if possible.</p>
+
+<p>If using the off-line editor, you can add a dictionary to an object on the attributes page, but you are restricted to string and script dictionaries.</p>
+
+<h2 id="adding-and-removing-items">Adding and removing items</h2>
+
+<p>To add items to a dictionary, use the <code class="highlighter-rouge">dictionary add</code> command. To remove something from a dictionary, use <code class="highlighter-rouge">dictionary remove</code>. Unlike the list versions of these commands, we now need to provide a key.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = NewObjectDictionary()
+dictionary add (d, "table", fancy table)
+dictionary add (d, "table2", fancy table)
+dictionary add (d, "pov", player)
+dictionary remove (d, "table")
+</code></pre></div></div>
+<p>As with lists, you can add the same thing as many times as you like, however, the key must be unique. If you try to add an item with a key that is already in the dictionary you will get an error. If you try to remove a key that does not exist you will again get an error.</p>
+
+<h2 id="retrieving-from-dictionaries">Retrieving from dictionaries</h2>
+
+<p>You can access an item in a dictionary using the <code class="highlighter-rouge">DictionaryItem</code> function. This takes the dictionary and the key as parameters. If you are using a specific dictionary type, it is again better to use the function for that type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StringDictionaryItem
+ScriptDictionaryItem
+ObjectDictionaryItem
+</code></pre></div></div>
+<p>Note that Quest will throw an error if the key is not found in the dictionary, so testing before hand is usually advised.</p>
+
+<h2 id="iterating">Iterating</h2>
+
+<p>Often you will want to go through each member of a dictionary, and as with a list we can use the <code class="highlighter-rouge">foreach</code> command to do this. It takes two parameters, the first being a variable to store a key in, and the second being the dictionary. It also requires a script.</p>
+
+<p>This example will output each member of the dictionary. The script will be run once for each entry in the dictionary <code class="highlighter-rouge">d</code>, and when it runs <code class="highlighter-rouge">key</code> will have the key for that entry.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foreach(key, d) {
+  msg("Entry: " + key + "=" + DictionaryItem(d, key))
+}
+</code></pre></div></div>
+<p>Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries) will cause an error.</p>
+
+<h2 id="dictionary-contains">Dictionary Contains?</h2>
+
+<p>Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not (unlike lists). The  <code class="highlighter-rouge">DictionaryContains</code> function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).</p>
+
+<p>To check a key is not already in use before adding to the dictionary:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not DictionaryContains(dict, obj.name)) {
+  dictionary add(dict, obj.name, obj)
+}
+</code></pre></div></div>
+<p>To check a key IS already in use before removing from the dictionary:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (DictionaryContains(dict, obj.name)) {
+  dictionary remove(dict, obj.name, obj)
+}
+</code></pre></div></div>
+<p>Alternatively we can use the <code class="highlighter-rouge">in</code> operator, which is rather less typing!</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not obj.name in dict) {
+  dictionary add(dict, obj.name, obj)
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (obj.name in dict) {
+  dictionary remove(dict, obj.name, obj)
+}
+</code></pre></div></div>
+
+<p>By the way, the reason there is a <code class="highlighter-rouge">DictionaryContains</code> function is to make it easier to use dictionaries via the GUI interface.</p>
+
+<h2 id="other-functions">Other functions</h2>
+
+<p>The <code class="highlighter-rouge">DictionaryCount</code> function will return the number of entries in the dictionary.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg("My dictionary has " + DictionaryCount(myDict) + " things in it.")
+</code></pre></div></div>
+
+<h2 id="some-uses-of-dictionaries">Some uses of dictionaries</h2>
+
+<h3 id="showmenu">ShowMenu</h3>
+
+<p>You can use a string dictionary with the <code class="highlighter-rouge">ShowMenu</code> function or <code class="highlighter-rouge">show menu</code> command. This allows you to give a set of options, and to handle them as a corresponding set of strings. This could, for example, allow you to run a script, depending on the option chosen. Suppose “getthing”, “jump” and “vomit” are all scripts on the player object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>options = NewStringDictionary()
+dictionary add (options, "getthing", "Get the thing")
+dictionary add (options, "jump", "Jump as high as you can")
+dictionary add (options, "vomit", "Try to vomit the poison up")
+ShowMenu ("Choose", options, false) {
+  do(player, result)
+}
+
+
+### Script parameters
+
+You can also use dictionaries to pass values to scripts. The key will become the name of a local variable, while the value will be its value.
+</code></pre></div></div>
+<p>vars = NewDictionary()
+dictionary add (vars, “weapon”, weapon)
+dictionary add (vars, “success”, “You hit the monster”)
+dictionary add (vars, “failure”, “You missed!”)
+do (monster, “attack”, vars)
+```
+In the attack script, you can now use three local variables; <code class="highlighter-rouge">weapon</code>, which is an object, and <code class="highlighter-rouge">success</code> and <code class="highlighter-rouge">failure</code>, two strings.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

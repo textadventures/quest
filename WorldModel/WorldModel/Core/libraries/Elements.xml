@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<library>
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Element Functions -->
+
+
+
+  <!--
+  This is a data store for elements (I call it a "struct" after the keyword in the C programming language)
+  If you add more elements to the name, you need to add them to both lists as well as creating a new type.
+  Note that your new type must end "_type", but that must not be included on these lists.
+  -->
+  <object name="element_struct">
+    <object name="fire">
+      <opposed type="object">frost</opposed>
+    </object>
+    <object name="frost">
+      <opposed type="object">fire</opposed>
+    </object>
+
+    <object name="storm">
+      <opposed type="object">earthmight</opposed>
+    </object>
+    <object name="earthmight">
+      <opposed type="object">storm</opposed>
+    </object>
+
+    <object name="shadow">
+      <opposed type="object">rainbow</opposed>
+    </object>
+    <object name="rainbow">
+      <opposed type="object">shadow</opposed>
+    </object>
+
+    <object name="divine">
+      <opposed type="object">necrotic</opposed>
+    </object>
+    <object name="necrotic">
+      <opposed type="object">divine</opposed>
+    </object>
+
+    <object name="chaos">
+      <opposed type="object">law</opposed>
+    </object>
+    <object name="law">
+      <opposed type="object">chaos</opposed>
+    </object>
+
+    <object name="life">
+      <opposed type="object">corruption</opposed>
+    </object>
+    <object name="corruption">
+      <opposed type="object">life</opposed>
+    </object>
+  </object>
+
+
+
+  <!--
+  Returns as a string the name of this object's element (or null).
+  -->
+  <function name="GetElement" parameters="obj" type="object"><![CDATA[
+    return(obj.element)
+  ]]></function>
+
+
+  <!--
+  Returns as a string the name of this object's opposed element (or null).
+  -->
+  <function name="GetOpposedElement" parameters="obj" type="string"><![CDATA[
+    if (not obj.element = null) {
+      return (obj.element.opposed)
+    }
+    else {
+      return (null)
+    }
+  ]]></function>
+
+  <!--
+  Returns 1 if the two objects are of the same element, -1 if of opposed elements and 0 otherwise.
+  -->
+  <function name="GetElementalPosition" parameters="obj, foe" type="int"><![CDATA[
+//msg("compare " + obj.name + " and " + foe.name)
+//msg("obj " + obj.element)
+//msg("foe " + foe.element)
+    if (obj.element = null or foe.element = null) {
+      return (0)
+    }
+    else if (obj.element = foe.element) {
+      return (1)
+    }
+    else if (obj.element.opposed = foe.element) {
+      return (-1)
+    }
+    else {
+      return (0)
+    }
+  ]]></function>
+
+
+  <!--
+  -->
+  <function name="IsPlayerImmune" parameters="attacker" type="boolean">
+    element = GetElement(attacker)
+    if (element = null) return (false)
+    return (ListContains(game.pov.immunities, element.name))
+  </function>
+
+
+
+</library>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unlock with combination</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Unlock with combination</h1>
+      <p>Here is an example of an exit that will be unlocked when the player inserts the right code.</p>
+
+<p>After creating an exit set the “Locked” checkbox and type somthing in the “Print message when locked” box. To unlock the exit later you must enter a name for your exit!</p>
+
+<p><img src="Unlockdoor1.jpg" alt="" title="Unlockdoor1.jpg" /></p>
+
+<p>Then add a keypad object to your room. Go to the <em>Features</em> tab, and turn on “Use/Give”, then go to the <em>Use/Give</em> tab and add a script for when using the keypad on its own. This script is executed if the player types “use keypad”. The player is asked to input the key and then the input is checked with an if-clause. If it is correct, the locked exit is unlocked.</p>
+
+<p><img src="Unlockdoor2.jpg" alt="" title="Unlockdoor2.jpg" /></p>
+
+<h2 id="random-code">Random Code</h2>
+
+<p>So now some wise guy has pasted the code on the internet, and everyone knows how to open the door already, without having to play part of your game. What we need is a code randomly generated each time the game is played.</p>
+
+<p>So, firstly we need that random code. Click on the game object, then on the “Script” tab. The top half is for a script to run when the game starts, which is what we want. All it has to do is assign a random number to game.code (i.e., the code attribute of the game object). GetRandomInt is a function that creates random numbers, so here is the code:</p>
+
+<p><img src="Unlockdoor4.png" alt="" title="Unlockdoor4.png" /></p>
+
+<p>There are a couple of tricks that are worth mentioning there. This is the expression used:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"" + GetRandomInt(1000, 9999)
+</code></pre></div></div>
+
+<p>We are getting a random number from 1000 to 9999. This ensures we have a four-figure number. This is then added to an empty string (that is the two double quotes). The end result, then is a string that contains exactly 4 digits.</p>
+
+<p>The second part is to modify the exit to use the random code. There is just one change, highlighted below:</p>
+
+<p><img src="Unlockdoor3.png" alt="" title="Unlockdoor3.png" /></p>
+
+<p>One last thing - you need a way to tell the player what the code is. Something somewhere has to do something like this:</p>
+
+<p><img src="http://docs.textadventures.co.uk/quest/guides/randomcode3.png" alt="" title="randomcode3.png" /></p>
+
+<p>This is going to print an expression, and in that expression the plain text is in double quotes, the code is game.code, as before, and it is all joined together with + signs. Alternatively, you can use the text processor:</p>
+
+<blockquote>
+  <p>A note on the wall says the code is {game.code}.</p>
+</blockquote>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

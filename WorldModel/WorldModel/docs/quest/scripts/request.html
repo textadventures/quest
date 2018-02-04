@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>request</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li class="active"><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>request</h1>
+      <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>request (request name, string parameter)
+</code></pre></div></div>
+
+<p>Raises a UI request. The request name must be specified directly - it is not a string expression. For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>request(UpdateLocation, "The Kitchen")
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">request</code> script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then <code class="highlighter-rouge">request</code> has become increasingly obsolete, and it is recommended that wherever possible, an alternative is used (even where the alternative uses <code class="highlighter-rouge">request</code> behind the scenes).</p>
+
+<p>Valid request names and parameters (and alternatives):</p>
+
+<p><em>Quit</em></p>
+
+<p>Quits the game. Parameter is ignored. Use <code class="highlighter-rouge">finish</code> instead.</p>
+
+<p><em>UpdateLocation</em></p>
+
+<p>Updates the location bar at the top of the screen with the parameter text. Use JS instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.updateLocation("The kitchen")
+</code></pre></div></div>
+
+<p><em>GameName</em></p>
+
+<p>Sets the name of the game. Do this instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setGameName("My Cool Game")
+</code></pre></div></div>
+
+<p><em>FontName</em></p>
+
+<p>(Obsolete as of Quest 5.4) Sets the font name. Use <a href="../functions/corelibrary/setfontname.html">SetFontName</a> instead.</p>
+
+<p><em>FontSize</em></p>
+
+<p>(Obsolete as of Quest 5.4) Sets the font size. Use <a href="../functions/corelibrary/setfontsize.html">SetFontSize</a> instead.</p>
+
+<p><em>Background</em></p>
+
+<p>Sets the background to the specified HTML colour. Use <a href="../functions/corelibrary/setbackgroundcolour.html">SetBackgroundColour</a> instead.</p>
+
+<p><em>Foreground</em></p>
+
+<p>Sets the foreground to the specified HTML colour. Use <a href="../functions/corelibrary/setforegroundcolour.html">SetForegroundColour</a> instead.</p>
+
+<p><em>LinkForeground</em></p>
+
+<p>Sets the link foreground to the specified HTML colour. As of 5.7.2, use <code class="highlighter-rouge">SetLinkForegroundColour</code> instead.</p>
+
+<p><em>RunScript</em></p>
+
+<p>Runs the specified JavaScript function. A far better way is to use the JS object, which can be used to access any built-in JavaScript function or any you add yourself.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.myCustomFunction(15, "some string)
+</code></pre></div></div>
+
+<p><em>SetStatus</em></p>
+
+<p>Sets the text for the status area on the right of the screen (under “Inventory”). If blank, the status area is removed. This is best done using <a href="../using_attributes.html">status attributes</a>.</p>
+
+<p><em>ClearScreen</em></p>
+
+<p>Clears the screen. Parameter is ignored. Use <code class="highlighter-rouge">ClearScreen</code> instead.</p>
+
+<p><em>PanesVisible</em></p>
+
+<p>Sets whether the panes on the right of the screen are displayed. Valid values are “on” and “off” (toggling whether panes are shown), and “disabled” (turns panes off and removes the button which would let the player turn them back on - this button appears to no longer be available). Instead use:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.panesVisible(true)
+JS.panesVisible(false)
+</code></pre></div></div>
+
+<p><em>ShowPicture</em></p>
+
+<p>Shows the specified picture file from the game directory. Use <a href="picture.html">picture</a> instead.</p>
+
+<p><em>Show</em></p>
+
+<p>Turns on an interface element. Valid elements are “Panes”, “Location” and “Command”. Instead use <code class="highlighter-rouge">JS.uiShow</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.uiShow("#gamePanes")
+JS.uiShow("#location")
+JS.uiShow("#txtCommandDiv")
+</code></pre></div></div>
+
+<p>You can also selectively hide or show one pane (if games panes are shown). Note that each pane has two components, so to hide the compass:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.uiHide("#compassLabel")
+JS.uiHide("#compassAccordion")
+</code></pre></div></div>
+
+<p>For the inventory, do <code class="highlighter-rouge">#inventoryLabel</code> and <code class="highlighter-rouge">#inventoryAccordion</code>; for the places and objects pane, <code class="highlighter-rouge">#placesObjectsLabel</code> and <code class="highlighter-rouge">#placesObjectsAccordion</code>. For the custom status pane and the custom command pane, use <code class="highlighter-rouge">#custonStatusPane</code> and <code class="highlighter-rouge">#commandPane</code> respectively (these have only one part).</p>
+
+<p><em>Hide</em></p>
+
+<p>Turns off an interface element. Valid elements are “Panes”, “Location” and “Command”. Use <code class="highlighter-rouge">JS.uiHide(element)</code> instead (see above for details).</p>
+
+<p><em>SetCompassDirections</em></p>
+
+<p>Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. As of Quest 5.7.2, use <code class="highlighter-rouge">JS</code> instead, for example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;southeast;up;down;in;out")
+</code></pre></div></div>
+
+<p>These names will also then not appear as exits in the “Places and Objects” list. The default is as shown in the example. The compass directions must be specified in the same order and there must be the same number of elements in the list. The exit in the compass rose will only be active if the alias of the exit matches the text you set here.</p>
+
+<p><em>Pause</em></p>
+
+<p>(Obsolete as of Quest 5.5) Pauses the game for the specified number of milliseconds.</p>
+
+<p><em>Wait</em></p>
+
+<p>Waits for the player to press a key. The parameter is ignored. Deprecated as of Quest 5.1 and unsupported as of Quest 5.4 - use the <a href="wait.html">wait</a> script command instead.</p>
+
+<p><em>SetInterfaceString</em></p>
+
+<p>Takes a parameter of the form “ElementName=Value”, to set the text in the user interface. Do this instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setInterfaceString("PlacesObjectsLabel", "You can see:")
+</code></pre></div></div>
+
+<p>Either way, valid element names are:</p>
+
+<ul>
+  <li>InventoryLabel (default “Inventory”)</li>
+  <li>PlacesObjectsLabel (default “Places and Objects”)</li>
+  <li>CompassLabel (default “Compass”)</li>
+  <li>InButtonLabel (default “in”)</li>
+  <li>OutButtonLabel (default “out”)</li>
+  <li>EmptyListLabel (default “(empty)”)</li>
+  <li>NothingSelectedLabel (default “(nothing selected)”)</li>
+</ul>
+
+<p><em>RequestSave</em></p>
+
+<p>Requests the UI to save the game - this may bring up a “Save As” dialog if the user has not yet saved their progress. Parameter is ignored. As of Quest 5.7.2, use:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RequestSave()
+</code></pre></div></div>
+
+<p><em>SetPanelContents</em></p>
+
+<p>Sets the static panel HTML contents. Use <code class="highlighter-rouge">SetFramePicture</code> and <code class="highlighter-rouge">ClearFramePicture</code> instead.</p>
+
+<p><em>Log</em></p>
+
+<p>(New in Quest 5.3) Log the specified text. Use <a href="../functions/corelibrary/log.html">Log</a> instead.</p>
+
+<p><em>Speak</em></p>
+
+<p>(New in Quest 5.4) Output text to speech synthesizer if enabled. As of Quest 5.7.2, use <code class="highlighter-rouge">RequestSpeak</code> instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RequestSpeak("Hello World")
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

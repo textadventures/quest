@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Timelimitedpuzzles</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Timelimitedpuzzles</h1>
+      <p><em>This tutorial was published by Alex in his blog <a href="http://www.textadventures.co.uk/blog/2012/02/27/time-limited-puzzles">1</a></em></p>
+
+<p>When I was at Perins School last week, I was asked about puzzles with a time limit. For example, the player opens a cupboard, inside which is a hungry alien. How do you give the player 10 seconds to kill the alien, before the alien kills them instead?</p>
+
+<p>This is pretty straightforward to handle, because in Quest you can run scripts after a certain number of seconds. Here’s a quick how-to:</p>
+
+<p>First, add the cupboard and alien objects. The alien should be inside the cupboard. For the cupboard, go to the Container tab. Choose “Container” from the type list, and untick the “Is open” box so that the cupboard is closed when the game begins.</p>
+
+<image:tut_timelimit1.png>
+
+Now we want to run a script when the player opens the object. We’ll tell the player they’ve surprised the sleeping (and hungry) alien, then give them 10 seconds to get rid of the alien before it kills them. To do this, scroll down to “After opening the object”, and add a “Print a message” script. Next, add another script – from the Timers section, choose “Run a script after a number of seconds”.
+
+<image:tut_timelimit2.png>
+
+You can now specify how many seconds to wait before something else happens. In this case, 10 seconds. After 10 seconds, we want to see if the “alien” object is still visible. If so, print a message and kill the player. If not, we don’t need to do anything.
+
+So, all we need to do is add an “If” inside the “After 10 seconds” script, as shown below:
+
+<image:tut_timelimit3.png>
+
+Finally, we just need to implement a way to solve the puzzle. Let’s add a flame thrower object. When the player uses the flame thrower on the alien, the alien bursts into flames.
+
+Add an object called “flame thrower”, then on the “Use/Give” tab scroll down to “Use this on (other object)”. Select “Handle objects individually”, add “alien”, and then edit the script. Add a “print a message” command to say something to the player, then add a “Remove object” command to remove the alien from play.
+
+The resulting script looks like this:
+
+<image:tut_timelimit4.png>
+</image:tut_timelimit4.png></image:tut_timelimit3.png></image:tut_timelimit2.png></image:tut_timelimit1.png>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

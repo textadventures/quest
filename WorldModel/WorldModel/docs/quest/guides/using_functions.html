@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using and Coding Functions</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using and Coding Functions</h1>
+      <p>Quest has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
+http://docs.textadventures.co.uk/quest/functions/</p>
+
+<p>Quest also “script commands”, which in many ways are like functions. One difference is that script commands are all named in lower case, while functions are all in CamelCase.
+http://docs.textadventures.co.uk/quest/scripts/</p>
+
+<h2 id="using-functions-and-script-commands">Using Functions and Script Commands</h2>
+
+<p>Some functions return a value, some require one or more values. The values it requires are called parameters. For example, the GetBoolean function requires an object and the name of an attribute, and it returns true if that attribute is present and set to true, and false if the attribute is set to false or missing.</p>
+
+<p>In this example, my_object and “flag” are the two parameters, and they go inside brackets. The brackets tell Quest these are the parameters.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return_value = GetBoolean(my_object, "flag")
+</code></pre></div></div>
+
+<p>Some functions take parameters, but do not return a value:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LockExit(vault_exit)
+</code></pre></div></div>
+
+<p>Sometimes a function has no return value and no parameters:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ClearScreen()
+</code></pre></div></div>
+
+<p>You might wonder why you need the brackets, if there are no parameters. Actually, you do not.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ClearScreen
+</code></pre></div></div>
+
+<p>Well, not always. If the function is on a line on its own with nothing else, Quest will handle it fine. Otherwise, you may need the brackets to ensure Quest will realise this is a function and not something else.</p>
+
+<h2 id="the-type-signature-and-error-messages">The Type Signature and Error Messages</h2>
+
+<p>The type of the value a function returns and the parameters it needs is called its “type signature”, and Quest will complain if you get is wrong. Here are some examples when the number of parameters are wrong, so you know what to expect. GetBoolean is a fundamental function, so gives different errors to most of the rest; it expects specific types or values for its parameters:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return_value = GetBoolean(my_object, "flag", 4)
+Error running script: Error compiling expression 'GetBoolean(my_object, "flag", 4)': FunctionCallElement: Could find not function 'GetBoolean(Element, String, Int32)'
+
+return_value = GetBoolean(my_object)
+Error running script: Error compiling expression 'GetBoolean(my_object)': FunctionCallElement: Could find not function 'GetBoolean(Element)'
+</code></pre></div></div>
+
+<p>Most functions will give errors like this, which just checks the number of parameters:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ClearScreen(4)
+Error running script: Too many parameters passed to ClearScreen function - 1 passed, but only 0 expected
+</code></pre></div></div>
+
+<p>If a fundamental function returns a value (like GetBoolean) and you do not do anything with that value, it will complain:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GetBoolean(my_object, "flag")
+Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
+</code></pre></div></div>
+
+<p>Most functions, however, will not cause an error if you do nothing with the return value - even though it is probably a bug in your game! If it does not return a value, and you still try to use it, however, you will get an error:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b = ClearScreen
+Error running script: Error compiling expression 'ClearScreen': Unknown object or variable 'ClearScreen'
+
+b = ClearScreen()
+Error running script: Error compiling expression 'ClearScreen()': Value cannot be null.Parameter name: key
+</code></pre></div></div>
+
+<h2 id="custom-functions">Custom Functions</h2>
+
+<p>The power of Quest is that it lets you do so much. It has dozens of built in functions, but you can easily create your own.</p>
+
+<p>So why would you want to use a function? The basic reason is because you want to do the same thing in two or more different places. As an example, let us say you have a room with a bench and another room with a chair, and you want the player to be able to type SIT, SIT ON BENCH and SIT ON CHAIR. One way would be to have a function that takes the seat as a parameter. You can set up a SIT command in each room that sends it the right seat depending on the room, and you can create SIT ON verbs for the chair and the bench that use the Sit function.</p>
+
+<p>So how do we create a function? Right-click in the left pane, and select “Add function”. Your new function will appear. Set the return type; in this case the function will not return anything, so we can leave it as “None”. Then you can add the parameters.</p>
+
+<p>You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs. In this case there is only one parameter, and I am going to call it “seat”.</p>
+
+<p>Then put in your script. In this example, all it does is print a message. Whatever values are sent as parameters will automatically go into the variables in the same order. In this function we are expecting to be sent some kind of seat, and whatever it is will be held in the “seat” variable. If this function is called by the “siton” verb of the bench, then the “seat” variable will contain the bench object.</p>
+
+<p><img src="func1.png" alt="" title="func1.png" /></p>
+
+<h2 id="assumptions-and-unexpected-values">Assumptions and Unexpected Values</h2>
+
+<p>You need to think about what will happen if the function is sent the wrong sort of variable. Or more specifically, what assumptions are you making about the values the function receives?</p>
+
+<p>In the example above we are expecting an object, we are expecting it to be something that can be sat on and we are expecting it to be there. You might assume it has a certain attribute, such as “alias” (I used the GetDisplayAlias function to avoid that assumption). It is important to think carefully about those assumptions - and I would recommend putting a comment in your code so they are explicitly stated. Just because we called it seat is no guarantee it really is a seat.</p>
+
+<p>If we cannot be sure, then it may be a good idea to test what the thing is before doing anything else; otherwise you can end up with some obscure bugs. In this case, the assumptions are fair. There are four places the function is called, and in each case we can be sure the assumptions are sound. No need to do unnecessary testing.</p>
+
+<h2 id="return-values">Return Values</h2>
+
+<p>If your function has a return value, you need a “return” script command in it to tell Quest what to return. The parameter you give to the “return” script command has to be of the same type as the you set for your function.</p>
+
+<p>Here is a rather contrived exampled that takes two parameters, and returns an integer.</p>
+
+<p><img src="func1.png" alt="" title="func2.png" /></p>
+
+<p>This slightly less contrived example shows that you can have several returns in your function. Once the return is invoked the script terminates at that point. In this example, we are testing if the player has completed the game. There are three steps, and at each a certain condition is tested. In the first, if the player is not in the final_room, then the function returns false and then it is done. Otherwise it goes to the next step. Finally, if it gets through each test, it returns true.</p>
+
+<p><img src="func1.png" alt="" title="func3.png" /></p>
+
+<h2 id="overriding-functions">Overriding Functions</h2>
+
+<p>Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions). In the off-line editor anyway.</p>
+
+<p>Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter ‘A’ in blue, to pick a common example). Click on “Filter” at the bottom left of the screen, and select “Show Library Elements”. In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane. You can click the “Copy” button at top left to get the function copied into your game, and then edit it as you see fit.</p>
+
+<p>Just do not change the name, return type or parameters.</p>
+
+<p>Of course, you can really mess Quest up by overriding functions (but if you do, just delete the function from your game, and the original will still be there), so some care is required…</p>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

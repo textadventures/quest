@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Help with InvisiClues</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Help with InvisiClues</h1>
+      <p>It can be helpful to the player if your game has a help system - something she can access in game to get past that puzzle that seemed so simple to you, but is fiendishly complicated for the player. But how to let the player see how to solve this puzzle, but not inadventently see the solution for the whole game?</p>
+
+<p>Back at the dawn of time, Infocom came up with the idea of <a href="https://en.wikipedia.org/wiki/InvisiClues">InvisiClues</a> - and now you can do that too, in a virtual way.</p>
+
+<p><img src="invisiclues.png" alt="" title="invisiclues.png" /></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>To get this to work, you need to create a new new HELP command. For the command pattern, just type in “help</td>
+      <td>?”, and for the name, “help2” (no quotes for both), as Quest already has a HELP command, and will object if you give your command the same name.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For the script, paste in this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (HasAttribute(game, "defaultbackground")) {
+  bg = LCase (game.defaultbackground)
+}
+else {
+  bg = "white"
+}
+msg ("Drag your mouse over the text to reveal only the clues you need.")
+foreach (key, game.helpdict) {
+  msg ("&lt;i&gt;" + key + "&lt;/i&gt; [&lt;font color=\"" + bg + "\"&gt;" + StringDictionaryItem(game.helpdict, key) + "&lt;/font&gt;]")
+}
+</code></pre></div></div>
+
+<p>The first 6 lines just get the background colour, the seven line is obvious just a message to the player. The important part is the loop at the end.</p>
+
+<p>The foreach command loops over game.helpdict. This is a dictionary, which is kind of like a list, but with strings (conventionally called keys) instead of numbers. When you do foreach with a dictionary, you get the key, rather than the index.</p>
+
+<p>The penultimate line prints the InvisiClue. The trick is that it changes the font colour to match the background, so first the key is printed in italics, then the value from the dictionary is printed in the background colour.</p>
+
+<h3 id="the-hints">The Hints</h3>
+
+<p>Once you have the command, you need to put in the data. Go to the <em>Attributes</em> tab of the game object, and create a new attribute, helpdict. Set it to be a string dictionary, and then put in your questions and answers.</p>
+
+<p>If using the web editor, you will not have an <em>Attributes</em> tab, so we will have to do it differently. Go to the <em>Scripts</em> tab of the game object, and modify the start script.</p>
+
+<p>Click to add a new script, and select “Set a variable or attribute” from the list of scripts. in the first boxm type <code class="highlighter-rouge">helpdict</code>, then select “New string dictionary” from the drop down.</p>
+
+<p>Click to add a new script again, and select “Add a value to a dictionary. In the first box, put in <code class="highlighter-rouge">helpdict</code>. The two dropdowns should be set to “String”. In the second box put the question, and in the third the answer. You need to do this for every hint you wish to add to your game.</p>
+
+<p><img src="setup_hints.png" alt="" title="setup_hints.png" /></p>
+
+<p>This is what the code looks like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>game.helpdict = NewStringDictionary()
+dictionary add (game.helpdict, "How do I go north?", "Open the door!")
+dictionary add (game.helpdict, "How do I open the door?", "Type OPEN DOOR!")
+dictionary add (game.helpdict, "How do I kill the bugbear?", "There are allergic to jam...")
+dictionary add (game.helpdict, "How do I kill the bugbear with jam?", "Perhaps you could give him a sandwiche?")
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

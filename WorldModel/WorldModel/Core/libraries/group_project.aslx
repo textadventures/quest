@@ -1,0 +1,59 @@
+<!--Saved by Quest 5.7.6404.15496-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="group_project_library.aslx" />
+  <game name="group_project">
+    <gameid>c76a1ed4-9935-44c1-97e7-b7857e268d49</gameid>
+    <version>1.0</version>
+    <firstpublished>2017</firstpublished>
+    <attr name="feature_advancedscripts" type="boolean">false</attr>
+    <description><![CDATA[This is the template for the group project. Your zone starts with the room "gateway". You can do what you like with that room, it belongs to you - but you must give it a new name. Note that it has a gateway tab.<br/><br/>All rooms, objects, exits (if you name them), commands (if you name them) and functions you add to the game must have a name that starts with your initials (or other two letter identifier), and that includes the new name for gateway. This is to ensure there are no conflicts. If two people have a room called gateway in their zone, we will have problems when we put it together.<br/><br/>Commands and verb elements will generally be better submitted to the library. Functions might too if others will use them.<br/><br/>Use the Combined function to test in game if this is the final version or just your bit.<br/><br/>    if (IsCombined()) msg("This is the full version!")<br/><br/>NOTE: Any changes you make to game, hub, or player will be lost (as well as any objects or commands or exits inside them) when you game is combined with everything else.<br/><br/>NOTE: The library may be updated periodically, and that may well affect the hub and player, but should not affect your zone.]]></description>
+    <start type="script">
+      StartScript
+    </start>
+    <combined type="boolean">false</combined>
+  </game>
+  <object name="hub">
+    <inherit name="editor_room" />
+    <attr name="feature_startscript" type="boolean">false</attr>
+    <description type="script">
+      DescribeHub
+    </description>
+    <enter type="script">
+      HubEnterScript
+    </enter>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <isfemale type="boolean">false</isfemale>
+      <race>human</race>
+      <attr name="pov_look" type="script">
+        DescribePlayer
+      </attr>
+    </object>
+    <command name="TravelFromHub">
+      <pattern>travel</pattern>
+      <script>
+        ShowMenu ("Travel to where?", GetDirectChildren(destinations), true) {
+          msg (TravelToHub.travelmsg)
+          dest = GetObject(result)
+          player.parent = dest.to
+        }
+      </script>
+    </command>
+    <object name="destinations">
+      <inherit name="editor_object" />
+      <visible type="boolean">false</visible>
+    </object>
+  </object>
+  <object name="gateway">
+    <inherit name="gateway_type" />
+    <inherit name="editor_room" />
+    <attr name="feature_startscript" type="boolean">false</attr>
+    <gateway />
+    <attr name="_initialise_" type="script">
+      AddToHubGateway (this)
+    </attr>
+  </object>
+</asl>

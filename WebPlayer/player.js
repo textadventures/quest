@@ -7,6 +7,7 @@ var canSendCommand = true;
 var apiRoot = "http://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
+var questKvMod = true;
 
 function pageLoad() {
     // triggered by ASP.NET every page load, including from the AJAX UpdatePanel

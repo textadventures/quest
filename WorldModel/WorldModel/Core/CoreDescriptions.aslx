@@ -224,7 +224,14 @@
       }
       count = count + 1
       if (count = listLength - 1) {
-        result = result + " " + preFinal + " "
+        if(HasAttribute(game,"american_dialect")){
+          if(game.american_dialect){
+            result = result + ", " + preFinal + " "
+          }
+        }
+        else{
+          result = result + preFinal + " "
+        }
       }
       else if (count < listLength) {
         result = result + ", "
@@ -285,7 +292,14 @@
         result = result + GetDisplayNameLink(item, "exit")
         count = count + 1
         if (count = listLength - 1) {
-          result = result + " " + preFinal + " "
+          if(HasAttribute(game,"american_dialect")){
+            if(game.american_dialect){
+              result = result + ", " + preFinal + " "
+            }
+          }
+          else{
+            result = result + preFinal + " "
+          }
         }
         else if (count < listLength) {
           result = result + ", "

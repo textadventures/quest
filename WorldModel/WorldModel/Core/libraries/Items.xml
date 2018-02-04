@@ -1,0 +1,421 @@
+<?xml version="1.0"?>
+<library>
+
+
+  <delegate name="script_returns_string" type="string" />
+  
+  <delegate name="script_returns_price" type="int" />
+  
+  
+  <!-- for buying and selling  -->
+
+  <type name="merchandise">
+    <take />
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Drop</value>
+      <value>Sell</value>
+    </inventoryverbs>
+    <take />
+
+    <buyingprice type="script_returns_price">
+      if (game.pov.status = "Merchant's Tongue") {
+        rate = 75
+      }
+      else {
+        rate = 100
+      }
+      return (this.price * (rate + game.pov.parent.markup) / 100)
+    </buyingprice>
+    
+    <sellingprice type="script_returns_price">
+      if (game.pov.status = "Merchant's Tongue") {
+        rate = 125
+      }
+      else {
+        rate = 100
+      }
+      return (this.price * (rate - game.pov.parent.markup) / 200)
+    </sellingprice>
+
+    <printstats type="script">
+      P("You guess this is worth about " + DisplayMoney(this.price) + ".")
+    </printstats>
+    
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:silver;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+
+    <look type="script"><![CDATA[
+      if (HasString(this, "loredesc") and game.pov.status = "Lore") {
+        P(this.loredesc)
+      }
+      else if (HasString(this, "revealeddesc") and game.pov.status = "True Sight") {
+        P(this.revealeddesc)
+      }
+      else if (HasString(this, "desc")) {
+        P(this.desc)
+      }
+      else {
+        P("It's just an ordinary " + GetDisplayAlias(this) + "...")
+      }
+      do (this, "printstats")
+    ]]></look>
+  </type>
+
+
+  <type name="merchandisewearable">
+    <inherit name="merchandise"/>
+	  <wear type="script"><![CDATA[
+       P (DynamicTemplate("WearableLoot", this))
+	  ]]></wear>
+  </type>
+
+  
+  <!-- =================================================== -->
+  <!-- Background stuff, randonly generated -->
+
+
+  <type name="generic">
+      <scenery />
+      <look type="script">
+        if (not HasString(this, "desc")) {
+          P ("You doubt it is important.")
+        }
+        else {
+          if (not this.alreadylooked) {
+            this.alreadylooked = true
+            if (HasString(this, "desc")) {
+              this.desc = Randomise(this.desc)
+            }
+            else {
+              this.desc = ""
+            }
+            if (RandomChance(this.chanceofsomething)) {
+              this.hassomething = true
+              o = PickFromObject(this.original)
+              o.parent = this.parent
+              s = Replace(this.firstlook, "%name%", LCase(o.alias))
+            }
+            else {
+              s = this.nothingthere
+            }
+          }
+          else if (this.hassomething) {
+            s = this.secondlook
+          }
+          else {
+            s = this.nothingthere
+          }
+          P(Trim(this.desc + " " + s))
+        }
+      </look>
+      <alreadylooked type="boolean">false</alreadylooked>
+      <hassomething type="boolean">false</hassomething>
+      <chanceofsomething type="int">10</chanceofsomething>
+  </type>
+
+  
+  
+  
+  <!-- =================================================== -->
+  <!-- Artefact -->
+
+  
+  <type name="artefact">
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+    </inventoryverbs>
+
+    <take />
+
+    <drop type="boolean">false</drop>
+
+    <ontake type="script">
+      player.artefactcount = player.artefactcount + 1
+      JS.eval ("$('#artefact-span').html('" + game.pov.artefactcount + "/14');")
+    </ontake>
+
+    <feature_usegive />
+
+    <use type="script">
+      msg ("This artefact is far too valuble to actually use!")
+    </use>
+
+    <sellstuff>You will get a better price for this artefact  in the city from a dealer who understands its cultural significance.</sellstuff>
+
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:DarkGoldenRod;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+  </type>
+  
+    
+  
+  
+  <type name="recipe">
+    <found type="boolean">false</found>
+    <take />
+    <drop type="boolean">false</drop>
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:Orchid;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+  </type>
+  
+  <type name="venom">
+    <inherit name="recipe" />
+    <take />
+    <count type="int">0</count>
+    <use type="script">
+      do (this, "apply")
+    </use>
+
+    <apply type="script">
+      if (game.pov.equipped = fists) {
+        msg ("You can't put venom on your bare hands.")
+      }
+      else if (not game.pov.equipped.canbevenomed) {
+        if (HasString(game.pov.equipped, "novenommsg")) {
+          msg (game.pov.equipped.novenommsg)
+        }
+        else {
+          msg ("You cannot put venom on " + GetDisplayName(this) + ".")
+        }
+      }
+      else if (not game.pov.equipped.venom = null) {
+        msg ("There is already venom on the blade.")
+      }
+      else if (this.count = 0) {
+        msg ("You have none of that type of venom at the moment.")
+      }
+      else {
+        game.pov.equipped.venom = this
+        this.count = this.count - 1
+        P (DynamicTemplate("VenomOkay", this))
+      }
+    </apply>
+    
+    <effect type="script"><![CDATA[
+      target = game.pov.target
+      target.hitpoints = target.hitpoints - this.potency
+      if (target.hitpoints > 0) {
+        msg ("The venom on your blade reduces the " + target.alias + " by a further " + this.potency + " hits (" + this.hitpoints + " hits left).")
+      }
+      else {
+        msg ("The venom on your blade reduces the " + target.alias + " by a further " + this.potency + " hits, and it dies.")
+        do (target, "makedead")
+      }
+    ]]></effect>
+  
+  </type>
+  
+
+
+
+  <!-- =================================================== -->
+  <!-- garment -->
+
+
+  <type name="garment">
+    <inherit name="merchandise"/>
+    <inherit name="wearable" />
+  </type>
+    
+    
+    
+  <!-- =================================================== -->
+  <!-- Shields -->
+
+
+  <type name="shield">
+    <inherit name="merchandise"/>
+    <level type="int">1</level>
+    <take />
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Drop</value>
+      <value>Equip</value>
+      <value>Sell</value>
+    </inventoryverbs>
+    
+    <printstats type="script">
+      msg("Gives +" + this.level + " to defence.")
+    </printstats>
+
+    <equip type="script"><![CDATA[
+      if (not this.parent = game.pov) {
+        msg ("You don't have it.")
+      }
+      else if (game.pov.equipped.twohanded) {
+        msg ("You cannot use a shield with a two-handed weapon.")
+      }
+      else {
+        if (not game.pov.shield = null) {
+          P (DynamicTemplate("ShieldSwap", this))
+        }
+        else {
+          P (DynamicTemplate("ShieldEquip", this))
+        }
+        game.pov.shield = this
+        this.inventoryverbs = Split ("Look at;Drop;Unequip", ";")
+        UpdateArmour
+        UpdateStatus
+      }
+    ]]></equip>
+    
+    <unequip type="script"><![CDATA[
+      if (not this.parent = game.pov) {
+        msg ("You don't have it.")
+      }
+      else if (not game.pov.shield = this) {
+        msg ("You don't have it equipped.")
+      }
+      else {
+        P (DynamicTemplate("ShieldUnequip", this))
+        game.pov.shield = null
+        this.inventoryverbs = Split ("Look at;Drop;Equip;Sell", ";")
+        UpdateArmour
+        UpdateStatus
+      }
+    ]]></unequip>
+    
+    <ondrop type="script">
+      if (game.pov.equipped = this) {
+        game.pov.shield = null
+        this.inventoryverbs = Split ("Look at;Drop;Equip;Sell", ";")
+      }
+    </ondrop>
+    
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:HotPink;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+  </type>
+
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Weapons -->
+
+
+
+
+  <type name="weapon">
+    <inherit name="merchandise"/>
+    <attackbonus type="int">0</attackbonus>
+    <damagebonus type="int">0</damagebonus>
+    <damagedicenumber type="int">1</damagedicenumber>
+    <damagedicesides type="int">4</damagedicesides>
+    <twohanded type="boolean">false</twohanded>
+    <nonweapon type="boolean">false</nonweapon>
+    <longreach type="boolean">false</longreach>
+    <canberusted type="boolean">true</canberusted>
+    <canbevenomed type="boolean">true</canbevenomed>
+    <take />
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Drop</value>
+      <value>Equip</value>
+      <value>Sell</value>
+    </inventoryverbs>
+    <!--
+    Gives a string that describes the effect of the weapon in tactical terms.
+    -->
+    <stats type="script_returns_string">
+      s = "+" + this.attackbonus + " to hit; " + this.damagedicenumber + "d" + this.damagedicesides + "+" + this.damagebonus + " damage"
+      if (not this.venom = null) {
+        s = s + "; " + GetDisplayName(this.venom) + " on the blade"
+      }
+      return (s)
+    </stats>
+    
+    <printstats type="script"><![CDATA[
+      msg(RunDelegateFunction (this, "stats")))
+    ]]></printstats>
+
+    <equip type="script"><![CDATA[
+      if (not this.parent = game.pov) {
+        msg ("You don't have it.")
+      }
+      else if (this.twohanded and not game.pov.shield = null) {
+        msg("You cannot use a two-handed weapon with a shield.")
+      }
+      else {      
+        if (not game.pov.equipped = fists and not game.pov.equipped = null) {
+          P (DynamicTemplate("WeaponSwap", this))
+        }
+        else {
+          P (DynamicTemplate("WeaponEquip", this))
+        }
+        game.pov.equipped.inventoryverbs = Split ("Look at;Drop;Equip;Sell", ";")
+        game.pov.equipped = this
+        this.inventoryverbs = Split ("Look at;Drop;Unequip", ";")
+        UpdateStatus
+      }
+    ]]></equip>
+    
+    <unequip type="script"><![CDATA[
+      if (game.pov.equipped = this) {
+        P (DynamicTemplate("WeaponUnequip", this))
+        game.pov.equipped = fists
+        this.inventoryverbs = Split ("Look at;Drop;Equip;Sell", ";")
+        UpdateStatus
+      }
+      else {
+        msg ("You don't have that equipped.")
+      }
+    ]]></unequip>
+    
+    <ondrop type="script">
+      if (game.pov.equipped = this) {
+        game.pov.equipped = fists
+        this.inventoryverbs = Split ("Look at;Drop;Equip;Sell", ";")
+        UpdateStatus
+      }
+    </ondrop>
+    
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:HotPink;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+  </type>
+
+
+
+
+</library>

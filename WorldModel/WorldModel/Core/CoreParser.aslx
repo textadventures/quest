@@ -32,8 +32,10 @@
     if (not handled) {
       StartTurnOutputSection
       if (StartsWith (command, "*")) {
-        msg ("")
+        msg ("Noted")
         msg (SafeXML (command))
+        game.notarealturn = true
+        Log("NOTE:  "+command)
       }
       else {    
         shownlink = false

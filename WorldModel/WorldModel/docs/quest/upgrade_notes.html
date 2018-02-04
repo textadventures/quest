@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upgrade Notes</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Upgrade Notes</h1>
+      <h2 id="upgrading-from-quest-541-to-quest-55">Upgrading from Quest 5.4.1 to Quest 5.5</h2>
+
+<p>To prevent so many tabs from showing when editing a game, some of Quest’s features can now be toggled on and off - on a per-game basis, and on a per-object basis. When upgrading, some features in the Editor may be hidden until you turn the feature on again.</p>
+
+<p>Per-game features - set these by selecting “game” and then go to the Features tab. Turning these options on will cause the relevant tabs and script commands to be shown.</p>
+
+<ul>
+  <li>hyperlinks</li>
+  <li>map and custom drawing grid</li>
+  <li>static picture frame</li>
+  <li>score</li>
+  <li>health</li>
+  <li>inventory limits</li>
+  <li>light and dark</li>
+  <li>ask and tell</li>
+  <li>in-room descriptions</li>
+</ul>
+
+<p>Per-object features - set these by selecting the object and then go to the Features tab. Turning these options on will cause the tab to be displayed for the object.</p>
+
+<ul>
+  <li>use and give</li>
+  <li>container</li>
+  <li>switch on/off</li>
+  <li>edible</li>
+  <li>player</li>
+</ul>
+
+<p>Other changes:</p>
+
+<ul>
+  <li>the “Pause” request is no longer supported. Use the <a href="functions/corelibrary/settimeout.html">SetTimeout</a> function instead.</li>
+  <li>the game title and author name are now displayed by default when a game begins. You can turn this option off from the game Setup tab.</li>
+  <li>in gamebook mode, the new default style is to not clear the screen between different pages. You can revert to the old behaviour by clicking game, then go to the Display tab and tick “Clear screen between each page”.</li>
+</ul>
+
+<p>For more details on new features, see the <a href="http://blog.textadventures.co.uk/2013/12/19/quest-5-5-beta-is-now-available/">Quest 5.5 beta blog post</a>.</p>
+
+<h2 id="upgrading-from-quest-54-to-quest-541">Upgrading from Quest 5.4 to Quest 5.4.1</h2>
+
+<p>If you have any exits that run scripts instead of automatically moving the player, you will need to tick a new checkbox on the exit editor “Run a script (instead of moving the player automatically)”.</p>
+
+<h2 id="upgrading-from-quest-53-to-quest-54">Upgrading from Quest 5.3 to Quest 5.4</h2>
+
+<ul>
+  <li>the old synchronous functions Ask, ShowMenu, GetInput and synchronous Wait request are now unsupported, and will raise an error if used in a game with ASL version set to 540 or above.</li>
+  <li>ASLX attribute type name changes:
+    <ul>
+      <li>“list” becomes “simplestringlist”</li>
+      <li>“stringdictionary” becomes “simplestringdictionary”</li>
+      <li>“objectdictionary” becomes “simpleobjectdictionary”</li>
+      <li>new “stringlist” format</li>
+      <li>new “stringdictionary” format</li>
+      <li>new “objectdictionary” format</li>
+      <li>new “list” format</li>
+      <li>new “dictionary” format</li>
+    </ul>
+  </li>
+  <li>new functions <a href="functions/newlist.html">NewList</a> and <a href="functions/newscriptdictionary.html">NewScriptDictionary</a></li>
+  <li>new <a href="text_processor.html">text processor</a></li>
+  <li><a href="functions/corelibrary/gettaggedname.html">GetTaggedName</a> is removed from Core.aslx</li>
+  <li><a href="functions/corelibrary/getdisplaynamelink.html">GetDisplayNameLink</a> no longer takes a verbs parameter</li>
+  <li>new function <a href="functions/corelibrary/setalignment.html">SetAlignment</a></li>
+  <li>the <a href="scripts/insert.html">insert</a> script command is obsolete, as you can directly write HTML with <a href="http://docs.textadventures.co.uk/quest/scripts/msg.html">msg</a></li>
+  <li>the old <a href="tutorial/text_formatting.html">text formatting</a> XML is no longer relevant - use HTML instead. The only breaking change is there is no “color” tag in HTML.</li>
+  <li>new “JS.” calling method for JavaScript functions</li>
+</ul>
+
+<h2 id="upgrading-from-quest-52-to-quest-53">Upgrading from Quest 5.2 to Quest 5.3</h2>
+
+<ul>
+  <li>Display verbs are now automatically generated by default. If you want the old behaviour (manually specifying display verbs for each object), go to the game Room Descriptions tab and turn off “Automatically generate object display verbs list”.</li>
+  <li>See also the <a href="https://blog.textadventures.co.uk/2012/12/03/quest-5-3-beta-is-now-available/">Quest 5.3 Beta release announcement</a></li>
+</ul>
+
+<h2 id="upgrading-from-quest-51-to-quest-52">Upgrading from Quest 5.1 to Quest 5.2</h2>
+
+<p>See the <a href="https://blog.textadventures.co.uk/2012/04/14/quest-5-2-beta-is-now-available/">Quest 5.2 Beta release announcement</a> and the <a href="https://blog.textadventures.co.uk/2012/05/12/quest-5-2-is-out-now/">Quest 5.2 release announcement</a></p>
+
+<h2 id="upgrading-from-quest-50-to-quest-51">Upgrading from Quest 5.0 to Quest 5.1</h2>
+
+<p>You can open and edit your Quest 5.0 games in Quest 5.1 (but note that, once saved, you won’t be able to edit your Quest 5.1 game in Quest 5.0).</p>
+
+<p>Please note that a few changes have been made to enable Quest games to be converted to Javascript (so they can run as stand-alone apps on iPhone, Android etc.). This means that some functions have been deprecated - this means that you can still use them, but I would encourage you to use the suggested replacements instead, particularly if you plan to convert your game into an app:</p>
+
+<ul>
+  <li>the <a href="http://docs.textadventures.co.uk/quest/functions/showmenu.html">ShowMenu</a> function is deprecated - use the new <a href="http://docs.textadventures.co.uk/quest/scripts/show_menu.html">show menu</a> script command instead</li>
+  <li>the <a href="functions/corelibrary/waitforkeypress.html">WaitForKeyPress</a> (and “Wait” <a href="http://docs.textadventures.co.uk/quest/scripts/request.html">request</a>) is deprecated - use the new <a href="http://docs.textadventures.co.uk/quest/scripts/wait.html">wait</a> script command instead</li>
+  <li>the <a href="functions/ask.html">Ask</a> function is deprecated - use the new <a href="http://docs.textadventures.co.uk/quest/scripts/ask.html">ask</a> script command instead</li>
+  <li>the + and - operators on lists are deprecated - use the new <a href="functions/listcombine.html">ListCombine</a> and <a href="functions/listexclude.html">ListExclude</a> functions instead</li>
+</ul>
+
+<p>Some minor behaviour changes:</p>
+
+<ul>
+  <li>when playing videos with <a href="functions/corelibrary/showyoutube.html">ShowYouTube</a> or <a href="functions/corelibrary/showvimeo.html">ShowVimeo</a>, the video now automatically starts playing</li>
+  <li>the static picture frame feature is no longer an optional extra - there is no need to set the <a href="http://docs.textadventures.co.uk/quest/attributes/useframe.html">useframe</a> option.</li>
+</ul>
+
+<p>New features:</p>
+
+<ul>
+  <li>there is a new “Simple Mode” in the Editor, which can be toggled on and off from the Tools menu. This hides away much of Quest’s more advanced functionality, so is useful for beginners, or if you don’t need to use the more advanced features.</li>
+  <li>you can now add, view and edit comments in the script editor</li>
+  <li><a href="guides/walkthroughs.html#Assertions">walkthrough assertions</a> let you test the value of expressions when a walkthrough is running</li>
+  <li>new <a href="http://docs.textadventures.co.uk/quest/scripts/while.html">while</a> script command</li>
+  <li><a href="http://docs.textadventures.co.uk/quest/scripts/for.html">for</a> has a new “step” parameter</li>
+  <li>new <a href="functions/corelibrary/objectlink.html">ObjectLink</a> and <a href="functions/corelibrary/commandlink.html">CommandLink</a> functions make it easier to output hyperlinks within a script</li>
+</ul>
+
+<p>Other changes:</p>
+
+<ul>
+  <li><a href="guides/running_a_script_when_an_attribute_changes.html">“changedXXXX” script attributes</a> can now access “oldvalue” to get the previous value of the attribute they’re watching</li>
+  <li>richer set of attributes for use…on… and give…to…: <a href="http://docs.textadventures.co.uk/quest/attributes/useanything.html">useanything</a>, <a href="http://docs.textadventures.co.uk/quest/attributes/giveanything.html">giveanything</a>, <a href="http://docs.textadventures.co.uk/quest/attributes/selfuseon.html">selfuseon</a>, <a href="http://docs.textadventures.co.uk/quest/attributes/selfuseanything.html">selfuseanything</a>, <a href="http://docs.textadventures.co.uk/quest/attributes/giveto.html">giveto</a>, <a href="http://docs.textadventures.co.uk/quest/attributes/givetoanything.html">givetoanything</a></li>
+  <li>new <a href="http://docs.textadventures.co.uk/quest/attributes/onexit.html">onexit</a> script can be run when leaving a room</li>
+  <li>new <a href="http://docs.textadventures.co.uk/quest/functions/getallchildobjects.html">GetAllChildObjects</a> function, and the related <a href="http://docs.textadventures.co.uk/quest/functions/getdirectchildren.html">GetDirectChildren</a> function has been moved from Core.aslx to become a Quest function</li>
+  <li>new <a href="functions/isdefined.html">IsDefined</a> function</li>
+  <li>the <a href="http://docs.textadventures.co.uk/quest/scripts/create_exit.html">create exit</a> script command now lets you specify a name for the exit object</li>
+  <li>new <a href="functions/isgamerunning.html">IsGameRunning</a> function</li>
+  <li>new <a href="http://docs.textadventures.co.uk/quest/scripts/request.html">request</a> types RequestSave and SetPanelContents</li>
+  <li>new optional cacheID parameter for regex functions <a href="functions/isregexmatch.html">IsRegexMatch</a>, <a href="functions/populate.html">Populate</a>, <a href="functions/getmatchstrength.html">GetMatchStrength</a></li>
+</ul>
+
+<h2 id="upgrading-from-quest-50-beta-versions">Upgrading from Quest 5.0 Beta Versions</h2>
+
+<h3 id="upgrading-from-50-beta-4">Upgrading from 5.0 Beta 4</h3>
+
+<p>For Quest 5.0 (Release Candidate 1) and later, each compass exit has its own type. You will get some slightly odd behaviour if you don’t update your exits - for example, if you have both north and northwest exits from a room, typing “n” will give you a disambiguation menu. To prevent this, go to each exit in your game and choose the direction from the “Type” dropdown, so it matches the Alias.</p>
+
+<h3 id="upgrading-from-50-beta-2">Upgrading from 5.0 Beta 2</h3>
+
+<p>For Beta 3 and later, the “player” object has been moved out of Core.aslx. This means if you have a game created for Beta 1 or Beta 2, you will need to add the “player” object yourself. You just need to make sure the object name is “player” and that it inherits the “defaultplayer” type.</p>
+
+<p>You can simply copy and paste this code block into your game file:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;object name="player"&gt;
+   &lt;inherit name="defaultplayer" /&gt;
+ &lt;/object&gt;
+</code></pre></div></div>
+
+<h2 id="upgrading-from-quest-4x">Upgrading from Quest 4.x</h2>
+
+<p>See separate article <a href="upgrading_from_quest_4.html">Upgrading from Quest 4</a></p>
+
+<h2 id="upgrading-to-development-versions">Upgrading to development versions</h2>
+
+<p>Development versions are unsupported. This section of the documentation is to note changes which will be moved to a new section above when the development version is released properly.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

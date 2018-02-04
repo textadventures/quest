@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text processor</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Text processor</h1>
+      <p>Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object links, show text only once, and more.</p>
+
+<p>To use the text processor, you can simply add a command in curly braces in any text that gets displayed. In this simple example, a room description is set to say that room smells only the first time the text is printed:</p>
+
+<p><img src="text_processor_text.png" alt="" title="text_processor_text.png" /></p>
+
+<p>The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in any text, for example, in an <a href="http://docs.textadventures.co.uk/quest/scripts/msg.html">msg</a> command:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> msg ("Would you like some {command:help}?")
+</code></pre></div></div>
+
+<p>You can use as many sections as you like within the same text, and even nest them:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> msg ("You can {command:go to shop:go into the shop}. {if player.coins&gt;10:You have {player.coins} coins, which is more than enough.}")
+</code></pre></div></div>
+
+<p>Note that the text processor does not support the use of “this” (if that means nothing to you, then you do not need to worry about it).</p>
+
+<p>Supported processor commands are:</p>
+
+<h2 id="text-adventure-mode-and-gamebook-mode">Text adventure mode and Gamebook mode</h2>
+
+<p>{once:<strong>text</strong>}<br />
+Displays the text only once. The text will not be printed on subsequent occasions.</p>
+
+<p>{notfirst:<strong>text</strong>}<br />
+Does not displays the text the first time it is printed; the text will only be printed on subsequent occasions.</p>
+
+<p>{random:<strong>text 1:text 2:text 3</strong>}<br />
+Choose text at random (you can have as many sections as you like). This is a great way to add some movement to a character.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You can see Mary {random:paddling in the sea:building a sand castle:running in the sand}.
+</code></pre></div></div>
+
+<p>{img:<strong>filename.png</strong>}<br />
+Insert the specified image.</p>
+
+<p>{<strong>object.attribute</strong>}<br />
+Displays the value of an object’s attribute. A great example of this is where the player can set the name of the main character, you can use <code class="highlighter-rouge">{player.alias}</code> as a stand-in for the character’s name.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'Hi, {player.alias},' says Mary, 'I've not seen you in a while!'
+</code></pre></div></div>
+
+<p>{if <strong>object.attribute</strong>:<strong>text</strong>}<br />
+Display text only if object attribute is true (so requires a flag, otherwise known as a Boolean attribute). Containers have a flag called “isopen”, and you could use that to modify the description, for instance.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The chest is old, and almost falling apart. {if chest.isopen:The lid is open.}
+</code></pre></div></div>
+
+<p>{if not <strong>object.attribute</strong>:<strong>text</strong>}<br />
+Display text only if object attribute is false.</p>
+
+<p>{if <strong>object.attribute=value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute equals a certain value.</p>
+
+<p>{if <strong>object.attribute&lt;&gt;value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute does not equal a certain value.</p>
+
+<p>{if <strong>object.attribute&gt;value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute is greater than a certain value.</p>
+
+<p>{if <strong>object.attribute&gt;=value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute is greater than or equal to a certain value.</p>
+
+<p>{if <strong>object.attribute&lt;value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute is less than a certain value.</p>
+
+<p>{if <strong>object.attribute&lt;=value</strong>:<strong>text</strong>}<br />
+Display text only if an object attribute is less than or equal to a certain value.</p>
+
+<p>{command:<strong>command</strong>}<br />
+Displays a link that will run a command, displaying the command itself as the text. The command will be parsed as normal, so could be as simple as {command:HELP} or as complicated as {command:put the ball in the chest}. For a gamebook, the command should be the name of a page.</p>
+
+<p>{command:<strong>command</strong>:<strong>text</strong>}<br />
+Displays a link that will run a command, as before, but displaying some different text.</p>
+
+<p>{page:<strong>command</strong>}<br />
+As <code class="highlighter-rouge">command</code> (an alternative name that may be prefered for game books).</p>
+
+<p>{page:<strong>command</strong>:<strong>text</strong>}<br />
+As <code class="highlighter-rouge">command</code> (an alternative name that may be prefered for game books).</p>
+
+<h2 id="additional-text-adventure-commands">Additional text adventure commands</h2>
+
+<p>{object:<strong>name</strong>}<br />
+Displays an object hyperlink, using the object’s display alias.</p>
+
+<p>{object:<strong>name</strong>:<strong>link text</strong>}<br />
+Displays an object hyperlink, using text you specify.</p>
+
+<p>{exit:<strong>name</strong>}<br />
+Displays an exit hyperlink. The name is the name you give to the exit (by default exits do not have names; you will need to give it a name yourself). The link will appear as the exit’s alias (“north”, “up”, etc.)</p>
+
+<p>{rndalt:<strong>object</strong>}<br />
+Display a randomly chosen name from an object’s <a href="http://docs.textadventures.co.uk/quest/attributes/alt.html">alt</a> list.</p>
+
+<p>{if <strong>attribute</strong>:<strong>text</strong>}<br />
+Display text only if game attribute is true</p>
+
+<p>{if not <strong>attribute</strong>:<strong>text</strong>}<br />
+Display text only if game attribute is false</p>
+
+<p>{select:<strong>object.attribute</strong>:<strong>text 0:text 1:text 2</strong>}<br />
+{select:<strong>object.attribute</strong>:<strong>text 0|text 1|text 2</strong>}<br />
+Selects one text to display, based on the value of the object attribute (you can have as many sections as you like). Note that the attribute must be an integer (whole number), and the sections number from zero. The second form, with texts separated by vertical bars, allows additional text processor directives to be nested inside the <strong>select</strong> directive. This is new to Quest 5.7.</p>
+
+<h2 id="additional-text-adventure-commands-in-quest-57">Additional text adventure commands in Quest 5.7</h2>
+
+<p>{i:<strong>text</strong>}
+Displays the given text in italic.</p>
+
+<p>{b:<strong>text</strong>}
+Displays the given text in bold. To do bold and italic, nest the commands, like this: {b:{i:very important}}.</p>
+
+<p>{u:<strong>text</strong>}
+Displays the given text in underline.</p>
+
+<p>{s:<strong>text</strong>}
+Displays the given text in strike-through.</p>
+
+<p>{colour:<strong>colour</strong>:<strong>text</strong>}
+Displays the given text in the colour specified (you can also used “color”, by the way).</p>
+
+<p>{back:<strong>colour</strong>:<strong>text</strong>}
+Displays the given text with the colour specified as the background. To show text as white on black, you can combine these like this: {colour:white:{back:black:some highlighted text}}.</p>
+
+<p>{here <strong>object</strong>:<strong>text</strong>}
+Displays the text only if the given object is in the current room (but not if in the player’s inventory or in a container in the room).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The beach is long, and the sand almost white. {here mary:You can see Mary, building a sand castle.}
+</code></pre></div></div>
+
+<p>{nothere <strong>object</strong>:<strong>text</strong>}
+Displays the text only if the given object is NOT in the current room.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The beach is long, and the sand almost white. {nothere mary:You wonder where Mary could be.}
+</code></pre></div></div>
+
+<p>{popup:<strong>text</strong>:<strong>long text</strong>}
+Displays a link, with the first text (which cannot have text processor directives nested in it). When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.</p>
+
+<p>{either <strong>condition</strong>:<strong>text</strong>}
+This works similar to the if command above, but with two important differences. The first is the the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).</p>
+
+<p>{either <strong>condition</strong>:<strong>text</strong>|<strong>text</strong>}
+As before, but the second text is only seen when the condition fails. Note that the two texts are separated by a vertical bar, to ensure nesting works properly.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
+ -&gt; "You are the player",
+"'Oh, {either player.male**flag:he|she} is not worth it.'"
+ -&gt; "'Oh, he is not worth it.'",
+</code></pre></div></div>
+
+<p>{eval:<strong>code</strong>}
+The code is evaluated, just as normal Quest code is, and the result displayed.</p>
+
+<p>{=<strong>code</strong>}
+This is a short cut for eval, and works just the same. The samples below show the potential, though by its nature this is rather less forgiving that the other commands available.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"You are in the {eval:player.parent.name}"
+ -&gt; "You are in the kitchen"
+"You are in the {=player.parent.name}"
+ -&gt; "You are in the kitchen"
+"You are in the {=CapFirst(player.parent.name)}"
+ -&gt; "You are in the Kitchen"
+"There are {=ListCount(AllObjects())} objects"
+-&gt; "There are 6 objects"
+"You look out the window: {=LookOutWindow}"
+ -&gt; "You look out the window: A figure is moving by the bushes"
+</code></pre></div></div>
+
+<h2 id="additional-gamebook-commands">Additional gamebook commands</h2>
+
+<p>{counter:<strong>countername</strong>}<br />
+Displays the value of an counter</p>
+
+<p>{if <strong>flag</strong>:<strong>text</strong>}<br />
+Display text only if flag is set</p>
+
+<p>{if not <strong>flag</strong>:<strong>text</strong>}<br />
+Display text only if flag is not set</p>
+
+<p>{if <strong>countername=value</strong>:<strong>text</strong>}<br />
+Display text only if a counter equals a certain value.</p>
+
+<p>{if <strong>countername&gt;value</strong>:<strong>text</strong>}<br />
+Display text only if a counter is greater than a certain value.</p>
+
+<p>{if <strong>countername&gt;=value</strong>:<strong>text</strong>}<br />
+Display text only if a counter is greater than or equal to a certain value.</p>
+
+<p>{if <strong>countername&lt;value</strong>:<strong>text</strong>}<br />
+Display text only if a counter is less than a certain value.</p>
+
+<p>{if <strong>countername&lt;=value</strong>:<strong>text</strong>}<br />
+Display text only if a counter is less than or equal to a certain value.</p>
+
+<h2 id="curly-braces">Curly braces</h2>
+
+<p>Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. As of Quest 5.7, if you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use <code class="highlighter-rouge">@@@open@@@</code> and <code class="highlighter-rouge">@@@close@@@</code> to tell Quest to display curly braces.
+```
+“player.count = @@@open@@@player.count@@@close@@@”
+ -&gt; “player.count = {player.count}”</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

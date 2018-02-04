@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<library>
+
+
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Verbs -->
+
+  <verb>
+    <property>attack</property>
+    <pattern>attack;fight;strike;kill;hit;swing;swing at</pattern>
+    <defaultexpression>"You can't attack " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>charge</property>
+    <pattern>charge</pattern>
+    <defaultexpression>"You can't attack " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>parry</property>
+    <pattern>parry</pattern>
+    <defaultexpression>"You can't attack " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>equip</property>
+    <pattern>equip;draw</pattern>
+    <defaultexpression>"You can't draw " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>unequip</property>
+    <pattern>unequip;sheathe</pattern>
+    <defaultexpression>"You can't sheathe " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>learn</property>
+    <pattern>learn</pattern>
+    <defaultexpression>"You can't learn " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>sellstuff</property>
+    <pattern>sellstuff</pattern>
+    <defaultexpression>"You can't sellstuff " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>smash</property>
+    <pattern>smash;break;destroy</pattern>
+    <defaultexpression>"You can't smash;break;destroy " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>harvest</property>
+    <pattern>harvest</pattern>
+    <defaultexpression>"You can't harvest " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>brew</property>
+    <pattern>brew</pattern>
+    <defaultexpression><![CDATA["To brew a potion, you need to first find a recipe. Once you have the recipe, you need a workbench and the ingredients, and then you can use the BREW <recipe> command."]]></defaultexpression>
+  </verb>
+  
+  <verb>
+    <property>apply</property>
+    <pattern>apply</pattern>
+    <defaultexpression>"You can't apply " + object.article + "."</defaultexpression>
+  </verb>
+
+
+  <!-- =================================================== -->
+  <!-- Help Commands -->
+
+
+
+  <command name="help2">
+    <pattern>help</pattern>
+    <script><![CDATA[
+      msg ("Various help screens are available. Type HELP &lt;option> to access them (or click a link). Options include {command:HELP HINTS}, {command:HELP COMBAT}, {command:HELP ARMOUR}, {command:HELP MAGIC}, {command:HELP STATS}, {command:HELP COMMANDS}, {command:HELP COMMERCE}, {command:HELP KEYS}, {command:HELP POTION}, {command:CREDITS}, {command:HELP VERSION}, {command:HELP CREATING}.")
+    ]]></script>
+  </command>
+  
+  <command name="help_magic">
+    <pattern>help magic;help spell;help spells;cast spell;learn spell</pattern>
+    <script><![CDATA[
+      msg ("To learn a spell, you have to have to have access to it first. You also need an intelligence of at least <i>twice</i> the level of the spell. Type <i>LEARN &lt;spell></i> to learn the spell (eg LEARN UNLOCK to learn the <i>Unlock</i> spell), and it will appear in the Spells list on the right.")
+      msg(" ")
+      msg ("To cast a spell that is already in your Spells list, just type <i>CAST &lt;spell></i>. Attack spells will affect all enemies in the location.")
+      msg(" ")
+      msg ("Some spells have a lasting effect. The effect continues until you cast another spell (you can cast the <i>Cancel</i> spell to do that). There is no other limitation on what you cast; no power points or anything like that.")
+      msg(" ")
+      msg ("Potions and scrolls can be used by anyone, but each can only be used once. Healing potions will bring you back to full health. Other potions will give you some bonus that may only last a few rounds. Scrolls hold attack spells, damaging all monsters present. Note that taking a potion (except healing potions) will cancel any on-going spell effect. Scrolls do not stop on-going effect (nor does wearing a talisman or ring).")
+      msg(" ")
+      msg("Type SPELLS to see a list of spells you have learnt. You can LOOK AT a spell to find its level.")
+    ]]></script>
+  </command>
+  
+  <command name="help_combat">
+    <pattern>help combat</pattern>
+    <script><![CDATA[
+      msg ("To attack something, just type <i>ATTACK &lt;foe></i>. Your attack roll will be calculated, and if you hit, the damage too. Usually your foe will then have an attack. Most foes will continue to attack each turn (and some will attack you even if you do not attack them). Some will even follow you if you go to another room (but not if you teleport!).")
+      msg(" ")
+      msg ("You can also try <i>PARRY &lt;foe></i>, which will increase your defence, but reduce your attack bonus; <i>CHARGE  &lt;foe></i>, which will give a bonus to your attack, but reduce your defence; or <i>FAINT &lt;foe></i>, which will reduce your attack this round, but give a bonus next time. The <i>FOCUS</i> command will give you a boost to your next attack (if you attack straight away).")
+      msg(" ")
+      msg ("<b>Weapons:</b> To use a certain weapon, you must <i>EQUIP</i> it first. Equipping a weapon unequips the current weapon. A foe's armour is more effective against a weapon that uses multiple dice, so a weapon doing 4d4 damage is good against unarmoured foes, but not as good as a d12 weapon against armoured ones.")
+      msg(" ")
+      msg ("<b>Defence:</b> Your defence is half your agility, minus your armour.")
+      msg(" ")
+      msg ("<b>Armour:</b> High armour reduces the amount of damage you take. You need good strength to wear armour though (four times as high as the armour value, otherwise your defence will be zero and your attacks at -5).")
+      msg(" ")
+      msg("<b>Turns:</b> Foes will only have a turn if your character actually does something. If you mistype and your command is not recognised that does not count as a turn, and foes will not get the opportunity to attack. On the other hand, equipping a weapon or trying unsuccessfully to unlock a door, for example, will count as turns.")
+    ]]></script>
+  </command>
+  
+  <command name="help_armour">
+    <pattern>help armour;help armor</pattern>
+    <script><![CDATA[
+      msg ("Your armour rating is calculated from a weighted average of all the bits of armour you are wearing on the following locations: feet, shoulders, torso, legs, head, arms, hands. The locations are weighted so head counts double and torso count three times as much as other locations.")
+      msg ("Plate armour can be worn on top of other armour, in which case the other armour only counts half. All armour can be worn on top of underwear.")
+    ]]></script>
+  </command>
+  
+  <command name="help_stats">
+    <pattern>help stats</pattern>
+    <script><![CDATA[
+      msg ("Your character is defined by four statistics:")
+      msg ("STAMINA: Used to determine the total hit points.")
+      msg ("STRENGTH: Determines the maximum armour that can be worn, also a bonus to attack and damage rolls.")
+      msg ("AGILITY: A bonus to attack rolls and to your defence.")
+      msg ("INTELLIGENCE: Used to determine the maximum spell level you can learn and cast.")
+      msg(" ")
+      msg ("Clicking on the stats box to the left will toggle the visibility of the less important ones. You can also type STATS to see your current status. Note that the attack bonus does not include any bonus associated with your current weapon (but both are applied when you make an attack!).")
+      msg(" ")
+      msg ("If you did not spend all your points during character creation, you can use the INCREASE command to raise a specific statistic (eg INCREASE STAMINA).")
+    ]]></script>
+  </command>
+  
+  <command name="help_keys">
+    <pattern>help keys</pattern>
+    <script><![CDATA[
+      msg ("There is one key on each level, and it will unlock one door on the next level. If you have the key, the door will be unlocked automatically; no need to type UNLOCK or anything.")
+      msg(" ")
+      msg("Keys do not appear in your inventory; if you make it to level twenty, you could have twenty of them cluttering up the list. To see what keys you do have, use the KEYS command.")
+      msg(" ")
+      msg("You can also use magic to unlock doors.")
+    ]]></script>
+  </command>
+  
+  <command name="help_potion">
+    <pattern>help potion</pattern>
+    <script><![CDATA[
+      msg ("If you can find a recipe you can craft venoms to put on your weapons and other potions too. Use the POTIONS command to see what recipes you currently have, and how much of each fungus and venom you are carrying (venom and fungi do not appear in your inventory).")
+      msg(" ")
+      msg("As well as a recipe you will need a suitable workbench and ingredients. The ingredients are the various coloured fungi you might find growing on the walls. To make a batch of red venom, for example, you will first need to find some red fungus, and use the HARVEST RED FUNGUS command. Then find a workbench, and type BREW RED VENOM. To apply it to your weapon, type APPLY RED VENOM.")
+      msg(" ")
+      msg("You can put venoms on most bladed weapons. The venom lasts until your next successful strike, or until you put the weapon away. Note that some creatures are immune to poison.")
+    ]]></script>
+  </command>
+  
+
+  <command name="help_commands">
+    <pattern>help commands</pattern>
+    <script><![CDATA[
+      msg ("Commands introduced to QUEST for this game:")
+      msg ("EQUIP &lt;weapon>: Get ready for combat by equipping the given weapon. Also for armour and shields.")
+      msg ("ATTACK &lt;foe>: Attack the given foe with your equipped weapon (or fists if none equipped).")
+      msg ("CHARGE &lt;foe>: Attack the given foe with a bonus, but taking a penalty to your defence.")
+      msg ("PARRY &lt;foe>: Attack the given foe with a bonus to your defence, but taking a penalty to your attack.")
+      msg ("FEINT &lt;foe>: Attack the given foe with a penalty this round, but a bonus next round, .")
+      msg ("FOCUS: Forego an attack this round to get a bonus next round.")
+      msg ("SEARCH &lt;foe>: Search the body of your foe (once it is dead; repeated searching will not find anything more).")
+      msg ("LEARN &lt;spell>: The spell will be learnt if visible and you have the intelligence to do so.")
+      msg ("CAST &lt;spell>: The spell will be cast if it is in your spell inventory.")
+      msg ("BUY: If the trader is present, a list of goods to buy will be presented.")
+      msg ("SELL&lt;object>: If the trader is present the item is sold. It the item is any use you will be able to buy it back later but at twice the price.")
+      msg ("STATUS: A detailed list of your attributes.")
+      msg ("KEYS: A list of keys you have found.")
+      msg ("VENOM: A list of venom recipes you currently know, and the number of each you have..")
+      msg ("HARVEST &lt;fungus>: To collect some of the fungus.")
+      msg ("BREW &lt;venom>: To create more venom.")
+      msg ("APPLY &lt;venom>: To apply venom to your current weapon.")
+    ]]></script>
+  </command>
+
+  <command name="help_commerce">
+    <pattern>help commerce</pattern>
+    <script><![CDATA[
+      msg ("You need to find a trader to buy and sell.")
+      msg ("To buy something, type <i>BUY</i>. You will be presented with a menu of items in stock. If you do not want anything, just ignore the list and type some other command.")
+      msg ("To sell something, type <i>SELL&lt;object></i>. Useful items will go into the trader's stock, and can be bought back, though at twice the price.")
+      msg("To sell all the useless stuff (including treasure, but not artefacts, weapons, etc.) in your inventory, type SELL JUNK.")
+    ]]></script>
+  </command>
+  
+  <command name="help_creating">
+    <pattern>help creating</pattern>
+    <script><![CDATA[
+      msg ("Want to create your own RPG-style game? You can find a tutorial and library <a href=\"https://github.com/ThePix/quest/wiki/CombatLib\">here</>.")
+    ]]></script>
+  </command>
+  
+  <command name="credits">
+    <pattern>credits;about</pattern>
+    <script><![CDATA[
+      msg ("This is a work of Interactive Fiction.")
+      msg (" ")
+      msg ("Version " + game.version + ".")
+      msg (" ")
+      msg ("It is written in Quest, which was created by Alex Warren, using CombatLib by The Pixie.")
+    ]]></script>
+  </command>
+  
+  <command name="version">
+    <pattern>help version</pattern>
+    <script><![CDATA[
+      msg ("Version " + game.version + ".")
+    ]]></script>
+  </command>
+  
+  <command name="hints">
+    <pattern>hint;hints;help hints;help hint</pattern>
+    <script><![CDATA[
+      msg ("Sorry, no hints implemented!")
+    ]]></script>
+  </command>
+  
+
+
+
+
+
+  <!-- =================================================== -->
+  <!-- Other commands -->
+
+  <command name="Smell">
+    <pattern>smell;sniff</pattern>
+    <script>
+      if (HasFullString(game.pov.parent, "smell")) {
+        msg (game.pov.parent.smell)
+      }
+      else {
+        msg ("You smell nothing usual.")
+      }
+    </script>
+  </command>
+  
+  
+  <command name="Listen">
+    <pattern>listen</pattern>
+    <script>
+      if (HasFullString(game.pov.parent, "listen")) {
+        msg (game.pov.parent.listen)
+      }
+      else {
+        msg ("It is quiet. Quiet as a grave...")
+      }
+    </script>
+  </command>
+
+  <!--
+  This version of take checks if the player has a spell that prevents her from taking stuff
+  -->
+  <command name="take2">
+    <pattern>take #object#; get #object#; pick up #object#</pattern>
+    <multiple>
+      return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
+    </multiple>
+    <script><![CDATA[
+      if (IsUnableToHold()) {
+        msg ("You cannot pick anything up with <i>" + GetDisplayAlias(game.pov.currentspell) + "</i> active.")
+      }
+      else {
+        foreach (obj, object) {
+          DoTake (obj, multiple)
+        }
+      }
+    ]]></script>
+  </command>
+
+  
+  
+  <command name="IncreaseStat">
+    <pattern>increase #text#</pattern>
+    <script><![CDATA[
+      text = LCase(text)
+      if (game.pov.pointsleft < 1) {
+        msg ("No points left to increase stats")
+      }
+      else if (not ListContains(Split("stamina;strength;agility;intelligence", ";"), text)) {
+        msg ("I don't think that's a stat")
+      }
+      else {
+        set (game.pov, text, GetInt(game.pov, text) + 1)
+        game.pov.pointsleft = game.pov.pointsleft - 1
+        msg ("Your " + text + " is now " + GetInt(game.pov, text) + " (" + game.pov.pointsleft + " points left)")
+        UpdateArmour
+        UpdateStatus
+      }
+    ]]></script>
+  </command>
+  
+  
+  
+  <command name="ListSpells">
+    <pattern>spell;spells</pattern>
+    <script><![CDATA[
+      l = GetDirectChildren (spells_known)
+      if (ListCount(l) = 0) {
+        msg ("You do not know any spells.")
+      }
+      else if (ListCount(l) = 1) {
+        sp = ObjectListItem(l, 0)
+        msg ("You only know the spell <i>" + GetDisplayAlias(sp) + "</i>.")
+      }
+      else {
+        msg ("Spells you know:")
+        foreach (sp, l) {
+          msg ("<i>" + GetDisplayAlias(sp) + "</i>")
+        }
+      }
+    ]]></script>
+  </command>
+  
+  
+  
+  <command name="status">
+    <pattern>status;stats;stat</pattern>
+    <script>
+      if (HasString(game.pov, "alias")) {
+        msg ("Name: " + game.pov.alias)
+      }
+      if (GetBoolean(game.pov, "female")) {
+        msg ("Female")
+      }
+      else {
+        msg ("Male")
+      }
+      foreach (att, Split("strength|intelligence|agility|stamina", "|")) {
+        msg (CapFirst(att) + ": " + GetInt(game.pov, att))
+      }
+      msg ("On-going magic: " + game.pov.status)
+      msg ("Gold: " + game.pov.money)
+      msg ("Hits: " + game.pov.hitpoints + "/" + CalcFullHits ())
+      msg ("Defence: " + game.pov.defence)
+      msg ("Armour: " + (game.pov.armour10/10))
+      if (ArmourTooHeavy()) {
+        msg ("... The armour is too heavy for you to fight effectively.")
+      }
+      if (not (game.pov.equipped = null)) msg ("Weapon: " + GetDisplayAlias (game.pov.equipped) + " " +  RunDelegateFunction (game.pov.equipped, "stats"))
+    </script>
+  </command>
+
+
+  <command name="focus">
+    <pattern>focus</pattern>
+    <script><![CDATA[
+      msg ("You spend a moment focusing your energies.")
+      game.pov.next_round_ob_bonus = 6
+      game.pov.db_bonus = 3
+    ]]></script>
+  </command>
+  
+
+  <command name="sneak">
+    <pattern>sneak</pattern>
+    <script><![CDATA[
+      msg ("You disappear into the shadows.")
+      game.pov.sneaklevel = game.pov.agility - game.pov.armour
+    ]]></script>
+  </command>
+  
+
+  <command name="cast_spell">
+    <pattern>cast #text#;invoke #text#</pattern>
+    <script>
+      f = _ProcessScopeCommand ("CastSpell", GetDirectChildren (spells_known), text)
+      if (not f) {
+        msg ("Is that even a spell?")
+      }
+    </script>
+  </command>
+	<function name="CastSpell" parameters="spell" type="boolean">
+    do(spell, "precast")
+    return(true)
+	</function>
+  
+
+  <command name="Keys">
+    <pattern>keys;keyring</pattern>
+    <script>
+      if (player.keyring = 0) {
+        msg ("There are no keys on your keyring.")
+      }
+      else {
+        s = "On your key ring you have: "
+        x = player.keyring
+        count = 0
+        while (not x = 0) {
+          if (x % 2 = 1) {
+            s = s + NameKey (count) + "; "
+          }
+          x = x / 2
+          count = count + 1
+        }
+        msg (s)
+      }
+    </script>
+  </command>
+
+
+  
+
+  
+  <command name="Venom">
+    <pattern>venom</pattern>
+    <script>
+      if (not GetBoolean(game.pov, "haspoisonglands")) {
+        msg ("What about venom?")
+      }
+      else if (not game.pov.equipped.canbevenomed) {
+        if (HasString(game.pov.equipped, "novenommsg")) {
+          msg (game.pov.equipped.novenommsg)
+        }
+        else {
+          msg ("You cannot put venom on " + game.pov.equipped.alias + ".")
+        }
+      }
+      else if (not game.pov.equipped.venom = null) {
+        msg ("There is already venom on the blade.")
+      }
+      else {
+        game.pov.equipped.venom = spit_venom
+        msg ("You spit venom on your weapon.")
+      }
+    </script>
+  </command>
+
+
+
+  
+  <command name="Potion">
+    <pattern>potion;potions</pattern>
+    <script>
+      flag = false
+      foreach(o, GetDirectChildren (player)) {
+        if (DoesInherit(o, "recipe")) {
+          if (not flag) {
+            msg("Recipes found:")
+            flag = true
+          }
+          msg ("- " + CapFirst(GetDisplayAlias(o)) + " (" + o.count + ")")
+        }
+      }
+      if (not flag) {
+        msg("No recipes found yet...")
+      }
+
+      if (not GetObject("ingredients") = null) {
+        flag = false
+        foreach(o, GetDirectChildren (ingredients)) {
+          if (o.count > 0) {
+            if (not flag) {
+              msg("Ingredients:")
+              flag = true
+            }
+            msg ("- " + o.alias + " (" + o.count + ")")
+          }
+        }
+        if (not flag) {
+          msg("You have no ingredients.")
+        }
+      }
+    </script>
+  </command>
+
+  
+  
+  
+  
+  <function name="_ProcessScopeCommand" parameters="func, scope, text" type="boolean"><![CDATA[
+    value = Trim (LCase (text))
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
+    foreach (obj, scope) {
+      name = LCase(GetDisplayAlias(obj))
+      CompareNames (name, value, obj, fullmatches, partialmatches)
+      if (obj.alt <> null) {
+        foreach (altname, obj.alt) {
+          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
+        }
+      }
+    }
+    if (game.lastobjects <> null) {
+      foreach (obj, game.lastobjects) {
+        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+      }
+    }
+    if (ListCount(fullmatches) = 1) {
+      game.scopecommandpending = ListItem(fullmatches, 0)
+    }
+    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
+      game.scopecommandpending = ListItem(partialmatches, 0)
+    }
+    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      return (false)
+    }
+    else {
+      menu = NewStringDictionary()
+      GenerateMenuChoices (menu, fullmatches)
+      GenerateMenuChoices (menu, partialmatches)
+      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        if (result <> null) {
+          game.scopecommandpending = GetObject(result)
+        }
+        else {
+          return (false)
+        }
+      }
+    }
+    on ready {
+      if (game.scopecommandpending = null) {
+        return (false)
+      }
+      else {
+        return (eval (func + "(" + game.scopecommandpending.name + ")"))
+      }
+    }
+  ]]></function>  
+
+</library>

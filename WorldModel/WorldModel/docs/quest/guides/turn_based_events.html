@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Turn-based events</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Turn-based events</h1>
+      <p>If your game is only responding to what the player does, it feels dead. Bring it alive by having events occur that are not simply reacting to the player’s actions (even if they are reacting to what he did four turns ago, it will still feel like it is not).</p>
+
+<p>Here then is a simple framework for turn-based events.</p>
+
+<h2 id="set-up-the-framework">Set up the framework</h2>
+
+<ol>
+  <li>
+    <p>Set an int attribute on game called “turn”.</p>
+  </li>
+  <li>
+    <p>Create two dummy rooms, “active_events” and “dead_events”. They should have no exits and should not be accessible by the player.</p>
+  </li>
+  <li>
+    <p>Copy this turnscript and type into your game code. Insert it at the end, just before the last line (which will be “&lt;/asl&gt;”)</p>
+
+    <turnscript name="eventhandler">
+     <enabled />
+     <script><![CDATA[
+       game.turn = game.turn + 1
+       foreach (evt, GetDirectChildren (active_events)) {
+         if (evt.turn <= game.turn) {
+           do (evt, "action")
+           if (evt.auto) {
+             evt.parent = dead_events
+             if (HasAttribute (evt, "next")) {
+               evt.next.turn = evt.nextturn + game.turn
+               evt.next.parent = active_events
+             }
+           }
+         }
+       }
+     ]]></script>
+   </turnscript>
+
+    <type name="event_type">
+     <done type="boolean">false</done>
+     <auto />
+     <turn type="int">-1</turn>
+     <action type="script">
+       msg ("TODO")
+     </action>
+   </type>
+  </li>
+</ol>
+
+<h2 id="set-up-events">Set up events</h2>
+
+<p>Each event needs to be an object in one of the rooms, “active_events” and “dead_events”. The room “active_events” is for events that are counting down, while “dead_events” is for events that have expired or are waiting in the wings to be used.</p>
+
+<p>For each event, set it to inherit “event_type”. You also need to set the “action” attribute; this is the script that will get run.</p>
+
+<p>For events in “active_events”, you need to set the “turn” attribute. The event will be fired in that number of turns, and will then get moved to the “dead_events” room.</p>
+
+<p>For events in “dead_events”, you need to set up something to start them off. This needs to move the event into the “active_events”, and to set the “turn” attribute to game.turn plus the number of turns to wait. It might look something like this, when the event, event3, is set to occur in 2 turns:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  event3.turn = 2 + game.turn
+  event3.parent = active_events
+</code></pre></div></div>
+
+<h2 id="chaining-events">Chaining events</h2>
+
+<p>You can set up one event to start the count down to another very easily. Just set the “next” attribute to the event to be started, and the “nextturn” attribute to the number of turns to wait.</p>
+
+<h2 id="turn-off-auto">Turn off auto</h2>
+
+<p>By default, events are automatically moved to “dead_events” and start the next chained event (if set) when they trigger. Setting the “auto” attribute to false stops that behaviour. This may be desirable if you want to wait until the player is in a certain room, for example. In that case, turn off auto, and the event will fire every turn. Each time it fires, you can have it test to see if the player is in the room; if she is, perform the special action, and then move the event to dead_events in the script.</p>
+
+<h2 id="note">Note</h2>
+
+<p>Quest counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns.</p>
+
+<h2 id="example-game">Example game</h2>
+
+<p>There are only two rooms and three events. Event 1 initiates the countdown to event 2, which in turn sets off event 3. Event 2 has “auto” set to false, so it keeps going until a condition is met (player in room 2), and only then starts the countdown to event 3.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!--Saved by Quest 5.4.4873.16527--&gt;
+&lt;asl version="540"&gt;
+  &lt;include ref="English.aslx" /&gt;
+  &lt;include ref="Core.aslx" /&gt;
+  &lt;dynamictemplate name="ObjectNotOpen"&gt;DoObjectNotOpen (object)&lt;/dynamictemplate&gt;
+  &lt;game name="events"&gt;
+    &lt;gameid&gt;17fa10af-9205-4eba-a5ad-65d3166864e7&lt;/gameid&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;firstpublished&gt;2013&lt;/firstpublished&gt;
+    &lt;turn type="int"&gt;0&lt;/turn&gt;
+    &lt;statusattributes type="stringdictionary"&gt;
+      &lt;item&gt;
+        &lt;key&gt;turn&lt;/key&gt;
+        &lt;value&gt;&lt;/value&gt;
+      &lt;/item&gt;
+    &lt;/statusattributes&gt;
+    &lt;subtitle&gt;A demonstration of simple turn-based events&lt;/subtitle&gt;
+    &lt;author&gt;The Pixie&lt;/author&gt;
+  &lt;/game&gt;
+  &lt;object name="room"&gt;
+    &lt;inherit name="editor_room" /&gt;
+    &lt;alias&gt;First Room&lt;/alias&gt;
+    &lt;usedefaultprefix type="boolean"&gt;false&lt;/usedefaultprefix&gt;
+    &lt;object name="player"&gt;
+      &lt;inherit name="editor_object" /&gt;
+      &lt;inherit name="editor_player" /&gt;
+    &lt;/object&gt;
+    &lt;exit alias="west" to="room2"&gt;
+      &lt;inherit name="westdirection" /&gt;
+    &lt;/exit&gt;
+  &lt;/object&gt;
+  &lt;object name="room2"&gt;
+    &lt;inherit name="editor_room" /&gt;
+    &lt;alias&gt;Second Room&lt;/alias&gt;
+    &lt;usedefaultprefix type="boolean"&gt;false&lt;/usedefaultprefix&gt;
+    &lt;exit alias="east" to="room"&gt;
+      &lt;inherit name="eastdirection" /&gt;
+    &lt;/exit&gt;
+  &lt;/object&gt;
+  &lt;object name="active_events"&gt;
+    &lt;inherit name="editor_room" /&gt;
+    &lt;object name="event1"&gt;
+      &lt;inherit name="editor_object" /&gt;
+      &lt;inherit name="event_type" /&gt;
+      &lt;turn type="int"&gt;3&lt;/turn&gt;
+      &lt;nextturn type="int"&gt;2&lt;/nextturn&gt;
+      &lt;next type="object"&gt;event2&lt;/next&gt;
+      &lt;action type="script"&gt;
+        msg ("Event 1")
+      &lt;/action&gt;
+    &lt;/object&gt;
+  &lt;/object&gt;
+  &lt;turnscript name="eventhandler"&gt;
+    &lt;enabled /&gt;
+    &lt;script&gt;&lt;![CDATA[
+      game.turn = game.turn + 1
+      foreach (evt, GetDirectChildren (active_events)) {
+        if (evt.turn &lt;= game.turn) {
+          do (evt, "action")
+          if (evt.auto) {
+            evt.parent = dead_events
+            if (HasAttribute (evt, "next")) {
+              evt.next.turn = evt.nextturn + game.turn
+              evt.next.parent = active_events
+            }
+          }
+        }
+      }
+    ]]&gt;&lt;/script&gt;
+  &lt;/turnscript&gt;
+  &lt;object name="dead_events"&gt;
+    &lt;inherit name="editor_room" /&gt;
+    &lt;object name="event2"&gt;
+      &lt;inherit name="editor_object" /&gt;
+      &lt;inherit name="event_type" /&gt;
+      &lt;auto type="boolean"&gt;false&lt;/auto&gt;
+      &lt;action type="script"&gt;
+        if (player.parent = room2) {
+          msg ("Event 2")
+          event3.turn = 2 + game.turn
+          event3.parent = active_events
+          this.parent = dead_events
+        }
+        else {
+          msg ("... waiting")
+        }
+      &lt;/action&gt;
+    &lt;/object&gt;
+    &lt;object name="event3"&gt;
+      &lt;inherit name="editor_object" /&gt;
+      &lt;inherit name="event_type" /&gt;
+      &lt;action type="script"&gt;
+        msg ("Event 3")
+      &lt;/action&gt;
+    &lt;/object&gt;
+  &lt;/object&gt;
+  &lt;type name="event_type"&gt;
+    &lt;done type="boolean"&gt;false&lt;/done&gt;
+    &lt;auto /&gt;
+    &lt;turn type="int"&gt;-1&lt;/turn&gt;
+    &lt;action type="script"&gt;
+      msg ("TODO")
+    &lt;/action&gt;
+  &lt;/type&gt;
+&lt;/asl&gt;
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

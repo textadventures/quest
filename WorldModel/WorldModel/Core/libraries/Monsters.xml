@@ -1,0 +1,564 @@
+<?xml version="1.0"?>
+<library>
+
+
+  <!--
+  
+  add scripts to monsters:
+  onweaponhit will trigger when the monster is hit by a weapon
+  onsuccessfulattack will trigger when the monster hits the player
+    (if this is a monster_attack, this.parent is the monster!)
+  -->
+
+
+  <delegate name="script_returns_object" type="object" />
+  
+
+
+  <type name="monster">
+    <inherit name="monster_attack"/>
+    <defence type="int">0</defence>
+    <armour type="int">0</armour>
+    <level type="int">0</level>
+    <treasurechance type="int">10</treasurechance>
+    <hitpoints type="int">10</hitpoints>
+    <xp type="int">0</xp>
+    <take type="boolean">false</take>
+    <nocorpse type="boolean">false</nocorpse>
+    <noncorporeal type="boolean">false</noncorporeal>
+    <poisonimmunity type="boolean">false</poisonimmunity>
+    <dead type="boolean">false</dead>
+    <attackonsight type="boolean">false</attackonsight>
+    <goblinoid type="boolean">false</goblinoid>
+    <attackasgroup type="boolean">false</attackasgroup>
+    <attackedonsight type="boolean">false</attackedonsight>
+    <guarding type="boolean">false</guarding>
+    <searched type="boolean">false</searched>
+    <stunned type="boolean">false</stunned>
+    <movetype type="string">Constrained</movetype>
+    <monstertype type="string">Beast</monstertype>
+    <death>The creature falls, dead</death>
+    <attackdesc type="string">% swings at you</attackdesc>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Attack</value>
+      </displayverbs>
+    
+    <changedhitpoints type="script">
+      if (not HasInt(this, "fullhits")) {
+        this.fullhits = oldvalue
+      }
+    </changedhitpoints>
+    
+    <colourmylistalias type="script"><![CDATA[
+      if (HasString(this, "alias")) {
+        s = CapFirst(this.alias)
+      }
+      else {
+        s = CapFirst(this.name)
+      }
+      if (HasString(this, "listalias")) s = this.listalias
+      this.listalias = "<span style=\"color:#800000;font-weight:bold;\">" + s + "</span>"
+    ]]></colourmylistalias>
+    
+    <look type="script"><![CDATA[
+      if (HasScript(this, "descscript")) {
+        do(this, "descscript")
+      }
+      else if (HasString(this, "loredesc") and game.pov.status = "Lore") {
+        msg(this.loredesc)
+      }
+      else if (HasString(this, "revealeddesc") and game.pov.status = "True Sight") {
+        msg(this.revealeddesc)
+      }
+      else if (HasString(this, "desc")) {
+        msg(this.desc)
+      }
+      else {
+        msg ("It looks like a " + GetDisplayName(this) + ".")
+      }
+      if (GetBoolean(game, "debug")) {
+        msg("Hit points: " + this.hitpoints)
+        msg("Defence: " + this.defence)
+        msg("Armour: " + this.armour)
+      }
+    ]]></look>
+
+    <makedead type="script"><![CDATA[
+      // Call this when a monster dies for some housekeeping 
+      if (not this.dead) {
+        MakeMeDead(this)
+        game.pov.xp = game.pov.xp + this.xp
+        if (HasString (this, "lookwhendead")) {
+          this.look = this.lookwhendead
+        }
+        else if (not HasScript(this, "look")) {
+          this.look = this.desc + " Oh, and it is dead."
+        }
+        this.dead = True
+        list remove (game.attackers, this)
+        list remove (game.friends, this)
+        this.displayverbs = Split ("Look at;Search", ";")
+        if (not HasAttribute(this, "alt")) {
+          this.alt = NewStringList()
+        }
+        list add(this.alt, "body")
+        list add(this.alt, "corpse")
+        foreach (o, GetDirectChildren(this)) {
+          if (DoesInherit(o, "monster_attack")) {
+            destroy(o.name)
+          }
+        }
+        if (HasString(this, "resetattribute")) {
+          n = GetInt(game.pov, this.resetattribute)
+          n = n + this.resetbonus
+          set(game.pov, this.resetattribute, n)
+        }
+        if (this.guarding) {
+          this.guarding = false
+          unguarded = true
+          foreach (obj, GetDirectChildren(game.pov.parent)) {
+            if (GetBoolean(obj, "guarding")) {
+              unguarded = false
+            }
+          }
+          if (unguarded) {
+            foreach (ex, ScopeExits()) {
+              if (Instr(ex.name, "guard") > 0) {
+                ex.locked = false
+              }
+            }
+          }
+        }
+      }
+      if (this.nocorpse) {
+        this.parent = dead
+      }
+      if (HasScript(this, "ondeath")) {
+        do (this, "ondeath")
+      }
+    ]]></makedead>
+    
+    <!--
+    Should be called by other scripts, once values are set.
+    Before calling ensure these attributes are set on the foe:
+    temp_db
+    temp_ob_now
+    temp_ob_next
+    temp_damage
+    temp_desc
+    -->
+    <doattack type="script"><![CDATA[
+      if (OutOfAmmo()) {
+        do (this, "outofammo")
+      }
+      else if (this.dead) {
+        // s = GetDisplayAlias(this)
+        // msg("The " + Mid(s, 1, LengthOf(s) - 7) + " is already dead.")
+        msg ("The " + GetDisplayAlias(this) + " is already dead.")
+      }
+      else {
+        SneakUpdate (5)
+        do (this, "settoattack")
+        attackroll = GetRandomInt (1, 20) + GetAttack(this)
+        
+        if (this.noncorporeal and GetElement(game.pov.equipped) = null) {
+          if (game.pov.equipped.nonweapon) {
+            msg("You attack the " + GetDisplayAlias(this) + ", and pass straight through it!")
+          }
+          else {
+            msg("You swing your " + GetDisplayAlias(game.pov.equipped) + " and it goes straight through the " + GetDisplayAlias(this) + "!")
+          }
+        }
+        else if (attackroll > 10) {
+          damage = GetDamage (game.pov.equipped, game.pov.strength / 2 + this.temp_damage + game.pov.damagebonus, this)
+          this.hitpoints = this.hitpoints - damage
+          if (this.hitpoints > 0) {
+            if (game.pov.equipped.nonweapon) {
+              msg ("You attack and hit, doing " + damage + " points of damage (" + this.hitpoints + " hits left). " + this.hurtbyweapon)
+            }
+            else {
+              msg (this.temp_desc + " " + GetDisplayAlias(game.pov.equipped) + " and hit, doing " + damage + " points of damage (" + this.hitpoints + " hits left). " + this.hurtbyweapon)
+            }
+            if (HasScript(this, "onweaponhit")) do (this, "onweaponhit")
+            if (HasObject(game.pov.equipped, "venom")) {
+              if (this.poisonimmunity) {
+                if (HasString(this, "poisonimmunitymsg")) {
+                  msg(this.poisonimmunitymsg)
+                }
+                else {
+                  msg("The " + GetDisplayAlias(this) + " is immune to your blade venom.")
+                }
+              }
+              else {
+                game.pov.target = this
+                do(game.pov.equipped.venom, "effect")
+              }
+              game.pov.equipped.venom = null
+            }
+          }
+          else {
+            if (game.pov.equipped.nonweapon) {
+              msg ("You attack and hit, doing " + damage + " points of damage. " + this.death)
+            }
+            else {
+              msg (this.temp_desc + " " + GetDisplayAlias(game.pov.equipped) + " and hit, doing " + damage + " points of damage. " + this.death)
+            }
+            do (this, "makedead")
+          }
+        }
+        else {
+          if (game.pov.equipped.nonweapon) {
+            msg ("You attack and miss.")
+          }
+          else {
+            msg ("You swing your " + GetDisplayAlias(game.pov.equipped) + " and miss.")
+          }
+        }
+        if (HasObject(game.pov, "secondary_attack")) {
+          do(this, "secondaryattack")
+        }
+      }
+    ]]></doattack>
+    
+    <secondaryattack type="script"><![CDATA[
+      if (not this.dead) {
+        // secondary attack does not depend on strength, etc. or transient bonuses
+        attackroll = GetRandomInt (1, 20) - this.defence + game.pov.secondary_attack.attackbonus
+        //game.pov.currectattack = game.pov.equipped
+        
+        if (this.noncorporeal and GetElement(game.pov.equipped) = null) {
+          if (game.pov.secondary_attack.nonweapon) {
+            msg("You attack the " + GetDisplayAlias(this) + ", and pass straight through it!")
+          }
+          else {
+            msg("You swing your " + GetDisplayAlias(game.pov.secondary_attack) + " and it goes straight through the " + GetDisplayAlias(this) + "!")
+          }
+        }
+        else if (attackroll > 10) {
+          damage = GetDamage (game.pov.secondary_attack, 0, this)
+          this.hitpoints = this.hitpoints - damage
+          if (this.hitpoints > 0) {
+            if (game.pov.secondary_attack.nonweapon) {
+              msg ("You attack and hit, doing " + damage + " points of damage (" + this.hitpoints + " hits left). " + this.hurtbyweapon)
+            }
+            else {
+              msg (this.temp_desc + " " + GetDisplayAlias(game.pov.secondary_attack) + " and hit, doing " + damage + " points of damage (" + this.hitpoints + " hits left). " + this.hurtbyweapon)
+            }
+            if (HasScript(this, "onweaponhit")) do (this, "onweaponhit")
+          }
+          else {
+            if (game.pov.secondary_attack.nonweapon) {
+              msg ("You attack and hit, doing " + damage + " points of damage. " + this.death)
+            }
+            else {
+              msg (this.temp_desc + " " + GetDisplayAlias(game.pov.secondary_attack) + " and hit, doing " + damage + " points of damage. " + this.death)
+            }
+            do (this, "makedead")
+          }
+        }
+        else {
+          if (game.pov.secondary_attack.nonweapon) {
+            msg ("You attack and miss.")
+          }
+          else {
+            msg ("You swing your " + GetDisplayAlias(game.pov.secondary_attack) + " and miss.")
+          }
+        }
+      }
+    ]]></secondaryattack>
+
+    <attack type="script"><![CDATA[
+      this.temp_db = 0
+      this.temp_ob_now = 0
+      this.temp_ob_next = 0
+      this.temp_damage = 0
+      this.temp_desc = "You swing your"
+      do(this, "doattack")
+    ]]></attack>
+    
+    <feint type="script"><![CDATA[
+      this.temp_db = 0
+      this.temp_ob_now = -3
+      this.temp_ob_next = 4
+      this.temp_damage = 0
+      this.temp_desc = "Looking for an opening, you swing your"
+      do(this, "doattack")
+    ]]></feint>
+    
+    <parry type="script"><![CDATA[
+      this.temp_db = 4
+      this.temp_ob_now = -3
+      this.temp_ob_next = 0
+      this.temp_damage = 0
+      this.temp_desc = "Careful not to drop your defence, you swing your"
+      do(this, "doattack")
+    ]]></parry>
+    
+    <charge type="script"><![CDATA[
+      this.temp_db = -4
+      this.temp_ob_now = 2
+      this.temp_ob_next = 0
+      this.temp_damage = 3
+      this.temp_desc = "You recklessly charge with your"
+      do(this, "doattack")
+    ]]></charge>
+
+    
+
+
+    
+    <searchforplayer type="script"><![CDATA[
+      // Should only be called if this monster is in attack mode, but player is absent
+      if (this.movetype = "Forgetful") {
+        list add(game.forgetme, this)
+      }
+      else if (not this.movetype = "Constrained") {
+        ex = GetExitByLink (this.parent, game.pov.parent)
+        if (not ex = null) {
+          this.parent = game.pov.parent
+          msg (GetDisplayAlias (this) + " has followed you here.")
+        }
+      }
+    ]]></searchforplayer>
+    
+    <settoattack type="script"><![CDATA[
+      // Use this to add the monster to the attackers list
+      if (not ListContains (game.attackers, this) and not GetBoolean (this, "dead") and not GetBoolean (this, "doesnotattack")) {
+        list add (game.attackers, this)
+        list remove (game.friends, this)
+        this.parent.attackdetected = true
+      }
+    ]]></settoattack>
+
+    <settodefend type="script"><![CDATA[
+      // Use this to add the monster to the friends list
+      if (not ListContains (game.friends, this) and not GetBoolean (this, "dead")) {
+        list add (game.friends, this)
+        list remove (game.attackers, this)
+      }
+    ]]></settodefend>
+
+    <outofammo type="script"><![CDATA[
+      msg ("No ammo in your weapon!")
+    ]]></outofammo>
+
+    <!--
+    Has this monster noticed the player? If so, add to attacker list.
+    Only used by the turn script.
+    -->
+    <initattack type="script">
+      if (not GetBoolean(this, "dead") and not ListContains(game.attackers, this)) {
+        // Someone else has detected the player, and these monsters communicate
+        if (GetBoolean (this, "attackasgroup") and GetBoolean (this.parent, "attackdetected")) {
+          msg (CapFirst(GetDisplayAlias(this)) + " has seen you, and is going to attack!")
+          do (this, "settoattack")
+        }
+        // Has this monster detected the player?
+        if (GetBoolean (this, "attackonsight") and (this.level >= game.pov.sneaklevel)) {
+          msg (CapFirst(GetDisplayAlias(this)) + " has seen you, and is going to attack!")
+          do (this, "settoattack")
+        }
+      }
+    </initattack>
+    
+    <search type="script"><![CDATA[
+      if (not this.dead) {
+        msg ("You can only search a monster once it is dead.")
+      }
+      else if (this.searched) {
+        msg ("There is nothing more to find.")
+      }
+      else if (IsUnableToHold()) {
+          msg ("You cannot search anything with <i>" + GetDisplayAlias(game.pov.currentspell) + "</i> active.")
+      }
+      else {
+        this.searched = true
+        do(this, "searchbody")
+      }
+    ]]></search>
+
+    <searchbody type="script">
+      gc = 0
+      for (i, 0, this.level * this.level) {
+        gc = GetRandomInt (0, 5) + gc
+      }
+      msg ("You find " + DisplayMoney(gc) + " on the body.")
+      game.pov.money = game.pov.money + gc
+      foreach (o, GetDirectChildren (this)) {
+        if (DoesInherit(o, "monster_attack")) {
+          o.parent = dead
+        }
+      }    
+      l = GetDirectChildren (this)
+      if (not ListCount (l) = 0) {
+        msg (FormatObjectList("You can also see", this, "and", " on the body."))
+        foreach (o, l) {
+          o.parent = this.parent
+        }
+      }
+    </searchbody>
+
+  </type>
+
+
+
+
+
+
+
+
+
+  <type name="monsterarcher">
+    <inherit name="monster"/>
+    
+    <attackplayer type="script"><![CDATA[
+      do(this, "selecttarget")
+      attackroll = GetRandomInt (1, 20) - game.pov.defence + this.attackbonus
+      if (attackroll > 10) {
+        damage = GetDamage (this, 0, game.pov)
+        msg (GetDisplayAlias (this) + " shoots an arrow at you and hits, doing " + damage + " points of damage.")
+        game.pov.hitpoints = game.pov.hitpoints - damage
+      }
+      else {
+        msg (GetDisplayAlias (this) + " shoots an arrow at you and misses.")
+      }
+    ]]></attackplayer>
+    
+  </type>
+  
+  
+  
+  
+  
+  <type name="multi_monster">
+    <inherit name="monster"/>
+    <chooses type="string">Random</chooses>
+
+    <attackplayer type="script"><![CDATA[
+      do(this, "selecttarget")
+      attack =  RunDelegateFunction (this, "selectattack")
+	    attack.alias = this.alias
+      attack.target = this.target
+      do (attack, "attackplayer")
+    ]]></attackplayer>
+
+    <selectattack type="script_returns_object">
+      lst = NewObjectList()
+      foreach (o, GetDirectChildren(this)) {
+        if (DoesInherit(o, "monster_attack") and GetLevel(this) >= GetLevel(o)) {
+          //msg(o.name)
+          //msg(GetLevel(this) + ">=" + GetLevel(o))
+          if (not HasString(this, "mustmatch")) {
+            list add (lst, o)
+            //msg("add no mustmatch")
+          }
+          else if (not Mid(LCase(this.alias), o.mustmatch) = 0) {
+            list add (lst, o)
+            //msg("add mustmatch match")
+          }
+        }
+      }
+      if (ListCount(lst) = 0) {
+        error ("SelectAttack failed for " + this.name + " - found no attacks!")
+      }
+      return (ObjectListItem(lst, GetRandomInt(0, ListCount(lst) - 1)))
+    </selectattack>
+  </type>
+  
+  
+  
+  
+  
+
+  
+  <type name="generated">
+    <treasurechance type="int">10</treasurechance>
+    <scalingfactor type="int">4</scalingfactor>
+  </type>
+  
+  
+  
+  
+  
+
+  
+  <type name="monster_attack">
+    <inherit name="weapon"/>
+    <selecttarget type="script">
+      // Is the current target dead? If so reset
+      if (not this.target = null) {
+        if (this.target.dead) {
+          this.target = null
+        }
+      }
+      // Is no target set? If so, find one.
+      if (this.target = null) {
+        if (ListContains(game.friends, this)) {
+          if (not ListCount(game.attackers) = 0) {
+            this.target = PickOneObj(game.attackers)
+          }
+        }
+        else {
+          if (not ListCount(game.friends) = 0) {
+            this.target = PickOneObj(game.friends)
+          }
+        }
+      }
+    </selecttarget>
+    
+    <attackplayer type="script">
+      if (this.target = null) error ("No target set!")
+      attackroll = GetRandomInt (1, 20) - this.target.defence + this.attackbonus
+      if (DoesInherit(this, "monster")) {
+        owner = this
+      }
+      else {
+        owner = this.parent
+      }
+      game.pov.sneaklevel = 0
+      if (attackroll > 10) {
+        damage = GetDamage (this, 0, this.target)
+        if (IsPlayerImmune(this) and this.target = game.pov) {
+          element = GetElement(this)
+          msg (GetDisplayAlias (owner) + " blasts " + element.name + " at you and hits, doing " + damage + " points of damage. But wait, you are are protected from " + element.name + ", the attack has no effect!")
+        }
+        else {
+          s = Replace(this.attackdesc, "%", CapFirst(GetDisplayAlias (owner))) + " and hits, doing " + damage + " points of damage."
+          if (not this.target = game.pov) {
+            s = Replace(s, " you", " " + GetDisplayAlias (this))
+          }
+          msg(s)
+          if (HasScript(this, "onsuccessfulattack")) do (this, "onsuccessfulattack")
+          this.target.hitpoints = this.target.hitpoints - damage
+        }
+      }
+      else {
+        s = Replace(this.attackdesc, "%", CapFirst(GetDisplayAlias (owner))) + " and misses."
+        if (not this.target = game.pov) {
+          s = Replace(s, " you", " " + GetDisplayAlias (this))
+        }
+        msg(s)
+        if (HasScript(this, "onfailedattack")) do (this, "onfailedattack")
+      }
+      //msg("here: " + this.name)
+      if (HasScript(this, "onanyattack")) do (this, "onanyattack")
+    </attackplayer>
+  </type>
+
+  
+  
+
+  <function name="MakeMeDead" parameters="obj"><![CDATA[
+  ]]></function>
+
+  <function name="OutOfAmmo" type="boolean"><![CDATA[
+    if (not HasInt(game.pov.equipped, "ammo")) return (false)
+    if (game.pov.equipped.ammo > 0) return (false)
+    return (true)
+  ]]></function>
+
+
+  
+
+</library>

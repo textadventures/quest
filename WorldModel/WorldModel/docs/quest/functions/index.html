@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Functions</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li class="active"><a href="index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Functions</h1>
+      <p>This is a list of most of the functions built in to Quest, grouped by type. For a list in alphabetical order, go <a href="index_allfunctions.html">here</a>.</p>
+
+<ul>
+  <li>
+    <p><a href="index.html#general">General Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#core">Core.aslx Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#ui">User Interface Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#list">List Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#scope">Scope Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#dictionary">Dictionary Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#string">String Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#clothing">Clothing Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#random">Randomising Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#internal">Internal Functions</a></p>
+  </li>
+  <li>
+    <p><a href="index.html#maths">Mathematical Functions</a></p>
+  </li>
+</ul>
+
+<h2 id="general-functions"><a name="general"></a>General Functions</h2>
+
+<ul>
+  <li><a href="clone.html">Clone</a></li>
+  <li><a href="corelibrary/cloneobject.html">CloneObject</a></li>
+  <li><a href="corelibrary/cloneobjectandmove.html">CloneObjectAndMove</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/cloneobjectandmovehere.html">CloneObjectAndMoveHere</a></li>
+  <li><a href="contains.html">Contains</a></li>
+  <li><a href="createbiexits.html">CreateBiExits</a></li>
+  <li><a href="doesinherit.html">DoesInherit</a></li>
+  <li><a href="dynamictemplate.html">DynamicTemplate</a></li>
+  <li><a href="equal.html">Equal</a></li>
+  <li><a href="eval.html">Eval</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/getallchildobjects.html">GetAllChildObjects</a></li>
+  <li><a href="getattribute.html">GetAttribute</a></li>
+  <li><a href="getattributenames.html">GetAttributeNames</a></li>
+  <li><a href="getboolean.html">GetBoolean</a></li>
+  <li><a href="getdouble.html">GetDouble</a></li>
+  <li><a href="getexitbylink.html">GetExitByLink</a></li>
+  <li><a href="getexitbyname.html">GetExitByName</a></li>
+  <li><a href="getfiledata.html">GetFileData</a></li>
+  <li><a href="getfileurl.html">GetFileURL</a></li>
+  <li><a href="getint.html">GetInt</a></li>
+  <li><a href="getmatchstrength.html">GetMatchStrength</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/getobject.html">GetObject</a></li>
+  <li><a href="getstring.html">GetString</a></li>
+  <li><a href="gettimer.html">GetTimer</a></li>
+  <li><a href="getuniqueelementname.html">GetUniqueElementName</a></li>
+  <li><a href="hasattribute.html">HasAttribute</a></li>
+  <li><a href="hasboolean.html">HasBoolean</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/hasdelegateimplementation.html">HasDelegateImplementation</a></li>
+  <li><a href="hasdouble.html">HasDouble</a></li>
+  <li><a href="hasint.html">HasInt</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/hasobject.html">HasObject</a></li>
+  <li><a href="hasscript.html">HasScript</a></li>
+  <li><a href="hasstring.html">HasString</a></li>
+  <li><a href="isdefined.html">IsDefined</a></li>
+  <li><a href="isdouble.html">IsDouble</a></li>
+  <li><a href="isgamerunning.html">IsGameRunning</a></li>
+  <li><a href="isint.html">IsInt</a></li>
+  <li><a href="isregexmatch.html">IsRegexMatch</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/rundelegatefunction.html">RunDelegateFunction</a></li>
+  <li><a href="safexml.html">SafeXML</a></li>
+  <li><a href="template.html">Template</a></li>
+  <li><a href="todouble.html">ToDouble</a></li>
+  <li><a href="toint.html">ToInt</a></li>
+  <li><a href="tostring.html">ToString</a></li>
+  <li><a href="typeof.html">TypeOf</a></li>
+</ul>
+
+<h2 id="coreaslx-functions"><a name="core"></a>Core.aslx Functions</h2>
+
+<ul>
+  <li><a href="corelibrary/addtoinventory.html">AddToInventory</a></li>
+  <li><a href="corelibrary/canreachthrough.html">CanReachThrough</a></li>
+  <li><a href="corelibrary/canseethrough.html">CanSeeThrough</a></li>
+  <li><a href="corelibrary/changepov.html">ChangePOV</a></li>
+  <li><a href="corelibrary/checkdarkness.html">CheckDarkness</a></li>
+  <li><a href="corelibrary/decreasehealth.html">DecreaseHealth</a></li>
+  <li><a href="corelibrary/decreasemoney.html">DecreaseMoney</a></li>
+  <li><a href="corelibrary/decreasescore.html">DecreaseScore</a></li>
+  <li><a href="corelibrary/disabletimer.html">DisableTimer</a></li>
+  <li><a href="corelibrary/disableturnscript.html">DisableTurnScript</a></li>
+  <li><a href="corelibrary/displaylist.html">DisplayList</a></li>
+  <li><a href="corelibrary/displaymailtolink.html">DisplayMailtoLink</a></li>
+  <li><a href="corelibrary/enabletimer.html">EnableTimer</a></li>
+  <li><a href="corelibrary/enableturnscript.html">EnableTurnScript</a></li>
+  <li><a href="corelibrary/formatexitlist.html">FormatExitList</a></li>
+  <li><a href="corelibrary/formatobjectlist.html">FormatObjectList</a></li>
+  <li><a href="corelibrary/getblockingobject.html">GetBlockingObject</a></li>
+  <li><a href="corelibrary/getdisplayalias.html">GetDisplayAlias</a></li>
+  <li><a href="corelibrary/getdisplayname.html">GetDisplayName</a></li>
+  <li><a href="corelibrary/getdisplaynamelink.html">GetDisplayNameLink</a></li>
+  <li><a href="corelibrary/getdisplayverbs.html">GetDisplayVerbs</a></li>
+  <li><a href="corelibrary/getlistdisplayalias.html">GetListDisplayAlias</a></li>
+  <li><a href="corelibrary/getnontransparentparent.html">GetNonTransparentParent</a></li>
+  <li><a href="corelibrary/getvolume.html">GetVolume</a></li>
+  <li><a href="corelibrary/got.html">Got</a></li>
+  <li><a href="corelibrary/helpercloseobject.html">HelperCloseObject</a></li>
+  <li><a href="corelibrary/helperopenobject.html">HelperOpenObject</a></li>
+  <li><a href="corelibrary/increasehealth.html">IncreaseHealth</a></li>
+  <li><a href="corelibrary/increasemoney.html">IncreaseMoney</a></li>
+  <li><a href="corelibrary/increasescore.html">IncreaseScore</a></li>
+  <li><a href="corelibrary/inituserinterface.html">InitUserInterface</a></li>
+  <li><a href="corelibrary/isswitchedon.html">IsSwitchedOn</a></li>
+  <li><a href="corelibrary/listparents.html">ListParents</a></li>
+  <li><a href="corelibrary/lockexit.html">LockExit</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/log.html">Log</a></li>
+  <li><a href="corelibrary/makeexitinvisible.html">MakeExitInvisible</a></li>
+  <li><a href="corelibrary/makeexitvisible.html">MakeExitVisible</a></li>
+  <li><a href="corelibrary/makeobjectinvisible.html">MakeObjectInvisible</a></li>
+  <li><a href="corelibrary/makeobjectvisible.html">MakeObjectVisible</a></li>
+  <li><a href="corelibrary/moveobject.html">MoveObject</a></li>
+  <li><a href="corelibrary/objectlink.html">ObjectLink</a></li>
+  <li><a href="corelibrary/removeobject.html">RemoveObject</a></li>
+  <li><a href="corelibrary/removesceneryobjects.html">RemoveSceneryObjects</a></li>
+  <li><a href="corelibrary/setdark.html">SetDark</a></li>
+  <li><a href="corelibrary/setexitlightstrength.html">SetExitLightstrength</a></li>
+  <li><a href="corelibrary/setlight.html">SetLight</a></li>
+  <li><a href="corelibrary/setobjectflagoff.html">SetObjectFlagOff</a></li>
+  <li><a href="corelibrary/setobjectflagon.html">SetObjectFlagOn</a></li>
+  <li><a href="corelibrary/setobjectlightstrength.html">SetObjectLightstrength</a></li>
+  <li><a href="corelibrary/settimeout.html">SetTimeout</a></li>
+  <li><a href="corelibrary/settimeoutid.html">SetTimeoutID</a></li>
+  <li><a href="corelibrary/settimerinterval.html">SetTimerInterval</a></li>
+  <li><a href="corelibrary/settimerscript.html">SetTimerScript</a></li>
+  <li><a href="corelibrary/setturnscript.html">SetTurnScript</a></li>
+  <li><a href="corelibrary/setturntimeout.html">SetTurnTimeout</a></li>
+  <li><a href="corelibrary/setturntimeoutid.html">SetTurnTimeoutID</a></li>
+  <li><a href="corelibrary/showroomdescription.html">ShowRoomDescription</a></li>
+  <li><a href="corelibrary/switchoff.html">SwitchOff</a></li>
+  <li><a href="corelibrary/switchon.html">SwitchOn</a></li>
+  <li><a href="corelibrary/unlockexit.html">UnlockExit</a></li>
+  <li><a href="corelibrary/updatestatusattributes.html">UpdateStatusAttributes</a></li>
+</ul>
+
+<h2 id="user-interface-functions"><a name="ui"></a>User Interface Functions</h2>
+
+<p>Functions that change what is displayed or how it is displayed or require the player to do something, rather than affecting the game world.</p>
+
+<ul>
+  <li><a href="ask.html">Ask</a></li>
+  <li><a href="corelibrary/clearframepicture.html">ClearFramePicture</a></li>
+  <li><a href="corelibrary/clearscreen.html">ClearScreen</a></li>
+  <li><a href="corelibrary/getcurrentfontfamily.html">GetCurrentFontFamily</a></li>
+  <li><a href="getinput.html">GetInput</a></li>
+  <li><a href="corelibrary/printcentered.html">PrintCentered</a></li>
+  <li><a href="corelibrary/setalignment.html">SetAlignment</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/setbackgroundcolour.html">SetBackgroundColour</a></li>
+  <li><a href="corelibrary/setbackgroundimage.html">SetBackgroundImage</a></li>
+  <li><a href="corelibrary/setbackgroundopacity.html">SetBackgroundOpacity</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/setfontname.html">SetFontName</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/setfontsize.html">SetFontSize</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/setforegroundcolour.html">SetForegroundColour</a></li>
+  <li><a href="corelibrary/setframepicture.html">SetFramePicture</a></li>
+  <li><a href="corelibrary/setwebfontname.html">SetWebFontName</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/showmenu.html">ShowMenu</a></li>
+  <li><a href="corelibrary/showvimeo.html">ShowVimeo</a></li>
+  <li><a href="corelibrary/showyoutube.html">ShowYouTube</a></li>
+  <li><a href="corelibrary/textfx_typewriter.html">TextFX_Typewriter</a></li>
+  <li><a href="corelibrary/textfx_unscramble.html">TextFX_Unscramble</a></li>
+</ul>
+
+<h2 id="list-functions"><a name="list"></a>List Functions</h2>
+
+<p>Functions for manipulating lists. For a discussion on how to use lists, see <a href="http://docs.textadventures.co.uk/quest/using_lists.html">here</a>.</p>
+
+<ul>
+  <li><a href="filterbyattribute.html">FilterByAttribute</a></li>
+  <li><a href="filterbynotattribute.html">FilterByNotAttribute</a></li>
+  <li><a href="filterbytype.html">FilterByType</a></li>
+  <li><a href="indexof.html">IndexOf</a></li>
+  <li><a href="listcombine.html">ListCombine</a></li>
+  <li><a href="listcontains.html">ListContains</a></li>
+  <li><a href="listcompact.html">ListCompact</a></li>
+  <li><a href="listcount.html">ListCount</a></li>
+  <li><a href="listexclude.html">ListExclude</a></li>
+  <li><a href="listitem.html">ListItem</a></li>
+  <li><a href="newlist.html">NewList</a></li>
+  <li><a href="newobjectlist.html">NewObjectList</a></li>
+  <li><a href="newstringlist.html">NewStringList</a></li>
+  <li><a href="objectlistitem.html">ObjectListItem</a></li>
+  <li><a href="objectlistsort.html">ObjectListSort</a></li>
+  <li><a href="objectlistsortdescending.html">ObjectListSortDescending</a></li>
+  <li><a href="stringlistitem.html">StringListItem</a></li>
+  <li><a href="stringlistsort.html">StringListSort</a></li>
+  <li><a href="stringlistsortdescending.html">StringListSortDescending</a></li>
+</ul>
+
+<h2 id="scope-functions"><a name="scope"></a>Scope Functions</h2>
+
+<p>Functions that will return a list of objects (in the loosest sense). See more <a href="http://docs.textadventures.co.uk/quest/scopes.html">here</a>.</p>
+
+<ul>
+  <li><a href="allcommands.html">AllCommands</a></li>
+  <li><a href="allexits.html">AllExits</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/allobjects.html">AllObjects</a></li>
+  <li><a href="allturnscripts.html">AllTurnScripts</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/getallchildobjects.html">GetAllChildObjects</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/getdirectchildren.html">GetDirectChildren</a></li>
+  <li><a href="corelibrary/scopeallexitsforroom.html">ScopeAllExitsForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopecommands.html">ScopeCommands</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeexits.html">ScopeExits</a></li>
+  <li><a href="corelibrary/scopeexitsall.html">ScopeExitsAll</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeexitsforroom.html">ScopeExitsForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeunlockedexitsforroom.html">ScopeUnlockedExitsForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeinventory.html">ScopeInventory</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopereachable.html">ScopeReachable</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopereachableforroom.html">ScopeReachableForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopereachableinventory.html">ScopeReachableInventory</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopereachablenotheld.html">ScopeReachableNotHeld</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopereachablenotheldforroom.html">ScopeReachableNotHeldForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisible.html">ScopeVisible</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisibleforroom.html">ScopeVisibleForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotheld.html">ScopeVisibleNotHeld</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotheldforroom.html">ScopeVisibleNotHeldForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotheldnotscenery.html">ScopeVisibleNotHeldNotScenery</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotheldnotsceneryforroom.html">ScopeVisibleNotHeldNotSceneryForRoom</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotreachable.html">ScopeVisibleNotReachable</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopevisiblenotreachableforroom.html">ScopeVisibleNotReachableForRoom</a></li>
+</ul>
+
+<h2 id="dictionary-functions"><a name="dictionary"></a>Dictionary Functions</h2>
+
+<p>Functions for manipulating dictionaries. For a discussion on how to use dictionaries, see <a href="http://docs.textadventures.co.uk/quest/using_dictionaries.html">here</a>.</p>
+
+<ul>
+  <li><a href="dictionarycontains.html">DictionaryContains</a></li>
+  <li><a href="dictionarycount.html">DictionaryCount</a></li>
+  <li><a href="dictionaryitem.html">DictionaryItem</a></li>
+  <li><a href="newdictionary.html">NewDictionary</a></li>
+  <li><a href="newobjectdictionary.html">NewObjectDictionary</a></li>
+  <li><a href="newscriptdictionary.html">NewScriptDictionary</a></li>
+  <li><a href="newstringdictionary.html">NewStringDictionary</a></li>
+  <li><a href="objectdictionaryitem.html">ObjectDictionaryItem</a></li>
+  <li><a href="scriptdictionaryitem.html">ScriptDictionaryItem</a></li>
+  <li><a href="stringdictionaryitem.html">StringDictionaryItem</a></li>
+</ul>
+
+<h2 id="string-functions"><a name="string"></a>String Functions</h2>
+
+<ul>
+  <li><a href="string/asc.html">Asc</a></li>
+  <li><a href="string/capfirst.html">CapFirst</a></li>
+  <li><a href="string/chr.html">Chr</a></li>
+  <li><a href="string/decimalise.html">Decimalise</a></li>
+  <li><a href="string/displaymoney.html">DisplayMoney</a></li>
+  <li><a href="string/displaynumber.html">DisplayNumber</a></li>
+  <li><a href="string/endswith.html">EndsWith</a></li>
+  <li><a href="string/formatlist.html">FormatList</a></li>
+  <li><a href="string/instr.html">Instr</a></li>
+  <li><a href="string/instrrev.html">InstrRev</a></li>
+  <li><a href="string/isnumeric.html">IsNumeric</a></li>
+  <li><a href="string/join.html">Join</a></li>
+  <li><a href="string/lcase.html">LCase</a></li>
+  <li><a href="string/left.html">Left</a></li>
+  <li><a href="string/lengthof.html">LengthOf</a></li>
+  <li><a href="string/ltrim.html">LTrim</a></li>
+  <li><a href="string/mid.html">Mid</a></li>
+  <li><a href="string/padstring.html">PadString</a></li>
+  <li><a href="processtext.html">ProcessText</a></li>
+  <li><a href="string/replace.html">Replace</a></li>
+  <li><a href="string/reversedirection.html">ReverseDirection</a></li>
+  <li><a href="string/right.html">Right</a></li>
+  <li><a href="string/rtrim.html">RTrim</a></li>
+  <li><a href="string/spaces.html">Spaces</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/string/split.html">Split</a></li>
+  <li><a href="string/startswith.html">StartsWith</a></li>
+  <li><a href="string/toroman.html">ToRoman</a></li>
+  <li><a href="string/towords.html">ToWords</a></li>
+  <li><a href="string/trim.html">Trim</a></li>
+  <li><a href="string/ucase.html">UCase</a></li>
+</ul>
+
+<h2 id="clothing-functions"><a name="clothing"></a>Clothing Functions</h2>
+
+<ul>
+  <li><a href="weargarment.html">WearGarment</a></li>
+  <li><a href="weargarment.html">WearGarment</a></li>
+  <li><a href="getouter.html">GetOuter</a></li>
+  <li><a href="getouterfor.html">GetOuterFor</a></li>
+  <li><a href="removegarment.html">RemoveGarment</a></li>
+  <li><a href="weargarment.html">WearGarment</a></li>
+</ul>
+
+<h2 id="randomising-functions"><a name="random"></a>Randomising Functions</h2>
+
+<p>These functions all return a random value.</p>
+
+<ul>
+  <li><a href="corelibrary/diceroll.html">DiceRoll</a></li>
+  <li><a href="getrandomdouble.html">GetRandomDouble</a></li>
+  <li><a href="getrandomint.html">GetRandomInt</a></li>
+  <li><a href="pickonechild.html">PickOneChild</a></li>
+  <li><a href="pickonechildoftype.html">PickOneChildOfType</a></li>
+  <li><a href="pickoneexit.html">PickOneExit</a></li>
+  <li><a href="pickoneobject.html">PickOneObject</a></li>
+  <li><a href="pickonestring.html">PickOneString</a></li>
+  <li><a href="pickoneunlockedexit.html">PickOneUnlockedExit</a></li>
+  <li><a href="corelibrary/randomchance.html">RandomChance</a></li>
+</ul>
+
+<h2 id="internal-coreaslx-functions"><a name="internal"></a>Internal Core.aslx Functions</h2>
+
+<p>Most games shouldn’t need to call these directly.</p>
+
+<ul>
+  <li><a href="corelibrary/addexternalstylesheet.html">AddExternalStylesheet</a></li>
+  <li><a href="corelibrary/addstatusattributesforelement.html">AddStatusAttributesForElement</a></li>
+  <li><a href="corelibrary/closeobject.html">CloseObject</a></li>
+  <li><a href="corelibrary/commandlink.html">CommandLink</a></li>
+  <li><a href="corelibrary/comparenames.html">CompareNames</a></li>
+  <li><a href="corelibrary/conjugate.html">Conjugate</a></li>
+  <li><a href="corelibrary/containsaccessible.html">ContainsAccessible</a></li>
+  <li><a href="corelibrary/containsreachable.html">ContainsReachable</a></li>
+  <li><a href="corelibrary/containsvisible.html">ContainsVisible</a></li>
+  <li><a href="corelibrary/displayhttplink.html">DisplayHttpLink</a></li>
+  <li><a href="corelibrary/doasktell.html">DoAskTell</a></li>
+  <li><a href="corelibrary/dodrop.html">DoDrop</a></li>
+  <li><a href="corelibrary/dotake.html">DoTake</a></li>
+  <li><a href="corelibrary/formatstatusattribute.html">FormatStatusAttribute</a></li>
+  <li><a href="corelibrary/generatemenuchoices.html">GenerateMenuChoices</a></li>
+  <li><a href="corelibrary/getdefaultprefix.html">GetDefaultPrefix</a></li>
+  <li><a href="corelibrary/getkeywordsmatchstrength.html">GetKeywordsMatchStrength</a></li>
+  <li><a href="corelibrary/getplacesobjectslist.html">GetPlacesObjectsList</a></li>
+  <li><a href="corelibrary/gettaggedname.html">GetTaggedName</a></li>
+  <li><a href="corelibrary/grid_addnewshapepoint.html">Grid_AddNewShapePoint</a></li>
+  <li><a href="corelibrary/grid_clearcustomlayer.html">Grid_ClearCustomLayer</a></li>
+  <li><a href="corelibrary/grid_drawarrow.html">Grid_DrawArrow</a></li>
+  <li><a href="corelibrary/grid_drawgridlines.html">Grid_DrawGridLines</a></li>
+  <li><a href="corelibrary/grid_drawimage.html">Grid_DrawImage</a></li>
+  <li><a href="corelibrary/grid_drawline.html">Grid_DrawLine</a></li>
+  <li><a href="corelibrary/grid_drawshape.html">Grid_DrawShape</a></li>
+  <li><a href="corelibrary/grid_drawsquare.html">Grid_DrawSquare</a></li>
+  <li><a href="corelibrary/grid_drawsvg.html">Grid_DrawSvg</a></li>
+  <li><a href="corelibrary/grid_loadsvg.html">Grid_LoadSvg</a></li>
+  <li><a href="corelibrary/grid_setcentre.html">Grid_SetCentre</a></li>
+  <li><a href="corelibrary/grid_showcustomlayer.html">Grid_ShowCustomLayer</a></li>
+  <li><a href="corelibrary/grid_calculatemapcoordinates.html">Grid_CalculateMapCoordinates</a></li>
+  <li><a href="corelibrary/grid_drawplayerinroom.html">Grid_DrawPlayerInRoom</a></li>
+  <li><a href="corelibrary/grid_drawroom.html">Grid_DrawRoom</a></li>
+  <li><a href="corelibrary/grid_redraw.html">Grid_Redraw</a></li>
+  <li><a href="corelibrary/grid_setscale.html">Grid_SetScale</a></li>
+  <li><a href="corelibrary/handlecommand.html">HandleCommand</a></li>
+  <li><a href="corelibrary/handlesinglecommand.html">HandleSingleCommand</a></li>
+  <li><a href="corelibrary/handlesinglecommandpattern.html">HandleSingleCommandPattern</a></li>
+  <li><a href="corelibrary/initinterface.html">InitInterface</a></li>
+  <li><a href="corelibrary/initpov.html">InitPOV</a></li>
+  <li><a href="corelibrary/initverbslist.html">InitVerbsList</a></li>
+  <li><a href="corelibrary/listobjectcontents.html">ListObjectContents</a></li>
+  <li><a href="corelibrary/onenterroom.html">OnEnterRoom</a></li>
+  <li><a href="corelibrary/openobject.html">OpenObject</a></li>
+  <li><a href="populate.html">Populate</a></li>
+  <li><a href="corelibrary/resolvename.html">ResolveName</a></li>
+  <li><a href="corelibrary/resolvenameinternal.html">ResolveNameInternal</a></li>
+  <li><a href="corelibrary/resolvenamelist.html">ResolveNameList</a></li>
+  <li><a href="corelibrary/resolvenamelistitem.html">ResolveNameListItem</a></li>
+  <li><a href="corelibrary/runturnscripts.html">RunTurnScripts</a></li>
+  <li><a href="corelibrary/startgame.html">StartGame</a></li>
+  <li><a href="corelibrary/tryopenclose.html">TryOpenClose</a></li>
+  <li><a href="corelibrary/writeverb.html">WriteVerb</a></li>
+</ul>
+
+<h2 id="mathematical-functions"><a name="internal"></a>Mathematical Functions</h2>
+
+<p>These will not be relevant to many games at all, but are available as a consequence of the .NET framework Quest is built on. They are included here for completeness; if you need them, you will know what they do. There is no further documentation.</p>
+
+<p>Quest has <code class="highlighter-rouge">e</code> and <code class="highlighter-rouge">pi</code> as built-in constants.</p>
+
+<p>These all take a single foating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.</p>
+
+<ul>
+  <li>Abs</li>
+  <li>Acos</li>
+  <li>Asin</li>
+  <li>Atan</li>
+  <li>Cos</li>
+  <li>Exp</li>
+  <li>Log</li>
+  <li>Log10</li>
+  <li>Sin</li>
+  <li>Sinh</li>
+  <li>Sqrt</li>
+  <li>Tan</li>
+  <li>Tanh</li>
+</ul>
+
+<p>The following functions all take a floating point parameter and return an integer.</p>
+
+<ul>
+  <li>Ceiling</li>
+  <li>Floor</li>
+  <li>Round</li>
+  <li>Truncate</li>
+  <li>Sign</li>
+</ul>
+
+<p>These two functions take two parameters, and can be used with either floating point or integers, and return the same type.</p>
+
+<ul>
+  <li>Max</li>
+  <li>Min</li>
+</ul>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -2,7 +2,7 @@
   <editor>
     <appliesto>include</appliesto>
     <tab>
-      <caption>[EditorIncludedLibraryLibrary]</caption>
+      <caption>[EditorIncludedLibraryLibrary]  (You have every library from Pixie's GitHub repository!  Just click the dropdown!)</caption>
 
       <control>
         <controltype>file</controltype>

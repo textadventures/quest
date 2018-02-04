@@ -1,0 +1,207 @@
+<!--Saved by Quest 5.6.5783.24153-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="LiquidLib.aslx" />
+  <game name="water">
+    <gameid>ceb08755-71c8-4656-b83f-e2003aebc0b9</gameid>
+    <version>1.1</version>
+    <firstpublished>2016</firstpublished>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <object name="waterskin">
+        <inherit name="editor_object" />
+        <inherit name="liquidcontainer" />
+        <full type="int">0</full>
+        <capacity type="int">10</capacity>
+        <look type="script">
+          if (this.full = 0) {
+            msg ("The waterskin is empty.")
+          }
+          else if (this.full = this.capacity) {
+            msg ("The waterskin is full of " + this.liquidtype + ".")
+          }
+          else {
+            msg ("The waterskin is about " + (waterskin.full  * 10) + "% full of " + this.liquidtype + ".")
+          }
+        </look>
+      </object>
+    </object>
+    <exit alias="south" to="room_with_pool">
+      <inherit name="southdirection" />
+    </exit>
+    <exit alias="east" to="room_with_tap">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="room_with_pool">
+    <inherit name="editor_room" />
+    <description>There is a pool of water.</description>
+    <watersource />
+    <liquidtype>water</liquidtype>
+    <attr name="handle_emptying" type="script">
+      if (this.emptiedliquidtype = "water") {
+        msg ("You empty the water into the pool.")
+      }
+      else if (this.emptiedliquidtype = "poison") {
+        msg ("You empty the contaminated water into the pool.")
+        this.liquidtype = "poison"
+      }
+      else if (this.emptiedliquidtype = "oil") {
+        msg ("You empty the oil into the pool; it floats on top.")
+      }
+      else {
+        msg ("You empty it.")
+      }
+    </attr>
+    <exit alias="north" to="room">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="east" to="room_with_fire">
+      <inherit name="eastdirection" />
+    </exit>
+    <exit alias="south" to="room_with_contaminated_pool">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+  <object name="room_with_fire">
+    <inherit name="editor_room" />
+    <fireout type="boolean">false</fireout>
+    <description>{if room_with_fire.fireout:The fire is out}{if not room_with_fire.fireout:There is a fire burning}.</description>
+    <attr name="handle_emptying" type="script">
+      if (this.emptiedliquidtype = "water") {
+        msg ("You empty it over the fire, which sizzles and spits, then dies.")
+        this.fireout = true
+      }
+      else if (this.emptiedliquidtype = "poison") {
+        msg ("You empty it over the fire, and suddenly you are engulkfed in toxic fumes! When the fumes clear, you see that the fire is out.")
+        this.fireout = true
+      }
+      else if (this.emptiedliquidtype = "oil") {
+        msg ("You empty it over the fire, which flares up, singing your eyebroews.")
+      }
+      else {
+        msg ("You empty it over the fire, but nothing much happens.")
+      }
+    </attr>
+    <exit alias="west" to="room_with_pool">
+      <inherit name="westdirection" />
+    </exit>
+    <exit alias="north" to="room_with_tap">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="south" to="room_with_oil">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+  <object name="room_with_tap">
+    <inherit name="editor_room" />
+    <liquidtype>water</liquidtype>
+    <exit alias="south" to="room_with_fire">
+      <inherit name="southdirection" />
+    </exit>
+    <exit alias="west" to="room">
+      <inherit name="westdirection" />
+    </exit>
+    <object name="tap">
+      <inherit name="editor_object" />
+      <inherit name="switchable" />
+      <feature_switchable />
+      <switchonmsg>You turn on the tap, Water flows into the sink and down the plug hole.</switchonmsg>
+      <switchoffmsg>You turn it off.</switchoffmsg>
+      <switchedondesc>Water is flowing from it.</switchedondesc>
+      <onswitchon type="script">
+        this.parent.watersource = true
+      </onswitchon>
+      <onswitchoff type="script">
+        this.parent.watersource = false
+      </onswitchoff>
+    </object>
+  </object>
+  <object name="room_with_contaminated_pool">
+    <inherit name="editor_room" />
+    <watersource />
+    <liquidtype>poison</liquidtype>
+    <exit alias="north" to="room_with_pool">
+      <inherit name="northdirection" />
+    </exit>
+    <exit alias="east" to="room_with_oil">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="room_with_oil">
+    <inherit name="editor_room" />
+    <watersource />
+    <liquidtype>oil</liquidtype>
+    <exit alias="west" to="room_with_contaminated_pool">
+      <inherit name="westdirection" />
+    </exit>
+    <exit alias="north" to="room_with_fire">
+      <inherit name="northdirection" />
+    </exit>
+  </object>
+  <function name="MixLiquid" parameters="container, liquidtype">
+    if (liquidtype = "poison" or container.liquidtype = "poison") {
+      msg ("You top it up with poison.")
+      container.liquidtype = "poison"
+    }
+    else if (liquidtype = "water" or container.liquidtype = "water") {
+      msg ("You top it up with water.")
+      container.liquidtype = "water"
+    }
+    else {
+      msg ("You empty it, and then fill it with " + liquidtype + ".")
+      container.liquidtype = liquidtype
+    }
+  </function>
+  <function name="DrinkLiquid" parameters="liquidtype" type="string">
+    if (liquidtype = "poison") {
+      msg ("It is poison! You fall over, dead.")
+      finish
+    }
+    else {
+      msg ("You take a drink from it.")
+    }
+  </function>
+  <walkthrough name="test">
+    <steps type="simplestringlist">
+      fill waterskin
+      empty waterskin
+      drink from waterskin
+      south
+      fill waterskin
+      drink from waterskin
+      empty waterskin
+      empty waterskin
+      fill waterskin
+      south
+      empty waterskin
+      north
+      fill waterskin
+      south
+      fill waterskin
+      drink from waterskin
+      fill waterskin
+      look at waterskin
+      north
+      empty waterskin
+      look at waterskin
+      south
+      east
+      fill waterskin
+      north
+      empty waterskin
+      west
+      fill waterskin
+      east
+      empty waterskin
+      west
+      fill waterskin
+      drink from waterskin
+    </steps>
+  </walkthrough>
+</asl>

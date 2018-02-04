@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tracking Time</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Tracking Time</h1>
+      <p>This describes how you can track the passage of time in your game. If you are using the desktop version, you may prefer to use the <a href="https://github.com/ThePix/quest/wiki/Clock-Library">Clock Library</a>, which has a lot of extra functionality for timetabling events. What is described here is a simpler version, which is also suitable for the web version.</p>
+
+<p>The simplest way to track time is to say that by default, each turn is one minute (so some things will take longer). For that we need a turnscript, and we need an attribute that tracks time.</p>
+
+<h2 id="a-turnscript">A Turnscript</h2>
+
+<p>So create a turn script, call it “TimeTurnScript”, set it to be enabled, and paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not HasInt(game, "time")) {
+  game.time = 60 * 10 + 23
+}
+else {
+  game.time = game.time + 1
+}
+</code></pre></div></div>
+
+<p>All it does is checks if the time is already set, if not it sets it to a value, if so, it adds 1 to the value.</p>
+
+<p>Note that the time is set to <code class="highlighter-rouge">60 * 10 + 23</code>; that will be 623 minutes past midnight. I could have set it to 623, but doing it this way makes it clear that the game starts at 10:23. You can, of course, put in your own time here.</p>
+
+<h2 id="a-better-turn-script">A Better Turn Script</h2>
+
+<p>Two issues we can address. The first is that the turn script will not fire at the start of the game (they fire <em>after</em> the player takes a turn), and we really need this set up from the start.</p>
+
+<p>Go to the <em>Script</em> tab of the game object, and add this to the start script:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RunTurnScripts
+</code></pre></div></div>
+
+<p>Now all your turn scripts will run before the player takes a turn.</p>
+
+<p>The second issue is that we do not want time to pass if the player mistypes something. On the <em>Features</em> tab, turn on advanced scripts, then on the <em>Advanced Scripts</em> tab, for the unresolved command script, paste in this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>game.notarealturn = true
+msg("I have no idea what that means.")
+</code></pre></div></div>
+
+<p>Then back to the turn script, and replace the script with this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not HasInt(game, "time")) {
+  game.time = 60 * 10 + 23
+}
+else if (not game.notarealturn) {
+  game.time = game.time + 1
+}
+game.notarealturn = false
+</code></pre></div></div>
+
+<p>Now if the player types in nonsense Quest cannot understand, <code class="highlighter-rouge">game.notarealturn</code> will be set to true, and time will not get moved on.</p>
+
+<p>If you have anything else that should only happen after a real turn (such as enemies attacking the player), you can add that to the above script. It would need to go after this line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  game.time = game.time + 1
+</code></pre></div></div>
+
+<p>You might also want to modify some commands so a minute does not pass whilst for them. For example, HELP and perhaps INVENTORY and LOOK. Just add this line to their scripts:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>game.notarealturn = true
+</code></pre></div></div>
+
+<h2 id="showing-the-time">Showing the Time</h2>
+
+<p>You can display the time as a status attribute (or elsewhere), and the best way is to have a “timeasstring” attribute that will hold it nicely formatted. Because of the weird way we write time (base 60, and noon is neither am or pm), the coding suddenly gets long…</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not HasInt(game, "time")) {
+  game.time = 60 * 10 + 23
+  if (not HasAttribute(game, "statusattributes")) {
+    game.statusattributes = NewStringDictionary()
+  }
+  dictionary add (game.statusattributes, "timeasstring", "Time: !")
+}
+else if (not game.notarealturn) {
+  game.time = game.time + 1
+}
+hours = (game.time / 60) % 24
+minutes = game.time % 60
+if (hours = 0 and minutes = 0) {
+  game.timeasstring = "Midnight"
+}
+else if (hours = 12 and minutes = 0) {
+  game.timeasstring = "Noon"
+}
+else if (hours &lt; 12) {
+  game.timeasstring = hours + ":" + minutes + " am"
+}
+else {
+  game.timeasstring = (hours - 12) + ":" + minutes + " pm"
+}
+game.notarealturn = false
+</code></pre></div></div>
+
+<p>Note that the third to sixth lines are adding “timeasstring” as a status attribute of the game object.</p>
+
+<h2 id="taking-your-time">Taking Your Time</h2>
+
+<p>Most actions will take 1 minutes, but you can increase that just by adding to game.time. Suppose mending the car takes 10 minutes, put this in the script (1 minute passes anyway):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>game.time = game.time + 9
+</code></pre></div></div>
+
+<p>For exits, set them to run a script, then paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MoveObject(player, this.to)
+game.time = game.time + 9
+</code></pre></div></div>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

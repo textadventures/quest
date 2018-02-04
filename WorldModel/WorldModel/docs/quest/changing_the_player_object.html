@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Changing the player object</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Changing the player object</h1>
+      <p>When you create a Quest game, there is by default one “player” object, which represents the player’s point of view (POV). The player’s inventory consists of all the objects that are contained by this “player” object.</p>
+
+<p>As of Quest 5.3, you can now switch the POV at any time - your game remains a single-player experience, but that player can now switch between different characters. This means you could create a game where the player can explore from different points of view, or perhaps simply choose a pre-defined character when starting the game.</p>
+
+<p>Any script can change the current POV by calling the “Change player object” command. So you could change the POV after asking a question in the game start script, in response to a command, or maybe after successfully solving a puzzle.</p>
+
+<p>Each player object gets its own inventory and attributes. This includes status attributes, so each player could have their own health or stats, and these will be updated on-screen as the player switches between characters. For status attributes which apply across the entire game (perhaps “score” for example), you should set these on the “game” object itself, so they will apply all the time regardless of which object is the current POV.</p>
+
+<p>Objects can behave differently depending on whether they are the player or not. For example, if you have two player objects “Dave” and “Bob” in a game, and it is possible for them to be together in the same room at the same time, you will want different responses for “look at Dave” and “look at Bob” depending on whether the player is currently Dave or Bob.</p>
+
+<p>To handle this, go to the object’s <em>Features</em> tab and tick “Player: Player can become this object”; a new tab will appear. If on the <em>Player</em> tab “Can be a player” is selected, options appear where you can set an override “look at” description to display when this object is the player.</p>
+
+<p><img src="Pov1.png" alt="" title="Pov1.png" /></p>
+
+<p>Say this object is Bob. On the <em>Player</em> tab set the name, description, etc. that apply when the player is Bob, whilst on the <em>Setup</em> tab, set them for how they will be when the player is not Bob.</p>
+
+<p>The <code class="highlighter-rouge">game</code> object has an attrribute called “pov”, and this stores the current player object.</p>
+
+<p>To change the cirrent player object, use the <code class="highlighter-rouge">ChangePOV</code> function, which changes <code class="highlighter-rouge">game.pov</code> and does some house-keeping.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ChangePOV (bob)
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

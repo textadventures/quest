@@ -25,6 +25,14 @@
       <nullable/>
     </control>
 
+
+    <control>
+      <mustinherit>editor_room</mustinherit>
+      <controltype>checkbox</controltype>
+      <caption>Set as defaultroom</caption>
+      <attribute>defaultroom</attribute>
+    </control>
+    
     <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <caption>[EditorObjectSetupVisible]</caption>
@@ -43,14 +51,13 @@
       <controltype>checkbox</controltype>
       <caption>[EditorObjectSetupUsedefault]</caption>
       <attribute>usedefaultprefix</attribute>
-      <onlydisplayif>not this.scenery</onlydisplayif>
     </control>
 
     <control>
       <caption>[EditorObjectSetupPrefix]</caption>
       <controltype>textbox</controltype>
       <attribute>prefix</attribute>
-      <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
+      <onlydisplayif>not this.usedefaultprefix</onlydisplayif>
     </control>
 
     <control>

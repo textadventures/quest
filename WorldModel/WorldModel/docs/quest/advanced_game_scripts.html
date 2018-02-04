@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Advanced game scripts</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Advanced game scripts</h1>
+      <p>Tick the check box on the <em>Features</em> tab of the <code class="highlighter-rouge">game</code> object to see the advanced game scripts.</p>
+
+<h2 id="inituserinterface">inituserinterface</h2>
+
+<p>The <code class="highlighter-rouge">InitUserInterface</code> function has been in Quest for a long time. It is an empty function that you can override to set up the user interface, and at gets called at the start of the game, and also when the player loads a saved game (unlike game.start, which only runs when the games starts, not a reload).</p>
+
+<p>The <code class="highlighter-rouge">game.inituserinterface</code> script is exactly the same; it is called at the start of the game, and also when the player loads a saved game. So why have both?</p>
+
+<p>If you are using the web version, you cannot override <code class="highlighter-rouge">InitUserInterface</code>, so what this meant was your user interface was restricted to the basic options. Now, however, you can change the <code class="highlighter-rouge">game.inituserinterface</code> to do whatever you want!</p>
+
+<p>This is where you should put any code that modified the user interface. See <a href="ui-custom.html">here</a> for more details on what you can do.</p>
+
+<h2 id="unresolvedcommandhandler">unresolvedcommandhandler</h2>
+
+<p>This has been in Quest for a long time, but in Quest 5.7 you can add it via the GUI.</p>
+
+<p>If it exists, this script gets called when Quest has no idea how to handle a command (otherwise Quest will just print “I don’t understand your command.”).</p>
+
+<p>Why would you want to? Well, if you are counting turns, if would be unfair to count as a turn when the player has just mistyped something, or has typed a command you forgot to implement. You can use this to flag the turn as not to be counted, and then in your turn script, where you increment the turn counter, test to see if it was a real turn (and reset the flag).</p>
+
+<p>The “command” variable will hold what the player typed, so your script might look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>game.notarealturn = game.notarealturn
+msg("I do not understand \"" + command + "\"")
+</code></pre></div></div>
+
+<p>In you turn script (assuming game.turn is set to 0 in the start script):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (GetBoolean(game, "notarealturn")) {
+  game.notarealturn = false
+}
+else {
+  game.turn = game.turn + 1
+  // Anything else that happens each turn goes here
+}
+</code></pre></div></div>
+
+<h2 id="scopebackdrop">scopebackdrop</h2>
+
+<p>When the player does LOOK AT (or most other commands), Quest will compare the object in the typed text against all the items present. You can use this script to add to the list Quest will try to match against.</p>
+
+<p>Why would you want to? Let us say your game is set in an old house; in every room there are walls, floor and ceiling, and some player might do LOOK AT WALL (and seriously, some will). This would not look good:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You are in a room with a bed and table; there are old posters stuck to the walls.
+
+&gt; LOOK AT WALLS
+
+I can't see that.
+</code></pre></div></div>
+
+<p>However, you really do not want to have to create a wall object in every room, plus floor, plus ceiling, etc. The <code class="highlighter-rouge">scopebackdrop</code> script offers a solution; just add  your generic objects to the “items” list in that script. For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>list add (items, wall)
+list add (items, floor)
+list add (items, ceiling)
+</code></pre></div></div>
+
+<p>Now when Quest is looking for a suitable object it will also consider these three. See the “Extended Scope” section of <a href="advanced_scope.html">this page</a> for more.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Change Script</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Change Script</h1>
+      <p>A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player’s hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have one just one change script that checks if the player is alive.</p>
+
+<p>Quest has some change scripts already built in. If you change the parent attribute of the player, a change script fires that calls the OnEnterRoom function. This ensures the function gets called every time, rather than replying on game creators calling it each time the player moves (in fact, this change script is on all objects, as any object can potentially be the player).</p>
+
+<p>Change scripts can be created for attributes on any object, not just the player, by the way.</p>
+
+<p>As an example, let us create an attribute called “hits” on the player object. In the desktop version, you can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the “Add Change Script button. Quest will add a new attribute, “changedhits”. Easy as that.</p>
+
+<p>Now make the script display the new hit points:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (player.hits &gt; 0) {
+    msg ("Hits points now " + player.hits)
+  }
+  else {
+    msg("You are dead!")
+    finish
+  }
+</code></pre></div></div>
+<p>The web version has no Attributes tab, making change scripts rather harder to use. We will have to do this all in code, and to ensure it is up andrunning from the start, do it in the start script of the game object. Here is the code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>player.hits = 5
+player.changedhits =&gt; {
+  if (player.hits &gt; 0) {
+    msg ("Hits points now " + player.hits)
+  }
+  else {
+    msg("You are dead!")
+    finish
+  }
+}
+</code></pre></div></div>
+<p>The first line creates the attribute, and gives it an intial value. The second line creates the change script attribute, and assigns a script to it (the <code class="highlighter-rouge">=&gt;</code> assigns a script to an attribute like <code class="highlighter-rouge">=</code> assigns a number or string. The code in the script itself is just the same.</p>
+
+<p>Quest recognises an attribute as a change script if it is a script and its name starts with “changed”. There are just standard scripts, and you can use them as such:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  do (player, "changedhits")
+</code></pre></div></div>
+
+<h2 id="notes">Notes</h2>
+
+<h3 id="lists">Lists</h3>
+
+<p>Changing the contents of a list does not trigger a change script. Quest will consider it to be the same list. Say we have an attribute called “listofstuff”.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  // This will not trigger a change script
+  list add (player.listofstuff, "item")
+  // These will
+  player.listofstuff = NewStringList()
+  player.listofstuff = Split("first item,item", ",")
+</code></pre></div></div>
+
+<h3 id="ordering">Ordering</h3>
+
+<p>The change script will fire when the attribute changes, so be careful where you make the change in your code. In the hit points example, this is wrong:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  player.hitpoints = player.hitpoints - 20
+  msg("You drink the liquid... and realised it was poison!")
+</code></pre></div></div>
+<p>If it kills the player, she will see this:</p>
+
+<blockquote>
+  <p>You are died!!</p>
+</blockquote>
+
+<blockquote>
+  <p>You drink the liquid… and realise it was poison!</p>
+</blockquote>
+
+<p>You need to adjust the hit points <em>after</em> the message.</p>
+
+<h3 id="change-inside-change">Change inside change</h3>
+
+<p>Be careful changing an attribute inside its own change script, you will end up in an infinite loop!</p>
+
+<h3 id="the-parent-attribute">The “parent” attribute</h3>
+
+<p>An attribute you may well want to react if it changes is the “parent” attribute, as this determines where an object is, what room it is currently in. You will find, however, that it already exists. You will need to click on “Make Editable Copy” to be able to do anything with it.</p>
+
+<p>If the object in question is not the “player” object and will never be the player, you can just delete the existing code, and put in your own. If this is the “player” object or can be the player, you will need to add your code to the end of the existing code.</p>
+
+<h3 id="the-oldvalue-variable">The oldvalue variable</h3>
+
+<p>There is a special variable that holds the previous value of the attribute your change script is following, and this is called “oldvalue”. A good example of that in use is the change script on the “parent” attribute that was just mentioned:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (game.pov = this) {
+    if (IsDefined("oldvalue")) {
+      OnEnterRoom (oldvalue)
+    }
+    else {
+      OnEnterRoom (null)
+    }
+    if (game.gridmap) {
+      MergePOVCoordinates
+    }
+  }
+</code></pre></div></div>
+<p>The first line means that this code only applies if this object is the current player point-of-view (usually that is the “player” object). If this is the player, then the player has moved. It checks to see if oldvalue exists (which it should do, but is good to check). If it exists, it is passed to OnEnterRoom, which can then run the leaving script for the old room if necessary.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

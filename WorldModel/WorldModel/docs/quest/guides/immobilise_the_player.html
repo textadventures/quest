@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Immobilise the player</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Immobilise the player</h1>
+      <p>Occasionally you want to stop the player moving to another room, say because he is sat down, and he has to stand first, or he is tied up or whatever. There are three ways (at least) to do this:</p>
+
+<h2 id="move-to-another-room">Move to another room</h2>
+
+<p>The first way is to move him to another room with no exits. This might not be appropriate in some cases, but suppose the player logs on to a computer, and while logged on, all commmands relate to the computer. The player does not need to interact or even see other objects in the room with the computer, so effectively moving the player inside the computer is a good solution.</p>
+
+<h2 id="block-the-exit">Block the exit</h2>
+
+<p>If this is something that happens in one specific room with a small number of exits, then the easiest solution is to just lock the exits while the player is immobilised, unlock them afterwards.</p>
+
+<h2 id="rewrite-the-go-command">Rewrite the go command</h2>
+
+<p>This is a little more complicated, but more general. What you do is set a string on the player when he is immobilised. The GO command checks to see if this string exists, and if it does, rather than moving the player, it prints the string.</p>
+
+<p>The way to do this is to rewrite the GO command.</p>
+
+<p>Create a new command, and set the pattern to be a regular expression. In the text box below, paste in this string:</p>
+
+<blockquote>
+  <p>^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$</exit></exit></exit></p>
+</blockquote>
+
+<p>Then paste in this code.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (HasString (player, "immobilisedmessage")) {
+  Print (player.immobilisedmessage)
+}
+else if (exit.visible) {
+  if (exit.locked) {
+    msg (exit.lockmessage)
+  }
+  else if (exit.runscript) {
+    if (HasScript(exit, "script")) {
+      do (exit, "script")
+    }
+  }
+  else if (exit.lookonly) {
+    msg ("You can't go there.")
+  }
+  else {
+    if (HasString(exit, "message")) {
+      if (not exit.message = "") {
+        msg (exit.message)
+      }
+    }
+    game.pov.parent = exit.to
+  }
+}
+else {
+  msg ("You can't go there.")
+}
+</code></pre></div></div>
+
+<p>As it has the same pattern as the built-in GO command, this will get used instead. The only difference is that before doing anything else, the script checks for the “immobilisedmessage” string on the player. If it is there, it gets printed. If not it proceeds as normal.</p>
+
+<p>Now to immobilise the player, your code needs to do something like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>player.immobilisedmessage = "Cannot move while seated."
+</code></pre></div></div>
+
+<p>To allow him to move again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>player.immobilisedmessage = nil
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

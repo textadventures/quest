@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to Keep Score</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>How to Keep Score</h1>
+      <p>Many years ago I wrote a library to help track the player’s score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.</p>
+
+<p>This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.</p>
+
+<h2 id="before-we-begin">Before We Begin</h2>
+
+<p>Just for the sake of testing, we will set up a new command, with the pattern JUMP, and paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg("You jump into the air. Hurrah!")
+</code></pre></div></div>
+<p>The plan is to have the player get 1 point for jumping, using this command.</p>
+
+<p>By the way, quest does have a “score”, which will do some of this for us. I am not going to use that because I want to show how status attributes are used.</p>
+
+<h2 id="status-attributes---off-line">Status Attributes - Off-line</h2>
+
+<p>Go to the <em>Attributes</em> tab of the game object. In the lower box, click <em>Add</em>, then type “score” and set it to an integer. Then go to the upper box, marked “Status Attributes”, click <em>Add</em>, and again then type “score”. You will get a second box this time, in it, paste in this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Score: !/10
+</code></pre></div></div>
+
+<h2 id="status-attributes---on-line">Status Attributes - On-line</h2>
+
+<p>on-line we have no <em>Attributes</em> tab, so we have to do this in the start scrip. Go to the <em>Scripts</em> tab of the game object and paste in this to the start script at the top:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  game.score = 0
+  game.statusattributes = NewStringDictionary()
+  dictionary add (game.statusattributes, "score", "Score: !/10")
+</code></pre></div></div>
+
+<p>The first line is obviously setting up the “score” attribute.</p>
+
+<p>Quest stores information about status attributes in dictionary attributes called <code class="highlighter-rouge">statusattributes</code>, on the game and player objects, and the second line creates one on the game object (Quest does this automatically in the off-line editor). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, “score”, and the display format, “Score: !/10”.</p>
+
+<h2 id="display-format">Display Format</h2>
+
+<p>However you set it up, your “score” status attribute should have a display format like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Score: !/10
+</code></pre></div></div>
+
+<p>The exclamation mark is a placeholder for the actual value, so it the score is currently zero, the player will see:</p>
+
+<blockquote>
+  <p>Score: 0/10</p>
+</blockquote>
+
+<h2 id="scoring-a-point">Scoring a Point…</h2>
+
+<p>No go back to the JUMP command, and change its script to this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg("You jump into the air. Hurrah!")
+  game.score = game.score + 1
+</code></pre></div></div>
+
+<p>You should now be able to go into the game, and see your score, and see that it goes up when you jump.</p>
+
+<h2 id="-and-only-one-point">… And Only One Point</h2>
+
+<p>In fact the score goes up every time you type JUMP; really we only want that to happen once. We will build in a system to ensure that that is the case later, but let us do it a different way first. Did you know you can set attributes on commands? Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg("You jump into the air. Hurrah!")
+  if (not GetBoolean(this, "alreadydone")) {
+    game.score = game.score + 1
+    this.alreadydone = true
+  }
+</code></pre></div></div>
+
+<p>This will check the “alreadydone” on the command itself, and only increase the score if it is not yet set. By the way, “this” indicates the thing the script belongs to - the command in this case.</p>
+
+<h2 id="listing-achievements">Listing Achievements</h2>
+
+<p>So we have a simple system, and that may be enough for you. However, we can improve the system to ensure the player only every gets rewarded once for any achievement, and to allow the player to check what she got points for. To do that, we will record each achievement in a string list, so the first step is to set that up. If on-line, add this to the start script of the game object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  game.score_achievements = NewStringDictionary()
+</code></pre></div></div>
+<p>If off-line you might prefer to add a string list attribute to the game object called “score_achievements” instead.</p>
+
+<p>This string list will keep a list of the achievements, and we can check that to see if an achievement has already been done. Best way to do that is in a function. God to <em>Functions</em>, and click <em>Add</em>. Give it the name “IncScore”, and leave its return type to <em>None</em>. You will need to add two parameters, <code class="highlighter-rouge">str</code> and <code class="highlighter-rouge">inc</code>, and then past in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (not DictionaryContains(game.score_achievements, str)) {
+    dictionary add (game.score_achievements, str, ToString(inc))
+    game.score = game.score + inc
+    msg("Your score went up by " + inc + "!")
+  }
+</code></pre></div></div>
+
+<p>What we will be sending this function is a string and a number. It will check if the string is already in the dictionary, and if it is not, it will get added, the score will be increased and the player informed.</p>
+
+<p>Now go back to your JUMP command, and delete the exiting script, pasting in this instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("You jump into the air. Hurrah!")
+  IncScore("You jumped", 5)
+</code></pre></div></div>
+
+<p>If you go into the game, you will find that you get 5 points for jumping, but only the first time.</p>
+
+<p>You could have several things giving the same reward. Perhaps leaping a chasm also counts as a jump; in your LEAP command, just have exactly the same line of code. The score system will check whether “You jumped” is already in the list, and only hand out points if it is not.</p>
+
+<h2 id="a-score-command">A SCORE Command</h2>
+
+<p>We can add a score command, to allow the player to see how much she has score and for what. Create a new command, and give is the pattern “score”, then paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("You have scored " + game.score + ".")
+  foreach (s, game.score_achievements) {
+    msg ("- " + s + " (" + DictionaryItem(game.score_achievements, s) + ")")
+  }
+</code></pre></div></div>
+
+<p>The first line gives the total score, the next sets up a loop, going through the dictionary with the achievements listed. For each one, the achievement, plus points rewarded, is displayed.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

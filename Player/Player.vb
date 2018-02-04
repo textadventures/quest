@@ -1,6 +1,9 @@
 ﻿Imports System.Xml
 Imports System.Threading
 Imports System.Globalization
+Imports System.IO
+Imports System.Text
+Imports System.Text.RegularExpressions
 
 Public Class Player
 
@@ -1066,6 +1069,63 @@ Public Class Player
         End If
     End Sub
 
+    'Public Sub Log(text As String) Implements IPlayer.Log
+    '    BeginInvoke(Sub()
+    '                    If m_log Is Nothing Then
+    '                        m_log = New Log
+    '                    End If
+    '                    If m_log.txtLog.TextLength > 0 Then
+    '                       m_log.txtLog.AppendText(Environment.NewLine)
+    '                    End If
+    '                    m_log.txtLog.AppendText(DateTime.Now.ToString() + " " + text)
+    '                    m_log.txtLog.Select(m_log.txtLog.Text.Length, 0)
+    '                    m_log.txtLog.ScrollToCaret()
+    '     End Sub)
+
+    'End Sub
+
+
+    ' This function converts HTML code to plain text
+    ' Any step is commented to explain it better
+    ' You can change or remove unnecessary parts to suite your needs
+    Public Function HTMLToText(ByVal HTMLCode As String) As String
+        ' Remove new lines since they are not visible in HTML
+        'HTMLCode = HTMLCode.Replace("\n", " ")
+
+        ' Remove tab spaces
+        'HTMLCode = HTMLCode.Replace("\t", " ")
+
+        ' Remove multiple white spaces from HTML
+        HTMLCode = Regex.Replace(HTMLCode, "\\s+", "  ")
+
+        ' Remove HEAD tag
+        HTMLCode = Regex.Replace(HTMLCode, "<head.*?</head>", "" _
+   , RegexOptions.IgnoreCase Or RegexOptions.Singleline)
+
+        ' Remove any JavaScript
+        HTMLCode = Regex.Replace(HTMLCode, "<script.*?</script>", "" _
+   , RegexOptions.IgnoreCase Or RegexOptions.Singleline)
+
+        ' Replace special characters like &, <, >, " etc.
+        Dim sbHTML As StringBuilder = New StringBuilder(HTMLCode)
+        ' Note: There are many more special characters, these are just
+        ' most common. You can add new characters in this arrays if needed
+        Dim OldWords() As String = {"&nbsp;", "&amp;", "&quot;", "&lt;",
+    "&gt;", "&reg;", "&copy;", "&bull;", "&trade;"}
+        Dim NewWords() As String = {" ", "&", """", "<", ">", "Â®", "Â©", "â€¢", "â„¢"}
+        For i As Integer = 0 To OldWords.Length - 1
+            sbHTML.Replace(OldWords(i), NewWords(i))
+        Next i
+
+        ' Check if there are line breaks (<br>) or paragraph (<p>)
+        sbHTML.Replace("<br>", Environment.NewLine)
+        sbHTML.Replace("<br/>", Environment.NewLine)
+        sbHTML.Replace("<p>", Environment.NewLine)
+
+        ' Finally, remove all HTML tags and return plain text
+        Return System.Text.RegularExpressions.Regex.Replace(
+    sbHTML.ToString(), "<[^>]*>", "")
+    End Function
     Public Sub Log(text As String) Implements IPlayer.Log
         BeginInvoke(Sub()
                         If m_log Is Nothing Then
@@ -1074,12 +1134,80 @@ Public Class Player
                         If m_log.txtLog.TextLength > 0 Then
                             m_log.txtLog.AppendText(Environment.NewLine)
                         End If
-                        m_log.txtLog.AppendText(DateTime.Now.ToString() + " " + text)
-                        m_log.txtLog.Select(m_log.txtLog.Text.Length, 0)
-                        m_log.txtLog.ScrollToCaret()
+                        'Modified by KV
+                        'This is for the SaveLoad library:
+                        If text.StartsWith("SaveLoadFile:") Then
+                            Dim filePath As String
+                            Dim logNamePre As String
+                            Dim logDir As String
+                            logDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest SaveLoad Files\" + m_gameName
+                            'logDir = Directory.GetCurrentDirectory()
+                            My.Computer.FileSystem.CreateDirectory(logDir)
+                            logNamePre = m_gameName + "-quest_save_" + Date.Now.ToString("yyyy-MM-dd_HH.mm.ss") + ".txt"
+                            filePath = System.IO.Path.Combine(
+                            logDir, logNamePre)
+                            m_log.txtLog.AppendText(Environment.NewLine + "Save file saved as " + filePath)
+                            My.Computer.FileSystem.WriteAllText(filePath, text, True)
+                            'This is to save a .txt file to the hard drive.
+                        ElseIf text.StartsWith("TxtFile:") Then
+                            Dim filePath As String
+                            Dim textArr() As String
+                            Dim filename As String
+                            Dim saveDir As String
+                            Dim saveNamePre As String
+                            textArr = Split(text, ">>>")
+                            filename = textArr(0)
+                            text = textArr(1)
+                            filename = filename.Replace("TxtFile:", "")
+                            saveDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest Bonus Files\" + m_gameName
+                            My.Computer.FileSystem.CreateDirectory(saveDir)
+                            saveNamePre = filename + ".txt"
+                            filePath = System.IO.Path.Combine(
+                            saveDir, saveNamePre)
+                            m_log.txtLog.AppendText(Environment.NewLine + "File saved as " + filePath)
+                            My.Computer.FileSystem.WriteAllText(filePath, text, False)
+                        ElseIf text.StartsWith("Transcript>>>") Then
+                            'This is modified to save a transcript
+                            Dim filePath As String
+                            Dim textArr() As String
+                            Dim filename As String
+                            Dim saveDir As String
+                            Dim saveNamePre As String
+                            textArr = Split(text, ">>>")
+                            filename = m_gameName + "_transcript"
+                            text = textArr(1)
+                            'text = StripTags(text)
+                            text = HTMLToText(text)
+                            saveDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest Transcripts\" + m_gameName + " - Transcripts"
+                            My.Computer.FileSystem.CreateDirectory(saveDir)
+                            saveNamePre = filename + ".txt"
+                            filePath = System.IO.Path.Combine(
+                            saveDir, saveNamePre)
+                            'm_log.txtLog.AppendText(Environment.NewLine + "File saved as " + filePath)
+                            My.Computer.FileSystem.WriteAllText(filePath, text, True)
+                        Else
+                            'This is modified to save a log file
+                            m_log.txtLog.AppendText(DateTime.Now.ToString() + " " + text)
+                            m_log.txtLog.Select(m_log.txtLog.Text.Length, 0)
+                            m_log.txtLog.ScrollToCaret()
+                            Dim filePath As String
+                            Dim logNamePre As String
+                            Dim logDir As String
+                            logDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest Logs\" + m_gameName
+                            My.Computer.FileSystem.CreateDirectory(logDir)
+                            logNamePre = m_gameName + "-log.txt"
+                            filePath = System.IO.Path.Combine(
+                            logDir, logNamePre)
+                            'm_log.txtLog.AppendText(Environment.NewLine + "Saved log to: " + filePath)
+                            Dim logEntry As String
+                            logEntry = DateTime.Now.ToString() + " " + text + Environment.NewLine
+                            My.Computer.FileSystem.WriteAllText(filePath, logEntry, True)
+                        End If
                     End Sub)
 
     End Sub
+
+
 
     Public Sub ResetAfterGameFinished()
         m_initialised = False

@@ -98,7 +98,7 @@ Partial Class About
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Window
         Me.CancelButton = Me.btnClose
-        Me.ClientSize = New System.Drawing.Size(332, 220)
+        Me.ClientSize = New System.Drawing.Size(668, 220)
         Me.Controls.Add(Me.lblBuild)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.lblCopyright)

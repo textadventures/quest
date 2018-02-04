@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Keeping a journal</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Keeping a journal</h1>
+      <p>This is a way to add a journal to your game. This is a book the player can make notes in, and that the game can add to as well when appropriate.</p>
+
+<h2 id="the-journal">The journal</h2>
+
+<p>The first step is to add an object to the player that will be the journal. Let us call it “journal”. Make sure it is in the player; Quest will try to put it in the same room. To move it to the right place, off-line you can just drag it, on-line click the <em>Move</em> button.</p>
+
+<p>We will be adding new commands later to handle the journal and what we could do is have those commands check the player has the journal, and give an error if not. However, we are going to do this differently, and stop the play dropping the journal, so we know she will always have it. Go to the <em>Inventory</em> tab of the journal, and untick “Object can be dropped”. On the <em>Object</em> tab, delete “Drop” from the list at the bottom.</p>
+
+<p>The journal needs to hold information so we need to give it a string list to do that. If off-line, you can do that on the <em>Attributes</em> tab, add a new attribute called “entries”, and set it to be a string list.</p>
+
+<p>If working on-line, go to the <em>Scripts</em> tab of the game object, and add this to the start script:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  journal.entries = NewStringList()
+</code></pre></div></div>
+
+<h2 id="read-the-journal">Read the Journal</h2>
+
+<p>We want the player to be able to read the journal, so go to the <em>Verbs</em> tab of the journal, click <em>Add</em> and type “read”. At the bottom, set it to “Run a script”, and paste this in:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (ListCount(this.entries) = 0) {
+    msg ("You have nothing written in your journal.")
+  }
+  else {
+    msg ("You look at your journal:")
+    foreach (s, this.entries) {
+      msg (s)
+    }
+  }
+</code></pre></div></div>
+<p>The first bit checks if anything is written in the journal yet, and if not then says as much. The second bit prints an introductory message, then goes through each entry in turn, printing it out.</p>
+
+<h2 id="the-journal-command">The JOURNAL command</h2>
+
+<p>This is optional, but will allow the player to type JOURNAL to see what is currently written in it, and would be useful if you turn off the panes on the right.</p>
+
+<p>Create a new command, and give it the pattern “journal”. Then paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   do(journal, "read")
+</code></pre></div></div>
+<p>We have already done the hard work setting up the READ verb, so here all we need to do is invoke that script. We could paste in the same code, but doing it this way means that if we later update that code, we only have to do it once.</p>
+
+<h2 id="adding-to-the-journal">Adding to the Journal</h2>
+
+<p>The journal can be used for two things. The game can write to it automatically when something important happens, and the player can write in it too. We will do the former first. Unfortunately for this tutorial, there are countless things that could be significant and need to be recorded; you will have to decide where and when to do that. The important bit is to add this line of code (modifying the text as appropriate of course):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  list add(journal.entries, "You did something important!")
+</code></pre></div></div>
+
+<h2 id="letting-the-player-write-in-the-journal">Letting the Player Write in the Journal</h2>
+
+<p>We are going to do this three ways. Firstly, for USE JOURNAL. On the <em>Features</em> tab, tick “Use/Give”, then on the <em>Use/Give</em> tab in the “Use (on its own)” section, set it to “Run script”. Paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("Please type the text to go in the journal")
+  get input {
+    list add (journal.entries, result)
+    msg (result)
+  }
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">get input</code> command makes Quest wait for the player to type something, and that goes into a special variable called <code class="highlighter-rouge">result</code>. That text then gets added to the journal entries.</p>
+
+<h2 id="the-note-command">The NOTE command</h2>
+
+<p>Like the JOURNAL command, this is optional, but useful if the right pane is turned off. We can use the same trick here too. Create a new command, and give it the pattern “note”. The paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   do(journal, "use")
+</code></pre></div></div>
+
+<h2 id="the---command">The - command</h2>
+
+<p>We can also let the player just type in a journal entry without any command. If the input starts with a dash, the rest of the line will go into the journal.</p>
+
+<p>Again, create a command, and give it this pattern: “-#text#” (no quotes). Quest will match <code class="highlighter-rouge">#text#</code> to any text, and will match the dash exactly, so this will match any line that starts with a dash, and the rest of the line will go into a variable called <code class="highlighter-rouge">text</code>.</p>
+
+<p>Paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg("You write in your journal: " + text)
+  list add(journal.entries, text)
+</code></pre></div></div>
+<p>Probably worth pointing out to the player that she has this option.</p>
+
+<h2 id="fancy-display">Fancy display</h2>
+
+<p>Quest has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, I will say where to make the changes. What we want to display differently is the actual text written in the journal, so it is the “read” verb of the journal that needs updating. here is an example:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (ListCount(this.entries) = 0) {
+    msg ("You have nothing written in your journal.")
+  }
+  else {
+    msg ("You look at your journal:")
+    defaultfont = game.defaultfont
+    defaultforeground = game.defaultforeground
+    SetFontName ("serif")
+    SetForegroundColour("Blue")
+    foreach (s, this.entries) {
+      msg (s)
+    }
+    SetFontName (defaultfont)
+    SetForegroundColour(defaultforeground)
+  }
+</code></pre></div></div>
+<p>The first five lines are the same. Then the current values are saved to suitable variables, before the new vales are set. The entries are printed, and then the old values are set again to get the display back to normal.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

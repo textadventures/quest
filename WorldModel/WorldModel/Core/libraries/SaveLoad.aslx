@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+  
+  <!--
+  SaveLoad v1.0
+  Quest version: 5.6
+  Written by: The Pixie, 2016
+  
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Save-and-Load-Library
+-->
+
+
+  <object name="saveloaddata">
+    <saveloadtext><![CDATA[
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+      <script>
+        var secretPassphrase = 'UltraSecret Passphrase';
+       
+        function loadGame2() {
+          s = prompt("Copy-and-paste your save game code here", "");
+          if (s) {
+            decode(s);
+          }
+        }
+         
+        function decode(s) {
+          s = CryptoJS.AES.decrypt(s, secretPassphrase);
+          s = s.toString();
+          str = '';
+          for (i = 0; i < s.length; i += 2) {
+            s2 = s.charAt(i) + s.charAt(i + 1);
+            n = parseInt(s2, 16);
+            str += String.fromCharCode(n);
+          }
+          ASLEvent("LoadGame", str);
+        }
+     
+        var loadDialog = $("#load-dialog").dialog({
+          autoOpen: false,
+          width: 600,
+          height: 500,
+            buttons: {
+              Ok: function() {
+                  decode($('textarea#data').val());
+                  $(this).dialog("close");
+              }
+          }
+        });
+
+        var saveDialog = $("#save-dialog").dialog({
+          autoOpen: false,
+          width: 600,
+          height: 500,
+            buttons: {
+              Ok: function() {
+                  $(this).dialog("close");
+              },
+          }
+        });
+
+        function loadGame() {
+          loadDialog.dialog("open");
+        }
+
+        function saveGame(s) {
+          str = CryptoJS.AES.encrypt(s, secretPassphrase);
+          $('textarea#savedata').val(str);
+          saveDialog.dialog("open");
+        }
+
+      </script>
+      <div id="load-dialog">
+        <p>Please paste your save game here:</p>
+        <textarea id="data" rows="13" cols="49"></textarea>
+      </div>
+      <div id="save-dialog">
+        <p>Please copy-and-paste your save game into a text file from here:</p>
+        <textarea id="savedata" rows="13" cols="49"></textarea>
+      </div>
+    ]]></saveloadtext>
+  </object>
+ 
+ 
+  <command name="savecmd">
+    <pattern>save</pattern>
+    <script>
+      JS.eval ("saveGame('" + SaveGame() + "');")
+    </script>
+  </command>
+ 
+ 
+  <command name="loadcmd">
+    <pattern>load</pattern>
+    <script>
+      JS.eval ("loadGame();")
+    </script>
+  </command>
+ 
+ 
+  <function name="SaveLoadInit">
+    OutputTextNoBr (saveloaddata.saveloadtext)
+  </function>
+ 
+ 
+  <function name="PreSave">
+  </function>
+ 
+  <function name="PreLoad">
+  </function>
+ 
+  <function name="PostLoad">
+  </function>
+ 
+  <function name="LoadGame" parameters="s">
+    if (s = "") {
+      NoLoadGameFound
+    }
+    PreLoad
+    pos = 0
+    foreach (val, Split(s, ";")) {
+      ary = Split(StringListItem(game.saveloadatts, pos), ".")
+      obj = GetObject(StringListItem (ary, 0))
+      att = StringListItem (ary, 1)
+      type = LCase(StringListItem (ary, 2))
+      //msg("------------------")
+      //msg("ary: " + ary)
+      //msg("val: " + val)
+      if (val = "" or TypeOf(val) = "null") {
+        // Do nothing, this attribute has not been set
+        //msg("No value")
+      }
+      else if (type = "object") {
+        set (obj, att, GetObject(val))
+      }
+      else if (type = "list") {
+        set (obj, att, Split(val, "|"))
+      }
+      else if (type = "int" or type = "integer") {
+        if (IsInt(val)) {
+          set (obj, att, ToInt(val))
+        }
+        else {
+          msg("Load error: Cannot convert \"" + val + "\" to an integer for " + StringListItem(game.saveloadatts, pos))
+        }
+      }
+      else if (type = "boolean" or type = "flag") {
+        set (obj, att, LCase(val) = "true")
+      }
+      else if (type = "dictionaryoflists") {
+        set (obj, att, _DictSplit(val, 0))
+      }
+      else {
+        set (obj, att, Replace(val, "@@@semicolon@@@", ";"))
+      }
+      pos = pos + 1
+    }
+    PostLoad
+    player.parent = player.current_location
+  </function>
+  
+  
+  <function name="NoLoadGameFound">
+    msg("No save game data found.")
+    finish
+  </function>
+  
+
+  <function name="SaveGame" type="string">
+    player.current_location = player.parent
+    PreSave
+    data = NewStringList()
+    foreach (att, game.saveloadatts) {
+      ary = Split(att, ".")
+      obj = GetObject(StringListItem (ary, 0))
+      if (not ListCount(ary) = 3) {
+        msg("Save error: Badly formatted entry: " + att)
+      }
+      else if (obj = null) {
+        msg("Save error: Failed to find an object called: " + StringListItem (ary, 0))
+      }
+      else {
+        att = StringListItem (ary, 1)
+        type = LCase(StringListItem (ary, 2))
+        val = GetAttribute(obj, att)
+        if (TypeOf(val) = "null") {
+          list add (data, "")
+        }
+        else if (type = "object") {
+          list add (data, val.name)
+        }
+        else if (type = "list") {
+          list add (data, Join(val, "|"))
+        }
+        else if (type = "int" or type = "integer") {
+          list add (data, "" + val)
+        }
+        else if (type = "boolean" or type = "flag") {
+          list add (data, "" + val)
+        }
+        else if (type = "dictionaryoflists") {
+          list add (data, SuperJoin(val))
+        }
+        else if (type = "string") {
+          list add (data, Replace(val, ";", "@@@semicolon@@@"))
+        }
+        else {
+          msg("Save error: Invalid type for " + StringListItem (ary, 0) + ": " + type)
+        }
+      }
+    }
+    return (Join(data, ";"))
+  </function>  
+ 
+  <!--
+  Will join a diction or list into a string. The dictionary or list can itself contain
+  further lists and dictionaries, which in turn can contain even more.  
+  -->  
+  <function name="SuperJoin" parameters="col" type="string">
+    return (_SuperJoin(col, 0))
+  </function>
+  
+  
+  
+  
+  
+  
+  
+ 
+  <function name="_SuperJoin" parameters="col, n" type="string">
+    if (TypeOf(col) = "dictionary") {
+      sublist = NewStringList()
+      foreach (key, col) {
+        if (not TypeOf(key) = "string") {
+          msg("Error; key is a " + TypeOf(key))
+          msg(key)
+        }
+        val = DictionaryItem(col, key)
+        s2 = _SuperJoin(val, n + 1)
+        s = key + "~" + n + s2
+        list add (sublist, s)
+      }
+      return(Join(sublist, "|" + n))
+    }
+    else if (TypeOf(col) = "list") {
+      sublist = NewStringList()
+      foreach (s, col) {
+        list add(sublist, _SuperJoin(s, n + 1))
+      }
+      return(Join(sublist, "|" + n))
+    }
+    else if (TypeOf(col) = "stringlist") {
+      return(Join(col, "|" + n))
+    }
+    else {
+      return ("" + col)
+    }
+  </function>
+ 
+ 
+  <function name="_DictSplit" parameters="str, n" type="dictionary">
+    dict = NewDictionary()
+    list = Split(str, "|" + n)
+    foreach (s, list) {
+      sublist = Split(s, "~" + n)
+      key = StringListItem(sublist, 0)
+      value = StringListItem(sublist, 1) // here
+      if (Instr(value, "|" + (n+1)) = 0) {
+        // Not a collection, just use the value
+        dictionary add(dict, key, value)
+      }
+      else if (Instr(s, "~" + (n+1)) = 0) {
+        // A list
+        dictionary add(dict, key, _ListSplit(value, n + 1))
+      }
+      else {
+        // A dict
+        dictionary add(dict, key, _DictSplit(value, n + 1))
+      }
+    }
+    return(dict)
+  </function>
+
+
+  <function name="_ListSplit" parameters="str, n" type="list">
+    l = NewList()
+    list = Split(str, "|" + n)
+    foreach (s, list) {
+      if (Instr(s, "|" + (n+1)) = 0) {
+        // Not a collection, just use the value
+        list add(l, s)
+      }
+      else if (Instr(s, "~" + (n+1)) = 0) {
+        // A list
+        list add(l, _ListSplit(value, n + 1))
+      }
+      else {
+        // A dict
+        list add(l, _DictSplit(value, n + 1))
+      }
+    }
+    return(l)
+  </function>
+
+
+</library>

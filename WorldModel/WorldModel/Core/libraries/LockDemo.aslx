@@ -1,0 +1,249 @@
+<!--Saved by Quest 5.6.5783.24153-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Clothing Demo">
+    <gameid>ac0b3225-36cd-43ab-b1fc-eb4cdc4af74e</gameid>
+    <version>1.0</version>
+    <firstpublished>2016</firstpublished>
+    <autodescription />
+    <echohyperlinks type="boolean">false</echohyperlinks>
+    <appendobjectdescription />
+    <feature_limitinventory />
+    <autodescription_youcango_newline />
+    <author>The Pixie</author>
+    <feature_bonusgarments />
+    <start type="script">
+      msg ("Your race is {if player.race=dragon-descended:dragon}.")
+      msg ("You have {if player.scales=True:scales}.")
+      msg ("You have {if player.scales=True:{if player.race=dragon-descended:dragon }scales}.")
+    </start>
+    <roomenter type="script">
+    </roomenter>
+  </game>
+  <object name="second_room">
+    <inherit name="editor_room" />
+    <feature_lightdark />
+    <description>An ornate room devoid of lights.</description>
+    <alias>Lounge</alias>
+    <exit name="exit to kitchen" alias="north" to="room">
+      <inherit name="northdirection" />
+      <lightsource />
+      <lightstrength>weak</lightstrength>
+      <lockmessage>The door is closed.</lockmessage>
+      <locked />
+    </exit>
+    <object name="door2">
+      <inherit name="editor_object" />
+      <inherit name="doortype" />
+      <feature_container />
+      <keycount type="int">1</keycount>
+      <alias>Door</alias>
+      <key type="object">brass key</key>
+      <matches type="object">door</matches>
+    </object>
+    <exit alias="northwest" to="corridor">
+      <inherit name="northwestdirection" />
+    </exit>
+  </object>
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>By a gravestone. That is what it looks like!</description>
+    <alias>Kitchen</alias>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <strength type="int">0</strength>
+      <charisma type="int">0</charisma>
+      <statusattributes type="stringdictionary">
+        <item>
+          <key>strength</key>
+          <value></value>
+        </item>
+        <item>
+          <key>charisma</key>
+          <value></value>
+        </item>
+      </statusattributes>
+      <race>dragon-descended</race>
+      <scales />
+    </object>
+    <exit name="exit to lounge" alias="south" to="second_room">
+      <inherit name="southdirection" />
+      <locked />
+      <lockmessage>The door is closed.</lockmessage>
+    </exit>
+    <object name="silver key">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="chest">
+      <inherit name="editor_object" />
+      <inherit name="container_closed" />
+      <inherit name="container_lockable" />
+      <feature_container />
+      <keycount type="int">1</keycount>
+      <key type="object">silver key</key>
+    </object>
+    <object name="door">
+      <inherit name="editor_object" />
+      <inherit name="doortype" />
+      <keycount type="int">1</keycount>
+      <transparent />
+      <take type="boolean">false</take>
+      <isopen type="boolean">false</isopen>
+      <alias>Door</alias>
+      <key type="object">brass key</key>
+      <matches type="object">door2</matches>
+    </object>
+    <object name="brass key">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="gate">
+      <inherit name="editor_object" />
+      <inherit name="openable" />
+      <feature_container />
+      <unlock type="string"></unlock>
+    </object>
+    <exit alias="southwest" to="corridor">
+      <inherit name="southwestdirection" />
+    </exit>
+  </object>
+  <object name="corridor">
+    <inherit name="editor_room" />
+    <exit alias="southeast" to="second_room">
+      <inherit name="southeastdirection" />
+    </exit>
+    <exit alias="northeast" to="room">
+      <inherit name="northeastdirection" />
+    </exit>
+  </object>
+  <type name="doortype">
+    <inherit name="container_lockable" />
+    <inherit name="openable" />
+    <feature_container />
+    <openscript type="script">
+      do (this, "findexits")
+      if (this.locked) {
+        if (this.autounlock and AllKeysAvailable(this)) {
+          do (this, "unlock")
+          if (not this.isopen) {
+            OpenCloseDoors (this, true)
+          }
+        }
+        else {
+          msg (DynamicTemplate("LockedObject", this))
+        }
+      }
+      else {
+        OpenCloseDoors (this, true)
+      }
+    </openscript>
+    <closescript type="script">
+      do (this, "findexits")
+      if (this.locked) {
+        msg (DynamicTemplate("LockedObject", this))
+      }
+      else {
+        CloseObject (this)
+        this.blocks.locked = true
+        if (not this.matches = null) {
+          this.matches.isopen = false
+          this.matches.blocks.locked = true
+        }
+      }
+    </closescript>
+    <lock type="script">
+      do (this, "findexits")
+      if (this.locked) {
+        msg (DynamicTemplate("AlreadyLocked", this))
+      }
+      else if (this.isopen and not this.canlockopen) {
+        msg (DynamicTemplate("CannotLockOpen", this))
+      }
+      else {
+        if (AllKeysAvailable(this)) {
+          msg (this.lockmessage)
+          this.locked = true
+          if (not this.matches = null) {
+            this.matches.locked = true
+          }
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </lock>
+    <unlock type="script">
+      do (this, "findexits")
+      if (not this.locked) {
+        msg (DynamicTemplate("AlreadyUnlocked", this))
+      }
+      else {
+        if (AllKeysAvailable(this)) {
+          msg (this.unlockmessage)
+          this.locked = false
+          if (not this.matches = null) {
+            this.matches.locked = false
+          }
+          if (this.autoopen and not this.isopen) {
+            TryOpenClose (true, this)
+            if (not this.matches = null) {
+              this.matches.isopen = true
+            }
+          }
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </unlock>
+    <doopenboth type="script">
+      // Used internally by this door only
+      if (HasString(object, "openmsg")) {
+        msg (object.openmsg)
+      }
+      else {
+        msg (DynamicTemplate("OpenSuccessful", object))
+      }
+      OpenCloseDoors (this, true)
+    </doopenboth>
+    <docloseboth type="script">
+      // Used internally by this door only
+      if (HasString(object, "closemsg")) {
+        msg (object.closemsg)
+      }
+      else {
+        msg (DynamicTemplate("CloseSuccessful", object))
+      }
+      OpenCloseDoors (this, false)
+    </docloseboth>
+    <findexits type="script">
+      if (this.blocks = null) {
+        if (this.matches = null) {
+          error ("No \"matches\" attribute set for " + this.name)
+        }
+        exit = GetExitByLink (this.parent, this.matches.parent)
+        if (exit = null) {
+          error ("No exit found from " + this.name + " to " + this.matches.name)
+        }
+        this.blocks = GetObject(exit)
+        exit = GetExitByLink (this.matches.parent, this.parent)
+        if (exit = null) {
+          error ("No exit found to " + this.name + " from " + this.matches.name)
+        }
+        this.matches.blocks = GetObject(exit)
+        this.matches.matches = this
+      }
+    </findexits>
+  </type>
+  <function name="OpenCloseDoors" parameters="door, open">
+    door.isopen = open
+    door.blocks.locked = not open
+    if (not door.matches = null) {
+      door.matches.isopen = open
+      door.matches.blocks.locked = not open
+    }
+  </function>
+</asl>

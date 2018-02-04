@@ -787,7 +787,7 @@ Public Class Editor
 
     Private Sub ToggleCodeView()
         Dim unsavedPrompt = If(m_codeView,
-                               "Do you wish to save your changes before leaving the code view?",
+                               "Do you wish to save your changes before leaving code view?",
                                "Do you wish to save your changes before editing this game in the code view?")
 
         If Not CheckGameIsSaved(unsavedPrompt) Then Return

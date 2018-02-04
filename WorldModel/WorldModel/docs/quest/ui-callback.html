@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JavaScript to Quest with ASLEvent</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>JavaScript to Quest with ASLEvent</h1>
+      <p>We can think of the game as two distinct parts, the game world, handled by Quest, and the user interface, handled by JavaScript in the browser window (even the desktop version uses a browser). The <code class="highlighter-rouge">JS</code> object can be uses to pass information and commands from Quest to JavaScript; how do we get information to pass the other way?</p>
+
+<h2 id="callback-function">Callback function</h2>
+
+<p>The callback function is a function in your game code that will be called from JavaScript. You can call it what you want (and you might have several different ones to handle different events). However, its return type must be “None” and it must take a single parameter, which will be a string.</p>
+
+<p>For example, let us create a function called “InputboxCallback”, with a parameter, “s”. The code might look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("You are " + s + " years old.")
+</code></pre></div></div>
+
+<h2 id="aslevent-function">ASLEvent function</h2>
+
+<p>Quest has a special JavaScript function called <code class="highlighter-rouge">ASLEvent</code>, which will pass two string values from the browser/JavaScript to the game world. The first parameter has to be the name of a Quest function, the second will be a string parameter to that function.</p>
+
+<p>Here is a very simple example of some JavaScript code. A discussion of the language is way beyond the scope of this tutorial, but the first line says we are defining a function, and the second displays a text box on screen, putting the players response in a new variable called “answer”. We then check the user actually types something (i.e., <code class="highlighter-rouge">answer</code> is not empty), and if so, invoke the <code class="highlighter-rouge">ASLEvent</code> function, which in turn will call the function we created above.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  function askAge() {
+    var answer = prompt("How old are you?");
+    if (answer != null &amp;&amp; answer != "") {
+      ASLEvent("InputboxCallback", answer);
+    }
+  }
+</code></pre></div></div>
+
+<h2 id="to-test">To test…</h2>
+
+<p>If you want to see that in action, wrap the JavaScript in <code class="highlighter-rouge">script</code> tags, and put it in a file called “js.html”. It should look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &lt;script&gt;
+    function askAge() {
+      var answer = prompt("How old are you?");
+      if (answer != null &amp;&amp; answer != "") {
+        ASLEvent("InputboxCallback", answer);
+      }
+    }
+  &lt;/script&gt;
+</code></pre></div></div>
+
+<p>In the game start script add these lines:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.addText (GetFileData("js.html"))
+  JS.askAge()
+</code></pre></div></div>
+
+<p>The first line will output the content of the file, adding the JavaScript function to the game. The second line then calls your function. Start the game, you wioll be asked your age, and when you click okay, Quest will print it out.</p>
+
+<h2 id="custom-status-pane">Custom status pane</h2>
+
+<p>Using this technique, you could change the <a href="custom_panes.html">custom status pane</a> into a control panel. Go to the game object, and turn on the custom status pane on the <em>Interface</em> tab, then add this to the start script:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  html = "&lt;p&gt;&lt;a onclick=\"ASLEvent('HandleClick', 'HERE')\"&gt;HERE&lt;/a&gt;&lt;p&gt;"
+  JS.setCustomStatus (html)
+</code></pre></div></div>
+
+<p>Create a new function, HandleClick, that will print its single parameter. When you go in game, you can click “HERE” and Quest will respond. Obviously this does nothing more than the custom command pane, but potentially you could set up a sophisticated control panel with switches and flashing lights and sliders.</p>
+
+<h2 id="handling-multiple-parameters">Handling multiple parameters</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>If you have a lot of bits of data to pass from JavaScript to Quest (say the results from a character creation dialogue), you will have to collect them altogether into one long string in JavaScript before calling ASLEvent, and then in the Quest function, you will need to split them apart again. Each bit of data should be separated with a specific character, say the vertical bar,</td>
+      <td>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The JavaScript might look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  var s = name;
+  s += "|" + age;
+  s += "|" + eyeColour;
+  ASLEvent("CreatorCallback", s);
+</code></pre></div></div>
+
+<p>In Quest, you can use Split to break the string up, and then handle each section. Remember to convert to integers where necessary:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  l = Split(s, "|")
+  player.name = StringListItem(l, 0)
+  player.age = ToInt(StringListItem(l, 1))
+  player.eyecolour = StringListItem(l, 2)
+</code></pre></div></div>
+
+<p><em>NOTE:</em> There is an issue to be aware of that appears when games are played on line. It seems you can only have one callback function in operation at a time. Offline this is no problem, as they happen so fast, but online, you may find that only the last one called actually completes. This means that calling ASLEvent for each bit of data is not a reliable option.</p>
+
+<h2 id="timers">Timers</h2>
+
+<p>If you want to use split second timing, then <code class="highlighter-rouge">ASLEvent</code> is the way to go. The Quest timers work in whole second only, and when you play on-line, the exact timing can go awry. However, you can use a JavaScript timer, which will run on the players PC, rather than the Quest server, and have that fire events in Quest using ASLEvent.</p>
+
+<p>The details are beyond the scope of this article, but you can see examples <a href="http://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown">here</a> and <a href="http://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect">here</a>.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

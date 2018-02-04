@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using timers and turn scripts</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li class="active"><a href="index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using timers and turn scripts</h1>
+      <p>You can use timers to make something happens every so many seconds, whilst with a turn script you can make it happen every turn.</p>
+
+<h2 id="timers">Timers</h2>
+
+<p>In a previous section, we made a bee fly into the kitchen after the player opened a window. We’ll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.</p>
+
+<p>To do this, we will use a timer. This timer will only be activated when the player opens the window in the kitchen. When the timer is activated, every 20 seconds it will print the message “The bee buzzes past you. Pesky bee”. This message will only be printed if the player is in the kitchen.</p>
+
+<p>First, let’s set up the timer. After we have done this, we will add the script command to activate it at the right time.</p>
+
+<h3 id="setting-up-the-timer">Setting up the Timer</h3>
+
+<p>In the Windows desktop version, add the timer by right-clicking the tree, or using the Add menu. In the web version, select “Timers” from the tree and click Add.</p>
+
+<p>Enter the name “bee timer”.</p>
+
+<p>The timer editor will now be displayed. The Interval specifies how often the timer fires – in this case, we want it to fire every 20 seconds, so enter “20”. Leave the box “Start timer when the game begins” unticked.</p>
+
+<p>For the timer script, add a “print a message” command to display “The bee buzzes past you. Pesky bee.”</p>
+
+<p><img src="TimerBee1.png" alt="" title="TimerBee1.png" /></p>
+
+<h3 id="activating-the-timer">Activating the Timer</h3>
+
+<p>Go back to the “window” object and edit the script which runs when the bee enters the kitchen - this will be the “Else” script if you’ve followed the tutorial so far. Add a command after the “move object” command - from the Timers category, choose “Enable timer”. Select “bee timer” from the list.</p>
+
+<p>Launch the game, go to the kitchen and open the window. Wait for a while and verify that the message is printed every 20 seconds.</p>
+
+<p>Now go north to the lounge. You’ll see that we still get the message about the bee flying around. Woops! That bee is only in the kitchen. We’ll need to update the timer script so that it only prints the message if the player is in the kitchen.</p>
+
+<p>You’ve already seen how to do this - an “if” command can check “player is in room”. So add a check to the “bee timer” script - if the player is in the kitchen, print the message. If not, then do nothing.</p>
+
+<p><img src="TimerBee2.png" alt="" title="TimerBee2.png" /></p>
+
+<h2 id="turn-scripts">Turn scripts</h2>
+
+<p>In this section, we’ll look at running a script after each turn in the game - a <strong>turn script</strong>. We’ll store the number of turns a player has taken in an attribute called “turns” on the player object.</p>
+
+<h3 id="setting-up-the-turn-counter-as-a-status-attribute">Setting up the turn counter as a status attribute</h3>
+
+<p>We created a status attribute on the last page, this is just the same.</p>
+
+<p>For the desktop version, to set up our “turns” attribute, select the “player” object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name “turns” and make this an integer. To turn this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add “turns” to the list.</p>
+
+<p><img src="Turncounter1.png" alt="" title="Turncounter1.png" /></p>
+
+<p>For the web version, go to the <em>Stripts</em> tab of the “game” object, where we set the player score as a status attribute. Now we need to add a new attribute to the player called turn, and a new entry in the dictionary for that attribute. It’ll look like this:</p>
+
+<p><img src="Turncounter.png" alt="" title="Turncounter.png" /></p>
+
+<p>If you launch the game now, you should see the turn variable displayed on the right-hand side of the Quest window. We’ve not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let’s add this script now.</p>
+
+<h3 id="increasing-the-turn-counter-after-each-turn">Increasing the turn counter after each turn</h3>
+
+<p>A turn script can apply to a specific room, or it can apply to the entire game. To make a turn script apply for just one room, you simply need to create it in that room. If you create a turn script outside of a room, it will apply to the entire game. So, right-click the tree menu or use the Add button to create a turn script.</p>
+
+<p>On the desktop version, you can drag it to the “Objects” label at the top of the tree to move it outside of all rooms. On the web version, click the move button towards the top right.</p>
+
+<p>You can optionally specify a name for your turn script. You can use this if you want to be able to switch your turn script on and off using script commands, in a similar way to how we switched a timer on and off in the previous section. You can leave the name blank for this turn script, as this will always be running.</p>
+
+<p>Make sure the “Enabled when the game begins” box is ticked.</p>
+
+<p>We’re going to add a script command which will increase the value of the player’s “turns” attribute by 1 each time it is called.</p>
+
+<p>To do this, add the “Set a variable or attribute” command.</p>
+
+<p>In the left box, type:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> player.turns
+</code></pre></div></div>
+
+<p>Then in the box on the right, type</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> player.turns + 1
+</code></pre></div></div>
+
+<p>This will add 1 each time the script is called.</p>
+
+<p><img src="Turnscript.png" alt="" title="Turnscript.png" /></p>
+
+<p>Launch the game now and verify that whenever you type a command, the “Turns” value is automatically updated.</p>
+
+<p>Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game! The last part of the tutorial is about how to release your masterpiece.</p>
+
+<p><a href="releasing_your_game.html">Next: Releasing your game</a></p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

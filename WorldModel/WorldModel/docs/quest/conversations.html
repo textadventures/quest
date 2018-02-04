@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Conversations</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Conversations</h1>
+      <p>This page is a guide to the issues involved, and some of it is general to all interactive fiction. Conversations are a thorny subject in interactive fiction; there are several ways to present them to the player and none are accepted as “the” way to do it, or acknowledged as the best.</p>
+
+<p>In the tutorial the “broadcast” method was introduced:</p>
+
+<blockquote>
+  <p>SAY HELLO</p>
+</blockquote>
+
+<p>The player says something to everyone present. This is actually very difficult to implement well, as you need to have each character response to anything the player might type.</p>
+
+<p>The “speak to” method is directed to a specific character:</p>
+
+<blockquote>
+  <p>SPEAK TO BORIS</p>
+</blockquote>
+
+<p>This could than be handled with a stock response or by offering a list of options (Quest will accept TALK TO as a synonym of SPEAK TO).</p>
+
+<p>Finally, the player can specify both the person to talk to and the subject:</p>
+
+<blockquote>
+  <p>ASK BORIS ABOUT KEY</p>
+</blockquote>
+
+<blockquote>
+  <p>TELL MARY ABOUT LOCK</p>
+</blockquote>
+
+<p>You should also consider whether you want both sides of the conversation in the output. Which you chose is up to you, but it will look better if you are consistent, so I suggest decided now, before you start typing.</p>
+
+<blockquote>
+  <p>&gt;TALK TO BORIS</p>
+
+  <p>‘Hi,’ you say to Boris, ‘can you help me find the key to this door?’</p>
+
+  <p>‘Sure, you need to look in the bedroom.’</p>
+</blockquote>
+
+<blockquote>
+  <p>&gt;TALK TO BORIS</p>
+
+  <p>‘Hi,’ says Boris, ‘do you need to find the key to this door? You need to look in the bedroom.’</p>
+</blockquote>
+
+<h2 id="speak-to-and-stock-responses">SPEAK TO and stock responses</h2>
+
+<p>The examples above illustrate this in play.</p>
+
+<p>To set this up in Quest, select the character, go to the verbs tab, and add a new verb, “speak” (Quest will match this up to the right command as you type). Then put in the response underneath. It could look like this:</p>
+
+<p><img src="Talk1.png" alt="" title="Talk1.png" /></p>
+
+<h2 id="speak-to-and-a-menu-of-responses">SPEAK TO and a menu of responses</h2>
+
+<p>In play this might look like this:</p>
+
+<blockquote>
+  <p>&gt;TALK TO BORIS</p>
+
+  <ol>
+    <li>
+      <p>Where is key</p>
+    </li>
+    <li>
+      <p>Who is the Queen</p>
+    </li>
+    <li>
+      <p>How do I defeat the troll</p>
+    </li>
+  </ol>
+
+  <p>&gt;1</p>
+
+  <p>‘Hi,’ you say to Boris, ‘can you help me find the key to this door?’</p>
+
+  <p>‘Sure, you need to look in the bedroom.’</p>
+</blockquote>
+
+<p>Quest handles menus well, and it would actually look rather more slick than that.</p>
+
+<p>As this is again using the “TALK TO” command, setting it up is like the first option. However, the script for that “SPEAK” verb is rather more complicated.</p>
+
+<p><img src="Talk2.png" alt="" title="Talk2.png" /></p>
+
+<p>In code view, it looks like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  topics = Split ("Where is key;Who is the Queen;How do I defeat the troll", ";")
+  ShowMenu ("Talk to Boris about...", topics, true) {
+    switch (result) {
+      case ("Where is key") {
+        msg ("'You need to look in the bedroom.'")
+      }
+      case ("Who is the Queen") {
+        msg ("'Just some girl.'")
+      }
+      case ("How do I defeat the troll") {
+        msg ("'Use fire to stop it regenerating.'")
+      }
+    }
+  }
+</code></pre></div></div>
+
+<p>The first line of the script sets up the topics. They need to be a string list, and the easiest way to create one is to use the Split function. Each topic is separated by a semi-colon, with no spaces.</p>
+
+<p>A switch statement is used to decide which response will be seen. Note that the key for each case must be exactly the same as the topic you listed before. The script for each case is set up just as the script for the first option.</p>
+
+<h2 id="ask-about">ASK ABOUT</h2>
+
+<p>In play this might look like this:</p>
+
+<blockquote>
+  <p>&gt;ASK BORIS ABOUT KEY</p>
+
+  <p>‘Hi,’ you say to Boris, ‘can you help me find the key to this door?’</p>
+
+  <p>‘Sure, you need to look in the bedroom.’</p>
+</blockquote>
+
+<p>This is the most open-ended approach, though in reality that flexibility is an illusion - the player is limited to asking about only the topics you have included, he just does not know it. This is also the major downfall of this method - the player might not guess the subjects you have coded for, and just get frustrated as the character fails to respond to guess after guess. This system is probably best suited to when you have a large number of topics you will include for every character in the game, as a menu will soon get unwieldly, and thematically, it feels right for a mystery.</p>
+
+<p>Quest has a tab just for Ask/Tell, making it easy to set up each response (but you need to activate in on the Features tab of the game object).</p>
+
+<p><img src="Talk3.png" alt="" title="Talk3.png" /></p>
+
+<p>For each topic, click on add, then put in the topic name. You can put in several; try to guess what words the player will use. They should be separated by spaces, as shown above. Then you need to put in the script, just as before.</p>
+
+<p>You should also put in a script to run for unknown topics.</p>
+
+<p>The Quest Ask/About system is discussed in detail <a href="ask_about.html">here</a></p>
+
+<h2 id="varying-responses">Varying Responses</h2>
+
+<p>In all the above examples, the character will respond the same every time. That is not ideal, people are not like that, they will get annoyed if you ask the same question fifteen times, and wonder why you are asking where the key is when you have just used it to open the door.</p>
+
+<p>For all the methods above, the important part here is the lines that start “msg”. We have gone through the three ways to arrive at them, now we are concentrating on just those lines.</p>
+
+<p>If you have a counter in there, then you could have the response depend on how often the topic has been raised (but remember to set up an integer attribute for the counter). Or use a boolean to flag that the topic has been asked (the version below automatically sets the attribute for you).</p>
+
+<p>Instead of:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+    msg ("'Sure, you need to look in the bedroom.'")
+</code></pre></div></div>
+
+<p>Try:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if (not GetBoolean (philipa, "key_asked") {
+      msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+      msg ("'Sure, you need to look in the bedroom.'")
+      philipa.key_asked = true
+    }
+    else {
+      msg ("'Hi again,' you say to Philippa, 'can you help me find the key to this door?'")
+      msg ("'Have you tried looking in the bedroom?'")
+    }
+</code></pre></div></div>
+
+<p>Or it could respond to changes in the world. The code below will make Philippa respond differently if the door is unlocked, or you are carrying the key.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if (not that_door.locked) {
+      msg ("'I see you finally managed to unlock the door then,' said Philippa sarcastically.'")
+    }
+    else if (key.parent = player) {
+      msg ("'You found the key then,' said Philippa sarcastically.'")
+    }
+    else if (not GetBoolean (philippa, "key_asked")) {
+      msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+      msg ("'Sure, you need to look in the bedroom.'")
+      philippa.key_asked = true
+    }
+    else {
+      msg ("'Hi again,' you say to Philippa, 'can you help me find the key to this door?'")
+      msg ("'Have you tried looking in the bedroom yet?'")
+    }
+</code></pre></div></div>
+
+<h2 id="see-also">See also</h2>
+
+<p>For a more comprehensive discussion on conversations in interactive fiction, you might like to read <a href="http://emshort.wordpress.com/how-to-play/writing-if/my-articles/conversation/">this article</a></p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

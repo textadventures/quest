@@ -168,6 +168,24 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>	  
+      
+    <control>
+        <controltype>checkbox</controltype>
+        <caption>Use American dialect (the Oxford comma)</caption>
+        <attribute>american_dialect</attribute>
+      </control>
+    
+    <control>
+        <controltype>checkbox</controltype>
+        <caption>Enable debugging mode</caption>
+        <attribute>debugging</attribute>
+      </control>
+          
+    <control>
+        <controltype>checkbox</controltype>
+        <caption>Enable the transcript</caption>
+        <attribute>save_transcript</attribute>
+      </control>
 
     </tab>
 
@@ -997,6 +1015,16 @@
         <expand/>
       </control>
      
+    </tab>
+
+    <tab>
+      <caption>Javascript</caption>
+      <control>
+        <controltype>richtext</controltype>
+        <attribute>js_script</attribute>
+        <notextprocessor/>
+        <expand/>
+      </control>
     </tab>
 
   </editor>
