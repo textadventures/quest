@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<library>
+
+  <!--
+  This is just a way to incorporate all the different parts of the combat system.
+
+  You must also include these libraries, and they must all appear before this one in the list in your game.
+  
+  ShopLib.aslx
+  ClothingLib.aslx
+ 
+  To learn how to use, see here:
+  https://github.com/ThePix/quest/wiki/CombatLib
+ 
+  -->
+
+  <delegate name="script_returns_int" type="int" />
+  <delegate name="script_returns_boolean" type="boolean" />
+  <delegate name="script_returns_string" type="string" />
+  
+  
+  <!--
+  This file defines the templates used.
+  Standalone.
+  -->
+  <include ref="templates.xml" />
+
+  <!--
+  This file defines the elements as a set of objects, plus some functions for handling them.
+  Standalone.
+  -->
+  <include ref="Elements.xml" />
+
+
+  <!--
+  A variety of utility functions.
+  Standalone.
+  -->
+  <include ref="UtilLib.xml" />
+
+  
+  <!--
+  This file defines the item types (weapons, armour and shields).
+  Requires ClothingLib
+  -->
+  <include ref="Items.xml" />
+ 
+  
+  <!--
+  This is has all the stuff that is not elsewhere!
+  Requires Items
+  -->
+  <include ref="CombatStuff.xml" />
+
+
+  <!--
+  Commands and verbs.
+  Requires CombatStuff
+  -->
+  <include ref="Commands.xml" />
+
+  
+  <!--
+  This file defines the monster types.
+  Requires Items
+  -->
+  <include ref="Monsters.xml" />
+
+  
+  <!--
+  This file defines the magic system; various spell types, magic item types and potion types.
+  -->
+  <include ref="Magic.xml" />
+
+
+  <!--
+  This sets up the new Combat tab.
+  -->
+  <include ref="CombatTabs.xml" />
+  
+ 
+  
+  
+  
+ 
+ </library>

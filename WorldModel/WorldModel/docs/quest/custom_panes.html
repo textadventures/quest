@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Custom Command and Status Panes</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Custom Command and Status Panes</h1>
+      <p>As of Quest 5.7 you can add new panes to your game.</p>
+
+<h2 id="custom-command-pane">Custom Command Pane</h2>
+
+<p>On the <em>Interface</em> panel of the game object, make sure “Show Panes” is ticked, then tick “Show a custom command pane”. If you start your game, you should see the new pane, but it just says “Commands” and does not do anything.</p>
+
+<p>We need to set some commands. Go to the <em>Features</em> tab of the game object, and tick “Advanced scripts”, then go to the <em>Advanced scripts</em> tab of the game object, at the top is the user interface initialisation script. This is the place to add the script command that will set up the panel.</p>
+
+<p>We need to use the <code class="highlighter-rouge">JS.setCommands</code> function, which can take two parameters. The first is a string of commands to display, separated by semi-colons. The second is the colour to display it in, and is optional. Here is an example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCommands ("Look;Wait")
+</code></pre></div></div>
+
+<p>In this example, the colour is set too. Note that you can use any <a href="https://en.wikipedia.org/wiki/Web_colors">web colour</a> or hex triples.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCommands ("Look;Wait;Sit", "blue")
+</code></pre></div></div>
+
+<p>Go in game, and test it works!</p>
+
+<p>You can change the commands at any time in your game, just be using the <code class="highlighter-rouge">JS.setCommands</code> function again. If the player does sit, you might want to have a line in the SIT command like this, so now there will be a “Stand” commmand, and not “Sit”:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCommands ("Look;Wait;Stand", "blue")
+</code></pre></div></div>
+
+<p>You might want to set the commands when the player enters and leaves a specific room, if there are commands specific to that room. This works best for simple, one-word commands, however you can use any command Quest can understand, including commands you have added yourself.</p>
+
+<h2 id="custom-status-pane">Custom Status Pane</h2>
+
+<p>This requires a bit more effort on your part, and knowledge of HTML and CSS will be useful.</p>
+
+<p>On the <em>Interface</em> panel of the game object, make sure “Show Panes” is ticked, then tick “Show a custom status pane”. If you start your game, you should see the new pane, but it just says “Status” and does not do anything.</p>
+
+<p>We need to use the <code class="highlighter-rouge">JS.setCustomStatus</code> function, which can take one parameter, a string to display. Here is an example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCustomStatus ("You are fine!")
+</code></pre></div></div>
+
+<p>At this point, you may wonder why bother? The power of the custom status pane comes from using it with HTML. This allows you to format the string to show the information nicely. Here is an example that displays the player’s status in a neat table.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html = "&lt;table&gt;&lt;tr&gt;&lt;td width=\"50%\"&gt;Condition:&lt;/td&gt;&lt;td&gt;Poisoned&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Woozy&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+JS.setCustomStatus (html)
+</code></pre></div></div>
+
+<p>In your game, you would want to re-build the string whenever a attribute changes. Here is some example code that will take a string list of conditions, called “list”, and display it in a table as in the previous example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html = "&lt;table&gt;&lt;tr&gt;&lt;td width=\"50%\"&gt;Condition:&lt;/td&gt;&lt;td&gt;"
+html = html + Join(list, "&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;")
+html = html + "&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+JS.setCustomStatus (html)
+</code></pre></div></div>
+
+<h3 id="indicator-bar">Indicator bar</h3>
+
+<p>So how about a graphical representation of the player’s hits, a horizontal bar that shows the proportion of her hits she has remaining… We can do that!</p>
+
+<p><img src="indicator-bar.png" alt="" title="indicator-bar.png" /></p>
+
+<p>We are going to have two attributes here, the player’s “hitpoints” and their maximum, “maxhitpoints”. We will set up an HTML table again, but the second row will be the indicator; a <code class="highlighter-rouge">span</code> element with a <code class="highlighter-rouge">padding-right</code> attribute that will be adjusted as hits change.</p>
+
+<p>We need this to happen when the game starts and when reloaded, so this needs to go in the “inituserinterface” script. However, we only want to set the hitpoints once, so that needs to go into the “start” script.</p>
+
+<p>Here is the code for the “inituserinterface” script:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s = "&lt;table width=\"100%\"&gt;&lt;tr&gt;"
+s = s + "   &lt;td style=\"text-align:right;\" width=\"50%\"&gt;Hit points:&lt;/td&gt;"
+s = s + "   &lt;td style=\"text-align:left;\" width=\"50%\"&gt;&lt;span id=\"hits-span\"&gt;---&lt;/span&gt;&lt;/td&gt;"
+s = s + " &lt;/tr&gt;"
+s = s + " &lt;tr&gt;"
+s = s + "   &lt;td colspan=\"2\" style=\"border: thin solid;background:white;text-align:left;\"&gt;"
+s = s + "   &lt;span id=\"hits-indicator\" style=\"background-color:black;padding-right:200px;\"&gt;&lt;/span&gt;"
+s = s + "   &lt;/td&gt;"
+s = s + " &lt;/tr&gt;"
+s = s + "&lt;/table&gt;"
+
+JS.setCustomStatus (s)
+if (HasScript(player, "changedhitpoints")) {
+  do (player, "changedhitpoints")
+}
+</code></pre></div></div>
+
+<p>The first ten lines set up the HTML (each line is adding a bit more to the string, <code class="highlighter-rouge">s</code>). There are two <code class="highlighter-rouge">span</code> elements, called “hits-span” and “hits-indicator”, and these are what will get updated.</p>
+
+<p>The next line dumps the HTML in the custom status pane.</p>
+
+<p>The last three rooms update the values - but only if player.changedhitpoints has been set, i.e., when reloading.</p>
+
+<p>And then in the “start script”:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>player.changedhitpoints =&gt; {
+  JS.eval ("$('#hits-span').html('" + game.pov.hitpoints + "/" + game.pov.maxhitpoints + "');")
+  JS.eval ("$('#hits-indicator').css('padding-right', '" + (200 * game.pov.hitpoints / game.pov.maxhitpoints) + "px');")
+}
+
+player.maxhitpoints = 70
+player.hitpoints = 70
+</code></pre></div></div>
+
+<p>The first four lines here add a change script to the “hitpoints” attribute of the player. This will fire whenever the hits change (you might want to add a bit that makes the player die if they dip below zero). The “hits-span” part just changes the text, but the “hits-indicator” sets a new value for the right padding of the <code class="highlighter-rouge">span</code>, making it wider or narrower as required.</p>
+
+<p>The last two lines set the hit points and the maximum. Note that the hit points must be set last so that when they change, the custom status pane will be updated correctly.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

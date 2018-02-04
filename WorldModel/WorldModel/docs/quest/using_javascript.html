@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Javascript</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using Javascript</h1>
+      <div class="alert alert-info">
+Note: As the `InitUserInterface` can only be overriden in the desktop version, using JavaScript in the web version will be problematic..
+
+</div>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Quest’s interface is customisable with the power of HTML/CSS and Javascript. If you don’t like Quest’s standard layout, you can modify it how you like with HTML and CSS, and use Javascript as the bridge between your interface and your game.</p>
+
+<p>Quest has a special object called “JS” (for JavaScript), and you can use this to send JavaScript code to the interface. There are several built-in methods, such as:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.hideBorder()
+  JS.showBorder()
+  JS.addText("Here is some text")
+</code></pre></div></div>
+
+<h3 id="using-javascript-css-and-jquery">Using JavaScript, CSS and JQuery</h3>
+
+<p>When you have exhausted those possibilities you are delving into the murky would of CSS and JQuery (which is an extension of JavaScript, and is already in your game), via the eval method of JS. To understand how that fits together, we will look at each technology in turn.</p>
+
+<h4 id="using-css">Using CSS</h4>
+
+<p>Cascading style sheets (CSS) is the primary way for web pages to define the style, as opposed to the content; what font to use, colours, etc. An example might looks like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#gameBorder {
+  background-color: #800080;
+}
+</code></pre></div></div>
+
+<p>The first line determines what is controlled - in this case an element with the ID gameBorder (the # indicates ID rather than a class or element type). The second line defines the settings. There can be several lines, before we get to the close brace (this is the conventional way to layout CSS). For the second line, there are two parts, the name, in this case “background-color”, and the value, “#800080” (which is a dark magenta).</p>
+
+<p>In summary, then, this CSS code will set the background colour of something with the ID “gameBorder” to be dark magenta.</p>
+
+<h4 id="using-jquery">Using JQuery</h4>
+
+<p>Static web pages use CSS like that, but if you want things to change, you need JavaScript, and JQuery is a quick way to access an element in JavaScript. To do the above in JavaScript/JQuery, you would do this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  $('#gameBorder').css('background-color', '#800080');
+</code></pre></div></div>
+<p>Notice that all the same information is there, just arranged differently, according to the syntax of JavaScript/JQuery. The <code class="highlighter-rouge">$</code> at the start is a shortcut to a special JQuery function that will get our HTML, and so <code class="highlighter-rouge">$('#gameBorder')</code> will grab the thing with the ID “gameBorder” (again, the # indicates this is an ID). Once we have that we call a method (function) called “css”, and send it two parameters, the thing we want to change and the new value.</p>
+
+<h4 id="using-jquery-in-quest">Using JQuery in Quest</h4>
+
+<p>To do it is Quest, you have to send that as a string to the JS.eval function:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.eval("$('#gameBorder').css('background-color', '#800080');")
+</code></pre></div></div>
+<p>Once you have that template, you can change a shed load of setting, you just need to know what each bit (like “gameBorder”) is called, what the CSS property (like “background-color”) is called and what value (like “#800080”) is allowed.</p>
+
+<h2 id="sending-messages-from-javascript-to-the-game">Sending messages from Javascript to the game</h2>
+
+<p>What about in the other direction? How do we get something from the interface, to your game - for example, when the player clicks on a special button.</p>
+
+<p>To do this, the button must have an attribute, “onclick”, with some Javascript code, using the special function <code class="highlighter-rouge">ASLEvent</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ASLEvent("ProcessButtonClick", id);
+</code></pre></div></div>
+
+<p>This is Javascript calling a <code class="highlighter-rouge">ProcessButtonClick</code> function which should be defined in the Quest game. It passes a parameter - the id of the button clicked - to indicate which button the player clicked.</p>
+
+<p>For more on how to use JavaScript oin your game, yoyu might like to look <a href="https://github.com/ThePix/quest/wiki#ui">here</a>.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

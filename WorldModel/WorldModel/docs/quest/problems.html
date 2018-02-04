@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resolving Common Problems</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Resolving Common Problems</h1>
+      <p>Note: <em>This is a work in progress. It does not cover all errors, but is slowly getting closer to that state…</em></p>
+
+<h2 id="problems-when-starting-quest">Problems when starting Quest</h2>
+
+<p>Occasionally we hear about a situation where the desktop version of Quest will not start. It has never happened to me, which makes finding the root cause very tricky, but for whatever reason Quest has got a double entry in the list of recently played or recently edited games. You might see an error message like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>System.InvalidOperationException: An error occurred while creating the form. For more
+information, see Exception.InnerException. Error: An exception was thrown in the constructor
+call for the type 'GameBrowser.PlayBrowser' that matches the specified binding constraint. ---&gt;
+System.Windows.Markup.XamlParseException: An exception was thrown in the constructor call for
+the type 'GameBrowser.PlayBrowser' that matches the specified binding constraint. ---&gt; 
+System.ArgumentException: An item with the same key has already been added.
+</code></pre></div></div>
+
+<p>Follow these steps (thanks Jay!):</p>
+
+<ul>
+  <li>Run “regedit” (e.g. press the Windows key and then hit “R” and then type “regedit” in the box that pops up.) If it asks to be able to make changes to the system, say “yes”.</li>
+  <li>Under Computer in the tree on the left, look for HKEY_CURRENT_USER and open that folder.</li>
+  <li>Look for SOFTWARE under that and open the folder.</li>
+  <li>Search down for Quest under that and open the folder.</li>
+</ul>
+
+<p>We need to delete two keys, “Recent” and “EditorRecent” (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word “Recent” and then choose “Delete” from the popup menu. Choose yes to confirm. Do the same for “EditorRecent”. Close the Rededit program (no need to save).</p>
+
+<p>Note that when you open Quest, the “recent” lists will be empty until you begin using Quest again, but that is preferable to not being to open Quest at all!</p>
+
+<h2 id="problems-when-creating-games">Problems when creating games</h2>
+
+<p>There are all sorts of problems that can arise as you code with Quest. Computer languagers are fussy things that expect you to type to very strict rules, and Quest is no different. Some things to check:</p>
+
+<ul>
+  <li>Variables, attributes and objects are named consistently (if it is <code class="highlighter-rouge">hitpoints</code> in one place and <code class="highlighter-rouge">hit points</code> in another and <code class="highlighter-rouge">Hit points</code> in a third, it is not going to work)</li>
+  <li>Brackets and braces need to match; if you have three open brackets and only two close brackets it is not going to work</li>
+  <li>Quotes likewise need to quote marks at the start and end</li>
+  <li>If a function’s return type in “None” there should be no <code class="highlighter-rouge">return</code>; if it is not “None” then there must be</li>
+  <li>Functions must have exactly the right number of paramters in the right order</li>
+</ul>
+
+<h3 id="room-description-appears-twice">Room description appears twice</h3>
+
+<p>This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.</p>
+
+<p>The solution is to avoid moving the player on any of the built-in room scripts. In the example above, the script should be on the exit that goes to the destination, without moving the player at all.</p>
+
+<h3 id="error-when-player-moves">Error when player moves</h3>
+
+<p>Occasionally you may see this error:</p>
+
+<blockquote>
+  <p>Error running script: Error evaluating expression ‘(not GetBoolean(game.pov.parent, “visited”)) and HasScript(game.pov.parent, “beforefirstenter”)’: GetBoolean function expected object parameter but was passed ‘null’</p>
+</blockquote>
+
+<p>This happens when the player’s “parent” attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).</p>
+
+<h2 id="names-you-cannot-use">Names you cannot use</h2>
+
+<p>Sometimes Quest is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called “game” it will call it “game1”). However, there are other times it will not…</p>
+
+<h3 id="itemsrooms-called-k1-k2-etc">Items/Rooms called K1, K2, etc.</h3>
+
+<p>Quest automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anyhing in your game ‘K’ following by a number you are in danger of having a name collision!</p>
+
+<h3 id="e-and-pi">‘e’ and ‘pi’</h3>
+
+<p>You will probably never need them in a text adventure, but <code class="highlighter-rouge">e</code> and <code class="highlighter-rouge">pi</code> are both mathematical constants. Quest will happily let you assign a value to them, but will ignore the assignment.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>e = GetExitByLink (room, room2)
+msg (e)
+-&gt; 2.71828182845905
+</code></pre></div></div>
+
+<p>This only applies to local variables, you can give these names to attributes.</p>
+
+<h3 id="object-game-turnscript-command-exittype"><code class="highlighter-rouge">object</code>, <code class="highlighter-rouge">game</code>, <code class="highlighter-rouge">turnscript</code>, <code class="highlighter-rouge">command</code>, <code class="highlighter-rouge">exit</code>,<code class="highlighter-rouge">type</code></h3>
+
+<p>Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect when you save your game and then load it (whether during player or when editing). The problem is that these all have special meaning for Quest when it is loading XML files, and it will, for example, assume your “object” attribute is a real object.</p>
+
+<h3 id="attribute-names-with-spaces">Attribute names with spaces</h3>
+
+<p>You can use attribute names with spaces in them for strings, number, objects and scripts, but not for lists or dictionaries.</p>
+
+<h3 id="other-attributes">Other attributes</h3>
+
+<p>Various attributes are already used by Quest. Do not do anything with “type” or “elementtype”. Obviously “name”, “parent”, “alias”, etc. have specific meanings in Quest, and trying to use them for something else will cause problems.</p>
+
+<h2 id="understanding-runtime-error-messages">Understanding runtime error messages</h2>
+
+<p>Runtime errors occur when playing the game. Quest has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Error compiling expression 'game.myflag': RootExpressionElement: Cannot convert type 'Object' to expression result of 'Boolean'
+</code></pre></div></div>
+
+<h3 id="locating-the-error">Locating the error</h3>
+
+<p>The first part is in this format:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Error compiling expression '[whatever]':
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">[whatever]</code> is the important part, as that is the code that Quest cannot understand.</p>
+
+<p>If you are using the desktop version, copy the bit inside the single quotes (without the quotes) and go to <em>Tools - Code view</em>, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurance.</p>
+
+<p>If using the web version, it is not as easy, but you could download your game, open it in a text editor and then search for the error. You would have to then correct the on-line version, and it still may not be clear how to do that.</p>
+
+<p>Either way, it may be easier to check any scripts you have changed recently, and see if the text is there using “Code view” for each script.</p>
+
+<h3 id="correcting-the-error">Correcting the error</h3>
+
+<p>The second part of the message indicates what the error actually is.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RootExpressionElement: Cannot convert type '[something]' to expression result of 'Boolean'
+</code></pre></div></div>
+
+<p>This occurs when the text inside an <code class="highlighter-rouge">if</code> condition, does not work out to a Boolean. If <code class="highlighter-rouge">[something]</code> is “Object”, then the code has resulted in <code class="highlighter-rouge">null</code>, and may be because an attribute does not exist (or has been spelled wrongly).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ArithmeticElement: Operation 'Add' is not defined for types 'Int32' and 'Object'
+</code></pre></div></div>
+
+<p>This could be ‘Subtract’ or whatever, and the types may be different. Again “Object” indicates <code class="highlighter-rouge">null</code>, and this is telling you that you are trying to add (or whatever) a number and null. Again, this is probably because an attribute does not exist or has been misspelled.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unknown object or variable '[something]'
+</code></pre></div></div>
+
+<p>In this case, Quest has found <code class="highlighter-rouge">[something]</code> in a script, but has no idea what it is. It could be an object that you misspelled or a local variable that you have not given a value to yet.</p>
+
+<h3 id="errors-calling-functions">Errors calling functions</h3>
+
+<p>If the function name is wrong, you will get something like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Error compiling expression 'msg2("some text")': FunctionCallElement: Could find not function 'msg2(String)'
+</code></pre></div></div>
+
+<p>If you have the wrong number of arguments, you might one of these (first is for hard-coded functions):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Expected 1 parameter(s) in script 'msg("some text", "more text")'
+Error running script: Too many parameters passed to OutputText function - 2 passed, but only 1 expected
+</code></pre></div></div>
+
+<p>If you try to set a value from a function that does not return a type, you might see one of these:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Error compiling expression 'msg("some text")': FunctionCallElement: Could find not function 'msg(String)'
+Error running script: Error compiling expression 'OutputText("some text")': Value cannot be null.Parameter name: key
+</code></pre></div></div>
+
+<p>For hard-coded functions, you will get an error if you do not set a value and it has a return type, and if you send it the wrong type in the parameters:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The following errors occurred: Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
+Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
+</code></pre></div></div>
+
+<h3 id="error-modifying-the-content-of-a-list">Error modifying the content of a list</h3>
+
+<p>You might see this error when you change the display or inventory verbs of an object during a game (it is possible with other lists too):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+</code></pre></div></div>
+
+<p>Somewhere in your game you will have a line like one of these:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>list add (sword.inventoryverbs, "Equip")
+list remove (hat.displayverbs, "Flatten")
+</code></pre></div></div>
+
+<p>The problem is that the two list attributes, “inventoryverbs” and “displayverbs” are set on the object’s type, not on the object itself (if you are using the desktop version, go to the <em>Attributes</em> tab, and check its source). You cannot modify the listwhen it belongs to the type.</p>
+
+<p>There are two solutions. The easiest is to add something to the the list in the editor (bottom of the __ tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.</p>
+
+<p>Alternatively, you can gve the object a new list. The <code class="highlighter-rouge">Split</code>function offers an easy way to do that:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sword.inventoryverbs = Split("Look at;Take;Equip", ";")
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

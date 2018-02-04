@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exits</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Exits</h1>
+      <p>Exits are dead easy to set up in Quest. Go to the <em>Exits</em> tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click “Create exit”.</p>
+
+<p>Like everything else in Quest, an exit is an object, and your exit will appear in the left hand pane, under the room (you may need to expand the node to see it).</p>
+
+<p>We will start by looking at the various settings for an exit.</p>
+
+<h2 id="to">To</h2>
+
+<p>The “To” dropdown determines where the exit will take the player.</p>
+
+<p>When you create a room, you will find you cannot create an exit that goes to the room it came from. However, once the exit is created, you can change its destination to any room (or object), including the same room.</p>
+
+<h2 id="type-vs-alias">Type vs alias</h2>
+
+<p>Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is “east” and the type is “north”, then the exit will get used for EAST, E and N).</p>
+
+<p>In the desktop version you can set the alias to any value you like, so you could have “kitchen” as a direction (you could do this in the web version by setting the exit alias in the start script, but it will be a pain if you do this for all the exits in your game). Note that the exit will then appear in the list of “Places and Objects” rather than the compass. Set the type to “Non-directional exit”.</p>
+
+<h2 id="prefix-and-suffix">Prefix and Suffix</h2>
+
+<p>This is text that will get added to the direction in the list of exits for the room description. For example, if you have an exit going south, you could add the prefix “through an arched doorway to the” and when the player sees the room description, she will see:</p>
+
+<blockquote>
+  <p>You can go through an arched doorway to the south.</p>
+</blockquote>
+
+<p>Note that if you are using hypertext links, only the alias will be a link, not the prefix or suffix.</p>
+
+<p>If you are using names instead of directions, you might want to have a prefix like “to the”, so the player sees:</p>
+
+<blockquote>
+  <p>You can go to the kitchen.</p>
+</blockquote>
+
+<h2 id="name">Name</h2>
+
+<p>A name is optional for an exit (if you do not give the exit a room, Quest will when the game starts). However, if you want to change any attribute of the exit during play (say to unlock it), you will need a name to refer to it by.</p>
+
+<h2 id="locked-vs-visible-vs-scenery">Locked vs Visible vs Scenery</h2>
+
+<p>An exit that is not <strong>visible</strong> will not appear in the compass rose or room description, and cannot be used. As far as the player is concerned, it does not exit.</p>
+
+<p>Having an exit invisible is a great way of making an exit during the game. Suppose the explosion has created a new opening through the wall. Rather than create a new exit during the game, it is far easy to have the exit already created in the editor, and just set it to be visible at the explosion.</p>
+
+<p>An exit that is <strong>locked</strong> will be listed in the room description, and will be visible in the compass rose, but the player will not be able to use it (she will see the locked message instead).</p>
+
+<p>An exit flagged as <strong>scenery</strong> will not be listed in the room description, and will not be visible in the compass rose, but the player will still be able to use it.</p>
+
+<p>If you have a flight of stairs heading up to the east, the player might type UP or EAST, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.</p>
+
+<h2 id="print-message-when-used">Print message when used</h2>
+
+<p>By default, Quest does not print anything when an exit is used, and just gives the details of the new room. You can use this text field to have a message when the player heads that way.</p>
+
+<h2 id="attributes">Attributes</h2>
+
+<p>To change the state of an exit during a game, we need to change its attributes. Actually, that is what we were changing with all the setting above, but during a game you need to do that with a script.</p>
+
+<p>As mentioned before, you need to give your exit a name to be able to do this. Say we have an exit called “exit to kitchen” (lines that start with two slashes are comments by the way)…</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// lock the exit
+exit to kitchen.locked = true
+
+// unlock the exit
+exit to kitchen.locked = false
+
+// make the exit appear
+exit to kitchen.visible = true
+
+// have the exit go to the garden object
+exit to kitchen.to = garden
+</code></pre></div></div>
+
+<h2 id="exit-script">Exit script</h2>
+
+<p>You can have an exit run a script when the player uses it. Tick the “Run a script” check box to activate the script, and an area for the script will appear.</p>
+
+<p>There are any number of reasons why you might want to run a script, so we can only look at a few examples. Note that by default the player will not be moved if we have “Run a script”; if we want the player to go to the new room, we need to do that in the script.</p>
+
+<h3 id="conditional-move">Conditional move</h3>
+
+<p>A common reason to run a script is to only allow the exit to be used if a certain condition is met. Perhaps the player has to complete a quest before the portal opens, or needs to be carrying the magical amulet or has to have persuaded the guard to let her pass.</p>
+
+<p><img src="exitscript1.png" alt="Exit script 1" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (Got(talisman)) {
+  msg ("The talisman hums as you pass through the portal.")
+  MoveObject (player, room2)
+}
+else {
+  msg ("For some reason you cannot get through the portal.")
+}
+</code></pre></div></div>
+
+<p>The basic principle is that we test the condition. If the condition passes, then we print a message, and move the player (it is important to do the message first, as moving the player will cause the room description to get printed, and you want the message before that). If the condition fails, just give a message.</p>
+
+<p>This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The “locked” attribute is better for specific events, such as the player using the UNLOCK command…  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail <a href="setting_up_door.html">here</a>.</p>
+
+<h3 id="move-and">Move and…</h3>
+
+<p>You might the player to trigger some event by using the exit.</p>
+
+<p><img src="exitscript2.png" alt="Exit script 2" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firsttime {
+  msg ("As you walk down the path, the sky darkens alarmingly ")
+  SetObjectFlagOn (player, "apocolyse started")
+}
+MoveObject (player, room2)
+</code></pre></div></div>
+
+<p>In this instance, we only want it to happen once, so we use the <code class="highlighter-rouge">firsttime</code> script command. Again, we need the message to appear before the room description, so we move the player in the last line.</p>
+
+<h3 id="using-thisto">Using <code class="highlighter-rouge">this.to</code></h3>
+
+<p>Rather than using a specific destination in your scripts, it can be a good idea to use <code class="highlighter-rouge">this.to</code> instead. <code class="highlighter-rouge">this</code> is a special value in Quest that refers to the object the script is attached to (i.e., the exit), and the “to” attribute is the destination of an exit. This means you can potentially use the same script for different exits to different destinations. It also means that if you later modify your game and change the destination of an exit, your script will still work fine; it will send the player to the new destination without you having to remember to update the script. It is probably less typing too!</p>
+
+<h2 id="room-scripts">Room scripts</h2>
+
+<p>It is worth briefly mentioning room scripts. Rooms have a number of scripts that fire in different situations; before entering, after entering, when leaving, etc. Do not be tempted to move the player in any of these scripts; it will confuse Quest, and the output will confuse you.</p>
+
+<p>So what if you want to trap the player in a room with several exits?</p>
+
+<p>The best way is to set all the exits to be either locked or invisible. In this example, we will set all the exits in the current room to be locked, using a <code class="highlighter-rouge">foreach</code> command. To unlock them all again, just set the attribute to <code class="highlighter-rouge">false</code>.</p>
+
+<p><img src="exitscript3.png" alt="Exit script 3" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foreach (ext, ScopeExits ()) {
+  ext.locked = true
+}
+</code></pre></div></div>
+
+<p>Note that <code class="highlighter-rouge">ext</code> is a local variable. Do not be tempted to use <code class="highlighter-rouge">e</code> as a local variable for an exit (or anything else); this is a built-in constant and cannot be set to anything (though Quest will fail to tell you that!).</p>
+
+<h2 id="useful-functions">Useful Functions</h2>
+
+<h3 id="creating-exits-on-the-fly">Creating exits on the fly</h3>
+
+<p>Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the <a href="http://docs.textadventures.co.uk/quest/scripts/create_exit.html">create exit</a> script command for just this purpose. If you want to create an exit going the other way at the same time, we have the <a href="functions/createbiexits.html">CreateBiExits</a> function.</p>
+
+<h3 id="finding-an-exit">Finding an exit</h3>
+
+<p>To find a specific exit, use <a href="functions/getexitbylink.html">GetExitByLink</a> to get the exit from one room to another or <a href="functions/getexitbyname.html">GetExitByName</a> to get the exit from a room in a specific direction (uses the alias of the exit). These both return the name of the exit (or <code class="highlighter-rouge">null</code> if there is none). Use <code class="highlighter-rouge">GetObject</code> to get the exit itself.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exitname = GetExitByName(room2, "north")
+if (not exitname = null) {
+  ext = GetObject(exitname)
+  msg ("The exit north goes to " + ext.to.name + ".")
+}
+else {
+  msg ("No exit north")
+}
+</code></pre></div></div>
+
+<h3 id="finding-exits">Finding exits</h3>
+
+<p>There are three scope functions that will return a list of exits for a given room.</p>
+
+<ul>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeexits.html">ScopeExits</a> All visible exits for current room</li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeexitsforroom.html">ScopeExitsForRoom</a> All visible exits for the given room</li>
+  <li><a href="http://docs.textadventures.co.uk/quest/functions/corelibrary/scopeunlockedexitsforroom.html">ScopeUnlockedExitsForRoom</a> All visible and unlocked exits for the given room</li>
+</ul>
+
+<h3 id="random-exit">Random exit</h3>
+
+<p>Two functions, <a href="functions/pickoneexit.html">PickOneExit</a> and <a href="functions/pickoneunlockedexit.html">functions/pickoneunlockedexit.html</a>, will give a random exit from the given room (or <code class="highlighter-rouge">null</code> if there are none).</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Setting up a shop</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Setting up a shop</h1>
+      <p>There is a library to handle shops, but this page describes how to do it yourself, which may be useful if you are using the web version.</p>
+
+<p>There are several ways to set up a shop; this is more comprehensive, which does mean it is more effort to set up initially, but once done, it is very easy to expand.</p>
+
+<p>The approach is to have separate rooms that the player cannot get to to hold the stock. When goods are purchased from stock, a clone is made for the player. When the player sells an item, if it is something that was purchased, it will get destroyed, otherwise it will get added to stock (and if bought back will not be cloned).</p>
+
+<h2 id="setting-up-an-economy">Setting Up An Economy</h2>
+
+<p>Quest has some features built in to help us, so the first step is to turn these on. Go to the <em>Features</em> tab of the <code class="highlighter-rouge">game</code> object, and tick “Money”.</p>
+
+<p>Now you need to think about what currency you want to use. If you are using pounds sterling, you should consider if you want to track the pennies, or just the pounds (the system will only be using whole numbers, so think carefully!).</p>
+
+<p>Now go to the <em>Player</em> tab, and the “Format for money” bit. By default it is “$!”. The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are <a href="functions/string/displaymoney.html">a lot of options</a>.</p>
+
+<p>Clearly everything will need a price, so it can be bought and sold.  On the <em>Inventory</em> tab of each object, you can set the price. You must also set the starting money for the player on the <em>Player</em> tab of the player object (you will get errors if this is not set).</p>
+
+<h3 id="functions">Functions…</h3>
+
+<p>There are several functions we need to create. To create a function, select functions from the left pane, then click “Add” in the right pane.</p>
+
+<p>The <code class="highlighter-rouge">SetUpShop</code> function has no return type, and two parameters, “shop” and “stock” (in that order!). It will be called at the start to set up each shop. Paste in this code (you will need to click on the “Code view” button first):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shop.stock = stock
+foreach (o, GetDirectChildren(stock)) {
+  SetUpMerchandise (o)
+}
+</code></pre></div></div>
+
+<p>It should like like this it all went well:</p>
+
+<p><img src="SetUpShop.png" alt="" title="SetUpShop.png" /></p>
+
+<p>The <code class="highlighter-rouge">BuyingPrice</code> function has “integer” as the return type, and one parameter, “obj”. This will calculate the price merchants sell at (i.e., the player is buying), based on the object’s price, and in the example below, it is just double. Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return (obj.price * 2)
+</code></pre></div></div>
+
+<p>You might want to modify this to reflect the player’s skill at haggling, and perhaps any spell effect, but this is good for now.</p>
+
+<p>The <code class="highlighter-rouge">SellingPrice</code> function has “integer” as the return type, and one parameter, “obj”. This will calculate the price merchants buy at, based on the object’s price, and in the example below, it is not modified. Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return (obj.price)
+</code></pre></div></div>
+
+<p>You might want to modify this too later.</p>
+
+<p>The <code class="highlighter-rouge">StealObject</code> function has no return type, and one parameter, “obj”. It will be called if the player tries to take something from the shop without paying. Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg ("You can't just steal stuff!")
+</code></pre></div></div>
+
+<p>You might want to modify that to allow shop-lifting, but I am not going to condone that sort of thing!</p>
+
+<p>The <code class="highlighter-rouge">SetUpMerchandise</code> function has no return type, and one parameter, “obj”. It will be called at the start for each object in the shop, but also when an object is sold. Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not HasString(obj, "alias")) {
+  obj.alias = obj.name
+}
+obj.listalias = obj.alias + " (" + DisplayMoney(BuyingPrice(obj)) + ")"
+obj.cloneme = true
+obj.take =&gt; {
+  StealObject (this)
+}
+obj.buy =&gt; {
+  BuyObject (this)
+}
+</code></pre></div></div>
+
+<p>So this is a bit more complicated. First, it gives the object an alias if one is not set, so we can use it in the next step. Then it sets the “listalias” attribute. This is what will appear in the right pane, and it will show the alias, followed by the price in brackets.</p>
+
+<p>Then it sets “cloneme” to true. This will diffentiate items that start in stock with items the player has sold to the shop. The former get cloned when bought, and destroyed when sold.</p>
+
+<p>Then we set the “take” and “buy” attributes to scripts that call the functions we created above, so now those functions will be called when the player tries to TAKE or BUY the item.</p>
+
+<p>The <code class="highlighter-rouge">BuyObject</code> function has no return type, and one parameter, “obj”. It will be called if the player tries to buy something from the shop. Paste in this code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (obj.price &gt; game.pov.money) {
+  msg ("You can't afford that!")
+}
+else {
+  if (GetBoolean(obj, "cloneme")) {
+    obj = CloneObject(obj)
+  }
+  obj.take = true
+  obj.parent = game.pov
+  obj.buy = null
+  obj.listalias = obj.alias
+  list remove (obj.generatedverbslist, "Buy")
+  list remove (obj.displayverbs, "Buy")
+  list remove (obj.inventoryverbs, "Buy")
+  player.money = game.pov.money - BuyingPrice(obj)
+  msg ("You buy " + obj.article + " for " + DisplayMoney(BuyingPrice(obj)) + ".")
+}
+</code></pre></div></div>
+
+<p>Another complicated one. The first three lines handle the player not having enough money. If so, then the “cloneme” attribute is checked, and if true, the object is cloned, and we then work with the clone. We set the “take” attribute to true so the object can be picked up like a normal object from now on, we move it to the player, we remove the “buy” script so it cannot be bought again, we reset the “listalias” attribute so it does not show the price. The next three lines remove “Buy” from the verb lists. Then we take the money off the player, and finally say we did it.</p>
+
+<h3 id="one-command">One Command</h3>
+
+<p>The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command (go to “Commands” in the left pane, then click “Add” in the right pane), and put this as the pattern:</p>
+
+<blockquote>
+  <p>sell #object#</p>
+</blockquote>
+
+<p>For the unresolved text:</p>
+
+<blockquote>
+  <p>You want to sell what exactly?</p>
+</blockquote>
+
+<p>We can also set the scope, so that Quest looks in the player’s inventory first. This means that if the player returns to the shop to sell something back, Quest will match the clone the player is holding, rather than the original in the shop.</p>
+
+<blockquote>
+  <p>inventory</p>
+</blockquote>
+
+<p>And paste in the script:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (not HasAttribute(game.pov.parent, "stock")) {
+  msg ("You can't sell stuff here.")
+}
+else if (not object.parent = game.pov) {
+  msg ("You're not carrying " + object.article + ".")
+}
+else {
+  game.pov.money = game.pov.money + SellingPrice(object)
+  if (GetBoolean(object, "cloneme")) {
+    RemoveObject (object)
+  }
+  else {
+    object.parent = game.pov.parent.stock
+    SetUpMerchandise (object)
+  }
+  msg ("You sell " + object.article + " for " + DisplayMoney(SellingPrice(object)) + ".")
+}
+</code></pre></div></div>
+
+<p>This checks if the room is a shop, then checks if the object is being carried. If so, the player’s money is adjusted. If the object has “cloneme” set to true, then it is a clone, and it is destroyed. Otherwise,it is moved to the shop’s stock and set up as merchandise.</p>
+
+<h3 id="game-scripts">Game Scripts</h3>
+
+<p>We need to add a script on the game object. On the <em>Features</em> tab, tick to display “Advanced scripts”, then on the <em>Advanced scripts</em> tab, paste this in at the bottom (“backdrop scope script…”):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (HasAttribute(game.pov.parent, "stock")) {
+  foreach (o, GetDirectChildren(game.pov.parent.stock)) {
+    list add (items, o)
+  }
+}
+</code></pre></div></div>
+
+<p>This will add the contents of the shop’s stock room to the scope, so the player will see the items there and can interact with them.</p>
+
+<h2 id="creating-a-shop">Creating A Shop</h2>
+
+<p>So now we have put in the infrastructure, we have done the hard work. Now you can create your shop - or however many you like. For each shop you need to also create a stockroom, which is just a room with no exits going to it, that contains everything for sale in that shop.</p>
+
+<p>You need to initialise each shop. Go to the <em>Scripts</em> tab of the game object, and add a line for each shop in your game to the start script at the top. The code will look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SetUpShop (shop, stock)
+</code></pre></div></div>
+
+<p>You will need to replace “shop” with the name of the shop object in your game, and “stock” with the name of it’s stock room.</p>
+
+<h3 id="a-cake-shop">A Cake Shop…</h3>
+
+<p>As an example, we will create a shop called “Cake Shop”. Add exits so the player can get to and from it, and a description as usual. Then create a second room, “Cake Shop Stock”. This should have no exits and needs no description. However, it does need some cake objects, so put a lamington, a Victoria sponge and a fairy cake in there. Make sure each has a price set.</p>
+
+<p>Now go to the <em>Scripts</em> tab of the game object, and in the start script at the top, add this line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SetUpShop (Cake Shop, Cake Shop Stock)
+</code></pre></div></div>
+
+<p>It should look like this:</p>
+
+<p><img src="StartShop.png" alt="" title="StartShop.png" /></p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

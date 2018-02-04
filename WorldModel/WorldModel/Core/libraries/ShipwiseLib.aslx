@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+  
+  <!--
+  ShipwiseLib v1.0
+  Quest version: 5.6
+  Written by: The Pixie, 2013-2016
+  
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Library:-Port-and-starboard
+  -->
+
+  <template name="CompassN">forward</template>
+  <template name="CompassW">port</template>
+  <template name="CompassE">starboard</template>
+  <template name="CompassS">aft</template>
+  <template name="CompassNShort">f</template>
+  <template name="CompassWShort">p</template>
+  <template name="CompassEShort">s</template>
+  <template name="CompassSShort">a</template>
+  <template name="lookdir"><![CDATA[^look (?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
+
+</library>

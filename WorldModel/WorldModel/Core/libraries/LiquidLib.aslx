@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+  
+  <!--
+  LiquidLib v1.0
+  Quest version: 5.6
+  Written by: The Pixie, 2016
+  
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Liquid-Library
+  -->
+
+
+  <type name="liquidcontainer">
+    <full type="int">0</full>
+    <capacity type="int">10</capacity>
+
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Drop</value>
+      <value>Fill</value>
+      <value>Drink from</value>
+      <value>Empty</value>
+    </inventoryverbs>
+
+    <fill type="script">
+      if (this.full = this.capacity) {
+        msg ("It is already full.")
+      }
+      else if (not GetBoolean(game.pov.parent, "watersource")) {
+        msg ("Nothing to fill it with here.")
+      }
+      else {
+        if (this.full > 0 and not this.liquidtype = game.pov.parent.liquidtype) {
+          MixLiquid(this, game.pov.parent.liquidtype)
+        }
+        else {
+          msg ("You fill it with " + game.pov.parent.liquidtype + ".")
+          this.liquidtype = game.pov.parent.liquidtype
+        }
+        this.full = this.capacity
+      }
+    </fill>
+    
+    <empty type="script">
+      if (this.full = 0) {
+        msg ("It is already empty.")
+      }
+      else if (HasScript(game.pov.parent, "handle_emptying")) {
+        game.pov.parent.emptiedliquidtype = this.liquidtype
+        this.full = 0
+        do(game.pov.parent, "handle_emptying")
+      }
+      else {
+        msg ("You empty it.")
+        this.full = 0
+      }
+    </empty>
+
+    <feature_usegive />
+
+    <givesingle />
+
+    <use type="script">
+      do (this, "drinkfrom")
+    </use>
+
+    <drinkfrom type="script">
+      if (this.full = 0) {
+        msg ("It is empty.")
+      }
+      else {
+        DrinkLiquid(this.liquidtype)
+        this.full = this.full - 1
+      }
+    </drinkfrom>
+  </type>
+
+  
+  <function name="MixLiquid" type="string" parameters="container, liquidtype">
+    msg ("You fill it with " + game.pov.parent.liquidtype + ".")
+    container.liquidtype = liquidtype
+  </function>
+  
+
+  <function name="DrinkLiquid" type="string" parameters="liquidtype">
+    msg ("You take a drink from it.")
+  </function>
+  
+  
+  <verb>
+    <property>fill</property>
+    <pattern>fill</pattern>
+    <defaultexpression>"You can't fill " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>empty</property>
+    <pattern>empty</pattern>
+    <defaultexpression>"You can't empty " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>drinkfrom</property>
+    <pattern>drink from</pattern>
+    <defaultexpression>"You can't drink from " + object.article + "."</defaultexpression>
+  </verb>
+  
+  
+  
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Liquids</caption>
+
+    <!-- What is it? -->
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; liquidcontainer=Container</types>
+      <width>150</width>
+      <mustinherit>editor_object</mustinherit>
+    </control>
+    
+    
+    <control>
+      <controltype>number</controltype>
+      <caption>Maximum capacity</caption>
+      <attribute>capacity</attribute>
+      <width>100</width>
+      <mustinherit>liquidcontainer</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    
+    <control>
+      <controltype>number</controltype>
+      <caption>Starting volume</caption>
+      <attribute>full</attribute>
+      <width>100</width>
+      <mustinherit>liquidcontainer</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Name of starting liquid</caption>
+      <attribute>liquidtype</attribute>
+      <mustinherit>liquidcontainer</mustinherit>
+    </control>
+
+    <!-- Room -->
+    
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Source of liquid here</caption>
+      <attribute>watersource</attribute>
+      <mustinherit>editor_room</mustinherit>
+    </control>  
+  
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Name of liquid</caption>
+      <attribute>liquidtype</attribute>
+      <mustinherit>editor_room</mustinherit>
+    </control>
+  
+    <control>
+      <controltype>script</controltype>
+      <caption>Run this script when a container is emptied (the "emptiedliquidtype" attribute of the room will be set)</caption>
+      <attribute>handle_emptying</attribute>
+      <mustinherit>editor_room</mustinherit>
+    </control>
+  </tab>
+  
+</library>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The UI Style</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>The UI Style</h1>
+      <p>Quest offers a number of options for making your game look good, and fit the style and atmosphere you want. All these options can be accessed from various tabs on the game object.</p>
+
+<p>This is the classic Quest interface:</p>
+
+<p><img src="ui-classic.png" alt="" title="ui-classic.png" /></p>
+
+<h2 id="the-display-tab">The <em>Display</em> Tab</h2>
+
+<p>On the Display tab of the game object, there are options for changing the text, the background and (if used) hyperlinks.</p>
+
+<p>For text, you can set the colour, font and size. There are two types of fonts, the built-in (base) fonts and web fonts.</p>
+
+<p>A web font will be downloaded to the player’s computer when she starts your game, and offers a huge variety of fonts (and a link below will help you choose). When choosing a font, remember that text adventures involve a fair bit of reading, so ensure you chose a font that not only looks cool, but is easy to read too. Changing the font size can also improve readability.</p>
+
+<p>If you do use a web font, it is a good idea to also select a suitable base font, and this will be used if the web font cannot be accessed.</p>
+
+<p>The background section allows you to set the colour of the page and the margins on either side. You can also choose to have an image for the margins, and to make the page transparent. You can also have the page a blend from one colour at the top to another at the bottom. Some restraint is suggested here!</p>
+
+<p>There are further options for setting the style for hyperlinks, and also for verb text (the drop down lists that appear when an object hyperlink to clicked).</p>
+
+<p>This example shows the subtle use of a colour blend, in a game with the command line turned off.</p>
+
+<p><img src="ui-no-cursor.png" alt="" title="ui-no-cursor.png" /></p>
+
+<h2 id="the-interface-tab">The <em>Interface</em> Tab</h2>
+
+<p>The Interface tab is where you control the features of the UI. Here you can turn on or off: the map; the game panes; the command bar; the location bar; the border; custom layout; and the picture frame.</p>
+
+<p>Turning a feature on will display additional options for that feature.</p>
+
+<h3 id="map">Map</h3>
+
+<p>You can set the scale and height. You can also set the colour and width for exits.</p>
+
+<h3 id="game-panes">Game panes</h3>
+
+<p>You can selectively turn off a pane, or add a control or custom status pane. You can move the status and compass to the top (which will stop them moving up and down as the inventory changes). You can also select from a number of colour schemes.</p>
+
+<h3 id="command-bar">Command bar</h3>
+
+<p>You can use a shadow box, or no box at all (and give own cursor). Due to the limitations of CSS, if you are using a colour blend for the background, the command bar background will ignore it, so the classic box is probably best.</p>
+
+<p>This example uses a cursor with the panes turned off to give a minimalist look.</p>
+
+<p><img src="ui-cursor.png" alt="" title="ui-cursor.png" /></p>
+
+<p>You can use any HTML character as the cursor (or several), and there are some <a href="https://www.w3schools.com/charsets/ref_utf_symbols.asp">pretty funky ones</a> in UTF-8, from a pointing hand to the yin yang symbol (though they may not be available in every font in every browser, so do test thoughly).</p>
+
+<p>To get these symbols in your game, you need to use the decimal value, with <code class="highlighter-rouge">&amp;#</code> before it and <code class="highlighter-rouge">;</code> after. This will give a heart cursor, for example:</p>
+
+<blockquote>
+  <p>&amp;#9829;</p>
+</blockquote>
+
+<h3 id="location-bar">Location bar</h3>
+
+<p>You can turn off the classic location bar style, and set your own colours. You can also hide the save button (for the web player; players can still save via the SAVE command).</p>
+
+<h3 id="border">Border</h3>
+
+<p>The border surrounds the page, separating it from the margins. You can set the colour.</p>
+
+<h3 id="custom-layout">Custom layout</h3>
+
+<p>You can set the padding and the width.</p>
+
+<h3 id="picture-frame">Picture frame</h3>
+
+<p>You can set it to be clear for rooms with no image set.</p>
+
+<h2 id="the-room-descriptions-tab">The <em>Room Descriptions</em> Tab</h2>
+
+<p>With the Room Descriptions tab, you can control what happens when the player enters a room (or types LOOK). Note that “Automatically generate room descriptions” does not mean Quest will do the work for you! Rather, it means it will list the exits and the objects for you. If the box is ticked, you can control their order by modifying the numbers (set to zero if you do not what that one displayed).</p>
+
+<p>Hopefully most of the options are self-explanatory; experiment and see what works best for your game.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

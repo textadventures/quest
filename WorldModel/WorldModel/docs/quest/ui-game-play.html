@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The UI and Game-play</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>The UI and Game-play</h1>
+      <p>Quest offers a number of options for the player to interact with the game:</p>
+
+<ul>
+  <li>Command bar</li>
+  <li>Hyperlinks</li>
+  <li>Game panes on the right</li>
+</ul>
+
+<p>Before releasing your game, you should consider if all these are applicable to the game.</p>
+
+<h2 id="command-bar">Command bar</h2>
+
+<p>The command bar is the traditional input method for interactive fiction. It offers the most flexibility to the player, creating a great sense (or illusion at least) of freedom. At the same time, this puts extra demands on the creator, as she has to anticipate all reasonable commands. If an object is mentioned in a room description, many players will expect to be able to look at it. You will also need to think of all possible synonyms for objects and verbs.</p>
+
+<p>However, if you decide to turn off the command bar, you need to address the limitations of hyperlinks and the game panes. By default, they can only handle moving the player to another room and simple VERB OBJECT commands. How will the player do stings like LOOK, WAIT, PUT BALL IN SACK and ATTACK ORC WITH FIREBALL?</p>
+
+<p>The command bar can be turned off or customised on the <em>Interface</em> tab of the game object.</p>
+
+<h2 id="hyperlinks">Hyperlinks</h2>
+
+<p>Hyperlinks are the bread-and-butter of hypertext books, and Quest allows you to build games that are entirely navigated by such link, but still has a sophisticated world model (i.e., objects and rooms existing in a meaningful relationship to each other).</p>
+
+<p>Quest will create hyperlinks for you. In object lists, each object will be given a link, that will show a list of appropriate options. In the exits list, each exit again will be a hyperlink.</p>
+
+<p>In addition, you can use text processor commands to add your own link. Text processor commands are indicated by curly braces, with the sections separated by colons.</p>
+
+<blockquote>
+  <p>If you would like help, click {command:HELP:here}.</p>
+</blockquote>
+
+<blockquote>
+  <p>Perhaps you could {command:PUT BALL IN SACK:put the ball in the sack}</p>
+</blockquote>
+
+<p>The text processor command in this case is called “command”, so that is the first section. The next part I put it in capitals, but it does not have to be; this is the actual command, what the player would type into the command bar. This can be as complicated as you like - just as long as Quest can understand it. The last bit is the text the player sees.</p>
+
+<p>Hyperlinks can be turned off and customised from the <em>Display</em> tab. You can give objects their own individual hyperlink colour on their <em>Object</em> tab.</p>
+
+<h2 id="game-panes">Game panes</h2>
+
+<p>The game panes are an alternative to hyperlinks, and may be more appropriate if you do not want your text interrupted by underlining and different colours. The compass also gives a quick indication of what exits are available. As with hyperlinks, Quest will list the appropriate verbs for an object.</p>
+
+<p>The game panes can be turned off or customised on the <em>Interface</em> tab of the game object.</p>
+
+<p>An additional pane can be added for simple commands. To set the commands, you need to use the JavaScript function <code class="highlighter-rouge">setCommands</code>, though it is not as difficult as it sounds. Here is an example that will set LOOK and WAIT in the pane. Note that the commands are separated by semi-colons. The second form shows how to set the colour of the text.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCommands("Look;Wait")
+
+JS.setCommands("Look;Wait", "blue")
+</code></pre></div></div>
+<p>This could be done in the start script of the game object, but you could have the displayed commands update according to the situation. If the player goes into a room with a throne, you could have “Sit” displayed, for example, and then have “Stand” displayed instead when the player is sat on the throne.</p>
+
+<h2 id="further-consideration">Further consideration</h2>
+
+<p>It can be easier to create puzzles for a game using the command bar, as it is far less obvious to the player what to do at a certain point (in contrast to randomly linking links until something works). This can also lead to the “guess the verb” problem, where the player is trying to work out what obscure phrase the game is expecting next.</p>
+
+<p>If you choose to have the command bar in addition to either hyperlinks or the game panes, be aware that some players may assume they can complete the game using exclusively one or the other.</p>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

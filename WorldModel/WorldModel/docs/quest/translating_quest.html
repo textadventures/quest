@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Translating Quest</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Translating Quest</h1>
+      <h2 id="introduction">Introduction</h2>
+
+<p>To translate Quest, make a copy of English.aslx and rename it for your language.</p>
+
+<p>It is recommended that you include this line in your translated file:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;include ref="English.aslx"/&gt;
+</code></pre></div></div>
+
+<p>This will include the English template within yours. This means that if English.aslx is updated, your translation won’t cause errors due to missing template entries.</p>
+
+<h2 id="translating-default-text">Translating default text</h2>
+
+<p>Default text appears within <a href="elements/template.html">template</a> and <a href="elements/dynamictemplate.html">dynamictemplate</a> tags.</p>
+
+<p>You can translate “template” tags directly, as they are simply static text.</p>
+
+<p>Dynamic templates are expressions - usually these are templates that include some object attribute, for example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;dynamictemplate name="TakeSuccessful"&gt;"You pick " + object.article + " up."&lt;/dynamictemplate&gt;
+</code></pre></div></div>
+
+<p>Your translation should also be an expression, but you’re not forced to use the same attributes. If it makes more sense for your language, for example, you could use the <a href="http://docs.textadventures.co.uk/quest/attributes/gender.html">gender</a> instead of the <a href="http://docs.textadventures.co.uk/quest/attributes/article.html">article</a> to create your sentence.</p>
+
+<p>Some functions that appear within dynamic templates are defined in English.aslx - for example the <a href="functions/corelibrary/getdefaultprefix.html">GetDefaultPrefix</a> and <a href="functions/corelibrary/conjugate.html">Conjugate</a> functions. You’re free to add, edit, or remove these functions in your template - of course, as long as you define any functions that you use in your dynamic templates.</p>
+
+<p>If you want to know where a template is used, search through the Core library files. <a href="http://www.textpad.com">TextPad</a> for example has a good “Find in Files” feature.</p>
+
+<h2 id="translating-commands">Translating commands</h2>
+
+<p>Some commands are defined using a <a href="elements/verbtemplate.html">verbtemplate</a> - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don’t need - there are 4 “speakto” verbtemplates in English.aslx, but it’s fine for there to be fewer in your translation.</p>
+
+<p>Some commands are defined like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;template templatetype="command" name="put"&gt;&lt;![CDATA[^put (?&lt;object1&gt;.*) (on|in) (?&lt;object2&gt;.*)$]]&gt;&lt;/template&gt;
+</code></pre></div></div>
+
+<p>That may look a bit off-putting at first glance, but it’s fairly simple. Let’s break it down:</p>
+
+<ul>
+  <li>you don’t need to worry about the templatetype - just leave it in. This is used so the Editor knows this is a template for a command, and that it doesn’t need to display this template separately.</li>
+  <li>the CDATA is simply XML formatting. Within the template, we’re using “&lt;” and “&gt;” - so for our XML to be valid, we <em>must</em> enclose the template within a <a href="http://en.wikipedia.org/wiki/CDATA">CDATA</a> section - starting with “&lt;![CDATA[” and ending with “]]&gt;”</li>
+</ul>
+
+<p>So the only bit we need to worry about is inside the CDATA, which is this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ^put (?&lt;object1&gt;.*) (on|in) (?&lt;object2&gt;.*)$
+</code></pre></div></div>
+
+<p>This is a <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a> (“regex”) and is simply a more advanced form of command pattern. This <a href="http://regexlib.com/CheatSheet.aspx">cheat sheet</a> is a handy syntax reference.</p>
+
+<p>The “\^” at the beginning and the “$” at the end simply mean that this regex must match the <em>entire</em> player input. We don’t want to match only a small fragment of what the player typed in - we want to understand the entire command. So leave those in.</p>
+
+<p>That means you only need to worry about the bit in the middle:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> put (?&lt;object1&gt;.*) (on|in) (?&lt;object2&gt;.*)
+</code></pre></div></div>
+
+<p>The brackets are there for grouping. There are three groups in the regex above. The first one is named using the ?&lt;name&gt; syntax as “object1”. It matches “.*” which is the regex way of saying “any number of any character”. The second group matches “on” or “in”. The third group is named “object2”.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>If we didn’t have the “(on</td>
+      <td>in)” in there, this would be equivalent to this command pattern:</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> put #object1# in #object2#
+</code></pre></div></div>
+
+<table>
+  <tbody>
+    <tr>
+      <td>To translate it, you only need to worry about the “put” and “on</td>
+      <td>in” parts.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For example, in Deutsch.aslx the translation of this is:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;template templatetype="command" name="put"&gt;&lt;![CDATA[^lege (1?&lt;object&gt;.*) (auf|in) (?&lt;object2&gt;.*)$]]&gt;&lt;/template&gt;
+</code></pre></div></div>
+
+<h2 id="language-specific-object-types">Language-specific object types</h2>
+
+<p>English doesn’t have the concept of “gender” for inanimate objects, but most other languages do. To handle this, you can define “masculine” and “feminine” <a href="elements/type.html">types</a> in your language file.</p>
+
+<p>For example, in French:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;type name="masculine"&gt;
+   &lt;gender&gt;il&lt;/gender&gt;
+   &lt;article&gt;le&lt;/article&gt;
+ &lt;/type&gt;
+ 
+ &lt;type name="feminine"&gt;
+   &lt;gender&gt;elle&lt;/gender&gt;
+   &lt;article&gt;la&lt;/article&gt;
+ &lt;/type&gt;
+</code></pre></div></div>
+
+<p>Then the LanguageSpecificObjectTypes template should look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;template name="LanguageSpecificObjectTypes"&gt;masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); &lt;/template&gt;
+</code></pre></div></div>
+
+<p>The type names in the template must match the type names you define. If they don’t, you’ll see errors in the Editor.</p>
+
+<p>This will add two entries in the object “Type” dropdown, allowing the game author to choose masculine or feminine inanimate object types.</p>
+
+<p>If your language has more than two genders, you can add more types and add them to the same LanguageSpecificObjectTypes template.</p>
+
+<h2 id="adding-the-translation-to-your-game">Adding the translation to your game</h2>
+
+<p>These are standard library files so can be added as such.</p>
+
+<p>To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest will then tell you to save and re-load your game.</p>
+
+<p>More on using libraries <a href="http://docs.textadventures.co.uk/quest/tutorial/using_libraries.html">here</a>.</p>
+
+<h2 id="display-verbs">Display Verbs</h2>
+
+<p>Quest uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; “wear” plus “hat” gives “wear hat”, and Quest will understand that. That may not be the case in your language. If not, them just add that as an alternative.</p>
+
+<p>For example, in German, the verb to display to allow the player to wear something is “Anziehen”, but the full phrase for “wear hat” would be “ziehe hut an”. The solution is to add “anziehen #object#” as an alternative, even though it is bad German.</p>
+
+<h2 id="releasing-your-translation">Releasing your translation</h2>
+
+<p>When you have finished your translation - and checked it works in your game - if you’d like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation.</p>
+
+<p><a href="https://github.com/textadventures/quest/issues">Github Issue Tracker</a></p>
+
+<h2 id="keeping-the-translation-up-to-date">Keeping the translation up to date</h2>
+
+<p>Quest is continually improving, and as new features are added, new templates are added to English.aslx. This means that your language library will need to be updated to reflect new changes.</p>
+
+<p>If you include English.aslx in your language file, as recommended, you won’t see errors, but it does mean that there is a chance players will see some English text. To avoid this, you will need to keep your language file up to date to reflect changes made in English.aslx.</p>
+
+<p>The easiest way to do this is to see what changes have been made to English.aslx by <a href="https://github.com/textadventures/quest">browsing the source code</a>. Navigate to WorldModel/WorldModel/Core/Languages/English.aslx, then you can use the “Compare to other versions” list in the top right. If you select “Older versions” from the list, you’ll be able to see the changes made since a particular date.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

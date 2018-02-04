@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Items that can be switched on and off</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Items that can be switched on and off</h1>
+      <p>In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest?</p>
+
+<p>Let’s create an object called “machine”, and do just that!</p>
+
+<h2 id="switchable">Switchable</h2>
+
+<p>On the <em>Features</em> tab, of the object, tick “Switchable:…”, and then go to the <em>Switchable</em> tab. Select “Can be switched on/off”. Various options will appear that you can fill in as you see fit, or just leave blank:</p>
+
+<p><img src="switchbasic.png" alt="Basic machine" /></p>
+
+<h2 id="descriptions">Descriptions</h2>
+
+<p>Let us say the machine has a description that is text, and says “A funny looking machine.” With the values set above, when the machine is looked at, the player will see “A funny looking machine.” when it is turned off, and “A funny looking machine. It is chugging away to itself.” when it is turned on.</p>
+
+<p>Yon can sometimes get better prose using the text processor, as you are not limited to tacking a sentence on the end. Make the two “Extra object description…” fields blank, and have the description (<em>Setup</em> tab) like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A funny looking machine{if machine.switchedon: chugging away}.
+</code></pre></div></div>
+
+<p>This uses the “switchedon” flag (or Boolean attribute) of the object, which Quest will set to true when the object is switched on.</p>
+
+<p>For complex descriptions, you may have to use a script, instead of text, and in that case the two “Extra object description…” fields will be ignored. Again the text processor is a solution:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg ("A funny looking machine{if machine.switchedon: chugging away}.")
+</code></pre></div></div>
+
+<p>Or an <code class="highlighter-rouge">if</code> command. This is a trivial example, but could be much more complicated. Note that “this” is a special variable that means the object the script belongs to (it cannot be used with the text processor unfortunately).</p>
+
+<p><img src="switchlookat.png" alt="Machine description" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (this.switchedon) {
+  msg ("A funny looking machine chugging away.")
+}
+else {
+  msg ("A funny looking machine.")
+}
+</code></pre></div></div>
+
+<h2 id="it-wont-turn-on">It won’t turn on!</h2>
+
+<p>Switchables can be given a special attribute, “cannotswitchon”, that will indicate it cannot be turned on - for example, there is no power or it needs a part or needs repairing. You can set this in the third text field on the <em>Switcheable</em> tab. In your game, you will need to set this to null at some point - when the device has power, perhaps.</p>
+
+<p>In this simple example, the player just has to use a new POWER command to get power to the machine:</p>
+
+<p><img src="switchpower.png" alt="Power comnmand" /></p>
+
+<p>This is the code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>machine.cannotswitchon = null
+</code></pre></div></div>
+
+<p>If the object becomes unuseable (perhaps the power is turned off), just set the “cannotswitchon” attribute to some appropriate string. Remember to also turn the machine off, by setting its “switchedon” attribute to false.</p>
+
+<p>Note that using the “After switching on the object” script is not a good option in this case, as Quest will report that the object has switched on before running the script; the player would see, “You turn the machine on. You can’t turn it on, it has no power.”</p>
+
+<h2 id="doing-something">Doing something</h2>
+
+<p>So it is great that we can turn it on and off, but so what? How does that impact the game world? There are two approaches here. The first is to have other systems check if the object is on or off. A simple example might be checking if a generator is turned on, before allowing something else to work. This is best done by checking the “switchedon” attribute of the machine.</p>
+
+<p>Suppose we have a crystal ball that can be used only when our machine is turned on, we could set it up like this:</p>
+
+<p><img src="switchstate.png" alt="Crystal ball" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (machine.switchedon) {
+  msg ("You consult the crystal ball, and learn all sorts of stuff.")
+}
+else {
+  msg ("The crystal ball is dark for some reason.")
+}
+</code></pre></div></div>
+
+<p>Alternatively, you could have the machine change the state of another object - or as many objects as you like. Let us say we have a new switchable object, a generator. This is connected to our machine and to a light (for details on using light and dark in your game, see <a href="handling_light_and_dark.html">here</a>).</p>
+
+<p>In this case the turning-on script for the generator needs to change the state of the other objects affected; for the light, we need to set it as a light source and update the description. For the machine, we need to set the “cannotswitchon” attribute to null to allow it to be turned on.</p>
+
+<p>For the turn off script, we need to reverse all that. We have some extra house keeping to do, as the machine may be turned on, we need to ensure it is turned off.</p>
+
+<p><img src="switchgenerator.png" alt="The generator" /></p>
+
+<p>The turn on code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = true
+light.look = "A light, shining brightly."
+machine.cannotswitchon = null
+</code></pre></div></div>
+
+<p>The turn off code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = false
+light.look = "A light."
+machine.cannotswitchon = "No power!"
+machine.switchedon = false
+</code></pre></div></div>
+
+<p>You might also want to put some text in there to let the play know these things have happened. Here is an example that checks if the machine is on (before turning it off!), and if it is, gives a message:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = false
+light.look = "A light."
+machine.cannotswitchon = "No power!"
+if (machine.switchedon) {
+  msg("The machine stops when the power fails.")
+}
+machine.switchedon = false
+</code></pre></div></div>
+
+<p>So which is the best approach for you? If you want to test if the object is switched on for something happening instantly, like using the crystal ball, the first approach is best. It is probably the safest way, in the sense that the state of the object is in one place only, so your game cannot get in a state where one thing thinks it is turned on and another thinks it is turned off.</p>
+
+<p>However, the second approach is easy for on-going situations, such as the light; the light will continue to give light as long as the generator is on.</p>
+
+<h2 id="on-for-a-moment">On for a moment</h2>
+
+<p>Occasionally you might want to implement a machine that the player turns on, it does something straight away, and then is off again.</p>
+
+<p>Let us suppose our machine will clone rabbits. We need to add a script that does two things; clone the rabbit and switch the machine back off. Note that in this case we do not need a message when the player turns the machine off.</p>
+
+<p><img src="switchmoment.png" alt="Bunny machine" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CloneObjectAndMove (rabbit, player.parent)
+SwitchOff (machine)
+</code></pre></div></div>
+
+<p>Or change the attribute directly:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CloneObjectAndMove (rabbit, player.parent)
+machine.switchedon = false
+</code></pre></div></div>
+
+<p>It is also a good idea to go to the <em>Object</em> tab and delete “Switch off” from the two lists at the bottom.</p>
+
+<h2 id="better-display-verbs">Better Display Verbs</h2>
+
+<p>In fact, it will look better if the player only sees “Switch on” when the object is off, and “Switch off” when it is on.</p>
+
+<p>We will do this for the generator. The generator cannot be picked up, so we only need to worry about the display verbs. As it starts turned off, on the <em>Object</em> tab delete “Switch off” and “Take” from the list of display verbs at the bottom.</p>
+
+<p>Then go to the <em>Switchable</em> tab, and set it to change the display verbs when turned on and off:</p>
+
+<p><img src="switchdisplayverbs.png" alt="Changing display verbs" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = true
+light.look = "A light, shining brightly."
+machine.cannotswitchon = null
+this.displayverbs = Split("Look at;Switch off", ";")
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = false
+light.look = "A light."
+machine.cannotswitchon = "No power!"
+machine.switchedon = false
+this.displayverbs = Split("Look at;Switch on", ";")
+</code></pre></div></div>
+
+<h3 id="portable-objects">Portable objects…</h3>
+
+<p>If the object can be picked up, then you need to modify the inventory verbs, and include the “Take” and “Drop” verbs. Delete just “Switch off”, but from both lists at the bottom of the <em>Object</em> tab. The code on the <em>Switchable</em> tab would then look like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = true
+light.look = "A light, shining brightly."
+machine.cannotswitchon = null
+this.displayverbs = Split("Look at;Take;Switch off", ";")
+this.inventoryverbs = Split("Look at;Drop;Switch off", ";")
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = false
+light.look = "A light."
+machine.cannotswitchon = "No power!"
+machine.switchedon = false
+this.displayverbs = Split("Look at;Take;Switch on", ";")
+this.inventoryverbs = Split("Look at;Drop;Switch on", ";")
+</code></pre></div></div>
+
+<h3 id="remember">Remember…</h3>
+
+<p>If your object can be turned off another way, you will need to update the display verbs there. For the machine powered by the generator, when the generator is turned off, we would have to also update the verbs for the machine.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>light.lightsource = false
+light.look = "A light."
+machine.cannotswitchon = "No power!"
+machine.switchedon = false
+machine.displayverbs = Split("Look at;Switch on", ";")
+this.displayverbs = Split("Look at;Switch on", ";")
+</code></pre></div></div>
+
+<h2 id="testing">Testing</h2>
+
+<p>It is vital that you test your switchable objects, as there is potential for weird bugs.</p>
+
+<p>What happens if the player switches it on three times in a row, or off three times in a row or on and off three times in a row. Do display verbs and descriptions change as they should. What happens if the player turns things on out of the expected sequence?</p>
+
+<p>Note that you can move the player object to the same room as the switchable object whilst you test. When you are sure it works as expected, move the player object back to its normal place.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

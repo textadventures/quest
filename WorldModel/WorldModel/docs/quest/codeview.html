@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tips and Tricks for Editing in Full Code View</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Tips and Tricks for Editing in Full Code View</h1>
+      <p><em>NOTE:</em> You can only access full code view in the desktop version.</p>
+
+<p>It is not difficult to make changes in full code view that will cause Quest to be unable to load your game, so use with caution. It is a good idea to back up your game to another location first, just in case something goes wrong.</p>
+
+<p>You can create objects, functions, etc. in full code view, but it is far easier to let Quest do that for you.</p>
+
+<p>So why use code view at all? One good reason is to find errors and typos. Whilst playing your game, if QWuest throws an error, it will often tell you the code that caused the error. Go into code view, press [Ctrl]-F, and paste the offending code into the search box (bear in mind that the text could be in multiple places in your code).</p>
+
+<p>Another reason to use full code view is for a library file, as the Quest editor will not allow you to edit library files.</p>
+
+<h2 id="moving-copying-and-deleting-elements">Moving, copying and deleting elements</h2>
+
+<p>XML is very fussy, and you will get an error if end tags are missing or in the wrong order. To ensure that never happens, collapse an element before manipulating it. Look down the left side; you will see  some lines have a - in a box. Click the box, and the entire XML element will be collapsed into one line (and the - becomes +). Now you can copy or delete that line, confident that you have the entire XML element.</p>
+
+<h2 id="errors-in-xml">Errors in XML</h2>
+
+<p>Collapsing elements is also a great way to find XML errors. If you can collapse the <code class="highlighter-rouge">asl</code> element at the top (or <code class="highlighter-rouge">library</code> element for a library), then your XML is formatted corrected. If not, go through it and collapse all the elements that you can. The error is somewhere in whatever is left and cannot be collapsed. When you correct an error, you should be able to collapse that bit.</p>
+
+<h2 id="use-notepad">Use Notepad++</h2>
+
+<p>For more advanced use, and for editing libraries, I would recommend using Notepad++.</p>
+
+<p>Notepad++ can be downloaded for free from here:
+https://notepad-plus-plus.org/</p>
+
+<p>When you open a Quest game or library for the first time, go to the <em>Language</em> menu, and select <em>XML</em>. Your game will now be displayed in pretty colours. This is not trivial, it does help to see what is XML code and what is actual text. You will also be able to collapse XML elements as described above.</p>
+
+<h3 id="find-and-replace">Find and replace</h3>
+
+<p>Notepad++ has a very sophisticated find and replace system. For one thing you can search backwards (useful if you are searching for a particular occurrence of something that appears numerous times and over-shoot!).</p>
+
+<p>If you are using libraries, the “Find in Files” option is excellent, as you can search all the files in the game folder in one go.</p>
+
+<p>It also supports Regex matching, which is very powerful in combination with replace. As an example, suppose you have a couple of dozen objects, where the <code class="highlighter-rouge">look</code> attribute is a script that prints a description, and then gives some stats for it. A better way would be to have a type, and give that the <code class="highlighter-rouge">look</code> script, and have that print a new attribute, and then give the stats. You could use a Regex find and replace to convert all those <code class="highlighter-rouge">look</code> script attributes to <code class="highlighter-rouge">desc</code> string attributes, extracting from them the description, but not the stats. It may not be something you do often, but when you do use it, it can save a lot of tedious work.</p>
+
+<h3 id="spell-checking">Spell checking</h3>
+
+<p>Notepad++ has a spell-checker plugin, DSpellCheck, though it needs to be added to the basic install.</p>
+
+<h3 id="comparing-files">Comparing Files</h3>
+
+<p>Occasionally you may find you have edited an old version of a file, and you end up with two versions, both have bits you want that is missing from the other. Notepadd++ has a Compare plugin that will show you the two files side by side and will highlight the differences between the two.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

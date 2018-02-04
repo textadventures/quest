@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+  
+  <!--
+  ShopLib v1.3
+  Quest version: 5.7
+  Written by: The Pixie, 2011-2017
+  
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Shop-Library
+  -->
+
+
+
+  <dynamictemplate name="NotForSale">"Sorry " + GetDisplayName(object) + " is not for sale."</dynamictemplate>
+  <dynamictemplate name="CannotAfford">"You look longingly at " + GetDisplayName(object) + ", but you cannot afford it."</dynamictemplate>
+  <dynamictemplate name="BuySuccessful">"You buy " + GetDisplayName(object) + " for " + DisplayMoney(BuyingPrice(object)) + "."</dynamictemplate>
+  <dynamictemplate name="SellSuccessful">"You sell " + GetDisplayName(object) + " for " + DisplayMoney(SellingPrice(object)) + "."</dynamictemplate>
+  <dynamictemplate name="NotAShop">"Where do you think you are, a shop or something?"</dynamictemplate>
+  <dynamictemplate name="BuyOnly">"You cannot sell things here - only buy."</dynamictemplate>
+  <dynamictemplate name="DoNotHaveToSell">"You do not have " + GetDisplayName (object) + "."</dynamictemplate>
+  <dynamictemplate name="ShopMenuHeader">"Item to purchase (have " + DisplayMoney(game.pov.money) + ")"</dynamictemplate>
+  <dynamictemplate name="ChangeMind">"You think about making a purchase, but decide not to."</dynamictemplate>
+
+
+  <command name="buystuff">
+    <pattern>buy #object#;purchase #object#</pattern>
+    <scope>shopstock</scope>
+    <script><![CDATA[
+      if (_PreBuy()) {
+        if (not object.parent = game.pov.parent.shopstock) {
+          msg (DynamicTemplate("NotForSale", object))
+        }
+        else {
+          DoBuy(object)
+        }
+      }
+    ]]></script>
+  </command>
+  
+  <command name="buyfrommenu">
+    <pattern type="string">^buy$|^purchase$</pattern>
+    <script>
+      if (_PreBuy()) {
+        sl = NewStringDictionary ()
+        foreach (obj, GetDirectChildren(game.pov.parent.shopstock)) {
+          dictionary add (sl, obj.name, CapFirst(GetDisplayAlias (obj)) + " (" + DisplayMoney(BuyingPrice(obj)) + ")")
+        }
+        if (GetBoolean(game, "addnothingtoshoplist")) {
+          dictionary add(sl, "Nothing", "Nothing")
+        }
+        ShowMenu (DynamicTemplate("ShopMenuHeader", game), sl, not GetBoolean(game, "addnothingtoshoplist")) {
+          if (result = "Nothing") {
+            P(DynamicTemplate("ChangeMind", game.pov.parent))
+          }
+          else if (not result = null) {
+            obj = GetObject (result)
+            DoBuy (obj)
+          }
+        } 
+      }
+    </script>
+  </command>
+
+  <command name="sellstuff">
+    <pattern>sell #object#;flog #object#</pattern>
+    <script>
+      if (not object.parent = game.pov) {
+        msg (DynamicTemplate("DoNotHaveToSell", object))
+      }
+      else if (not HasObject(game.pov.parent, "shopstock")) {
+        msg (DynamicTemplate("NotAShop", game.pov))
+      }
+      else if (GetBoolean(game.pov.parent, "buyonly")) {
+        msg (DynamicTemplate("BuyOnly", game.pov))
+      }
+      else {
+        value = SellingPrice(object)
+        game.pov.money = game.pov.money + value
+        msg (DynamicTemplate("SellSuccessful", object))
+        if (GetBoolean (object, "destroyonsale")) {
+          destroy (object.name)
+        }
+        if (GetBoolean (object, "cloneonpurchase") and not HasBoolean (object, "destroyonsale")) {
+          destroy (object.name)
+        }
+        else {
+          object.parent = game.pov.parent.shopstock
+        }
+      }
+    </script>
+    <unresolved>You want to sell what?</unresolved>
+  </command>
+  
+  <command name="selljunk">
+    <pattern>sell junk;flog junk;sell crap;flog crap</pattern>
+    <script>
+      if (not HasObject(game.pov.parent, "shopstock")) {
+        msg (DynamicTemplate("NotAShop", game.pov))
+      }
+      else if (GetBoolean(game.pov.parent, "buyonly")) {
+        msg (DynamicTemplate("BuyOnly", game.pov))
+      }
+      else {
+        foreach (object, GetDirectChildren(game.pov)) {
+          if (GetBoolean (object, "destroyonsale")) {
+            if (HasInt(object, "price")) {
+              value = SellingPrice(object)
+              game.pov.money = game.pov.money + value
+              P (DynamicTemplate("SellSuccessful", obj))
+              object.parent = null
+            }
+          }
+        }
+      }
+    </script>
+    <unresolved>You want to sell what?</unresolved>
+  </command>
+  
+  
+  <function name="ShopInventory" type="string">
+    sl = NewStringList ()
+    foreach (obj, GetDirectChildren(game.pov.parent.shopstock)) {
+      list add (sl, GetDisplayName (obj) + " (" + DisplayMoney(BuyingPrice(obj)) + ")")
+    }
+    return (Join (sl, ", "))
+  </function>
+
+
+  <function name="_PreBuy" type="boolean">
+    if (not HasObject(game.pov.parent, "shopstock")) {
+      msg (DynamicTemplate("NotAShop", game.pov))
+      return (false)
+    }
+    if (HasInt(game.pov, "maxobjects")) {
+      if (game.pov.maxobjects > 0) {
+        children = GetDirectChildren(game.pov)
+        if (ListCount(children) >= game.pov.maxobjects) {
+          if (HasString(game.pov, "containermaxobjects")) {
+            message = prefix + game.pov.containermaxobjects
+          }
+          else {
+            message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+          }
+          return (false)
+        }
+      }
+    }
+    return (true)
+  </function>
+
+
+  <function name="DoBuy" parameters="obj">
+      if (not HasInt (obj, "price")) {
+        msg (DynamicTemplate("NotForSale", obj))
+      }
+      else {
+        buyingprice = BuyingPrice(obj)
+        if (buyingprice > game.pov.money) {
+          msg (DynamicTemplate("CannotAfford", obj))
+        }
+        else {
+          if (GetBoolean(obj, "cloneonpurchase")) {
+            CloneObjectAndMove(obj, game.pov)
+          }
+          else {
+            obj.parent = game.pov
+          }
+          game.pov.money = game.pov.money - buyingprice
+          P (DynamicTemplate("BuySuccessful", obj))
+        }
+      }
+  </function>
+
+
+
+
+  
+  
+  
+  
+
+  <!--
+  Sets the mark up for buying goods across the world to be their price attribute.
+  -->
+  <function name="BuyingPrice" parameters="obj" type="int"><![CDATA[
+    return (obj.price)
+  ]]></function>
+
+  <!--
+  Sets the mark up for selling goods across the world to be their price attribute.
+  -->
+  <function name="SellingPrice" parameters="obj" type="int"><![CDATA[
+    return (obj.price)
+  ]]></function>
+
+
+</library>

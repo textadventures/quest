@@ -1,0 +1,28 @@
+<library>
+  <function name="SetInventory2Label" parameters="label">
+    JS.eval("$('#Inventory2Label a').html('" + label + "');")
+  </function>
+  <function name="SetInventory2" parameters="objects">
+    <![CDATA[
+    // Build the JSON string for these.
+    s = ""
+    count = 1
+    foreach (o, objects) {
+      verbs = ""
+      foreach(verb, o.inventoryverbs) {
+        if (verbs <> "") {
+          verbs = verbs + ","
+        }
+        verbs = verbs + "\"" + verb + "\""
+      }
+      if (s <> "") {
+        s = s + ", "
+      }
+      s = s + "\"k" + count + "\": {\"Text\":\"" + GetDisplayAlias(o) + "\",\"Verbs\":[" + verbs + "],\"ElementId\":\"" + o.name + "\",\"ElementName\":\"" + GetDisplayAlias(o) + "\"}"
+      count = count + 1
+    }
+    s = "{" + s + "}"
+    //msg(s)
+    JS.updateInventory2("Inventory2", s)
+    ]]></function>
+</library>

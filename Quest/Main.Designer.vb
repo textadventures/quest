@@ -91,7 +91,7 @@ Partial Class Main
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.Name = "Main"
-        Me.Text = "Quest"
+        Me.Text = "Quest (KVMod)"
         Me.ResumeLayout(False)
 
     End Sub

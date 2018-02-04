@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using "doubles"</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using "doubles"</h1>
+      <p>Doubles are an alternative number system to integers; what is the difference?</p>
+
+<h2 id="integers">Integers</h2>
+
+<p>Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest, an integer can go from -2147483647 to 2147483647 - plenty big enough for most purposes.</p>
+
+<h2 id="non-integers">Non-Integers</h2>
+
+<p>In mathematics, numbers that are expressed as a fraction or decimal are called “rational” numbers (or “real” number; rational numbers are in fact a subset of real numbers). In computing, these are called floating point number because they have a decimal point that can be anywhere in the number. While rational (and  real) numbers can range from minus infinity to plus infinity, floating point numbers are limited because of the space in a computer. They are also limited in terms of their accuracy (how many digits you can store).</p>
+
+<p>More modern computers (like since the eighties or something) therefore offer a second option, a floating point number that uses double the space in the computer, and so can be considerably more accurate.</p>
+
+<p>This, then, is what is known as a “double”.</p>
+
+<h2 id="why-not-to-use-doubles">Why not to use doubles</h2>
+
+<p>The problem with doubles is that they are approximate. Usually they are good enough, but occasionally you might see something like 6.12303176911189E-17 rather than zero. That is very close, and for calculations good enough, but it does not <em>look</em> right.</p>
+
+<p>Use integers if you possibly can.</p>
+
+<h2 id="what-about-money-etc">What about money, etc.?</h2>
+
+<p>You might wonder about how you would handle money, say to represent £2.99, in Quest. Use integers!</p>
+
+<p>Use integers to count the pennies, rather than doubles to count the pounds. You only need to see the pounds value when it is printed, and Quest has the <code class="highlighter-rouge">DisplayMoney</code> function to handle that.</p>
+
+<p>For other quantities, you can do similar. If you want to track temperature to the nearest 0.1 of a degree, store the number in tenths of a degree, and output it in degrees (perhaps with the <code class="highlighter-rouge">DisplayNumber</code> function).</p>
+
+<h2 id="when-to-use-doubles">When to use doubles…</h2>
+
+<p>I have been messing with Quest for over 6 years and besides experimenting for tutorials like this have never had to use anything other than integers. The only time I have seen it come up on the forum was for someone trying to track the progress of a ship across the ocean (or spaceship across space maybe), where the player specifies an angle and distance. For complex trigonmetric calculations, you are into the realm of doubles.</p>
+
+<h2 id="trigonometry">Trigonometry</h2>
+
+<p>Quest supports all the usual trigonometric functions - and the obscure ones too - and others functions as well.</p>
+
+<ul>
+  <li>Acos</li>
+  <li>Asin</li>
+  <li>Atan</li>
+  <li>Cos</li>
+  <li>Cosh</li>
+  <li>Sin</li>
+  <li>Sinh</li>
+  <li>Tan</li>
+  <li>Tanh</li>
+</ul>
+
+<p>Note that the trigonometric functions all use radians rather than degrees. If you want to work in degrees, you will need to make your own functions. For example, you could add a function called <code class="highlighter-rouge">Sine</code>, returning a double and taking a single parameter, “angle”, and have it convert the angle to radians before calling the built-in function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return (Sin(angle * pi / 180))
+</code></pre></div></div>
+
+<h2 id="other-functions-and-constants">Other Functions and Constants</h2>
+
+<p>The constants <code class="highlighter-rouge">e</code> and <code class="highlighter-rouge">pi</code> are built-in.</p>
+
+<p>Quest also has these other functions.</p>
+
+<ul>
+  <li>Abs</li>
+  <li>Exp</li>
+  <li>Log</li>
+  <li>Log10</li>
+  <li>Sqrt</li>
+</ul>
+
+<h2 id="notes">Notes…</h2>
+
+<p>If you do a calculation that mixes integers and doubles, Quest will convert the integers to doubles to do the maths, and the result will be a double.</p>
+
+<p>Quest offers four functions that will round your double to an integer.</p>
+
+<ul>
+  <li>Ceiling</li>
+  <li>Floor</li>
+  <li>Round</li>
+  <li>Truncate</li>
+</ul>
+
+<p>To display a double to, say, three decimal places, multiple it by 1000, then round it, then divide by 1000.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg("The objective is " + (Round(distance * 1000)/1000) + " km away.")
+</code></pre></div></div>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

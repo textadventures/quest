@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asking a question</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Asking a question</h1>
+      <p>Often in a text adventure you want the game to ask an open-ended question of the player - the answer to a riddle, perhaps. The <code class="highlighter-rouge">get input</code> script command exists to handle just that. Here is an example script:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
+  get input {
+    if (result = "man") {
+      msg ("'Is it a man?' you ask.")
+      msg ("'How come everyone knows the answer?'")
+      msg ("'We have this thing called the internet nowadays...'")
+    }
+    else {
+      msg ("'Is it \"" + result + "\"?' you ask.")
+      msg ("'No!'")
+    }
+  }
+</code></pre></div></div>
+<p>The first line just asks the riddle. Then we see the <code class="highlighter-rouge">get input</code> command. The block after that gets run only once the player has typed a response. A magic variable called <code class="highlighter-rouge">result</code> has the text the player typed, so we just need to check it is the correct answer and react accordingly.</p>
+
+<p>This will work, but has a couple of issues that we want to resolve.</p>
+
+<h2 id="testing-input">Testing Input</h2>
+
+<p>The first problem is that the player has to type the exact string “man”. What if he types “Man” or “a man”? We might also like to handle “woman” and “human” so the riddle is more politically correct.</p>
+
+<p>To do this, replace the third line with this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (IsRegexMatch  ("man", LCase (result))) {
+</code></pre></div></div>
+
+<p>The LCase function will convert the player’s text to all lower case, so “Man” will be handled as “man”. This text will then be matched against a Regex (a pattern) rather than a specific string. As long as the player has “man” somewhere in the answer, the pattern will match.</p>
+
+<p>In this case, that will match human and woman too, which is great. Usually multiple answers are not so convenient, but you can do that too - just put them inside brackets and separate each with a vertical bar.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (IsRegexMatch  ("(man|lady)", LCase (result))) {
+</code></pre></div></div>
+
+<p>In fact, this will match anything with “man” in the word, so would also match “shaman”. We could improve it by using <code class="highlighter-rouge">\b</code> to match against the word boundary, and then include all the options we will allow (note that you have to “escape” backslashes, so we use two here, <code class="highlighter-rouge">\\b</code>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (IsRegexMatch  ("\\b(man|lady|woman|human|person)\\b", LCase (result))) {
+</code></pre></div></div>
+
+<p>We could optionally match “a” (the <code class="highlighter-rouge">?</code> indicates it is optional), and also match the start and end of the string with <code class="highlighter-rouge">^</code> and <code class="highlighter-rouge">$</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
+</code></pre></div></div>
+
+<p>There is a section on Regex in the <a href="pattern_matching.html">pattern matching</a> page.</p>
+
+<h2 id="changing-the-prompt">Changing the Prompt</h2>
+
+<p>This is worthwhile doing as it makes it clear to the player that he or she should not be typing a command. To get this to work, you need to use some JavaScript!</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
+</code></pre></div></div>
+<p>It might be worth also turning off the panes on the right, to stop the player messing with them when she should be answering the question:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  request (Hide, "Panes")
+</code></pre></div></div>
+<p>Remember to set them back to normal after.</p>
+
+<h2 id="altogether-now">Altogether Now…</h2>
+
+<p>Here is the full the script, doing all we have discussed:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
+  JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
+  request (Hide, "Panes")
+  get input {
+    if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
+      msg ("'Is it a man?' you ask.")
+      msg ("'How come everyone knows the answer?'")
+      msg ("'We have this thing called the internet nowadays...'")
+    }
+    else {
+      msg ("'Is it \"" + result + "\"?' you ask.")
+      msg ("'No!'")
+    }
+    JS.eval("$('#txtCommand').attr('placeholder', 'Type here...');")
+    request (Show, "Panes")
+  }
+</code></pre></div></div>
+
+<h2 id="multiple-questions">Multiple questions</h2>
+
+<p>Occasionally you might want to ask several questions in a row. There is an issue here because of the way scripts run. Consider this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> msg("What is your name?")
+ get input {
+   player.name = result
+ }
+ msg("What is your age?")
+ get input {
+   player.age = result
+ }
+</code></pre></div></div>
+<p>If you run that code, you will get this message:</p>
+
+<blockquote>
+  <p>Error running script: Only one ‘get input’ can be in progress at a time</p>
+</blockquote>
+
+<p>The problem is that <code class="highlighter-rouge">get input</code> does not pause the script. The first one fires, and then, even though the first is still waiting, the script continues immediately to the second <code class="highlighter-rouge">msg</code>, and then the second <code class="highlighter-rouge">get input</code>, which causes the error.</p>
+
+<p>The solution is to <em>nest</em> the second inside the first. You will probably then want to move the player to the start of the game inside the second one.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msg ("What is your name?")
+get input {
+  player.name = result
+  msg ("What is your age?")
+  get input {
+    player.age = result
+    MoveObject (player, room)
+  }
+}
+</code></pre></div></div>
+
+<h2 id="dozens-of-questions">Dozens of questions</h2>
+
+<p>For a complex RPG-style game you might have lots of questions to create the character. There are ways to do that using JavaScript and dialogue panels, but they are not straightforward. However, you can use recursion. Which is also not straightforward, but is not <em>so</em> bad.</p>
+
+<p>The objective here is to ask a series of questions, which we will say is in a string list, game.questions, and put the answers in a second list, game.answers. Recursion is when a function calls itself; what will happen is the function will do <code class="highlighter-rouge">get input</code>, and then inside the <code class="highlighter-rouge">get input</code> we will call the function to ask the next question.</p>
+
+<p>It is vitally important that a recursive function has a way of stopping, otherwise it will be trapped in an infinite loop. We will remove the question from the list after asking it, and will terminate when the list is empty.</p>
+
+<p>Here is the code for the function, which is called <code class="highlighter-rouge">AskAQuestion</code> (no parameters or return type):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (ListCount(game.questions) &gt; 0) {
+  s = StringListItem(game.questions, 0)
+  list remove (game.questions, s)
+  msg (s)
+  get input {
+    list add (game.answers, result)
+    msg ("&gt;" + result)
+    msg ("Thanks")
+    AskAQuestion
+  }
+}
+else {
+  msg (" ")
+  msg ("Name: " + StringListItem(game.answers, 0))
+  msg ("Age: " + StringListItem(game.answers, 1))
+  msg ("Favourite colour: " + StringListItem(game.answers, 2))
+  msg (" ")
+}
+</code></pre></div></div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

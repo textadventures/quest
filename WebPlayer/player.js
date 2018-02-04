@@ -7,6 +7,7 @@ var canSendCommand = true;
 var apiRoot = "http://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
+var questKvMod = true;
 
 function pageLoad() {
     // triggered by ASP.NET every page load, including from the AJAX UpdatePanel
@@ -173,6 +174,19 @@ function ASLEvent(event, parameter) {
     // even though we use "return false" to suppress submission of the form with the Enter key.
     window.setTimeout(function () {
         $("#fldUIMsg").val("event " + event + ";" + parameter);
+        $("#cmdSubmit").click();
+    }, 100);
+    return true;
+}
+
+function ASLAttribute(event, parameter) {
+    if (!canSendCommand) return false;
+    canSendCommand = false;
+    // using setTimeout here to work around a double-submission race condition which seems to only affect Firefox,
+    // even though we use "return false" to suppress submission of the form with the Enter key.
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("attr " + event + ";" + parameter);
+        //This might still run the turnscripts!!! Warning from KV
         $("#cmdSubmit").click();
     }, 100);
     return true;

@@ -526,4 +526,47 @@
     return (l)
   </function>
 
+  <function name="DbgLog" parameters="txt">
+    if(HasAttribute(game,"debugging")){
+      if(game.debugging){
+        Log("DEBUGGING:  "+txt)
+      }
+    }
+  </function>
+
+  <function name="DbgMsg" parameters="txt">
+    <![CDATA[
+    if(HasAttribute(game,"debugging")){
+      if(game.debugging){
+        msg("<br/><p style='color:blue;font-weight:bold;'>DEBUGGING:  "+txt+"</p><br/>")
+      }
+    }
+  ]]>
+  </function>
+
+  <function name="RunGameJs"><![CDATA[
+    if(HasAttribute(game,"js_script")){
+      regEx = "//"
+      js = Split(SafeXML(game.js_script),"&lt;br/&gt;")
+      notes = NewStringList()
+      foreach (line, js) {
+        if (StartsWith(line,"//")) {
+          list add (notes, line)
+        }
+      }
+      js = ListExclude(js,notes)
+      finaljs = NewStringList()
+      foreach (line, js) {
+        code = line
+        if (IsRegExMatch(regEx,line)) {
+          list = Split(line,"//")
+          code = list[0]
+        }
+        list add (finaljs, code)
+      }
+      js = Join(finaljs,"")
+      JS.eval (js)
+    }
+  ]]></function>
+
 </library>

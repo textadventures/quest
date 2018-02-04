@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quest 5 - Documentation</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Quest 5 - Documentation</h1>
+      <p>Quest 5 is free, <a href="open_source.html">open source</a> software for creating text adventure games. It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest currently has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Romanian, Esperanto, Russian and Icelandic.</p>
+
+<p>You can <a href="http://textadventures.co.uk/create">use Quest in your web browser</a>, or <a href="http://textadventures.co.uk/quest/desktop">download a version for Windows</a> (or start with the web, and if you like it, download the game you are working on, and finish it on the desktop version).</p>
+
+<h2 id="contents">Contents</h2>
+
+<p><a href="index.html#Tutorial">Tutorial</a></p>
+
+<p><a href="index.html#Commands">Commands (and Verbs)</a></p>
+
+<p><a href="index.html#Otherfeatures">Features of Quest</a></p>
+
+<p><a href="index.html#Howto">How to…</a></p>
+
+<p><a href="index.html#TheUserExperience">The User Experience</a></p>
+
+<p><a href="index.html#Npcs">Handling Characters (NPCs)</a></p>
+
+<p><a href="index.html#Coding">Guides to Coding With Quest</a></p>
+
+<p><a href="index.html#AdvancedTopics">Advanced Topics for Desktop Only</a></p>
+
+<p><a href="index.html#Reference">Reference</a></p>
+
+<p><a href="index.html#Other">Other Guides</a></p>
+
+<p><a href="index.html#Contributing">Contributing</a></p>
+
+<p><a href="index.html#Search">Search</a></p>
+
+<h2 id="tutorial"><a name="Tutorial"></a>Tutorial</h2>
+
+<p>New to Quest? The <a href="tutorial/index.html">tutorial</a> will guide you through creating your first game, and is an excellent way to understand what Quest is about.</p>
+
+<p>The Quest Tutorial starts here:</p>
+
+<ul>
+  <li><a href="tutorial/tutorial_introduction.html">Introduction</a></li>
+</ul>
+
+<h2 id="commands-and-verbs"><a name="Commands"></a>Commands (and Verbs)</h2>
+
+<p>Commands are the heart of a text adventure.</p>
+
+<ul>
+  <li><a href="commands.html">Commands</a></li>
+  <li><a href="commands_for_room.html">Commands for specific rooms</a></li>
+  <li><a href="using_verbs.html">Using Verbs</a></li>
+  <li><a href="complex_commands.html">Complex commands</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/pattern_matching.html">Pattern matching</a></li>
+  <li><a href="advanced_scope.html">Commands With Unusual Scope</a></li>
+</ul>
+
+<h2 id="features-of-quest"><a name="Otherfeatures"></a>Features of Quest</h2>
+
+<p>Quest has a whole range of features built in and ready to use. You probably won’t be using them all, so just dip in as you need to.</p>
+
+<ul>
+  <li><a href="text_processor.html">The Text Processor</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/using_attributes.html">Custom attributes</a> (including status attributes and change scripts)</li>
+  <li><a href="exits.html">Exits</a></li>
+  <li><a href="containers.html">Containers</a></li>
+  <li><a href="switchable.html">Switchable objects</a></li>
+  <li><a href="handling_light_and_dark.html">Light and dark</a></li>
+  <li><a href="wearables.html">Clothing</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/tutorial/using_timers_and_turn_scripts.html">Using timers and turn scripts</a> (link to the tutorial page)</li>
+  <li><a href="score_health_money.html">Score, health and money</a></li>
+</ul>
+
+<h2 id="how-to"><a name="Howto"></a>How to…</h2>
+
+<p>Some of these will involve some simple coding. <em>It’s not that bad!</em> We will walk you through and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the third guide to learn how to copy-and-paste code.</p>
+
+<ul>
+  <li><a href="quest_code.html">Introduction to coding</a></li>
+  <li><a href="important_attributes.html">Important attributes</a></li>
+  <li><a href="copy_and_paste_code.html">Copy-and-paste Code</a></li>
+  <li><a href="functions.html">Use functions</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/multiple_choices___using_a_switch_script.html">Use a switch script</a></li>
+  <li><a href="changing_the_player_object.html">Change the player object</a></li>
+  <li><a href="handling_water.html">Handle water</a></li>
+  <li><a href="showing_a_map.html">Show a map</a></li>
+  <li><a href="ask_simple_question.html">Ask a simple question</a> (showing a menu)</li>
+  <li><a href="http://docs.textadventures.co.uk/quest/asking_a_question.html">Ask a question</a></li>
+  <li><a href="keeping_a_journal.html">Keep a journal</a></li>
+  <li><a href="keeping_score.html">Keep score</a></li>
+  <li><a href="transit_system.html">Implement a transit system</a></li>
+  <li><a href="convert.html">Transform one (or more) thing to another</a></li>
+  <li><a href="time.html">Track time</a></li>
+  <li><a href="shop.html">Set up a shop</a></li>
+  <li><a href="setting_up_door.html">Set up a door</a></li>
+</ul>
+
+<h2 id="the-user-interface"><a name="TheUserExperience"></a>The User Interface</h2>
+
+<p>Quest allows you to customise the user interface (UI) to suit the style and mood of your game.</p>
+
+<p>These pages get progressively more advanced. The first two require no coding (not even GUi scripts), the next three some very simple coding. After that it does get more complex…</p>
+
+<ul>
+  <li><a href="multimedia.html">Multimedia</a></li>
+  <li>
+    <p><a href="images.html">Images</a></p>
+  </li>
+  <li><a href="ui-game-play.html">Game-play</a> (what to consider when designing the interface)</li>
+  <li><a href="ui-style.html">UI style</a> (simple options you can set from the game object)</li>
+  <li><a href="display_verbs.html">Display verbs</a></li>
+  <li><a href="custom_panes.html">Custom commands and status pane</a> (adding extra panes to your game)</li>
+  <li><a href="ui-custom.html">Simple Customisation</a></li>
+  <li><a href="ui-javascript.html">Customisation part 1</a> (three pages that explore customisation in detail)</li>
+  <li><a href="ui-javascript2.html">Customisation part 2</a></li>
+  <li><a href="ui-javascript3.html">Customisation part 3</a></li>
+  <li><a href="ui-callback.html">ASLEvent: Handling events in JavaScript</a></li>
+  <li><a href="ui-dialogue.html">Dialogue panels</a></li>
+</ul>
+
+<h2 id="handling-characters-npcs"><a name="Npcs"></a>Handling Characters (NPCs)</h2>
+
+<p>Adding people that the player can interactive with can help bring your game to life, but is hard to do well. These pages will get you started.</p>
+
+<ul>
+  <li><a href="follower.html">Following the player</a></li>
+  <li><a href="conversations.html">Introduction to Conversations</a></li>
+  <li><a href="ask_about.html">Ask/Tell</a></li>
+  <li><a href="patrolling_npcs.html">Patrolling NPCs</a></li>
+  <li><a href="independent_npcs.html">Independent NPCs</a></li>
+</ul>
+
+<h2 id="guides-to-coding-with-quest"><a name="Coding"></a>Guides to Coding With Quest</h2>
+
+<p>A look at some of the more technical features of Quest. These articles assume you can at least copy-and-paste code.</p>
+
+<ul>
+  <li><a href="creating_functions_which_return_a_value.html">Functions</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/using_lists.html">Lists</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/using_dictionaries.html">Dictionaries</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/scopes.html">Scopes</a></li>
+  <li><a href="clones.html">Clones</a></li>
+  <li><a href="change_scripts.html">Change scripts</a></li>
+  <li><a href="advanced_game_scripts.html">Advanced game scripts</a></li>
+  <li><a href="using_javascript.html">Javascript</a></li>
+</ul>
+
+<h2 id="advanced-topics-for-desktop-only"><a name="AdvancedTopics"></a>Advanced Topics for Desktop Only</h2>
+
+<p>Due to restrictions in the web editor, the following are only applicable to the desktop version.</p>
+
+<ul>
+  <li><a href="using_walkthroughs.html">Walkthroughs</a></li>
+  <li><a href="overriding.html">Overriding functions</a></li>
+  <li><a href="using_inherited_types.html">Types</a></li>
+  <li><a href="tabs_for_types.html">Tabs for types</a></li>
+  <li><a href="changing_templates.html">Templates</a></li>
+  <li><a href="translating_quest.html">Translating Quest</a></li>
+  <li><a href="using_libraries.html">Libraries</a></li>
+  <li><a href="editor_user_interface_elements.html">Editor User Interface Elements</a></li>
+  <li><a href="debugging_your_game.html">Debugging your game</a></li>
+</ul>
+
+<h2 id="reference"><a name="Reference"></a>Reference</h2>
+
+<ul>
+  <li><a href="problems.html">Common problems</a></li>
+  <li><a href="webeditor.html">WebEditor</a></li>
+  <li><a href="codeview.html">Code view</a></li>
+  <li><a href="upgrade_notes.html">Notes for users of previous versions of Quest</a></li>
+  <li><a href="asl_requirements.html">ASL Requirements</a></li>
+  <li><a href="undo_support.html">“Undo” support</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/scripts/">Script Commands</a></li>
+  <li><a href="functions/index.html">Functions</a></li>
+  <li><a href="http://docs.textadventures.co.uk/quest/types/">Attribute Types</a></li>
+  <li><a href="elements/index.html">Elements</a></li>
+  <li><a href="null.html">Null</a></li>
+  <li><a href="using_doubles.html">Using doubles</a></li>
+  <li><a href="aslx.html">ASLX File Format</a></li>
+  <li><a href="expressions.html">Expressions</a></li>
+  <li><a href="competition_entry.html">Competition entries</a></li>
+  <li><a href="publishing.html">Publishing games</a></li>
+  <li><a href="configuring_quest.html">Configuring Quest</a></li>
+  <li><a href="libraries.html">User contributed libraries</a></li>
+  <li><a href="guides/index.html">User contributed guides</a></li>
+</ul>
+
+<h2 id="other-guides"><a name="Other"></a>Other Guides</h2>
+
+<ul>
+  <li><a href="guides/helpsheets.html">Helpsheets for beginners</a> by gideonwilliams</li>
+  <li><a href="https://github.com/ThePix/quest/wiki">The Pixie’s tutorials and libraries</a></li>
+</ul>
+
+<h2 id="contributing"><a name="Contributing"></a>Contributing</h2>
+
+<p>If you would like to help with developing Quest, please see the <a href="developers.html">Developers</a> page.</p>
+
+<p>If you find a bug in Quest (as opposed to your own game), please log it on the <a href="https://github.com/textadventures/quest/issues">Issue Tracker</a>, or if there is a feature you would like included. We cannot guarantee all bugs and feature requests will be addressed, but they are more likely to be if reported here. Try to include as much detail as possible, includiong a same game that illustrates the issue if at all possible.</p>
+
+<p>You can also discuss Quest at <a href="http://textadventures.co.uk/forum/quest">the forum</a>. If you have an issue with your game, this is the place to go!</p>
+
+<p>Quest is completely open source, including this documentation! The source code and documentation both live <a href="https://github.com/textadventures/quest">on GitHub</a> (documentation is in the <code class="highlighter-rouge">docs</code> folder).</p>
+
+<h2 id="search"><a name="Search"></a>Search</h2>
+
+<script>
+  (function() {
+    var cx = '015306987908116640949:jr9g5bqdxsa';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+
+<style>
+	.gcs,
+	.gcs *,
+	.gcs *:before,
+	.gcs *:after {
+	  -webkit-box-sizing: content-box;
+	     -moz-box-sizing: content-box;
+	          box-sizing: content-box;
+	}
+</style>
+
+<div class="gcs">
+	<gcse:searchbox-only></gcse:searchbox-only>
+</div>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

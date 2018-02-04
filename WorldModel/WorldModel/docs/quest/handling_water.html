@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Handling water</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Handling water</h1>
+      <p>There is more than one way to do this, but this is what I recommend. This will involve setting attributes, so you will struggle with the on-line editor, but it is certainly doable!</p>
+
+<p>What we will do is to create a waterskin that can be filled and drunk from, and then set up a room with a pool of water and another with a tap.</p>
+
+<p>There are also a <a href="https://github.com/ThePix/quest/wiki/Liquid-Library">library</a> available.</p>
+
+<h2 id="the-waterskin">The waterskin</h2>
+
+<p>So first create the waterskin, in the normal way. Give it two integer attributes, “full” and “capacity”. Set them to 0 and 10 respectively. The full attribute will track how much water is in the waterskin, the capacity will be the maximum. You may want to play around with these values.</p>
+
+<p>Then go to the verbs tab, and create a new verb, “fill”. Paste in this code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (this.full = this.capacity) {
+    msg ("It is already full.")
+  }
+  else if (not GetBoolean(game.pov.parent, "watersource")) {
+    msg ("No water here.")
+  }
+  else {
+    msg ("You fill it.")
+    this.full = this.capacity
+  }
+</code></pre></div></div>
+<p>All this does is check if the waterskin is already full, then check if there is water. If all is okay, the waterskin gets filled.</p>
+
+<p>You might want to give it a description like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The waterskin {if waterskin.full=0:is empty}
+{if waterskin.full&lt;&gt;0:contains some water}.
+</code></pre></div></div>
+<p>The text processor is a bit limited, and you might prefer to use a script so you can say how full it is.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (this.full = 0) {
+    msg ("The waterskin.")
+  }
+  else if (this.full = this.capacity) {
+    msg ("The waterskin is full.")
+  }
+  else {
+    msg ("The waterskin is about " + (waterskin.full  * 10) + "% full.")
+  }
+</code></pre></div></div>
+
+<h2 id="a-source-of-water">A Source of Water</h2>
+
+<p>Now we will do a room with a pool of clear, fresh water. Create a room, give it a Boolean attribute, “watersource”, and set it to true.Now you should be able to go in-game and fill the waterskin with water.</p>
+
+<p>For a room with a tap, create the room, then create the tap as an object in it. For the tap, on the Features tab tick Switchable. On the “Switchable” tab set it to “Can be switched…”. Fill in the text boxes as you like. For the first script, paste in this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  this.parent.watersource = true
+</code></pre></div></div>
+<p>And for the second:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  this.parent.watersource = false
+</code></pre></div></div>
+
+<h2 id="playing-with-water">Playing With Water</h2>
+
+<p>What else do you want to do? Well, you could empty it. Create an “empty” verb, and paste this in.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (this.full = 0) {
+    msg ("It is already empty.")
+  }
+  else {
+    msg ("You empty it.")
+    this.full = 0
+  }
+</code></pre></div></div>
+<p>Is there some point to emptying it? Perhaps there is a room with a fire, and emptying the waterskin will put the fire out. You could do that like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (this.full = 0) {
+    msg ("It is already empty.")
+  }
+  else if (game.pov.parent = room_with_fire) {
+    msg ("You empty it over the fire, which spits, then dies.")
+    this.full = 0
+    room_with_fire.fireout = true
+  }
+  else {
+    msg ("You empty it.")
+    this.full = 0
+  }
+</code></pre></div></div>
+<p>You might want to drink from the waterskin. Add a “drink from” verb, and paste this in:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if (this.full = 0) {
+    msg ("It is empty.")
+  }
+  else {
+    msg ("You take a drink from it.")
+    this.full = this.full - 1
+  }
+</code></pre></div></div>
+<p>What it does is check the waterskin is not empty, and if not reduces its contents by 1. You might want to do some other things in the second block, if the player is going to die of thirst; that is up to you to sort out!</p>
+
+<p>You might want to USE the waterskin, i.e., (I guess) drink from it. USE is kind of built-in, so takes a bit of setting up. Go to the Features tab, and tick Use/Give. Then go to the Use/Give tab, and at the top, for “Use (on its own)”, set the action to “Run script”. This does the same thing as “drink from”, so we can use that script (note that spaces are removed from the verb to make the attribute name).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  do(this, "drinkfrom")
+</code></pre></div></div>
+<p>You could have pasted the script from “drink from” in here, but this way is better in the long term. If you later decide you want to change the effects of drinking water, you only have to change it in one place, rather than remember to do both. This is a principle in software engineering called DRY (Don’t Repeat Yourself).</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

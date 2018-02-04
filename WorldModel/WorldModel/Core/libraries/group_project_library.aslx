@@ -1,0 +1,120 @@
+<library>
+  <command name="TravelToHub">
+    <pattern>travel</pattern>
+    <script>
+      if (GetBoolean(player.parent, "gateway") or player.cantravelfromanywhere) {
+        msg (this.travelmsg)
+        player.parent = hub
+      }
+      else {
+        msg ("You can't travel from here.")
+      }
+    </script>
+    <travelmsg>You travel in some unspecified manner...</travelmsg>
+  </command>
+  
+  
+  <function name="AddToHubGateway" parameters="room">
+    name = room.name + "_destination"
+    if (not GetObject(name) = null) error ("Something has gone wrong, and a destination is being added to the hub a second time.")
+    create (name)
+    obj = GetObject (name)
+    obj.parent = destinations
+    obj.look = room.dimensionderscription
+    obj.alias = room.dimensionname
+    obj.to = room
+    obj.linkcolour = room.dimensioncolour
+  </function>
+  
+  <function name="DescribePlayer">
+    msg ("Looking good...")
+    msg ("As a {either player.isfemale:female|male} {player.race}.")
+  </function>
+
+  <function name="DescribeHub">
+    msg ("This is the hub, the starting point of your adventure!")
+  </function>
+
+  <function name="StartScript">
+    msg ("Welcome to...")
+    msg ("Group project!")
+  </function>
+
+  <function name="HubEnterScript">
+    msg ("So this is the hub...")
+    player.cantravelfromanywhere = false
+  </function>
+
+  <function name="StartMeElsewhere" parameters="obj, roomname">
+    room = GetObject(roomname)
+    if (room = null) {
+      obj.parent = hub
+    }
+    else {
+      obj.parent = room
+    }
+  </function>
+
+  <function name="IsDimensionCompleted" parameters="gateway" type="boolean">
+    return (gateway.completed)
+  </function>
+  
+  <function name="AreAllDimensionsCompleted" type="boolean">
+    flag = true
+    foreach (obj, GetDirectChildren(destinations)) {
+      if (not obj.to.completed) {
+        flag = false
+      }
+    }
+    return (flag)
+  </function>
+  
+  <function name="DimensionComplete" parameters="gateway">
+    gateway.completed = true
+  </function>
+  
+  <type name="gateway_type">
+    <completed type="boolean">false</completed>
+  </type>
+  
+  <!-- Interface -->
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Gateway</caption>
+    <mustinherit>gateway_type</mustinherit>
+
+    <control>
+      <caption>Dimension name</caption>
+      <controltype>textbox</controltype>
+      <attribute>dimensionname</attribute>
+    </control>
+
+    <control>
+      <caption>Dimension description</caption>
+      <controltype>richtext</controltype>
+      <attribute>dimensionderscription</attribute>
+    </control>
+
+    <control>
+      <caption>Start script</caption>
+      <controltype>script</controltype>
+      <attribute>_initialise_</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>This will run when the game starts. The first line must be "AddToHubGateway (this)"</caption>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Link colour (when travelling from hub)</caption>
+      <attribute>dimensioncolour</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+  </tab>    
+  
+  
+</library>

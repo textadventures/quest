@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+
+  <!--
+  QuestLib v1.0
+  
+  Quest version: 5.7
+  Written by: The Pixie, 2017
+
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Quest-Library
+  
+  
+  A quest has a state, "Active", "Failed", "Successful" (can be implicitly "Inactive")
+  and a status, a string proved by the creator.
+  -->
+
+
+  <command>
+    <pattern>quest #object#</pattern>
+    <scope>quests</scope>
+    <script>
+      if (GetObject("quests") = null) {
+        create ("quests")
+      }
+      if (not object.parent = quests) {
+        msg("That's not a quest.")
+      }
+      
+      msg ("Quest: {i:" + GetDisplayAlias(object) + "}")
+      foreach (s, object.history) {
+        msg (Spaces(4) + s)
+      }
+      msg (Spaces(4) + object.status)
+      msg (" ")
+    </script>
+  </command>
+  
+  <command>
+    <pattern>quests;q;current quests;cq</pattern>
+    <script>
+      msg ("Current quests:")
+      QuestReport ("Active")
+    </script>
+  </command>
+  
+  <command>
+    <pattern>successes;successful quests;sq</pattern>
+    <script>
+      msg ("Successfully completed quests:")
+      QuestReport ("Successful")
+    </script>
+  </command>
+  
+  <command>
+    <pattern>fails;failures;failed quests;fq</pattern>
+    <script>
+      msg ("Failed quests:")
+      QuestReport ("Failed")
+    </script>
+  </command>
+  
+  
+  <function name="QuestReport" parameters="state">
+    if (GetObject("quests") = null) {
+      create ("quests")
+    }
+    flag = true
+    foreach (o, FilterByAttribute(GetDirectChildren(quests), "state", state)) {
+      msg (QuestSummary(o))
+      flag = false
+    }
+    if (flag) {
+      msg (Spaces(4) + "None")
+    }
+    firsttime {
+      msg (" ")
+      msg ("[Type SUCCESSFUL QUESTS or SQ to see a list of successfully completed quests]")
+      msg ("[Type FAILED QUESTS or FQ for a list of failed quests]")
+    }
+    msg (" ")
+  </function>
+  
+  
+  <function name="Quest" parameters="obj, s, state">
+    if (GetObject("quests") = null) {
+      create ("quests")
+    }
+    obj.parent = quests
+    if (not HasAttribute(obj, "history")) {
+      obj.history = NewStringList()
+    }
+    if (not obj.status = s) {
+      if (state = "Success") {
+        msg ("Quest completed: {i:" + obj.alias + "}")
+        obj.state = "Successful"
+      }
+      else if (state = "Failed") {
+        msg ("Quest failed: {i:" + obj.alias + "}")
+        obj.state = "Failed"
+      }
+      else if (state = "Start") {
+        msg ("Quest started: {i:" + obj.alias + "}")
+        obj.state = "Active"
+      }
+      else {
+        msg ("Quest updated: {i:" + obj.alias + "}")
+        obj.state = "Active"
+      }
+    }
+    if (HasString(obj, "status")) {
+      list add (obj.history, "{s:" + obj.status + "}")
+    }
+    obj.status = s
+  </function>
+  
+  <function name="QuestSummary" parameters="obj" type="string">
+    return (Spaces(4) + "{i:" + obj.alias + ":} " + obj.status)
+  </function>
+  
+  <function name="QuestNext" parameters="obj, s">
+    Quest (obj, s, "Next")
+  </function>
+  
+  <function name="QuestEnd" parameters="obj, s">
+    Quest (obj, s, "Success")
+  </function>
+  
+  <function name="QuestFail" parameters="obj, s">
+    Quest (obj, s, "Failed")
+  </function>
+  
+  <function name="QuestStart" parameters="obj, s">
+    Quest (obj, s, "Start")
+  </function>
+  
+  <function name="QuestState" parameters="quest" type="string">
+    if (GetObject("quests") = null) {
+      create ("quests")
+    }
+    if (not quest.parent = quests) {
+      return ("Inactive")
+    }
+    else {
+      return (quest.state)
+    }
+  </function>
+  
+
+  
+  
+</library>
+  

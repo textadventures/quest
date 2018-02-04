@@ -7,6 +7,7 @@ Public Class PlayerHTML
     Public Event Ready()
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
+    Public Event SendAttribute(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
     Public Event ExitFullScreen()
@@ -94,6 +95,8 @@ Public Class PlayerHTML
                 RunCommand(args)
             Case "ASLEvent"
                 RunASLEvent(args)
+            Case "ASLAttribute"
+                RunASLAttribute(args)
             Case "GoURL"
                 GoURL(args)
             Case "EndWait"
@@ -109,14 +112,46 @@ Public Class PlayerHTML
         Dim args As String() = data.Split({";"c}, 2)
         RaiseEvent SendEvent(args(0), args(1))
     End Sub
+    Private Sub RunASLAttribute(data As String)
+        Dim args As String() = data.Split({";"c}, 2)
+        RaiseEvent SendAttribute(args(0), args(1))
+    End Sub
 
     Private Sub RunCommand(data As String)
         RaiseEvent CommandRequested(data)
     End Sub
 
+    'Private Sub GoURL(data As String)
+    'If not data.StartsWith("http://") Or data.StartsWith("https://") Or data.StartsWith("mailto:") Then
+    'System.Diagnostics.Process.Start(data)
+    'End If
+    'End Sub
+    Private Function getDefaultBrowser() As String
+        Dim browser As String = String.Empty
+        Dim key As RegistryKey = Nothing
+        Try
+            key = Registry.ClassesRoot.OpenSubKey("HTTP\shell\open\command", False)
+
+            'trim off quotes
+            browser = key.GetValue(Nothing).ToString().ToLower().Replace("""", "")
+            If Not browser.EndsWith("exe") Then
+                'get rid of everything after the ".exe"
+                browser = browser.Substring(0, browser.LastIndexOf(".exe") + 4)
+            End If
+        Finally
+            If key IsNot Nothing Then
+                key.Close()
+            End If
+        End Try
+        Return browser
+    End Function
     Private Sub GoURL(data As String)
-        If data.StartsWith("http://") Or data.StartsWith("https://") Or data.StartsWith("mailto:") Then
-            System.Diagnostics.Process.Start(data)
+        If data.StartsWith("file:") Then
+            'Do nothing.
+        Else
+            Dim browser As String
+            browser = getDefaultBrowser()
+            Process.Start(browser, data)
         End If
     End Sub
 
@@ -124,10 +159,22 @@ Public Class PlayerHTML
         InvokeScript("clearScreen", "")
     End Sub
 
+    'Public Function GetURL(filename As String) As String
+    'filename = System.Uri.EscapeDataString(filename)
+    'filename += "?c=" + (Convert.ToInt32((DateTime.Now - (New DateTime(2012, 1, 1))).TotalSeconds)).ToString()
+    'Return "quest://local/" + filename
+    'End Function
+
     Public Function GetURL(filename As String) As String
-        filename = System.Uri.EscapeDataString(filename)
-        filename += "?c=" + (Convert.ToInt32((DateTime.Now - (New DateTime(2012, 1, 1))).TotalSeconds)).ToString()
-        Return "quest://local/" + filename
+        If filename.StartsWith("shared>>>") Then
+            filename = filename.Replace("shared>>>", "")
+            filename = System.Uri.EscapeDataString(filename)
+            Return "quest://local/" + My.Computer.FileSystem.SpecialDirectories.MyDocuments + "\Quest Shared\" + filename
+        Else
+            filename = System.Uri.EscapeDataString(filename)
+            filename += "?c=" + (Convert.ToInt32((DateTime.Now - (New DateTime(2012, 1, 1))).TotalSeconds)).ToString()
+            Return "quest://local/" + filename
+        End If
     End Function
 
     Public Sub ShowPicture(filename As String)

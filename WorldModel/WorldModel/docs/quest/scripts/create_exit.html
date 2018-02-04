@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>create exit</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li class="active"><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>create exit</h1>
+      <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create exit (string alias, object from, object to)
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create exit (string alias, object from, object to, string type)
+</code></pre></div></div>
+
+<p>or, as of Quest 5.1</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create exit (string name, string alias, object from, object to, string type)
+</code></pre></div></div>
+
+<p>Creates an exit with the specified alias (usually the direction, such as “north”) between two objects/rooms.</p>
+
+<p>An initial type can be specified e.g. “northdirection”. This will ensure that the correct <a href="../attributes/alt.html">alt</a> names are applied to compass exits.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create exit ("northwest", fromRoom, toRoom, "northwestdirection")
+</code></pre></div></div>
+
+<p>You can also specify the object name to use. If not specified, an id will be automatically generated.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create exit ("exit_to_garden", "northwest", fromRoom, toRoom, "northwestdirection")
+</code></pre></div></div>
+
+<p>It is usually easier to make an exit in the normal way in the editor, but to set it so it is not visible; instead of then creating an exit during game play, you set this exit to be visible.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

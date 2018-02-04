@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customising the UI - Part 3</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Customising the UI - Part 3</h1>
+      <h2 id="testing">Testing</h2>
+
+<p>When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check thast it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.</p>
+
+<h2 id="various-tricks">Various Tricks</h2>
+
+<p>A collection of tricks using the techniques already descussed.</p>
+
+<h3 id="the-continue-link">The “Continue” link</h3>
+
+<p>You can change in the colour of hyperlinks on the Display tab of the game object, but it does not affect the “Continue” message when the game waits for the player to press a button, because that is actually part of the command line, not the output text. However, you can change it with JQuery, like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss ("#txtCommandDiv a", "color:pink;")
+</code></pre></div></div>
+
+<p>Note that the first parameter is identifying an <code class="highlighter-rouge">a</code> element (an HTML anchor, which is used for hyperlinks) inside of the <code class="highlighter-rouge">#txtCommandDiv</code>.</p>
+
+<h3 id="the-saved-text">The “Saved” text</h3>
+
+<p>The message that says the game is saved is also odd, in that is has no ID so cannot be changed through JQuery/CSS.</p>
+
+<p>The solution is to change the style of a container element, however, even that is problematic as they may not exist yet when ‘InitUserInterface’ fires, so I suggest setting style properties on the body element (this is not an id, so has no # before it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss ("body", "color:orange;font-family:georgia,serif;")
+</code></pre></div></div>
+
+<h3 id="changing-the-ending">Changing the Ending</h3>
+
+<p>The <code class="highlighter-rouge">finish</code> script command terminates the game, and replaces the panes on the right with a message. You can change the default font using JQuery again, to make it consistent with your game:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss ("#gamePanesFinished", "font-family:Berkshire Swash;")
+</code></pre></div></div>
+
+<p>You can also change what gets displayed, using the JQuery html method. In this example, I am modifying the text (using the <code class="highlighter-rouge">html</code> method of JQuery), and adding an image (and we have to use GetFileURL to do that). I am also building the string first, and then calling JS.eval.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s = "$('#gamePanesFinished').html('&lt;h2&gt;Game Over&lt;/h2&gt;"
+s = s + "&lt;p&gt;This game has finished and you are dead!".&lt;/p&gt;&lt;img src=\""
+s = s + GetFileURL("gravestone.png")
+s = s + "\" /&gt;');"
+JS.eval (s)
+finish
+</code></pre></div></div>
+
+<h3 id="changing-the-arrows">Changing the Arrows</h3>
+
+<p>The arrows in the compass rose and the triangles to the left of the panes are icons that are defined in JQuery. To change their color, you need to replace the image file (they are all in one file).</p>
+
+<p>You an get an image file with the right colours, from here:
+<a href="http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png">http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png</a></p>
+
+<p>You can change the number 800080 to the RGB colour what you want (I guess the file server creates the images on the fly, and will accept any value, but that may not be the case), this is a dark purple I was trying. Save the file in your game folder.</p>
+
+<p>Then you just need to do this to get the new icons in your game (again, modifying the number for your downloaded file):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss (".ui-icon", "background-image', 'url(" + GetFileURL("ui-icons_800080_256x240.png") + ");")
+</code></pre></div></div>
+
+<p>Once you have the file, you could edit it to change the shape of the arrows too, or make them multicoloured (using the web editor, you will need to use the “Show picture” script element to upload the image; once uploaded, delete the “Show picture”).</p>
+
+<h3 id="disable-the-panes">Disable the panes</h3>
+
+<p>This will leave the panes there, but clicking on them will do nothing.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss ("#gamePanesRunning", "pointer-events:none;")
+</code></pre></div></div>
+
+<p>To enable them again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss ("#gamePanesRunning", "pointer-events:inherit;")
+</code></pre></div></div>
+
+<h3 id="moving-the-screen-to-the-bottom">Moving the screen to the bottom</h3>
+
+<p>Sometimes when you dislay something on the screen, Quest fails to scroll down for. You can force that with this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.scrollToEnd()
+</code></pre></div></div>
+
+<h3 id="sticking-the-command-bar-to-the-bottom-of-the-screen">Sticking the command bar to the bottom of the screen.</h3>
+
+<p>You can use this to keep the box where the player types pinned to the bottom of the screen. The first line sets its position to “fixed”, this means it will stay in one place relative to the screen. The second line specifies where it will be fixed. The third line stops the game printing messages behind the input box.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.setCss("#txtCommandDiv", "position:fixed;bottom:10px")
+JS.setCss("#gameContent", "margin-bottom:70px;")
+</code></pre></div></div>
+
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

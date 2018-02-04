@@ -1,0 +1,424 @@
+<?xml version="1.0"?>
+<library>
+  <!--
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  -->
+
+
+  <!--
+  Text Processor Plus v1.1
+  
+  Version 1.1 modifies how null (or no attribute) is handled for if/either.
+  If gets converted to a string, "null", rather than throwing an error.
+  
+  Quest version: 5.6
+  Written by: The Pixie, 2016
+
+  Tutorial and notes here:
+  https://github.com/ThePix/quest/wiki/Library:-Text-Processor-Plus
+  -->
+
+
+
+  <function name="ProcessTextCommand" parameters="section, data" type="string">
+    if (StartsWith(section, "if ")) {
+      return (ProcessTextCommand_If(section, data))
+    }
+    // Next six lines added by The Pixie
+    else if (StartsWith(section, "either ")) {
+      return (ProcessTextCommand_Either(section, data))
+    }
+    else if (StartsWith(section, "eval:")) {
+      return (ProcessTextCommand_Eval(section, data))
+    }
+    else if (StartsWith(section, "object:")) {
+      return (ProcessTextCommand_Object(section, data))
+    }
+    else if (StartsWith(section, "command:")) {
+      return (ProcessTextCommand_Command(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "covering:")) {
+      return (ProcessTextCommand_Covering(Mid(section, 10), data))
+    }
+    else if (StartsWith(section, "covered:")) {
+      return (ProcessTextCommand_Covered(Mid(section, 9), data, true))
+    }
+    else if (StartsWith(section, "bare:")) {
+      return (ProcessTextCommand_Covered(Mid(section, 6), data, false))
+    }
+    else if (StartsWith(section, "page:")) {
+      return (ProcessTextCommand_Command(Mid(section, 6), data))
+    }
+    else if (StartsWith(section, "exit:")) {
+      return (ProcessTextCommand_Exit(section, data))
+    }
+    else if (StartsWith(section, "back:")) {
+      return (ProcessTextCommand_Background(Mid(section, 6), data))
+    }
+    else if (StartsWith(section, "popup:")) {
+      return (ProcessTextCommand_Popup(Mid(section, 7), data))
+    }
+    else if (StartsWith(section, "color:")) {
+      return (ProcessTextCommand_Colour(Mid(section, 7), data))
+    }
+    else if (StartsWith(section, "colour:")) {
+      return (ProcessTextCommand_Colour(Mid(section, 8), data))
+    }
+    else if (StartsWith(section, "once:")) {
+      return (ProcessTextCommand_Once(section, data))
+    }
+    else if (StartsWith(section, "notfirst:")) {
+      return (ProcessTextCommand_NotFirst(section, data))
+    }
+    else if (StartsWith(section, "random:")) {
+      return (ProcessTextCommand_Random(section, data))
+    }
+    else if (StartsWith(section, "rndalt:")) {
+      return (ProcessTextCommand_RandomAlias(section, data))
+    }
+    else if (StartsWith(section, "img:")) {
+      return (ProcessTextCommand_Img(section, data))
+    }
+    else if (StartsWith(section, "counter:")) {
+      return (ProcessTextCommand_Counter(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "select:")) {
+      return (ProcessTextCommand_Select(section, data))
+    }
+    else {
+      dot = Instr(section, ".")
+      if (dot = 0) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        objectname = Left(section, dot - 1)
+        attributename = Mid(section, dot + 1)
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          if (HasAttribute(object, attributename)) {
+            type = TypeOf(object, attributename)
+            switch (type) {
+              case ("string", "int", "double") {
+                return (ToString(GetAttribute(object, attributename)))
+              }
+              case ("boolean") {
+                result = GetAttribute(object, attributename)
+                if (result) {
+                  return ("true")
+                }
+                else {
+                  return ("false")
+                }
+              }
+              default {
+                return ("(" + type + ")")
+              }
+            }
+          }
+          else {
+            return ("")
+          }
+        }
+      }
+    }
+  </function>
+
+
+  <function name="ProcessTextCommand_Covered" type="string" parameters="section, data, coveredflag"><![CDATA[
+    parts = Split(section, ":")
+    if (ListCount(parts) < 2) {
+      if (coveredflag) {
+        return ("{covered:" + section + "}")
+      }
+      else {
+        return ("{bare:" + section + "}")
+      }
+    }
+    if (ListCount(parts) = 2) {
+      char = game.pov
+      bodypart = StringListItem(parts, 0)
+      section = StringListItem(parts, 1)
+    }
+    else {
+      char = GetObject(StringListItem(parts, 0))
+      if (char = null) {
+        if (coveredflag) {
+          return ("{covered:" + section + "}")
+        }
+        else {
+          return ("{bare:" + section + "}")
+        }
+      }
+      bodypart = StringListItem(parts, 1)
+      section = StringListItem(parts, 2)
+    }
+    garment = GetOuterFor(game.pov, bodypart)
+    if (not garment = null and coveredflag) {
+      return (ProcessTextSection(section, data))
+    }
+    if (garment = null and not coveredflag) {
+      return (ProcessTextSection(section, data))
+    }
+    return ("")
+  ]]></function>
+
+
+  <function name="ProcessTextCommand_Covering" type="string" parameters="section, data"><![CDATA[
+    parts = Split(section, ":")
+    if (ListCount(parts) = 1) {
+      char = game.pov
+      bodypart = StringListItem(parts, 0)
+    }
+    else {
+      char = GetObject(StringListItem(parts, 0))
+      if (char = null) {
+        return ("{covering:" + section + "}")
+      }
+      bodypart = StringListItem(parts, 1)
+    }
+    garment = GetOuterFor(char, bodypart)
+    if (not garment = null) {
+      return (Replace(GetDisplayName(garment), " (worn)", ""))
+    }
+    else {
+      return ("nothing")
+    }
+  ]]></function>
+
+
+  <!--
+  Override this to do something useful.
+  Or use ClothingLib, which already does just that.
+  -->
+  <function name="GetOuterFor" type="object" parameters="char, slot">
+    return (null)
+  </function>
+
+  <function name="ProcessTextCommand_If" type="string" parameters="section, data">
+    return (ProcessTextCommand_If_Either(section, data, 4, false))
+  </function>
+
+  
+  <function name="ProcessTextCommand_Either" parameters="section, data" type="string">
+    return (ProcessTextCommand_If_Either(section, data, 8, true))
+  </function>
+  
+
+  <function name="ProcessTextCommand_If_Either" type="string" parameters="section, data, length, iseither">
+  <![CDATA[
+    command = Mid(section, length)
+    colon = Instr(command, ":")
+    if (iseither) {
+      colon2 = Instr(colon + 1, command, ":")
+      if (colon = 0 or colon2 = 0) {
+        return ("{either " + command + "}")
+      }
+    }
+    else {
+      if (colon = 0) {
+        return ("{if " + command + "}")
+      }
+    }
+
+    text = Mid(command, colon + 1)
+    if (iseither) {
+      text2 = Mid(command, colon2 + 1)
+      text = Replace(text, ":" + text2, "")
+    }
+    else {
+      text2 = ""
+    }
+    condition = Left(command, colon - 1)
+    operator = Instr(condition, "<=")
+    if (operator <> 0) {
+      operatorlength = 2
+    }
+    if (operator = 0) {
+      operator = Instr(condition, ">=")
+      if (operator <> 0) {
+        operatorlength = 2
+      }
+    }
+    if (operator = 0) {
+      operator = Instr(condition, "<>")
+      if (operator <> 0) {
+        operatorlength = 2
+      }
+    }
+    if (operator = 0) {
+      operator = Instr(condition, "<")
+      if (operator <> 0) {
+        operatorlength = 1
+      }
+    }
+    if (operator = 0) {
+      operator = Instr(condition, ">")
+      if (operator <> 0) {
+        operatorlength = 1
+      }
+    }
+    if (operator = 0) {
+      operator = Instr(condition, "=")
+      if (operator <> 0) {
+        operatorlength = 1
+      }
+    }
+    if (operator = 0) {
+      // There is no equality operator, so this is just a Boolean
+      checkfor = true
+      if (StartsWith(condition, "not ")) {
+        checkfor = false
+        condition = Mid(condition, 5)
+      }
+      dot = Instr(condition, ".")
+      if (dot = 0) {
+        result = GetBoolean(game, condition)
+      }
+      else {
+        objectname = Left(condition, dot - 1)
+        attributename = Mid(condition, dot + 1)
+        object = GetObject(objectname)
+        if (object = null) {
+          result = false
+        }
+        else {
+          result = GetBoolean(object, attributename)
+        }
+      }
+      return (ConditionalProcess (result = checkfor, text, text2, data))
+    }
+    else {
+      // split the string into three parts; lhs, op, rhs
+      lhs = Left(condition, operator - 1)
+      rhs = Mid(condition, operator + operatorlength)
+      op = Mid(condition, operator, operatorlength)
+      dot = Instr(lhs, ".")
+      if (dot = 0) {
+        // if there is no dot, either this is an attribute of the game object
+        // (i.e., game is implicit) or not a text processor at all
+        objectname = ""
+        attributename = ""
+        if (HasInt(game, lhs)) {
+          objectname = "game"
+          attributename = lhs
+        }
+        else {
+          return ("{if " + command + "}")
+        }
+      }
+      else {
+        objectname = Left(lhs, dot - 1)
+        attributename = Mid(lhs, dot + 1)
+      }
+      object = GetObject(objectname)
+      if (object = null) {
+        return ("{if " + command + "}")
+      }
+      else {
+        // so for the left side, we have object (now known to be an object)
+        // and attribute, a string, that may not exist
+        value = GetAttribute(object, attributename)
+        if (TypeOf(value) = "null") {
+          //error ("Text Processor Error: No attribute found called " + attributename + " for " + object.name + ". Section is: " + section)
+          value = "null"
+        }
+        else if (TypeOf(value) = "object") {
+          value = value.name
+        }
+        if (op = "=") {
+          return (ConditionalProcess (ToString(value) = rhs, text, text2, data))
+        }
+        else if (op = "<>") {
+          return (ConditionalProcess (not ToString(value) = rhs, text, text2, data))
+        }
+        else {
+          if (not IsDouble(ToString(value))) error ("Text Processor Error: Left hand side is not a number. Section is: " + section)
+          if (not IsDouble(rhs)) error ("Text Processor Error: Right hand side is not a number. Section is: " + section)
+          lhs_double = ToDouble(ToString(value))
+          rhs_double = ToDouble(rhs)
+          if (op = ">") {
+            return (ConditionalProcess (lhs_double > rhs_double, text, text2, data))
+          }
+          else if (op = "<") {
+            return (ConditionalProcess (lhs_double < rhs_double, text, text2, data))
+          }
+          else if (op = ">=") {
+            return (ConditionalProcess (lhs_double >= rhs_double, text, text2, data))
+          }
+          else if (op = "<=") {
+            return (ConditionalProcess (lhs_double <= rhs_double, text, text2, data))
+          }
+        }
+      }
+    }
+  ]]>
+  </function>
+  
+  
+
+  
+  
+  <!--
+  If flag is true, text12 gets used, otherwise text2.
+  If text2 is empty, just return an empty string.
+  -->
+  <function name="ConditionalProcess" parameters="flag, text1, text2, data" type="string">
+    if (flag) {
+      return (ProcessTextSection(text1, data))
+    }
+    else {
+      if (text2 = "") {
+        return ("")
+      }
+      else {
+        return (ProcessTextSection(text2, data))
+      }
+    }
+  </function>
+  
+  
+
+  
+  <function name="ProcessTextCommand_Colour" parameters="section, data" type="string"><![CDATA[
+    ary = Split(section, ":")
+    c = StringListItem(ary, 0)
+    list remove(ary, c)
+    s = Join (ary, ":")
+    return(ProcessTextSection("<span style=\"color:" + c + ";\">" + s + "</span>", data))
+  ]]></function> 
+
+
+
+  <function name="ProcessTextCommand_Background" parameters="section, data" type="string"><![CDATA[
+    ary = Split(section, ":")
+    c = StringListItem(ary, 0)
+    list remove(ary, c)
+    s = Join (ary, ":")
+    return(ProcessTextSection("<span style=\"background-color:" + c + ";\">" + s + "</span>", data))
+  ]]></function> 
+  
+
+  
+  <function name="ProcessTextCommand_Popup" parameters="section, data" type="string"><![CDATA[
+    ary = Split(section, ":")
+    s1 = StringListItem(ary, 0)
+    list remove(ary, s1)
+    s2 = Join (ary, ":")
+    id = s1 + GetRandomInt(0, 99999)
+    s = "<span  style=\"cursor:pointer;color:blue;\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;background-color:yellow;border:2px solid red;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
+    s = s + s2 + "</p></div>"
+    return(ProcessTextSection(s, data))
+  ]]></function> 
+  
+
+  
+  <function name="ProcessTextCommand_Eval" parameters="section, data" type="string"><![CDATA[
+    exp = Mid(section, 6)
+    return("" + Eval(exp))
+  ]]></function> 
+
+</library>  

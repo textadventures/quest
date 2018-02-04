@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commands Specific to a Room</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Commands Specific to a Room</h1>
+      <p>Frequently you will want to add a command that is specific to a certain room.  If the command involves an object, then Quest will attempt to match the object (for example, ATTACK GOBLIN, Quest will start by trying to match GOBLIN to any object present). Often there will be no object, for example, the player might have to CLIMB or SWIM.</p>
+
+<p>One way to do that would be to test whether you are in the right room in the command script. However, the cool way is to have two commands - one in the room itself.</p>
+
+<p>Let us suppose a room where the player has to CLIMB.</p>
+
+<h3 id="the-general-command">The general command</h3>
+
+<p>In most rooms, CLIMB will do nothing. We will handle that first. Create a command as usual, and give it this pattern:</p>
+
+<blockquote>
+  <p>climb</p>
+</blockquote>
+
+<p>Now click the “Add new script” button, select “Print” and paste in some suitable text, “Nothing to climb here.”</p>
+
+<h3 id="the-room-command">The room command</h3>
+
+<p>Now create a second command. This will be the command that actually does something. Give it the same pattern, click the “Add new script” button, select “Print” and paste in some suitable text, “You climb the drainpipe, and go in through the window.” Then click the “Add new script” button again, select “Move Object”. Select the player object and some suitable room.</p>
+
+<p>Now the clever bit. If you are using the web version, click on the “Move” button towards the top right, and select the room the player can climb in. For the desktop version, drag the command to the room (make sure you do the right one!).</p>
+
+<p>If the player is in that room, Quest will use the CLIMB command for the room, and the player will climb the drainpipe. Otherwise the general command will be used.</p>
+
+<h3 id="another-room">Another room?</h3>
+
+<p>If you have more than one room the player can climb in, just create a new command for each one. Each will have its own text and destination, and no need for any of those <code class="highlighter-rouge">if/else</code> things!</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

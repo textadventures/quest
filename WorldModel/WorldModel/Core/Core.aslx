@@ -28,6 +28,8 @@
   <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
   <include ref="CoreWearable.aslx"/>
+  <include ref="ClockLib.aslx"/>
+  <include ref="NpcLib.aslx"/>
 
   <function name="InitInterface">
       <![CDATA[
@@ -220,6 +222,7 @@
   <function name="StartGame">
     <![CDATA[
     StartTurnOutputSection
+    game.clock = TimeAsString()
     if (game.showtitle) {
       JS.StartOutputSection ("title")
       PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
@@ -272,6 +275,7 @@
       }
       UpdateStatusAttributes
       UpdateObjectLinks
+      RunGameJs
     }
     ]]>
   </function>

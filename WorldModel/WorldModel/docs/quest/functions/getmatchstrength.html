@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GetMatchStrength</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li class="active"><a href="index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>GetMatchStrength</h1>
+      <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GetMatchStrength (string regex, string input)
+</code></pre></div></div>
+
+<p>Optionally as of Quest 5.1 there is a new cache ID parameter:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GetMatchStrength (string regex, string input, string cache ID)
+</code></pre></div></div>
+
+<p>Returns an <a href="http://docs.textadventures.co.uk/quest/types/int.html">int</a> indicating how strongly the given input matches the regular expression.</p>
+
+<p>The strength is defined as the length of the “required” parts of the string, i.e. the total length of the string <em>minus</em> the total length of all named groups.</p>
+
+<p>Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or <a href="isregexmatch.html">IsRegexMatch</a> or <a href="populate.html">Populate</a> ) using the same cache ID.</p>
+
+<p>For example, given this regex which matches the text “look at “ followed by any object name:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> look at (?&lt;object&gt;.*)
+</code></pre></div></div>
+
+<p>An input of “look at dog” has a strength of 8.</p>
+
+<p>This is calculated as follows:</p>
+
+<ul>
+  <li>The string “look at dog” has a length of 11</li>
+  <li>The named group “object” matches the substring “dog”, which has a length of 3</li>
+  <li>The strength therefore is 11 - 3 = 8</li>
+</ul>
+
+<p>The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.</p>
+
+<p>See also <a href="isregexmatch.html">IsRegexMatch</a>, <a href="populate.html">Populate</a></p>
+
+<p>NOTE: This a <a href="http://docs.textadventures.co.uk/quest/functions/hardcoded.html">hard-coded function</a>.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

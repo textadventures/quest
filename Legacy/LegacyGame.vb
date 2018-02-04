@@ -12062,6 +12062,11 @@ Public Class LegacyGame
 
     End Sub
 
+    '<NOCONVERT
+    Public Sub SendAttribute(eventName As String, param As String) Implements IASL.SendAttribute
+
+    End Sub
+
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
     'NOCONVERT>
 

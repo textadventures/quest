@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Templates</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Using Templates</h1>
+      <h2 id="template-tag">&lt;template&gt; tag</h2>
+
+<p>Specifies text that is printed, for example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;template name="UnresolvedObject"&gt;I can't see that.&lt;/template&gt;
+</code></pre></div></div>
+
+<h2 id="using-templates">Using templates</h2>
+
+<p>You can use a template anywhere by surrounding the name with square brackets. The text will be replaced by the contents of the template.</p>
+
+<p>For example, in Core.aslx in the definition for the <strong>default</strong> type we have:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;displayverbs type="list"&gt;[LookAt];[Take];[SpeakTo]&lt;/displayverbs&gt;
+</code></pre></div></div>
+
+<p>Which means that the default <strong>displayverbs</strong> is specified by the contents of the three templates named <strong>LookAt</strong>, <strong>Take</strong> and <strong>SpeakTo</strong>. So when the ASL file is loaded, this effectively becomes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;displayverbs type="list"&gt;Look at;Take;Speak to&lt;/displayverbs&gt;
+</code></pre></div></div>
+
+<h2 id="dynamic-templates">Dynamic Templates</h2>
+
+<p>Templates are used for all the standard output from Core.aslx. This includes the standard error messages, such as “I don’t understand your command”.</p>
+
+<p>A dynamic template is a template that can call functions and read attributes. This is useful for dynamic responses such as when the player tries to take an untakeable object. Usually, a response of “You can’t take it” is sufficient, but what if the object is a female character? Dynamic templates to the rescue – they are essentially functions that return a string value, for example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;dynamictemplate name="TakeUnsuccessful"&gt;
+   "You can't take " + object.article + "."
+ &lt;/dynamictemplate&gt;
+</code></pre></div></div>
+
+<p>A female character should have their “article” attribute set to “her”, so this will print “You can’t take her.”</p>
+
+<p>To print this from a script, call the <a href="../functions/dynamictemplate.html">DynamicTemplate</a> function, which takes two parameters:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> msg (DynamicTemplate("TakeUnsuccessful", object))
+</code></pre></div></div>
+
+<h2 id="how-quest-uses-templates">How Quest Uses Templates</h2>
+
+<p>It is important to realise that templates and dynamic templates are handled very differently by Quest, although they are designed to do similar things. Templates are used when the aslx file is read, while dynamic templates are used when Quest is generating a response for the player.</p>
+
+<p>The most important consequence of this is that if you are replacing existing templates, then you must do that before the core libraries are loaded. Consider this example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &lt;include ref="English.aslx"/&gt;
+  &lt;include ref="Core.aslx" /&gt;
+  &lt;template name="SeeListHeader"&gt;There's&lt;/template&gt;
+  &lt;template name="GoListHeader"&gt; Go to &lt;/template&gt;
+  &lt;template name="UnrecognisedCommand"&gt;Unknown command.&lt;/template&gt;
+  &lt;template name="YouAreIn"&gt;&lt;/template&gt;
+  &lt;template name="PlacesObjectsLabel"&gt;Places / Objects&lt;/template&gt;
+</code></pre></div></div>
+
+<p>First the standard language templates are loaded from English.aslx, then Core.aslx is loaded, and as it is loaded, all the template substitutions are made. Then a bunch of templates are defined… but too late! The substitutions have alreasy been made.</p>
+
+<p>Now try this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &lt;include ref="English.aslx"/&gt;
+  &lt;template name="SeeListHeader"&gt;There's&lt;/template&gt;
+  &lt;template name="GoListHeader"&gt; Go to &lt;/template&gt;
+  &lt;template name="UnrecognisedCommand"&gt;Unknown command.&lt;/template&gt;
+  &lt;template name="YouAreIn"&gt;&lt;/template&gt;
+  &lt;template name="PlacesObjectsLabel"&gt;Places / Objects&lt;/template&gt;
+  &lt;include ref="Core.aslx" /&gt;
+</code></pre></div></div>
+
+<p>First the standard language templates are loaded from English.aslx, but then the new templates are defined, overriding the standard ones. Now when Core.aslx is loaded, these new templates will get used for the template substituitions.</p>
+
+<p>What this also means is that you can put templates into scripts and functions; Quest will do the text substitution when the file is loaded, so when the code is invoked, the proper text is in place.</p>
+
+<p>It is also worth noting that you can call other functions inside a dynamic template, say to flag that a command completed successfully or to put in some formatting or whatever (as done with random default answers).</p>
+
+<h2 id="printing-square-brackets">Printing Square Brackets</h2>
+
+<p>If text in square brackets gets automatically substituted, what do you do if you want square brackets in your output? As the output is HTML, you can use the HTML code, &#91;. Simple, except that the file is in XML, so you have to encode that ampersand for when the XML is read.</p>
+
+<p>This in your code will give an open square bracket, [, on output:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &amp;amp;amp;#91;
+</code></pre></div></div>
+
+<p>See also: <a href="random_default_answers.html">Random default answers</a></p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

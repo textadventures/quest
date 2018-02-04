@@ -1,0 +1,299 @@
+<!--Saved by Quest 5.6.6108.15891-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="StackLibrary.aslx" />
+  <game name="Stack Demo">
+    <gameid>a9bfdc45-5714-4f08-a962-4de554d5123c</gameid>
+    <version>1.0</version>
+    <firstpublished>2013</firstpublished>
+    <showhealth />
+    <showscore type="boolean">false</showscore>
+    <autodisplayverbs type="boolean">false</autodisplayverbs>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+    <object name="yellow potion">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <alias>Funny yellow potion</alias>
+      <look>It's a yellow potion. (It's also a child of the 'blue potion' of the 'potions' stack.)</look>
+      <inventoryverbs type="stringlist" />
+      <drinkable type="string"></drinkable>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <take />
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink the potion and recover 10% health.")
+        player.health = player.health + 10
+        destroy (this.name)
+      </use>
+    </object>
+    <object name="yellow potion1">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <alias>Yellow potion</alias>
+      <look>It's a yellow potion. (It's also a child of the 'blue potion' of the 'potions' stack.)</look>
+      <inventoryverbs type="stringlist" />
+      <drinkable type="string"></drinkable>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink the potion and recover 10% health.")
+        player.health = player.health + 10
+        destroy (this.name)
+      </use>
+    </object>
+    <object name="yellow potion2">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <alias>Yellow potion</alias>
+      <look>It's a yellow potion. (It's also a child of the 'blue potion' of the 'potions' stack.)</look>
+      <inventoryverbs type="stringlist" />
+      <take />
+      <drinkable type="string"></drinkable>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink the potion and recover 10% health.")
+        player.health = player.health + 10
+        destroy (this.name)
+      </use>
+    </object>
+    <object name="green potion1">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <alias>Green potion</alias>
+      <look>It's a green potion. (It's also a child of the 'blue potion' of the 'potions' stack.)</look>
+      <inventoryverbs type="stringlist" />
+      <drinkable type="string"></drinkable>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <drink>You think about drinking it but decide not to.</drink>
+      <listalias><![CDATA[<font color="green">very green potion</font>]]></listalias>
+      <takemsg>You take the green potion.</takemsg>
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink the potion and recover 20% health.")
+        player.health = player.health + 20
+        destroy (this.name)
+      </use>
+    </object>
+    <object name="blue potion">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <stackname><![CDATA[<font color="blue">potions</font>]]></stackname>
+      <childinheritscript type="boolean">false</childinheritscript>
+      <stacklimit type="int">4</stacklimit>
+      <alias>Blue potion</alias>
+      <look>It's a blue potion. (It's also the main object of the 'potions' stack, although there's no way to see this in a game.)</look>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <inventoryverbs type="stringlist" />
+      <takemsg>You pick it up and instantly feel 5% better. Weird.</takemsg>
+      <drinkable type="string"></drinkable>
+      <stackverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Drop</value>
+      </stackverbs>
+      <usequestion>Drink which potion?</usequestion>
+      <feature_usegive />
+      <stackprent type="object">blue potion</stackprent>
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink it and recover 25% health.")
+        player.health = player.health + 25
+        MoveObject (this, game)
+      </use>
+      <ontake type="script">
+        IncreaseHealth (5)
+      </ontake>
+    </object>
+    <object name="green potion">
+      <inherit name="editor_object" />
+      <inherit name="childstack_object" />
+      <alias>Green potion</alias>
+      <look>It's a green potion. (It's also a child of the 'blue potion' of the 'potions' stack.)</look>
+      <inventoryverbs type="stringlist" />
+      <drinkable type="string"></drinkable>
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Drink</value>
+        <value>Take</value>
+      </displayverbs>
+      <visible type="boolean">false</visible>
+      <takemsg>You take the green potion.</takemsg>
+      <stackparent type="object">potion_stack</stackparent>
+      <use type="script">
+        msg ("You drink the potion and recover 20% health.")
+        player.health = player.health + 20
+        destroy (this.name)
+      </use>
+    </object>
+    <object name="jagged metal spike">
+      <inherit name="editor_object" />
+      <look>That looks painful...</look>
+      <inventoryverbs type="stringlist" />
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+        <value>Use</value>
+      </displayverbs>
+      <take />
+      <use type="script">
+        player.health = player.health - 25
+        msg ("Ouch! Why did you do that?")
+      </use>
+    </object>
+  </object>
+  <command name="Drink">
+    <pattern>drink2 #object#</pattern>
+    <script>
+      if (not object.drinkable = null) {
+        do (object, "use")
+      }
+      else {
+        msg ("You can't drink that.")
+      }
+    </script>
+  </command>
+  <turnscript name="Drinkable Stack">
+    <enabled />
+    <script>
+      if (not GetObject("potions_container") = null) {
+        potions_container.drinkable = ""
+      }
+    </script>
+  </turnscript>
+  <object name="Stack Containers">
+    <inherit name="editor_room" />
+    <object name="potion_stack">
+      <inherit name="editor_object" />
+      <inherit name="stack_container" />
+      <alias><![CDATA[<font color="blue">Potions</font>]]></alias>
+    </object>
+  </object>
+  <command>
+    <pattern>x</pattern>
+    <script>
+      do (help, "script")
+    </script>
+  </command>
+  <function name="DoTake" parameters="object, ismultiple"><![CDATA[
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    if (object.parent = game.pov) {
+      msg (prefix + DynamicTemplate("AlreadyTaken", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      volume = 0
+      continue = true
+      foreach (obj, GetAllChildObjects(game.pov)) {
+        if (HasInt(obj, "volume")) {
+          volume = volume + obj.volume
+        }
+      }
+      if (not Contains(game.pov, object)) {
+        volume = volume + GetVolume(object,true)
+      }
+      if (HasInt(game.pov, "maxvolume")) {
+        if (volume > game.pov.maxvolume) {
+          continue = false
+          if (HasString(game.pov, "containerfullmessage")) {
+            message = prefix + game.pov.containerfullmessage
+          }
+          else {
+            message = prefix + DynamicTemplate("FullInventory", object)
+          }
+        }
+      }
+      children = GetDirectChildren(game.pov)
+      if (HasInt(game.pov, "maxobjects")) {
+        if (game.pov.maxobjects > 0) {
+          if (ListCount(children) >= game.pov.maxobjects) {
+            continue = false
+            if (HasString(game.pov, "containermaxobjects")) {
+              message = prefix + game.pov.containermaxobjects
+            }
+            else {
+              message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+            }
+          }
+        }
+      }
+      if (continue = false) {
+        msg (message)
+      }
+      else {
+        found = true
+        takemsg = object.takemsg
+        switch (TypeOf(object, "take")) {
+          case ("script") {
+            if (ismultiple) {
+              OutputTextNoBr (prefix)
+            }
+            do (object, "take")
+            takemsg = ""
+          }
+          case ("boolean") {
+            if (object.take = true) {
+              object.parent = game.pov
+              if (takemsg = null) {
+                takemsg = DynamicTemplate("TakeSuccessful", object)
+              }
+            }
+            else {
+              found = false
+            }
+          }
+          case ("string") {
+            object.parent = game.pov
+            takemsg = object.take
+          }
+          default {
+            found = false
+          }
+        }
+        if (not found and takemsg = null) {
+          takemsg = DynamicTemplate("TakeUnsuccessful", object)
+        }
+        if (LengthOf(takemsg) > 0) {
+          msg (prefix + takemsg)
+        }
+        if (HasScript(object, "ontake")) {
+          do (object, "ontake")
+        }
+        if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+          object.scenery = false
+        }
+      }
+    }
+  ]]></function>
+</asl>

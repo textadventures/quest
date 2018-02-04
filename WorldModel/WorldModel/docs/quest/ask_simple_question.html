@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asking a simple question</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Asking a simple question</h1>
+      <p>You will often find you want to ask the player a question. You might want to ask if the player wants to play as a man or a woman, or perhaps there is a point in the game where a character asks a question.</p>
+
+<p>We will look at asking simple questions here, and by that I mean a question with a limited number of responses that are presented as a menu. Such questions are simple because we know how the player will respond. Handling a question where the player can type in anything is more complicated and discussed <a href="http://docs.textadventures.co.uk/quest/asking_a_question.html">elsewhere</a>.</p>
+
+<p>There are four parts to the process. First we have to decide what will prompt the question, then we need to get the options for the menu, then we show the menu, and finally we need to handle the response.</p>
+
+<h2 id="what-prompts-the-question">What prompts the question?</h2>
+
+<p>There are all sorts of triggers, and we cannot address them all here, but here are some examples.</p>
+
+<p><strong>Start of the game:</strong> If you want ask if the player wants to play as a man or a woman, then you need to do it right at the start. Go to the game object at the top on the left, and the <em>Scripts</em> tab on the right. At the top of the tab is the “Start script”.</p>
+
+<p><strong>Entering a room:</strong> Perhaps a character asks a question as soon as the player enters a room. Go to the <em>Scripts</em> tab of the room, and look for the “After entering the room for the first time” bit.</p>
+
+<p><strong>When an item is taken or dropped:</strong> Go to the <em>Inventory</em> tab of the object, and look for the “After taking the object” or “After dropping the object” bit (ensure the box is ticked to allow it to be taken or dropped).</p>
+
+<p><strong>Verbs:</strong> A common use is when the player talks to a character. Talking can be done as a verb, so go to the <em>Verbs</em> tab of the character, start typing in “speak”, and select the option when it appears. Set it to run a script.</p>
+
+<p><strong>Commands:</strong> For a command, just go to the script of the command.</p>
+
+<p><strong>Others:</strong> For other triggers, you are on your own, but think about what item or room is involved, and go to that, and look at what tab seems most appropriate; what scripts are available?</p>
+
+<h2 id="collecting-the-options">Collecting the options</h2>
+
+<p>Each option you give the player must go into a string list, so the first thing to do is create a new string list. Click “Add new script”, and select “Set a variable or attribute”. In the first text box, type “options” (no quotes), and from the drop-down, select “new string list”.</p>
+
+<p>Now we can add the options to the list. For each option, Click “Add new script”, and select “Add a value to a list”. In the first text box, type “options”, in the drop-down select “text”, and in the second text field type in your option.</p>
+
+<p>Here is an example, setting up a character called Cindy as a flower seller. This is for when the player talks to her, so is set up as a verb. Three options have been added.</p>
+
+<p><img src="menu1.png" alt="" title="menu1.png" /></p>
+
+<h2 id="show-the-menu">Show the menu</h2>
+
+<p>Click “Add new script”, and select “Show a menu”. In the first textbox, type in the question you want to ask the player. In the second, type in “options” to tell it to use the list of options we created before. You can also choose whether the player can ignore the menu. If this is asking the player whether to be a man or a woman, you would want to set this “no” to ensure the player makes a choice. For our flower seller, we can leave it as “yes”; if the player decides the flowers on offer are not that good, she can just ignore the menu and do something else.</p>
+
+<p><img src="menu2.png" alt="" title="menu2.png" /></p>
+
+<p>At this point you should be able to go into the game and actually see the menu work - though it will not do anything.</p>
+
+<h2 id="handle-the-response">Handle the response</h2>
+
+<p>So now we need to handle the response. You will see you now have two “Add new script” buttons. You need to be using the upper one, indented to the right. This will ensure the scripts you add will be run after the choice is made.</p>
+
+<p>When the player makes a choice, that option goes into a variable called “result”, and we are going to check that to decide what to. The best way to do that is with a <code class="highlighter-rouge">switch</code>. Click “Add new script”, and select “Switch”. In the text box, type in “result”.</p>
+
+<p>Click “Add” and type in the first of your options. Note that this must be exactly the same as you had it in the option, with the same capitalisation, otherwise it will not get matched, and copy-and-paste is a good idea. You also need to put double quotes at the start and end.</p>
+
+<p>You will see you have yet another “Add new script” - this one specifically for this option. Add scripts as appropriate - exactly what is up to you. In the example below, it just prints some text.</p>
+
+<p><img src="menu3.png" alt="" title="menu3.png" /></p>
+
+<p>You need to do that for each option. Below you can see it has been done for two, I still need to do the third!</p>
+
+<p><img src="menu4.png" alt="" title="menu4.png" /></p>
+
+<h2 id="in-code">In code?!?</h2>
+
+<p>It is worthwhile looking briefly at the code view:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("What flowers do you want to buy?", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from Cindy.")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from Cindy.")
+    }
+  }
+}
+</code></pre></div></div>
+
+<p>If you look through it you should see each set that we added is there, in the same order. The code is just a different way of looking at the same thing.</p>
+
+<h2 id="yes-or-no">Yes or no?</h2>
+
+<p>For simple questions, we can shortcut some of that. We can use the <code class="highlighter-rouge">Split</code> function to make the string list, and just check for one value for <code class="highlighter-rouge">result</code>. For example:</p>
+
+<p><img src="menu5.png" alt="" title="menu5.png" /></p>
+
+<p>In code:</p>
+
+<p>```
+ShowMenu (“Are you sure?”, Split(“Yes;No”, “;”), false) {
+  if (result = “Yes”) {
+    msg (“You buy some red roses from Cindy.”)
+  }
+}</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

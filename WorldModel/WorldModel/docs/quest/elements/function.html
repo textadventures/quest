@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>function element</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li ><a href="../tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>function element</h1>
+      <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;function name="name"optional type="type"optional parameters="parameters"&gt;script&lt;/function&gt;
+</code></pre></div></div>
+
+<p>Creates a function.</p>
+
+<p>If no type is specified, the function does not return a value.</p>
+
+<p>If the function does return a value, the type should be one of the valid <a href="../types/index.html">Attribute Types</a>. Return a value within the function using the <a href="../scripts/return.html">return</a> command.</p>
+
+<p>If the function takes parameters, the parameters should be specified as a comma-delimited list.</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList"&gt;
+...
+&lt;/function&gt;
+</code></pre></div></div>
+
+<h3 id="the-attributes-of-a-function">The attributes of a function</h3>
+
+<p><strong>name:</strong> This is the name of the function. Every function must have name, and that is the name you use to invoke the function in some other script.</p>
+
+<p><strong>parameters:</strong> These are the values (if any) passed into the function. You give them names, and when the function is called, those parameters must be set by giving values in the function call (e.g. MyFunction(a, b) ). The values are mapped to the parameters in the order they are given. If your function does not take input parameters, then you can omit this or leave it as an empty string.</p>
+
+<p><strong>type:</strong> This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don’t. If you use a “<a href="../scripts/return.html">return</a>” statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.</p>
+
+<p>Quest will object if there is a return statement, but no type specified; or if there is a type specified, but no return statement.</p>
+
+<h3 id="a-working-example">A Working Example</h3>
+
+<p>Here is a trivial example. It’s a function to concatenate two strings and return the result. Clearly, you don’t need this function (since you can just use the “+” yourself), but hopefully it illustrates how functions are set up.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;function name="ConcatStrings" parameters="s1, s2" type="string"&gt;
+      return (s1 + s2)
+    &lt;/function&gt;
+</code></pre></div></div>
+
+<p>This basically says, “We have a function called ‘ConcatStrings’, it takes two input parameters, which we will call ‘s1’ and ‘s2’ inside the function, and the function returns a string value.”</p>
+
+<p>The function would be invoked as:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    s = ConcatStrings("Mama ", "Mia")
+</code></pre></div></div>
+
+<p>The resulting “s” would be “Mama Mia”</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

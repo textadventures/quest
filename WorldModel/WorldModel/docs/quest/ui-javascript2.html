@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customising the UI - Part 2</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Home</a></li>
+            <li ><a href="tutorial/index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="functions/index.html">Functions</a></li>
+            <li ><a href="attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Customising the UI - Part 2</h1>
+      <h2 id="elements">Elements</h2>
+
+<p>Bits of an HTML page are called elements, and “gameBorder” is just one of them. All HTML documents have an “html” element that contains everything else, and inside that it has a “head” and a “body” elements. Quest then has a few dozen elements that make up the interface inside the “body” element.</p>
+
+<p>You can look at those elements as you play a game. In the off-line editor, click on HTML Tools; on-line, your browser will probably have the facility to do this too. On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.</p>
+
+<p>Most of the interesting elements are of the type “div”, and each is identified by an “id”. The gameBorder one looks like this:</p>
+
+<p><img src="devtools.png" alt="" title="devtools.png" /></p>
+
+<h2 id="css-properties-and-values">CSS Properties and Values</h2>
+
+<p>There are a large number of CSS properties, to get a full list, use the internet. I will mention just some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for “center” and “color”.</p>
+
+<p>As of version 5.7, Quest has <code class="highlighter-rouge">JS.setCss</code> for setting CSS properties.</p>
+
+<h3 id="color">color</h3>
+
+<p>The colour of text is determined by the “color” property (note American spelling). You can set colours in a number of ways, the easiest is to use a name. This <a href="http://en.wikipedia.org/wiki/Web_colors">Wiki page</a> has a full list of available names (note that there are no spaces in the name; for once, capitalisation does not matter):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "color:blueviolet;")
+</code></pre></div></div>
+<p>You can also set colours by using the RGB code. These both set the colour to red.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "color:rgb(255, 0, 0);")
+  JS.setCss("#gameBorder", "color:#ff0000;")
+</code></pre></div></div>
+<p>Each splits colours in to three components: red, green, blue. In the first, each component is a number from 0 to 255. In the second, it is a hexadecimal number from 00 to ff. If you do not know what hexadecimal is, use the other format.</p>
+
+<h3 id="background-color">background-color</h3>
+
+<p>This works just the same as color, but changes the background for this element.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "background-color:blueviolet;")
+</code></pre></div></div>
+
+<h3 id="background-image">background-image</h3>
+
+<p>You can set the background image for each element. The CSS requires that the image name go inside a url function call, and to ensure it works on-line, Quest requires the name go inside a GetFileURL, so it gets complicated:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") + ");")
+</code></pre></div></div>
+<p>The status bar at the top uses an image. If you want to stop that image displaying, do this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#status", "background-image:none;")
+</code></pre></div></div>
+
+<h3 id="width">width</h3>
+
+<p>This will change the width of the element. You have the potential to mess up big time here, so change one element at a time and see what happens. Elements do impact on each other, so you may not see any difference. When experimenting, change the width of Quest itself (or the browser) to see what effect that has too.</p>
+
+<p>Note that the value must include “px”, which says the units are pixels.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "width:950px;")
+</code></pre></div></div>
+
+<h3 id="opacity">opacity</h3>
+
+<p>The opacity property defines how much this element covers the one below (the reverse of transparency). It can range from 0.0 (this element is not visible) to 1.0 (this element is completely opaque).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> JS.setCss("#gameBorder", "opacity:0.5;")
+</code></pre></div></div>
+
+<h3 id="border">border</h3>
+
+<p>The border property lets you set borders. You can set various aspects in one go, so in this example a dashed line, 5 px wide and blue, will be added.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS.setCss("#gameBorder", "border:dashed 5px blue;")
+</code></pre></div></div>
+<p>The status bar at the top has a blue border. If you want to remove it, do this (also set the width to 950px to keep it aligned):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> JS.setCss("#status", "border:none;")
+</code></pre></div></div>
+
+<h2 id="awkward-attributes-the-command-bar">Awkward Attributes (The Command Bar)</h2>
+
+<p>Some attributes are difficult to change, and the usual technique just does not work. A good example is the border of the command bar. The element’s ID is <code class="highlighter-rouge">txtCommand</code>, and it has <code class="highlighter-rouge">border</code> and <code class="highlighter-rouge">outline</code> properties, but if you set them to “none”, it does not work. Why not? No idea.</p>
+
+<p>However, there is a way around - on the desktop anyway. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;css&gt;&lt;![CDATA[
+      &lt;style&gt;
+        #txtCommand {
+          outline:none;
+          border: none;
+        }
+      &lt;/style&gt;
+    ]]&gt;&lt;/css&gt;
+</code></pre></div></div>
+<p>Be careful how you do that; I would suggest pasting it below this line:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;firstpublished&gt;2016&lt;/firstpublished&gt;
+</code></pre></div></div>
+<p>You can output that in game.start, and it should now make the required change.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JS.addText (game.css)
+</code></pre></div></div>
+
+<p>As of Quest 5.7, you can turn off the border on the <em>Interface</em> tab of the game object, but there may well be other elements that need to be handled like this, for example….</p>
+
+<h3 id="inventory-items">Inventory Items</h3>
+
+<p>This technique will also allow you to change how inventory items are displayed. They do not have IDs, they uses classes instead, <code class="highlighter-rouge">ui-selectee</code> (for all objects in the list), <code class="highlighter-rouge">ui-selected</code> (for the selected one) and <code class="highlighter-rouge">ui-selecting</code> (for the selected one whilst clicked). The difference is that only one element on the page can have a specific ID but any number can have a class. You specify a class by using a <code class="highlighter-rouge">.</code>, rather than a <code class="highlighter-rouge">#</code>.</p>
+
+<p>This example will alter the background colour when an item is selected.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;css&gt;&lt;![CDATA[
+      &lt;style&gt;
+        .ui-selected {
+          background-color: darkblue;
+          color: white;
+        }
+        .ui-selecting {
+          background-color: blue;
+          color: white;
+        }
+      &lt;/style&gt;
+    ]]&gt;&lt;/css&gt;
+</code></pre></div></div>
+
+<p>In <a href="ui-javascript3.html">part 3</a> we will discuss testing and look at some specific tricks.</p>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

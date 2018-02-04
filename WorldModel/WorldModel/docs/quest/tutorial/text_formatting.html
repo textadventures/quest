@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text formatting</title>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../docs.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Quest Documentation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="../index.html">Home</a></li>
+            <li class="active"><a href="index.html">Tutorial</a></li>
+            <li ><a href="http://docs.textadventures.co.uk/quest/scripts/">Scripts</a></li>
+            <li ><a href="../functions/index.html">Functions</a></li>
+            <li ><a href="../attributes.html">Attributes</a></li>
+            <li><a href="http://textadventures.co.uk/forum">Forum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Text formatting</h1>
+      <p>Up until now, our Quest game has been entirely plain text. In this section, we’ll look at jazzing things up a bit by using text formatting, and including pictures, sounds and video.</p>
+
+<h2 id="setting-the-default-font-and-colours">Setting the Default Font and Colours</h2>
+
+<p>To change the default font and colours used throughout your game, select “game” from the tree and go to the Display tab.</p>
+
+<p>Here you can set the initial font, foreground, background and hyperlink colours.</p>
+
+<h2 id="changing-fonts-and-colours-during-the-game">Changing Fonts and Colours during the Game</h2>
+
+<p>You can also change the font and colours while the game is in progress. You can do this using script commands. The commands are all in the “Output” category - you can change the foreground and background colour, and also the font and font size.</p>
+
+<h2 id="bold-italic-underline">Bold, Italic, Underline</h2>
+
+<p>You can use HTML-style formatting to set bold, italic and underline. For example, when printing a message, you can type this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This text is &lt;b&gt;bold&lt;/b&gt;. This text is &lt;i&gt;italic&lt;/i&gt;. This text is &lt;u&gt;underlined&lt;/u&gt;.
+</code></pre></div></div>
+
+<p>This will output:</p>
+
+<p>This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.</p>
+
+<p>Up to Quest 5.3, you can also temporarily override colour using a “color” tag, for example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This text is the current foreground colour, but &lt;color color="red"&gt;this is red&lt;/color&gt;.
+</code></pre></div></div>
+
+<p>The “color” tag is not supported as of Quest 5.4, as all output is now plain HTML. This means you can use “span” tags with in-line CSS styles to set the colour of a range of text instead, however, as of Quest 5.7, you can use text processor commands.</p>
+
+<blockquote>
+  <p>here is some text with {colour:blue:this} written in blue and {back:red:that} with a red background.</p>
+</blockquote>
+
+
+      <div class="footer">
+        <hr/>
+        <a href="http://textadventures.co.uk/"><img src="../logo.png"/></a>
+      </div>
+    </div>
+
+  </body>
+</html>

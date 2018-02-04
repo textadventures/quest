@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<library>
+
+<dynamictemplate name="VenomOkay">"You spread venom over your weapon."</dynamictemplate>
+
+<dynamictemplate name="ShieldSwap">"You put away your " + GetDisplayAlias(game.pov.shield) + " and hold your " + GetDisplayAlias (object) + " ready."</dynamictemplate>
+<dynamictemplate name="ShieldUnequip">"You put away your " + GetDisplayAlias(game.pov.equipped) + "."</dynamictemplate>
+<dynamictemplate name="ShieldEquip">"You hold your " + GetDisplayAlias (object) + " ready."</dynamictemplate>
+
+<dynamictemplate name="WeaponSwap">"You put away your " + GetDisplayAlias(game.pov.shield) + " and draw your " + GetDisplayAlias (object) + " ready."</dynamictemplate>
+<dynamictemplate name="WeaponUnequip">"You put away your " + GetDisplayAlias(game.pov.equipped) + "."</dynamictemplate>
+<dynamictemplate name="WeaponEquip">"You draw your " + GetDisplayAlias (object) + " ready."</dynamictemplate>
+
+<dynamictemplate name="WearableLoot">"You consider putting on the " + GetDisplayAlias (object) + ", but decide not to; better to sell it when you can. It is not like it is magical or anything."</dynamictemplate>
+
+<dynamictemplate name="SpellLearn"><![CDATA["In a process that seems at once unfathomable, and yet familiar, the spell fades away, and you realise you are now able to cast the <i>" + GetDisplayAlias(object) + "</i> spell."]]></dynamictemplate>
+
+
+
+</library>
