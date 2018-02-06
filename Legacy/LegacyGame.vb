@@ -7839,9 +7839,9 @@ Public Class LegacyGame
         ' beginning or end of a line.
         ' PostScript: well, it used to, I'm not sure if it's really
         ' required now though....
-        ' As of Quest 4.0 we use the ¦ character rather than a dot.
-        test = "¦" & Trim(test) & "¦"
-        required = "¦" & required & "¦"
+        ' As of Quest 4.0 we use the ï¿½ character rather than a dot.
+        test = "ï¿½" & Trim(test) & "ï¿½"
+        required = "ï¿½" & required & "ï¿½"
 
         'Go through RequiredLine in chunks going up to variables.
         Dim currentReqLinePos = 1
@@ -12059,6 +12059,11 @@ Public Class LegacyGame
 
     '<NOCONVERT
     Public Sub SendEvent(eventName As String, param As String) Implements IASL.SendEvent
+
+    End Sub
+
+    '<NOCONVERT
+    Public Sub SendCall(eventName As String, param As String) Implements IASL.SendCall
 
     End Sub
 
