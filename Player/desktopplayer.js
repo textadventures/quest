@@ -1,4 +1,4 @@
-﻿var webPlayer = false;
+var webPlayer = false;
 var canSendCommand = true;
 
 function sendCommand(text, metadata) {
@@ -13,6 +13,10 @@ function sendCommand(text, metadata) {
 
 function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
+}
+
+function ASLCall(event, parameter) {
+    UIEvent("ASLCall", event + ";" + parameter);
 }
 
 function goUrl(href) {
