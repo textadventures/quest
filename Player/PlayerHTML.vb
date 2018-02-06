@@ -1,4 +1,4 @@
-﻿Imports System.Xml
+Imports System.Xml
 Imports System.IO
 Imports Microsoft.Win32
 
@@ -7,6 +7,7 @@ Public Class PlayerHTML
     Public Event Ready()
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
+    Public Event SendCall(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
     Public Event ExitFullScreen()
@@ -94,6 +95,8 @@ Public Class PlayerHTML
                 RunCommand(args)
             Case "ASLEvent"
                 RunASLEvent(args)
+            Case "ASLCall"
+                RunASLCall(args)
             Case "GoURL"
                 GoURL(args)
             Case "EndWait"
@@ -108,6 +111,10 @@ Public Class PlayerHTML
     Private Sub RunASLEvent(data As String)
         Dim args As String() = data.Split({";"c}, 2)
         RaiseEvent SendEvent(args(0), args(1))
+    End Sub
+    Private Sub RunASLCall(data As String)
+        Dim args As String() = data.Split({";"c}, 2)
+        RaiseEvent SendCall(args(0), args(1))
     End Sub
 
     Private Sub RunCommand(data As String)
