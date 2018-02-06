@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +17,7 @@ namespace TextAdventures.Quest
         void SendCommand(string command);
         void SendCommand(string command, IDictionary<string, string> metadata);
         void SendEvent(string eventName, string param);
+        void SendCall(string eventName, string param);
         event PrintTextHandler PrintText;
         event UpdateListHandler UpdateList;
         event FinishedHandler Finished;
