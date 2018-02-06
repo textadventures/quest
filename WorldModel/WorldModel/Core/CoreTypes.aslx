@@ -239,6 +239,9 @@
     <visited type="boolean">false</visited>
     <hasbeenmoved type="boolean">false</hasbeenmoved>
   </type>
+  
+  <type name="defaultroom">
+  </type>
 
   <type name="defaultexit">
     <displayverbs type="simplestringlist">[GoTo]</displayverbs>
