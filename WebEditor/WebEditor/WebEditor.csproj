@@ -190,6 +190,38 @@
       <Link>Core\Languages\EditorDeutsch.aslx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreFunctions.aslx">
+      <Link>Core\CoreFunctions.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectWearable.aslx">
+      <Link>Core\CoreEditorObjectWearable.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Greek.aslx">
+      <Link>Core\Languages\Greek.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Icelandic.aslx">
+      <Link>Core\Languages\Icelandic.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Greek.template">
+      <Link>Core\Templates\Greek.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Icelandic.template">
+      <Link>Core\Templates\Icelandic.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorAnnotation.aslx">
+      <Link>Core\CoreEditorAnnotation.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreWearable.aslx">
+      <Link>Core\CoreWearable.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
