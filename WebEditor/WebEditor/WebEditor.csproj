@@ -186,6 +186,10 @@
       <Link>Core\Templates\Russian.template</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\EditorDeutsch.aslx">
+      <Link>Core\Languages\EditorDeutsch.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -220,6 +224,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="WebEditorSettings.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="WebEditorSettings.default.xml">
       <SubType>Designer</SubType>
     </Content>
