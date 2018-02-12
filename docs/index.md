@@ -102,19 +102,19 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Track time](time.html)
 -  [Set up a shop](shop.html)
 -  [Set up a door](setting_up_door.html)
+-  [Use multimedia](multimedia.html)
+-  [Use images](images.html)
 
 
 
 
-<a name="TheUserExperience"></a>The User Interface
+
+<a name="TheUserExperience"></a>The User Experience
 ---------------------------------------------------
 
 Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
 
 These pages get progressively more advanced. The first two require no coding (not even GUi scripts), the next three some very simple coding. After that it does get more complex...
-
--  [Multimedia](multimedia.html)
--  [Images](images.html)
 
 -  [Game-play](ui-game-play.html) (what to consider when designing the interface)
 -  [UI style](ui-style.html) (simple options you can set from the game object)
@@ -126,6 +126,8 @@ These pages get progressively more advanced. The first two require no coding (no
 -  [Customisation part 3](ui-javascript3.html)
 -  [ASLEvent: Handling events in JavaScript](ui-callback.html)
 -  [Dialogue panels](ui-dialogue.html)
+
+
 
 
 <a name="Npcs"></a>Handling Characters (NPCs)
