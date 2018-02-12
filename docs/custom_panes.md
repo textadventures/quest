@@ -1,45 +1,10 @@
 ---
 layout: index
-title: Custom Command and Status Panes
+title: Custom Status Pane
 ---
 
 
-As of Quest 5.7 you can add new panes to your game.
-
-Custom Command Pane
--------------------
-
-On the _Interface_ panel of the game object, make sure "Show Panes" is ticked, then tick "Show a custom command pane". If you start your game, you should see the new pane, but it just says "Commands" and does not do anything.
-
-We need to set some commands. Go to the _Features_ tab of the game object, and tick "Advanced scripts", then go to the _Advanced scripts_ tab of the game object, at the top is the user interface initialisation script. This is the place to add the script command that will set up the panel.
-
-We need to use the `JS.setCommands` function, which can take two parameters. The first is a string of commands to display, separated by semi-colons. The second is the colour to display it in, and is optional. Here is an example:
-
-```
-JS.setCommands ("Look;Wait")
-```
-
-In this example, the colour is set too. Note that you can use any [web colour](https://en.wikipedia.org/wiki/Web_colors) or hex triples.
-
-```
-JS.setCommands ("Look;Wait;Sit", "blue")
-```
-
-Go in game, and test it works!
-
-You can change the commands at any time in your game, just be using the `JS.setCommands` function again. If the player does sit, you might want to have a line in the SIT command like this, so now there will be a "Stand" commmand, and not "Sit":
-
-```
-JS.setCommands ("Look;Wait;Stand", "blue")
-```
-
-You might want to set the commands when the player enters and leaves a specific room, if there are commands specific to that room. This works best for simple, one-word commands, however you can use any command Quest can understand, including commands you have added yourself.
-
-
-Custom Status Pane
-------------------
-
-This requires a bit more effort on your part, and knowledge of HTML and CSS will be useful.
+A knowledge of HTML and CSS will be useful here.
 
 On the _Interface_ panel of the game object, make sure "Show Panes" is ticked, then tick "Show a custom status pane". If you start your game, you should see the new pane, but it just says "Status" and does not do anything.
 
@@ -59,11 +24,14 @@ JS.setCustomStatus (html)
 In your game, you would want to re-build the string whenever a attribute changes. Here is some example code that will take a string list of conditions, called "list", and display it in a table as in the previous example:
 
 ```
-html = "<table><tr><td width=\"50%\">Condition:</td><td>"
-html = html + Join(list, "</td></tr><tr><td></td><td>")
-html = html + "</td></tr></table>"
-JS.setCustomStatus (html)
+s = "<table><tr><td width=\"50%\">Condition:</td><td>"
+s = s + Join(list, "</td></tr><tr><td></td><td>")
+s = s + "</td></tr></table>"
+JS.setCustomStatus (s)
 ```
+
+Note that the string, `s`, is built up step-by-step, and then we do something with it at the end. You could do all this in one long line, but it is much easier to read and understand this way.
+
 
 ### Indicator bar
 
@@ -71,11 +39,9 @@ So how about a graphical representation of the player's hits, a horizontal bar t
 
 ![](indicator-bar.png "indicator-bar.png")
 
-We are going to have two attributes here, the player's "hitpoints" and their maximum, "maxhitpoints". We will set up an HTML table again, but the second row will be the indicator; a `span` element with a `padding-right` attribute that will be adjusted as hits change.
+We are going to have two attributes here, the player's current "hitpoints" and their maximum, "maxhitpoints". We will set up an HTML table again, but the second row will be the indicator; a `span` element with a `padding-right` attribute that will be adjusted as hits change.
 
-We need this to happen when the game starts and when reloaded, so this needs to go in the "inituserinterface" script. However, we only want to set the hitpoints once, so that needs to go into the "start" script. 
-
-Here is the code for the "inituserinterface" script:
+We need this to happen when the game starts and when reloaded, so this needs to go in the "inituserinterface" script as before. Here is the code for the "inituserinterface" script:
 
 ```
 s = "<table width=\"100%\"><tr>"
@@ -101,7 +67,7 @@ The next line dumps the HTML in the custom status pane.
 
 The last three rooms update the values - but only if player.changedhitpoints has been set, i.e., when reloading.
 
-And then in the "start script":
+And then in the "start script" (go to the _Scripts_ tab of the game object):
 
 ```
 player.changedhitpoints => {
