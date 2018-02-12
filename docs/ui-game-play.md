@@ -46,13 +46,19 @@ The game panes are an alternative to hyperlinks, and may be more appropriate if 
 
 The game panes can be turned off or customised on the _Interface_ tab of the game object.
 
-An additional pane can be added for simple commands. To set the commands, you need to use the JavaScript function `setCommands`, though it is not as difficult as it sounds. Here is an example that will set LOOK and WAIT in the pane. Note that the commands are separated by semi-colons. The second form shows how to set the colour of the text.
+### Command Pane
+
+An additional pane can be added for simple commands. To set the commands, you need to use the JavaScript function `setCommands`, though it is not as difficult as it sounds.
+
+Go to the _Features_ tab of the game object, and tick "Advanced scripts", then go to the _Advanced scripts_ tab of the game object, at the top is the user interface initialisation script. This is the place to add the script command that will set up the panel.
+
+Here is an example that will set LOOK and WAIT in the pane. Note that the commands are separated by semi-colons. The second form shows how to set the colour of the text.
 ```
 JS.setCommands("Look;Wait")
 
 JS.setCommands("Look;Wait", "blue")
 ```
-This could be done in the start script of the game object, but you could have the displayed commands update according to the situation. If the player goes into a room with a throne, you could have "Sit" displayed, for example, and then have "Stand" displayed instead when the player is sat on the throne.
+You could even have the displayed commands update according to the situation. If the player goes into a room with a throne, you could have "Sit" displayed, for example, and then have "Stand" displayed instead when the player is sat on the throne. Remember to reset it when the player leaves the room.
 
 
 Further consideration
