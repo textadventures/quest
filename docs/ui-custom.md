@@ -3,20 +3,27 @@ layout: index
 title: Modifying the Status and Game Panes
 ---
 
-Customisation in Action
------------------------
-
-In this section we will modify the status bar and game panes to get a feel for how to approach it and some of the issues that can be encountered. We will go for an old-fashioned look, in brown. This is what we are aiming for:
+In this article we will modify the status bar and game panes of the Quest interfce. We will go for an old-fashioned look, in brown. This is what we are aiming for:
 
 ![](interface1.png "interface1.png")
 
-The first thing to do is to decide what we want, and how that is described in CSS. we can then assign the CSS values to some string variables. Most of what we will do is change the background colour and the border, so we start there:
+The first thing to do is to decide what we want; what colours will we use and so on.
+
+Once you know that, you can work out how it is described in CSS. CSS is a language that is used by web pages. A full description is beyond the scope of this article, but in essense it is about associating a description of how an HTML element will be displayed with that element. The description consists of a list of properties, each made up of a name and a value separated by a colon. Each property is separated by a semi-colon.
+
+Here is an example:
+
+> border: chocolate ridge 6px;background:sandybrown
+
+This is setting two properties. The first is called "border", the second is "background". The "border" property is set to "chocolate ridge 6px", i.e., the colour chocolate, the ridge line style and a thickness of 6 pixels.
+
+We will use these properties a lot as we want several elements of the page to have this style, so it is convenient to assign it to a local variable:
 
 ```
 backandborder = "border: chocolate ridge 6px;background:sandybrown"
 ```
 
-I want to include a command panel, and to have the buttons stand out a bit, so here is the CSS for the buttons:
+I want to include a command panel, and to have the buttons stand out a bit, so here is the CSS for the buttons, assigned to a second local variable:
 
 ```
 button = "padding:5px;background:BurlyWood;border:ridge chocolate 1px;"
@@ -28,13 +35,15 @@ I want the text in a certain colour and font.
 text = "color:black;font-family:georgia, serif"
 ```
 
-To set the status bar at the top isnow easy:
+To set the status bar at the top is now easy:
 
 ```
 JS.setCss ("#status", backandborder)
 ```
 
-To set the panes on the right, we can modify to classes, one used for the header and one for the content. I also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
+`JS.setCss` is a Quest function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#status". The hash at the start indicates this is the ID of an element by the way.
+
+To set the panes on the right, we can modify to classes, one used for the header and one for the content. As these are classes they start with a full stop (period). I also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
 
 ```
 JS.setCss (".ui-accordion-header", "border-radius: 0px;" + backandborder)
@@ -47,7 +56,7 @@ Then we can modify the text style:
 JS.setCss (".accordion-header-text", text)
 ```
 
-The orange triangles are awkward to change, so we will just hide them. Why actually clicks on them?
+The orange triangles are awkward to change, so we will just hide them. Who actually clicks on them?
 
 ```
 JS.setCss (".ui-icon", "display:none")
@@ -69,7 +78,9 @@ JS.setCss ("#gamePanes", "margin-top: 16px")
 JS.eval ("$('#gamePanes').width(227);")
 ```
 
-Here is the whole thing:
+Note that we have to use JS.eval for the width as it is not a CSS property.
+
+Here is the whole thing (which should go in the interface script at the top of the _Advanced Scripts_ tab of thye game object):
 
 ```
 backandborder = "border: chocolate ridge 6px;background:sandybrown"
@@ -87,6 +98,9 @@ JS.setCss ("#verblinklook", button)
 JS.setCss ("#gamePanes", "margin-top: 16px")
 JS.eval ("$('#gamePanes').width(227);")
 ```
+
+Actually I would prefer...
+------------------------
 
 Because we set up strings at the start, we can change the first two lines to see some dramatic differences...
 
