@@ -14,15 +14,17 @@ Sometimes you want the player to be able to access items in other rooms. For exa
 
 As of Quest 5.7, there are two new features that let you handle these situations relatively easily.
 
+To change the scope of all commands, say because of the nature of the rooms or objects (as with the first two examples), use the Extended Scope feature. If this is for a specific command (as with CAST, BUY or CALL in the examples above), use Alternative Scope.
+
 Extended Scope
 --------------
 
-The first is an extended scope. On the _Features_ tab of the game object, tick "Advanced scripts", then go to the _Advanced scripts_ tab. The script at the bottom allows you to add items to the scope Quest uses to decide what the player can reach.
+On the _Features_ tab of the game object, tick "Advanced scripts", then go to the _Advanced scripts_ tab. The script at the bottom allows you to add items to the scope Quest uses to decide what the player can reach.
 
 
 ### Scenery
 
-The simplest way to use this is to set up a room, let us say it is called "scenery") of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "items":
+The simplest way to use this is to set up a room, let us say it is called "scenery", of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "items":
 
 ```
 foreach (obj, GetDirectChildren(scenery)) {
@@ -77,14 +79,19 @@ What this does is check if the player is in the bar, and if so, it adds all the 
 Alternative scope
 -----------------
 
-You can set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
+You can also set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
 
 ```
 "all"        ScopeVisible()
-"inventory"  ScopeInventory
-"notheld"   ScopeVisibleNotHeld
+"inventory"  ScopeInventory()
+"notheld"    ScopeVisibleNotHeld()
+"room"       As above
+"container"  As "all", but only includes containers
+"contents"   As "all", but only includes the contents of containers
+"world"      AllObjects()
 objectname   GetAllChildObjects(GetObject(objectname))
 attrname     GetAllChildObjects(GetAttribute(player.parent, attrname))
+     or      Contents of the list
 ```
 
 The first is the default. The second tells Quest to look in the inventory; if the players is carrying a hat and there is another on the ground, typing WEAR HAT will put on the one being held, because WEAR is set to "inventory". Conversely, "notheld" makes Quest look in the room first.
@@ -93,4 +100,20 @@ If the text is set to the name of an object, Quest will look at the children of 
 
 If the text is an object attribute of the current location, Quest will look at the children of that object. This could be used for a stockroom of a shop.
 
+On the other hand, if it is an object list, then the items in the list will be used. This might be an address book, used for phoning NPCs.
+
+You can combine scopes, so "contents;storeroom" would collect any object that the player can reach that is an object and any object in the "storeroom" location. There is no prioritising, so order does not matter.
+
+For commands with multiple objects, you can specify by each object. You can see the format in this example:
+
+> object1=contents;storeroom|object2=room
+
+In this example, Quest will look for object1 in containers or the storeroom location, and for object2 in the current location.
+
+
+Even More Options?
+------------------
+You can also add your own "changecommandscope" script to add even more items to the list Quest will try to match object names against. This script can be on the player, the player's parent (the room the player is in), the player's parent's parent, or the game object. Or all of them! This allows you to add objects on a per room or per zone basis as you like.
+
+As with Extended Scope, your script should add items to the "items" local variable. It can access the command object via the "command" variable.
 
