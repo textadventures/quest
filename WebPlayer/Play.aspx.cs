@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -345,6 +345,9 @@ namespace WebPlayer
                     case "event":
                         SendEvent(args[1]);
                         break;
+                    case "call":
+                        SendCall(args[1]);
+                        break;
                     case "tick":
                         m_player.Tick(tickCount);
                         break;
@@ -389,6 +392,12 @@ namespace WebPlayer
         {
             string[] args = data.Split(new[] { ';' }, 2);
             m_player.SendEvent(args[0], args[1]);
+        }
+
+        void SendCall(string data)
+        {
+            string[] args = data.Split(new[] { ';' }, 2);
+            m_player.SendCall(args[0], args[1]);
         }
 
         private SessionResources Resources

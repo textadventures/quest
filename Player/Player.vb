@@ -1,4 +1,4 @@
-﻿Imports System.Xml
+Imports System.Xml
 Imports System.Threading
 Imports System.Globalization
 
@@ -791,6 +791,13 @@ Public Class Player
             m_recordedWalkthrough.Add("event:" + eventName + ";" + param)
         End If
         m_game.SendEvent(eventName, param)
+        ClearBuffer()
+    End Sub
+    Private Sub ctlPlayerHtml_SendCall(eventName As String, param As String) Handles ctlPlayerHtml.SendCall
+        If RecordWalkthrough IsNot Nothing Then
+            m_recordedWalkthrough.Add("call:" + eventName + ";" + param)
+        End If
+        m_game.SendCall(eventName, param)
         ClearBuffer()
     End Sub
 

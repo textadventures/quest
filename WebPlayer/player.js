@@ -1,4 +1,4 @@
-﻿var $_GET = {};
+var $_GET = {};
 var webPlayer = true;
 var tmrTick = null;
 var tickCount = 0;
@@ -173,6 +173,19 @@ function ASLEvent(event, parameter) {
     // even though we use "return false" to suppress submission of the form with the Enter key.
     window.setTimeout(function () {
         $("#fldUIMsg").val("event " + event + ";" + parameter);
+        $("#cmdSubmit").click();
+    }, 100);
+    return true;
+}
+
+function ASLCall(event, parameter) {
+    if (!canSendCommand) return false;
+    canSendCommand = false;
+    // using setTimeout here to work around a double-submission race condition which seems to only affect Firefox,
+    // even though we use "return false" to suppress submission of the form with the Enter key.
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("call " + event + ";" + parameter);
+        //This might still run the turnscripts!!! Warning from KV
         $("#cmdSubmit").click();
     }, 100);
     return true;

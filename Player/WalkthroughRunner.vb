@@ -1,4 +1,4 @@
-﻿Friend Class WalkthroughRunner
+Friend Class WalkthroughRunner
     Private m_gameDebug As IASLDebug
     Private m_game As IASL
     Private m_walkthrough As String
@@ -44,6 +44,11 @@
                     Dim eventName As String = eventData(0)
                     Dim param As String = eventData(1)
                     m_game.SendEvent(eventName, param)
+                ElseIf cmd.StartsWith("call:") Then
+                    Dim eventData As String() = cmd.Substring(6).Split(New Char() {";"c}, 2)
+                    Dim eventName As String = eventData(0)
+                    Dim param As String = eventData(1)
+                    m_game.SendCall(eventName, param)
                 Else
                     m_game.SendCommand(cmd)
                 End If
