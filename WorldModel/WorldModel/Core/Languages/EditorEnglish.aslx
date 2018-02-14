@@ -857,7 +857,6 @@
   <template name="EditorTextProcessorNotHere">If not in room</template>
   <template name="EditorTextProcessorRandomText">Random text</template>
   <template name="EditorTextProcessorImage">Image</template>
-  <template name="EditorTextProcessorImage">Bild</template>
   <template name="EditorScriptObjectsInventory">Inventory</template>
   <template name="EditorScriptObjectsMove">Move</template>
   <template name="EditorScriptObjectsShow">Show</template>
