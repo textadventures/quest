@@ -795,32 +795,32 @@
   
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
-    request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+    JS.setPanelContents("<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
     game.panelcontents = filename
     ]]>
   </function>
 
   <function name="ClearFramePicture">
-    request (SetPanelContents, "")
+    JS.setPanelContents("")
     game.panelcontents = null
   </function>
 
   <function name="ClearScreen">
-    request (ClearScreen, "")
+    JS.clearScreen()
   </function>
 
   <function name="SetForegroundColour" parameters="colour">
-    request (Foreground, colour)
+    //request (Foreground, colour)
     game.defaultforeground = colour
   </function>
 
   <function name="SetBackgroundColour" parameters="colour">
-    request (Background, colour)
+    JS.setBackground(game.defaultbackground)
     game.defaultbackground = colour
   </function>
 
   <function name="SetLinkForegroundColour" parameters="colour">
-    request (LinkForeground, colour)
+    //request (LinkForeground, colour)
     game.defaultlinkforeground = colour
   </function>
 
@@ -862,10 +862,6 @@
 
   <function name="ShowVimeo" parameters="id">
     JS.AddVimeo(id)
-  </function>
-
-  <function name="WaitForKeyPress">
-    request (Wait, "")
   </function>
 
   <function name="DisplayHttpLink" parameters="text, url, https">

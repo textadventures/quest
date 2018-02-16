@@ -172,7 +172,7 @@
             }            
           }
           
-          request (UpdateLocation, CapFirst(GetDisplayName(game.pov.parent)))
+          JS.updateLocation(CapFirst(GetDisplayName(game.pov.parent)))
           roomFrameExists = false
           if (HasString(game.pov.parent, "picture")) {
             if (LengthOf(game.pov.parent.picture) > 0) {

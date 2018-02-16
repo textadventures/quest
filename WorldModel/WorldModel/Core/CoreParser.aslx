@@ -742,15 +742,9 @@
   determined by an attribute on the command, among other ways.
   -->
   <function name="GetScope" parameters="variable, value, objtype" type="list">
-    // CHANGE PIX: Returns a list, not an objectlist because that is what ListCombine gives us
-    //msg("In GetScope")
-    //msg("variable=" + variable)
-    //msg("value=" + value)
-    //msg("objtype=" + objtype)
     items = NewObjectList()
     if (HasString(game.pov.currentcommandpattern, "scope")) {
       scoping = GetScoping(game.pov.currentcommandpattern.scope, variable)
-      // CHANGE: the "scope" for a command can now be a comma-separated list of the accepted values
       foreach (partscope, Split(scoping, ";")) {
         switch (partscope) {
           case ("inventory") {
@@ -787,6 +781,12 @@
             }
             else if (HasAttribute(game.pov.parent, partscope)) {
               attr = GetAttribute(game.pov.parent, partscope)
+              if (TypeOf(attr) = "objectlist") {
+                items = ListCombine (items, attr)
+              }
+            }
+            else if (HasAttribute(game.pov, partscope)) {
+              attr = GetAttribute(game.pov, partscope)
               if (TypeOf(attr) = "objectlist") {
                 items = ListCombine (items, attr)
               }

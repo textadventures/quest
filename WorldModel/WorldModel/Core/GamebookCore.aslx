@@ -72,18 +72,18 @@
     if (game.setcustompadding) {
       JS.setGamePadding(game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
     }
-    request (Background, game.defaultbackground)
-    request (Foreground, game.defaultforeground)
-    request (LinkForeground, game.defaultlinkforeground)
+    SetBackgroundColour(game.defaultbackground)
+    SetForegroundColour(game.defaultforeground)
+    SetLinkForegroundColour(game.defaultlinkforeground)
     JS.SetMenuBackground(game.menubackground)
     JS.SetMenuForeground(game.menuforeground)
     JS.SetMenuHoverBackground(game.menuhoverbackground)
     JS.SetMenuHoverForeground(game.menuhoverforeground)
     JS.SetMenuFontName(game.menufont)
     JS.SetMenuFontSize(game.menufontsize + "pt")
-    request (Hide, "Panes")
-    request (Hide, "Command")
-    request (Hide, "Location")
+    JS.panesVisible(false)
+    JS.uiHide("#location")
+    JS.uiHide("#txtCommandDiv")
   </function>
 
   <function name="StartGame">
@@ -163,7 +163,7 @@
     parent = player.parent
     if (game.clearlastpage) {
       if (not game.noclear) {
-        request (ClearScreen, "")
+        ClearScreen
       }
     }
     else {
@@ -298,9 +298,9 @@
   </function>
 
   <function name="GetInput" parameters="callback">
-    request (Show, "Command")
+    JS.uiShow("#txtCommandDiv")
     get input {
-      request (Hide, "Command")
+      JS.uiHide("#txtCommandDiv")
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", result)
       invoke (callback, parameters)

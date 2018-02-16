@@ -464,6 +464,7 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
         <caption>[EditorGameRespondtogridclicks]</caption>
         <attribute>respondtogridclicks</attribute>
       </control>

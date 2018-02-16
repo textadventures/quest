@@ -46,7 +46,7 @@
   </function>
 
   <function name="Pause" parameters="interval">
-    request (Pause, ToString(interval * 1000))
+    error("The Pause function is obsolete as of Quest 5.5")
   </function>
   
 </library>

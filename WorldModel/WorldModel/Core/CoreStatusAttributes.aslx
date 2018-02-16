@@ -4,7 +4,7 @@
     status = AddStatusAttributesForElement("", game, game.statusattributes)
     status = AddStatusAttributesForElement(status, game.pov, game.povstatusattributes)
     status = AddStatusAttributesForElement(status, game.pov, game.pov.statusattributes)
-    request (SetStatus, status)
+    JS.updateStatus(status)
     ]]>
   </function>
 
