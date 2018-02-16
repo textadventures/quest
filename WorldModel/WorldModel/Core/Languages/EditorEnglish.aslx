@@ -139,6 +139,7 @@
   <template name="EditorGameHeightpixels">Height (pixels)</template>
   <template name="EditorGameExitwidth">Exit width</template>
   <template name="EditorGameExitcolour">Exit colour</template>
+  <template name="EditorGameRespondtogridclicks">Map should respond to clicks?</template>
   <template name="EditorGameLayout">Layout</template>
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
@@ -857,6 +858,7 @@
   <template name="EditorTextProcessorNotHere">If not in room</template>
   <template name="EditorTextProcessorRandomText">Random text</template>
   <template name="EditorTextProcessorImage">Image</template>
+  <template name="EditorTextProcessorImage">Bild</template>
   <template name="EditorScriptObjectsInventory">Inventory</template>
   <template name="EditorScriptObjectsMove">Move</template>
   <template name="EditorScriptObjectsShow">Show</template>
