@@ -496,6 +496,12 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.GetResourceExternalData(filename);
         }
 
+        public string SetExternalFileData(string filename, string content)
+        {
+            if (filename.Contains("..") || !filename.ToUpper().EndsWith(".PHP")) throw new ArgumentOutOfRangeException("Invalid filename");
+            return m_worldModel.SetResourceExternalData(filename, content);
+        }
+
         public string GetUniqueElementName(string name)
         {
             return m_worldModel.GetUniqueElementName(name);
