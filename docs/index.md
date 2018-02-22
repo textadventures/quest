@@ -121,6 +121,7 @@ These pages get progressively more advanced. The first two require no coding (no
 -  [Display verbs](display_verbs.html)
 -  [Custom commands and status pane](custom_panes.html) (adding extra panes to your game)
 -  [Simple Customisation](ui-custom.html)
+-  [Mesing with the location bar](ui-location-bar.md) (have it display the turn and score, or add commands to it)
 -  [Customisation part 1](ui-javascript.html) (three pages that explore customisation in detail)
 -  [Customisation part 2](ui-javascript2.html)
 -  [Customisation part 3](ui-javascript3.html)
