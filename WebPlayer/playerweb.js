@@ -51,18 +51,23 @@ function playMp3(filename, sync, looped) {
     playAudio(filename, "mp3", sync, looped);
 }
 
+var showCommandDiv = isElementVisible("#txtCommandDiv");
 function playAudio(filename, format, sync, looped) {
     _currentPlayer = "jplayer";
 
     $("#jquery_jplayer").unbind($.jPlayer.event.ended);
 
     if (looped) {
-        // TO DO: This works in Firefox. In Chrome the event does fire but the audio doesn't restart.
+        // This works in Firefox and Chrome.
         endFunction = function () { $("#jquery_jplayer").jPlayer("play"); };
     }
     else if (sync) {
+        // Added the following line to set the variable properly. 3-4-2018
+		showCommandDiv = isElementVisible("#txtCommandDiv");
         _waitingForSoundToFinish = true;
-        endFunction = function () { finishSync($("#txtCommandDiv").is(":visible")); };
+        // Altered finishSync to use the showCommandDiv variable.
+        // It was using txtCommandDiv visibility, which the last line sets to false!
+        endFunction = function () { finishSync(showCommandDiv); };
         $("#txtCommandDiv").hide();
     }
     else {
