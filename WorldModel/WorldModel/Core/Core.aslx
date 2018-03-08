@@ -392,7 +392,10 @@
 
 
   <function name="FinishTurn">
-    RunTurnScripts
+    if (not GetBoolean(game, "suppressturnscripts")) {
+      RunTurnScripts
+    }
+    game.suppressturnscripts = false
     UpdateStatusAttributes
     CheckDarkness
     UpdateObjectLinks
