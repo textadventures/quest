@@ -328,9 +328,13 @@
   
   <command name="undo">
     <pattern type="string">[undo]</pattern>
-    <script>undo</script>
+    <script>
+      undo
+      game.suppressturnscripts = true
+    </script>
     <isundo/>
   </command>
+
   
   <command name="inventory" pattern="[inventory]">
     list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
