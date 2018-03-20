@@ -1,4 +1,6 @@
-﻿Public Class EditBrowser
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class EditBrowser
     Private m_recentItems As RecentItems
 
     Public Event EditGame(filename As String)
@@ -12,7 +14,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         m_recentItems = New RecentItems("EditorRecent")
-        ctlGameList.LaunchCaption = "Edit"
+        ctlGameList.LaunchCaption = T("LauncherEdit")
         Populate()
 
         AddHandler ctlEditorWelcome.CreateNewGame, AddressOf DoCreateNewGame
@@ -55,5 +57,9 @@
 
     Private Sub DoTutorial()
         RaiseEvent Tutorial()
+    End Sub
+
+    Private Sub lblRecent_Initialized(sender As Object, e As EventArgs) Handles lblRecent.Initialized
+        lblRecent.Content = T("LauncherRecent")
     End Sub
 End Class

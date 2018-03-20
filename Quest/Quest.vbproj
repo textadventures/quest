@@ -19,7 +19,7 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
-    <ApplicationIcon>q2_48x48c.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\questicon256.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -29,7 +29,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>D:\Sven\Quest\quest-5.7.1.project.modern\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -40,8 +40,9 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -90,6 +91,21 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>1E94BDD171440820B1CBF645B0BCC15FD37D2AE2</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Quest_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -178,13 +194,26 @@
     <Compile Include="OptionsDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="About.de.resx">
+      <DependentUpon>About.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="About.ha.resx">
+      <DependentUpon>About.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ErrorHandler.de.resx">
+      <DependentUpon>ErrorHandler.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorHandler.resx">
       <DependentUpon>ErrorHandler.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.de.resx">
+      <DependentUpon>Main.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.vb</DependentUpon>
@@ -195,18 +224,22 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="OptionsDialog.de.resx">
+      <DependentUpon>OptionsDialog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsDialog.resx">
       <DependentUpon>OptionsDialog.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
     <None Include="My Project\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
@@ -252,13 +285,14 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Resources\quest.png" />
+    <None Include="Quest_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="jfwapi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="q2_48x48c.ico" />
+    <Content Include="Resources\questicon256.ico" />
+    <None Include="Resources\questlogo.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -292,6 +326,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,5 +1,6 @@
 ﻿Imports System.Windows
 Imports System.Windows.Media
+Imports TextAdventures.Utility.Language.L
 
 Public Class GameListItem
     Public Enum State
@@ -68,16 +69,16 @@ Public Class GameListItem
 
             Select Case m_state
                 Case State.ReadyToPlay
-                    cmdLaunch.Content = "Play"
-                    info.Text = "Download complete"
+                    cmdLaunch.Content = T("LauncherPlay")
+                    info.Text = T("LauncherDownloadComplete")
                     mnuDelete.IsEnabled = True
                 Case State.NotDownloaded
-                    cmdLaunch.Content = "Download"
-                    info.Text = "Not downloaded"
+                    cmdLaunch.Content = T("LauncherDownload")
+                    info.Text = T("LauncherNotDownloaded")
                     mnuDelete.IsEnabled = False
                 Case State.Downloading
-                    cmdLaunch.Content = "Cancel"
-                    info.Text = "Downloading..."
+                    cmdLaunch.Content = T("LauncherCancel")
+                    info.Text = T("LauncherDownloading")
                     mnuDelete.IsEnabled = False
             End Select
 
@@ -363,5 +364,17 @@ Public Class GameListItem
             System.IO.File.Delete(Filename)
         End If
         CurrentState = State.NotDownloaded
+    End Sub
+
+    Private Sub mnuClear_Initialized(sender As Object, e As EventArgs) Handles mnuClear.Initialized
+        mnuClear.Header = T("EditorClearAllItems")
+    End Sub
+
+    Private Sub mnuRemove_Initialized(sender As Object, e As EventArgs) Handles mnuRemove.Initialized
+        mnuRemove.Header = T("EditorRemoveThisItem")
+    End Sub
+
+    Private Sub mnuDelete_Initialized(sender As Object, e As EventArgs) Handles mnuDelete.Initialized
+        mnuDelete.Header = T("EditorDeleteDownloadedFile")
     End Sub
 End Class

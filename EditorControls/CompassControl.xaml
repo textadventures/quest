@@ -13,10 +13,10 @@
     </UserControl.Resources>
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
-        
+
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
             <Grid HorizontalAlignment="Center">
                 <Grid.RowDefinitions>

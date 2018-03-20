@@ -27,7 +27,7 @@ Public Class LoadingControl
         lblStatus.ScrollToCaret()
     End Sub
 
-    Private Sub lblStatus_GotFocus(sender As Object, e As EventArgs) Handles lblStatus.GotFocus
+    Private Sub lblStatus_GotFocus(sender As Object, e As EventArgs)
         HideCaret(lblStatus.Handle)
     End Sub
 

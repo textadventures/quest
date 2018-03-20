@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="mnuFilter.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAIDSURBVDhPpZLrS5NhGMb3j4SWh0oRQVExD4gonkDpg4hG
+        YKxG6WBogkMZKgPNCEVJFBGdGETEvgwyO9DJE5syZw3PIlPEE9pgBCLZ5XvdMB8Ew8gXbl54nuf63dd9
+        0OGSnwCahxbPRNPAPMw9Xpg6ZmF46kZZ0xSKzJPIrhpDWsVnpBhGkKx3nAX8Pv7z1zg8OoY/cITdn4fw
+        bf/C0kYAN3Ma/w3gWfZL5kzTKBxjWyK2DftwI9tyMYCZKXbNHaD91bLYJrDXsYbrWfUKwJrPE9M2M1Oc
+        VzOOpHI7Jr376Hi9ogHqFIANO0/MmmmbmSmm9a8ze+I4MrNWAdjtoJgWcx+PSzg166yZZ8xM8XvXDix9
+        c4jIqFYAjoriBV9AhEPv1mH/sonogha0afbZMMZz+yreTGyhpusHwtNNCsA5U1zS4BLxzJIfg299qO32
+        Ir7UJtZfftyATqeT+8o2D8JSjQrAJblrncYL7ZJ2+bfaFnC/1S1NjL3diRat7qrO7wLRP3HjWsojBeCo
+        mDEo5mNjuweFGvjWg2EBhCbpkW78htSHHwRyNdmgAFzPEee2iFkzayy2OLXzT4gr6UdUnlXrullsxxQ+
+        kx0g8BTA3aZlButjSTyjODq/WcQcW/B/Je4OQhLvKQDnzN1mp0nnkvAhR8VuMzNrpm1mpjgkoVwB/v8D
+        TgDQASA1MVpwzwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="expandAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="expandAllToolStripMenuItem.Text" xml:space="preserve">
+    <value>Alle erweitern</value>
+  </data>
+  <data name="collapseAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="collapseAllToolStripMenuItem.Text" xml:space="preserve">
+    <value>Alle zusammenklappen</value>
+  </data>
+  <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 6</value>
+  </data>
+  <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="cutToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ausschneiden</value>
+  </data>
+  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="copyToolStripMenuItem.Text" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Einfügen</value>
+  </data>
+  <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 6</value>
+  </data>
+  <data name="AddVerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AddCommandToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+K</value>
+  </data>
+  <data name="AddCommandToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddCommandToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Kommando</value>
+  </data>
+  <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 6</value>
+  </data>
+  <data name="addPageToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+S</value>
+  </data>
+  <data name="addPageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="addPageToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Seite</value>
+  </data>
+  <data name="AddRoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddRoomToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Raum</value>
+  </data>
+  <data name="AddObjectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddObjectToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Objekt</value>
+  </data>
+  <data name="AddExitToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+A</value>
+  </data>
+  <data name="AddExitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddExitToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Ausgang</value>
+  </data>
+  <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 6</value>
+  </data>
+  <data name="addTurnScriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="addTurnScriptToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Turn-Skript</value>
+  </data>
+  <data name="AddFunctionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddFunctionToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Funktion</value>
+  </data>
+  <data name="addTimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddWalkthroughToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 6</value>
+  </data>
+  <data name="AddEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddLibraryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddLibraryToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Bibliothek</value>
+  </data>
+  <data name="AddTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddTemplateToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Vorlage</value>
+  </data>
+  <data name="AddDynamicTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddDynamicTemplateToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Dynamische Vorlage</value>
+  </data>
+  <data name="AddObjectTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddObjectTypeToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Objekt-Typ</value>
+  </data>
+  <data name="AddJavascriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddImpliedTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddImpliedTypeToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Implizierter Typ</value>
+  </data>
+  <data name="AddDelegateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 24</value>
+  </data>
+  <data name="AddDelegateToolStripMenuItem.Text" xml:space="preserve">
+    <value>+ Delegieren</value>
+  </data>
+  <data name="ctlContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>233, 610</value>
+  </data>
+  <data name="ctlImageList.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACg
+        CQAAAk1TRnQBSQFMAgEBAgEAAbABAAGwAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        AwABEAMAAQEBAAEgBgABEP8A/wAYAAMDAQQDLgFIAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFg
+        AToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAzABTAMDAQQMAAMyAVABOgI5AWABOgI5AWABOgI5
+        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADJgE4kAADQgF0AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AUYCRQF/CAADQAFwAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wE9AjwBaIwAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVQCUwGv
+        CAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVkBVAFWAb6MAAFRAlABnwFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFUAlMBrwgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFhATkBPAHvAxcBIIgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVQCUwGvCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8DMgFQ
+        iAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BVAJTAa8IAAFRAlABnwFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFHAkYBgYgAAVECUAGfAVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVQCUwGvCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8DSgGNiAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BVAJTAa8IAAFRAlABnwFcARYBGAH/AVwBFgEYAf8BOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5
+        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADMgFQAwYBCIgAAVECUAGfAVwBFgEYAf8BXAEWARgB/wFc
+        ARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVACTwGbCAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        ATYCNQFYjAABUQJQAZ8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEY
+        Af8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AWECRgHnAyoBQAgAAVECUAGf
+        AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEW
+        ARgB/wFcARYBGAH/AVwBFgEYAf8BWQJTAccDDAEQjAADQQFyAVwBFgEYAf8BXAEWARgB/wFcARYBGAH/
+        AVwBFgEYAf8BVgFSAVMBqwMgAS4kAANBAXIBXAEWARgB/wFcARYBGAH/AVwBFgEYAf8BXAEWARgB/wFW
+        AVIBUwGrAyABLqgAAyoBQAE6AjkBYAE6AjkBYAE6AjkBYAMJAQwsAAMqAUABOgI5AWABOgI5AWABOgI5
+        AWADCQEM/wD/AKYAAUIBTQE+BwABPgMAASgDAAFAAwABEAMAAQEBAAEBBQABgBcAA/8BAAT/BAAE/wQA
+        AYABAQHAAQcEAAGAAQEBgAEDBAABgAEBAYABAwQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAQQA
+        AYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAwQAAYABAQGAAQMEAAGAAf8BgAH/BAABwQH/AcEB/wQA
+        BP8EAAT/BAAL
+</value>
+  </data>
+</root>

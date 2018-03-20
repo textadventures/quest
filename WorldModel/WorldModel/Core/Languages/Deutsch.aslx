@@ -8,6 +8,7 @@
   
   <template name="LanguageId">de</template>
 
+  <dynamictemplate name="ObjectCannotBeStored">"Du kannst das dort nicht hineinlegen."</dynamictemplate>
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
   <template name="DefaultObjectDescription">Du siehst nichts Bemerkenswertes.</template>

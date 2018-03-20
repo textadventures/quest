@@ -6,6 +6,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <CheckBox Name="checkBox" Click="checkBox_Click" />
+        <CheckBox Name="checkBox" Click="checkBox_Click" Foreground="#FF222222" Background="White" >
+            <CheckBox.BorderBrush>
+                <SolidColorBrush Color="#FFACACAC"/>
+            </CheckBox.BorderBrush>
+        </CheckBox>
     </Grid>
 </UserControl>

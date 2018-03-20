@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports TextAdventures.Utility.Language.L
 
 Public Class PublishWindow
 
@@ -54,20 +55,20 @@ Public Class PublishWindow
         Try
             System.IO.Directory.CreateDirectory(outputFolder)
         Catch ex As Exception
-            MsgBox("Failed to create folder: " + ex.Message, MsgBoxStyle.Critical, "Failed to create folder")
+            MsgBox(T("EditorFailedCreateFolder") + ex.Message, MsgBoxStyle.Critical, "Quest")
             Return
         End Try
 
         Dim outputFilename As String = txtFilename.Text
 
         If System.IO.File.Exists(outputFilename) Then
-            Dim deleteExisting = MsgBox("Do you want to overwrite the existing .quest file?", MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Output already exists")
+            Dim deleteExisting = MsgBox(T("EditorOverwriteExistingFile"), MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Quest")
 
             If deleteExisting = MsgBoxResult.Yes Then
                 Try
                     System.IO.File.Delete(outputFilename)
                 Catch ex As Exception
-                    MsgBox("Unable to delete file: " + ex.Message, MsgBoxStyle.Critical, "Unable to delete file")
+                    MsgBox(T("EditorUnableDeleteFile") + ex.Message, MsgBoxStyle.Critical, "Quest")
                     Return
                 End Try
             ElseIf deleteExisting = MsgBoxResult.No Then
@@ -85,7 +86,7 @@ Public Class PublishWindow
         Dim result = m_controller.Publish(outputFilename, chkIncludeWalkthrough.Checked)
 
         If Not result.Valid Then
-            EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")
+            EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, T("EditorUnablePublishGame"))
         Else
             ' Show Output folder in a new Explorer window
             Process.Start("explorer.exe", "/n," + outputFolder)
@@ -93,9 +94,9 @@ Public Class PublishWindow
             Try
                 ' warn if file size over 20MB
                 If New FileInfo(outputFilename).Length > 20 * 1024 * 1024 Then
-                    MsgBox("Output file size is over 20MB. Consider reducing the size of any image or sound files, and delete any unused files from the game folder." +
+                    MsgBox(T("EditorOutputFileOver") +
                            Environment.NewLine + Environment.NewLine +
-                           "You may not be able to upload this file to textadventures.co.uk.", MsgBoxStyle.Exclamation, "Warning")
+                           T("EditorNotBeAbleUploadFile"), MsgBoxStyle.Exclamation, "Warning")
                 End If
             Catch ex As Exception
                 ' ignore

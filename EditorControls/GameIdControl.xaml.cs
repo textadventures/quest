@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -22,6 +23,7 @@ namespace TextAdventures.Quest.EditorControls
         public GameIdControl()
         {
             InitializeComponent();
+            cmdGenerate.Content = L.T("EditorGenerate");
             m_helper = new ControlDataHelper<string>(this);
         }
 

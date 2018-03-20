@@ -21,11 +21,32 @@
             <ComboBox Name="to" Padding="6,3,6,3" Margin="6,0,0,0" MinWidth="90" SelectionChanged="to_SelectionChanged"/>
             <TextBlock Name="toName" Padding="6,3,6,3" Margin="6,0,0,0"></TextBlock>
         </StackPanel>
-        <Button Style="{StaticResource button}"  Name="create" HorizontalAlignment="Left" Click="create_Click">Create exit</Button>
-        <Button Style="{StaticResource button}" Name="edit" HorizontalAlignment="Left" Click="edit_Click">Edit</Button>
-        <CheckBox Style="{StaticResource item}" Name="chkCorresponding">Also create exit in the other direction</CheckBox>
+        <Button Style="{StaticResource button}"  Name="create" HorizontalAlignment="Left" Click="create_Click" BorderBrush="#FFACACAC" Foreground="Black">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background> Create exit
+        </Button>
+        <Button Style="{StaticResource button}" Name="edit" HorizontalAlignment="Left" Click="edit_Click" BorderBrush="#FFACACAC" Foreground="Black">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background> Edit
+        </Button>
+        <CheckBox Style="{StaticResource item}" Name="chkCorresponding" BorderBrush="#FFACACAC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">Also create exit in the other direction</CheckBox>
         <TextBlock Style="{StaticResource item}" Name="corresponding">Exit in the other direction already exists</TextBlock>
-        <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left" Click="createCorresponding_Click">Create exit in the other direction</Button>
+        <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left" Click="createCorresponding_Click" Foreground="Black" BorderBrush="#FFACACAC">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background> Create exit in the other direction
+        </Button>
         <Rectangle Name="rectangle" Height="1" VerticalAlignment="Bottom" Margin="25,15,25,5" SnapsToDevicePixels="True">
             <Rectangle.Fill>
                 <SolidColorBrush Color="DarkGray"/>

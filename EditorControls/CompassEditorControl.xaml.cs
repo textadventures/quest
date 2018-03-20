@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -69,6 +70,17 @@ namespace TextAdventures.Quest.EditorControls
 
         private void UpdateControlVisibility()
         {
+            createExitTitle.Text = L.T("EditorCreateExitTitle");
+            toLabel.Content = L.T("EditorToLabel");
+            createLookOnlyTitle.Text = L.T("EditorCreateLookOnlyTitle");
+            createLookOnlyDesc.Text = L.T("EditorCreateLookOnlyDesc");
+            createLookOnly.Content = L.T("EditorCreateLookOnly");
+            create.Content = L.T("EditorCreate");
+            edit.Content = L.T("EditorEdit");
+            chkCorresponding.Content = L.T("EditorChkCorresponding");
+            corresponding.Text = L.T("EditorCorresponding");
+            createCorresponding.Content = L.T("EditorCreateCorresponding");
+
             if (m_mode == CompassEditorMode.NoSelection || m_mode == CompassEditorMode.NotACompassExit)
             {
                 createExitTitle.Visibility = Visibility.Collapsed;
@@ -85,7 +97,7 @@ namespace TextAdventures.Quest.EditorControls
                 corresponding.Visibility = Visibility.Collapsed;
                 createCorresponding.Visibility = Visibility.Collapsed;
 
-                direction.Text = m_mode == CompassEditorMode.NoSelection ? "No exit selected" : "Selected exit is not a compass direction";
+                direction.Text = m_mode == CompassEditorMode.NoSelection ? L.T("EditorDirectionNoSelect") : L.T("EditorDirectionSelect");
             }
             else if (m_mode == CompassEditorMode.NewCompassExit)
             {

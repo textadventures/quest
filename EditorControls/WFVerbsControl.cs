@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -12,9 +13,9 @@ namespace TextAdventures.Quest.EditorControls
         private class VerbsSubEditorControlData : AttributeSubEditorControlData
         {
             private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
-                {"string", "Print a message"},
-                {"script", "Run a script"},
-                {"scriptdictionary", "Require another object"},
+                {"string", L.T("TypePrintMessage")},
+                {"script", L.T("TypeRunScript")},
+                {"scriptdictionary", L.T("TypeRequireAnotherObject")},
             };
 
             public VerbsSubEditorControlData(string attribute)
@@ -34,7 +35,7 @@ namespace TextAdventures.Quest.EditorControls
                     case "keyname":
                         return "Object";
                     case "keyprompt":
-                        return "Please enter the object name";
+                        return L.T("EditorKeypromptEnterObjectName");
                     case "source":
                         return "object";
                 }
@@ -55,9 +56,9 @@ namespace TextAdventures.Quest.EditorControls
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
-            ctlSplitContainer.SplitterDistance = 125;
+            // ctlSplitContainer.SplitterDistance = 125;
             lblAttributesTitle.Text = "Verbs";
-            lblAttributesTitle.Width = 60;
+            // lblAttributesTitle.Width = 60;
             cmdOnChange.Available = false;
         }
 
@@ -91,7 +92,7 @@ namespace TextAdventures.Quest.EditorControls
             IDictionary<string, string> availableVerbs = Controller.GetVerbProperties();
 
             PopupEditors.EditStringResult result = PopupEditors.EditString(
-                "Please enter a name for the new verb",
+                L.T("EditorEnterNameForNewVerb"),
                 string.Empty,
                 availableVerbs.Values);
 
@@ -167,6 +168,35 @@ namespace TextAdventures.Quest.EditorControls
         {
             string displayName = Controller.GetDisplayVerbPatternForAttribute(attr.AttributeName);
             return displayName ?? attr.AttributeName;
+        }
+
+        private void InitializeComponent()
+        {
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
+            this.ctlSplitContainerMain.Panel2.SuspendLayout();
+            this.ctlSplitContainerMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainer)).BeginInit();
+            this.ctlSplitContainer.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // ctlSplitContainerMain
+            // 
+            // 
+            // ctlSplitContainer
+            // 
+            this.ctlSplitContainer.SplitterDistance = 660;
+            // 
+            // WFVerbsControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.Name = "WFVerbsControl";
+            this.ctlSplitContainerMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).EndInit();
+            this.ctlSplitContainerMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainer)).EndInit();
+            this.ctlSplitContainer.ResumeLayout(false);
+            this.ResumeLayout(false);
+
         }
     }
 }

@@ -24,106 +24,70 @@ Partial Class ErrorHandler
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ErrorHandler))
         Me.lblInfo = New System.Windows.Forms.Label()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.txtError = New System.Windows.Forms.TextBox()
         Me.cmdClose = New System.Windows.Forms.Button()
         Me.cmdReport = New System.Windows.Forms.Button()
         Me.cmdCopy = New System.Windows.Forms.Button()
         Me.lblHelp = New System.Windows.Forms.Label()
         Me.lblIssueTracker = New System.Windows.Forms.LinkLabel()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'lblInfo
         '
-        Me.lblInfo.AutoSize = True
-        Me.lblInfo.Location = New System.Drawing.Point(71, 13)
+        resources.ApplyResources(Me.lblInfo, "lblInfo")
         Me.lblInfo.Name = "lblInfo"
-        Me.lblInfo.Size = New System.Drawing.Size(183, 13)
-        Me.lblInfo.TabIndex = 0
-        Me.lblInfo.Text = "Sorry, an error has occurred in Quest."
-        '
-        'PictureBox1
-        '
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(13, 13)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(52, 50)
-        Me.PictureBox1.TabIndex = 1
-        Me.PictureBox1.TabStop = False
         '
         'txtError
         '
-        Me.txtError.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtError.Location = New System.Drawing.Point(72, 30)
-        Me.txtError.Multiline = True
+        resources.ApplyResources(Me.txtError, "txtError")
         Me.txtError.Name = "txtError"
         Me.txtError.ReadOnly = True
-        Me.txtError.Size = New System.Drawing.Size(505, 82)
-        Me.txtError.TabIndex = 2
         '
         'cmdClose
         '
-        Me.cmdClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        resources.ApplyResources(Me.cmdClose, "cmdClose")
         Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdClose.Location = New System.Drawing.Point(502, 284)
         Me.cmdClose.Name = "cmdClose"
-        Me.cmdClose.Size = New System.Drawing.Size(75, 23)
-        Me.cmdClose.TabIndex = 3
-        Me.cmdClose.Text = "Close"
         Me.cmdClose.UseVisualStyleBackColor = True
         '
         'cmdReport
         '
-        Me.cmdReport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdReport.Location = New System.Drawing.Point(344, 284)
+        resources.ApplyResources(Me.cmdReport, "cmdReport")
         Me.cmdReport.Name = "cmdReport"
-        Me.cmdReport.Size = New System.Drawing.Size(152, 23)
-        Me.cmdReport.TabIndex = 4
-        Me.cmdReport.Text = "Report this error"
         Me.cmdReport.UseVisualStyleBackColor = True
-        Me.cmdReport.Visible = False
         '
         'cmdCopy
         '
-        Me.cmdCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cmdCopy.Location = New System.Drawing.Point(72, 118)
+        resources.ApplyResources(Me.cmdCopy, "cmdCopy")
         Me.cmdCopy.Name = "cmdCopy"
-        Me.cmdCopy.Size = New System.Drawing.Size(204, 23)
-        Me.cmdCopy.TabIndex = 5
-        Me.cmdCopy.Text = "Copy error details to clipboard"
         Me.cmdCopy.UseVisualStyleBackColor = True
         '
         'lblHelp
         '
-        Me.lblHelp.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblHelp.Location = New System.Drawing.Point(72, 155)
+        resources.ApplyResources(Me.lblHelp, "lblHelp")
         Me.lblHelp.Name = "lblHelp"
-        Me.lblHelp.Size = New System.Drawing.Size(492, 101)
-        Me.lblHelp.TabIndex = 6
-        Me.lblHelp.Text = resources.GetString("lblHelp.Text")
         '
         'lblIssueTracker
         '
-        Me.lblIssueTracker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblIssueTracker.AutoSize = True
-        Me.lblIssueTracker.Location = New System.Drawing.Point(72, 284)
+        resources.ApplyResources(Me.lblIssueTracker, "lblIssueTracker")
         Me.lblIssueTracker.Name = "lblIssueTracker"
-        Me.lblIssueTracker.Size = New System.Drawing.Size(72, 13)
-        Me.lblIssueTracker.TabIndex = 7
         Me.lblIssueTracker.TabStop = True
-        Me.lblIssueTracker.Text = "Issue Tracker"
+        '
+        'PictureBox1
+        '
+        resources.ApplyResources(Me.PictureBox1, "PictureBox1")
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.TabStop = False
         '
         'ErrorHandler
         '
         Me.AcceptButton = Me.cmdReport
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.Color.GhostWhite
         Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(589, 319)
         Me.Controls.Add(Me.lblIssueTracker)
         Me.Controls.Add(Me.lblHelp)
         Me.Controls.Add(Me.cmdCopy)
@@ -132,12 +96,9 @@ Partial Class ErrorHandler
         Me.Controls.Add(Me.txtError)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.lblInfo)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ErrorHandler"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Error"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

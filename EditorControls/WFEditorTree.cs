@@ -39,6 +39,7 @@ namespace TextAdventures.Quest.EditorControls
 
             AddMenuClickHandler("expandall", ExpandAll);
             AddMenuClickHandler("collapseall", CollapseAll);
+            
         }
 
         private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
@@ -53,7 +54,7 @@ namespace TextAdventures.Quest.EditorControls
         private Action<string, string> m_doDragDelegate;
         public delegate void MenuClickHandler();
         private Dictionary<string, ToolStripMenuItem> m_menus = new Dictionary<string, ToolStripMenuItem>();
-
+        private Dictionary<string, ToolStripSeparator> m_separators = new Dictionary<string, ToolStripSeparator>();
         private Dictionary<string, MenuClickHandler> m_handlers = new Dictionary<string, MenuClickHandler>();
         public event FiltersUpdatedEventHandler FiltersUpdated;
         public delegate void FiltersUpdatedEventHandler();
@@ -648,6 +649,16 @@ namespace TextAdventures.Quest.EditorControls
                         m_menus.Add(tag, menuItem);
                     }
                 }
+
+                ToolStripSeparator menuSep = item as ToolStripSeparator;
+                if (menuSep != null)
+                {
+                    string tag = menuSep.Tag as string;
+                    if (!string.IsNullOrEmpty(tag))
+                    {
+                        m_separators.Add(tag, menuSep);
+                    }
+                }
             }
         }
 
@@ -706,6 +717,21 @@ namespace TextAdventures.Quest.EditorControls
         public void SetMenuEnabled(string key, bool enabled)
         {
             m_menus[key].Enabled = enabled;
+        }
+
+        public void SetMenuSeparatorVisible(string key, bool visible)
+        {
+            m_separators[key].Visible = visible;
+        }
+
+        private void ctlContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

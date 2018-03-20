@@ -1,4 +1,6 @@
-﻿Public Class Launcher
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class Launcher
     Public Event BrowseForGame()
     Public Event LaunchGame(filename As String)
     Public Event EditGame(filename As String)
@@ -148,4 +150,11 @@
         End If
     End Function
 
+    Private Sub lblPlay_Initialized(sender As Object, e As EventArgs) Handles lblPlay.Initialized
+        lblPlay.Text = T("LauncherPlay")
+    End Sub
+
+    Private Sub lblCreate_Initialized(sender As Object, e As EventArgs) Handles lblCreate.Initialized
+        lblCreate.Text = T("LauncherCreate")
+    End Sub
 End Class

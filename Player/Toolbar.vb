@@ -46,6 +46,7 @@
                 butDebugger.Visible = Not m_simpleMode
                 butLog.Visible = Not m_simpleMode
                 butHTML.Visible = Not m_simpleMode
+                butWalkthrough.Visible = Not m_simpleMode
             End If
         End Set
     End Property

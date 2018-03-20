@@ -1,14 +1,14 @@
 ﻿<library>
   <editor>
     <appliesto>(function)MovePlayer</appliesto>
-    <display>Move player to #0</display>
+    <display>[EditorGBMovePlayerToX]</display>
     <category>Pages</category>
     <create>MovePlayer ()</create>
-    <add>Move player to page</add>
+    <add>[EditorGBMovePlayerToPage]</add>
 
     <control>
       <controltype>label</controltype>
-      <caption>Move player to</caption>
+      <caption>[EditorGBMovePlayerTo]</caption>
     </control>
 
     <control>
@@ -21,14 +21,14 @@
   
   <editor>
     <appliesto>(function)AddPageLink</appliesto>
-    <display>Add link from #0 to #1 "#2"</display>
+    <display>[EditorGBAddLinkFromXToY]</display>
     <category>Pages</category>
     <create>AddPageLink (,,"")</create>
-    <add>Add page link</add>
+    <add>[EditorGBAddPageLink]</add>
 
     <control>
       <controltype>label</controltype>
-      <caption>Add page link from</caption>
+      <caption>[EditorGBAddPageLinkFrom]</caption>
     </control>
 
     <control>
@@ -40,7 +40,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorGBAddPageLinkTo]</caption>
     </control>
 
     <control>
@@ -52,7 +52,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Link text:</caption>
+      <caption>[EditorGBAddLinkText]</caption>
       <breakbefore/>
     </control>
 
@@ -66,14 +66,14 @@
 
   <editor>
     <appliesto>(function)RemovePageLink</appliesto>
-    <display>Remove link from #0 to #1</display>
+    <display>[EditorGBRemoveLinkFromXToY]</display>
     <category>Pages</category>
     <create>RemovePageLink (,)</create>
-    <add>Remove page link</add>
+    <add>[EditorGBRemovePageLink]</add>
 
     <control>
       <controltype>label</controltype>
-      <caption>Remove page link from</caption>
+      <caption>[EditorGBRemovePageLinkFrom]</caption>
     </control>
 
     <control>
@@ -85,7 +85,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorGBAddPageLinkTo]</caption>
     </control>
 
     <control>

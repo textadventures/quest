@@ -13,16 +13,37 @@
                 <RowDefinition Height="100" />
                 <RowDefinition Height="65" />
             </Grid.RowDefinitions>
-            <Button Name="cmdNewGame" Click="cmdNewGame_Click" Margin="20">
-                <TextBlock FontSize="16">Create a new game</TextBlock>
+            <Button Name="cmdNewGame" Click="cmdNewGame_Click" Margin="20" BorderBrush="#FFACACAC" Foreground="Black">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
+                        <GradientStop Color="White"/>
+                        <GradientStop Color="White" Offset="0.95"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <TextBlock x:Name="lblCreateNewGame" FontSize="16">Create a new game</TextBlock>
             </Button>
-            <Button Name="cmdOpenGame" Click="cmdOpenGame_Click" Grid.Row="1" Margin="20">
-                <TextBlock FontSize="16">Open an existing game</TextBlock>
+            <Button Name="cmdOpenGame" Click="cmdOpenGame_Click" Grid.Row="1" Margin="20" BorderBrush="#FFACACAC">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="0"/>
+                        <GradientStop Color="White" Offset="0.95"/>
+                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <TextBlock x:Name="lblOpenExistingGame" FontSize="16">Open an existing game</TextBlock>
             </Button>
-            <Button Name="cmdTutorial" Click="cmdTutorial_Click" Grid.Row="2" Margin="20">
-                <TextBlock FontSize="16">Read the tutorial</TextBlock>
+            <Button Name="cmdTutorial" Click="cmdTutorial_Click" Grid.Row="2" Margin="20" BorderBrush="#FFACACAC">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="0"/>
+                        <GradientStop Color="White" Offset="0.95"/>
+                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <TextBlock x:Name="lblReadTheTutorial" FontSize="16">Read the tutorial</TextBlock>
             </Button>
-            <TextBlock Grid.Row="3" Margin="20" FontSize="16"><Hyperlink Click="Hyperlink_Click">Get help in the forums</Hyperlink></TextBlock>
+            <TextBlock Grid.Row="3" Margin="20" FontSize="16" TextAlignment="Center"><Hyperlink Click="Hyperlink_Click" Foreground="#FF1D1B61"><TextBlock x:Name="lblGetHelpInForums">Get help in the forums</TextBlock></Hyperlink></TextBlock>
         </Grid>
     </ScrollViewer>
 </UserControl>

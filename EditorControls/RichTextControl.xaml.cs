@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -67,7 +68,11 @@ namespace TextAdventures.Quest.EditorControls
                                 Content = command.Command,
                                 Padding = new Thickness(5),
                                 Margin = new Thickness(3),
-                                Tag = command
+                                Tag = command,
+                                Foreground = System.Windows.Media.Brushes.Black,
+                                Background = System.Windows.Media.Brushes.White,
+                                BorderBrush = System.Windows.Media.Brushes.Silver
+
                             },
                             new TextBlock
                             {
@@ -102,6 +107,12 @@ namespace TextAdventures.Quest.EditorControls
                 case "objects":
                     InsertObject(command);
                     break;
+                case "hereobjects":
+                    InsertHereObject(command);
+                    break;
+                case "exits":
+                    InsertExit(command);
+                    break;
                 case "images":
                     InsertPicture(command);
                     break;
@@ -117,9 +128,38 @@ namespace TextAdventures.Quest.EditorControls
 
         private void InsertObject(TextProcessorCommand command)
         {
+            var text = L.T("EditorKeypromptEnterObjectName");
             var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
             var result = PopupEditors.EditStringWithDropdown(
-                "Please choose an object",
+                text,
+                string.Empty, null, null, string.Empty, objects);
+
+            if (!result.Cancelled)
+            {
+                InsertText(command.InsertBefore + result.Result + command.InsertAfter, string.Empty);
+            }
+        }
+
+        private void InsertHereObject(TextProcessorCommand command)
+        {
+            var prompt = L.T("EditorKeypromptEnterObjectName");
+            var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
+            var result = PopupEditors.EditStringWithDropdown(
+                prompt,
+                string.Empty, null, null, string.Empty, objects);
+
+            if (!result.Cancelled)
+            {
+                InsertText(command.InsertBefore + result.Result + ":", command.InsertAfter);
+            }
+        }
+
+        private void InsertExit(TextProcessorCommand command)
+        {
+            var text = L.T("EditorKeypromptEnterExitName");
+            var objects = m_helper.Controller.GetObjectNames("exit", true).OrderBy(n => n);
+            var result = PopupEditors.EditStringWithDropdown(
+                text,
                 string.Empty, null, null, string.Empty, objects);
 
             if (!result.Cancelled)
@@ -200,6 +240,11 @@ namespace TextAdventures.Quest.EditorControls
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             Utility.Utility.LaunchURL("http://docs.textadventures.co.uk/quest/text_processor.html");
+        }
+
+        private void txtProcessorHelp_Initialized(object sender, EventArgs e)
+        {
+            txtProcessorHelp.Text = L.T("EditorTextProcessorHelp");
         }
     }
 }

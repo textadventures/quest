@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -341,7 +342,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             if (attributeName.Length == 0)
             {
-                PopupEditors.EditStringResult result = PopupEditors.EditString("Please enter a name for the new attribute", string.Empty);
+                PopupEditors.EditStringResult result = PopupEditors.EditString(L.T("EditorEnterNameAttribute"), string.Empty);
                 if (result.Cancelled) return;
                 attributeName = result.Result;
             }
@@ -392,7 +393,7 @@ namespace TextAdventures.Quest.EditorControls
                                              .Where(t => !m_controller.IsDefaultTypeName(t))
                                              .OrderBy(t => t);
 
-            var result = PopupEditors.EditStringWithDropdown("Please choose a type to add", string.Empty, null, null,
+            var result = PopupEditors.EditStringWithDropdown(L.T("EditorChooseTypeToAdd"), string.Empty, null, null,
                                                              string.Empty, availableTypes);
 
             if (result.Cancelled) return;

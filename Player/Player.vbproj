@@ -183,8 +183,14 @@
     <EmbeddedResource Include="DebuggerPane.resx">
       <DependentUpon>DebuggerPane.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Log.de.resx">
+      <DependentUpon>Log.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Log.resx">
       <DependentUpon>Log.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.de.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.vb</DependentUpon>
@@ -200,6 +206,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerHTML.resx">
       <DependentUpon>PlayerHTML.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbar.de.resx">
+      <DependentUpon>Toolbar.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Toolbar.resx">
       <DependentUpon>Toolbar.vb</DependentUpon>
@@ -307,6 +316,11 @@
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\b_walkthrough.png" />
+    <None Include="Resources\b_stop.png" />
+    <None Include="Resources\b_debug.png" />
+    <None Include="Resources\b_log.png" />
+    <None Include="Resources\b_html.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />

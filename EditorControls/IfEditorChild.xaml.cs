@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -33,6 +34,8 @@ namespace TextAdventures.Quest.EditorControls
         public IfEditorChild()
         {
             InitializeComponent();
+            lblIf.Content = L.T("EditorIf");
+            cmdDelete.Content = L.T("EditorCmdDelete");
             ctlExpression.IsSimpleModeAvailable = false;
             ctlExpression.UseExpressionTemplates = true;
             ctlExpression.ExpressionTypeTemplateFilter = "if";
@@ -111,15 +114,15 @@ namespace TextAdventures.Quest.EditorControls
                 switch (m_mode)
                 {
                     case IfEditorChildMode.If:
-                        lblIf.Content = "If:";
-                        ctlScriptExpander.Header = "Then:";
+                        lblIf.Content = L.T("EditorIf") + ":";
+                        ctlScriptExpander.Header = L.T("EditorThen") + ":";
                         break;
                     case IfEditorChildMode.ElseIf:
-                        lblIf.Content = "Else if:";
-                        ctlScriptExpander.Header = "Then:";
+                        lblIf.Content = L.T("EditorElseIf") + ":";
+                        ctlScriptExpander.Header = L.T("EditorThen") + ":";
                         break;
                     case IfEditorChildMode.Else:
-                        ctlScriptExpander.Header = "Else:";
+                        ctlScriptExpander.Header = L.T("EditorElse") + ":";
                         break;
                 }
 

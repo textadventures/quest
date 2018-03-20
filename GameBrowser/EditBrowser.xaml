@@ -16,6 +16,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <my:EditorWelcome x:Name="ctlEditorWelcome" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" />
-        <Label Grid.Row="0" Grid.Column="2" FontSize="16">Recent</Label>
+        <Label x:Name="lblRecent" Grid.Row="0" Grid.Column="2" FontSize="16">Recent</Label>
         <my:GameList Grid.Row="1" Grid.Column="2" x:Name="ctlGameList" />
     </Grid></UserControl>
