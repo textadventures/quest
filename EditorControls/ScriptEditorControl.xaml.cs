@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Threading;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -747,6 +748,11 @@ namespace TextAdventures.Quest.EditorControls
             ctlToolbar.CanDelete = false;
             ctlToolbar.CanMoveUp = false;
             ctlToolbar.CanMoveDown = false;
+        }
+
+        private void cmdAddScript_Initialized(object sender, EventArgs e)
+        {
+            cmdAddScript.ToolTip = L.T("EditorToolBarAddScript");
         }
     }
 }

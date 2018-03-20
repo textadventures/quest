@@ -1,4 +1,5 @@
 ﻿Imports Microsoft.Win32
+Imports TextAdventures.Utility.Language.L
 
 Public Class NewGameWindow
 
@@ -50,7 +51,7 @@ Public Class NewGameWindow
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
         If System.IO.File.Exists(txtFilename.Text) Then
-            Dim result = MsgBox(String.Format("The file {0} already exists.{1}Would you like to overwrite it?", txtFilename.Text, Environment.NewLine + Environment.NewLine),
+            Dim result = MsgBox(String.Format(T("EditorFileOverwrite"), txtFilename.Text, Environment.NewLine + Environment.NewLine),
                                 MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel)
             If result = MsgBoxResult.Yes Then
                 ' do nothing, file will be overwritten
@@ -81,7 +82,7 @@ Public Class NewGameWindow
         If lstTemplate.Items.Count > 0 Then
             Dim key As RegistryKey = Registry.CurrentUser.CreateSubKey(k_regPath)
             Dim lastTemplate As String = TryCast(key.GetValue(k_regName), String)
-            If lastTemplate Is Nothing Then lastTemplate = "English"
+            If lastTemplate Is Nothing Then lastTemplate = CurrentLanguage
 
             Dim index As Integer = lstTemplate.Items.IndexOf(lastTemplate)
             lstTemplate.SelectedIndex = If(index = -1, 0, index)

@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" FontSize="16">Get Games</Label>
+        <Label Grid.Row="0" Grid.Column="0" FontSize="16" x:Name="lblGetGames">Get Games</Label>
         <Label Grid.Row="0" Grid.Column="2" FontSize="16" Name="lblRecent">Recent</Label>
         <my:BrowseFilter Grid.Row="1" Grid.Column="0" x:Name="ctlBrowseFilter" Margin="4,0,0,8" HorizontalAlignment="Left" />
         <my:GameList Grid.Row="2" Grid.Column="0" x:Name="ctlOnlineGameList" />

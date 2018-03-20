@@ -1,6 +1,7 @@
 ﻿Imports System.Xml
 Imports System.Threading
 Imports System.Globalization
+Imports TextAdventures.Utility.Language.L
 
 Public Class Player
 
@@ -81,6 +82,8 @@ Public Class Player
         Select Case args.Button
             Case "stop"
                 StopGame()
+            Case "walkthrough"
+                RunWalkthrough()
             Case "debugger"
                 DebuggerMenuClick()
             Case "log"
@@ -132,6 +135,7 @@ Public Class Player
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
+            ctlToolbar.butWalkthrough.Enabled = m_menu.MenuEnabled("walkthrough")
 
             ' Generate the new HTML and wait for Ready event
             ctlPlayerHtml.InitialiseHTMLUI(m_game)
@@ -179,6 +183,7 @@ Public Class Player
     Private Sub ResetMenu()
         m_menu.MenuEnabled("walkthrough") = False
         m_menu.MenuEnabled("debugger") = False
+        ctlToolbar.butWalkthrough.Enabled = False
     End Sub
 
     Private Sub CancelWalkthrough()
@@ -391,7 +396,7 @@ Public Class Player
             menuOptions.Add(item.Key, item.Key)
         Next
 
-        menuForm.Caption = "Please choose a walkthrough to run:"
+        menuForm.Caption = T("EditorChooseWalkthrough")
         menuForm.Options = menuOptions
         menuForm.AllowCancel = True
         menuForm.ShowDialog()

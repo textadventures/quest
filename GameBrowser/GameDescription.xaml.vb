@@ -1,4 +1,5 @@
 ﻿Imports System.Net
+Imports TextAdventures.Utility.Language.L
 
 Public Class GameDescription
     Public Event Close()
@@ -68,13 +69,13 @@ Public Class GameDescription
     Private Sub UpdateState()
         Select Case m_listItemControl.CurrentState
             Case GameListItem.State.ReadyToPlay
-                cmdAction.Content = "Play"
+                cmdAction.Content = T("LauncherPlay")
                 cmdAction.IsEnabled = True
             Case GameListItem.State.NotDownloaded
-                cmdAction.Content = "Download"
+                cmdAction.Content = T("LauncherDownload")
                 cmdAction.IsEnabled = True
             Case GameListItem.State.Downloading
-                cmdAction.Content = "Downloading"
+                cmdAction.Content = T("LauncherDownloading")
                 cmdAction.IsEnabled = False
         End Select
     End Sub
@@ -236,8 +237,13 @@ Public Class GameDescription
         If Not data.Any Then
             Dim textBlock As New Windows.Controls.TextBlock
             textBlock.Margin = New Windows.Thickness(5)
-            textBlock.Text = "No reviews or comments"
+            textBlock.Text = T("LauncherNoReviewsOrComments")
             reviewsStack.Children.Add(textBlock)
         End If
     End Sub
+
+    Private Sub expander_Initialized(sender As Object, e As EventArgs) Handles expander.Initialized
+        expander.Header = T("LauncherReviewsAndComments")
+    End Sub
+
 End Class

@@ -16,7 +16,6 @@
     Private m_handlers As New Dictionary(Of String, MenuClickHandler)
 
     Public Sub New()
-
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
@@ -62,6 +61,8 @@
         AddMenuData("codeview", MenuMode.Editor)
         AddMenuData("wordwrap", MenuMode.Editor)
         AddMenuData("htmldevtools", MenuMode.Player)
+        AddMenuData("english", MenuMode.GameBrowser, MenuMode.Editor)
+        AddMenuData("deutsch", MenuMode.GameBrowser, MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)
@@ -267,4 +268,7 @@
         applicableMenu.PerformClick()
     End Sub
 
+    Private Sub Menu_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class

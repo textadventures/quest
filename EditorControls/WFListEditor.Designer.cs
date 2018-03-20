@@ -33,130 +33,120 @@
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
+            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdLink = new System.Windows.Forms.ToolStripButton();
             this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
-            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
+            this.cmdGoToPage = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
-            this.cmdGoToPage = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstList
             // 
-            this.lstList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstList.BackColor = System.Drawing.Color.White;
+            resources.ApplyResources(this.lstList, "lstList");
+            this.lstList.ForeColor = System.Drawing.Color.Black;
+            this.lstList.GridLines = true;
             this.lstList.HideSelection = false;
-            this.lstList.Location = new System.Drawing.Point(0, 25);
             this.lstList.Name = "lstList";
-            this.lstList.Size = new System.Drawing.Size(807, 247);
-            this.lstList.TabIndex = 5;
             this.lstList.UseCompatibleStateImageBehavior = false;
             this.lstList.View = System.Windows.Forms.View.Details;
             // 
             // ctlToolStrip
             // 
+            this.ctlToolStrip.BackColor = System.Drawing.Color.White;
+            this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
             this.cmdAddNewPage,
-            this.cmdLink,
+            this.cmdDelete,
             this.cmdEditKey,
             this.cmdEdit,
-            this.cmdDelete,
+            this.cmdLink,
             this.cmdGoToPage,
             this.cmdMoveUp,
             this.cmdMoveDown});
-            this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(807, 25);
-            this.ctlToolStrip.TabIndex = 4;
-            this.ctlToolStrip.Text = "ToolStrip1";
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Image = ((System.Drawing.Image)(resources.GetObject("cmdAdd.Image")));
-            this.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdAdd.AutoToolTip = false;
+            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
+            resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
-            this.cmdAdd.Size = new System.Drawing.Size(49, 22);
-            this.cmdAdd.Text = "Add";
             // 
             // cmdAddNewPage
             // 
-            this.cmdAddNewPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddNewPage.Image")));
-            this.cmdAddNewPage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdAddNewPage.AutoToolTip = false;
+            this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add_page;
+            resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.Name = "cmdAddNewPage";
-            this.cmdAddNewPage.Size = new System.Drawing.Size(105, 22);
             this.cmdAddNewPage.Tag = "addpage";
-            this.cmdAddNewPage.Text = "Add New Page";
-            // 
-            // cmdLink
-            // 
-            this.cmdLink.Image = ((System.Drawing.Image)(resources.GetObject("cmdLink.Image")));
-            this.cmdLink.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdLink.Name = "cmdLink";
-            this.cmdLink.Size = new System.Drawing.Size(135, 22);
-            this.cmdLink.Tag = "link";
-            this.cmdLink.Text = "Link to Existing Page";
-            // 
-            // cmdEditKey
-            // 
-            this.cmdEditKey.Image = ((System.Drawing.Image)(resources.GetObject("cmdEditKey.Image")));
-            this.cmdEditKey.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdEditKey.Name = "cmdEditKey";
-            this.cmdEditKey.Size = new System.Drawing.Size(69, 22);
-            this.cmdEditKey.Text = "Edit Key";
-            // 
-            // cmdEdit
-            // 
-            this.cmdEdit.Image = ((System.Drawing.Image)(resources.GetObject("cmdEdit.Image")));
-            this.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdEdit.Name = "cmdEdit";
-            this.cmdEdit.Size = new System.Drawing.Size(47, 22);
-            this.cmdEdit.Text = "Edit";
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Image = ((System.Drawing.Image)(resources.GetObject("cmdDelete.Image")));
-            this.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdDelete.AutoToolTip = false;
+            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
+            resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(60, 22);
-            this.cmdDelete.Text = "Delete";
+            // 
+            // cmdLink
+            // 
+            this.cmdLink.AutoToolTip = false;
+            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
+            resources.ApplyResources(this.cmdLink, "cmdLink");
+            this.cmdLink.Name = "cmdLink";
+            this.cmdLink.Tag = "link";
+            // 
+            // cmdEditKey
+            // 
+            this.cmdEditKey.AutoToolTip = false;
+            this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_rename_key;
+            resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
+            this.cmdEditKey.Name = "cmdEditKey";
+            // 
+            // cmdEdit
+            // 
+            this.cmdEdit.AutoToolTip = false;
+            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
+            resources.ApplyResources(this.cmdEdit, "cmdEdit");
+            this.cmdEdit.Name = "cmdEdit";
+            // 
+            // cmdGoToPage
+            // 
+            this.cmdGoToPage.AutoToolTip = false;
+            this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_domain;
+            resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
+            this.cmdGoToPage.Name = "cmdGoToPage";
+            this.cmdGoToPage.Tag = "goto";
             // 
             // cmdMoveUp
             // 
-            this.cmdMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveUp.Image")));
-            this.cmdMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveUp.AutoToolTip = false;
+            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_up;
+            resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.Name = "cmdMoveUp";
-            this.cmdMoveUp.Size = new System.Drawing.Size(75, 22);
-            this.cmdMoveUp.Text = "Move Up";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
             // cmdMoveDown
             // 
-            this.cmdMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveDown.Image")));
-            this.cmdMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveDown.AutoToolTip = false;
+            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_down;
+            resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.Name = "cmdMoveDown";
-            this.cmdMoveDown.Size = new System.Drawing.Size(91, 22);
-            this.cmdMoveDown.Text = "Move Down";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
-            // 
-            // cmdGoToPage
-            // 
-            this.cmdGoToPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdGoToPage.Image")));
-            this.cmdGoToPage.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdGoToPage.Name = "cmdGoToPage";
-            this.cmdGoToPage.Size = new System.Drawing.Size(85, 22);
-            this.cmdGoToPage.Tag = "goto";
-            this.cmdGoToPage.Text = "Go to Page";
             // 
             // WFListEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lstList);
             this.Controls.Add(this.ctlToolStrip);
             this.Name = "WFListEditor";
-            this.Size = new System.Drawing.Size(807, 272);
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
             this.ResumeLayout(false);

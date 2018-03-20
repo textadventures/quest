@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
+using TextAdventures.Quest.Functions;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest
 {
@@ -132,6 +134,7 @@ namespace TextAdventures.Quest
         private bool m_simpleMode;
         private EditorStyle m_editorStyle = EditorStyle.TextAdventure;
         private EditorMode m_editorMode = EditorMode.Desktop;
+        private bool m_lastelementscutout;
 
         public event EventHandler ClearTree;
         public event EventHandler BeginTreeUpdate;
@@ -289,7 +292,7 @@ namespace TextAdventures.Quest
         public EditorController()
         {
             m_availableFilters = new AvailableFilters();
-            m_availableFilters.Add("libraries", "Show Library Elements");
+            m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
 
             m_filterOptions = new FilterOptions();
             // set default filters here
@@ -321,6 +324,7 @@ namespace TextAdventures.Quest
 
         public bool Initialise(string filename, string libFolder = null)
         {
+            m_lastelementscutout = false;
             m_filename = filename;
             m_worldModel = new WorldModel(filename, libFolder, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
@@ -1766,6 +1770,8 @@ namespace TextAdventures.Quest
                     }
                 }
             }
+
+            m_lastelementscutout = false;
         }
 
         public string PasteElements(string parentName)
@@ -1783,11 +1789,11 @@ namespace TextAdventures.Quest
                 Element newElement;
                 if (m_editorStyle == Quest.EditorStyle.TextAdventure)
                 {
-                    newElement = e.Clone();
+                    newElement = e.Clone(el => true, m_lastelementscutout);
                 }
                 else if (m_editorStyle == Quest.EditorStyle.GameBook)
                 {
-                    newElement = e.Clone(el => el.Name != "player");
+                    newElement = e.Clone(el => el.Name != "player", m_lastelementscutout);
                 }
                 else
                 {
@@ -1799,6 +1805,8 @@ namespace TextAdventures.Quest
 
             m_worldModel.UndoLogger.EndTransaction();
 
+            m_lastelementscutout = false;
+
             return lastPastedElement;
         }
 
@@ -1806,10 +1814,20 @@ namespace TextAdventures.Quest
         {
             m_worldModel.UndoLogger.StartTransaction("Cut");
             CopyElements(elementNames);
+            m_lastelementscutout = true;
+
+            /* 
+             * The cut out elements should be displayed in gray.
+             * Unfortunately, I have not yet been able to do this from the EditorController.cs.
+             * (SoonGames)
+
             foreach (string name in elementNames)
             {
-                DeleteElement(name, false);
+                Element element = m_worldModel.Elements.Get(name);
+                element.Fields.Set("forecolor", "color"); // ??? With Set I was only able to change the element name.
             }
+            */
+
             m_worldModel.UndoLogger.EndTransaction();
         }
 

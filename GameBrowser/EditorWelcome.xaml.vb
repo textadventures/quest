@@ -1,4 +1,6 @@
-﻿Public Class EditorWelcome
+﻿Imports TextAdventures.Utility.Language.L
+
+Public Class EditorWelcome
 
     Public Event CreateNewGame()
     Public Event OpenGame()
@@ -28,4 +30,19 @@
         End Try
     End Sub
 
+    Private Sub lblCreateNewGame_Initialized(sender As Object, e As EventArgs) Handles lblCreateNewGame.Initialized
+        lblCreateNewGame.Text = T("LauncherCreateNewGame")
+    End Sub
+
+    Private Sub lblOpenExistingGame_Initialized(sender As Object, e As EventArgs) Handles lblOpenExistingGame.Initialized
+        lblOpenExistingGame.Text = T("LauncherOpenExistingGame")
+    End Sub
+
+    Private Sub lblReadTheTutorial_Initialized(sender As Object, e As EventArgs) Handles lblReadTheTutorial.Initialized
+        lblReadTheTutorial.Text = T("LauncherReadTutorial")
+    End Sub
+
+    Private Sub lblGetHelpInForums_Initialized(sender As Object, e As EventArgs) Handles lblGetHelpInForums.Initialized
+        lblGetHelpInForums.Text = T("LauncherGetHelpInForums")
+    End Sub
 End Class

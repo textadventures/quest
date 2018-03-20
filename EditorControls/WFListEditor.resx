@@ -117,130 +117,244 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lstList.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lstList.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 25</value>
+  </data>
+  <data name="lstList.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="lstList.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1076, 310</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lstList.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;lstList.Name" xml:space="preserve">
+    <value>lstList</value>
+  </data>
+  <data name="&gt;&gt;lstList.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lstList.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lstList.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="ctlToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="cmdAdd.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHaSURBVDhPlZLdS5NhGMb3RxRkGI0+oIO+xBJHlnQoYTnZ
-        mm5kKil6Wn9DBx4aFQSVWbQ229C1DzY3XU0PGpEFJTh5LUk3bWMu5+tky9efz8qwcsh2w33ycN+/+7ku
-        LpWqUHW6Q6ouN/90/q3oEst1zyOiF7n0Mo7OK/+GFV1iWGeZ5PhdiVOPZmkPrpQOuGqb4vTjeSqtCTrf
-        ZksHGJwSZ61LaJwy3RPKLoBChgkJJn8MjWuV88M5OiY2UN0K7+ybYWGsGG6wLqK3zGKwRzG647T507SH
-        MlzwZ7n4WqHrvUL3hw1uhHO0jK1iCqQwBISxeWgeoLUnOfHgCxVPY1TZU9S4M9QGctSMKlSPKFSIXxx7
-        lUFtTVHeH6PsnoTOldgG6D0yZ158R+NY4Zw3R9WwwknfOkc96xx2ZTk0KHNQLB94EmP/fYm9PR9pHPj2
-        NyCJ0RfHNLpE48gPLgfTXBn/yRGnWB6SaX2TptW3wHXHV67ZIhjNn2g2T24BCpkotOnCy+LyGmpLkrZg
-        ahcTC6VLALShBGqz0Cyy0OJZ2LpWbBQFoN4bpfxhlH13pjDZZkoH1A1KlPVG2HP7HU3PPpcOaHZMox+Y
-        Q9sfQd/3x7BiJeQT9n/yfqVuZ20CUveTqEqqmHwAAAAASUVORK5CYII=
-</value>
+  <data name="cmdAdd.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
   </data>
-  <data name="cmdAddNewPage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHaSURBVDhPlZLdS5NhGMb3RxRkGI0+oIO+xBJHlnQoYTnZ
-        mm5kKil6Wn9DBx4aFQSVWbQ229C1DzY3XU0PGpEFJTh5LUk3bWMu5+tky9efz8qwcsh2w33ycN+/+7ku
-        LpWqUHW6Q6ouN/90/q3oEst1zyOiF7n0Mo7OK/+GFV1iWGeZ5PhdiVOPZmkPrpQOuGqb4vTjeSqtCTrf
-        ZksHGJwSZ61LaJwy3RPKLoBChgkJJn8MjWuV88M5OiY2UN0K7+ybYWGsGG6wLqK3zGKwRzG647T507SH
-        MlzwZ7n4WqHrvUL3hw1uhHO0jK1iCqQwBISxeWgeoLUnOfHgCxVPY1TZU9S4M9QGctSMKlSPKFSIXxx7
-        lUFtTVHeH6PsnoTOldgG6D0yZ158R+NY4Zw3R9WwwknfOkc96xx2ZTk0KHNQLB94EmP/fYm9PR9pHPj2
-        NyCJ0RfHNLpE48gPLgfTXBn/yRGnWB6SaX2TptW3wHXHV67ZIhjNn2g2T24BCpkotOnCy+LyGmpLkrZg
-        ahcTC6VLALShBGqz0Cyy0OJZ2LpWbBQFoN4bpfxhlH13pjDZZkoH1A1KlPVG2HP7HU3PPpcOaHZMox+Y
-        Q9sfQd/3x7BiJeQT9n/yfqVuZ20CUveTqEqqmHwAAAAASUVORK5CYII=
-</value>
+  <data name="cmdAdd.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
   </data>
-  <data name="cmdLink.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFZSURBVDhPY2AYBdQJgfbZO307Zm9f2DJnx+PqqRsfl3Ys
-        W5hWO9sXZDo+ObDt7XO2hy5cf+r59Ydv///9////x+///28/cuN/fsui57nNC/twyXkk1IWCDeiYs33T
-        vWef/hc2zznEp+V1Rccl/crExYcfLdp6+f+s9Sd+rT9wC0if/CxpHHwNJFc9YeWhhRtP/zcLLNoENqBl
-        xpYvQIv/cyt73tdyStSavfnSWRD/+7///599/P//yuNf/49f//yfT9O3NyS3W6tpxub7x6+9/69qn/IF
-        bED95I2bTl979j+vac6h0NzuK/XTtlzhU/X5zani/h+GdZ0SnsHkpiw9dKhjzs7/MmbhEBeUdq0IbZq6
-        /vnKHef/n7j2+v/u00//10/d/N/SP/+5d0pzHy45IS0/SBiAQGRBn697Qt1Ci6DCxxrO8Y9lzCMWCmj7
-        gGMBnxx10sDQNwUARqLzQPMXwLYAAAAASUVORK5CYII=
-</value>
+  <data name="cmdAdd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
   </data>
-  <data name="cmdEditKey.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHWSURBVDhPvZPbS9NhHMYn3XfhRX9EEoQwgroXdqEgKHal
-        o2kISWSahTi1qFU4MTzAFlq6aG1z4TzMbZh4zjFNy8oOCsp0v9kCvZBqbGuf/L1DKafmjX7huXufz/M9
-        8CoUx11j2mLVy5J8ZHkqC88eOt9m40Rne02GbFxquMbbigREUW//Tp0tJPTQEuK26Rs3W9e40hxErZfI
-        1QUoqJeoMfoYcGixu328u1cmzI+UygTANAZtQ3EMAzEa+6PUOSLc7QxTZQ5Ta97kiWMOj72M9WU9X8ZL
-        0Om0wnzn3JksAdDL6dYQ1VvppcY1NA0SF+8HKGqUaLG+wWUuEuZPQ5foeaziVOpJCnNPJ+Z/0T9NLB5L
-        0mY4infmI872vCRzuSbtws7ytgHDvgW2JQP7PCP0tmYebD6oA0PbMyZdD/DPlO+0ffl6FVuV8s/p/u5g
-        0PsVz/hnfkWiyIB4/DfWpmwxs6XbTab6Fkl3370D2bzxI8rV0htk5+TJBpyjc3T0THE+qzgZ0OF4LRYo
-        JzuH5+l69R5pI8Lz3lmedk0LeRd+YrBN7g0wWgYFYFUKsugP8mFRYmo+wMjsKm7fCt0TK9hH/fsDmkwu
-        0jPUKFWa/2rPEQ79GY7q4R9j+Mg6QVwzrQAAAABJRU5ErkJggg==
-</value>
+  <data name="cmdAdd.ToolTipText" xml:space="preserve">
+    <value>Add</value>
   </data>
-  <data name="cmdEdit.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIGSURBVDhPlZJvS1NhGMYHfZS+QOCrvoRRfQCJMms2bGTO
-        rBbDSsRWLyLYorTMNFJ05tIsS9pAp8wKVrnmPGq6/pAIWSlp8eu+n7PtYCrRAz/Ow3nOfV3Xc9/H5frP
-        RekOlOQuF6b0cnQB5Ur/R4LRHE2RORq7pmm4l+ZCW4pA8wv8oTHqrsahJQz+OlNcFAg+mOfXbwy61uW5
-        ug7LP2HxB3xYhpklOcgXU7YH9u3k0t7ddoKmnlnWpEipF8et2LZYBRq7sqysYVDnFeGbuC+twufveeez
-        p6CsFPbbzt7zfba7rosdk3yVAuVv962cJ15nNwrUt6bMXRUVKCnBwGLSNMw45+88vgCjL6fwBnqdBIHm
-        CXLSKEUFiksFFGmextazkXl4nsxSda7bEfCHEljSZaUgEA6HzZgKxSqqZ7FZGE5k8Zy+7wjofNNfMGxI
-        4GQxOz17asFA3KKytsMR8AWHePUJw3ZjLLwfzMLDmIX75B1HoLphgDFpjjKeg4Tcc1T2I+8hPieRZ2BI
-        nAenIPoOIsMWFd5bjoB2NCYfKv9KEJmE7mcW5Z4bjoDnTCdPJJph2n4+Fh4J/eLaJ669aeiR4s43tsBB
-        d3izwNtMhlQ6g/4oOmsdl3Zcm6b31uhavEmg0tdOkZq7uH1CTRtHq1s5cuI2h4+3UF51k0PHrotzyHCg
-        4loxwR+YR6Xb1Yds/wAAAABJRU5ErkJggg==
-</value>
+  <data name="cmdAddNewPage.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
   </data>
-  <data name="cmdDelete.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH5SURBVDhPY2AAAi8vLwM3L889np6eTvX19UwgMaJBaGgo
-        s5OTa7qjo8t/J2fnb97e3oEgMWwG2NvbswQFBSm5u7vmweVBgo6Ozkm29g7bzC1t/xsZm/9xd/esQjdE
-        Xt6ew9LW0cnby+u7vb3jHBQLbG3dJe3tXSwcHFy2WdnY/7ezd/jv7+O50dXVlRuk0MLCgtPd3X2FgZHT
-        b1NT824tLS0erF4E2srm5ORSYOTg/NvOzuk/0DvLzM1t9Cwt7Sbb2tj81zMwmaykZMxPKHwY7excNG1t
-        nc6bmVv/19fX/25obPReTUt3nYyMBSchzXB5fX1jBz19k5+WVrb/tfSN7snIaAkRr9ncXEFFReuSrp7h
-        P30Dk/8mphb/tbR1bhFlgKGhobyauvZVNXWtPxqammuEhSVMZGVVthkYGv9XUdPOxGsIMHQlZOWVT8kp
-        qv7X1jM4JCMjIyQuLs4NwnKKatMNDIy/KGtry2I1RN7enkNGUXWRhLT0Ry0twydaWgZacIXy8hwMDEJ8
-        2voGZyWk5CcBxTETmrScnLeYhMJ/VTVtoFM1WhkYxMFpAAkwKStrqSgrK98XEBCQB4qjJHk2YWHRViFh
-        8f/y8sq72Nh41dAVQA1iNjW1nMzJx2mKIS8pp2zEyso+EShhB8S8eAKLBSjHRVSM0EURADaSdeOqcqtE
-        AAAAAElFTkSuQmCC
-</value>
+  <data name="cmdAddNewPage.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
   </data>
-  <data name="cmdGoToPage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFnSURBVDhPjVNNS8NAEM1P8md504sePHmoXipYFFHxgyB+
-        FUSCHlosSkDBniQ0EQItstJAehH2mJzGfYObbrcbaeCRyex7b2cmu55nPXFWbrdfc9q6TWn9bMBAjFwy
-        Lps2f+b74jmj1aOIgkiSmEiSBTEQIwezzscPOU32H77IDwUL6h4YgQPu3M5arHf97w0uWmKTeFxuouxF
-        hFVLkrjVJCt3PfQd9Kf9mkYgLS37DHsDaLgKTDgSamjK1QXTxFyHBloPkxWTqRgCG7oKvCsTpYGWDcKU
-        SM2FYZJdseZBwwaNm5T/cbXwZ6S/zRZMDjTNuyF5571M/Vup5kBzMMX2eqsr6DJUQ3wfFVcgwt1l4sqh
-        fGj6o+KAz4L/khMcIzWYRQAuNDOncedeHWWYoJIaozCV1AoE7T1+u+/DSS/n0jATkHX5iJFbOx3Q9VvN
-        ZdLldOJi5fgpp0Z7SBv+JwMxct2kOLRv4i/yXNu0FbyTfgAAAABJRU5ErkJggg==
-</value>
+  <data name="cmdAddNewPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
   </data>
-  <data name="cmdMoveUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGnSURBVDhPlZLdK0NxGMf9CZK3UN5CpiYl4srFhr38Cbt2
-        5cZLNtY2WZMbmgtxQ1GLWNbONtvODDXvymTZDcJQm+3Y2WkRpa+d1REx7fzqqV9Pv8/neer7y8nJcCr7
-        rIrCHhOax7YVmd5k7HOw0veE2iGCn4SDVb4oRNYwpgPJ7CUcPLwbg5iIoHMjBilJwxh8RaPW9f8mX/A+
-        BbHtCV1OChIyDvkmg1Y7A63/JbOEg0dY2B5Fl+sZEk8Cci8DEcmgwUKjbo2C9oT5LfmCD+Ppqd3uOKQe
-        BrIUzE5vsdHQ+5PQHDNQH9AY2aN+SlJRrZb2rNxW9VvAlTQFsrDISUOQmqzfj34INU5wJRi2x2oGrKt/
-        xlivskG2lYSMTKDVSqHaFIbeF3lj4az+AyuQepMQO54hWA6jfOEeuu3Hd16CbncC7eYIKuZDKJu9hpbk
-        Kei0xSBcCqFk5hLFxiDUjgd+G3SYw6iau0LB1AXyJ86gIu74CZoXb1E0GUCe4RS5uiMMEdf8BAZfBCpX
-        CErHDQaJK/Sun6djzCqFplFS+T1z7t42vqP8S/AJRoVZiIZ9VMIAAAAASUVORK5CYII=
-</value>
+  <data name="cmdAddNewPage.ToolTipText" xml:space="preserve">
+    <value>Add New Page</value>
   </data>
-  <data name="cmdMoveDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGSSURBVDhPlZNLSwJRGIb9FZUUJYqXMSmUFrYJ2rYJWmfS
-        omhpCFoKIQjtKl1YUG0KVFDwGmR2X0QJWm0kqIhI8W4jFm7fzowYMRk5Ax/DgfM875nvOyMQcB61LW7u
-        mneDW6OrF2bu3rZrBlyIZaE/zGPyoICpowosyQ8Mr8TQsWDc/waVJwOJJwe5vwxL6pOfYCxIQG8eMl8Z
-        isA7LHcNfgJtqAQZSaYIrAzSsN7yFKiDVcgZOFRjy5riKRgK06CCTVhJ3pYkzx4MEpBiYZo0sYrlRP3v
-        HpCx+bgzV5BUKkBD4a9A6i3BdFVjBT9Lagz72LFKFkMz1FIUtvsGJk7q0ERr7PczsMxbhGQ/B60nC+N5
-        EYbjHJw3RVY0Yj/Vfd+LlsRK5q0iMDM+qacJD+y+om/zGULHA5zXbeCWRWwM65mTzF3SkLgLEO9lINoh
-        sOsJwo00gQu/k7lXU2SM6BjJbLyE/u0X9Loe0bPeIdySiQxNyXQki+61NBwkWWaKQGM/03f0LzCbWpKt
-        RJE/zD3Jf8lf1P1TrnrVKLUAAAAASUVORK5CYII=
-</value>
+  <data name="cmdDelete.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdDelete.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdDelete.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdDelete.ToolTipText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="cmdEditKey.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdEditKey.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdEditKey.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdEditKey.ToolTipText" xml:space="preserve">
+    <value>Edit Key</value>
+  </data>
+  <data name="cmdEdit.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdEdit.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdEdit.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdEdit.ToolTipText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="cmdLink.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdLink.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdLink.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdLink.ToolTipText" xml:space="preserve">
+    <value>Link to Existing Page</value>
+  </data>
+  <data name="cmdGoToPage.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdGoToPage.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdGoToPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdGoToPage.ToolTipText" xml:space="preserve">
+    <value>Go to Page</value>
+  </data>
+  <data name="cmdMoveUp.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdMoveUp.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdMoveUp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdMoveUp.ToolTipText" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="cmdMoveDown.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="cmdMoveDown.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="cmdMoveDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="cmdMoveDown.ToolTipText" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="ctlToolStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="ctlToolStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1076, 25</value>
+  </data>
+  <data name="ctlToolStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="ctlToolStrip.Text" xml:space="preserve">
+    <value>ToolStrip1</value>
+  </data>
+  <data name="&gt;&gt;ctlToolStrip.Name" xml:space="preserve">
+    <value>ctlToolStrip</value>
+  </data>
+  <data name="&gt;&gt;ctlToolStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ctlToolStrip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ctlToolStrip.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>8, 16</value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1076, 335</value>
+  </data>
+  <data name="&gt;&gt;cmdAdd.Name" xml:space="preserve">
+    <value>cmdAdd</value>
+  </data>
+  <data name="&gt;&gt;cmdAdd.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdAddNewPage.Name" xml:space="preserve">
+    <value>cmdAddNewPage</value>
+  </data>
+  <data name="&gt;&gt;cmdAddNewPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdDelete.Name" xml:space="preserve">
+    <value>cmdDelete</value>
+  </data>
+  <data name="&gt;&gt;cmdDelete.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdLink.Name" xml:space="preserve">
+    <value>cmdLink</value>
+  </data>
+  <data name="&gt;&gt;cmdLink.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdEditKey.Name" xml:space="preserve">
+    <value>cmdEditKey</value>
+  </data>
+  <data name="&gt;&gt;cmdEditKey.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdEdit.Name" xml:space="preserve">
+    <value>cmdEdit</value>
+  </data>
+  <data name="&gt;&gt;cmdEdit.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdGoToPage.Name" xml:space="preserve">
+    <value>cmdGoToPage</value>
+  </data>
+  <data name="&gt;&gt;cmdGoToPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdMoveUp.Name" xml:space="preserve">
+    <value>cmdMoveUp</value>
+  </data>
+  <data name="&gt;&gt;cmdMoveUp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdMoveDown.Name" xml:space="preserve">
+    <value>cmdMoveDown</value>
+  </data>
+  <data name="&gt;&gt;cmdMoveDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>WFListEditor</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

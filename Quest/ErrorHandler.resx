@@ -118,97 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="PictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        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
-        SUVORK5CYII=
-</value>
-  </data>
-  <data name="lblHelp.Text" xml:space="preserve">
-    <value>If you this might be a bug in Quest, please submit the error to the Issue Tracker, which you can access via the link below.
- 
-Please include as much information as possible about the problem, so that we can reproduce the issue and fix it. It helps if you tell us what you were doing just before the error occurred. If you are editing a game, it will help us if you could upload the game file too.</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>785, 393</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -447,4 +358,368 @@ Please include as much information as possible about the problem, so that we can
         +gAAD///////AAAP////////gA///w==
 </value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cmdClose.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="lblIssueTracker.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="&gt;&gt;cmdReport.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lblHelp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblHelp.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
+  </data>
+  <data name="lblHelp.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="cmdCopy.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;txtError.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmdClose.Text" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cmdReport.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;lblHelp.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cmdReport.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="cmdClose.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>System</value>
+  </data>
+  <data name="&gt;&gt;lblIssueTracker.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PictureBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 37</value>
+  </data>
+  <data name="&gt;&gt;cmdCopy.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdCopy.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cmdCopy.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="cmdReport.Text" xml:space="preserve">
+    <value>Report this error</value>
+  </data>
+  <data name="PictureBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 48</value>
+  </data>
+  <data name="cmdCopy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 145</value>
+  </data>
+  <data name="txtError.Size" type="System.Drawing.Size, System.Drawing">
+    <value>672, 100</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="lblIssueTracker.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;txtError.Name" xml:space="preserve">
+    <value>txtError</value>
+  </data>
+  <data name="lblInfo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>95, 16</value>
+  </data>
+  <data name="&gt;&gt;PictureBox1.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="PictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        SUVORK5CYII=
+</value>
+  </data>
+  <data name="lblInfo.Text" xml:space="preserve">
+    <value>Sorry, an error has occurred in Quest.</value>
+  </data>
+  <data name="cmdReport.Location" type="System.Drawing.Point, System.Drawing">
+    <value>459, 350</value>
+  </data>
+  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>249, 17</value>
+  </data>
+  <data name="lblIssueTracker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 350</value>
+  </data>
+  <data name="cmdCopy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>272, 28</value>
+  </data>
+  <data name="txtError.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;cmdClose.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="cmdReport.Size" type="System.Drawing.Size, System.Drawing">
+    <value>203, 28</value>
+  </data>
+  <data name="&gt;&gt;cmdClose.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblHelp.Name" xml:space="preserve">
+    <value>lblHelp</value>
+  </data>
+  <data name="&gt;&gt;lblIssueTracker.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblHelp.Text" xml:space="preserve">
+    <value>If you this might be a bug in Quest, please submit the error to the Issue Tracker, which you can access via the link below.
+ 
+Please include as much information as possible about the problem, so that we can reproduce the issue and fix it. It helps if you tell us what you were doing just before the error occurred. If you are editing a game, it will help us if you could upload the game file too.</value>
+  </data>
+  <data name="lblIssueTracker.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;cmdCopy.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cmdClose.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmdClose.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 28</value>
+  </data>
+  <data name="txtError.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;txtError.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="lblIssueTracker.Text" xml:space="preserve">
+    <value>Issue Tracker</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmdClose.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="txtError.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;lblHelp.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>8, 16</value>
+  </data>
+  <data name="cmdReport.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="lblHelp.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="lblIssueTracker.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;cmdReport.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmdReport.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="lblHelp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>656, 124</value>
+  </data>
+  <data name="PictureBox1.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>AutoSize</value>
+  </data>
+  <data name="lblHelp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 191</value>
+  </data>
+  <data name="lblInfo.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cmdClose.Location" type="System.Drawing.Point, System.Drawing">
+    <value>669, 350</value>
+  </data>
+  <data name="PictureBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="txtError.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 37</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtError.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="lblInfo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="cmdCopy.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;cmdClose.Name" xml:space="preserve">
+    <value>cmdClose</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;PictureBox1.Name" xml:space="preserve">
+    <value>PictureBox1</value>
+  </data>
+  <data name="&gt;&gt;cmdCopy.Name" xml:space="preserve">
+    <value>cmdCopy</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Name" xml:space="preserve">
+    <value>lblInfo</value>
+  </data>
+  <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;PictureBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="lblIssueTracker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 17</value>
+  </data>
+  <data name="cmdCopy.Text" xml:space="preserve">
+    <value>Copy error details to clipboard</value>
+  </data>
+  <data name="cmdClose.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;PictureBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblIssueTracker.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;txtError.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="cmdReport.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="&gt;&gt;cmdReport.Name" xml:space="preserve">
+    <value>cmdReport</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>ErrorHandler</value>
+  </data>
+  <data name="PictureBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 4, 4, 4</value>
+  </data>
+  <data name="cmdCopy.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="cmdReport.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;lblIssueTracker.Name" xml:space="preserve">
+    <value>lblIssueTracker</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

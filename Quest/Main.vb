@@ -1,4 +1,5 @@
 ﻿Imports TextAdventures.Utility
+Imports TextAdventures.Utility.Language.L
 
 Public Class Main
 
@@ -7,10 +8,17 @@ Public Class Main
     Private m_cmdLineLaunch As String = Nothing
     Private m_fromEditor As Boolean
     Private m_editorSimpleMode As Boolean
+    Private m_languages As New Dictionary(Of String, String)
+    Private m_language As String
 
     Public Sub New()
+        LoadLanguage()
+
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
+
+        ctlMenu.MenuChecked(CurrentLanguage.ToLower) = True
+        ctlMenu.MenuEnabled(CurrentLanguage.ToLower) = False
 
         AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
 
@@ -56,6 +64,24 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
         ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
+        ctlMenu.AddMenuClickHandler("english", AddressOf English)
+        ctlMenu.AddMenuClickHandler("deutsch", AddressOf Deutsch)
+    End Sub
+
+    Private Sub English()
+        ChangeLanguage("English")
+    End Sub
+
+    Private Sub Deutsch()
+        ChangeLanguage("Deutsch")
+    End Sub
+
+    Private Sub ChangeLanguage(lang As String)
+        Dim Result As Integer = MsgBox(T("EditorChangeLangRestartContinue"), MsgBoxStyle.YesNo Or MsgBoxStyle.Exclamation, "Quest")
+        If Result = 6 Then
+            SaveLanguage(lang)
+            Application.Restart()
+        End If
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -109,17 +135,16 @@ Public Class Main
     End Sub
 
     Private Sub Browse()
-        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder",
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Quest Games|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|All files|*.*"
+        dlgOpenFile.Filter = T("EditorBrowseFilter")
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then
             Registry.SaveSetting("Quest", "Settings", "StartFolder", System.IO.Path.GetDirectoryName(dlgOpenFile.FileName))
-
             Launch(dlgOpenFile.FileName)
         End If
     End Sub
@@ -139,7 +164,7 @@ Public Class Main
             game = GameLauncher.GetGame(filename, String.Empty)
 
             If game Is Nothing Then
-                MsgBox("Unrecognised file type. This game cannot be loaded in Quest.", MsgBoxStyle.Critical)
+                MsgBox(T("EditorUnrecognisedFileType"), MsgBoxStyle.Critical)
             Else
                 Me.SuspendLayout()
                 ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Player
@@ -234,12 +259,12 @@ Public Class Main
     End Sub
 
     Private Sub OpenEditMenuClick()
-        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before opening a new game?") Then Return
+        If Not ctlEditor.CheckGameIsSaved(T("EditorSaveChangesBeforeOpening")) Then Return
         BrowseEdit()
     End Sub
 
     Private Sub CreateNewMenuClick()
-        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before creating a new game?") Then Return
+        If Not ctlEditor.CheckGameIsSaved(T("EditorSaveChangesBeforeCreating")) Then Return
 
         Dim newFile = ctlEditor.CreateNewGame()
         If String.IsNullOrEmpty(newFile) Then Return
@@ -248,12 +273,12 @@ Public Class Main
     End Sub
 
     Private Sub BrowseEdit()
-        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder",
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Quest Games (*.aslx)|*.aslx|All files|*.*"
+        dlgOpenFile.Filter = T("EditorBrowseEditFilter")
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then

@@ -28,7 +28,7 @@ namespace TextAdventures.Quest.EditorControls
             m_manager.ExtraToolbarItemClicked += m_manager_ExtraToolbarItemClicked;
             ctlListEditor.ShowExtraToolstripItems(new[] { "addpage", "link", "goto" });
             ctlListEditor.HideAddButton();
-            ctlListEditor.SetEditButtonText("Edit Link Text");
+            // ctlListEditor.SetEditButtonText("Edit Link Text");
         }
 
         private void m_manager_RequestParentElementEditorSave()

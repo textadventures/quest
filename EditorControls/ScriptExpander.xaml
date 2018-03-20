@@ -11,7 +11,13 @@
             <Expander.Header>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Name="header" VerticalAlignment="Center">Script</TextBlock>
-                    <Button Name="cmdDelete" Click="cmdDelete_Click" Margin="20,0,0,0" Padding="10,3,10,3">Remove</Button>
+                    <Button Name="cmdDelete" Click="cmdDelete_Click" Margin="20,0,0,0" Padding="10,3,10,3" BorderBrush="#FFACACAC">
+                        <Button.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                                <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background> Remove</Button>
                 </StackPanel>
             </Expander.Header>
             <my:ScriptEditorControl x:Name="ctlScript" HorizontalAlignment="Stretch"/>

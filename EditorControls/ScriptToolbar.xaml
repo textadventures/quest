@@ -9,44 +9,84 @@
         <Style TargetType="{x:Type Image}" x:Key="toolbarImageStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Button}, AncestorLevel=1}, Path=IsEnabled}" Value="False">
-                    <Setter Property="Opacity" Value="0.50"></Setter>
+                    <Setter Property="Opacity" Value="0.5"></Setter>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid UseLayoutRounding="True">
-        <ToolBarTray Background="{x:Null}">
-            <ToolBar KeyboardNavigation.TabNavigation="Local" ToolBarTray.IsLocked="True">
-                <Button Name="cmdMakeEditable" Click="cmdMakeEditable_Click" Visibility="Collapsed">Make Editable Copy</Button>
-                <Button Name="cmdDelete" ToolTip="Delete" Click="cmdDelete_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/DeleteHS.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Separator/>
-                <Button Name="cmdMoveUp" ToolTip="Move up" Click="cmdMoveUp_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/Up.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Button Name="cmdMoveDown" ToolTip="Move down" Click="cmdMoveDown_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/Down.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Separator/>
-                <Button Name="cmdCut" ToolTip="Cut" Click="cmdCut_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/CutHS.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Button Name="cmdCopy" ToolTip="Copy" Click="cmdCopy_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/CopyHS.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Button Name="cmdPaste" ToolTip="Paste" Click="cmdPaste_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/PasteHS.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-                <Separator Name="codeViewSeparator" />
-                <ToggleButton Name="cmdCodeView" ToolTip="Code View" Click="cmdCodeView_OnClick" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/EditCodeHS.png" SnapsToDevicePixels="True"></Image>
-                </ToggleButton>
-                <Separator Name="popOutSeparator" />
-                <Button Name="cmdPopOut" ToolTip="Pop out" Click="cmdPopOut_Click" SnapsToDevicePixels="True">
-                    <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/FullView.png" SnapsToDevicePixels="True"></Image>
-                </Button>
-            </ToolBar>
-        </ToolBarTray>
+    <Grid UseLayoutRounding="False">
+        <DockPanel HorizontalAlignment="Left" Height="25" LastChildFill="False" VerticalAlignment="Top" Width="269">
+            <Button x:Name="cmdMakeEditable" Click="cmdMakeEditable_Click" Visibility="Visible" Background="White" BorderBrush="#FFB4B4B4" Foreground="White" Width="25" ToolTip="Make editable copy" Initialized="cmdMakeEditable_Initialized">
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="Images/MakeEditCopy.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Button Name="cmdDelete" ToolTip="Delete" Click="cmdDelete_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdDelete_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="Images/DeleteHS.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Separator Margin="0" MinHeight="1">
+                <Separator.Background>
+                    <SolidColorBrush Color="#FFF0F0F0"/>
+                </Separator.Background>
+            </Separator>
+            <Button Name="cmdMoveUp" ToolTip="Move up" Click="cmdMoveUp_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdMoveUp_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="./Images/Up.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Button Name="cmdMoveDown" ToolTip="Move down" Click="cmdMoveDown_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdMoveDown_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="./Images/Down.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Separator Margin="0" MinHeight="1">
+                <Separator.Background>
+                    <SolidColorBrush Color="#FFF0F0F0"/>
+                </Separator.Background>
+            </Separator>
+            <Button Name="cmdCut" ToolTip="Cut" Click="cmdCut_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdCut_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Source="./Images/CutHS.png" SnapsToDevicePixels="True" Stretch="None" Width="16" Height="16" UseLayoutRounding="False"/>
+            </Button>
+            <Button Name="cmdCopy" ToolTip="Copy" Click="cmdCopy_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdCopy_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="./Images/CopyHS.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Button Name="cmdPaste" ToolTip="Paste" Click="cmdPaste_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdPaste_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="./Images/PasteHS.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+            <Separator Name="codeViewSeparator" Margin="0" MinHeight="1">
+                <Separator.Background>
+                    <SolidColorBrush Color="#FFF0F0F0"/>
+                </Separator.Background>
+            </Separator>
+            <ToggleButton Name="cmdCodeView" ToolTip="Code View" Click="cmdCodeView_OnClick" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdCodeView_Initialized">
+                <ToggleButton.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </ToggleButton.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" Source="./Images/EditCodeHS.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </ToggleButton>
+            <Separator Name="popOutSeparator" Margin="0" MinHeight="1">
+                <Separator.Background>
+                    <SolidColorBrush Color="#FFF0F0F0"/>
+                </Separator.Background>
+            </Separator>
+            <Button Name="cmdPopOut" ToolTip="Pop out" Click="cmdPopOut_Click" SnapsToDevicePixels="True" Foreground="White" Width="25" Background="White" Initialized="cmdPopOut_Initialized">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FFB4B4B4"/>
+                </Button.BorderBrush>
+                <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18" Source="./Images/FullView.png" SnapsToDevicePixels="True" Stretch="None"></Image>
+            </Button>
+        </DockPanel>
     </Grid>
 </UserControl>

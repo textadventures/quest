@@ -18,7 +18,14 @@
             </Grid.ColumnDefinitions>
             <Label Name="lblIf" Padding="0,3,10,0">If:</Label>
             <my:ExpressionControl x:Name="ctlExpression" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-            <Button Name="cmdDelete" Click="cmdDelete_Click" Grid.Column="2" Padding="10,0,10,0" Margin="10,0,0,0">Remove</Button>
+            <Button Name="cmdDelete" Click="cmdDelete_Click" Grid.Column="2" Padding="10,0,10,0" Margin="10,0,0,0" BorderBrush="#FFACACAC" Foreground="Black">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background> Remove
+            </Button>
         </Grid>
         <my:ScriptExpander x:Name="ctlScriptExpander" Grid.Row="1" Grid.ColumnSpan="2" Padding="20,0,0,0" />
     </Grid>

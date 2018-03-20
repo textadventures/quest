@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <WindowsFormsHost Name="attributesHost">
+        <WindowsFormsHost Name="attributesHost" Margin="-10,0,10,0">
             <this:WFVerbsControl />
         </WindowsFormsHost>
 

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -126,6 +127,41 @@ namespace TextAdventures.Quest.EditorControls
             me.cmdReplace.Visibility = vis;
             me.cmdReplaceAll.Visibility = vis;
             me.InputGrid.ColumnDefinitions[3].Width = len;
+        }
+
+        private void lblFind_Initialized(object sender, EventArgs e)
+        {
+            lblFind.Text = L.T("FindControllblFind");
+        }
+
+        private void lblReplace_Initialized(object sender, EventArgs e)
+        {
+            lblReplace.Text = L.T("FindControllblReplace");
+        }
+
+        private void chkBoxRegex_Initialized(object sender, EventArgs e)
+        {
+            chkBoxRegex.Content = L.T("FindControlchkBoxRegex");
+        }
+
+        private void cmdFind_Initialized(object sender, EventArgs e)
+        {
+            cmdFind.Content = L.T("FindControlcmdFind");
+        }
+
+        private void cmdReplace_Initialized(object sender, EventArgs e)
+        {
+            cmdReplace.Content = L.T("FindControlcmdReplace");
+        }
+
+        private void cmdReplaceAll_Initialized(object sender, EventArgs e)
+        {
+            cmdReplaceAll.Content = L.T("FindControlcmdReplaceAll");
+        }
+
+        private void cmdClose_Initialized(object sender, EventArgs e)
+        {
+            cmdClose.Content = L.T("FindControlcmdClose");
         }
     }
 

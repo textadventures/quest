@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -146,6 +147,50 @@ namespace TextAdventures.Quest.EditorControls
         {
             codeViewSeparator.Visibility = Visibility.Visible;
             cmdCodeView.Visibility = Visibility.Visible;
+        }
+
+        private void cmdMakeEditable_Initialized(object sender, EventArgs e)
+        {
+            cmdMakeEditable.ToolTip = L.T("EditorToolBarMakeEditable");
+        }
+
+        private void cmdDelete_Initialized(object sender, EventArgs e)
+        {
+            cmdDelete.ToolTip = L.T("EditorToolBarDelete");
+        }
+
+        private void cmdMoveUp_Initialized(object sender, EventArgs e)
+        {
+            cmdMoveUp.ToolTip = L.T("EditorToolBarMoveUp");
+        }
+
+        private void cmdMoveDown_Initialized(object sender, EventArgs e)
+        {
+            cmdMoveDown.ToolTip = L.T("EditorToolBarMoveDown");
+        }
+
+        private void cmdCut_Initialized(object sender, EventArgs e)
+        {
+            cmdCut.ToolTip = L.T("EditorToolBarCut");
+        }
+
+        private void cmdCopy_Initialized(object sender, EventArgs e)
+        {
+            cmdCopy.ToolTip = L.T("EditorToolBarCopy");
+        }
+
+        private void cmdPaste_Initialized(object sender, EventArgs e)
+        {
+            cmdPaste.ToolTip = L.T("EditorToolBarPaste");
+        }
+        private void cmdCodeView_Initialized(object sender, EventArgs e)
+        {
+            cmdCodeView.ToolTip = L.T("EditorToolBarCodeView");
+        }
+
+        private void cmdPopOut_Initialized(object sender, EventArgs e)
+        {
+            cmdPopOut.ToolTip = L.T("EditorToolBarPopOut");
         }
     }
 }

@@ -28,36 +28,41 @@ Partial Class AlertBanner
         '
         'lblAlertText
         '
-        Me.lblAlertText.AutoSize = True
+        Me.lblAlertText.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblAlertText.ForeColor = System.Drawing.Color.Black
-        Me.lblAlertText.Location = New System.Drawing.Point(3, 5)
+        Me.lblAlertText.Location = New System.Drawing.Point(1, 1)
+        Me.lblAlertText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblAlertText.Name = "lblAlertText"
-        Me.lblAlertText.Size = New System.Drawing.Size(28, 13)
+        Me.lblAlertText.Size = New System.Drawing.Size(306, 28)
         Me.lblAlertText.TabIndex = 0
         Me.lblAlertText.Text = "Text"
+        Me.lblAlertText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cmdAction
         '
-        Me.cmdAction.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdAction.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdAction.Location = New System.Drawing.Point(231, 0)
+        Me.cmdAction.Dock = System.Windows.Forms.DockStyle.Right
+        Me.cmdAction.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdAction.Location = New System.Drawing.Point(307, 1)
+        Me.cmdAction.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdAction.Name = "cmdAction"
-        Me.cmdAction.Size = New System.Drawing.Size(75, 23)
+        Me.cmdAction.Size = New System.Drawing.Size(100, 28)
         Me.cmdAction.TabIndex = 1
         Me.cmdAction.Text = "Action"
-        Me.cmdAction.UseVisualStyleBackColor = True
+        Me.cmdAction.UseVisualStyleBackColor = False
         '
         'AlertBanner
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.Controls.Add(Me.cmdAction)
         Me.Controls.Add(Me.lblAlertText)
+        Me.Controls.Add(Me.cmdAction)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "AlertBanner"
-        Me.Size = New System.Drawing.Size(309, 23)
+        Me.Padding = New System.Windows.Forms.Padding(1, 1, 5, 1)
+        Me.Size = New System.Drawing.Size(412, 30)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Private WithEvents lblAlertText As System.Windows.Forms.Label

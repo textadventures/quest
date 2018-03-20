@@ -12,7 +12,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid x:Name="InputGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -21,18 +21,49 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Name="lblFind" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="0">Find:</TextBlock>
-            <TextBox Name="txtFind" VerticalContentAlignment="Center" KeyDown="txtFind_KeyDown" Margin="3,0,0,0" Grid.Column="1" />
-            <TextBlock Name="lblReplace" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Collapsed" Grid.Column="2">Replace with:</TextBlock>
+            <TextBlock Name="lblFind" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="0" Initialized="lblFind_Initialized">Find:</TextBlock>
+            <TextBox Name="txtFind" VerticalContentAlignment="Center" KeyDown="txtFind_KeyDown" Margin="3,0,0,0" Grid.Column="1" >
+                <TextBox.BorderBrush>
+                    <SolidColorBrush Color="#FFACACAC"/>
+                </TextBox.BorderBrush>
+            </TextBox>
+            <TextBlock Name="lblReplace" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Collapsed" Grid.Column="2" Initialized="lblReplace_Initialized">Replace with:</TextBlock>
             <TextBox Name="txtReplace" Margin="3,0,0,0" VerticalContentAlignment="Center" KeyDown="txtReplace_KeyDown" Visibility="Collapsed" Grid.Column="3"/>
         </Grid>
 
         <StackPanel HorizontalAlignment="Right" Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-            <CheckBox Name="chkBoxRegex" Content="Regex search" VerticalAlignment="Center" Margin="3,0,0,0" DockPanel.Dock="Right" />
-            <Button Name="cmdFind" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdFind_Click">Find Next</Button>
-            <Button Name="cmdReplace" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdReplace_Click" Visibility="Collapsed">Replace</Button>
-            <Button Name="cmdReplaceAll" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdReplaceAll_Click" Visibility="Collapsed">Replace All</Button>
-            <Button Name="cmdClose" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdClose_Click">Close</Button>
+            <CheckBox Name="chkBoxRegex" Content="Regex search" VerticalAlignment="Center" Margin="3,0,0,0" DockPanel.Dock="Right" BorderBrush="#FFACACAC" Initialized="chkBoxRegex_Initialized" />
+            <Button Name="cmdFind" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdFind_Click" BorderBrush="#FFACACAC" Foreground="Black" Initialized="cmdFind_Initialized">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background> Find Next
+            </Button>
+            <Button Name="cmdReplace" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdReplace_Click" Visibility="Collapsed" Initialized="cmdReplace_Initialized" BorderBrush="#FFACACAC">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background> Replace</Button>
+            <Button Name="cmdReplaceAll" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdReplaceAll_Click" Visibility="Collapsed" Initialized="cmdReplaceAll_Initialized" BorderBrush="#FFACACAC">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background> Replace All</Button>
+            <!-- The close button was hidden, because there was no possibility to switch between the Find- and Replace buttons in the TextEditorControl. xaml. cs. The hierarchy was one-way. But since you can now use toolbar buttons to show and hide the search, the close button is no longer needed. (SoonGames) -->
+            <Button Name="cmdClose" Visibility="Collapsed" VerticalAlignment="Center" Margin="2,0,0,0" Padding="3,1,3,1" Click="cmdClose_Click" BorderBrush="#FFACACAC" Foreground="Black" Initialized="cmdClose_Initialized">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background> Close
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

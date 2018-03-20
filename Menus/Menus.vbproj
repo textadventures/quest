@@ -121,17 +121,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Menu.de-BE.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.de.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -153,6 +160,114 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_command.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_debug.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_forum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_fullscreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_log.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_restart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_room.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_save_as.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_turn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_verb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_replace.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

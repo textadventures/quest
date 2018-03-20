@@ -1,0 +1,750 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EditorFromLibrary" xml:space="preserve">
+    <value>From library {0}</value>
+  </data>
+  <data name="EditorFromLibraryCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="EditorUnableToSave" xml:space="preserve">
+    <value>Unable to save the file due to the following error:</value>
+  </data>
+  <data name="EditorNewElement" xml:space="preserve">
+    <value>Please enter a name for the new {0}</value>
+  </data>
+  <data name="EditorNewObject" xml:space="preserve">
+    <value>Please enter a name for the new object</value>
+  </data>
+  <data name="EditorNewRoom" xml:space="preserve">
+    <value>Please enter a name for the new room</value>
+  </data>
+  <data name="EditorNewWalkthrough" xml:space="preserve">
+    <value>Please enter a name for the new walkthrough</value>
+  </data>
+  <data name="EditorNewdata" xml:space="preserve">
+    <value>Please enter a name for the new data</value>
+  </data>
+  <data name="EditorNewPage" xml:space="preserve">
+    <value>Please enter a name for the new page</value>
+  </data>
+  <data name="EditorUnableToAddEmement" xml:space="preserve">
+    <value>Unable to add element</value>
+  </data>
+  <data name="EditorUnableToAdddata" xml:space="preserve">
+    <value>Unable to add data</value>
+  </data>
+  <data name="EditorSaveBeforeClosing" xml:space="preserve">
+    <value>Do you wish to save your changes before closing?</value>
+  </data>
+  <data name="EditorSaveBeforeLeavingCodeView" xml:space="preserve">
+    <value>Do you wish to save your changes before leaving the code view?</value>
+  </data>
+  <data name="EditorSaveBeforeEditingThisGame" xml:space="preserve">
+    <value>Do you wish to save your changes before editing this game in the code view?</value>
+  </data>
+  <data name="EditorCreateLocalCopy" xml:space="preserve">
+    <value>Create local copy of '{0}'</value>
+  </data>
+  <data name="EditorUnsavedChanges" xml:space="preserve">
+    <value>You have unsaved changes.</value>
+  </data>
+  <data name="EditorModifiedOutside" xml:space="preserve">
+    <value>{0} has been modified outside Quest.</value>
+  </data>
+  <data name="EditorSaveGameAndClickReload" xml:space="preserve">
+    <value>Save this game and then click Reload to apply changes from updating Included Libraries.</value>
+  </data>
+  <data name="EditorParent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
+  <data name="EditorNotParents" xml:space="preserve">
+    <value>(none)</value>
+  </data>
+  <data name="EditorChangeLangRestartContinue" xml:space="preserve">
+    <value>To change the language, Quest must be restarted. Would you like to continue?</value>
+  </data>
+  <data name="EditorBrowseFilter" xml:space="preserve">
+    <value>Quest Games|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|All files|*.*</value>
+  </data>
+  <data name="EditorUnrecognisedFileType" xml:space="preserve">
+    <value>Unrecognised file type. This game cannot be loaded in Quest.</value>
+  </data>
+  <data name="EditorSaveChangesBeforeOpening" xml:space="preserve">
+    <value>Do you wish to save your changes before opening a new game?</value>
+  </data>
+  <data name="EditorSaveChangesBeforeCreating" xml:space="preserve">
+    <value>Do you wish to save your changes before creating a new game?</value>
+  </data>
+  <data name="EditorBrowseEditFilter" xml:space="preserve">
+    <value>Quest Games (*.aslx)|*.aslx|All files|*.*</value>
+  </data>
+  <data name="EditorFileOverwrite" xml:space="preserve">
+    <value>The file {0} already exists.{1}Would you like to overwrite it?</value>
+  </data>
+  <data name="EditorFailedCreateFolder" xml:space="preserve">
+    <value>Failed to create folder: </value>
+  </data>
+  <data name="EditorOverwriteExistingFile" xml:space="preserve">
+    <value>Do you want to overwrite the existing .quest file?</value>
+  </data>
+  <data name="EditorUnableDeleteFile" xml:space="preserve">
+    <value>Unable to delete file: </value>
+  </data>
+  <data name="EditorUnablePublishGame" xml:space="preserve">
+    <value>Unable to publish game</value>
+  </data>
+  <data name="EditorOutputFileOver" xml:space="preserve">
+    <value>Output file size is over 20 MB. Consider reducing the size of any image or sound files, and delete any unused files from the game folder.</value>
+  </data>
+  <data name="EditorNotBeAbleUploadFile" xml:space="preserve">
+    <value>You may not be able to upload this file to textadventures.co.uk.</value>
+  </data>
+  <data name="EditorCreateExitTitle" xml:space="preserve">
+    <value>Create an exit:</value>
+  </data>
+  <data name="EditorToLabel" xml:space="preserve">
+    <value>To:</value>
+  </data>
+  <data name="EditorCreateLookOnlyTitle" xml:space="preserve">
+    <value>Or create a "look" direction:</value>
+  </data>
+  <data name="EditorCreateLookOnlyDesc" xml:space="preserve">
+    <value>Allows players to look in this direction, but not move this way.</value>
+  </data>
+  <data name="EditorCreateLookOnly" xml:space="preserve">
+    <value>Create "look" direction</value>
+  </data>
+  <data name="EditorCreate" xml:space="preserve">
+    <value>Create exit</value>
+  </data>
+  <data name="EditorEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditorChkCorresponding" xml:space="preserve">
+    <value>Also create exit in the other direction</value>
+  </data>
+  <data name="EditorCorresponding" xml:space="preserve">
+    <value>Exit in the other direction already exists</value>
+  </data>
+  <data name="EditorCreateCorresponding" xml:space="preserve">
+    <value>Create exit in the other direction</value>
+  </data>
+  <data name="EditorDirectionNoSelect" xml:space="preserve">
+    <value>No exit selected</value>
+  </data>
+  <data name="EditorDirectionSelect" xml:space="preserve">
+    <value>Selected exit is not a compass direction</value>
+  </data>
+  <data name="EditorNoLinkDestinationNone" xml:space="preserve">
+    <value>(none)</value>
+  </data>
+  <data name="EditorNoLinkDestinationLook" xml:space="preserve">
+    <value>look</value>
+  </data>
+  <data name="EditorMenuItemClear" xml:space="preserve">
+    <value>(Clear)</value>
+  </data>
+  <data name="EditorMenuItemVariable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="EditorMenuItemObject" xml:space="preserve">
+    <value>Object</value>
+  </data>
+  <data name="EditorMenuItemAttribute" xml:space="preserve">
+    <value>Attribute</value>
+  </data>
+  <data name="EditorMenuItemFunction" xml:space="preserve">
+    <value>Function</value>
+  </data>
+  <data name="EditorMenuItemAnd" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="EditorMenuItemOr" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="EditorMenuItemAdd" xml:space="preserve">
+    <value>+ add</value>
+  </data>
+  <data name="EditorMenuItemSubtract" xml:space="preserve">
+    <value>- subtract</value>
+  </data>
+  <data name="EditorMenuItemMultiply" xml:space="preserve">
+    <value>* multiply</value>
+  </data>
+  <data name="EditorMenuItemDivide" xml:space="preserve">
+    <value>/ divide</value>
+  </data>
+  <data name="EditorMenuItemEquals" xml:space="preserve">
+    <value>= equals</value>
+  </data>
+  <data name="EditorMenuItemNotEquals" xml:space="preserve">
+    <value>&lt;&gt; not equals</value>
+  </data>
+  <data name="EditorMenuItemGreaterThan" xml:space="preserve">
+    <value>&gt; greater than</value>
+  </data>
+  <data name="EditorMenuItemlessThan" xml:space="preserve">
+    <value>&lt; less than</value>
+  </data>
+  <data name="EditorFilesOnlyInGameFolder" xml:space="preserve">
+    <value>Files can only be created in the game folder.</value>
+  </data>
+  <data name="EditorDifferentFileOverrideIt" xml:space="preserve">
+    <value>A different file called {0} already exists in the game folder.\n\nWould you like to overwrite it?</value>
+  </data>
+  <data name="EditorUnableCreateFileErrorOccured" xml:space="preserve">
+    <value>Unable to create file. The following error occurred:{0}</value>
+  </data>
+  <data name="EditorUnableCopyFileErrorOccurred" xml:space="preserve">
+    <value>Unable to copy file. The following error occurred:{0}</value>
+  </data>
+  <data name="EditorPictureFiles" xml:space="preserve">
+    <value>Picture Files</value>
+  </data>
+  <data name="EditorIf" xml:space="preserve">
+    <value>If</value>
+  </data>
+  <data name="EditorElseIf" xml:space="preserve">
+    <value>Else If</value>
+  </data>
+  <data name="EditorElse" xml:space="preserve">
+    <value>Else</value>
+  </data>
+  <data name="EditorThen" xml:space="preserve">
+    <value>Then</value>
+  </data>
+  <data name="EditorAddElseIf" xml:space="preserve">
+    <value>Add Else If</value>
+  </data>
+  <data name="EditorAddElse" xml:space="preserve">
+    <value>Add Else</value>
+  </data>
+  <data name="EditorCmdDelete" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="EditorEnterNameAttribute" xml:space="preserve">
+    <value>Please enter a name for the new attribute</value>
+  </data>
+  <data name="EditorUnableAddAttribute" xml:space="preserve">
+    <value>Unable to add attribute</value>
+  </data>
+  <data name="EditorChooseTypeToAdd" xml:space="preserve">
+    <value>Please choose a type to add</value>
+  </data>
+  <data name="EditorTypAlreadyInherited" xml:space="preserve">
+    <value>Type '{0}' is already inherited</value>
+  </data>
+  <data name="EditorTypNotExists" xml:space="preserve">
+    <value>Type '{0}' does not exist</value>
+  </data>
+  <data name="EditorUnableToAddType" xml:space="preserve">
+    <value>Unable to add type</value>
+  </data>
+  <data name="EditorUnableToAddItem" xml:space="preserve">
+    <value>Unable to add item</value>
+  </data>
+  <data name="EditorUnableToAddPage" xml:space="preserve">
+    <value>Unable to add page</value>
+  </data>
+  <data name="EditorEnterNameForNewVerb" xml:space="preserve">
+    <value>Please enter a name for the new verb</value>
+  </data>
+  <data name="EditorUnableToAddVerb" xml:space="preserve">
+    <value>Unable to add verb</value>
+  </data>
+  <data name="EditorVerbWithCommand" xml:space="preserve">
+    <value>Verb would clash with command: </value>
+  </data>
+  <data name="EditorChooseAWalktroughToRun" xml:space="preserve">
+    <value>Please choose a walkthrough to run:</value>
+  </data>
+  <data name="EditorFilterSavedGames" xml:space="preserve">
+    <value>Saved Games|*."</value>
+  </data>
+  <data name="EditorFilterGameFiles" xml:space="preserve">
+    <value>Game files|</value>
+  </data>
+  <data name="EditorFilterAllFiles" xml:space="preserve">
+    <value>|All files|*.*</value>
+  </data>
+  <data name="EditorInvalidSaveFileName" xml:space="preserve">
+    <value>Invalid save file name. Save file names must end with the extension</value>
+  </data>
+  <data name="EditorSaveItFromEditorScreen" xml:space="preserve">
+    <value>If you are editing your game, you must save it from the Editor screen. The Save command in a game is for saving your play progress.</value>
+  </data>
+  <data name="EditorUnableSaveFileError" xml:space="preserve">
+    <value>Unable to save the file due to the following error:</value>
+  </data>
+  <data name="EditorCantPlaySound" xml:space="preserve">
+    <value>Can't play sound that is both synchronous and looped</value>
+  </data>
+  <data name="EditorGameFileNotExistLikeFind" xml:space="preserve">
+    <value>The game file {0} does not exist.{1}Would you like to find the file yourself?</value>
+  </data>
+  <data name="EditorErrorRunningCommand" xml:space="preserve">
+    <value>Error running command</value>
+  </data>
+  <data name="EditorSorryErrorOccurred" xml:space="preserve">
+    <value>Sorry, an error occurred.</value>
+  </data>
+  <data name="EditorErrorWalkthroughHalted" xml:space="preserve">
+    <value>Error - walkthrough halted:</value>
+  </data>
+  <data name="EditorFailedToLoadGame" xml:space="preserve">
+    <value>Failed to load game.</value>
+  </data>
+  <data name="EditorFollowingErrorsOccurred" xml:space="preserve">
+    <value>The following errors occurred:</value>
+  </data>
+  <data name="EditorUnknownDictionaryType" xml:space="preserve">
+    <value>Unknown dictionary type</value>
+  </data>
+  <data name="EditorUnknownListType" xml:space="preserve">
+    <value>Unknown list type</value>
+  </data>
+  <data name="EditorUnrecogniseIfAttribute" xml:space="preserve">
+    <value>Unrecognised 'if' attribute</value>
+  </data>
+  <data name="EditorUnrecognisedElseIfAttribute" xml:space="preserve">
+    <value>Unrecognised 'else if' attribute</value>
+  </data>
+  <data name="EditorUnhandledEvent" xml:space="preserve">
+    <value>Unhandled event</value>
+  </data>
+  <data name="EditorUnknownAttributeTypeDisplayString" xml:space="preserve">
+    <value>Unknown attribute type for DisplayString</value>
+  </data>
+  <data name="EditorValMsgOK" xml:space="preserve">
+    <value>No error</value>
+  </data>
+  <data name="EditorValMsgItemAlreadyExists" xml:space="preserve">
+    <value>Item '{0}' already exists in the list</value>
+  </data>
+  <data name="EditorValMsgElementAlreadyExists" xml:space="preserve">
+    <value>An element called '{0}' already exists in this game</value>
+  </data>
+  <data name="EditorValMsgInvalidAttributeName1" xml:space="preserve">
+    <value>Invalid attribute name</value>
+  </data>
+  <data name="EditorValMsgInvalidAttributeName2" xml:space="preserve">
+    <value>An error occurred: {1}</value>
+  </data>
+  <data name="EditorValMsgInvalidElementName" xml:space="preserve">
+    <value>Invalid element name</value>
+  </data>
+  <data name="EditorValMsgCircularTypeReference" xml:space="preserve">
+    <value>Circular type reference</value>
+  </data>
+  <data name="EditorValMsgInvalidElementNameMultipleSpaces" xml:space="preserve">
+    <value>Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces.</value>
+  </data>
+  <data name="EditorValMsgInvalidElementNameInvalidWord" xml:space="preserve">
+    <value>Invalid element name. Elements cannot contain these words: </value>
+  </data>
+  <data name="EditorValMsgCannotRenamePlayerElement" xml:space="preserve">
+    <value>The player object cannot be renamed</value>
+  </data>
+  <data name="EditorValMsgInvalidElementNameStartsWithNumber" xml:space="preserve">
+    <value>Invalid element name. An element name cannot start with a number.</value>
+  </data>
+  <data name="EditorValMsgMismatchingBrackets" xml:space="preserve">
+    <value>The number of opening brackets \"(\" does not match the number of closing brackets \")\".</value>
+  </data>
+  <data name="EditorValMsgMismatchingQuotes" xml:space="preserve">
+    <value>Missing quote character (\")</value>
+  </data>
+  <data name="EditorFailedLoadGameFollowingErrors" xml:space="preserve">
+    <value>Failed to load game due to the following errors:</value>
+  </data>
+  <data name="EditorParentElementSpecifiedObjectReference" xml:space="preserve">
+    <value>Parent element and attribute must be specified to wrap object reference</value>
+  </data>
+  <data name="EditorParentElementSpecifiedCommandPattern" xml:space="preserve">
+    <value>Parent element and attribute must be specified to wrap command pattern</value>
+  </data>
+  <data name="EditorCannotMixElementTypesInClipboard" xml:space="preserve">
+    <value>Cannot mix element types in the clipboard</value>
+  </data>
+  <data name="EditorPasteNotImplementedForThisType" xml:space="preserve">
+    <value>Paste not implemented for this editor type</value>
+  </data>
+  <data name="EditorElementIsNotDefinedInLibrary" xml:space="preserve">
+    <value>Element is not defined in a library</value>
+  </data>
+  <data name="EditorPleaseEnterValue" xml:space="preserve">
+    <value>Please enter a value</value>
+  </data>
+  <data name="EditorPleaseEnterKey" xml:space="preserve">
+    <value>Please enter a key</value>
+  </data>
+  <data name="EditorUnableToSet" xml:space="preserve">
+    <value>Unable to set '{0}'</value>
+  </data>
+  <data name="EditorUnknownSourceListForDropdown" xml:space="preserve">
+    <value>Unknown source list for dropdown</value>
+  </data>
+  <data name="EditorUnknownDirection" xml:space="preserve">
+    <value>Unknown direction {0}</value>
+  </data>
+  <data name="EditorInvalidControlTypeExpression" xml:space="preserve">
+    <value>Invalid control type for expression</value>
+  </data>
+  <data name="EditorInvalidExpression" xml:space="preserve">
+    <value>Invalid expression</value>
+  </data>
+  <data name="EditorUnknownControlType" xml:space="preserve">
+    <value>Unknown control type</value>
+  </data>
+  <data name="EditorPleaseEnterName" xml:space="preserve">
+    <value>Please enter {0} name</value>
+  </data>
+  <data name="EditorPleaseEnterNameVariable" xml:space="preserve">
+    <value>a variable</value>
+  </data>
+  <data name="EditorPleaseEnterNameObject" xml:space="preserve">
+    <value>an object</value>
+  </data>
+  <data name="EditorPleaseEnterNameAttribute" xml:space="preserve">
+    <value>an attribute</value>
+  </data>
+  <data name="EditorPleaseEnterNameFunction" xml:space="preserve">
+    <value>a function</value>
+  </data>
+  <data name="EditorFilenameNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="EditorUnableSetAttributeValue" xml:space="preserve">
+    <value>Unable to set attribute value</value>
+  </data>
+  <data name="EditorPleaseChooseObject" xml:space="preserve">
+    <value>Please choose an object</value>
+  </data>
+  <data name="EditorLinkText" xml:space="preserve">
+    <value>Link text</value>
+  </data>
+  <data name="EditorAddLinkTo" xml:space="preserve">
+    <value>Add link to</value>
+  </data>
+  <data name="EditorTextNotFound" xml:space="preserve">
+    <value>Text not found: {0}</value>
+  </data>
+  <data name="EditorReplacedOccurrences" xml:space="preserve">
+    <value>Replaced {0} occurrences.</value>
+  </data>
+  <data name="EditorInvalidColumnStyle" xml:space="preserve">
+    <value>Invalid column style</value>
+  </data>
+  <data name="EditorPrintMessage" xml:space="preserve">
+    <value>Print a message</value>
+  </data>
+  <data name="EditorRunScript" xml:space="preserve">
+    <value>Run a script</value>
+  </data>
+  <data name="EditorRequireAnotherObject" xml:space="preserve">
+    <value>Require another object</value>
+  </data>
+  <data name="EditorKeypromptEnterObjectName" xml:space="preserve">
+    <value>Please enter the object name</value>
+  </data>
+  <data name="EditorLaunchCaptionPlay" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="EditorGenerate" xml:space="preserve">
+    <value>Generate...</value>
+  </data>
+  <data name="LauncherPlay" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="LauncherCreate" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="LauncherCreateNewGame" xml:space="preserve">
+    <value>Create a new game</value>
+  </data>
+  <data name="LauncherOpenExistingGame" xml:space="preserve">
+    <value>Open an existing game</value>
+  </data>
+  <data name="LauncherReadTutorial" xml:space="preserve">
+    <value>Read the Tutorial</value>
+  </data>
+  <data name="LauncherGetHelpInForums" xml:space="preserve">
+    <value>Get help in the forums</value>
+  </data>
+  <data name="LauncherRecent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="LauncherDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="LauncherDownloading" xml:space="preserve">
+    <value>Downloading...</value>
+  </data>
+  <data name="LauncherDownloadComplete" xml:space="preserve">
+    <value>Download complete</value>
+  </data>
+  <data name="LauncherNotDownloaded" xml:space="preserve">
+    <value>Not downloaded</value>
+  </data>
+  <data name="LauncherCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="LauncherNoReviewsOrComments" xml:space="preserve">
+    <value>No reviews or comments</value>
+  </data>
+  <data name="LauncherReviewsAndComments" xml:space="preserve">
+    <value>Reviews and comments</value>
+  </data>
+  <data name="LauncherGetGames" xml:space="preserve">
+    <value>Get Games</value>
+  </data>
+  <data name="LauncherEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="LauncherNewVersion" xml:space="preserve">
+    <value>New version available</value>
+  </data>
+  <data name="LauncherClickHereToUpdate" xml:space="preserve">
+    <value>Click here to update</value>
+  </data>
+  <data name="EditorToolBarAddScript" xml:space="preserve">
+    <value>Add Script</value>
+  </data>
+  <data name="EditorToolBarCodeView" xml:space="preserve">
+    <value>Code View</value>
+  </data>
+  <data name="EditorToolBarCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="EditorToolBarCut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="EditorToolBarDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="EditorToolBarMakeEditable" xml:space="preserve">
+    <value>Make editable copy</value>
+  </data>
+  <data name="EditorToolBarMoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="EditorToolBarMoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="EditorToolBarPaste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="EditorToolBarPopOut" xml:space="preserve">
+    <value>Pop out</value>
+  </data>
+  <data name="EditorScriptAdderAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="EditorScriptAdderClose" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TypePrintMessage" xml:space="preserve">
+    <value>Print a message</value>
+  </data>
+  <data name="TypeRequireAnotherObject" xml:space="preserve">
+    <value>Require another object</value>
+  </data>
+  <data name="TypeRunScript" xml:space="preserve">
+    <value>Run script</value>
+  </data>
+  <data name="EditorBrowseButton" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="EditorCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="EditorClearAllItems" xml:space="preserve">
+    <value>Clear all items</value>
+  </data>
+  <data name="EditorDeleteDownloadedFile" xml:space="preserve">
+    <value>Delete downloaded file</value>
+  </data>
+  <data name="EditorFileNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="EditorFilterShowLibraryElements" xml:space="preserve">
+    <value>Show Library Elements</value>
+  </data>
+  <data name="EditorImageSelectionWindowTitle" xml:space="preserve">
+    <value>Choose an image</value>
+  </data>
+  <data name="EditorNewFileButton" xml:space="preserve">
+    <value>New...</value>
+  </data>
+  <data name="EditorNewTemplate" xml:space="preserve">
+    <value>Please enter a name for the new template</value>
+  </data>
+  <data name="EditorOkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="EditorRemoveThisItem" xml:space="preserve">
+    <value>Remove this item</value>
+  </data>
+  <data name="EditorScriptAdderWindowTitle" xml:space="preserve">
+    <value>Add Script Command</value>
+  </data>
+  <data name="EditorTextProcessorHelp" xml:space="preserve">
+    <value>Text Processor help</value>
+  </data>
+  <data name="EditorKeypromptEnterExitName" xml:space="preserve">
+    <value>Please enter the exit name</value>
+  </data>
+  <data name="EditorMenuItemThis" xml:space="preserve">
+    <value>This object</value>
+  </data>
+  <data name="EditorMenuItemFalse" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="EditorMenuItemTrue" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="FindControlchkBoxRegex" xml:space="preserve">
+    <value>Regex search</value>
+  </data>
+  <data name="FindControlcmdClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="FindControlcmdFind" xml:space="preserve">
+    <value>Find next</value>
+  </data>
+  <data name="FindControlcmdReplace" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="FindControlcmdReplaceAll" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="FindControllblFind" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="FindControllblReplace" xml:space="preserve">
+    <value>Replace with:</value>
+  </data>
+  <data name="EditorReload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="EditorChooseWalkthrough" xml:space="preserve">
+    <value>Please choose a walkthrough to run:</value>
+  </data>
+</root>

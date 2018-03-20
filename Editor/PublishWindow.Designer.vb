@@ -22,6 +22,7 @@ Partial Class PublishWindow
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PublishWindow))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtFilename = New System.Windows.Forms.TextBox()
         Me.cmdBrowse = New System.Windows.Forms.Button()
@@ -33,75 +34,51 @@ Partial Class PublishWindow
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(13, 13)
+        resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(49, 13)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "&Save as:"
         '
         'txtFilename
         '
-        Me.txtFilename.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtFilename.Location = New System.Drawing.Point(68, 10)
+        resources.ApplyResources(Me.txtFilename, "txtFilename")
         Me.txtFilename.Name = "txtFilename"
-        Me.txtFilename.Size = New System.Drawing.Size(362, 20)
-        Me.txtFilename.TabIndex = 1
         '
         'cmdBrowse
         '
-        Me.cmdBrowse.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdBrowse.Location = New System.Drawing.Point(436, 8)
+        resources.ApplyResources(Me.cmdBrowse, "cmdBrowse")
         Me.cmdBrowse.Name = "cmdBrowse"
-        Me.cmdBrowse.Size = New System.Drawing.Size(75, 23)
-        Me.cmdBrowse.TabIndex = 2
-        Me.cmdBrowse.Text = "Browse..."
         Me.cmdBrowse.UseVisualStyleBackColor = True
         '
         'chkIncludeWalkthrough
         '
-        Me.chkIncludeWalkthrough.AutoSize = True
-        Me.chkIncludeWalkthrough.Location = New System.Drawing.Point(16, 45)
+        resources.ApplyResources(Me.chkIncludeWalkthrough, "chkIncludeWalkthrough")
         Me.chkIncludeWalkthrough.Name = "chkIncludeWalkthrough"
-        Me.chkIncludeWalkthrough.Size = New System.Drawing.Size(122, 17)
-        Me.chkIncludeWalkthrough.TabIndex = 3
-        Me.chkIncludeWalkthrough.Text = "Include &walkthrough"
         Me.chkIncludeWalkthrough.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        resources.ApplyResources(Me.cmdCancel, "cmdCancel")
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(435, 89)
         Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
-        Me.cmdCancel.TabIndex = 4
-        Me.cmdCancel.Text = "Cancel"
         Me.cmdCancel.UseVisualStyleBackColor = True
         '
         'cmdSave
         '
-        Me.cmdSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSave.Location = New System.Drawing.Point(354, 89)
+        resources.ApplyResources(Me.cmdSave, "cmdSave")
         Me.cmdSave.Name = "cmdSave"
-        Me.cmdSave.Size = New System.Drawing.Size(75, 23)
-        Me.cmdSave.TabIndex = 5
-        Me.cmdSave.Text = "Save"
         Me.cmdSave.UseVisualStyleBackColor = True
         '
         'ctlSaveDialog
         '
         Me.ctlSaveDialog.DefaultExt = "quest"
-        Me.ctlSaveDialog.Filter = "Published Games|*.quest"
+        resources.ApplyResources(Me.ctlSaveDialog, "ctlSaveDialog")
         '
         'PublishWindow
         '
         Me.AcceptButton = Me.cmdSave
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.Color.GhostWhite
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(523, 123)
         Me.Controls.Add(Me.cmdSave)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.chkIncludeWalkthrough)
@@ -111,11 +88,8 @@ Partial Class PublishWindow
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(300, 150)
         Me.Name = "PublishWindow"
         Me.ShowIcon = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Publish"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

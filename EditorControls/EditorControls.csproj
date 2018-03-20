@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>q2_48x48c.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
@@ -293,8 +294,14 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WindowHelpers.cs" />
+    <EmbeddedResource Include="InputWindow.de.resx">
+      <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InputWindow.resx">
       <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFAttributesControl.de.resx">
+      <DependentUpon>WFAttributesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFAttributesControl.resx">
       <DependentUpon>WFAttributesControl.cs</DependentUpon>
@@ -309,6 +316,12 @@
     <EmbeddedResource Include="WFDictionaryStringControl.resx">
       <DependentUpon>WFDictionaryStringControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WFEditorTree.de-DE.resx">
+      <DependentUpon>WFEditorTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFEditorTree.de.resx">
+      <DependentUpon>WFEditorTree.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WFEditorTree.resx">
       <DependentUpon>WFEditorTree.cs</DependentUpon>
     </EmbeddedResource>
@@ -318,14 +331,23 @@
     <EmbeddedResource Include="WFGamebookOptions.resx">
       <DependentUpon>WFGamebookOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WFListEditor.de.resx">
+      <DependentUpon>WFListEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WFListEditor.resx">
       <DependentUpon>WFListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFMultiControl.resx">
       <DependentUpon>WFMultiControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WFToolbar.de.resx">
+      <DependentUpon>WFToolbar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WFToolbar.resx">
       <DependentUpon>WFToolbar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFVerbsControl.resx">
+      <DependentUpon>WFVerbsControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -524,13 +546,121 @@
     <Resource Include="Images\Up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="q2_48x48c.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EditCodeHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MakeEditCopy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AddScript.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_tv_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_tv_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_command.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_room.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_turn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_verb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_change_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_code_win.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_copy_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_domain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_link.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_record.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_rename_key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_wf_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\questicon16.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

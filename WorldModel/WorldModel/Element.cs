@@ -287,12 +287,12 @@ namespace TextAdventures.Quest
 
         public Element Clone()
         {
-            return Clone(e => true);
+            return Clone(e => true, false);
         }
 
-        public Element Clone(Func<Element, bool> canCloneChild)
+        public Element Clone(Func<Element, bool> canCloneChild, Boolean lastelementscutout = false)
         {
-            Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, m_worldModel.GetUniqueElementName(Name));
+            Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, (lastelementscutout) ? Name : m_worldModel.GetUniqueElementName(Name));
 
             if (this.MetaFields[MetaFieldDefinitions.Library])
             {
@@ -305,7 +305,7 @@ namespace TextAdventures.Quest
 
             foreach (Element child in children.Where(e => canCloneChild(e)))
             {
-                Element cloneChild = child.Clone();
+                Element cloneChild = child.Clone(e => true, lastelementscutout);
                 cloneChild.Parent = newElement;
             }
 

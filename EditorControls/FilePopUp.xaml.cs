@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -35,5 +36,20 @@ namespace TextAdventures.Quest.EditorControls
         }
 
         public string Filename { get; private set; }
+
+        private void ok_Initialized(object sender, System.EventArgs e)
+        {
+            ok.Content = L.T("EditorOkButton");
+        }
+
+        private void cancel_Initialized(object sender, System.EventArgs e)
+        {
+            cancel.Content = L.T("EditorCancelButton");
+        }
+
+        private void ImageSelectionWindow_Initialized(object sender, System.EventArgs e)
+        {
+            ImageSelectionWindow.Title = L.T("EditorImageSelectionWindowTitle");
+        }
     }
 }

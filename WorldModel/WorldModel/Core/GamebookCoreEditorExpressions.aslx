@@ -5,7 +5,7 @@
   <editor>
     <pattern>HasSeenPage(#page#)</pattern>
     <create>HasSeenPage()</create>
-    <description>player has seen page</description>
+    <description>[EditorGBplayerHasSeenPage]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -19,7 +19,7 @@
   <editor>
     <pattern>GetBoolean(game, #flag#)</pattern>
     <create>GetBoolean(game, "")</create>
-    <description>flag is set</description>
+    <description>[EditorGBFlagIsSet]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -32,7 +32,7 @@
   <editor>
     <pattern>not GetBoolean(game, #flag#)</pattern>
     <create>not GetBoolean(game, "")</create>
-    <description>flag is not set</description>
+    <description>[EditorGBFlagIsNotSet]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -45,7 +45,7 @@
   <editor>
     <pattern><![CDATA[GetInt(game, #counter#) #compare# #value#]]></pattern>
     <create><![CDATA[GetInt(game, "") = 0]]></create>
-    <description>counter</description>
+    <description>[EditorGBCounter]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -78,7 +78,7 @@
   <editor>
     <pattern>RandomChance(#percentile#)</pattern>
     <create>RandomChance(50)</create>
-    <description>random chance</description>
+    <description>[EditorGBRandomChance]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -92,7 +92,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>% of the time</caption>
+      <caption>[EditorGBProcentOfTheTime]</caption>
     </control>
   </editor>
 </library>

@@ -10,7 +10,18 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBox Name="textBox" MinWidth="40" IsReadOnly="True" MinHeight="20" VerticalContentAlignment="Center" />
-        <Button Name="cmdGenerate" Margin="10,0,0,0" Padding="8,0,8,0"  Grid.Column="1" Content="Generate..." Click="cmdGenerate_Click" />
+        <TextBox Name="textBox" MinWidth="40" IsReadOnly="True" MinHeight="20" VerticalContentAlignment="Center" >
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="#FFACACAC"/>
+            </TextBox.BorderBrush>
+        </TextBox>
+        <Button Name="cmdGenerate" Margin="10,0,0,0" Padding="8,0,8,0"  Grid.Column="1" Content="Generate..." Click="cmdGenerate_Click" BorderBrush="#FFACACAC" Foreground="Black" >
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
     </Grid>
 </UserControl>
