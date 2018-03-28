@@ -114,14 +114,18 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 
 Quest allows you to customise the user interface (UI) to suit the style and mood of your game.
 
-These pages get progressively more advanced. The first two require no coding (not even GUi scripts), the next three some very simple coding. After that it does get more complex...
+The first two pages require no coding (not even GUI scripts), the next three some very simple coding.
 
 -  [Game-play](ui-game-play.html) (what to consider when designing the interface)
 -  [UI style](ui-style.html) (simple options you can set from the game object)
 -  [Display verbs](display_verbs.html)
--  [Custom commands and status pane](custom_panes.html) (adding extra panes to your game)
+-  [Custom command pane](command_pane.html) (adding an extra pane with simple commands to click)
 -  [Simple Customisation](ui-custom.html)
--  [Mesing with the location bar](ui-location-bar.md) (have it display the turn and score, or add commands to it)
+-  [Messing with the location bar](ui-location-bar.md) (have it display the turn and score, or add commands to it)
+
+These are rather more advanced, and get in to HTML and JavaScript.
+
+-  [Custom commands and status pane](custom_panes.html) (adding an extra pane you can do anything with)
 -  [Customisation part 1](ui-javascript.html) (three pages that explore customisation in detail)
 -  [Customisation part 2](ui-javascript2.html)
 -  [Customisation part 3](ui-javascript3.html)
