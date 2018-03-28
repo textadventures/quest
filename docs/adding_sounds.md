@@ -150,10 +150,8 @@ msg ("<audio src='" + src + "' autoplay controls />")
 
 This will look like so: 
 
-![](images/audio_controls.jpg)</audio>
+![](images/audio_controls.jpg)
 
-<audio controls ><source src="audio/snd effect.ogg" type="audio/ogg"><source src="audio/snd effect.mp3" type="audio/mp3"> 
- 
  
 **NOTE:**
 
