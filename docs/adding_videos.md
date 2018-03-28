@@ -15,7 +15,7 @@ Copy the video's ID from YouTube.
 
 Paste the ID into the "Play YouTube video" script.
 
-[![animated gif](AddingYouTube.gif)](AddingYouTube.gif)
+[![animated gif](images/AddingYouTube.gif)](AddingYouTube.gif)
 
 
 
@@ -112,7 +112,7 @@ JS.eval(js)
 
 How do we find the correct text to enter for a new source? We can simply copy the embed code for our example video from YouTube:
 
-[![screenshot](youtube_embed_code.png)](youtube_embed_code.png)
+[![screenshot](images/youtube_embed_code.png)](youtube_embed_code.png)
 
 In this example, we would have this:
 
@@ -123,7 +123,7 @@ In this example, we would have this:
 
 Now, let's find another video to switch to. A forum member with the web handle "onimike" creates videos concerning Quest, so we'll choose one of those.
 
-[![screenshot](questvidembedcode2.png)](questvidembedcode2.png)
+[![screenshot](images/questvidembedcode2.png)](questvidembedcode2.png)
 
 
 
