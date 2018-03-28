@@ -19,6 +19,8 @@ Contents
 
 [How to...](#Howto)
 
+[Multimedia](#Multimedia)
+
 [The User Experience](#TheUserExperience)
 
 [Handling Characters (NPCs)](#Npcs)
@@ -102,10 +104,19 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Track time](time.html)
 -  [Set up a shop](shop.html)
 -  [Set up a door](setting_up_door.html)
+
+
+
+
+<a name="Multimedia"></a>Multimedia
+---------------------------------------
+
+You can add images, sounds and videos to your game. These pages will take your the basics, and on to the more advanced too.
+
 -  [Use multimedia](multimedia.html)
 -  [Use images](images.html)
-
-
+-  [Adding sounds](adding_sounds.html)
+-  [Adding videos](adding_videos.html)
 
 
 
