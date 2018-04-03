@@ -34,7 +34,7 @@
     <template name="GoListHeader">Μπορείς να πας</template>
     <template name="And">και</template>
     <template name="Or">ή</template>
-    <template name="NothingToUndo">Δεν γίνεται τίποτα!</template>
+    <template name="NothingToUndo">Δεν υπάρχει κάτι να αναιρέσεις!</template>
     <template name="NotCarryingAnything">Δεν κουβαλάς τίποτα.</template>
     <template name="CarryingListHeader">Κουβαλάς</template>
     <dynamictemplate name="DropSuccessful">CapFirst(object.gender) + " ρίχνεις."</dynamictemplate>
@@ -101,14 +101,14 @@
     <template name="SurfaceContentsPrefix">πάνω στο οποίο έχει</template>
     <dynamictemplate name="ObjectContains">CapFirst(object.article)+ " " + object.name + " έχει μέσα" </dynamictemplate>
     <dynamictemplate name="ContainerFull">CapFirst(object.article)+ " " + object.name + " " + WriteVerb(object, "είμαι") + " γεμάτ" + GetSuffix(object) + "."</dynamictemplate>
-    <dynamictemplate name="DisambiguateMenu">"Παρακαλώ καθορίστε ποιό '" + text + "' εννοείτε:"</dynamictemplate>
+    <dynamictemplate name="DisambiguateMenu">"Παρακαλώ διάλεξε ποιό '" + text + "' εννοείς:"</dynamictemplate>
     <dynamictemplate name="UndoTurn">"Αναίρεση: " + text</dynamictemplate>
     <template name="LockedExit">Αυτή η έξοδος είναι κλειδωμένη.</template>
     <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
     <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
     <template name="NoKey">Δεν έχεις το κλειδί.</template>
     <template name="UnlockMessage">Ξεκλειδώθηκε.</template>
-    <template name="LockMessage">Ξεκλειδώθηκε</template>
+    <template name="LockMessage">Κλειδώθηκε.</template>
     <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " κλειδώθηκε."</dynamictemplate>
     <dynamictemplate name="AlreadyLocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη κλειδωμέν" + GetSuffix(object)</dynamictemplate>
     <dynamictemplate name="AlreadyUnlocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη ξεκλείδωτ" + GetSuffix(object)</dynamictemplate>
