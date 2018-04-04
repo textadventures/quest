@@ -315,6 +315,7 @@
   <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
   <template templatetype="command" name="help">^help$|^\?$</template>
   <template templatetype="command" name="save">^save$</template>
+  <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " nothing."</dynamictemplate>
 
   <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
 <b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>

@@ -6,30 +6,89 @@ title: Translating Quest
 Introduction
 ------------
 
-To translate Quest, make a copy of English.aslx and rename it for your language.
+Quest has been designed to be language neutral, so you can write games that can be played in any language.
 
-It is recommended that you include this line in your translated file:
+There are numerous translations that are built in, donated by the community over the years. This does mean that some of them are out of date, and do not include the more recent additions. 
 
-     <include ref="English.aslx"/>
+You can even use the editor in your own language, but that will obviously involve more translations. As of March 2018, the editor can only be used in German and, to a degree, Spanish.
+
+
+Using Non-Latin Alphabets
+-------------------------
+
+Quests scripts cannot cope with letters outside the standard Latin alphabet.
+
+Let us suppose you have an object, a rock, in a game you are writing in Greek. Quest will not object to you calling it πέτρα, and the player will be able to interact with it as normal. However, if you try to do anything in a script using that name, you will get an error:
+
+```
+πέτρα.parent = player.parent
+```
+
+The solution is to name in in the Latin alphabet, and give it an alias "πέτρα".
+
+
+Verbs
+-----
+
+In English, we can just put a verb with a noun to get a command, and the verbs in Quest employ this to great effect. That may not work in your language. If you are using the desktop version, you can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
+
+
+
+Making a Translation
+--------------------
+
+To translate Quest, make a copy of English.aslx and rename it for your language. Open the file in a text editor, we recommend [NotePad++](https://notepad-plus-plus.org/).
+
+At the top you will see this:
+
+```
+<library>
+  <include ref="EditorEnglish.aslx"/>
+  <template name="LanguageId">en</template>
+```
+
+The first step is to moduify that so it uses "English.aslx", rather than "EditorEnglish.aslx", and change the language ID. This example is for Icelandic:
+
+```
+<library>
+  <include ref="English.aslx"/>
+  <template name="LanguageId">is</template>
+```
 
 This will include the English template within yours. This means that if English.aslx is updated, your translation won't cause errors due to missing template entries.
+
 
 Translating default text
 ------------------------
 
 Default text appears within [template](elements/template.html) and [dynamictemplate](elements/dynamictemplate.html) tags.
 
-You can translate "template" tags directly, as they are simply static text.
+You can translate "template" tags directly, as they are simply static text. Note that the name must not be changed, just the bit between the tags. Here are some examples from the Russian.aslx:
+
+```
+  <template name="LookAt">Посмотреть на</template>
+  <template name="Take">Взять</template>
+  <template name="SpeakTo">Поговорить с</template>
+  <template name="Use">Использовать</template>
+```
 
 Dynamic templates are expressions - usually these are templates that include some object attribute, for example:
 
-     <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
+```
+  <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
+```
 
-Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](attributes/gender.html) instead of the [article](attributes/article.html) to create your sentence.
+Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](attributes/gender.html) instead of the [article](attributes/article.html) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
 
-Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](functions/corelibrary/getdefaultprefix.html) and [Conjugate](functions/corelibrary/conjugate.html) functions. You're free to add, edit, or remove these functions in your template - of course, as long as you define any functions that you use in your dynamic templates.
+```
+  <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
+```
 
-If you want to know where a template is used, search through the Core library files. [TextPad](http://www.textpad.com) for example has a good "Find in Files" feature.
+Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](functions/corelibrary/getdefaultprefix.html) and [Conjugate](functions/corelibrary/conjugate.html) functions. You can add, edit, or remove these functions in your template as required.
+
+If you want to know where a template is used, search through the Core library files. Notepad++ has a good "Find in Files" feature that lets you search across all files in a folder.
+
 
 Translating commands
 --------------------
@@ -49,9 +108,9 @@ So the only bit we need to worry about is inside the CDATA, which is this:
 
      ^put (?<object1>.*) (on|in) (?<object2>.*)$
 
-This is a [regular expression](http://en.wikipedia.org/wiki/Regular_expression) ("regex") and is simply a more advanced form of command pattern. This [cheat sheet](http://regexlib.com/CheatSheet.aspx) is a handy syntax reference.
+This is a [regular expression](http://en.wikipedia.org/wiki/Regular_expression) ("regex") and is simply a more advanced form of command pattern, and is discussed in some detail [here](pattern_matching.html). This [cheat sheet](http://regexlib.com/CheatSheet.aspx) is a handy syntax reference.
 
-The "\^" at the beginning and the "\$" at the end simply mean that this regex must match the *entire* player input. We don't want to match only a small fragment of what the player typed in - we want to understand the entire command. So leave those in.
+The "^" at the beginning and the "$" at the end simply mean that this regex must match the *entire* player input. We don't want to match only a small fragment of what the player typed in - we want to understand the entire command. So leave those in.
 
 That means you only need to worry about the bit in the middle:
 
@@ -69,6 +128,8 @@ For example, in Deutsch.aslx the translation of this is:
 
      <template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
 
+	 
+	 
 Language-specific object types
 ------------------------------
 
@@ -97,6 +158,7 @@ This will add two entries in the object "Type" dropdown, allowing the game autho
 If your language has more than two genders, you can add more types and add them to the same LanguageSpecificObjectTypes template.
 
 
+
 Adding the translation to your game
 -----------------------------------
 
@@ -104,7 +166,7 @@ These are standard library files so can be added as such.
 
 To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest will then tell you to save and re-load your game.
 
-More on using libraries [here](tutorial/using_libraries.html).
+More on using libraries [here](using_libraries.html).
 
 
 Display Verbs
@@ -118,10 +180,11 @@ For example, in German, the verb to display to allow the player to wear somethin
 Releasing your translation
 --------------------------
 
-When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation.
+When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation. We would also be grateful for undates to existing translations.
 
 [Github Issue Tracker](https://github.com/textadventures/quest/issues)
 
+Note that Quest is only updated once or twice a year, so your changes may not become official straightaway.
 
 Keeping the translation up to date
 ----------------------------------

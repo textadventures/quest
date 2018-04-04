@@ -484,6 +484,14 @@ function updateLocation(text) {
     $("#location").html(text);
 }
 
+
+// Used in grid.js, but defined here so it can be set during startup
+_respondToGridClicks = false;
+
+function respondToGridClicks(flag) {
+    _respondToGridClicks = flag;
+}
+
 function updateList(listName, listData) {
     var listElement = "";
     var buttonPrefix = "";
@@ -647,7 +655,7 @@ function setCurrentDiv(div) {
     $("#outputData").attr("data-currentdiv", div);
 }
 
-var _divCount = -1;
+var _divCount = -1; 
 
 function getDivCount() {
     if (_divCount < 1) {

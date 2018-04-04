@@ -365,7 +365,7 @@
     <None Include="Core\Languages\EditorDeutsch.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </None>	
+    </None>
     <None Include="Core\Languages\EditorEspanol.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -377,6 +377,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Francais.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\Languages\Greek.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Icelandic.aslx">
@@ -434,6 +437,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Templates\Gamebook.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\Templates\Greek.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Templates\Icelandic.template">

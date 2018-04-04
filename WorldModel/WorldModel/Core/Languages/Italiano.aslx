@@ -163,6 +163,9 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <template name="CompassDirectionPrefix">a</template>
   <template name="UpDownDirectionPrefix"></template>
   <template name="InOutDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionSuffix"></template>
+  <template name="InOutDirectionSuffix"></template>
   <template name="CompassNWShort">no</template>
   <template name="CompassNShort">n</template>
   <template name="CompassNEShort">ne</template>

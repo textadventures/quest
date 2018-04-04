@@ -489,6 +489,7 @@
   <template name="EditorScriptsDrawingDrawSquarewidth">Breite</template>
   <template name="EditorScriptsDrawingDrawSquareheight">Höhe</template>
   <template name="EditorScriptsDrawingDrawSquareLabel">Beschriftung</template> 
+  <template name="EditorGameRespondtogridclicks">Soll die Map auf Klicks reagieren?</template>
   <template name="EditorScriptsDrawingAddcustomshape">Füge benutzerdefinierten Formpunkt hinzu</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtX">Füge benutzerdefinierten Formpunkt hinzu bei X</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtY">, Y</template>

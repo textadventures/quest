@@ -8,6 +8,10 @@
   
   <template name="LanguageId">de</template>
 
+  <template name="Again1">Wiederholen</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">Es gibt nichts zu wiederholen.</template>
+
   <dynamictemplate name="ObjectCannotBeStored">"Du kannst das dort nicht hineinlegen."</dynamictemplate>
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
@@ -109,6 +113,7 @@
   <dynamictemplate name="Eaten">"Du isst " + object.article + "."</dynamictemplate>
   <template name="DefaultOops">Da gibt es nichts zu korrigieren.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " nichts."</dynamictemplate>
 
   <dynamictemplate name="YouLooking">"Du schaust nach " + text +"."</dynamictemplate>
   <dynamictemplate name="LookAtDarkness">"Es ist zu dunkel, um etwas zu erkennen."</dynamictemplate>
@@ -122,6 +127,12 @@
   <template name="No">Nein</template>
   <template name="By">von</template>
 
+  <template name="NothingToTake">Hier gibt es nichts zum nehmen.</template>
+  <template name="NothingToDrop">Sie besitzen nichts zum ablegen.</template>
+  <template name="NothingToWear">Sie besitzen nichts zum anziehen.</template>
+  <template name="NothingToRemove">Sie besitzen nichts zum ausziehen.</template>
+  <dynamictemplate name="ObjectCannotBeStored">"Sie können " + object.article + " dort nicht ablegen."</dynamictemplate>  
+  
   <dynamictemplate name="WearSuccessful">"Du ziehst " + object.article + " an."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
   <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " anziehen kannst."</dynamictemplate>
@@ -189,7 +200,9 @@
   <template name="TypeHereLabel">Schreibe hier...</template>
   <template name="ContinueLabel">Weiter...</template>
   
-  <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
+
+  <template templatetype="command" name="tellto"><![CDATA[^(erzähle|frage) (?<Objekt>.*) (von|nach) (?<Text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<Objekt>.*), (?<Text>.*)$]]></template>  <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^(schau|schaue|schau nach|schaue nach) (?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="look">^schau$|^schaue$</template>
   <verbtemplate name="lookat">untersuche</verbtemplate>

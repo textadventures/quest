@@ -267,7 +267,8 @@
   <template name="DefaultXyzzy">Overraskende nok sker der ikke noget som helst.</template>
   <template templatetype="command" name="help">^hjælp$|^\?$</template>
   <template templatetype="command" name="save">^gem$</template>
-
+  <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " ingenting."</dynamictemplate>
+  
   <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
 <b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
 <b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>

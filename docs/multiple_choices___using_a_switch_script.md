@@ -3,67 +3,80 @@ layout: index
 title: Multiple choices - using a switch script
 ---
 
-A "switch" is like an "if" script, but it caters for more options without you having to to add a load of "else if" entries.
+A `switch` is like an `if` script, but it caters for more options without you having to to add a load of `else if` entries.
 
-In this example, we'll add a telephone to the lounge in the tutorial and set up a "dial" command. The player will be able to dial a variety of different numbers:
+The most common use of a `switch` is after asking the player a question, so we will have a go at that, using the `ShowMenu` function. Let us suppose we have a character the player can talk to, and we want to give the player a number of conversation options. So first, add a character, we can call her "Mary", make her a "Female character (named)" on the _Setup_ tab, then on the _Verbs_ tab add a new verb, "Speak to", and set it to run a script.
 
--   999 will print the message "There's no need to call the police now."
--   94672 will print the message "Madame Buxom, Queen of Pain, is on her way."
--   32461 will print the message "A voice at the end of the line says 'Stop calling this number you pervert!'"
--   15629 will print the message "You’re not hungry or drunk enough for anything from Luigi's Pizza Palace right now."
--   Otherwise "Sorry, wrong number!" will be printed
 
-First, add a telephone to the lounge and give it a sensible description. You should also go to the _Object_ tab and give it an "Other name" of "phone". Next, add a command "dial \#text\#". Whenever the player types "dial", the text that follows will be put into the "text" string variable.
+The `ShowMenu` bit
+---------------------
 
-In the command script, add "switch". You can now enter a Switch expression, and any number of cases. Here, we want to compare the variable "text" against different values, so the Switch expression is "text". Each of the cases that we add will be compared against this.
+The first step is to create some options the player can choose from. Do add script, and select "Set a variable or attribute". Call the variable `options`, and for the expression: `Split("The weather;Her hair;The Lost Key of Arenbos", ";")`
 
-Click Add to add the first case. Enter the expression "999".
+What that will do is create a variable, called "options", and will put a string list n to it. To create the list we are using the `Split` function, which breaks a string into a list, in the case at each semi-colon. We just have three options, but you can have any number.
 
-     
+Then do add a new script again, and this time pick "Show a menu". For the text, type is `Talk about?`.
 
-Click OK. The Script Editor will now be displayed, ready for you to enter the script that should run if \#text\# is equal to "999". Print the message "There's no need to call the police now." and close the window.
 
-Follow the same process to enter the responses for the other phone numbers. When you reach the bottom of the list, add script to the "Default" section to print "Sorry, wrong number!". This will handle any other input that wasn't matched by our cases.
+The `switch` statement
+----------------------
 
-When you have finished, the Script Editor should look like this:
+We need to add another script, but you now have two "Add new script" buttons. You need to pick the higher one that is indented, because this is happening inside the `ShowMenu`. Select `Switch...` and type in `result` for the switch.
 
-![](Switch.png "Switch.png")
+`result` is a special variable that Quest will set, and will contain the choice the player made.
 
-In the web version, it looks a little different:
+It should now look like this:
 
-![](Switch.png "Switch2.png")
+![switch01.png](images/switch01.png)
 
-This is much easier to read, edit and add to than if we had used lots of "if" and "else if" scripts.
+Now we need to add the choices. These need to match exactly, and it is a good idea to copy and paste. To add an option, click on the "Add" next to case. You will be asked "Please enter the case expression". Paste in the first option, inside double quotes. Click okay, and you will get a box to put a script. We will just have it print a message, but you can add as many steps as you need, perhaps changing attributes, moving objects, whatever.
 
-Launch the game and dial a few numbers to check that you see the correct response.
+So now it looks like this on the desktop version:
+
+![switch02.png](images/switch02.png)
+
+`switch` states are displayed differently on the web version; in that case it should look like this:
+
+![switch03.png](images/switch03.png)
+
+Launch the game and try the options to check that you see the correct response.
+
+
+Default option
+--------------
+
+As we are controlling what the player can select, there is no chance that anything else will be encountered by the `switch` statement, but that is not always the case. To catch everything that would otherwise be missed, we can add a default. This just involves clicking the "Add new script" button - but now there are three! You want the highest, most indented one in this case.
+
+![switch04.png](images/switch04.png)
 
 
 Advanced
 --------
 
-In code view, the switch above looks like this, and we will look at more code in this section:
+In code view, the script above looks like this, and we will look at more code in this section:
 
 ```
-switch (text) {
-  case (999) {
-    msg ("There’s no need to call the police now.")
-  }
-  case (94672) {
-    msg ("Madame Buxom, Queen of Pain, is on her way.")
-  }
-  case (32461) {
-    msg ("A voice at the end of the line says ‘Stop calling this number you pervert!’")
-  }
-  case (15629) {
-    msg ("You’re not hungry or drunk enough for anything from Luigi’s Pizza Palace right now.")
-  }
-  default {
-    msg ("Sorry, wrong number!")
+options = Split("The weather;Her hair;The Lost Key of Arenbos", ";")
+ShowMenu ("Talk about?", options, true) {
+  switch (result) {
+    case ("The weather") {
+      msg ("'Hasn't it been awful,' says Mary.")
+    }
+    case ("Her hair") {
+      msg ("'Do you like it this colour?' she asks.")
+    }
+    case ("The Lost Key of Arenbos") {
+      msg ("'Oh, I suppose you want it back.'")
+      MoveObject (The Lost Key of Arenbos, player)
+    }
+    default {
+      msg ("That was not even an option!")
+    }
   }
 }
 ```
 
-You can add multiple choices to a single `case` statement, just separate them with commas. For example, you might want to allow 911 to be used as an emergency number:
+You can add multiple choices to a single `case` statement, just separate them with commas. For example, you might want to allow both 999 and 911 to be used as an emergency number:
 
 ```
   case (999, 911) {
@@ -94,7 +107,7 @@ switch (true) {
     msg("You are strong!")
   }
   case (player.strength > 10) {
-    msg("More trainging required!")
+    msg("More training required!")
   }
   case (player.strength > 5) {
     msg("You should work out more!")
