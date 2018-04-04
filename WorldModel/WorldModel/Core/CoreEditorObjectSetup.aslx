@@ -10,7 +10,7 @@
       <width>150</width>
       <advanced/>
     </control>
-
+ 
     <control>
       <caption>[EditorObjectSetupName]</caption>
       <controltype>textbox</controltype>
@@ -58,6 +58,13 @@
       <controltype>textbox</controltype>
       <attribute>suffix</attribute>
       <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_player</mustnotinherit>
+      <caption>This is a room.</caption>
+      <controltype>checkbox</controltype>
+      <attribute>isroom</attribute>
     </control>
 
     <control>
