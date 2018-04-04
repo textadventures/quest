@@ -871,5 +871,16 @@
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
   <command name="save" pattern="[save]">request (RequestSave, "")</command>
-
+  
+  <command name="version" pattern="version">msg ("Version: " + game.version)</command>
+  
+  </object>
+  <command name="log_cmd">
+    <pattern>log;view log;display log;view the log;display the log</pattern>
+    <script>
+      game.notarealturn = true
+      JS.showLog ()
+    </script>
+  </command>
+  
 </library>
