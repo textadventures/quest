@@ -61,11 +61,6 @@ function onMouseDrag(event) {
     updateOffset(event.delta);
 }
 
-var _respondToGridClicks = false;
-
-function respondToGridClicks(flag) {
-    _respondToGridClicks = flag;
-}
 
 function onMouseUp(event) {
     if (_respondToGridClicks) {

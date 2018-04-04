@@ -1,5 +1,5 @@
 ﻿<library>
-
+  <!-- lookat modified by KV to include timesexamined attribute -->
   <command name="lookat" template="lookat">
     <![CDATA[
     if (GetBoolean(object, "hidechildren")) {
@@ -7,7 +7,11 @@
     }
     
     if (TypeOf(object, "look") = "script") {
+      if (not HasAttribute(object,"timesexamined")){
+        object.timesexamined = 0
+      }
       do (object, "look")
+      object.timesexamined = object.timesexamined + 1
     }
     else {
       lookdesc = ""
@@ -34,7 +38,12 @@
       if (isDark and not GetBoolean(object, "lightsource")) {
         lookdesc = DynamicTemplate("LookAtDarkness", object)
       }
-      
+      else {
+        if (not HasAttribute(object,"timesexamined")){
+          object.timesexamined = 0
+        }
+        object.timesexamined = object.timesexamined + 1
+      }
       msg (lookdesc)
     }
     
@@ -62,37 +71,41 @@
     ]]>
   </function>
 
+  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
   <command name="take" template="take">
     <multipleobjects type="script">
       game.pov.currentcommandpendingobjectscope = NewObjectList()
-      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
-          list add(game.pov.currentcommandpendingobjectscope, obj)
-        }
+      objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
+      foreach (obj, objlist) {
+       if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
+        list add(game.pov.currentcommandpendingobjectscope, obj)
+       }
       }
     </multipleobjects>
     <multiple>
       takeList = NewObjectList()
       foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        if (obj.parent = game.pov.parent) {
-          list add(takeList, obj)
-        }
+       if (obj.parent = game.pov.parent) {
+         list add(takeList, obj)
+       }
       }
       return (takeList)
     </multiple>
     <scope>notheld</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NothingToTake]")
+       msg("[NothingToTake]")
       }
       else{
-        foreach (obj, object) {
-          DoTake(obj, multiple)
-        }
+       foreach (obj, object) {
+         DoTake(obj, multiple)
+       }
       }
     </script>
   </command>
-
+  
+  
   <function name="DoTake" parameters="object, ismultiple">
     prefix = ""
     if (ismultiple) {
@@ -872,4 +885,25 @@
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
   <command name="save" pattern="[save]">request (RequestSave, "")</command>
 
+  
+  <!-- added by KV -->
+
+  <command name="version_cmd">
+    <pattern>version;info;about</pattern>
+    <script>
+      <![CDATA[
+      table = "<table style='padding:9px;border:1px solid black;'>"
+      table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
+      if (HasAttribute (game, "author")) {
+        table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
+      }
+      table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+      table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+      table = table + "</table>"
+      msg (table)
+    ]]>
+    </script>
+  </command>
+  
+  
 </library>
