@@ -874,7 +874,6 @@
   
   <command name="version" pattern="version">msg ("Version: " + game.version)</command>
   
-  </object>
   <command name="log_cmd">
     <pattern>log;view log;display log;view the log;display the log</pattern>
     <script>
