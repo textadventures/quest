@@ -84,7 +84,7 @@
     <template name="SelfAlt">εγώ; ο ίδιος</template>
     <template name="AllObjects">όλα; τα πάντα</template>
     <template name="Nothing">τίποτα</template>
-    <template name="ParserIgnorePrefixes">το; τα; ένα; την; τον; έναν; μία</template>
+    <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις</template>
 	<template name="Health">Υγεία</template>
 	<template name="Money">Χρήματα</template>
 	<template name="Score">Σκορ</template>
