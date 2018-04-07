@@ -109,7 +109,7 @@
     <template name="NoKey">Δεν έχεις το κλειδί.</template>
     <template name="UnlockMessage">Ξεκλειδώθηκε.</template>
     <template name="LockMessage">Κλειδώθηκε.</template>
-    <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " κλειδώθηκε."</dynamictemplate>
+    <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " είναι κλειδωμένο."</dynamictemplate>
     <dynamictemplate name="AlreadyLocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη κλειδωμέν" + GetSuffix(object)</dynamictemplate>
     <dynamictemplate name="AlreadyUnlocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη ξεκλείδωτ" + GetSuffix(object)</dynamictemplate>
     <dynamictemplate name="CannotLockOpen">"Δεν μπορείς να κλειδώσεις " + object.article + object.name + " όσο " + Conjugate(object, "είμαι") + " ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
@@ -464,10 +464,12 @@
             return ("έναν")
         } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
             return ("μία")
-        } else if ( DoesInherit (obj, "plural") or  DoesInherit (obj, "maleplural") ) {
+        } else if ( DoesInherit (obj, "maleplural") ) {
             return ("κάποιους")
-        } else if ( DoesInherit (obj, "plural") or DoesInherit (obj, "femaleplural") ) {
+        } else if ( DoesInherit (obj, "femaleplural") ) {
             return ("κάποιες")
+		} else if ( DoesInherit (obj, "plural") ) {
+            return ("κάποια")
         } else { 
             return ("ένα") 
         }
