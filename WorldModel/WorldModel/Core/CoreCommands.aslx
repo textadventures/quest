@@ -905,5 +905,20 @@
     </script>
   </command>
   
+    <command name="log_cmd">
+    <pattern>log;view log;display log;view the log;display the log</pattern>
+    <script>
+      game.notarealturn = true
+      JS.showLog ()
+    </script>
+  </command>
   
+  <command name="view_transcript_cmd">
+    <pattern>transcript;script;view script;view transcript;display transcript;view the transcript;display the transcript</pattern>
+    <script>
+      game.notarealturn = true
+      JS.showTranscript ()
+    </script>
+  </command>
+
 </library>

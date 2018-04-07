@@ -894,9 +894,10 @@
     return ("{command:" + cmd + ":" + text + "}")
     ]]>
   </function>
-  
+
   <function name="Log" parameters="text">
     request (Log, text)
+    JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry("+text+"); };")
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">
