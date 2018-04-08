@@ -238,6 +238,7 @@
     <feature_lightdark type="boolean">false</feature_lightdark>
     <visited type="boolean">false</visited>
     <hasbeenmoved type="boolean">false</hasbeenmoved>
+    <timesexamined type="int">0</timesexamined>
   </type>
 
   <type name="defaultexit">
