@@ -9,7 +9,10 @@
 	στο αντικείμενο που το αφορά, και κατόπιν να διορθώνεται το Pattern του στην καρτέλα Verbs, π.χ. σε "τοποθέτησε".
 	Όταν φτιάχνεις ένα δωμάτιο γένους θηλυκού, θα πρέπει στα attributes να δίνεις Inherited Type: female 
 	Τα δωμάτια πρέπει να δίνονται στην Αιτιατική, π.χ. Φούρνο, και όχι Φούρνος 
-	ΤΟDO: Να μπουν τα ρήματα χωρίς τόνο ως alias, π.χ. παρε, πετα, ...
+	ΤΟDO: Να μπουν τα ρήματα χωρίς τόνο ως alias, π.χ. παρε, πετα, ...	
+	Για να μιλήσεις σε έναν χαρακτήρα, χρησιμοποίησε τη σύνταξη: 
+	> Αντώνη, άνοιξε την πόρτα   ή
+	> πες στον Αντώνη : άνοιξε την πόρτα (αντί > πες στον Αντώνη να ανοίξει την πόρτα - έτσι αποφεύγουμε την Υποτακτική).
 	-->
 	
     <include ref="English.aslx"/>
@@ -84,7 +87,7 @@
     <template name="SelfAlt">εγώ; ο ίδιος</template>
     <template name="AllObjects">όλα; τα πάντα</template>
     <template name="Nothing">τίποτα</template>
-    <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις</template>
+    <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις; στον; στην; στο; στα; στους; στις</template>
 	<template name="Health">Υγεία</template>
 	<template name="Money">Χρήματα</template>
 	<template name="Score">Σκορ</template>
@@ -106,6 +109,7 @@
     <template name="LockedExit">Αυτή η έξοδος είναι κλειδωμένη.</template>
     <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
     <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
+    <dynamictemplate name="DefaultTellTo">"Δεν " + WriteVerb(object, "κάνω") + " τίποτα."</dynamictemplate>
     <template name="NoKey">Δεν έχεις το κλειδί.</template>
     <template name="UnlockMessage">Ξεκλειδώθηκε.</template>
     <template name="LockMessage">Κλειδώθηκε.</template>
@@ -224,9 +228,6 @@
     <verbtemplate name="drop">ρίξε</verbtemplate>
     <verbtemplate name="use">χρησιμοποίησε</verbtemplate>
     <verbtemplate name="speakto">μίλα με</verbtemplate>
-    <verbtemplate name="speakto">μίλα στον</verbtemplate>
-    <verbtemplate name="speakto">μίλα στην</verbtemplate>
-    <verbtemplate name="speakto">μίλα στο</verbtemplate>
     <verbtemplate name="speakto">μίλησε</verbtemplate>
     <verbtemplate name="speakto">μίλησε με</verbtemplate>
 	<verbtemplate name="speakto">συζήτησε με</verbtemplate>
@@ -421,7 +422,32 @@
           }
         }
       }
-	  
+	case ("κάνω") {
+        switch (gender) {
+          case ("εγώ") {
+            return ("κάνω")
+          }
+          case ("εσύ") {
+            return ("κάνεις")
+          }
+          case ("αυτός") {
+            return ("κάνει")
+          }
+          case ("εμείς") {
+            return ("κάνουμε")
+          }
+          case ("εσείς") {
+            return ("κάνετε")
+          }
+		  case ("αυτοί") {
+            return ("κάνουν")
+          }
+          default {
+            return ("κάνει")
+          }
+        }
+      }
+      
       case ("έχω") {
         switch (gender) {
           case ("εγώ") {
