@@ -239,6 +239,7 @@
     <visited type="boolean">false</visited>
     <hasbeenmoved type="boolean">false</hasbeenmoved>
     <timesexamined type="int">0</timesexamined>
+    <not_all type="boolean">false</not_all>
   </type>
 
   <type name="defaultexit">

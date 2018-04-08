@@ -484,6 +484,14 @@ function updateLocation(text) {
     $("#location").html(text);
 }
 
+
+// Used in grid.js, but defined here so it can be set during startup
+_respondToGridClicks = false;
+
+function respondToGridClicks(flag) {
+    _respondToGridClicks = flag;
+}
+
 function updateList(listName, listData) {
     var listElement = "";
     var buttonPrefix = "";
@@ -647,7 +655,7 @@ function setCurrentDiv(div) {
     $("#outputData").attr("data-currentdiv", div);
 }
 
-var _divCount = -1;
+var _divCount = -1; 
 
 function getDivCount() {
     if (_divCount < 1) {
@@ -1135,6 +1143,289 @@ $(function () {
         return false;
     });
 });
+    
+// ***********
+// Section added by KV
+
+
+function isMobilePlayer() {
+    if (typeof (currentTab) === 'string') {
+        return true;
+    }
+    return false;
+};
+
+function showPopup(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupCustomSize(title, text, width, height) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: width,
+        height: height,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupFullscreen(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: $(window).width(),
+        height: $(window).height(),
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+// Make it easy to print messages.
+//var msg = addTextAndScroll;
+    
+// Log functions
+var logVar = "";
+function addLogEntry(text){
+  logVar += getTimeAndDateForLog() + ' ' + text+"NEW_LINE";
+};
+
+function showLog(){
+  var logDivString = "";
+  logDivString += "<div ";
+  logDivString += "id='log-dialog' ";
+  logDivString += "style='display:none;;'>";
+  logDivString += "<textarea id='logdata' rows='13'";
+  logDivString += "  cols='49'></textarea></div>";
+  addText(logDivString);
+  if(webPlayer){
+    var logDialog = $("#log-dialog").dialog({
+      autoOpen: false,
+      width: 600,
+      height: 500,
+      title: "Log",
+      buttons: {
+        Ok: function() {
+          $(this).dialog("close");
+        },
+        Print: function(){
+          $(this).dialog("close");
+          showLogDiv();
+          printLogDiv();
+        },
+        Save: function(){
+          $(this).dialog("close");
+          saveLog();
+        },
+      },
+      show: { effect: "fadeIn", duration: 500 },
+      // The modal setting keeps the player from interacting with anything besides the dialog window.
+      //  (The log will not update while open without adding a turn script.  I prefer this.)
+      modal: true,
+    });
+  }else{
+    var logDialog = $("#log-dialog").dialog({
+    autoOpen: false,
+    width: 600,
+    height: 500,
+    title: "Log",
+    buttons: {
+      Ok: function() {
+        $(this).dialog("close");
+      },
+      Print: function(){
+        $(this).dialog("close");
+        showLogDiv();
+        printLogDiv();
+      },
+    },
+    show: { effect: "fadeIn", duration: 500 },
+    // The modal setting keeps the player from interacting with anything besides the dialog window.
+    //  (The log will not update while open without adding a turn script.  I prefer this.)
+    modal: true,
+  });
+  }
+  $('textarea#logdata').val(logVar.replace(/NEW_LINE/g,"\n"));
+  logDialog.dialog("open");
+};
+
+var logDivIsSetUp = false;
+
+var logDivToAdd = "";
+logDivToAdd += "<div ";
+logDivToAdd += "id='log-div' ";
+logDivToAdd += "style='display:none;'>";
+logDivToAdd += "<a class='do-not-print-with-log' ";
+logDivToAdd += "href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  ";
+logDivToAdd += "<a class='do-not-print-with-log' href='' ";
+logDivToAdd += "onclick='printLogDiv();'>PRINT</a> ";
+logDivToAdd += "<div id='log-contents-div' '></div></div>";
+
+function setupLogDiv(){
+  addText(logDivToAdd);
+  $("#log-div").insertBefore($("#dialog"));
+  logDivIsSetUp = true;
+};
+
+function showLogDiv(){
+    if(!logDivIsSetUp){
+     setupLogDiv(); 
+    }
+	$(".do-not-print-with-log").show();
+	$("#log-contents-div").html(logVar.replace(/NEW_LINE/g,"<br/>"));
+	$("#log-div").show();
+	$("#gameBorder").hide();
+};
+
+function hideLogDiv(){
+	$("#log-div").hide();
+	$("#gameBorder").show();
+};
+
+function printLogDiv(){
+  if(typeof(document.title) !== "undefined"){
+    var docTitleBak = document.title;
+  }else{
+    var docTitleBak = "title";
+  }
+  document.title = "log.txt" ;
+  $('.do-not-print-with-log').hide();
+  print();
+  $('.do-not-print-with-log').show();
+  document.title = docTitleBak;
+};
+
+
+function saveLog(){
+  if(webPlayer){
+    var href = "data:text/plain,"+logVar.replace(/NEW_LINE/g,"\n");
+    addTextAndScroll("<a download='log.txt' href='"+href+"' id='log-save-link'>Click here to save the log if your pop-up blocker stopped the download.</a>");
+    document.getElementById("log-save-link").addEventListener ("click", function (e) {e.stopPropagation();});
+    document.getElementById("log-save-link").click();
+  }else{
+    alert("This function is only available while playing online.");
+  }
+ };
+
+function getTimeAndDateForLog(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	var hrs = today.getHours();
+	var mins = today.getMinutes();
+	var secs = today.getSeconds();
+	today = mm + '/' + dd + '/' + yyyy;
+	if(hrs>12) {
+	  ampm = 'AM';
+	  hrs = '0' + '' + hrs - 12
+	}else{
+	  ampm = 'PM';
+	} 
+	if (mins<10) {
+	  mins = '0'+mins;
+	} 
+	if(secs<10) {
+	  secs = '0' + secs;
+	}
+	time = hrs + ':' + mins + ':' + secs + ' ' + ampm;
+	return today + ' ' + time;
+};
+    
+// **********************************
+
+// TRANSCRIPT FUNCTIONS
+
+var transcriptVar = "";
+function addTranscriptEntry(text) {
+    transcriptVar += text;
+};
+
+
+function showTranscript() {
+    var transcriptDivString = "";
+    transcriptDivString += "<div ";
+    transcriptDivString += "id='transcript-dialog' ";
+    transcriptDivString += "style='display:none;'>";
+    transcriptDivString += "<div id='transcriptdata'></div></div>";
+    addText(transcriptDivString);
+    var transcriptDialog = $("#transcript-dialog").dialog({
+        autoOpen: false,
+        width: 600,
+        height: 500,
+        title: "Transcript",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+            },
+            Print: function () {
+                printTranscriptDiv();
+            },
+        },
+        show: { effect: "fadeIn", duration: 500 },
+        modal: true,
+    });
+    $('#transcriptdata').html($('#divOutput').html());
+    $("#transcriptdata *").attr('style', '').attr('color', '');
+    transcriptDialog.dialog("open");
+
+};
+
+
+
+function printTranscriptDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#transcriptdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#transcript-dialog").dialog("close");
+    $("#transcript-dialog").remove();
+};
+
+
+// ***********************************
+
+
 
 // GRID FUNCTIONS ***********************************************************************************************************************
 
