@@ -51,7 +51,7 @@
     if (LengthOf(game.backgroundimage) > 0) {
       SetBackgroundImage (game.backgroundimage)
     }
-    JS.SetCompassDirections(Join(game.compassdirections, ";"))
+    JS.setCompassDirections(Join(game.compassdirections, ";"))
     JS.setInterfaceString("InventoryLabel", "[InventoryLabel]")
     JS.setInterfaceString("StatusLabel", "[StatusLabel]")
     JS.setInterfaceString("PlacesObjectsLabel", "[PlacesObjectsLabel]")
