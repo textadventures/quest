@@ -72,12 +72,12 @@
     ]]>
   </function>
 
-  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
+  <!-- take command modified by KV to exclude objects with notall set to true from TAKE ALL -->
   <command name="take" template="take">
     <multipleobjects type="script">
       game.pov.currentcommandpendingobjectscope = NewObjectList()
       objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
-      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"notall",true))
       foreach (obj, objlist) {
         if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
           list add(game.pov.currentcommandpendingobjectscope, obj)
