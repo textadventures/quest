@@ -20,7 +20,7 @@ A block is a section of code that is set apart from the main. In the GUI view, i
 
 Probably the most common use is with the `if` script command. This example has two blocks:
 
-![](tutorial/Addif4.png "tutorial/Addif4.png")
+![](images/Addif4.png "images/Addif4.png")
 
 In code it looks like this:
 
@@ -123,3 +123,37 @@ ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) 
   game.objecttopaint.colour = result
 }
 ```
+
+Nesting
+-------
+
+Given Quest does not wait for a block or script to complete, what do you do if you want to have multiple `ShowMenu` calls in the same script? For example, during character creation, you might want to ask the player several questions to set up the character.
+
+The trick is _nesting_, which is putting one thing inside another. Instead of having the second `ShowMenu` after the first, you put it inside the code for the first.
+
+![](images/nested_switch.png "images/nested_switch.png")
+
+Here it is in code.
+
+```
+options = Split("Red;Green;Blue;Yellow", ";")
+ShowMenu ("What is your favourite colour?", options, false) {
+  switch (result) {
+    case ("Red") {
+      msg ("You must be very passionate. Or like a team that play in red.")
+    }
+    case ("Yellow") {
+      msg ("What a bright, cheerful colour!.")
+    }
+    case ("Green", "Blue") {
+      msg (result + "? Seriously?")
+    }
+  }
+  options = Split("Dog;Turtle;Duck;Newt;Trout", ";")
+  ShowMenu ("Okay, and what is your favourite animal?", options, false) {
+    msg ("Really? Big fan of " + result + "s, are you?")
+  }
+}
+```
+
+The same applies for `wait` or whatever, or combinations. You can have as many nested as you like - though it will get increasing difficult for you to track what belongs were.
