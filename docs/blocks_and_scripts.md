@@ -20,7 +20,7 @@ A block is a section of code that is set apart from the main. In the GUI view, i
 
 Probably the most common use is with the `if` script command. This example has two blocks:
 
-![](images/Addif4.png "images/Addif4.png")
+![](tutorial/Addif4.png "tutorial/Addif4.png")
 
 In code it looks like this:
 
