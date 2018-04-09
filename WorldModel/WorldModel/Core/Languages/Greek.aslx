@@ -366,16 +366,19 @@
 	<type name="masculine">
 	  <gender>τον</gender>
 	  <article>ο</article>
+	  <possessive>του</possessive>
 	</type>
 	  
 	<type name="feminine">
 	  <gender>την</gender>
 	  <article>η</article>
+	  <possessive>της</possessive>
 	</type>
 
 	<type name="neutral">
 	  <gender>τo</gender>
 	  <article>το</article>
+	  <possessive>του</possessive>
 	</type>
 	
     <template name="EditorVerbDefaultExpression">"Δεν μπορείς να " + object.gender + " #verb#."</template>
