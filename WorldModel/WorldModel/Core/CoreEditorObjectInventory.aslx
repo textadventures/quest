@@ -38,6 +38,13 @@
     </control>
 
     <control>
+      <controltype>checkbox</controltype>
+      <caption>Object is excluded when entering TAKE ALL</caption>
+      <attribute>not_all</attribute>
+      <mustnotinherit>editor_room</mustnotinherit>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>[EditorObjectInventoryDrop]</caption>
     </control>

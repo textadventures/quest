@@ -11,6 +11,7 @@
 
   <object name="lugar">
     <inherit name="editor_room" />
+    <isroom />
 
     <object name="jugador">
       <inherit name="editor_object" />
