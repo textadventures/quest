@@ -897,7 +897,9 @@
   
   <function name="Log" parameters="text">
     request (Log, text)
-    JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry("+text+"); };")
+    if (not GetBoolean(game, "nohtmllog")){
+      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry("+text+"); };")
+    }
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">

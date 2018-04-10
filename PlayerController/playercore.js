@@ -745,14 +745,32 @@ function disableAllCommandLinks() {
     });
 }
 
+// Modified by KV to handle the transcript
+var transcriptEnabled = true;
+var clearedOnce = false;
 function clearScreen() {
-    $("#divOutput").css("min-height", 0);
-    $("#divOutput").html("");
-    createNewDiv("left");
-    beginningOfCurrentTurnScrollPosition = 0;
-    setTimeout(function () {
-        $("html,body").scrollTop(0);
-    }, 100);
+    if (!transcriptEnabled) {
+        $("#divOutput").css("min-height", 0);
+        $("#divOutput").html("");
+        createNewDiv("left");
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $("html,body").scrollTop(0);
+        }, 100);
+    } else {
+        $("#divOutput").append("<hr class='clearedAbove' />");
+		  if (!clearedOnce) {
+			addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
+        }
+        clearedOnce = true;
+        $('#divOutput').children().addClass('clearedScreen');
+        $('#divOutput').css('min-height', 0);
+        createNewDiv('left');
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $('html,body').scrollTop(0);
+        }, 100);
+    }
 }
 
 function keyPressCode(e) {
@@ -1405,9 +1423,11 @@ function showTranscript() {
         modal: true,
     });
     $('#transcriptdata').html($('#divOutput').html());
-    $("#transcriptdata *").attr('style', '').attr('color', '');
-    transcriptDialog.dialog("open");
-
+    $("#transcriptdata a").addClass("disabled");
+	transcriptDialog.dialog("open");
+	setTimeout(function () {
+	    $("#transcriptdata a").addClass("disabled");
+	}, 1);
 };
 
 

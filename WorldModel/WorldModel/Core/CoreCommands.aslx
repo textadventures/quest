@@ -72,12 +72,12 @@
     ]]>
   </function>
 
-  <!-- take command modified by KV to exclude objects with notall set to true from TAKE ALL -->
+  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
   <command name="take" template="take">
     <multipleobjects type="script">
       game.pov.currentcommandpendingobjectscope = NewObjectList()
       objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
-      objlist = ListExclude(objlist, FilterByAttribute(objlist,"notall",true))
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
       foreach (obj, objlist) {
         if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
           list add(game.pov.currentcommandpendingobjectscope, obj)
@@ -887,8 +887,7 @@
 
   <!-- added by KV -->
 
-  <command name="version_cmd">
-    <pattern>version;info;about</pattern>
+  <command name="version_cmd" pattern="[version_cmd]">
     <script>
       <![CDATA[
       table = "<table style='padding:9px;border:1px solid black;'>"
@@ -904,19 +903,27 @@
     </script>
   </command>
 
-  <command name="log_cmd">
-    <pattern>log;view log;display log;view the log;display the log</pattern>
+  <command name="log_cmd" pattern="[log_cmd]">
     <script>
       game.notarealturn = true
-      JS.showLog ()
+      if (not GetBoolean(game, "nohtmllog")){
+        JS.showLog ()
+      }
+      else {
+        msg ("This game has no in-game log.")
+      }
     </script>
   </command>
 
-  <command name="view_transcript_cmd">
-    <pattern>transcript;script;view script;view transcript;display transcript;view the transcript;display the transcript</pattern>
+  <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
       game.notarealturn = true
-      JS.showTranscript ()
+      if (not GetBoolean(game, "notranscript")){
+        JS.showTranscript ()
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
     </script>
   </command>
   

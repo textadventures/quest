@@ -40,7 +40,7 @@
     <control>
       <controltype>checkbox</controltype>
       <caption>Object is excluded when entering TAKE ALL</caption>
-      <attribute>notall</attribute>
+      <attribute>not_all</attribute>
       <mustnotinherit>editor_room</mustnotinherit>
     </control>
 
