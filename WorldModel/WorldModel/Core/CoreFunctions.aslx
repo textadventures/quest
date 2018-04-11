@@ -538,8 +538,8 @@
       Log ("DictionaryAdd ERROR:  Dictionary does not exist!")
       return (false)
     }
-    if (not DictionaryContains(dict,key)) {
-      dictionary add (dict, key, val)
+    if ((dict = null) or TypeOf(dict)="object") {
+      error ("DictionaryAdd:  Dictionary does not exist!")
     }
     else {
       if (not DictionaryItem(dict,key) = val) {
