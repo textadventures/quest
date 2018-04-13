@@ -8,6 +8,10 @@
 
     <template name="LanguageId">es</template>
 
+	<template name="Again1">Otra vez</template>
+	<template name="Again2">O</template>
+	<template name="NothingToRepeat">No hay nada para repetir.</template>
+
     <template name="UnresolvedObject">No veo eso.</template>
     <template name="UnresolvedLocation">No puedes ir por ahí.</template>
     <template name="DefaultObjectDescription">Nada fuera de lo común.</template>
@@ -114,7 +118,16 @@
     <template name="Yes">Sí</template>
     <template name="No">No</template>
     <template name="By">Por</template>
-
+	<template name="Score">Puntos</template>
+    <template name="Health">Salud</template>
+    <template name="Money">Dinero</template>
+    <template name="NothingToTake">No hay nada para coger.</template>
+    <template name="NothingToDrop">No tienes nada para dejar.</template>
+    <template name="NothingToWear">No tienes nada para ponerte.</template>
+    <template name="NothingToRemove">No tienes nada para quitarte.</template>
+    <dynamictemplate name="ObjectCannotBeStored">"No puedes poner" + object.article + " ahí."</dynamictemplate>
+  
+  
     <dynamictemplate name="WearSuccessful">"Te pones " + object.article + "."</dynamictemplate>
     <dynamictemplate name="WearUnsuccessful">"No puedes ponerte " + object.article + "."</dynamictemplate>
     <dynamictemplate name="CannotWearIfNotHeld">"Necesitas cogerlo antes para poder ponértelo."</dynamictemplate>
@@ -237,6 +250,7 @@
     <template templatetype="command" name="ask"><![CDATA[^pregunta a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$|^pregunte a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$^preguntar a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$^preguntarle a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$^preguntale a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$^pregúntale a (?<object>.*) (sobre|por|acerca de) (?<text>.*)$]]></template>
     <template templatetype="command" name="tell"><![CDATA[^habla (?<object>.*) sobre (?<text>.*)$|^hable (?<object>.*) sobre (?<text>.*)$|^hablale (?<object>.*) sobre (?<text>.*)$|^hablele (?<object>.*) sobre (?<text>.*)$]]></template>
     <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
+	<dynamictemplate name="CantGive">"No puedes dar " + object.article + "."</dynamictemplate>
 
     <verbtemplate name="buy">comprar</verbtemplate>
     <verbtemplate name="buy">compre</verbtemplate>
@@ -501,6 +515,8 @@
     <template name="DefaultXyzzy">Sorprendentemente no pasa absolutamente nada.</template>
     <template templatetype="command" name="help">^ayuda$|^\?$</template>
     <template templatetype="command" name="save">^grabar$|^salvar$</template>
+	<template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
+    <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
     <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
     <b>- Objetos:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
     <b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>

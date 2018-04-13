@@ -133,7 +133,12 @@
 	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
 	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
-	<template name="wornmodifier">worn</template>
+	<template name="NeutralWornModifier">worn</template>
+	<template name="MaleWornModifier">worn</template>
+	<template name="FemaleWornModifier">worn</template>
+	<template name="NeutralPluralWornModifier">worn</template>
+	<template name="MalePluralWornModifier">worn</template>
+	<template name="FemalePluralWornModifier">worn</template>
 
   <template name="Wear">Wear</template>
   <verbtemplate name="wear">put #object# on</verbtemplate>
@@ -404,6 +409,11 @@
       }
     }
   </function>
+  
+  <function name="Possessive" parameters="possessive, object" type="string">
+    return (possessive + " " + GetDisplayAlias(object))
+  </function>
+  
 
   <function name="ToWords" parameters="number" type="string">
     <![CDATA[

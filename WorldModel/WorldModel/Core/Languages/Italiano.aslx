@@ -287,9 +287,63 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <verbtemplate name="show">mostra</verbtemplate>
   <verbtemplate name="show">fai vedere</verbtemplate>
   <dynamictemplate name="DefaultShow">"Non puoi mostrare " + object.article + " " + object.alias + "."</dynamictemplate>
- 
 
- <!-- la riga sotto andrebbe eliminata altrimennti confligge con 
+  <template name="Again1">ancora</template>
+  <template name="NothingToRepeat">Non c'è niente da ripetere.</template>
+  <verbtemplate name="givesingle">dai</verbtemplate>
+
+  
+  <template name="NothingToTake">Non c'è niente da prendere qui.</template>
+  <template name="NothingToDrop">Non hai niente da lasciare.</template>
+  <template name="NothingToWear">Non hai niente da indossare.</template>
+  <template name="NothingToRemove">Non hai niente da togliere.</template>
+  <dynamictemplate name="ObjectCannotBeStored">"Non puoi metter" + object.gender + " lì."</dynamictemplate>
+
+  <dynamictemplate name="WearSuccessful">object.gender + " indossi."</dynamictemplate>
+  <dynamictemplate name="WearUnsuccessful">"Non puoi indossar" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="CannotWearIfNotHeld">"Devi prender" + object.gender + " prima di indossar" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotHeld">"Devi prender" + object.gender + " prima di toglier" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyWearing">object.gender + " stai già indossando."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotWearing">"Non " + object.gender + " stai indossando."</dynamictemplate>
+  <dynamictemplate name="NotRemovable">"Non puoi toglier" + object.gender + "!"</dynamictemplate>
+  <dynamictemplate name="CannotWearOver">"Non puoi indossare ciò sopra " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <dynamictemplate name="CannotWearWith">"Non puoi indossare ciò assieme a " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <dynamictemplate name="RemoveSuccessful">"Te " + object.gender + " togli."</dynamictemplate>
+  <dynamictemplate name="RemoveFirst">"Non puoi toglierti ciò mentre indossi " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <template name="Wear">Indossa</template>
+  <template name="Remove">Togli</template>
+	<template name="NeutralWornModifier">indossato</template>
+	<template name="MaleWornModifier">indossato</template>
+	<template name="FemaleWornModifier">indossata</template>
+	<template name="NeutralPluralWornModifier">indossati</template>
+	<template name="MalePluralWornModifier">indossati</template>
+	<template name="FemalePluralWornModifier">indossate</template>
+  
+  <template name="Nothing">niente</template>
+  <template name="Eat">Mangia</template>
+  <template name="UnlockMessage">Ok, ci riesci.</template>
+  <template name="LockMessage">Bloccato.</template>
+  <template name="Yes">Si</template>
+  <template name="No">No</template>
+  <template name="By">di</template>
+  
+  <template name="Score">Punteggio</template>
+  <template name="Health">Salute</template>
+  <template name="Money">Denaro</template>
+  <template name="StatusLabel">Stato</template>
+  <template name="TypeHereLabel">Batti qui:</template>
+  <template name="ContinueLabel">Continua:</template>
+  
+  <dynamictemplate name="MaxObjectsInInventory">"Non puoi portare altri oggetti."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Non puoi mettere altri oggetti lì dentro."</dynamictemplate>
+
+  <dynamictemplate name="ObjectCannotBeStored">"Non puoi metter" + object.gender + " lì."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Non puoi dar" + object.gender + " via."</dynamictemplate>
+  <dynamictemplate name="Eaten">CapFirst(object.gender) + " mangi."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"È troppo buio per distinguere qualcosa."</dynamictemplate>
+
+
+  <!-- la riga sotto andrebbe eliminata altrimennti confligge con 
 
        siediti + preposizioni
 
@@ -322,15 +376,9 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <!-- nella riga sotto, ho tolto capfirst, per evitare casini con articoli -->
   <dynamictemplate name="DefaultTouch">"Tocchi, ma non succede niente."</dynamictemplate>
   
-  <verbtemplate name="turnon">turn on</verbtemplate>
-  <verbtemplate name="turnon">turn #object# on</verbtemplate>
   <verbtemplate name="turnon">accendi</verbtemplate>
-  <verbtemplate name="turnon">switch #object# on</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Non puoi accendere " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="turnoff">spegni</verbtemplate>
-  <verbtemplate name="turnoff">turn #object# off</verbtemplate>
-  <verbtemplate name="turnoff">switch off</verbtemplate>
-  <verbtemplate name="turnoff">switch #object# off</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"Non puoi spegnere " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="turn">gira</verbtemplate>
   <dynamictemplate name="DefaultTurn">"Non puoi girare " + object.article + " " + object.alias + "."</dynamictemplate>
@@ -341,6 +389,8 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <template templatetype="command" name="useon"><![CDATA[^usa (?<object1>.*) (su|con|sui|sulle|sull'|sugli|sullo|sulla) (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"Non puoi usar" + object2.article + " in questo modo."</dynamictemplate>
   <verbtemplate name="wear">indossa</verbtemplate>
+  <verbtemplate name="wear">metti</verbtemplate>
+  <verbtemplate name="remove">togli</verbtemplate>
   <dynamictemplate name="DefaultWear">"Non puoi indossare " + object.article + " " + object.alias + "."</dynamictemplate>
   <template templatetype="command" name="listen">^ascolta$</template> <!-- a che serve questa sintassi? -->
   <template name="DefaultListen">Non senti niente di particolare.</template>

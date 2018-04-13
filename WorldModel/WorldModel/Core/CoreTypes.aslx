@@ -155,6 +155,7 @@
     <gender>[NeutralGender]</gender>
     <article>[NeutralArticle]</article>
     <possessive>[NeutralPossessive]</possessive>
+    <wornmodifier>[NeutralWornModifier]</wornmodifier>
     <isopen type="boolean">false</isopen>
     <open type="boolean">false</open>
     <close type="boolean">false</close>
@@ -442,6 +443,7 @@
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
     <possessive>[MalePossessive]</possessive>
+    <wornmodifier>[MaleWornModifier]</wornmodifier>
   </type>
   
   <type name="namedmale">
@@ -455,6 +457,7 @@
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
     <possessive>[FemalePossessive]</possessive>
+    <wornmodifier>[FemaleWornModifier]</wornmodifier>
   </type>
   
   <type name="namedfemale">
@@ -466,6 +469,7 @@
     <gender>[NeutralPluralGender]</gender>
     <article>[NeutralPluralArticle]</article>
     <possessive>[NeutralPluralPossessive]</possessive>
+    <wornmodifier>[NeutralPluralWornModifier]</wornmodifier>
   </type>
 
   <type name="maleplural">
@@ -473,6 +477,7 @@
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
     <possessive>[MalePluralPossessive]</possessive>
+    <wornmodifier>[MalePluralWornModifier]</wornmodifier>
   </type>
 
   <type name="femaleplural">
@@ -480,6 +485,7 @@
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
     <possessive>[FemalePluralPossessive]</possessive>
+    <wornmodifier>[FemalePluralWornModifier]</wornmodifier>
   </type>
 
   <type name="openable">

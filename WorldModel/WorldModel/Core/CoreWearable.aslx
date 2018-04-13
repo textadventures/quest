@@ -329,10 +329,10 @@
   Unit tested.
   -->
 	<function name="GetDescriptor" parameters="object" type="string"><![CDATA[
-    if (object.multistate_status = 0) return (" ([wornmodifier])")
+    if (object.multistate_status = 0) return (" (" + object.wornmodifier + ")")
     s = StringListItem(object.multistate_descriptors, object.multistate_status - 1)
-    if (s = "*")  return (" ([wornmodifier])")
-    return (" ([wornmodifier] " + s + ")")
+    if (s = "*")  return (" (" + object.wornmodifier + ")")
+    return (" (" + object.wornmodifier + " " + s + ")")
 	]]></function>
 
 
