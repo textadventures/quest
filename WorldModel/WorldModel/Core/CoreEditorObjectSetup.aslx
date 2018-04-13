@@ -61,6 +61,12 @@
     </control>
 
     <control>
+      <controltype>checkbox</controltype>
+      <caption>Object is a room</caption>
+      <attribute>isroom</attribute>
+    </control>
+
+    <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectSetupType]</caption>
