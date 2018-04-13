@@ -51,7 +51,7 @@
     if (LengthOf(game.backgroundimage) > 0) {
       SetBackgroundImage (game.backgroundimage)
     }
-    JS.SetCompassDirections(Join(game.compassdirections, ";"))
+    JS.setCompassDirections(Join(game.compassdirections, ";"))
     JS.setInterfaceString("InventoryLabel", "[InventoryLabel]")
     JS.setInterfaceString("StatusLabel", "[StatusLabel]")
     JS.setInterfaceString("PlacesObjectsLabel", "[PlacesObjectsLabel]")
@@ -272,6 +272,10 @@
       }
       UpdateStatusAttributes
       UpdateObjectLinks
+    }
+    // Added by KV to use the old JS clearScreen if the transcript is disabled
+    if (GetBoolean(game, "notranscript")){
+      JS.eval("transcriptEnabled = false;")
     }
     ]]>
   </function>

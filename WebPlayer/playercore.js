@@ -745,14 +745,32 @@ function disableAllCommandLinks() {
     });
 }
 
+// Modified by KV to handle the transcript
+var transcriptEnabled = true;
+var clearedOnce = false;
 function clearScreen() {
-    $("#divOutput").css("min-height", 0);
-    $("#divOutput").html("");
-    createNewDiv("left");
-    beginningOfCurrentTurnScrollPosition = 0;
-    setTimeout(function () {
-        $("html,body").scrollTop(0);
-    }, 100);
+    if (!transcriptEnabled) {
+        $("#divOutput").css("min-height", 0);
+        $("#divOutput").html("");
+        createNewDiv("left");
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $("html,body").scrollTop(0);
+        }, 100);
+    } else {
+        $("#divOutput").append("<hr class='clearedAbove' />");
+		  if (!clearedOnce) {
+			addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
+        }
+        clearedOnce = true;
+        $('#divOutput').children().addClass('clearedScreen');
+        $('#divOutput').css('min-height', 0);
+        createNewDiv('left');
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $('html,body').scrollTop(0);
+        }, 100);
+    }
 }
 
 function keyPressCode(e) {
@@ -1147,6 +1165,78 @@ $(function () {
 // ***********
 // Section added by KV
 
+
+function isMobilePlayer() {
+    if (typeof (currentTab) === 'string') {
+        return true;
+    }
+    return false;
+};
+
+function showPopup(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupCustomSize(title, text, width, height) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: width,
+        height: height,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupFullscreen(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: $(window).width(),
+        height: $(window).height(),
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
 // Make it easy to print messages.
 //var msg = addTextAndScroll;
     
@@ -1299,6 +1389,63 @@ function getTimeAndDateForLog(){
 };
     
 // **********************************
+
+// TRANSCRIPT FUNCTIONS
+
+var transcriptVar = "";
+function addTranscriptEntry(text) {
+    transcriptVar += text;
+};
+
+
+function showTranscript() {
+    var transcriptDivString = "";
+    transcriptDivString += "<div ";
+    transcriptDivString += "id='transcript-dialog' ";
+    transcriptDivString += "style='display:none;'>";
+    transcriptDivString += "<div id='transcriptdata'></div></div>";
+    addText(transcriptDivString);
+    var transcriptDialog = $("#transcript-dialog").dialog({
+        autoOpen: false,
+        width: 600,
+        height: 500,
+        title: "Transcript",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+            },
+            Print: function () {
+                printTranscriptDiv();
+            },
+        },
+        show: { effect: "fadeIn", duration: 500 },
+        modal: true,
+    });
+    $('#transcriptdata').html($('#divOutput').html());
+    $("#transcriptdata a").addClass("disabled");
+	transcriptDialog.dialog("open");
+	setTimeout(function () {
+	    $("#transcriptdata a").addClass("disabled");
+	}, 1);
+};
+
+
+
+function printTranscriptDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#transcriptdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#transcript-dialog").dialog("close");
+    $("#transcript-dialog").remove();
+};
+
+
+// ***********************************
+
+
 
 // GRID FUNCTIONS ***********************************************************************************************************************
 

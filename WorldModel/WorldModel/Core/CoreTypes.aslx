@@ -91,7 +91,9 @@
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
-    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
+    <nohtmllog type="boolean">false</nohtmllog>
+    <notranscript type="boolean">false</notranscript>
   </type>
 
   <type name="theme_novella">
@@ -239,6 +241,8 @@
     <feature_lightdark type="boolean">false</feature_lightdark>
     <visited type="boolean">false</visited>
     <hasbeenmoved type="boolean">false</hasbeenmoved>
+    <timesexamined type="int">0</timesexamined>
+    <not_all type="boolean">false</not_all>
   </type>
 
   <type name="defaultexit">

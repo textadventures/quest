@@ -9,7 +9,10 @@
 	στο αντικείμενο που το αφορά, και κατόπιν να διορθώνεται το Pattern του στην καρτέλα Verbs, π.χ. σε "τοποθέτησε".
 	Όταν φτιάχνεις ένα δωμάτιο γένους θηλυκού, θα πρέπει στα attributes να δίνεις Inherited Type: female 
 	Τα δωμάτια πρέπει να δίνονται στην Αιτιατική, π.χ. Φούρνο, και όχι Φούρνος 
-	ΤΟDO: Να μπουν τα ρήματα χωρίς τόνο ως alias, π.χ. παρε, πετα, ...
+	ΤΟDO: Να μπουν τα ρήματα χωρίς τόνο ως alias, π.χ. παρε, πετα, ...	
+	Για να μιλήσεις σε έναν χαρακτήρα, χρησιμοποίησε τη σύνταξη: 
+	> Αντώνη, άνοιξε την πόρτα   ή
+	> πες στον Αντώνη : άνοιξε την πόρτα (αντί > πες στον Αντώνη να ανοίξει την πόρτα - έτσι αποφεύγουμε την Υποτακτική).
 	-->
 	
     <include ref="English.aslx"/>
@@ -63,28 +66,28 @@
     <template name="MaleGender">ο</template>
     <template name="FemaleGender">η</template>
     <template name="SelfGender">εσύ</template>
-    <template name="NeutralPluralGender">αυτά</template>
-    <template name="MalePluralGender">αυτοί</template>
-    <template name="FemalePluralGender">αυτές</template>
+    <template name="NeutralPluralGender">τα</template>
+    <template name="MalePluralGender">οι</template>
+    <template name="FemalePluralGender">οι</template>
     <template name="NeutralArticle">το</template>
     <template name="MaleArticle">ο</template>
     <template name="FemaleArticle">η</template>
     <template name="SelfArticle">ο ίδιος</template>
-    <template name="NeutralPluralArticle">αυτά</template>
-    <template name="MalePluralArticle">αυτοί</template>
-    <template name="FemalePluralArticle">αυτές</template>
+    <template name="NeutralPluralArticle">τα</template>
+    <template name="MalePluralArticle">οι</template>
+    <template name="FemalePluralArticle">οι</template>
     <template name="NeutralPossessive">του</template>
     <template name="MalePossessive">του</template>
     <template name="FemalePossessive">της</template>
     <template name="SelfPossessive">σου</template>
-    <template name="NeutralPluralPossessive">των</template>
-    <template name="MalePluralPossessive">των</template>
-    <template name="FemalePluralPossessive">των</template>
+    <template name="NeutralPluralPossessive">τους</template>
+    <template name="MalePluralPossessive">τους</template>
+    <template name="FemalePluralPossessive">τους</template>
     <template name="SelfAlias">εγώ</template>
     <template name="SelfAlt">εγώ; ο ίδιος</template>
     <template name="AllObjects">όλα; τα πάντα</template>
     <template name="Nothing">τίποτα</template>
-    <template name="ParserIgnorePrefixes">το; τα; ένα; την; τον; έναν; μία</template>
+    <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις; στον; στην; στο; στα; στους; στις</template>
 	<template name="Health">Υγεία</template>
 	<template name="Money">Χρήματα</template>
 	<template name="Score">Σκορ</template>
@@ -106,10 +109,11 @@
     <template name="LockedExit">Αυτή η έξοδος είναι κλειδωμένη.</template>
     <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
     <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " δεν απαντάει."</dynamictemplate>
+    <dynamictemplate name="DefaultTellTo">"Δεν " + WriteVerb(object, "κάνω") + " τίποτα."</dynamictemplate>
     <template name="NoKey">Δεν έχεις το κλειδί.</template>
     <template name="UnlockMessage">Ξεκλειδώθηκε.</template>
     <template name="LockMessage">Κλειδώθηκε.</template>
-    <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " κλειδώθηκε."</dynamictemplate>
+    <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " είναι κλειδωμένο."</dynamictemplate>
     <dynamictemplate name="AlreadyLocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη κλειδωμέν" + GetSuffix(object)</dynamictemplate>
     <dynamictemplate name="AlreadyUnlocked">CapFirst(object.article)+ " " + object.name + WriteVerb(object, "είμαι") + " ήδη ξεκλείδωτ" + GetSuffix(object)</dynamictemplate>
     <dynamictemplate name="CannotLockOpen">"Δεν μπορείς να κλειδώσεις " + object.article + object.name + " όσο " + Conjugate(object, "είμαι") + " ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
@@ -224,9 +228,6 @@
     <verbtemplate name="drop">ρίξε</verbtemplate>
     <verbtemplate name="use">χρησιμοποίησε</verbtemplate>
     <verbtemplate name="speakto">μίλα με</verbtemplate>
-    <verbtemplate name="speakto">μίλα στον</verbtemplate>
-    <verbtemplate name="speakto">μίλα στην</verbtemplate>
-    <verbtemplate name="speakto">μίλα στο</verbtemplate>
     <verbtemplate name="speakto">μίλησε</verbtemplate>
     <verbtemplate name="speakto">μίλησε με</verbtemplate>
 	<verbtemplate name="speakto">συζήτησε με</verbtemplate>
@@ -365,16 +366,19 @@
 	<type name="masculine">
 	  <gender>τον</gender>
 	  <article>ο</article>
+	  <possessive>του</possessive>
 	</type>
 	  
 	<type name="feminine">
 	  <gender>την</gender>
 	  <article>η</article>
+	  <possessive>της</possessive>
 	</type>
 
 	<type name="neutral">
 	  <gender>τo</gender>
 	  <article>το</article>
+	  <possessive>του</possessive>
 	</type>
 	
     <template name="EditorVerbDefaultExpression">"Δεν μπορείς να " + object.gender + " #verb#."</template>
@@ -421,7 +425,32 @@
           }
         }
       }
-	  
+	case ("κάνω") {
+        switch (gender) {
+          case ("εγώ") {
+            return ("κάνω")
+          }
+          case ("εσύ") {
+            return ("κάνεις")
+          }
+          case ("αυτός") {
+            return ("κάνει")
+          }
+          case ("εμείς") {
+            return ("κάνουμε")
+          }
+          case ("εσείς") {
+            return ("κάνετε")
+          }
+		  case ("αυτοί") {
+            return ("κάνουν")
+          }
+          default {
+            return ("κάνει")
+          }
+        }
+      }
+      
       case ("έχω") {
         switch (gender) {
           case ("εγώ") {
@@ -464,10 +493,12 @@
             return ("έναν")
         } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
             return ("μία")
-        } else if ( DoesInherit (obj, "plural") or  DoesInherit (obj, "maleplural") ) {
+        } else if ( DoesInherit (obj, "maleplural") ) {
             return ("κάποιους")
-        } else if ( DoesInherit (obj, "plural") or DoesInherit (obj, "femaleplural") ) {
+        } else if ( DoesInherit (obj, "femaleplural") ) {
             return ("κάποιες")
+		} else if ( DoesInherit (obj, "plural") ) {
+            return ("κάποια")
         } else { 
             return ("ένα") 
         }
