@@ -368,12 +368,12 @@
 
   <function name="GetListDisplayAlias" type="string" parameters="obj">
     <![CDATA[
+    // Modified by KV
     if (HasString(obj, "listalias")) {
-      // Modified by KV
       result = ProcessText(obj.listalias)
     }
     else {
-      result = GetDisplayAlias(obj)
+      result = ProcessText(GetDisplayAlias(obj))
     }
     return (result)
   ]]>
