@@ -17,4 +17,4 @@ On x64 machines, add the following registry key:
 
 Next, set add a new string value called "LockAdult", and set the value to 1.
 
-![](Lockadult.png "Lockadult.png")
+![](images/Lockadult.png "Lockadult.png")

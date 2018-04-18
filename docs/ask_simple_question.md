@@ -38,7 +38,7 @@ Now we can add the options to the list. For each option, Click "Add new script",
 
 Here is an example, setting up a character called Cindy as a flower seller. This is for when the player talks to her, so is set up as a verb. Three options have been added.
 
-![](menu1.png "menu1.png")
+![](images/menu1.png "menu1.png")
 
 
 Show the menu
@@ -46,7 +46,7 @@ Show the menu
 
 Click "Add new script", and select "Show a menu". In the first textbox, type in the question you want to ask the player. In the second, type in "options" to tell it to use the list of options we created before. You can also choose whether the player can ignore the menu. If this is asking the player whether to be a man or a woman, you would want to set this "no" to ensure the player makes a choice. For our flower seller, we can leave it as "yes"; if the player decides the flowers on offer are not that good, she can just ignore the menu and do something else.
 
-![](menu2.png "menu2.png")
+![](images/menu2.png "menu2.png")
 
 At this point you should be able to go into the game and actually see the menu work - though it will not do anything.
 
@@ -62,11 +62,11 @@ Click "Add" and type in the first of your options. Note that this must be exactl
 
 You will see you have yet another "Add new script" - this one specifically for this option. Add scripts as appropriate - exactly what is up to you. In the example below, it just prints some text.
 
-![](menu3.png "menu3.png")
+![](images/menu3.png "menu3.png")
 
 You need to do that for each option. Below you can see it has been done for two, I still need to do the third!
 
-![](menu4.png "menu4.png")
+![](images/menu4.png "menu4.png")
 
 
 In code?!?
@@ -99,7 +99,7 @@ Yes or no?
 
 For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
 
-![](menu5.png "menu5.png")
+![](images/menu5.png "menu5.png")
 
 In code:
 

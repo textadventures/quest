@@ -29,7 +29,7 @@ Change Bob's "look at" description to "Run script", and add an "if" command.
 
 For the expression, choose "object has flag". Then select "Bob" and enter the flag name "alive". Add the descriptions above for "then" and "else" messages.
 
-![](Use1.png "Use1.png")
+![](../images/Use1.png "Use1.png")
 
 Using the defibrillator
 -----------------------
@@ -40,7 +40,7 @@ Go to the _Inventory_ tab and tick "Object can be taken".
 
 Now go back to Bob. On his _Use/Give_ tab, go to the "Use (other object) on this" section and choose "Handle objects individually".
 
-![](Use2.png "Use2.png")
+![](../images/Use2.png "Use2.png")
 
 A list will appear in the "Use" section. Here you can add the objects that can be used on Bob, with a script for each. Click "Add" and type "defibrillator".
 
@@ -50,7 +50,7 @@ So, add a "print a message" script and type something like "Miraculously, the de
 
 Now add a "Set object flag" command. Choose Bob from the objects list, and enter the flag name "alive".
 
-![](Use3.png "Use3.png")
+![](../images/Use3.png "Use3.png")
 
 Close the Script Editor window. Now run the game. Look at Bob, then type "use defibrillator on bob", then look at Bob again. Verify that you see the correct text in each case.
 
@@ -78,7 +78,7 @@ First, go to Bob's _Use/Give_ tab, and double click "defibrillator" in the "Use"
 
 Now add a new function (right click the tree, or use the Add menu), and call it "revive bob". For the script, click the Paste button.
 
-![](Functionrevive.png "Functionrevive.png")
+![](../images/Functionrevive.png "Functionrevive.png")
 
 Now we just need to update "use defibrillator on bob" and create "use defibrillator", to make them call this function. Go back to Bob's use/give tab, and double-click to edit the defibrillator script again.
 
@@ -88,7 +88,7 @@ Now we're kind of back where we started - if you run the game and type "use defi
 
 We just need to make "use defibrillator" call the same function now, so go to the defibrillator's use/give tab, and in the "use (on its own)" section choose "Run a script". Add a "call function" script, so that it also calls the "revive bob" function.
 
-![](Functionrevive2.png "Functionrevive2.png")
+![](../images/Functionrevive2.png "Functionrevive2.png")
 
 Launch the game now and verify you get the same response whether you type "use defibrillator on bob" or just "use defibrillator".
 
@@ -106,10 +106,10 @@ Ask and Tell work in the same way, so we'll only cover "ask" here.
 
 Click on Bob and go to the "Ask/tell" tab. (If you can't find this tab, you will have to activate this feature in the _Features_ tab in the "game" section.) Here you can add subjects to the list, and give a script for each subject. You can also give a script to run when the player asks Bob about something he doesn't know about.
 
-Let's make Bob respond to a question about the massive heart attack he's just amazingly recovered from. Click the "Add" ![](Add.png "fig:Add.png") button and enter some topic keywords, for example "heart attack cardiac arrest". When the player asks Bob about anything, this list of keywords is checked for matches in the player's command. So the player could type "ask bob about heart" or "ask bob about cardiac arrest", and that will match this topic.
+Let's make Bob respond to a question about the massive heart attack he's just amazingly recovered from. Click the "Add" ![](../images/Add.png "fig:Add.png") button and enter some topic keywords, for example "heart attack cardiac arrest". When the player asks Bob about anything, this list of keywords is checked for matches in the player's command. So the player could type "ask bob about heart" or "ask bob about cardiac arrest", and that will match this topic.
 
 A Script Editor will appear. It would make sense that the player can only ask questions of Bob when he's been brought back to life, so the first thing to do is add an "if" command and check that Bob's "alive" flag is set. If it is, he can say something like "Well, one moment I was sitting there, feeling pretty happy with myself after eating my afternoon snack - a cheeseburger, pizza and ice cream pie, smothered in bacon, which I'd washed down with a bucket of coffee and six cans of Red Bull - when all of a sudden, I was in terrible pain, and then everything was peaceful. Then you came along."
 
-![](Asktell.png "Asktell.png")
+![](../images/Asktell.png "Asktell.png")
 
 [Next: Using containers](using_containers.html)

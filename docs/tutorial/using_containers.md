@@ -12,7 +12,7 @@ Create a "fridge" object in the kitchen and give it a description like "A big ol
 
 Now let's set the fridge up as a container. This is a feature, so first go to the _Features_ tab, and tick "Container". Click the _Container_ tab. By default, "Not a container" is selected. Change this to "Closed container". The Container options will now appear.
 
-![](Container.png "Container.png")
+![](../images/Container.png "Container.png")
 
 By default, the player can open and close the fridge. We're going to add some objects to the fridge in a moment, and it would be good if the contents were listed when the player opened the fridge, so tick the "List children when object is looked at or opened" option.
 
@@ -27,7 +27,7 @@ Now run the game and go to the kitchen. Notice that you can't see the milk, and 
 
 By setting the "List prefix" you can change the "It contains" text which appears before the list of objects.
 
-![](Containerfridge.png "Containerfridge.png")
+![](../images/Containerfridge.png "Containerfridge.png")
 
 Updating the description
 ------------------------
@@ -67,7 +67,7 @@ First, set up the objects:
 
 Now, make the box lockable. Go to the Container tab and in the "Locking" section, choose "Lockable" from the lock types list. This will display the lock options. You can now choose the "key" object from the list.
 
-![](Lockedcontainer.png "Lockedcontainer.png")
+![](../images/Lockedcontainer.png "Lockedcontainer.png")
 
 By default we have the "Automatically unlock if player has the key" and "Automatically open when unlocked" options turned on. This is out of politeness to players really, as there's no need to force them to jump through hoops and perform additional steps - if they've unlocked the object, it's a fair bet they want to open it, and if they type "open box" before unlocking it, then if they have the key, there's no point in forcing them to type "unlock box" first.
 

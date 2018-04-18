@@ -100,7 +100,7 @@ There are any number of reasons why you might want to run a script, so we can on
 
 A common reason to run a script is to only allow the exit to be used if a certain condition is met. Perhaps the player has to complete a quest before the portal opens, or needs to be carrying the magical amulet or has to have persuaded the guard to let her pass.
 
-![Exit script 1](exitscript1.png)
+![](images/exitscript1.png "exitscript1.png")
 
 ```
 if (Got(talisman)) {
@@ -121,7 +121,7 @@ This is very much like having the exit locked, so when would you use this, rathe
 
 You might the player to trigger some event by using the exit.
 
-![Exit script 2](exitscript2.png)
+![](images/exitscript2.png "exitscript2.png")
 
 ```
 firsttime {
@@ -148,7 +148,7 @@ So what if you want to trap the player in a room with several exits?
 
 The best way is to set all the exits to be either locked or invisible. In this example, we will set all the exits in the current room to be locked, using a `foreach` command. To unlock them all again, just set the attribute to `false`.
 
-![Exit script 3](exitscript3.png)
+![](images/exitscript3.png "exitscript3.png")
 
 ```
 foreach (ext, ScopeExits ()) {

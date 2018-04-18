@@ -35,7 +35,7 @@ Quest has several object types built in, such as the editor_object type and the 
 
 You can see the type of an object by going to the _Attributes_ tab; the top pane is a list of types. Here is an example for an openable container:
 
-![](type_attributes.png "type_attributes.png")
+![](images/type_attributes.png "type_attributes.png")
 
 As you can see, something in Quest can be more than one type. As well as being an editor_object type, this is also a container_open type. Also, in grey, it is a container_base; this is an inherited type, my object has this because container_open inherits from container_base. It is also a defaultobject, which is in grey too, because everything in Quest has the defaultobject type.
 

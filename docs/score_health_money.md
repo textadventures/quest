@@ -8,11 +8,11 @@ Quest offers an easy way to incorporate these common attributes in your game. Th
 
 To change the values, use one of these script commands (they will only be present if the relevant option was selected on the _Features_ tab): 
 
-![](increase_decrease.png "increase_decrease.png")
+![](images/increase_decrease.png "increase_decrease.png")
 
 Here you can see the "Increase score" script command, set to add 5 to the player score:
 
-![](increase.png "increase.png")
+![](images/increase.png "increase.png")
 
 It you prefer to do this in code, you just need to add to or subtract from the attribute.
 
@@ -38,7 +38,7 @@ The health attribute belongs to the player object (or objects, if you have more 
 
 On the _Player_ tab of the game object, you can set what happens when health goes to zero or less. Here is a simple example that gives a message and then ends the game (which is probably all you need):
 
-![](you_died.png "you_died.png")
+![](images/you_died.png "you_died.png")
 
 Here it is in code (just to show how simple it is):
 

@@ -27,17 +27,17 @@ We need to add another script, but you now have two "Add new script" buttons. Yo
 
 It should now look like this:
 
-![switch01.png](images/switch01.png)
+![](images/switch01.png "switch01.png")
 
 Now we need to add the choices. These need to match exactly, and it is a good idea to copy and paste. To add an option, click on the "Add" next to case. You will be asked "Please enter the case expression". Paste in the first option, inside double quotes. Click okay, and you will get a box to put a script. We will just have it print a message, but you can add as many steps as you need, perhaps changing attributes, moving objects, whatever.
 
 So now it looks like this on the desktop version:
 
-![switch02.png](images/switch02.png)
+![](images/switch02.png "switch02.png")
 
 `switch` states are displayed differently on the web version; in that case it should look like this:
 
-![switch03.png](images/switch03.png)
+![](images/switch03.png "switch03.png")
 
 Launch the game and try the options to check that you see the correct response.
 
@@ -47,7 +47,7 @@ Default option
 
 As we are controlling what the player can select, there is no chance that anything else will be encountered by the `switch` statement, but that is not always the case. To catch everything that would otherwise be missed, we can add a default. This just involves clicking the "Add new script" button - but now there are three! You want the highest, most indented one in this case.
 
-![switch04.png](images/switch04.png)
+![](images/switch04.png "switch04.png")
 
 
 Advanced

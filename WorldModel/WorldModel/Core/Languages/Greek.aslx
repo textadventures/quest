@@ -349,6 +349,11 @@
     <template name="DefaultXyzzy">Δεν γίνεται απολύτως τίποτα.</template>
     <template templatetype="command" name="help">^βοήθεια$|^\?$</template>
     <template templatetype="command" name="save">^σώσε$|^αποθήκευσε$</template>
+
+    <template templatetype="command" name="log_cmd">^αρχείο$|^δες αρχείο$|^δείξε αρχείο$</template>
+    <template templatetype="command" name="view_transcript_cmd">^(δες | δείξε|)(το |)(κείμενο)$</template>
+    <template templatetype="command" name="version_cmd">^(έκδοση|πληροφορίες|σχετικά)$</template>
+
     <template name="DefaultHelp"><![CDATA[<u>Σύντομη Βοήθεια</u><br/><br/>
     <b>- Αντικείμενα:</b>  Δοκίμασε ΚΟΙΤΑ ... ΜΙΛΑ ΣΤΟΝ ... ΠΑΡΕ ... ΡΙΞΕ ... ΑΝΟΙΞΕ ... ΔΩΣΕ ... ΣΤΟΝ ... ΧΡΗΣΙΜΟΠΟΙΗΣΕ ... ΣΤΟ ... <br/>
     <b>- Κατάλογος:</b>  Για να δεις τα αντικείμενα που κουβαλάς, γράψε ΚΑΤ ή ΚΑΤΑΛΟΓΟΣ.<br/>

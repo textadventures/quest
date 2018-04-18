@@ -31,7 +31,7 @@ at this point it is just a case of making some choices. Can it be opened and clo
 
 There are also scripts that will trigger when the chest is opened (perhaps the chest is trapped), is closed or an item is added (see later).
 
-![Container](container.png)
+![](images/container2.png "Container")
 
 
 Locked Container
@@ -45,13 +45,13 @@ In the "Locking" section, select: "Lockable". Again, you will see a bunch of opt
 
 By default, the player will need to have all they keys to unlock the container. As of Quest 5.8, you can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
 
-![Locked with a key](locklandkey.png)
+![](images/locklandkey.png "Locked with a key")
 
 Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Set the number of keys to zero and untick the "Require all keys" check box (if using earlier versions of Quest you will need to set the number of keys to 1, and create a dummy key the player cannot get to).
 
 Set up the script like this:
 
-![Script to unlock](unlock.png)
+![](images/unlock.png "Script to unlock")
 
 
 Limited Container
@@ -65,11 +65,11 @@ This time we need to set it to be a "Limited container". We get a warning, now, 
 
 Quest allows you to limit a container by count and by volume. The player will only be able to add an item to the container if the container has less than the maximum number of items _and_ it has enough volume for the new item. By default the volume of an item is 0, and if you are not interested in volumes, you can just leave everything to the default. We will do that for our backpack for now. Set the "Maximum number of objects" to some suitable number and, if you want, put in a message for when it is full.
 
-![A limited container](limitbycount.png)
+![](images/limitbycount.png "A limited container")
 
 If you want to limit the volume, you need to set the "Maximum number of objects" to some really big number, and then set the volume limit.
 
-![Another limited container](limitbyvolume.png)
+![](images/limitbyvolume.png "Another limited container")
 
 You will also need to set the volume of any object in your game that the player can pick up - including any containers.
 
@@ -86,7 +86,7 @@ Let's quickly look at scripts.
 
 Suppose the chest has a trap that will cause a small explosion when it is opened. We only want it to fire the first time it is opened, and if the player disarms it (which we will flag with an attribute called "disarmed"), it will not fire. Here is how we might create the script:
 
-![A trapped container](containeropenscript.png)
+![](images/containeropenscript.png "A trapped container")
 
 This is the code behind it:
 
@@ -106,7 +106,7 @@ Note that "this" is a special value that refers to the object the script is atta
 
 Limited containers are a special type of fussy containers; they will refuse to accept a new object under certain conditions. For other containers, we can add a script to make the container only accept objects using other criteria. In this example, the player will only be able to put clothing in the chest:
 
-![A fussy container](containerfussy.png)
+![](images/containerfussy.png "A fussy container")
 
 ```
 if (DoesInherit(object, "wearable")) {
@@ -125,7 +125,7 @@ The basic principle is straightforward. An `if` command is used to test the cond
 
 We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general princple, always check if the player has exceeded a certain amount rather than got a certain amount.
 
-![A counting container](containercounter.png)
+![](images/containercounter.png "A counting container")
 
 ```
 MoveObject (object, this)

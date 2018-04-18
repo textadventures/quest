@@ -26,7 +26,7 @@ The timer editor will now be displayed. The Interval specifies how often the tim
 
 For the timer script, add a "print a message" command to display "The bee buzzes past you. Pesky bee."
 
-![](TimerBee1.png "TimerBee1.png")
+![](../images/TimerBee1.png "TimerBee1.png")
 
 ### Activating the Timer
 
@@ -38,7 +38,7 @@ Now go north to the lounge. You'll see that we still get the message about the b
 
 You've already seen how to do this - an "if" command can check "player is in room". So add a check to the "bee timer" script - if the player is in the kitchen, print the message. If not, then do nothing.
 
-![](TimerBee2.png "TimerBee2.png")
+![](../images/TimerBee2.png "TimerBee2.png")
 
 Turn scripts
 ------------
@@ -51,11 +51,11 @@ We created a status attribute on the last page, this is just the same.
 
 For the desktop version, to set up our "turns" attribute, select the "player" object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name "turns" and make this an integer. To turn this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add "turns" to the list.
 
-![](Turncounter1.png "Turncounter1.png")
+![](../images/Turncounter1.png "Turncounter1.png")
 
 For the web version, go to the _Stripts_ tab of the "game" object, where we set the player score as a status attribute. Now we need to add a new attribute to the player called turn, and a new entry in the dictionary for that attribute. It'll look like this: 
 
-![](Turncounter.png "Turncounter.png")
+![](../images/Turncounter.png "Turncounter.png")
 
 If you launch the game now, you should see the turn variable displayed on the right-hand side of the Quest window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
 
@@ -83,7 +83,7 @@ Then in the box on the right, type
 
 This will add 1 each time the script is called.
 
-![](Turnscript.png "Turnscript.png")
+![](../images/Turnscript.png "Turnscript.png")
 
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
 

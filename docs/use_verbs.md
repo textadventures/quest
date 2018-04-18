@@ -43,4 +43,4 @@ Note that in the web version, verb elements are not accessible. Quest creates th
 
 For users of the web editor, it is therefore safer to add each synonym as a new verb (unless using a built-in verb that already has synonyms). The best way to do that is to have one as the master verb, with the script that does all the work, and have the synonyms use that with the "Run an object's script" command. In the example below, "burn" is the master for the "stool" object, with an admittedly trivial script. Then there is "incinerate", and that has a script that runs the "burn" script on the "stool" object. You can, of course, add as many synonyms as you like.
 
-![](verbs-web.png "verbs-web.png")
+![](images/verbs-web.png "verbs-web.png")

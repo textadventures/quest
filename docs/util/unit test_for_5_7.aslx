@@ -1,0 +1,1101 @@
+<!--Saved by Quest 5.7.6404.15496-->
+<asl version="550">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
+  <delegate name="textprocessor" parameters="" type="string" />
+  <game name="Unit testing for 5.7">
+    <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
+    <version>1.0</version>
+    <firstpublished>2017</firstpublished>
+    <defaultforeground>Black</defaultforeground>
+    <showpanes type="boolean">false</showpanes>
+    <testcount type="int">0</testcount>
+    <testfailures type="stringlist" />
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <feature_annotations />
+    <feature_advancedwearables />
+    <attr name="autodescription_youarein" type="int">0</attr>
+    <attr name="autodescription_youcansee" type="int">0</attr>
+    <attr name="autodescription_youcango" type="int">0</attr>
+    <attr name="autodescription_description" type="int">0</attr>
+    <showcommandbar type="boolean">false</showcommandbar>
+    <showlocation type="boolean">false</showlocation>
+    <showborder type="boolean">false</showborder>
+    <gridmap type="boolean">false</gridmap>
+    <classiclocation />
+    <attr name="feature_pictureframe" type="boolean">false</attr>
+    <shadowbox />
+    <feature_advancedscripts />
+    <showmoney type="boolean">false</showmoney>
+    <feature_asktell />
+    <author>The Pixie</author>
+    <feature_limitinventory />
+    <terminate />
+    <finished type="boolean">false</finished>
+    <roomenter type="script">
+    </roomenter>
+    <changecommandscope type="script">
+      sl = NewStringList()
+      foreach (o, items) {
+        list add (sl, o.name)
+      }
+      game.lastscopefound = Join(sl, "|")
+    </changecommandscope>
+    <start type="script"><![CDATA[
+      player.changedparent => {
+      }
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Oddball commands")
+      AssertCommand ("again", "There is nothing to repeat.")
+      AssertCommand ("x backpack", "A small backpack.")
+      AssertCommand ("again", "A small backpack.")
+      AssertCommand ("again", "A small backpack.")
+      game.dropcount = 0
+      AssertCommand ("drop backpack", "You drop it.")
+      Assert (player.parent, backpack.parent)
+      Assert (1, game.dropcount)
+      AssertCommand ("undo", "A small backpack.")
+      Assert (player, backpack.parent)
+      game.testcount = game.testcount + 3
+      Assert (0, game.dropcount)
+      AssertCommand ("x bakpack", "I can't see that.")
+      AssertCommand ("oops backpack", "A small backpack.")
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Formating numbers")
+      Assert ("12.34", Decimalise(1234, 2))
+      Assert ("123.4", Decimalise(1234, 1))
+      Assert ("-123.4", Decimalise(-1234, 1))
+      Assert ("1234", Decimalise(1234, 0))
+      Assert ("+123.4", DisplayNumber(1234, "+1.1"))
+      Assert ("012.34", DisplayNumber(1234, "3.2"))
+      Assert ("(123.4)", DisplayNumber(1234, "(1.1)"))
+      Assert ("(001,234)", DisplayNumber(1234, "(3,3)"))
+      game.moneyformat = "! credits"
+      Assert ("1234 credits", DisplayMoney(1234))
+      Assert ("-1234 credits", DisplayMoney(-1234))
+      game.moneyformat = "!3.2! credits"
+      Assert ("012.34 credits", DisplayMoney(1234))
+      Assert ("-012.34 credits", DisplayMoney(-1234))
+      game.moneyformat = "!+3,2! credits"
+      Assert ("+012,34 credits", DisplayMoney(1234))
+      Assert ("-012,34 credits", DisplayMoney(-1234))
+      game.moneyformat = "!+3.2!-3.2! credits"
+      Assert ("+012.34 credits", DisplayMoney(1234))
+      Assert ("-012.34 credits", DisplayMoney(-1234))
+      game.moneyformat = "!$1,2!($1,2)!"
+      Assert ("$12,34", DisplayMoney(1234))
+      Assert ("($12,34)", DisplayMoney(-1234))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("FormatList and IndexOf")
+      list = Split("one;two;three", ";")
+      Assert ("one, two or three", FormatList(list, ",", "or", "nothing"))
+      Assert ("one; two; and three", FormatList(list, ";", "; and", "nothing"))
+      Assert (0, IndexOf(list, "one"))
+      Assert (-1, IndexOf(list, "zero"))
+      list = NewStringList()
+      Assert ("nothing", FormatList(list, ",", "and", "nothing"))
+      Assert (-1, IndexOf(list, "one"))
+      //
+      Testing ("FormatList with objects")
+      list = NewObjectList()
+      Assert ("nothing", FormatList(list, ",", "or", "nothing"))
+      list add (list, overalls)
+      Assert ("overalls", FormatList(list, ",", "or", "nothing"))
+      list add (list, coat)
+      Assert ("overalls or an overcoat", FormatList(list, ",", "or", "nothing"))
+      list add (list, tiger)
+      Assert ("overalls, an overcoat and a Tiger", FormatList(list, ",", "and", "nothing"))
+      Assert ("overalls, an overcoat, and a Tiger", FormatList(list, ",", ", and", "nothing"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("ToWords and ToRoman")
+      Assert ("fourteen", ToWords(14))
+      Assert ("one hundred and forty", ToWords(140))
+      Assert ("fourteen hundred and nine", ToWords(1409))
+      Assert ("minus fourteen", ToWords(-14))
+      Assert ("1400000", ToWords(1400000))
+      Assert ("XIV", ToRoman(14))
+      Assert ("", ToRoman(0))
+      Assert ("CXL", ToRoman(140))
+      Assert ("MCDIX", ToRoman(1409))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Spaces")
+      Assert ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Spaces(5))
+      Assert ("", Spaces(-1))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("ScopeUnlockedExitsForRoom")
+      Assert (2, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitsecond.locked = true
+      Assert (1, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitthird.visible = false
+      Assert (0, ListCount(ScopeUnlockedExitsForRoom(room)))
+      exitsecond.locked = false
+      exitthird.visible = true
+      //
+      // -------------------------------------------------------------------------
+      Testing ("CloneObjectAndMoveHere")
+      cl = CloneObjectAndMoveHere (teapot)
+      Assert (room, cl.parent)
+      Assert ("teapot", cl.alias)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("DiceRoll")
+      for (i, 1, 20) {
+        AssertInRange (1, 3, "DiceRoll(\"1d3\")")
+        AssertInRange (1, 3, "DiceRoll(\"d3\")")
+        AssertInRange (6, 10, "DiceRoll(\"2d3+4\")")
+        AssertInRange (5, 7, "DiceRoll(\"d3+4\")")
+        AssertInRange (-2, 2, "DiceRoll(\"2d3-4\")")
+        AssertInRange (-3, -1, "DiceRoll(\"d3-4\")")
+      }
+      Assert (3, DiceRoll(3))
+      Assert (3, DiceRoll("3"))
+      Assert (3, DiceRoll("+3"))
+      Assert (-2, DiceRoll("-2"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("PickOne...")
+      Assert ("", PickOneString(NewStringList()))
+      list = Split("one;two;three", ";")
+      for (i, 1, 20) {
+        AssertIn (list, PickOneString(list))
+      }
+      for (i, 1, 20) {
+        AssertIn (list, PickOneString("one;two;three"))
+      }
+      ol = NewObjectList()
+      Assert (null, PickOneObject(ol))
+      list add (ol, hat)
+      list add (ol, teapot)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneChildOfType(third, "specialtype"))
+      }
+      list add (ol, tiger)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneObject(ol))
+      }
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneChild(third))
+      }
+      ol = NewObjectList()
+      list add (ol, exitsecond)
+      list add (ol, exitthird)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneExit(room))
+      }
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneUnlockedExit(room))
+      }
+      exitsecond.locked = true
+      list remove (ol, exitsecond)
+      for (i, 1, 20) {
+        AssertIn (ol, PickOneUnlockedExit(room))
+      }
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Drop options")
+      player.parent = third
+      droppable object.parent = player
+      AssertCommand ("drop droppable", "You drop it.")
+      Assert (third, droppable object.parent)
+      player.parent = fourth
+      droppable object.parent = player
+      AssertCommand ("drop droppable", "You drop it.")
+      Assert (third, droppable object.parent)
+      undroppable object.parent = player
+      AssertCommand ("drop undroppable", "You can't drop it.")
+      AssertCommand ("put undroppable in backpack", "You cannot put an undroppable object there.")
+      Assert (player, undroppable object.parent)
+      script drop object.parent = player
+      AssertCommand ("drop script", "you are trying to drop this object to a third")
+      AssertCommand ("put script in backpack", "you are trying to drop this object to a backpack")
+      Assert (player, script drop object.parent)
+      // check inventory limits work
+      player.parent = sixth
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item1 in bag", "Done.")
+      AssertCommand ("put item2 in bag", "Done.")
+      AssertCommand ("put item3 in bag", "You can't put more items in it.")
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item1 in box", "Done.")
+      AssertCommand ("put item2 in box", "Done.")
+      AssertCommand ("put item3 in box", "It is full.")
+      item1.parent = player
+      item2.parent = player
+      item3.parent = player
+      AssertCommand ("put item3 in box", "Done.")
+      AssertCommand ("put item1 in box", "It is full.")
+      item1.parent = null
+      item2.parent = null
+      item3.parent = null
+      player.parent = room
+      //
+      // -------------------------------------------------------------------------
+      Testing ("me and alias")
+      AssertCommand ("x me", "Looking good.")
+      AssertCommand ("look boris", "Looking good.")
+      //
+      // -------------------------------------------------------------------------
+      Testing ("SecondaryScopeReachableForRoom")
+      Assert (6, Listcount(ScopeReachableNotHeldForRoom (third)))
+      //
+      //
+      //
+      // -------------------------------------------------------------------------
+      TestClothing
+      //
+      //
+      // -------------------------------------------------------------------------
+      player.parent = room
+      Testing ("Text processor: colours")
+      Assert ("This is in <span style=\"color:red;\">red</span>", ProcessText("This is in {colour:red:red}"))
+      Assert ("This is in <span style=\"color:red;\">red</span>", ProcessText("This is in {color:red:red}"))
+      Assert ("This is in <span style=\"background-color:red;\">red</span>", ProcessText("This is in {back:red:red}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: text style")
+      Assert ("This is in <i>italic</i>", ProcessText("This is in {i:italic}"))
+      Assert ("This is in <b>bold</b>", ProcessText("This is in {b:bold}"))
+      Assert ("This is in <u>underline</u>", ProcessText("This is in {u:underline}"))
+      Assert ("This is in <s>stringthrough</s>", ProcessText("This is in {s:stringthrough}"))
+      Assert ("This is in {n:nothing}", ProcessText("This is in {n:nothing}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: either")
+      player.count = 5
+      player.flag = true
+      Assert ("1 You don't have enough", ProcessText("1 You {either player.count < 10:don't }have enough"))
+      Assert ("2 You have enough", ProcessText("2 You {either player.count<3:don't }have enough"))
+      Assert ("3 You don't have enough", ProcessText("3 You {either player.flag:don't }have enough"))
+      Assert ("4 You have enough", ProcessText("4 You {either not player.flag:don't }have enough"))
+      player.flag = false
+      Assert ("5 You have enough", ProcessText("5 You {either player.flag:don't }have enough"))
+      Assert ("6 You don't have enough", ProcessText("6 You {either not player.flag:don't }have enough"))
+      Assert ("7 You have more than 4", ProcessText("7 You have {either player.count > 4:more than 4|less than 5}"))
+      Assert ("8 You have less than 6", ProcessText("8 You have {either player.count > 5:more than 5|less than 6}"))
+      Assert ("9 You have less <i>than</i> 6", ProcessText("9 You have {either player.count > 5:more {i:than} 5|less {i:than} 6}"))
+      Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\"):are the player}"))
+      Assert ("You are the player", ProcessText("You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"))
+      Assert ("You are the player", ProcessText("You {if player.alias=Boris:are the player}"))
+      Assert ("You are the player", ProcessText("You {if player.alias<>you:are the player}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: eval")
+      Assert ("player.count = 5", ProcessText("player.count = {=player.count}"))
+      Assert ("You are in the room", ProcessText("You are in the {=player.parent.name}"))
+      Assert ("You are in the Room", ProcessText("You are in the {=CapFirst(player.parent.name)}"))
+      Assert ("player.count = 5", ProcessText("player.count = {eval:player.count}"))
+      Assert ("You are in the room", ProcessText("You are in the {eval:player.parent.name}"))
+      Assert ("You are in the Room", ProcessText("You are in the {eval:CapFirst(player.parent.name)}"))
+      Assert ("This is from test", ProcessText("This is {=Test}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: here/nothere")
+      Assert ("You can see the player", ProcessText("You can see {here player:the player}"))
+      Assert ("You can not see the tiger", ProcessText("You can not see {nothere tiger:the tiger}"))
+      Assert ("You can see ", ProcessText("You can see {nothere player:the player}"))
+      Assert ("You can not see ", ProcessText("You can not see {here tiger:the tiger}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: curly brace")
+      Assert ("player.count = {player.count}", ProcessText("player.count = @@@open@@@player.count@@@close@@@"))
+      Assert ("player.count = {}", ProcessText("player.count = @@@open@@@@@@close@@@"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: failing text")
+      Assert ("1 You don't have enough", ProcessText("1 You {if player.count<10:don't }have enough"))
+      Assert ("2 You {if player2.count<10:don't }have enough", ProcessText("2 You {if player2.count<10:don't }have enough"))
+      Assert ("3 You have {if player.notset<10:nothing}.", ProcessText("3 You have {if player.notset<10:nothing}."))
+      Assert ("4 You have .", ProcessText("4 You have {if player.notset:nothing}."))
+      Assert ("5 You have {if player.notset=True:nothing}.", ProcessText("5 You have {if player.notset=True:nothing}."))
+      Assert ("6 You have enough", ProcessText("6 You {if player.name=10:don't }have enough"))
+      Assert ("6 You don't have enough", ProcessText("6 You {if player.name<>10:don't }have enough"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: select")
+      player.count = 2
+      Assert ("player is two", ProcessText("player is {select:player.count:zero:one:two:three}"))
+      Assert ("player is <i>two</i>", ProcessText("player is {select:player.count:{u:zero}|{b:one}|{i:two}|three}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: this")
+      game.text_processor_this = player
+      Assert ("You are the player", ProcessText("You {either StartsWith(this.name, \"play\") and not player.flag:are the player}"))
+      Assert ("You are the player", ProcessText("You {if this.alias<>you:are the player}"))
+      game.text_processor_this = tiger
+      Assert ("You can not see ", ProcessText("You can not see {here this:the tiger}"))
+      Assert ("You can not see a tiger", ProcessText("You can not see a {this.name}"))
+      game.text_processor_this = null
+      Assert ("You can not see a {this.name}", ProcessText("You can not see a {this.name}"))
+      game.text_processor_this = player
+      Assert ("You can see the player", ProcessText("You can see {here this:the player}"))
+      game.text_processor_this = player
+      Assert ("player is <i>two</i>", ProcessText("player is {select:this.count:{u:zero}|{b:one}|{i:two}|three}"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Text processor: old error handling")
+      Assert ("player.count = {unknown.count}", ProcessText("player.count = {unknown.count}"))
+      //
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Equal")
+      Assert (false, Equal("23", 6))
+      Assert (false, Equal("1234567", null))
+      Assert (false, Equal(null, 6))
+      Assert (true, Equal(23, 23))
+      Assert (true, Equal(null, null))
+      Assert (true, Equal(null, tiger.unknownatt))
+      Assert (true, Equal("23", "23"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("PadString")
+      Assert ("000023", PadString("23", 6, "0"))
+      Assert ("1234567", PadString("1234567", 6, "0"))
+      Assert ("[][]23", PadString("23", 6, "[]"))
+      Assert ("000023", PadString(23, 6, 0))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("ReverseDirection")
+      Assert ("west", ReverseDirection("east"))
+      Assert ("southeast", ReverseDirection("northwest"))
+      Assert ("down", ReverseDirection("up"))
+      Assert ("out", ReverseDirection("in"))
+      Assert ("up", ReverseDirection("down"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("FilterBy... and ObjectListToStringList")
+      ol = NewObjectList()
+      list add (ol, hat)
+      list add (ol, teapot)
+      list add (ol, socks)
+      list add (ol, shoes)
+      list add (ol, casual jacket)
+      Assert (4, ListCount(FilterByType(ol, "wearable")))
+      Assert (0, ListCount(FilterByType(ol, "female")))
+      Assert (5, ListCount(FilterByType(ol, "defaultobject")))
+      Assert (1, ListCount(FilterByAttribute(ol, "flag", "set")))
+      Assert (4, ListCount(FilterByNotAttribute(ol, "flag", "set")))
+      Assert (1, ListCount(FilterByAttribute(ol, "flag", true)))
+      Assert (4, ListCount(FilterByNotAttribute(ol, "flag", true)))
+      Assert (3, ListCount(FilterByAttribute(ol, "parent", player)))
+      Assert (2, ListCount(FilterByNotAttribute(ol, "parent", player)))
+      Assert ("hat|teapot|socks|shoes|casual jacket", Join(ObjectListToStringList(ol, "name"), "|"))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Tell to")
+      player.parent = second
+      AssertCommand ("ask mary to jump", "Mary jumps.")
+      AssertCommand ("mary, jump", "Mary jumps.")
+      AssertCommand ("tell mary about jump", "You tell Mary about the jump.")
+      // names with spaces
+      AssertCommand ("ask polly sue to jump up and down", "Mary jumps.")
+      AssertCommand ("polly sue, jump around a it", "Mary jumps.")
+      AssertCommand ("tell polly sue about the jump", "You tell Mary about the jump.")
+      // check the second form does not mess up all commas in commands
+      player.parent = third
+      AssertCommand ("get teapot, tiger", "Tiger: You can't take it.")
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Scopes")
+      AssertCommand ("cast spell", "You cast the spell!")
+      AssertCommand ("x spell", "I can't see that.")
+      AssertCommand ("phone mary", "'Hi!' says Mary.")
+      AssertCommand ("x mary", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("buy item4", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      player.parent = seventh
+      AssertCommand ("buy item4", "You buy item4")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("x item4", "I can't see that.")
+      // OutputTextRaw ("Found: " + game.lastscopefound)
+      AssertCommand ("get blue ball", "You pick it up.")
+      Assert ("chest|yellow ball|red ball|blue ball|wall|sky", game.lastscopefound)
+      AssertCommand ("put ball in the chest", "Done.")
+      Assert ("chest|backpack", game.lastscopefound)
+      AssertCommand ("remove blue ball from chest", "You pick it up.")
+      Assert (player, blue ball.parent)
+      // scope is none, but secondary will catch chest
+      AssertCommand ("test chest", "Test chest")
+      Assert ("", game.lastscopefound)
+      CmdScopeTest.scope = "container"
+      AssertCommand ("test chest", "Test chest")
+      Assert ("chest|backpack", game.lastscopefound)
+      CmdScopeTest.scope = "contents"
+      AssertCommand ("test chest", "Test chest")
+      Assert ("yellow ball", game.lastscopefound)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Take all")
+      mary.parent = seventh
+      chest.parent = null
+      teapot.parent = null
+      undroppable object.parent = null
+      script drop object.parent = null
+      shoes.parent = null
+      AssertCommand ("take all", "red ball: You pick it up.")
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Split")
+      l = Split("one;two;three", ";")
+      Assert (3, ListCount(l))
+      l = Split("one|two|three", "|")
+      Assert (3, ListCount(l))
+      l = Split("one;two;three", "|")
+      Assert (1, ListCount(l))
+      l = Split("one;two;three")
+      Assert (3, ListCount(l))
+      //
+      // -------------------------------------------------------------------------
+      Testing ("Split")
+      tiger_clone = CloneObject(tiger)
+      Assert (tiger, tiger_clone.prototype)
+      tiger_clone2 = CloneObject(tiger_clone)
+      Assert (tiger, tiger_clone2.prototype)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("CreateBiExits")
+      count6 = ListCount(ScopeExitsForRoom(sixth))
+      count7 = ListCount(ScopeExitsForRoom(seventh))
+      CreateBiExits("north", sixth, seventh)
+      Assert(1, ListCount(ScopeExitsForRoom(sixth)) - count6) 
+      Assert(1, ListCount(ScopeExitsForRoom(seventh)) - count7) 
+      Results
+    ]]></start>
+    <scopebackdrop type="script">
+      foreach (o, GetDirectChildren(backdrop)) {
+        list add (items, o)
+      }
+    </scopebackdrop>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <attr name="implementation_notes">This is just a test of new features for Quest 5.7</attr>
+    <usedefaultprefix />
+    <description>This is a big room.</description>
+    <customtp type="script">
+      msg ("here1")
+      msg ("section=" + section)
+      game.textprocessorresult = "@" + section + "@"
+      msg ("here2")
+      msg ("game.textprocessorresult=" + game.textprocessorresult)
+    </customtp>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <bonus1 type="int">2</bonus1>
+      <bonus2 type="int">4</bonus2>
+      <attr name="pov_alias">Boris</attr>
+      <cool type="int">2</cool>
+      <warm type="int">3</warm>
+      <object name="backpack">
+        <inherit name="editor_object" />
+        <inherit name="container_limited" />
+        <feature_container />
+        <maxobjects type="int">3</maxobjects>
+        <maxvolume type="int">10</maxvolume>
+        <look>A small backpack.</look>
+        <ondrop type="script">
+          game.dropcount = game.dropcount + 1
+        </ondrop>
+      </object>
+      <object name="coat">
+        <inherit name="editor_object" />
+        <inherit name="wearable" />
+        <feature_wearable />
+        <attr name="wear_layer" type="int">3</attr>
+        <wear_slots type="stringlist">
+          <value>torso</value>
+        </wear_slots>
+        <armour type="int">4</armour>
+        <bonusatts>bonus1;bonus2-2</bonusatts>
+        <alias>overcoat</alias>
+      </object>
+      <object name="overalls">
+        <inherit name="editor_object" />
+        <inherit name="wearable" />
+        <inherit name="plural" />
+        <feature_wearable />
+        <wear_slots type="stringlist">
+          <value>torso</value>
+          <value>legs</value>
+        </wear_slots>
+        <usedefaultprefix type="boolean">false</usedefaultprefix>
+      </object>
+    </object>
+    <exit name="exitsecond" alias="southeast" to="second">
+      <inherit name="southeastdirection" />
+    </exit>
+    <exit name="exitthird" alias="southwest" to="third">
+      <inherit name="southwestdirection" />
+    </exit>
+    <object name="door">
+      <inherit name="editor_object" />
+      <unlock type="string"></unlock>
+    </object>
+  </object>
+  <object name="second">
+    <inherit name="editor_room" />
+    <exit alias="northwest" to="room">
+      <inherit name="northwestdirection" />
+    </exit>
+    <object name="mary">
+      <inherit name="editor_object" />
+      <inherit name="namedfemale" />
+      <alt type="stringlist">
+        <value>polly sue</value>
+      </alt>
+      <tellto type="scriptdictionary">
+        <item key="jump">
+          msg ("Mary jumps.")
+        </item>
+      </tellto>
+      <tell type="scriptdictionary">
+        <item key="jump">
+          msg ("You tell Mary about the jump.")
+        </item>
+      </tell>
+      <object name="dress">
+        <inherit name="editor_object" />
+        <inherit name="wearable" />
+        <feature_wearable />
+        <wear_slots type="stringlist">
+          <value>legs</value>
+          <value>torso</value>
+        </wear_slots>
+        <display>dress</display>
+        <take />
+        <alias>Dress</alias>
+      </object>
+      <object name="underwear">
+        <inherit name="editor_object" />
+        <inherit name="wearable" />
+        <worn type="boolean">false</worn>
+        <feature_wearable />
+        <attr name="wear_layer" type="int">1</attr>
+        <wear_slots type="stringlist">
+          <value>torso</value>
+        </wear_slots>
+        <display>underwear</display>
+        <usedefaultprefix type="boolean">false</usedefaultprefix>
+      </object>
+    </object>
+  </object>
+  <object name="third">
+    <inherit name="editor_room" />
+    <exit alias="northeast" to="room">
+      <inherit name="northeastdirection" />
+    </exit>
+    <object name="hat">
+      <inherit name="editor_object" />
+      <inherit name="specialtype" />
+      <inherit name="wearable" />
+      <feature_wearable />
+      <multistate />
+      <flag />
+    </object>
+    <object name="teapot">
+      <inherit name="editor_object" />
+      <inherit name="specialtype" />
+      <inherit name="container_lockable" />
+      <take />
+      <drop type="boolean">false</drop>
+      <feature_container />
+      <transparent />
+      <flag>set</flag>
+      <alt type="stringlist">
+        <value>kettle</value>
+      </alt>
+    </object>
+    <object name="tiger">
+      <inherit name="editor_object" />
+      <alias>Tiger</alias>
+    </object>
+    <exit alias="west" to="fourth">
+      <inherit name="westdirection" />
+      <runscript type="boolean">false</runscript>
+      <message>You sneak down the dark passage...</message>
+    </exit>
+  </object>
+  <object name="fourth">
+    <inherit name="editor_room" />
+    <dropdestination type="object">third</dropdestination>
+    <object name="droppable object">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="undroppable object">
+      <inherit name="editor_object" />
+      <take />
+      <drop type="boolean">false</drop>
+    </object>
+    <object name="script drop object">
+      <inherit name="editor_object" />
+      <take />
+      <drop type="script">
+        msg ("you are trying to drop this object to " + GetDisplayName(destination))
+      </drop>
+    </object>
+    <exit alias="east" to="third">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="backdrop">
+    <inherit name="editor_room" />
+    <object name="wall">
+      <inherit name="editor_object" />
+    </object>
+    <object name="sky">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+  <object name="fifth">
+    <inherit name="editor_room" />
+    <object name="socks">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <inherit name="plural" />
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <feature_wearable />
+      <wear_slots type="stringlist">
+        <value>feet</value>
+      </wear_slots>
+      <attr name="wear_layer" type="int">1</attr>
+    </object>
+    <object name="shoes">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <inherit name="plural" />
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <feature_wearable />
+      <wear_slots type="stringlist">
+        <value>feet</value>
+      </wear_slots>
+    </object>
+    <object name="casual jacket">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <feature_wearable />
+      <attr name="wear_layer" type="int">3</attr>
+      <wear_slots type="stringlist">
+        <value>torso</value>
+      </wear_slots>
+      <multistate />
+      <multistate_descriptors type="stringlist">
+        <value>unfastened</value>
+        <value>half-buttoned</value>
+        <value>*</value>
+      </multistate_descriptors>
+      <multistate_wearslots type="stringlist">
+        <value>torso;navel</value>
+        <value>torso</value>
+        <value>torso</value>
+      </multistate_wearslots>
+      <multistate_verbs type="stringlist">
+        <value>Fasten</value>
+        <value>Fasten;Unfasten</value>
+        <value>Unfasten</value>
+      </multistate_verbs>
+      <multistate_bonusatts type="stringlist">
+        <value>cool</value>
+        <value>*</value>
+        <value>warm+2;cool-1</value>
+      </multistate_bonusatts>
+      <fasten type="script">
+        if (not this.worn) {
+          msg ("You're not wearing it.")
+        }
+        else if (this.multistate_status = 3) {
+          msg ("It already is.")
+        }
+        else {
+          msg ("You button up the jacket.")
+          SetMultistate (this, this.multistate_status + 1)
+        }
+      </fasten>
+      <unfasten type="script">
+        if (not this.worn) {
+          msg ("You're not wearing it.")
+        }
+        else if (this.multistate_status = 1) {
+          msg ("It already is.")
+        }
+        else {
+          msg ("You unfasten it.")
+          SetMultistate (this, this.multistate_status - 1)
+        }
+      </unfasten>
+    </object>
+  </object>
+  <verb>
+    <property>fasten</property>
+    <pattern>fasten</pattern>
+    <defaultexpression>"You can't fasten " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>unfasten</property>
+    <pattern>unfasten</pattern>
+    <defaultexpression>"You can't unfasten " + object.article + "."</defaultexpression>
+  </verb>
+  <object name="sixth">
+    <inherit name="editor_room" />
+    <object name="bag">
+      <inherit name="editor_object" />
+      <inherit name="container_limited" />
+      <take />
+      <feature_container />
+      <maxobjects type="int">2</maxobjects>
+      <close type="boolean">false</close>
+    </object>
+    <object name="item1">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">4</volume>
+    </object>
+    <object name="item2">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">6</volume>
+    </object>
+    <object name="item3">
+      <inherit name="editor_object" />
+      <take />
+      <volume type="int">8</volume>
+    </object>
+    <object name="box">
+      <inherit name="editor_object" />
+      <inherit name="container_limited" />
+      <feature_container />
+      <maxobjects type="int">100</maxobjects>
+      <maxvolume type="int">10</maxvolume>
+    </object>
+  </object>
+  <command name="CmdPhone">
+    <pattern>phone #object#</pattern>
+    <scope>none</scope>
+    <changecommandscope type="script">
+      foreach (o, FilterByType(AllObjects(), "npc_type")) {
+        list add (items, o)
+      }
+    </changecommandscope>
+    <script>
+      msg ("'Hi!' says Mary.")
+    </script>
+  </command>
+  <verb>
+    <property>cast</property>
+    <pattern>cast</pattern>
+    <defaultexpression>"You can't cast " + object.article + "."</defaultexpression>
+    <scope>spellbook</scope>
+  </verb>
+  <object name="spellbook">
+    <inherit name="editor_room" />
+    <object name="spell">
+      <inherit name="editor_object" />
+      <cast type="script">
+        msg ("You cast the spell!")
+      </cast>
+    </object>
+  </object>
+  <object name="stockroom">
+    <inherit name="editor_room" />
+    <object name="item4">
+      <inherit name="editor_object" />
+    </object>
+  </object>
+  <command name="CmdPurchase">
+    <pattern>purchase #object#;buy #object#</pattern>
+    <scope>stock</scope>
+    <script>
+      msg ("You buy " + object.name)
+    </script>
+  </command>
+  <object name="seventh">
+    <inherit name="editor_room" />
+    <stock type="object">stockroom</stock>
+    <object name="chest">
+      <inherit name="editor_object" />
+      <inherit name="container_open" />
+      <feature_container />
+      <object name="yellow ball">
+        <inherit name="editor_object" />
+      </object>
+    </object>
+    <object name="red ball">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <object name="blue ball">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+  </object>
+  <command name="CmdScopeTest">
+    <pattern>test #object#</pattern>
+    <scope>none</scope>
+    <script>
+      msg ("Test " + object.name)
+    </script>
+  </command>
+  <type name="specialtype" />
+  <function name="Testing" parameters="s">
+    game.testingtitle = s
+  </function>
+  <function name="OutputText" parameters="text">
+    game.lastoutputtext = ProcessText(text)
+    if (not GetBoolean(game, "hideoutput") or game.finished) {
+      OutputTextRaw (game.lastoutputtext)
+    }
+  </function>
+  <function name="AssertOutput" parameters="s">
+    Assert (s, game.lastoutputtext)
+  </function>
+  <function name="Assert" parameters="expected, actual"><![CDATA[
+    if (not TypeOf(expected) = TypeOf(actual)) {
+      Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to be >" + expected + "< (" + TypeOf(expected) + ")")
+    }
+    else if (not expected = actual) {
+      Result (">" + actual + "< was expected to be >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertMatch" parameters="expected, actual"><![CDATA[
+    if (not "string" = TypeOf(actual)) {
+      Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to match >" + expected + "< (" + TypeOf(expected) + ")")
+    }
+    else if (not IsRegexMatch(expected, actual)) {
+      Result (">" + actual + "< was expected to match >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertCommand" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    Assert (s, game.lastoutputtext)
+  </function>
+  <function name="AssertCommandMatch" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    AssertMatch (s, game.lastoutputtext)
+  </function>
+  <function name="AssertIn" parameters="list, actual"><![CDATA[
+    if (not ListContains(list, actual)) {
+      Result (">" + actual + "< expected to be in " + list)
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertInRange" parameters="from, to, code"><![CDATA[
+    actual = eval(code)
+    if (actual < from or actual > to) {
+      Result (">" + actual + "< expected to be in range " + to + " to " + from + ": " + code)
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="Result" parameters="message"><![CDATA[
+    if (message = null) {
+      JS.addText (".")
+    }
+    else {
+      JS.addText ("F")
+      list add (game.testfailures, "Error in " + game.testingtitle + ": " + message)
+    }
+    game.testcount = game.testcount + 1
+    if (game.testcount = 50) {
+      JS.addText ("<br/>")
+      game.testcount = 0
+    }
+  ]]></function>
+  <function name="Results">
+    game.testingdone = true
+    msg (" ")
+    msg (" ")
+    if (ListCount(game.testfailures) = 0) {
+      msg ("No failures!")
+    }
+    else {
+      msg (ListCount(game.testfailures) + " failure(s):")
+      foreach (s, game.testfailures) {
+        OutputTextRaw (s)
+      }
+    }
+    msg (" ")
+    msg (" ")
+    if (game.terminate) {
+      finish
+    }
+    else {
+      game.finished = true
+      JS.uiShow ("#txtCommandDiv")
+      JS.panesVisible (true)
+    }
+  </function>
+  <function name="Test" type="string">
+    return ("from test")
+  </function>
+  <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
+    return (GetDirectChildren(backdrop))
+  </function>
+  <function name="BuySomething" parameters="obj" type="boolean">
+    game.purchasedobject = obj
+    return (true)
+  </function>
+  <function name="TestClothing">
+    Testing ("Clothing - baseline")
+    SetVerbs
+    Assert (2, player.bonus1)
+    Assert (4, player.bonus2)
+    Assert (0, GetArmour())
+    Assert ("nothing", FormatList(ListWornFor(player), ",", "and", "nothing"))
+    Assert ("nothing", ListClothes())
+    Assert (0, WornCount())
+    //
+    Testing ("Clothing - Putting things on")
+    Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
+    WearGarment (overalls)
+    Assert (1, WornCount())
+    Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
+    WearGarment (coat)
+    Assert (2, WornCount())
+    Assert ("Look at", Join(overalls.inventoryverbs, ";"))
+    Assert ("overalls (worn)", overalls.alias)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert (3, player.bonus1)
+    Assert (2, player.bonus2)
+    Assert (coat, GetOuter("torso"))
+    Assert (overalls, GetOuter("legs"))
+    Assert (null, GetOuter("head"))
+    Assert ("an overcoat (worn) and overalls (worn)", FormatList(ListWornFor(player), ",", "and", "nothing"))
+    Assert ("an overcoat and overalls", ListClothes())
+    Assert (24, GetArmour())
+    Assert (8, _GetSlotArmour(player, "torso"))
+    //
+    Testing ("Clothing - Removing items")
+    RemoveGarment (coat)
+    Assert ("Look at;Remove", Join(overalls.inventoryverbs, ";"))
+    RemoveGarment (overalls)
+    Assert ("Look at;Drop;Wear", Join(overalls.inventoryverbs, ";"))
+    Assert (2, player.bonus1)
+    Assert (4, player.bonus2)
+    Assert ("overalls", overalls.alias)
+    Assert ("overcoat", coat.alias)
+    Assert (0, GetArmour())
+    //
+    Testing ("Clothing - aliases")
+    // Testing an issue that the alias disappeared after repeated wearing
+    WearGarment (coat)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert ("overcoat (worn)", coat.listalias)
+    RemoveGarment (coat)
+    Assert ("overcoat", coat.alias)
+    Assert ("overcoat", coat.listalias)
+    WearGarment (coat)
+    Assert ("overcoat (worn)", coat.alias)
+    Assert ("overcoat (worn)", coat.listalias)
+    RemoveGarment (coat)
+    Assert ("overcoat", coat.alias)
+    Assert ("overcoat", coat.listalias)
+    //
+    Testing ("Clothing - NPCs")
+    Assert (null, GetOuterFor(mary, "torso"))
+    underwear.worn = true
+    Assert ("underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
+    Assert (underwear, GetOuterFor(mary, "torso"))
+    dress.worn = true
+    Assert ("a Dress and underwear", FormatList(ListWornFor(mary), ",", "and", "nothing"))
+    Assert ("a Dress", FormatList(ListVisibleFor(mary), ",", "and", "nothing"))
+    Assert (dress, GetOuterFor(mary, "legs"))
+    Assert (null, GetOuterFor(mary, "head"))
+    //
+    Testing ("Clothing - commands")
+    AssertCommand ("wear overcoat", "You put it on.")
+    AssertCommand ("put overcoat on", "You are already wearing it.")
+    AssertCommand ("put on overalls", "You cannot wear that over an overcoat.")
+    AssertCommand ("doff overcoat", "You take it off.")
+    AssertCommand ("don overalls", "You put them on.")
+    AssertCommand ("wear overcoat", "You put it on.")
+    AssertCommand ("take overalls off", "You can't remove that while wearing an overcoat.")
+    AssertCommand ("take overcoat off", "You take it off.")
+    AssertCommand ("take off overalls", "You take them off.")
+    //
+    Testing ("Clothing - commands 2")
+    player.parent = fifth
+    AssertCommand ("get shoes", "You pick them up.")
+    Assert ("Look at;Drop;Wear", Join(shoes.inventoryverbs, ";"))
+    AssertCommand ("don shoes", "You put them on.")
+    Assert ("Look at;Remove", Join(shoes.inventoryverbs, ";"))
+    AssertCommand ("get socks", "You pick them up.")
+    Assert ("Look at;Drop", Join(socks.inventoryverbs, ";"))
+    //
+    Testing ("Clothing - multistate")
+    AssertCommand ("get jacket", "You pick it up.")
+    Assert ("Look at;Drop;Wear", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket", GetDisplayName(casual jacket))
+    AssertCommand ("don jacket", "You put it on.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "You button up the jacket.")
+    Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "You button up the jacket.")
+    Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (1, player.cool)
+    Assert (5, player.warm)
+    Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
+    AssertCommand ("fasten jacket", "It already is.")
+    Assert ("Look at;Remove;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (1, player.cool)
+    Assert (5, player.warm)
+    Assert ("a casual jacket (worn)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "You unfasten it.")
+    Assert ("Look at;Remove;Fasten;Unfasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (2, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn half-buttoned)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "You unfasten it.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    AssertCommand ("unfasten jacket", "It already is.")
+    Assert ("Look at;Remove;Fasten", Join(casual jacket.inventoryverbs, ";"))
+    Assert (3, player.cool)
+    Assert (3, player.warm)
+    Assert ("a casual jacket (worn unfastened)", GetDisplayName(casual jacket))
+    //
+    Testing ("Clothing - set alias")
+    SetAlias (casual jacket, "smart jacket")
+    Assert ("a smart jacket (worn unfastened)", GetDisplayName(casual jacket))
+    RemoveGarment (casual jacket)
+    SetAlias (casual jacket, "shabby jacket")
+    Assert ("a shabby jacket", GetDisplayName(casual jacket))
+    SetAlias (tiger, "Lion")
+    Assert ("Lion", tiger.alias)
+    SetAlias (tiger, "Tiger")
+  </function>
+</asl>

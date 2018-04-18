@@ -12,7 +12,7 @@ Switchable
 
 On the _Features_ tab, of the object, tick "Switchable:...", and then go to the _Switchable_ tab. Select "Can be switched on/off". Various options will appear that you can fill in as you see fit, or just leave blank:
 
-![Basic machine](switchbasic.png)
+![Basic machine](images/switchbasic.png)
 
 Descriptions
 ------------
@@ -35,7 +35,7 @@ msg ("A funny looking machine{if machine.switchedon: chugging away}.")
 
 Or an `if` command. This is a trivial example, but could be much more complicated. Note that "this" is a special variable that means the object the script belongs to (it cannot be used with the text processor unfortunately).
 
-![Machine description](switchlookat.png)
+![Machine description](images/switchlookat.png)
 
 ```
 if (this.switchedon) {
@@ -54,7 +54,7 @@ Switchables can be given a special attribute, "cannotswitchon", that will indica
 
 In this simple example, the player just has to use a new POWER command to get power to the machine:
 
-![Power comnmand](switchpower.png)
+![Power comnmand](images/switchpower.png)
 
 This is the code:
 
@@ -75,7 +75,7 @@ So it is great that we can turn it on and off, but so what? How does that impact
 
 Suppose we have a crystal ball that can be used only when our machine is turned on, we could set it up like this:
 
-![Crystal ball](switchstate.png)
+![Crystal ball](images/switchstate.png)
 
 ```
 if (machine.switchedon) {
@@ -92,7 +92,7 @@ In this case the turning-on script for the generator needs to change the state o
 
 For the turn off script, we need to reverse all that. We have some extra house keeping to do, as the machine may be turned on, we need to ensure it is turned off.
 
-![The generator](switchgenerator.png)
+![The generator](images/switchgenerator.png)
 
 The turn on code:
 
@@ -138,7 +138,7 @@ Occasionally you might want to implement a machine that the player turns on, it 
 
 Let us suppose our machine will clone rabbits. We need to add a script that does two things; clone the rabbit and switch the machine back off. Note that in this case we do not need a message when the player turns the machine off.
 
-![Bunny machine](switchmoment.png)
+![Bunny machine](images/switchmoment.png)
 
 ```
 CloneObjectAndMove (rabbit, player.parent)
@@ -164,7 +164,7 @@ We will do this for the generator. The generator cannot be picked up, so we only
 
 Then go to the _Switchable_ tab, and set it to change the display verbs when turned on and off:
 
-![Changing display verbs](switchdisplayverbs.png)
+![Changing display verbs](images/switchdisplayverbs.png)
 
 ```
 light.lightsource = true

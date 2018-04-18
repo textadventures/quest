@@ -36,7 +36,7 @@ foreach (o, GetDirectChildren(stock)) {
 
 It should like like this it all went well:
 
-![](SetUpShop.png "SetUpShop.png")
+![](images/SetUpShop.png "SetUpShop.png")
 
 The `BuyingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants sell at (i.e., the player is buying), based on the object's price, and in the example below, it is just double. Paste in this code:
 
@@ -192,4 +192,4 @@ SetUpShop (Cake Shop, Cake Shop Stock)
 
 It should look like this:
 
-![](StartShop.png "StartShop.png")
+![](images/StartShop.png "StartShop.png")

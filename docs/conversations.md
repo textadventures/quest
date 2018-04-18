@@ -43,7 +43,7 @@ The examples above illustrate this in play.
 
 To set this up in Quest, select the character, go to the verbs tab, and add a new verb, "speak" (Quest will match this up to the right command as you type). Then put in the response underneath. It could look like this:
 
-![](Talk1.png "Talk1.png")
+![](images/Talk1.png "Talk1.png")
 
 
 SPEAK TO and a menu of responses
@@ -69,7 +69,7 @@ Quest handles menus well, and it would actually look rather more slick than that
 
 As this is again using the "TALK TO" command, setting it up is like the first option. However, the script for that "SPEAK" verb is rather more complicated.
 
-![](Talk2.png "Talk2.png")
+![](images/Talk2.png "Talk2.png")
 
 In code view, it looks like this:
 
@@ -108,7 +108,7 @@ This is the most open-ended approach, though in reality that flexibility is an i
 
 Quest has a tab just for Ask/Tell, making it easy to set up each response (but you need to activate in on the Features tab of the game object).
 
-![](Talk3.png "Talk3.png")
+![](images/Talk3.png "Talk3.png")
 
 For each topic, click on add, then put in the topic name. You can put in several; try to guess what words the player will use. They should be separated by spaces, as shown above. Then you need to put in the script, just as before.
 

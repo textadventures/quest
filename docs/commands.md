@@ -18,7 +18,7 @@ To add a command:
 
 The pattern we will match against is "help", and we just want to print something, so it will just look like this:
 
-![](CommandHelp.png "CommandHelp.png")
+![](images/CommandHelp.png "CommandHelp.png")
 
 Now if you play the game and type HELP, you will see the new text.
 
@@ -57,5 +57,5 @@ If there are two or more zombies here, Quest will ask the player which one she m
 
 So we have a single object, called `object`, which we know matches the name the player typed, and we know is present. Your script can now do what it likes with that object as though it is the real thing.
 
-![](CommandAttack.png "CommandAttack.png")
+![](images/CommandAttack.png "CommandAttack.png")
 

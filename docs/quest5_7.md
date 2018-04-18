@@ -26,7 +26,7 @@ Customisation of the user interface (UI) is now much easier. There are a number 
 
 This is our starting point
 
-![](ui-classic.png "ui-classic.png")
+![](images/ui-classic.png "ui-classic.png")
 
 ### Game panes
 
@@ -35,7 +35,7 @@ You can now select different colour schemes for the panes on the right (or inven
 You can turn off individual panes, and add a new command pane and a new status pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands). The status pane can have any HTML put in it (with JS.setCustomStatus), so could display indicators bars as well as text.
 https://github.com/textadventures/quest/issues/752
 
-![](ui-no-cursor.png "ui-no-cursor.png")
+![](images/ui-no-cursor.png "ui-no-cursor.png")
 
 [Custom panes](custom_panes.html)
 
@@ -43,7 +43,7 @@ https://github.com/textadventures/quest/issues/752
 
 New options for the command bar; borderless cursor or shadow box.
 
-![](ui-cursor.png "ui-cursor.png")
+![](images/ui-cursor.png "ui-cursor.png")
 
 ### Colours
 

@@ -81,7 +81,7 @@ This is very easy to do - simply go to the _Inventory_ tab. You have a couple of
 
 To let the player take the newspaper, we just need to tick the "Object can be taken" box. If you don't specify a message, you'll get a default message - "You pick it up". If you want something a bit more imaginative, you can enter a Take Message such as "You fold the newspaper and place it neatly under your arm".
 
-![](Takedrop.png "Takedrop.png")
+![](../images/Takedrop.png "Takedrop.png")
 
 The "Object can be dropped" box is ticked by default, so the player can take and drop the object as many times as they like. The options are the same as for "Take", so you can specify your own drop message or completely customise the behaviour with a script if you like.
 
@@ -100,13 +100,13 @@ The options should be fairly self-explanatory - you can choose whether the objec
 
 Enter some sensible text for these, for example as shown below.
 
-![](Switchonoff.png "Switchonoff.png")
+![](../images/Switchonoff.png "Switchonoff.png")
 
 Go back to the Setup tab and change the "Look at" description so it just reads "The TV is an old model, possibly 20 years old."
 
 Now when you play the game, you get sensible behaviour for "switch on tv", "switch off tv", and alternative forms of the command.
 
-![](Switchonoffplay.png "Switchonoffplay.png")
+![](../images/Switchonoffplay.png "Switchonoffplay.png")
 
 Notice that by setting this object up as "Can be switched on/off", two new options "switch on" and "switch off" have automatically appeared in the TV hyperlink menu.
 

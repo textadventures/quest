@@ -17,7 +17,7 @@ To the script, add a "Set this function's return value" command. Enter the expre
 
 The function editor should now look like this:
 
-![](Functionvalue.png "Functionvalue.png")
+![](images/Functionvalue.png "Functionvalue.png")
 
 We can now call the function from any script command. Let's add a script command "test" just to check that it works.
 
@@ -27,7 +27,7 @@ In the script for the command, add a "print a message" command, and enter the ex
 
 The command should look like this:
 
-![](Callfunction.png "Callfunction.png")
+![](images/Callfunction.png "Callfunction.png")
 
 Run the game and type "test". You should get the correct output:
 

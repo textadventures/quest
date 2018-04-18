@@ -5,7 +5,7 @@ title: Modifying the Status and Game Panes
 
 In this article we will modify the status bar and game panes of the Quest interfce. We will go for an old-fashioned look, in brown. This is what we are aiming for:
 
-![](interface1.png "interface1.png")
+![](images/interface1.png "interface1.png")
 
 The first thing to do is to decide what we want; what colours will we use and so on.
 
@@ -109,7 +109,7 @@ backandborder = "border: darkblue double 6px;background:dodgerblue"
 button = "padding:5px;background:skyblue;border:double darkblue 1px;"
 ```
 
-![](interface2.png "interface2.png")
+![](images/interface2.png "interface2.png")
 
 
 
@@ -118,7 +118,7 @@ backandborder = "border: darkgrey outset 6px;background:grey"
 button = "padding:5px;background:silver;border:outset darkgrey 1px;"
 ```
 
-![](interface3.png "interface3.png")
+![](images/interface3.png "interface3.png")
 
 
 
@@ -128,4 +128,4 @@ backandborder = "border: Indigo dotted 6px;background:MediumPurple"
 button = "padding:5px;background:Violet;border:dotted Indigo 1px;"
 ```
 
-![](interface4.png "interface4.png")
+![](images/interface4.png "interface4.png")

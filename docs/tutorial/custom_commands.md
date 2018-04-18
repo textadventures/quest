@@ -40,7 +40,7 @@ But if you don't  like the backslashes, you could use single quotes quite safely
 
      "You say '" + text + "', but nobody replies."
 
-![](Commandsay.png "Commandsay.png")
+![](../images/Commandsay.png "Commandsay.png")
 
 Launch the game and type in a few "say" commands to see that Quest responds correctly.
 
@@ -72,7 +72,7 @@ Add the "weigh" command using the command pattern above, and add a "print a mess
 
      "It weighs " + object.weight + " grams."
 
-![](Commandweigh.png "Commandweigh.png")
+![](../images/Commandweigh.png "Commandweigh.png")
 
 Launch the game and go to the kitchen. See what happens when you type "weigh flour", "weigh sugar" etc.
 
@@ -91,7 +91,7 @@ Expand the "Then" script, and click Paste to restore the previous "print a messa
 
 The script should now look like this:
 
-![](Checkforattribute.png "Checkforattribute.png")
+![](../images/Checkforattribute.png "Checkforattribute.png")
 
 Launch the game and verify that you now get a sensible response for "weigh bob" and "weigh sofa" in the lounge (it should say "You can't weigh that") and that you can still weigh the items in the kitchen.
 
@@ -100,7 +100,7 @@ Additional Example (Advanced)
 
 Quest can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
 
-![](Say_to_troll.png "Say_to_troll.png")
+![](../images/Say_to_troll.png "Say_to_troll.png")
 
 In code, it looks like this:
 

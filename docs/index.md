@@ -212,6 +212,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Publishing games](publishing.html)
 -   [Configuring Quest](configuring_quest.html)
 -   [User contributed libraries](libraries.html)
+-   [Helpsheets](helpsheets/) A set of simple guides created by gideonwilliams
 -   [User contributed guides](guides/)
 
 

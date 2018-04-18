@@ -37,7 +37,7 @@ Note that the string, `s`, is built up step-by-step, and then we do something wi
 
 So how about a graphical representation of the player's hits, a horizontal bar that shows the proportion of her hits she has remaining... We can do that!
 
-![](indicator-bar.png "indicator-bar.png")
+![](images/indicator-bar.png "indicator-bar.png")
 
 We are going to have two attributes here, the player's current "hitpoints" and their maximum, "maxhitpoints". We will set up an HTML table again, but the second row will be the indicator; a `span` element with a `padding-right` attribute that will be adjusted as hits change.
 

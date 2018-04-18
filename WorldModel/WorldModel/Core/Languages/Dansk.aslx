@@ -270,6 +270,11 @@
   <template templatetype="command" name="help">^hjælp$|^\?$</template>
   <template templatetype="command" name="save">^gem$</template>
   <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " ingenting."</dynamictemplate>
+  
+  <template templatetype="command" name="log_cmd">^log$|^se log$|^vis log$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(se |vis |)(scriptet)$</template>
+  <template templatetype="command" name="version_cmd">^(version|info|om)$</template>
+  
 
   <template name="DefaultHelp"><![CDATA[<u>Hurtig Hjælp</u><br/><br/>
 <b>- Objecter:</b>  Prøv med SE PÅ...., TAL MED...., TAG..., LÆG..., ÅBEN..., LUK..., GIV... TIL..., BRUG..., eller BRUG... MED...<br/>

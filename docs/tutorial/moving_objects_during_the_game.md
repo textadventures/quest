@@ -39,7 +39,7 @@ For the "then" script, print a message such as "You open the window. Not much ha
 
 Now cut and paste the existing "print a message" ("a bee flies in...") and "move object" to the "Else".
 
-![](Bee.png "Bee.png")
+![](../images/Bee.png "Bee.png")
 
 Removing an Object during Play
 ------------------------------

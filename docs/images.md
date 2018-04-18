@@ -146,7 +146,7 @@ if (HasInt(game.pov.parent, "number")) {
 
 The first three lines set all the maps to hidden. The next five lines set the maps for any room visited to be visible, but transparent, so it seems greyed out. The last three lines show the current room fully opaque.
 
-![selective-map.png](selective-map.png)
+![](images/selective-map.png "selective-map.png")
 
 ### Or You Could
 

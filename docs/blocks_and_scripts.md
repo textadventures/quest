@@ -20,7 +20,7 @@ A block is a section of code that is set apart from the main. In the GUI view, i
 
 Probably the most common use is with the `if` script command. This example has two blocks:
 
-![](tutorial/Addif4.png "tutorial/Addif4.png")
+![](images/Addif4.png "Addif4.png")
 
 In code it looks like this:
 
@@ -131,7 +131,7 @@ Given Quest does not wait for a block or script to complete, what do you do if y
 
 The trick is _nesting_, which is putting one thing inside another. Instead of having the second `ShowMenu` after the first, you put it inside the code for the first.
 
-![](images/nested_switch.png "images/nested_switch.png")
+![](images/nested_switch.png "nested_switch.png")
 
 Here it is in code.
 

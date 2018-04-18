@@ -11,13 +11,13 @@ After turning the feature on, you can customise the map size, but we will leave 
 
 Run your game now and move between rooms. When the player first enters a room, it is drawn on the map. The yellow dot indicates where the player currently is. This is what it looks like for the tutorial game:
 
-![](Map.png "Map.png")
+![](images/Map.png "Map.png")
 
 By default, rooms are displayed as a 1x1 square. You can change this by selecting the room and going to the _Map_ tab (which only appears when the map feature is turned on).
 
 Here you can change the size and colour of the grid square. You can change what borders are shown, and you can enter a label too. Here's what the game looks like with a 5x3 yellow lounge and a 2x2 sky blue kitchen, with labels added.
 
-![](Map2.png "Map2.png")
+![](images/Map2.png "Map2.png")
 
 ### Exits
 
@@ -29,7 +29,7 @@ For large rooms, you might break them up into more than one location. Let's say 
 
 In the illustration below the border size for both rooms is set to 3 to show the effect better.
 
-![](map7.png "map7.png")
+![](images/map7.png "map7.png")
 
 
 ### Loops
@@ -38,11 +38,11 @@ If you have rooms that connect in a loop you will also have to ensure the distan
 
 In this example, the three rooms in the loop are all square, all 2x2, so the diagonal is fine:
 
-![](map3.png "map3.png")
+![](images/map3.png "map3.png")
 
 Now another loop has been added, but the lengths do not match, so the exits do not meet:
 
-![](map4.png "map4.png")
+![](images/map4.png "map4.png")
 
 So let's sort it out! You need the rooms to match horizontally and vertically, so you need to do this process twice. We will do the horizontal here. On the bottom, there is the Garden and Gazebo. As the player dot sits in the middle of each room, we need half the width in both cases (3 and 1 respectively), plus the length of the exit, 1. This is a total of 5.
 
@@ -50,14 +50,14 @@ Now look at the top of the loop, and the kitchen and garage. The widths are 2 an
 
 Once the vertical is also matched, we end up with this:
 
-![](map5.png "map5.png")
+![](images/map5.png "map5.png")
 
 
 ### Up and Down, In and Out
 
 The map will cope with up and down exits (though it will not display them). When the player goes up or down, rooms on other levels will be shown faded behind the current level. It does assume your game is strictly levelled, that is, the only way between levels is up and down exits.
 
-![](map6.png "map6.png")
+![](images/map6.png "map6.png")
 
 Note that you can only go up seven levels from the starting room, and only down seven levels.
 

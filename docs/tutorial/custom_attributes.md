@@ -20,7 +20,7 @@ If you are using the desktop version, you can click an object and select the Att
 
 So let's give the new objects weights. First we'll set the flour's "weight" attribute to 500. To do this, select the flour object and go to the Attributes tab. We'll look at "Inherited Types" later - for now, go to the Attributes table and click the Add button. Enter the name "weight". We want to to use whole numbers for weight values, so select "Integer" from the list and enter the value "500".
 
-![](Weightflour.png "Weightflour.png")
+![](../images/Weightflour.png "Weightflour.png")
 
 Alternatively...
 -------------
@@ -29,7 +29,7 @@ The Web version currently has no attributes tab, so we will have to use an alter
 
 Click "Add new script", and select "Set a objects attribute (named by an expression)" from the "Variables" category. In the first line, keep "Name", and in the other box, select the flour. For the next line, set the attribute name to "weight" (note that for once you need quotes here, but there are already provided). In the third line, for the value type "500".
      
-![](attributes_web.png "attributes_web.png")
+![](../images/attributes_web.png "attributes_web.png")
 
 Now follow the same process to set the weights of the eggs and the sugar.
 
@@ -46,7 +46,7 @@ For example, to read the weight of the eggs, you would type:
 
 Let's update the "look at" description of the eggs, as an example. Select the eggs object, and then under the "Setup" tab, change the "Look at" description to "Run script". Add the "print a message" command. Now, instead of printing a normal message (which would never change, and can't read attributes), we want to print the result of an expression. So, click the "message" drop-down and select "expression" instead.
 
-![](Printexpression.png "Printexpression.png")
+![](../images/Printexpression.png "Printexpression.png")
 
 Enter this expression exactly, including the quotation marks in the correct place:
 

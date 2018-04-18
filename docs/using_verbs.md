@@ -83,7 +83,7 @@ Note: Verb elements can currently only be edited with the Windows desktop versio
 
 The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist (especially on the web version, where they are not accessible!). Look for them under the game object. Here is one for our ROTATE verb.
 
-![](verb_element.png "verb_element.png")
+![](images/verb_element.png "verb_element.png")
 
 The first bit is the text that Quest will match against, just as with a command. You can change this, to allow for synonyms, with each word separated by semi-colons, like this:
 

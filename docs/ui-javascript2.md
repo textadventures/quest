@@ -12,7 +12,7 @@ You can look at those elements as you play a game. In the off-line editor, click
 
 Most of the interesting elements are of the type "div", and each is identified by an "id". The gameBorder one looks like this:
 
-![](devtools.png "devtools.png")
+![](images/devtools.png "devtools.png")
 
 
 CSS Properties and Values
