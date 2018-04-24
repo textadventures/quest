@@ -216,8 +216,10 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <template templatetype="command" name="put"><![CDATA[^metti (?<object1>.*) (su|in|nel|nella|nello|nei|negli|nelle) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^rimuovi (?<object1>.*) (da|dal|dalle|dai|dagli|dalle|dallo) (?<object2>.*)$|^togli (?<object1>.*) (da|dal|dalle|dai|dagli|dalle|dallo) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^chiedi (?<object>.*) della (?<text>.*)$|^chiedi (?<object>.*) di (?<text>.*)$]]></template>
-<!-- MODELLO DI ALEX per le scelte multiple sui verbi: <template templatetype="command" name="ask"><![CDATA[^chiedi (?<object>.*) di (?<text>.*)$|^chiedi (?<object>.*) (?<text>.*)$|........]]></template> -->
-    <template templatetype="command" name="tell"><![CDATA[^parla a (?<object>.*) (di|del|delle|dei|degli|delle|dello) (?<text>.*)$|^parla con (?<object>.*) (di|del|delle|dei|degli|delle|dello) (?<text>.*)$]]></template>
+  <!-- MODELLO DI ALEX per le scelte multiple sui verbi: <template templatetype="command" name="ask"><![CDATA[^chiedi (?<object>.*) di (?<text>.*)$|^chiedi (?<object>.*) (?<text>.*)$|........]]></template> -->
+  <template templatetype="command" name="tell"><![CDATA[^parla a (?<object>.*) (di|del|delle|dei|degli|delle|dello) (?<text>.*)$|^parla con (?<object>.*) (di|del|delle|dei|degli|delle|dello) (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(chiedi|di') a (?<object>.*) di (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">compra</verbtemplate>
@@ -230,7 +232,9 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <dynamictemplate name="DefaultEat">"Non puoi mangiare " + object.article + " " + object.alias + "."</dynamictemplate>
   <template templatetype="command" name="give"><![CDATA[^dai (?<object1>.*) a (?<object2>.*)$]]></template>
  <!-- riga originale  -->
-    <dynamictemplate name="DefaultGive">"Non " + object2.article + " vuole."</dynamictemplate>
+  <dynamictemplate name="DefaultGive">"Non " + object2.article + " vuole."</dynamictemplate>
+  <dynamictemplate name="DefaultTellTo">"Non " + WriteVerb (object, "fare") + " niente."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb (object, "essere") + " troppo pesant" + object.suffix + " da prendere."</dynamictemplate>
  
    <!-- riga modificata  <dynamictemplate name="DefaultGive">"Non ha molto senso."</dynamictemplate> -->
  
@@ -409,6 +413,10 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   <template templatetype="command" name="help">^aiuto$|^\?$</template>
   <template templatetype="command" name="save">^salva$</template>
 
+  <template templatetype="command" name="log_cmd">^(diario|vedi diario|mostra diario)$</template>
+  <template templatetype="command" name="view_transcript_cmd">^vedi |mostra |visualizza |)(la |)trascrizione$</template>
+  <template templatetype="command" name="version_cmd">^(versione|info)$</template>
+  
   <template name="DefaultHelp"><![CDATA[<u>Aiuto rapido</u><br/><br/>
 <b>- Oggetti:</b>  Prova a scrivere GUARDA (l'oggetto o la persona)..., PARLA CON..., PRENDI..., LASCIA..., APRI..., DAI (qualcosa) A (qualcuno)..., USA... (qualcosa) SU/CON (qualcuno)...<br/>
 <b>- Inventario:</b>  Guarda sulla destra cosa stai portando con te, oppure digita: I, INV oppure INVENTORY.<br/>
@@ -580,39 +588,88 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
   
   <!-- funzione suggerita da Pertex -->
   
-        <function name="Conjugate2" type="string" parameters="obj,verb">
-      gender = obj.gender
-      switch (gender) {
-              case ("he") {
-                return ("lo")
-              }
-              case ("she") {
-                return ("la")
-              }
-            case ("it") {
-                return ("???")
-              }
-              case ("they") {
-                return ("???")
-              }
-              default {
-                return ("???")
-              }
-       }
-       return (verb)
-      </function>
-	         <function name="GetSuffix" type="string" parameters="obj">
-          if ( DoesInherit (obj, "masculine") or DoesInherit (obj, "male") ) {
-             return ("o")
-          } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
-             return ("a")
-          } else if ( DoesInherit (obj, "maleplural") ) {
-             return ("i")
-          } else if ( DoesInherit (obj, "femaleplural") ) {
-             return ("e")
-          } else {
-             return ("")
-          }
-       </function>   
+  <function name="Conjugate2" type="string" parameters="obj,verb">
+    gender = obj.gender
+    switch (gender) {
+      case ("he") {
+        return ("lo")
+      }
+      case ("she") {
+        return ("la")
+      }
+      case ("it") {
+        return ("???")
+      }
+      case ("they") {
+        return ("???")
+      }
+      default {
+        return ("???")
+      }
+    }
+    return (verb)
+  </function>
+  
+  
+  <function name="GetSuffix" type="string" parameters="obj">
+    if ( DoesInherit (obj, "masculine") or DoesInherit (obj, "male") ) {
+       return ("o")
+    } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
+       return ("a")
+    } else if ( DoesInherit (obj, "maleplural") ) {
+       return ("i")
+    } else if ( DoesInherit (obj, "femaleplural") ) {
+       return ("e")
+    } else {
+       return ("")
+    }
+   </function>   
+
+
+  <function name="Possessive" parameters="owner, object" type="string">
+    if (owner = game.pov) {
+      case (DoesInherit (object, "masculine") or DoesInherit(object, "male")) {
+        return ("il tuo")
+      }
+      case (DoesInherit (object, "female") or DoesInherit(object, "female")) {
+        return ("la tua")
+      }
+      case (DoesInherit(object, "maleplural")) {
+        return ("i tuoi")
+      }
+      case (DoesInherit(object, "femaleplural")) {
+        return ("le tue")
+      }
+    }
+    else if (DoesInherit(owner, "maleplural") or DoesInherit(owner, "femaleplural")) {
+      case (DoesInherit (object, "masculine") or DoesInherit(object, "male")) {
+        return ("il loro")
+      }
+      case (DoesInherit (object, "female") or DoesInherit(object, "female")) {
+        return ("la loro")
+      }
+      case (DoesInherit(object, "maleplural")) {
+        return ("i loro")
+      }
+      case (DoesInherit(object, "femaleplural")) {
+        return ("le loro")
+      }
+    }
+    else {
+      case (DoesInherit (object, "masculine") or DoesInherit(object, "male")) {
+        return ("il suo")
+      }
+      case (DoesInherit (object, "female") or DoesInherit(object, "female")) {
+        return ("la sua")
+      }
+      case (DoesInherit(object, "maleplural")) {
+        return ("i suoi")
+      }
+      case (DoesInherit(object, "femaleplural")) {
+        return ("le sue")
+      }
+    }
+    error("No possessive found for " + object.name + " with " + owner.name + ".")
+  </function>
 
 </library>
