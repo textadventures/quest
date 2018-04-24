@@ -104,6 +104,7 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Track time](time.html)
 -  [Set up a shop](shop.html)
 -  [Set up a door](setting_up_door.html)
+-  [Give the player a memory of Wiki(memory_or_wiki.html)
 
 
 
