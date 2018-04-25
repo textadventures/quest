@@ -15,6 +15,12 @@ function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
 }
 
+
+// RestartGame added by KV
+function RestartGame() {
+    UIEvent("RestartGame", "");
+}
+
 function goUrl(href) {
     UIEvent("GoURL", href);
 }
