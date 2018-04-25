@@ -927,4 +927,18 @@
     </script>
   </command>
   
+  <command name="restart" pattern="^restart$">
+    <script>
+      Ask ("Are you sure you want to restart the game?"){
+        if (result){
+          JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
+        }
+        else {
+          game.notarealturn = true
+          game.suppressturnscripts = true
+        }
+      }
+    </script>
+  </command>
+  
 </library>
