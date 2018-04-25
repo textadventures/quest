@@ -102,14 +102,22 @@ Public Class PlayerHTML
                 RaiseEvent ExitFullScreen()
             Case "Save"
                 RaiseEvent Save(args)
+            ' Added by KV
+            Case "RestartGame"
+                RestartGame(args)
         End Select
     End Sub
-
+            
+    Private Sub RestartGame(data As String)
+        m_keyHandler_KeyPressed(131154)
+    End Sub
+    ' End of Addition by KV
+            
     Private Sub RunASLEvent(data As String)
         Dim args As String() = data.Split({";"c}, 2)
         RaiseEvent SendEvent(args(0), args(1))
     End Sub
-
+            
     Private Sub RunCommand(data As String)
         RaiseEvent CommandRequested(data)
     End Sub
