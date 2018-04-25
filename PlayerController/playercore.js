@@ -2009,3 +2009,8 @@ function Grid_DrawShape(id, border, fill, opacity) {
     }
 
 })(jQuery);
+
+function whereAmI() {
+  ASLEvent("WhereAmI", platform);
+}
+var platform = "desktop";

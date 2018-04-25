@@ -102,3 +102,5 @@ function finishSync(showCommandDiv) {
         $("#cmdSubmit").click();
     }, 100);
 }
+
+var platform = "webplayer";

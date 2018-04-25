@@ -30,7 +30,8 @@
   <include ref="CoreWearable.aslx"/>
 
   <function name="InitInterface">
-      <![CDATA[
+    <![CDATA[
+    JS.whereAmI()
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
@@ -403,6 +404,12 @@
     UpdateStatusAttributes
     CheckDarkness
     UpdateObjectLinks
+  </function>  
+
+
+
+  <function name="WhereAmI" parameters="s">
+    game.questplatform = s
   </function>
 
 </library>
