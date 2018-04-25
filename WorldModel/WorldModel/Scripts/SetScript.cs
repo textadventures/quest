@@ -52,13 +52,21 @@ namespace TextAdventures.Quest.Scripts
 
                 if (!WorldModel.EditMode && WorldModel.Version >= WorldModelVersion.v530)
                 {
-                    if (!Utility.IsValidAttributeName(variable))
+                    if (expr == null)
                     {
-                        string error = string.Format("Invalid {0} name '{1}' in '{2}'",
-                            expr == null ? "variable" : "attribute",
-                            variable,
-                            script);
-                        throw new Exception(error);
+                        if (!Utility.IsValidFieldName(variable))
+                        {
+                            string error = string.Format("Invalid variable name '{0}' in '{1}'", variable, script);
+                            throw new Exception(error);
+                        }
+                    }
+                    else
+                    {
+                        if (!Utility.IsValidAttributeName(variable))
+                        {
+                            string error = string.Format("Invalid attribute name '{0}' in '{1}'", variable, script);
+                            throw new Exception(error);
+                        }
                     }
                 }
 
