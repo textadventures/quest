@@ -452,7 +452,7 @@
   
   <type name="namedmale">
     <inherit name="male" />
-    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
   </type>
 
   <type name="female">
@@ -466,7 +466,7 @@
   
   <type name="namedfemale">
     <inherit name="female" />
-    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
   </type>
 
   <type name="plural">
