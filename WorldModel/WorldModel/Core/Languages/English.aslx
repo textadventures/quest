@@ -70,6 +70,7 @@
   <template name="SelfAlt">me; myself; self</template>
   <template name="AllObjects">all; everything</template>
   <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="UseDefaultPrefixIfNamed">false</template>
   <template name="Score">Score</template>
   <template name="Health">Health</template>
   <template name="Money">Money</template>

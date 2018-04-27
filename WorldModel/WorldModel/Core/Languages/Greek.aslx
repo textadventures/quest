@@ -88,6 +88,7 @@
     <template name="AllObjects">όλα; τα πάντα</template>
     <template name="Nothing">τίποτα</template>
     <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις; στον; στην; στο; στα; στους; στις</template>
+  <template name="UseDefaultPrefixIfNamed">true</template>
 	<template name="Health">Υγεία</template>
 	<template name="Money">Χρήματα</template>
 	<template name="Score">Σκορ</template>
@@ -493,20 +494,20 @@
 		if ( DoesInherit (obj, "namedmale")) {
 			return ("τον")
 		} else if (DoesInherit (obj, "namedfemale") ) {
-            return ("την")
-        } else if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
-            return ("έναν")
-        } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
-            return ("μία")
-        } else if ( DoesInherit (obj, "maleplural") ) {
-            return ("κάποιους")
-        } else if ( DoesInherit (obj, "femaleplural") ) {
-            return ("κάποιες")
+        return ("την")
+    } else if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
+        return ("έναν")
+    } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
+        return ("μία")
+    } else if ( DoesInherit (obj, "maleplural") ) {
+        return ("κάποιους")
+    } else if ( DoesInherit (obj, "femaleplural") ) {
+        return ("κάποιες")
 		} else if ( DoesInherit (obj, "plural") ) {
-            return ("κάποια")
-        } else { 
-            return ("ένα") 
-        }
+        return ("κάποια")
+    } else { 
+        return ("ένα") 
+    }
     </function>  
 	
 	<function name="GetSuffix" type="string" parameters="obj">
@@ -524,5 +525,10 @@
 		  return ("α")
 		}
     </function>
+
+  <type name="namedmale">
+    <inherit name="male" />
+    <usedefaultprefix type="boolean">true</usedefaultprefix>
+  </type>
 
 </library>
