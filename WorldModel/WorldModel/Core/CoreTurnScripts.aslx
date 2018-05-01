@@ -65,4 +65,8 @@
       EnableTurnScript(turnscript)
     }
   </function>
+
+  <function name="SuppressTurnscripts">
+    game.suppressturnscripts = true
+  </function>
 </library>
