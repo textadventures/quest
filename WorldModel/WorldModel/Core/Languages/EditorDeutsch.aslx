@@ -46,6 +46,7 @@
   <template name="EditorGameDevModeChangedPovPos">Entwicklermodus: Ändere Position des Spielers.</template>
   <template name="EditorGameDevModeChangedAttributes">Entwicklermodus: Setze Attribute.</template>
   <template name="EditorGameDevModeStartScript">Entwicklermodus: Starte Initialisierungsscript.</template>
+  <template name="EditorScriptsTurnScriptsSuppressurnscript">Turn-Skripte unterdrücken</template>
   <template name="EditorGBScriptWhenEnteringPage">Skript starten bei Seitenaufruf</template>
   <template name="EditorGBClearScreenBetweenEachPage">Bildschirm zwischen jeder Seite leeren</template>
   <template name="EditorGBColour">Farbe</template>
