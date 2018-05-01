@@ -695,7 +695,7 @@
   <template name="EditorScriptsTurnScriptsEnableturn">Enable turn script</template>
   <template name="EditorScriptsTurnScriptsDisableturn">Disable turn script</template>
   <template name="EditorScriptsTurnScriptsSetturnscript">Set turn script</template>
-  <template name="EditorScriptsTurnScriptsSetturnscript">Suppress turn scripts</template>
+  <template name="EditorScriptsTurnScriptsSuppressturnscripts">Suppress turn scripts</template>
   <template name="EditorScriptsTurnScriptsscriptto">script to</template>
   <template name="EditorScriptsTurnScriptsAfter">After</template>
   <template name="EditorScriptsTurnScriptsturns">turns</template>
