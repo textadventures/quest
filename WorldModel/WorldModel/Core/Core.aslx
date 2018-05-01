@@ -28,6 +28,7 @@
   <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
   <include ref="CoreWearable.aslx"/>
+  <include ref="CoreDevMode.aslx"/>
 
   <function name="InitInterface">
       <![CDATA[
