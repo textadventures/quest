@@ -1370,10 +1370,10 @@ function getTimeAndDateForLog(){
 	var secs = today.getSeconds();
 	today = mm + '/' + dd + '/' + yyyy;
 	if(hrs>12) {
-	  ampm = 'AM';
+	  ampm = 'PM';
 	  hrs = '0' + '' + hrs - 12
 	}else{
-	  ampm = 'PM';
+	  ampm = 'AM';
 	} 
 	if (mins<10) {
 	  mins = '0'+mins;

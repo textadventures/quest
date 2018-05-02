@@ -116,15 +116,18 @@ Public Class PlayerHTML
         'MsgBox(logPath)
         Dim logDirName = Split(data, "@@@GAMENAME@@@")(0)
         Dim dataToPrint = Split(data, "@@@GAMENAME@@@")(1)
-        If Not Directory.Exists(logPath + "\" + logDirName) = True Then
-            Directory.CreateDirectory(logPath + "\" + logDirName)
+        Dim realPath = logPath + "\" + logDirName
+        If Not System.IO.Directory.Exists(realPath) = True Then
+            'MsgBox(realPath + "does not exist.")
+            System.IO.Directory.CreateDirectory(realPath)
         End If
-        If Not System.IO.File.Exists(logPath + "\" + logDirName + "\log.txt") = True Then
+        If Not System.IO.File.Exists(realPath + "\log.txt") = True Then
+            'MsgBox(realPath + "\log.txt does not exist.")
             Dim file As System.IO.FileStream
-            file = System.IO.File.Create(logPath + "\" + logDirName + "\log.txt")
+            file = System.IO.File.Create(realPath + "\log.txt")
             file.Close()
         End If
-        My.Computer.FileSystem.WriteAllText(logPath + "\" + logDirName + "\log.txt", dataToPrint + Environment.NewLine, True)
+        My.Computer.FileSystem.WriteAllText(realPath + "\log.txt", dataToPrint + Environment.NewLine, True)
     End Sub
     Private Sub SaveTranscript(data As String)
         'Dim path As String = Directory.GetCurrentDirectory()
@@ -133,8 +136,8 @@ Public Class PlayerHTML
         Dim transcriptPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Transcripts"
         Dim mgameName = Split(data, "@@@TRANSCRIPTNAME@@@")(0)
         Dim dataToPrint = Split(data, "@@@TRANSCRIPTNAME@@@")(1)
-        If Not Directory.Exists(transcriptPath) = True Then
-            Directory.CreateDirectory(transcriptPath)
+        If Not System.IO.Directory.Exists(transcriptPath) = True Then
+            System.IO.Directory.CreateDirectory(transcriptPath)
         End If
         If Not System.IO.File.Exists(transcriptPath + "\" + mgameName + "-transcript.html") = True Then
             Dim file As System.IO.FileStream
