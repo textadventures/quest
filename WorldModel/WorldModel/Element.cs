@@ -290,6 +290,11 @@ namespace TextAdventures.Quest
             return Clone(e => true, false);
         }
 
+        public Element ShallowClone()
+        {
+            return Clone(e => false, false);
+        }
+
         public Element Clone(Func<Element, bool> canCloneChild, Boolean lastelementscutout = false)
         {
             Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, (lastelementscutout) ? Name : m_worldModel.GetUniqueElementName(Name));
