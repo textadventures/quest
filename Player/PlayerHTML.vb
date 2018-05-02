@@ -105,14 +105,50 @@ Public Class PlayerHTML
             ' Added by KV
             Case "RestartGame"
                 RestartGame(args)
+            Case "SaveTranscript"
+                SaveTranscript(args)
+            Case "WriteToLog"
+                WriteToLog(args)
         End Select
     End Sub
-            
+    Private Sub WriteToLog(data As String)
+        Dim logPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Logs"
+        'MsgBox(logPath)
+        Dim logDirName = Split(data, "@@@GAMENAME@@@")(0)
+        Dim dataToPrint = Split(data, "@@@GAMENAME@@@")(1)
+        If Not Directory.Exists(logPath + "\" + logDirName) = True Then
+            Directory.CreateDirectory(logPath + "\" + logDirName)
+        End If
+        If Not System.IO.File.Exists(logPath + "\" + logDirName + "\log.txt") = True Then
+            Dim file As System.IO.FileStream
+            file = System.IO.File.Create(logPath + "\" + logDirName + "\log.txt")
+            file.Close()
+        End If
+        My.Computer.FileSystem.WriteAllText(logPath + "\" + logDirName + "\log.txt", dataToPrint + Environment.NewLine, True)
+    End Sub
+    Private Sub SaveTranscript(data As String)
+        'Dim path As String = Directory.GetCurrentDirectory()
+        'MsgBox(path)
+        ' Add gamename in param and save to document folder
+        Dim transcriptPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Transcripts"
+        Dim mgameName = Split(data, "@@@TRANSCRIPTNAME@@@")(0)
+        Dim dataToPrint = Split(data, "@@@TRANSCRIPTNAME@@@")(1)
+        If Not Directory.Exists(transcriptPath) = True Then
+            Directory.CreateDirectory(transcriptPath)
+        End If
+        If Not System.IO.File.Exists(transcriptPath + "\" + mgameName + "-transcript.html") = True Then
+            Dim file As System.IO.FileStream
+            file = System.IO.File.Create(transcriptPath + "\" + mgameName + "-transcript.html")
+            file.Close()
+        End If
+        My.Computer.FileSystem.WriteAllText(transcriptPath + "\" + mgameName + "-transcript.html", dataToPrint, True)
+
+    End Sub
     Private Sub RestartGame(data As String)
         m_keyHandler_KeyPressed(131154)
     End Sub
     ' End of Addition by KV
-            
+
     Private Sub RunASLEvent(data As String)
         Dim args As String() = data.Split({";"c}, 2)
         RaiseEvent SendEvent(args(0), args(1))

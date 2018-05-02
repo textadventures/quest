@@ -21,6 +21,21 @@ function RestartGame() {
     UIEvent("RestartGame", "");
 }
 
+// SaveTranscript added by KV
+function SaveTranscript(data) {
+    data = data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>";
+    var pre = transcriptName + "@@@TRANSCRIPTNAME@@@";
+    if (!webPlayer && transcriptString != '') { UIEvent("SaveTranscript", pre + data); }
+    transcriptString += data;
+}
+
+// Added by KV to write/append to log.txt in the current directory
+function WriteToLog(data) {
+    if (!webPlayer && data != '' && typeof (data) == 'string') {
+        UIEvent("WriteToLog", gameName + "@@@GAMENAME@@@" + getTimeAndDateForLog() + " " + data);
+    }
+}
+
 function goUrl(href) {
     UIEvent("GoURL", href);
 }
