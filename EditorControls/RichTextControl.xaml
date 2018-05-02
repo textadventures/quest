@@ -11,7 +11,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <TextBox Name="textBox" TextChanged="textBox_TextChanged" LostFocus="textBox_LostFocus" MinWidth="40" MinHeight="20" AcceptsReturn="True" SpellCheck.IsEnabled="True" TextWrapping="Wrap" FontFamily="Georgia" FontSize="14" Padding="5" />
+        <TextBox Name="textBox" TextChanged="textBox_TextChanged" LostFocus="textBox_LostFocus" MinWidth="40" MinHeight="20" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Georgia" FontSize="14" Padding="5" />
         <StackPanel Name="textProcessorOptions" Grid.Column="1">
             <StackPanel Name="stackCommandButtons"></StackPanel>
             <TextBlock Margin="3,10"><Hyperlink Click="Hyperlink_Click"><TextBlock Name="txtProcessorHelp" Initialized="txtProcessorHelp_Initialized">Text Processor help</TextBlock></Hyperlink></TextBlock>
