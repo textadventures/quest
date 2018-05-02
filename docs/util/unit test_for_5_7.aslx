@@ -1,9 +1,8 @@
-<!--Saved by Quest 5.7.6404.15496-->
+<!--Saved by Quest 5.8.6696.15227-->
 <asl version="550">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
-  <delegate name="textprocessor" parameters="" type="string" />
   <game name="Unit testing for 5.7">
     <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
     <version>1.0</version>
@@ -467,9 +466,27 @@
       Testing ("CreateBiExits")
       count6 = ListCount(ScopeExitsForRoom(sixth))
       count7 = ListCount(ScopeExitsForRoom(seventh))
-      CreateBiExits("north", sixth, seventh)
-      Assert(1, ListCount(ScopeExitsForRoom(sixth)) - count6) 
-      Assert(1, ListCount(ScopeExitsForRoom(seventh)) - count7) 
+      CreateBiExits ("north", sixth, seventh)
+      Assert (1, ListCount(ScopeExitsForRoom(sixth)) - count6)
+      Assert (1, ListCount(ScopeExitsForRoom(seventh)) - count7)
+      //
+      // -------------------------------------------------------------------------
+      Testing ("CloneObject (5.8)")
+      clonedbox = CloneObject(box)
+      clonedbox2 = CloneObject(box)
+      Assert ("box", clonedbox.alias)
+      Assert (box, clonedbox.prototype)
+      Assert ("box", clonedbox2.alias)
+      Assert (box, clonedbox2.prototype)
+      clonedball = ObjectListItem(GetDirectChildren(clonedbox), 0)
+      Assert ("ball", clonedball.alias)
+      Assert (ball, clonedball.prototype)
+      Assert (clonedbox, clonedball.parent)
+      clonedball2 = ObjectListItem(GetDirectChildren(clonedbox2), 0)
+      clonednail2 = ObjectListItem(GetDirectChildren(clonedball2), 0)
+      Assert ("nail", clonednail2.alias)
+      Assert (nail, clonednail2.prototype)
+      Assert (clonedball2, clonednail2.parent)
       Results
     ]]></start>
     <scopebackdrop type="script">
@@ -778,6 +795,12 @@
       <feature_container />
       <maxobjects type="int">100</maxobjects>
       <maxvolume type="int">10</maxvolume>
+      <object name="ball">
+        <inherit name="editor_object" />
+        <object name="nail">
+          <inherit name="editor_object" />
+        </object>
+      </object>
     </object>
   </object>
   <command name="CmdPhone">
