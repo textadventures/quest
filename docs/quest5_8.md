@@ -52,8 +52,6 @@ Following a [suggestion from mrangel](http://textadventures.co.uk/forum/quest/to
 
 ### Thanks to KV:
 
-Spell checker for RTF text boxes (i.e., anywhere that supports fancy formatting) on desktop
-
 RESTART command
 
 Advanced popups
