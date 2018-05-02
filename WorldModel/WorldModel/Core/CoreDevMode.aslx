@@ -6,7 +6,7 @@
   ****************************************************************************************************
   CoreDevMode - Tool for better testing the game
   by SoonGames, 2018
-  Version 1.0
+  Version 1.01
   ****************************************************************************************************
   Quest-Version: 5.7
   ****************************************************************************************************
@@ -305,12 +305,10 @@
   </function>
 
   <function name="setVerbs">
-    if (game.devmode_language = "DE") verbs = game.devmode_verbs_de
-    else verbs = game.devmode_verbs
+    verbs = game.devmode_verbs
     foreach (object, AllObjects()) {
       if (HasAttribute(object, "displayverbs")) {
-        if (game.enablehyperlinks) object.displayverbs = ListCombine (object.displayverbs, verbs)
-        else object.displayverbs = verbs
+        object.displayverbs = ListCombine (object.displayverbs, verbs)
       }
       if (HasAttribute(object, "inventoryverbs")) {
         object.inventoryverbs = ListCombine (object.inventoryverbs, verbs)
@@ -335,7 +333,6 @@
 
   <type name="devmode">
     <devmode_verbs type="simplestringlist">[DevModeCommandsInVerbs]</devmode_verbs>
-    <devmode_verbs_de type="simplestringlist">[DevModeCommandsInVerbsDE]</devmode_verbs_de>
     <devmode_active type="boolean">true</devmode_active>
     <devmode_attributes type="stringdictionary" />
     <devmode_language type="string" />
