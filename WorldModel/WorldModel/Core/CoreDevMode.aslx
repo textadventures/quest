@@ -1,0 +1,491 @@
+<?xml version="1.0"?>
+<library>
+
+<!--
+
+  ****************************************************************************************************
+  CoreDevMode - Tool for better testing the game
+  by SoonGames, 2018
+  Version 1.01
+  ****************************************************************************************************
+  Quest-Version: 5.7
+  ****************************************************************************************************
+  If you are viewing this on GitHub and want to download it, right click on the RAW button
+  just above, and select "Save link as..."
+  ****************************************************************************************************
+  Download the DevMode.aslx, integrate it as Library in Quest.
+  ****************************************************************************************************
+  Tool for better testing the game.
+  Inspired by Pixie's Cheating-Code. ;-)
+  ****************************************************************************************************
+
+-->
+
+  <!-- DevMode Options -->
+  <dynamictemplate name="DevModeFontSyntax"><![CDATA["<font color=\"" + game.devmode_fontcolour + "\">" + text + "</font>"]]></dynamictemplate>
+
+  <!-- Commands -->
+  <command name="devmode_commands">
+    <pattern type="string"></pattern>
+    <pattern type="string"><![CDATA[^#(?<text>.*)]]></pattern>
+    <script>
+    <![CDATA[
+      if (HasAttribute(game, "devmode_active")) {
+        if (IsDefined("text")) {
+          regex = Template("DevModePattern")
+          if (IsRegexMatch (regex, text)) {
+            res = populate (regex, text)
+            com0 = ToString(DictionaryItem(res, "command0"))
+            com1 = ToString(DictionaryItem(res, "command1"))
+            com2 = ToString(DictionaryItem(res, "command2"))
+
+            // Commands
+            if (not com0 = "") { // without object
+              switch (LCase(com0)) {
+                case (Template("DevModeCommandClr")) { // clr
+                  ClearScreen
+                }
+                case (Template("DevModeCommandHelp")) { // ?
+                  msgdm (Template("DevModeDescriptionCommands"))
+                }
+              }
+            }
+            else if (not com1 = "") { // with one object
+              objstr = ToString(DictionaryItem(res, "object"))
+              obj = getObjectExt(objstr)
+              if (obj = null) error (DynamicTemplate("DevModeErrorCantFindObject", objstr))
+              switch (LCase(com1)) {
+                case (Template("DevModeCommandDrop")) { // drop
+                  setWithoutChange (obj, "parent", game.pov.parent)
+                }
+                case (Template("DevModeCommandTake")) { // take
+                  setWithoutChange (obj, "parent", game.pov)
+                }
+                case (Template("DevModeCommandTo")) { // to
+                  setPov (obj)
+                }                
+                case (Template("DevModeCommandGo")) { // go
+                  setPovPos (obj)
+                }
+                case (Template("DevModeCommandOpen")) { // open
+                  setWithoutChange (obj, "isopen", true)
+                }
+                case (Template("DevModeCommandClose")) { // close
+                  setWithoutChange (obj, "isopen", false)
+                }
+                case (Template("DevModeCommandOn")) { // on
+                  setWithoutChange (obj, "switchedon", true)
+                }
+                case (Template("DevModeCommandOff")) { // off
+                  setWithoutChange (obj, "switchedon", false)
+                }
+              }
+            }
+            else if (not com2 = "") { // with two objects
+              obj1str = ToString(DictionaryItem(res, "object1"))
+              obj2str = ToString(DictionaryItem(res, "object2"))
+              obj1 = getObjectExt(obj1str)
+              obj2 = getObjectExt(obj2str)
+              if (obj1 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj1str))
+              if (obj2 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj2str))
+              switch (LCase(ToString(DictionaryItem(res, "command2")))) {
+                case (Template("DevModeCommandPut")) { // put
+                  setWithoutChange (obj1, "parent", obj2)
+                }
+              }
+            }
+          }
+
+          // Expressions
+          else {
+            Expression (text)
+          }
+        }
+        else {
+          request (Quit, "") // Exit game
+        }
+      }
+      else {
+        msgdm (Template("DevModeNotActive")) // The DevMode is not activ
+      }
+    ]]>
+    </script>
+  </command>
+
+  <!-- Functions -->
+
+  <function name="Expression" parameters="text">
+    <![CDATA[
+      regex = "^(?<object1>.+)\\.(?<attribute1>.+)=(?<value1>.+)$|^(?<token2>\\?|\\!?)(?<object2>.+)\\.(?<attribute2>.+)$"
+      if (IsRegexMatch (regex, text)) {
+        res = populate (regex, text)
+        obj1str = ToString(DictionaryItem(res, "object1"))
+        obj2str = ToString(DictionaryItem(res, "object2"))
+
+        // VALUE
+
+        // Expression with value
+        if (not obj1str = "") {
+
+          obj = getObjectExt(obj1str)
+          if (obj = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj1str))
+          attstr = ToString(DictionaryItem(res, "attribute1"))
+          valstr = ToString(DictionaryItem(res, "value1"))
+
+          // List
+          if (StartsWith(valstr, "[") and EndsWith(valstr, "]")) {
+            val = NewList ()
+            if (not valstr = "[]") {
+              val = Split(Mid(valstr, 2, LengthOf(valstr) - 2), ";")
+            }
+          }
+
+          // Dictionary
+          else if (StartsWith(valstr, "{") and EndsWith(valstr, "}")) {
+            val = NewDictionary ()
+            if (not valstr = "{}") {
+              list = Split(Mid(valstr, 2, LengthOf(valstr) - 2), ";")
+              foreach (lkey, list) {
+                if (not Instr(lkey, ":") = 0) {
+                  dict = Split(lkey, ":")
+                  dict0 = ToString(dict[0])
+                  dict1 = ToString(dict[1])
+                  dictionary add (val, dict0, dict1)
+                }
+                else {
+                  error (Template("DevModeErrorWrongFormat"))
+                }
+              }
+            }
+          }
+
+          // Other
+          else if (StartsWith(valstr, "\"") and EndsWith(valstr,  "\"") or not getObjectExt(valstr) = null or LCase(valstr) = "true" or LCase(valstr) = "false" or (Isint(valstr) or IsDouble(valstr)) or LCase(valstr) = "null") {
+            val = Eval(valstr)
+          }
+
+          // Attribute of another object
+          else if (not InStr(valstr, ".") = 0) {
+            list = Split(valstr, ".")
+            if (not ListCount(list) = 2) error (Template("DevModeErrorWrongFormat"))
+            valobjstr = ToString(list[0])
+            valatt = ToString(list[1])
+            valobj = getObjectExt(valobjstr)
+            if (valobj = null) error (DynamicTemplate("DevModeErrorCantFindObject", valobjstr))
+            if (not HasAttribute (valobj, valatt)) error (DynamicTemplate("DevModeErrorCantFindAttribute", valatt))
+            val = Eval(valstr)
+          }
+
+          // Wrong Format
+          else {
+            error (Template("DevModeErrorWrongFormat"))
+          }
+        }
+
+        // Expression without value
+        else if (not obj2str = "") {
+          obj = getObjectExt(obj2str)
+          if (obj = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj2str))
+          tok = ToString(DictionaryItem(res, "token2"))
+          attstr = ToString(DictionaryItem(res, "attribute2"))
+        }
+      }
+      else {
+        error (Template("DevModeErrorWrongFormat"))
+      }
+
+      // ATTRIBUTE
+
+      // Listitem
+      if (EndsWith(attstr, "[]")) {
+        att = Replace (attstr, "[]", "")
+        if (not HasAttribute (obj, att)) error (DynamicTemplate("DevModeErrorCantFindAttribute", att))
+        con = GetAttribute (obj, att)
+        if (obj2str = "") {
+          if (not TypeOf(con) = "list" and not TypeOf(con) = "objectlist" and not TypeOf(con) = "stringlist") con = NewList ()
+          list add (con, val)
+          set (obj, att, con)
+        }
+        else {
+          error (Template("DevModeErrorWrongTyp"))
+        }
+      }
+
+      // Dictionaryitem
+      else if (not Instr(attstr, "{") = 0 and EndsWith(attstr, "}")) {
+        attkey = Split (attstr, "{")
+        att = ToString (attkey[0])
+        if (not HasAttribute (obj, att)) error (DynamicTemplate("DevModeErrorCantFindAttribute", att))
+        key = Replace (ToString (attkey[1]), "}", "")
+        con = GetAttribute (obj, att)
+        if (obj2str = "") {
+          if (not TypeOf(con) = "dictionary" and not TypeOf(con) = "objectdictionary" and not TypeOf(con) = "stringdictionary") con = NewDictionary ()
+          if (DictionaryContains(con, key)) dictionary remove (con, key)
+          dictionary add (con, key, val)
+          set (obj, att, con)
+        }
+        else {
+          if (not TypeOf(con) = "dictionary" and not TypeOf(con) = "objectdictionary" and not TypeOf(con) = "stringdictionary") error (Template("DevModeErrorWrongTyp"))
+          if (not DictionaryContains(con, key)) error (Template("DevModeErrorWrongKey"))
+          msgdm ("=" + DictionaryItem(con, key))
+        }
+      }
+
+      // Other
+      else {
+        if (obj2str = "") {
+          att = attstr
+          set (obj, att, val)
+        }
+        else {
+          att = attstr
+          if (tok = "?") set (obj, att, true) // True
+          else if (tok = "!") set (obj, att, false) // False
+          else { // Read attribute
+            if (not HasAttribute(obj, att)) error (DynamicTemplate("DevModeErrorCantFindAttribute", att))
+            val = ToString(GetAttribute(obj, att))
+            msgdm ("=" + val)
+          }
+        }
+      }
+    ]]>
+  </function>
+
+  <function name="msgdm" parameters="str">
+    <![CDATA[
+      if (game.devmode_showinfos) {
+        if (game.devmode_ownfontcolour) col = " color=\"" + game.devmode_fontcolour + "\""
+        else col = ""
+        msg ("<font" + col + ">" + str + "</font>")
+      }
+    ]]>
+  </function>
+
+  <function name="setWithoutChange" parameters="obj, att, val">
+    cha = "changed" + att
+    bla => { }
+    scr => { }
+    if (obj = null) error (Template("DevModeErrorObjectNotRecognised"))
+    if (HasAttribute (obj, cha)) {
+      scr = GetAttribute (obj, cha)
+      set (obj, cha, bla)
+      set (obj, att, val)
+      set (obj, cha, scr)
+    }
+    else {
+      set (obj, att, val)
+    }
+  </function>
+
+  <function name="setPov" parameters="obj">
+    msgdm (Template("EditorGameDevModeChangedPov"))
+    setWithoutChange (game, "pov", obj)
+  </function>
+
+  <function name="setPovPos" parameters="obj">
+    msgdm (Template("EditorGameDevModeChangedPovPos"))
+    setWithoutChange (game.pov, "parent", obj)
+  </function>
+
+  <function name="setDevMode">
+    if (HasAttribute(game, "devmode_active")) {
+      msgdm (Template("EditorGameDevModeActive"))
+      if (HasAttribute(game, "devmode_attributes") and not DictionaryCount(game.devmode_attributes) = 0) {
+        foreach(key, game.devmode_attributes) Expression (key + "=" + ToString(DictionaryItem(game.devmode_attributes, key)))
+        msgdm (Template("EditorGameDevModeChangedAttributes"))
+      }
+      if (game.devmode_changepov) setPov (getObjectExt(game.devmode_pov))
+      if (game.devmode_changepovpos) setPovPos (getObjectExt(game.devmode_povpos))
+      if (game.devmode_setverbs) setVerbs
+      if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
+        msgdm (Template("EditorGameDevModeStartScript"))
+        do (game, "devmode_initscript")
+      }
+    }
+  </function>
+
+  <function name="setVerbs">
+    verbs = game.devmode_verbs
+    foreach (object, AllObjects()) {
+      if (HasAttribute(object, "displayverbs")) {
+        object.displayverbs = ListCombine (object.displayverbs, verbs)
+      }
+      if (HasAttribute(object, "inventoryverbs")) {
+        object.inventoryverbs = ListCombine (object.inventoryverbs, verbs)
+      }
+    }
+    game.enablehyperlinks = true
+  </function>
+
+  <function name="getObjectExt" parameters="name" type="object">
+    obj = GetObject(name)
+    if (obj = null) {
+      foreach (sobj, AllObjects()) {
+        if (HasAttribute(sobj, "alias")) {
+          if (LCase(sobj.alias) = LCase(name)) return (sobj)
+        }
+      }
+    }
+    return (obj)
+  </function>
+  
+  <!-- Types -->
+
+  <type name="devmode">
+    <devmode_verbs type="simplestringlist">[DevModeCommandsInVerbs]</devmode_verbs>
+    <devmode_active type="boolean">true</devmode_active>
+    <devmode_attributes type="stringdictionary" />
+    <devmode_language type="string" />
+    <devmode_changepov type="boolean">false</devmode_changepov>
+    <devmode_changepovpos type="boolean">false</devmode_changepovpos>
+    <devmode_setverbs type="boolean">true</devmode_setverbs>
+    <devmode_showinfos type="boolean">true</devmode_showinfos>
+    <devmode_ownfontcolour type="boolean">true</devmode_ownfontcolour>
+    <devmode_fontcolour type="string">Green</devmode_fontcolour>
+    <inituserinterface type="script">
+      setDevMode
+    </inituserinterface>
+ </type>
+
+  <!-- Interface -->
+
+  <tab>
+    <parent>_GameEditor</parent>
+    <caption>[EditorGameDevMode]</caption>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>[EditorGameDevMode]</caption>
+      <types>*=[EditorGameDevModeOff]; devmode=[EditorGameDevModeOn];</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>[EditorGameDevMode]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorGameDevModeInfoRelease]</caption>
+      <mustinherit>devmode</mustinherit>
+      <bold/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorGameDevModeInfoCommands]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>[EditorGameDevModeOptions]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeChangePov]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_changepov</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>[EditorGameDevModePov]</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>devmode_pov</attribute>
+      <onlydisplayif>game.devmode_changepov</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeChangePovPos]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_changepovpos</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>[EditorGameDevModePlace]</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>devmode_povpos</attribute>
+      <onlydisplayif>game.devmode_changepovpos</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeSetInitScript]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_setinitscript</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeInitScript]</caption>
+      <controltype>script</controltype>
+      <attribute>devmode_initscript</attribute>
+      <onlydisplayif>game.devmode_setinitscript</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeSetVerbs]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_setverbs</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeShowInfos]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_showinfos</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeOwnFontColour]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_ownfontcolour</attribute>
+      <onlydisplayif>game.devmode_showinfos</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>[EditorGameDevModeFontColour]</caption>
+      <attribute>devmode_fontcolour</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <onlydisplayif>game.devmode_showinfos and game.devmode_ownfontcolour</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>[EditorGameDevModeAttributes]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[DevModeDescriptionAttribute]</caption>
+      <mustinherit>devmode</mustinherit>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>stringdictionary</controltype>
+      <keyprompt>[EditorObjectAttributesPleaseenter]</keyprompt>
+      <valueprompt>[EditorObjectAttributesPleaseenter2]</valueprompt>
+      <attribute>devmode_attributes</attribute>
+      <mustinherit>devmode</mustinherit>
+      <expand/>            
+    </control>
+
+  </tab>
+
+</library>
