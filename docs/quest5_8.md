@@ -60,7 +60,7 @@ Advanced popups
 
 LOOK AT now counts how many times an object has been looked at
 
-TAKE ALL will ignore any object with "notall" set to false
+TAKE ALL will ignore any object with "notall" set to true
 
 Transcripts and logging now possible
 
