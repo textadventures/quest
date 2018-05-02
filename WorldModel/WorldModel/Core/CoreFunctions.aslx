@@ -72,12 +72,16 @@
   </function>
 
   <function name="CloneObject" parameters="object" type="object">
-    newobject = Clone(object)
+    newobject = ShallowClone(object)
     if (not HasString(object, "alias")) {
       newobject.alias = object.name
     }
     if (not HasAttribute(object, "prototype")) {
       newobject.prototype = object
+    }
+    foreach (o, GetDirectChildren(object)) {
+      o2 = CloneObject (o)
+      MoveObject (o2, newobject)
     }
     return (newobject)
   </function>
