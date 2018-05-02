@@ -550,6 +550,13 @@ namespace TextAdventures.Quest.Functions
             return newElement;
         }
 
+        public Element ShallowClone(/* Element */ object obj)
+        {
+            Element element = GetParameter<Element>(obj, "Clone", "object");
+            Element newElement = element.ShallowClone();
+            return newElement;
+        }
+
         public bool DoesInherit(/* Element */ object obj, string typeName)
         {
             Element element = GetParameter<Element>(obj, "DoesInherit", "object");
