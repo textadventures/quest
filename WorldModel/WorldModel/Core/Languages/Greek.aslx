@@ -352,9 +352,9 @@
     <template templatetype="command" name="save">^σώσε$|^αποθήκευσε$</template>
 
     <template templatetype="command" name="log_cmd">^αρχείο$|^δες αρχείο$|^δείξε αρχείο$</template>
-    <!--<template templatetype="command" name="transcript_on_cmd">^κείμενο$</template>
-    <template templatetype="command" name="transcript_off_cmd">^κείμενο off$</template>
-    <template templatetype="command" name="view_transcript_cmd">^(δες|δείξε|) (το |)(κείμενο)$</template>-->
+    <template templatetype="command" name="transcript_on_cmd">^ιστορικό$|^ιστορικό ενεργό$</template>
+    <template templatetype="command" name="transcript_off_cmd">^ιστορικό ανενεργό$</template>
+    <template templatetype="command" name="view_transcript_cmd">^(δες|δείξε) (το |)ιστορικό$</template>
     <template templatetype="command" name="version_cmd">^(έκδοση|πληροφορίες|σχετικά)$</template>
 
     <template name="DefaultHelp"><![CDATA[<u>Σύντομη Βοήθεια</u><br/><br/>
