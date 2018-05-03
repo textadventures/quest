@@ -15,6 +15,7 @@ namespace TextAdventures.Quest.EditorControls
         public WFAttributesControl()
         {
             InitializeComponent();
+            ctlSplitContainer.SplitterDistance = ctlSplitContainerMain.Size.Width / 2;
 
             ctlMultiControl.Dirty += ctlMultiControl_Dirty;
             ctlMultiControl.RequestParentElementEditorSave += ctlMultiControl_RequestParentElementEditorSave;
