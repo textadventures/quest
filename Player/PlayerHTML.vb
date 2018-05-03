@@ -114,20 +114,19 @@ Public Class PlayerHTML
     Private Sub WriteToLog(data As String)
         Dim logPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Logs"
         'MsgBox(logPath)
-        Dim logDirName = Split(data, "@@@GAMENAME@@@")(0)
+        Dim logName = Split(data, "@@@GAMENAME@@@")(0)
         Dim dataToPrint = Split(data, "@@@GAMENAME@@@")(1)
-        Dim realPath = logPath + "\" + logDirName
-        If Not System.IO.Directory.Exists(realPath) = True Then
+        If Not System.IO.Directory.Exists(logPath) = True Then
             'MsgBox(realPath + "does not exist.")
-            System.IO.Directory.CreateDirectory(realPath)
+            System.IO.Directory.CreateDirectory(logPath)
         End If
-        If Not System.IO.File.Exists(realPath + "\log.txt") = True Then
+        If Not System.IO.File.Exists(logPath + "\" + logName + "-log.txt") = True Then
             'MsgBox(realPath + "\log.txt does not exist.")
             Dim file As System.IO.FileStream
-            file = System.IO.File.Create(realPath + "\log.txt")
+            file = System.IO.File.Create(logPath + "\" + logName + "-log.txt")
             file.Close()
         End If
-        My.Computer.FileSystem.WriteAllText(realPath + "\log.txt", dataToPrint + Environment.NewLine, True)
+        My.Computer.FileSystem.WriteAllText(logPath + "\" + logName + "-log.txt", dataToPrint + Environment.NewLine, True)
     End Sub
     Private Sub SaveTranscript(data As String)
         'Dim path As String = Directory.GetCurrentDirectory()
