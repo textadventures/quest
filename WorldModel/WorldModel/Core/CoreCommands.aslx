@@ -883,7 +883,24 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
-  <command name="save" pattern="[save]">request (RequestSave, "")</command>
+  
+  <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
+  <command name="save">
+    <pattern type="string">^save$</pattern>
+    <script>
+      if (HasAttribute(game, "questplatform")) {
+        if (game.questplatform = "desktop") {
+          RequestSave
+        }
+        else {
+          JS.saveGame ()
+        }
+      }
+      else {
+        RequestSave
+      }
+    </script>
+  </command>
 
   <!-- added by KV -->
 
