@@ -9,11 +9,7 @@
 AppName=Quest
 AppVersion={#QuestVersion}
 AppVerName=Quest {#QuestVersion}
-<<<<<<< HEAD
-AppCopyright=Copyright Â© 2017 Andy Joel, 1998-2016 Alex Warren
-=======
 AppCopyright=Copyright © 2017/2018 Andy Joel, 1998-2016 Alex Warren
->>>>>>> 46fbdad9518010450b10de1f96bafedd8161ee7f
 VersionInfoVersion={#QuestVersion}
 AppPublisher=Andy Joel
 AppPublisherURL=http://textadventures.co.uk/

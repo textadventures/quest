@@ -883,7 +883,24 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
-  <command name="save" pattern="[save]">request (RequestSave, "")</command>
+  
+  <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
+  <command name="save">
+    <pattern type="string">^save$</pattern>
+    <script>
+      if (HasAttribute(game, "questplatform")) {
+        if (game.questplatform = "desktop") {
+          RequestSave
+        }
+        else {
+          JS.saveGame ()
+        }
+      }
+      else {
+        RequestSave
+      }
+    </script>
+  </command>
 
   <!-- added by KV -->
 
@@ -926,6 +943,73 @@
       }
     </script>
   </command>
+
+  <command name="transcript_on_cmd">
+    <pattern type="string">^(transcript|script)( on|)$|^enable (script|transcript)$</pattern>
+    <script>
+      <![CDATA[
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")) {
+        if (not GetBoolean(game,"savetranscript")) {
+          msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
+          JS.eval ("$('input#txtCommand').val(transcriptName);")
+          get input {
+            filename = Trim(result)
+            if (not filename = "") {
+              JS.eval ("transcriptName = '"+filename+"';")
+            }
+            JS.eval ("savingTranscript = true;")
+            game.savetranscript = true
+            pre = "<hr/>Transcript enabled for:<br/>"
+            table = "<table style='padding:9px;border:1px solid black;'>"
+            table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
+            if (HasAttribute (game, "author")) {
+              table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
+            }
+            table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+            table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+            table = table + "</table>"
+            s = pre + table
+            msg("")
+            msg (s)
+            msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
+          }
+        }
+        else {
+          msg ("The transcript is already enabled.")
+        }
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
+    ]]>
+    </script>
+  </command>
+
+  <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
+    <script>
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")){
+        if (GetBoolean(game,"savetranscript")){
+          game.savetranscript = false
+          JS.eval("var saveTranscript = false;")
+          msg("Transcript disabled.")
+        }
+        else{
+          msg("The transcript is already disabled.")
+        }
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
+    </script>
+  </command>
+  
+  <function name="UpdateTranscriptString" parameters="data">
+    game.suppressturnscripts = true
+    game.transcriptstring = game.transcriptstring + data
+  </function>
+  
   
   <command name="restart" pattern="^restart$">
     <script>

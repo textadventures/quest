@@ -26,7 +26,8 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <NuGetPackageImportStamp>02740396</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,8 +78,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -225,7 +226,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IASL\IASL.csproj">
@@ -316,6 +316,7 @@
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="packages.config" />
     <None Include="Resources\b_walkthrough.png" />
     <None Include="Resources\b_stop.png" />
     <None Include="Resources\b_debug.png" />
@@ -330,18 +331,18 @@
     <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
 if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets')" />
+  <Import Project="..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets'))" />
     <Error Condition="!Exists('..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.props'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.targets'))" />
     <Error Condition="!Exists('..\packages\CefSharp.WinForms.39.0.1\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.39.0.1\build\CefSharp.WinForms.props'))" />
   </Target>
-  <Import Project="..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2171.2069\build\cef.redist.x64.targets')" />
+  <Import Project="..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2171.2069\build\cef.redist.x86.targets')" />
   <Import Project="..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.39.0.1\build\CefSharp.Common.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
