@@ -52,15 +52,13 @@ Following a [suggestion from mrangel](http://textadventures.co.uk/forum/quest/to
 
 ### Thanks to KV:
 
-Spell checker for RTF text boxes (i.e., anywhere that supports fancy formatting) on desktop
-
 RESTART command
 
 Advanced popups
 
 LOOK AT now counts how many times an object has been looked at
 
-TAKE ALL will ignore any object with "notall" set to false
+TAKE ALL will ignore any object with "notall" set to true
 
 Transcripts and logging now possible
 
