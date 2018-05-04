@@ -32,8 +32,12 @@
     if (not handled) {
       StartTurnOutputSection
       if (StartsWith (command, "*")) {
+        // Modified by KV to bypass turn scripts and turn counts, and to print "Noted."
+        game.notarealturn = true
+        game.suppressturnscripts = true
         msg ("")
         msg (SafeXML (command))
+        msg("Noted.")
       }
       else {    
         shownlink = false
@@ -515,7 +519,7 @@
       return (null)
     }
     else {
-      candidates = ListCompact(fullmatches + partialmatches)
+      candidates = ListCompact(ListCombine(fullmatches, partialmatches))
       
       if (LengthOf(variable) > 0) {
         // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements

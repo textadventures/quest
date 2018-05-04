@@ -159,9 +159,15 @@ function markScrollPosition() {
     beginningOfCurrentTurnScrollPosition = $("#gameContent").height();
 }
 
+// Variable added by KV for the transcript
+var gameName = document.title;
+
+
 function setGameName(text) {
     $("#gameTitle").remove();
     document.title = text;
+    // Added by KV
+    gameName = text;
 }
 
 var _waitMode = false;
@@ -616,11 +622,19 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
+// These 2 variables added by KV for the transcript
+var savingTranscript = false;
+var transcriptString = "";
+
+// This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-
+    if (savingTranscript && typeof(SaveTranscript) == 'function') {
+        SaveTranscript(text);
+        ASLEvent("UpdateTranscriptString", text);
+    }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
 }
@@ -745,32 +759,15 @@ function disableAllCommandLinks() {
     });
 }
 
-// Modified by KV to handle the transcript
-var transcriptEnabled = true;
-var clearedOnce = false;
+
 function clearScreen() {
-    if (!transcriptEnabled) {
-        $("#divOutput").css("min-height", 0);
-        $("#divOutput").html("");
-        createNewDiv("left");
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $("html,body").scrollTop(0);
-        }, 100);
-    } else {
-        $("#divOutput").append("<hr class='clearedAbove' />");
-		  if (!clearedOnce) {
-			addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
-        }
-        clearedOnce = true;
-        $('#divOutput').children().addClass('clearedScreen');
-        $('#divOutput').css('min-height', 0);
-        createNewDiv('left');
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $('html,body').scrollTop(0);
-        }, 100);
-    }
+    $("#divOutput").css("min-height", 0);
+    $("#divOutput").html("");
+    createNewDiv("left");
+    beginningOfCurrentTurnScrollPosition = 0;
+    setTimeout(function () {
+        $("html,body").scrollTop(0);
+    }, 100);
 }
 
 function keyPressCode(e) {
@@ -1236,9 +1233,6 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog(msgboxOptions);
     $('#msgbox').dialog('open');
 };
-
-// Make it easy to print messages.
-//var msg = addTextAndScroll;
     
 // Log functions
 var logVar = "";
@@ -1373,10 +1367,10 @@ function getTimeAndDateForLog(){
 	var secs = today.getSeconds();
 	today = mm + '/' + dd + '/' + yyyy;
 	if(hrs>12) {
-	  ampm = 'AM';
+	  ampm = 'PM';
 	  hrs = '0' + '' + hrs - 12
 	}else{
-	  ampm = 'PM';
+	  ampm = 'AM';
 	} 
 	if (mins<10) {
 	  mins = '0'+mins;
@@ -1392,11 +1386,10 @@ function getTimeAndDateForLog(){
 
 // TRANSCRIPT FUNCTIONS
 
-var transcriptVar = "";
-function addTranscriptEntry(text) {
-    transcriptVar += text;
-};
-
+// This function is for loading a saved game
+function replaceTranscriptString(data) {
+    transcriptString = data;
+}
 
 function showTranscript() {
     var transcriptDivString = "";
@@ -1417,20 +1410,20 @@ function showTranscript() {
             },
             Print: function () {
                 printTranscriptDiv();
+                $(this).dialog("close");
+                $(this).remove();
             },
         },
         show: { effect: "fadeIn", duration: 500 },
         modal: true,
     });
-    $('#transcriptdata').html($('#divOutput').html());
+    $('#transcriptdata').html(transcriptString);
     $("#transcriptdata a").addClass("disabled");
-	transcriptDialog.dialog("open");
-	setTimeout(function () {
-	    $("#transcriptdata a").addClass("disabled");
-	}, 1);
+    transcriptDialog.dialog("open");
+    setTimeout(function () {
+        $("#transcriptdata a").addClass("disabled");
+    }, 1);
 };
-
-
 
 function printTranscriptDiv() {
     var iframe = document.createElement('iframe');

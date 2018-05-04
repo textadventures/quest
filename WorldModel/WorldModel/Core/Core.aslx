@@ -32,6 +32,13 @@
 
   <function name="InitInterface">
     <![CDATA[
+    // Added by KV for transcript
+    JS.eval("var gameName = '"+game.gamename+"';var transcriptName = gameName;")
+    if (GetBoolean(game,"savetranscript")){
+      JS.eval("var savingTranscript = true;")
+      JS.replaceTranscriptString(game.transcriptstring)
+    }
+    // End of addition by KV for transcript
     JS.whereAmI()
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
