@@ -119,6 +119,7 @@ namespace TextAdventures.Quest.EditorControls
                 lstList.Columns.Add(column2);
                 lstList.HeaderStyle = ColumnHeaderStyle.Nonclickable;
                 lstList.FullRowSelect = true;
+                lstList.Columns[0].Width = 200;
             }
         }
 
