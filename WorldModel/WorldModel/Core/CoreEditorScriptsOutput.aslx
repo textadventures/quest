@@ -472,6 +472,27 @@
     </control>
   </editor>
  
+ 
+  <editor>
+    <appliesto>speak</appliesto>
+    <display>Speak: #0</display>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Speak</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+  
+ 
+ 
   <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>

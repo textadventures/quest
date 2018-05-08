@@ -94,6 +94,7 @@
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
     <nohtmllog type="boolean">false</nohtmllog>
     <notranscript type="boolean">false</notranscript>
+    <suppressturnscripts/>
     <!-- Scripts used by the text processor -->
     <textprocessorcommands type="scriptdictionary">
       <item key="if ">

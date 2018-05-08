@@ -30,6 +30,7 @@
     <noclear type="boolean">false</noclear>
     <clearlastpage type="boolean">false</clearlastpage>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+    <suppressturnscripts/>
     <!-- Scripts used by the text processor -->
     <textprocessorcommands type="scriptdictionary">
       <item key="if ">
