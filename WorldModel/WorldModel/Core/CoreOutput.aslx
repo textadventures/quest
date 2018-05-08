@@ -847,7 +847,7 @@
   </function>
   
   <function name="Log" parameters="text">
-    request (Log, text)
+    //request (Log, text)
     if (not GetBoolean(game, "nohtmllog")){
       JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry("+text+"); };")
     }
