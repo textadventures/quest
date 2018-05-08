@@ -272,7 +272,9 @@
   <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " ingenting."</dynamictemplate>
   
   <template templatetype="command" name="log_cmd">^log$|^se log$|^vis log$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(se |vis |)(scriptet)$</template>
+  <template templatetype="command" name="transcript_on_cmd">^scriptet$</template>
+  <template templatetype="command" name="transcript_off_cmd">^scriptet off$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(se|vis) scriptet$</template>>
   <template templatetype="command" name="version_cmd">^(version|info|om)$</template>
 
   
