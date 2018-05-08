@@ -494,6 +494,9 @@
     <Compile Include="Scripts\UndoScript.cs" />
     <Compile Include="Scripts\WaitScript.cs" />
     <Compile Include="Scripts\WhileScript.cs" />
+    <Compile Include="Scripts\SaveScript.cs" />
+    <Compile Include="Scripts\QuitScript.cs" />
+    <Compile Include="Scripts\SpeakScript.cs" />
     <Compile Include="Templates.cs" />
     <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />
