@@ -356,30 +356,6 @@
   <template name="DefaultXyzzy">Überraschenderweise passiert gar nichts.</template>
   <template templatetype="command" name="help">^hilfe$|^\?$</template>
   <template templatetype="command" name="save">^save$|^speichern$</template>
- 
-  <template name="DevModeCommandPut">lege</template>
-  <template name="DevModeCommandDrop">lege</template>
-  <template name="DevModeCommandTake">nimm</template>
-  <template name="DevModeCommandTo">zu</template>
-  <template name="DevModeCommandGo">gehe</template>
-  <template name="DevModeCommandOpen">öffne</template>
-  <template name="DevModeCommandClose">schliesse</template>
-  <template name="DevModeCommandOn">an</template>
-  <template name="DevModeCommandOff">aus</template>
-  <template name="DevModeCommandClr">clr</template>
-  <template name="DevModeCommandHelp">?</template>
-  <template name="DevModeCommandsInVerbs">#lege;#nimm;#zu;#öffne;#schliesse;#an;#aus</template>
-  <template name="DevModePattern"><![CDATA[^(?<command2>lege) (?<object1>.+) (in|auf) (?<object2>.+)$|^(?<command1>lege|nimm|zu|gehe|öffne|schliesse|an|aus) (?<object>.+)$|^(?<command0>clr|\?)$]]></template>
-  <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>
-  <template name="DevModeErrorObjectNotRecognised">Das Objekt wurde nicht erkannt.</template>
-  <template name="DevModeErrorWrongTyp">Das ist der falsche Typ.</template>
-  <template name="DevModeErrorWrongKey">Der Key wurde nicht gefunden.</template>
-  <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-  <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-  <template name="DevModeExecuteCommand">Der Befehl wurde ausgeführt.</template>
-  <template name="DevModeNotActive">Der DevMode ist nicht aktiv!</template>
-  <template name="DevModeDescriptionCommands"><![CDATA[<b>kommandos</b><br/>#nimm object<br/>#lege object<br/>#lege object1 in object2<br/>#öffne object<br/>#schliesse object<br/>#an objekt<br/>#aus objekt<br/>#zu player<br/>#gehe raum<br/><br/><br/><i>Im Gegensatz zu den Kommandos im Spiel werden sie direkt und ohne Umwege über Abfangskripte ausgeführt.</i><br/><br/><b>Ausdrücke</b><br/>#object1.attribut=object2.attribut (Attributzuweisung eines anderen Objektes)<br/>#object.attribut=true/false (Boolean)<br/>#?object.attribut (Setze auf True)<br/>#!object.attribut (Setze auf False)<br/>#object.attribut="value" (String)<br/>#object.attribut=15 (Integer)<br/>#object.attribut=25.55 (Double)<br/>#object.attribut=[Item1;Item2;Item3] (Liste)<br/>#object.attribut[]=element (Element zur Liste hinzufügen)<br/>#object.attribut=[] (Eine neue Liste erstellen)<br/>#object.attribut={Key1:Item1;Key2:Item2;Key3:Item3} (Dictionary)<br/>#object.attribut{Key}=element (Element zum Dictionary hinzufügen oder überschreiben)<br/>#object.attribut={} (Neues Dictionary erstellen)<br/>#object.attribut (Attribute auslesen)<br/><br/><b>Extras</b><br/>#clr (Bildschirminhalt löschen)<br/>#? (Hilfe)<br/># (Spiel schliessen)]]></template>
-  <template name="DevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Listen (["Hallo";"Welt";"!"]) und Wörterbücher ({H:"Hallo";W:"Welt"} zu erstellen.)]]></template>
 
  <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
 <b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
@@ -572,5 +548,29 @@
 	return (getZehner)
 	]]>
 </function>
+
+  <template name="DevModeCommandPut">lege</template>
+  <template name="DevModeCommandDrop">lege</template>
+  <template name="DevModeCommandTake">nimm</template>
+  <template name="DevModeCommandTo">zu</template>
+  <template name="DevModeCommandGo">gehe</template>
+  <template name="DevModeCommandOpen">öffne</template>
+  <template name="DevModeCommandClose">schliesse</template>
+  <template name="DevModeCommandOn">an</template>
+  <template name="DevModeCommandOff">aus</template>
+  <template name="DevModeCommandClr">clr</template>
+  <template name="DevModeCommandHelp">?</template>
+  <template name="DevModeCommandsInVerbs">#lege;#nimm;#zu;#öffne;#schliesse;#an;#aus</template>
+  <template name="DevModePattern"><![CDATA[^(?<command2>lege) (?<object1>.+) (in|auf) (?<object2>.+)$|^(?<command1>lege|nimm|zu|gehe|öffne|schliesse|an|aus) (?<object>.+)$|^(?<command0>clr|\?)$]]></template>
+  <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>
+  <template name="DevModeErrorObjectNotRecognised">Das Objekt wurde nicht erkannt.</template>
+  <template name="DevModeErrorWrongTyp">Das ist der falsche Typ.</template>
+  <template name="DevModeErrorWrongKey">Der Key wurde nicht gefunden.</template>
+  <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
+  <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
+  <template name="DevModeExecuteCommand">Der Befehl wurde ausgeführt.</template>
+  <template name="DevModeNotActive">Der DevMode ist nicht aktiv!</template>
+  <template name="DevModeDescriptionCommands"><![CDATA[<b>kommandos</b><br/>#nimm object<br/>#lege object<br/>#lege object1 in object2<br/>#öffne object<br/>#schliesse object<br/>#an objekt<br/>#aus objekt<br/>#zu player<br/>#gehe raum<br/><br/><br/><i>Im Gegensatz zu den Kommandos im Spiel werden sie direkt und ohne Umwege über Abfangskripte ausgeführt.</i><br/><br/><b>Ausdrücke</b><br/>#object1.attribut=object2.attribut (Attributzuweisung eines anderen Objektes)<br/>#object.attribut=true/false (Boolean)<br/>#?object.attribut (Setze auf True)<br/>#!object.attribut (Setze auf False)<br/>#object.attribut="value" (String)<br/>#object.attribut=15 (Integer)<br/>#object.attribut=25.55 (Double)<br/>#object.attribut=[Item1;Item2;Item3] (Liste)<br/>#object.attribut[]=element (Element zur Liste hinzufügen)<br/>#object.attribut=[] (Eine neue Liste erstellen)<br/>#object.attribut={Key1:Item1;Key2:Item2;Key3:Item3} (Dictionary)<br/>#object.attribut{Key}=element (Element zum Dictionary hinzufügen oder überschreiben)<br/>#object.attribut={} (Neues Dictionary erstellen)<br/>#object.attribut (Attribute auslesen)<br/><br/><b>Extras</b><br/>#clr (Bildschirminhalt löschen)<br/>#? (Hilfe)<br/># (Spiel schliessen)]]></template>
+  <template name="DevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Listen (["Hallo";"Welt";"!"]) und Wörterbücher ({H:"Hallo";W:"Welt"} zu erstellen.)]]></template>
 
 </library>
