@@ -759,7 +759,7 @@ function disableAllCommandLinks() {
     });
 }
 
-
+/*
 function clearScreen() {
     $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");
@@ -769,6 +769,84 @@ function clearScreen() {
         $("html,body").scrollTop(0);
     }, 100);
 }
+/*
+
+// Modified by KV to handle the scrollback feature
+var saveClearedText = true;
+var clearedOnce = false;
+function clearScreen() {
+    if (!saveClearedText) {
+        $("#divOutput").css("min-height", 0);
+        $("#divOutput").html("");
+        createNewDiv("left");
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $("html,body").scrollTop(0);
+        }, 100);
+    } else {
+        $("#divOutput").append("<hr class='clearedAbove' />");
+        if (!clearedOnce) {
+            addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
+        }
+        clearedOnce = true;
+        $('#divOutput').children().addClass('clearedScreen');
+        $('#divOutput').css('min-height', 0);
+        createNewDiv('left');
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $('html,body').scrollTop(0);
+        }, 100);
+    }
+}
+
+// Scrollback functions added by KV (Allows us to view the entire text, even what has been cleared. (Frotz and Glulxe both have this.)
+
+function showScrollback() {
+    var scrollbackDivString = "";
+    scrollbackDivString += "<div ";
+    scrollbackDivString += "id='scrollback-dialog' ";
+    scrollbackDivString += "style='display:none;'>";
+    transcriptDivString += "<div id='scrollbackdata'></div></div>";
+    addText(scrollbackDivString);
+    var scrollbackDialog = $("#scrollback-dialog").dialog({
+        autoOpen: false,
+        width: 600,
+        height: 500,
+        title: "Scrollback",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+            },
+            Print: function () {
+                printScrollbackDiv();
+            },
+        },
+        show: { effect: "fadeIn", duration: 500 },
+        modal: true,
+    });
+    $('#scrollbackdata').html($('#divOutput').html());
+    $("#scrollbackdata a").addClass("disabled");
+    scrollbackDialog.dialog("open");
+    setTimeout(function () {
+        $("#scrollbackdata a").addClass("disabled");
+    }, 1);
+};
+
+
+
+function printScrollbackDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#scrollbackdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#scrollback-dialog").dialog("close");
+    $("#scrollback-dialog").remove();
+};
+
+// END OF SCROLLBACK FUNCTIONS
+
 
 function keyPressCode(e) {
     var keynum
