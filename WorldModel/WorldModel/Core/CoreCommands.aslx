@@ -391,7 +391,7 @@
   </command>
 
   <command name="quit" pattern="[quit]">
-    request (Quit, "")
+    quit
   </command>
 
   <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
@@ -883,7 +883,7 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
-  <command name="save" pattern="[save]">request (RequestSave, "")</command>
+  <command name="save" pattern="[save]">save</command>
 
   <!-- added by KV -->
 
