@@ -1,27 +1,4 @@
 <library type="editor">
-  <template name="DevModeCommandPut">put</template>
-  <template name="DevModeCommandDrop">drop</template>
-  <template name="DevModeCommandTake">take</template>
-  <template name="DevModeCommandTo">to</template>
-  <template name="DevModeCommandGo">go</template>
-  <template name="DevModeCommandOpen">open</template>
-  <template name="DevModeCommandClose">close</template>
-  <template name="DevModeCommandOn">on</template>
-  <template name="DevModeCommandOff">off</template>
-  <template name="DevModeCommandClr">clr</template>
-  <template name="DevModeCommandHelp">?</template>
-  <template name="DevModeCommandsInVerbs">#drop;#take;#to;#open;#close;#on;#off</template>
-  <template name="DevModePattern"><![CDATA[^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>clr|\?)$]]></template>
-  <template name="DevModeErrorWrongFormat">Unfortunately, this is the wrong format.</template>
-  <template name="DevModeErrorObjectNotRecognised">The object was not detected.</template>
-  <template name="DevModeErrorWrongTyp">That´s the wrong typ.</template>
-  <template name="DevModeErrorWrongKey">The key was not found.</template>
-  <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
-  <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
-  <template name="DevModeExecuteCommand">The command was executed.</template>
-  <template name="DevModeNotActive">The DevMode is not active!</template>
-  <template name="DevModeDescriptionCommands"><![CDATA[<b>Commands</b><br/>#take object<br/>#drop object<br/>#put object1 in object2<br/>#open object<br/>#close object<br/>#on objekt<br/>#off objekt<br/>#to player<br/>#go raum<br/><br/><i>Unlike the commands in the game, they are executed directly and without detours via intercept scripts.</i><br/><br/><b>Expressions</b><br/>#object1.attribut=object2.attribut (attribute assignment of another object)<br/>#object.attribut=true/false (boolean)<br/>#?object.attribut (set true)<br/>#!object.attribut (set false)<br/>#object.attribut="value" (string)<br/>#object.attribut=15 (integer)<br/>#object.attribut=25.55 (double)<br/>#object.attribut=[item1;item2;item3] (list)<br/>#object.attribut[]=element (add element to list)<br/>#object.attribut=[] (create new list)<br/>#object.attribut={key1:item1;key2:item2;key3:item3} (dictionary)<br/>#object.attribut{key}=element (add or overwrite element to dictionary)<br/>#object.attribut={} (create new dictionary)<br/>#object.attribut (read attribute)<br/><br/><b>Extras</b><br/>#clr (clear screen)<br/>#? (help)<br/># (close game)]]></template>
-  <template name="DevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello";"World";"!"]) and Dictionarys ({H:"Hello";W:"World"}.)]]></template>
   <template name="EditorGameDevMode">Developer-Mode</template>
   <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game the developer mode must be deactivated!</template>
   <template name="EditorGameDevModeInfoCommands">Enhanced commands are available in the current game. Enter '#?' to get more information.</template>
