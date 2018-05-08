@@ -42,4 +42,22 @@
       <simple>text</simple>
     </control>
   </editor>
+  
+  <editor>
+    <appliesto>save</appliesto>
+    <display>Save</display>
+    <control>
+      <controltype>label</controltype>
+      <caption>Save</caption>
+    </control>
+  </editor>
+  
+  <editor>
+    <appliesto>quit</appliesto>
+    <display>Quit</display>
+    <control>
+      <controltype>label</controltype>
+      <caption>Quit</caption>
+    </control>
+  </editor>
 </library>
