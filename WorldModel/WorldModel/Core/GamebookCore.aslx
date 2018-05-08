@@ -30,6 +30,85 @@
     <noclear type="boolean">false</noclear>
     <clearlastpage type="boolean">false</clearlastpage>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+    <suppressturnscripts/>
+    <!-- Scripts used by the text processor -->
+    <textprocessorcommands type="scriptdictionary">
+      <item key="if ">
+        game.textprocessorcommandresult = ProcessTextCommand_If (section, data)
+      </item>
+      <item key="either ">
+        game.textprocessorcommandresult = ProcessTextCommand_Either (section, data)
+      </item>
+      <item key="here ">
+        game.textprocessorcommandresult = ProcessTextCommand_Here (section, data)
+      </item>
+      <item key="nothere ">
+        game.textprocessorcommandresult = ProcessTextCommand_Here (section, data)
+      </item>
+      <item key="popup:">
+        game.textprocessorcommandresult = ProcessTextCommand_Popup (section, data)
+      </item>
+      <item key="i:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="b:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="s:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="u:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="colour:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="color:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="back:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="object:">
+        game.textprocessorcommandresult = ProcessTextCommand_Object (section, data)
+      </item>
+      <item key="command:">
+        game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
+      </item>
+      <item key="page:">
+        game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
+      </item>
+      <item key="exit:">
+        game.textprocessorcommandresult = ProcessTextCommand_Exit (section, data)
+      </item>
+      <item key="once:">
+        game.textprocessorcommandresult = ProcessTextCommand_Once (section, data)
+      </item>
+      <item key="notfirst:">
+        game.textprocessorcommandresult = ProcessTextCommand_NotFirst (section, data)
+      </item>
+      <item key="random:">
+        game.textprocessorcommandresult = ProcessTextCommand_Random (section, data)
+      </item>
+      <item key="rndalt:">
+        game.textprocessorcommandresult = ProcessTextCommand_RandomAlias (section, data)
+      </item>
+      <item key="img:">
+        game.textprocessorcommandresult = ProcessTextCommand_Img (section, data)
+      </item>
+      <item key="counter:">
+        game.textprocessorcommandresult = ProcessTextCommand_Counter (section, data)
+      </item>
+      <item key="select:">
+        game.textprocessorcommandresult = ProcessTextCommand_Select (section, data)
+      </item>
+      <item key="eval:">
+        game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
+      </item>
+      <item key="=">
+        game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
+      </item>
+    </textprocessorcommands>
   </type>
 
   <type name="defaultobject">
