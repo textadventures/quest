@@ -150,6 +150,12 @@
         <caption>[EditorGameAdvancedScripts]</caption>
         <attribute>feature_advancedscripts</attribute>
       </control>	  
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameEnableDevMode]</caption>
+        <attribute>feature_devmode</attribute>
+      </control>	
 
       <control>
         <controltype>checkbox</controltype>
@@ -168,6 +174,7 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>	  
+
 
     </tab>
 
