@@ -173,6 +173,7 @@
         game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
       </item>
     </textprocessorcommands>
+    <feature_devmode type="boolean">false</feature_devmode>
   </type>
 
   <type name="theme_novella">
