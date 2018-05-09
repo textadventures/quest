@@ -15,13 +15,13 @@ Creating a blank game
 
 To create a new game, open Quest and click the File menu, then Create New Game.
 
-![](Newgamemenu.png "Newgamemenu.png")
+![](../images/Newgamemenu.png "Newgamemenu.png")
 
 Alternatively, you can switch to the _Create_ tab and click the "Create a new game" button.
 
 You'll see a screen like this:
 
-![](Newgame.png "Newgame.png")
+![](../images/Newgame.png "Newgame.png")
 
 Ensure that "Text adventure" is selected, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
 
@@ -34,7 +34,7 @@ Click OK and you'll see the main Editor screen:
 
 To create a new game, [log in to Quest](http://textadventures.co.uk/create/). You'll see the "New game" form.
 
-![](Webnewgame.png "Webnewgame.png")
+![](../images/Webnewgame.png "Webnewgame.png")
 
 As you can see, the options are the same in both versions, just laid out a bit differently.
 
@@ -47,9 +47,9 @@ The Editor Screen
 -----------------
 
 
-![](Blankgame.png "Blankgame.png")
+![](../images/Blankgame.png "Blankgame.png")
 
-![](Webblankgame.png "Webblankgame.png")
+![](../images/Webblankgame.png "Webblankgame.png")
 
 On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
 
@@ -57,9 +57,9 @@ Quest has created a room called "room" for us, and inside this room is the "play
 
 As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as "inventory" to see that Quest comes up with some default responses, but that's about all we can do at the moment.
 
-![](Playblankgame.png "Playblankgame.png")
+![](../images/Playblankgame.png "Playblankgame.png")
 
-![](Webplayblankgame.png "Webplayblankgame.png")
+![](../images/Webplayblankgame.png "Webplayblankgame.png")
 
 In the Windows version you can go back to the Editor by clicking "Stop Game" in the top left of the screen, or you can also type "quit" or hit the Escape key.
 
@@ -81,11 +81,11 @@ Setting up rooms
 
 Quest created a room called "room", which isn't a very good name. In this tutorial game, we want to start in a lounge, so select "room" from the tree and change its name.
 
-![](Renameroom.png "Renameroom.png")
+![](../images/Renameroom.png "Renameroom.png")
 
 To create a room description, click the _Room_ tab. Enter a Description in the text editor - something like "This is quite a plain lounge with an old beige carpet and peeling wallpaper."
 
-![](Editroomdescription.png "Editroomdescription.png")
+![](../images/Editroomdescription.png "Editroomdescription.png")
 
 Let's add a second room to the game.
 
@@ -107,11 +107,11 @@ If you play the game at this point, you'll see the player is still trapped in th
 
 To do this, click back to the "lounge" room and go to the _Exits_ tab. Then click the "South" exit:
 
-![](Addexit1.png "Addexit1.png")
+![](../images/Addexit1.png "Addexit1.png")
 
 To create the exit, choose "kitchen" from the drop-down list on the right. Ensure that "Also create exit in the other direction" is selected, then click the "Create" button.
 
-![](Addexit2.png "Addexit2.png")
+![](../images/Addexit2.png "Addexit2.png")
 
 When you click the "Create" button, actually *two* exits are created - one exit south from to lounge to the kitchen, and another exit north from the kitchen back to the lounge. You can see both exits in the tree.
 
@@ -158,7 +158,7 @@ So, add "television" to the list of Other Names for this object. This will ensur
 
 As an exercise, add any other alternative names you think that players might want to use.
 
-![](Othernames.png "Othernames.png")
+![](../images/Othernames.png "Othernames.png")
 
 ### Description
 
@@ -166,7 +166,7 @@ If you run the game and look at the TV, you’ll see that Quest doesn’t have m
 
 That's a bit boring - it's a sign of a bad game if you can't even be bothered to come up with descriptions for all your objects. We don't want to make a bad game, so let's add a description for this object. To do this, go to the Description drop-down in the bottom half of the object's _Setup_ tab and select "Text".
 
-![](Objectdescription.png "Objectdescription.png")
+![](../images/Objectdescription.png "Objectdescription.png")
 
 Now enter the description. You could write something like "The TV is an old model, possibly 20 years old. It is currently showing an old western."
 
@@ -180,7 +180,7 @@ To do this, let's add the verb "watch" to our TV object. As you should remember 
 
 Go to the _Verbs_ tab, click the "Add" button and type "watch". You can choose either to print a message or run a script when the player watches the TV. Enter a message. For example, "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
 
-![](Addverb.png "Addverb.png")
+![](../images/Addverb.png "Addverb.png")
 
 ### Exercises
 

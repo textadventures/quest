@@ -21,7 +21,7 @@ DisplayMoney(-1234)
   -> "-1234 credits"
 ```
 
-With two !, the bit between the exclamation marks will be used to format the number, using [DisplayNumber](displaynumber.html). A + at the start will cause a + to appear at the start of the number if positive.
+With two !, the bit between the exclamation marks will be used to format the number, using [DisplayNumber](displaynumber.html). The format is a number, a separator and a second number, where the first number is the minum number digits left of the decimal (padded with zeroes), and the second number is the number of decimal places. A + at the start will cause a + to appear at the start of the number if positive.
 
 ```
 game.moneyformat = "!3.2! credits"

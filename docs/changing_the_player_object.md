@@ -15,7 +15,7 @@ Objects can behave differently depending on whether they are the player or not. 
 
 To handle this, go to the object's _Features_ tab and tick "Player: Player can become this object"; a new tab will appear. If on the _Player_ tab "Can be a player" is selected, options appear where you can set an override "look at" description to display when this object is the player.
 
-![](Pov1.png "Pov1.png")
+![](images/Pov1.png "Pov1.png")
 
 Say this object is Bob. On the _Player_ tab set the name, description, etc. that apply when the player is Bob, whilst on the _Setup_ tab, set them for how they will be when the player is not Bob.
 

@@ -5,72 +5,154 @@ title: request
 
     request (request name, string parameter)
 
-Raises a UI request. The request name must be specified directly - it is not a string expression.
+Raises a UI request. The request name must be specified directly - it is not a string expression. For example:
 
-Valid request names and parameters:
+```
+request(UpdateLocation, "The Kitchen")
+```
 
-Quit  
-Quits the game. Parameter is ignored.
+The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that wherever possible, an alternative is used (even where the alternative uses `request` behind the scenes).
 
-UpdateLocation  
-Updates the location bar at the top of the screen with the parameter text.
+Valid request names and parameters (and alternatives):
 
-GameName  
-Sets the name of the game.
 
-FontName  
-(Obsolete as of Quest 5.4) Sets the font name.
+_Quit_  
 
-FontSize  
-(Obsolete as of Quest 5.4) Sets the font size.
+Quits the game. Parameter is ignored. Use `finish` instead.
 
-Background  
-Sets the background to the specified HTML colour.
 
-Foreground  
-Sets the foreground to the specified HTML colour.
+_UpdateLocation_
 
-LinkForeground  
-Sets the link foreground to the specified HTML colour.
+Updates the location bar at the top of the screen with the parameter text. Use JS instead:
 
-RunScript  
-Runs the specified Javascript function. To specify parameters for the function, separate them with semicolons, e.g. "myfunction; parameter1; parameter2".
+```
+JS.updateLocation("The kitchen")
+```
 
-SetStatus  
-Sets the text for the status area on the right of the screen (under "Inventory"). If blank, the status area is removed.
 
-ClearScreen  
-Clears the screen. Parameter is ignored.
+_GameName_
 
-PanesVisible  
-Sets whether the panes on the right of the screen are displayed. Valid values are "on" and "off" (toggling whether panes are shown), and "disabled" (turns panes off and removes the button which would let the player turn them back on).
+Sets the name of the game. Do this instead:
 
-ShowPicture  
-Shows the specified picture file from the game directory.
+```
+JS.setGameName("My Cool Game")
+```
 
-Show  
-Turns on an interface element. Valid elements are "Panes", "Location" and "Command".
 
-Hide  
-Turns off an interface element. Valid elements are "Panes", "Location" and "Command".
+_FontName_
 
-SetCompassDirections  
-Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. These names will also then not appear as exits in the "Places and Objects" list. The default is:
+(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](../functions/corelibrary/setfontname.html) instead.
 
-<!-- -->
 
-     northwest;north;northeast;west;east;southwest;south;southeast;up;down;in;out
+_FontSize_
 
-The compass directions must be specified in the same order and there must be the same number of elements in the list.
+(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](../functions/corelibrary/setfontsize.html) instead.
 
-Pause  
+
+_Background_
+
+Sets the background to the specified HTML colour. Use [SetBackgroundColour](../functions/corelibrary/setbackgroundcolour.html) instead.
+
+
+_Foreground_
+
+Sets the foreground to the specified HTML colour. Use [SetForegroundColour](../functions/corelibrary/setforegroundcolour.html) instead.
+
+
+_LinkForeground_
+
+Sets the link foreground to the specified HTML colour. As of 5.7.2, use `SetLinkForegroundColour` instead.
+
+
+_RunScript_
+
+Runs the specified JavaScript function. A far better way is to use the JS object, which can be used to access any built-in JavaScript function or any you add yourself.
+
+```
+JS.myCustomFunction(15, "some string)
+```
+
+
+_SetStatus_
+
+Sets the text for the status area on the right of the screen (under "Inventory"). If blank, the status area is removed. This is best done using [status attributes](../using_attributes.html).
+
+
+_ClearScreen_
+
+Clears the screen. Parameter is ignored. Use `ClearScreen` instead.
+
+
+_PanesVisible_  
+
+Sets whether the panes on the right of the screen are displayed. Valid values are "on" and "off" (toggling whether panes are shown), and "disabled" (turns panes off and removes the button which would let the player turn them back on - this button appears to no longer be available). Instead use:
+
+```
+JS.panesVisible(true)
+JS.panesVisible(false)
+```
+
+
+_ShowPicture_  
+
+Shows the specified picture file from the game directory. Use [picture](picture.html) instead.
+
+
+_Show_
+
+Turns on an interface element. Valid elements are "Panes", "Location" and "Command". Instead use `JS.uiShow`.
+
+```
+JS.uiShow("#gamePanes")
+JS.uiShow("#location")
+JS.uiShow("#txtCommandDiv")
+```
+
+You can also selectively hide or show one pane (if games panes are shown). Note that each pane has two components, so to hide the compass:
+
+```
+JS.uiHide("#compassLabel")
+JS.uiHide("#compassAccordion")
+```
+
+For the inventory, do `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#custonStatusPane` and `#commandPane` respectively (these have only one part).
+
+
+_Hide_
+
+Turns off an interface element. Valid elements are "Panes", "Location" and "Command". Use `JS.uiHide(element)` instead (see above for details).
+
+
+_SetCompassDirections_
+
+Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. As of Quest 5.7.2, use `JS` instead, for example:
+
+```
+JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;southeast;up;down;in;out")
+```
+
+These names will also then not appear as exits in the "Places and Objects" list. The default is as shown in the example. The compass directions must be specified in the same order and there must be the same number of elements in the list. The exit in the compass rose will only be active if the alias of the exit matches the text you set here.
+
+
+_Pause_  
+
 (Obsolete as of Quest 5.5) Pauses the game for the specified number of milliseconds.
 
-Wait  
+
+_Wait_
+
 Waits for the player to press a key. The parameter is ignored. Deprecated as of Quest 5.1 and unsupported as of Quest 5.4 - use the [wait](wait.html) script command instead.
 
-SetInterfaceString  
-Takes a parameter of the form "ElementName=Value", to set the text in the user interface. Valid element names are:
+
+_SetInterfaceString_
+
+Takes a parameter of the form "ElementName=Value", to set the text in the user interface. Do this instead:
+
+```
+JS.setInterfaceString("PlacesObjectsLabel", "You can see:")
+```
+
+Either way, valid element names are:
 
 -   InventoryLabel (default "Inventory")
 -   PlacesObjectsLabel (default "Places and Objects")
@@ -80,16 +162,30 @@ Takes a parameter of the form "ElementName=Value", to set the text in the user i
 -   EmptyListLabel (default "(empty)")
 -   NothingSelectedLabel (default "(nothing selected)")
 
-RequestSave  
-Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored.
 
-SetPanelContents  
-Sets the static panel HTML contents.
+_RequestSave_
 
-Log  
-(New in Quest 5.3) Log the specified text
+Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. As of Quest 5.7.2, use:
 
-Speak  
-(New in Quest 5.4) Output text to speech synthesizer if enabled
+```
+RequestSave()
+```
 
 
+_SetPanelContents_
+
+Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePicture` instead.
+
+
+_Log_
+
+(New in Quest 5.3) Log the specified text. Use [Log](../functions/corelibrary/log.html) instead.
+
+
+_Speak_  
+
+(New in Quest 5.4) Output text to speech synthesizer if enabled. As of Quest 5.7.2, use `RequestSpeak` instead:
+
+```
+RequestSpeak("Hello World")
+```

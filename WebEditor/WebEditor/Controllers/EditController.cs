@@ -445,7 +445,7 @@ namespace WebEditor.Controllers
 
                 UploadOutputToAzure(outputFilename);
 
-                Logging.Log.InfoFormat("Publish succeeded for {0}", id, outputFilename);
+                Logging.Log.InfoFormat("Publish succeeded for {0}", id);
             }
             
 

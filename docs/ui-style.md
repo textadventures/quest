@@ -7,7 +7,7 @@ Quest offers a number of options for making your game look good, and fit the sty
 
 This is the classic Quest interface:
 
-![](ui-classic.png "ui-classic.png")
+![](images/ui-classic.png "ui-classic.png")
 
 
 The _Display_ Tab
@@ -27,7 +27,7 @@ There are further options for setting the style for hyperlinks, and also for ver
 
 This example shows the subtle use of a colour blend, in a game with the command line turned off.
 
-![](ui-no-cursor.png "ui-no-cursor.png")
+![](images/ui-no-cursor.png "ui-no-cursor.png")
 
 
 The _Interface_ Tab
@@ -52,7 +52,13 @@ You can use a shadow box, or no box at all (and give own cursor). Due to the lim
 
 This example uses a cursor with the panes turned off to give a minimalist look.
 
-![](ui-cursor.png "ui-cursor.png")
+![](images/ui-cursor.png "ui-cursor.png")
+
+You can use any HTML character as the cursor (or several), and there are some [pretty funky ones](https://www.w3schools.com/charsets/ref_utf_symbols.asp) in UTF-8, from a pointing hand to the yin yang symbol (though they may not be available in every font in every browser, so do test thoughly).
+
+To get these symbols in your game, you need to use the decimal value, with `&#` before it and `;` after. This will give a heart cursor, for example:
+
+> &amp;#9829;
 
 ### Location bar
 

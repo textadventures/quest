@@ -15,6 +15,26 @@ function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
 }
 
+
+// RestartGame added by KV
+function RestartGame() {
+    UIEvent("RestartGame", "");
+}
+
+// SaveTranscript added by KV to write/append to GAMENAME-transcript.html in Documents\Quest Transcripts
+function SaveTranscript(data) {
+    data = data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>";
+    if (!webPlayer && transcriptString != '') { UIEvent("SaveTranscript", data); }
+    transcriptString += data;
+}
+
+// Added by KV to write/append to GAMENAME-log.txt in Documents\Quest Logs
+function WriteToLog(data) {
+    if (!webPlayer && data != '' && typeof (data) == 'string') {
+        UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
+    }
+}
+
 function goUrl(href) {
     UIEvent("GoURL", href);
 }

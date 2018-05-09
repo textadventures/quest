@@ -352,6 +352,7 @@
   <tab>
     <parent>_GameEditor</parent>
     <caption>[EditorGameDevMode]</caption>
+    <onlydisplayif>GetBoolean (game, "feature_devmode")</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>

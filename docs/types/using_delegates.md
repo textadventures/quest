@@ -3,6 +3,10 @@ layout: index
 title: Using Delegates
 ---
 
+<div class="alert alert-info">
+Note: Delegates can currently only be edited in the Windows desktop version of Quest, and only in full code view. There is no editor support for delegates at all.
+</div>
+
 It is easy to create a [script](script.html) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value, or accepts particular parameters? It would look a lot like a function. The answer is to use **delegates**.
 
 First you need to define the delegate, using a [delegate](../elements/delegate.html) XML tag. This accepts the same attributes as the [function](../elements/function.html) tag, so you can specify parameters and/or a return value type.
@@ -142,6 +146,56 @@ The game now looks like this:
         </verb>
       </asl>
 
-Note that we use "rundelegate" to invoke the new method, as it does not return a value.
+We use "rundelegate" to invoke the new method, as it does not return a value. The parameters for your method must have the same names as those in your delegate definition.
 
-Also note that the parameters for your method must have the same names as those in your delegate definition.
+NOTE: For sending parameters to a script, an alternative is to put the parameters into a dictionary. Whether this is preferable is a matter of choice, but it is at least supported by the editor.
+
+      <!--Saved by Quest 5.4.4873.16527-->
+      <asl version="540">
+        <include ref="English.aslx" />
+        <include ref="Core.aslx" />
+        <delegate name="script_returns_int" parameters="" type="int" />
+        <game name="test">
+          <gameid>cb4455e4-6e7c-45da-bf39-f2126e817fb1</gameid>
+          <version>1.1</version>
+          <firstpublished>2013</firstpublished>
+        </game>
+        <object name="room">
+          <inherit name="editor_room" />
+          <object name="player">
+            <inherit name="editor_object" />
+            <inherit name="editor_player" />
+          </object>
+          <object name="goblin">
+            <inherit name="editor_object" />
+            <fullhits type="int">25</fullhits>
+            <hitslost type="int">0</hitslost>
+            <getpc type="script_returns_int">
+              return (100 * (this.fullhits - this.hitslost) / this.fullhits)
+            </getpc>
+            <attack type="script">
+              msg ("You hit the " + this.name + " and it loses " + a + " hits!")
+              this.hitslost = this.hitslost + a
+              msg ("The " + this.name + " has " + RunDelegateFunction (this, "getpc") + "% of its hits.")
+            </attack>
+            <gethits type="script_returns_int">
+              return (this.fullhits - this.hitslost)
+            </gethits>
+            <hit type="script">
+              d = NewDictionary()
+              dictionary add(d, "a", 4)
+              do (this, "attack", d)
+            </hit>
+            <kick type="script">
+              d = NewDictionary()
+              dictionary add(d, "a", 7)
+              do (this, "attack", d)
+            </kick>
+          </object>
+        </object>
+        <verb>
+          <property>kick</property>
+          <pattern>kick</pattern>
+          <defaultexpression>"You can't kick " + object.article + "."</defaultexpression>
+        </verb>
+      </asl>

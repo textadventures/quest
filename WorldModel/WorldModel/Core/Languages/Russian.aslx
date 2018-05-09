@@ -11,7 +11,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
 -->
 
   <include ref="EditorEnglish.aslx"/>
-r  <include ref="English.aslx"/>
+  <include ref="English.aslx"/>
   <template name="LanguageId">ru</template>
   
   <template name="UnresolvedObject">Я не вижу ничего с таким названием</template>
@@ -548,6 +548,6 @@ r  <include ref="English.aslx"/>
           } else {
              return ("")
           }
-  </function>   
+  </function>
 
 </library>

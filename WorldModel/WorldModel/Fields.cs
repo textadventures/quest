@@ -369,7 +369,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                if (!Utility.IsValidAttributeName(name))
+                if (!Utility.IsValidFieldName(name))
                 {
                     throw new Exception(string.Format("Invalid attribute name '{0}'", name));
                 }

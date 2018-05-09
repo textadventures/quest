@@ -34,7 +34,7 @@ Give the command a name. This is not required by Quest, but will be useful later
 
 The code for this has to check the player has the parts, and if so then it does four things. It has to move the string away, it has to move the branch elsewhere, it has to bring he bow here, and it has to tell the player that it worked.
 
-[make1.png]
+![](images/make1.png "make1.png")
 
 This is the underlying code; these are two ways of looking at the same thing. It is the same script in both views:
 
@@ -62,7 +62,7 @@ A general problem with text adventures is that player can type all sorts of thin
 
 On the string object, turn on "Use/Give" on the _Features_ tab, and then on the _Use/Give_ tab go to the "Use (other object) on this" section. Set the action to handle objects individually, and then click "Add" and select the branch. For the script, we will just use the code on the command (this is why we gave the command a name):
 
-[make2.png]
+![](images/make2.png "make2.png")
 
 In code it looks like this:
 
@@ -72,7 +72,7 @@ do (CmdMakeBow, "script")
 
 Close the dialogue box, and do exactly the same in the "Use this on (other object)" section. It should now look like this:
 
-[make3.png]
+![](images/make1.png "make3.png")
 
 
 ### TIE STRING TO BOW
@@ -85,7 +85,7 @@ The command needs to check that object1 really is the string, and object2 really
 
 Here is what it looks like:
 
-[make4.png]
+![](images/make1.png "make4.png")
 
 And the code:
 

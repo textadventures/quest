@@ -150,6 +150,12 @@
         <caption>[EditorGameAdvancedScripts]</caption>
         <attribute>feature_advancedscripts</attribute>
       </control>	  
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameEnableDevMode]</caption>
+        <attribute>feature_devmode</attribute>
+      </control>	
 
       <control>
         <controltype>checkbox</controltype>
@@ -168,6 +174,7 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>	  
+
 
     </tab>
 
@@ -460,6 +467,13 @@
         <attribute>mapexitcolour</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <caption>[EditorGameRespondtogridclicks]</caption>
+        <attribute>respondtogridclicks</attribute>
       </control>
 
 

@@ -9,7 +9,7 @@ To add a status attribute, first set it up as an ordinary attribute of either th
 
 The key in the dictionary is the name of the attribute. The value can be left blank, or you can set it to a format string like "your strength is !".
 
-![](Status.jpg "Status.jpg")
+![](images/Status.jpg "Status.jpg")
 
 The status attributes "health" and "score" are build-in attributes. You can activate them in the game options tab.
 

@@ -62,6 +62,12 @@
       </control>
 
       <control>
+        <caption>[EditorCommandScope]</caption>
+        <controltype>textbox</controltype>
+        <attribute>scope</attribute>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>[EditorVerbMultipleobjects]</caption>
       </control>

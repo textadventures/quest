@@ -10,7 +10,7 @@ Overview
 
 You can view all the attributes of an object using the Debugger, which is accessed via the Tools menu. Attributes from an inherited type are shown in grey.
 
-![](Debugger.png "Debugger.png")
+![](images/Debugger.png "Debugger.png")
 
 Types are defined using a [<type> element](elements/type.html), and attributes are defined in the same way as for an object. Objects and types can both inherit from other types using an <inherit> tag.
 

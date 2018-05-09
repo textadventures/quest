@@ -13,19 +13,19 @@ Click the "Add new script" header and you'll see a list of all the commands you 
 
 Go to the Scripts category and add the "If" command (you can click the "Add" button, or just double-click the command).
 
-![](Addif.png "Addif.png")
+![](../images/Addif.png "Addif.png")
 
 The "if" command is hugely powerful, because it lets us choose which script to run depending on a condition that we set.
 
 After adding the command, you'll see the following editor:
 
-![](Addif2.png "Addif2.png")
+![](../images/Addif2.png "Addif2.png")
 
 First, we need to add a condition. If you click the "expression" dropdown list next to the "If" label, you'll see a list of conditions that you can add. Select "object is switched on".
 
 The editor template will then change, and next to the condition you will now see two more drop-down lists. Leave the first one set to "object", and you'll be able to choose an object from the second list. Select "TV".
 
-![](Addif3.png "Addif3.png")
+![](../images/Addif3.png "Addif3.png")
 
 That's our condition added - now we just need to say what happens when the condition is met. Click the "Then" header and you'll see that you can add script commands here too. These script commands will *only* be run *if* the TV is switched on. Add a "Print a message" command.
 
@@ -35,7 +35,7 @@ We're not done yet - what if the TV is *not* switched on? Fortunately we don't n
 
 Your screen should now look like this:
 
-![](Addif4.png "Addif4.png")
+![](../images/Addif4.png "Addif4.png")
 
 Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type "watch tv".
 

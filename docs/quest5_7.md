@@ -16,7 +16,7 @@ The changes are virtually all restricted to the .aslx files in WorldModel/Worldm
 
 Games created in Quest 5.6 should be able to run in Quest 5.7 without any issue (if you do have a problem, let me know - that is a bug). You should also be able to run games created in Quest 5.7 on the 5.6 web player, however some of the new user interface options will not work, so these are best avoided until the web player is updated.
 
-Thanks to beta-testers: Anony NN, chaosdagger, Dcoder, Doctor Agon, Pertex
+Thanks to beta-testers: Anony NN, chaosdagger, Dcoder, Doctor Agon, Pertex, Richard Headkid
 
 
 New UI Options
@@ -26,7 +26,7 @@ Customisation of the user interface (UI) is now much easier. There are a number 
 
 This is our starting point
 
-![](ui-classic.png "ui-classic.png")
+![](images/ui-classic.png "ui-classic.png")
 
 ### Game panes
 
@@ -35,7 +35,7 @@ You can now select different colour schemes for the panes on the right (or inven
 You can turn off individual panes, and add a new command pane and a new status pane. The command pane makes it easier to create a game with no command bar, as commands like LOOK and WAIT can be put here (with JS.setCommands). The status pane can have any HTML put in it (with JS.setCustomStatus), so could display indicators bars as well as text.
 https://github.com/textadventures/quest/issues/752
 
-![](ui-no-cursor.png "ui-no-cursor.png")
+![](images/ui-no-cursor.png "ui-no-cursor.png")
 
 [Custom panes](custom_panes.html)
 
@@ -43,7 +43,7 @@ https://github.com/textadventures/quest/issues/752
 
 New options for the command bar; borderless cursor or shadow box.
 
-![](ui-cursor.png "ui-cursor.png")
+![](images/ui-cursor.png "ui-cursor.png")
 
 ### Colours
 
@@ -392,3 +392,81 @@ If you have a language file for the game, these templates should be added.
 Also the `ToWords` function.
 
 There are considerably more for the editor. Do a compare on Github to see what the changes are (or contact me).
+
+
+
+Quest 5.7.2
+-----------
+
+Version 5.7.2 is a minor update, mostly sorting out various minor issue.
+
+DefaultListenTo, DefaultSmell use the gender not the article
+http://textadventures.co.uk/forum/quest/topic/nky_kv1oj0qpwdo0ujmz6w/fixing-pronouns
+
+Added "npc_type", and female and male both inherit from this now. If you want to check if something is a character, use this instead of checking both.
+https://github.com/textadventures/quest/issues/912
+
+Modified ScopeCommands to look also at the region (higher level room)
+https://github.com/textadventures/quest/issues/911
+
+You can now set the colour of labels on the map.
+https://github.com/textadventures/quest/issues/910
+   
+Added ObjectCannotBeStored dynamic template
+https://github.com/textadventures/quest/issues/909
+
+The text processor pop-up now uses the new `JSSafe` function, which strips most punctuation from a string.
+https://github.com/textadventures/quest/issues/907
+
+Quest now supports AGAIN/G (from K.V.).
+
+Added lots of options to GetScope (plus `GetScoping` command to support it) (thanks to mrangel) and added scope attributes to put/in and remove/from
+
+Rearranged the order of the functions and added lots of comments in CoreParser.aslx, to make it easier to understand how it works
+
+Modified removefrom template to allow TAKE and OUT OF/OFF
+
+The `CloneObject` function now sets the "prototytpe" object to the original, unless it is already set. New `CloneObjectAndInitialise` that does the same as CloneObject but also runs the initialisation script on the clone if there is one.
+
+Modified how multiple commands (GET ALL) etc. are handled so they give a message if there is nothing there, and to use scripts rather than delegates. Also, GET ALL will ignore any object that inherits from npc_type.
+https://github.com/textadventures/quest/issues/914
+
+Modified ListObjectContents (first line) so contents of a transparent container will get printed, even if closed (bug reported by Darryl Huen)
+
+The `Split` function can now be used with just one parameter. If no separator is specified, it will default to ";", which is the standard used by Quest.
+
+Annotations modified so a "room/object" will get a _Notes_ tab too, which is how it was intended (a room/object turns out to be neither a editor_room or a editor_object)
+
+
+### Updates to playercore.js
+
+_These are changes to the JavaScript. They will not work online until this version gets up-loaded by Louis._
+
+Now includes JS.addScript; this is an alternative to JS.addText (which is used by msg, etc), which inserts the text without any side effects, so is much safer way to add your own JavaScript, CSS and out-of-sequence HTML, as it will not mess up the paragraph ordering.
+
+After a ShowMenu-style selection is made, the title and options are hidden, but this left an ugly gap. Now the command bar will scroll up to fill the gap.
+https://github.com/textadventures/quest/issues/904
+
+Corrected an issue that meant the paragraph counts could go awry in some situations, including after loading a save game.
+https://github.com/textadventures/quest/issues/917
+https://github.com/textadventures/quest/issues/908
+
+Reading data from external files
+https://github.com/textadventures/quest/pull/923
+
+Option in editor to have the map respond to mouse clicks or not (previously clicking caused a turn to elapse, even if nothing happened) (bug reported by Darryl Huen).
+
+Turn scripts run alphabetically (previously global scripts ran after local, unless you loaded a saved game, when they run first; now the order is defined)  (bug reported by Darryl Huen).
+
+
+
+### Languages
+
+Russian.aslx - removed "r" at start of line which stopped it working.
+https://github.com/textadventures/quest/issues/916
+
+Spanish - Updated, thanks Mauricio Díaz García
+
+GamebookCoreEditor.aslx, GamebookCoreEditorExpressions.aslx, EditorDeutsch.aslx, EditorEnglish.aslx modified by SoonGames to support game books in other languages
+
+Some language files were modified to include English.aslx, which ensures there is some version of every template, even if in the wrong language.

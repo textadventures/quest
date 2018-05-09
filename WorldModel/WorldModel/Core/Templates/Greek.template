@@ -1,0 +1,22 @@
+﻿<asl version="550" template="Greek">
+
+  <include ref="Greek.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="$NAME$">
+    <gameid>$ID$</gameid>
+    <version>1.0</version>
+    <firstpublished>$YEAR$</firstpublished>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+    <isroom />
+
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+
+</asl>

@@ -17,19 +17,19 @@ This tutorial guides you through creating your first gamebook game. If you want 
 
 To create a new game, open Quest and click the File menu, then Create New Game.
 
-![](Newgamemenu.png "Newgamemenu.png")
+![](../images/Newgamemenu.png "Newgamemenu.png")
 
 Alternatively, you can switch to the Create tab and click the "Create a new game" button.
 
 You'll see a screen like this:
 
-![](Newgamebook.png "Newgamebook.png")
+![](../images/Newgamebook.png "Newgamebook.png")
 
 Ensure that "Gamebook" is selected, and enter a name like "Tutorial Game". Quest will create a folder and a game file for you. You can change where it puts the file by clicking the "Browse" button - it is recommended that you put your game file in its own folder.
 
 Click OK and you'll see the main Editor screen:
 
-![](Blankgamebook.png "Blankgamebook.png")
+![](../images/Blankgamebook.png "Blankgamebook.png")
 
 On the left is a tree showing you the pages in the gamebook, and a place to set options about the game itself. "Game" is currently selected, so that's what we can see in the pane on the right.
 
@@ -37,7 +37,7 @@ Quest has created three example pages for us, and inside Page1 is the "player" o
 
 As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
 
-![](Playblankgamebook.png "Playblankgamebook.png")
+![](../images/Playblankgamebook.png "Playblankgamebook.png")
 
 You can go back to the Editor by clicking "Stop Game" in the top left of the screen. (You can hit the Escape key)
 
@@ -45,11 +45,11 @@ You can go back to the Editor by clicking "Stop Game" in the top left of the scr
 
 To create a new game, [log in to Quest](http://textadventures.co.uk/create/). You'll see the "New game" form.
 
-![](Webnewgamebook.png "Webnewgamebook.png")
+![](../images/Webnewgamebook.png "Webnewgamebook.png")
 
 Ensure that "Gamebook" is selected. Enter a name like "Tutorial Game" and click the "Create" button. Click the link which appears, and you'll see the main Editor screen.
 
-![](Webblankgamebook.png "Webblankgamebook.png")
+![](../images/Webblankgamebook.png "Webblankgamebook.png")
 
 On the left is a tree showing you the pages in the gamebook, and a place to set options about the game itself. "Game" is currently selected, so that's what we can see in the pane on the right.
 
@@ -57,7 +57,7 @@ Quest has created three example pages for us, and inside Page1 is the "player" o
 
 As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
 
-![](Webplayblankgame.png "Webplayblankgame.png")
+![](../images/Webplayblankgame.png "Webplayblankgame.png")
 
 Simple Mode
 -----------

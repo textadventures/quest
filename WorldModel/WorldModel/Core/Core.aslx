@@ -31,7 +31,15 @@
   <include ref="CoreDevMode.aslx"/>
 
   <function name="InitInterface">
-      <![CDATA[
+    <![CDATA[
+    // Added by KV for transcript
+    JS.eval("var gameName = '"+game.gamename+"';var transcriptName = gameName;")
+    if (GetBoolean(game,"savetranscript")){
+      JS.eval("var savingTranscript = true;")
+      JS.replaceTranscriptString(game.transcriptstring)
+    }
+    // End of addition by KV for transcript
+    JS.whereAmI()
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
@@ -46,23 +54,23 @@
     if (game.setbackgroundopacity) {
       SetBackgroundOpacity (game.backgroundopacity)
     }
-    request (Background, game.defaultbackground)
-    request (Foreground, game.defaultforeground)
-    request (LinkForeground, game.defaultlinkforeground)
+    SetBackgroundColour(game.defaultbackground)
+    SetForegroundColour(game.defaultforeground)
+    SetLinkForegroundColour(game.defaultlinkforeground)
     if (LengthOf(game.backgroundimage) > 0) {
       SetBackgroundImage (game.backgroundimage)
     }
-    request (SetCompassDirections, Join(game.compassdirections, ";"))
-    request (SetInterfaceString, "InventoryLabel=[InventoryLabel]")
-    request (SetInterfaceString, "StatusLabel=[StatusLabel]")
-    request (SetInterfaceString, "PlacesObjectsLabel=[PlacesObjectsLabel]")
-    request (SetInterfaceString, "CompassLabel=[CompassLabel]")
-    request (SetInterfaceString, "InButtonLabel=[InButtonLabel]")
-    request (SetInterfaceString, "OutButtonLabel=[OutButtonLabel]")
-    request (SetInterfaceString, "EmptyListLabel=[EmptyListLabel]")
-    request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
-    request (SetInterfaceString, "TypeHereLabel=[TypeHereLabel]")
-    request (SetInterfaceString, "ContinueLabel=[ContinueLabel]")    
+    JS.setCompassDirections(Join(game.compassdirections, ";"))
+    JS.setInterfaceString("InventoryLabel", "[InventoryLabel]")
+    JS.setInterfaceString("StatusLabel", "[StatusLabel]")
+    JS.setInterfaceString("PlacesObjectsLabel", "[PlacesObjectsLabel]")
+    JS.setInterfaceString("CompassLabel", "[CompassLabel]")
+    JS.setInterfaceString("InButtonLabel", "[InButtonLabel]")
+    JS.setInterfaceString("OutButtonLabel", "[OutButtonLabel]")
+    JS.setInterfaceString("EmptyListLabel", "[EmptyListLabel]")
+    JS.setInterfaceString("NothingSelectedLabel", "[NothingSelectedLabel]")
+    JS.setInterfaceString("TypeHereLabel", "[TypeHereLabel]")
+    JS.setInterfaceString("ContinueLabel", "[ContinueLabel]")    
     JS.SetMenuBackground (game.menubackground)
     JS.SetMenuForeground (game.menuforeground)
     JS.SetMenuHoverBackground (game.menuhoverbackground)
@@ -74,10 +82,10 @@
     }
     ResetCommandBarFormat
     if (game.showcommandbar) {
-      request (Show, "Command")
+      JS.uiShow("#txtCommandDiv")
     }
     else {
-      request (Hide, "Command")
+      JS.uiHide("#txtCommandDiv")
     }
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
@@ -118,8 +126,9 @@
         JS.setCss ("#status", "border:none")
       }
     }
-    request (Show, "Location")
+    //request (Show, "Location")
     if (game.showlocation) {
+      JS.uiShow("#location")
       JS.setCss ("#status", "display:block")
     }
     else {
@@ -161,13 +170,12 @@
       JS.colourBlend (game.colourblendtop, game.colourblendbottom)
     }
     if (game.borderlesscursor) {
-      JS.eval ("$('head').append('<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>');")
+      JS.addScript("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
       JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
       JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
-      request (SetInterfaceString, "TypeHereLabel=")
     }
     else if (game.shadowbox) {
-      JS.eval ("$('head').append('<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>');")
+      JS.addScript ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
     }
     if (game.panestheme = "Midnight") {
       JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")
@@ -190,6 +198,9 @@
     if (game.panestheme = "Tranquil") {
       JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
     }
+    if (game.respondtogridclicks) {
+      JS.respondToGridClicks (true)
+    }
     //
     // -----------------------------------------------------------------------
     // This is in the original, but must come last
@@ -197,11 +208,15 @@
       JS.hideBorder ()
     }
     if (game.showpanes) {
-      request (Show, "Panes")
+      JS.panesVisible(true)
     }
     else {
-      request (Hide, "Panes")
+      JS.panesVisible(false)
     }
+    JS.getDivCount ()
+    if (not game.pov = null) {
+      JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
+    }    
     InitUserInterface
     if (HasScript(game, "inituserinterface")) {
       do (game, "inituserinterface")
@@ -267,6 +282,10 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
+    // Added by KV to use the old JS clearScreen if the transcript is disabled
+    if (GetBoolean(game, "notranscript")){
+      JS.eval("transcriptEnabled = false;")
+    }
     ]]>
   </function>
   
@@ -289,7 +308,7 @@
       baselist = object.displayverbs
     }
     
-    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist")) {
+    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist") or not HasAttribute(game, "verbattributes")) {
       return (baselist)
     }
     else {
@@ -382,5 +401,23 @@
     newPOV.article = newPOV.pov_article
     ]]>
   </function>  
+
+
+
+  <function name="FinishTurn">
+    if (not GetBoolean(game, "suppressturnscripts")) {
+      RunTurnScripts
+    }
+    game.suppressturnscripts = false
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
+  </function>  
+
+
+
+  <function name="WhereAmI" parameters="s">
+    game.questplatform = s
+  </function>
 
 </library>

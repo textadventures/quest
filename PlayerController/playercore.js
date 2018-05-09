@@ -159,9 +159,14 @@ function markScrollPosition() {
     beginningOfCurrentTurnScrollPosition = $("#gameContent").height();
 }
 
+// Variable added by KV
+var gameName = document.title;
+
 function setGameName(text) {
     $("#gameTitle").remove();
     document.title = text;
+    // Added by KV
+    gameName = text;
 }
 
 var _waitMode = false;
@@ -461,7 +466,11 @@ function setForeground(col) {
 }
 
 function setCompassDirections(directions) {
-    _compassDirs = directions;
+    if (typeof directions === "string") {
+      _compassDirs = directions.split(";")
+    } else {
+      _compassDirs = directions;
+    }
     $("#cmdCompassNW").attr("title", _compassDirs[0]);
     $("#cmdCompassN").attr("title", _compassDirs[1]);
     $("#cmdCompassNE").attr("title", _compassDirs[2]);
@@ -478,6 +487,14 @@ function setCompassDirections(directions) {
 
 function updateLocation(text) {
     $("#location").html(text);
+}
+
+
+// Used in grid.js, but defined here so it can be set during startup
+_respondToGridClicks = false;
+
+function respondToGridClicks(flag) {
+    _respondToGridClicks = flag;
 }
 
 function updateList(listName, listData) {
@@ -604,11 +621,19 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
+// These 2 variables added by KV for the transcript
+var savingTranscript = false;
+var transcriptString = "";
+
+// This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-
+    if (savingTranscript) {
+        SaveTranscript(text);
+        ASLEvent("UpdateTranscriptString", text);
+    }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
 }
@@ -643,11 +668,11 @@ function setCurrentDiv(div) {
     $("#outputData").attr("data-currentdiv", div);
 }
 
-var _divCount = -1;
+var _divCount = -1; 
 
 function getDivCount() {
-    if (_divCount == -1) {
-        _divCount = parseInt($("#outputData").attr("data-divcount"));
+    if (_divCount < 1) {
+        _divCount = parseInt($("#outputData").attr("data-divcount")) || 0;
     }
     return _divCount;
 }
@@ -733,15 +758,79 @@ function disableAllCommandLinks() {
     });
 }
 
+// Modified by KV to handle the scrollback feature
+var saveClearedText = true;
+var clearedOnce = false;
 function clearScreen() {
-    $("#divOutput").css("min-height", 0);
-    $("#divOutput").html("");
-    createNewDiv("left");
-    beginningOfCurrentTurnScrollPosition = 0;
-    setTimeout(function () {
-        $("html,body").scrollTop(0);
-    }, 100);
+    if (!saveClearedText) {
+        $("#divOutput").css("min-height", 0);
+        $("#divOutput").html("");
+        createNewDiv("left");
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $("html,body").scrollTop(0);
+        }, 100);
+    } else {
+        $("#divOutput").append("<hr class='clearedAbove' />");
+        if (!clearedOnce) {
+            addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
+        }
+        clearedOnce = true;
+        $('#divOutput').children().addClass('clearedScreen');
+        $('#divOutput').css('min-height', 0);
+        createNewDiv('left');
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            $('html,body').scrollTop(0);
+        }, 100);
+    }
 }
+
+// Scrollback functions added by KV
+
+function showScrollback() {
+    var scrollbackDivString = "";
+    scrollbackDivString += "<div ";
+    scrollbackDivString += "id='scrollback-dialog' ";
+    scrollbackDivString += "style='display:none;'>";
+    transcriptDivString += "<div id='scrollbackdata'></div></div>";
+    addText(scrollbackDivString);
+    var scrollbackDialog = $("#scrollback-dialog").dialog({
+        autoOpen: false,
+        width: 600,
+        height: 500,
+        title: "Scrollback",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+            },
+            Print: function () {
+                printScrollbackDiv();
+            },
+        },
+        show: { effect: "fadeIn", duration: 500 },
+        modal: true,
+    });
+    $('#scrollbackdata').html($('#divOutput').html());
+    $("#scrollbackdata a").addClass("disabled");
+    scrollbackDialog.dialog("open");
+    setTimeout(function () {
+        $("#scrollbackdata a").addClass("disabled");
+    }, 1);
+};
+
+
+
+function printScrollbackDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#scrollbackdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#scrollback-dialog").dialog("close");
+    $("#scrollback-dialog").remove();
+};
 
 function keyPressCode(e) {
     var keynum
@@ -869,6 +958,9 @@ function HideOutputSection(name) {
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
         $("." + name).hide(250, function () { $(this).remove(); });
+        // Added by The Pixie, 04/Oct/17
+        // This should close the gap when the menu is hidden
+        $("#divOutput").animate({'min-height':0}, 250);
     }, 250);
 }
 
@@ -1023,6 +1115,9 @@ function setCss(element, cssString) {
   }
 }
 
+function addScript(text) {
+    $('body').prepend(text);
+}
 
 function colourBlend(colour1, colour2) {
   $('#gamePanes').css('background-color', 'transparent');
@@ -1125,6 +1220,288 @@ $(function () {
         return false;
     });
 });
+    
+// ***********
+// Section added by KV
+
+
+function isMobilePlayer() {
+    if (typeof (currentTab) === 'string') {
+        return true;
+    }
+    return false;
+};
+
+function showPopup(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupCustomSize(title, text, width, height) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: width,
+        height: height,
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+function showPopupFullscreen(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: $(window).width(),
+        height: $(window).height(),
+        buttons: [
+			{
+			    text: 'OK',
+			    click: function () { $(this).dialog('close'); }
+			},
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+};
+
+// Make it easy to print messages.
+//var msg = addTextAndScroll;
+    
+// Log functions
+var logVar = "";
+function addLogEntry(text){
+  logVar += getTimeAndDateForLog() + ' ' + text+"NEW_LINE";
+};
+
+function showLog(){
+  var logDivString = "";
+  logDivString += "<div ";
+  logDivString += "id='log-dialog' ";
+  logDivString += "style='display:none;;'>";
+  logDivString += "<textarea id='logdata' rows='13'";
+  logDivString += "  cols='49'></textarea></div>";
+  addText(logDivString);
+  if(webPlayer){
+    var logDialog = $("#log-dialog").dialog({
+      autoOpen: false,
+      width: 600,
+      height: 500,
+      title: "Log",
+      buttons: {
+        Ok: function() {
+          $(this).dialog("close");
+        },
+        Print: function(){
+          $(this).dialog("close");
+          showLogDiv();
+          printLogDiv();
+        },
+        Save: function(){
+          $(this).dialog("close");
+          saveLog();
+        },
+      },
+      show: { effect: "fadeIn", duration: 500 },
+      // The modal setting keeps the player from interacting with anything besides the dialog window.
+      //  (The log will not update while open without adding a turn script.  I prefer this.)
+      modal: true,
+    });
+  }else{
+    var logDialog = $("#log-dialog").dialog({
+    autoOpen: false,
+    width: 600,
+    height: 500,
+    title: "Log",
+    buttons: {
+      Ok: function() {
+        $(this).dialog("close");
+      },
+      Print: function(){
+        $(this).dialog("close");
+        showLogDiv();
+        printLogDiv();
+      },
+    },
+    show: { effect: "fadeIn", duration: 500 },
+    // The modal setting keeps the player from interacting with anything besides the dialog window.
+    //  (The log will not update while open without adding a turn script.  I prefer this.)
+    modal: true,
+  });
+  }
+  $('textarea#logdata').val(logVar.replace(/NEW_LINE/g,"\n"));
+  logDialog.dialog("open");
+};
+
+var logDivIsSetUp = false;
+
+var logDivToAdd = "";
+logDivToAdd += "<div ";
+logDivToAdd += "id='log-div' ";
+logDivToAdd += "style='display:none;'>";
+logDivToAdd += "<a class='do-not-print-with-log' ";
+logDivToAdd += "href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  ";
+logDivToAdd += "<a class='do-not-print-with-log' href='' ";
+logDivToAdd += "onclick='printLogDiv();'>PRINT</a> ";
+logDivToAdd += "<div id='log-contents-div' '></div></div>";
+
+function setupLogDiv(){
+  addText(logDivToAdd);
+  $("#log-div").insertBefore($("#dialog"));
+  logDivIsSetUp = true;
+};
+
+function showLogDiv(){
+    if(!logDivIsSetUp){
+     setupLogDiv(); 
+    }
+	$(".do-not-print-with-log").show();
+	$("#log-contents-div").html(logVar.replace(/NEW_LINE/g,"<br/>"));
+	$("#log-div").show();
+	$("#gameBorder").hide();
+};
+
+function hideLogDiv(){
+	$("#log-div").hide();
+	$("#gameBorder").show();
+};
+
+function printLogDiv(){
+  if(typeof(document.title) !== "undefined"){
+    var docTitleBak = document.title;
+  }else{
+    var docTitleBak = "title";
+  }
+  document.title = "log.txt" ;
+  $('.do-not-print-with-log').hide();
+  print();
+  $('.do-not-print-with-log').show();
+  document.title = docTitleBak;
+};
+
+
+function saveLog(){
+  if(webPlayer){
+    var href = "data:text/plain,"+logVar.replace(/NEW_LINE/g,"\n");
+    addTextAndScroll("<a download='log.txt' href='"+href+"' id='log-save-link'>Click here to save the log if your pop-up blocker stopped the download.</a>");
+    document.getElementById("log-save-link").addEventListener ("click", function (e) {e.stopPropagation();});
+    document.getElementById("log-save-link").click();
+  }else{
+    alert("This function is only available while playing online.");
+  }
+ };
+
+function getTimeAndDateForLog(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	var hrs = today.getHours();
+	var mins = today.getMinutes();
+	var secs = today.getSeconds();
+	today = mm + '/' + dd + '/' + yyyy;
+	if(hrs>12) {
+	  ampm = 'PM';
+	  hrs = '0' + '' + hrs - 12
+	}else{
+	  ampm = 'AM';
+	} 
+	if (mins<10) {
+	  mins = '0'+mins;
+	} 
+	if(secs<10) {
+	  secs = '0' + secs;
+	}
+	time = hrs + ':' + mins + ':' + secs + ' ' + ampm;
+	return today + ' ' + time;
+};
+    
+// **********************************
+// TRANSCRIPT FUNCTIONS
+
+// This function is for loading a saved game
+function replaceTranscriptString(data) {
+    transcriptString = data;
+}
+
+function showTranscript() {
+    var transcriptDivString = "";
+    transcriptDivString += "<div ";
+    transcriptDivString += "id='transcript-dialog' ";
+    transcriptDivString += "style='display:none;'>";
+    transcriptDivString += "<div id='transcriptdata'></div></div>";
+    addText(transcriptDivString);
+    var transcriptDialog = $("#transcript-dialog").dialog({
+        autoOpen: false,
+        width: 600,
+        height: 500,
+        title: "Transcript",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+            },
+            Print: function () {
+                printTranscriptDiv();
+                $(this).dialog("close");
+                $(this).remove();
+            },
+        },
+        show: { effect: "fadeIn", duration: 500 },
+        modal: true,
+    });
+    $('#transcriptdata').html(transcriptString);
+    $("#transcriptdata a").addClass("disabled");
+    transcriptDialog.dialog("open");
+    setTimeout(function () {
+        $("#transcriptdata a").addClass("disabled");
+    }, 1);
+};
+
+function printTranscriptDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#transcriptdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#transcript-dialog").dialog("close");
+    $("#transcript-dialog").remove();
+};
+
+// ***********************************
+
+
 
 // GRID FUNCTIONS ***********************************************************************************************************************
 
@@ -1167,9 +1544,10 @@ function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
 
-function Grid_DrawLabel(x, y, z, text) {
+function Grid_DrawLabel(x, y, z, text, col) {
+    if (col === undefined) col = "black";
     if (!_canvasSupported) return;
-    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text, col);
 }
 
 function Grid_ShowCustomLayer(visible) {
@@ -1687,3 +2065,8 @@ function Grid_DrawShape(id, border, fill, opacity) {
     }
 
 })(jQuery);
+
+function whereAmI() {
+  ASLEvent("WhereAmI", platform);
+}
+var platform = "desktop";

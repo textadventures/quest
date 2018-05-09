@@ -1,5 +1,6 @@
 ﻿<library>
 
+  <!-- lookat modified by KV to include timesexamined attribute -->
   <command name="lookat" template="lookat">
     <![CDATA[
     if (GetBoolean(object, "hidechildren")) {
@@ -7,7 +8,11 @@
     }
     
     if (TypeOf(object, "look") = "script") {
+      if (not HasAttribute(object,"timesexamined")){
+        object.timesexamined = 0
+      }
       do (object, "look")
+      object.timesexamined = object.timesexamined + 1
     }
     else {
       lookdesc = ""
@@ -34,7 +39,12 @@
       if (isDark and not GetBoolean(object, "lightsource")) {
         lookdesc = DynamicTemplate("LookAtDarkness", object)
       }
-      
+      else {
+        if (not HasAttribute(object,"timesexamined")){
+          object.timesexamined = 0
+        }
+        object.timesexamined = object.timesexamined + 1
+      }
       msg (lookdesc)
     }
     
@@ -44,7 +54,7 @@
 
   <function name="ListObjectContents" parameters="object">
     <![CDATA[
-    if (GetBoolean(object, "isopen") and GetBoolean(object, "listchildren")) {
+    if ((GetBoolean(object, "isopen") or GetBoolean(object, "transparent")) and GetBoolean(object, "listchildren")) {
       if (GetBoolean(object, "hidechildren")) {
         object.hidechildren = false
       }
@@ -62,7 +72,18 @@
     ]]>
   </function>
 
+  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
   <command name="take" template="take">
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = NewObjectList()
+      objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
+      foreach (obj, objlist) {
+        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
+          list add(game.pov.currentcommandpendingobjectscope, obj)
+        }
+      }
+    </multipleobjects>
     <multiple>
       takeList = NewObjectList()
       foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
@@ -74,12 +95,17 @@
     </multiple>
     <scope>notheld</scope>
     <script>
-      foreach (obj, object) {
-        DoTake(obj, multiple)
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToTake]")
+      }
+      else{
+        foreach (obj, object) {
+          DoTake(obj, multiple)
+        }
       }
     </script>
   </command>
-
+  
   <function name="DoTake" parameters="object, ismultiple">
     prefix = ""
     if (ismultiple) {
@@ -186,13 +212,21 @@
   </function>
 
   <command name="drop" template="drop">
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = GetDirectChildren(game.pov)
+    </multipleobjects>
     <multiple>
       return (GetDirectChildren(game.pov))
     </multiple>
     <scope>inventory</scope>
     <script>
-      foreach (obj, object) {
-        DoDrop(obj, multiple)
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToTake]")
+      }
+      else{
+        foreach (obj, object) {
+          DoDrop(obj, multiple)
+        }
       }
     </script>
   </command>
@@ -307,9 +341,13 @@
   
   <command name="undo">
     <pattern type="string">[undo]</pattern>
-    <script>undo</script>
+    <script>
+      undo
+      game.suppressturnscripts = true
+    </script>
     <isundo/>
   </command>
+
   
   <command name="inventory" pattern="[inventory]">
     list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
@@ -353,7 +391,7 @@
   </command>
 
   <command name="quit" pattern="[quit]">
-    request (Quit, "")
+    finish
   </command>
 
   <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
@@ -473,74 +511,76 @@
   </command>
 
   <command name="put" pattern="[put]">
-    // put object1 in/on object 2
-    canbedropped = true
-    if (HasBoolean(object1, "drop")) {
-      if (not object1.drop) {
-        canbedropped = false
+    <scope>object1=inventory|object2=container</scope>
+    <script>
+      // put object1 in/on object 2
+      canbedropped = true
+      if (HasBoolean(object1, "drop")) {
+        if (not object1.drop) {
+          canbedropped = false
+        }
       }
-    }
-    if (object1.parent = object2) {
-      msg (DynamicTemplate("AlreadyThere", object1))
-    }
-    // must be carrying object1
-    else if (not ListContains(ScopeInventory(), object1)) {
-      msg (DynamicTemplate("NotCarrying", object1))
-    }
-    // item cannot be dropped
-    else if (not canbedropped) {
-      msg (DynamicTemplate("ObjectCannotBeStored", object1))
-    }
-    // object1 must not be inside a closed container
-    else if (not ListContains(ScopeReachable(), object1)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
-    }
-    // object2 must not be inside a closed container
-    else if (not ListContains(ScopeReachable(), object2)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
-    }
-    // object2 must be an open container or surface
-    else if (not object2.container) {
-      msg (Template("CannotDoThat"))
-    }
-    else if (not object2.isopen) {
-      msg (DynamicTemplate("ObjectNotOpen", object2))
-    }
-    else {
-      if (GetBoolean(object2, "hidechildren")) {
-        object2.hidechildren = false
+      if (object1.parent = object2) {
+        msg (DynamicTemplate("AlreadyThere", object1))
       }
-
-      //if (HasDelegateImplementation(object2, "addscript")) {
-      //  rundelegate (object2, "addscript", object1)
-      //}
-      params = NewDictionary()
-      dictionary add (params, "object", object1)
-      dictionary add (params, "destination", object2)
-      if (HasScript(object2, "addscript")) {
-        do (object2, "addscript", params)
+      // must be carrying object1
+      else if (not ListContains(ScopeInventory(), object1)) {
+        msg (DynamicTemplate("NotCarrying", object1))
       }
-      else if (HasScript(object1, "drop")) {
-        do (object1, "drop", params)
+      // item cannot be dropped
+      else if (not canbedropped) {
+        msg (DynamicTemplate("ObjectCannotBeStored", object1))
+      }
+      // object1 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object1)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+      }
+      // object2 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object2)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+      }
+      // object2 must be an open container or surface
+      else if (not object2.container) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not object2.isopen) {
+        msg (DynamicTemplate("ObjectNotOpen", object2))
       }
       else {
-        object1.parent = object2
-        msg (Template("Done"))
+        if (GetBoolean(object2, "hidechildren")) {
+          object2.hidechildren = false
+        }
+
+        params = NewDictionary()
+        dictionary add (params, "object", object1)
+        dictionary add (params, "destination", object2)
+        if (HasScript(object2, "addscript")) {
+          do (object2, "addscript", params)
+        }
+        else if (HasScript(object1, "drop")) {
+          do (object1, "drop", params)
+        }
+        else {
+          object1.parent = object2
+          msg (Template("Done"))
+        }
       }
-    }
-    
+    </script>
   </command>
 
   <command name="removefrom" pattern="[removefrom]">
-    // remove object1 from object2
-    // if object2 does indeed contain object1, this is a synonym for "take object1"
-    
-    if (not Contains(object2, object1)) {
-      msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
-    }
-    else {
-      DoTake (object1, false)
-    }
+    <scope>object1=contents|object2=container</scope>
+    <script>
+      // remove object1 from object2
+      // if object2 does indeed contain object1, this is a synonym for "take object1"
+      
+      if (not Contains(object2, object1)) {
+        msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
+      }
+      else {
+        DoTake (object1, false)
+      }
+    </script>
   </command>
 
   <function name="CreateGiveMenuList" parameters="object" type="objectlist">
@@ -843,6 +883,145 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
-  <command name="save" pattern="[save]">request (RequestSave, "")</command>
 
+  <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
+  <command name="save">
+    <pattern type="string">^save$</pattern>
+    <script>
+      if (HasAttribute(game, "questplatform")) {
+        if (game.questplatform = "desktop") {
+          requestsave
+        }
+        else {
+          JS.saveGame ()
+        }
+      }
+      else {
+        requestsave
+      }
+    </script>
+  </command>
+  
+  <!-- added by KV -->
+
+  <command name="version_cmd" pattern="[version_cmd]">
+    <script>
+      <![CDATA[
+      table = "<table style='padding:9px;border:1px solid black;'>"
+      table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
+      if (HasAttribute (game, "author")) {
+        table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
+      }
+      table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+      table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+      table = table + "</table>"
+      msg (table)
+    ]]>
+    </script>
+  </command>
+
+  <command name="log_cmd" pattern="[log_cmd]">
+    <script>
+      game.notarealturn = true
+      if (not GetBoolean(game, "nohtmllog")){
+        JS.showLog ()
+      }
+      else {
+        msg ("This game has no in-game log.")
+      }
+    </script>
+  </command>
+
+  <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
+    <script>
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")){
+        JS.showTranscript ()
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
+    </script>
+  </command>
+
+  <command name="transcript_on_cmd">
+    <pattern type="string">^(transcript|script)( on|)$|^enable (script|transcript)$</pattern>
+    <script>
+      <![CDATA[
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")) {
+        if (not GetBoolean(game,"savetranscript")) {
+          msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
+          JS.eval ("$('input#txtCommand').val(transcriptName);")
+          get input {
+            filename = Trim(result)
+            if (not filename = "") {
+              JS.eval ("transcriptName = '"+filename+"';")
+            }
+            JS.eval ("savingTranscript = true;")
+            game.savetranscript = true
+            pre = "<hr/>Transcript enabled for:<br/>"
+            table = "<table style='padding:9px;border:1px solid black;'>"
+            table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
+            if (HasAttribute (game, "author")) {
+              table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
+            }
+            table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+            table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+            table = table + "</table>"
+            s = pre + table
+            msg("")
+            msg (s)
+            msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
+          }
+        }
+        else {
+          msg ("The transcript is already enabled.")
+        }
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
+    ]]>
+    </script>
+  </command>
+
+  <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
+    <script>
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")){
+        if (GetBoolean(game,"savetranscript")){
+          game.savetranscript = false
+          JS.eval("var saveTranscript = false;")
+          msg("Transcript disabled.")
+        }
+        else{
+          msg("The transcript is already disabled.")
+        }
+      }
+      else {
+        msg ("This game has no transcript feature.")
+      }
+    </script>
+  </command>
+
+  <function name="UpdateTranscriptString" parameters="data">
+    game.suppressturnscripts = true
+    game.transcriptstring = game.transcriptstring + data
+  </function>
+  
+  <command name="restart" pattern="^restart$">
+    <script>
+      Ask ("Are you sure you want to restart the game?"){
+        if (result){
+          JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
+        }
+        else {
+          game.notarealturn = true
+          game.suppressturnscripts = true
+        }
+      }
+    </script>
+  </command>
+  
 </library>

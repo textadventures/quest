@@ -30,11 +30,11 @@ To add an Editor User Interface for a function defined in your library, add a se
 
 The example above adds the "Enable timer" command to the "Timers" category:
 
-![](Editorui1.png "Editorui1.png")
+![](images/Editorui1.png "Editorui1.png")
 
 When selected, the editor looks like this - the example above defines two controls, a label reading "Enable timer" and an expression control, which shows the "timer" dropdown:
 
-![](Editorui2.png "Editorui2.png")
+![](images/Editorui2.png "Editorui2.png")
 
 appliesto  
 Should be of the format "(function)YourFunctionName"

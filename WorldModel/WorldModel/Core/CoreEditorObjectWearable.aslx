@@ -215,7 +215,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>https://github.com/ThePix/quest/wiki/Clothing-Library</href>
+      <href>http://docs.textadventures.co.uk/quest/wearables.html</href>
     </control>
 
 	</tab>

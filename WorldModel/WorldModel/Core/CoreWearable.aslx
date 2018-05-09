@@ -5,26 +5,36 @@
 
 	
 	<command name="wear" template="wear">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoWear(obj)
-			}
-      UpdateArmour
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToWear]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoWear(obj)
+        }
+        UpdateArmour
+      }
 		</script>
     <scope>inventory</scope>
 	</command>
 
 	<command name="remove" template="remove">
-		<multiple>
-			return (ScopeInventory())
-		</multiple>
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
-			foreach (obj, object) {
-				f = _DoRemove(obj)
-			}
+      if (multiple and ListCount(object) = 0) {
+        msg("[NothingToRemove]")
+      }
+      else{
+        foreach (obj, object) {
+          f = _DoRemove(obj)
+        }
+      }
       UpdateArmour
 		</script>
     <scope>inventory</scope>
@@ -319,10 +329,10 @@
   Unit tested.
   -->
 	<function name="GetDescriptor" parameters="object" type="string"><![CDATA[
-    if (object.multistate_status = 0) return (" ([wornmodifier])")
+    if (object.multistate_status = 0) return (" (" + object.wornmodifier + ")")
     s = StringListItem(object.multistate_descriptors, object.multistate_status - 1)
-    if (s = "*")  return (" ([wornmodifier])")
-    return (" ([wornmodifier] " + s + ")")
+    if (s = "*")  return (" (" + object.wornmodifier + ")")
+    return (" (" + object.wornmodifier + " " + s + ")")
 	]]></function>
 
 

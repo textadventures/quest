@@ -11,6 +11,7 @@
 
   <object name="room">
     <inherit name="editor_room" />
+    <isroom />
 
     <object name="player">
       <inherit name="defaultplayer" />

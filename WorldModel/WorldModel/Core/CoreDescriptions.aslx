@@ -172,7 +172,7 @@
             }            
           }
           
-          request (UpdateLocation, CapFirst(GetDisplayName(game.pov.parent)))
+          JS.updateLocation(CapFirst(GetDisplayName(game.pov.parent)))
           roomFrameExists = false
           if (HasString(game.pov.parent, "picture")) {
             if (LengthOf(game.pov.parent.picture) > 0) {
@@ -369,7 +369,8 @@
   <function name="GetListDisplayAlias" type="string" parameters="obj">
     <![CDATA[
     if (HasString(obj, "listalias")) {
-      result = obj.listalias
+      // Modified by KV
+      result = ProcessText(obj.listalias)
     }
     else {
       result = GetDisplayAlias(obj)

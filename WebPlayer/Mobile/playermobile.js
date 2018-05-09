@@ -400,5 +400,6 @@ function setCustomStatus(s) {
     el.html(s);
 }
 
-        
+
+var platform = "mobile";        
 // ----------------------------------        

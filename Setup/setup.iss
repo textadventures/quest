@@ -9,7 +9,7 @@
 AppName=Quest
 AppVersion={#QuestVersion}
 AppVerName=Quest {#QuestVersion}
-AppCopyright=Copyright © 2017/2018 Andy Joel, 1998-2016 Alex Warren
+AppCopyright=Copyright Â© 2017/2018 Andy Joel, 1998-2016 Alex Warren
 VersionInfoVersion={#QuestVersion}
 AppPublisher=Andy Joel
 AppPublisherURL=http://textadventures.co.uk/
@@ -25,7 +25,7 @@ AllowNoIcons=yes
 SolidCompression=yes
 PrivilegesRequired=admin
 ChangesAssociations=yes
-MinVersion=5.1sp3
+MinVersion=6.0
 UsePreviousSetupType=no
 
 [Languages]

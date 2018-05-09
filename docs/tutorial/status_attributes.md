@@ -24,7 +24,7 @@ Status Attributes - Web Version
 
 On the web version, we have no _Attributes_ tab, so we have to do this in the start script, as we did with the weight attributes earlier. Go to the _Scripts_ tab of the game object; you should see the script commands setting the weight attributes (only one is done in the image below). You need to add three new script commands like this:
 
-![](status_attribute.png "status_attribute.png")
+![](../images/status_attribute.png "status_attribute.png")
 
 The first line, highlighted in yellow, is obviously setting up the "score" attribute, just as before.
 

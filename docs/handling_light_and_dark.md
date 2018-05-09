@@ -148,3 +148,23 @@ else {
   msg("You search but find nothing of interest.")
 }
 ```
+
+Descriptions: scripts vs text
+-----------------
+
+If you use text for a room or object description, Quest will check if it is dark first, and only give the description if there is light to see the object.
+
+If you have set the room description to be a script, then Quest will again check if it is dark, and will only run the script if the room is illuminated.
+
+For objects, however, the Quest will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. Yo may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
+
+To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper descriotion.
+
+```
+if (CheckDarkness()) {
+  msg(DynamicTemplate("LookAtDarkness", this))
+}
+else {
+  msg("You search but find nothing of interest.")
+}
+```

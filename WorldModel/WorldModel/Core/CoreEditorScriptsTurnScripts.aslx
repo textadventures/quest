@@ -169,4 +169,17 @@
       <simple>name</simple>
     </control>
   </editor>
+  
+  <editor>
+    <appliesto>(function)SuppressTurnscripts</appliesto>
+    <display>Suppress turnscripts for one turn</display>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
+    <create>SuppressTurnscripts</create>
+    <add>[EditorScriptsTurnScriptsSuppressturnscripts]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsTurnScriptsSuppressturnscripts]</caption>
+    </control>
+  </editor>
 </library>

@@ -232,7 +232,7 @@
     <value>13</value>
   </data>
   <data name="Label1.Text" xml:space="preserve">
-    <value>Editor is loading...</value>
+    <value>Editor loading</value>
   </data>
   <data name="Label1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>TopCenter</value>
@@ -268,7 +268,7 @@
     <value>14</value>
   </data>
   <data name="Label2.Text" xml:space="preserve">
-    <value>Soon it will start.</value>
+    <value>We'll just be a moment...</value>
   </data>
   <data name="Label2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>TopCenter</value>

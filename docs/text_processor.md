@@ -7,7 +7,7 @@ Quest 5.4 introduces a text processor, giving an easy way to conditionally print
 
 To use the text processor, you can simply add a command in curly braces in any text that gets displayed. In this simple example, a room description is set to say that room smells only the first time the text is printed:
 
-![](text_processor_text.png "text_processor_text.png")
+![](images/text_processor_text.png "text_processor_text.png")
 
 The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in any text, for example, in an [msg](scripts/msg.html) command:
 

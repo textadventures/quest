@@ -334,6 +334,9 @@
     <None Include="Core\CoreWearable.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+	<None Include="Core\CoreDevMode.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\GamebookCore.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -362,6 +365,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\Languages\EditorDeutsch.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Core\Languages\EditorEspanol.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -373,6 +380,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Francais.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\Languages\Greek.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Languages\Icelandic.aslx">
@@ -432,6 +442,9 @@
     <None Include="Core\Templates\Gamebook.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\Templates\Greek.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\Templates\Icelandic.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -484,6 +497,8 @@
     <Compile Include="Scripts\UndoScript.cs" />
     <Compile Include="Scripts\WaitScript.cs" />
     <Compile Include="Scripts\WhileScript.cs" />
+    <Compile Include="Scripts\RequestSaveScript.cs" />
+    <Compile Include="Scripts\RequestSpeakScript.cs" />
     <Compile Include="Templates.cs" />
     <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />

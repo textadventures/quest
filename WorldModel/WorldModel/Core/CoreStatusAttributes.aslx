@@ -1,25 +1,20 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
     <![CDATA[
-    status = AddStatusAttributesForElement("", game, game.statusattributes)
-    status = AddStatusAttributesForElement(status, game.pov, game.povstatusattributes)
-    status = AddStatusAttributesForElement(status, game.pov, game.pov.statusattributes)
-    request (SetStatus, status)
+    status = NewStringList()
+    AddStatusAttributesForElement (status, game, game.statusattributes)
+    AddStatusAttributesForElement (status, game.pov, game.povstatusattributes)
+    AddStatusAttributesForElement (status, game.pov, game.pov.statusattributes)
+    JS.updateStatus (Join(status, "<br/>"))
     ]]>
   </function>
 
   <function name="AddStatusAttributesForElement" parameters="status, element, statusAttributes" type="string">
-    <![CDATA[
-    if (statusAttributes <> null) {
+    if (not statusAttributes = null) {
       foreach (attr, statusAttributes) {
-        if (LengthOf(status) > 0) {
-          status = status + "\n"
-        }
-        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr))
+        list add (status, FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr)))
       }
     }
-    return (status)
-    ]]>
   </function>
 
   <function name="FormatStatusAttribute" parameters="attr, value, format" type="string">

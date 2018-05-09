@@ -2,7 +2,9 @@
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
   
-  <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayAlias(object) + " there."</dynamictemplate>
+  <template name="Again1">again</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">There is nothing to repeat.</template>
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
@@ -22,6 +24,7 @@
   <template name="CarryingListHeader">You are carrying</template>
   <dynamictemplate name="DropSuccessful">"You drop " + object.article + "."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="ObjectCannotBeStored">"You can't put " + object.article + " there."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
@@ -67,6 +70,7 @@
   <template name="SelfAlt">me; myself; self</template>
   <template name="AllObjects">all; everything</template>
   <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="UseDefaultPrefixIfNamed">false</template>
   <template name="Score">Score</template>
   <template name="Health">Health</template>
   <template name="Money">Money</template>
@@ -114,6 +118,11 @@
   <template name="No">No</template>
   <template name="By">by</template>
 
+  <template name="NothingToTake">Nothing here to take.</template>
+  <template name="NothingToDrop">You've nothing to drop.</template>
+  <template name="NothingToWear">You've nothing to wear.</template>
+  <template name="NothingToRemove">You've nothing to take off.</template>
+
 	<dynamictemplate name="WearSuccessful">"You put " + object.article + " on."</dynamictemplate>
 	<dynamictemplate name="WearUnsuccessful">"You can't wear " + object.article + "."</dynamictemplate>
 	<dynamictemplate name="CannotWearIfNotHeld">"You would need to get " + object.article + " before you can put " + object.article + " on."</dynamictemplate>
@@ -125,7 +134,12 @@
 	<dynamictemplate name="CannotWearWith">"You cannot wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
 	<dynamictemplate name="RemoveSuccessful">"You take " + object.article + " off."</dynamictemplate>
 	<dynamictemplate name="RemoveFirst">"You can't remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
-	<template name="wornmodifier">worn</template>
+	<template name="NeutralWornModifier">worn</template>
+	<template name="MaleWornModifier">worn</template>
+	<template name="FemaleWornModifier">worn</template>
+	<template name="NeutralPluralWornModifier">worn</template>
+	<template name="MalePluralWornModifier">worn</template>
+	<template name="FemalePluralWornModifier">worn</template>
 
   <template name="Wear">Wear</template>
   <verbtemplate name="wear">put #object# on</verbtemplate>
@@ -205,7 +219,7 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^(remove|take) (?<object1>.*) (from|out of|off) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
@@ -240,7 +254,7 @@
   <verbtemplate name="lie">lie down upon</verbtemplate>
   <dynamictemplate name="DefaultLie">"You can't lie on " + object.article + "."</dynamictemplate>
   <verbtemplate name="listento">listen to</verbtemplate>
-  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.article + " makes no sound."</dynamictemplate>
+  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.gender + " makes no sound."</dynamictemplate>
   <verbtemplate name="lock">lock</verbtemplate>
   <dynamictemplate name="DefaultLock">"You can't lock " + object.article + "."</dynamictemplate>
   <verbtemplate name="move">move</verbtemplate>
@@ -262,7 +276,7 @@
   <dynamictemplate name="DefaultSit">"You can't sit on " + object.article + "."</dynamictemplate>
   <verbtemplate name="smell">smell</verbtemplate>
   <verbtemplate name="smell">sniff</verbtemplate>
-  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.article + " doesn't smell of much."</dynamictemplate>
+  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.gender + " doesn't smell of much."</dynamictemplate>
   <verbtemplate name="taste">taste</verbtemplate>
   <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
   <verbtemplate name="throw">throw</verbtemplate>
@@ -307,6 +321,7 @@
   <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
   <template templatetype="command" name="help">^help$|^\?$</template>
   <template templatetype="command" name="save">^save$</template>
+  <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " nothing."</dynamictemplate>
 
   <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
 <b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
@@ -395,6 +410,11 @@
       }
     }
   </function>
+  
+  <function name="Possessive" parameters="possessive, object" type="string">
+    return (possessive + " " + GetDisplayAlias(object))
+  </function>
+  
 
   <function name="ToWords" parameters="number" type="string">
     <![CDATA[
@@ -438,4 +458,38 @@
   ]]>
   </function>
   
+  <!-- Added by KV -->
+  <template templatetype="command" name="log_cmd">^log$|^view log$|^display log$</template>
+  <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
+  <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
+  <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
+  
+  
+  
+  <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
+  <template name="DevModeCommandPut">put</template>
+  <template name="DevModeCommandDrop">drop</template>
+  <template name="DevModeCommandTake">take</template>
+  <template name="DevModeCommandTo">to</template>
+  <template name="DevModeCommandGo">go</template>
+  <template name="DevModeCommandOpen">open</template>
+  <template name="DevModeCommandClose">close</template>
+  <template name="DevModeCommandOn">on</template>
+  <template name="DevModeCommandOff">off</template>
+  <template name="DevModeCommandClr">clr</template>
+  <template name="DevModeCommandHelp">?</template>
+  <template name="DevModeCommandsInVerbs">#drop;#take;#to;#open;#close;#on;#off</template>
+  <template name="DevModePattern"><![CDATA[^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>clr|\?)$]]></template>
+  <template name="DevModeErrorWrongFormat">Unfortunately, this is the wrong format.</template>
+  <template name="DevModeErrorObjectNotRecognised">The object was not detected.</template>
+  <template name="DevModeErrorWrongTyp">That´s the wrong typ.</template>
+  <template name="DevModeErrorWrongKey">The key was not found.</template>
+  <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
+  <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
+  <template name="DevModeExecuteCommand">The command was executed.</template>
+  <template name="DevModeNotActive">The DevMode is not active!</template>
+  <template name="DevModeDescriptionCommands"><![CDATA[<b>Commands</b><br/>#take object<br/>#drop object<br/>#put object1 in object2<br/>#open object<br/>#close object<br/>#on objekt<br/>#off objekt<br/>#to player<br/>#go raum<br/><br/><i>Unlike the commands in the game, they are executed directly and without detours via intercept scripts.</i><br/><br/><b>Expressions</b><br/>#object1.attribut=object2.attribut (attribute assignment of another object)<br/>#object.attribut=true/false (boolean)<br/>#?object.attribut (set true)<br/>#!object.attribut (set false)<br/>#object.attribut="value" (string)<br/>#object.attribut=15 (integer)<br/>#object.attribut=25.55 (double)<br/>#object.attribut=[item1;item2;item3] (list)<br/>#object.attribut[]=element (add element to list)<br/>#object.attribut=[] (create new list)<br/>#object.attribut={key1:item1;key2:item2;key3:item3} (dictionary)<br/>#object.attribut{key}=element (add or overwrite element to dictionary)<br/>#object.attribut={} (create new dictionary)<br/>#object.attribut (read attribute)<br/><br/><b>Extras</b><br/>#clr (clear screen)<br/>#? (help)<br/># (close game)]]></template>
+  <template name="DevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello";"World";"!"]) and Dictionarys ({H:"Hello";W:"World"}.)]]></template>
+
 </library>

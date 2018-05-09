@@ -64,10 +64,10 @@ Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries
 
 
 
-`DictionaryContains`
+Dictionary Contains?
 ---------------
 
-Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not. The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
+Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not (unlike lists). The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
 
 To check a key is not already in use before adding to the dictionary:
 ```
@@ -81,6 +81,20 @@ if (DictionaryContains(dict, obj.name)) {
   dictionary remove(dict, obj.name, obj)
 }
 ```
+Alternatively we can use the `in` operator, which is rather less typing!
+```
+if (not obj.name in dict) {
+  dictionary add(dict, obj.name, obj)
+}
+```
+
+```
+if (obj.name in dict) {
+  dictionary remove(dict, obj.name, obj)
+}
+```
+
+By the way, the reason there is a `DictionaryContains` function is to make it easier to use dictionaries via the GUI interface.
 
 Other functions
 ---------------

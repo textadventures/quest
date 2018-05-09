@@ -1,5 +1,5 @@
 <library>
-  <include ref="EditorEnglish.aslx"/>
+  <include ref="English.aslx"/>
   <template name="LanguageId">nb</template>
   
   <template name="UnresolvedObject">Kan ikke se det.</template>
@@ -320,4 +320,5 @@
       }
     }
   </function>
+ 
 </library>

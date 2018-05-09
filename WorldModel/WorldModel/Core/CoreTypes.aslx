@@ -41,12 +41,13 @@
     <customstatuspane type="boolean">false</customstatuspane>
     <panestheme>Classic</panestheme>
     <shadowbox type="boolean">false</shadowbox>
+    <respondtogridclicks type="boolean">false</respondtogridclicks>
     <commandcursor>&gt;</commandcursor>
     <moneyformat>$!</moneyformat>
     <classiclocation/>
     <turnoffsavebutton type="boolean">false</turnoffsavebutton>
     <mapexitwidth type="int">1</mapexitwidth>
-    <mapexitcolour>black</mapexitcolour>
+    <mapexitcolour>Black</mapexitcolour>
     
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
@@ -90,7 +91,89 @@
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
-    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
+    <nohtmllog type="boolean">false</nohtmllog>
+    <notranscript type="boolean">false</notranscript>
+    <suppressturnscripts/>
+    <!-- Scripts used by the text processor -->
+    <textprocessorcommands type="scriptdictionary">
+      <item key="if ">
+        game.textprocessorcommandresult = ProcessTextCommand_If (section, data)
+      </item>
+      <item key="either ">
+        game.textprocessorcommandresult = ProcessTextCommand_Either (section, data)
+      </item>
+      <item key="here ">
+        game.textprocessorcommandresult = ProcessTextCommand_Here (section, data)
+      </item>
+      <item key="nothere ">
+        game.textprocessorcommandresult = ProcessTextCommand_Here (section, data)
+      </item>
+      <item key="popup:">
+        game.textprocessorcommandresult = ProcessTextCommand_Popup (section, data)
+      </item>
+      <item key="i:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="b:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="s:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="u:">
+        game.textprocessorcommandresult = ProcessTextCommand_Format (section, data)
+      </item>
+      <item key="colour:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="color:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="back:">
+        game.textprocessorcommandresult = ProcessTextCommand_Colour (section, data)
+      </item>
+      <item key="object:">
+        game.textprocessorcommandresult = ProcessTextCommand_Object (section, data)
+      </item>
+      <item key="command:">
+        game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
+      </item>
+      <item key="page:">
+        game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
+      </item>
+      <item key="exit:">
+        game.textprocessorcommandresult = ProcessTextCommand_Exit (section, data)
+      </item>
+      <item key="once:">
+        game.textprocessorcommandresult = ProcessTextCommand_Once (section, data)
+      </item>
+      <item key="notfirst:">
+        game.textprocessorcommandresult = ProcessTextCommand_NotFirst (section, data)
+      </item>
+      <item key="random:">
+        game.textprocessorcommandresult = ProcessTextCommand_Random (section, data)
+      </item>
+      <item key="rndalt:">
+        game.textprocessorcommandresult = ProcessTextCommand_RandomAlias (section, data)
+      </item>
+      <item key="img:">
+        game.textprocessorcommandresult = ProcessTextCommand_Img (section, data)
+      </item>
+      <item key="counter:">
+        game.textprocessorcommandresult = ProcessTextCommand_Counter (section, data)
+      </item>
+      <item key="select:">
+        game.textprocessorcommandresult = ProcessTextCommand_Select (section, data)
+      </item>
+      <item key="eval:">
+        game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
+      </item>
+      <item key="=">
+        game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
+      </item>
+    </textprocessorcommands>
+    <feature_devmode type="boolean">false</feature_devmode>
   </type>
 
   <type name="theme_novella">
@@ -154,6 +237,7 @@
     <gender>[NeutralGender]</gender>
     <article>[NeutralArticle]</article>
     <possessive>[NeutralPossessive]</possessive>
+    <wornmodifier>[NeutralWornModifier]</wornmodifier>
     <isopen type="boolean">false</isopen>
     <open type="boolean">false</open>
     <close type="boolean">false</close>
@@ -219,6 +303,7 @@
     <grid_bordersides type="int">15</grid_bordersides>
     <grid_render type="boolean">false</grid_render>
     <grid_label type="string"></grid_label>
+    <grid_label_colour type="string">Black</grid_label_colour>
     <grid_parent_offset_auto/>
     <grid_parent_offset_x type="int">0</grid_parent_offset_x>
     <grid_parent_offset_y type="int">0</grid_parent_offset_y>
@@ -236,6 +321,8 @@
     <feature_lightdark type="boolean">false</feature_lightdark>
     <visited type="boolean">false</visited>
     <hasbeenmoved type="boolean">false</hasbeenmoved>
+    <timesexamined type="int">0</timesexamined>
+    <not_all type="boolean">false</not_all>
   </type>
 
   <type name="defaultexit">
@@ -351,34 +438,122 @@
     <pattern type="simplepattern"></pattern>
   </type>
 
-  <type name="male">
+  <type name="defaultverb">
+    <separator>[VerbObjectSeparator]</separator>
+    <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
+    <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
+    <multiobjectmenuempty>[NoObjectsAvailable]</multiobjectmenuempty>
+    <script type="script">
+      <![CDATA[
+      if (not IsDefined("object2")) {
+        object2 = null
+      }
+      
+      switch (TypeOf(object, this.property)) {
+        case ("script") {
+          if (object2 = null) {
+            do (object, this.property)
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("string") {
+          if (object2 = null) {
+            msg (GetString(object, this.property))
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("scriptdictionary") {
+          if (object2 <> null) {
+            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
+          }
+          else {
+            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
+            excludelist = NewObjectList()
+            list add (excludelist, game.pov)
+            list add (excludelist, object)
+            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+            if (ListCount(candidates) = 0) {
+              msg (this.multiobjectmenuempty)
+            }
+            else {
+              game.pov.multiverb = this.property
+              game.pov.multiverbobject = object
+              game.pov.multiverbobjectdefault = this.multiobjectdefault
+              ShowMenu (this.multiobjectmenu, candidates, true) {
+                if (result <> null) {
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
+                  game.pov.multiverb = null
+                  game.pov.multiverbobject = null
+                  game.pov.multiverbobjectdefault = null
+                }
+              }
+            }
+          }
+        }
+        case ("null") {
+          if (this.defaulttext <> null) {
+            msg (this.defaulttext)
+          }
+          else if (this.defaulttemplate <> null) {
+            msg (DynamicTemplate(this.defaulttemplate, object))
+          }
+          else if (this.defaultexpression <> null) {
+            params = NewDictionary()
+            dictionary add (params, "object", object)
+            msg (Eval(this.defaultexpression, params))
+          }
+          else {
+            error ("No verb response defined")
+          }
+        }
+        default {
+          error ("No verb response defined")
+        }
+      }
+      ]]>
+    </script>
+  </type>
+
+  <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
+  </type>
+
+  <type name="male">
+    <inherit name="npc_type" />
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
     <possessive>[MalePossessive]</possessive>
+    <wornmodifier>[MaleWornModifier]</wornmodifier>
   </type>
   
   <type name="namedmale">
     <inherit name="male" />
-    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
   </type>
 
   <type name="female">
+    <inherit name="npc_type" />
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
     <possessive>[FemalePossessive]</possessive>
+    <wornmodifier>[FemaleWornModifier]</wornmodifier>
   </type>
   
   <type name="namedfemale">
     <inherit name="female" />
-    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
   </type>
 
   <type name="plural">
     <gender>[NeutralPluralGender]</gender>
     <article>[NeutralPluralArticle]</article>
     <possessive>[NeutralPluralPossessive]</possessive>
+    <wornmodifier>[NeutralPluralWornModifier]</wornmodifier>
   </type>
 
   <type name="maleplural">
@@ -386,6 +561,7 @@
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
     <possessive>[MalePluralPossessive]</possessive>
+    <wornmodifier>[MalePluralWornModifier]</wornmodifier>
   </type>
 
   <type name="femaleplural">
@@ -393,6 +569,7 @@
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
     <possessive>[FemalePluralPossessive]</possessive>
+    <wornmodifier>[FemalePluralWornModifier]</wornmodifier>
   </type>
 
   <type name="openable">

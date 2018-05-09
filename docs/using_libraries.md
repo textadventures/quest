@@ -12,7 +12,7 @@ Libraries allow you to reuse elements in multiple games. That might be [object t
 
 To see what these libraries add to your game, go to the bottom left of the Quest GUI, click on Filter, and select Show Library Elements. You will see that a shed load of stuff appears in the hierarchy on the left. Everything in grey has come from a library, and if you click on it, Quest will tell you what library in a yellow banner across the top. Core.aslx adds most of the functions, all the types, commands and verbs, while English.aslx adds the templates (some of the more fundamental functions and all script commands are built-in).
 
-![](Showlibraryelements.png "Showlibraryelements.png")
+![](images/Showlibraryelements.png "Showlibraryelements.png")
 
 
 Where to find libraries
@@ -20,7 +20,7 @@ Where to find libraries
 
 You can find libraries:
 
-- [User submitted libraries](libriries.html)
+- [User submitted libraries](libraries.html)
 
 - [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
 

@@ -1,48 +1,399 @@
 ﻿<library>
-  <function name="CompareNames" parameters="name, value, obj, fullmatches, partialmatches">
-    if (name = value) {
-      if (not ListContains(fullmatches, obj)) {
-        list add (fullmatches, obj)
+
+
+
+
+  <!--
+  This is where command handling starts, and is called from the Quest sub-system.
+  command is the text.
+  metadata is a dictionary; if the player types a command or clicks the compass, it is empty,
+      if she clicks a link or on the pane, it has the name of the object that was clicked on
+      as the key, and the object name as the value.
+  This does some housekeeping, including breaking the command up on . if necessary.
+  For multiple commands, HandleNextCommandQueueItem is called recursively to iterate through them.
+  Either way HandleSingleCommand is called for each command.
+  -->
+  <function name="HandleCommand" parameters="command, metadata">
+    <![CDATA[
+    handled = false
+    if (game.menucallback <> null) {
+      if (HandleMenuTextResponse(command)) {
+        handled = true
+      }
+      else {
+        if (game.menuallowcancel) {
+          ClearMenu
+        }
+        else {
+          handled = true
+        }
+      }
+    }
+    if (not handled) {
+      StartTurnOutputSection
+      if (StartsWith (command, "*")) {
+        // Modified by KV to bypass turn scripts and turn counts, and to print "Noted."
+        game.notarealturn = true
+        game.suppressturnscripts = true
+        msg ("")
+        msg (SafeXML (command))
+        msg("Noted.")
+      }
+      else {    
+        shownlink = false
+        if (game.echocommand) {
+          if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
+            foreach (key, metadata) {
+              if (EndsWith(command, key)) {
+                objectname = StringDictionaryItem(metadata, key)
+                object = GetObject(objectname)
+                if (object <> null) {
+                  msg ("")
+                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}" )
+                  shownlink = true
+                }
+              }
+            }
+          }
+          if (not shownlink) {
+            msg ("")
+            OutputTextRaw ("&gt; " + SafeXML(command))
+          }
+        }
+        if (game.command_newline) {
+          msg ("")
+        }
+        game.pov.commandmetadata = metadata
+        if (game.multiplecommands){		
+          commands = Split(command, ".")
+          if (ListCount(commands) = 1) {
+            game.pov.commandqueue = null
+            HandleSingleCommand (Trim(command))
+          }
+          else {
+            game.pov.commandqueue = commands
+            HandleNextCommandQueueItem
+          }
+		    }
+        else {
+          game.pov.commandqueue = null
+          HandleSingleCommand (Trim(command))	
+        }		
+      }
+    }
+    ]]>
+  </function>
+
+  
+  <!--
+  Recursively iterates through each command in the input string, calling HandleSingleCommand
+  (which in turn calls this).
+  The whole parser system is built of functions recursively calling each other, making it very hard to follow!
+  Unfortunately this is necessary to allow for disambiguation with ShowMenu, which is non-blocking.
+  -->
+  <function name="HandleNextCommandQueueItem">
+    if (TypeOf(game.pov, "commandqueue") = "stringlist") {
+      queuelength = ListCount(game.pov.commandqueue)
+      if (queuelength > 0) {
+        thiscommand = Trim(StringListItem(game.pov.commandqueue, 0))
+        if (queuelength = 1) {
+          game.pov.commandqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.commandqueue, i))
+          }
+          game.pov.commandqueue = newqueue
+        }
+        if (LengthOf(thiscommand) > 0) {
+          HandleSingleCommand (thiscommand)
+        }
+        else {
+          HandleNextCommandQueueItem
+        }
+      }
+    }
+  </function>
+
+  
+  <!--
+  Handles a single command
+  -->
+  <function name="HandleSingleCommand" parameters="command">
+    <![CDATA[
+    if (LCase(command) = "[Again1]" or LCase(command) = "[Again2]") {
+      // First handle AGAIN
+      if (not game.pov.currentcommand = null) {
+        HandleSingleCommand(game.pov.currentcommand)
+      }
+      else {
+        msg ("[NothingToRepeat]")
       }
     }
     else {
-      if (StartsWith(name, value)) {
-        if (not ListContains(partialmatches, obj)) {
-          list add (partialmatches, obj)
+      // Check through all commands for any that match
+      candidates = NewObjectList()
+      foreach (cmd, ScopeCommands()) {
+        if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+          list add (candidates, cmd)
         }
       }
-      else {
-        // check if input matches the start of any word in the name
-        if (Instr(name, " " + value) > 0) {
-          if (not ListContains(partialmatches, obj)) {
-            list add (partialmatches, obj)
+      
+      maxstrength = -1
+      thiscommand = null
+          
+      // Pick the best match
+      foreach (candidate, candidates) {
+        strength = GetMatchStrength(candidate.pattern, command, candidate.name)
+        // favour commands defined later, so an author can override a library command...
+        if (strength >= maxstrength) {
+          // ... except if the command defined later (candidate) has no parent, and the current best
+          // match (thiscommand) does have a parent. We want to favour any commands defined in rooms
+          // over global candidates.
+          skip = false
+          if (thiscommand <> null) {
+            if (thiscommand.parent <> null and candidate.parent = null) {
+              skip = true
+            }
+          }
+          if (not skip) {
+            thiscommand = candidate
+            maxstrength = strength
           }
         }
       }
-    }
-  </function>
-  
-  <!--
-  This was previously used in disambiguation, but is no longer, as ShowMenu
-  can now take an object list. This makes it obsolete, as I cannot imagine
-  anyone using it anywhere else. It is therefore deprecated as of Quest 5.7.
-  -->
-  <function name="GenerateMenuChoices" parameters="dictionary, objects">
-    foreach (obj, objects) {
-      if (not DictionaryContains(dictionary, obj.name)) {
-        dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
+      
+      if (thiscommand = null) {
+        if (HasScript(game, "unresolvedcommandhandler")) {
+          params = NewDictionary()
+          dictionary add(params, "command", command)
+          do (game, "unresolvedcommandhandler", params)
+        } else {
+          msg (Template("UnrecognisedCommand"))
+        }
+        HandleNextCommandQueueItem
+      }
+      else {
+        varlist = Populate(thiscommand.pattern, command, thiscommand.name)
+        HandleSingleCommandPattern (command, thiscommand, varlist)
       }
     }
+    ]]>
   </function>
+
   
   <!--
+  By the time we get here, we have a single command and have matched it to a command object (thiscommand).
+  We have a list of objects to match to (object1="book"; object2="table"), but now have to match the word to the object
+  This does some housekeeping, then calls ResolveNextName to kick off the process
+  Note: This is called by the OOPS command, and I suspect that is why varlist is sent as an attribute
+  
+  Say the command is PUT THE HAT IN BOX, and the pattern in put #object1# in #object2#.
+  varlist is object1=THE HAT;object2=BOX
+  -->
+  <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
+    // current command string
+    game.pov.currentcommand = command
+    
+    // current command object
+    game.pov.currentcommandpattern = thiscommand
+    
+    // string dictionary of variables, e.g. object1="book"; object2="table"
+    game.pov.currentcommandvarlist = varlist
+    
+    // string list of variables left to resolve
+    game.pov.currentcommandvarlistqueue = NewStringList()
+    foreach (key, varlist) {
+      list add (game.pov.currentcommandvarlistqueue, key)
+    }
+    
+    // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
+    game.pov.currentcommandresolvedelements = NewDictionary()
+    
+    // list of resolved elements, e.g. book_object; table_object
+    game.pov.currentcommandresolvedobjects = NewObjectList()
+    
+    game.pov.currentcommandunresolvedobject = null
+    game.pov.currentcommandpendingvariable = null
+    ResolveNextName
+  </function>
+  
+  
+  <!--
+  Tries to resolve the next item in the list of objects/exts/texts with ResolveName
+  If an object is recognised AddToResolvedNames is called, and UnresolvedCommand otherwise.
+  Then calls itself to do the next object (actually AddToResolvedNames does that).
+  If there are no more to resolve, then this function will call the script
+  on the command, and then call HandleNextCommandQueueItem to handle the next command.
+  The dictionary game.pov.currentcommandresolvedelements is used to hold the resolved objects,
+  and this is passed to the command script.
+  Say the command is PUT THE HAT IN BOX, and the pattern is put #object1# in #object2#.
+  The first iteration, var will be "object1" and value will be "THE HAT", and ResolveName
+  will be sent "object1, "THE HAT", "object".
+  Alternatively, if the command has a "multipleobjects" script, ResolveNameList is used
+  (this is for GET and DROP, which can handle GET ALL, GET THIS AND THAT, etc.).
+  -->
+  <function name="ResolveNextName">
+    <![CDATA[
+    resolvedall = false
+    queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
+    if (queuetype = "stringlist") {
+      queuelength = ListCount(game.pov.currentcommandvarlistqueue)
+      if (queuelength > 0) {
+      
+        // Pop next variable off the queue
+        var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
+        if (queuelength = 1) {
+          game.pov.currentcommandvarlistqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.currentcommandvarlistqueue, i))
+          }
+          game.pov.currentcommandvarlistqueue = newqueue
+        }
+        
+        // Resolve variable
+        value = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+        
+        if (value <> "") {
+          result = null
+          resolvinglist = false
+          
+          // This is to resolve issue 626
+          if (StartsWith(var, "objectexit")) {
+            result = ResolveName(var, value, "exit")
+          }
+          if (result = null) {
+            if (StartsWith(var, "object")) {
+              if (HasScript(game.pov.currentcommandpattern, "multipleobjects")) {
+                game.pov.currentcommandpendingobjectlist = NewObjectList()
+                game.pov.currentcommandpendingvariable = var
+                do(game.pov.currentcommandpattern, "multipleobjects")
+                ResolveNameList(value, "object")
+                resolvinglist = true
+              }
+              else {
+                result = ResolveName(var, value, "object")
+              }
+            }
+            else if (StartsWith(var, "exit")) {
+              result = ResolveName(var, value, "exit")
+            }
+            else if (StartsWith(var, "text")) {
+              result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+            }
+            else {
+              error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
+            }
+          }
+        
+          // at this point, ResolveName has returned - either an object name, unresolved, or pending
+            
+          if (result = null) {
+            if ((not resolvinglist) and LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
+              UnresolvedCommand(value, var)
+            }
+          }
+          else {
+            AddToResolvedNames(var, result)
+          }
+        }
+        else {
+          ResolveNextName
+        }
+      }
+      else {
+        resolvedall = true
+      }
+    }
+    else if (queuetype = "null") {
+      resolvedall = true
+    }
+    else {
+      error ("Invalid queue type")
+    }
+    
+    if (resolvedall) {
+      // All the objects have been resolved, so now we can actually do the command
+      // TO DO: game.lastobjects should be game.pov.lastobjects
+      game.lastobjects = game.pov.currentcommandresolvedobjects
+      
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
+      }
+      
+      if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
+        if (LengthOf(game.pov.currentcommand) > 0) {
+          start transaction (game.pov.currentcommand)
+        }
+      }
+      if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
+        // TO DO: game.unresolved* should be game.pov.unresolved*
+        game.unresolvedcommand = null
+        game.unresolvedcommandvarlist = null
+        game.unresolvedcommandkey = null
+      }
+      if (HasScript(game.pov.currentcommandpattern, "script")) {
+        // This is the bit that actually runs the commands
+        do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
+      }
+      HandleNextCommandQueueItem
+    }
+    ]]>
+  </function>
+
+  
+  <!--
+  Adds var and result to game.pov.currentcommandresolvedelements
+  Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
+  The first iteration, var will be "object1" and result will be the pink_hat object.
+  The dictionary game.pov.currentcommandresolvedelements will get sent to the command script with
+  object1=pink_hat.
+  In addition, result is added to game.pov.currentcommandresolvedobjects.
+  Calls ResolveNextName when done to move to the iteration.
+  -->
+  <function name="AddToResolvedNames" parameters="var, result">
+    if (TypeOf(result) = "object") {
+      if (result.type = "object") {
+        list add (game.pov.currentcommandresolvedobjects, result)
+      }
+    }
+    else if (TypeOf(result) = "objectlist") {
+      foreach (obj, result) {
+        if (obj.type = "object") {
+          list add (game.pov.currentcommandresolvedobjects, obj)
+        }
+      }
+    }
+    dictionary add(game.pov.currentcommandresolvedelements, var, result)
+    ResolveNextName
+  </function>
+
+  
+  <!--
+  Tries to match an object to a name, returning the object if successful.
+  Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
+  The first iteration, variable will be "object1", value is "THE HAT", objtype is "object"
+  and the result will be the pink_hat object.
+  
+  I think the first bit is a shortcut for when the player clicks a link with the object name, quickly matching
+  against values in a dictionary.
+  Uses ResolveNameInternal to actually find the object, after putting the text in lowercase.
+  Also tries after stripping of prefixes (eg "the")
+  
+  Note that variable is what was previously called var!
+  
+  This is is the ortiginal comment for this function - I do not understand what it means about variable:
+  
   ResolveName function
   Parameters: variable    - for single object commands. If we show a menu, key to populate in game.pov.currentcommandresolvedelements.
                             Leave blank for multi-object commands. In this case, we add the object to game.pov.currentcommandpendingobjectlist
               value       - string to resolve to an object e.g. "book", "south"
               objtype     - object type, must be "object" or "exit"
   -->
-
   <function name="ResolveName" parameters="variable, value, objtype" type="object">
     <![CDATA[
     found = false
@@ -83,11 +434,21 @@
     ]]>
   </function>
   
+  
+  <!--
+  Tries to match an object to a name, returning the object if successful.
+  Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
+  The first iteration, variable will be "object1", value is "hat", objtype is "object"
+  and the result will be the pink_hat object.
+  
+  Uses GetScope get a list of possible objects from the right location, and uses ScopeVisible as a backup if that fails
+  passing all these to ResolveNameFromList.
+  -->
   <function name="ResolveNameInternal" parameters="variable, value, objtype" type="object">
     <![CDATA[
     game.pov.currentcommandmultiobjectpending = false
     
-    scope = GetScope(objtype)
+    scope = GetScope(variable, value, objtype)
     if (HasString(game.pov.currentcommandpattern, "scope")) {
       secondaryscope = ScopeVisible()
     }
@@ -100,41 +461,15 @@
   </function>
 
 
-  
-  <function name="GetScope" parameters="objtype" type="objectlist">
-    if (HasString(game.pov.currentcommandpattern, "scope")) {
-      //msg("game.pov.currentcommandpattern.scope=" + game.pov.currentcommandpattern.scope)
-      if (game.pov.currentcommandpattern.scope = "inventory") {
-        return (ScopeInventory())
-      }
-      if (game.pov.currentcommandpattern.scope = "notheld") {
-        return (ScopeVisibleNotHeld())
-      }
-      if (game.pov.currentcommandpattern.scope = "all") {
-        return (ScopeVisible())
-      }
-      obj = GetObject(game.pov.currentcommandpattern.scope)
-      if (not obj = null) {
-        return (GetAllChildObjects(obj))
-      }
-      if (HasObject(player.parent, game.pov.currentcommandpattern.scope)) {
-        obj = GetAttribute(player.parent, game.pov.currentcommandpattern.scope)
-        return (GetAllChildObjects(obj))
-      }      
-    }
-    if (objtype = "object") {
-      return(ScopeVisible())
-    }
-    else if (objtype = "exit") {
-      return(ScopeExits())
-    }
-    else {
-      // Should never get here!
-      return (null)
-    }
-  </function>
-
-  
+  <!--
+  Tries to match an object to a name, returning the object if successful.
+  Looks for the object in scope first, and if that fails in secondaryscrope.
+  Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
+  The first iteration, variable will be "object1", value is "hat", objtype is "object"
+  and the result will be the pink_hat object.
+  Maintains a list of matches and partial matches, using CompareNames with each object to assign to one or the other
+  (or neither). If nothing is found in scope, it uses secondaryscope.
+  -->
   <function name="ResolveNameFromList" parameters="variable, value, objtype, scope, secondaryscope" type="object">
     <![CDATA[
     value = Trim(LCase(value))
@@ -184,7 +519,7 @@
       return (null)
     }
     else {
-      candidates = ListCompact(fullmatches + partialmatches)
+      candidates = ListCompact(ListCombine(fullmatches, partialmatches))
       
       if (LengthOf(variable) > 0) {
         // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
@@ -216,7 +551,21 @@
     ]]>
   </function>
   
+  
   <!--
+  An alternative way to match objects to name. This is used for commands with a "multipleobjects" script, which will return
+  the correct scope.
+  For some reason this system puts the name into game.pov.currentcommandpendingvariable instead of passing it around as var.
+  Say the command is GET THE HAT AND THE BOX, and there is an object pink_hat.
+  Now value is "THE HAT AND THE BOX", objtype is "object".
+  The scope is a list of objects in the location as given by the "multipleobjects" script of the get command, and is used if the player typed GET ALL.
+  Note that the "multipleobjects" must create an object list called game.pov.currentcommandpendingobjectscope populated with candidate objects.
+  The command script should check if objects is empty and multiple is true and if so give a message.
+  Currently this applies to GET, TAKE, WEAR and REMOVE.
+  Not sure if objtype is needed; is this relevant for anything other than objects?
+
+  Original comments:
+  
   ResolveNameList function
   Parameters: value     - value to resolve into the object list e.g. "book", "all", "newspaper, book and magazine"
               scope     - objectlist to use if value is "all"
@@ -225,12 +574,10 @@
   Populates game.pov.currentcommandpendingobjectlist with the object names.
   Adds "multiple" entry to game.pov.currentcommandresolvedelements if there is more than one element.
   -->
-
-  <function name="ResolveNameList" parameters="value, scope, objtype">
+  <function name="ResolveNameList" parameters="value, objtype">
     <![CDATA[
     game.pov.currentcommandpendingobjectlist = NewObjectList()
     game.pov.currentcommandpendingobjectlistunresolved = NewStringList()
-    game.pov.currentcommandpendingobjectscope = scope
     game.pov.currentcommandpendingobjecttype = objtype
     
     inputlist = Split(value, ",")
@@ -244,6 +591,12 @@
     ]]>
   </function>
 
+  
+  <!--
+  Tries to resolve the next name in the list. If there are more, calls ResolveNameListItem to do the next,
+  which in turn calls this.
+  If they are all done, calls ResolveNameListItemFinished
+  -->
   <function name="ResolveNextNameListItem">
     resolvedall = false
     if (TypeOf(game.pov, "currentcommandpendingobjectlistunresolved") = "stringlist") {
@@ -276,6 +629,12 @@
     }
   </function>
 
+  
+  <!--
+  Tries to resolve the next name in the list. If there are more, calls ResolveNextNameListItem to do the next,
+  which in turn calls this.
+  If they are all done, calls ResolveNameListItemFinished
+  -->
   <function name="ResolveNameListItem" parameters="value">
     <![CDATA[
     if (ListContains(game.allobjects, value)) {
@@ -298,6 +657,10 @@
     ]]>
   </function>
 
+  
+  <!--
+  Calls AddToResolvedNames now they have all been done.
+  -->
   <function name="ResolveNameListItemFinished" parameters="result">
     <![CDATA[
     if (ListCount(result) > 1) {
@@ -310,300 +673,22 @@
     ]]>
   </function>
 
-  <function name="HandleCommand" parameters="command, metadata">
-    <![CDATA[
-    handled = false
-    if (game.menucallback <> null) {
-      if (HandleMenuTextResponse(command)) {
-        handled = true
-      }
-      else {
-        if (game.menuallowcancel) {
-          ClearMenu
-        }
-        else {
-          handled = true
-        }
-      }
-    }
-    if (not handled) {
-      StartTurnOutputSection
-      if (StartsWith (command, "*")) {
-        msg ("")
-        msg (SafeXML (command))
-      }
-      else {    
-        shownlink = false
-        if (game.echocommand) {
-          if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
-            foreach (key, metadata) {
-              if (EndsWith(command, key)) {
-                objectname = StringDictionaryItem(metadata, key)
-                object = GetObject(objectname)
-                if (object <> null) {
-                  msg ("")
-                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}" )
-                  shownlink = true
-                }
-              }
-            }
-          }
-          if (not shownlink) {
-            msg ("")
-            OutputTextRaw ("&gt; " + SafeXML(command))
-          }
-        }
-        if (game.command_newline) {
-          msg ("")
-        }
-        game.pov.commandmetadata = metadata
-        if (game.multiplecommands){		
-          commands = Split(command, ".")
-          if (ListCount(commands) = 1) {
-            game.pov.commandqueue = null
-            HandleSingleCommand (Trim(command))
-          }
-          else {
-            game.pov.commandqueue = commands
-            HandleNextCommandQueueItem
-          }
-		}
-        else {
-          game.pov.commandqueue = null
-          HandleSingleCommand (Trim(command))	
-        }		
-      }
-    }
-    ]]>
-  </function>
+  
+  
+  
+  
 
-  <function name="HandleNextCommandQueueItem">
-    if (TypeOf(game.pov, "commandqueue") = "stringlist") {
-      queuelength = ListCount(game.pov.commandqueue)
-      if (queuelength > 0) {
-        thiscommand = Trim(StringListItem(game.pov.commandqueue, 0))
-        if (queuelength = 1) {
-          game.pov.commandqueue = null
-        }
-        else {
-          newqueue = NewStringList()
-          for (i, 1, queuelength - 1) {
-            list add (newqueue, StringListItem(game.pov.commandqueue, i))
-          }
-          game.pov.commandqueue = newqueue
-        }
-        if (LengthOf(thiscommand) > 0) {
-          HandleSingleCommand (thiscommand)
-        }
-        else {
-          HandleNextCommandQueueItem
-        }
-      }
-    }
-  </function>
 
-  <function name="HandleSingleCommand" parameters="command">
-    <![CDATA[
-    candidates = NewObjectList()
-    foreach (cmd, ScopeCommands()) {
-      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
-        list add (candidates, cmd)
-      }
-    }
-    
-    maxstrength = -1
-    thiscommand = null
-        
-    foreach (candidate, candidates) {
-      strength = GetMatchStrength(candidate.pattern, command, candidate.name)
-      // favour commands defined later, so an author can override a library command...
-      if (strength >= maxstrength) {
-        // ... except if the command defined later (candidate) has no parent, and the current best
-        // match (thiscommand) does have a parent. We want to favour any commands defined in rooms
-        // over global candidates.
-        skip = false
-        if (thiscommand <> null) {
-          if (thiscommand.parent <> null and candidate.parent = null) {
-            skip = true
-          }
-        }
-        if (not skip) {
-          thiscommand = candidate
-          maxstrength = strength
-        }
-      }
-    }
-    
-    if (thiscommand = null) {
-      if (HasScript(game, "unresolvedcommandhandler")) {
-        params = NewDictionary()
-        dictionary add(params, "command", command)
-        do (game, "unresolvedcommandhandler", params)
-      } else {
-        msg (Template("UnrecognisedCommand"))
-      }
-      HandleNextCommandQueueItem
-    }
-    else {
-      varlist = Populate(thiscommand.pattern, command, thiscommand.name)
-      HandleSingleCommandPattern (command, thiscommand, varlist)
-    }
-    ]]>
-  </function>
 
-  <function name="FinishTurn">
-    RunTurnScripts
-    UpdateStatusAttributes
-    CheckDarkness
-    UpdateObjectLinks
-  </function>
 
-  <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
-    // current command string
-    game.pov.currentcommand = command
-    
-    // current command object
-    game.pov.currentcommandpattern = thiscommand
-    
-    // string dictionary of variables, e.g. object1="book"; object2="table"
-    game.pov.currentcommandvarlist = varlist
-    
-    // string list of variables left to resolve
-    game.pov.currentcommandvarlistqueue = NewStringList()
-    foreach (key, varlist) {
-      list add (game.pov.currentcommandvarlistqueue, key)
-    }
-    
-    // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
-    game.pov.currentcommandresolvedelements = NewDictionary()
-    
-    // list of resolved elements, e.g. book_object; table_object
-    game.pov.currentcommandresolvedobjects = NewObjectList()
-    
-    game.pov.currentcommandunresolvedobject = null
-    game.pov.currentcommandpendingvariable = null
-    ResolveNextName
-  </function>
 
-  <function name="ResolveNextName">
-    <![CDATA[
-    resolvedall = false
-    queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
-    if (queuetype = "stringlist") {
-      queuelength = ListCount(game.pov.currentcommandvarlistqueue)
-      if (queuelength > 0) {
-      
-        // Pop next variable off the queue
-        var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
-        if (queuelength = 1) {
-          game.pov.currentcommandvarlistqueue = null
-        }
-        else {
-          newqueue = NewStringList()
-          for (i, 1, queuelength - 1) {
-            list add (newqueue, StringListItem(game.pov.currentcommandvarlistqueue, i))
-          }
-          game.pov.currentcommandvarlistqueue = newqueue
-        }
-        
-        // Resolve variable
-        value = StringDictionaryItem(game.pov.currentcommandvarlist, var)
-        
-        if (value <> "") {
-          result = null
-          resolvinglist = false
-          
-          if (StartsWith(var, "object")) {
-            if (HasDelegateImplementation(game.pov.currentcommandpattern, "multiple")) {
-              game.pov.currentcommandpendingobjectlist = NewObjectList()
-              game.pov.currentcommandpendingvariable = var
-              ResolveNameList(value, RunDelegateFunction(game.pov.currentcommandpattern, "multiple"), "object")
-              resolvinglist = true
-            }
-            else {
-              result = ResolveName(var, value, "object")
-            }
-          }
-          else if (StartsWith(var, "exit")) {
-            result = ResolveName(var, value, "exit")
-          }
-          else if (StartsWith(var, "text")) {
-            result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
-          }
-          else {
-            error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
-          }
-        
-          // at this point, ResolveName has returned - either an object name, unresolved, or pending
-            
-          if (result = null) {
-            if ((not resolvinglist) and LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
-              UnresolvedCommand(value, var)
-            }
-          }
-          else {
-            AddToResolvedNames(var, result)
-          }
-        }
-        else {
-          ResolveNextName
-        }
-      }
-      else {
-        resolvedall = true
-      }
-    }
-    else if (queuetype = "null") {
-      resolvedall = true
-    }
-    else {
-      error ("Invalid queue type")
-    }
-    
-    if (resolvedall) {
-      // TO DO: game.lastobjects should be game.pov.lastobjects
-      game.lastobjects = game.pov.currentcommandresolvedobjects
-      
-      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
-        dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
-      }
-      
-      if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
-        if (LengthOf(game.pov.currentcommand) > 0) {
-          start transaction (game.pov.currentcommand)
-        }
-      }
-      if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
-        // TO DO: game.unresolved* should be game.pov.unresolved*
-        game.unresolvedcommand = null
-        game.unresolvedcommandvarlist = null
-        game.unresolvedcommandkey = null
-      }
-      if (HasScript(game.pov.currentcommandpattern, "script")) {
-        do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
-      }
-      HandleNextCommandQueueItem
-    }
-    ]]>
-  </function>
-
-  <function name="AddToResolvedNames" parameters="var, result">
-    if (TypeOf(result) = "object") {
-      if (result.type = "object") {
-        list add (game.pov.currentcommandresolvedobjects, result)
-      }
-    }
-    else if (TypeOf(result) = "objectlist") {
-      foreach (obj, result) {
-        if (obj.type = "object") {
-          list add (game.pov.currentcommandresolvedobjects, obj)
-        }
-      }
-    }
-    dictionary add(game.pov.currentcommandresolvedelements, var, result)
-    ResolveNextName
-  </function>
-
+  
+  
+  
+  
+  <!--
+  This is called when an object cannot be resolved
+  -->
   <function name="UnresolvedCommand" parameters="objectname, varname">
     // TO DO: Update names below, we don't need these two variables
     unresolvedobject = objectname
@@ -630,86 +715,10 @@
     game.unresolvedcommandkey = unresolvedkey
   </function>
   
-  <type name="defaultverb">
-    <separator>[VerbObjectSeparator]</separator>
-    <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
-    <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
-    <multiobjectmenuempty>[NoObjectsAvailable]</multiobjectmenuempty>
-    <script type="script">
-      <![CDATA[
-      if (not IsDefined("object2")) {
-        object2 = null
-      }
-      
-      switch (TypeOf(object, this.property)) {
-        case ("script") {
-          if (object2 = null) {
-            do (object, this.property)
-          }
-          else {
-            msg (this.multiobjectdefault)
-          }
-        }
-        case ("string") {
-          if (object2 = null) {
-            msg (GetString(object, this.property))
-          }
-          else {
-            msg (this.multiobjectdefault)
-          }
-        }
-        case ("scriptdictionary") {
-          if (object2 <> null) {
-            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
-          }
-          else {
-            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
-            excludelist = NewObjectList()
-            list add (excludelist, game.pov)
-            list add (excludelist, object)
-            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
-            if (ListCount(candidates) = 0) {
-              msg (this.multiobjectmenuempty)
-            }
-            else {
-              game.pov.multiverb = this.property
-              game.pov.multiverbobject = object
-              game.pov.multiverbobjectdefault = this.multiobjectdefault
-              ShowMenu (this.multiobjectmenu, candidates, true) {
-                if (result <> null) {
-                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
-                  game.pov.multiverb = null
-                  game.pov.multiverbobject = null
-                  game.pov.multiverbobjectdefault = null
-                }
-              }
-            }
-          }
-        }
-        case ("null") {
-          if (this.defaulttext <> null) {
-            msg (this.defaulttext)
-          }
-          else if (this.defaulttemplate <> null) {
-            msg (DynamicTemplate(this.defaulttemplate, object))
-          }
-          else if (this.defaultexpression <> null) {
-            params = NewDictionary()
-            dictionary add (params, "object", object)
-            msg (Eval(this.defaultexpression, params))
-          }
-          else {
-            error ("No verb response defined")
-          }
-        }
-        default {
-          error ("No verb response defined")
-        }
-      }
-      ]]>
-    </script>
-  </type>
-
+  
+  <!--
+  Used in the verb type
+  -->
   <function name="HandleMultiVerb" parameters="object, property, object2, default">
     dictionary = GetAttribute(object, property)
     if (DictionaryContains(dictionary, object2.name)) {
@@ -727,6 +736,178 @@
       }
       else {
         msg (default)
+      }
+    }
+  </function>  
+
+
+  <!--
+  Gets a list of objects to try to match against. Exactly where that list comes from can be
+  determined by an attribute on the command, among other ways.
+  -->
+  <function name="GetScope" parameters="variable, value, objtype" type="list">
+    items = NewObjectList()
+    if (HasString(game.pov.currentcommandpattern, "scope")) {
+      scoping = GetScoping(game.pov.currentcommandpattern.scope, variable)
+      foreach (partscope, Split(scoping, ";")) {
+        switch (partscope) {
+          case ("inventory") {
+            items = ListCombine(items, ScopeInventory())
+          }
+          case ("notheld", "room") {
+            items = ListCombine(items, ScopeVisibleNotHeld()) - game.pov
+          }
+          case ("all") {
+            items = ListCombine(items, ScopeVisible()) - game.pov
+          }
+          case ("container") {
+            items = ListCombine(items, FilterByType(ScopeVisible(), "container_base"))
+          }
+          case ("contents") {
+            foreach (cont, FilterByType(ScopeVisible(), "container_base")) {
+              items = ListCombine(items, GetAllChildObjects(cont))
+            }
+          }
+          case ("world") {
+            items = ListCombine(items, AllObjects())
+          }
+          case ("none") {
+          }
+          default {
+            // The command's "scope" can be the name of an object, or an attribute of the player's parent
+            obj = GetObject(partscope)
+            if (not obj = null) {
+              items = ListCombine(items, GetAllChildObjects(obj))
+            }
+            if (HasObject(game.pov.parent, partscope)) {
+              obj = GetAttribute(game.pov.parent, partscope)
+              items = ListCombine(items, GetAllChildObjects(obj))
+            }
+            else if (HasAttribute(game.pov.parent, partscope)) {
+              attr = GetAttribute(game.pov.parent, partscope)
+              if (TypeOf(attr) = "objectlist") {
+                items = ListCombine (items, attr)
+              }
+            }
+            else if (HasAttribute(game.pov, partscope)) {
+              attr = GetAttribute(game.pov, partscope)
+              if (TypeOf(attr) = "objectlist") {
+                items = ListCombine (items, attr)
+              }
+            }
+          }
+        }
+      }
+    }
+    else if (objtype = "object") {
+      items = ScopeVisible()
+    }
+    else if (objtype = "exit") {
+      items = ScopeExits()
+    }
+    else {
+      // Should never get here!
+      // CHANGE: Should still never get here, but we don't return null.
+      // If we get here somehow, trust user's scripts to define scope.
+    }
+    items = ListCompact(items)
+  
+    // CHANGE: Run the script 'changecommandscope' (if it exists) for the game object, the player's room and
+    //   containing rooms, and the current command. This allows the user to change command scope on a per-location
+    //   or per-command basis
+    // This script gets an "items" list parameter, like `scopebackdrop` script does; but also has parameters
+    //   'command', 'variable', and 'objtype', so the user can adjust their script to give different item lists
+    //   for different commands, or different variables within a command.
+    objectswithscripts = NewObjectList()
+    if (HasScript(game.pov.currentcommandpattern, "changecommandscope")) {
+      list add (objectswithscripts, game.pov.currentcommandpattern)
+    }
+    room = game.pov
+    while (not room = null) {
+      if (HasScript(room, "changecommandscope")) {
+        list add (objectswithscripts, room)
+      }
+      room = room.parent
+    }
+    if (HasScript(game, "changecommandscope")) {
+      list add (objectswithscripts, game)
+    }
+    if (ListCount(objectswithscripts) > 0) {
+      params = NewDictionary()
+      dictionary add (params, "items", items)
+      dictionary add (params, "command", game.pov.currentcommandpattern)
+      dictionary add (params, "variable", variable)
+      dictionary add (params, "objtype", objtype)
+      dictionary add (params, "matched", game.pov.currentcommandresolvedelements)
+      foreach (o, objectswithscripts) {
+        do (o, "changecommandscope", params)
+      }
+      items = ListCompact(items)
+    }
+    return (items)
+  </function>  
+  
+
+  <!--
+  Extracts from the scopestring the bit relevant for this variable.
+  From "object1=nothing|object2=sometext|object3=blank", "object2" is will return "sometext"
+  Returns the string as is if there is no |.
+  Returns "all" if it cannot work out what to do.
+  -->  
+  <function name="GetScoping" parameters="scopestring, variable" type="string">
+    lst = Split(scopestring, "|")
+    if (ListCount(lst) = 1) {
+      return (scopestring)
+    }
+    foreach (s, lst) {
+      if (StartsWith(s, variable + "=")) {
+        return (Mid(s, LengthOf(variable) + 2))
+      }
+    }
+    return ("all")
+  </function>
+
+
+  <!--
+  Compares name (or an object) to value (what the player typed)
+  If they match, obj is added to fullmatches.
+  If value matches the start of any word in name, obj is added to partialmatches.
+  Ensures an obj is only added to a list one, but can be in both lists
+  -->
+  <function name="CompareNames" parameters="name, value, obj, fullmatches, partialmatches">
+    if (name = value) {
+      if (not ListContains(fullmatches, obj)) {
+        list add (fullmatches, obj)
+      }
+    }
+    else {
+      if (StartsWith(name, value)) {
+        if (not ListContains(partialmatches, obj)) {
+          list add (partialmatches, obj)
+        }
+      }
+      else {
+        // check if input matches the start of any word in the name
+        if (Instr(name, " " + value) > 0) {
+          if (not ListContains(partialmatches, obj)) {
+            list add (partialmatches, obj)
+          }
+        }
+      }
+    }
+  </function>
+  
+  
+  <!--
+  This was previously used in disambiguation, but is no longer, as ShowMenu
+  can now take an object list. This makes it obsolete, as I cannot imagine
+  anyone using it anywhere else. It is therefore deprecated as of Quest 5.7.
+  -->
+  <function name="GenerateMenuChoices" parameters="dictionary, objects">
+    msg("WARNING: GenerateMenuChoices is deprecated as ShowMenu can handle lists with objects")
+    foreach (obj, objects) {
+      if (not DictionaryContains(dictionary, obj.name)) {
+        dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
       }
     }
   </function>

@@ -18,6 +18,8 @@ namespace TextAdventures.Quest
         private const string k_dotReplacementString = "___DOT___";
         private const string k_spaceReplacementString = "___SPACE___";
 
+        public static readonly string[] DisallowedAttributes = {"object", "command", "turnscript", "game", "exit", "type", "finish" };
+        
         public static string GetParameter(string script)
         {
             string afterParameter;
@@ -599,13 +601,21 @@ namespace TextAdventures.Quest
         //  - must not start with a number
         //  - must not contain keywords "and", "or" etc.
         //  - can contain spaces, but not at the beginning or end
+        //  - cannot be "object", "finish" etc. (attributes only)
         private static Regex s_validAttributeName = new Regex(@"^[A-Za-z_][\w ]*$");
 
-        public static bool IsValidAttributeName(string name)
+        public static bool IsValidFieldName(string name)
         {
             if (!s_validAttributeName.IsMatch(name)) return false;
             if (name.EndsWith(" ")) return false;
             if (name.Split(' ').Any(w => s_keywords.Contains(w))) return false;
+            return true;
+        }
+
+        public static bool IsValidAttributeName(string name)
+        {
+            if (!IsValidFieldName(name)) return false;
+            if (DisallowedAttributes.Contains(name)) return false;
             return true;
         }
 

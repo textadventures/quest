@@ -38,7 +38,7 @@ See [Translating Quest](guides/translating_quest.html) for full information.
 Technical Overview
 ------------------
 
-![](architecture.png "Architecture")
+![](images/architecture.png "Architecture")
 
 Here are each of the projects you'll find in Quest.sln:
 

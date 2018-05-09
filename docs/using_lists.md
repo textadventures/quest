@@ -7,7 +7,7 @@ title: Using Lists
 
 A list is a sequence of entries in a prescribed order. Each entry is associated with a number, which is its position in the list.
 
-There are three types of lists: string list, object lists and general lists. As you might expect, a string list can only hold strings, and an object list can only hold objects, but a general list can pretty much hold anything.
+There are three types of lists: string lists; object lists; and general lists. As you might expect, a string list can only hold strings, and an object list can only hold objects, but a general list can pretty much hold anything.
 
 To create a list, then, we have three functions:
 ```
@@ -17,9 +17,7 @@ mylist = NewList()
 ```
 It is best practice to use string lists or object lists wherever possible, rather than general lists.
 
-If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes.
-
-
+If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).
 
 
 Adding and removing items
@@ -41,6 +39,22 @@ If you try to add something to a list that is already in the list, it will get a
 
 If you try to remove something from a list that is not there, nothing will happen (no error message or warning is given). If you remove something that is in the list multiple times, only one instance is removed (the first in the list).
 
+
+### When adding or removing fails...
+
+In a certain situation you may find you cannot add or remove an item from a list, and you get this error:
+
+```
+Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
+```
+
+This typically happens when you try to modify the display or inventory verbs, but the list is actually an attribute of the type the object inherits from, rather than the object itself. If you are using the desktop version, you will be able to go to the _Attributes_ tab of the object, and will see that the attribute in question is greyed out.
+
+There are two solutions.
+
+The simplest is to add something to the list in the editor (bottom of the _object_ tab), and then delete it. This will force Quest to add the attribute to the object (you will find it is not in black on the _Attributes_ tab).
+
+The alternative is to give the object a new list, using `NewStringList`, and then add all the values from scratch (or use the `Split` function discussed later).
 
 
 Retrieving from lists
@@ -66,6 +80,13 @@ msg(ListItem(l, 3))
 ```
 The first `msg` prints the number 42, because that is the fourth entry, and 3 is the fourth position, counting zero as the first. When the object `fancy table` is removed from the list, the position of 42 changes; it is now third, and the number 9.23 is fourth.
 
+It is good practice to consider a list as either:
+
+- Static: The list will never have an element removed over the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of exisyting elements).
+
+- Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
+
+
 #### Retrieving from string lists and object Lists
 
 If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.
@@ -75,26 +96,35 @@ If you know that what you are retrieving is a string, you can use `StringListIte
 
 
 
-Retrieving from other lists
-----------------------------
+#### Retrieving from other lists
 
 It can take Quest a moment to work out what the thing is with `ListItem`. Consider this code:
 ```
-if (ListItem(l, 2) = "one") msg("Here")
-if (ListItem(l, 2) = 42) msg("Here")
+if (ListItem(l, 2) = "one") {
+  msg("Here")
+}
+if (ListItem(l, 2) = 42) {
+  msg("Here")
+}
 ```
 The first line is fine, but the second will through an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!
 ```
-if (ListItem(l, 2) = "one") msg("Here")
+if (ListItem(l, 2) = "one") {
+  msg("Here")
+}
 n = ListItem(l, 2)
-if (n = 42) msg("Here")
+if (n = 42) {
+  msg("Here")
+}
 ```
+
+
 
 
 Quick string lists
 -------------------
 
-A quick way to get a string list is the Split command (especially useful for menu options) (the second parameter is the separator, and you can choose anything suitable):
+A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (as of Quest 5.8, this is optional, and if omitted will default to a semi-colon):
 ```
 l1 = Split("one|two|three", "|")
 msg(l1)
@@ -116,8 +146,6 @@ Some other useful functions that return object lists:
 
 
 
-
-
 Iterating
 ----------
 
@@ -129,7 +157,11 @@ foreach(x, l) {
   msg("Entry: " + x)
 }
 ```
-Changing a list whilst in a foreach loop (i.e., adding or removing entries) will cause an error.
+Changing a list whilst in a foreach loop (i.e., adding or removing entries) will cause an error:
+
+```
+Error running script: Collection was modified; enumeration operation may not execute.
+```
 
 One way around that is to add entries you want to remove to another list while you iterate, and then to remove them later. For example, say we have a list of monsters and want to go through it and remove any that are dead, we could do this:
 ```
@@ -154,12 +186,21 @@ The `ListCount` function will return the number of entries in the list. Remember
 msg("My list has " + ListCount(myList) + " things in it.")
 msg("The last entry is at position " + (ListCount(myList) - 1))
 ```
+
 Use `ListContains` to determine if a list contains a specific entry.
 ```
 if (ListContains(myList, player) {
   list remove(myList, player)            
 }
 ```
+Alternatively, you can use the `in` operator:
+```
+if (player in myList) {
+  list remove(myList, player)            
+}
+```
+
+
 The `ListCombine` function will return a new list made up by combining the two given lists. The lists must be of the same type.
 ```
 myBigList = ListCombine(list1, list2)

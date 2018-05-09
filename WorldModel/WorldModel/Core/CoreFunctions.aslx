@@ -72,9 +72,16 @@
   </function>
 
   <function name="CloneObject" parameters="object" type="object">
-    newobject = Clone(object)
+    newobject = ShallowClone(object)
     if (not HasString(object, "alias")) {
       newobject.alias = object.name
+    }
+    if (not HasAttribute(object, "prototype")) {
+      newobject.prototype = object
+    }
+    foreach (o, GetDirectChildren(object)) {
+      o2 = CloneObject (o)
+      MoveObject (o2, newobject)
     }
     return (newobject)
   </function>
@@ -82,6 +89,14 @@
   <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
     newobject = CloneObject(object)
     newobject.parent = newparent
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndInitialise" parameters="object" type="object">
+    newobject = CloneObject(object)
+    if (HasScript(newobject, "_initialise_")) {
+      do (newobject, "_initialise_")
+    }
     return (newobject)
   </function>
 
@@ -146,6 +161,16 @@
     ]]>
   </function>
 
+  
+  <function name="RequestSave">
+    // Deprecated
+    requestsave
+  </function>
+
+  <function name="RequestSpeak" parameters="s">
+    // Deprecated
+    requestspeak (s)
+  </function>
 
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
@@ -219,6 +244,26 @@
     return (s)
   </function>
 
+  <function name="JSSafe" parameters="s" type="string"><![CDATA[
+    s = Replace(s, "\"", "")
+    s = Replace(s, "\'", "")
+    s = Replace(s, " ", "")
+    s = Replace(s, ".", "")
+    s = Replace(s, ",", "")
+    s = Replace(s, "!", "")
+    s = Replace(s, "?", "")
+    s = Replace(s, "-", "")
+    s = Replace(s, "/", "")
+    s = Replace(s, "(", "")
+    s = Replace(s, ")", "")
+    s = Replace(s, "$", "")
+    s = Replace(s, "%", "")
+    s = Replace(s, "&", "")
+    s = Replace(s, "*", "")
+    s = Replace(s, "@", "")
+    return (s)
+  ]]></function>
+  
   <function name="HandleMenuTextResponse" parameters="input" type="boolean">
     <![CDATA[
     handled = false
@@ -313,7 +358,7 @@
     return (true)
   </function>
   
-   <function name="CreateBiExits" parameters="direction, from, to">
+  <function name="CreateBiExits" parameters="dir, from, to">
     create exit (dir, from, to)
     create exit (ReverseDirection(dir), to, from)
   </function>
@@ -486,4 +531,57 @@
     return (l)
   </function>
 
+
+  <!-- Added by KV -->
+
+  <function name="AllRooms" type="objectlist">
+    return (FilterByAttribute(AllObjects(),"isroom",true))
+  </function>
+
+  <function name="DictionaryAdd" parameters="dict, key, val">
+    if (dict = null) {
+      Log ("DictionaryAdd ERROR:  Dictionary does not exist!")
+      return (false)
+    }
+    if ((dict = null) or TypeOf(dict)="object") {
+      error ("DictionaryAdd:  Dictionary does not exist!")
+    }
+    else {
+      if (not DictionaryItem(dict,key) = val) {
+        dictionary remove (dict, key)
+        dictionary add (dict, key, val)
+      }
+    }
+  </function>
+
+  <function name="DictionaryRemove" parameters="dict, key">
+    if (dict = null) {
+      Log ("DictionaryAdd ERROR:  Dictionary does not exist!")
+      return (false)
+    }
+    if (DictionaryContains(dict,key)) {
+      dictionary remove (dict, key)
+    }
+  </function>
+
+  <function name="DbgLog" parameters="txt">
+    if(GetBoolean(game,"debugging")){
+      Log("DEBUGGING:  "+txt)
+    }
+  </function>
+
+  <function name="DbgMsg" parameters="txt">
+    <![CDATA[
+    if(GetBoolean(game,"debugging")){
+      msg("<br/><p style='color:blue;font-weight:bold;'>DEBUGGING:  "+txt+"</p><br/>")
+    }
+  ]]>
+  </function>
+  <function name="DisableTranscript">
+    game.notranscript = true
+    JS.eval("enableTranscript = false;")
+  </function>
+  <function name="DisableHtmlLog">
+    game.nohtmllog = true
+  </function>
 </library>
