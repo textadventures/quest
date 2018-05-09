@@ -474,7 +474,7 @@
  
  
   <editor>
-    <appliesto>speak</appliesto>
+    <appliesto>requestspeak</appliesto>
     <display>Speak: #0</display>
 
     <control>

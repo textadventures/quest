@@ -391,7 +391,7 @@
   </command>
 
   <command name="quit" pattern="[quit]">
-    quit
+    finish
   </command>
 
   <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
@@ -883,22 +883,21 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
-  <command name="save" pattern="[save]">save</command>
 
   <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
   <command name="save">
     <pattern type="string">^save$</pattern>
     <script>
       if (HasAttribute(game, "questplatform")) {
-      if (game.questplatform = "desktop") {
-      RequestSave
+        if (game.questplatform = "desktop") {
+          requestsave
+        }
+        else {
+          JS.saveGame ()
+        }
       }
       else {
-      JS.saveGame ()
-      }
-      }
-      else {
-      RequestSave
+        requestsave
       }
     </script>
   </command>

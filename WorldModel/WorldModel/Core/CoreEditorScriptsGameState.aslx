@@ -44,7 +44,7 @@
   </editor>
   
   <editor>
-    <appliesto>save</appliesto>
+    <appliesto>requestsave</appliesto>
     <display>Save</display>
     <control>
       <controltype>label</controltype>
@@ -52,12 +52,4 @@
     </control>
   </editor>
   
-  <editor>
-    <appliesto>quit</appliesto>
-    <display>Quit</display>
-    <control>
-      <controltype>label</controltype>
-      <caption>Quit</caption>
-    </control>
-  </editor>
 </library>

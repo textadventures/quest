@@ -163,13 +163,14 @@
 
   
   <function name="RequestSave">
-    request(RequestSave, "")
+    // Deprecated
+    requestsave
   </function>
 
   <function name="RequestSpeak" parameters="s">
-    request(Speak, s)
+    // Deprecated
+    requestspeak (s)
   </function>
-
 
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
