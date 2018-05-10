@@ -300,8 +300,8 @@
     <Content Include="Mobile\KeepAlive.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
     <Content Include="App_Data\51Degrees.dat" />
+    <Content Include="packages.config" />
     <Content Include="51Degrees.config" />
     <None Include="Properties\PublishProfiles\*.pubxml" />
     <Content Include="Views\Resume\Index.cshtml" />
