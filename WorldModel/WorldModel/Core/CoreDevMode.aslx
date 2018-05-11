@@ -297,7 +297,7 @@
       if (game.devmode_changepov) setPov (getObjectExt(game.devmode_pov))
       if (game.devmode_changepovpos) setPovPos (getObjectExt(game.devmode_povpos))
       if (game.devmode_setverbs) setVerbs
-      if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
+      if (not game.devmode_setinitscript = null and HasScript(game, "devmode_initscript")) {
         msgdm (Template("EditorGameDevModeStartScript"))
         do (game, "devmode_initscript")
       }
