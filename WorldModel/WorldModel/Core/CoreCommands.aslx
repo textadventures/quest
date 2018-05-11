@@ -961,15 +961,14 @@
             JS.eval ("savingTranscript = true;")
             game.savetranscript = true
             pre = "<hr/>Transcript enabled for:<br/>"
-            table = "<table style='padding:9px;border:1px solid black;'>"
-            table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
+            s = "<b>TITLE: </b>" + game.gamename + "<br/>"
             if (HasAttribute (game, "author")) {
-              table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
+              s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
             }
-            table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
-            table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
-            table = table + "</table>"
-            s = pre + table
+            s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+            s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
+            s = s + "<br/>"
+            s = pre + s
             msg("")
             msg (s)
             msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
