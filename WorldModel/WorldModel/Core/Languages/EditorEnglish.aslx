@@ -1,4 +1,5 @@
 <library type="editor">
+  <template name="EditorGameEnableDevMode">Show Developer Mode options</template>
   <template name="EditorGameDevMode">Developer-Mode</template>
   <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game the developer mode must be deactivated!</template>
   <template name="EditorGameDevModeInfoCommands">Enhanced commands are available in the current game. Enter '#?' to get more information.</template>
@@ -16,11 +17,7 @@
   <template name="EditorGameDevModeOn">Activ</template>
   <template name="EditorGameDevModeOff">Inactiv</template>
   <template name="EditorGameDevModeAttributes">Attributes</template>
-  <template name="EditorGameDevModeActive"><![CDATA[<b>DevMode: Activ</b>]]></template>
-  <template name="EditorGameDevModeChangedPov">DevMode: Change player object.</template>
-  <template name="EditorGameDevModeChangedPovPos">DevMode: Change player position.</template>
-  <template name="EditorGameDevModeChangedAttributes">DevMode: Set attributes.</template>
-  <template name="EditorGameDevModeStartScript">DevMode: Start initialization script.</template>
+  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello";"World";"!"]) and Dictionarys ({H:"Hello";W:"World"}.)]]></template>
   <template name="EditorGBScriptWhenEnteringPage">Script when entering page</template>
   <template name="EditorGBClearScreenBetweenEachPage">Clear screen between each page</template>
   <template name="EditorGBColour">Colour</template>
@@ -927,5 +924,4 @@
   <template name="EditorScriptObjectsHide">Hide</template>
   <template name="EditorScriptObjectsPrint">Print</template>
   <template name="EditorScriptObjectsIf">If</template>
-  <template name="EditorGameEnableDevMode">Show Developer Mode options</template>
 </library>

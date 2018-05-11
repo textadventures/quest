@@ -1,5 +1,5 @@
 define(['state', 'scripts'], function (state, scripts) {   
-    var allowedVersions = [500, 510, 520, 530, 540, 550];
+    var allowedVersions = [500, 510, 520, 530, 540, 550, 580];
     
     var getXmlAttribute = function (node, attributeName) {
         var attribute = node.attributes[attributeName];

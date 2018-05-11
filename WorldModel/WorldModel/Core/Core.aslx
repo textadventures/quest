@@ -216,7 +216,10 @@
     JS.getDivCount ()
     if (not game.pov = null) {
       JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
-    }    
+    }
+    if (game.feature_devmode) {
+      setDevMode
+    }
     InitUserInterface
     if (HasScript(game, "inituserinterface")) {
       do (game, "inituserinterface")

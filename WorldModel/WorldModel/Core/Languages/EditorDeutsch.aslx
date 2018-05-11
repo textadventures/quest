@@ -19,11 +19,7 @@
   <template name="EditorGameDevModeOn">Aktiviert</template>
   <template name="EditorGameDevModeOff">Deaktiviert</template>
   <template name="EditorGameDevModeAttributes">Attributes</template>
-  <template name="EditorGameDevModeActive"><![CDATA[<b>Entwicklermodus: Aktiviert</b>]]></template>
-  <template name="EditorGameDevModeChangedPov">Entwicklermodus: Ändere Spielerobjekt.</template>
-  <template name="EditorGameDevModeChangedPovPos">Entwicklermodus: Ändere Position des Spielers.</template>
-  <template name="EditorGameDevModeChangedAttributes">Entwicklermodus: Setze Attribute.</template>
-  <template name="EditorGameDevModeStartScript">Entwicklermodus: Starte Initialisierungsscript.</template>
+  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Listen (["Hallo";"Welt";"!"]) und Wörterbücher ({H:"Hallo";W:"Welt"} zu erstellen.)]]></template>
   <template name="EditorScriptsTurnScriptsSuppressurnscript">Turn-Skripte unterdrücken</template>
   <template name="EditorGBScriptWhenEnteringPage">Skript starten bei Seitenaufruf</template>
   <template name="EditorGBClearScreenBetweenEachPage">Bildschirm zwischen jeder Seite leeren</template>

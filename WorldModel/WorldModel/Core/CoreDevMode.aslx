@@ -6,7 +6,7 @@
   ****************************************************************************************************
   CoreDevMode - Tool for better testing the game
   by SoonGames, 2018
-  Version 1.01
+  Version 1.1
   ****************************************************************************************************
   Quest-Version: 5.7
   ****************************************************************************************************
@@ -278,30 +278,30 @@
   </function>
 
   <function name="setPov" parameters="obj">
-    msgdm (Template("EditorGameDevModeChangedPov"))
+    msgdm (Template("DevModeChangedPov"))
     setWithoutChange (game, "pov", obj)
   </function>
 
   <function name="setPovPos" parameters="obj">
-    msgdm (Template("EditorGameDevModeChangedPovPos"))
+    msgdm (Template("DevModeChangedPovPos"))
     setWithoutChange (game.pov, "parent", obj)
   </function>
 
   <function name="setDevMode">
-    if (HasAttribute(game, "devmode_active")) {
-      msgdm (Template("EditorGameDevModeActive"))
-      if (HasAttribute(game, "devmode_attributes") and not DictionaryCount(game.devmode_attributes) = 0) {
-        foreach(key, game.devmode_attributes) Expression (key + "=" + ToString(DictionaryItem(game.devmode_attributes, key)))
-        msgdm (Template("EditorGameDevModeChangedAttributes"))
-      }
-      if (game.devmode_changepov) setPov (getObjectExt(game.devmode_pov))
-      if (game.devmode_changepovpos) setPovPos (getObjectExt(game.devmode_povpos))
-      if (game.devmode_setverbs) setVerbs
-      if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
-        msgdm (Template("EditorGameDevModeStartScript"))
-        do (game, "devmode_initscript")
-      }
-    }
+	  if (HasAttribute(game, "devmode_active")) {
+		  msgdm (Template("DevModeActive"))
+		  if (HasAttribute(game, "devmode_attributes") and not DictionaryCount(game.devmode_attributes) = 0) {
+			  foreach(key, game.devmode_attributes) Expression (key + "=" + ToString(DictionaryItem(game.devmode_attributes, key)))
+			  msgdm (Template("DevModeChangedAttributes"))
+		  }
+		  if (game.devmode_changepov) setPov (getObjectExt(game.devmode_pov))
+		  if (game.devmode_changepovpos) setPovPos (getObjectExt(game.devmode_povpos))
+		  if (game.devmode_setverbs) setVerbs
+		  if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
+			  msgdm (Template("DevModeStartScript"))
+			  do (game, "devmode_initscript")
+		  }
+	  }
   </function>
 
   <function name="setVerbs">
@@ -332,19 +332,16 @@
   <!-- Types -->
 
   <type name="devmode">
-    <devmode_verbs type="simplestringlist">[DevModeCommandsInVerbs]</devmode_verbs>
     <devmode_active type="boolean">true</devmode_active>
-    <devmode_attributes type="stringdictionary" />
-    <devmode_language type="string" />
     <devmode_changepov type="boolean">false</devmode_changepov>
     <devmode_changepovpos type="boolean">false</devmode_changepovpos>
+    <devmode_setinitscript type="boolean">false</devmode_setinitscript>
     <devmode_setverbs type="boolean">true</devmode_setverbs>
+    <devmode_verbs type="simplestringlist">[DevModeCommandsInVerbs]</devmode_verbs>
     <devmode_showinfos type="boolean">true</devmode_showinfos>
     <devmode_ownfontcolour type="boolean">true</devmode_ownfontcolour>
     <devmode_fontcolour type="string">Green</devmode_fontcolour>
-    <inituserinterface type="script">
-      setDevMode
-    </inituserinterface>
+    <devmode_attributes type="stringdictionary" />
  </type>
 
   <!-- Interface -->
@@ -473,7 +470,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[DevModeDescriptionAttribute]</caption>
+      <caption>[EditorGameDevModeDescriptionAttribute]</caption>
       <mustinherit>devmode</mustinherit>
       <advanced/>
     </control>
