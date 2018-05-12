@@ -905,19 +905,16 @@
   <!-- added by KV -->
 
   <command name="version_cmd" pattern="[version_cmd]">
-    <script>
-      <![CDATA[
-      table = "<table style='padding:9px;border:1px solid black;'>"
-      table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
-      if (HasAttribute (game, "author")) {
-        table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
-      }
-      table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
-      table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
-      table = table + "</table>"
-      msg (table)
-    ]]>
-    </script>
+    <script><![CDATA[
+      s = "<b>TITLE: </b>" + game.gamename + "<br/>"
+	    if (HasAttribute (game, "author")) {
+	      s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+	    }
+	    s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+	    s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
+	    s = s + "<br/>"
+	    msg (s)
+    ]]></script>
   </command>
 
   <command name="log_cmd" pattern="[log_cmd]">
