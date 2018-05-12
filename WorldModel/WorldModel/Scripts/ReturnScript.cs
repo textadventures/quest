@@ -45,7 +45,7 @@ namespace TextAdventures.Quest.Scripts
         public override void Execute(Context c)
         {
             c.ReturnValue = m_returnValue.Execute(c);
-            if (m_worldModel.Version >= WorldModelVersion.v580) c.IsReturned = true;
+            if (m_worldModel.Version >= WorldModelVersion.v550) c.IsReturned = true;
         }
 
         public override string Save()
