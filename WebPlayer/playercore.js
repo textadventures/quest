@@ -793,7 +793,7 @@ function showScrollback() {
     scrollbackDivString += "<div ";
     scrollbackDivString += "id='scrollback-dialog' ";
     scrollbackDivString += "style='display:none;'>";
-    transcriptDivString += "<div id='scrollbackdata'></div></div>";
+    scrollbackDivString += "<div id='scrollbackdata'></div></div>";
     addText(scrollbackDivString);
     var scrollbackDialog = $("#scrollback-dialog").dialog({
         autoOpen: false,

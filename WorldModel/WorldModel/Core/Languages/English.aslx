@@ -465,8 +465,6 @@
   <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
   
-  
-  
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
   <template name="DevModeCommandPut">put</template>
   <template name="DevModeCommandDrop">drop</template>
@@ -490,6 +488,10 @@
   <template name="DevModeExecuteCommand">The command was executed.</template>
   <template name="DevModeNotActive">The DevMode is not active!</template>
   <template name="DevModeDescriptionCommands"><![CDATA[<b>Commands</b><br/>#take object<br/>#drop object<br/>#put object1 in object2<br/>#open object<br/>#close object<br/>#on objekt<br/>#off objekt<br/>#to player<br/>#go raum<br/><br/><i>Unlike the commands in the game, they are executed directly and without detours via intercept scripts.</i><br/><br/><b>Expressions</b><br/>#object1.attribut=object2.attribut (attribute assignment of another object)<br/>#object.attribut=true/false (boolean)<br/>#?object.attribut (set true)<br/>#!object.attribut (set false)<br/>#object.attribut="value" (string)<br/>#object.attribut=15 (integer)<br/>#object.attribut=25.55 (double)<br/>#object.attribut=[item1;item2;item3] (list)<br/>#object.attribut[]=element (add element to list)<br/>#object.attribut=[] (create new list)<br/>#object.attribut={key1:item1;key2:item2;key3:item3} (dictionary)<br/>#object.attribut{key}=element (add or overwrite element to dictionary)<br/>#object.attribut={} (create new dictionary)<br/>#object.attribut (read attribute)<br/><br/><b>Extras</b><br/>#clr (clear screen)<br/>#? (help)<br/># (close game)]]></template>
-  <template name="DevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello";"World";"!"]) and Dictionarys ({H:"Hello";W:"World"}.)]]></template>
+  <template name="DevModeActive"><![CDATA[<b>DevMode: Activ</b>]]></template>
+  <template name="DevModeChangedPov">DevMode: Change player object.</template>
+  <template name="DevModeChangedPovPos">DevMode: Change player position.</template>
+  <template name="DevModeChangedAttributes">DevMode: Set attributes.</template>
+  <template name="DevModeStartScript">DevMode: Start initialization script.</template>
 
 </library>

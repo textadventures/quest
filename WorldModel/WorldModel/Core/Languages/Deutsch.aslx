@@ -548,7 +548,7 @@
 	return (getZehner)
 	]]>
 </function>
-
+  
   <template name="DevModeCommandPut">lege</template>
   <template name="DevModeCommandDrop">lege</template>
   <template name="DevModeCommandTake">nimm</template>
@@ -571,6 +571,10 @@
   <template name="DevModeExecuteCommand">Der Befehl wurde ausgeführt.</template>
   <template name="DevModeNotActive">Der DevMode ist nicht aktiv!</template>
   <template name="DevModeDescriptionCommands"><![CDATA[<b>kommandos</b><br/>#nimm object<br/>#lege object<br/>#lege object1 in object2<br/>#öffne object<br/>#schliesse object<br/>#an objekt<br/>#aus objekt<br/>#zu player<br/>#gehe raum<br/><br/><br/><i>Im Gegensatz zu den Kommandos im Spiel werden sie direkt und ohne Umwege über Abfangskripte ausgeführt.</i><br/><br/><b>Ausdrücke</b><br/>#object1.attribut=object2.attribut (Attributzuweisung eines anderen Objektes)<br/>#object.attribut=true/false (Boolean)<br/>#?object.attribut (Setze auf True)<br/>#!object.attribut (Setze auf False)<br/>#object.attribut="value" (String)<br/>#object.attribut=15 (Integer)<br/>#object.attribut=25.55 (Double)<br/>#object.attribut=[Item1;Item2;Item3] (Liste)<br/>#object.attribut[]=element (Element zur Liste hinzufügen)<br/>#object.attribut=[] (Eine neue Liste erstellen)<br/>#object.attribut={Key1:Item1;Key2:Item2;Key3:Item3} (Dictionary)<br/>#object.attribut{Key}=element (Element zum Dictionary hinzufügen oder überschreiben)<br/>#object.attribut={} (Neues Dictionary erstellen)<br/>#object.attribut (Attribute auslesen)<br/><br/><b>Extras</b><br/>#clr (Bildschirminhalt löschen)<br/>#? (Hilfe)<br/># (Spiel schliessen)]]></template>
-  <template name="DevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Listen (["Hallo";"Welt";"!"]) und Wörterbücher ({H:"Hallo";W:"Welt"} zu erstellen.)]]></template>
+  <template name="DevModeActive"><![CDATA[<b>Entwicklermodus: Aktiviert</b>]]></template>
+  <template name="DevModeChangedPov">Entwicklermodus: Ändere Spielerobjekt.</template>
+  <template name="DevModeChangedPovPos">Entwicklermodus: Ändere Position des Spielers.</template>
+  <template name="DevModeChangedAttributes">Entwicklermodus: Setze Attribute.</template>
+  <template name="DevModeStartScript">Entwicklermodus: Starte Initialisierungsscript.</template>
 
 </library>
