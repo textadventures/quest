@@ -539,7 +539,7 @@
   </function>
 
   <function name="DictionaryAdd" parameters="dict, key, val">
-    if ((dict = null) or TypeOf(dict)="object") {
+    if (dict = null or TypeOf(dict)="object") {
       error ("DictionaryAdd:  Dictionary does not exist!")
     }
     if (DictionaryContains(dict, key)) {
@@ -549,7 +549,7 @@
   </function>
 
   <function name="DictionaryRemove" parameters="dict, key">
-    if ((dict = null) or TypeOf(dict)="object") {
+    if (dict = null or TypeOf(dict)="object") {
       error ("DictionaryAdd:  Dictionary does not exist!")
     }
     if (DictionaryContains(dict, key)) {
