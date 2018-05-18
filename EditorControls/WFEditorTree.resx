@@ -128,11 +128,8 @@
   <data name="txtSearch.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="txtSearch.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
   <data name="txtSearch.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 21</value>
+    <value>289, 17</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="txtSearch.TabIndex" type="System.Int32, mscorlib">
@@ -162,7 +159,7 @@
   <data name="mnuFilter.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAIDSURBVDhPpZLrS5NhGMb3j4SWh0oRQVExD4gonkDpg4hG
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIDSURBVDhPpZLrS5NhGMb3j4SWh0oRQVExD4gonkDpg4hG
         YKxG6WBogkMZKgPNCEVJFBGdGETEvgwyO9DJE5syZw3PIlPEE9pgBCLZ5XvdMB8Ew8gXbl54nuf63dd9
         0OGSnwCahxbPRNPAPMw9Xpg6ZmF46kZZ0xSKzJPIrhpDWsVnpBhGkKx3nAX8Pv7z1zg8OoY/cITdn4fw
         bf/C0kYAN3Ma/w3gWfZL5kzTKBxjWyK2DftwI9tyMYCZKXbNHaD91bLYJrDXsYbrWfUKwJrPE9M2M1Oc
@@ -178,22 +175,22 @@
     <value>Magenta</value>
   </data>
   <data name="mnuFilter.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 22</value>
+    <value>46, 17</value>
   </data>
   <data name="mnuFilter.Text" xml:space="preserve">
     <value>Filter</value>
   </data>
   <data name="ctlToolStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 390</value>
+    <value>0, 317</value>
   </data>
   <data name="ctlToolStrip.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="ctlToolStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 25</value>
+    <value>289, 20</value>
   </data>
   <data name="ctlToolStrip.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -223,13 +220,13 @@
     <value>Microsoft Sans Serif, 7.8pt</value>
   </data>
   <data name="lstSearchResults.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 20</value>
+    <value>0, 16</value>
   </data>
   <data name="lstSearchResults.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="lstSearchResults.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 370</value>
+    <value>289, 301</value>
   </data>
   <data name="lstSearchResults.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -262,13 +259,13 @@
     <value>NoControl</value>
   </data>
   <data name="cmdSearch.Location" type="System.Drawing.Point, System.Drawing">
-    <value>345, 0</value>
+    <value>259, 0</value>
   </data>
   <data name="cmdSearch.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="cmdSearch.Size" type="System.Drawing.Size, System.Drawing">
-    <value>20, 20</value>
+    <value>15, 16</value>
   </data>
   <data name="cmdSearch.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -298,13 +295,13 @@
     <value>NoControl</value>
   </data>
   <data name="cmdClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>365, 0</value>
+    <value>274, 0</value>
   </data>
   <data name="cmdClose.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="cmdClose.Size" type="System.Drawing.Size, System.Drawing">
-    <value>20, 20</value>
+    <value>15, 16</value>
   </data>
   <data name="cmdClose.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -333,11 +330,8 @@
   <data name="pnlSearchContainer.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="pnlSearchContainer.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
   <data name="pnlSearchContainer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 20</value>
+    <value>289, 16</value>
   </data>
   <data name="pnlSearchContainer.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -364,7 +358,7 @@
     <value>Ctrl+Right</value>
   </data>
   <data name="expandAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="expandAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Expand All</value>
@@ -376,19 +370,19 @@
     <value>Ctrl+Left</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="collapseAllToolStripMenuItem.Text" xml:space="preserve">
     <value>Collapse All</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 6</value>
+    <value>192, 6</value>
   </data>
   <data name="cutToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="cutToolStripMenuItem.Text" xml:space="preserve">
     <value>Cut</value>
@@ -397,7 +391,7 @@
     <value>None</value>
   </data>
   <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="copyToolStripMenuItem.Text" xml:space="preserve">
     <value>Copy</value>
@@ -406,7 +400,7 @@
     <value>None</value>
   </data>
   <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
     <value>Paste</value>
@@ -415,13 +409,13 @@
     <value>None</value>
   </data>
   <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 6</value>
+    <value>192, 6</value>
   </data>
   <data name="AddVerbToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
@@ -430,7 +424,7 @@
     <value>Alt+V</value>
   </data>
   <data name="AddVerbToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddVerbToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Verb</value>
@@ -442,13 +436,13 @@
     <value>Alt+C</value>
   </data>
   <data name="AddCommandToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddCommandToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Command</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 6</value>
+    <value>192, 6</value>
   </data>
   <data name="addPageToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
@@ -457,7 +451,7 @@
     <value>Alt+P</value>
   </data>
   <data name="addPageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="addPageToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Page</value>
@@ -475,7 +469,7 @@
     <value>Alt+R</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddRoomToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Room</value>
@@ -490,7 +484,7 @@
     <value>Alt+O</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddObjectToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Object</value>
@@ -502,13 +496,13 @@
     <value>Alt+E</value>
   </data>
   <data name="AddExitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddExitToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Exit</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 6</value>
+    <value>192, 6</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
@@ -517,7 +511,7 @@
     <value>Alt+U</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="addTurnScriptToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Turn Script</value>
@@ -529,7 +523,7 @@
     <value>Alt+F</value>
   </data>
   <data name="AddFunctionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddFunctionToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Function</value>
@@ -541,7 +535,7 @@
     <value>Alt+T</value>
   </data>
   <data name="addTimerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="addTimerToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Timer</value>
@@ -553,19 +547,19 @@
     <value>Alt+W</value>
   </data>
   <data name="AddWalkthroughToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddWalkthroughToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Walkthrough</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 6</value>
+    <value>192, 6</value>
   </data>
   <data name="AddEditorToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="AddEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddEditorToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Editor</value>
@@ -577,7 +571,7 @@
     <value>None</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddLibraryToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Library</value>
@@ -586,7 +580,7 @@
     <value>None</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Template</value>
@@ -595,7 +589,7 @@
     <value>None</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddDynamicTemplateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Dynamic Template</value>
@@ -604,7 +598,7 @@
     <value>None</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddObjectTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Object Type</value>
@@ -613,7 +607,7 @@
     <value>None</value>
   </data>
   <data name="AddJavascriptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddJavascriptToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Javascript</value>
@@ -622,7 +616,7 @@
     <value>None</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddImpliedTypeToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Implied Type</value>
@@ -634,7 +628,7 @@
     <value>None</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 24</value>
+    <value>195, 22</value>
   </data>
   <data name="AddDelegateToolStripMenuItem.Text" xml:space="preserve">
     <value>+ Delegate</value>
@@ -643,7 +637,7 @@
     <value>False</value>
   </data>
   <data name="ctlContextMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>229, 638</value>
+    <value>196, 562</value>
   </data>
   <data name="&gt;&gt;ctlContextMenu.Name" xml:space="preserve">
     <value>ctlContextMenu</value>
@@ -667,61 +661,51 @@
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACK
-        CQAAAk1TRnQBSQFMAgEBAgEAAbwBAQG8AQEBEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADs
+        BwAAAk1TRnQBSQFMAgEBAgEAAfQBAQH0AQEBEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABEAMAAQEBAAEgBgABEP8A/wAYAAMDAQQDLgFIAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFg
         AToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAzABTAMDAQQMAAMyAVABOgI5AWABOgI5AWABOgI5
-        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADJgE4kAADQgF0AUgBAgEEAf8BSAEC
-        AQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUYCRQF/CAADQAFwAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wE9AjwBaIwAAVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/A1QBrwgA
-        AVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEE
-        Af8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFZAlYBvowAAVECUAGfAUgBAgEEAf8BSAEC
-        AQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/A1QBrwgAAVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wFhAlgB7wMXASCIAAFRAlABnwFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEE
-        Af8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wNU
-        Aa8IAAFRAlABnwFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wMyAVCIAAFRAlABnwFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEE
-        Af8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wNUAa8IAAFRAlABnwFIAQIBBAH/AUgBAgEE
-        Af8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFHAkYBgYgAAVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wFIAQIBBAH/A1QBrwgAAVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        A0oBjYgAAVECUAGfAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/A1QBrwgAAVECUAGf
-        AUgBAgEEAf8BSAECAQQB/wE6AjkBYAE6AjkBYAE6AjkBYAE6AjkBYAE6AjkBYAE6AjkBYAE6AjkBYAE6
-        AjkBYAE6AjkBYAMyAVADBgEIiAABUQJQAZ8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEE
-        Af8BUAJPAZsIAAFRAlABnwFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BNgI1AViMAAFRAlABnwFI
-        AQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEE
-        Af8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BYQJcAecDKgFACAABUQJQAZ8BSAECAQQB/wFIAQIBBAH/
-        AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BSAEC
-        AQQB/wNZAccDDAEQjAADQQFyAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BVgJUAasDIAEu
-        JAADQQFyAUgBAgEEAf8BSAECAQQB/wFIAQIBBAH/AUgBAgEEAf8BVgJUAasDIAEuqAADKgFAAToCOQFg
-        AToCOQFgAToCOQFgAwkBDCwAAyoBQAE6AjkBYAE6AjkBYAE6AjkBYAMJAQz/AP8ApgABQgFNAT4HAAE+
-        AwABKAMAAUADAAEQAwABAQEAAQEFAAGAFwAD/wEABP8EAAT/BAABgAEBAcABBwQAAYABAQGAAQMEAAGA
-        AQEBgAEDBAABgAEBAYABAQQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAQQAAYABAQGAAQEEAAGA
-        AQEBgAEDBAABgAEBAYABAwQAAYAB/wGAAf8EAAHBAf8BwQH/BAAE/wQABP8EAAs=
+        AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWABOgI5AWADJgE4kAADQgF0AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/
+        AUYCRQF/CAADQAFwAUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/AT0CPAFojAABUQJQAZ8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIA
+        Af8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8DVAGvCAABUQJQAZ8BQQIA
+        Af8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIA
+        Af8BWQJWAb6MAAFRAlABnwFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wNUAa8IAAFRAlABnwFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFhAlgB7wMXASCIAAFR
+        AlABnwFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wNUAa8IAAFRAlABnwFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wMyAVCIAAFRAlABnwFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wNUAa8IAAFRAlABnwFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFHAkYBgYgAAVECUAGfAUECAAH/AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/A1QBrwgA
+        AVECUAGfAUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/A0oBjYgAAVECUAGfAUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/A1QBrwgAAVECUAGfAUECAAH/
+        AUECAAH/AToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFgAToCOQFg
+        AzIBUAMGAQiIAAFRAlABnwFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFBAgAB/wFQAk8BmwgAAVECUAGfAUECAAH/AUECAAH/AUECAAH/
+        AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/AUECAAH/ATYCNQFYjAABUQJQ
+        AZ8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIA
+        Af8BQQIAAf8BYQJcAecDKgFACAABUQJQAZ8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BQQIA
+        Af8BQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8DWQHHAwwBEIwAA0EBcgFBAgAB/wFBAgAB/wFBAgAB/wFB
+        AgAB/wFWAlQBqwMgAS4kAANBAXIBQQIAAf8BQQIAAf8BQQIAAf8BQQIAAf8BVgJUAasDIAEuqAADKgFA
+        AToCOQFgAToCOQFgAToCOQFgAwkBDCwAAyoBQAE6AjkBYAE6AjkBYAE6AjkBYAMJAQz/AP8ApgABQgFN
+        AT4HAAE+AwABKAMAAUADAAEQAwABAQEAAQEFAAGAFwAD/wEABP8EAAT/BAABgAEBAcABBwQAAYABAQGA
+        AQMEAAGAAQEBgAEDBAABgAEBAYABAQQAAYABAQGAAQEEAAGAAQEBgAEBBAABgAEBAYABAQQAAYABAQGA
+        AQEEAAGAAQEBgAEDBAABgAEBAYABAwQAAYAB/wGAAf8EAAHBAf8BwQH/BAAE/wQABP8EAAs=
 </value>
   </data>
   <data name="ctlTreeView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 20</value>
-  </data>
-  <data name="ctlTreeView.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>0, 16</value>
   </data>
   <data name="ctlTreeView.SelectedImageKey" xml:space="preserve">
     <value>s_object_open.png</value>
   </data>
   <data name="ctlTreeView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 370</value>
+    <value>289, 301</value>
   </data>
   <data name="ctlTreeView.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -751,13 +735,13 @@
     <value>89</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>8, 16</value>
+    <value>6, 13</value>
   </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>385, 415</value>
+    <value>289, 337</value>
   </data>
   <data name="&gt;&gt;mnuFilter.Name" xml:space="preserve">
     <value>mnuFilter</value>

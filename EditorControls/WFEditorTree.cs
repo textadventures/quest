@@ -19,6 +19,7 @@ namespace TextAdventures.Quest.EditorControls
             Resize += EditorTree_Resize;
             cmdClose.Click += cmdClose_Click;
             cmdSearch.Click += cmdSearch_Click;
+            ctlTreeView.DrawNode += CtlTreeView_DrawNode;
             ctlTreeView.AfterSelect += ctlTreeView_AfterSelect;
             ctlTreeView.DoubleClick += ctlTreeView_DoubleClick;
             ctlTreeView.KeyUp += ctlTreeView_KeyUp;
@@ -42,7 +43,45 @@ namespace TextAdventures.Quest.EditorControls
             
         }
 
-        private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
+    // Color of the Treeview menu
+    private void CtlTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
+    {
+      if (e.Node == null) return;
+
+      var selected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
+      var focused = e.Node.TreeView.Focused;
+
+      if (selected)
+      {
+        var backgroundColor = "";
+        var foregroundColor = "";
+
+        // Selected with focus
+        if (focused)
+        {
+          backgroundColor = "#1D1B61";
+          foregroundColor = "#FFFFFF";
+        }
+        // Selected without focus
+        else
+        {
+          backgroundColor = "#A2A2A2";
+          foregroundColor = "#FFFFFF";
+        }
+        var getBackgrColorFromHex = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
+        var getForegrColorFromHex = System.Drawing.ColorTranslator.FromHtml(foregroundColor);
+        var font = e.Node.NodeFont ?? e.Node.TreeView.Font;
+        SolidBrush backgroundBrush = new SolidBrush(getBackgrColorFromHex);
+        e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+        TextRenderer.DrawText(e.Graphics, e.Node.Text, font, e.Bounds, getForegrColorFromHex, TextFormatFlags.GlyphOverhangPadding);
+      }
+      else
+      {
+          e.DrawDefault = true;
+      }
+    }
+
+    private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
         private FilterOptions m_filterSettings;
         private string m_previousSelection;
         private List<string> m_openNodes;
