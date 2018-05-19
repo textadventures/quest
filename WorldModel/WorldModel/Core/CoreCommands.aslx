@@ -344,6 +344,9 @@
     <script>
       undo
       game.suppressturnscripts = true
+      if (GetBoolean (game, "gridmap")){
+        Grid_DrawPlayerInRoom (game.pov.parent)
+      }
     </script>
     <isundo/>
   </command>
@@ -839,6 +842,7 @@
         dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
         HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
       }
+      game.suppressturnscripts = true
     ]]></script>
   </command>
 
@@ -882,7 +886,14 @@
   <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
-  <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
+  
+  <!-- Modified to suppress turn scripts -->
+  <command name="help" pattern="[help]">
+    <script>
+      msg (Template("DefaultHelp"))
+      game.suppressturnscripts = true
+    </script>
+  </command>
 
   <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
   <command name="save">
@@ -899,6 +910,7 @@
       else {
         requestsave
       }
+      game.suppressturnscripts = true
     </script>
   </command>
   
@@ -907,13 +919,14 @@
   <command name="version_cmd" pattern="[version_cmd]">
     <script><![CDATA[
       s = "<b>TITLE: </b>" + game.gamename + "<br/>"
-	    if (HasAttribute (game, "author")) {
-	      s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
-	    }
-	    s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-	    s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-	    s = s + "<br/>"
-	    msg (s)
+      if (HasAttribute (game, "author")) {
+        s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+      }
+      s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+      s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
+      s = s + "<br/>"
+      msg (s)
+      game.suppressturnscripts = true
     ]]></script>
   </command>
 
@@ -926,6 +939,7 @@
       else {
         msg ("This game has no in-game log.")
       }
+      game.suppressturnscripts = true
     </script>
   </command>
 
@@ -938,6 +952,7 @@
       else {
         msg ("This game has no transcript feature.")
       }
+      game.suppressturnscripts = true
     </script>
   </command>
 
@@ -978,6 +993,7 @@
       else {
         msg ("This game has no transcript feature.")
       }
+      game.suppressturnscripts = true
     ]]>
     </script>
   </command>
@@ -998,6 +1014,7 @@
       else {
         msg ("This game has no transcript feature.")
       }
+      game.suppressturnscripts = true
     </script>
   </command>
 
