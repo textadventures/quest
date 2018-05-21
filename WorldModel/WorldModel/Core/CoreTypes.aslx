@@ -520,6 +520,7 @@
 
   <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
+    <not_all type="boolean">true</not_all>
   </type>
 
   <type name="plural_npc_type">
