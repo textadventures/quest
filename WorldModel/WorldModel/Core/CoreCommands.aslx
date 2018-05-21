@@ -79,7 +79,7 @@
       objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
       objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
       foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        list add(takeList, obj)
+        list add(game.pov.currentcommandpendingobjectscope, obj)
       }
     </multipleobjects>
     <multiple>
