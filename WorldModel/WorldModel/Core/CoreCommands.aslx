@@ -78,11 +78,6 @@
       game.pov.currentcommandpendingobjectscope = NewObjectList()
       objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
       objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
-      foreach (obj, objlist) {
-        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
-          list add(game.pov.currentcommandpendingobjectscope, obj)
-        }
-      }
     </multipleobjects>
     <multiple>
       takeList = NewObjectList()
