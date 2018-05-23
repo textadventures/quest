@@ -531,7 +531,18 @@
     return (l)
   </function>
 
-
+  <function name="ObjectListCompact" parameters="lst" type="objectlist">
+    l = NewObjectList()
+    foreach (o, lst) {
+      if (not Equal(o, null)) {
+        if (IndexOf(l, o) = -1) {
+          list add (l, o)
+        }
+      }
+    }
+    return (l)
+  </function>
+  
   <!-- Added by KV -->
 
   <function name="AllRooms" type="objectlist">
