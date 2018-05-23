@@ -761,29 +761,27 @@ function disableAllCommandLinks() {
 // Modified by KV to handle the scrollback feature
 var saveClearedText = true;
 var clearedOnce = false;
+/* 
+ * Improved by mrangel
+ * Now we can append elements with the class 'donotclear' to divOutput and clearScreen() will ignore those elements.
+*/
 function clearScreen() {
     if (!saveClearedText) {
-        $("#divOutput").css("min-height", 0);
-        $("#divOutput").html("");
-        createNewDiv("left");
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $("html,body").scrollTop(0);
-        }, 100);
+        $("#divOutput").children(":not(.donotclear)").remove();
     } else {
         $("#divOutput").append("<hr class='clearedAbove' />");
         if (!clearedOnce) {
             addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
         }
         clearedOnce = true;
-        $('#divOutput').children().addClass('clearedScreen');
-        $('#divOutput').css('min-height', 0);
-        createNewDiv('left');
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $('html,body').scrollTop(0);
-        }, 100);
+        $('#divOutput').children(":not(.donotclear)").addClass('clearedScreen');
     }
+    $('#divOutput').css('min-height', 0);
+    createNewDiv('left');
+    beginningOfCurrentTurnScrollPosition = 0;
+    setTimeout(function () {
+        $('html,body').scrollTop(0);
+    }, 100);
 }
 
 // Scrollback functions added by KV
