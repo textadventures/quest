@@ -1,4 +1,4 @@
-﻿<library>
+<library>
 
   <!-- lookat modified by KV to include timesexamined attribute -->
   <command name="lookat" template="lookat">
@@ -74,23 +74,7 @@
 
   <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
   <command name="take" template="take">
-    <multipleobjects type="script">
-      game.pov.currentcommandpendingobjectscope = NewObjectList()
-      objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
-      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
-      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        list add(game.pov.currentcommandpendingobjectscope, obj)
-      }
-    </multipleobjects>
-    <multiple>
-      takeList = NewObjectList()
-      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        if (obj.parent = game.pov.parent) {
-          list add(takeList, obj)
-        }
-      }
-      return (takeList)
-    </multiple>
+    <allow_all />
     <scope>notheld</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
@@ -210,12 +194,7 @@
   </function>
 
   <command name="drop" template="drop">
-    <multipleobjects type="script">
-      game.pov.currentcommandpendingobjectscope = GetDirectChildren(game.pov)
-    </multipleobjects>
-    <multiple>
-      return (GetDirectChildren(game.pov))
-    </multiple>
+    <allow_all />
     <scope>inventory</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
