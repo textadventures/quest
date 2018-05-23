@@ -1,4 +1,4 @@
-﻿<library>
+<library>
 
 
 
@@ -222,7 +222,7 @@
   
   <!--
   Tries to resolve the next item in the list of objects/exts/texts with ResolveName
-  If an object is recognised AddToResolvedNames is called, and UnresolvedCommand otherwise.
+  If an object is recognised, AddToResolvedNames is called, and UnresolvedCommand otherwise.
   Then calls itself to do the next object (actually AddToResolvedNames does that).
   If there are no more to resolve, then this function will call the script
   on the command, and then call HandleNextCommandQueueItem to handle the next command.
@@ -231,17 +231,16 @@
   Say the command is PUT THE HAT IN BOX, and the pattern is put #object1# in #object2#.
   The first iteration, var will be "object1" and value will be "THE HAT", and ResolveName
   will be sent "object1, "THE HAT", "object".
-  Alternatively, if the command has a "multipleobjects" script, ResolveNameList is used
+  Alternatively, if the command has a "multipleobjects" script, ResolveNameList is used,
+  or if "allow_all" is true, then GetScope is used
   (this is for GET and DROP, which can handle GET ALL, GET THIS AND THAT, etc.).
   -->
-  <function name="ResolveNextName">
-    <![CDATA[
+  <function name="ResolveNextName"><![CDATA[
     resolvedall = false
     queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
     if (queuetype = "stringlist") {
       queuelength = ListCount(game.pov.currentcommandvarlistqueue)
       if (queuelength > 0) {
-      
         // Pop next variable off the queue
         var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
         if (queuelength = 1) {
@@ -254,25 +253,29 @@
           }
           game.pov.currentcommandvarlistqueue = newqueue
         }
-        
         // Resolve variable
         value = StringDictionaryItem(game.pov.currentcommandvarlist, var)
-        
         if (value <> "") {
           result = null
           resolvinglist = false
-          
           // This is to resolve issue 626
           if (StartsWith(var, "objectexit")) {
             result = ResolveName(var, value, "exit")
           }
           if (result = null) {
             if (StartsWith(var, "object")) {
-              if (HasScript(game.pov.currentcommandpattern, "multipleobjects")) {
+              if (GetBoolean(game.pov.currentcommandpattern, "allow_all")) {
+                scope = FilterByAttribute(GetScope("object", "", "object"), "scenery", false)
+                game.pov.currentcommandpendingobjectscope = ListExclude(scope, FilterByAttribute(scope, "not_all", true))
+                game.pov.currentcommandpendingvariable = var
+                ResolveNameList (value, "object")
+                resolvinglist = true
+              }
+              else if (HasScript(game.pov.currentcommandpattern, "multipleobjects")) {
                 game.pov.currentcommandpendingobjectlist = NewObjectList()
                 game.pov.currentcommandpendingvariable = var
-                do(game.pov.currentcommandpattern, "multipleobjects")
-                ResolveNameList(value, "object")
+                do (game.pov.currentcommandpattern, "multipleobjects")
+                ResolveNameList (value, "object")
                 resolvinglist = true
               }
               else {
@@ -289,16 +292,14 @@
               error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
             }
           }
-        
           // at this point, ResolveName has returned - either an object name, unresolved, or pending
-            
           if (result = null) {
             if ((not resolvinglist) and LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
-              UnresolvedCommand(value, var)
+              UnresolvedCommand (value, var)
             }
           }
           else {
-            AddToResolvedNames(var, result)
+            AddToResolvedNames (var, result)
           }
         }
         else {
@@ -315,16 +316,13 @@
     else {
       error ("Invalid queue type")
     }
-    
     if (resolvedall) {
       // All the objects have been resolved, so now we can actually do the command
       // TO DO: game.lastobjects should be game.pov.lastobjects
       game.lastobjects = game.pov.currentcommandresolvedobjects
-      
       if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
         dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
       }
-      
       if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
         if (LengthOf(game.pov.currentcommand) > 0) {
           start transaction (game.pov.currentcommand)
@@ -340,11 +338,10 @@
         // This is the bit that actually runs the commands
         do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
       }
+      FinishTurn
       HandleNextCommandQueueItem
     }
-    ]]>
-  </function>
-
+  ]]></function>
   
   <!--
   Adds var and result to game.pov.currentcommandresolvedelements
@@ -745,7 +742,7 @@
   Gets a list of objects to try to match against. Exactly where that list comes from can be
   determined by an attribute on the command, among other ways.
   -->
-  <function name="GetScope" parameters="variable, value, objtype" type="list">
+  <function name="GetScope" parameters="variable, value, objtype" type="objectlist"><![CDATA[
     items = NewObjectList()
     if (HasString(game.pov.currentcommandpattern, "scope")) {
       scoping = GetScoping(game.pov.currentcommandpattern.scope, variable)
@@ -810,14 +807,13 @@
       // CHANGE: Should still never get here, but we don't return null.
       // If we get here somehow, trust user's scripts to define scope.
     }
-    items = ListCompact(items)
-  
+    items = ObjectListCompact(items)
     // CHANGE: Run the script 'changecommandscope' (if it exists) for the game object, the player's room and
-    //   containing rooms, and the current command. This allows the user to change command scope on a per-location
-    //   or per-command basis
+    // containing rooms, and the current command. This allows the user to change command scope on a per-location
+    // or per-command basis
     // This script gets an "items" list parameter, like `scopebackdrop` script does; but also has parameters
-    //   'command', 'variable', and 'objtype', so the user can adjust their script to give different item lists
-    //   for different commands, or different variables within a command.
+    // 'command', 'variable', and 'objtype', so the user can adjust their script to give different item lists
+    // for different commands, or different variables within a command.
     objectswithscripts = NewObjectList()
     if (HasScript(game.pov.currentcommandpattern, "changecommandscope")) {
       list add (objectswithscripts, game.pov.currentcommandpattern)
@@ -842,11 +838,10 @@
       foreach (o, objectswithscripts) {
         do (o, "changecommandscope", params)
       }
-      items = ListCompact(items)
+      items = ObjectListCompact(items)
     }
     return (items)
-  </function>  
-  
+  ]]></function>  
 
   <!--
   Extracts from the scopestring the bit relevant for this variable.
