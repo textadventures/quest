@@ -219,7 +219,7 @@
     <scope>inventory</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NothingToTake]")
+        msg("[NotCarryingAnything]")
       }
       else{
         foreach (obj, object) {
