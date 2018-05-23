@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,6 @@ namespace TextAdventures.Quest.Scripts
 {
     public class RequestSaveScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "requestsave"; }
@@ -23,30 +21,27 @@ namespace TextAdventures.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new RequestSaveScript(scriptContext);
+            return new RequestSaveScript(WorldModel);
         }
 
         protected override int[] ExpectedParameters
         {
             get { return new int[] { 0 }; }
         }
-        #endregion
     }
 
     public class RequestSaveScript : ScriptBase
     {
-        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
 
-        public RequestSaveScript(ScriptContext scriptContext)
+        public RequestSaveScript(WorldModel worldModel)
         {
-            m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
+            m_worldModel = worldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new RequestSaveScript(m_scriptContext);
+            return new RequestSaveScript(m_worldModel);
         }
 
         public override void Execute(Context c)
@@ -56,7 +51,15 @@ namespace TextAdventures.Quest.Scripts
 
         public override string Save()
         {
-            return SaveScript("requestsave");
+            return "requestsave";
+        }
+
+        public override string Keyword
+        {
+            get
+            {
+                return "requestsave";
+            }
         }
 
         public override object GetParameter(int index)
@@ -67,14 +70,6 @@ namespace TextAdventures.Quest.Scripts
         public override void SetParameterInternal(int index, object value)
         {
             throw new ArgumentOutOfRangeException();
-        }
-
-        public override string Keyword
-        {
-            get
-            {
-                return "requestsave";
-            }
         }
     }
 }
