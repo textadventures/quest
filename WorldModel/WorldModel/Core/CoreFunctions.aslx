@@ -228,6 +228,12 @@
       dictionary add (parameters, "result", UnescapeQuotes(option))
       script = game.menucallback
       ClearMenu
+      // Added by KV to handle the new FinishTurn setup in 580
+      if (not GetBoolean(game, "disambiguating")) {
+        game.runturnscripts = true
+      }
+      game.disambiguating = false
+      // End of addition by KV
       invoke (script, parameters)
     }
   </function>
