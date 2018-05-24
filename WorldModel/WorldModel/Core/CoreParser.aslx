@@ -516,6 +516,8 @@
       return (null)
     }
     else {
+      // Added this line to resolve issue with new FinishTurn setup in 580
+      game.disambiguating = true
       candidates = ListCompact(ListCombine(fullmatches, partialmatches))
       
       if (LengthOf(variable) > 0) {
