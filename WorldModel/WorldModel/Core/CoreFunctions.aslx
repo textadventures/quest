@@ -233,6 +233,7 @@
         game.runturnscripts = true
       }
       game.disambiguating = false
+      FinishTurn
       // End of addition by KV
       invoke (script, parameters)
     }

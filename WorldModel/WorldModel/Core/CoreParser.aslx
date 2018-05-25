@@ -235,7 +235,8 @@
   or if "allow_all" is true, then GetScope is used
   (this is for GET and DROP, which can handle GET ALL, GET THIS AND THAT, etc.).
   -->
-  <function name="ResolveNextName"><![CDATA[
+  <function name="ResolveNextName">
+        <![CDATA[
     resolvedall = false
     queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
     if (queuetype = "stringlist") {
@@ -338,6 +339,11 @@
         // This is the bit that actually runs the commands
         do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
       }
+      //
+      //Setting game.runturnscripts to true to run turn scripts after ShowMenu , show menu, ask, or Ask.
+      //This works in conjuction with FinishTurn, which has also been modified as of Quest 5.8.
+      //- KV, 2018/05/25
+      game.runturnscripts = true
       FinishTurn
       HandleNextCommandQueueItem
     }
