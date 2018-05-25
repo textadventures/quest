@@ -33,11 +33,12 @@
       StartTurnOutputSection
       if (StartsWith (command, "*")) {
         // Modified by KV to bypass turn scripts and turn counts, and to print "Noted."
-        game.notarealturn = true
         game.suppressturnscripts = true
         msg ("")
         msg (SafeXML (command))
         msg("Noted.")
+	// Added for Quest 5.8    - KV
+	FinishTurn
       }
       else {    
         shownlink = false
