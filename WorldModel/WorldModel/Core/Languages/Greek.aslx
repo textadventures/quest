@@ -156,7 +156,12 @@
     <dynamictemplate name="CannotWearWith">"Δεν μπορείς να το φορέσεις όσο φοράς " +  object.gender + " " + GetDisplayGarment(object) + "."</dynamictemplate>
     <dynamictemplate name="RemoveSuccessful">CapFirst(object.gender) + " βγάζεις."</dynamictemplate>
     <dynamictemplate name="RemoveFirst">"Δεν μπορείς να το βγάλεις όσο φοράς " + object.gender + " " + GetDisplayGarment(object) + "."</dynamictemplate>
-    <template name="wornmodifier">φορέθηκε</template>
+	<template name="NeutralWornModifier">φορέθηκε</template>
+	<template name="MaleWornModifier">φορέθηκε</template>
+	<template name="FemaleWornModifier">φορέθηκε</template>
+	<template name="NeutralPluralWornModifier">φορέθηκε</template>
+	<template name="MalePluralWornModifier">φορέθηκε</template>
+	<template name="FemalePluralWornModifier">φορέθηκε</template>
     <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
     <template name="Wear">Φόρεσε</template>
     <template name="WearCommand">Φόρεσε #object#</template>
