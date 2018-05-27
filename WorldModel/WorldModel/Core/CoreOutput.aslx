@@ -849,10 +849,11 @@
   <function name="Log" parameters="text">
     <![CDATA[
     //request (Log, text)
+    // Using JSSafe to avoid errors in the browser - KV  May 27, 2018
     if (not GetBoolean(game, "nohtmllog")){
-      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry('"+text+"'); };")
+      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry('"+JSSafe(text)+"'); };")
     }
-    JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){var s = '"+text+"';WriteToLog(s);}")
+    JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){var s = '"+JSSafe(text)+"';WriteToLog(s);}")
     ]]>
   </function>
 
