@@ -33,7 +33,9 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    JS.eval("var gameName = '"+game.gamename+"';var transcriptName = gameName;")
+    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
+    jsgamename = JSSafe(game.gamename)
+    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
     if (GetBoolean(game,"savetranscript")){
       JS.eval("var savingTranscript = true;")
       JS.replaceTranscriptString(game.transcriptstring)
