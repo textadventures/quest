@@ -41,7 +41,6 @@
       JS.replaceTranscriptString(game.transcriptstring)
     }
     // End of addition by KV for transcript
-    JS.whereAmI()
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
