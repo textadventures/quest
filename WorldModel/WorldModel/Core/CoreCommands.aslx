@@ -931,8 +931,7 @@
     </script>
   </command>
 
-  <command name="transcript_on_cmd">
-    <pattern type="string">^(transcript|script)( on|)$|^enable (script|transcript)$</pattern>
+  <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
     <script>
       <![CDATA[
       if (not GetBoolean(game, "notranscript")) {
@@ -972,8 +971,7 @@
     </script>
   </command>
 
-  <command name="transcript_off_cmd">
-    <pattern type="string">^(transcript|script) off$|^disable (script|transcript)$</pattern>
+  <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
       if (not GetBoolean(game, "notranscript")) {
         if (GetBoolean(game,"savetranscript")) {
