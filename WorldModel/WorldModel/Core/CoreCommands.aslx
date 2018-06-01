@@ -909,7 +909,6 @@
 
   <command name="log_cmd" pattern="[log_cmd]">
     <script>
-      game.notarealturn = true
       if (not GetBoolean(game, "nohtmllog")){
         JS.showLog ()
       }
@@ -922,7 +921,6 @@
 
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
-      game.notarealturn = true
       if (not GetBoolean(game, "notranscript")){
         JS.showTranscript ()
       }
@@ -937,7 +935,6 @@
     <pattern type="string">^(transcript|script)( on|)$|^enable (script|transcript)$</pattern>
     <script>
       <![CDATA[
-      game.notarealturn = true
       if (not GetBoolean(game, "notranscript")) {
         if (not GetBoolean(game,"savetranscript")) {
           msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
@@ -975,17 +972,17 @@
     </script>
   </command>
 
-  <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
+  <command name="transcript_off_cmd">
+    <pattern type="string">^(transcript|script) off$|^disable (script|transcript)$</pattern>
     <script>
-      game.notarealturn = true
-      if (not GetBoolean(game, "notranscript")){
-        if (GetBoolean(game,"savetranscript")){
+      if (not GetBoolean(game, "notranscript")) {
+        if (GetBoolean(game,"savetranscript")) {
           game.savetranscript = false
-          JS.eval("var saveTranscript = false;")
-          msg("Transcript disabled.")
+          JS.eval ("var savingTranscript = false;")
+          msg ("Transcript disabled.")
         }
-        else{
-          msg("The transcript is already disabled.")
+        else {
+          msg ("The transcript is already disabled.")
         }
       }
       else {
@@ -1007,7 +1004,6 @@
           JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
         }
         else {
-          game.notarealturn = true
           game.suppressturnscripts = true
         }
       }
