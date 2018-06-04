@@ -20,8 +20,6 @@ Public Class Editor
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
     Private m_splitHelper As TextAdventures.Utility.SplitterHelper
-    Private m_isFind As Boolean
-    Private m_isReplace As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -42,8 +40,6 @@ Public Class Editor
     End Sub
 
     Public Sub Initialise(ByRef filename As String)
-        m_isFind = False
-        m_isReplace = False
         m_menu.Visible = False
         If Not m_uiHidden Then
             HideUI()
@@ -154,8 +150,8 @@ Public Class Editor
         menu.AddMenuClickHandler("paste", AddressOf Paste)
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
-        menu.AddMenuClickHandler("find", AddressOf ToggleFind)
-        menu.AddMenuClickHandler("replace", AddressOf ToggleReplace)
+        menu.AddMenuClickHandler("find", AddressOf Find)
+        menu.AddMenuClickHandler("replace", AddressOf Replace)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
         menu.AddMenuClickHandler("codeview", AddressOf ToggleCodeView)
         menu.AddMenuClickHandler("wordwrap", AddressOf ToggleWordWrap)
@@ -176,8 +172,8 @@ Public Class Editor
         ctlToolbar.AddButtonHandler("copy", AddressOf Copy)
         ctlToolbar.AddButtonHandler("paste", AddressOf Paste)
         ctlToolbar.AddButtonHandler("delete", AddressOf Delete)
-        ctlToolbar.AddButtonHandler("find", AddressOf ToggleFind)
-        ctlToolbar.AddButtonHandler("replace", AddressOf ToggleReplace)
+        ctlToolbar.AddButtonHandler("find", AddressOf Find)
+        ctlToolbar.AddButtonHandler("replace", AddressOf Replace)
         ctlToolbar.AddButtonHandler("code", AddressOf ToggleCodeView)
         ctlToolbar.AddButtonHandler("logbug", AddressOf LogBug)
         ctlToolbar.AddButtonHandler("help", AddressOf Help)
@@ -212,30 +208,6 @@ Public Class Editor
         ctlTree.AddMenuClickHandler("copy", AddressOf Copy)
         ctlTree.AddMenuClickHandler("paste", AddressOf Paste)
         ctlTree.AddMenuClickHandler("delete", AddressOf Delete)
-    End Sub
-
-    Private Sub ToggleFind()
-        m_isFind = Not m_isFind
-        ctlToolbar.SetToggle("find", m_isFind)
-        If (m_isFind) Then
-            m_isReplace = False
-            ctlToolbar.SetToggle("replace", m_isReplace)
-            Find()
-        Else
-            FindClose()
-        End If
-    End Sub
-
-    Private Sub ToggleReplace()
-        m_isReplace = Not m_isReplace
-        ctlToolbar.SetToggle("replace", m_isReplace)
-        If (m_isReplace) Then
-            m_isFind = False
-            ctlToolbar.SetToggle("find", m_isFind)
-            Replace()
-        Else
-            FindClose()
-        End If
     End Sub
 
     Private Sub SetUpEditors()
