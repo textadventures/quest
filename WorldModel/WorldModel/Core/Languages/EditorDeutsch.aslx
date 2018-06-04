@@ -167,7 +167,7 @@
   <template name="EditorGamePrices">Preise: Ein Nummernfeld zur Angabe eines Artikelpreises wird der Registerkarte "Inventar" hinzugefügt</template>
   <template name="EditorGameInroomdescriptions">Beschreibungen im Raum: Zu jedem Objekt kann eine zusätzliche Beschreibung in den Räumen angezeigt werden</template>
   <template name="EditorGameAllowLookDirections">Die Ausgänge können in Richtungen nur zum Betrachten umgewandelt werden</template>
-  <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch "und" und ".")</template>
+  <template name="EditorGameMultipleCommands">Eingabe mehrerer Kommandos in einem Kommandofeld erlauben (Getrennt durch einen Punkt)</template>
   <template name="EditorGameHideSaveButton">Speichern-Schaltfläche im Webplayer entfernen</template>
   <template name="EditorGameDisplay">Oberfläche</template>
   <template name="EditorGameTheme">Thema</template>
