@@ -590,8 +590,9 @@
   
   <function name="DisableTranscript">
     game.notranscript = true
-    JS.eval("enableTranscript = false;")
+    JS.eval("savingTranscript = false;")
   </function>
+  
   <function name="DisableHtmlLog">
     game.nohtmllog = true
   </function>
