@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Docs Style Guide
+title: Quest 5.8
 ---
 
 This file documents changes to Quest as of version 5.7.
@@ -39,7 +39,7 @@ Can now check if played on webplayer, desktop or mobile
 
 A new command, TELL <char> TO <text> or <char>, <text> has been added to the _Ask/Tell_ tab.
 
-Turnscripts have been revised a little. They will now run at the start of the game. However, there is a new function, SuppressTurnscripts, which will stop all turnscipts for one turn. You might want to do this for a HELP command, for example, or for events caught by the map. The UNDO command now does this automatically, so turnscripts make more sense in that context. Also, turnscripts now run in alphabetical order (previously the order of global and local scripts would be reversed in a loaded game; now the order is always the same).
+Turnscripts have been revised a little. There is a new function, SuppressTurnscripts, which will stop all turnscipts for one turn. You might want to do this for a HELP command, for example, or for events caught by the map. The UNDO command now does this automatically, so turnscripts make more sense in that context. Also, turnscripts now run in alphabetical order (previously the order of global and local scripts would be reversed in a loaded game; now the order is always the same).
 
 The `QuickParam` function will create a dictionary with one entry that you can pass to a script as a parameter.
 
@@ -58,7 +58,7 @@ Advanced popups
 
 LOOK AT now counts how many times an object has been looked at
 
-TAKE ALL will ignore any object with "notall" set to true
+TAKE ALL will ignore any object with "not_all" set to true
 
 Transcripts and logging now possible
 

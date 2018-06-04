@@ -144,7 +144,12 @@
   <dynamictemplate name="CannotWearWith">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
   <dynamictemplate name="RemoveSuccessful">"Du ziehst " + object.article + " aus."</dynamictemplate>
   <dynamictemplate name="RemoveFirst">"Du kannst dies nicht anziehen solange du  " + GetDefaultPrefix (object) + " " + object.display + " trägst."</dynamictemplate>
-  <template name="wornmodifier">getragen</template>
+	<template name="NeutralWornModifier">getragen</template>
+	<template name="MaleWornModifier">getragen</template>
+	<template name="FemaleWornModifier">getragen</template>
+	<template name="NeutralPluralWornModifier">getragen</template>
+	<template name="MalePluralWornModifier">getragen</template>
+	<template name="FemalePluralWornModifier">getragen</template>
 
   <template name="Wear">Anziehen</template>
   <verbtemplate name="wear">anziehen</verbtemplate>

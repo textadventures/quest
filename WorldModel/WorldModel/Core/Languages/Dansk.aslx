@@ -1,7 +1,11 @@
 <library>
   <include ref="English.aslx"/>
   <template name="LanguageId">da</template>
-  
+
+  <template name="Again1">gentag</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">Der er ikke noget at gentage.</template>
+
   <template name="UnresolvedObject">Det kan jeg ikke se.</template>
   <template name="UnresolvedLocation">Der kan du ikke komme hen.</template>
   <template name="DefaultObjectDescription">Der er ikke noget usædvanligt at se.</template>
@@ -14,12 +18,14 @@
   <template name="SeeListHeader">Du kan se</template>
   <template name="GoListHeader">Du kan gå mod</template>
   <template name="And">og</template>
+  <template name="Nothing">ingenting</template>
   <template name="Or">eller</template>
   <template name="NothingToUndo">Der er ikke noget at fortryde!</template>
   <template name="NotCarryingAnything">Du bærer ikke på noget.</template>
   <template name="CarryingListHeader">Du bærer</template>
   <dynamictemplate name="DropSuccessful">"Du lægger " + object.article + "."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Du kan ikke lægge " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="ObjectCannotBeStored">"Du kan ikke lægge " + object.article + " der."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"Du bærer allerede " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Du bærer ikke " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantUse">"Du kan ikke bruge " + object.article + "."</dynamictemplate>
@@ -54,10 +60,20 @@
   <template name="NeutralPluralArticle">dem</template>
   <template name="MalePluralArticle">dem</template>
   <template name="FemalePluralArticle">dem</template>
+  <template name="NeutralPossessive">dens</template>
+  <template name="MalePossessive">hans</template>
+  <template name="FemalePossessive">hendes</template>
+  <template name="SelfPossessive">din</template>
+  <template name="NeutralPluralPossessive">deres</template>
+  <template name="MalePluralPossessive">deres</template>
+  <template name="FemalePluralPossessive">deres</template>
   <template name="SelfAlias">mig</template>
   <template name="SelfAlt">mig selv; mig</template>
   <template name="AllObjects">alt; det hele</template>
   <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="Score">Score</template>
+  <template name="Health">Helbred</template>
+  <template name="Money">Penge</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " allerede åben."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " allerede lukket."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kan ikke åbne " + object.article + "."</dynamictemplate>
@@ -147,7 +163,7 @@
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^(gå mod|gå)? (?<exit>.*)$|^(?<exit>nord|øst|syd|vest|nordøst|nordvest|sydøst|sydvest|ind|ud|op|ned|n|ø|s|v|nø|nv|sø|sv|i|u|o|n)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^se (?<exit>nord|øst|syd|vest|nordøst|nordvest|sydøst|sydvest|ind|ud|op|ned|n|ø|s|v|nø|nv|sø|sv|i|u|o|n)$]]></template>
   <template templatetype="command" name="look">^look$|^l$</template>
-  <template templatetype="command" name="se">^look$|^l$</template>
+  <template templatetype="command" name="look">^se$|^l$</template>
   <verbtemplate name="lookat">se på</verbtemplate>
   <verbtemplate name="lookat">kig på</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
@@ -170,10 +186,13 @@
   <verbtemplate name="open">åben</verbtemplate>
   <verbtemplate name="close">luk</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^placer (?<object1>.*) (på|i) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^(tag|fjern) (?<object1>.*) (af|fra) (?<object2>.*)$]]></template>
   <template templatetype="command" name="remove"><![CDATA[^fjern (?<object1>.*) fra (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^spørg (?<object>.*) om (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^fortæl (?<object>.*) om (?<text>.*)$]]></template>
-  <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
+ <template templatetype="command" name="tellto"><![CDATA[^(bed) (?<object>.*) om at (?<text>.*)$]]></template>
+ <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
+ <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">køb</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Du kan ikke købe " + object.article + "."</dynamictemplate>
@@ -253,6 +272,42 @@
   <dynamictemplate name="DefaultUseOn">"Du kan ikke bruge " + object2.article + " sådan."</dynamictemplate>
   <verbtemplate name="wear">tag #object# på</verbtemplate>
   <dynamictemplate name="DefaultWear">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
+
+  <template name="NothingToTake">Der er ikke noget at tage.</template>
+  <template name="NothingToDrop">Du har ikke noget at lægge.</template>
+  <template name="NothingToWear">Du har ikke noget at tage på.</template>
+  <template name="NothingToRemove">Du har ikke noget at tage af.</template>
+
+  <dynamictemplate name="WearSuccessful">"Du tager " + object.article + " på."</dynamictemplate>
+	<dynamictemplate name="WearUnsuccessful">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
+	<dynamictemplate name="CannotWearIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " på."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " af."</dynamictemplate>
+	<dynamictemplate name="AlreadyWearing">"Du har " + object.article + " allerede på."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotWearing">"Du har " + object.article + " ikke på."</dynamictemplate>
+	<dynamictemplate name="NotRemovable">"Du kan ikke tage " + object.article + " af!"</dynamictemplate>
+	<dynamictemplate name="CannotWearOver">"Du kan ikke have den på ovenpå " + GetDisplayGarment(object) + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearWith">"Du kan ikke have den på, når du i forvejen har " + GetDisplayGarment(object) + " på."</dynamictemplate>
+	<dynamictemplate name="RemoveSuccessful">"Du tager " + object.article + " af."</dynamictemplate>
+	<dynamictemplate name="RemoveFirst">"Du kan ikke tage den af, mens du stadig har " + GetDisplayGarment(object) + " på."</dynamictemplate>
+	<template name="NeutralWornModifier">båret</template>
+	<template name="MaleWornModifier">båret</template>
+	<template name="FemaleWornModifier">båret</template>
+	<template name="NeutralPluralWornModifier">båret</template>
+	<template name="MalePluralWornModifier">båret</template>
+	<template name="FemalePluralWornModifier">båret</template>
+
+  <template name="Wear">Ifør dig</template>
+  <verbtemplate name="wear">tag #object# på</verbtemplate>
+	<verbtemplate name="wear">Tag på</verbtemplate>
+	<verbtemplate name="wear">ifør dig</verbtemplate>
+	<verbtemplate name="wear">don</verbtemplate>
+
+  <template name="Remove">Affør dig</template>
+  <verbtemplate name="remove">tag #object# af</verbtemplate>
+	<verbtemplate name="remove">Tag af</verbtemplate>
+	<verbtemplate name="remove">affør dig</verbtemplate>
+	<verbtemplate name="remove">doff</verbtemplate>
+
   <template templatetype="command" name="listen">^lyt$</template>
   <template name="DefaultListen">Du kan ikke høre noget særligt.</template>
   <template templatetype="command" name="jump">^hop$</template>
@@ -270,15 +325,13 @@
   <template templatetype="command" name="help">^hjælp$|^\?$</template>
   <template templatetype="command" name="save">^gem$</template>
   <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " ingenting."</dynamictemplate>
-  
+
   <template templatetype="command" name="log_cmd">^log$|^se log$|^vis log$</template>
   <template templatetype="command" name="transcript_on_cmd">^scriptet$</template>
   <template templatetype="command" name="transcript_off_cmd">^scriptet off$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(se|vis) scriptet$</template>>
+  <template templatetype="command" name="view_transcript_cmd">^(se |vis |)(scriptet)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|om)$</template>
 
-  
-  
   <dynamictemplate name="WearSuccessful">"Du tager " + object.article + " på."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
   <dynamictemplate name="CannotWearIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " på."</dynamictemplate>
@@ -309,8 +362,6 @@
   <verbtemplate name="remove">affør dig</verbtemplate>
   <verbtemplate name="remove">doff</verbtemplate>
 
-
-
   <template name="DefaultHelp"><![CDATA[<u>Hurtig Hjælp</u><br/><br/>
 <b>- Objecter:</b>  Prøv med SE PÅ...., TAL MED...., TAG..., LÆG..., ÅBEN..., LUK..., GIV... TIL..., BRUG..., eller BRUG... MED...<br/>
 <b>- Grej:</b>  Se hvad du bærer på ved at skrive I, INV eller INVENTORY eller se på panelet foroven til højre.<br/>
@@ -324,7 +375,7 @@
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
   <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
-  
+
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
       return ("an")
@@ -385,7 +436,7 @@
           }
           default {
             return ("")
-          }       
+          }
         }
       }
       default {
@@ -397,5 +448,5 @@
         }
       }
     }
-    </function>
-  </library>
+  </function>
+</library>

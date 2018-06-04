@@ -11,7 +11,6 @@
 	> Αντώνη, άνοιξε την πόρτα   ή
 	> πες στον Αντώνη : άνοιξε την πόρτα (αντί > πες στον Αντώνη να ανοίξει την πόρτα - έτσι αποφεύγουμε την Υποτακτική).
 		ΤΟDO: Να μπουν τα ρήματα χωρίς τόνο ως alias, π.χ. παρε, πετα, ...	
-	TODO: βάλε (φόρεσε) vs τοποθέτησε, χτύπα vs knock
 	TODO: πέτα (throw): το κρατάμε ή όχι, το κάνουμε απλά ρίξε??
 	-->
 	
@@ -56,11 +55,6 @@
     <template name="Drop">ρίξε</template>
     <template name="GoTo">πήγαινε</template>
     <template name="Go">πήγαινε</template>
-
-    <!--template name="SwitchOn">ενεργοποίησε</template>
-    <template name="SwitchOff">απενεργοποίησε</template>
-    <template name="Open">άνοιξε</template>
-    <template name="Close">κλείσε</template--> 
 
     <template name="Eat">φάε</template>
     <dynamictemplate name="ObjectNotOpen">CapFirst(object.article)+ " " + GetDisplayAlias(object) + GreekNominative(object) + " δεν " + WriteVerb(object, "είμαι") + " ανοιχτ" + GetSuffix(object) + "."</dynamictemplate>
@@ -148,7 +142,7 @@
     <dynamictemplate name="WearSuccessful">CapFirst(object.gender) + " φοράς."</dynamictemplate>
     <dynamictemplate name="WearUnsuccessful">"Δεν μπορείς να " + object.gender + " φορέσεις."</dynamictemplate>
     <dynamictemplate name="CannotWearIfNotHeld">"Πρέπει πρώτα να " + object.gender + " πάρεις για να " + object.gender + " φορέσεις."</dynamictemplate>
-    <dynamictemplate name="CannotRemoveIfNotHeld">"Πρέπει πρώτα να " + object.gender + " πάρεις για να " + object.gender + " βγάλεις."</dynamictemplate>
+    <dynamictemplate name="CannotRemoveIfNotHeld">"Δεν " + object.gender + " έχεις, άρα δεν μπορείς να " + object.gender + " βγάλεις."</dynamictemplate>
     <dynamictemplate name="AlreadyWearing">CapFirst(object.gender) + " φοράς ήδη."</dynamictemplate>
     <dynamictemplate name="CannotRemoveIfNotWearing">"Δεν " + object.gender + " φοράς."</dynamictemplate>
     <dynamictemplate name="NotRemovable">"Δεν μπορείς να " + object.gender + " βγάλεις!"</dynamictemplate>
@@ -156,14 +150,19 @@
     <dynamictemplate name="CannotWearWith">"Δεν μπορείς να το φορέσεις όσο φοράς " +  object.gender + " " + GetDisplayGarment(object) + "."</dynamictemplate>
     <dynamictemplate name="RemoveSuccessful">CapFirst(object.gender) + " βγάζεις."</dynamictemplate>
     <dynamictemplate name="RemoveFirst">"Δεν μπορείς να το βγάλεις όσο φοράς " + object.gender + " " + GetDisplayGarment(object) + "."</dynamictemplate>
-    <template name="wornmodifier">φορέθηκε</template>
+	<template name="NeutralWornModifier">φορέθηκε</template>
+	<template name="MaleWornModifier">φορέθηκε</template>
+	<template name="FemaleWornModifier">φορέθηκε</template>
+	<template name="NeutralPluralWornModifier">φορέθηκαν</template>
+	<template name="MalePluralWornModifier">φορέθηκαν</template>
+	<template name="FemalePluralWornModifier">φορέθηκαν</template>
     <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
     <template name="Wear">Φόρεσε</template>
     <template name="WearCommand">Φόρεσε #object#</template>
     <verbtemplate name="wear">ντύσου</verbtemplate>
     <verbtemplate name="wear">φόρα</verbtemplate>    
 	<verbtemplate name="wear">φόρεσε</verbtemplate>
-    <!-- <verbtemplate name="wear">βάλε</verbtemplate>  -->
+    <verbtemplate name="wear">βάλε</verbtemplate>
     <template name="Remove">Βγάλε</template>
     <template name="RemoveCommand">βγάλε #object#</template>
     <verbtemplate name="remove">ξεντύσου</verbtemplate> 
@@ -197,11 +196,6 @@
 	<template name="Close">Κλείσε</template>
 	<template name="SwitchOn">Άνοιξε</template>
 	<template name="SwitchOff">Κλείσε</template>
-	
-	
-	
-	
-	
     
     <template name="CompassNW">βορειοδυτικά</template>
     <template name="CompassN">βόρεια</template>
@@ -271,14 +265,10 @@
     <verbtemplate name="speakto">κουβέντιασε με</verbtemplate>
     <verbtemplate name="speakto">συζήτησε</verbtemplate>
     <verbtemplate name="speakto">κουβέντιασε</verbtemplate>
-
-    <!--verbtemplate name="open">άνοιξε</verbtemplate>
-    <verbtemplate name="close">κλείσε</verbtemplate-->
-	
 	<verbtemplate name="SwitchOn">ενεργοποίησε</verbtemplate>
     <verbtemplate name="SwitchOff">απενεργοποίησε</verbtemplate>
 	
-    <template templatetype="command" name="put"><![CDATA[^τοποθέτησε (?<object1>.*) (στο|στην|στον|στη) (?<object2>.*)$]]></template>
+    <template templatetype="command" name="put"><![CDATA[^βάλε (?<object1>.*) (στο|στην|στον|στη) (?<object2>.*)$]]></template>	
     <template templatetype="command" name="removefrom"><![CDATA[^βγάλε (?<object1>.*) από (?<object2>.*)$]]></template>
 	<template templatetype="command" name="ask"><![CDATA[^ρώτα (?<object>.*) για (?<text>.*)$]]></template>
 	<template templatetype="command" name="tell"><![CDATA[^πες (?<object>.*) για (?<text>.*)$]]></template>
@@ -314,8 +304,8 @@
     <verbtemplate name="kiss">φίλα</verbtemplate>
 	<verbtemplate name="kiss">φίλησε</verbtemplate>
     <dynamictemplate name="DefaultKiss">"Δεν μπορείς να " + object.gender + " φιλήσεις."</dynamictemplate>
-	<verbtemplate name="knock">knock</verbtemplate>
-    <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate>
+	<!-- verbtemplate name="knock">knock</verbtemplate>
+    <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate-->
     <verbtemplate name="lick">γλύψε</verbtemplate>
     <dynamictemplate name="DefaultLick">"Δεν μπορείς να " + object.gender + " γλύψεις."</dynamictemplate>
     <verbtemplate name="lie">ξάπλωσε</verbtemplate>

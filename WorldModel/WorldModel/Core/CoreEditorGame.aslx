@@ -173,7 +173,16 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
-      </control>	  
+      </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>[EditorGameMultipleCommandsSeparator]</caption>
+      <attribute>multiplecommandsseparator</attribute>
+      <validvalues type="simplestringlist">.; [And] </validvalues>
+      <onlydisplayif>game.multiplecommands</onlydisplayif>
+      <freetext/>
+    </control>
 
 
     </tab>
