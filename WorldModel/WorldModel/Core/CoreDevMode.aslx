@@ -6,7 +6,7 @@
   ****************************************************************************************************
   CoreDevMode - Tool for better testing the game
   by SoonGames, 2018
-  Version 1.1
+  Version 1.11
   ****************************************************************************************************
   Quest-Version: 5.7
   ****************************************************************************************************
@@ -106,7 +106,7 @@
         }
       }
       else {
-        msgdm (Template("DevModeNotActive")) // The DevMode is not activ
+        error (Template("DevModeNotActive")) // The DevMode is not activ
       }
     ]]>
     </script>
