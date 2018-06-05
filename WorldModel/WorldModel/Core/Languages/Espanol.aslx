@@ -139,14 +139,8 @@
     <dynamictemplate name="CannotWearWith">"No puedes ponerte eso mientras llevas puesto " + GetDisplayGarment(object) + "."</dynamictemplate>
     <dynamictemplate name="RemoveSuccessful">"Te quitas " + object.article + "."</dynamictemplate>
     <dynamictemplate name="RemoveFirst">"No puedes quitarse eso mientras llevas puesto " + GetDisplayGarment(object) + "."</dynamictemplate>
-	<template name="NeutralWornModifier">usado</template>
-	<template name="MaleWornModifier">usado</template>
-	<template name="FemaleWornModifier">usado</template>
-	<template name="NeutralPluralWornModifier">usado</template>
-	<template name="MalePluralWornModifier">usado</template>
-	<template name="FemalePluralWornModifier">usado</template>
-
-  <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
+    <template name="wornmodifier">usado</template>
+    <!-- verb templates allow for WEAR HAT, etc., whilst WearCommand handles PUT HAT ON -->
     <template name="Wear">Poner</template>
     <template name="WearCommand">poner #object# en;poner #object#</template>
     <verbtemplate name="wear">ponerse</verbtemplate>

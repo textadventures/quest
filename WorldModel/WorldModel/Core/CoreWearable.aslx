@@ -5,16 +5,15 @@
 
 	
 	<command name="wear" template="wear">
-    <allow_all />
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
       if (multiple and ListCount(object) = 0) {
         msg("[NothingToWear]")
       }
       else{
         foreach (obj, object) {
-          if (multiple) {
-            OutputTextNoBr(GetDisplayAlias(obj) + ": ")
-          }
           f = _DoWear(obj)
         }
         UpdateArmour
@@ -24,16 +23,15 @@
 	</command>
 
 	<command name="remove" template="remove">
-    <allow_all />
+		<multipleobjects type="script">
+			game.pov.currentcommandpendingobjectscope = ScopeInventory()
+		</multipleobjects>
 		<script>
       if (multiple and ListCount(object) = 0) {
         msg("[NothingToRemove]")
       }
       else{
         foreach (obj, object) {
-          if (multiple) {
-            OutputTextNoBr(GetDisplayAlias(obj) + ": ")
-          }
           f = _DoRemove(obj)
         }
       }

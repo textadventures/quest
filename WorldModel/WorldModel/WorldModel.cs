@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -648,10 +648,7 @@ namespace TextAdventures.Quest
                             {"command", command},
                             {"metadata", new QuestDictionary<string>(metadata)}
                         }), false);
-                        if (Version < WorldModelVersion.v580)
-                        {
-                             TryFinishTurn();
-                        }
+                        TryFinishTurn();
                     }
                     catch (Exception ex)
                     {
@@ -725,10 +722,7 @@ namespace TextAdventures.Quest
             RunProcedure(eventName, parameters, false);
             if (Version >= WorldModelVersion.v540)
             {
-                if (Version < WorldModelVersion.v580)
-                {
-                     TryFinishTurn();
-                }
+                TryFinishTurn();
                 if (State != GameState.Finished)
                 {
                     UpdateLists();

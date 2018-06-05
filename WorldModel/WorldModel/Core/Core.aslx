@@ -33,14 +33,13 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
-    jsgamename = JSSafe(game.gamename)
-    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
+    JS.eval("var gameName = '"+game.gamename+"';var transcriptName = gameName;")
     if (GetBoolean(game,"savetranscript")){
       JS.eval("var savingTranscript = true;")
       JS.replaceTranscriptString(game.transcriptstring)
     }
     // End of addition by KV for transcript
+    JS.whereAmI()
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
@@ -290,8 +289,6 @@
     if (GetBoolean(game, "notranscript")){
       JS.eval("transcriptEnabled = false;")
     }
-    game.runturnscripts = false
-    FinishTurn
     ]]>
   </function>
   
@@ -411,12 +408,9 @@
 
 
   <function name="FinishTurn">
-    if (GetBoolean(game,"runturnscripts")) {
-      if (not GetBoolean(game, "suppressturnscripts")) {
-        RunTurnScripts
-      }
+    if (not GetBoolean(game, "suppressturnscripts")) {
+      RunTurnScripts
     }
-    game.runturnscripts = false
     game.suppressturnscripts = false
     UpdateStatusAttributes
     CheckDarkness

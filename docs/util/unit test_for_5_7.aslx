@@ -487,22 +487,6 @@
       Assert ("nail", clonednail2.alias)
       Assert (nail, clonednail2.prototype)
       Assert (clonedball2, clonednail2.parent)
-      //
-      // -------------------------------------------------------------------------
-      Testing ("DictionaryAdd and DictionaryRemove (5.8)")
-      d = NewStringDictionary()
-      dictionary add (d, "key1", "value1")
-      dictionary add (d, "key2", "value2")
-      DictionaryAdd (d, "key3", "value3")
-      Assert (3, DictionaryCount(d))
-      Assert ("value3", StringDictionaryItem(d, "key3"))
-      DictionaryAdd (d, "key3", "value4")
-      Assert (3, DictionaryCount(d))
-      Assert ("value4", StringDictionaryItem(d, "key3"))
-      DictionaryRemove (d, "key3")
-      Assert (2, DictionaryCount(d))
-      DictionaryRemove (d, "key3")
-      Assert (2, DictionaryCount(d))
       Results
     ]]></start>
     <scopebackdrop type="script">

@@ -520,12 +520,6 @@
 
   <type name="npc_type">
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
-    <not_all type="boolean">true</not_all>
-  </type>
-
-  <type name="plural_npc_type">
-    <inherit name="npc_type" />
-    <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
   </type>
 
   <type name="male">
@@ -563,7 +557,6 @@
   </type>
 
   <type name="maleplural">
-    <inherit name="plural_npc_type" />
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
@@ -572,7 +565,6 @@
   </type>
 
   <type name="femaleplural">
-    <inherit name="plural_npc_type" />
     <displayverbs type="simplestringlist">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>

@@ -45,9 +45,7 @@ namespace TextAdventures.Quest.Scripts
         public override void Execute(Context c)
         {
             c.ReturnValue = m_returnValue.Execute(c);
-            // Leaving this set to v550 for backwards compatibility
-            // Some things do not work in 550 games when this is changed to 580
-            if (m_worldModel.Version >= WorldModelVersion.v550) c.IsReturned = true;
+            if (m_worldModel.Version >= WorldModelVersion.v580) c.IsReturned = true;
         }
 
         public override string Save()

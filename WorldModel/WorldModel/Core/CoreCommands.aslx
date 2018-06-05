@@ -1,4 +1,4 @@
-<library>
+﻿<library>
 
   <!-- lookat modified by KV to include timesexamined attribute -->
   <command name="lookat" template="lookat">
@@ -74,7 +74,25 @@
 
   <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
   <command name="take" template="take">
-    <allow_all />
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = NewObjectList()
+      objlist = ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)
+      objlist = ListExclude(objlist, FilterByAttribute(objlist,"not_all",true))
+      foreach (obj, objlist) {
+        if (obj.parent = game.pov.parent and not DoesInherit(obj, "npc_type")) {
+          list add(game.pov.currentcommandpendingobjectscope, obj)
+        }
+      }
+    </multipleobjects>
+    <multiple>
+      takeList = NewObjectList()
+      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
+        if (obj.parent = game.pov.parent) {
+          list add(takeList, obj)
+        }
+      }
+      return (takeList)
+    </multiple>
     <scope>notheld</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
@@ -194,11 +212,16 @@
   </function>
 
   <command name="drop" template="drop">
-    <allow_all />
+    <multipleobjects type="script">
+      game.pov.currentcommandpendingobjectscope = GetDirectChildren(game.pov)
+    </multipleobjects>
+    <multiple>
+      return (GetDirectChildren(game.pov))
+    </multiple>
     <scope>inventory</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NotCarryingAnything]")
+        msg("[NothingToTake]")
       }
       else{
         foreach (obj, object) {
@@ -321,9 +344,6 @@
     <script>
       undo
       game.suppressturnscripts = true
-      if (GetBoolean (game, "gridmap")){
-        Grid_DrawPlayerInRoom (game.pov.parent)
-      }
     </script>
     <isundo/>
   </command>
@@ -819,7 +839,6 @@
         dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
         HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
       }
-      game.suppressturnscripts = true
     ]]></script>
   </command>
 
@@ -863,14 +882,7 @@
   <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
-  
-  <!-- Modified to suppress turn scripts -->
-  <command name="help" pattern="[help]">
-    <script>
-      msg (Template("DefaultHelp"))
-      game.suppressturnscripts = true
-    </script>
-  </command>
+  <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
 
   <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
   <command name="save">
@@ -887,53 +899,56 @@
       else {
         requestsave
       }
-      game.suppressturnscripts = true
     </script>
   </command>
   
   <!-- added by KV -->
 
   <command name="version_cmd" pattern="[version_cmd]">
-    <script><![CDATA[
-      s = "<b>TITLE: </b>" + game.gamename + "<br/>"
+    <script>
+      <![CDATA[
+      table = "<table style='padding:9px;border:1px solid black;'>"
+      table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
       if (HasAttribute (game, "author")) {
-        s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+        table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
       }
-      s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-      s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-      s = s + "<br/>"
-      msg (s)
-      game.suppressturnscripts = true
-    ]]></script>
+      table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+      table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+      table = table + "</table>"
+      msg (table)
+    ]]>
+    </script>
   </command>
 
   <command name="log_cmd" pattern="[log_cmd]">
     <script>
+      game.notarealturn = true
       if (not GetBoolean(game, "nohtmllog")){
         JS.showLog ()
       }
       else {
         msg ("This game has no in-game log.")
       }
-      game.suppressturnscripts = true
     </script>
   </command>
 
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
+      game.notarealturn = true
       if (not GetBoolean(game, "notranscript")){
         JS.showTranscript ()
       }
       else {
         msg ("This game has no transcript feature.")
       }
-      game.suppressturnscripts = true
     </script>
   </command>
 
-  <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
+  <command name="transcript_on_cmd">
+    <pattern type="string">^(transcript|script)( on|)$|^enable (script|transcript)$</pattern>
     <script>
       <![CDATA[
+      game.notarealturn = true
       if (not GetBoolean(game, "notranscript")) {
         if (not GetBoolean(game,"savetranscript")) {
           msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
@@ -946,14 +961,15 @@
             JS.eval ("savingTranscript = true;")
             game.savetranscript = true
             pre = "<hr/>Transcript enabled for:<br/>"
-            s = "<b>TITLE: </b>" + game.gamename + "<br/>"
+            table = "<table style='padding:9px;border:1px solid black;'>"
+            table = table + "<tr><td>TITLE: </td><td>" + game.gamename + "</td></tr>"
             if (HasAttribute (game, "author")) {
-              s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+              table = table + "<tr><td>AUTHOR: </td><td>" + game.author + "</td></tr>"
             }
-            s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-            s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-            s = s + "<br/>"
-            s = pre + s
+            table = table + "<tr><td>VERSION: </td><td>" + game.version + "</td></tr>"
+            table = table + "<tr><td>IFID: </td><td>" + game.gameid + "</td></tr>"
+            table = table + "</table>"
+            s = pre + table
             msg("")
             msg (s)
             msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
@@ -966,27 +982,26 @@
       else {
         msg ("This game has no transcript feature.")
       }
-      game.suppressturnscripts = true
     ]]>
     </script>
   </command>
 
   <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
-      if (not GetBoolean(game, "notranscript")) {
-        if (GetBoolean(game,"savetranscript")) {
+      game.notarealturn = true
+      if (not GetBoolean(game, "notranscript")){
+        if (GetBoolean(game,"savetranscript")){
           game.savetranscript = false
-          JS.eval ("var savingTranscript = false;")
-          msg ("Transcript disabled.")
+          JS.eval("var saveTranscript = false;")
+          msg("Transcript disabled.")
         }
-        else {
-          msg ("The transcript is already disabled.")
+        else{
+          msg("The transcript is already disabled.")
         }
       }
       else {
         msg ("This game has no transcript feature.")
       }
-      game.suppressturnscripts = true
     </script>
   </command>
 
@@ -1002,6 +1017,7 @@
           JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
         }
         else {
+          game.notarealturn = true
           game.suppressturnscripts = true
         }
       }
