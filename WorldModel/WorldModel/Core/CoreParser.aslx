@@ -65,7 +65,8 @@
           msg ("")
         }
         game.pov.commandmetadata = metadata
-        if (game.multiplecommands){		
+        if (game.multiplecommands){
+          command = Replace (command, Template("And"), ".")
           commands = Split(command, ".")
           if (ListCount(commands) = 1) {
             game.pov.commandqueue = null
