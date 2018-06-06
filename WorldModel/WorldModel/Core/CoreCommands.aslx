@@ -80,9 +80,13 @@
       if (multiple and ListCount(object) = 0) {
         msg("[NothingToTake]")
       }
-      else{
+      else {
         foreach (obj, object) {
-          DoTake(obj, multiple)
+          // if this is multiple then we should skip anything in a container that will be taken
+          // and anything held by an object with not_all set (eg an NPC)
+          if (not multiple or (not obj.parent.take and not obj.parent.not_all)) {
+            DoTake (obj, multiple)
+          }
         }
       }
     </script>
@@ -98,7 +102,7 @@
       msg (prefix + DynamicTemplate("AlreadyTaken", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
-      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      msg (BlockingMessage(object, prefix))
     }
     else {
       volume = 0
@@ -200,9 +204,11 @@
       if (multiple and ListCount(object) = 0) {
         msg("[NotCarryingAnything]")
       }
-      else{
+      else {
         foreach (obj, object) {
-          DoDrop(obj, multiple)
+          if (Contains(game.pov,obj)) {
+            DoDrop (obj, multiple)
+          }
         }
       }
     </script>
@@ -218,7 +224,7 @@
       msg (prefix + DynamicTemplate("NotCarrying", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
-      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      msg (BlockingMessage(object, prefix))
     }
     else {
       found = true
@@ -417,7 +423,7 @@
     }
 
     if (not ListContains(ScopeReachable(), object)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      msg (BlockingMessage(object, ""))
     }
     else {
       found = false
@@ -513,18 +519,18 @@
       }
       // object1 must not be inside a closed container
       else if (not ListContains(ScopeReachable(), object1)) {
-        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+        msg (BlockingMessage(object1, ""))
       }
       // object2 must not be inside a closed container
       else if (not ListContains(ScopeReachable(), object2)) {
-        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+        msg (BlockingMessage(object2, ""))
       }
       // object2 must be an open container or surface
       else if (not object2.container) {
         msg (Template("CannotDoThat"))
       }
       else if (not object2.isopen) {
-        msg (DynamicTemplate("ObjectNotOpen", object2))
+        msg (BlockingMessage(object2, ""))
       }
       else {
         if (GetBoolean(object2, "hidechildren")) {
@@ -1008,4 +1014,13 @@
     </script>
   </command>
   
+  <function name="BlockingMessage" parameters="blocked, prefix" type="string">
+    obj = GetBlockingObject(blocked)
+    if (HasString(obj, "blockingmessage")) {
+      return (obj.blockingmessage)
+    }
+    else {
+      return (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(obj)))
+    }
+  </function>
 </library>
