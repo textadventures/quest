@@ -82,9 +82,9 @@
       }
       else {
         foreach (obj, object) {
-          // if this is multiple then we should skip anything in a container that will be taken
+          // if this is multiple then we should skip anything in a container that has already been taken
           // and anything held by an object with not_all set (eg an NPC)
-          if (not multiple or (not obj.parent.take and not obj.parent.not_all)) {
+          if (not multiple or (not Contains(game.pov, obj) and not obj.parent.not_all)) {
             DoTake (obj, multiple)
           }
         }
