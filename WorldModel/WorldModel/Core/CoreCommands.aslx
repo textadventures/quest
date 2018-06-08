@@ -77,17 +77,18 @@
     <allow_all />
     <scope>notheld</scope>
     <script>
-      if (multiple and ListCount(object) = 0) {
-        msg("[NothingToTake]")
-      }
-      else {
-        foreach (obj, object) {
-          // if this is multiple then we should skip anything in a container that has already been taken
-          // and anything held by an object with not_all set (eg an NPC)
-          if (not multiple or (not Contains(game.pov, obj) and not obj.parent.not_all)) {
-            DoTake (obj, multiple)
-          }
+      took_something = false
+      foreach (obj, object) {
+        // if this is multiple then we should skip anything in a container that has already been taken
+        // (always earlier in the list) and anything held by an NPC.
+        // Scenery and anything flagged "not_all" will already be excluded
+        if (not multiple or (not Contains(game.pov, obj.parent) and not DoesInherit(obj.parent, "npc_type"))) {
+          DoTake (obj, multiple)
+          took_something = true
         }
+      }
+      if (multiple and not took_something) {
+        msg ("[NothingToTake]")
       }
     </script>
   </command>
