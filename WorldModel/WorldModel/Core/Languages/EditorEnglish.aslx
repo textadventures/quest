@@ -355,6 +355,7 @@
   <template name="EditorObjectInventoryTake2">Take</template>
   <template name="EditorObjectInventoryTakemessage">Take message (leave blank for default)</template>
   <template name="EditorObjectInventoryAftertaking">After taking the object</template>
+  <template name="EditorObjectInventoryExcludedTakeAll">Object is excluded when entering TAKE ALL</template>
   <template name="EditorObjectInventoryDrop">Drop</template>
   <template name="EditorObjectInventoryDrop2">Drop</template>
   <template name="EditorObjectInventoryDropmessage">Drop message (leave blank for default)</template>

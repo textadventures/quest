@@ -11,7 +11,6 @@
   <template name="Again1">Wiederholen</template>
   <template name="Again2">g</template>
   <template name="NothingToRepeat">Es gibt nichts zu wiederholen.</template>
-
   <dynamictemplate name="ObjectCannotBeStored">"Du kannst das dort nicht hineinlegen."</dynamictemplate>
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
@@ -553,7 +552,13 @@
 	return (getZehner)
 	]]>
 </function>
-  
+
+  <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
+  <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>
+  <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
+  <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
+
   <template name="DevModeCommandPut">lege</template>
   <template name="DevModeCommandDrop">lege</template>
   <template name="DevModeCommandTake">nimm</template>
