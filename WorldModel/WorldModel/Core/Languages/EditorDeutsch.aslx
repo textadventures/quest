@@ -357,6 +357,7 @@
   <template name="EditorObjectInventoryTake2">Nimm</template>
   <template name="EditorObjectInventoryTakemessage">Beim nehmen des Objektes (Ohne Eingabe = Standardverhalten)</template>
   <template name="EditorObjectInventoryAftertaking">Nachdem das Objekt genommen wurde</template>
+  <template name="EditorObjectInventoryExcludedTakeAll">Objekt wird bei der Eingabe von NIMM ALLES ausgeschlossen</template>
   <template name="EditorObjectInventoryDrop">Lege</template>
   <template name="EditorObjectInventoryDrop2">Lege</template>
   <template name="EditorObjectInventoryDropmessage">Beim ablegen des Objektes (Ohne Eingabe = Standardverhalten)</template>
@@ -440,6 +441,7 @@
   <template name="EditorObjectScriptsTurnscripts">Nach jedem Zug in diesem Raum</template>
   <template name="EditorObjectScriptsCommands">Kommandos in diesem Raum</template>
   <template name="EditorObjectSetupSetup">Konfiguration</template>
+  <template name="EditorObjectIsRoom">Das Objekt ist ein Raum</template>
   <template name="EditorObjectSetupType">Typ</template>
   <template name="EditorObjectSetupName">Name</template>
   <template name="EditorObjectSetupAlias">Alias</template>
