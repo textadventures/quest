@@ -2,6 +2,7 @@
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
   
+  <template name="WantRestartGame">Are you sure you want to restart the game?</template>
   <template name="Again1">again</template>
   <template name="Again2">g</template>
   <template name="NothingToRepeat">There is nothing to repeat.</template>

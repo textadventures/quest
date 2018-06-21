@@ -997,7 +997,7 @@
   
   <command name="restart" pattern="^restart$">
     <script>
-      Ask ("Are you sure you want to restart the game?"){
+      Ask (Template("WantRestartGame")){
         if (result){
           JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
         }
