@@ -466,11 +466,15 @@
 	<function name="SetVerbs"><![CDATA[
     foreach(o, GetAllChildObjects(game.pov)) {
       if (DoesInherit(o, "wearable")) {
-        if (HasAttribute(o, "wear_slots") and HasInt(o, "wear_layer")) {
-          _SetVerbsForGarment(o)
+        if (HasAttribute(o, "wear_adjverbs")) {
+          if (o.wear_adjverbs) {
+            if (HasAttribute(o, "wear_slots") and HasInt(o, "wear_layer")) {
+              _SetVerbsForGarment(o)
+            }
+            if (not HasString(o, "alias")) o.alias = o.name
+            if (not HasString(o, "listalias")) o.listalias = o.alias
+          }
         }
-        if (not HasString(o, "alias")) o.alias = o.name
-        if (not HasString(o, "listalias")) o.listalias = o.alias
       }
     }
 	]]></function>
@@ -804,6 +808,7 @@
     </take>
 		<removeable type="boolean">true</removeable>
 		<wear_layer type="int">2</wear_layer>
+    <wear_adjverbs type="boolean">true</wear_adjverbs>
 		<inventoryverbs type="listextend">[Wear];[Remove]</inventoryverbs>
     <wear_slots type="stringlist" />
     <colourmylistalias type="script"><![CDATA[
