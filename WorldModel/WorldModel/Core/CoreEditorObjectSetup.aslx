@@ -62,7 +62,7 @@
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Object is a room</caption>
+      <caption>[EditorObjectSetupIsRoom]</caption>
       <attribute>isroom</attribute>
     </control>
 
