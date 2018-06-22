@@ -1,4 +1,5 @@
 <library type="editor">
+  <template name="EditorObjectWearableAdjVerbs">Adapting the inventory verbs to the states</template>
   <template name="EditorGameEnableDevMode">Show DevMode options</template>
   <template name="EditorGameDevMode">DevMode</template>
   <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game DevMode must be deactivated!</template>

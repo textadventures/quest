@@ -1,6 +1,7 @@
 ﻿<!-- Translated by SoonGames -->
 <!-- For the templates with prefixed comment "no translation" the function is unknown to me, therefore these are not translated. -->
 <library type="editor">
+  <template name="EditorObjectWearableAdjVerbs">Die Inventarverben den Zuständen anpassen</template>
   <template name="EditorGameEnableDevMode">Entwicklermodus (Hinzufügen von erweiterten Befehlen zum Testen des Spiels)</template>
   <template name="EditorGameDevMode">Entwicklermodus</template>
   <template name="EditorGameDevModeInfoRelease">Wichtig: Vor Veröffentlichung des Spiels muss der Entwicklermodus deaktiviert werden!</template>  

@@ -8,6 +8,7 @@
   
   <template name="LanguageId">de</template>
 
+  <template name="WantRestartGame">Bist du sicher, dass du das Spiel neu starten willst?</template>
   <template name="Again1">Wiederholen</template>
   <template name="Again2">g</template>
   <template name="NothingToRepeat">Es gibt nichts zu wiederholen.</template>

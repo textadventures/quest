@@ -50,7 +50,13 @@
 			<caption>[EditorObjectWearableRemoveMessage]</caption>
 			<nullable/>
 		</control>
-		
+
+		<control>
+			<mustinherit>wearable</mustinherit>
+			<controltype>checkbox</controltype>
+			<attribute>wear_adjverbs</attribute>
+			<caption>[EditorObjectWearableAdjVerbs]</caption>
+		</control>	
 
     <!-- Advanced Features  -->
     
