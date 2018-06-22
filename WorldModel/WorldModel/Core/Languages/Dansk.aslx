@@ -350,18 +350,6 @@
   <template name="MalePluralWornModifier">båret</template>
   <template name="FemalePluralWornModifier">båret</template>
 
-  <template name="Wear">Wear</template>
-  <verbtemplate name="wear">tag #object# på</verbtemplate>
-  <verbtemplate name="wear">wear</verbtemplate>
-  <verbtemplate name="wear">ifør dig</verbtemplate>
-  <verbtemplate name="wear">don</verbtemplate>
-
-  <template name="Remove">Remove</template>
-  <verbtemplate name="remove">tag #object# af</verbtemplate>
-  <verbtemplate name="remove">remove</verbtemplate>
-  <verbtemplate name="remove">affør dig</verbtemplate>
-  <verbtemplate name="remove">doff</verbtemplate>
-
   <template name="DefaultHelp"><![CDATA[<u>Hurtig Hjælp</u><br/><br/>
 <b>- Objecter:</b>  Prøv med SE PÅ...., TAL MED...., TAG..., LÆG..., ÅBEN..., LUK..., GIV... TIL..., BRUG..., eller BRUG... MED...<br/>
 <b>- Grej:</b>  Se hvad du bærer på ved at skrive I, INV eller INVENTORY eller se på panelet foroven til højre.<br/>
