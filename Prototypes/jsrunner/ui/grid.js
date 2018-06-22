@@ -53,7 +53,10 @@ gridApi.setZoom = function(zoom) {
 };
 
 gridApi.zoomIn = function(amount) {
-    paper.view.zoom = paper.view.zoom * (Math.pow(1.1, amount));
+    zoom = paper.view.zoom * (Math.pow(1.1, amount));
+    if (zoom > 0.0001) {
+        paper.view.zoom = zoom;
+    }
 };
 
 function onMouseDrag(event) {
