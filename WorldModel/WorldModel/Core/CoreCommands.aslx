@@ -531,7 +531,7 @@
         msg (Template("CannotDoThat"))
       }
       else if (not object2.isopen) {
-        msg (BlockingMessage(object2, ""))
+        msg (DynamicTemplate("ObjectNotOpen", object2))
       }
       else {
         if (GetBoolean(object2, "hidechildren")) {
