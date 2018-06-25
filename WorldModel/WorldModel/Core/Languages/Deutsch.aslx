@@ -587,6 +587,6 @@
   <template name="DevModeChangedPovPos">Position des Spielers geändert zu </template>
   <template name="DevModeStartScript">Initialisierungsscript gestartet.</template>
   <template name="DevModeSetVerbs">Verben zugeordnet.</template>
-  <template name="DevModeComExecute">Kommmando ausgeführt: </template>
+  <template name="DevModeComExecute">Kommando ausgeführt: </template>
 
 </library>
