@@ -39,6 +39,7 @@
       SetTimerScript(timer) {
         this.enabled = false
         invoke (this.timeoutscript)
+        JS.scrollToEnd ()
         destroy (this.name)
       }
       EnableTimer(timer)
