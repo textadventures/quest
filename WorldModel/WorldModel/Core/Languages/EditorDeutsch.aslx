@@ -719,6 +719,7 @@
   <template name="EditorScriptsTurnScriptsEnableturn">Turn-Skript aktivieren</template>
   <template name="EditorScriptsTurnScriptsDisableturn">Turn-Skript deaktivieren</template>
   <template name="EditorScriptsTurnScriptsSetturnscript">Das Skript für jeden Turn setzen</template>
+  <template name="EditorScriptsTurnScriptsSuppressturnscripts">Turn-Skripte unterdrücken</template>
   <template name="EditorScriptsTurnScriptsscriptto">das währenddessen ausgeführt wird</template>
   <template name="EditorScriptsTurnScriptsAfter">Nach</template>
   <template name="EditorScriptsTurnScriptsturns">Turns</template>
