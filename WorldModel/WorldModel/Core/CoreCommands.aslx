@@ -533,6 +533,10 @@
       else if (not object2.isopen) {
         msg (DynamicTemplate("ObjectNotOpen", object2))
       }
+      // object1 is inside object 2
+      else if (ListContains(ListParents(object2), object1)) {
+        msg (Template("CannotDoThat"))
+      }
       else {
         if (GetBoolean(object2, "hidechildren")) {
           object2.hidechildren = false
