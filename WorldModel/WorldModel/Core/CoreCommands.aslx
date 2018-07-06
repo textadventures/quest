@@ -207,7 +207,7 @@
       }
       else {
         foreach (obj, object) {
-          if (Contains(game.pov,obj)) {
+          if (not multiple or Contains(game.pov, obj)) {
             DoDrop (obj, multiple)
           }
         }
