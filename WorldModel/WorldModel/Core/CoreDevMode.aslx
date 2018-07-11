@@ -6,7 +6,7 @@
   ****************************************************************************************************
   DevMode - Tool for better testing the game
   by SoonGames, 2018
-  Version 1.5.1
+  Version 1.5.2
   ****************************************************************************************************
   Compatible with Quest 5.7
   ****************************************************************************************************
@@ -114,7 +114,7 @@
       if (HasAttribute(game, "devmode_active")) {
         if (game.devmode_active) {
           if (IsDefined("text")) {
-            regex = "^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>clr|\\?)$"
+            regex = "^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>selftest|clr|\\?)$"
             if (IsRegexMatch (regex, text)) {
               result = populate (regex, text)
               com0 = ToString(DictionaryItem(result, "command0"))
@@ -124,6 +124,9 @@
               // Commands
               if (not com0 = "") { // without object
                 switch (LCase(com0)) {
+                  case ("selftest") {
+                    selfTest
+                  }
                   case ("clr") {
                     ClearScreen
                   }
@@ -576,9 +579,6 @@
           DevModeOutput (Template("DevModeStartScript"))
           do (game, "devmode_initscript")
         }
-        if (game.devmode_selftest) {
-          selfTest
-        }
         msg("")
       }
 	  }
@@ -802,7 +802,6 @@
     <devmode_showdebugtable type="boolean">true</devmode_showdebugtable>
     <devmode_ownfontcolour type="boolean">true</devmode_ownfontcolour>
     <devmode_fontcolour type="string">Green</devmode_fontcolour>
-    <devmode_selftest type="boolean">false</devmode_selftest>
     <devmode_attributes type="stringdictionary" />
     <devmode_verbs type="simplestringlist">#drop;#take;#to;#open;#close;#on;#off</devmode_verbs>
  </type>
