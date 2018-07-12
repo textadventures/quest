@@ -459,6 +459,16 @@
   ]]>
   </function>
   
+  
+  <function name="GetDefiniteName" parameters="obj" type="string">
+    result = GetDisplayAlias(obj)
+    if (GetBoolean(obj, "usedefaultprefix") or not obj.prefix = null) {
+      result = "the " + result
+    }
+    return (result)
+  </function>  
+  
+  
   <!-- Added by KV -->
   <template templatetype="command" name="log_cmd">^log$|^view log$|^display log$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
