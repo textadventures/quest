@@ -596,4 +596,17 @@
   <function name="DisableHtmlLog">
     game.nohtmllog = true
   </function>
+
+  <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
+    d = NewDictionary()
+    dictionary add (d, key1, value1)
+    if (IsDefined("key2")) {
+      dictionary add (d, key2, value2)
+    }
+    if (IsDefined("key3")) {
+      dictionary add (d, key3, value3)
+    }
+    return (d)
+  </function>
+
 </library>
