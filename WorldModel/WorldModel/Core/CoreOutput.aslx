@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="OutputText" parameters="text">
     <![CDATA[
     OutputTextRaw(ProcessText(text))
@@ -98,6 +98,40 @@
     }
   </function>
 
+  <function name="ParamsForTextProcessor" type="dictionary">
+    params = NewDictionary()
+    if (not game.text_processor_this = null) {
+      dictionary add (params, "this", game.text_processor_this)
+    }
+    if (HasAttribute(game, "text_processor_variables")) {
+      foreach (key, game.text_processor_variables) {
+        if (not key = "this" or game.text_processor_this = null) {
+          dictionary add (params, key, DictionaryItem(game.text_processor_variables, key))
+        }
+      }
+    }
+    return (params)
+  </function>
+    
+    
+  <function name="ObjectForTextProcessor" type="object" parameters="objectname">
+    if (not game.text_processor_this = null and objectname = "this") {
+      object = game.text_processor_this
+      if (TypeOf(object) = "object") {
+        return (object)
+      }
+    }
+
+    if (not game.text_processor_variables = null and DictionaryContains (game.text_processor_variables, objectname)) {
+      object = DictionaryItem(game.text_processor_variables, objectname)
+      if (TypeOf(object) = "object") {
+        return (object)
+      }
+    }
+   
+    return (GetObject(objectname))
+  </function>
+    
     
   <function name="GetLinkTextColour" type="string">
     if (UIOptionUseGameColours()) {
@@ -185,12 +219,7 @@
     else {
       objectname = Left(section, dot - 1)
       attributename = Mid(section, dot + 1)
-      if (objectname = "this") {
-        object = game.text_processor_this
-      }
-      else {
-        object = GetObject(objectname)
-      }
+      object = ObjectForTextProcessor(objectname)
       if (object = null) {
         return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
@@ -255,8 +284,8 @@
       text = Replace(text, "|" + text2, "")
     }
     condition = Left(command, colon - 1)
-    if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
-    result = eval(condition) 
+    result = eval(condition, ParamsForTextProcessor())
+
     if (result) {
       return (ProcessTextSection(text, data))
     }
@@ -287,8 +316,7 @@
     else {
       text = Mid(command, colon + 1)
       condition = Left(command, colon - 1)
-      if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
-      object = Eval(condition)
+      object = Eval(condition, ParamsForTextProcessor())
       if (object = null) {
         return ("@@@open@@@" + section + "@@@close@@@")
       }
@@ -362,7 +390,7 @@
         else {
           objectname = Left(condition, dot - 1)
           attributename = Mid(condition, dot + 1)
-          object = GetObject(objectname)
+          object = ObjectForTextProcessor(objectname)
           if (object = null) {
             result = false
           }
@@ -397,7 +425,7 @@
           objectname = Left(lhs, dot - 1)
           attributename = Mid(lhs, dot + 1)
         }
-        object = GetObject(objectname)
+        object = ObjectForTextProcessor(objectname)
         if (object = null) {
           return ("@@@open@@@if " + command + "@@@close@@@")
         }
@@ -519,8 +547,7 @@
       text = Mid(objectname, colon + 1)
       objectname = Left(objectname, colon - 1)
     }
-    if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
-    object = GetObject(objectname)
+    object = ObjectForTextProcessor(objectname)
     if (object = null) {
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
     }
@@ -677,8 +704,7 @@
   
   <function name="ProcessTextCommand_RandomAlias" type="string" parameters="section, data">
     objectname = Mid(section, 8)
-    if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
-    object = GetObject(objectname)
+    object = ObjectForTextProcessor(objectname)
     if (object = null) {
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
     }
@@ -721,8 +747,7 @@
     }
     else {
       objectname = StringListItem(objectandattlist, 0)
-      if (not game.text_processor_this = null) objectname = Replace(objectname, "this", game.text_processor_this.name)
-      object = GetObject(objectname)
+      object = ObjectForTextProcessor(objectname)
       if (object = null) {
         return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
