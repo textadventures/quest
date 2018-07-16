@@ -45,7 +45,7 @@
   <template name="Open">Open</template>
   <template name="Close">Close</template>
   <template name="Eat">Eat</template>
-  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDefiniteName(object)) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>
