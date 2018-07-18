@@ -267,25 +267,27 @@
   </function>
  
   <function name="ProcessTextCommand_Either" parameters="section, data" type="string">
-  <![CDATA[
     command = Mid(section, 8)
-    colon = Instr(command, ":")
-    if (colon = 0) {
+    l = Tsplit(command)
+    if (ListCount(l) = 1) {
       return ("@@@open@@@either " + command + "@@@close@@@")
     }
-
-    text = Mid(command, colon + 1)
-    colon2 = Instr(colon + 1, command, "|")
-    if (colon2 = 0) {
-      text2 = ""
+    condition = StringListItem(l, 0)
+    text = StringListItem(l, 1)
+    if (ListCount(l) = 2) {
+      sep = Instr(text, "|")
+      if (sep = 0) {
+        text2 = ""
+      }
+      else {
+        text2 = Mid(text, sep + 1)
+        text = Replace(text, "|" + text2, "")
+      }
     }
     else {
-      text2 = Mid(command, colon2 + 1)
-      text = Replace(text, "|" + text2, "")
+      text2 = StringListItem(l, 2)
     }
-    condition = Left(command, colon - 1)
     result = eval(condition, ParamsForTextProcessor())
-
     if (result) {
       return (ProcessTextSection(text, data))
     }
@@ -297,7 +299,6 @@
         return (ProcessTextSection(text2, data))
       }
     }
-  ]]>
   </function>
 
   <function name="ProcessTextCommand_Here" parameters="section, data" type="string">
@@ -738,7 +739,7 @@
   
   <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
     elements = Mid(section, 8)
-    elementslist = Split(elements, ":")
+    elementslist = Tsplit(elements)
     objectandatt = StringListItem (elementslist, 0)
     list remove (elementslist, objectandatt)
     objectandattlist = Split(objectandatt, ".")
