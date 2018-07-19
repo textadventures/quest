@@ -403,7 +403,12 @@
       }
       default {
         if (gender = "it") {
-          return (verb + "s")
+          if (EndsWith(verb, "y") and not EndsWith(verb, "ey")) {
+            return (Mid(verb, 1, Lengthof(verb) - 1) + "ies")
+          }
+          else {
+            return (verb + "s")
+          }
         }
         else {
           return (verb)
