@@ -342,6 +342,20 @@
       Assert ("player is <i>two</i>", ProcessText("player is {select:this.count:{u:zero}|{b:one}|{i:two}|three}"))
       //
       // -------------------------------------------------------------------------
+      Testing ("Text processor: params")
+      game.text_processor_this = null
+      game.text_processor_variables = NewDictionary()
+      dictionary add (game.text_processor_variables, "animal", tiger)
+      Assert ("You can not see a tiger", ProcessText("You can not see a {animal.name}"))
+      Assert ("You can not see a {creature.name}", ProcessText("You can not see a {creature.name}"))
+      dictionary add (game.text_processor_variables, "garment", hat)
+      Assert ("You can see a hat", ProcessText("You {either garment.wear_layer = 2:can|cannot} see a {garment.name}"))
+      dictionary add (game.text_processor_variables, "this", teapot)
+      Assert ("You can see a teapot", ProcessText("You can see a {this.name}"))
+      game.text_processor_this = tiger
+      Assert ("You can see a tiger", ProcessText("You can see a {this.name}"))
+      //
+      // -------------------------------------------------------------------------
       Testing ("Text processor: old error handling")
       Assert ("player.count = {unknown.count}", ProcessText("player.count = {unknown.count}"))
       //
