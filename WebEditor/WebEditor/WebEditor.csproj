@@ -246,7 +246,7 @@
       <Link>Core\CoreWearable.aslx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Core\CoreDevMode.aslx">
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreDevMode.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
