@@ -46,7 +46,7 @@ In general, if there are several things with the same name in your game, later o
 
 The upshot of this is that your libraries should be after the standard libraries, and you may need to be careful exactly what order they come in.
 
-An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here(translating_quest.html)] if yoyu are).
+An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here(translating_quest.html)] if you are).
 
 
 Your own libraries?
@@ -97,9 +97,9 @@ If you create a library, it is a good idea to add Editor elements to it, so that
 
 _NOTE:_ The point of creating your own libraries is you can quickly get to the code if you need to tweak something. If you prefer to use the GUI to create scripts, do not bother with your own libraries.
 
-_NOTE:_ There is an issue with creating objects in libraries that have a parent attribute set to an object in the main file, so avoid  doing that!
+_NOTE:_ There is an issue with creating objects in the main file that have a parent attribute set to an object or room in the library file, and Quest will crash when trying to open the GUI.
 
-_NOTE:_ If you make your library publicly available, make sure all the elements have names, so users can override them. In particular, check your verb elements.
+_NOTE:_ If you make your library publicly available, make sure all the elements have names, so users can override them. In particular, check your verb and command elements.
 
 
 File name and location

@@ -6,13 +6,42 @@ title: Customising the UI - Part 1
 
 The Quest user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
 
-Potentially this means you can set up your game to look like _anything_. In practice, this is not trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. That said, we can make a lot of changes without knowing too much about any of them.
+Potentially this means you can set up your game to look like _anything_. In practice, this is not always trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. There is a decent guide [here](http://www.xmlnews.org/docs/xml-basics.html). That said, we can make a lot of changes without knowing too much about any of them.
+
+
+
+Web Pages
+---------
+
+To really get to grips with the UI you have to understand how it is represented in the computer. To do that it is best to focus on the web player. The principles are the same, but playing on-line nicely separates the two parts.
+
+When you access a web page, such as this one, your browser sends a message, an HTTP request, to a server, which sends an HTTP response. Both of these are just a string of characters, a file in effect (and often the response actually is a file on the server).
+
+When a player accesses your game they send an HTTP request, the Quest web player sends back an HTTP response; the user interface, with no output on it.
+
+
+JavaScript
+----------
+
+JavaScript is a programming language built into most web browsers. Most interactive web pages use JavaScript to make stuff happen on them.
+
+By the way, JavaScript is not the same as Java!
+
+JavaScript is also used in Quest, which, even when playing off-line, uses a web browser interface. Without JavaScript, you would have a static page. The JavaScript collects and processes the user clicking on the compass or whatever, it takes input from the command bar, it communicates with the web player on the Quest server, and it updates the web page being displayed as most text is output.
+
+The way JavaScript communicates with a web server if called [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)). Quest also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/wiki/JQuery), which is a set of functions that gets downloaded with the original page.
+
+Quest has a JavaScript object, called `JS`, and we can use that to dynamically change the web page that the player is looking at. Getting information back from the web page is something else again.
 
 
 The JS Object
 -------------
 
-The `JS` object is a quick way to use JavaSript in your game. You can use it to access the built-in JavaScript functions (and your own too), and there are several that can be used to change the UI. 
+The `JS` object is a quick way to use JavaSript in your game. 
+
+Let us start with the easy stuff. Quest has an `addText` method on the `JS` object which simply adds the given text to the web page at a certain point, i.e., at the end of the existing output text. `JS.addText` is used by both `OutputTextRaw` and `OutputTextRawNoBr`, which are in turn used by `OutputTextRaw` and `OutputTextRawNoBr` respectively, and `OutputTextRaw` is in turn used by `msg` and `PrintCentred`, so everything you print to screen uses `JS.addText`.
+
+You can use it to access the other built-in JavaScript functions (and your own too), and there are several that can be used to change the UI. 
 
 ```
   // Use these two to turn features on and off during play
@@ -102,7 +131,9 @@ If you are using the desktop version, click on "HTML Tools" whilst playing again
 
 ### A note about colours
 
-In CSS you can use two formats for colours. The name or the hex value. About a hundred colours are named (note they have no spaces, but are case insensitive). The hex value must start with a #, followed by three pairs of characters, one pair each for red, green and blue. Each pair is the hexadecimal value, from 00 to FF. If the hex value makes no sense, stick to the names!
+In CSS you can use two formats for colours. The name or the hex value. About a hundred colours are named (note they have no spaces, but are case insensitive). The hex value must start with a #. It must be followed by three pairs of characters, one pair each for red, green and blue, where each pair is the hexadecimal value, from 00 to FF. Alternatively, you can use three characters one each for red, green and blue; in this case each character is doubled to make the full version, so "#f08" is the same colour as "#ff0088". 
+
+If the hex value makes no sense, stick to the names!
 
 [https://en.wikipedia.org/wiki/Web_colors](https://en.wikipedia.org/wiki/Web_colors)
 
@@ -136,11 +167,11 @@ Quest sets up the User Interface in the `InitInterface` function, which is defin
 
 The big advantage of doing it this way is that this will be called whenever Quest thinks the interface needs updating, which is not just at the start of the game (for example, when the screen is cleared). You also get the bonus of having all your interface stuff in the same place, which keeps it neat.
 
-Note, however, that you should not print anything from the "inituserinterface" script (you might feel tempted to output CSS or some JavaScripts using msg or OutputTextRawNoBr). If you do, when a saved game is reloaded, all the new text will get inserted into the top of the existing text.
-
 To edit the script, go to the _Features_ tab of the game object, and check that "Show advanced scripts for the game object" is ticked. Then go to the _Advanced Scripts" tab. The "inituserinterface" script is at the top.
 
-Because it is easier to show on a forum post, all the tricks here will be in code. In the desktop version, click on the seventh icon, "Code view", and a text box will appear. For the web version, the button is labelled "Code view". Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
+Note, however, that you should not print anything from the "inituserinterface" script (you might feel tempted to output CSS or some JavaScripts using msg or OutputTextRawNoBr). If you do, when a saved game is reloaded, all the new text will get inserted into the top of the existing text. Instead, use the `JS.addScript` function, which will add your JavaScript or CSS or whatever outside the normal flow of text.
+
+Because it is easier to show, all the tricks here will be in code. In the desktop version, click on the seventh icon, "Code view", and a text box will appear. For the web version, the button is labelled "Code view". Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
 
 
 Using All That In Quest
@@ -153,7 +184,7 @@ JS.eval("$('#gameBorder').css('background-color', '#800080');")
 JS.eval("$('#gameBorder').css('color', 'pink');")
 ```
 
-The JS object is a way to access any JavaScript function, even those you add yourself. The `eval` function is useful because it will run any JavaScript code. So the first line above is say, "JavaScript, please run this string as though it is JavaScript code", and the string to run is `$('#gameBorder').css('background-color', '#800080');`, i.e., the code we had before.
+The JS object is a way to access any JavaScript function, even those you add yourself. The `eval` function is useful because it will run any JavaScript code. So the first line above is saying, "JavaScript, please run this string as though it is JavaScript code", and the string to run is `$('#gameBorder').css('background-color', '#800080');`, i.e., the code we had before.
 
 Note that this is not a way to get information from the interface; this is a one-way street. Data is going from Quest to JavaScript only (there is a way to go the other way; that is how the player's inputs get to Quest, but that is beyond the scope of this article).
 
@@ -161,7 +192,7 @@ Note that this is not a way to get information from the interface; this is a one
 Shortcuts
 ---------
 
-Fortunately, as of Quest 5.7, you can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
+As of Quest 5.7, you can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
 
 ```
 JS.setCss("#gameBorder", "background-color;#800080;color:pink;")

@@ -11,7 +11,7 @@ Raises a UI request. The request name must be specified directly - it is not a s
 request(UpdateLocation, "The Kitchen")
 ```
 
-The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that wherever possible, an alternative is used (even where the alternative uses `request` behind the scenes).
+The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that the alternative is used. It is just possible `request` will be taken out of Quest at some date.
 
 Valid request names and parameters (and alternatives):
 
@@ -165,10 +165,10 @@ Either way, valid element names are:
 
 _RequestSave_
 
-Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. As of Quest 5.7.2, use:
+Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. As of Quest 5.8, use:
 
 ```
-RequestSave()
+requestsave()
 ```
 
 
@@ -184,7 +184,7 @@ _Log_
 
 _Speak_  
 
-(New in Quest 5.4) Output text to speech synthesizer if enabled. As of Quest 5.7.2, use `RequestSpeak` instead:
+(New in Quest 5.4) Output text to speech synthesizer if enabled. As of Quest 5.8, use `requestspeak` instead:
 
 ```
 RequestSpeak("Hello World")

@@ -10,6 +10,7 @@ title: Functions
 *  [AllCommands](allcommands.html)
 *  [AllExits](allexits.html)
 *  [AllObjects](allobjects.html)
+*  [AllRooms](allrooms.html)
 *  [AllTurnScripts](allturnscripts.html)
 *  [Asc](string/asc.html)
 *  [Ask](../scripts/ask.html)
@@ -43,9 +44,11 @@ title: Functions
 *  [Destroy](../scripts/destroy.html)
 *  [Decimalise](string/decimalise.html)
 *  [DiceRoll](corelibrary/diceroll.html)
+*  [DictionaryAdd](dictionaryadd.html)
 *  [DictionaryContains](dictionarycontains.html)
 *  [DictionaryCount](dictionarycount.html)
 *  [DictionaryItem](dictionaryitem.html)
+*  [DictionaryRemove](dictionaryremove.html)
 *  [Dictionary add](../scripts/dictionary_add.html)
 *  [Dictionary remove](../scripts/dictionary_remove.html)
 *  [DisableTimer](corelibrary/disabletimer.html)
@@ -208,10 +211,15 @@ title: Functions
 
 *  [ObjectDictionaryItem](objectdictionaryitem.html)
 *  [ObjectLink](corelibrary/objectlink.html)
+*  [ObjectListCompact](objectlistcompact.html)
 *  [ObjectListItem](objectlistitem.html)
 *  [ObjectListSortDescending](objectlistsortdescending.html)
 *  [ObjectListSort](objectlistsort.html)
 *  [On ready](../scripts/on_ready.html)
+*  [OutputText](outputtext.html)
+*  [OutputTextNoBr](outputtextnobr.html)
+*  [OutputTextRaw](outputtextraw.html)
+*  [OutputTextRawNoBr](outputtextrawnobr.html)
 
 ## P
 
@@ -303,6 +311,7 @@ title: Functions
 *  [StringListSortDescending](stringlistsortdescending.html)
 *  [StringListSort](stringlistsort.html)
 *  [Stop sound](../scripts/stop_sound.html)
+*  [SuppressTurnscripts](suppressturnscripts.html)
 *  [Switch](../scripts/switch.html)
 *  [SwitchOff](corelibrary/switchoff.html)
 *  [SwitchOn](corelibrary/switchon.html)

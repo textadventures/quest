@@ -7,6 +7,18 @@ title: Resolving Common Problems
 Note: _This is a work in progress. It does not cover all errors, but is slowly getting closer to that state..._
 
 
+Problems when installing Quest
+----------------------------
+
+Quest can only be installed on Windows. Note that more recent versions of Quest will not run on Windows XP (since Quest 5.6 I think, and since 5.7 it should even warn you if you try to install on Windows XP).
+
+If Quest fails to install properly, uninstall it (if applicable), restart your PC, then re-install.
+
+Try installing `vcredist_x86.exe` from [here](https://www.microsoft.com/en-gb/download/details.aspx?id=30679).
+
+Check you have .NET 3.0, 3.5 and 4.0 installed properly.
+
+
 Problems when starting Quest
 ----------------------------
 
@@ -31,6 +43,22 @@ Follow these steps (thanks Jay!):
 We need to delete two keys, "Recent" and "EditorRecent" (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word "Recent" and then choose "Delete" from the popup menu. Choose yes to confirm. Do the same for "EditorRecent". Close the Rededit program (no need to save).
 
 Note that when you open Quest, the "recent" lists will be empty until you begin using Quest again, but that is preferable to not being to open Quest at all!
+
+If you have never got the current version of Quest to run, then see also the section on problems with installing Quest, as it could be that Quest did not install properly.
+
+If instead you see this:
+
+```
+System.NotSupportedException: No imaging component suitable to complete this operation was found. ---> System.Runtime.InteropServices.COMException: The component cannot be found. (Exception from HRESULT: 0x88982F50)
+   --- End of inner exception stack trace ---
+   at System.Windows.Media.Imaging.BitmapDecoder.SetupDecoderFromUriOrStream(Uri uri, Stream stream, BitmapCacheOption cacheOption, Guid& clsId, Boolean& isOriginalWritable, Stream& uriStream, UnmanagedMemoryStream& unmanagedMemoryStream, SafeFileHandle& safeFilehandle)
+   at System.Windows.Media.Imaging.BitmapDecoder.CreateFromUriOrStream(Uri baseUri, Uri uri, Stream stream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption, RequestCachePolicy uriCachePolicy, Boolean insertInDecoderCache)
+   at System.Windows.Media.Imaging.BitmapImage.FinalizeCreation()
+   at System.Windows.Media.Imaging.BitmapImage.EndInit()
+...
+```
+
+It could be that there is a dodgy image in the folder. Go to the game folder (it will have the name of your game, inside "Quest games" folder), and move out every file except the one that ends .aslx (or the one with the Quest icon), then try opening again. If it opens, one of the files you moved was to blame. Move a few back at a time to see which one. Note that Quests will try to open _all_ the image files in the folder when you open your game, whether used or not.
 
 
 

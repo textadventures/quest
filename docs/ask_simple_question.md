@@ -94,8 +94,8 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
 If you look through it you should see each set that we added is there, in the same order. The code is just a different way of looking at the same thing.
 
 
-Yes or no?
----------
+Note 1: Yes or no?
+-------------------
 
 For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
 
@@ -109,3 +109,100 @@ ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
     msg ("You buy some red roses from Cindy.")
   }
 }
+
+You can also use the `Ask` function - see [here](functions/ask.html).
+
+
+Note 2: Code after will run immediately
+-----------------------------------------
+
+If you have any script after the ShowMenu, this will run straightaway, without waiting for the player to make a choice. Consider this example:
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("What flowers do you want to buy?", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from Cindy.")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from Cindy.")
+    }
+  }
+}
+msg("'Have a nice day!' she says.")
+```
+
+Quest will set up the string list, display the menu, but will then print "'Have a nice day!' she says." immediately, whilst another part waits for the player to make a choice. That is probably not what you want! This is how to do it properly:
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("What flowers do you want to buy?", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from Cindy.")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from Cindy.")
+    }
+  }
+  msg("'Have a nice day!' she says.")
+}
+```
+
+
+Note 3: No local variables
+---------------------------
+
+The script that runs inside of ShowMenu when the player makes a choice has no access to local variables. It will not know what `this` is, and if in a command will not know what `object` (or whatever) is.
+
+Fir example, suppose the above script is an attribute of Cindy, we could try this:
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("'What flowers do you want to buy?' asks " + GetDisplayAlias(this) + ".", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from " + GetDisplayAlias(this) + ".")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from " + GetDisplayAlias(this) + ".")
+    }
+  }
+  msg("'Have a nice day!' she says.")
+}
+```
+
+The 'What flowers do you want to buy?' bit will be okay, `this` will refer to Cindy, as the script belongs to her. However, the bits inside the `ShowMenu` will fail, because that is a different script; it does not belong to Cindy, so `this` does not refer to anything.
+
+The way to get around that is to assign the value to an attribute of the game or player object (you can use the same one for all your `ShowMenu` calls, as it is only needed temporarily.
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+game.show_menu_this = this
+ShowMenu ("'What flowers do you want to buy?' asks " + GetDisplayAlias(this) + ".", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from " + GetDisplayAlias(game.show_menu_this) + ".")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from " + GetDisplayAlias(game.show_menu_this) + ".")
+    }
+  }
+  msg("'Have a nice day!' she says.")
+}
+```
+
+

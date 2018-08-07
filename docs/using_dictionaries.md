@@ -34,6 +34,7 @@ dictionary remove (d, "table")
 ```
 As with lists, you can add the same thing as many times as you like, however, the key must be unique. If you try to add an item with a key that is already in the dictionary you will get an error. If you try to remove a key that does not exist you will again get an error.
 
+As of Quest 5.8, the functions `DictionaryAdd` and `DictionaryRemove` offer a safe way to add and remove keys. `DictionaryAdd` will replace the existing key, if it is present. `DictionaryRemove` will just do nothing if the key does not exist.
 
 
 Retrieving from dictionaries

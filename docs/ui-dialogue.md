@@ -121,8 +121,8 @@ Disabling Other Input
 The dialogue box is not "modal", which means that the player can play your game whilst the dialogue box is still there. The best way around that is to turn off the command bar and panes on the right in the editor (_Interface_ tab of the game object), and turn them back on it the `HandleDialogue` function, so that is now:
 
 ```
-request (Show, "Panes")
-request (Show, "Command")
+JS.panesVisible(true)
+JS.uiShow("#txtCommandDiv")
 l = Split(s, "|")
 msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1)) 
 ```

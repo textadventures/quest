@@ -25,6 +25,8 @@ Contents
 
 [Handling Characters (NPCs)](#Npcs)
 
+[Creating an RPG](#Rpg)
+
 [Guides to Coding With Quest](#Coding)
 
 [Advanced Topics for Desktop Only](#AdvancedTopics)
@@ -56,10 +58,11 @@ The Quest Tutorial starts here:
 
 Commands are the heart of a text adventure.
 
--  [Commands](commands.html)
+-  [Introduction to commands](commands.html)
 -  [Commands for specific rooms](commands_for_room.html)
 -  [Using Verbs](using_verbs.html)
 -  [Complex commands](complex_commands.html)
+-  [Handling multiple objects and ALL](handling_multiple.html)
 -  [Pattern matching](pattern_matching.html)
 -  [Commands With Unusual Scope](advanced_scope.html)
 
@@ -77,7 +80,6 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Switchable objects](switchable.html)
 -  [Light and dark](handling_light_and_dark.html)
 -  [Clothing](wearables.html)
--  [Using timers and turn scripts](tutorial/using_timers_and_turn_scripts.html) (link to the tutorial page)
 -  [Score, health and money](score_health_money.html)
 
 
@@ -85,18 +87,19 @@ Quest has a whole range of features built in and ready to use. You probably won'
 <a name="Howto"></a>How to...
 ---------------------------------------
 
-Some of these will involve some simple coding. _It's not that bad!_ We will walk you through and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the third guide to learn how to copy-and-paste code.
+Some of these will involve some simple coding. _It's not that bad!_ We will walk you through it and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the third guide to learn how to copy-and-paste code.
 
 -  [Introduction to coding](quest_code.html)
 -  [Important attributes](important_attributes.html)
+
 -  [Copy-and-paste Code](copy_and_paste_code.html)
 -  [Use functions](functions.html)
--  [Use a switch script](multiple_choices___using_a_switch_script.html)
+-  [Use a `switch` script](multiple_choices___using_a_switch_script.html)
 -  [Change the player object](changing_the_player_object.html)
 -  [Handle water](handling_water.html)
 -  [Show a map](showing_a_map.html)
--  [Ask a simple question](ask_simple_question.html) (showing a menu)
--  [Ask a question](asking_a_question.html)
+-  [Ask a question (menu)](ask_simple_question.html)
+-  [Ask a question (text input)](asking_a_question.html)
 -  [Keep a journal](keeping_a_journal.html)
 -  [Keep score](keeping_score.html)
 -  [Implement a transit system](transit_system.html)
@@ -104,7 +107,8 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Track time](time.html)
 -  [Set up a shop](shop.html)
 -  [Set up a door](setting_up_door.html)
--  [Give the player a memory of Wiki](memory_or_wiki.html)
+-  [Give the player a memory or Wiki](memory_or_wiki.html)
+-  [Use neutral language](neutral_language.html) (grammatically correct responses)
 
 
 
@@ -116,6 +120,7 @@ You can add images, sounds and videos to your game. These pages will take your t
 
 -  [Use multimedia](multimedia.html)
 -  [Use images](images.html)
+-  [Creating images on the fly](images_on_the_fly.html)
 -  [Adding sounds](adding_sounds.html)
 -  [Adding videos](adding_videos.html)
 
@@ -133,16 +138,21 @@ The first two pages require no coding (not even GUI scripts), the next three som
 -  [Display verbs](display_verbs.html)
 -  [Custom command pane](command_pane.html) (adding an extra pane with simple commands to click)
 -  [Simple Customisation](ui-custom.html)
--  [Messing with the location bar](ui-location-bar.md) (have it display the turn and score, or add commands to it)
+-  [Fonts](ui-fonts.html)
 
 These are rather more advanced, and get in to HTML and JavaScript.
 
--  [Custom commands and status pane](custom_panes.html) (adding an extra pane you can do anything with)
+-  [Messing with the location bar](ui-location-bar.md) (have it display the turn and score, or add commands to it)
+-  [Custom status pane](custom_panes.html) (adding an extra pane you can do anything with)
+-  [ASLEvent: Handling events in JavaScript](ui-callback.html) (have Quest respond to events in the interface)
+-  [Dialogue panels](ui-dialogue.html)
+-  [Dialogue panels with point buy](ui-dialogue-points.html)
+
+These are more general, and go into detail about the principles of UI customisation.
+
 -  [Customisation part 1](ui-javascript.html) (three pages that explore customisation in detail)
 -  [Customisation part 2](ui-javascript2.html)
 -  [Customisation part 3](ui-javascript3.html)
--  [ASLEvent: Handling events in JavaScript](ui-callback.html)
--  [Dialogue panels](ui-dialogue.html)
 
 
 
@@ -159,15 +169,32 @@ Adding people that the player can interactive with can help bring your game to l
 -  [Independent NPCs](independent_npcs.html)
   
 
+  
+<a name="Rpg"></a>Creating an RPG-style game
+---------------------------------------------
+
+Quest can be used to create an RPG-style game, in which the player has a set of statistics, and these are used to determine success in combat and other situations. The Zombie Apocalypse is an example used to walk you through one possible way of doing it. You do not need to have done the first two parts to use the spells.
+
+-  [Introduction](rpg-intro.html)
+-  [The Zombie Apocalypse Part 1](zombie-apocalypse-1.html)
+-  [The Zombie Apocalypse Part 2](zombie-apocalypse-2.html)
+-  [Spells for the Zombie Apocalypse](zombie-apocalypse-spells.html)
+
+
+
+  
 
 <a name="Coding"></a>Guides to Coding With Quest
 ---------------------------------------
 
-A look at some of the more technical features of Quest. These articles assume you can at least copy-and-paste code.
+A look at some of the more technical features of Quest. These articles assume you can at least copy-and-paste code. The first takes you through creating a very short, but technically complex, game, and is, if you like, the big brother of the tutorial.
 
+-  [Cloak of Darkness](cloak_of_darkness.html)
+-  [Introduction to Coding](introtocoding.html)
 -  [Functions](creating_functions_which_return_a_value.html)
 -  [Lists](using_lists.html)
 -  [Dictionaries](using_dictionaries.html)
+-  [Turnscripts](using_turnscripts.html)
 -  [Scopes](scopes.html)
 -  [Clones](clones.html)
 -  [Change scripts](change_scripts.html)
@@ -195,6 +222,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 <a name="Reference"></a>Reference
 ---------------------------------
 
+-   [Using Trizbort](trizbort.html) Draw a map in Trizbort, then export to Quest.
 -   [Common problems](problems.html)
 -   [WebEditor](webeditor.html)
 -   [Code view](codeview.html)
@@ -206,8 +234,10 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Attribute Types](types/)
 -   [Elements](elements/)
 -   [Null](null.html)
+-   [About SAVE](about_save.html)
 -   [Using doubles](using_doubles.html)
 -   [ASLX File Format](aslx.html)
+-   [Editing in Full Code View](full_code_view.html)
 -   [Expressions](expressions.html)
 -   [Competition entries](competition_entry.html)
 -   [Publishing games](publishing.html)
@@ -215,6 +245,10 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [User contributed libraries](libraries.html)
 -   [Helpsheets](helpsheets/) A set of simple guides created by gideonwilliams
 -   [User contributed guides](guides/)
+-   [Docs Style Guide](style_guide.html)
+-   [History of Quest](history.html)
+-   [Quest Source Code](source_code.md)
+-   [Unit Testing](unit_testing.html)
 
 
 <a name="Other"></a>Other Guides

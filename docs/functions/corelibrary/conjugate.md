@@ -3,8 +3,23 @@ layout: index
 title: Conjugate
 ---
 
-<b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
+    Conjugate (object, string verb)
 
-Conjugate(obj, verb)
+Returns the correct form of the verb for the given object, based on the "gender" attribute of the object. This allows authors to create responses neutral with respect to the object.
 
-Should be defined by the language library (but is only used within the language library, so it is safe to not define this if it is not used).
+```
+Conjugate (crowd, "be")
+-> "are"
+Conjugate (crowd, "do")
+-> "do"
+Conjugate (crowd, "sit")
+-> "sit"
+Conjugate (dog, "be")
+-> "is"
+Conjugate (dog, "do")
+-> "does"
+Conjugate (dog, "sit")
+-> "sits"
+```
+
+See also [WriteVerb](writeverb.html)

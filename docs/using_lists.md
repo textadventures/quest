@@ -87,7 +87,7 @@ It is good practice to consider a list as either:
 - Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
 
 
-#### Retrieving from string lists and object Lists
+### Retrieving from string lists and object Lists
 
 If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.
 
@@ -96,7 +96,7 @@ If you know that what you are retrieving is a string, you can use `StringListIte
 
 
 
-#### Retrieving from other lists
+### Retrieving from other lists
 
 It can take Quest a moment to work out what the thing is with `ListItem`. Consider this code:
 ```
@@ -129,8 +129,13 @@ A quick way to get a string list is the Split command (especially useful for men
 l1 = Split("one|two|three", "|")
 msg(l1)
 // -> List: one; two; three; 
+
+l1 = Split("one;two;three")
+msg(l1)
+// -> List: one; two; three; 
 ```
-By the way, the `Join` function goes the other way; it converts from a string list to a string,
+By the way, the `Join` function goes the other way; it converts from a string list to a string.
+
 
 
 Quick object lists
@@ -181,11 +186,15 @@ foreach (obj, delete) {
 Other functions
 ---------------
 
+### How many?
+
 The `ListCount` function will return the number of entries in the list. Remember that the entries will number from zero to _one less than_ the number returned.
 ```
 msg("My list has " + ListCount(myList) + " things in it.")
 msg("The last entry is at position " + (ListCount(myList) - 1))
 ```
+
+### Does it contain?
 
 Use `ListContains` to determine if a list contains a specific entry.
 ```
@@ -193,13 +202,14 @@ if (ListContains(myList, player) {
   list remove(myList, player)            
 }
 ```
-Alternatively, you can use the `in` operator:
+Alternatively, you can use the `in` operator (but only in a local variable or attribute; extra brackets confuse it!):
 ```
 if (player in myList) {
   list remove(myList, player)            
 }
 ```
 
+### Adding and taking away
 
 The `ListCombine` function will return a new list made up by combining the two given lists. The lists must be of the same type.
 ```
@@ -218,11 +228,72 @@ msg (ListExclude(l, player))
 ```
 Note that `ListCombine` and `ListExclude` do not change the original lists at all.
 
-As of Quest 5.7, the `IndexOf` function can be used to get the position of an element in a list (or -1 if it is not in the list).
+### Compacting
+
+If you have combined two lists, you may have one entry appear in the list multiple times. You can use `ListCompact` or `ObjectListCompact` to remove repeated elements (and null elements too). `ListCompact` can be used with any type of list, and will return a new generic list. `ObjectListCompact` can only be used with lists of objects, and will return an object list.
+
+
+### Filtering
+
+You can filter lists to pull out just the objects you are interested in. For example, you might want a list of characters in the current room. All characters are of the "npc_type" type.
+
+```
+allobjects = ScopeReachable()
+charactersonly = FilterByType(allobjects)
+```
+
+You can also filter by attribute. Suppose you have clones a whole hoard of goblins, and now you want to list them. If they all have the alias "goblin", then you can do this:
+
+```
+allobjects = ScopeReachable()
+goblinsonly = FilterByAttribute(allobjects, "alias", "goblin")
+```
+
+There is a reverse function, so we can get all the objects that are not goblins:
+
+```
+allobjects = ScopeReachable()
+notgoblins = FilterByNotAttribute(allobjects, "alias", "goblin")
+```
+
+Perhaps you just want the characters that are not goblins. You can do that by filtering twice:
+
+```
+allobjects = ScopeReachable()
+charactersonly = FilterByType(allobjects)
+charactersnotgoblins = FilterByNotAttribute(charactersonly, "alias", "goblin")
+```
+
+Note that you can use any type of attribute. This example will get all the scenery objects in the room:
+
+```
+allobjects = ScopeReachable()
+sceneryonly = FilterByAttribute(allobjects, "scenery", true)
+```
+
+
+
+### Where?
+
+The `IndexOf` function can be used to get the position of an element in a list (or -1 if it is not in the list).
+
+[IndexOf](functions/indexof.html)
+
+
+### Sorting lists
+
+You can use `StringListSort` and `StringListSortDescending` to sort a list of strings.
+
+[StringListSort](functions/stringlistsort.html)
+[StringListSortDescending](functions/stringlistsortdescending.html)
 
 You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list of objects according to a certain attribute.
-http://docs.textadventures.co.uk/quest/functions/objectlistsort.html
-http://docs.textadventures.co.uk/quest/functions/objectlistsortdescending.html
+
+[ObjectListSort](functions/objectlistsort.html)
+[ObjectListSortDescending](functions/objectlistsortdescending.html)
+
+
+
 
 
 
@@ -255,5 +326,41 @@ And mixed lists, here in one step we add an object and a string:
 ```
 list1 = NewList()
 list2 = list1 + player + "player"
+```
+
+
+
+
+Randomising
+-----------
+
+You can pick a random string or object from a list using `PickOneObject` or `PickOneString`. If you want to do that several times, but avoid having any repeats, just remove the selected from the list.
+
+```
+list = Split ("One;Two;Three")
+for (i, 1, 5) {
+  if (ListCount(list) > 0) {
+    s = PickOneString (list)
+    list remove (list, s)
+    msg (list)
+  }
+  else {
+    msg ("Default")
+  }
+}
+```
+
+Inside the loop, we check if there are any left in the list. If there are, one is selected at random, removed from the list, and displayed. If the list is empty, a default message is displayed.
+
+This also allows us to shuffle a list.
+
+```
+list = Split ("One;Two;Three")
+shuffled = NewStringList()
+while (ListCount(list) > 0) {
+  s = PickOneString (list)
+  list remove (list, s)
+  list add (shuffled)
+}
 ```
 

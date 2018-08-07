@@ -3,8 +3,7 @@ layout: index
 title: Custom Status Pane
 ---
 
-
-A knowledge of HTML and CSS will be useful here.
+The Custom Status Pane is an extra pane you can add to those on the right, that you can use to show pretty much anything. A knowledge of HTML and CSS will be useful here.
 
 On the _Interface_ panel of the game object, make sure "Show Panes" is ticked, then tick "Show a custom status pane". If you start your game, you should see the new pane, but it just says "Status" and does not do anything.
 
@@ -82,3 +81,48 @@ player.hitpoints = 70
 The first four lines here add a change script to the "hitpoints" attribute of the player. This will fire whenever the hits change (you might want to add a bit that makes the player die if they dip below zero). The "hits-span" part just changes the text, but the "hits-indicator" sets a new value for the right padding of the `span`, making it wider or narrower as required.
 
 The last two lines set the hit points and the maximum. Note that the hit points must be set last so that when they change, the custom status pane will be updated correctly.
+
+
+### Multiple indicators?
+
+You can have the pane show several indicators. This is the code for three, showing hit points, armour and magic.
+
+
+```
+s = "<table width=\"100%\">"
+s = s + " <tr>"
+s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"
+s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"hits-span\">---</span></td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;text-align:left;\">"
+s = s + "   <span id=\"hits-indicator\" style=\"background-color:black;padding-right:200px;\"></span>"
+s = s + "   </td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td style=\"text-align:right;\" width=\"50%\">Armour:</td>"
+s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"armour-span\">---</span></td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;text-align:left;\">"
+s = s + "   <span id=\"armour-indicator\" style=\"background-color:black;padding-right:200px;\"></span>"
+s = s + "   </td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td style=\"text-align:right;\" width=\"50%\">Magic points:</td>"
+s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"magic-span\">---</span></td>"
+s = s + " </tr>"
+s = s + " <tr>"
+s = s + "   <td colspan=\"2\" style=\"border: thin solid;background:white;text-align:left;\">"
+s = s + "   <span id=\"magic-indicator\" style=\"background-color:black;padding-right:200px;\"></span>"
+s = s + "   </td>"
+s = s + " </tr>"
+s = s + "</table>"
+
+JS.setCustomStatus (s)
+if (HasScript(player, "changedhitpoints")) {
+  do (player, "changedhitpoints")
+}
+```
+
+You will need to also modify the game.start script so these two indicators also get updated.

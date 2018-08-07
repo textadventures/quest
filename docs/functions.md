@@ -42,7 +42,7 @@ You might wonder why you need the brackets, if there are no parameters. Actually
 ```
 Well, not always. If the function is on a line on its own with nothing else, Quest will handle it fine. Otherwise, you will need the brackets to ensure Quest will realise this is a function and not something else.
 
-The type of the value a function returns and the parameters it needs is called its "type signature", and Quest will complain if you get is wrong.
+The type of the value a function returns and the parameters it needs is called its "type signature", and Quest will complain if you get it wrong.
 
 
 Custom Functions

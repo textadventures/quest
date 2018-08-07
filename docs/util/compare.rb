@@ -26,7 +26,7 @@ end
 
 
 a1, b1, c1 = get_lists "English.aslx"
-a2, b2, c2 = get_lists "Italiano.aslx"
+a2, b2, c2 = get_lists "Dansk.aslx"
 p (a1 - a2)
 p (b1 - b2)
 p (c1 - c2)

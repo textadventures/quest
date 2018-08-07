@@ -86,7 +86,7 @@ Notes...
 
 If you do a calculation that mixes integers and doubles, Quest will convert the integers to doubles to do the maths, and the result will be a double.
 
-Quest offers four functions that will round your double to an integer.
+Quest offers four functions that will round your double to an integer. Note, however, that the _type_ will still be double. Rounding a double with the value 4.56 will give a double with the value 4.00.
 
 * Ceiling
 * Floor
@@ -99,5 +99,10 @@ To display a double to, say, three decimal places, multiple it by 1000, then rou
 msg("The objective is " + (Round(distance * 1000)/1000) + " km away.")
 ```
 
+To convert to an integer _type_ you will need to use `cast` (note that there are no quotes around `int`).
+
+```
+my_int = cast(4.56, int)
+```
 
 
