@@ -889,14 +889,14 @@
     <script>
       if (HasAttribute(game, "questplatform")) {
         if (game.questplatform = "desktop") {
-          requestsave
+           request(RequestSave, "")
         }
         else {
           JS.saveGame ()
         }
       }
       else {
-        requestsave
+        request(RequestSave, "")
       }
       game.suppressturnscripts = true
     </script>

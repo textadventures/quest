@@ -43,13 +43,4 @@
     </control>
   </editor>
   
-  <editor>
-    <appliesto>requestsave</appliesto>
-    <display>Save</display>
-    <control>
-      <controltype>label</controltype>
-      <caption>Save</caption>
-    </control>
-  </editor>
-  
 </library>
