@@ -12,7 +12,7 @@
     if (GetString(game, "commandbarformat") <> format) {
       ResetCommandBarFormat
     }
-    requestspeak (text)
+    RequestSpeak (text)
     ]]>
   </function>
 
@@ -31,7 +31,7 @@
   <function name="OutputTextRawNoBr" parameters="text">
     <![CDATA[
     JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
-    requestspeak (text)
+    RequestSpeak (text)
     ]]>
   </function>
 
