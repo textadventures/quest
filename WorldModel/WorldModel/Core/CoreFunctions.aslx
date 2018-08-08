@@ -164,7 +164,7 @@
   
   <function name="RequestSave">
     // Deprecated
-    request (Save, "")
+    request (RequestSave, "")
   </function>
 
   <function name="RequestSpeak" parameters="s">
