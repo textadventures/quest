@@ -57,7 +57,7 @@ Quest has created three example pages for us, and inside Page1 is the "player" o
 
 As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
 
-![](../images/Webplayblankgame.png "Webplayblankgame.png")
+![](../images/Webplayblankgamebook.png "Webplayblankgamebook.png")
 
 Simple Mode
 -----------
