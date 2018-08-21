@@ -480,6 +480,11 @@
     game.menuoptions = null
     game.menucallback = null
   </function>
+  
+  <!-- Added to fix issue with first release of Quest 580 -->
+  <function name="RequestSpeak" parameters="s">
+    request (Speak, s)
+  </function>
 <!-- End of addition by KV -->
 
 </library>
