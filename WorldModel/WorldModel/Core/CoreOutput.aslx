@@ -792,7 +792,7 @@
   </function>
 
   <function name="SetBackgroundColour" parameters="colour">
-    JS.setBackground(game.defaultbackground)
+    JS.setBackground(colour)
     game.defaultbackground = colour
   </function>
 
