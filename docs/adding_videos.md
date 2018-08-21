@@ -322,4 +322,4 @@ Additional Audio and Video Functions
 
 There is a user-submitted guide which provides step-by-step instructions for any online (or offline) users who would like to add a few audio and video functions to a game (desktop users may prefer to download the library, which can be downloaded from the same page).
 
-[Advanced Audio and Video Functions](https://github.com/KVonGit/AudioVideoLib/wiki)
+[Advanced Audio and Video Functions](http://media.textadventures.co.uk/games/PHVys9dICUiMSSpr_m9WYQ/index.html)
