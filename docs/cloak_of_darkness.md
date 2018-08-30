@@ -285,7 +285,7 @@ So now we need some room descriptions, and these need to depend on whether the c
 
 > There is something oppressive about the {either CloakHere():dark\|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. 
 
-This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by the |. If the cloak is here, the room is dark, otherwise dingy.
+This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by the \|. If the cloak is here, the room is dark, otherwise dingy.
 
 > {either CloakHere():dark\|dingy}
 
