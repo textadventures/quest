@@ -9,7 +9,7 @@ The Cloak of Darkness is a specification for an adventure game that has been cre
 
 > This adventure is a tiny adventure designed to be easy to port to a given Authoring system. It is, if you will, the interactive fiction equivalent of "Hello, world!"
 
-This seems a great way to look in some detail at how to create a Quest game. This, then, is the _second_ Quest tutorial. It is more advanced than the first tutorial, so we will be working with code. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
+This seems to be a great way to look in some detail at how to create a Quest game. This, then, is the _second_ Quest tutorial. It is more advanced than the first tutorial, so we will be working with code. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
 
 If you want to see how the scripts look in the GUI, and you are using the desktop version, just download the game (link below), open it up and take a look. If you are using the web version, you will need to click the "code view" button for that script, paste the code in there, and then click "code view" again to go back to the GUI view.
 
@@ -129,19 +129,20 @@ The cloakroom description will read more naturally if the hook is part of the de
 Go to the _Room_ tab of the cloakroom, and in the description paste in this code:
 
 ```
-s = "The cloakroom is brightly lit, and is little more than a cupboard. "
+s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
 if (cloak.parent = hook) {
-  msg (s + "Your cloak is hung from the only hook.")
+  s = s + "Your cloak is hung from the only hook."
 }
 else if (cloak.parent = this) {
-  msg (s + "There is a single hook, which apparently was not good enough for you, to judge from the cloak on the floor.")
+  s = s + "There is a single hook, which apparently was not good enough for you, to judge from the cloak on the floor."
 }
 else {
-  msg (s + "There is a single hook, which strikes you as strange for a cloakroom.")
+  s = s + "There is a single hook, which strikes you as strange for a cloakroom."
 }
+msg (s + " The only way out is back to the east. "
 ```
 
-The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option.
+The first line is the general description, which is used for all descriptions. It is assigned to a local variable `s`. We add that to a specific message, depending on where the cloak is. This means we only need to write the text one time, instead of repeating it for each option. I wanted the comment about the exit at the end of the paragraph, so the last line adds that to the string, and prints the whole thing.
 
 Now go to the _Setup_ tab of the hook, and tick it to be scenery. This will stop it appearing in the list of objects.
 
@@ -282,9 +283,16 @@ But the bit in the `if` condition is already `true` or `false`, so we can just r
 
 So now we need some room descriptions, and these need to depend on whether the cloak is present or not. There are a couple of ways to do that. `if/else` is a good idea if the text is very different, but the text processor is better if just a few words are changing. For the foyer, then, we might have:
 
-> There is something oppressive about the {either CloakHere():dark|dingy} foyer; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. 
+> There is something oppressive about the {either CloakHere():dark\|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. 
 
-This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by the |.
+This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by the |. If the cloak is here, the room is dark, otherwise dingy.
+
+> {either CloakHere():dark\|dingy}
+
+At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notonce` which only uses the given text when it is not the first time.
+
+> {once:room}{notfirst:foyer}
+
 
 The cloakroom uses a script, but we can modify the first line to use the same text processor directive:
 
@@ -361,9 +369,15 @@ msg ("")
 
 ### Locked message
 
-We can improve the message the player sees when trying the locked door using the text processor. Using the `once` directive, we can have a longer message appear the first time. We can put the player's thoughts in italics too, nesting one text directive in another.
+We can improve the message the player sees when trying the locked door using the text processor. Using the `once` directive, we can have a longer message appear the first time.
 
+> You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
+
+We can put the player's thoughts in italics too, using the `i` directive, nesting one text directive in another.
+ 
 > You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
+
+
 
 
 ### Walls, etc.
@@ -545,7 +559,7 @@ this.changedparent => {
 
 This will set the "worn" attribute to be true, so the cloak is worn at the start. The "changedparent" script is a special type of script called a change script, and this fires when the value of the associated attribute changes - in this case the parent attribute. This means that whenever the cloak moves, i.e., goes from or to the player, worn is set to false, which will ensure that when the cloak is dropped or hung up, and picked up again, it is not magically being worn.
 
-The "this" variable indicates the object to which the script belongs, by the way. It is good practice to use it where possible as it means you can copy-and-paste code very esily. Any other wearable item can have exactly the same code.
+The "this" variable indicates the object to which the script belongs, by the way. It is good practice to use it where possible as it means you can copy-and-paste code very easily. Any other wearable item can have exactly the same code.
 
 Finally we need to tell the player if the cloak is worn or not when in the inventory, so we will create our own INVENTORY command. Here is the pattern:
 
@@ -590,6 +604,21 @@ else {
 ```
 
 This version creates two lists, one of worn items, one of carried items, and prints a message depending on whether there is anything is each list. I am using a local variable, `s`, primarily so the code will fit the page, by the way.
+
+
+Walkthrough
+-----------
+
+There is a walk-through published for Cloak of Darkness [here](http://www.delron.org.uk/walkthru/cloak.html). For some reason it goes west twice, but maybe that is to test the player cannot do that. In fact, testing what happens when the player does something wrong is a vital part of the process, so this is a good thing to do, it is just odd that this is the only time it happens.
+
+You can test you game by following that walk through.
+
+On the desktop version, you can do more, and create a walkthrough object that you can play again and again. Click walkthrough in the left pane (almost at the bottom), then click the plus sign to create a new one. Give it some name. You can now add each step of the walkthrough.
+
+However, an easier way is to click the record button (the circle), and then play through the game. Quest will record each step.
+
+Once you have a walkthrough you can click the play button (the triangle), to play through the walkthrough. You can add to a walkthrough by clicking record again; Quest will play through the existing steps, then record your new moves.
+
 
 
 Releasing the game

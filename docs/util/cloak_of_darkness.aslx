@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.8.6773.16526-->
+<!--Saved by Quest 5.8.6809.15141-->
 <asl version="580">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -21,13 +21,14 @@
     <customlocationtextcolour>White</customlocationtextcolour>
     <defaultwebfont>Kavivanar</defaultwebfont>
     <defaultforeground>Pink</defaultforeground>
-    <defaultbackground>#444</defaultbackground>
-    <marginscolour>#444</marginscolour>
+    <defaultbackground>#333</defaultbackground>
+    <marginscolour>#333</marginscolour>
     <attr name="autodescription_youarein_useprefix" type="boolean">false</attr>
     <attr name="autodescription_youcango_newline" type="boolean">false</attr>
     <attr name="autodescription_description" type="int">2</attr>
     <attr name="autodescription_youcansee" type="int">4</attr>
     <attr name="autodescription_youcango" type="int">0</attr>
+    <feature_devmode />
     <start type="script">
       message.count = 0
     </start>
@@ -44,11 +45,11 @@
   <object name="foyer">
     <inherit name="editor_room" />
     <isroom />
-    <description>There is something oppressive about the {either CloakHere():dark|dingy} foyer; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. You can see doors to the north, west and south.</description>
+    <description>There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. It's former glory has all but faded, the walls still sport old posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. You can see doors to the north, west and south.</description>
     <listen>You can hear the rain pounding against the windows.</listen>
     <beforefirstenter type="script">
       msg ("You hurry through the night, keen to get out of the rain. Ahead, you can see the old opera house, a brightly lit beacon of safety.")
-      msg ("Moments later you are pushing though the doors into the foyer. Now you are here it does not seem so bright. The door closes behind you with an ominous finality...")
+      msg ("Moments later you are pushing though the doors into a foyer. Now that you are here it does not seem so bright. The door closes behind you with an ominous finality...")
       msg ("")
     </beforefirstenter>
     <object name="player">
@@ -97,16 +98,17 @@
   <object name="cloakroom">
     <inherit name="editor_room" />
     <description type="script">
-      s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard, and the only way out is back to the east. "
+      s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
       if (cloak.parent = hook) {
-        msg (s + "Your cloak is hung from the only hook.")
+        s = s + "Your cloak is hung from the only hook."
       }
       else if (cloak.parent = this) {
-        msg (s + "There is a single hook, which apparently was not good enough for you, to judge from the cloak on the floor.")
+        s = s + "There is a single hook, which apparently was not good enough for you, to judge from the cloak on the floor."
       }
       else {
-        msg (s + "There is a single hook, which strikes you as strange for a cloakroom.")
+        s = s + "There is a single hook, which strikes you as strange for a cloakroom."
       }
+      msg (s + " The only way out is back to the east. ")
     </description>
     <exit alias="east" to="foyer">
       <inherit name="eastdirection" />
@@ -120,6 +122,14 @@
         <value>peg</value>
       </alt>
       <isroom />
+      <look type="script">
+        if (cloak.parent = hook) {
+          msg ("An ornate brass hook, with a cloak hanging from it.")
+        }
+        else {
+          msg ("An ornate brass hook, ideal for hanging cloaks on.")
+        }
+      </look>
     </object>
   </object>
   <object name="bar">
@@ -366,12 +376,15 @@
   </function>
   <walkthrough name="test">
     <steps type="simplestringlist">
-      event:WhereAmI;desktop
-      south
-      l
-      l
-      l
-      look at message
-    </steps>
+l
+west
+west
+i
+x hook
+put cloak on hook
+east
+south
+x message
+</steps>
   </walkthrough>
 </asl>

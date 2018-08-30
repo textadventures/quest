@@ -223,6 +223,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 ---------------------------------
 
 -   [Using Trizbort](trizbort.html) Draw a map in Trizbort, then export to Quest.
+-   [DevMode](devmode.html) A tool for testing and debugging your game.
 -   [Common problems](problems.html)
 -   [WebEditor](webeditor.html)
 -   [Code view](codeview.html)
@@ -242,20 +243,21 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Competition entries](competition_entry.html)
 -   [Publishing games](publishing.html)
 -   [Configuring Quest](configuring_quest.html)
--   [User contributed libraries](libraries.html)
--   [Helpsheets](helpsheets/) A set of simple guides created by gideonwilliams
--   [User contributed guides](guides/)
 -   [Docs Style Guide](style_guide.html)
 -   [History of Quest](history.html)
 -   [Quest Source Code](source_code.md)
 -   [Unit Testing](unit_testing.html)
 
 
-<a name="Other"></a>Other Guides
+<a name="Other"></a>Other Guides and Libraries
 ---------------------------------
 
 -   [Helpsheets for beginners](guides/helpsheets.html) by gideonwilliams
 -   [The Pixie's tutorials and libraries](https://github.com/ThePix/quest/wiki)
+-   [KV's libraries](http://textadventures.co.uk/user/view/3fbmqo02fkkr-emkcwxdma/k-v)
+-   [SoonGames' libraries](https://github.com/SoonGames/quest_libraries)
+-   [User contributed libraries](libraries.html)
+-   [User contributed guides](guides/)
 
 
 

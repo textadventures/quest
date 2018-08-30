@@ -19,9 +19,9 @@ Use a library
 
 If we are going to get serious, it is better to put your types in another file (and personally, I would put verbs, commands, functions, turnscripts and templates all in there too), so we will do that first.
 
-One reason to use a library is that Quest will not save your tabs, so if you add them to the mnain game they will disappear!
+One reason to use a library is that Quest will not save your tabs, so if you add them to the main game they will disappear!
 
-Quest cannot edit library files, so open up in a text editor like Notepad++. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as [1](http://validator.w3.org/#validate_by_input)), in case I have messed up the code so much Quest cannot handle it. The basic framework looks like this:
+Quest cannot edit library files, so open up in a text editor like Notepad++. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as [this](http://validator.w3.org/#validate_by_input)), in case I have messed up the code so much Quest cannot handle it. The basic framework looks like this:
 
       <?xml version="1.0"?>
       <library>

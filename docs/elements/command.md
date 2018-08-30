@@ -35,9 +35,12 @@ Template
 
 The "template" attribute specifies the command pattern to use, if the command pattern is defined by a [verbtemplate](verbtemplate.html).
 
-Multiple
+Allow all
 --------
 
-To handle "take all" and "drop all", the "take" and "drop" commands have a "multiple" attribute. This is of implied delegate type AssociatedScope, which means that the "multiple" attribute is a function which returns an [objectlist](../types/objectlist.html).
+To handle "take all" and "drop all", the "take" and "drop" commands, for example, have "allow_all" set to true. When this is set to `true`, the script attribute will be sent an object list as "object" instead of a single object. In addition, it will be sent "multiple" which will be true to indicate the player used "all", and so the items need a prefix saying what they are.
 
-This means that the "all" can refer to different things - for "take all", the "all" refers to the non-scenery objects in the current room. For "drop all", the "all" refers to objects in the player's inventory.
+Scope
+-----
+
+The scope attribute tells Quest where to look first for objects for this command. See the "Alternative scope" section of [this page](../advanced_scope.html) for details.

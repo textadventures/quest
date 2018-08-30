@@ -4,7 +4,7 @@ title: DevMode
 ---
 
 
-DevMode is a special way of running your game that makes it easier when you are devbeloping your game. It is very much like having cheat codes.
+DevMode is a special way of running your game that makes it easier when you are developing your game. It is very much like having cheat codes.
 
 To turn on DevMode, go to the _Features_ tab of the game object, and tick the "Show DevMode options" box. Go to the _DevMode_ tab, and set it to "Active".
 
@@ -13,9 +13,9 @@ Settings
 
 ### Change the player or starting location
 
-It is often useful to change where the player starts whilst testing your game. You do nopt want to have to negotiate ttwent rooms and five puzzles to get to the bit you are working on. DevMode allows you to temporarily set the player start room to a different location.
+It is often useful to change where the player starts whilst testing your game. You do not want to have to negotiate twenty rooms and five puzzles to get to the bit you are working on. DevMode allows you to temporarily set the player start room to a different location.
 
-If your game allows the player to switch between multiple characters, you can also select the one active at the start. Or you might want to create a character purely for debugging; you culd set that here.
+If your game allows the player to switch between multiple characters, you can also select the one active at the start. Or you might want to create a character purely for debugging; you could set that here.
 
 
 ### Initialisation script

@@ -1,7 +1,9 @@
 ---
 layout: index
-title: Elements
+title: XML Elements
 ---
+
+Note that this is about XML elements in the ASLX file, which is not quite the same as the elements in the game.
 
 The following elements may appear in an ASLX file:
 

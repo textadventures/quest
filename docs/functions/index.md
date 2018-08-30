@@ -242,6 +242,7 @@ Functions for manipulating dictionaries. For a discussion on how to use dictiona
 * [NewScriptDictionary](newscriptdictionary.html)
 * [NewStringDictionary](newstringdictionary.html)
 * [ObjectDictionaryItem](objectdictionaryitem.html)
+* [QuickParams](quickparams.html)
 * [ScriptDictionaryItem](scriptdictionaryitem.html)
 * [StringDictionaryItem](stringdictionaryitem.html)
 
@@ -344,6 +345,7 @@ Functions with very specific effects in the game world.
 * [FormatExitList](corelibrary/formatexitlist.html)
 * [FormatObjectList](corelibrary/formatobjectlist.html)
 * [GetBlockingObject](corelibrary/getblockingobject.html)
+* [GetDefiniteName](getdefinitename.html)
 * [GetDisplayAlias](corelibrary/getdisplayalias.html)
 * [GetDisplayName](corelibrary/getdisplayname.html)
 * [GetDisplayNameLink](corelibrary/getdisplaynamelink.html)

@@ -20,3 +20,5 @@ As of Quest 5.4, the same list is expressed like this:
 In Quest 5.4, you can still use the older semi-colon separate format with "simplestringlist":
 
      <mylist type="simplestringlist">one; two; three</mylist>
+
+There is more on lists [here](using_lists.html).

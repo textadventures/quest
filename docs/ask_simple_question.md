@@ -109,6 +109,7 @@ ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
     msg ("You buy some red roses from Cindy.")
   }
 }
+```
 
 You can also use the `Ask` function - see [here](functions/ask.html).
 
@@ -162,7 +163,7 @@ Note 3: No local variables
 
 The script that runs inside of ShowMenu when the player makes a choice has no access to local variables. It will not know what `this` is, and if in a command will not know what `object` (or whatever) is.
 
-Fir example, suppose the above script is an attribute of Cindy, we could try this:
+For example, suppose the above script is an attribute of Cindy, we could try this:
 
 ```
 options = NewStringList()

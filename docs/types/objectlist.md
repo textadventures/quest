@@ -8,3 +8,5 @@ An objectlist is a [list](list.html) that can contain any number of elements, al
 The format in an ASLX file is:
 
      <mylist type="objectlist">player; object1; thing</mylist>
+
+There is more on lists [here](using_lists.html).

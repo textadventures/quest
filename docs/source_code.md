@@ -238,5 +238,6 @@ First ensure all version numbers are updated. There are lots of places! Also mak
 - Load another game
 - Check it saves
 - Open a save game, check it plays normally
+- Check it can be published
 
 The file `unit test_for_5_7.aslx` can be found [here](https://github.com/textadventures/quest/blob/master/docs/util/unit%20test_for_5_7.aslx), and has tests for nearly all the code added to Quest in versions 5.7.1 and 5.7.2, and a bit for 5.8. Read about Quest unit testing [here](unit_testing.html).

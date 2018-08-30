@@ -71,5 +71,5 @@ player.immobilisedmessage = "Cannot move while seated."
 To allow him to move again:
 
 ```
-player.immobilisedmessage = nil
+player.immobilisedmessage = null
 ```

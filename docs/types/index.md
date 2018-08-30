@@ -19,5 +19,6 @@ Variables and object attributes can be any of the following types:
 -   [objectdictionary](objectdictionary.html)
 -   [scriptdictionary](scriptdictionary.html)
 -   [dictionary](dictionary.html)
--   [Delegate name](using_delegates.html)
+-   [delegate](using_delegates.html)
+-   [command pattern](command_pattern.html)
 

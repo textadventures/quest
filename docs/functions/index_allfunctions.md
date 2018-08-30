@@ -92,6 +92,7 @@ title: Functions
 *  [GetBlockingObject](corelibrary/getblockingobject.html)
 *  [GetBoolean](getboolean.html)
 *  [GetCurrentFontFamily](corelibrary/getcurrentfontfamily.html)
+*  [GetDefiniteName](getdefinitename.html)
 *  [GetDirectChildren](getdirectchildren.html)
 *  [GetDisplayAlias](corelibrary/getdisplayalias.html)
 *  [GetDisplayNameLink](corelibrary/getdisplaynamelink.html)
@@ -234,6 +235,11 @@ title: Functions
 *  [Play sound](../scripts/play_sound.html)
 *  [Populate](populate.html)
 *  [PrintCentered](corelibrary/printcentered.html)
+
+## Q
+
+*  [QuickParams](quickparams.html)
+
 
 ## R
 
