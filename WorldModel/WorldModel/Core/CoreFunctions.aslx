@@ -510,6 +510,9 @@
 
   
   <function name="FilterByAttribute" parameters="lst, name, value" type="objectlist">
+    if (not IsDefined("value")) {
+      return (FilterByNotAttribute (lst, name, null))
+    }
     l = NewObjectList()
     foreach (o, lst) {
       val = GetAttribute(o, name)
@@ -519,6 +522,9 @@
   </function>
 
   <function name="FilterByNotAttribute" parameters="lst, name, value" type="objectlist">
+    if (not IsDefined("value")) {
+      return (FilterByAttribute (lst, name, null))
+    }
     l = NewObjectList()
     foreach (o, lst) {
       val = GetAttribute(o, name)
