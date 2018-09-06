@@ -173,13 +173,13 @@ Adding people that the player can interactive with can help bring your game to l
 <a name="Rpg"></a>Creating an RPG-style game
 ---------------------------------------------
 
-Quest can be used to create an RPG-style game, in which the player has a set of statistics, and these are used to determine success in combat and other situations. The Zombie Apocalypse is an example used to walk you through one possible way of doing it. You do not need to have done the first two parts to use the spells.
+Quest can be used to create an RPG-style game, in which the player has a set of statistics, and these are used to determine success in combat and other situations. The Zombie Apocalypse is an example used to walk you through one possible way of doing it. You do not need to have done the first two parts to use the spells. None of them involve a character creation process.
 
 -  [Introduction](rpg-intro.html)
+-  [Character creation](character_creation.html)
 -  [The Zombie Apocalypse Part 1](zombie-apocalypse-1.html)
 -  [The Zombie Apocalypse Part 2](zombie-apocalypse-2.html)
 -  [Spells for the Zombie Apocalypse](zombie-apocalypse-spells.html)
-
 
 
   

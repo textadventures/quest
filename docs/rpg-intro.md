@@ -1,19 +1,20 @@
 ---
 layout: index
-title: RPG: Introduction
+title:  Introduction to RPGs
 ---
 
 
-
+Introduction
+------------
 
 ### What is an RPG?
 
-In an RPG (role-playing game), each player takes the part of a character in a fictional world, where that character's capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Dungeons and Dragons is the archetypal RPG.
+In a traditional RPG (role-playing game), each player takes the part of a character in a fictional world, where that character's capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Dungeons and Dragons is the archetypal RPG.
 
 
 ### What is an RPG-style text game?
 
-For the purposes of interactive fiction, an RPG-style game is one is which the player controls a character whose capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Those statistics can be determined, in part, by the player, and are likely to change during the game. It is assumed that combat will be an important feature of the game.
+For the purposes of interactive fiction, an RPG-style game is one is which the player controls a character whose capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Those statistics can be determined to some degree by the player, and are likely to change during the game. It is assumed that combat will be an important feature of the game.
 
 Here is an example game so you can see what we are talking about. It is based in a fantasy world, but the same ideas apply to science fiction, Wild West, cyberpunk and pulp genres too:
 http://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper
@@ -27,11 +28,11 @@ The very first thing to do is to realise it is a lot of work. RPG games are both
 Designing a game system
 -----------------------
 
-Before you start doing anything in Quest, you need to think about how your game will play. Forget about how we will code, just think about what the player will experience.
+Before you start doing anything in Quest, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
 
 The decisions you make here will affect how complicated your game is. I tried to keep combat as simple as possible in Deeper, and it is still a huge amount of code! For example, there are no ranged attacks at all, there is no consideration of position, damage is the total hits rather than by location.
 
-To be fun, your game must offer real chjoices to the player. If the sword does more damage than the dagger, the sword is the better option, and there is no strategy in choosing the sword. If the dagger is better against some enemies, but not other, the player gets a meaningful choice.
+To be fun, your game must offer real choices to the player. If the sword does more damage than the dagger, the sword is the better option, and there is no strategy in choosing the sword. If the dagger is better against some enemies, but not other, the player gets a meaningful choice.
 
 ### Stats
 
@@ -43,13 +44,13 @@ You need to work out how combat is resolved; if this was a pen and paper game, w
 
 ### Time or turn?
 
-Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Is Quest up to timed combat? The timers on the web player are known to be flaky, so investigate that before going too far.
+Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Is Quest up to timed combat? The timers on the web player have issue with the lag between the player's computer and the Quest server, so investigate that before going too far.
 
 ### Defence
 
 What are the effects of armour or a shield?  Is armour handled as one outfit, or as separate pieces? Is there a drawback to using them? If sci-fi game a shield could be something that absorbs damage up to a certain point before being depleted.
 
-Can the player parry attacks? How does that work? What weapons can parry?
+Can the player parry attacks? How does that work? What weapons can parry? How does the player choose.
 
 ### Attack
 

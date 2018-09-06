@@ -16,7 +16,6 @@ Easy to implement using only the GUI.
 -   [Time-limited puzzles](timelimitedpuzzles.html)
 -   [Security code to unlock door](unlockdoor.html)
 -   [Starting inventory](starting_inventory.html)
--   [
 
 
 Basic

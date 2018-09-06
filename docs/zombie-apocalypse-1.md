@@ -1,6 +1,6 @@
 ---
 layout: index
-title: RPG: Zombie Apocalypse (part 1)
+title: Zombie Apocalypse (part 1)
 ---
 
 

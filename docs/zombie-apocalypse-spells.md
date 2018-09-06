@@ -1,22 +1,22 @@
 ---
 layout: index
-title: RPG: Spells for the Zombie Apocalypse
+title: Spells for the Zombie Apocalypse
 ---
 
 
 
 _Why are there spells in a zombie apocalyse? No one knows, but it is a fact._
 
-This is an extension to the two part series on how to do combat on the web version of Quest. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest code, at least to be able to copy-and-paste code).
+This is an extension to the two part series on how to do combat on the web version of Quest. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest code, at least to be able to copy-and-paste it).
 
-Spells have a number of issues that need to be considered, and will make a lot of work for the game creator. By their nature spells can do pretty much anything, andthere is no way that can be covered here. All we can hope to do is look at a few examples, and hope that gives some points about how to implement your own spells.
+Spells have a number of issues that need to be considered, and will make a lot of work for the game creator. By their nature spells can do pretty much anything, and there is no way that can be covered here. All we can hope to do is look at a few examples, and hope that gives some points about how to implement your own spells.
 
-A list of classc spells can be found here, and we will have a go at implementing some of them.
+A list of classic spells can be found here, and we will have a go at implementing some of them.
 http://www.ifwiki.org/index.php/Spells
 
 The second problem is that spells can be cast on anything, and we need the game to be able to handle that. If we start with "frotz", which will cause something to give light, we need to create the spell so it can be cast on any object in the game, from a zombie, to your trusty spade or even yourself.
 
-We also need to think about how spells are cast. By this I mean, when does the player need to do to be able to cast a spell. Perhaps the player must learn the spell from a wizard, or by absorbing a glyph from a scroll or just picking it up off the ground. Can she cast the spell as often as she likes, or can she only cast it once, or maybe she has to use magic points to cast it. For this tutorial, we shall say a spell needs to be learnt from a scroll, and the player has to spend magic points. Hopefully you will be able to adapt these to your own game.
+We also need to think about how spells are cast. By this I mean, what does the player need to do to be able to cast a spell. Perhaps the player must learn the spell from a wizard, or by absorbing a glyph from a scroll or just picking it up off the ground. Can she cast the spell as often as she likes, or can she only cast it once, or maybe she has to use magic points to cast it. For this tutorial, we shall say a spell needs to be learnt from a scroll, and the player has to spend magic points. Hopefully you will be able to adapt these to your own game.
 
 For the desktop version, it would be easier to create a "spell" type, and have each spell as an object of that type. That is not an option for the web version, so we will do it quite differently, and have each spell as a separate command.
 
@@ -246,7 +246,7 @@ It is as easy as that!
 
 ### The Aimfiz Spell
 
-This spell teleports caster to someone else's location, and we will look at it as it can be cast on objects that are not here. The pattern is the usual:
+This spell teleports the caster to someone else's location, and we will look at it as it can be cast on objects that are not here. The pattern is the usual:
 
 > aimfiz #object#;cast aimfiz at #object#;cast aimfiz at #object#
 
