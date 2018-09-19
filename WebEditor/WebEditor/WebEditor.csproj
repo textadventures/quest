@@ -184,18 +184,6 @@
   <ItemGroup>
     <Content Include="Content\favicon.ico" />
     <Content Include="Content\favicon.png" />
-    <Content Include="Core\DevMode\debugtable.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Core\DevMode\debugtable.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Core\DevMode\tabulator.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Core\DevMode\tabulator.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="robots.txt" />
