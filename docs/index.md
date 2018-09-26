@@ -108,6 +108,7 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Set up a shop](shop.html)
 -  [Set up a door](setting_up_door.html)
 -  [Give the player a memory or Wiki](memory_or_wiki.html)
+-  [Let the player push/pull objects to other rooms](move_object.html)
 -  [Use neutral language](neutral_language.html) (grammatically correct responses)
 
 
