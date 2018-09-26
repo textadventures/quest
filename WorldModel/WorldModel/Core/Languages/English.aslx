@@ -352,6 +352,25 @@
   </function>
 
   <function name="Conjugate" type="string" parameters="obj, verb">
+    if (not HasAttribute(game, "conjugations")) {
+      game.conjugations = NewStringDictionary()
+      dictionary add (game.conjugations, "@ with", " with")
+      dictionary add (game.conjugations, "@ by", " by")
+      dictionary add (game.conjugations, "@ on", " on")
+      dictionary add (game.conjugations, "@ at", " at")
+      dictionary add (game.conjugations, "*ay", "ays")
+      dictionary add (game.conjugations, "*oy", "oys")
+      dictionary add (game.conjugations, "*ey", "eys")
+      dictionary add (game.conjugations, "*y", "ies")
+      dictionary add (game.conjugations, "*ss", "sses")
+      dictionary add (game.conjugations, "*s", "sses")
+      dictionary add (game.conjugations, "*sh", "shes")
+      dictionary add (game.conjugations, "*ch", "ches")
+      dictionary add (game.conjugations, "*o", "oes")
+      dictionary add (game.conjugations, "*x", "xes")
+      dictionary add (game.conjugations, "*z", "zes")
+      dictionary add (game.conjugations, "*", "s")
+    }
     gender = obj.gender
     if (gender = "he" or gender = "she") {
       gender = "it"
@@ -403,12 +422,21 @@
       }
       default {
         if (gender = "it") {
-          if (EndsWith(verb, "y") and not EndsWith(verb, "ey")) {
-            return (Mid(verb, 1, Lengthof(verb) - 1) + "ies")
+          foreach (ending, game.conjugations) {
+            if (ending = verb) {
+              return (DictionaryItem (game.conjugations, verb))
+            }
+            else if (Left (ending, 1) = "@" and EndsWith (verb, Mid (ending, 2))) {
+              // This does not work if the next two lines are done in one go
+              // possibly due to recursion messing up local variables maybe?
+              s = Conjugate (obj, Left (verb, LengthOf(verb) - LengthOf(ending) + 1))
+              return (s + DictionaryItem (game.conjugations, ending))
+            }
+            else if (Left (ending, 1) = "*" and EndsWith (verb, Mid (ending, 2))) {
+              return (Left (verb, LengthOf(verb) - LengthOf(ending) + 1) + DictionaryItem (game.conjugations, ending))
+            }
           }
-          else {
-            return (verb + "s")
-          }
+          return (verb + "s")
         }
         else {
           return (verb)
@@ -467,8 +495,8 @@
   
   <function name="GetDefiniteName" parameters="obj" type="string">
     result = GetDisplayAlias(obj)
-    if (GetBoolean(obj, "usedefaultprefix") or not obj.prefix = null) {
-      result = "the " + result
+    if (not DoesInherit(obj, "namedmale") and not DoesInherit(obj, "namedfemale") and not result = "me" and not result = "you") {
+    result = "the " + result
     }
     return (result)
   </function>  
