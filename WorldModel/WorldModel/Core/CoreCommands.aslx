@@ -217,6 +217,7 @@
 
   <function name="DoDrop" parameters="object, ismultiple">
     prefix = ""
+    oldparent = object.parent
     if (ismultiple) {
       prefix = GetDisplayAlias(object) + ": "
     }
@@ -274,7 +275,7 @@
       }
       
       if (HasScript(object, "ondrop")) {
-        do (object, "ondrop")
+         do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
       }
     }
   </function>

@@ -361,7 +361,7 @@
   <template name="EditorObjectInventoryDrop">Drop</template>
   <template name="EditorObjectInventoryDrop2">Drop</template>
   <template name="EditorObjectInventoryDropmessage">Drop message (leave blank for default)</template>
-  <template name="EditorObjectInventoryAfterdropping">After dropping the object</template>
+  <template name="EditorObjectInventoryAfterdropping">Run script after (Boolean "success" will indicate if the object moved)</template>
   <template name="EditorObjectInventoryPrice">Price</template>
   <template name="EditorObjectInventoryInventorylimitation">Inventory limitation</template>
   <template name="EditorObjectInventorySetmaximum">Set "maximum objects" to 0 to allow unlimited inventory items.</template>
