@@ -219,7 +219,7 @@
   <verbtemplate name="speakto">talk</verbtemplate>
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^(put|insert|place|drop) (?<object1>.*) (on|in|on to|in to|into) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^(put|insert|place|drop) (?<object1>.*) (on to|onto|in to|into|on|in) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^(remove|take|get|eject) (?<object1>.*) (from|out of|off|out) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
