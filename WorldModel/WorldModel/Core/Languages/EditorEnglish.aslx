@@ -1,4 +1,5 @@
 <library type="editor">
+  <template name="EditorDefault">Default</template>
   <template name="EditorObjectWearableAdjVerbs">Adapting the inventory verbs to the states</template>
   <template name="EditorGameEnableDevMode">Show DevMode options</template>
   <template name="EditorGameDevMode">DevMode</template>

@@ -708,6 +708,9 @@
         msg (game.pov.currentcommandpattern.unresolved)
       }
     }
+    else if (HasScript(game.pov.currentcommandpattern, "unresolved")) {
+      do (game.pov.currentcommandpattern, "unresolved", QuickParams("object", unresolvedobject, "key", unresolvedkey))
+    }
     else {
       if (ListCount(game.pov.currentcommandvarlist) > 1) {
         msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
