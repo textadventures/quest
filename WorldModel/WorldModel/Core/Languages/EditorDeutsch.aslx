@@ -286,6 +286,8 @@
   <template name="EditorObjectOptionsLookatobject">Beschreibung beim Betrachten</template>
   <template name="EditorObjectOptionsPleaseenter">Bitte geben Sie einen zusätzlichen Namen für dieses Objekt ein</template>
   <template name="EditorObjectSetupLookatobject">Beschreibung beim Betrachten</template>
+  <template name="EditorObjectRunascript">Skript ausführen</template>
+  <template name="EditorObjectScripttorun">Skript zum Ausführen</template>
   <template name="EditorFunctionPleaseenter">Bitte geben Sie einen Parameternamen ein</template>
   <template name="EditorWalkthroughPleaseenter">Bitte geben Sie das Kommando für diesen Walkthrough-Schritt ein</template>
   <template name="EditorObjectAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>

@@ -284,6 +284,8 @@
   <template name="EditorObjectOptionsLookatobject">"Look at" object description</template>
   <template name="EditorObjectOptionsPleaseenter">Please enter an additional name for this object</template>
   <template name="EditorObjectSetupLookatobject">"Look at" object description</template>
+  <template name="EditorObjectRunascript">Run a script</template>
+  <template name="EditorObjectScripttorun">Script to run</template>
   <template name="EditorFunctionPleaseenter">Please enter an parameter name</template>
   <template name="EditorWalkthroughPleaseenter">Please enter the command for this walkthrough step</template>
   <template name="EditorObjectAttributesPleaseenter">Please enter the attribute name</template>
