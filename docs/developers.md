@@ -8,11 +8,10 @@ Join In
 
 Quest is an open-source software project, [hosted on GitHub](https://github.com/textadventures/quest).
 
-To compile the source code, you will need Visual Studio 2010 or later. You can edit the desktop version of Quest for free using [Visual Studio Express for Windows Desktop](http://www.microsoft.com/visualstudio/eng/downloads#d-express-windows-desktop).
+To compile the source code, you will need Visual Studio, which you can download for free. More details on how to do that [here](source_code.html).
 
 The code is a mixture of C\# (for the internals) and VB.NET (for the GUI).
 
-Visual Studio may complain that it can't load the Setup project. This will happen if you do not have InstallShield installed. You can safely ignore this message. Also if you are using Visual Studio Express for Windows Desktop, you can safely ignore the warning that the WebPlayer and WebEditor projects cannot be loaded, as these are not required for loading and running the main Quest project.
 
 Developer Guidelines
 --------------------
@@ -23,17 +22,42 @@ The [Issue Tracker](https://github.com/textadventures/quest/issues) contains all
 
 Assign yourself something that looks sensible. It is probably best to pick a small bug first, to give yourself a feel for the code before attempting something major.
 
-You can also create items - if there's an obvious missing feature or bug, add it to the Issue Tracker, and assign it to yourself if you want to work on it. Check it's not a duplicate first. And if you're proposing a major new feature, please suggest it on the forums (or email me) first.
+You can also create items - if there's an obvious missing feature or bug, add it to the Issue Tracker, and assign it to yourself if you want to work on it. Check it's not a duplicate first. And if you're proposing a major new feature, please suggest it on the forums (or PM me) first.
 
-Please ask me for help! I'm happy to answer your questions about how things work, and why things are the way they are. Just send an email to me at <alex@axeuk.com> or ask in the Quest Forum: <http://textadventures.co.uk/forum/quest>
+Please ask me for help! I'm happy to answer your questions about how things work, and why things are the way they are. Just ask in the [Quest Forum](http://textadventures.co.uk/forum/quest).
 
 You can create a fork in GitHub, clone it, and then push your changes to that fork. When you have finished working on your issue, send a Pull Request. I'll then review the code, and it can then be merged into the main repository.
+
 
 ### Translating Quest
 
 If you know a language other than English, why not try translating the English.aslx file? The more languages Quest supports, the better, so please feel free to add any language you can speak!
 
-See [Translating Quest](guides/translating_quest.html) for full information.
+See [Translating Quest](translating_quest.html) for full information.
+
+
+### Adding your changes to Quest
+
+When you have a set of changes that you want included in Quest, you first need to be sure they work! There will be tests you will need to do specific to those changes, but additionally ensure:
+
+The unit tests all pass
+The desktop version can be used to open a game to edit, and the game, the player, a room and an item will all display tabs properly
+The desktop version can be used to open a game to play, and that you an save games whilst playing
+The web player starts up properly, and will accept a couple of commands
+The web editor starts up properly, and you can look at a couple of rooms/items
+
+You can then commit your changes to your local Github repository. When you do so, you will need to give it a name. Please prefix the name with the appropriate code. This allows us to quickly see what changes need special attention when Quest is updated - when adding a new file, we need to ensure it is replicated properly for example.
+
+[docs]  Changes to the documentation (including new files) in the `docs` folder only.
+[lang]  Changes to existing language files, in `WorldModel\WorldModel\Core\Languages` only
+[lang][new]  New language files and/or changes to existing language files, in `WorldModel\WorldModel\Core\Languages` and `WorldModel\WorldModel\Core\Templates`only
+[aslx]  Changes to existing files (including language files), in `WorldModel\WorldModel\Core\Languages` and subfolders only.
+[aslx][new]  New files and/or changes to existing files (including language files), in `WorldModel\WorldModel\Core\Languages` and subfolders only.
+
+Commits that make changes outside of the `docs` and ``WorldModel\WorldModel\Core` can potentially causes big problems when updating the web player and web editor (in part because they cannot be tested properly), and so are less likely to be permitted.
+
+
+
 
 Technical Overview
 ------------------

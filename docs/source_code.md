@@ -7,7 +7,7 @@ title: Quest Source Code
 Open Source
 -----------
 
-Quest is open-source (like, say, TADS and Inform 7), which means anyone can look at the code, and indeed (within the terms of the [licence agreement](https://github.com/textadventures/quest/blob/master/LICENSE)) make your own version.
+Quest is open-source (unlike, say, TADS and Inform 7), which means anyone can look at the code, and indeed (within the terms of the [licence agreement](https://github.com/textadventures/quest/blob/master/LICENSE)) make your own version.
 
 An important implication of this is that Quest can survive its authors. It will always be possibly for YOU to maintain and update Quest.
 
@@ -20,7 +20,7 @@ This describes how to download and compile the Quest source code. This is my exp
 
 ### Download
 
-Quest can be downloaded from Github. Go to this address and over on the right is a "Clone or download" button. Download the ZIP and unpack it somewhere convenient (or even better, if you have GitHub desktop installed, use that to download it).
+Quest can be downloaded from Github. Go to this address and over on the right is a "Clone or download" button. Download the ZIP and unpack it somewhere convenient (or even better, if you have GitHub desktop installed, use that to Clone it).
 
 [https://github.com/textadventures/quest](https://github.com/textadventures/quest)
 
@@ -94,6 +94,8 @@ Press F5 to start the web editor. It will open a new tab in your browser with th
 
 The Quest Solution
 ------------------
+
+See also [here](developers.html).
 
 Visual Studio is designed for developing huge software, and that can make it pretty daunting to use and to find anything. You will see in the first place that Quest is split into numerous projects. If you look inside each project, you will see further folders. The "bin" and "obj" folders are used by Visual Studio when you build the project, the object file for intermediate files, the binaries folder for the compiled program. In each of them is an "x86" folder, because Quest is targeting 32-bit Windows, and inside that, "debug" and "release" folders, for whether your build for debugging or release. Both "debug" and both "release" folders have copies of Quest in them, which generally you do not have to worry about, but if you do a search across the whole solution, you will get numerous hits in these files.
 

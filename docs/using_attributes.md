@@ -12,7 +12,7 @@ So what makes a turnscript different to a room or the player? The answer is: att
 
 Attributes are values that are attached to an object. All objects have a "name" attribute that is unique to them. All objects have an "elementtype" attribute that is equal to "object". All objects have a "type" attribute equal to the type of the object ("object", "command", "exit", "turnscript" or "game"). Quest uses these to track what things are, and they cannot be changed during play, and indeed only the "name" attribute can be changed in the editor.
 
-By the way, it is also worth mentioning that you cannot give anything an attribute with any of these five names.
+By the way, it is also worth mentioning that you cannot give anything an attribute with any of these five names: "object", "command", "turnscript", "game", "exit", "type", "elementtype", "finish".
 
 All other attributes you can add, modify or remove as you like, both with the editor and during play, and this is what makes your game world.
 

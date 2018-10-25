@@ -40,6 +40,11 @@ Here is an example, setting up a character called Cindy as a flower seller. This
 
 ![](images/menu1.png "menu1.png")
 
+In some situations, you might want to vary the list. There are various ways to do that, but the easiest is just to add an `if` to the script. Have the `if` command check if the option should be added (are orchids in stock), and if so, add that option to the list.
+
+![](images/menu1a.png "menu1a.png")
+
+
 
 Show the menu
 -------------
@@ -68,6 +73,10 @@ You need to do that for each option. Below you can see it has been done for two,
 
 ![](images/menu4.png "menu4.png")
 
+If you have variable options (for example, the option to buy orchids is only there if the flower seller has them in stick), that is no problem. You just need to make sure there is a `case` for all of them. You do not need to check the condition again or check that the option was in the list. The player will only be able to make that choice if it was in the list, and it will only be in the list if it is allowed. Below I have added both lilies and orchids, and also move the relevant object to the player. It is starting to get long, so only the lower half of the script is shown:
+
+![](images/menu4a.png "menu4a.png")
+
 
 In code?!?
 ----------
@@ -79,13 +88,26 @@ options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")
 list add (options, "Lilies")
+if (GetBoolean(Cindy, "orchids in stock")) {
+  list add (options, "Orchids")
+}
 ShowMenu ("What flowers do you want to buy?", options, true) {
   switch (result) {
     case ("Red roses") {
       msg ("You buy some red roses from Cindy.")
+      MoveObject (roses, player)
     }
     case ("Lavender") {
       msg ("You buy some lavender from Cindy.")
+      MoveObject (lavender, player)
+    }
+    case ("Lilies") {
+      msg ("You buy some lilies from Cindy.")
+      MoveObject (lilies, player)
+    }
+    case ("Orchids") {
+      msg ("You buy some orchidsfrom Cindy.")
+      MoveObject (orchids, player)
     }
   }
 }
