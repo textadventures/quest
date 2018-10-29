@@ -49,17 +49,17 @@ else {
 return (f)
 ```
 
-So what it does is split the string on colons. If there is only one part (i.e., there were no colons), it just prints the text (if the player is present). Otherwise it will try to interpret the command. For that, it will try to find the object specified (and given an error if it fails).
+So what it does is split the string on colons. If there is only one part (i.e., there were no colons), it just prints the text (if the player is present). Otherwise it will try to interpret the command. For that, it will try to find the object specified (and give an error if it fails).
 
 At this point it does something a bit sneaky! It uses the `Eval` function to call a function that has a name starting "Npc" and ending with the name of the command. For "Get" that would be "NpcGet". Why do it that way? The alternative would be a `switch case` (or `if/else`) for each option, which would be a lot longer. Also, this way, you can add a new function without having to change this function, so it is extensible.
 
-Because we are using `Eval` we need to set the variable as attributes of game. We also need to return a value, in this case a Boolean. That will be useful later.
+Because we are using `Eval` we need to set the variables as attributes of game. We also need to return a value, in this case a Boolean. That will be useful later.
 
 
 The "takeaturn" script
 ----------------------
 
-We are now ready to give the "takeaturn" script to the NPC.
+We are now ready to give the "takeaturn" script to the NPC (on the _Initialisation_ tab, as we did with patrolling NPCs).
 
 ```
 this.takeaturn => {
@@ -160,7 +160,7 @@ However, you could give the NPC a new agenda, say when the player talks to her:
 
 ```
 msg("'Hi,' says Mary.")
-msg("'Could you get the key for me?'")
+msg("'Could you get the key for me?' you ask her.")
 msg("'Sure!'")
 mary.actions = Split("Move:Apple Street;Move:Gate house;Get:gate key;Move:Gate house;Move:Apple Street;Wait:player", ";")
 ```
@@ -266,7 +266,7 @@ return (entry)
 ```  
 
 
-Now we can add a GoTo command. Create another function, NpcGoTo, and as usual give it two parameters, "npc" and "obj" and have it return a Boolean. Here is the code:
+Now we can add a `GoTo` command. Create another function, "NpcGoTo", and as usual give it two parameters, "npc" and "obj" and have it return a Boolean. Here is the code:
 
 ```
 l = PathLib_GetPathExt(npc.parent, obj, AllExits(), -1)
