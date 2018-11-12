@@ -6,7 +6,7 @@ title: More on Attributes
 
 Most things in Quest are objects. In fact there are five types of objects. Rooms, objects and player objects are objects of the object type. Commands and verbs are objects of the command type. Exits are objects of the exit type. Turnscripts are objects of the turnscript type (timers are not objects by the way). The game object is an object of the game type.
 
-You can use the `GetObject` function to get any of these, and all will resister as an object with the `TypeOf` command.
+You can use the `GetObject` function to get any of these, and all will register as an object with the `TypeOf` command.
 
 So what makes a turnscript different to a room or the player? The answer is: attributes.
 
@@ -154,3 +154,5 @@ Attribute names to avoid
 Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**.
 
 It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
+
+For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). If using the web version this might only become apparent when the player tries to save the game.
