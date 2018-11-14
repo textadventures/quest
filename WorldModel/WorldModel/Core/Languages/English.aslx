@@ -528,4 +528,13 @@
   <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
 
+  <!-- Need a special verb in English because of the name collision with the "enter" script rooms use -->
+  <verb name="enter_verb">
+    <pattern>enter #object#</pattern>
+    <property>enterverb</property>
+    <defaultexpression>"You can't enter "+object.article+"."</defaultexpression>
+    <scope>notheld</scope>
+  </verb>
+  
+  
 </library>

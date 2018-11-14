@@ -262,7 +262,7 @@
     if (not IsRegexMatch("[^\\w\\s]", section, "tp_punctuation_check")) {
       section = section + "()"
     }
-    return (ToString(eval(section)))
+    return (ToString(eval(section, ParamsForTextProcessor())))
   ]]>
   </function>
  
