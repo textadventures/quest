@@ -88,7 +88,7 @@
         }
       }
       if (multiple and not took_something) {
-        msg ("[NothingToTake]")
+        msg (Template("NothingToTake"))
       }
     </script>
   </command>
@@ -193,7 +193,13 @@
   ]]></function>
 
   <function name="TestTakeGlobal" parameters="object, prefix" type="boolean">
-    return (true)
+    if (HasString(game.pov, "notallowedtotake")) {
+      msg(game.pov.notallowedtotake)
+      return (false)
+    }
+    else {
+      return (true)
+    }
   </function>
   
   <command name="drop" template="drop">
@@ -201,7 +207,7 @@
     <scope>inventory</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NotCarryingAnything]")
+        msg(Template("NotCarryingAnything"))
       }
       else {
         foreach (obj, object) {
@@ -282,7 +288,13 @@
   </function>
 
   <function name="TestDropGlobal" parameters="object, prefix" type="boolean">
-    return (true)
+    if (HasString(game.pov, "notallowedtodrop")) {
+      msg(game.pov.notallowedtodrop)
+      return (false)
+    }
+    else {
+      return (true)
+    }
   </function>
   
   <function name="CreateUseMenuList" parameters="object" type="objectlist">
@@ -401,7 +413,7 @@
         }
       }
       else if (exit.lookonly) {
-         msg ("[UnresolvedLocation]")
+         msg (Template("UnresolvedLocation"))
       } 
       else {
         if (HasString(exit, "message")) {
@@ -418,12 +430,18 @@
       }   
     } 
     else {   
-      msg ("[UnresolvedLocation]")
+      msg (Template("UnresolvedLocation"))
     }
   </command>
 
   <function name="TestExitGlobal" parameters="exit" type="boolean">
-    return (true)
+    if (HasString(game.pov, "notallowedtoexit")) {
+      msg(game.pov.notallowedtoexit)
+      return (false)
+    }
+    else {
+      return (true)
+    }
   </function>
   
   <function name="TryOpenClose" parameters="doopen, object">
@@ -550,7 +568,7 @@
       else if (ListContains(ListParents(object2), object1)) {
         msg (Template("CannotDoThat"))
       }
-      else if (not TestDropGlobal(object, "")) {
+      else if (not TestDropGlobal(object1, "")) {
         // Do nothing, already handled
       }
       else {
@@ -642,7 +660,7 @@
 
   <function name="HandleGiveTo" parameters="object1, object2">
     handled = false
-    if (not TestDropGlobal(object, "")) {
+    if (not TestDropGlobal(object1, "")) {
       handled = true
     }
     else if (HasString(object2, "give")) {
