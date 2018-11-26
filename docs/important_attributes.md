@@ -93,7 +93,7 @@ Even commands and turnscripts can have parent attributes. If they do, they will 
 The look and description attributes
 ------------------------------------
 
-These are the descriptios the player will see. The "look" attribute is used when the player examines an object. The "description" is seen when the player enters a room. Both can be a string or a script.
+These are the descriptions the player will see. The "look" attribute is used when the player examines an object. The "description" is seen when the player enters a room. Both can be a string or a script.
 
 
 
@@ -155,5 +155,3 @@ Various verb attributes
 Several attributes are used by Quest to determine how the object will respond to commands:
 
 > take, drop, use, open, close, lock, unlock
-
-

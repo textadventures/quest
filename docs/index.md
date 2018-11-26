@@ -17,6 +17,8 @@ Contents
 
 [Features of Quest](#Otherfeatures)
 
+[Attributes](#Attributes)
+
 [How to...](#Howto)
 
 [Multimedia](#Multimedia)
@@ -71,10 +73,9 @@ Commands are the heart of a text adventure.
 <a name="Otherfeatures"></a>Features of Quest
 ---------------------------------------
 
-Quest has a whole range of features built in and ready to use. You probably won't be using them all, so just dip in as you need to.
+Quest has a whole range of features built-in and ready to use. You probably won't be using them all, so just dip in as you need to.
 
 -  [The Text Processor](text_processor.html)
--  [Custom attributes](using_attributes.html) (including status attributes and change scripts)
 -  [Exits](exits.html)
 -  [Containers](containers.html)
 -  [Switchable objects](switchable.html)
@@ -83,15 +84,25 @@ Quest has a whole range of features built in and ready to use. You probably won'
 -  [Score, health and money](score_health_money.html)
 
 
+<a name="Attributes"></a>Attributes
+---------------------------------------
+
+In Quest, everything is an object, from rooms to items, from turn scripts to exits. What makes them work in the way we want them to is attributes.
+
+-  [Introduction to attributes]
+-  [Using attributes](using_attributes.html) (including status attributes and change scripts)
+-  [Important attributes](important_attributes.html)
+-  [Status attributes](status_attributes.html)
+-  [Change scripts](change_scripts.html)
+
+
 
 <a name="Howto"></a>How to...
 ---------------------------------------
 
-Some of these will involve some simple coding. _It's not that bad!_ We will walk you through it and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the third guide to learn how to copy-and-paste code.
+Some of these will involve some simple coding. _It's not that bad!_ We will walk you through it and you can copy-and-paste all the tricky stuff. All you need to do is change the names so the code applies to things in your game. Look at the second guide to learn how to copy-and-paste code.
 
--  [Introduction to coding](quest_code.html)
--  [Important attributes](important_attributes.html)
-
+-  [Start to code](quest_code.html)
 -  [Copy-and-paste Code](copy_and_paste_code.html)
 -  [Use functions](functions.html)
 -  [Use a `switch` script](multiple_choices___using_a_switch_script.html)
@@ -199,7 +210,6 @@ A look at some of the more technical features of Quest. These articles assume yo
 -  [Turnscripts](using_turnscripts.html)
 -  [Scopes](scopes.html)
 -  [Clones](clones.html)
--  [Change scripts](change_scripts.html)
 -  [Advanced game scripts](advanced_game_scripts.html)
 -  [Javascript](using_javascript.html)
 

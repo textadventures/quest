@@ -41,118 +41,24 @@ Each line starts with `this`, which is a special value meaning the object the sc
 Status Attributes
 -----------------
 
-Status attributes are just attributes that you tell Quest to display - there is nothing special about the attribute itself. Quest has two lists of status attributes, one for the game object and one for the player (if the player object can change, then each one gets its own list, but only the current one will be used). Therefore you should use the game one to hold game-wide values such as the time and score, and the player one for those that relate to the player, such as health and money.
-
-If using the desktop version, you can set up state attributes on the _Attributes_ tab of the player or game objects. Otherwise, you will need to do it in code, in the start script of the game object.
-
-The list is held in a string dictionary called "statusattributes", where each key is the name of the attribute, and each value is how to display it. To set this up, then, you first need to create the string dictionary, then you need to add values to it.
-
-Here is an example, where the dictionary is added to the player, and then an attribute added to the list.
-
-```
-player.statusattributes = NewStringDictionary()
-dictionary add (player.statusattributes, "hitpoints", "Hit points: !")
-```
-
-Note that the exclamation mark is a stand-in for the actual value.
-
-Occasionally you want to do something more complicated for a status attribute - for example, you might want to show both the current and the maximum ammo is a gun. The trick is to create a new string attribute that holds both, and to update that whenever either value changes. The code might looking like this, where `player.ammonote` is a string to display the values (this needs to be run whenever the values change):
-
-```
-player.ammonote = player.ammo + "/" + player.ammomax
-```
-
-The attribute can be added to the list of status attributes as before (so in the game start script:
-
-```
-dictionary add (player.statusattributes, "ammonote", "Ammo: !")
-```
-
-So how do we ensure `player.ammonote` always gets updated? With change scripts...
+[Status attributes](statuis_attributes.html) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
 
 
 Change Scripts
 --------------
 
-A change script is a special attribute, a script that will fire whenever another attribute changes. From the example above, we want to update `player.ammonote`, whenever `player.ammo` changes (and `player.ammomax` too).
+A [change script](change_scripts) is a special attribute, a script that will fire whenever another attribute changes. From the example above, we want to update `player.ammonote`, whenever `player.ammo` changes (and `player.ammomax` too).
 
-If using the desktop version, you can just go to the _Attributes_ tab. Click the attribute to be tracked, `ammo`, then click on "Add Change Script" above it. You will get a new attribute, `changedammo` set to a script, and can paste the code straight in.
-
-On the web version, you will need to do this on the initialisation script, where we set up attributes before. For example:
-
-```
-this.ammo = 6
-this.ammomax = 15
-this.changedammo => {
-  this.ammonote = this.ammo + "/" + this.ammomax
-}
-this.changedammomax => {
-  this.ammonote = this.ammo + "/" + this.ammomax
-}
-```
-
-So the first two lines set up the attributes themselves. Then we do `changedammo`, the change script for `ammo`. Instead of `=` to assign the value, we have `=>`, which assigns a script, and then the script goes inside the curly braces. The one for ammomax is the same.
-
-As the scripts are attached to the player, we can use `this` instead of `player`.
-
-
-Capping an Attribute with a Change Script
------------------------------------------
-
-Often you will find you want to constrain an attribute to a range, and change scripts offer a great way to do that. Suppose we want to track purity, as a percentage, so it can range from 0 to 100.
-
-Using the desktop version, go to the _Attributes_ tab, and select the `purity` attribute. Then click on "Add change script", and paste in this code:
-
-if (this.purity < 0) {
-  this.purity = 0
-}
-if (this.purity > 100) {
-  this.purity = 100
-}
-
-For the web version, go to the initialisation script.
-
-```
-this.purity = 100
-this.changedpurity => {
-  if (this.purity < 0) {
-    this.purity = 0
-  }
-  if (this.purity > 100) {
-    this.purity = 100
-  }
-}
-```
-
-Now whenever Purity changes, this will fire and ensure it is in range.
-
-
-Having an event fire when...
-----------------------------
-
-You may find you want something to happen when an attribute hits a certain value. The classic example is the player dies when hits go to zero.
-
-```
-this.hits = 35
-this.changedhits = > {
-  if (this.hits <= 0) {
-    msg("You are dead!")
-    finish
-  }
-}
-```
-
-Note that you should test if the `hits` attribute is zero _or less_, as you want the player to be dead if her hits are -5.
-
-You can do the same for the monsters, ensuring they die when they run out of hits (editing the script as required).
 
 
 
 Attribute names to avoid
 ------------------------
 
-Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**.
+Quest uses "name", "type" and "elementtype" to track what things are, and will not allow you to change them during a game; only "name" can be changed in the editor.
 
-It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
+There are several [important attributes](important_attributes.html) that already have a meaning in Quest, and you are probably best avoiding them to avoid confusion.
+
+Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**. It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
 
 For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). If using the web version this might only become apparent when the player tries to save the game.
