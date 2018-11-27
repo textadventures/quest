@@ -306,7 +306,7 @@ Functions for manipulating dictionaries. For a discussion on how to use dictiona
 <a name="random"></a>Randomising Functions
 -------------------------------------
 
-These functions all return a random value.
+These functions all return a random value. See also [here](random.html).
 
 * [DiceRoll](corelibrary/diceroll.html)
 * [GetRandomDouble](getrandomdouble.html)
