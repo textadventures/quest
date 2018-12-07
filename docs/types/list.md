@@ -14,4 +14,4 @@ title: List
 
 Usually it is better to use a [stringlist](stringlist.html) (if all elements in the list will be strings) or an [objectlist](objectlist.html) (if all elements in the list will be objects) instead.
 
-There is more on lists [here](using_lists.html).
+There is more on lists [here](../using_lists.html).
