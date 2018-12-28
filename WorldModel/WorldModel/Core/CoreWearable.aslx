@@ -543,7 +543,7 @@
         }
         bonus = ClothingBonusMultiplier() * bonus
         n = GetInt(game.pov, att) + bonus
-        set (player, att, n)
+        set (game.pov, att, n)
       }
     }
 	]]></function>
