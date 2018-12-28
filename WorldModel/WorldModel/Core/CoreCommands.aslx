@@ -88,122 +88,126 @@
         }
       }
       if (multiple and not took_something) {
-        msg ("[NothingToTake]")
+        msg (Template("NothingToTake"))
       }
     </script>
   </command>
   
-  <function name="DoTake" parameters="object, ismultiple">
+  <function name="DoTake" parameters="object, ismultiple"><![CDATA[
     prefix = ""
     if (ismultiple) {
       prefix = GetDisplayAlias(object) + ": "
     }
-    
     if (object.parent = game.pov) {
       msg (prefix + DynamicTemplate("AlreadyTaken", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
       msg (BlockingMessage(object, prefix))
     }
+    else if (not TestTakeGlobal(object, prefix)) {
+      // Do nothing, already handled
+    }
+    else if (not CheckLimits(object, prefix)) {
+      // Do nothing, already handled
+    }
     else {
-      volume = 0
-      continue = true
-      
-      foreach (obj, GetAllChildObjects(game.pov)) {
-        if (HasInt(obj, "volume")) {
-          volume = volume + obj.volume
+      found = true
+      takemsg = object.takemsg
+      switch (TypeOf(object, "take")) {
+        case ("script") {
+          if (ismultiple) {
+            OutputTextNoBr (prefix)
+          }
+          do (object, "take")
+          takemsg = ""
         }
-      }
-    
-      if (not Contains(game.pov, object)) {
-        volume = volume + GetVolume(object,true)
-      }
-    
-      if (HasInt(game.pov, "maxvolume")) {
-        if (volume > game.pov.maxvolume) {
-          continue = false
-          if (HasString(game.pov, "containerfullmessage")) {
-            message = prefix + game.pov.containerfullmessage
+        case ("boolean") {
+          if (object.take = true) {
+            object.parent = game.pov
+            if (takemsg = null) {
+              takemsg = DynamicTemplate("TakeSuccessful", object)
+            }
           }
           else {
-            message = prefix + DynamicTemplate("FullInventory", object)
-          }
-        }
-      }
-    
-      children = GetDirectChildren(game.pov)
-      if (HasInt(game.pov, "maxobjects")) {
-        if (game.pov.maxobjects > 0) {
-          if (ListCount(children) >= game.pov.maxobjects) {
-            continue = false
-            if (HasString(game.pov, "containermaxobjects")) {
-              message = prefix + game.pov.containermaxobjects
-            }
-            else {
-              message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
-            }
-          }
-        }
-      }
-    
-      if (continue = false) {
-        msg (message)
-      }
-      else {
-        found = true
-        takemsg = object.takemsg
-      
-        switch (TypeOf(object, "take")) {
-          case ("script") {
-            if (ismultiple) {
-              OutputTextNoBr (prefix)
-            }
-            do (object, "take")
-            takemsg = ""
-          }
-          case ("boolean") {
-            if (object.take = true) {
-              object.parent = game.pov
-              if (takemsg = null) {
-                takemsg = DynamicTemplate("TakeSuccessful", object)
-              }
-            }
-            else {
-              found = false
-            }
-          }
-          case ("string") {
-            object.parent = game.pov
-            takemsg = object.take
-          }
-          default {
             found = false
           }
         }
-      
-        if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
-      
-        if (LengthOf(takemsg) > 0) {
-          msg (prefix + takemsg)
+        case ("string") {
+          object.parent = game.pov
+          takemsg = object.take
         }
-      
-        if (HasScript(object, "ontake")) {
-          do (object, "ontake")
+        default {
+          found = false
         }
-        
-        if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
-            object.scenery = false
+      }
+      if (not found and takemsg = null) {
+        takemsg = DynamicTemplate("TakeUnsuccessful", object)
+      }
+      if (LengthOf(takemsg) > 0) {
+        msg (prefix + takemsg)
+      }
+      if (HasScript(object, "ontake")) {
+        do (object, "ontake")
+      }
+      if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+        object.scenery = false
+      }
+    }
+  ]]></function>
+
+  <function name="CheckLimits" parameters="object, prefix" type="boolean"><![CDATA[
+    volume = 0
+    foreach (obj, GetAllChildObjects(game.pov)) {
+      if (HasInt(obj, "volume")) {
+        volume = volume + obj.volume
+      }
+    }
+    if (not Contains(game.pov, object)) {
+      volume = volume + GetVolume(object,true)
+    }
+    if (HasInt(game.pov, "maxvolume")) {
+      if (volume > game.pov.maxvolume) {
+        if (HasString(game.pov, "containerfullmessage")) {
+          msg (prefix + game.pov.containerfullmessage)
+        }
+        else {
+          msg (prefix + DynamicTemplate("FullInventory", object))
+        }
+        return (false)
+      }
+    }
+    children = GetDirectChildren(game.pov)
+    if (HasInt(game.pov, "maxobjects")) {
+      if (game.pov.maxobjects > 0) {
+        if (ListCount(children) >= game.pov.maxobjects) {
+          if (HasString(game.pov, "containermaxobjects")) {
+            msg (prefix + game.pov.containermaxobjects)
+          }
+          else {
+            msg (prefix + DynamicTemplate("MaxObjectsInInventory", object))
+          }
         }
       }
     }
-  </function>
+    return (true)
+  ]]></function>
 
+  <function name="TestTakeGlobal" parameters="object, prefix" type="boolean">
+    if (HasString(game.pov, "notallowedtotake")) {
+      msg(game.pov.notallowedtotake)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
   <command name="drop" template="drop">
     <allow_all />
     <scope>inventory</scope>
     <script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NotCarryingAnything]")
+        msg(Template("NotCarryingAnything"))
       }
       else {
         foreach (obj, object) {
@@ -217,6 +221,7 @@
 
   <function name="DoDrop" parameters="object, ismultiple">
     prefix = ""
+    oldparent = object.parent
     if (ismultiple) {
       prefix = GetDisplayAlias(object) + ": "
     }
@@ -226,6 +231,9 @@
     }
     else if (not ListContains(ScopeReachable(), object)) {
       msg (BlockingMessage(object, prefix))
+    }
+    else if (not TestDropGlobal(object, prefix)) {
+      // Do nothing, already handled
     }
     else {
       found = true
@@ -274,11 +282,21 @@
       }
       
       if (HasScript(object, "ondrop")) {
-        do (object, "ondrop")
+         do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
       }
     }
   </function>
 
+  <function name="TestDropGlobal" parameters="object, prefix" type="boolean">
+    if (HasString(game.pov, "notallowedtodrop")) {
+      msg(game.pov.notallowedtodrop)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
   <function name="CreateUseMenuList" parameters="object" type="objectlist">
     objectlist = NewObjectList()
     objectlist = ScopeReachableInventory()
@@ -386,13 +404,16 @@
       if (exit.locked) {
         msg (exit.lockmessage)
       }
+      else if (not TestExitGlobal(exit)) {
+        // Do nothing, already handled
+      }
       else if (exit.runscript) {
         if (HasScript(exit, "script")) {
           do (exit, "script")
         }
       }
       else if (exit.lookonly) {
-         msg ("[UnresolvedLocation]")
+         msg (Template("UnresolvedLocation"))
       } 
       else {
         if (HasString(exit, "message")) {
@@ -409,10 +430,20 @@
       }   
     } 
     else {   
-      msg ("[UnresolvedLocation]")
+      msg (Template("UnresolvedLocation"))
     }
   </command>
 
+  <function name="TestExitGlobal" parameters="exit" type="boolean">
+    if (HasString(game.pov, "notallowedtoexit")) {
+      msg(game.pov.notallowedtoexit)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
   <function name="TryOpenClose" parameters="doopen, object">
     if (doopen) {
       action = "open"
@@ -537,6 +568,9 @@
       else if (ListContains(ListParents(object2), object1)) {
         msg (Template("CannotDoThat"))
       }
+      else if (not TestDropGlobal(object1, "")) {
+        // Do nothing, already handled
+      }
       else {
         if (GetBoolean(object2, "hidechildren")) {
           object2.hidechildren = false
@@ -626,7 +660,10 @@
 
   <function name="HandleGiveTo" parameters="object1, object2">
     handled = false
-    if (HasString(object2, "give")) {
+    if (not TestDropGlobal(object1, "")) {
+      handled = true
+    }
+    else if (HasString(object2, "give")) {
       msg (object2.give)
       handled = true
     }

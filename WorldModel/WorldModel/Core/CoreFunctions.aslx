@@ -106,6 +106,19 @@
     return (newobject)
   </function>
 
+  <function name="GetClone" parameters="prototype, parent" type="object">
+    if (not IsDefined("parent")) {
+      parent = game.pov
+    }
+    foreach (obj, GetDirectChildren(parent)) {
+      if (obj.prototype = prototype) {
+        return (obj)
+      }
+    }
+    return (null)
+  </function>
+  
+  
   <function name="LockExit" parameters="exit">
     exit.locked = true
   </function>

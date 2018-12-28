@@ -795,18 +795,24 @@
     <displayverbs type="listextend">[Eat]</displayverbs>
     <inventoryverbs type="listextend">[Eat]</inventoryverbs>
     <eat type="script">
-      if (HasString(this, "eatmsg")) {
-        msg (this.eatmsg)
+      if (HasScript(this, "eatscript") and this.runscript) {
+        do (this, "eatscript")
       }
       else {
-        msg (DynamicTemplate("Eaten", this))
+        if (HasString(this, "eatmsg")) {
+          msg (this.eatmsg)
+        }
+        else {
+          msg (DynamicTemplate("Eaten", this))
+        }
+        if (HasInt(game.pov, "health")) {
+          game.pov.health = game.pov.health + this.eathealth
+        }
+        destroy (this.name)
       }
-      if (HasInt(game.pov, "health")) {
-        game.pov.health = game.pov.health + this.eathealth
-      }
-      destroy (this.name)
     </eat>
     <eathealth type="int">0</eathealth>
+    <runscript type="boolean">false</runscript>
   </type>
 
   <type name="gridborder_path_ew">

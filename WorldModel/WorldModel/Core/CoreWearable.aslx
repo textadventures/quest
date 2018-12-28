@@ -8,7 +8,7 @@
     <allow_all />
 		<script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NothingToWear]")
+        msg(Template("NothingToWear"))
       }
       else{
         foreach (obj, object) {
@@ -27,7 +27,7 @@
     <allow_all />
 		<script>
       if (multiple and ListCount(object) = 0) {
-        msg("[NothingToRemove]")
+        msg(Template("NothingToRemove"))
       }
       else{
         foreach (obj, object) {
@@ -772,7 +772,13 @@
   example to check the size is suitable.
   -->
   <function name="TestGarment" type="boolean" parameters="object"><![CDATA[
-    return (true)
+    if (HasString(game.pov, "notallowedtodress")) {
+      msg(game.pov.notallowedtotake)
+      return (false)
+    }
+    else {
+      return (true)
+    }
 	]]></function>
 
 
@@ -780,7 +786,13 @@
   Override this in your game for custom testing, for removing the item.
   -->
   <function name="TestRemove" type="boolean" parameters="object"><![CDATA[
-    return (true)
+    if (HasString(game.pov, "notallowedtoundress")) {
+      msg(game.pov.notallowedtotake)
+      return (false)
+    }
+    else {
+      return (true)
+    }
 	]]></function>
 
 

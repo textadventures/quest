@@ -88,11 +88,20 @@
     </control>
 
     <control>
+      <caption>[EditorObjectRunascript]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>runscript</attribute>
+      <mustinherit>edible</mustinherit>
+      <advanced/>
+    </control>
+
+    <control>
       <controltype>textbox</controltype>
       <attribute>eatmsg</attribute>
       <caption>[EditorObjectOptionsMessageEat]</caption>
       <nullable/>
       <mustinherit>edible</mustinherit>
+      <onlydisplayif>not this.runscript</onlydisplayif>
     </control>
 
     <control>
@@ -100,7 +109,15 @@
       <attribute>eathealth</attribute>
       <caption>[EditorObjectOptionsChangehealth]</caption>
       <mustinherit>edible</mustinherit>
-      <onlydisplayif>game.showhealth</onlydisplayif>
+      <onlydisplayif>game.showhealth and not this.runscript</onlydisplayif>
+    </control>
+
+    <control>
+      <caption>[EditorExitScripttorun]</caption>
+      <controltype>script</controltype>
+      <attribute>eatscript</attribute>
+      <onlydisplayif>this.runscript</onlydisplayif>
+      <advanced/>
     </control>
 
   </tab>

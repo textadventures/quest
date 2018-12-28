@@ -30,7 +30,7 @@
       else if (TypeOf(value) = "null") {
         value = ""
       }
-      return (Replace(format, "!", value))
+      return (Replace(format, "!", "" + value))
     }
   </function>
 

@@ -336,6 +336,12 @@
         game.unresolvedcommandvarlist = null
         game.unresolvedcommandkey = null
       }
+      if (DictionaryContains(game.pov.currentcommandresolvedelements, "object")) {
+        game.text_processor_this = ObjectDictionaryItem(game.pov.currentcommandresolvedelements, "object")
+      }
+      else if (DictionaryContains(game.pov.currentcommandresolvedelements, "object1")) {
+        game.text_processor_this = ObjectDictionaryItem(game.pov.currentcommandresolvedelements, "object1")
+      }
       if (HasScript(game.pov.currentcommandpattern, "script")) {
         // This is the bit that actually runs the commands
         do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
@@ -707,6 +713,9 @@
       else {
         msg (game.pov.currentcommandpattern.unresolved)
       }
+    }
+    else if (HasScript(game.pov.currentcommandpattern, "unresolved")) {
+      do (game.pov.currentcommandpattern, "unresolved", QuickParams("object", unresolvedobject, "key", unresolvedkey))
     }
     else {
       if (ListCount(game.pov.currentcommandvarlist) > 1) {

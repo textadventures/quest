@@ -108,7 +108,7 @@ You can combine scopes, so "contents;storeroom" would collect any object that th
 
 For commands with multiple objects, you can specify by each object. You can see the format in this example:
 
-> object1=contents;storeroom|object2=room
+> object1=contents;storeroom\|object2=room
 
 In this example, Quest will look for object1 in containers or the storeroom location, and for object2 in the current location.
 

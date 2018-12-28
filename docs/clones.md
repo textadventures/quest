@@ -4,9 +4,11 @@ title: Attack of the Clones!
 ---
 
 
-A clone is an exact copy of a prototype, and can be a useful way to quickly create several of the same things whilst a game is underway. For example, you could create a single orc, and then clone it several times to give the player a hoard to fight against, or you could implement a shop where all the goods for sale get cloned when the player purchases them, so the shop remains stocked.
+A clone is an exact copy of a prototype, and can be a useful way to quickly create several of the same things whilst a game is underway. For example, you could create a single orc, and then clone it several times to give the player a hoard to fight against, or you could [implement a shop](shop.html) where all the goods for sale get cloned when the player purchases them, so the shop remains stocked.
 
-Actually clones are not exact copies. Every object in Quest must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set.
+Actually clones are not exact copies. Every object in Quest must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also (as of Quest 5.7) be given a new attribute "prototype", which points to the prototype.
+
+Note that cloning an object with `CloneObject` will also clone any objects it contains.
 
 Alternatively, use the `CloneObjectAndMove` function, which uses `CloneObject`, but then moves the clone to the given location, or the `CloneObjectAndMoveHere` function which is similar but moves the clone to the current room.
 
@@ -16,17 +18,6 @@ All of these function return the clone, which allows you to modify if required.
 newgoblin = CloneObjectAndMoveHere(goblin)
 newgoblin.look = "This goblin has a wooden leg."
 ```
-
-
-It can be useful to note what the prototype was when an object was cloned so you can refer to it later. You can set it like this:
-
-
-```
-newgoblin = CloneObjectAndMoveHere(goblin)
-newgoblin.look = "This goblin has a wooden leg."
-newgoblin.prototype = goblin
-```
-
 
 Once the player is interacting with a clone, you need to ensure that it is the clone that things happen to. And this is where it gets complicated...
 
@@ -78,7 +69,7 @@ Finding and checking for clones
 
 Note that neither of these techniques will flag up the prototype; it is generally best to keep the prototypes somewhere the player will never find them.
 
-Back at the start we set the "prototype" attribute on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
+Back at the start the "prototype" attribute was mentioned. This will point to the protoype (even if you clone a clone, it will point to the original protortype) on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
 
 
 ```
@@ -117,28 +108,26 @@ else {
 Specialised Functions
 ---------------------
 
-If you are going to be cloning several of the same type of thing in your game, you might want to create functins to do the job for you. Let's look at some examples, from an RPG style game.
+If you are going to be cloning several of the same type of thing in your game, you might want to create functions to do the job for you. Let's look at some examples, from an RPG-style game.
 
 The first is `CreateTreasure`. It is going to create a clone of a given object, then mix it up a bit. It has no return type, and two parameters, obj and room. Here is the code:
 
 ```
     o = CloneObjectAndMove(obj, room)
-    o.prototype = obj
     if (HasString(o, "look")) o.look = ProcessText(o.look)
     o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```
 
-It will clone any item, move it to the given room, then, to give some variety, it will call `ProcessText` on the "look" attribute. This means that if the attribute is set to this:
+It will clone any item, move it to the given room, then, to give some variety, it will call `ProcessText` on the "look" attribute. This means that we can set the attribute to something like this:
 
 > This is a {random:red:blue:green} hat.
 
-The text processor directive will get processed now, as the item is created, and so its colour will not change each time the player looks at it. The price is also varietyed to with 25% of the prce of the prototype.
+The text processor directive will get processed now, as the item is created, and so its colour will not change each time the player looks at it. The price is also varietied to with 25% of the price of the prototype.
 
 The next one, `CreateProtectionPotion` is a bit more specialised, but could readily be adapted. It take a single parameter, room. It makes a clone of a specific item, masterpotionprotection, and assigns an element from one of a set of predefined objects too.
 
 ```
     o = CloneObjectAndMove(masterpotionprotection, room)
-    o.prototype = masterpotionprotection
     o.element = GetObject(PickOneStr("fire|frost|necrotic"))
     o.alias = "Potion of Protection from " + CapFirst(o.element.name)
     o.listalias = o.alias
@@ -155,7 +144,6 @@ This is a more involved example, but the principle is the same. `CreateScroll` h
 
 ```
     o = CloneObjectAndMove(masterscroll, room)
-    o.prototype = masterscroll
     o.element = GetObject(PickOneStr("fire|frost|divine|storm|earthmight"))
     qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
     o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + Roman(level / 3 + 1)

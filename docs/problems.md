@@ -230,3 +230,14 @@ Alternatively, you can gve the object a new list. The `Split`function offers an 
 ```
 sword.inventoryverbs = Split("Look at;Take;Equip", ";")
 ```
+
+
+### Error using the `do` command
+
+If the attribute is missing or not a script, this rather misleading error message will be given:
+
+```
+Error running script: Object reference not set to an instance of an object.
+```
+
+Note that there maybe other issues that will also cause this error.

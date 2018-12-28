@@ -1,4 +1,5 @@
 <library type="editor">
+  <template name="EditorDefault">Default</template>
   <template name="EditorObjectWearableAdjVerbs">Adapting the inventory verbs to the states</template>
   <template name="EditorGameEnableDevMode">Show DevMode options</template>
   <template name="EditorGameDevMode">DevMode</template>
@@ -283,6 +284,8 @@
   <template name="EditorObjectOptionsLookatobject">"Look at" object description</template>
   <template name="EditorObjectOptionsPleaseenter">Please enter an additional name for this object</template>
   <template name="EditorObjectSetupLookatobject">"Look at" object description</template>
+  <template name="EditorObjectRunascript">Run a script</template>
+  <template name="EditorObjectScripttorun">Script to run</template>
   <template name="EditorFunctionPleaseenter">Please enter an parameter name</template>
   <template name="EditorWalkthroughPleaseenter">Please enter the command for this walkthrough step</template>
   <template name="EditorObjectAttributesPleaseenter">Please enter the attribute name</template>
@@ -361,7 +364,7 @@
   <template name="EditorObjectInventoryDrop">Drop</template>
   <template name="EditorObjectInventoryDrop2">Drop</template>
   <template name="EditorObjectInventoryDropmessage">Drop message (leave blank for default)</template>
-  <template name="EditorObjectInventoryAfterdropping">After dropping the object</template>
+  <template name="EditorObjectInventoryAfterdropping">Run script after (Boolean "success" will indicate if the object moved)</template>
   <template name="EditorObjectInventoryPrice">Price</template>
   <template name="EditorObjectInventoryInventorylimitation">Inventory limitation</template>
   <template name="EditorObjectInventorySetmaximum">Set "maximum objects" to 0 to allow unlimited inventory items.</template>

@@ -21,4 +21,4 @@ In Quest 5.4, you can still use the older semi-colon separate format with "simpl
 
      <mylist type="simplestringlist">one; two; three</mylist>
 
-There is more on lists [here](using_lists.html).
+There is more on lists [here](../using_lists.html).
