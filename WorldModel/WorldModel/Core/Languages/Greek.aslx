@@ -79,8 +79,8 @@
     <template name="NeutralPluralPossessive">τους</template>
     <template name="MalePluralPossessive">τους</template>
     <template name="FemalePluralPossessive">τους</template>
-    <template name="SelfAlias">εγώ</template>
-    <template name="SelfAlt">εγώ; ο ίδιος</template>
+    <template name="SelfAlias">εμένα</template>
+    <template name="SelfAlt">με</template>
     <template name="AllObjects">όλα; τα πάντα; τα όλα</template>
     <template name="Nothing">τίποτα</template>
     <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις; στον; στην; στο; στα; στους; στις; στη</template>
@@ -545,10 +545,12 @@
   </function>
 
     <function name="GetPrefix" type="string" parameters="obj,type">
-		if ( DoesInherit (obj, "namedmale")) {
-			return ("τον")
-		} else if (DoesInherit (obj, "namedfemale") ) {
+	if ( DoesInherit (obj, "namedmale")) {
+	    return ("τον")
+	} else if (DoesInherit (obj, "namedfemale") ) {
             return ("την")
+	}  else if (DoesInherit (obj, "namedneutral") ) {
+            return ("το")
         } else if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
             return ("έναν")
         } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
@@ -588,8 +590,13 @@
 		}
     </function>
 
-	<type name="namedmale">
+  <type name="namedmale">
     <inherit name="male" />
+    <usedefaultprefix type="boolean">true</usedefaultprefix>
+  </type>
+  
+  <type name="namedneutral">
+    <inherit name="neutral" />
     <usedefaultprefix type="boolean">true</usedefaultprefix>
   </type>
   
