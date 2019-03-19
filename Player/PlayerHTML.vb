@@ -44,15 +44,10 @@ Public Class PlayerHTML
         resScheme.SchemeName = "res"
         settings.RegisterScheme(resScheme)
 
-        ' KV added this next line of code to actually set CefSharp's path to the temp fold AppData\Local\Temp
-        ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
-        settings.CachePath = Path.GetTempPath()
-
         CefSharp.Cef.Initialize(settings)
 
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
-        ' KV commented this out and made this work correctly on line 49
-        'Directory.SetCurrentDirectory(Path.GetTempPath())
+        Directory.SetCurrentDirectory(Path.GetTempPath())
 
         ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("")
         ctlWebView.Dock = DockStyle.Fill
