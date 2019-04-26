@@ -31,9 +31,15 @@ Go into the code in Quest, and cut the type from there, and paste it into your l
 
       <?xml version="1.0"?>
       <library>
+        <verb>
+          <property>learn</property>
+          <pattern>learn</pattern>
+          <defaultexpression>"You can't learn " + object.article + "."</defaultexpression>
+        </verb>
+
         <type name="spell">
-          <inventoryverbs type="list">Cast</inventoryverbs>
-          <displayverbs type="list">Learn</displayverbs>
+          <inventoryverbs type="stringlist">Cast</inventoryverbs>
+          <displayverbs type="stringlist">Learn</displayverbs>
           <drop type="boolean">false</drop>
           <take type="boolean">false</take>
           <usedefaultprefix type="boolean">false</usedefaultprefix>
