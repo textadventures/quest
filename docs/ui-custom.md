@@ -3,7 +3,7 @@ layout: index
 title: Modifying the Status and Game Panes
 ---
 
-In this article we will modify the status bar and game panes of the Quest interfce. We will go for an old-fashioned look, in brown. This is what we are aiming for:
+In this article we will modify the status bar and game panes of the Quest interface, to show how easy it is to get a ook that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:
 
 ![](images/interface1.png "interface1.png")
 

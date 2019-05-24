@@ -5,7 +5,7 @@ title: List
 
 **New in Quest 5.4**
 
-"list" is a sequence of any attribute type. The format is:
+"list" is a sequence of any attribute type. The format is in the ASLX file:
 
      <myattribute type="list">
        <value type="string">a string value</value>
@@ -13,3 +13,5 @@ title: List
      </myattribute>
 
 Usually it is better to use a [stringlist](stringlist.html) (if all elements in the list will be strings) or an [objectlist](objectlist.html) (if all elements in the list will be objects) instead.
+
+There is more on lists [here](../using_lists.html).

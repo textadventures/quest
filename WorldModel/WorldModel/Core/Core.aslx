@@ -29,7 +29,7 @@
   <include ref="CoreEditor.aslx"/>
   <include ref="CoreWearable.aslx"/>
   <include ref="CoreDevMode.aslx"/>
-
+  
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
@@ -356,6 +356,7 @@
       oldPOV.look = oldPOV.external_look
       oldPOV.gender = oldPOV.external_gender
       oldPOV.article = oldPOV.external_article
+      oldPOV.possessive = oldPOV.external_possessive
     }
 
     newPOV.external_alias = newPOV.alias
@@ -363,6 +364,7 @@
     newPOV.external_look = newPOV.look
     newPOV.external_gender = newPOV.gender
     newPOV.external_article = newPOV.article
+    newPOV.external_possessive = newPOV.possessive
     
     if (not GetBoolean(newPOV, "pov_used")) {
       if (newPOV.alt = null) {
@@ -405,6 +407,7 @@
     newPOV.look = newPOV.pov_look
     newPOV.gender = newPOV.pov_gender
     newPOV.article = newPOV.pov_article
+    newPOV.possessive = newPOV.pov_possessive
     ]]>
   </function>  
 

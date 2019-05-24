@@ -11,16 +11,51 @@ Any script can change the current POV by calling the "Change player object" comm
 
 Each player object gets its own inventory and attributes. This includes status attributes, so each player could have their own health or stats, and these will be updated on-screen as the player switches between characters. For status attributes which apply across the entire game (perhaps "score" for example), you should set these on the "game" object itself, so they will apply all the time regardless of which object is the current POV.
 
-Objects can behave differently depending on whether they are the player or not. For example, if you have two player objects "Dave" and "Bob" in a game, and it is possible for them to be together in the same room at the same time, you will want different responses for "look at Dave" and "look at Bob" depending on whether the player is currently Dave or Bob.
 
-To handle this, go to the object's _Features_ tab and tick "Player: Player can become this object"; a new tab will appear. If on the _Player_ tab "Can be a player" is selected, options appear where you can set an override "look at" description to display when this object is the player.
+Making an object the player
+---------------------------
+
+Before an object can become the player, you need to set it up in the editor. On the _Features_ tab, tick the "Player:..." box, then on the _Player_ tab, select "Can be player".
+
+On the _Player_ tab of the `game` you can select which object will be the player at the start of the game (if you do not select one, it will default to `player`).
+
+
+Player or character?
+--------------------
+
+Quest will handle an object different depending on whether it is the current player or not. For example, if you have two player objects "Mary" and "Bob" in a game, and it is possible for them to be together in the same room at the same time, you will want different responses for LOOK AT MARY and LOOK AT BOB depending on whether the player is currently Mary or Bob.
+
+When the player is Mary, Quest will use the setting for Mary on the _Player_ tab, so the the description there might start "You are...". For Bob, Quest will use the setting on the _Setup_ tab, just as it does for other objects. The description on the _Setup_ tab might start "Bob is...".
+
 
 ![](images/Pov1.png "Pov1.png")
 
 Say this object is Bob. On the _Player_ tab set the name, description, etc. that apply when the player is Bob, whilst on the _Setup_ tab, set them for how they will be when the player is not Bob.
 
-The `game` object has an attrribute called "pov", and this stores the current player object.
+`game.pov`
+----------
 
-To change the cirrent player object, use the `ChangePOV` function, which changes `game.pov` and does some house-keeping.
+The `game` object has an attribute called "pov", and this stores the current player object. You can use that to test who the player is. For example, you might want Bob's description to change depending on who is looking at him. The description on the _Player_ tab is fine, that is only for when the player is Bob. However, we could change the one on _Setup_ tab to a script that changes depending on who the player is when not Bob.
 
-    ChangePOV (bob)
+```
+if (game.pov = Mary) {
+  msg("Bob is that creepy guy with an unhealthy obsession with defibrillators.")
+}
+else if (game.pov = Dave) {
+  msg("Bob is your best friend... though he went a weird after that incident with the defibrillator.")
+}
+else {
+  msg("Bob is just some guy.")
+}
+```
+
+
+Changing `game.pov`
+-------------------
+
+To change the current player object, use the `ChangePOV` function, which changes `game.pov` and also does some house-keeping (so just setting `game.pov` to the new player object may not work properly).
+
+```
+ChangePOV (bob)
+```
+

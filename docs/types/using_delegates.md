@@ -7,7 +7,9 @@ title: Using Delegates
 Note: Delegates can currently only be edited in the Windows desktop version of Quest, and only in full code view. There is no editor support for delegates at all.
 </div>
 
-It is easy to create a [script](script.html) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value, or accepts particular parameters? It would look a lot like a function. The answer is to use **delegates**.
+It is easy to create a [script](script.html) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value? It would look a lot like a function. The answer is to use **delegates**.
+
+Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supposed by the editors).
 
 First you need to define the delegate, using a [delegate](../elements/delegate.html) XML tag. This accepts the same attributes as the [function](../elements/function.html) tag, so you can specify parameters and/or a return value type.
 

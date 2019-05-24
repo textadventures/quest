@@ -9,7 +9,7 @@ It is not difficult to make changes in full code view that will cause Quest to b
 
 You can create objects, functions, etc. in full code view, but it is far easier to let Quest do that for you.
 
-So why use code view at all? One good reason is to find errors and typos. Whilst playing your game, if QWuest throws an error, it will often tell you the code that caused the error. Go into code view, press [Ctrl]-F, and paste the offending code into the search box (bear in mind that the text could be in multiple places in your code).
+So why use code view at all? One good reason is to find errors and typos. Whilst playing your game, if Quest throws an error, it will often tell you the code that caused the error. Go into code view, press [Ctrl]-F, and paste the offending code into the search box (bear in mind that the text could be in multiple places in your code).
 
 Another reason to use full code view is for a library file, as the Quest editor will not allow you to edit library files.
 
@@ -31,8 +31,7 @@ Use Notepad++
 
 For more advanced use, and for editing libraries, I would recommend using Notepad++. 
 
-Notepad++ can be downloaded for free from here:
-https://notepad-plus-plus.org/
+Notepad++ can be downloaded for free from [here](https://notepad-plus-plus.org/).
 
 When you open a Quest game or library for the first time, go to the _Language_ menu, and select _XML_. Your game will now be displayed in pretty colours. This is not trivial, it does help to see what is XML code and what is actual text. You will also be able to collapse XML elements as described above.
 

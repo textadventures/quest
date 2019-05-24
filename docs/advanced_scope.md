@@ -34,6 +34,8 @@ foreach (obj, GetDirectChildren(scenery)) {
 
 Note that each item has to be added individually to ensure the `items` variable is not lost; using the `ListCombine` function will fail.
 
+Note also that using `ScopeVisibleForRoom` rather than `GetDirectChildren` will cause Quest to crash, as `ScopeVisibleForRoom` uses this script, which uses `ScopeVisibleForRoom`, which uses this script, which... And so on for ever! 
+
 Because we tagged the items as scenery, they will not show up in room lists, but the player can still examine them.
 
 We can go further, and add scenery items according to the type of room. How you do that depends on how you flag the rooms of a certain type. In the code below, it is assumed that locations in the forest all start "Forest", etc.
@@ -106,14 +108,14 @@ You can combine scopes, so "contents;storeroom" would collect any object that th
 
 For commands with multiple objects, you can specify by each object. You can see the format in this example:
 
-> object1=contents;storeroom|object2=room
+> object1=contents;storeroom\|object2=room
 
 In this example, Quest will look for object1 in containers or the storeroom location, and for object2 in the current location.
 
 
 Even More Options?
 ------------------
-You can also add your own "changecommandscope" script to add even more items to the list Quest will try to match object names against. This script can be on the player, the player's parent (the room the player is in), the player's parent's parent, or the game object. Or all of them! This allows you to add objects on a per room or per zone basis as you like.
+You can also add your own "changecommandscope" script to add even more items to the list Quest will try to match object names against. This script can be on the command, player, the player's parent (the room the player is in), the player's parent's parent, or the game object. Or all of them! This allows you to add objects on a per room or per zone basis as you like.
 
 As with Extended Scope, your script should add items to the "items" local variable. It can access the command object via the "command" variable.
 

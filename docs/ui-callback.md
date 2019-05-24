@@ -33,23 +33,19 @@ Here is a very simple example of some JavaScript code. A discussion of the langu
 To test...
 ----------
 
-If you want to see that in action, wrap the JavaScript in `script` tags, and put it in a file called "js.html". It should look like this:
+If you want to see that in action, wrap the JavaScript in `script` tags, and put it in a string. We can then add that to the HTML document using `addScript`. In the game start script it would lok like this:
 
-      <script>
-        function askAge() {
-          var answer = prompt("How old are you?");
-          if (answer != null && answer != "") {
-            ASLEvent("InputboxCallback", answer);
-          }
-        }
-      </script>
+```
+s = "<script>"
+s = s + "function askAge() {"
+s = s + "var answer = prompt('How old are you?');"
+s = s + "if (answer != null && answer != '') {"
+s = s + "ASLEvent('InputboxCallback', answer);"
+s = s + "}}</script>"
+JS.addScript(s)
+JS.askAge()
+```
 
-In the game start script add these lines:
-
-      JS.addText (GetFileData("js.html"))
-      JS.askAge()
-
-The first line will output the content of the file, adding the JavaScript function to the game. The second line then calls your function. Start the game, you wioll be asked your age, and when you click okay, Quest will print it out.
 
 
 Custom status pane
@@ -88,6 +84,6 @@ _NOTE:_ There is an issue to be aware of that appears when games are played on l
 Timers
 ------
 
-If you want to use split second timing, then `ASLEvent` is the way to go. The Quest timers work in whole second only, and when you play on-line, the exact timing can go awry. However, you can use a JavaScript timer, which will run on the players PC, rather than the Quest server, and have that fire events in Quest using ASLEvent.
+If you want to use split second timing, then `ASLEvent` is the way to go. The Quest timers work in whole second only, and when you play on-line, the exact timing can go awry, depending on the load on the server and the speed of the player's internet connection. However, you can use a JavaScript timer, which will run on the players PC, rather than the Quest server, and have that fire events in Quest using ASLEvent.
 
 The details are beyond the scope of this article, but you can see examples [here](http://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](http://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).

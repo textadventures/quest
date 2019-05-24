@@ -7,7 +7,7 @@ Occasionally you would like the player to be able to interact with a component o
 
 Quest actually has this facility built-in, though it may not be obvious.
 
-Create your object first, let us say it is called "machine". Create the component, "button", as a child of that object (right click on machine, select "Add object", and choose "machine" from te dropdown at the bottom; alternatively you can drag an object on to another). In the object hierarchy it should look like this on the left.
+Create your object first, let us say it is called "machine". Create the component, "button", as a child of that object (right click on machine, select "Add object", and choose "machine" from the dropdown at the bottom; alternatively you can drag an object on to another). In the object hierarchy it should look like this on the left.
 
 ![](component.png "component.png")
 

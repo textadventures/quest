@@ -18,4 +18,4 @@ Example:
 
 This command was added in Quest 5.2.
 
-Foor more information see [here](../asking_a_question.html).
+For more information see [here](../asking_a_question.html).

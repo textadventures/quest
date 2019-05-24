@@ -102,28 +102,6 @@ Quest can handle text and objects in the same command. Here the say command is e
 
 ![](../images/Say_to_troll.png "Say_to_troll.png")
 
-In code, it looks like this:
-
-      <command name="saying">
-        <pattern>say #text_talk# to #object_one#</pattern>
-        <script>
-          switch (object_one) {
-            case (troll) {
-              msg ("You say: " + text_talk)
-              msg ("The troll grunts but otherwise ignores you.")
-            }
-            case (bob) {
-              msg ("You say: " + text_talk)
-              msg ("Bob smiles back at you.")
-            }
-            default {
-              msg ("You say: " + text_talk + " but the " + object_one.name + " says nothing, possible because, you know, it cannot speak.")
-            }
-          }
-        </script>
-        <unresolved>Say that to who?</unresolved>
-      </command>
-
 The pattern you are using is this:
 
       say #text_talk# to #object_one#

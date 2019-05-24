@@ -234,11 +234,12 @@
       <Link>Core\CoreWearable.aslx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreDevMode.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
-    <Content Include="Scripts\jquery-ui-1.8.11.js" />
-    <Content Include="Scripts\jquery-ui-1.8.11.min.js" />
     <Content Include="Scripts\jquery.jstree.js" />
     <Content Include="Scripts\jquery.layout.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

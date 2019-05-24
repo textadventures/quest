@@ -10,6 +10,7 @@ There are several ways to set up a shop; this is more comprehensive, which does 
 
 The approach is to have separate rooms that the player cannot get to to hold the stock. When goods are purchased from stock, a clone is made for the player. When the player sells an item, if it is something that was purchased, it will get destroyed, otherwise it will get added to stock (and if bought back will not be cloned).
 
+
 Setting Up An Economy
 ---------------------
 
@@ -34,7 +35,7 @@ foreach (o, GetDirectChildren(stock)) {
 }
 ```
 
-It should like like this it all went well:
+It should like like this if all went well:
 
 ![](images/SetUpShop.png "SetUpShop.png")
 
@@ -193,3 +194,10 @@ SetUpShop (Cake Shop, Cake Shop Stock)
 It should look like this:
 
 ![](images/StartShop.png "StartShop.png")
+
+
+
+Clones
+------
+
+There some issues when using clones in your game. See [here](clones.html).

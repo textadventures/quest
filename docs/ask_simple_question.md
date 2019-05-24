@@ -40,6 +40,11 @@ Here is an example, setting up a character called Cindy as a flower seller. This
 
 ![](images/menu1.png "menu1.png")
 
+In some situations, you might want to vary the list. There are various ways to do that, but the easiest is just to add an `if` to the script. Have the `if` command check if the option should be added (are orchids in stock), and if so, add that option to the list.
+
+![](images/menu1a.png "menu1a.png")
+
+
 
 Show the menu
 -------------
@@ -68,11 +73,73 @@ You need to do that for each option. Below you can see it has been done for two,
 
 ![](images/menu4.png "menu4.png")
 
+If you have variable options (for example, the option to buy orchids is only there if the flower seller has them in stick), that is no problem. You just need to make sure there is a `case` for all of them. You do not need to check the condition again or check that the option was in the list. The player will only be able to make that choice if it was in the list, and it will only be in the list if it is allowed. Below I have added both lilies and orchids, and also move the relevant object to the player. It is starting to get long, so only the lower half of the script is shown:
+
+![](images/menu4a.png "menu4a.png")
+
 
 In code?!?
 ----------
 
 It is worthwhile looking briefly at the code view:
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+if (GetBoolean(Cindy, "orchids in stock")) {
+  list add (options, "Orchids")
+}
+ShowMenu ("What flowers do you want to buy?", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from Cindy.")
+      MoveObject (roses, player)
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from Cindy.")
+      MoveObject (lavender, player)
+    }
+    case ("Lilies") {
+      msg ("You buy some lilies from Cindy.")
+      MoveObject (lilies, player)
+    }
+    case ("Orchids") {
+      msg ("You buy some orchidsfrom Cindy.")
+      MoveObject (orchids, player)
+    }
+  }
+}
+```
+
+If you look through it you should see each set that we added is there, in the same order. The code is just a different way of looking at the same thing.
+
+
+Note 1: Yes or no?
+-------------------
+
+For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
+
+![](images/menu5.png "menu5.png")
+
+In code:
+
+```
+ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
+  if (result = "Yes") {
+    msg ("You buy some red roses from Cindy.")
+  }
+}
+```
+
+You can also use the `Ask` function - see [here](functions/ask.html).
+
+
+Note 2: Code after will run immediately
+-----------------------------------------
+
+If you have any script after the ShowMenu, this will run straightaway, without waiting for the player to make a choice. Consider this example:
 
 ```
 options = NewStringList()
@@ -89,23 +156,76 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
     }
   }
 }
+msg("'Have a nice day!' she says.")
 ```
 
-If you look through it you should see each set that we added is there, in the same order. The code is just a different way of looking at the same thing.
-
-
-Yes or no?
----------
-
-For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
-
-![](images/menu5.png "menu5.png")
-
-In code:
+Quest will set up the string list, display the menu, but will then print "'Have a nice day!' she says." immediately, whilst another part waits for the player to make a choice. That is probably not what you want! This is how to do it properly:
 
 ```
-ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
-  if (result = "Yes") {
-    msg ("You buy some red roses from Cindy.")
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("What flowers do you want to buy?", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from Cindy.")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from Cindy.")
+    }
   }
+  msg("'Have a nice day!' she says.")
 }
+```
+
+
+Note 3: No local variables
+---------------------------
+
+The script that runs inside of ShowMenu when the player makes a choice has no access to local variables. It will not know what `this` is, and if in a command will not know what `object` (or whatever) is.
+
+For example, suppose the above script is an attribute of Cindy, we could try this:
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+ShowMenu ("'What flowers do you want to buy?' asks " + GetDisplayAlias(this) + ".", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from " + GetDisplayAlias(this) + ".")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from " + GetDisplayAlias(this) + ".")
+    }
+  }
+  msg("'Have a nice day!' she says.")
+}
+```
+
+The 'What flowers do you want to buy?' bit will be okay, `this` will refer to Cindy, as the script belongs to her. However, the bits inside the `ShowMenu` will fail, because that is a different script; it does not belong to Cindy, so `this` does not refer to anything.
+
+The way to get around that is to assign the value to an attribute of the game or player object (you can use the same one for all your `ShowMenu` calls, as it is only needed temporarily.
+
+```
+options = NewStringList()
+list add (options, "Red roses")
+list add (options, "Lavender")
+list add (options, "Lilies")
+game.show_menu_this = this
+ShowMenu ("'What flowers do you want to buy?' asks " + GetDisplayAlias(this) + ".", options, true) {
+  switch (result) {
+    case ("Red roses") {
+      msg ("You buy some red roses from " + GetDisplayAlias(game.show_menu_this) + ".")
+    }
+    case ("Lavender") {
+      msg ("You buy some lavender from " + GetDisplayAlias(game.show_menu_this) + ".")
+    }
+  }
+  msg("'Have a nice day!' she says.")
+}
+```
+
+

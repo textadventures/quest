@@ -3,7 +3,75 @@ layout: index
 title: Asking a question
 ---
 
-Often in a text adventure you want the game to ask an open-ended question of the player - the answer to a riddle, perhaps. The `get input` script command exists to handle just that. Here is an example script:
+Open-Ended Question
+-------------------
+
+Often in a text adventure you want the game to ask an open-ended question of the player. A simple example would be to allow the player to name the character. The `get input` script command exists to handle just that. 
+
+![](images/Question1.png "Question1.png")
+
+```
+  msg ("What is your name?")
+  get input {
+    player.alias = CapFirst(result)
+  }
+```
+
+The first line just asks the question. Then we see the `get input` command. The block after that gets run only once the player has typed a response. A magic variable called `result` has the text the player typed, so we just need to assign that.
+
+Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's nasme in text:
+
+> 'Hi, {player.alias},' says the oddly-shaped doll.
+
+
+
+Multiple Questions
+-------------------
+
+You might think that you can just have one question after another...
+
+
+```
+  msg ("What is your name?")
+  get input {
+    player.alias = CapFirst(result)
+  }
+  msg ("How old are you?")
+  get input {
+    player.alias = CapFirst(result)
+  }
+```
+
+Unfortunately, Quest will complain, "Error running script: Only one 'get input' can be in progress at a time". Quest does not wait for the player to give her name, it just goes straight to the next bit of code, asks her age, and then complains that it is now waiting for two answers.
+
+We need to _nest_ the question. This means putting the second inside the first.
+
+![](images/Question2.png "Question2.png")
+
+```
+  msg ("What is your name?")
+  get input {
+    player.alias = CapFirst(result)
+    msg ("How old are you?")
+    get input {
+      player.age = result
+    }
+  }
+```
+
+
+
+
+
+
+
+Looking for a Specific Answer
+-----------------------------
+
+You might want the player to give a specific answer - the answer to a riddle, perhaps. Here is an example script:
+
+![](images/Question3.png "Question3.png")
+
 ```
   msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
   get input {
@@ -18,7 +86,7 @@ Often in a text adventure you want the game to ask an open-ended question of the
     }
   }
 ```
-The first line just asks the riddle. Then we see the `get input` command. The block after that gets run only once the player has typed a response. A magic variable called `result` has the text the player typed, so we just need to check it is the correct answer and react accordingly.
+The first line just asks the riddle. This time we need to check it is the correct answer and react accordingly.
 
 This will work, but has a couple of issues that we want to resolve.
 
@@ -66,7 +134,7 @@ This is worthwhile doing as it makes it clear to the player that he or she shoul
 ```
 It might be worth also turning off the panes on the right, to stop the player messing with them when she should be answering the question:
 ```
-  request (Hide, "Panes")
+  JS.panesVisible(false)
 ```
 Remember to set them back to normal after.
 
@@ -75,10 +143,13 @@ Altogether Now...
 -----------------
 
 Here is the full the script, doing all we have discussed:
+
+![](images/Question4.png "Question4.png")
+
 ```
   msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
   JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
-  request (Hide, "Panes")
+  JS.panesVisible(false)
   get input {
     if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
       msg ("'Is it a man?' you ask.")
@@ -90,43 +161,12 @@ Here is the full the script, doing all we have discussed:
       msg ("'No!'")
     }
     JS.eval("$('#txtCommand').attr('placeholder', 'Type here...');")
-    request (Show, "Panes")
+    JS.panesVisible(true)
   }
 ```
 
 
-Multiple questions
-------------------
 
-Occasionally you might want to ask several questions in a row. There is an issue here because of the way scripts run. Consider this code:
-```
- msg("What is your name?")
- get input {
-   player.name = result
- }
- msg("What is your age?")
- get input {
-   player.age = result
- }
-```
-If you run that code, you will get this message:
-
-> Error running script: Only one 'get input' can be in progress at a time
-
-The problem is that `get input` does not pause the script. The first one fires, and then, even though the first is still waiting, the script continues immediately to the second `msg`, and then the second `get input`, which causes the error.
-
-The solution is to _nest_ the second inside the first. You will probably then want to move the player to the start of the game inside the second one.
-```
-msg ("What is your name?")
-get input {
-  player.name = result
-  msg ("What is your age?")
-  get input {
-    player.age = result
-    MoveObject (player, room)
-  }
-}
-```
 
 
 Dozens of questions

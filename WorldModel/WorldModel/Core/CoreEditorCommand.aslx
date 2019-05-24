@@ -21,11 +21,17 @@
       </control>
 
       <control>
+        <controltype>multi</controltype>
         <caption>[EditorCommandUnresolved]</caption>
-        <controltype>textbox</controltype>
         <attribute>unresolved</attribute>
-      </control>
-
+        <types>
+          null=[EditorDefault]; string=[TypeText]; script=[TypeRunScript]
+        </types>
+        <editors>
+          string=textbox
+        </editors>
+      </control>      
+      
       <control>
         <caption>[EditorCommandScope]</caption>
         <controltype>textbox</controltype>

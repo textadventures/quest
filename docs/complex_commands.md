@@ -5,6 +5,8 @@ title: Complex commands
 
 So you want to use THIS with THAT? what is the best way to handle it?
 
+This page discusses how to set up commands that use two (or more) objects. For simple commands, see [here](comaands.html).
+
 > TIE CORD TO HOOK
 >
 > CUT ROPE WITH KNIFE
@@ -96,7 +98,7 @@ So we have a command pattern or regular expression that Quest will use to match 
 ```
 ... Quest will already have assigned values to two special variables, in this case called object1 and object2. We do not know specifically what they are, but they will be objects that are present in the current room or in the player's inventory.
 
-The way to write the code here is going to be the same for most commands. Think of a checklist; what do we need to check before allowing the command to work?
+The way to write the code here is going to be the same for most commands; what do we need to check before allowing the command to work?
 
 1. The player has the first object
 
@@ -162,3 +164,65 @@ The code here has two changes. Condition number 3 now checks the attachable flag
     cord.attachedto = object2
   }
 ```
+
+
+Burn, Baby, Burn!
+-----------------
+
+Let's ook at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; I will offer a relatively simple approach.
+
+We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
+
+Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest this is something objects can be burned on. Then for any object that can be destoyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
+
+For the first command give it this pattern:
+
+> burn #object1# on #object2#;burn #object1# in #object2#;burn #object1# with #object2#
+
+Give it a name, "cmd_burn_with" (commands do not usually need names, but this will be useful later). Paste in the code:
+
+```
+if (not GetBoolean(object2, "fire")) {
+  msg (CapFirst(GetDisplayName(object2)) + " " + Conjugate(object2, "be") + "n't a fire.")
+}
+else if (not HasString(object1, "ashes")) {
+  msg (WriteVerb(object1, "do") + "n't burn.")
+}
+else {
+  msg ("You burn the " + GetDisplayAlias(object1) + " with the " + GetDisplayAlias(object2) + ".")
+  create ("ashes of " + object1.name)
+  ashes = GetObject("ashes of " + object1.name)
+  ashes.parent = object1.parent
+  ashes.alias = object1.ashes
+  if (HasString(object1, "ashes_look")) {
+    ashes.look = object1.ashes_look
+  }
+  else {
+    ashes.look = "This is all that is left of the " + GetDisplayAlias(object1) + " after you burnt " + object1.article + "."
+  }
+  object1.parent = null
+}
+```
+
+The code checks if the second object is on fire (i.e., the "fire" attribute is true), then checks the first object can be burnt (i.e., it has an "ashes" string). If so, it creates a new object, the ashes of the first object, placing that wherever the first object is, and then removes that object.
+
+The second command has this pattern:
+
+> burn #object1#
+
+Here is the code:
+
+```
+l = FilterByAttribute(ScopeReachable(), "fire", true)
+if (ListCount(l) = 0) {
+  msg ("There is no fire here to burn anything on.")
+}
+else {
+  d = NewDictionary()
+  dictionary add (d, "object1", object1)
+  dictionary add (d, "object2", ObjectListItem(l, 0))
+  do (cmd_burn_with, "script", d)
+}
+```
+
+This looks for an object present with the "fire" attribute. If it finds one, it passes that and object1 to the first command as a dictionary to do all the work. Note that if there are two fires in the room, one will be selected arbitrarily by Quest.

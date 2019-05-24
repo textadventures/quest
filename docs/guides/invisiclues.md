@@ -9,7 +9,7 @@ Back at the dawn of time, Infocom came up with the idea of [InvisiClues](https:/
 
 ![](invisiclues.png "invisiclues.png")
 
-To get this to work, you need to create a new HELP command. For the command pattern, just type in "help|?", and for the name, "help2" (no quotes for both), as Quest already has a HELP command, and will object if you give your command the same name.
+To get this to work, you need to create a new HELP command. For the command pattern, just type in "help;?", and for the name, "help2" (no quotes for both), as Quest already has a HELP command, and will object if you give your command the same name.
 
 For the script, paste in this:
 
@@ -26,9 +26,10 @@ For the script, paste in this:
 
 The first 6 lines just get the background colour, the seven line is obvious just a message to the player. The important part is the loop at the end.
 
-The foreach command loops over game.helpdict. This is a dictionary, which is kind of like a list, but with strings (conventionally called keys) instead of numbers. When you do `foreach` with a dictionary, you get the key, rather than the index.
+The `foreach` command loops over game.helpdict. This is a dictionary, which is kind of like a list, but with strings (conventionally called keys) instead of numbers. When you do `foreach` with a dictionary, you get the key, rather than the index.
 
 The penultimate line prints the InvisiClue. The trick is that it changes the font colour to match the background, so first the key is printed in italics, then the value from the dictionary is printed in the background colour.
+
 
 ### The Hints
 

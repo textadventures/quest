@@ -79,8 +79,8 @@
     <template name="NeutralPluralPossessive">τους</template>
     <template name="MalePluralPossessive">τους</template>
     <template name="FemalePluralPossessive">τους</template>
-    <template name="SelfAlias">εγώ</template>
-    <template name="SelfAlt">εγώ; ο ίδιος</template>
+    <template name="SelfAlias">εμένα</template>
+    <template name="SelfAlt">με</template>
     <template name="AllObjects">όλα; τα πάντα; τα όλα</template>
     <template name="Nothing">τίποτα</template>
     <template name="ParserIgnorePrefixes">το; τα; ένα; τη; την; τον; έναν; μία; μια; τους; τις; στον; στην; στο; στα; στους; στις; στη</template>
@@ -268,7 +268,7 @@
 	<verbtemplate name="SwitchOn">ενεργοποίησε</verbtemplate>
     <verbtemplate name="SwitchOff">απενεργοποίησε</verbtemplate>
 	
-    <template templatetype="command" name="put"><![CDATA[^βάλε (?<object1>.*) (στο|στην|στον|στη) (?<object2>.*)$]]></template>	
+    <template templatetype="command" name="put"><![CDATA[^βάλε (?<object1>.*) (στο|στην|στον|στη|στους|στις|στα) (?<object2>.*)$]]></template>	
     <template templatetype="command" name="removefrom"><![CDATA[^βγάλε (?<object1>.*) από (?<object2>.*)$]]></template>
 	<template templatetype="command" name="ask"><![CDATA[^ρώτα (?<object>.*) για (?<text>.*)$]]></template>
 	<template templatetype="command" name="tell"><![CDATA[^πες (?<object>.*) για (?<text>.*)$]]></template>
@@ -289,7 +289,7 @@
     <verbtemplate name="eat">μάσησε</verbtemplate>
     <dynamictemplate name="DefaultEat">"Δεν μπορείς να " + object.gender + " φας."</dynamictemplate>
 	<verbtemplate name="givesingle">δώσε</verbtemplate>
-    <template templatetype="command" name="give"><![CDATA[^δώσε (?<object1>.*) (στον|στην|στο|στη) (?<object2>.*)$]]></template>
+    <template templatetype="command" name="give"><![CDATA[^δώσε (?<object1>.*) (στον|στην|στο|στη|στους|στις|στα) (?<object2>.*)$]]></template>
     <dynamictemplate name="DefaultGive">"Δεν " + object2.gender + " θέλει."</dynamictemplate>
     <verbtemplate name="hit">χτύπα</verbtemplate>
 	<verbtemplate name="hit">χτύπησε</verbtemplate>
@@ -358,7 +358,7 @@
     <verbtemplate name="untie">ξέδεσε</verbtemplate>
 	<verbtemplate name="untie">ξέλυσε</verbtemplate>
     <dynamictemplate name="DefaultUntie">"Δεν μπορείς να " + object.gender + " λύσεις."</dynamictemplate>
-    <template templatetype="command" name="useon"><![CDATA[^χρησιμοποίησε (?<object1>.*) (στον|στην|στο|στη)  (?<object2>.*)$]]></template>
+    <template templatetype="command" name="useon"><![CDATA[^χρησιμοποίησε (?<object1>.*) (στον|στην|στο|στη|στους|στις|στα)  (?<object2>.*)$]]></template>
     <dynamictemplate name="DefaultUseOn">"Δεν μπορείς να " + object2.gender + " χρησιμοποιήσεις έτσι."</dynamictemplate>
     <verbtemplate name="wear">φόρα</verbtemplate>
     <verbtemplate name="wear">φόρεσε</verbtemplate>
@@ -545,10 +545,12 @@
   </function>
 
     <function name="GetPrefix" type="string" parameters="obj,type">
-		if ( DoesInherit (obj, "namedmale")) {
-			return ("τον")
-		} else if (DoesInherit (obj, "namedfemale") ) {
+	if ( DoesInherit (obj, "namedmale")) {
+	    return ("τον")
+	} else if (DoesInherit (obj, "namedfemale") ) {
             return ("την")
+	}  else if (DoesInherit (obj, "namedneutral") ) {
+            return ("το")
         } else if ( DoesInherit (obj, "male") or DoesInherit (obj, "masculine") ) {
             return ("έναν")
         } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "feminine") ) {
@@ -588,8 +590,13 @@
 		}
     </function>
 
-	<type name="namedmale">
+  <type name="namedmale">
     <inherit name="male" />
+    <usedefaultprefix type="boolean">true</usedefaultprefix>
+  </type>
+  
+  <type name="namedneutral">
+    <inherit name="neutral" />
     <usedefaultprefix type="boolean">true</usedefaultprefix>
   </type>
   

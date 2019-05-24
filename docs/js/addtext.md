@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 layout: index
 title: addText
@@ -6,13 +5,4 @@ title: addText
 
     JS.addText (string text)
 
-=======
----
-layout: index
-title: addText
----
-
-    JS.addText (string text)
-
->>>>>>> 46fbdad9518010450b10de1f96bafedd8161ee7f
-Inserts the given text into the page. This is how `msg` displays text.
+Inserts the given text into the page. This is how `msg` displays text. Use [addScript](addscript.html) to add code, such as CSS or JavaScript, or to add HTML outside the normal text flow.

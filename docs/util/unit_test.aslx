@@ -1,0 +1,160 @@
+<!--Saved by Quest 5.8.6733.15539-->
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <dynamictemplate name="ObjectCannotBeStored">"You cannot put " + GetDisplayName(object) + " there."</dynamictemplate>
+  <game name="Unit testing">
+    <gameid>120a1c08-57db-4210-bdb0-540c78231fc4</gameid>
+    <version>1.0</version>
+    <firstpublished>2017</firstpublished>
+    <defaultforeground>Black</defaultforeground>
+    <showpanes type="boolean">false</showpanes>
+    <testcount type="int">0</testcount>
+    <testfailures type="stringlist" />
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <feature_annotations />
+    <feature_advancedwearables />
+    <attr name="autodescription_youarein" type="int">0</attr>
+    <attr name="autodescription_youcansee" type="int">0</attr>
+    <attr name="autodescription_youcango" type="int">0</attr>
+    <attr name="autodescription_description" type="int">0</attr>
+    <showcommandbar type="boolean">false</showcommandbar>
+    <showlocation type="boolean">false</showlocation>
+    <showborder type="boolean">false</showborder>
+    <gridmap type="boolean">false</gridmap>
+    <classiclocation />
+    <attr name="feature_pictureframe" type="boolean">false</attr>
+    <shadowbox />
+    <feature_advancedscripts />
+    <showmoney type="boolean">false</showmoney>
+    <feature_asktell />
+    <author>The Pixie</author>
+    <feature_limitinventory />
+    <terminate />
+    <finished type="boolean">false</finished>
+    <description type="string"></description>
+    <roomenter type="script">
+    </roomenter>
+    <changecommandscope type="script">
+      sl = NewStringList()
+      foreach (o, items) {
+        list add (sl, o.name)
+      }
+      game.lastscopefound = Join(sl, "|")
+    </changecommandscope>
+    <start type="script"><![CDATA[
+      player.changedparent => {
+      }
+      //
+      // TEST CODE HERE
+      //
+      Results
+    ]]></start>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>This is a big room.</description>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+  <function name="OutputText" parameters="text">
+    game.lastoutputtext = ProcessText(text)
+    if (not GetBoolean(game, "hideoutput") or game.finished) {
+      OutputTextRaw (game.lastoutputtext)
+    }
+  </function>
+  <function name="AssertOutput" parameters="s">
+    Assert (s, game.lastoutputtext)
+  </function>
+  <function name="Assert" parameters="expected, actual"><![CDATA[
+    if (not TypeOf(expected) = TypeOf(actual)) {
+      Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to be >" + expected + "< (" + TypeOf(expected) + ")")
+    }
+    else if (not expected = actual) {
+      Result (">" + actual + "< was expected to be >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertMatch" parameters="expected, actual"><![CDATA[
+    if (not "string" = TypeOf(actual)) {
+      Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to match >" + expected + "< (" + TypeOf(expected) + ")")
+    }
+    else if (not IsRegexMatch(expected, actual)) {
+      Result (">" + actual + "< was expected to match >" + expected + "<")
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertCommand" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    Assert (s, game.lastoutputtext)
+  </function>
+  <function name="AssertCommandMatch" parameters="com, s">
+    game.hideoutput = true
+    HandleSingleCommand (com)
+    game.hideoutput = false
+    AssertMatch (s, game.lastoutputtext)
+  </function>
+  <function name="AssertIn" parameters="list, actual"><![CDATA[
+    if (not ListContains(list, actual)) {
+      Result (">" + actual + "< expected to be in " + list)
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="AssertInRange" parameters="from, to, code"><![CDATA[
+    actual = eval(code)
+    if (actual < from or actual > to) {
+      Result (">" + actual + "< expected to be in range " + to + " to " + from + ": " + code)
+    }
+    else {
+      Result (null)
+    }
+  ]]></function>
+  <function name="Result" parameters="message"><![CDATA[
+    if (message = null) {
+      JS.addText (".")
+    }
+    else {
+      JS.addText ("F")
+      list add (game.testfailures, "Error in " + game.testingtitle + ": " + message)
+    }
+    game.testcount = game.testcount + 1
+    if (game.testcount = 50) {
+      JS.addText ("<br/>")
+      game.testcount = 0
+    }
+  ]]></function>
+  <function name="Results">
+    game.testingdone = true
+    msg (" ")
+    msg (" ")
+    if (ListCount(game.testfailures) = 0) {
+      msg ("No failures!")
+    }
+    else {
+      msg (ListCount(game.testfailures) + " failure(s):")
+      foreach (s, game.testfailures) {
+        OutputTextRaw (s)
+      }
+    }
+    msg (" ")
+    msg (" ")
+    if (game.terminate) {
+      finish
+    }
+    else {
+      game.finished = true
+      JS.uiShow ("#txtCommandDiv")
+      JS.panesVisible (true)
+    }
+  </function>
+</asl>

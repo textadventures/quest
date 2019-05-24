@@ -6,17 +6,18 @@ title: Customising the UI - Part 3
 Testing
 -------
 
-When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check thast it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
+When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check that it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
 
 
 Various Tricks
 --------------
 
-A collection of tricks using the techniques already descussed.
+A collection of tricks using the techniques already discussed.
+
 
 ### The "Continue" link
 
-You can change in the colour of hyperlinks on the Display tab of the game object, but it does not affect the "Continue" message when the game waits for the player to press a button, because that is actually part of the command line, not the output text. However, you can change it with JQuery, like this:
+You can change the colour of hyperlinks on the Display tab of the game object, but it does not affect the "Continue" message when the game waits for the player to press a button, because that is actually part of the command line, not the output text. However, you can change it like this:
 
 ```
 JS.setCss ("#txtCommandDiv a", "color:pink;")
@@ -45,11 +46,21 @@ JS.setCss ("#gamePanesFinished", "font-family:Berkshire Swash;")
 
 You can also change what gets displayed, using the JQuery html method. In this example, I am modifying the text (using the `html` method of JQuery), and adding an image (and we have to use GetFileURL to do that). I am also building the string first, and then calling JS.eval.
 
+This is the HTML I want to add:
+
+```
+<h2>Game Over</h2>
+<p>This game has finished and you are dead!</p>
+<img src="gravestone.png" />
+```
+
+This is how we do it:
+
 ```
 s = "$('#gamePanesFinished').html('<h2>Game Over</h2>"
-s = s + "<p>This game has finished and you are dead!".</p><img src=\""
-s = s + GetFileURL("gravestone.png")
-s = s + "\" />');"
+s = s + "<p>This game has finished and you are dead!</p>"
+s = s + "<img src=\"" + GetFileURL("gravestone.png") + "\" />"
+s = s + "');"
 JS.eval (s)
 finish
 ```
@@ -58,7 +69,7 @@ finish
 
 The arrows in the compass rose and the triangles to the left of the panes are icons that are defined in JQuery. To change their color, you need to replace the image file (they are all in one file).
 
-You an get an image file with the right colours, from here:
+You can get an image file with the right colours, from here:
 [http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png](http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png)
 
 You can change the number 800080 to the RGB colour what you want (I guess the file server creates the images on the fly, and will accept any value, but that may not be the case), this is a dark purple I was trying. Save the file in your game folder.

@@ -74,7 +74,6 @@
       <controltype>script</controltype>
       <caption>[EditorObjectInventoryAfterdropping]</caption>
       <attribute>ondrop</attribute>
-      <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
     </control>
 
     <control>

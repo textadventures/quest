@@ -36,3 +36,5 @@ Here is an example dictionary containing a variety of different types:
          </value>
        </item>
      </example>
+
+See [Using Dictionaries](../using_dictionaries.html)
