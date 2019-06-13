@@ -45,4 +45,6 @@ Quest is a powerful system with a gentle learning curve - you can get started ve
 Let's Begin
 -----------
 
-[Next: Creating a simple game](creating_a_simple_game.html)
+[Next: Creating a simple text adventure](creating_a_simple_game.html)
+
+[Next: Creating a simple game book](creating_a_gamebook.html)
