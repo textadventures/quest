@@ -4,14 +4,14 @@
 <!--
 
   ****************************************************************************************************
-  DevMode - Tool for better testing the game
-  by SoonGames, 2018
-  Version 1.5.2
+  CoreDevMode - Tool for better testing the game
+  by ScriptGames, 2018 - 2019
+  Version 2.5.0
   ****************************************************************************************************
-  Compatible with Quest 5.7
+  Compatible with Quest 5.7 and higher
   ****************************************************************************************************
-  Edited in Visual Studio Code 1.25.0
-  - with extension Mark Jump
+  Edited in Visual Studio Code 1.35.0
+  - with extension TODOs
   ****************************************************************************************************
   If you are viewing this on GitHub and want to download it, right click on the RAW button
   just above, and select "Save link as..."
@@ -21,7 +21,50 @@
   Tool for better testing the game.
   Inspired by Pixie's Cheating-Code. ;-)
   ****************************************************************************************************
-
+  
+  ****************************************************************************************************
+  Version 2.5.0
+  Improved display of standbye mode
+  Added possibility to execute initializations after startup, standbye or startup and standbye
+  Initializations can be executed by command directly in the game
+  ****************************************************************************************************
+  Version 2.4.1
+  Command #awake to #wake
+  Removed error when loading debug table data (online)
+  Fixed a bug where the category 'Rooms' was not listed (online)
+  ****************************************************************************************************
+  Version 2.4
+  Add Standbye-Mode.
+  Add Tasks and Notes.
+  ****************************************************************************************************
+  Version 2.3
+  Add Searchfield to the log area.
+  ****************************************************************************************************
+  Version 2.2
+  Adjustable sidebar size
+  New label for the display of the log area.
+  ****************************************************************************************************
+  Version 2.1
+  Optical improvement.
+  The size of the content is normalized again, since nothing is covered by the sidebar anymore.
+  ****************************************************************************************************
+  Version 2.0
+  Fixed a bug that prevented execution on the Internet.
+  Sidebaricon was renewed.
+  Sidebar is now transparent.
+  ****************************************************************************************************
+  Version 1.8.2
+  The sidebar no longer hides the content of the game.
+  ****************************************************************************************************
+  Version 1.8
+  Added the ability to place the sidebar to the right or left of the page margin.
+  ****************************************************************************************************
+  Version 1.7
+  A popup menu has been added under the names of the debug table. With this the object commands can be
+  executed, as well as an update of the table.
+  ****************************************************************************************************
+  Version 1.6
+  All exits, turn scripts and commands added.
   ****************************************************************************************************
   Version 1.5
   Editable debug table added.
@@ -61,6 +104,13 @@
   ****************************************************************************************************
   DevMode-Single-Commands
   ****************************************************************************************************
+  #wake (Wake up from standbye)
+  #sleep (Send to standbye)
+  #inito (Execute initialization player switch)
+  #inigo (Execute initialization position)
+  #iniscr (Execute initialization script)
+  #iniatt (Executing Initialization Attributes)
+  #ini (Execute all initializations)
   #clr (clear screen)
   #? (help)
   # (close game)
@@ -93,14 +143,7 @@
   
   <!--
   ****************************************************************************************************
-  // MARK: Include debug table
-  Files required for DevMode
-  ****************************************************************************************************
-  -->
-
-  <!--
-  ****************************************************************************************************
-  // MARK: devmode_commands
+  MARK devmode_commands
   The commands are processed here
   ****************************************************************************************************
   -->
@@ -112,89 +155,140 @@
       if (HasAttribute(game, "devmode_active")) {
         if (game.devmode_active) {
           if (IsDefined("text")) {
-            regex = "^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>selftest|clr|\\?)$"
-            if (IsRegexMatch (regex, text)) {
-              result = populate (regex, text)
-              com0 = ToString(DictionaryItem(result, "command0"))
-              com1 = ToString(DictionaryItem(result, "command1"))
-              com2 = ToString(DictionaryItem(result, "command2"))
-
-              // Commands
-              if (not com0 = "") { // without object
-                switch (LCase(com0)) {
-                  case ("selftest") {
-                    selfTest
-                  }
-                  case ("clr") {
-                    ClearScreen
-                  }
-                  case ("?") {
-                    DevModeOutput (Template("DevModeDescriptionCommands"))
-                  }
-                }
+            if (text = "wake") {
+              if (game.devmode_standbye) {
+                game.devmode_standbye = false
+                wakeDevMode
+                DevModeOutput (Template("DevModeAwake"))
               }
-              else if (not com1 = "") { // with one object
-                objstr = ToString(DictionaryItem(result, "object"))
-                obj = getObjectExt(objstr)
-                if (obj = null) error (DynamicTemplate("DevModeErrorCantFindObject", objstr))
-                switch (LCase(com1)) {
-                  case ("drop") {
-                    setWithoutChange (obj, "parent", game.pov.parent)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("take") {
-                    setWithoutChange (obj, "parent", game.pov)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("to") {
-                    setWithoutChange (game, "pov", obj)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }                
-                  case ("go") {
-                    setWithoutChange (game.pov, "parent", obj)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("open") {
-                    setWithoutChange (obj, "isopen", true)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("close") {
-                    setWithoutChange (obj, "isopen", false)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("on") {
-                    setWithoutChange (obj, "switchedon", true)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                  case ("off") {
-                    setWithoutChange (obj, "switchedon", false)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                }
-              }
-              else if (not com2 = "") { // with two objects
-                obj1str = ToString(DictionaryItem(result, "object1"))
-                obj2str = ToString(DictionaryItem(result, "object2"))
-                obj1 = getObjectExt(obj1str)
-                obj2 = getObjectExt(obj2str)
-                if (obj1 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj1str))
-                if (obj2 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj2str))
-                switch (LCase(ToString(DictionaryItem(result, "command2")))) {
-                  case ("put") {
-                    setWithoutChange (obj1, "parent", obj2)
-                    DevModeOutput (Template("DevModeComExecute"))
-                  }
-                }
+              else {
+                DevModeOutput (Template("DevModeAlreadyAwake"))              
               }
             }
+            else if (text = "sleep") {
+              if (not game.devmode_standbye) {
+                game.devmode_standbye = true
+                sleepDevMode
+                DevModeOutput (Template("DevModeSleep"))
+              }
+              else {
+                DevModeOutput (Template("DevModeAlreadySleep"))
+              }
+            }
+            else if (not game.devmode_standbye) {
+              regex = "^(?<command2>put) (?<object1>.+) (in|on) (?<object2>.+)$|^(?<command1>drop|take|to|go|open|close|on|off) (?<object>.+)$|^(?<command0>wake|sleep|inito|inigo|iniscr|iniatt|ini|selftest|clr|\\?)$"
+              if (IsRegexMatch (regex, text)) {
+                result = populate (regex, text)
+                com0 = ToString(DictionaryItem(result, "command0"))
+                com1 = ToString(DictionaryItem(result, "command1"))
+                com2 = ToString(DictionaryItem(result, "command2"))
 
-            // Expressions
+                // Commands
+                if (not com0 = "") { // without object
+                  switch (LCase(com0)) {
+                    case ("inito") {
+                      setPlayer
+                    }
+                    case ("inigo") {
+                      setPlayerPosition
+                    }
+                    case ("iniscr") {
+                      setInitScript
+                    }
+                    case ("iniatt") {
+                      setAttributes
+                    }
+                    case ("ini") {
+                      setInits
+                    }
+                    case ("selftest") {
+                      selfTest
+                    }
+                    case ("clr") {
+                      ClearScreen
+                    }
+                    case ("?") {
+                      DevModeOutput (Template("DevModeDescriptionCommands"))
+                    }
+                  }
+                }
+                else if (not com1 = "") { // with one object
+                  objstr = ToString(DictionaryItem(result, "object"))
+                  obj = getObjectExt(objstr)
+                  if (obj = null) error (DynamicTemplate("DevModeErrorCantFindObject", objstr))
+                  switch (LCase(com1)) {
+                    case ("take") {
+                      setWithoutChange (obj, "parent", game.pov)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("drop") {
+                      setWithoutChange (obj, "parent", game.pov.parent)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("open") {
+                      setWithoutChange (obj, "isopen", true)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("close") {
+                      setWithoutChange (obj, "isopen", false)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("on") {
+                      setWithoutChange (obj, "switchedon", true)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("off") {
+                      setWithoutChange (obj, "switchedon", false)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                    case ("to") {
+                      setWithoutChange (game, "pov", obj)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }                
+                    case ("go") {
+                      setWithoutChange (game.pov, "parent", obj)
+                      DevModeOutput (Template("DevModeComExecute"))
+                      roomFrameExists = false
+                      if (HasString(game.pov.parent, "picture")) {
+                        if (LengthOf(game.pov.parent.picture) > 0) {
+                          roomFrameExists = true
+                          SetFramePicture(game.pov.parent.picture)
+                        }
+                      }
+                      if (game.clearframe and not roomFrameExists) {
+                        ClearFramePicture
+                      }
+                    }
+                  }
+                }
+                else if (not com2 = "") { // with two objects
+                  obj1str = ToString(DictionaryItem(result, "object1"))
+                  obj2str = ToString(DictionaryItem(result, "object2"))
+                  obj1 = getObjectExt(obj1str)
+                  obj2 = getObjectExt(obj2str)
+                  if (obj1 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj1str))
+                  if (obj2 = null) error (DynamicTemplate("DevModeErrorCantFindObject", obj2str))
+                  switch (LCase(ToString(DictionaryItem(result, "command2")))) {
+                    case ("put") {
+                      setWithoutChange (obj1, "parent", obj2)
+                      DevModeOutput (Template("DevModeComExecute"))
+                    }
+                  }
+                }
+              }
+
+              // Expressions
+              else {
+                ParseToQuestCode (text)
+              }
+            }
             else {
-              ParseToQuestCode (text)
+              error (Template("DevModeNotAwake")) // The DevMode is not awake
             }
           }
           else {
-            request (Quit, "") // Exit game
+            if (not game.devmode_standbye) request (Quit, "") // Exit game
+            else error (Template("DevModeNotAwake")) // The DevMode is not awake
           }
         }
         else {
@@ -210,7 +304,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: ParseToQuestCode
+  MARK ParseToQuestCode
   Converts the flyscript to quest code
   ****************************************************************************************************
   -->
@@ -229,7 +323,6 @@
       // ----------------------------------------------------------------------------------------------------
       if (IsRegexMatch (regex, text)) {
         result = populate (regex, text)
-        Log (ToString(result))
 
         // ----------------------------------------------------------------------------------------------------
         // ASSIGN RESULT
@@ -413,7 +506,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: ParseToFlyScript
+  MARK ParseToFlyScript
   Converts the quest code to flyscript
   ****************************************************************************************************
   -->
@@ -489,7 +582,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: DevModeOutput
+  MARK DevModeOutput
   Output display of the DevMode in the selected color
   ****************************************************************************************************
   -->
@@ -505,7 +598,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: DevModeOutputError
+  MARK DevModeOutputError
   Output display of DevMode in red
   ****************************************************************************************************
   -->
@@ -519,7 +612,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: setWithoutChange
+  MARK setWithoutChange
   The intercept scripts are bypassed
   ****************************************************************************************************
   -->
@@ -541,61 +634,249 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: setDevMode
+  MARK setDevMode
   The DevMode is initialized
   ****************************************************************************************************
   -->
   <function name="setDevMode">
+    setStandbye
 	  if (HasAttribute(game, "devmode_active")) {
-      if (game.devmode_active) {
+      if (game.devmode_active and not game.devmode_standbye) {
         DevModeOutput (Template("DevModeActive"))
-        if (HasAttribute(game, "devmode_attributes") and not DictionaryCount(game.devmode_attributes) = 0) {
-          foreach(key, game.devmode_attributes) {
-            command = key + "=" + ToString(DictionaryItem(game.devmode_attributes, key))
-            commandOutput ("#" + command)
-            ParseToQuestCode (command)
-          }
+        if (not Instr (game.devmode_initstart, "start") = 0) {
+          setInits
         }
-        if (game.devmode_changepov) {
-          commandOutput ("#to " + game.devmode_pov)
-          HandleSingleCommand ("#to " + game.devmode_pov)
-        }
-        if (game.devmode_changepovpos) {
-          commandOutput ("#go " + game.devmode_povpos)
-          HandleSingleCommand ("#go " + game.devmode_povpos)
-        }
-        if (game.devmode_setverbs) {
-          setVerbs
-        }
-        if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
-          msg("")
-          DevModeOutput (Template("DevModeStartScript"))
-          do (game, "devmode_initscript")
-        }
-        msg("")
+        setVerbs
+        setSidebar
       }
-	  }
+    }
   </function>
 
   <!--
   ****************************************************************************************************
-  // MARK: getTableDataNames
+  MARK wakeDevMode
+  The DevMode wakes up
+  ****************************************************************************************************
+  -->
+  <function name="wakeDevMode">
+	  if (HasAttribute(game, "devmode_active")) {
+      if (game.devmode_active) {
+        DevModeOutput (Template("DevModeActive"))
+        if (not Instr (game.devmode_initstart, "standbye") = 0) {
+          setInits
+        }
+        setVerbs
+        setSidebar
+      }
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK sleepDevMode
+  The DevMode is put to sleep
+  ****************************************************************************************************
+  -->
+  <function name="sleepDevMode">
+    unsetVerbs
+    unsetSidebar
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setStandbye
+  Set or Unset Standbye
+  ****************************************************************************************************
+  -->
+  <function name="setStandbye">
+    if (game.devmode_startmode = "standbye") game.devmode_standbye = true
+    else game.devmode_standbye = false
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setInits
+  Set the initialisations
+  ****************************************************************************************************
+  -->
+  <function name="setInits">
+    setAttributes
+    setPlayer
+    setPlayerPosition
+    setInitScript
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setInits
+  Set the initialisations
+  ****************************************************************************************************
+  -->
+  <function name="setAttributes">
+    if (GetBoolean (game, "devmode_setattributes") and HasAttribute(game, "devmode_attributes") and not DictionaryCount(game.devmode_attributes) = 0) {
+      foreach(key, game.devmode_attributes) {
+        setAttribute (key + "=" + ToString(DictionaryItem(game.devmode_attributes, key)))
+      }
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setPlayer
+  Change the Player
+  ****************************************************************************************************
+  -->
+  <function name="setPlayer">
+    if (game.devmode_changepov) {
+      setCommand ("#to " + game.devmode_pov)
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setPlayerPosition
+  Change the Position
+  ****************************************************************************************************
+  -->
+  <function name="setPlayerPosition">
+    if (game.devmode_changepovpos) {
+      setCommand ("#go " + game.devmode_povpos)
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setInitScript
+  Start the initialization
+  ****************************************************************************************************
+  -->
+  <function name="setInitScript">
+    if (game.devmode_setinitscript and HasScript(game, "devmode_initscript")) {
+      msg("")
+      DevModeOutput (Template("DevModeStartScript"))
+      do (game, "devmode_initscript")
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setVerbs
+  The verbs of the object commands are assigned to the object list
+  ****************************************************************************************************
+  -->
+  <function name="setVerbs">
+    if (game.devmode_setverbs) {
+      verbs = game.devmode_verbs
+      foreach (object, AllObjects()) {
+        if (HasAttribute(object, "displayverbs")) {
+          object.displayverbs = ListCombine (object.displayverbs, verbs)
+        }
+        if (HasAttribute(object, "inventoryverbs")) {
+          object.inventoryverbs = ListCombine (object.inventoryverbs, verbs)
+        }
+      }
+      game.enablehyperlinks = true
+      msg("")
+      DevModeOutput (Template("DevModeSetVerbs"))
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK unsetVerbs
+  The verbs of the DevMode are removed from the verb menus
+  ****************************************************************************************************
+  -->
+  <function name="unsetVerbs">
+    if (game.devmode_setverbs) {
+      verbs = game.devmode_verbs
+      foreach (object, AllObjects()) {
+        if (HasAttribute(object, "displayverbs")) {
+          object.displayverbs = ListExclude (object.displayverbs, verbs)
+        }
+        if (HasAttribute(object, "inventoryverbs")) {
+          object.inventoryverbs = ListExclude (object.inventoryverbs, verbs)
+        }
+      }
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK setSidebar
+  Create the Sidebar
+  ****************************************************************************************************
+  -->
+  <function name="setSidebar">
+    if (game.devmode_showsidebar) {
+      JS.initDevModeSideBar (game.devmode_sidebarpos, game.devmode_sidebarsize, Join(game.devmode_verbs, ","))
+      msg("")
+      DevModeOutput (Template("DevModeInitSidebar"))
+    }
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK unsetSidebar
+  Removed the Sidebar
+  ****************************************************************************************************
+  -->
+  <function name="unsetSidebar">
+    if (game.devmode_showsidebar) {
+      JS.removeDevModeSideBar ()
+    } 
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK getTableDataNames
   All names of the objects are transferred to the table
   ****************************************************************************************************
   -->
   <function name="getTableDataNames" parameters="empty">
     data = NewStringList ()
-    list add (data, "{\"name\":\"game\"}")
+    list add (data, "{\"name\":\"game\",\"typ\":\"Gameobject\"}")
+
+    // ----------------------------------------------------------------------------------------------------
+    // ALL OBJECTS
+    // ----------------------------------------------------------------------------------------------------
     foreach (obj, AllObjects()) {
-      list add (data, "{\"name\":\"" + obj.name + "\"}")
+      if (HasAttribute(obj, "isroom") and HasBoolean(obj, "isroom") and GetBoolean(obj, "isroom") or HasAttribute(obj, "type") and GetString(obj, "type") = "object" and not HasAttribute(obj, "parent")) {
+        list add (data, "{\"name\":\"" + obj.name + "\",\"typ\":\"Rooms\"}")
+      }
+      else {
+        list add (data, "{\"name\":\"" + obj.name + "\",\"typ\":\"Objects\"}")
+      }
     }
+
+    // ----------------------------------------------------------------------------------------------------
+    // ALL EXITS
+    // ----------------------------------------------------------------------------------------------------
+    foreach (obj, AllExits()) {
+      list add (data, "{\"name\":\"" + obj.name + "\",\"typ\":\"Exits\"}")
+    }
+
+    // ----------------------------------------------------------------------------------------------------
+    // ALL TURNSCRIPTS
+    // ----------------------------------------------------------------------------------------------------
+    foreach (obj, AllTurnScripts()) {
+      list add (data, "{\"name\":\"" + obj.name + "\",\"typ\":\"TurnScripts\"}")
+    }
+
+    // ----------------------------------------------------------------------------------------------------
+    // ALL COMMMANDS
+    // ----------------------------------------------------------------------------------------------------
+    foreach (obj, AllCommands()) {
+      list add (data, "{\"name\":\"" + obj.name + "\",\"typ\":\"Commands\"}")
+    }
+
     datastr = "[" + Join (data, ",") + "]"
     JS.setTableData("names", datastr)
   </function>
 
   <!--
   ****************************************************************************************************
-  // MARK: getTableDataAttr
+  MARK getTableDataAttr
   All attributes and values of the objects are transferred to the table
   ****************************************************************************************************
   -->
@@ -604,7 +885,9 @@
     obj = GetObject (name)
     foreach (attr, GetAttributeNames (obj, true)) {
       val = ParseToFlyScript (GetAttribute (obj, attr))
-      list add (data, "{\"attribute\":\"" + attr + "\",\"value\":\"" + Replace(val, "\"", "\\\"") + "\"}")
+      val = Replace(val, "\\", "\\\\")
+      val = Replace(val, "\"", "\\\"")
+      list add (data, "{\"attribute\":\"" + attr + "\",\"value\":\"" + val + "\"}")
     }
     datastr = "[" + Join (data, ",") + "]"
     JS.setTableData("attr", datastr)
@@ -612,18 +895,29 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: setTableData
-  The changes to the table data are transferred to Quest
+  MARK setCommand
+  Executing the object commands
   ****************************************************************************************************
   -->
-  <function name="setTableData" parameters="command">
-    commandOutput ("#" + command)
-    ParseToQuestCode (command)
+  <function name="setCommand" parameters="command">
+    commandOutput (command)
+    HandleSingleCommand (command)
   </function>
 
   <!--
   ****************************************************************************************************
-  // MARK: commandOutput
+  MARK setAttribute
+  The changes to the table data are transferred to Quest
+  ****************************************************************************************************
+  -->
+  <function name="setAttribute" parameters="attribute">
+    commandOutput ("#" + attribute)
+    ParseToQuestCode (attribute)
+  </function>
+
+  <!--
+  ****************************************************************************************************
+  MARK commandOutput
   The command is output with an arrow in front of it
   ****************************************************************************************************
   -->
@@ -634,28 +928,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: setVerbs
-  The verbs of the object commands are assigned to the object list
-  ****************************************************************************************************
-  -->
-  <function name="setVerbs">
-    verbs = game.devmode_verbs
-    foreach (object, AllObjects()) {
-      if (HasAttribute(object, "displayverbs")) {
-        object.displayverbs = ListCombine (object.displayverbs, verbs)
-      }
-      if (HasAttribute(object, "inventoryverbs")) {
-        object.inventoryverbs = ListCombine (object.inventoryverbs, verbs)
-      }
-    }
-    game.enablehyperlinks = true
-    msg("")
-    DevModeOutput (Template("DevModeSetVerbs"))
-  </function>
-
-  <!--
-  ****************************************************************************************************
-  // MARK: getObjectExt
+  MARK getObjectExt
   Extended getObject, which takes into account the alias of the object instead of the name
   ****************************************************************************************************
   -->
@@ -673,7 +946,7 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: selfTest
+  MARK selfTest
   A test, at game start to check all functions of the DevMode
   ****************************************************************************************************
   -->
@@ -770,7 +1043,6 @@
               if (not result) {
                 iserror = true
                 DevModeOutputError (Template("DevModeComSelfTestFailed"))
-                Log (ToString(ListItem(testobject1.testattribut, 2)))
               }
             }
           }
@@ -781,27 +1053,36 @@
 
   <!--
   ****************************************************************************************************
-  // MARK: Types
+  MARK Types
   The types required for the interface
   ****************************************************************************************************
   -->
   <type name="devmode">
     <devmode_active type="boolean">true</devmode_active>
+    <devmode_standbye type="boolean">false</devmode_standbye>
+    <devmode_startmode type="string">standard</devmode_startmode>
+    <devmode_showtasksandnotes type="boolean">true</devmode_showtasksandnotes>
     <devmode_changepov type="boolean">false</devmode_changepov>
     <devmode_changepovpos type="boolean">false</devmode_changepovpos>
     <devmode_setinitscript type="boolean">false</devmode_setinitscript>
     <devmode_setverbs type="boolean">true</devmode_setverbs>
+    <devmode_setattributes type="boolean">false</devmode_setattributes>
     <devmode_showinfos type="boolean">true</devmode_showinfos>
-    <devmode_showdebugtable type="boolean">true</devmode_showdebugtable>
+    <devmode_showsidebar type="boolean">true</devmode_showsidebar>
+    <devmode_sidebarpos type="string">right</devmode_sidebarpos>
+    <devmode_sidebarsize type="string">25%</devmode_sidebarsize>
+    <devmode_initstart type="string">start</devmode_initstart>
     <devmode_ownfontcolour type="boolean">true</devmode_ownfontcolour>
     <devmode_fontcolour type="string">Green</devmode_fontcolour>
     <devmode_attributes type="stringdictionary" />
-    <devmode_verbs type="simplestringlist">#drop;#take;#to;#open;#close;#on;#off</devmode_verbs>
+    <devmode_tasks type="stringlist" />
+    <devmode_notes type="string" />
+    <devmode_verbs type="simplestringlist">#take;#drop;#open;#close;#on;#off;#to;#go</devmode_verbs>
  </type>
 
   <!--
   ****************************************************************************************************
-  // MARK: Interface
+  MARK Interface
   The interface of the DevMode
   ****************************************************************************************************
   -->
@@ -814,7 +1095,14 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorGameDevMode]</caption>
       <types>*=[EditorGameDevModeOff]; devmode=[EditorGameDevModeOn];</types>
-      <width>150</width>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeStartmode]</caption>
+      <controltype>dropdown</controltype>
+      <attribute>devmode_startmode</attribute>
+      <validvalues type="simplestringdictionary">standard=[EditorGameDevModeStartmodeStandard]; standbye=[EditorGameDevModeStartmodeStandbye]</validvalues>
+      <mustinherit>devmode</mustinherit>
     </control>
 
     <control>
@@ -839,6 +1127,85 @@
     <control>
       <controltype>title</controltype>
       <caption>[EditorGameDevModeOptions]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeShowTasksAndNotes]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_showtasksandnotes</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeShowSidebar]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_showsidebar</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeSidebarPos]</caption>
+      <controltype>dropdown</controltype>
+      <attribute>devmode_sidebarpos</attribute>
+      <validvalues type="simplestringdictionary">left=[EditorGameDevModeSidebarPosLeft]; right=[EditorGameDevModeSidebarPosRight]</validvalues>
+      <onlydisplayif>game.devmode_showsidebar</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+      <width>75</width>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeSidebarSize]</caption>
+      <controltype>dropdown</controltype>
+      <attribute>devmode_sidebarsize</attribute>
+      <validvalues type="simplestringlist">25%;50%;75%;100%</validvalues>
+      <onlydisplayif>game.devmode_showsidebar</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+      <width>75</width>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeSetVerbs]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_setverbs</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeShowInfos]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_showinfos</attribute>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeOwnFontColour]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>devmode_ownfontcolour</attribute>
+      <onlydisplayif>game.devmode_showinfos</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>[EditorGameDevModeFontColour]</caption>
+      <attribute>devmode_fontcolour</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <onlydisplayif>game.devmode_showinfos and game.devmode_ownfontcolour</onlydisplayif>
+      <mustinherit>devmode</mustinherit>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>[EditorGameDevModeInitialization]</caption>
+      <mustinherit>devmode</mustinherit>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <attribute>devmode_initstart</attribute>
+      <validvalues type="simplestringdictionary">start=[EditorGameDevModeInitStart]; standbye=[EditorGameDevModeInitStandbye]; startstandbye=[EditorGameDevModeInitStartAndStandbye]</validvalues>
       <mustinherit>devmode</mustinherit>
     </control>
 
@@ -890,47 +1257,9 @@
     </control>
 
     <control>
-      <caption>[EditorGameDevModeSetVerbs]</caption>
+      <caption>[EditorGameDevModeSetAttributes]</caption>
       <controltype>checkbox</controltype>
-      <attribute>devmode_setverbs</attribute>
-      <mustinherit>devmode</mustinherit>
-    </control>
-
-    <control>
-      <caption>[EditorGameDevModeShowDebugTable]</caption>
-      <controltype>checkbox</controltype>
-      <attribute>devmode_showdebugtable</attribute>
-      <mustinherit>devmode</mustinherit>
-    </control>
-
-    <control>
-      <caption>[EditorGameDevModeShowInfos]</caption>
-      <controltype>checkbox</controltype>
-      <attribute>devmode_showinfos</attribute>
-      <mustinherit>devmode</mustinherit>
-    </control>
-
-    <control>
-      <caption>[EditorGameDevModeOwnFontColour]</caption>
-      <controltype>checkbox</controltype>
-      <attribute>devmode_ownfontcolour</attribute>
-      <onlydisplayif>game.devmode_showinfos</onlydisplayif>
-      <mustinherit>devmode</mustinherit>
-    </control>
-
-    <control>
-      <controltype>dropdown</controltype>
-      <caption>[EditorGameDevModeFontColour]</caption>
-      <attribute>devmode_fontcolour</attribute>
-      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-      <onlydisplayif>game.devmode_showinfos and game.devmode_ownfontcolour</onlydisplayif>
-      <mustinherit>devmode</mustinherit>
-      <freetext/>
-    </control>
-
-    <control>
-      <controltype>title</controltype>
-      <caption>[EditorGameDevModeAttributes]</caption>
+      <attribute>devmode_setattributes</attribute>
       <mustinherit>devmode</mustinherit>
     </control>
 
@@ -938,6 +1267,7 @@
       <controltype>label</controltype>
       <caption>[EditorGameDevModeDescriptionAttribute]</caption>
       <mustinherit>devmode</mustinherit>
+      <onlydisplayif>game.devmode_setattributes</onlydisplayif>
       <advanced/>
     </control>
 
@@ -947,7 +1277,36 @@
       <valueprompt>[EditorObjectAttributesPleaseenter2]</valueprompt>
       <attribute>devmode_attributes</attribute>
       <mustinherit>devmode</mustinherit>
+      <onlydisplayif>game.devmode_setattributes</onlydisplayif>
+    </control>
+
+  </tab>
+
+  <!--
+  ****************************************************************************************************
+  MARK Interface for Tasks and Notes
+  The interface of the DevMode for the Tasks and Notes
+  ****************************************************************************************************
+  -->
+  <tab>
+    <parent>_GameEditor</parent>
+    <caption>[EditorGameDevModeTasksAndNotesTab]</caption>
+    <onlydisplayif>GetBoolean (game, "feature_devmode") and game.devmode_active and game.devmode_showtasksandnotes</onlydisplayif>
+
+    <control>
+      <caption>[EditorGameDevModeTasks]</caption>
+      <controltype>list</controltype>
+      <attribute>devmode_tasks</attribute>
+      <editprompt>[EditorGameDevModeTasksPleaseenter]</editprompt>
       <expand/>            
+    </control>
+
+    <control>
+      <caption>[EditorGameDevModeNotes]</caption>
+      <controltype>richtext</controltype>
+      <attribute>devmode_notes</attribute>
+      <notextprocessor/>
+      <expand/>
     </control>
 
   </tab>
