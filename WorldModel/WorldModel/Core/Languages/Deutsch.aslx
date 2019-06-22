@@ -161,7 +161,6 @@
   <template name="CompassN">Norden</template>
   <template name="CompassNE">Nordosten</template>
   <template name="CompassW">Westen</template>
-  <template name="CompassOut">raus</template>
   <template name="CompassE">Osten</template>
   <template name="CompassSW">Südwesten</template>
   <template name="CompassS">Süden</template>
