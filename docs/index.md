@@ -90,7 +90,7 @@ Quest has a whole range of features built-in and ready to use. You probably won'
 
 In Quest, everything is an object, from rooms to items, from turn scripts to exits. What makes them work in the way we want them to is attributes.
 
--  [Introduction to attributes]
+-  [Introduction to attributes](attributes.html)
 -  [Using attributes](using_attributes.html) (including status attributes and change scripts)
 -  [Important attributes](important_attributes.html)
 -  [Status attributes](status_attributes.html)
