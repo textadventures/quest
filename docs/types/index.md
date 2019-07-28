@@ -15,7 +15,6 @@ Variables and object attributes can be any of the following types:
 -   [stringlist](stringlist.html)
 -   [objectlist](objectlist.html)
 -   [list](list.html)
--   [stringdictionary](stringdictionary.html)
 -   [objectdictionary](objectdictionary.html)
 -   [scriptdictionary](scriptdictionary.html)
 -   [dictionary](dictionary.html)
