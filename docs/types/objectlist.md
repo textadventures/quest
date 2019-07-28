@@ -9,4 +9,4 @@ The format in an ASLX file is:
 
      <mylist type="objectlist">player; object1; thing</mylist>
 
-There is more on lists [here](using_lists.html).
+There is more on lists [here](../using_lists.html).
