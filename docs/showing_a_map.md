@@ -73,6 +73,14 @@ _NOTE:_ We will be using code from here on in. It is easier for me to type, and 
 
 _NOTE:_ The map system works by maintaining a dictionary attribute on the player object. When the player moves, the dictionary gets updated with all the exits and rooms adjoining the new room. If you get errors in your game about a dictionary, the culprit may well be the mapping system.
 
+### Changing the colour of the map
+
+Use this code to change the background colour, in this instance to red:
+```
+JS.setCss ("#gridPanel", "background-color:red")
+```
+This is best put in the "User initialisation script...", found on the _Advanced Scripts_ tab of the game object (you may need to activate the tab on the _Features_ tab).
+
 
 ### Turning the grid on and off
 
