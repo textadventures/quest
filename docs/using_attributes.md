@@ -41,7 +41,7 @@ Each line starts with `this`, which is a special value meaning the object the sc
 Status Attributes
 -----------------
 
-[Status attributes](statuis_attributes.html) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
+[Status attributes](status_attributes.html) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
 
 
 Change Scripts
