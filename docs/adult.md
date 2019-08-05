@@ -39,6 +39,8 @@ Casual mention of drug-taking is fine. In interactive fiction, I would suggest t
 
 I would include smoking here too, but would be more relaxed about drinking (possibly because I drink, but do noit smoke myself?), and would only consider it adult if it was _about_ drinking, or involves drinking to excess.
 
+I would probably not consider games that are clearly educational with regards to the risk from drugs to be adult.
+
 
 ### The F-word
 
