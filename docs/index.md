@@ -238,6 +238,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Using Trizbort](trizbort.html) Draw a map in Trizbort, then export to Quest.
 -   [DevMode](devmode.html) A tool for testing and debugging your game.
 -   [Common problems](problems.html)
+-   [What counts as "adult"](adult.html)
 -   [WebEditor](webeditor.html)
 -   [Code view](codeview.html)
 -   [Notes for users of previous versions of Quest](upgrade_notes.html)
