@@ -12,7 +12,7 @@ Simple commands
 
 Let us start with a HELP command. There is already a HELP command in Quest, but we will add our own (somewhat less helpful) version.
 
-Quest searches the commands starting at the bottom, so any command we add in our game will be found first, before the built-in commands, so our new command will get a match and used, and the built-in one will not.
+Quest searches the commands starting at the bottom, so any command we add in our game will be found first, before the built-in commands, so our new command will get a match and used, and the built-in one will not (actually it is a little more complicated than that, but that is good enough for now).
 
 To add a command:
 
@@ -84,7 +84,7 @@ Think of a checklist; what do we need to check before allowing the command to wo
 
 1. The player needs a weapon
 
-As Quest will only match an object if it is present, so we do not need to check if the hook is present, it must be if Quest found it (that may not be the case if you use a [scope](advanced_scope.html), but that is outside this discusson). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
+As Quest will only match an object if it is present, so we do not need to check if the zombie is present, it must be if Quest found it (that may not be the case if you use a [scope](advanced_scope.html), but that is outside this discusson). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
 
 We then need to flip each item in the list, and add a response. I.e., instead of checking that it is an enemy, we check it is not, and add a response.
 
