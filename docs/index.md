@@ -267,7 +267,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 <a name="Other"></a>Other Guides and Libraries
 ---------------------------------
 
--   [Helpsheets for beginners](guides/helpsheets.html) by gideonwilliams
+-   [Helpsheets for beginners](http://docs.textadventures.co.uk/quest/helpsheets/) by gideonwilliams
 -   [The Pixie's tutorials and libraries](https://github.com/ThePix/quest/wiki)
 -   [KV's libraries](http://textadventures.co.uk/user/view/3fbmqo02fkkr-emkcwxdma/k-v)
 -   [SoonGames' libraries](https://github.com/SoonGames/quest_libraries)
