@@ -13,7 +13,7 @@ This is a list of most of the functions built in to Quest, grouped by type. For 
 
 - [Functions for Objects and Exits](#objects)
 
-- [Timers and Turnscripts](#tanat)
+- [Timers and Turnscripts](#timers-and-turnscripts)
 
 - [User Interface Functions](#ui)
 
