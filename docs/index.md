@@ -123,7 +123,7 @@ Some of these will involve some simple coding. _It's not that bad!_ We will walk
 -  [Let the player push/pull objects to other rooms](move_object.html)
 -  [Use neutral language](neutral_language.html) (grammatically correct responses)
 -  [Add randomness](random.html)
-
+-  [Run Quest on Linux](linux.html)
 
 
 <a name="Multimedia"></a>Multimedia
