@@ -269,7 +269,6 @@ Due to restrictions in the web editor, the following are only applicable to the 
 
 -   [Helpsheets for beginners](http://docs.textadventures.co.uk/quest/helpsheets/) by gideonwilliams
 -   [The Pixie's tutorials and libraries](https://github.com/ThePix/quest/wiki)
--   [KV's libraries](https://github.com/KVonGit/quest5-stuff)
 -   [SoonGames' libraries](https://github.com/SoonGames/quest_libraries)
 -   [User contributed libraries](libraries.html)
 -   [User contributed guides](guides/)
