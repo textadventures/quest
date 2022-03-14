@@ -5,7 +5,7 @@ title: Complex commands
 
 So you want to use THIS with THAT? what is the best way to handle it?
 
-This page discusses how to set up commands that use two (or more) objects. For simple commands, see [here](comaands.html).
+This page discusses how to set up commands that use two (or more) objects. For simple commands, see [here](commands.html).
 
 > TIE CORD TO HOOK
 >
