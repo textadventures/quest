@@ -38,7 +38,9 @@ Now, add a "defibrillator" object to the lounge. Enter a description like "A hea
 
 Go to the _Inventory_ tab and tick "Object can be taken".
 
-Now go back to Bob. On his _Use/Give_ tab, go to the "Use (other object) on this" section and choose "Handle objects individually".
+Now go back to Bob. We need to turn on "Use/Give", so on his "Features" tab, tick the "Use/Give:..." check box. His _Use/Give_ tab should now appear.
+
+Go to the "Use (other object) on this" section of the new "Use/Give" tab, and choose "Handle objects individually".
 
 ![](../images/Use2.png "Use2.png")
 
@@ -104,7 +106,9 @@ Ask and Tell
 
 Ask and Tell work in the same way, so we'll only cover "ask" here.
 
-Click on Bob and go to the "Ask/tell" tab. (If you can't find this tab, you will have to activate this feature in the _Features_ tab in the "game" section.) Here you can add subjects to the list, and give a script for each subject. You can also give a script to run when the player asks Bob about something he doesn't know about.
+Click on Bob and go to the "Ask/tell" tab. As with "Use/Give" this will have to be turned on, but it is done globally, which means you only need to do it once for your whole game, and that it is done from the _Features_ tab of the "game" at the top of the list on the left.
+
+On Bob's "Ask/Tell" tab you can add subjects to the list, and give a script for each subject. You can also give a script to run when the player asks Bob about something he doesn't know about.
 
 Let's make Bob respond to a question about the massive heart attack he's just amazingly recovered from. Click the "Add" ![](../images/Add.png "fig:Add.png") button and enter some topic keywords, for example "heart attack cardiac arrest". When the player asks Bob about anything, this list of keywords is checked for matches in the player's command. So the player could type "ask bob about heart" or "ask bob about cardiac arrest", and that will match this topic.
 
