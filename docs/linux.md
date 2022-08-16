@@ -5,6 +5,8 @@ title: How to run Quest on Linux
 
 Very grateful to redyoshi49q for working out how to do this. His/her instructions are reproduced as-is. The discusion can be found [here](http://textadventures.co.uk/forum/samples/topic/nwsz5gf0te6qdtfrwzdmga/quest-5-8-working-in-wine).
 
+I suggest you also look at [this](https://github.com/textadventures/quest/issues/1158), which has additional comments.
+
 ***
 
 I seem to have finally gotten Quest working in Wine on Linux, thanks in no small part due to helpful tidbits that were dropped in the bug report viewable at https://bugs.winehq.org/show_bug.cgi?id=43408 .
