@@ -25,3 +25,4 @@ WebPlayer/paper.js
 WebPlayer/grid.js
 *.pubxml
 _site/
+.idea
