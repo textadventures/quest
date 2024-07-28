@@ -1,5 +1,5 @@
-﻿using TextAdventures.Quest;
+﻿using TextAdventures.Quest.LegacyASL;
 
-var z = new MenuData("test", null, false);
+var game = new LegacyGame("test.asl", "test.asl");
 
-Console.WriteLine("OK..." + z.Caption);
+game.Begin();
