@@ -10,7 +10,7 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "LegacyASL", "..\Legacy\Lega
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "..\Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestConsole", "..\QuestConsole\QuestConsole.csproj", "{5087E30D-95F3-49B6-B534-2EBA91C599CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuestConsole", "..\QuestConsole\QuestConsole.csproj", "{5087E30D-95F3-49B6-B534-2EBA91C599CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
