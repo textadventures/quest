@@ -6,9 +6,13 @@ namespace TextAdventures.Quest
     {
         public static bool ReadGameFileFromAzureBlob
         {
+            // TODO: QUESTCORE
+
+            get { return false; }
+
             // TODO: Fix this ugliness
 
-            get { return ConfigurationManager.AppSettings["FileManagerType"] == "WebPlayer.AzureFileManager, WebPlayer" || ConfigurationManager.AppSettings["AzureFiles"] == "true"; }
+            // get { return ConfigurationManager.AppSettings["FileManagerType"] == "WebPlayer.AzureFileManager, WebPlayer" || ConfigurationManager.AppSettings["AzureFiles"] == "true"; }
         }
     }
 }
