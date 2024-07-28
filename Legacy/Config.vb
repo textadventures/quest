@@ -5,7 +5,9 @@ Option Infer On
 Public Class Config
     Public Shared ReadOnly Property ReadGameFileFromAzureBlob As Boolean
         Get
-            Return System.Configuration.ConfigurationManager.AppSettings("FileManagerType") = "WebPlayer.AzureFileManager, WebPlayer"
+            ' TODO - QUESTCORE
+            ' Return System.Configuration.ConfigurationManager.AppSettings("FileManagerType") = "WebPlayer.AzureFileManager, WebPlayer"
+            Return False
         End Get
     End Property
 End Class
