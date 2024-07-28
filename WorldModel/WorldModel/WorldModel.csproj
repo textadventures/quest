@@ -22,7 +22,6 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Dependencies\Ciloci.Flee.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
     <Reference Update="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
