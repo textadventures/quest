@@ -1,5 +1,11 @@
-﻿using TextAdventures.Quest.LegacyASL;
+﻿using QuestCore;
 
-var game = new LegacyGame("test.asl", "test.asl");
+if (args.Length == 0)
+{
+    Console.WriteLine("Usage: QUESTCORE.EXE <filename>");
+    return;
+}
 
-game.Begin();
+string filename = args[0];
+Runner runner = new Runner(filename);
+runner.Start();

@@ -10,6 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="..\IASL\IASL.csproj" />
     <ProjectReference Include="..\Legacy\LegacyASL.vbproj" />
+    <ProjectReference Include="..\PlayerController\PlayerController.csproj" />
+    <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj" />
   </ItemGroup>
 
 </Project>
