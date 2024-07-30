@@ -25,7 +25,7 @@ public partial class Quest : ComponentBase
         // check if they are needed and if there's a better way of getting this.
         
         var game = GameLauncher.GetGame(filename, null);
-        var playerHelperUi = new PlayerHelperUI();
+        var playerHelperUi = new PlayerHelperUI(AddText);
         playerHelper = new PlayerHelper(game, playerHelperUi);
         
         // TODO: Add playerHelper event handlers
@@ -34,7 +34,9 @@ public partial class Quest : ComponentBase
 
         if (result)
         {
-            status = "OK!";    
+            status = "OK!";
+            playerHelper.Game.Begin();
+            AddText(playerHelper.ClearBuffer());
         }
         else
         {
@@ -50,5 +52,10 @@ public partial class Quest : ComponentBase
     private void LoadASL5()
     {
         Load("/Users/alexwarren/Code/quest/examples/test.aslx");
+    }
+
+    private void AddText(string text)
+    {
+        output.Add(text);
     }
 }
