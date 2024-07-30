@@ -95,9 +95,11 @@ namespace TextAdventures.Quest
                     return "True";
                 case "editprompt":
                 case "valueprompt":
-                    return L.T("EditorPleaseEnterValue");
+                    return "Please enter a value";
+                    //return L.T("EditorPleaseEnterValue");
                 case "keyprompt":
-                    return L.T("EditorPleaseEnterKey");
+                    return "Please enter a key";
+                    //return L.T("EditorPleaseEnterKey");
                 default:
                     return null;
             }

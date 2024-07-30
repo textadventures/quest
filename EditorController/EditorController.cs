@@ -292,7 +292,8 @@ namespace TextAdventures.Quest
         public EditorController()
         {
             m_availableFilters = new AvailableFilters();
-            m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
+            m_availableFilters.Add("libraries", "Show Library Elements");
+            // m_availableFilters.Add("libraries", L.T("EditorFilterShowLibraryElements"));
 
             m_filterOptions = new FilterOptions();
             // set default filters here
