@@ -4,8 +4,8 @@ Public Class DebuggerPane
 
     Private WithEvents m_game As IASLDebug
     Private m_filter As String
-    Private m_objectsSorter As New Utility.ListViewColumnSorter
-    Private m_attributesSorter As New Utility.ListViewColumnSorter
+    'Private m_objectsSorter As New Utility.ListViewColumnSorter
+    'Private m_attributesSorter As New Utility.ListViewColumnSorter
 
     Public Sub New()
 
@@ -13,8 +13,8 @@ Public Class DebuggerPane
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        lstObjects.ListViewItemSorter = m_objectsSorter
-        lstAttributes.ListViewItemSorter = m_attributesSorter
+        'lstObjects.ListViewItemSorter = m_objectsSorter
+        'lstAttributes.ListViewItemSorter = m_attributesSorter
     End Sub
 
     Public Property Game() As IASLDebug
@@ -35,7 +35,7 @@ Public Class DebuggerPane
     End Sub
 
     Private Sub lstObjects_ColumnClick(sender As Object, e As System.Windows.Forms.ColumnClickEventArgs) Handles lstObjects.ColumnClick
-        Utility.ListViewColumnSorter.SortList(lstObjects, m_objectsSorter, e.Column)
+        ' Utility.ListViewColumnSorter.SortList(lstObjects, m_objectsSorter, e.Column)
     End Sub
 
     Private Sub lstObjects_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstObjects.SelectedIndexChanged
@@ -73,6 +73,6 @@ Public Class DebuggerPane
     End Property
 
     Private Sub lstAttributes_ColumnClick(sender As Object, e As System.Windows.Forms.ColumnClickEventArgs) Handles lstAttributes.ColumnClick
-        Utility.ListViewColumnSorter.SortList(lstAttributes, m_attributesSorter, e.Column)
+        ' Utility.ListViewColumnSorter.SortList(lstAttributes, m_attributesSorter, e.Column)
     End Sub
 End Class
