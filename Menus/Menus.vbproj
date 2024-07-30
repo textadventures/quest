@@ -1,108 +1,286 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>TextAdventures.Quest.Controls</RootNamespace>
+    <AssemblyName>Menus</AssemblyName>
+    <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
     <OptionStrict>On</OptionStrict>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <AssemblyTitle>Quest Game Browser</AssemblyTitle>
-    <Company>Alex Warren</Company>
-    <Product>Quest</Product>
-    <Copyright>Copyright © 2017/2018 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE. All Icons by https://de.icons8.com/ are licensed under CC BY-ND 3.0.</Copyright>
-    <AssemblyVersion>5.8.%2a</AssemblyVersion>
-    <Platforms>AnyCPU;x64</Platforms>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>Menus.xml</DocumentationFile>
     <DefineConstants>_MYFORMS=True</DefineConstants>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>Menus.xml</DocumentationFile>
-    <DefineConstants>_MYFORMS=True</DefineConstants>
-    <NoWarn>42353,42354,42355</NoWarn>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>Menus.xml</DocumentationFile>
     <DefineConstants>_MYFORMS=True</DefineConstants>
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineDebug>false</DefineDebug>
-    <DocumentationFile>Menus.xml</DocumentationFile>
-    <DefineConstants>_MYFORMS=True</DefineConstants>
-    <NoWarn>42353,42354,42355</NoWarn>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>_MYFORMS=True</DefineConstants>
     <DocumentationFile>Menus.xml</DocumentationFile>
     <NoWarn>42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>_MYFORMS=True</DefineConstants>
     <DocumentationFile>Menus.xml</DocumentationFile>
+    <Optimize>true</Optimize>
     <NoWarn>42353,42354,42355</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Update="System.Core">
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Update="System.Xml.Linq">
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
     <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
     <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Menu.Designer.vb">
+    <Compile Include="Menu.Designer.vb">
       <DependentUpon>Menu.vb</DependentUpon>
     </Compile>
-    <Compile Update="Menu.vb">
+    <Compile Include="Menu.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="My Project\Application.Designer.vb">
+    <Compile Include="MenuData.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Update="My Project\Resources.Designer.vb">
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="My Project\Settings.Designer.vb">
+    <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="My Project\Application.myapp">
+    <EmbeddedResource Include="Menu.de-BE.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.de.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.resx">
+      <DependentUpon>Menu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <None Include="Resources\addobject.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Settings.vb" />
+    <None Include="Resources\addroom.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_add_page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_command.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_debug.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_forum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_fullscreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_log.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_restart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_room.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_save_as.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_turn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_verb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\s_replace.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -340,7 +340,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub SetCompassDirections(list As IEnumerable(Of String))
-        InvokeScript("setCompassDirectionsEval", (New TextAdventures.Utility.JSInterop.StringArrayParameter(list)).GetParameter())
+        InvokeScript("setCompassDirectionsEval", (New Utility.JSInterop.StringArrayParameter(list)).GetParameter())
     End Sub
 
     Public Sub SetInterfaceString(name As String, text As String)

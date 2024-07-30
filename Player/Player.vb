@@ -17,7 +17,7 @@ Public Class Player
     Private m_menu As TextAdventures.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
-    ' Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
+    Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
     Private m_loopSound As Boolean = False
     Private m_waitingForSoundToFinish As Boolean = False
     Private m_destroyed As Boolean = False
@@ -240,7 +240,7 @@ Public Class Player
             RaiseEvent RecordedWalkthrough(RecordWalkthrough, m_recordedWalkthrough)
         End If
         RecordWalkthrough = Nothing
-        ' m_speech.SpeakAsyncCancelAll()
+        m_speech.SpeakAsyncCancelAll()
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
@@ -396,8 +396,7 @@ Public Class Player
             menuOptions.Add(item.Key, item.Key)
         Next
 
-        menuForm.Caption = "Please choose a walkthrough to run:"
-        ' menuForm.Caption = T("EditorChooseWalkthrough")
+        menuForm.Caption = T("EditorChooseWalkthrough")
         menuForm.Options = menuOptions
         menuForm.AllowCancel = True
         menuForm.ShowDialog()
@@ -635,13 +634,13 @@ Public Class Player
 
     Private Sub Speak(text As String) Implements IPlayer.Speak
         text = StripTags(text)
-        'BeginInvoke(Sub()
-        '                If UseSAPI Then
-        '                    m_speech.SpeakAsync(text)
-        '                Else
-        '                    JawsApi.JawsApi.JFWSayString(text, False)
-        '                End If
-        '            End Sub)
+        BeginInvoke(Sub()
+                        If UseSAPI Then
+                            m_speech.SpeakAsync(text)
+                        Else
+                            JawsApi.JawsApi.JFWSayString(text, False)
+                        End If
+                    End Sub)
     End Sub
 
     Public Sub SetWindowMenu(menuData As MenuData) Implements IPlayer.SetWindowMenu
@@ -842,9 +841,9 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayerHtml.ShortcutKeyPressed
-        'If keys = Windows.Forms.Keys.Escape Then
-        '    EscPressed()
-        'End If
+        If keys = Windows.Forms.Keys.Escape Then
+            EscPressed()
+        End If
         RaiseEvent ShortcutKeyPressed(keys)
     End Sub
 
@@ -976,7 +975,7 @@ Public Class Player
         Set(value As Boolean)
             m_useSapi = value
             If Not value Then
-                ' m_speech.SpeakAsyncCancelAll()
+                m_speech.SpeakAsyncCancelAll()
             End If
         End Set
     End Property
