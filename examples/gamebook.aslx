@@ -1,0 +1,979 @@
+﻿<!--Saved by Quest 5.6.5652.22093-->
+<asl version="550">
+  <template name="NothingToUndo">Nothing to undo!</template>
+  <game name="gamebook">
+    <gameid>3665bc1a-b7ba-4285-801b-276d1f594eca</gameid>
+    <version>1.0</version>
+    <firstpublished>2015</firstpublished>
+  </game>
+  <object name="Page1">
+    <description>This is page 1. Type a description here, and then create links to other pages below.</description>
+    <options type="stringdictionary">
+      <item>
+        <key>Page2</key>
+        <value>This link goes to page 2</value>
+      </item>
+      <item>
+        <key>Page3</key>
+        <value>And this link goes to page 3</value>
+      </item>
+    </options>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+  <object name="Page2">
+    <description>This is page 2. Type a description here, and then create links to other pages below.</description>
+  </object>
+  <object name="Page3">
+    <description>This is page 3. Type a description here, and then create links to other pages below.</description>
+  </object>
+  <type name="defaultgame">
+    <attr name="_editorstyle">gamebook</attr>
+    <defaultfont>Georgia, serif</defaultfont>
+    <defaultfontsize type="int">12</defaultfontsize>
+    <defaultbackground>White</defaultbackground>
+    <defaultforeground>Black</defaultforeground>
+    <defaultlinkforeground>Blue</defaultlinkforeground>
+    <menufont>Arial</menufont>
+    <menufontsize type="int">9</menufontsize>
+    <menubackground>White</menubackground>
+    <menuforeground>Black</menuforeground>
+    <menuhoverbackground>LightGrey</menuhoverbackground>
+    <menuhoverforeground>Black</menuhoverforeground>
+    <description type="string"></description>
+    <setcustomwidth />
+    <customwidth type="int">700</customwidth>
+    <setcustompadding type="boolean">false</setcustompadding>
+    <custompaddingtop type="int">30</custompaddingtop>
+    <custompaddingbottom type="int">0</custompaddingbottom>
+    <custompaddingleft type="int">20</custompaddingleft>
+    <custompaddingright type="int">20</custompaddingright>
+    <showborder type="boolean">false</showborder>
+    <showtitle />
+    <noclear type="boolean">false</noclear>
+    <clearlastpage type="boolean">false</clearlastpage>
+    <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+  </type>
+  <type name="defaultobject">
+    <description type="string"></description>
+  </type>
+  <type name="defaultplayer">
+    <changedparent type="script">
+      DoPage (player.parent)
+    </changedparent>
+  </type>
+  <type name="picture" />
+  <type name="youtube" />
+  <type name="link">
+    <address>http://</address>
+  </type>
+  <type name="script">
+    <runscriptonly />
+  </type>
+  <type name="scripttext">
+    <runscript />
+  </type>
+  <function name="OutputText" parameters="text">
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    OutputTextRaw (text)
+  </function>
+  <function name="OutputTextRaw" parameters="text"><![CDATA[
+    format = GetCurrentTextFormat("")
+    JS.addText ("<span style=\"" + format + "\">" + text + "</span><br/>")
+    if (GetString(game, "commandbarformat") <> format) {
+      format = format + ";background:" + game.defaultbackground
+      game.commandbarformat = format
+      JS.setCommandBarStyle (format)
+    }
+    request (Speak, text)
+  ]]></function>
+  <function name="OutputTextNoBr" parameters="text">
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    OutputTextRawNoBr (text)
+  </function>
+  <function name="OutputTextRawNoBr" parameters="text"><![CDATA[
+    JS.addText ("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
+    request (Speak, text)
+  ]]></function>
+  <function name="GetCurrentTextFormat" parameters="colour" type="string"><![CDATA[
+    style = ""
+    if (UIOptionUseGameFont()) {
+      font = GetCurrentFontFamily()
+    }
+    else {
+      font = GetUIOption("OverrideFontName")
+    }
+    if (LengthOf(font) > 0) {
+      style = style + "font-family:" + font + ";"
+    }
+    if (LengthOf(colour) = 0) {
+      if (UIOptionUseGameColours()) {
+        colour = game.defaultforeground
+      }
+      else {
+        colour = GetUIOption("OverrideForeground")
+      }
+    }
+    if (LengthOf(colour) > 0) {
+      style = style + "color:" + colour + ";"
+    }
+    if (UIOptionUseGameFont()) {
+      size = game.defaultfontsize
+    }
+    else {
+      size = ToDouble(GetUIOption("OverrideFontSize"))
+    }
+    if (size > 0) {
+      style = style + "font-size:" + ToString(size) + "pt;"
+    }
+    return (style)
+  ]]></function>
+  <function name="GetCurrentLinkTextFormat" type="string">
+    return (GetCurrentTextFormat(GetLinkTextColour()))
+  </function>
+  <function name="UIOptionUseGameFont" type="boolean">
+    value = GetUIOption("UseGameFont")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+  <function name="UIOptionUseGameColours" type="boolean">
+    value = GetUIOption("UseGameColours")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+  <function name="GetLinkTextColour" type="string">
+    if (UIOptionUseGameColours()) {
+      return (game.defaultlinkforeground)
+    }
+    else {
+      return (GetUIOption("OverrideLinkForeground"))
+    }
+  </function>
+  <function name="ProcessTextSection" parameters="text, data" type="string"><![CDATA[
+    containsUnprocessedSection = false
+    open = Instr(text, "{")
+      if (open > 0) {
+        nestCount = 1
+        searchStart = open + 1
+        finished = false
+        while (not finished) {
+          nextOpen = Instr(searchStart, text, "{")
+            nextClose = Instr(searchStart, text, "}")
+          if (nextClose > 0) {
+            if (nextOpen > 0 and nextOpen < nextClose) {
+              nestCount = nestCount + 1
+              searchStart = nextOpen + 1
+            }
+            else {
+              nestCount = nestCount - 1
+              searchStart = nextClose + 1
+              if (nestCount = 0) {
+                close = nextClose
+                containsUnprocessedSection = true
+                finished = true
+              }
+            }
+          }
+          else {
+            finished = true
+          }
+        }
+      }
+      if (containsUnprocessedSection) {
+        section = Mid(text, open + 1, close - open - 1)
+        value = ProcessTextCommand(section, data)
+        text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
+      }
+      return (text)
+  ]]></function>
+  <function name="ProcessTextCommand" parameters="section, data" type="string">
+    if (StartsWith(section, "if ")) {
+      return (ProcessTextCommand_If(section, data))
+    }
+    else if (StartsWith(section, "object:")) {
+      return (ProcessTextCommand_Object(section, data))
+    }
+    else if (StartsWith(section, "command:")) {
+      return (ProcessTextCommand_Command(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "page:")) {
+      return (ProcessTextCommand_Command(Mid(section, 6), data))
+    }
+    else if (StartsWith(section, "exit:")) {
+      return (ProcessTextCommand_Exit(section, data))
+    }
+    else if (StartsWith(section, "once:")) {
+      return (ProcessTextCommand_Once(section, data))
+    }
+    else if (StartsWith(section, "random:")) {
+      return (ProcessTextCommand_Random(section, data))
+    }
+    else if (StartsWith(section, "rndalt:")) {
+      return (ProcessTextCommand_RandomAlias(section, data))
+    }
+    else if (StartsWith(section, "img:")) {
+      return (ProcessTextCommand_Img(section, data))
+    }
+    else if (StartsWith(section, "counter:")) {
+      return (ProcessTextCommand_Counter(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "select:")) {
+      return (ProcessTextCommand_Select(section, data))
+    }
+    else {
+      dot = Instr(section, ".")
+      if (dot = 0) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        objectname = Left(section, dot - 1)
+        attributename = Mid(section, dot + 1)
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          if (HasAttribute(object, attributename)) {
+            type = TypeOf(object, attributename)
+            switch (type) {
+              case ("string", "int", "double") {
+                return (ToString(GetAttribute(object, attributename)))
+              }
+              case ("boolean") {
+                result = GetAttribute(object, attributename)
+                if (result) {
+                  return ("true")
+                }
+                else {
+                  return ("false")
+                }
+              }
+              default {
+                return ("(" + type + ")")
+              }
+            }
+          }
+          else {
+            return ("")
+          }
+        }
+      }
+    }
+  </function>
+  <function name="ProcessTextCommand_Object" parameters="section, data" type="string"><![CDATA[
+    objectname = Mid(section, 8)
+    text = ""
+    colon = Instr(objectname, ":")
+    if (colon > 0) {
+      text = Mid(objectname, colon + 1)
+      objectname = Left(objectname, colon - 1)
+    }
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      if (LengthOf(text) = 0) {
+        text = SafeXML(GetDisplayAlias(object))
+      }
+      if (game.enablehyperlinks) {
+        linkid = ProcessTextCommand_GetNextLinkId()
+        colour = ""
+        if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+          colour = object.linkcolour
+        }
+        else {
+          colour = GetLinkTextColour()
+        }
+        style = GetCurrentTextFormat(colour)
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
+      }
+      else {
+        return (text)
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_GetNextLinkId" type="string">
+    if (not HasInt(game, "lastlinkid")) {
+      game.lastlinkid = 0
+    }
+    game.lastlinkid = game.lastlinkid + 1
+    return ("verblink" + game.lastlinkid)
+  </function>
+  <function name="ProcessTextCommand_Command" parameters="command, data" type="string"><![CDATA[
+    text = command
+    colon = Instr(command, ":")
+    if (colon > 0) {
+      text = Mid(command, colon + 1)
+      command = Left(command, colon - 1)
+    }
+    style = GetCurrentLinkTextFormat()
+    candidates = NewObjectList()
+    foreach (cmd, ScopeCommands()) {
+      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+        list add (candidates, cmd)
+      }
+    }
+    elementid = ""
+    if (ListCount(candidates) = 1) {
+      cmd = ObjectListItem(candidates, 0)
+      elementid = cmd.name
+    }
+    linkid = ProcessTextCommand_GetNextLinkId()
+    dataattrs = ""
+    if (game.deactivatecommandlinks) {
+      dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
+    }
+    dataattrs = dataattrs + "data-command=\"" + command + "\""
+    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
+  ]]></function>
+  <function name="ProcessTextCommand_Exit" parameters="section, data" type="string"><![CDATA[
+    exitname = Mid(section, 6)
+    exit = GetObject(exitname)
+    if (exit = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      verbs = GetDisplayVerbs(exit)
+      alias = GetDisplayAlias(exit)
+      command = LCase(StringListItem(verbs, 0)) + " " + alias
+      style = GetCurrentLinkTextFormat()
+      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_Once" parameters="section, data" type="string">
+    if (not HasAttribute(game, "textprocessor_seen")) {
+      game.textprocessor_seen = NewDictionary()
+    }
+    fulltext = StringDictionaryItem(data, "fulltext")
+    if (not DictionaryContains(game.textprocessor_seen, fulltext)) {
+      onceSectionsInThisText = NewList()
+      dictionary add (game.textprocessor_seen, fulltext, onceSectionsInThisText)
+    }
+    else {
+      onceSectionsInThisText = DictionaryItem(game.textprocessor_seen, fulltext)
+    }
+    if (not ListContains(onceSectionsInThisText, section)) {
+      list add (onceSectionsInThisText, section)
+      return (ProcessTextSection(Mid(section, 6), data))
+    }
+    else {
+      return ("")
+    }
+  </function>
+  <function name="ProcessTextCommand_Random" parameters="section, data" type="string">
+    elements = Mid(section, 8)
+    elementslist = Tsplit(elements)
+    index = GetRandomInt(0, ListCount(elementslist) - 1)
+    return (ProcessTextSection(ListItem(elementslist, index), data))
+  </function>
+  <function name="Tsplit" parameters="splittext" type="stringlist"><![CDATA[
+    itemlist = NewStringList()
+    sections = 0
+    startpos = 1
+    for (i, 1, LengthOf(splittext)) {
+      if (Mid(splittext, i, 1) = "{") {
+          sections = sections + 1
+        }
+        if (Mid(splittext, i, 1) = "}") {
+        sections = sections - 1
+      }
+      if (Mid(splittext, i, 1) = ":" and 0 >= sections) {
+        item = Mid(splittext, startpos, i - startpos)
+        list add (itemlist, item)
+        startpos = i + 1
+      }
+    }
+    item = Mid(splittext, startpos)
+    list add (itemlist, item)
+    return (itemlist)
+  ]]></function>
+  <function name="ProcessTextCommand_RandomAlias" parameters="section, data" type="string"><![CDATA[
+    objectname = Mid(section, 8)
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      count = ListCount(object.alt)
+      if (count > 0) {
+        return (ListItem(object.alt, GetRandomInt(0, count - 1)))
+      }
+      else {
+        return ("")
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_If" parameters="section, data" type="string"><![CDATA[
+    command = Mid(section, 4)
+    colon = Instr(command, ":")
+    if (colon = 0) {
+      return ("{if " + command + "}")
+    }
+    else {
+      text = Mid(command, colon + 1)
+      condition = Left(command, colon - 1)
+      operator = Instr(condition, "<=")
+      if (operator <> 0) {
+        operatorlength = 2
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">=")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<>")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "=")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        checkfor = true
+        if (StartsWith(condition, "not ")) {
+          checkfor = false
+          condition = Mid(condition, 5)
+        }
+        dot = Instr(condition, ".")
+        if (dot = 0) {
+          result = GetBoolean(game, condition)
+        }
+        else {
+          objectname = Left(condition, dot - 1)
+          attributename = Mid(condition, dot + 1)
+          object = GetObject(objectname)
+          if (object = null) {
+            result = false
+          }
+          else {
+            result = GetBoolean(object, attributename)
+          }
+        }
+        if (result = checkfor) {
+          return (ProcessTextSection(text, data))
+        }
+        else {
+          return ("")
+        }
+      }
+      else {
+        lhs = Left(condition, operator - 1)
+        rhs = Mid(condition, operator + operatorlength)
+        op = Mid(condition, operator, operatorlength)
+        dot = Instr(lhs, ".")
+        if (dot = 0) {
+          objectname = ""
+          attributename = ""
+          if (HasInt(game, lhs)) {
+            objectname = "game"
+            attributename = lhs
+          }
+          else {
+            return ("{if " + command + "}")
+          }
+        }
+        else {
+          objectname = Left(lhs, dot - 1)
+          attributename = Mid(lhs, dot + 1)
+        }
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{if " + command + "}")
+        }
+        else {
+          value = GetAttribute(object, attributename)
+          // The next three lines added by The Pixie
+          if (TypeOf(value) = "object") {
+            value = value.name
+          }
+          if (op = "=") {
+            if (ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<>") {
+            if (not ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = ">") {
+            if (ToDouble(ToString(value)) > ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<") {
+            if (ToDouble(ToString(value)) < ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = ">=") {
+            if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<=") {
+            if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+        }
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_Img" parameters="section, data" type="string"><![CDATA[
+    filename = Mid(section, 5)
+    return ("<img src=\"" + GetFileURL(filename) + "\" />")
+  ]]></function>
+  <function name="ProcessTextCommand_Counter" parameters="section, data" type="string">
+    if (HasAttribute(game, section)) {
+      return (ToString(GetAttribute(game, section)))
+    }
+    else {
+      return ("0")
+    }
+  </function>
+  <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
+    elements = Mid(section, 8)
+    elementslist = Split(elements, ":")
+    objectandatt = StringListItem (elementslist, 0)
+    list remove (elementslist, objectandatt)
+    objectandattlist = Split(objectandatt, ".")
+    if (not ListCount (objectandattlist) = 2) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      object = GetObject(StringListItem(objectandattlist, 0))
+      if (object = null) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else if (not HasInt (object, StringListItem(objectandattlist, 1))) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        index = GetInt(object, StringListItem(objectandattlist, 1))
+        if ((0 > index) or (index >= Listcount(elementslist))) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          return (ProcessTextSection(ListItem(elementslist, index), data))
+        }
+      }
+    }
+  ]]></function>
+  <function name="SetFramePicture" parameters="filename"><![CDATA[
+    request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+    game.panelcontents = filename
+  ]]></function>
+  <function name="ClearFramePicture">
+    request (SetPanelContents, "")
+    game.panelcontents = null
+  </function>
+  <function name="ClearScreen">
+    request (ClearScreen, "")
+  </function>
+  <function name="SetForegroundColour" parameters="colour">
+    request (Foreground, colour)
+    game.defaultforeground = colour
+  </function>
+  <function name="SetBackgroundColour" parameters="colour">
+    request (Background, colour)
+    game.defaultbackground = colour
+  </function>
+  <function name="SetFontName" parameters="font">
+    game.defaultfont = font
+    game.defaultwebfont = ""
+  </function>
+  <function name="SetWebFontName" parameters="font">
+    AddExternalStylesheet ("http://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
+    game.defaultwebfont = font
+  </function>
+  <function name="AddExternalStylesheet" parameters="stylesheet">
+    if (game.externalstylesheets = null) {
+      game.externalstylesheets = NewStringList()
+    }
+    if (not ListContains(game.externalstylesheets, stylesheet)) {
+      list add (game.externalstylesheets, stylesheet)
+      JS.addExternalStylesheet (stylesheet)
+    }
+  </function>
+  <function name="SetFontSize" parameters="size">
+    game.defaultfontsize = size
+  </function>
+  <function name="PrintCentered" parameters="text">
+    SetAlignment ("center")
+    msg (text)
+    SetAlignment ("left")
+  </function>
+  <function name="ShowYouTube" parameters="id">
+    JS.AddYouTube (id)
+  </function>
+  <function name="ShowVimeo" parameters="id">
+    JS.AddVimeo (id)
+  </function>
+  <function name="WaitForKeyPress">
+    request (Wait, "")
+  </function>
+  <function name="DisplayHttpLink" parameters="text, url, https"><![CDATA[
+    pos = Instr(url, "://")
+    if (pos > 0) {
+      url = Mid(url, pos + 3)
+    }
+    if (https) {
+      url = "https://" + url
+    }
+    else {
+      url = "http://" + url
+    }
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+  ]]></function>
+  <function name="DisplayMailtoLink" parameters="text, url"><![CDATA[
+    if (Instr(url, "mailto:") = 0) {
+      url = "mailto:" + url
+    }
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+  ]]></function>
+  <function name="CommandLink" parameters="cmd, text" type="string">
+    return ("{command:" + cmd + ":" + text + "}")
+  </function>
+  <function name="Log" parameters="text">
+    request (Log, text)
+  </function>
+  <function name="SetBackgroundImage" parameters="filename">
+    JS.SetBackgroundImage (GetFileURL(filename))
+    game.backgroundimage = filename
+  </function>
+  <function name="SetBackgroundOpacity" parameters="opacity">
+    JS.SetBackgroundOpacity (opacity)
+    game.backgroundopacity = opacity
+    game.setbackgroundopacity = true
+  </function>
+  <function name="DisplayList" parameters="list, numbers"><![CDATA[
+    if (numbers) {
+      result = "<ol>"
+    }
+    else {
+      result = "<ul>"
+    }
+    foreach (item, list) {
+      result = result + "<li>" + item + "</li>"
+    }
+    if (numbers) {
+      result = result + "</ol>"
+    }
+    else {
+      result = result + "</ul>"
+    }
+    msg (result)
+  ]]></function>
+  <function name="SetAlignment" parameters="align">
+    JS.createNewDiv (align)
+  </function>
+  <function name="GetCurrentFontFamily" type="string">
+    if (game.defaultwebfont = null) {
+      return (game.defaultfont)
+    }
+    else {
+      if (game.defaultwebfont = "") {
+        return (game.defaultfont)
+      }
+      else {
+        return ("'" + game.defaultwebfont + "', " + game.defaultfont)
+      }
+    }
+  </function>
+  <function name="TextFX_Typewriter" parameters="text, speed">
+    TextFX_Typewriter_Internal (text, speed, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+  </function>
+  <function name="TextFX_Typewriter_Internal" parameters="text, speed, font, color, size">
+    JS.TextFX.Typewriter (text, speed, font, color, size)
+  </function>
+  <function name="TextFX_Unscramble" parameters="text, speed, reveal">
+    TextFX_Unscramble_Internal (text, speed, reveal, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+  </function>
+  <function name="TextFX_Unscramble_Internal" parameters="text, speed, reveal, font, color, size">
+    JS.TextFX.Unscramble (text, speed, reveal, font, color, size)
+  </function>
+  <function name="InitInterface">
+    if (game.setcustomwidth) {
+      JS.setGameWidth (game.customwidth)
+    }
+    if (not game.showborder) {
+      JS.hideBorder ()
+    }
+    if (game.setcustompadding) {
+      JS.setGamePadding (game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+    }
+    request (Background, game.defaultbackground)
+    request (Foreground, game.defaultforeground)
+    request (LinkForeground, game.defaultlinkforeground)
+    JS.SetMenuBackground (game.menubackground)
+    JS.SetMenuForeground (game.menuforeground)
+    JS.SetMenuHoverBackground (game.menuhoverbackground)
+    JS.SetMenuHoverForeground (game.menuhoverforeground)
+    JS.SetMenuFontName (game.menufont)
+    JS.SetMenuFontSize (game.menufontsize + "pt")
+    request (Hide, "Panes")
+    request (Hide, "Command")
+    request (Hide, "Location")
+  </function>
+  <function name="StartGame"><![CDATA[
+    msg ("START")
+    if (game.showtitle) {
+      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+      if (game.subtitle <> null) {
+        if (LengthOf(game.subtitle) > 0) {
+          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+        }
+      }
+      if (game.author <> null) {
+        if (LengthOf(game.author) > 0) {
+          PrintCentered ("<br/><span style=\"font-size:140%\">" + game.author + "</span>")
+        }
+      }
+      msg ("<div style=\"margin-top:20px\"></div>")
+    }
+    game.noclear = true
+    DoPage (player.parent)
+    game.noclear = false
+  ]]></function>
+  <function name="ScopeInventory" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+  <function name="GetPlacesObjectsList" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+  <function name="ScopeExits" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+  <function name="ScopeCommands" type="objectlist">
+    result = NewObjectList()
+    foreach (command, AllCommands()) {
+      if (command.parent = game.pov.parent) {
+        list add (result, command)
+      }
+    }
+    return (result)
+  </function>
+  <function name="HandleCommand" parameters="command"><![CDATA[
+    if (command = "undo") {
+      // ignore
+    }
+    else {
+      newpage = GetObject(command)
+      if (newpage = null) {
+        msg ("Error - no page named '" + command + "'")
+      }
+      else {
+        if (not game.clearlastpage and HasAttribute(player.parent, "options")) {
+          if (DictionaryContains(player.parent.options, command)) {
+            optiontext = StringDictionaryItem(player.parent.options, command)
+            msg ("<b>" + optiontext + "</b>")
+            msg ("")
+          }
+          JS.disableAllCommandLinks ()
+        }
+        player.parent = GetObject(command)
+      }
+    }
+  ]]></function>
+  <function name="DoPage" parameters="page"><![CDATA[
+    msg ("DOPAGE")
+    parent = player.parent
+    if (game.clearlastpage) {
+      if (not game.noclear) {
+        request (ClearScreen, "")
+      }
+    }
+    else {
+      if (HasString(game, "optionsoutputsection")) {
+        HideOutputSection (game.optionsoutputsection)
+      }
+    }
+    if (not GetBoolean(game, "continuesound")) {
+      stop sound
+    }
+    if (HasScript( game, "roomenter")) {
+      do (game, "roomenter")
+    }
+    on ready {
+      if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
+        if (HasScript(player.parent, "script")) {
+          do (player.parent, "script")
+        }
+        else {
+          msg ("No script has been created for this page.")
+        }
+      }
+      // script may have moved the player, so finish DoPage if parent has changed
+      if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
+        if (HasString(player.parent, "sound")) {
+          if (LengthOf(player.parent.sound) > 0) {
+            play sound (player.parent.sound, false, false)
+            game.continuesound = GetBoolean(player.parent, "continuesound")
+          }
+        }
+        if (HasString(player.parent, "picture")) {
+          if (LengthOf(player.parent.picture) > 0) {
+            picture (player.parent.picture)
+            msg ("")
+          }
+        }
+        if (HasString(player.parent, "youtube")) {
+          if (LengthOf(player.parent.youtube) > 0) {
+            JS.AddYouTube (player.parent.youtube)
+            msg ("")
+            msg ("")
+          }
+        }
+        msg (player.parent.description)
+        msg ("")
+        msg ("")
+        game.optionsoutputsection = StartNewOutputSection()
+        if (TypeOf(player.parent, "options") = "stringdictionary") {
+          foreach (key, player.parent.options) {
+            destination = GetObject(key)
+            if (destination = null) {
+              msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
+            }
+            else {
+              if (DoesInherit(destination, "link")) {
+                msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+              }
+              else {
+                msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+              }
+            }
+            msg ("")
+          }
+        }
+        EndOutputSection (game.optionsoutputsection)
+      }
+    }
+    set (player.parent, "visited", true)
+  ]]></function>
+  <function name="StartNewOutputSection" type="string">
+    if (not HasInt(game, "lastoutputsection")) {
+      game.lastoutputsection = 0
+    }
+    game.lastoutputsection = game.lastoutputsection + 1
+    name = "section" + game.lastoutputsection
+    JS.StartOutputSection (name)
+    return (name)
+  </function>
+  <function name="EndOutputSection" parameters="name">
+    JS.EndOutputSection (name)
+  </function>
+  <function name="HideOutputSection" parameters="name">
+    JS.HideOutputSection (name)
+  </function>
+  <function name="RandomChance" parameters="percentile" type="boolean"><![CDATA[
+    return (GetRandomInt(1,100) <= percentile)
+  ]]></function>
+  <function name="HasSeenPage" parameters="page" type="boolean">
+    return (GetBoolean(page, "visited"))
+  </function>
+  <function name="SetFlagOn" parameters="flag">
+    set (game, flag, true)
+  </function>
+  <function name="SetFlagOff" parameters="flag">
+    set (game, flag, false)
+  </function>
+  <function name="SetCounter" parameters="counter, value">
+    set (game, counter, value)
+  </function>
+  <function name="ChangeCounter" parameters="counter, value">
+    if (not HasInt(game, counter)) {
+      set (game, counter, 0)
+    }
+    set (game, counter, GetInt(game, counter) + value)
+  </function>
+  <function name="IncreaseCounter" parameters="counter">
+    if (not HasInt(game, counter)) {
+      set (game, counter, 0)
+    }
+    set (game, counter, GetInt(game, counter) + 1)
+  </function>
+  <function name="DecreaseCounter" parameters="counter">
+    if (not HasInt(game, counter)) {
+      set (game, counter, 0)
+    }
+    set (game, counter, GetInt(game, counter) - 1)
+  </function>
+  <function name="GetInput" parameters="callback">
+    request (Show, "Command")
+    get input {
+      request (Hide, "Command")
+      parameters = NewStringDictionary()
+      dictionary add (parameters, "result", result)
+      invoke (callback, parameters)
+    }
+  </function>
+  <function name="AddPageLink" parameters="source, destination, text">
+    RemovePageLink (source, destination)
+    dictionary add (source.options, destination.name, text)
+  </function>
+  <function name="RemovePageLink" parameters="source, destination">
+    if (source.options = null) {
+      source.options = NewStringDictionary()
+    }
+    if (DictionaryContains(source.options, destination.name)) {
+      dictionary remove (source.options, destination.name)
+    }
+  </function>
+  <function name="MovePlayer" parameters="destination">
+    player.parent = destination
+  </function>
+</asl>

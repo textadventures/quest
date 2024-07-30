@@ -3,10 +3,19 @@
 
 <h3>Quest</h3>
 
-@foreach (var line in output)
-{
-    <p>@line</p>
-}
+<p>@status</p>
 
-<input @bind="input"/>
-<button @onclick="Submit">Submit</button>
+@if (playerHelper != null)
+{
+    @foreach (var line in output)
+    {
+        <p>@line</p>
+    }
+    
+    <input @bind="input"/>
+    <button @onclick="Submit">Submit</button>
+}
+else
+{
+    <button @onclick="LoadASL4">Load ASL4</button>
+}

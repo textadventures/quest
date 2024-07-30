@@ -1,0 +1,242 @@
+<asl version="550">
+    <game name="Test Game">
+        <inherit name="sometype"/>
+        <testattr>Test attribute value</testattr>
+        <testattr2>Test another attribute value</testattr2>
+        <overrideattr>This is the overridden attribute value</overrideattr>
+        <compassdirections type="stringlist">
+            <value>northwest</value>
+            <value>north</value>
+            <value>northeast</value>
+            <value>west</value>
+            <value>east</value>
+            <value>southwest</value>
+            <value>south</value>
+            <value>southeast</value>
+            <value>up</value>
+            <value>down</value>
+            <value>in</value>
+            <value>out</value>
+        </compassdirections>
+    </game>
+    
+    <type name="defaultgame">
+        <inheritedattr>An inherited attribute value</inheritedattr>
+        <overrideattr>This will be overridden so this value should NOT appear</overrideattr>
+        <overrideattr2>This will be overridden so this value should NOT appear</overrideattr2>
+    </type>
+    
+    <type name="sometype">
+        <overrideattr2>This is another overridden attribute value</overrideattr2>
+    </type>
+
+    <function name="ScopeInventory" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="GetPlacesObjectsList" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="ScopeExits" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="HandleCommand" parameters="command">
+        if (command = "help") {
+            msg ("This is just a test.")
+        }
+        else if (command = "hello") {
+            msg ("Greetings!")
+        }
+        else if (command = "hi") {
+            msg ("Hello there!")
+        }
+        else if (command = "fn") {
+            msg ("call fn")
+            msg ("Result " + testfn(5, 1))
+        }
+        else if (command = "js") {
+            JS.alert ("Hello world!")
+        }
+        else if (command = "invoke") {
+            scriptfn (2) {
+                msg ("This was passed as a script argument.")
+            }
+        }
+        else if (command = "for") {
+            for (i, 1, 10) {
+                msg (i)
+            }
+        }
+        else if (command = "foreach") {
+            msg ("running foreach...")
+            foreach (dir, game.compassdirections) {
+                msg (dir)
+            }
+            msg ("done")
+        }
+        else if (command = "hasstring") {
+            msg ("testattr " + HasString(game, "testattr"))
+            msg ("madeupattr " + HasString(game, "madeupattr"))
+            msg ("compassdirections " + HasString(game, "compassdirections"))
+            msg ("Get values...")
+            msg ("testattr " + GetString(game, "testattr"))
+            msg ("madeupattr " + GetString(game, "madeupattr"))
+            msg ("compassdirections " + GetString(game, "compassdirections"))
+            msg ("compassdirections as boolean " + GetBoolean(game, "compassdirections"))
+        }
+        else if (command = "a") {
+            msg (a())
+        }
+        else if (command = "attrs") {
+            msg (Join(GetAttributeNames(game, true), ","))
+        }
+        else if (command = "input") {
+            msg ("Getting input...")
+            msg (GetInput())
+            msg ("Done")
+        }
+        else if (command = "input2") {
+            msg ("Getting input via 'get input' script...")
+            somevar = 123
+            get input {
+                msg ("Result: " + result)
+                msg ("Somevar: " + somevar)
+                msg ("Callback finished")
+            }
+            msg ("Callback set")
+            on ready {
+                msg ("On ready")
+                msg ("Somevar: " + somevar)
+            }
+        }
+        else if (Left(command, 2) = "sw") {
+            sw (Mid(command, 3))
+        }
+        else if (command = "wait") {
+            msg ("Start wait")
+            request (Wait, "")
+            msg ("Done wait")
+        }
+        else if (command = "wait2") {
+            msg ("Start wait via script")
+            wait {
+                msg ("Done wait via script")
+            }
+            msg ("Wait active")
+            on ready {
+                msg ("On ready after wait")
+            }
+        }
+        else if (command = "ask") {
+            if (Ask("Some question")) {
+                msg ("Response 1: yes")
+            }
+            else {
+                msg ("Response 1: no")
+            }
+            if (Ask("Some other question")) {
+                msg ("Response 2: yes")
+            }
+            else {
+                msg ("Response 2: no")
+            }
+        }
+        else {
+            msg (command)
+        }
+    </function>
+
+    <function name="InitInterface">
+        request (Show, "Command")
+    </function>
+    
+    <function name="StartGame">
+        Testing(123, 456)
+        Test2()
+        TestAttributes()
+    </function>
+    
+    <function name="Testing" parameters="value1, value2">
+        msg ("Hello world " + value1 + ", " + value2)
+    </function>
+    
+    <function name="Test2">
+        msg ("Welcome")
+    </function>
+    
+    <function name="TestAttributes">
+        msg ("Test attributes...")
+        msg ("game.testattr = " + game.testattr)
+        msg ("game.testattr2 = " + game.testattr2)
+        msg ("game.inheritedattr = " + game.inheritedattr) 
+        msg ("game.overrideattr = " + game.overrideattr)
+        msg ("game.overrideattr2 = " + game.overrideattr2)
+    </function>
+    
+    <function name="testfn" parameters="arg1, arg2" type="int">
+        msg ("start fn")
+        if (1 = 1) {
+            return (arg1 + arg2 + 2 + nestfn(1))
+            msg ("not this")
+        }
+        msg ("not here")
+    </function>
+    
+    <function name="nestfn" parameters="arg" type="int">
+        return (arg + 1)
+    </function>
+    
+    <function name="scriptfn" parameters="arg, script">
+        msg ("arg: " + arg)
+        msg ("running script...")
+        invoke (script)
+        msg ("done invoke")
+    </function>
+    
+    <function name="a" parameters="arg" type="string">
+        return ("a" + b() + e())
+    </function>
+    
+    <function name="b" type="string">
+        return ("b" + c() + d())
+    </function>
+    
+    <function name="c" type="string">
+        return ("c")
+    </function>
+    
+    <function name="d" type="string">
+        return ("d")
+    </function>
+    
+    <function name="e" type="string">
+        return ("e" + f())
+    </function>
+    
+    <function name="f" type="string">
+        return ("f")
+    </function>
+
+    <function name="sw" parameters="value">
+        switch (value) {
+            case (1) {
+                msg ("One")
+            }
+            case (2, 3, 4) {
+                msg ("Two, three or four")
+            }
+            case (5) {
+                msg ("Five")
+            }
+            default {
+                msg ("Something else")
+            }
+        }
+        msg ("Done switch")
+    </function>
+</asl>
