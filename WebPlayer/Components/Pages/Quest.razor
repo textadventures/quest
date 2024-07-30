@@ -1,0 +1,12 @@
+@page "/"
+@rendermode InteractiveServer
+
+<h3>Quest</h3>
+
+@foreach (var line in output)
+{
+    <p>@line</p>
+}
+
+<input @bind="input"/>
+<button @onclick="Submit">Submit</button>
