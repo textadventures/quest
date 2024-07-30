@@ -19,12 +19,12 @@ public partial class Quest : ComponentBase
         input = "";
     }
 
-    private void LoadASL4()
+    private void Load(string filename)
     {
         // TODO: Note libraryFolder is only used for .quest-save and .zip,
         // check if they are needed and if there's a better way of getting this.
         
-        var game = GameLauncher.GetGame("/Users/alexwarren/Code/quest/examples/test.asl", null);
+        var game = GameLauncher.GetGame(filename, null);
         var playerHelperUi = new PlayerHelperUI();
         playerHelper = new PlayerHelper(game, playerHelperUi);
         
@@ -40,5 +40,15 @@ public partial class Quest : ComponentBase
         {
             status = string.Join(", ", errors);
         }
+    }
+
+    private void LoadASL4()
+    {
+        Load("/Users/alexwarren/Code/quest/examples/test.asl");
+    }
+
+    private void LoadASL5()
+    {
+        Load("/Users/alexwarren/Code/quest/examples/test.aslx");
     }
 }
