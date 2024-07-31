@@ -16,19 +16,11 @@
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="grid.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="paper.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="playercore.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="grid.js" />
+    <EmbeddedResource Include="paper.js" />
+    <EmbeddedResource Include="playercore.css" />
     <EmbeddedResource Include="playercore.htm" />
-    <Content Include="playercore.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="playercore.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
