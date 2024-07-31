@@ -5,18 +5,15 @@ namespace WebPlayer.Components.Pages;
 
 public partial class Quest : ComponentBase
 {
-    private readonly List<string> output = [];
     private string input = string.Empty;
-    private string status = string.Empty;
-
     private PlayerHelper? playerHelper;
+
+    private MarkupString uiHtml = (MarkupString) PlayerHelper.GetResource("playercore.htm");
 
     private void Submit()
     {
         if (input.Length == 0) return;
-        
-        output.Add(input);
-        input = "";
+        // TODO...
     }
 
     private void Load(string filename)
@@ -25,7 +22,7 @@ public partial class Quest : ComponentBase
         // check if they are needed and if there's a better way of getting this.
         
         var game = GameLauncher.GetGame(filename, null);
-        var playerHelperUi = new PlayerHelperUI(AddText);
+        var playerHelperUi = new PlayerHelperUI();
         playerHelper = new PlayerHelper(game, playerHelperUi);
         
         // TODO: Add playerHelper event handlers
@@ -34,13 +31,13 @@ public partial class Quest : ComponentBase
 
         if (result)
         {
-            status = "OK!";
             playerHelper.Game.Begin();
-            AddText(playerHelper.ClearBuffer());
+            // AddText(playerHelper.ClearBuffer());
         }
         else
         {
-            status = string.Join(", ", errors);
+            // TODO: Display errors somewhere
+            // string.Join(", ", errors);
         }
     }
 
@@ -52,10 +49,5 @@ public partial class Quest : ComponentBase
     private void LoadASL5()
     {
         Load("/Users/alexwarren/Code/quest/examples/test.aslx");
-    }
-
-    private void AddText(string text)
-    {
-        output.Add(text);
     }
 }

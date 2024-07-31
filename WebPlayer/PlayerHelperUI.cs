@@ -5,11 +5,8 @@ namespace WebPlayer;
 
 public class PlayerHelperUI : IPlayerHelperUI
 {
-    private readonly Action<string> _addText;
-    
-    public PlayerHelperUI(Action<string> addText)
+    public PlayerHelperUI()
     {
-        _addText = addText;
     }
     
     public void ShowMenu(MenuData menuData)
@@ -146,7 +143,6 @@ public class PlayerHelperUI : IPlayerHelperUI
 
     public void OutputText(string text)
     {
-        _addText(text);
     }
 
     public void SetAlignment(string alignment)
