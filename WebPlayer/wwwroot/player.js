@@ -8,10 +8,14 @@ var apiRoot = "http://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
 
-function pageLoad() {
-    // triggered by ASP.NET every page load, including from the AJAX UpdatePanel
+$(() => {
     canSendCommand = true;
-}
+    
+    // TODO: Play.aspx used this:
+    // init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>')
+    
+    init(null, null);
+});
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -26,19 +30,19 @@ function init(url, gameSessionLogId) {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
 
-    if ($_GET["id"].substr(0, 7) === "editor/") return;
-
-    $.ajax({
-        url: apiRoot + "games/cansave",
-        success: function (result) {
-            if (result) {
-                $("#cmdSave").show();
+    if (apiRoot) {
+        $.ajax({
+            url: apiRoot + "games/cansave",
+            success: function (result) {
+                if (result) {
+                    $("#cmdSave").show();
+                }
+            },
+            xhrFields: {
+                withCredentials: true
             }
-        },
-        xhrFields: {
-            withCredentials: true
-        }
-    });
+        });   
+    }
 
     if (gameSessionLogId) {
         $.ajax({

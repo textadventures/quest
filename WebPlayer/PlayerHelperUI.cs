@@ -57,6 +57,8 @@ public class PlayerHelperUI : IPlayerHelperUI
 
     public void UpdateGameName(string name)
     {
+        // TODO: this needs to be async
+        // and it needs to call the JS "setGameName" function with the name
     }
 
     public void ClearScreen()

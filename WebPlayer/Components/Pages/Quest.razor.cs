@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using TextAdventures.Quest;
 
 namespace WebPlayer.Components.Pages;
 
 public partial class Quest : ComponentBase
 {
+    [Parameter] public required string Id { get; set; }
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+
     private string input = string.Empty;
     private PlayerHelper? playerHelper;
 
@@ -16,8 +20,17 @@ public partial class Quest : ComponentBase
         // TODO...
     }
 
-    private void Load(string filename)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+        
+        var filename = Id switch
+        {
+            "asl4" => "/Users/alexwarren/Code/quest/examples/test.asl",
+            "asl5" => "/Users/alexwarren/Code/quest/examples/test.aslx",
+            _ => throw new NotImplementedException()
+        };
+
         // TODO: Note libraryFolder is only used for .quest-save and .zip,
         // check if they are needed and if there's a better way of getting this.
         
@@ -32,7 +45,7 @@ public partial class Quest : ComponentBase
         if (result)
         {
             playerHelper.Game.Begin();
-            // AddText(playerHelper.ClearBuffer());
+            await OutputText(playerHelper.ClearBuffer());
         }
         else
         {
@@ -41,13 +54,9 @@ public partial class Quest : ComponentBase
         }
     }
 
-    private void LoadASL4()
+    private async Task OutputText(string text)
     {
-        Load("/Users/alexwarren/Code/quest/examples/test.asl");
-    }
-
-    private void LoadASL5()
-    {
-        Load("/Users/alexwarren/Code/quest/examples/test.aslx");
+        if (text.Length == 0) return;
+        await JS.InvokeVoidAsync("addTextAndScroll", text);
     }
 }
