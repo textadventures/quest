@@ -21,6 +21,12 @@
     <EmbeddedResource Include="playercore.css" />
     <EmbeddedResource Include="playercore.htm" />
     <EmbeddedResource Include="playercore.js" />
+    <None Remove="Jplayer.swf" />
+    <EmbeddedResource Include="Jplayer.swf" />
+    <None Remove="jquery.jplayer.min.js" />
+    <EmbeddedResource Include="jquery.jplayer.min.js" />
+    <None Remove="jquery.multi-open-accordion-1.5.3.js" />
+    <EmbeddedResource Include="jquery.multi-open-accordion-1.5.3.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
