@@ -442,8 +442,10 @@ namespace TextAdventures.Quest
 
         public static string GetResource(string name)
         {
+            var allResources = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            
             using var stream = System.Reflection.Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream($"PlayerController.{name}");
+                .GetManifestResourceStream($"PlayerController.Resources.{name}");
             if (stream == null) return null;
             
             using var reader = new StreamReader(stream);
