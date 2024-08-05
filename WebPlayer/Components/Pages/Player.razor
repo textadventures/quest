@@ -1,5 +1,5 @@
 @page "/play/{Id}"
-@rendermode InteractiveServer
+@using TextAdventures.Quest
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js"></script>
@@ -16,8 +16,15 @@
     <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas"></script>
 </HeadContent>
 
-@uiHtml
+@UiHtml
 <div id="jquery_jplayer" style="width: 0; height: 0">
 </div>
 <div id="audio_embed">
 </div>
+
+<Runner Id="@Id"></Runner>
+
+@code {
+    [Parameter] public required string Id { get; set; }
+    private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetResource("playercore.htm");
+}

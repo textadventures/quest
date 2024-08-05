@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TextAdventures.Quest;
 
-namespace WebPlayer.Components.Pages;
+namespace WebPlayer.Components;
 
-public partial class Quest : ComponentBase, IPlayerHelperUI
+public partial class Runner : ComponentBase, IPlayerHelperUI
 {
     [Parameter] public required string Id { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
@@ -12,8 +12,6 @@ public partial class Quest : ComponentBase, IPlayerHelperUI
     private PlayerHelper PlayerHelper = null!; 
 
     private string input = string.Empty;
-
-    private MarkupString uiHtml = (MarkupString) PlayerHelper.GetResource("playercore.htm");
     
     private readonly List<(string, object?[]?)> _javaScriptBuffer = [];
     
