@@ -160,20 +160,11 @@ function sendCommand(text, metadata) {
     
     // TODO: See if setTimeout is still needed here
     window.setTimeout(async function () {
-        // $("#fldUITickCount").val(getTickCountAndStopTimer());
-        // var data = new Object();
-        // data["command"] = text;
-        // if (typeof metadata != "undefined") {
-        //     data["metadata"] = metadata;
-        // }
-        // $("#fldUIMsg").val("command " + JSON.stringify(data));
-        // $("#cmdSubmit").click();
-        
         // TODO: Check metadata format
-        await WebPlayer.sendCommand(text, getTickCountAndStopTimer() /*, {
+        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), {
             command: text,
             metadata
-        } */);
+        });
     }, 100);
 }
 

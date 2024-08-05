@@ -5,8 +5,8 @@ class WebPlayer {
         WebPlayer.dotNetHelper = value;
     }
     
-    static async sendCommand(command, tickCount) {
-        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount);
+    static async sendCommand(command, tickCount, metadata) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
     }
 }

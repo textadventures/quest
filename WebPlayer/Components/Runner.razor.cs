@@ -62,9 +62,9 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     }
 
     [JSInvokable]
-    public async Task UiSendCommandAsync(string command, int tickCount /*, IDictionary<string, string> metadata */)
+    public async Task UiSendCommandAsync(string command, int tickCount, IDictionary<string, string> metadata)
     {
-        PlayerHelper.SendCommand(command, tickCount, null /* metadata */);
+        PlayerHelper.SendCommand(command, tickCount, metadata);
         await OutputTextNow(PlayerHelper.ClearBuffer());
         await ClearJavaScriptBuffer();
     }
