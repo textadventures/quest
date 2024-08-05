@@ -1,3 +1,18 @@
+class WebPlayer {
+    static dotNetHelper;
+
+    static setDotNetHelper(value) {
+        WebPlayer.dotNetHelper = value;
+    }
+    
+    static async sendCommand(command, tickCount) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount);
+        canSendCommand = true;
+    }
+}
+
+window.WebPlayer = WebPlayer;
+
 $(function () {
     var width = $_GET["w"];
     if (width) {
@@ -18,9 +33,6 @@ function sendEndWait() {
 
 function sessionTimeout() {
     disableInterface();
-}
-
-function afterSendCommand() {
 }
 
 function afterSave() {

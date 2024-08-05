@@ -8,11 +8,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 {
     [Parameter] public required string Id { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
-
-    private PlayerHelper PlayerHelper = null!; 
-
-    private string input = string.Empty;
-    
+    private PlayerHelper PlayerHelper = null!;
     private readonly List<(string, object?[]?)> _javaScriptBuffer = [];
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
@@ -29,15 +25,12 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         _javaScriptBuffer.Clear();
     }
 
-    private void Submit()
-    {
-        if (input.Length == 0) return;
-        // TODO...
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+
+        await JS.InvokeVoidAsync("WebPlayer.setDotNetHelper",
+            DotNetObjectReference.Create(this));
         
         var filename = Id switch
         {
@@ -66,6 +59,14 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             // TODO: Display errors somewhere
             // string.Join(", ", errors);
         }
+    }
+
+    [JSInvokable]
+    public async Task UiSendCommandAsync(string command, int tickCount /*, IDictionary<string, string> metadata */)
+    {
+        PlayerHelper.SendCommand(command, tickCount, null /* metadata */);
+        await OutputTextNow(PlayerHelper.ClearBuffer());
+        await ClearJavaScriptBuffer();
     }
 
     private async Task OutputTextNow(string text)

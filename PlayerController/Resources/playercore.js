@@ -172,6 +172,7 @@ function setGameName(text) {
 var _waitMode = false;
 var _pauseMode = false;
 
+// TODO: Check if this is used....? -----
 function beginPause(ms) {
     _pauseMode = true;
     $("#txtCommandDiv").hide();
@@ -183,11 +184,16 @@ function beginPause(ms) {
 function endPause() {
     _pauseMode = false;
     $("#txtCommandDiv").show();
+    
+    // TODO: This is old WebPlayer-specific
     window.setTimeout(function () {
         $("#fldUIMsg").val("endpause");
         $("#cmdSubmit").click();
     }, 100);
 }
+// ----------------------------------------
+
+
 
 function commandKey(e) {
     if (_waitMode) return false;
