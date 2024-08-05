@@ -440,16 +440,29 @@ namespace TextAdventures.Quest
         public string PlayerOverrideFontFamily { get; set; }
         public float PlayerOverrideFontSize { get; set; }
 
-        public static string GetResource(string name)
+        private static Stream GetResource(string name)
         {
-            var allResources = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            
-            using var stream = System.Reflection.Assembly.GetExecutingAssembly()
+            return System.Reflection.Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream($"PlayerController.Resources.{name}");
+        }
+
+        public static string GetResourceString(string name)
+        {
+            using var stream = GetResource(name);
             if (stream == null) return null;
             
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
+        }
+        
+        public static byte[] GetResourceBytes(string name)
+        {
+            using var stream = GetResource(name);
+            if (stream == null) return null;
+
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
         }
 
         public static IJavaScriptParameter ListDataParameter(List<ListData> list)
