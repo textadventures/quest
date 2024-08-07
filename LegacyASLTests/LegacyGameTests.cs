@@ -17,7 +17,8 @@ namespace LegacyASLTests
         [TestInitialize]
         public void Init()
         {
-            m_game = new LegacyGame(@"..\..\..\test1.asl", null);
+            var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
+            m_game = new LegacyGame(filename, null);
             m_game.PrintText += m_player.PrintText;
             m_game.Initialise(m_player);
             m_game.Begin();

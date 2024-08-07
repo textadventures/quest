@@ -15,8 +15,8 @@ namespace WorldModelTests
         public void RunWalkthrough()
         {
             WorldModel worldModel = new WorldModel(
-                @"..\..\..\savetest.aslx",
-                @"..\..\..\",
+                Path.Combine("..", "..", "..", "savetest.aslx"),
+                Path.Combine("..", "..", ".."),
                 null);
 
             Mock<IPlayer> player = new Mock<IPlayer>();

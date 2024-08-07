@@ -12,7 +12,7 @@ namespace PlayerControllerTests
     {
         private string GetPath(string filename)
         {
-            return @"..\..\..\" + filename;
+            return Path.Combine("..", "..", "..", filename);
         }
 
         [TestMethod]
