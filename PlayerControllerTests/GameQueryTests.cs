@@ -12,8 +12,7 @@ namespace PlayerControllerTests
     {
         private string GetPath(string filename)
         {
-            string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Substring(6).Replace("/", @"\");
-            return System.IO.Path.Combine(folder, @"..\..\" + filename);
+            return @"..\..\..\" + filename;
         }
 
         [TestMethod]

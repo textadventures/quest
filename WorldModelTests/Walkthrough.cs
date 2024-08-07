@@ -14,11 +14,9 @@ namespace WorldModelTests
         [TestMethod]
         public void RunWalkthrough()
         {
-            string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Substring(6).Replace("/", @"\");
-            string templateFolder = System.IO.Path.Combine(folder, @"..\..\..\WorldModel\WorldModel\Core");
             WorldModel worldModel = new WorldModel(
-                System.IO.Path.Combine(folder, @"..\..\walkthrough.aslx"),
-                templateFolder,
+                @"..\..\..\walkthrough.aslx",
+                @"..\..\..\",
                 null);
 
             Mock<IPlayer> player = new Mock<IPlayer>();
