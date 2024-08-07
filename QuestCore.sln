@@ -2,19 +2,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IASL", "..\IASL\IASL.csproj", "{BE34CB28-317F-4732-AA32-9D715B4F2C7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IASL", "IASL\IASL.csproj", "{BE34CB28-317F-4732-AA32-9D715B4F2C7E}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "LegacyASL", "..\Legacy\LegacyASL.vbproj", "{42EEDC11-C395-4CE8-80E3-057AF4100DDE}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "LegacyASL", "Legacy\LegacyASL.vbproj", "{42EEDC11-C395-4CE8-80E3-057AF4100DDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "..\Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerController", "..\PlayerController\PlayerController.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerController", "PlayerController\PlayerController.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "..\WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorController", "..\EditorController\EditorController.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorController", "EditorController\EditorController.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPlayer", "..\WebPlayer\WebPlayer.csproj", "{DD39556B-7A5A-4835-9372-72F4F237D511}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPlayer", "WebPlayer\WebPlayer.csproj", "{DD39556B-7A5A-4835-9372-72F4F237D511}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
