@@ -8,21 +8,21 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 {
     [Parameter] public required string Id { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
-    private PlayerHelper PlayerHelper = null!;
-    private readonly List<(string, object?[]?)> _javaScriptBuffer = [];
+    private PlayerHelper PlayerHelper { get; set; } = null!;
+    private List<(string, object?[]?)> JavaScriptBuffer { get; set; } = [];
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
     {
-        _javaScriptBuffer.Add((identifier, args));
+        JavaScriptBuffer.Add((identifier, args));
     }
 
     private async Task ClearJavaScriptBuffer()
     {
-        foreach (var (identifier, args) in _javaScriptBuffer)
+        foreach (var (identifier, args) in JavaScriptBuffer)
         {
             await JS.InvokeVoidAsync(identifier, args);
         }
-        _javaScriptBuffer.Clear();
+        JavaScriptBuffer.Clear();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -45,7 +45,18 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         var game = GameLauncher.GetGame(filename, null);
         PlayerHelper = new PlayerHelper(game, this);
         
-        // TODO: Add playerHelper event handlers
+        PlayerHelper.UseGameColours = true;
+        PlayerHelper.UseGameFont = true;
+        
+        // TODO:
+        // m_controller.Game.LogError += LogError;
+        // m_controller.Game.UpdateList += UpdateList;
+        // m_controller.Game.Finished += GameFinished;
+        // IASLTimer gameTimer = game as IASLTimer;
+        // if (gameTimer != null)
+        // {
+        //     gameTimer.RequestNextTimerTick += RequestNextTimerTick;
+        // }
         
         var result = PlayerHelper.Initialise(this, out var errors);
 
@@ -96,26 +107,30 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayer.ShowMenu(MenuData menuData)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.DoWait()
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.DoPause(int ms)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.ShowQuestion(string caption)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetWindowMenu(MenuData menuData)
     {
-        // TODO
+        // Do nothing - only implemented for desktop player
     }
 
     string IPlayer.GetNewGameFile(string originalFilename, string extensions)
@@ -126,11 +141,13 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.StopSound()
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.WriteHTML(string html)
@@ -148,7 +165,6 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         AddJavaScriptToBuffer("updateLocation", location);
     }
     
-
     void IPlayer.UpdateGameName(string name)
     {
         AddJavaScriptToBuffer("setGameName", name);
@@ -163,6 +179,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayer.ShowPicture(string filename)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetPanesVisible(string data)
@@ -178,46 +195,52 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayer.SetBackground(string colour)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetForeground(string colour)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetLinkForeground(string colour)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.RunScript(string function, object[] parameters)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.Quit()
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetFont(string fontName)
     {
-        // TODO
+        PlayerHelper.SetFont(fontName);
     }
 
     void IPlayer.SetFontSize(string fontSize)
     {
-        // TODO
+        PlayerHelper.SetFontSize(fontSize);
     }
 
     void IPlayer.Speak(string text)
     {
-        // TODO
+        // Do nothing
     }
 
     void IPlayer.RequestSave(string html)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.Show(string element)
@@ -253,21 +276,25 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayer.SetCompassDirections(IEnumerable<string> dirs)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetInterfaceString(string name, string text)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.SetPanelContents(string html)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
     void IPlayer.Log(string text)
     {
         // TODO
+        AddJavaScriptToBuffer("console.log", text);
     }
 
     string IPlayer.GetUIOption(UIOption option)
