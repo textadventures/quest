@@ -10,6 +10,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private PlayerHelper PlayerHelper { get; set; } = null!;
     private List<(string, object?[]?)> JavaScriptBuffer { get; set; } = [];
+    private bool Finished { get; set; } = false;
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
     {
@@ -63,7 +64,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         if (result)
         {
             PlayerHelper.Game.Begin();
-            await OutputTextNow(PlayerHelper.ClearBuffer());
+            await ClearBuffer();
         }
         else
         {
@@ -72,17 +73,63 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         }
     }
 
+    private async Task UiActionAsync(Action action)
+    {
+        if (Finished) return;
+        action();
+        await ClearBuffer();
+    }
+
     [JSInvokable]
     public async Task UiSendCommandAsync(string command, int tickCount, IDictionary<string, string> metadata)
     {
-        PlayerHelper.SendCommand(command, tickCount, metadata);
-        await OutputTextNow(PlayerHelper.ClearBuffer());
-        await ClearJavaScriptBuffer();
+        await UiActionAsync(() => PlayerHelper.SendCommand(command, tickCount, metadata));
     }
 
-    private async Task OutputTextNow(string text)
+    [JSInvokable]
+    public async Task UiEndWaitAsync()
     {
-        OutputText(text);
+        await UiActionAsync(() => PlayerHelper.Game.FinishWait());
+    }
+
+    [JSInvokable]
+    public async Task UiEndPauseAsync()
+    {
+        await UiActionAsync(() => PlayerHelper.Game.FinishPause());
+    }
+
+    [JSInvokable]
+    public async Task UiChoiceAsync(string choice)
+    {
+        await UiActionAsync(() => PlayerHelper.Game.SetMenuResponse(choice));
+    }
+
+    [JSInvokable]
+    public async Task UiChoiceCancelAsync()
+    {
+        await UiActionAsync(() => PlayerHelper.Game.SetMenuResponse(null));
+    }
+    
+    // TODO: Other UiActions:
+    /*
+       case "msgbox":
+           m_player.SetQuestionResponse(args[1]);
+           break;
+       case "event":
+           SendEvent(args[1]);
+           break;
+       case "tick":
+           m_player.Tick(tickCount);
+           break;
+       case "save":
+           string unescapedHtml = args[1].Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
+           m_player.RequestSave(unescapedHtml);
+           break;
+     */
+
+    private async Task ClearBuffer()
+    {
+        OutputText(PlayerHelper.ClearBuffer());
         await ClearJavaScriptBuffer();
     }
     
@@ -106,8 +153,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.ShowMenu(MenuData menuData)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("showMenu", menuData.Caption, menuData.Options, menuData.AllowCancel);
     }
 
     void IPlayer.DoWait()

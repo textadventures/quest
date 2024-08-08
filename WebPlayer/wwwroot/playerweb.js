@@ -9,6 +9,10 @@ class WebPlayer {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
     }
+
+    static async uiChoice(choice) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceAsync", choice);
+    }
 }
 
 window.WebPlayer = WebPlayer;

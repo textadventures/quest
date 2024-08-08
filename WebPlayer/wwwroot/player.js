@@ -125,8 +125,7 @@ function dialogSelect() {
     if (_menuSelection.length > 0) {
         $("#dialog").dialog("close");
         window.setTimeout(function () {
-            $("#fldUIMsg").val("choice " + _menuSelection);
-            $("#cmdSubmit").click();
+            WebPlayer.uiChoice(_menuSelection);
         }, 100);
     }
 }
