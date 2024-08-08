@@ -28,7 +28,6 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-    setInterval(keepSessionAlive, 60000);
 
     if (apiRoot) {
         $.ajax({
@@ -70,10 +69,6 @@ function setUpSessionLog() {
     if (outputBufferId && gameSessionLogData) {
         $.post("/GameSession/Init/?userId=" + gameSessionLogData.UserId + "&sessionId=" + gameSessionLogData.SessionId + "&bufferId=" + outputBufferId);
     }
-}
-
-function keepSessionAlive() {
-    $.post("KeepAlive.ashx");
 }
 
 var _waitingForSoundToFinish = false;
