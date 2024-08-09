@@ -140,9 +140,8 @@ function dialogClose() {
 }
 
 function dialogSendCancel() {
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("choicecancel");
-        $("#cmdSubmit").click();
+    window.setTimeout(async function () {
+        await WebPlayer.uiChoiceCancel();
     }, 100);
 }
 
