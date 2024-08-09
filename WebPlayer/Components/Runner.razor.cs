@@ -9,8 +9,14 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     [Parameter] public required string Id { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private PlayerHelper PlayerHelper { get; set; } = null!;
-    private List<(string, object?[]?)> JavaScriptBuffer { get; set; } = [];
+    private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
     private bool Finished { get; set; } = false;
+    private ListHandler ListHandler { get; }
+    
+    public Runner()
+    {
+        ListHandler = new ListHandler(AddJavaScriptToBuffer);
+    }
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
     {
@@ -51,7 +57,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         
         // TODO:
         // m_controller.Game.LogError += LogError;
-        // m_controller.Game.UpdateList += UpdateList;
+        PlayerHelper.Game.UpdateList += UpdateList;
         // m_controller.Game.Finished += GameFinished;
         // IASLTimer gameTimer = game as IASLTimer;
         // if (gameTimer != null)
@@ -71,6 +77,11 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             // TODO: Display errors somewhere
             // string.Join(", ", errors);
         }
+    }
+
+    private void UpdateList(ListType listType, List<ListData> items)
+    {
+        ListHandler.UpdateList(listType, items);
     }
 
     private async Task UiActionAsync(Action action)

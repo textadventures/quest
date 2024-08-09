@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TextAdventures.Quest;
 using System.Xml;
 using System.IO;
-using TextAdventures.Utility.JSInterop;
 
 namespace TextAdventures.Quest
 {
@@ -465,19 +461,19 @@ namespace TextAdventures.Quest
             return ms.ToArray();
         }
 
-        public static IJavaScriptParameter ListDataParameter(List<ListData> list)
+        public static Dictionary<string, string> ListDataParameter(List<ListData> list)
         {
             var convertedList = new Dictionary<string, string>();
-            int count = 1;
-            foreach (ListData data in list)
+            var count = 1;
+            foreach (var data in list)
             {
                 convertedList.Add(
-                    string.Format("k{0}", count),
+                    $"k{count}",
                     Newtonsoft.Json.JsonConvert.SerializeObject(data)
                 );
                 count++;
             }
-            return new DictionaryParameter(convertedList);
+            return convertedList;
         }
 
         public static string VerbString(IEnumerable<string> verbs)
