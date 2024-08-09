@@ -14,6 +14,10 @@ class WebPlayer {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceAsync", choice);
     }
     
+    static async uiChoiceCancel() {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceCancelAsync");
+    }
+    
     static async uiTick(tickCount) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiTickAsync", tickCount);
     }
