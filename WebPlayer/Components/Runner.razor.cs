@@ -221,14 +221,24 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
     {
-        // TODO
-        throw new NotImplementedException();
+        string? functionName = null;
+        if (filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
+        if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
+
+        if (functionName == null) return;
+
+        var url = GetURL(filename);
+            
+        AddJavaScriptToBuffer(
+            functionName,
+            url,
+            synchronous,
+            looped);
     }
 
     void IPlayer.StopSound()
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("stopAudio");
     }
 
     void IPlayer.WriteHTML(string html)
@@ -237,6 +247,11 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     }
 
     string IPlayer.GetURL(string file)
+    {
+        return GetURL(file);
+    }
+    
+    string GetURL(string file)
     {
         throw new NotImplementedException();
     }
@@ -275,20 +290,18 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.SetBackground(string colour)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("setBackground", colour);
     }
 
     void IPlayer.SetForeground(string colour)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("setForeground", colour);
+        PlayerHelper.SetForeground(colour);
     }
 
     void IPlayer.SetLinkForeground(string colour)
     {
-        // TODO
-        throw new NotImplementedException();
+        PlayerHelper.SetLinkForeground(colour);
     }
 
     void IPlayer.RunScript(string function, object[] parameters)
@@ -358,31 +371,32 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.SetCompassDirections(IEnumerable<string> dirs)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("setCompassDirections", dirs);
     }
 
     void IPlayer.SetInterfaceString(string name, string text)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("setInterfaceString", name, text);
     }
 
     void IPlayer.SetPanelContents(string html)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("setPanelContents", html);
     }
 
     void IPlayer.Log(string text)
     {
-        // TODO
         AddJavaScriptToBuffer("console.log", text);
     }
 
-    string IPlayer.GetUIOption(UIOption option)
+    string? IPlayer.GetUIOption(UIOption option)
     {
-        throw new NotImplementedException();
+        if (option == UIOption.UseGameColours || option == UIOption.UseGameFont)
+        {
+            return "true";
+        }
+
+        return null;
     }
 
     void IPlayerHelperUI.OutputText(string text)
