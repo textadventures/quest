@@ -26,6 +26,12 @@ define game <>
 	}
 	command <tmron> timeron <mytimer>
 	command <tmroff> timeroff <mytimer>
+	command <pause> {
+		msg <Pausing for 5 seconds...>
+		pause <5000>
+		msg <Finished pause>
+	}
+	command <menu> choose <test menu>
 	verb <read> msg <You can't read that.>
 end define
 
@@ -77,3 +83,8 @@ define timer <mytimer>
 	disabled
 end define
 
+define selection <test menu>
+	info <Choose one of these...>
+	choice <one> msg <Option 1>
+	choice <two> msg <Option 2>
+end define
