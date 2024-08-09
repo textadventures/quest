@@ -146,6 +146,9 @@
                 msg ("Response 2: no")
             }
         }
+        else if (command = "menu") {
+            menu()
+        }
         else {
             msg (command)
         }
@@ -238,5 +241,12 @@
             }
         }
         msg ("Done switch")
+    </function>
+
+    <function name="menu">
+        options = Split("One,Two,Three,Four", ",")
+        show menu ("Please choose one of these...", options, true) {
+            msg ("You chose: " + result)
+        }
     </function>
 </asl>
