@@ -241,11 +241,11 @@ function showQuestion(title) {
         buttons: [
             {
                 text: "Yes",
-                click: function () { msgboxSubmit("yes"); }
+                click: function () { msgboxSubmit(true); }
             },
             {
                 text: "No",
-                click: function () { msgboxSubmit("no"); }
+                click: function () { msgboxSubmit(false); }
             }
         ],
         closeOnEscape: false,

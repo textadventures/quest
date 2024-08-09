@@ -73,11 +73,10 @@ function setUpSessionLog() {
 
 var _waitingForSoundToFinish = false;
 
-function msgboxSubmit(text) {
+function msgboxSubmit(response) {
     $("#msgbox").dialog("close");
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("msgbox " + text);
-        $("#cmdSubmit").click();
+    window.setTimeout(async function () {
+        await WebPlayer.uiSetQuestionResponse(response);
     }, 100);
 }
 

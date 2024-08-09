@@ -141,12 +141,15 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     {
         await UiActionAsync(() => PlayerHelper.GameTimer.Tick(tickCount));
     }
+
+    [JSInvokable]
+    public async Task UiSetQuestionResponseAsync(bool response)
+    {
+        await UiActionAsync(() => PlayerHelper.Game.SetQuestionResponse(response));
+    }
     
     // TODO: Other UiActions:
     /*
-       case "msgbox":
-           m_player.SetQuestionResponse(args[1]);
-           break;
        case "event":
            SendEvent(args[1]);
            break;
@@ -198,8 +201,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.ShowQuestion(string caption)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("showQuestion", caption);
     }
 
     void IPlayer.SetWindowMenu(MenuData menuData)

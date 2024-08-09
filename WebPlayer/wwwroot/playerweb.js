@@ -21,6 +21,10 @@ class WebPlayer {
     static async uiEndWait() {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiEndWaitAsync");
     }
+    
+    static async uiSetQuestionResponse(response) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSetQuestionResponseAsync", response);
+    }
 }
 
 window.WebPlayer = WebPlayer;
