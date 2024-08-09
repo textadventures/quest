@@ -133,8 +133,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     {
         await UiActionAsync(() => PlayerHelper.Game.SetMenuResponse(choice));
     }
-
-    // TODO: Nothing invokes this yet
+    
     [JSInvokable]
     public async Task UiChoiceCancelAsync()
     {
@@ -153,11 +152,14 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         await UiActionAsync(() => PlayerHelper.Game.SetQuestionResponse(response));
     }
     
+    [JSInvokable]
+    public async Task UiSendEventAsync(string eventName, string param)
+    {
+        await UiActionAsync(() => PlayerHelper.Game.SendEvent(eventName, param));
+    }
+    
     // TODO: Other UiActions:
     /*
-       case "event":
-           SendEvent(args[1]);
-           break;
        case "save":
            string unescapedHtml = args[1].Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
            m_player.RequestSave(unescapedHtml);

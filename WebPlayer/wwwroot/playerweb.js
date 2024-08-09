@@ -33,6 +33,11 @@ class WebPlayer {
     static async uiSetQuestionResponse(response) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSetQuestionResponseAsync", response);
     }
+    
+    static async uiSendEvent(eventName, param) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendEventAsync", eventName, param);
+        canSendCommand = true;
+    }
 }
 
 window.WebPlayer = WebPlayer;
