@@ -455,7 +455,8 @@ Public Class LegacyGame
     Private _questionResponse As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
-        _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
+        Text.Encoding.RegisterProvider(Text.CodePagesEncodingProvider.Instance)
+        _tempFolder = System.IO.Path.Combine(IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
         _gameLoadMethod = "normal"
         _filename = filename
@@ -7841,9 +7842,9 @@ Public Class LegacyGame
         ' beginning or end of a line.
         ' PostScript: well, it used to, I'm not sure if it's really
         ' required now though....
-        ' As of Quest 4.0 we use the ¦ character rather than a dot.
-        test = "¦" & Trim(test) & "¦"
-        required = "¦" & required & "¦"
+        ' As of Quest 4.0 we use the Â¦ character rather than a dot.
+        test = "Â¦" & Trim(test) & "Â¦"
+        required = "Â¦" & required & "Â¦"
 
         'Go through RequiredLine in chunks going up to variables.
         Dim currentReqLinePos = 1

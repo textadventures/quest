@@ -128,6 +128,9 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
   <PropertyGroup>
     <Company>Textadventures.co.uk</Company>
     <AssemblyVersion>5.8.%2a</AssemblyVersion>
