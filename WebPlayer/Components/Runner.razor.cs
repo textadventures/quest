@@ -288,8 +288,10 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.RunScript(string function, object[] parameters)
     {
-        // TODO
-        throw new NotImplementedException();
+        // Clear text buffer before running custom JavaScript, otherwise text written
+        // before now may appear after inserted HTML.
+        OutputText(PlayerHelper.ClearBuffer());
+        AddJavaScriptToBuffer(function, parameters);
     }
 
     void IPlayer.Quit()
