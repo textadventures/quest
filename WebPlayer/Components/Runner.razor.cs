@@ -150,9 +150,6 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
        case "event":
            SendEvent(args[1]);
            break;
-       case "tick":
-           m_player.Tick(tickCount);
-           break;
        case "save":
            string unescapedHtml = args[1].Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
            m_player.RequestSave(unescapedHtml);
@@ -190,8 +187,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.DoWait()
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("beginWait");
     }
 
     void IPlayer.DoPause(int ms)

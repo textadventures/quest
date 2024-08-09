@@ -17,6 +17,10 @@ class WebPlayer {
     static async uiTick(tickCount) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiTickAsync", tickCount);
     }
+    
+    static async uiEndWait() {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiEndWaitAsync");
+    }
 }
 
 window.WebPlayer = WebPlayer;
@@ -32,9 +36,8 @@ function ui_init() {
 }
 
 function sendEndWait() {
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("endwait");
-        $("#cmdSubmit").click();
+    window.setTimeout(async function () {
+        await WebPlayer.uiEndWait();
     }, 100);
     waitEnded();
 }
@@ -116,10 +119,9 @@ function stopAudio() {
 
 function finishSync(showCommandDiv) {
     _waitingForSoundToFinish = false;
-    window.setTimeout(function () {
+    window.setTimeout(async function () {
         if (showCommandDiv) $("#txtCommandDiv").show();
-        $("#fldUIMsg").val("endwait");
-        $("#cmdSubmit").click();
+        await WebPlayer.uiEndWait();
     }, 100);
 }
 
