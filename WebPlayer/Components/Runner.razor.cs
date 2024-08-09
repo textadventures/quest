@@ -42,7 +42,10 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         var filename = Id switch
         {
             "asl4" => "/Users/alexwarren/Code/quest/examples/test.asl",
+            "cas" => "/Users/alexwarren/Code/quest/examples/test.cas",
             "asl5" => "/Users/alexwarren/Code/quest/examples/test.aslx",
+            "blank" => "/Users/alexwarren/Code/quest/examples/blank.aslx",
+            "gamebook" => "/Users/alexwarren/Code/quest/examples/gamebook.aslx",
             _ => throw new NotImplementedException()
         };
 
