@@ -76,9 +76,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         }
         else
         {
-            throw new NotImplementedException();
-            // TODO: Display errors somewhere
-            // string.Join(", ", errors);
+            OutputText(string.Join("<br/>", errors));
+            await ClearBuffer();
         }
     }
 
@@ -253,6 +252,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     
     string GetURL(string file)
     {
+        // TODO
         throw new NotImplementedException();
     }
 
