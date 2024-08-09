@@ -46,6 +46,7 @@
     </function>
 
     <function name="HandleCommand" parameters="command">
+    <![CDATA[
         if (command = "help") {
             msg ("This is just a test.")
         }
@@ -149,9 +150,17 @@
         else if (command = "menu") {
             menu()
         }
+        else if (command = "event") {
+            msg ("<a onclick=\"ASLEvent('FromJS','some parameter')\">Click me</a>")
+        }
         else {
             msg (command)
         }
+    ]]>
+    </function>
+
+    <function name="FromJS" parameters="p">
+        msg ("FromJS called: " + p)
     </function>
 
     <function name="InitInterface">
