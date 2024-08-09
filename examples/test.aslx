@@ -1,4 +1,4 @@
-<asl version="550">
+<asl version="530">
     <game name="Test Game">
         <inherit name="sometype"/>
         <testattr>Test attribute value</testattr>
@@ -90,7 +90,7 @@
             msg ("compassdirections as boolean " + GetBoolean(game, "compassdirections"))
         }
         else if (command = "a") {
-            msg (a())
+            msg (a("..."))
         }
         else if (command = "attrs") {
             msg (Join(GetAttributeNames(game, true), ","))
