@@ -86,7 +86,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     private void LogError(string errormessage)
     {
-        throw new NotImplementedException();
+        OutputText("[Sorry, an error occurred]");
+        AddJavaScriptToBuffer("console.error", errormessage);
     }
 
     private void UpdateList(ListType listType, List<ListData> items)
@@ -96,7 +97,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     
     private void GameFinished()
     {
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("gameFinished");
+        Finished = true;
     }
 
     private async Task UiActionAsync(Action action)
