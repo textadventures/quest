@@ -184,8 +184,8 @@ function startTimer() {
     if (_timerRunning) return;
     _timerRunning = true;
     tickCount = 0;
-    tmrTick = setInterval(function () {
-        timerTick();
+    tmrTick = setInterval(async function () {
+        await timerTick();
     }, 1000);
 }
 
@@ -195,16 +195,10 @@ function stopTimer() {
     clearInterval(tmrTick);
 }
 
-var _submittingTimerTick = false;
-
-function timerTick() {
+async function timerTick() {
     tickCount++;
     if (sendNextGameTickerAfter > 0 && tickCount >= sendNextGameTickerAfter) {
-        $("#fldUITickCount").val(getTickCountAndStopTimer());
-        $("#fldUIMsg").val("tick");
-        _submittingTimerTick = true;
-        $("#cmdSubmit").click();
-        _submittingTimerTick = false;
+        await WebPlayer.uiTick(getTickCountAndStopTimer());
     }
 }
 

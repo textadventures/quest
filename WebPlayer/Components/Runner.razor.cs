@@ -50,20 +50,19 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         // check if they are needed and if there's a better way of getting this.
         
         var game = GameLauncher.GetGame(filename, null);
-        PlayerHelper = new PlayerHelper(game, this);
-        
-        PlayerHelper.UseGameColours = true;
-        PlayerHelper.UseGameFont = true;
-        
-        // TODO:
-        // m_controller.Game.LogError += LogError;
+        PlayerHelper = new PlayerHelper(game, this)
+        {
+            UseGameColours = true,
+            UseGameFont = true
+        };
+
+        PlayerHelper.Game.LogError += LogError;
         PlayerHelper.Game.UpdateList += UpdateList;
-        // m_controller.Game.Finished += GameFinished;
-        // IASLTimer gameTimer = game as IASLTimer;
-        // if (gameTimer != null)
-        // {
-        //     gameTimer.RequestNextTimerTick += RequestNextTimerTick;
-        // }
+        PlayerHelper.Game.Finished += GameFinished;
+        if (game is IASLTimer gameTimer)
+        {
+            gameTimer.RequestNextTimerTick += RequestNextTimerTick;
+        }
         
         var result = PlayerHelper.Initialise(this, out var errors);
 
@@ -74,14 +73,30 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         }
         else
         {
+            throw new NotImplementedException();
             // TODO: Display errors somewhere
             // string.Join(", ", errors);
         }
     }
 
+    private void RequestNextTimerTick(int seconds)
+    {
+        AddJavaScriptToBuffer("requestNextTimerTick", seconds);
+    }
+
+    private void LogError(string errormessage)
+    {
+        throw new NotImplementedException();
+    }
+
     private void UpdateList(ListType listType, List<ListData> items)
     {
         ListHandler.UpdateList(listType, items);
+    }
+    
+    private void GameFinished()
+    {
+        throw new NotImplementedException();
     }
 
     private async Task UiActionAsync(Action action)
@@ -119,6 +134,12 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     public async Task UiChoiceCancelAsync()
     {
         await UiActionAsync(() => PlayerHelper.Game.SetMenuResponse(null));
+    }
+
+    [JSInvokable]
+    public async Task UiTickAsync(int tickCount)
+    {
+        await UiActionAsync(() => PlayerHelper.GameTimer.Tick(tickCount));
     }
     
     // TODO: Other UiActions:
