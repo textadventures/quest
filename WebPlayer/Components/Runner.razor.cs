@@ -130,6 +130,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         await UiActionAsync(() => PlayerHelper.Game.SetMenuResponse(choice));
     }
 
+    // TODO: Nothing invokes this yet
     [JSInvokable]
     public async Task UiChoiceCancelAsync()
     {
@@ -195,8 +196,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
     void IPlayer.DoPause(int ms)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("beginPause", ms);
     }
 
     void IPlayer.ShowQuestion(string caption)
