@@ -767,7 +767,6 @@
     request (Hide, "Location")
   </function>
   <function name="StartGame"><![CDATA[
-    msg ("START")
     if (game.showtitle) {
       PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
       if (game.subtitle <> null) {
@@ -830,7 +829,6 @@
     }
   ]]></function>
   <function name="DoPage" parameters="page"><![CDATA[
-    msg ("DOPAGE")
     parent = player.parent
     if (game.clearlastpage) {
       if (not game.noclear) {
