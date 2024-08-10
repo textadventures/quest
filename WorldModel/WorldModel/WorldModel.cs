@@ -1665,16 +1665,23 @@ namespace TextAdventures.Quest
                 m_callbacks.AddOnReadyCallback(new Callback(callback, c));
             }
         }
+        
+        #nullable enable
 
-        public Stream GetResource(string filename)
+        public Stream? GetResource(string filename)
         {
             return ResourceGetter?.Invoke(filename);
         }
 
-        public string GetResourceData(string filename)
+        public string? GetResourceData(string filename)
         {
-            return File.ReadAllText(GetExternalPath(filename));
+            var stream = GetResource(filename);
+            if (stream == null) return null;
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
+        
+        #nullable restore
 
         public string GetResourceExternalData(string filename)
         {
