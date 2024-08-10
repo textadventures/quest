@@ -12,16 +12,15 @@ namespace TextAdventures.Quest
     {
         public class ReadResult
         {
-            public byte[] GameFile;
+            public Stream GameFile;
             
             // TODO: Replace this with a function for extracting resources
             public string Folder;
         }
 
-        public async Task<ReadResult> LoadPackage(IGameDataProvider gameDataProvider)
+        public ReadResult LoadPackage(IGameDataProvider gameDataProvider)
         {
-            var packageBytes = await gameDataProvider.GetDataAsync();
-            var packageStream = new MemoryStream(packageBytes);
+            var packageStream = gameDataProvider.GetData();
             var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
             
             var gameFile = zip.GetEntry("game.aslx");
@@ -31,16 +30,10 @@ namespace TextAdventures.Quest
                 throw new InvalidDataException("Invalid game file");
             }
             
-            var gameStream = gameFile.Open();
-            using var ms = new MemoryStream();
-            await gameStream.CopyToAsync(ms);
-            
-            var result = new ReadResult
+            return new ReadResult
             {
-                GameFile = ms.ToArray()
+                GameFile = gameFile.Open()
             };
-
-            return result;
         }
     }
 }

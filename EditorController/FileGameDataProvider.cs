@@ -5,9 +5,9 @@ namespace TextAdventures.Quest;
 
 public class FileGameDataProvider(string filename): IGameDataProvider
 {
-    public async Task<byte[]> GetDataAsync()
+    public Stream GetData()
     {
-        return await File.ReadAllBytesAsync(Filename);
+        return File.OpenRead(Filename);
     }
 
     public string Filename { get; } = filename;

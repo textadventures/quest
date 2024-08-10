@@ -1377,9 +1377,8 @@ Public Class LegacyGame
     End Function
 
     Private Async Function GetFileData(gameDataProvider As IGameDataProvider) As Task (Of String)
-        Dim bytes = Await gameDataProvider.GetDataAsync()
-        Dim memoryStream = New IO.MemoryStream(bytes)
-        Return Await New IO.StreamReader(memoryStream).ReadToEndAsync()
+        Dim stream = gameDataProvider.GetData()
+        Return Await New IO.StreamReader(stream).ReadToEndAsync()
     End Function
     
     Private Async Function ParseFile(gameDataProvider As IGameDataProvider) As Task(Of Boolean)
