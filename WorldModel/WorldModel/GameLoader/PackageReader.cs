@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
-using System.Threading.Tasks;
 
 namespace TextAdventures.Quest
 {
     internal class PackageReader
     {
-        public class ReadResult
+        public class ReadResult(ZipArchive zip)
         {
             public Stream GameFile;
             
-            // TODO: Replace this with a function for extracting resources
-            public string Folder;
+            public Stream GetFile(string filename)
+            {
+                var entry = zip.GetEntry(filename);
+                return entry?.Open();
+            }
         }
 
         public ReadResult LoadPackage(IGameDataProvider gameDataProvider)
@@ -30,7 +28,7 @@ namespace TextAdventures.Quest
                 throw new InvalidDataException("Invalid game file");
             }
             
-            return new ReadResult
+            return new ReadResult(zip)
             {
                 GameFile = gameFile.Open()
             };

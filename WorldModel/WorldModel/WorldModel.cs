@@ -1214,43 +1214,7 @@ namespace TextAdventures.Quest
 
         public string GetExternalPath(string file)
         {
-            return GetExternalPath(file, true);
-        }
-
-        private string TryGetExternalPath(string file)
-        {
-            return GetExternalPath(file, false);
-        }
-
-        private string GetExternalPath(string file, bool throwException)
-        {
-            string resourcesFolder = ResourcesFolder ?? Path.GetDirectoryName(Filename);
-            return GetExternalPath(resourcesFolder, file, throwException);
-        }
-
-        private string GetExternalPath(string current, string file, bool throwException)
-        {
-            string path;
-
-            if (TryPath(current, file, out path, false)) return path;
-            if (ResourcesFolder == null)
-            {
-                // Only try other folders if we're not using a resource folder (i.e. a .quest file)
-                // Because if we do have a resource folder, all required external files should be there.
-
-                if (TryPath(Environment.CurrentDirectory, file, out path, false)) return path;
-                if (!string.IsNullOrEmpty(m_libFolder) && TryPath(m_libFolder, file, out path, true)) return path;
-                if (System.Reflection.Assembly.GetEntryAssembly() != null)
-                {
-                    if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
-                }
-            }
-            if (throwException)
-            {
-                throw new Exception(
-                    string.Format("Cannot find a file called '{0}' in current path or application/resource path", file));
-            }
-            return null;
+            throw new NotImplementedException();
         }
 
         internal string GetExternalURL(string file)
@@ -1292,29 +1256,6 @@ namespace TextAdventures.Quest
                 AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false, searchPattern);
             }
             return result;
-        }
-
-        private bool TryPath(string path, string file, out string fullPath, bool recurse)
-        {
-            path = TextAdventures.Utility.Utility.RemoveFileColonPrefix(path);
-            fullPath = System.IO.Path.Combine(path, file);
-            if (System.IO.File.Exists(fullPath))
-            {
-                return true;
-            }
-            else
-            {
-                if (recurse && !file.Contains("\\") && !file.Contains("/"))
-                {
-                    var results = System.IO.Directory.GetFiles(path, file, System.IO.SearchOption.AllDirectories);
-                    if (results.Length > 0)
-                    {
-                        fullPath = results[0];
-                        return true;
-                    }
-                }
-                return false;
-            }
         }
 
         internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
@@ -1643,7 +1584,7 @@ namespace TextAdventures.Quest
             return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
         }
 
-        public string ResourcesFolder { get; internal set; }
+        public Func<string, Stream> ResourceGetter { get; internal set; }
         public bool DebugEnabled { get; private set; }
 
         private static List<string> s_functionNames = null;
@@ -1727,9 +1668,7 @@ namespace TextAdventures.Quest
 
         public Stream GetResource(string filename)
         {
-            string path = TryGetExternalPath(filename);
-            if (path == null) return null;
-            return new FileStream(GetExternalPath(filename), FileMode.Open, FileAccess.Read);
+            return ResourceGetter?.Invoke(filename);
         }
 
         public string GetResourceData(string filename)
@@ -1773,22 +1712,10 @@ namespace TextAdventures.Quest
 
         public string GetResourcePath(string filename)
         {
-            return TryGetExternalPath(filename);
+            throw new NotImplementedException();
         }
 
         internal RegexCache RegexCache { get { return m_regexCache; } }
-
-        ~WorldModel()
-        {
-            if (ResourcesFolder != null && System.IO.Directory.Exists(ResourcesFolder))
-            {
-                try
-                {
-                    System.IO.Directory.Delete(ResourcesFolder, true);
-                }
-                catch { }
-            }
-        }
 
         public WorldModelVersion Version { get; internal set; }
 
