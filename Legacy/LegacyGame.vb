@@ -1388,12 +1388,10 @@ Public Class LegacyGame
         Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
-    '<NOCONVERT
     Private Function GetFileData(filename As String) As String
         Return System.IO.File.ReadAllText(filename)
     End Function
-    'NOCONVERT>
-
+    
     Private Function ParseFile(ByRef filename As String) As Boolean
         'Returns FALSE if failed.
 
@@ -1867,12 +1865,10 @@ Public Class LegacyGame
         _lines(numLines) = line
     End Sub
 
-    '<NOCONVERT
     Private Function GetCASFileData(filename As String) As String
         Return System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
     End Function
-    'NOCONVERT>
-
+    
     Private Sub LoadCASFile(filename As String)
         Dim endLineReached, exitTheLoop As Boolean
         Dim textMode As Boolean
@@ -1997,7 +1993,6 @@ Public Class LegacyGame
         Next i
     End Sub
 
-    '<NOCONVERT
     Private Function DecryptString(s As String) As String
         Dim output = ""
         For i = 1 To Len(s)
@@ -2007,8 +2002,7 @@ Public Class LegacyGame
 
         Return output
     End Function
-    'NOCONVERT>
-
+    
     Private Function RemoveTabs(s As String) As String
         If InStr(s, Chr(9)) > 0 Then
             'Remove tab characters and change them into
@@ -3119,12 +3113,10 @@ Public Class LegacyGame
         End Select
     End Function
 
-    '<NOCONVERT
     Private Sub DoPrint(text As String)
         RaiseEvent PrintText(_textFormatter.OutputHTML(text))
     End Sub
-    'NOCONVERT>
-
+    
     Private Sub DestroyExit(exitData As String, ctx As Context)
         Dim fromRoom As String = ""
         Dim toRoom As String = ""
@@ -3198,7 +3190,6 @@ Public Class LegacyGame
         _player.ClearScreen()
     End Sub
 
-    '<NOCONVERT
     Private Sub DoWait()
         _player.DoWait()
         ChangeState(State.Waiting)
@@ -3207,8 +3198,7 @@ Public Class LegacyGame
             System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
     End Sub
-    'NOCONVERT>
-
+    
     Private Sub ExecuteFlag(line As String, ctx As Context)
         Dim propertyString As String = ""
 
@@ -5474,7 +5464,6 @@ Public Class LegacyGame
         End If
     End Sub
 
-    '<NOCONVERT
     Public Sub Pause(duration As Integer)
         _player.DoPause(duration)
         ChangeState(State.Waiting)
@@ -5483,8 +5472,7 @@ Public Class LegacyGame
             System.Threading.Monitor.Wait(_waitLock)
         End SyncLock
     End Sub
-    'NOCONVERT>
-
+    
     Private Function ConvertParameter(parameter As String, convertChar As String, action As ConvertType, ctx As Context) As String
         ' Returns a string with functions, string and
         ' numeric variables executed or converted as
@@ -5955,7 +5943,6 @@ Public Class LegacyGame
         End Try
     End Sub
 
-    '<NOCONVERT
     Private Function ExecuteIfAsk(question As String) As Boolean
         _player.ShowQuestion(question)
         ChangeState(State.Waiting)
@@ -5981,8 +5968,7 @@ Public Class LegacyGame
             System.Threading.Monitor.PulseAll(_waitLock)
         End SyncLock
     End Sub
-    'NOCONVERT>
-
+    
     Private Function ExecuteIfGot(item As String) As Boolean
         If _gameAslVersion >= 280 Then
             For i = 1 To _numberObjs
@@ -6214,15 +6200,11 @@ Public Class LegacyGame
                 ChangeState(State.Waiting)
             End If
 
-            'TODO: Handle sync parameter
-
-            '<NOCONVERT
             If sync Then
                 SyncLock (_waitLock)
                     System.Threading.Monitor.Wait(_waitLock)
                 End SyncLock
             End If
-            'NOCONVERT>
         End If
     End Sub
 
@@ -9080,9 +9062,7 @@ Public Class LegacyGame
 
         Dim cmd = LCase(input)
 
-        '<NOCONVERT
         SyncLock _commandLock
-            'NOCONVERT>
             If _commandOverrideModeOn Then
                 ' Commands have been overridden for this command,
                 ' so put input into previously specified variable
@@ -9092,10 +9072,8 @@ Public Class LegacyGame
                 System.Threading.Monitor.PulseAll(_commandLock)
                 Return False
             End If
-            '<NOCONVERT
         End SyncLock
-        'NOCONVERT>
-
+        
         Dim userCommandReturn As Boolean
 
         If echo Then
@@ -10347,10 +10325,7 @@ Public Class LegacyGame
                 LogASLError(GetParameter(scriptLine, ctx), LogType.Misc)
             ElseIf BeginsWith(scriptLine, "mailto ") Then
                 Dim emailAddress As String = GetParameter(scriptLine, ctx)
-                ' TODO: Just write HTML directly
-                '<NOCONVERT
                 RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
-                'NOCONVERT>
             ElseIf BeginsWith(scriptLine, "shell ") And _gameAslVersion < 410 Then
                 LogASLError("'shell' is not supported in this version of Quest", LogType.WarningError)
             ElseIf BeginsWith(scriptLine, "shellexe ") And _gameAslVersion < 410 Then
@@ -10401,16 +10376,12 @@ Public Class LegacyGame
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
 
-        ' TODO: Handle in TypeScript version
-
-        '<NOCONVERT
         ChangeState(State.Waiting, True)
 
         SyncLock _commandLock
             System.Threading.Monitor.Wait(_commandLock)
         End SyncLock
-        'NOCONVERT>
-
+        
         _commandOverrideModeOn = False
 
         ' State will have been changed to Working when the user typed their response,
@@ -11404,12 +11375,9 @@ Public Class LegacyGame
                 End If
             Next j
         End If
-
-        ' TODO...
-        '<NOCONVERT
+        
         RaiseEvent UpdateList(ListType.InventoryList, invList)
-        'NOCONVERT>
-
+        
         If _gameAslVersion >= 284 Then
             UpdateStatusVars(ctx)
         Else
@@ -11542,15 +11510,11 @@ Public Class LegacyGame
             End If
         End If
 
-        ' TODO...
-        '<NOCONVERT
         RaiseEvent UpdateList(ListType.ObjectsList, objList)
-        'NOCONVERT>
         _gotoExits = exitList
         UpdateExitsList()
     End Sub
 
-    '<NOCONVERT
     Private Sub UpdateExitsList()
         ' The Quest 5.0 Player takes a combined list of compass and "go to" exits, whereas the
         ' ASL4 code produces these separately. So we keep track of them separately and then
@@ -11568,8 +11532,7 @@ Public Class LegacyGame
 
         RaiseEvent UpdateList(ListType.ExitsList, mergedList)
     End Sub
-    'NOCONVERT>
-
+    
     Private Sub UpdateStatusVars(ctx As Context)
         Dim displayData As String
         Dim status As String = ""
@@ -11824,7 +11787,6 @@ Public Class LegacyGame
         roomExit.SetIsLocked(lock)
     End Sub
 
-    '<NOCONVERT
     Public Sub Begin() Implements IASL.Begin
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf DoBegin))
         ChangeState(State.Working)
@@ -11836,8 +11798,7 @@ Public Class LegacyGame
             End While
         End SyncLock
     End Sub
-    'NOCONVERT>
-
+    
     Private Sub DoBegin()
         Dim gameBlock As DefineBlock = GetDefineBlock("game")
         Dim ctx As New Context
@@ -11929,7 +11890,6 @@ Public Class LegacyGame
         ChangeState(State.Ready)
     End Sub
 
-    '<NOCONVERT
     Public ReadOnly Property Errors As System.Collections.Generic.List(Of String) Implements IASL.Errors
         Get
             Return New List(Of String)()
@@ -11941,20 +11901,17 @@ Public Class LegacyGame
             Return _filename
         End Get
     End Property
-    'NOCONVERT>
-
+    
     Public Sub Finish() Implements IASL.Finish
         GameFinished()
     End Sub
 
-    '<NOCONVERT
     Public Event Finished() Implements IASL.Finished
 
     Public Event LogError(errorMessage As String) Implements IASL.LogError
 
     Public Event PrintText(text As String) Implements IASL.PrintText
-    'NOCONVERT>
-
+    
     Public Sub Save(filename As String, html As String) Implements IASL.Save
         SaveGame(filename)
     End Sub
@@ -11963,14 +11920,12 @@ Public Class LegacyGame
         Return SaveGame(_filename, False)
     End Function
 
-    '<NOCONVERT
     Public ReadOnly Property SaveFilename As String Implements IASL.SaveFilename
         Get
             Return _saveGameFile
         End Get
     End Property
-    'NOCONVERT>
-
+    
     Public Sub SendCommand(command As String) Implements IASL.SendCommand
         SendCommand(command, 0, Nothing)
     End Sub
@@ -12002,7 +11957,6 @@ Public Class LegacyGame
 
     End Sub
 
-    '<NOCONVERT
     Private Sub WaitForStateChange(changedFromState As State)
         SyncLock _stateLock
             While _state = changedFromState And Not _gameFinished
@@ -12010,8 +11964,7 @@ Public Class LegacyGame
             End While
         End SyncLock
     End Sub
-    'NOCONVERT>
-
+    
     Private Sub ProcessCommandInNewThread(command As Object)
         ' Process command, and change state to Ready if the command finished processing
 
@@ -12020,21 +11973,17 @@ Public Class LegacyGame
                 ChangeState(State.Ready)
             End If
         Catch ex As Exception
-            '<NOCONVERT
             LogException(ex)
-            'NOCONVERT>
             ChangeState(State.Ready)
         End Try
     End Sub
 
-    '<NOCONVERT
     Public Sub SendEvent(eventName As String, param As String) Implements IASL.SendEvent
 
     End Sub
 
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
-    'NOCONVERT>
-
+    
     Public Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Boolean Implements IASL.Initialise
         _player = player
         If LCase(Right(_filename, 4)) = ".qsg" Or _data IsNot Nothing Then
@@ -12047,13 +11996,10 @@ Public Class LegacyGame
     Private Sub GameFinished()
         _gameFinished = True
 
-        '<NOCONVERT
         RaiseEvent Finished()
-        'NOCONVERT>
-
+        
         ChangeState(State.Finished)
 
-        '<NOCONVERT
         ' In case we're in the middle of processing an "enter" command, nudge the thread along
         SyncLock _commandLock
             System.Threading.Monitor.PulseAll(_commandLock)
@@ -12066,8 +12012,7 @@ Public Class LegacyGame
         SyncLock _stateLock
             System.Threading.Monitor.PulseAll(_stateLock)
         End SyncLock
-        'NOCONVERT>
-
+        
         Cleanup()
     End Sub
 
@@ -12092,13 +12037,11 @@ Public Class LegacyGame
         End If
     End Sub
 
-    '<NOCONVERT
     Protected Overrides Sub Finalize()
         Cleanup()
         MyBase.Finalize()
     End Sub
-    'NOCONVERT>
-
+    
     Private Function GetLibraryLines(libName As String) As String()
         Dim libCode As Byte() = Nothing
         libName = LCase(libName)
@@ -12121,14 +12064,12 @@ Public Class LegacyGame
         Return GetResourceLines(libCode)
     End Function
 
-    '<NOCONVERT
     Public ReadOnly Property SaveExtension As String Implements IASL.SaveExtension
         Get
             Return "qsg"
         End Get
     End Property
-    'NOCONVERT>
-
+    
     Public Sub Tick(elapsedTime As Integer) Implements IASLTimer.Tick
         Dim i As Integer
         Dim timerScripts As New List(Of String)
@@ -12169,9 +12110,7 @@ Public Class LegacyGame
             Try
                 ExecuteScript(script, _nullContext)
             Catch ex As Exception
-                '<NOCONVERT
                 LogException(ex)
-                'NOCONVERT>
             End Try
         Next
 
@@ -12198,10 +12137,7 @@ Public Class LegacyGame
 
         Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString)
 
-        ' TODO...
-        '<NOCONVERT
         RaiseEvent RequestNextTimerTick(nextTrigger)
-        'NOCONVERT>
     End Sub
 
     Private Sub ChangeState(newState As State)
@@ -12211,15 +12147,12 @@ Public Class LegacyGame
 
     Private Sub ChangeState(newState As State, acceptCommands As Boolean)
         _readyForCommand = acceptCommands
-        '<NOCONVERT
         SyncLock _stateLock
             _state = newState
             System.Threading.Monitor.PulseAll(_stateLock)
         End SyncLock
-        'NOCONVERT>
     End Sub
 
-    '<NOCONVERT
     Public Sub FinishWait() Implements IASL.FinishWait
         If (_state <> State.Waiting) Then Exit Sub
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf FinishWaitInNewThread))
@@ -12237,11 +12170,9 @@ Public Class LegacyGame
     Public Sub FinishPause() Implements IASL.FinishPause
         FinishWait()
     End Sub
-    'NOCONVERT>
-
+    
     Private m_menuResponse As String
 
-    '<NOCONVERT
     Private Function ShowMenu(menuData As MenuData) As String
         _player.ShowMenu(menuData)
         ChangeState(State.Waiting)
@@ -12287,14 +12218,12 @@ Public Class LegacyGame
             Return _originalFilename
         End Get
     End Property
-    'NOCONVERT>
-
+    
     Private Function GetOriginalFilenameForQSG() As String
         If _originalFilename IsNot Nothing Then Return _originalFilename
         Return _gameFileName
     End Function
 
-    '<NOCONVERT
     Public Delegate Function UnzipFunctionDelegate(filename As String, <Runtime.InteropServices.Out()> ByRef tempDir As String) As String
     Private m_unzipFunction As UnzipFunctionDelegate
 
@@ -12355,8 +12284,5 @@ Public Class LegacyGame
         Dim fileData As String = System.IO.File.ReadAllText(_resourceFile, System.Text.Encoding.GetEncoding(1252))
         Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(fileData, _startCatPos - 1))
     End Function
-    'NOCONVERT>
-
-    '<LEGACY.TS>
 
 End Class
