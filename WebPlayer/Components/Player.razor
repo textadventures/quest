@@ -1,4 +1,3 @@
-@page "/play/{Id}"
 @using TextAdventures.Quest
 
 <HeadContent>
@@ -22,9 +21,10 @@
 <div id="audio_embed">
 </div>
 
-<Runner Id="@Id"></Runner>
+<Runner Id="@Id" GameDataProvider="@GameDataProvider"></Runner>
 
 @code {
     [Parameter] public required string Id { get; set; }
+    [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetResourceString("playercore.htm");
 }

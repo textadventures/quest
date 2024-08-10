@@ -11,58 +11,44 @@ namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
-        public static IASL GetGame(byte[] loadData, int loadDataVersion, string legacyAslSourceFile)
-        {
-            if (loadDataVersion >= 500)
-            {
-                return new WorldModel(Encoding.UTF8.GetString(loadData));
-            }
-            
-            return new LegacyGame(new LegacyGame.InitGameData
-            {
-                Data = loadData,
-                SourceFile = legacyAslSourceFile,
-            });
-        }
-
-        public static IASL GetGame(string filename, string libraryFolder)
-        {
-            return GetGame(filename, libraryFolder, null);
-        }
-
-        private static IASL GetGame(string filename, string libraryFolder, string originalFilename)
+        public static IASL GetGame(IGameDataProvider gameDataProvider, string libraryFolder)
         {
             string tempDir;
-            switch (System.IO.Path.GetExtension(filename).ToLower())
+            switch (System.IO.Path.GetExtension(gameDataProvider.Filename).ToLower())
             {
                 case ".aslx":
                 case ".quest":
                 case ".quest-save":
-                    return new WorldModel(filename, libraryFolder, originalFilename);
+                    return new WorldModel(gameDataProvider, libraryFolder);
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    LegacyASL.LegacyGame game = new TextAdventures.Quest.LegacyASL.LegacyGame(filename, originalFilename);
-                    game.SetUnzipFunction(UnzipAndGetGameFile);
-                    return game;
+                    // TODO
+                    throw new NotImplementedException();
+                
+                    // LegacyASL.LegacyGame game = new TextAdventures.Quest.LegacyASL.LegacyGame(filename, originalFilename);
+                    // game.SetUnzipFunction(UnzipAndGetGameFile);
+                    // return game;
                 case ".zip":
-                    return GetGameFromZip(filename, libraryFolder, out tempDir);
+                    // TODO
+                    throw new NotImplementedException();
+                    // return GetGameFromZip(filename, libraryFolder, out tempDir);
                 default:
                     return null;
             }
         }
 
-        private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
-        {
-            string gameFile = UnzipAndGetGameFile(filename, out tempDir);
-            if (gameFile == null) return null;
-            IASL result = GetGame(gameFile, libraryFolder, filename);
-            if (result != null)
-            {
-                result.TempFolder = tempDir;
-            }
-            return result;
-        }
+        // private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
+        // {
+        //     string gameFile = UnzipAndGetGameFile(filename, out tempDir);
+        //     if (gameFile == null) return null;
+        //     IASL result = GetGame(gameFile, libraryFolder, filename);
+        //     if (result != null)
+        //     {
+        //         result.TempFolder = tempDir;
+        //     }
+        //     return result;
+        // }
 
         private static string UnzipAndGetGameFile(string zipFile, out string tempDir)
         {

@@ -12,15 +12,14 @@ namespace WorldModelTests
     public class SaveTests
     {
         [TestMethod]
-        public void RunWalkthrough()
+        public async Task RunWalkthrough()
         {
             WorldModel worldModel = new WorldModel(
-                Path.Combine("..", "..", "..", "savetest.aslx"),
-                Path.Combine("..", "..", ".."),
-                null);
+                new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx")),
+                Path.Combine("..", "..", ".."));
 
             Mock<IPlayer> player = new Mock<IPlayer>();
-            bool success = worldModel.Initialise(player.Object);
+            bool success = await worldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 
             worldModel.Begin();
@@ -30,8 +29,8 @@ namespace WorldModelTests
             string tempFilename = System.IO.Path.GetTempFileName();
             worldModel.Save(tempFilename, null);
 
-            WorldModel savedGameWorldModel = new WorldModel(tempFilename, null, null);
-            success = savedGameWorldModel.Initialise(player.Object);
+            WorldModel savedGameWorldModel = new WorldModel(new FileGameDataProvider(tempFilename), null);
+            success = await savedGameWorldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 
             savedGameWorldModel.Begin();

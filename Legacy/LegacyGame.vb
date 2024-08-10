@@ -11972,12 +11972,12 @@ Public Class LegacyGame
 
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
     
-    Public Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Boolean Implements IASL.Initialise
+    Public Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Task(Of Boolean) Implements IASL.Initialise
         _player = player
         If LCase(Right(_filename, 4)) = ".qsg" Or _data IsNot Nothing Then
-            Return OpenGame(_filename)
+            Return Task.FromResult(OpenGame(_filename))
         Else
-            Return InitialiseGame(_filename)
+            Return Task.FromResult(InitialiseGame(_filename))
         End If
     End Function
 

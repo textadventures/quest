@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TextAdventures.Quest
 {
@@ -59,18 +61,17 @@ namespace TextAdventures.Quest
             m_gameTimer = m_game as IASLTimer;
         }
 
-        public bool Initialise(IPlayer player, out List<string> errors, bool? isCompiled = null)
+        public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player, bool? isCompiled = null)
         {
-            bool result = m_game.Initialise(player, isCompiled);
+            bool result = await m_game.Initialise(player, isCompiled);
             if (m_game.Errors.Count > 0)
             {
-                errors = m_game.Errors;
-                return false;
+                return (false, m_game.Errors);
             }
             else
             {
-                errors = result ? new List<string> { "Unable to initialise game" } : null;
-                return result;
+                var errors = result ? new List<string> { "Unable to initialise game" } : null;
+                return (result, errors);
             }
         }
 

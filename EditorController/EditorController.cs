@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TextAdventures.Quest.Scripts;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Utility.Language;
@@ -315,19 +316,19 @@ namespace TextAdventures.Quest
 
         public void StartInitialise(string filename, string libFolder = null)
         {
-            System.Threading.Thread newThread = new System.Threading.Thread(() =>
+            System.Threading.Thread newThread = new System.Threading.Thread(async () =>
             {
-                bool result = Initialise(filename, libFolder);
+                bool result = await Initialise(filename, libFolder);
                 if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
             });
             newThread.Start();
         }
 
-        public bool Initialise(string filename, string libFolder = null)
+        public async Task<bool> Initialise(string filename, string libFolder = null)
         {
             m_lastelementscutout = false;
             m_filename = filename;
-            m_worldModel = new WorldModel(filename, libFolder, null);
+            m_worldModel = new WorldModel(new FileGameDataProvider(filename), libFolder);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
@@ -336,7 +337,7 @@ namespace TextAdventures.Quest
             m_worldModel.Elements.ElementRenamed += Elements_ElementRenamed;
             m_worldModel.LoadStatus += m_worldModel_LoadStatus;
 
-            bool ok = m_worldModel.InitialiseEdit();
+            bool ok = await m_worldModel.InitialiseEdit();
 
             if (ok)
             {

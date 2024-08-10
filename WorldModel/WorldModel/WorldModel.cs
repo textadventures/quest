@@ -6,6 +6,7 @@ using System.Threading;
 using TextAdventures.Quest.Scripts;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest
@@ -49,8 +50,7 @@ namespace TextAdventures.Quest
         private Dictionary<string, int> m_nextUniqueID = new Dictionary<string, int>();
         private Template m_template;
         private UndoLogger m_undoLogger;
-        private string m_filename;
-        private readonly string m_data;
+        private IGameDataProvider m_gameDataProvider;
         private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
@@ -157,13 +157,7 @@ namespace TextAdventures.Quest
         {
         }
 
-        public WorldModel(string data)
-            : this(null, null)
-        {
-            m_data = data;
-        }
-
-        public WorldModel(string filename, string originalFilename)
+        private WorldModel(IGameDataProvider gameDataProvider)
         {
             m_expressionOwner = new Functions.ExpressionOwner(this);
             m_template = new Template(this);
@@ -171,14 +165,14 @@ namespace TextAdventures.Quest
             m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
 
             InitialiseDebuggerObjectTypes();
-            m_filename = filename;
+            m_gameDataProvider = gameDataProvider;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
-        public WorldModel(string filename, string libFolder, string originalFilename)
-            : this(filename, originalFilename)
+        public WorldModel(IGameDataProvider gameDataProvider, string libFolder)
+            : this(gameDataProvider)
         {
             m_libFolder = libFolder;
         }
@@ -480,12 +474,12 @@ namespace TextAdventures.Quest
             if (m_playerUI != null) m_playerUI.UpdateGameName(name);
         }
 
-        public bool Initialise(IPlayer player, bool? isCompiled = null)
+        public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
         {
             m_editMode = false;
             m_playerUI = player;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play, isCompiled);
-            bool result = InitialiseInternal(loader);
+            bool result = await InitialiseInternal(loader);
             if (result)
             {
                 m_walkthroughs = new Walkthroughs(this);
@@ -493,14 +487,14 @@ namespace TextAdventures.Quest
             return result;
         }
 
-        public bool InitialiseEdit()
+        public async Task<bool> InitialiseEdit()
         {
             m_editMode = true;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Edit);
-            return InitialiseInternal(loader);
+            return await InitialiseInternal(loader);
         }
 
-        private bool InitialiseInternal(GameLoader loader)
+        private async Task<bool> InitialiseInternal(GameLoader loader)
         {
             if (m_state != GameState.NotStarted)
             {
@@ -510,15 +504,7 @@ namespace TextAdventures.Quest
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             
-            bool success;
-            if (m_data != null)
-            {
-                success = loader.Load(data: m_data);
-            }
-            else
-            {
-                success = m_filename == null || loader.Load(m_filename);    
-            }
+            var success = await loader.Load(m_gameDataProvider);
             
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
@@ -739,7 +725,7 @@ namespace TextAdventures.Quest
 
         public string Filename
         {
-            get { return m_filename; }
+            get { return m_gameDataProvider.Filename; }
         }
 
         public void Finish()

@@ -7,6 +7,7 @@ namespace WebPlayer.Components;
 public partial class Runner : ComponentBase, IPlayerHelperUI
 {
     [Parameter] public required string Id { get; set; }
+    [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private PlayerHelper PlayerHelper { get; set; } = null!;
     private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
@@ -38,20 +39,10 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
         await JS.InvokeVoidAsync("WebPlayer.setDotNetHelper",
             DotNetObjectReference.Create(this));
-        
-        var filename = Id switch
-        {
-            "asl4" => "/Users/alexwarren/Code/quest/examples/test.asl",
-            "cas" => "/Users/alexwarren/Code/quest/examples/test.cas",
-            "asl5" => "/Users/alexwarren/Code/quest/examples/test.aslx",
-            "blank" => "/Users/alexwarren/Code/quest/examples/blank.aslx",
-            "gamebook" => "/Users/alexwarren/Code/quest/examples/gamebook.aslx",
-            _ => throw new NotImplementedException()
-        };
 
         // TODO: Is there a better way of getting libraryFolder?
         
-        var game = GameLauncher.GetGame(filename, null);
+        var game = GameLauncher.GetGame(GameDataProvider, null);
         PlayerHelper = new PlayerHelper(game, this)
         {
             UseGameColours = true,
@@ -66,7 +57,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             gameTimer.RequestNextTimerTick += RequestNextTimerTick;
         }
         
-        var result = PlayerHelper.Initialise(this, out var errors);
+        var (result, errors) = await PlayerHelper.Initialise(this);
 
         if (result)
         {

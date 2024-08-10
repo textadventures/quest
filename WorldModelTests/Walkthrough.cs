@@ -15,9 +15,8 @@ namespace WorldModelTests
         public void RunWalkthrough()
         {
             WorldModel worldModel = new WorldModel(
-                Path.Combine("..", "..", "..", "walkthrough.aslx"),
-                Path.Combine("..", "..", ".."),
-                null);
+                new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx")),
+                Path.Combine("..", "..", ".."));
 
             Mock<IPlayer> player = new Mock<IPlayer>();
             worldModel.Initialise(player.Object);

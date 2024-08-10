@@ -6,7 +6,7 @@ namespace EditorControllerTests
     public class TemplateTests
     {
         [TestMethod]
-        public void TestTemplates()
+        public async Task TestTemplates()
         {
             var templateFolder = Path.Combine(["..", "..", "..", "..", "WorldModel", "WorldModel", "Core"]);
 
@@ -27,7 +27,7 @@ namespace EditorControllerTests
                     errorsRaised += e.Message;
                 };
 
-                var result = controller.Initialise(tempFile, templateFolder);
+                var result = await controller.Initialise(tempFile, templateFolder);
 
                 Assert.IsTrue(result,
                     $"Initialisation failed for template '{Path.GetFileName(template.Filename)}': {errorsRaised}");

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace TextAdventures.Quest
 {
@@ -62,29 +64,23 @@ namespace TextAdventures.Quest
             AddExtendedAttributeLoaders(mode);
             AddXMLLoaders(mode);
         }
-
-        public bool Load(string filename = null, string data = null)
+        
+        public async Task<bool> Load(IGameDataProvider gameDataProvider)
         {
-            if (filename == null && data == null)
+            if (Path.GetExtension(gameDataProvider.Filename) == ".quest")
             {
-                throw new ArgumentException("Expected filename or data");
+                // TODO: Get data from provider
+                // filename = LoadCompiledFile(filename);
+                throw new NotImplementedException();
             }
 
-            if (Path.GetExtension(filename) == ".quest")
-            {
-                filename = LoadCompiledFile(filename);
-            }
+            var data = Encoding.UTF8.GetString(await gameDataProvider.GetDataAsync());
 
             try
             {
                 FileStream stream = null;
 
-                if (data == null)
-                {
-                    stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-
-                using (XmlReader reader = stream != null ? new XmlTextReader(stream) : new XmlTextReader(new StringReader(data)))
+                using (XmlReader reader = new XmlTextReader(new StringReader(data)))
                 {
                     do
                     {
@@ -127,7 +123,7 @@ namespace TextAdventures.Quest
                         AddError("File must begin with an ASL element");
                     }
 
-                    LoadXML(filename, reader);
+                    LoadXML(gameDataProvider.Filename, reader);
 
                     reader.Close();
                 }
