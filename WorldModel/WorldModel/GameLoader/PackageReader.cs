@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
-using Ionic.Zip;
 
 namespace TextAdventures.Quest
 {
@@ -13,30 +13,32 @@ namespace TextAdventures.Quest
         public class ReadResult
         {
             public byte[] GameFile;
+            
+            // TODO: Replace this with a function for extracting resources
             public string Folder;
         }
 
         public async Task<ReadResult> LoadPackage(IGameDataProvider gameDataProvider)
         {
-            ReadResult result = new ReadResult();
-            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempDir);
+            var packageBytes = await gameDataProvider.GetDataAsync();
+            var packageStream = new MemoryStream(packageBytes);
+            var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
             
-            var bytes = await gameDataProvider.GetDataAsync();
-            var memoryStream = new MemoryStream(bytes);
+            var gameFile = zip.GetEntry("game.aslx");
             
-            ZipFile zip = ZipFile.Read(memoryStream);
-            zip.ExtractAll(tempDir);
-
-            result.Folder = tempDir;
-            var gameFile = Path.Combine(tempDir, "game.aslx");
-
-            if (!File.Exists(gameFile))
+            if (gameFile == null)
             {
                 throw new InvalidDataException("Invalid game file");
             }
-
-            result.GameFile = await File.ReadAllBytesAsync(gameFile);
+            
+            var gameStream = gameFile.Open();
+            using var ms = new MemoryStream();
+            await gameStream.CopyToAsync(ms);
+            
+            var result = new ReadResult
+            {
+                GameFile = ms.ToArray()
+            };
 
             return result;
         }
