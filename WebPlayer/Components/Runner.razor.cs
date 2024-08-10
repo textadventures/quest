@@ -49,8 +49,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             _ => throw new NotImplementedException()
         };
 
-        // TODO: Note libraryFolder is only used for .quest-save and .zip,
-        // check if they are needed and if there's a better way of getting this.
+        // TODO: Is there a better way of getting libraryFolder?
         
         var game = GameLauncher.GetGame(filename, null);
         PlayerHelper = new PlayerHelper(game, this)

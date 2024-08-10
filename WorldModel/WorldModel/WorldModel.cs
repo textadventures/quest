@@ -747,11 +747,6 @@ namespace TextAdventures.Quest
             get { return m_saveFilename; }
         }
 
-        public string BasePath
-        {
-            get { return System.IO.Path.GetDirectoryName(m_filename); }
-        }
-
         public void Finish()
         {
             FinishGame();
@@ -1763,16 +1758,6 @@ namespace TextAdventures.Quest
 
         public string GetResourceData(string filename)
         {
-            if (Config.ReadGameFileFromAzureBlob)
-            {
-                var url = GetExternalURL(filename);
-                using (var client = new WebClient())
-                {
-                    client.Encoding = System.Text.Encoding.UTF8;
-                    return client.DownloadString(url);
-                }
-            }
-
             return File.ReadAllText(GetExternalPath(filename));
         }
 
@@ -1845,11 +1830,6 @@ namespace TextAdventures.Quest
             {
                 string gameId = m_game.Fields[FieldDefinitions.GameID];
                 if (gameId != null) return gameId;
-                if (Config.ReadGameFileFromAzureBlob)
-                {
-                    var parts = m_filename.Split('/');
-                    return parts[parts.Length - 2];
-                }
                 return TextAdventures.Utility.Utility.FileMD5Hash(m_filename);
             }
         }

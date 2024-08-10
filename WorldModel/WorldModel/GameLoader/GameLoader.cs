@@ -72,11 +72,6 @@ namespace TextAdventures.Quest
 
             if (Path.GetExtension(filename) == ".quest")
             {
-                if (Config.ReadGameFileFromAzureBlob)
-                {
-                    throw new InvalidOperationException("Not expecting a .quest file when loading file from Azure");
-                }
-
                 filename = LoadCompiledFile(filename);
             }
 
@@ -86,18 +81,7 @@ namespace TextAdventures.Quest
 
                 if (data == null)
                 {
-                    if (Config.ReadGameFileFromAzureBlob)
-                    {
-                        using (var client = new WebClient())
-                        {
-                            client.Encoding = System.Text.Encoding.UTF8;
-                            data = client.DownloadString(filename);
-                        }
-                    }
-                    else
-                    {
-                        stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    }
+                    stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 }
 
                 using (XmlReader reader = stream != null ? new XmlTextReader(stream) : new XmlTextReader(new StringReader(data)))
@@ -417,21 +401,9 @@ namespace TextAdventures.Quest
             // then we add those and mark them as non-overwritable.
 
             XmlReader reader;
-
-            if (Config.ReadGameFileFromAzureBlob)
-            {
-                using (var client = new WebClient())
-                {
-                    client.Encoding = System.Text.Encoding.UTF8;
-                    var data = client.DownloadString(filename);
-                    reader = new XmlTextReader(new StringReader(data));
-                }
-            }
-            else
-            {
-                var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                reader = new XmlTextReader(stream);
-            }
+            
+            var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            reader = new XmlTextReader(stream);
 
             TemplateLoader templateLoader = new TemplateLoader();
             templateLoader.GameLoader = this;

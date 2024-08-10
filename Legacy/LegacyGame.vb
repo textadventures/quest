@@ -1390,18 +1390,7 @@ Public Class LegacyGame
 
     '<NOCONVERT
     Private Function GetFileData(filename As String) As String
-        ' TODO - QUESTCORE
-        'If Config.ReadGameFileFromAzureBlob Then
-        '    Using client As New WebClient
-        '        Dim fileData = client.DownloadString(filename)
-
-        '        Dim fileBytes As Byte() = client.DownloadData(filename)
-        '        m_gameId = TextAdventures.Utility.Utility.CalculateMD5Hash(fileBytes)
-        '        Return fileData
-        '    End Using
-        'Else
         Return System.IO.File.ReadAllText(filename)
-        'End If
     End Function
     'NOCONVERT>
 
@@ -1880,29 +1869,7 @@ Public Class LegacyGame
 
     '<NOCONVERT
     Private Function GetCASFileData(filename As String) As String
-        ' TODO - QUESTCORE
-        'If Config.ReadGameFileFromAzureBlob Then
-        '    Using client As New WebClient
-        '        Dim url As String = filename
-        '        Dim baseAddress As Uri = New Uri(url)
-        '        Dim directory As Uri = New Uri(baseAddress, ".")
-        '        Dim fileData As String
-
-        '        Try
-        '            fileData = client.DownloadString(url)
-        '        Catch ex As WebException
-        '            url = directory.OriginalString + "_game.cas"
-        '            fileData = client.DownloadString(url)
-        '        End Try
-
-        '        Dim parts As String() = directory.OriginalString.Split("/"c)
-        '        m_gameId = parts(parts.Length - 2)
-
-        '        Return fileData
-        '    End Using
-        'Else
         Return System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
-        'End If
     End Function
     'NOCONVERT>
 
@@ -12371,9 +12338,6 @@ Public Class LegacyGame
     Public ReadOnly Property GameID() As String Implements IASL.GameID
         Get
             If String.IsNullOrEmpty(_gameFileName) Then Return Nothing
-            If Config.ReadGameFileFromAzureBlob Then
-                Return m_gameId
-            End If
             Return TextAdventures.Utility.Utility.FileMD5Hash(_gameFileName)
         End Get
     End Property
