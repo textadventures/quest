@@ -38,6 +38,10 @@ class WebPlayer {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendEventAsync", eventName, param);
         canSendCommand = true;
     }
+    
+    static async uiSaveGame(html) {
+        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
+    }
 }
 
 window.WebPlayer = WebPlayer;

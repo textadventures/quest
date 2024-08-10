@@ -158,13 +158,15 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         await UiActionAsync(() => PlayerHelper.Game.SendEvent(eventName, param));
     }
     
-    // TODO: Other UiActions:
-    /*
-       case "save":
-           string unescapedHtml = args[1].Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
-           m_player.RequestSave(unescapedHtml);
-           break;
-     */
+    [JSInvokable]
+    public async Task UiSaveGameAsync(string html)
+    {
+        await UiActionAsync(() =>
+        {
+            var data = PlayerHelper.Game.Save(html);
+            AddJavaScriptToBuffer("saveGameResponse", data);
+        });
+    }
 
     private async Task ClearBuffer()
     {

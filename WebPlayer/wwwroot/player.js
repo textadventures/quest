@@ -29,6 +29,10 @@ function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
 
+    // TODO: Temporarily always showing Save button here - need to work out where the game gets
+    // saved (localStorage?), and if we implement server-side saving below
+    $("#cmdSave").show();
+
     if (apiRoot) {
         $.ajax({
             url: apiRoot + "games/cansave",
@@ -214,35 +218,39 @@ function goUrl(href) {
 }
 
 function saveGame() {
-    window.setTimeout(function () {
-        var saveData = $("#divOutput").html().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        $("#fldUIMsg").val("save " + saveData);
-        $("#cmdSubmit").click();
+    window.setTimeout(async function () {
+        const saveData = $("#divOutput").html();
+        await WebPlayer.uiSaveGame(saveData);
     }, 100);
 }
 
 function saveGameResponse(data) {
     addText("Saving game...<br/>");
-    $.ajax({
-        url: apiRoot + "games/save/?id=" + $_GET["id"],
-        success: function (result) {
-            if (result.Success) {
-                addText("Game saved successfully.<br/>");
-            } else {
-                addText("Failed to save game: " + result.Reason + "<br/>");
+    if (apiRoot) {
+        $.ajax({
+            url: apiRoot + "games/save/?id=" + $_GET["id"],
+            success: function (result) {
+                if (result.Success) {
+                    addText("Game saved successfully.<br/>");
+                } else {
+                    addText("Failed to save game: " + result.Reason + "<br/>");
+                }
+            },
+            error: function (xhr, status, err) {
+                console.log(status);
+                console.log(err);
+                addText("Failed to save game.<br/>");
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            type: "POST",
+            data: {
+                data: data
             }
-        },
-        error: function (xhr, status, err) {
-            console.log(status);
-            console.log(err);
-            addText("Failed to save game.<br/>");
-        },
-        xhrFields: {
-            withCredentials: true
-        },
-        type: "POST",
-        data: {
-            data: data
-        }
-    });
+        });
+    }
+    else {
+        console.log("TODO: Save game", data);
+    }
 }
