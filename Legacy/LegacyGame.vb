@@ -11895,12 +11895,6 @@ Public Class LegacyGame
             Return New List(Of String)()
         End Get
     End Property
-
-    Public ReadOnly Property Filename As String Implements IASL.Filename
-        Get
-            Return _filename
-        End Get
-    End Property
     
     Public Sub Finish() Implements IASL.Finish
         GameFinished()
@@ -11919,12 +11913,6 @@ Public Class LegacyGame
     Public Function Save(html As String) As Byte() Implements IASL.Save
         Return SaveGame(_filename, False)
     End Function
-
-    Public ReadOnly Property SaveFilename As String Implements IASL.SaveFilename
-        Get
-            Return _saveGameFile
-        End Get
-    End Property
     
     Public Sub SendCommand(command As String) Implements IASL.SendCommand
         SendCommand(command, 0, Nothing)
@@ -12213,12 +12201,6 @@ Public Class LegacyGame
 
     Public Event RequestNextTimerTick(nextTick As Integer) Implements IASLTimer.RequestNextTimerTick
 
-    Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename
-        Get
-            Return _originalFilename
-        End Get
-    End Property
-    
     Private Function GetOriginalFilenameForQSG() As String
         If _originalFilename IsNot Nothing Then Return _originalFilename
         Return _gameFileName

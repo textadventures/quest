@@ -50,7 +50,6 @@ namespace TextAdventures.Quest
         private Template m_template;
         private UndoLogger m_undoLogger;
         private string m_filename;
-        private string m_originalFilename;
         private readonly string m_data;
         private string m_libFolder = null;
         private List<string> m_errors;
@@ -61,7 +60,6 @@ namespace TextAdventures.Quest
         private ObjectFactory m_objectFactory;
         private GameSaver m_saver;
         private bool m_loadedFromSaved = false;
-        private string m_saveFilename = string.Empty;
         private bool m_editMode = false;
         private Functions.ExpressionOwner m_expressionOwner;
         private IPlayer m_playerUI = null;
@@ -174,7 +172,6 @@ namespace TextAdventures.Quest
 
             InitialiseDebuggerObjectTypes();
             m_filename = filename;
-            m_originalFilename = originalFilename;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
@@ -549,9 +546,12 @@ namespace TextAdventures.Quest
 
         void loader_FilenameUpdated(string filename)
         {
-            // Update base ASLX filename to original filename if we're loading a saved game
-            m_saveFilename = m_filename;
-            m_filename = filename;
+            // TODO: This previously did this...
+            // // Update base ASLX filename to original filename if we're loading a saved game
+            // m_saveFilename = m_filename;
+            // m_filename = filename;
+            
+            // ... but we now only need it to do this, which could be more explicit:
             m_loadedFromSaved = true;
         }
 
@@ -740,11 +740,6 @@ namespace TextAdventures.Quest
         public string Filename
         {
             get { return m_filename; }
-        }
-
-        public string SaveFilename
-        {
-            get { return m_saveFilename; }
         }
 
         public void Finish()
@@ -1446,11 +1441,6 @@ namespace TextAdventures.Quest
             return DefaultTypeNames.ContainsValue(typeName);
         }
 
-        public string OriginalFilename
-        {
-            get { return m_originalFilename; }
-        }
-
         public Element AddNewTemplate(string templateName)
         {
             return m_template.AddTemplate(templateName, string.Empty, false);
@@ -1824,15 +1814,7 @@ namespace TextAdventures.Quest
 
         public int ASLVersion { get { return int.Parse(VersionString); } }
 
-        public string GameID
-        {
-            get
-            {
-                string gameId = m_game.Fields[FieldDefinitions.GameID];
-                if (gameId != null) return gameId;
-                return TextAdventures.Utility.Utility.FileMD5Hash(m_filename);
-            }
-        }
+        public string GameID => m_game.Fields[FieldDefinitions.GameID];
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
         public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
         public string Cover { get { return m_game.Fields[FieldDefinitions.Cover]; } }

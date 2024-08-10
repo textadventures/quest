@@ -22,9 +22,6 @@ namespace TextAdventures.Quest
         event FinishedHandler Finished;
         event ErrorHandler LogError;
         List<string> Errors { get; }
-        string Filename { get; }
-        string OriginalFilename { get; }
-        string SaveFilename { get; }
         void Finish();
         void Save(string filename, string html);
         byte[] Save(string html);
