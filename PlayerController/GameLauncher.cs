@@ -23,12 +23,9 @@ namespace TextAdventures.Quest
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    // TODO
-                    throw new NotImplementedException();
-                
-                    // LegacyASL.LegacyGame game = new TextAdventures.Quest.LegacyASL.LegacyGame(filename, originalFilename);
-                    // game.SetUnzipFunction(UnzipAndGetGameFile);
-                    // return game;
+                    LegacyASL.LegacyGame game = new LegacyGame(gameDataProvider);
+                    game.SetUnzipFunction(UnzipAndGetGameFile);
+                    return game;
                 case ".zip":
                     // TODO
                     throw new NotImplementedException();

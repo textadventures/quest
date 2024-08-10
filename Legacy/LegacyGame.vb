@@ -4,7 +4,6 @@ Option Infer On
 
 Imports System.Collections.Generic
 Imports System.Linq
-Imports System.Net
 
 Public Class LegacyGame
 
@@ -443,9 +442,8 @@ Public Class LegacyGame
     Private _tempFolder As String
     Private _playerErrorMessageString(38) As String
     Private _listVerbs As New Dictionary(Of ListType, List(Of String))
-    Private _filename As String
+    Private _gameDataProvider As IGameDataProvider
     Private _originalFilename As String
-    Private _data As InitGameData
     Private _player As IPlayer
     Private _gameFinished As Boolean
     Private _gameIsRestoring As Boolean
@@ -454,13 +452,13 @@ Public Class LegacyGame
     Private _fileDataPos As Integer
     Private _questionResponse As Boolean
 
-    Public Sub New(filename As String, originalFilename As String)
+    Public Sub New(gameDataProvider As IGameDataProvider)
         Text.Encoding.RegisterProvider(Text.CodePagesEncodingProvider.Instance)
         _tempFolder = System.IO.Path.Combine(IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         LoadCASKeywords()
         _gameLoadMethod = "normal"
-        _filename = filename
-        _originalFilename = originalFilename
+        _gameDataProvider = gameDataProvider
+        _originalFilename = Nothing
 
         ' Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         ' for compatibility with games which have non-fatal errors in them.
@@ -469,16 +467,6 @@ Public Class LegacyGame
         _skipCheckFile(1) = "bargain.cas"
         _skipCheckFile(2) = "easymoney.asl"
         _skipCheckFile(3) = "musicvf1.cas"
-    End Sub
-
-    Public Class InitGameData
-        Public Data As Byte()
-        Public SourceFile As String
-    End Class
-
-    Public Sub New(data As InitGameData)
-        Me.New(Nothing, Nothing)
-        _data = data
     End Sub
 
     Private Function RemoveFormatting(s As String) As String
@@ -1388,11 +1376,13 @@ Public Class LegacyGame
         Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
-    Private Function GetFileData(filename As String) As String
-        Return System.IO.File.ReadAllText(filename)
+    Private Async Function GetFileData(gameDataProvider As IGameDataProvider) As Task (Of String)
+        Dim bytes = Await gameDataProvider.GetDataAsync()
+        Dim memoryStream = New IO.MemoryStream(bytes)
+        Return Await New IO.StreamReader(memoryStream).ReadToEndAsync()
     End Function
     
-    Private Function ParseFile(ByRef filename As String) As Boolean
+    Private Async Function ParseFile(gameDataProvider As IGameDataProvider) As Task(Of Boolean)
         'Returns FALSE if failed.
 
         Dim hasErrors As Boolean
@@ -1416,6 +1406,7 @@ Public Class LegacyGame
         Dim typeBlockName As String
         Dim typeLine As Integer
         Dim defineCount, curLine As Integer
+        Dim filename As String = gameDataProvider.Filename
 
         _defineBlockParams = New Dictionary(Of String, Dictionary(Of String, String))
 
@@ -1432,7 +1423,7 @@ Public Class LegacyGame
 
         If LCase(Right(filename, 4)) = ".asl" Or LCase(Right(filename, 4)) = ".txt" Then
             'Read file into Lines array
-            Dim fileData = GetFileData(filename)
+            Dim fileData = Await GetFileData(gameDataProvider)
 
             Dim aslLines As String() = fileData.Split(Chr(13))
             ReDim _lines(aslLines.Length)
@@ -8059,11 +8050,8 @@ Public Class LegacyGame
 
         Dim prevQsgVersion = False
 
-        If _data Is Nothing Then
-            fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
-        Else
-            fileData = System.Text.Encoding.GetEncoding(1252).GetString(_data.Data)
-        End If
+        ' TODO: Need a way to pass in the QSG file data instead of reading it from the file system
+        fileData = System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
 
         ' Check version
         savedQsgVersion = Left(fileData, 10)
@@ -8080,21 +8068,18 @@ Public Class LegacyGame
         Else
             InitFileData(fileData)
             GetNextChunk()
-
-            If _data Is Nothing Then
-                _gameFileName = GetNextChunk()
-            Else
-                GetNextChunk()
-                _gameFileName = _data.SourceFile
-            End If
+            
+            _gameFileName = GetNextChunk()
         End If
 
-        If _data Is Nothing And Not System.IO.File.Exists(_gameFileName) Then
+        If Not System.IO.File.Exists(_gameFileName) Then
             _gameFileName = _player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip")
             If _gameFileName = "" Then Return False
         End If
 
-        result = InitialiseGame(_gameFileName, True)
+        ' TODO: Need to load the original game file here
+        Throw New NotImplementedException
+        ' result = InitialiseGame(_gameFileName, True)
 
         If result = False Then
             Return False
@@ -10598,7 +10583,7 @@ Public Class LegacyGame
         End If
     End Sub
 
-    Private Function InitialiseGame(filename As String, Optional fromQsg As Boolean = False) As Boolean
+    Private Async Function InitialiseGame(gameDataProvider as IGameDataProvider, Optional fromQsg As Boolean = False) As Task(Of Boolean)
         _loadedFromQsg = fromQsg
 
         _changeLogRooms = New ChangeLog
@@ -10609,14 +10594,15 @@ Public Class LegacyGame
         _outPutOn = True
         _useAbbreviations = True
 
-        _gamePath = System.IO.Path.GetDirectoryName(filename) + "\"
+        ' TODO: ?
+        ' _gamePath = System.IO.Path.GetDirectoryName(filename) + "\"
 
-        LogASLError("Opening file " & filename & " on " & Date.Now.ToString(), LogType.Init)
+        LogASLError("Opening file " & gameDataProvider.Filename & " on " & Date.Now.ToString(), LogType.Init)
 
         ' Parse file and find where the 'define' blocks are:
-        If ParseFile(filename) = False Then
+        If Await ParseFile(gameDataProvider) = False Then
             LogASLError("Unable to open file", LogType.Init)
-            Dim err = "Unable to open " & filename
+            Dim err = "Unable to open " & gameDataProvider.Filename
 
             If _openErrorReport <> "" Then
                 ' Strip last vbcrlf
@@ -10715,7 +10701,7 @@ Public Class LegacyGame
         SetUpTimers()
         SetUpMenus()
 
-        _gameFileName = filename
+        _gameFileName = gameDataProvider.Filename
 
         LogASLError("Finished loading file.", LogType.Init)
 
@@ -11911,7 +11897,7 @@ Public Class LegacyGame
     End Sub
 
     Public Function Save(html As String) As Byte() Implements IASL.Save
-        Return SaveGame(_filename, False)
+        Return SaveGame(_gameDataProvider.Filename, False)
     End Function
     
     Public Sub SendCommand(command As String) Implements IASL.SendCommand
@@ -11972,12 +11958,12 @@ Public Class LegacyGame
 
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
     
-    Public Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Task(Of Boolean) Implements IASL.Initialise
+    Public Async Function Initialise(player As IPlayer, Optional isCompiled As Boolean? = Nothing) As Task(Of Boolean) Implements IASL.Initialise
         _player = player
-        If LCase(Right(_filename, 4)) = ".qsg" Or _data IsNot Nothing Then
-            Return Task.FromResult(OpenGame(_filename))
+        If LCase(Right(_gameDataProvider.Filename, 4)) = ".qsg" Then
+            Return OpenGame(_gameDataProvider.Filename)
         Else
-            Return Task.FromResult(InitialiseGame(_filename))
+            Return Await InitialiseGame(_gameDataProvider)
         End If
     End Function
 

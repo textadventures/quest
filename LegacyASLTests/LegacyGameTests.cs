@@ -15,12 +15,12 @@ namespace LegacyASLTests
         private TestPlayer m_player = new TestPlayer();
 
         [TestInitialize]
-        public void Init()
+        public async Task Init()
         {
             var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
-            m_game = new LegacyGame(filename, null);
+            m_game = new LegacyGame(new FileGameDataProvider(filename));
             m_game.PrintText += m_player.PrintText;
-            m_game.Initialise(m_player);
+            await m_game.Initialise(m_player);
             m_game.Begin();
         }
 
