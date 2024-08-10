@@ -67,14 +67,17 @@ namespace TextAdventures.Quest
         
         public async Task<bool> Load(IGameDataProvider gameDataProvider)
         {
+            byte[] bytes;
+            
             if (Path.GetExtension(gameDataProvider.Filename) == ".quest")
             {
-                // TODO: Get data from provider
-                // filename = LoadCompiledFile(filename);
-                throw new NotImplementedException();
+                bytes = await LoadCompiledFile(gameDataProvider);
             }
-
-            var bytes = await gameDataProvider.GetDataAsync();
+            else
+            {
+                bytes = await gameDataProvider.GetDataAsync();
+            }
+            
             var memoryStream = new MemoryStream(bytes);
             var data = await new StreamReader(memoryStream).ReadToEndAsync();
 
@@ -112,7 +115,9 @@ namespace TextAdventures.Quest
 
                         if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
                         {
-                            LoadCompiledFile(originalFile);
+                            // TODO
+                            throw new NotImplementedException();
+                            // LoadCompiledFile(originalFile);
                         }
 
                         if (!string.IsNullOrEmpty(originalFile))
@@ -155,10 +160,10 @@ namespace TextAdventures.Quest
             return (m_errors.Count == 0);
         }
 
-        private string LoadCompiledFile(string filename)
+        private async Task<byte[]> LoadCompiledFile(IGameDataProvider gameDataProvider)
         {
             PackageReader packageReader = new PackageReader();
-            var result = packageReader.LoadPackage(filename);
+            var result = await packageReader.LoadPackage(gameDataProvider);
             WorldModel.ResourcesFolder = result.Folder;
             IsCompiledFile = true;
             return result.GameFile;

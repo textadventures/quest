@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading.Tasks;
 using Ionic.Zip;
 
 namespace TextAdventures.Quest
@@ -11,25 +12,31 @@ namespace TextAdventures.Quest
     {
         public class ReadResult
         {
-            public string GameFile;
+            public byte[] GameFile;
             public string Folder;
         }
 
-        public ReadResult LoadPackage(string filename)
+        public async Task<ReadResult> LoadPackage(IGameDataProvider gameDataProvider)
         {
             ReadResult result = new ReadResult();
             string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
-            ZipFile zip = ZipFile.Read(filename);
+            
+            var bytes = await gameDataProvider.GetDataAsync();
+            var memoryStream = new MemoryStream(bytes);
+            
+            ZipFile zip = ZipFile.Read(memoryStream);
             zip.ExtractAll(tempDir);
 
             result.Folder = tempDir;
-            result.GameFile = Path.Combine(tempDir, "game.aslx");
+            var gameFile = Path.Combine(tempDir, "game.aslx");
 
-            if (!File.Exists(result.GameFile))
+            if (!File.Exists(gameFile))
             {
                 throw new InvalidDataException("Invalid game file");
             }
+
+            result.GameFile = await File.ReadAllBytesAsync(gameFile);
 
             return result;
         }
