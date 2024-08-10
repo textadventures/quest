@@ -74,7 +74,9 @@ namespace TextAdventures.Quest
                 throw new NotImplementedException();
             }
 
-            var data = Encoding.UTF8.GetString(await gameDataProvider.GetDataAsync());
+            var bytes = await gameDataProvider.GetDataAsync();
+            var memoryStream = new MemoryStream(bytes);
+            var data = await new StreamReader(memoryStream).ReadToEndAsync();
 
             try
             {

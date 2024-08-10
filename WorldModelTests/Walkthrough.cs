@@ -12,14 +12,14 @@ namespace WorldModelTests
     public class Walkthrough
     {
         [TestMethod]
-        public void RunWalkthrough()
+        public async Task RunWalkthrough()
         {
             WorldModel worldModel = new WorldModel(
                 new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx")),
                 Path.Combine("..", "..", ".."));
 
             Mock<IPlayer> player = new Mock<IPlayer>();
-            worldModel.Initialise(player.Object);
+            await worldModel.Initialise(player.Object);
             worldModel.Begin();
 
             foreach (string cmd in worldModel.Walkthroughs.Walkthroughs["debug"].Steps)

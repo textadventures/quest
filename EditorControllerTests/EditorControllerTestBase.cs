@@ -31,7 +31,7 @@ namespace EditorControllerTests
         }
 
         [TestInitialize]
-        public void Init()
+        public async Task Init()
         {
             m_controller = new EditorController();
             m_controller.ClearTree += m_controller_ClearTree;
@@ -42,7 +42,7 @@ namespace EditorControllerTests
             m_controller.RedoListUpdated += m_controller_RedoListUpdated;
             string tempFile = System.IO.Path.GetTempFileName();
             ExtractResource("EditorControllerTests.test.aslx", tempFile);
-            m_controller.Initialise(tempFile);
+            await m_controller.Initialise(tempFile);
             DoExtraInitialisation();
             try
             {
