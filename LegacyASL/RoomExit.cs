@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace TextAdventures.Quest.LegacyASL
 {
     internal class RoomExit
     {
-        public string Id;
-
         private int _objId;
         private int _roomId;
         private LegacyASL.LegacyGame.Direction _direction;
@@ -199,7 +197,7 @@ namespace TextAdventures.Quest.LegacyASL
                 }
                 else
                 {
-                    lastExitId = lastExitId;
+                    lastExitId = Conversions.ToInteger(lastExitIdString);
                 }
                 lastExitId = lastExitId + 1;
                 _game.AddToObjectProperties("quest.lastexitid=" + lastExitId.ToString(), _parent.GetObjId(), _game._nullContext);

@@ -186,7 +186,6 @@ namespace TextAdventures.Quest.LegacyASL
         {
             public string PlaceName;
             public string Prefix;
-            public string PlaceAlias;
             public string Script;
         }
 
@@ -229,7 +228,6 @@ namespace TextAdventures.Quest.LegacyASL
             public string Detail;
             public string ContainerRoom;
             public bool Exists;
-            public bool IsGlobal;
             public string Prefix;
             public string Suffix;
             public string Gender;
@@ -1637,8 +1635,6 @@ namespace TextAdventures.Quest.LegacyASL
 
         private string Keyword2CAS(string KWord)
         {
-            string k = "";
-
             if (string.IsNullOrEmpty(KWord))
             {
                 return "";
@@ -11763,7 +11759,6 @@ namespace TextAdventures.Quest.LegacyASL
             string oldBadCmdBefore = _badCmdBefore;
 
             int roomID = GetRoomID(_currentRoom, ctx);
-            bool enteredHelpCommand = false;
 
             if (string.IsNullOrEmpty(input))
                 return true;
@@ -12079,7 +12074,6 @@ namespace TextAdventures.Quest.LegacyASL
                 else if (BeginsWith(cmd, "help"))
                 {
                     ShowHelp(ctx);
-                    enteredHelpCommand = true;
                 }
                 else if (cmd == "about")
                 {
@@ -14122,8 +14116,6 @@ namespace TextAdventures.Quest.LegacyASL
             // is returned after a ";"
 
             int roomId = GetRoomID(_currentRoom, ctx);
-            bool foundPlace = false;
-            bool scriptPresent = false;
 
             // check if place is available
             var r = _rooms[roomId];
@@ -14154,8 +14146,6 @@ namespace TextAdventures.Quest.LegacyASL
 
                 if ((Strings.LCase(checkPlaceName) ?? "") == (Strings.LCase(placeName) ?? ""))
                 {
-                    foundPlace = true;
-
                     if (!string.IsNullOrEmpty(r.Places[i].Script))
                     {
                         return checkPlace + ";" + r.Places[i].Script;
@@ -14737,7 +14727,6 @@ namespace TextAdventures.Quest.LegacyASL
             string sw = "southwest";
             string u = "up";
             string d = "down";
-            string o = "out";
 
             if (_gameAslVersion >= 410)
             {
@@ -16005,8 +15994,6 @@ namespace TextAdventures.Quest.LegacyASL
                 return null;
             return new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read);
         }
-
-        private string m_gameId;
 
         public string GameID
         {
