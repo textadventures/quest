@@ -1659,7 +1659,7 @@ namespace TextAdventures.Quest.LegacyASL
         {
             // Loads data required for conversion of CAS files
 
-            string[] questDatLines = this.GetResourceLines(LegacyASL.My.Resources.Resources.QuestDAT);
+            string[] questDatLines = this.GetResourceLines(Resources.GetResourceBytes(Resources.QuestDAT));
 
             foreach (var line in questDatLines)
             {
@@ -15739,27 +15739,27 @@ namespace TextAdventures.Quest.LegacyASL
             {
                 case "stdverbs.lib":
                     {
-                        libCode = LegacyASL.My.Resources.Resources.stdverbs;
+                        libCode = Resources.GetResourceBytes(Resources.stdverbs);
                         break;
                     }
                 case "standard.lib":
                     {
-                        libCode = LegacyASL.My.Resources.Resources.standard;
+                        libCode = Resources.GetResourceBytes(Resources.standard);
                         break;
                     }
                 case "q3ext.qlb":
                     {
-                        libCode = LegacyASL.My.Resources.Resources.q3ext;
+                        libCode = Resources.GetResourceBytes(Resources.q3ext);
                         break;
                     }
                 case "typelib.qlb":
                     {
-                        libCode = LegacyASL.My.Resources.Resources.Typelib;
+                        libCode = Resources.GetResourceBytes(Resources.Typelib);
                         break;
                     }
                 case "net.lib":
                     {
-                        libCode = LegacyASL.My.Resources.Resources.net;
+                        libCode = Resources.GetResourceBytes(Resources.net);
                         break;
                     }
             }
