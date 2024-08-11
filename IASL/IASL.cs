@@ -51,7 +51,7 @@ namespace TextAdventures.Quest
         void PlaySound(string filename, bool synchronous, bool looped);
         void StopSound();
         void WriteHTML(string html);
-        string GetURL(string filename, Stream stream);
+        string GetURL(string filename);
         void LocationUpdated(string location);
         void UpdateGameName(string name);
         void ClearScreen();

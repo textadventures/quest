@@ -58,6 +58,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             gameTimer.RequestNextTimerTick += RequestNextTimerTick;
         }
         
+        GameResources.AddResourceProvider(Provider, Id, PlayerHelper.Game.GetResource);
+        
         var (result, errors) = await PlayerHelper.Initialise(this);
 
         if (result)
@@ -220,9 +222,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
 
         if (functionName == null) return;
-
-        // TODO: Get stream here
-        var url = GetURL(filename, null!);
+        
+        var url = GetURL(filename);
             
         AddJavaScriptToBuffer(
             functionName,
@@ -241,18 +242,13 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         OutputText(html);
     }
 
-    string IPlayer.GetURL(string file, Stream stream)
+    string IPlayer.GetURL(string file)
     {
-        return GetURL(file, stream);
+        return GetURL(file);
     }
     
-    string GetURL(string file, Stream stream)
+    string GetURL(string file)
     {
-        // TODO: A better implementation would be to register the game itself with the resource
-        // handler, instead of ad hoc adding resources here. Saved games might reference URLs which
-        // were output previously.
-        
-        GameResources.AddResource(Provider, Id, file, stream);
         return $"/game/{Provider}/{Id}/{file}";
     }
 

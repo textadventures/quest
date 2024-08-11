@@ -7250,9 +7250,7 @@ Public Class LegacyGame
         Else
             ' Workaround for a particular game which expects pictures to be in a popup window -
             ' use the static picture frame feature so that image is not cleared
-            
-            ' TODO: Fetch stream here
-            _player.SetPanelContents("<img src=""" + _player.GetURL(filename, Nothing) + """ onload=""setPanelHeight()""/>")
+            _player.SetPanelContents("<img src=""" + _player.GetURL(filename) + """ onload=""setPanelHeight()""/>")
         End If
     End Sub
 

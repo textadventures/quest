@@ -1219,9 +1219,7 @@ namespace TextAdventures.Quest
 
         internal string GetExternalURL(string file)
         {
-            var resource = GetResource(file);
-            if (resource == null) return string.Empty;
-            return m_playerUI.GetURL(file, resource);
+            return m_playerUI.GetURL(file);
         }
 
         public IEnumerable<string> GetAvailableLibraries()

@@ -4,24 +4,26 @@ namespace WebPlayer;
 
 public static class GameResources
 {
-    private static readonly Dictionary<string, byte[]> Resources = new();
+    private static readonly Dictionary<string, Func<string, Stream?>> ResourceProviders = new();
     
-    private static string Key(string provider, string id, string name) => $"{provider}.{id}.{name}";
+    private static string Key(string provider, string id) => $"{provider}.{id}";
 
-    public static void AddResource(string provider, string id, string name, Stream data)
+    public static void AddResourceProvider(string gameProvider, string gameId, Func<string, Stream?> resourceProvider)
     {
-        if (Resources.ContainsKey(Key(provider, id, name))) return;
+        if (ResourceProviders.ContainsKey(Key(gameProvider, gameId))) return;
         
-        using var ms = new MemoryStream();
-        data.CopyTo(ms);
-        Resources[Key(provider, id, name)] = ms.ToArray();
+        ResourceProviders[Key(gameProvider, gameId)] = resourceProvider;
     }
     
     public static IResult GetResource(string provider, string id, string name)
     {
-        var key = Key(provider, id, name);
-        if (!Resources.TryGetValue(key, out var bytes)) return Results.StatusCode(StatusCodes.Status404NotFound);
+        var key = Key(provider, id);
+        if (!ResourceProviders.TryGetValue(key, out var resourceProvider)) return Results.StatusCode(StatusCodes.Status404NotFound);
+        
+        var stream = resourceProvider(name);
+        if (stream == null) return Results.StatusCode(StatusCodes.Status404NotFound);
+        
         new FileExtensionContentTypeProvider().TryGetContentType(name, out var contentType);
-        return Results.Bytes(bytes, contentType);
+        return Results.Stream(stream, contentType);
     }
 }
