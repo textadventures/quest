@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyASLTests", "LegacyASL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASL4", "ASL4\ASL4.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASL", "LegacyASL\LegacyASL.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
