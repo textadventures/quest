@@ -2026,21 +2026,24 @@ namespace TextAdventures.Quest
 
         public static Dictionary<string, TemplateData> GetAvailableTemplates(string folder = null)
         {
-            Dictionary<string, TemplateData> templates = new Dictionary<string, TemplateData>();
+            // TODO
+            throw new NotImplementedException();
 
-            if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
-            folder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(folder);
-
-            foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
-            {
-                string key = System.IO.Path.GetFileNameWithoutExtension(file);
-                if (!templates.ContainsKey(key))
-                {
-                    AddTemplateData(templates, key, file);
-                }
-            }
-
-            return templates;
+            // Dictionary<string, TemplateData> templates = new Dictionary<string, TemplateData>();
+            //
+            // if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
+            // folder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(folder);
+            //
+            // foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
+            // {
+            //     string key = System.IO.Path.GetFileNameWithoutExtension(file);
+            //     if (!templates.ContainsKey(key))
+            //     {
+            //         AddTemplateData(templates, key, file);
+            //     }
+            // }
+            //
+            // return templates;
         }
 
         private static void AddTemplateData(Dictionary<string, TemplateData> templates, string key, string filename)

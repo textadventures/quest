@@ -33,7 +33,10 @@ namespace TextAdventures.Quest
 
         public FontsManager()
         {
+            // TODO: Use HttpClient
+#pragma warning disable SYSLIB0014
             m_client = new System.Net.WebClient();
+#pragma warning restore SYSLIB0014
             m_client.DownloadStringCompleted += m_client_DownloadStringCompleted;
             m_client.Proxy = null;
             m_client.DownloadStringAsync(new Uri("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDs93IH2UgudQK5IyNSdvKnm1N8TIYzlcM"));
