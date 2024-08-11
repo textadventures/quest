@@ -254,3 +254,9 @@ function saveGameResponse(data) {
         console.log("TODO: Save game", data);
     }
 }
+
+function addExternalScript(url) {
+    const script = document.createElement("script");
+    script.src = url;
+    document.head.appendChild(script);
+}

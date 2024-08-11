@@ -32,7 +32,7 @@ namespace TextAdventures.Quest
         void FinishPause();
         void SetMenuResponse(string? response);
         void SetQuestionResponse(bool response);
-        IEnumerable<string> GetExternalScripts();
+        IEnumerable<string>? GetExternalScripts();
         IEnumerable<string> GetExternalStylesheets();
         string? TempFolder { get; set; }
         System.IO.Stream? GetResource(string filename);

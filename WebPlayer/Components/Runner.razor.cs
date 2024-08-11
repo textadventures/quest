@@ -64,6 +64,9 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
         if (result)
         {
+            RegisterExternalScripts();
+            RegisterExternalStylesheets();
+            
             PlayerHelper.Game.Begin();
             await ClearBuffer();
         }
@@ -398,5 +401,30 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     void IPlayerHelperUI.OutputText(string text)
     {
         OutputText(text);
+    }
+
+    private void RegisterExternalScripts()
+    {
+        var scripts = PlayerHelper.Game.GetExternalScripts();
+        if (scripts == null) return;
+        
+        foreach (var script in scripts)
+        {
+            var url = GetURL(script);
+            AddJavaScriptToBuffer("addExternalScript", url);
+        }
+    }
+
+    private void RegisterExternalStylesheets()
+    {
+        // TODO
+        
+        // var stylesheets = m_player.GetExternalStylesheets();
+        // if (stylesheets == null) return;
+        //
+        // foreach (var stylesheet in stylesheets)
+        // {
+        //     m_buffer.AddJavaScriptToBuffer("addExternalStylesheet", new StringParameter(stylesheet));
+        // }
     }
 }
