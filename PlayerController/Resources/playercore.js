@@ -106,7 +106,7 @@ $(function () {
     
     $(document).on("click", ".exitlink", function () {
         if (!$(this).hasClass("disabled")) {
-            sendCommand($(this).data("command"));
+            sendCommand($(this).attr("data-command"));
         }
     });
     
@@ -117,7 +117,7 @@ $(function () {
                 $this.addClass("disabled");
                 $this.data("deactivated", true);
             }
-            sendCommand($this.data("command"));
+            sendCommand($this.attr("data-command"));
         }
     });
 
