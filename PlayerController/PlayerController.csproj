@@ -10,8 +10,8 @@
     <AssemblyVersion>5.8.%2a</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ASL4\ASL4.csproj" />
     <ProjectReference Include="..\IASL\IASL.csproj" />
-    <ProjectReference Include="..\Legacy\LegacyASL.vbproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj" />
   </ItemGroup>

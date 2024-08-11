@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ASL4\ASL4.csproj" />
 		<ProjectReference Include="..\IASL\IASL.csproj" />
-		<ProjectReference Include="..\Legacy\LegacyASL.vbproj" />
 	</ItemGroup>
 </Project>

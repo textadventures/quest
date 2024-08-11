@@ -22,7 +22,7 @@ namespace TextAdventures.Quest
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    LegacyASL.LegacyGame game = new LegacyGame(gameDataProvider);
+                    LegacyGame game = new LegacyGame(gameDataProvider);
                     game.SetUnzipFunction(UnzipAndGetGameFile);
                     return game;
                 case ".zip":
