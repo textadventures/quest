@@ -1224,15 +1224,18 @@ namespace TextAdventures.Quest
 
         public IEnumerable<string> GetAvailableLibraries()
         {
-            List<string> result = new List<string>();
-            AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false);
-            AddFilesInPathToList(result, Environment.CurrentDirectory, false);
-            if (m_libFolder != null) AddFilesInPathToList(result, m_libFolder, false);
-            if (System.Reflection.Assembly.GetEntryAssembly() != null)
-            {
-                AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), true);
-            }
-            return result;
+            // TODO
+            throw new NotImplementedException();
+
+            // List<string> result = new List<string>();
+            // AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false);
+            // AddFilesInPathToList(result, Environment.CurrentDirectory, false);
+            // if (m_libFolder != null) AddFilesInPathToList(result, m_libFolder, false);
+            // if (System.Reflection.Assembly.GetEntryAssembly() != null)
+            // {
+            //     AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), true);
+            // }
+            // return result;
         }
 
         private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
