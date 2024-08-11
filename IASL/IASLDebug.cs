@@ -7,8 +7,8 @@ namespace TextAdventures.Quest
 {
     public class ObjectsUpdatedEventArgs : EventArgs
     {
-        public string Added { get; set; }
-        public string Removed { get; set; }
+        public string? Added { get; set; }
+        public string? Removed { get; set; }
     }
 
     public interface IASLDebug
@@ -36,7 +36,7 @@ namespace TextAdventures.Quest
             set;
         }
 
-        public string Source
+        public string? Source
         {
             get;
             set;
@@ -58,7 +58,7 @@ namespace TextAdventures.Quest
         {
         }
 
-        public DebugDataItem(string value, bool isInherited, string source)
+        public DebugDataItem(string value, bool isInherited, string? source)
         {
             Value = value;
             IsInherited = isInherited;

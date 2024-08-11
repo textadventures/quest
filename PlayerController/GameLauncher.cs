@@ -13,7 +13,6 @@ namespace TextAdventures.Quest
     {
         public static IASL GetGame(IGameDataProvider gameDataProvider, string libraryFolder)
         {
-            string tempDir;
             switch (System.IO.Path.GetExtension(gameDataProvider.Filename).ToLower())
             {
                 case ".aslx":

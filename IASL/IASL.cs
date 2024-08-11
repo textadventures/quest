@@ -30,7 +30,7 @@ namespace TextAdventures.Quest
         string SaveExtension { get; }
         void FinishWait();
         void FinishPause();
-        void SetMenuResponse(string response);
+        void SetMenuResponse(string? response);
         void SetQuestionResponse(bool response);
         IEnumerable<string> GetExternalScripts();
         IEnumerable<string> GetExternalStylesheets();
@@ -73,7 +73,7 @@ namespace TextAdventures.Quest
         void SetInterfaceString(string name, string text);
         void SetPanelContents(string html);
         void Log(string text);
-        string GetUIOption(UIOption option);
+        string? GetUIOption(UIOption option);
     }
 
     public enum ListType
@@ -126,7 +126,7 @@ namespace TextAdventures.Quest
     {
         private string m_text;
         private IEnumerable<string> m_verbs;
-        private string m_elementId;
+        private string? m_elementId;
         private string m_elementName;
 
         public ListData(string text, IEnumerable<string> verbs)
@@ -134,7 +134,7 @@ namespace TextAdventures.Quest
         {
         }
 
-        public ListData(string text, IEnumerable<string> verbs, string elementId, string elementName)
+        public ListData(string text, IEnumerable<string> verbs, string? elementId, string elementName)
         {
             m_text = text;
             m_verbs = verbs;
@@ -152,7 +152,7 @@ namespace TextAdventures.Quest
             get { return m_verbs; }
         }
 
-        public string ElementId
+        public string? ElementId
         {
             get { return m_elementId; }
         }
