@@ -177,7 +177,7 @@ namespace LegacyASLTests
         {
         }
 
-        public string GetURL(string file)
+        public string GetURL(string file, Stream stream)
         {
             return file;
         }

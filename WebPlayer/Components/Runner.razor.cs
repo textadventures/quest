@@ -6,6 +6,7 @@ namespace WebPlayer.Components;
 
 public partial class Runner : ComponentBase, IPlayerHelperUI
 {
+    [Parameter] public required string Provider { get; set; }
     [Parameter] public required string Id { get; set; }
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
@@ -220,7 +221,8 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
 
         if (functionName == null) return;
 
-        var url = GetURL(filename);
+        // TODO: Get stream here
+        var url = GetURL(filename, null!);
             
         AddJavaScriptToBuffer(
             functionName,
@@ -239,15 +241,19 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
         OutputText(html);
     }
 
-    string IPlayer.GetURL(string file)
+    string IPlayer.GetURL(string file, Stream stream)
     {
-        return GetURL(file);
+        return GetURL(file, stream);
     }
     
-    string GetURL(string file)
+    string GetURL(string file, Stream stream)
     {
-        // TODO
-        throw new NotImplementedException();
+        // TODO: A better implementation would be to register the game itself with the resource
+        // handler, instead of ad hoc adding resources here. Saved games might reference URLs which
+        // were output previously.
+        
+        GameResources.AddResource(Provider, Id, file, stream);
+        return $"/game/{Provider}/{Id}/{file}";
     }
 
     void IPlayer.LocationUpdated(string location)
