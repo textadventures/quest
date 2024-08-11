@@ -6,6 +6,7 @@ using System.Threading;
 using TextAdventures.Quest.Scripts;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using TextAdventures.Quest.Functions;
 
@@ -86,6 +87,8 @@ namespace TextAdventures.Quest
         public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public event Action<int> RequestNextTimerTick;
+        
+        static readonly HttpClient HttpClient = new HttpClient();
 
         public class ElementFieldUpdatedEventArgs : EventArgs
         {
@@ -1685,40 +1688,6 @@ namespace TextAdventures.Quest
         }
         
         #nullable restore
-
-        public string GetResourceExternalData(string filename)
-        {
-            if (!IsUrlValid(filename))
-            {
-                return "";
-            }
-            using (var client = new WebClient())
-            {
-                client.Encoding = System.Text.Encoding.UTF8;
-                return client.DownloadString(filename);
-            }
-        }
-
-        public string SetResourceExternalData(string filename, String content)
-        {
-            if (!IsUrlValid(filename))
-            {
-                return "";
-            }
-            using (var client = new WebClient())
-            {
-                var reqparm = new System.Collections.Specialized.NameValueCollection();
-                reqparm.Add("param", content);
-                byte[] responsebytes = client.UploadValues(filename, "POST", reqparm);
-                return System.Text.Encoding.UTF8.GetString(responsebytes);
-            }
-        }
-
-        private static bool IsUrlValid(string uriName)
-        {
-            Uri uriResult;
-            return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-        }
 
         public string GetResourcePath(string filename)
         {

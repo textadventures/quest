@@ -490,16 +490,16 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.GetResourceData(filename);
         }
 
+        // This was added for Quest 5.8. Should be a responsibility of the front-end, not WorldModel.
         public string GetExternalFileData(string filename)
         {
-            if (filename.Contains("..")) throw new ArgumentOutOfRangeException("Invalid filename");
-            return m_worldModel.GetResourceExternalData(filename);
+            throw new Exception("GetExternalFileData is not supported");
         }
 
+        // This was added for Quest 5.8. Should be a responsibility of the front-end, not WorldModel.
         public string SetExternalFileData(string filename, string content)
         {
-            if (filename.Contains("..") || !filename.ToUpper().EndsWith(".PHP")) throw new ArgumentOutOfRangeException("Invalid filename");
-            return m_worldModel.SetResourceExternalData(filename, content);
+            throw new Exception("SetExternalFileData is not supported");
         }
 
         public string GetUniqueElementName(string name)
