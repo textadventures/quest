@@ -18,4 +18,10 @@ public class GameData(Stream data, string filename) : IGameData
 public interface IGameDataProvider
 {
     Task<IGameData?> GetData();
+    
+    /// <summary>
+    /// A unique id to be used when fetching resources for this game. Different instances of the same game can
+    /// share a ResourcesId.
+    /// </summary>
+    string ResourcesId { get; }
 }

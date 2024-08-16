@@ -1,13 +1,13 @@
 @page "/textadventures/{Id}"
 @using TextAdventures.Quest
 
-<Player Id="@Id" Provider="textadventures" GameDataProvider="@GetGameDataProvider()"></Player>
+<Player GameDataProvider="@GetGameDataProvider()"></Player>
 
 @code {
     [Parameter] public required string Id { get; set; }
     
     private IGameDataProvider GetGameDataProvider()
     {
-        return new UrlGameDataProvider("http://textadventures.co.uk/games/download/" + Id);
+        return new UrlGameDataProvider("http://textadventures.co.uk/games/download/" + Id, $"textadventures.{Id}");
     }
 }

@@ -1,7 +1,7 @@
 @page "/file/{Id}"
 @using TextAdventures.Quest
 
-<Player Id="@Id" Provider="file" GameDataProvider="@GetGameDataProvider()"></Player>
+<Player GameDataProvider="@GetGameDataProvider()"></Player>
 
 @code {
     [Parameter] public required string Id { get; set; }
@@ -20,6 +20,6 @@
             _ => throw new NotImplementedException()
         };
 
-        return new FileGameDataProvider(filename);
+        return new FileGameDataProvider(filename, $"file.{Id}");
     }
 }

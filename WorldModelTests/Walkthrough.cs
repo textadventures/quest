@@ -14,7 +14,7 @@ namespace WorldModelTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
-            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"));
+            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"), "test");
             var gameData = await gameDataProvider.GetData();
             WorldModel worldModel = new WorldModel(
                 gameData,

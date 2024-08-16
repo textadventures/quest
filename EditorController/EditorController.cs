@@ -328,7 +328,8 @@ namespace TextAdventures.Quest
         {
             m_lastelementscutout = false;
             m_filename = filename;
-            var gameDataProvider = new FileGameDataProvider(filename);
+            // TODO: ResourcesId is probably not relevant here?
+            var gameDataProvider = new FileGameDataProvider(filename, "editor");
             var gameData = await gameDataProvider.GetData();
             m_worldModel = new WorldModel(gameData, libFolder);
             m_scriptFactory = new ScriptFactory(m_worldModel);

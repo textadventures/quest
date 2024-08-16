@@ -6,8 +6,6 @@ namespace WebPlayer.Components;
 
 public partial class Runner : ComponentBase, IPlayerHelperUI
 {
-    [Parameter] public required string Provider { get; set; }
-    [Parameter] public required string Id { get; set; }
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private PlayerHelper PlayerHelper { get; set; } = null!;
@@ -60,7 +58,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             gameTimer.RequestNextTimerTick += RequestNextTimerTick;
         }
         
-        GameResources.AddResourceProvider(Provider, Id, PlayerHelper.Game.GetResource);
+        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, PlayerHelper.Game.GetResource);
         
         var (result, errors) = await PlayerHelper.Initialise(this);
 
@@ -254,7 +252,7 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
     
     string GetURL(string file)
     {
-        return $"/game/{Provider}/{Id}/{file}";
+        return $"/game/{GameDataProvider.ResourcesId}/{file}";
     }
 
     void IPlayer.LocationUpdated(string location)

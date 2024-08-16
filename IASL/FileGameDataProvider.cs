@@ -3,13 +3,15 @@ using System.Threading.Tasks;
 
 namespace TextAdventures.Quest;
 
-public class FileGameDataProvider(string filename): IGameDataProvider
+public class FileGameDataProvider(string filename, string resourcesId): IGameDataProvider
 {
     public Task<IGameData?> GetData()
     {
         var stream = File.OpenRead(filename);
         return Task.FromResult<IGameData?>(new GameData(stream, filename));
     }
-    
+
+    public string ResourcesId => resourcesId;
+
     public string Filename => filename;
 }

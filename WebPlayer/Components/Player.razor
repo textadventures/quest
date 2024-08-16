@@ -21,11 +21,9 @@
 <div id="audio_embed">
 </div>
 
-<Runner Id="@Id" Provider="@Provider" GameDataProvider="@GameDataProvider"></Runner>
+<Runner GameDataProvider="@GameDataProvider"></Runner>
 
 @code {
-    [Parameter] public required string Provider { get; set; }
-    [Parameter] public required string Id { get; set; }
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetResourceString("playercore.htm");
 }

@@ -2,7 +2,7 @@ using TextAdventures.Quest;
 
 namespace WebPlayer.Components;
 
-public class UrlGameDataProvider(string url) : IGameDataProvider
+public class UrlGameDataProvider(string url, string resourcesId) : IGameDataProvider
 {
     public async Task<IGameData?> GetData()
     {
@@ -15,6 +15,8 @@ public class UrlGameDataProvider(string url) : IGameDataProvider
 
         return new GameData(stream, filename);
     }
+    
+    public string ResourcesId => resourcesId;
 
     public string Url => url;
 }

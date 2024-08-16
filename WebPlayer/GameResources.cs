@@ -5,22 +5,18 @@ namespace WebPlayer;
 public static class GameResources
 {
     private static readonly Dictionary<string, Func<string, Stream?>> ResourceProviders = new();
-    
-    private static string Key(string provider, string id) => $"{provider}.{id}";
 
-    public static void AddResourceProvider(string gameProvider, string gameId, Func<string, Stream?> resourceProvider)
+    public static void AddResourceProvider(string resourcesId, Func<string, Stream?> resourceProvider)
     {
-        if (ResourceProviders.ContainsKey(Key(gameProvider, gameId))) return;
-        
-        ResourceProviders[Key(gameProvider, gameId)] = resourceProvider;
+        ResourceProviders.TryAdd(resourcesId, resourceProvider);
     }
     
     private static readonly object ResourceStreamLock = new();
     
-    public static IResult GetResource(string provider, string id, string name)
+    public static IResult GetResource(string resourcesId, string name)
     {
-        var key = Key(provider, id);
-        if (!ResourceProviders.TryGetValue(key, out var resourceProvider)) return Results.StatusCode(StatusCodes.Status404NotFound);
+        if (!ResourceProviders.TryGetValue(resourcesId, out var resourceProvider))
+            return Results.StatusCode(StatusCodes.Status404NotFound);
 
         // Workaround for ZipArchive not being thread-safe - if multiple requests are made simultaneously for resources
         // in the same zip file, some of those requests can fail.

@@ -31,6 +31,6 @@ app.MapGet("/res/{name}", ResourceHandler.GetResource);
 app.MapGet("/res/{dir}/{name}", (string dir, string name) => ResourceHandler.GetResource($"{dir}.{name}"));
 app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) => ResourceHandler.GetResource($"{dir1}.{dir2}.{name}"));
 
-app.Map("/game/{provider}/{id}/{name}", GameResources.GetResource);
+app.Map("/game/{resourcesId}/{name}", GameResources.GetResource);
 
 app.Run();

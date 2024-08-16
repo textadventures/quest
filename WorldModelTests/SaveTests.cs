@@ -14,7 +14,7 @@ namespace WorldModelTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
-            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx"));
+            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx"), "test");
             var gameData = await gameDataProvider.GetData();
             WorldModel worldModel = new WorldModel(
                 gameData,
@@ -31,7 +31,7 @@ namespace WorldModelTests
             string tempFilename = System.IO.Path.GetTempFileName();
             worldModel.Save(tempFilename, null);
 
-            var gameDataProvider2 = new FileGameDataProvider(tempFilename);
+            var gameDataProvider2 = new FileGameDataProvider(tempFilename, "test");
             var gameData2 = await gameDataProvider2.GetData();
             WorldModel savedGameWorldModel = new WorldModel(gameData2, null);
             success = await savedGameWorldModel.Initialise(player.Object);
