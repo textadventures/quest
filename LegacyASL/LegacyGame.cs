@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using System.Text;
+using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace TextAdventures.Quest.LegacyASL;
@@ -7,10 +8,10 @@ public partial class LegacyGame : IASL, IASLTimer
 {
     public enum State
     {
-        Ready,       // game is not doing any processing, and is ready for a command
-        Working,     // game is processing a command
-        Waiting,     // while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
-        Finished    // game is over
+        Ready, // game is not doing any processing, and is ready for a command
+        Working, // game is processing a command
+        Waiting, // while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
+        Finished // game is over
     }
 
     private class DefineBlock
@@ -190,18 +191,18 @@ public partial class LegacyGame : IASL, IASLTimer
         public string RoomAlias;
         public UserDefinedCommandType[] Commands;
         public int NumberCommands;
-        public TextAction Description = new TextAction();
-        public ScriptText Out = new ScriptText();
-        public TextAction East = new TextAction();
-        public TextAction West = new TextAction();
-        public TextAction North = new TextAction();
-        public TextAction South = new TextAction();
-        public TextAction NorthEast = new TextAction();
-        public TextAction NorthWest = new TextAction();
-        public TextAction SouthEast = new TextAction();
-        public TextAction SouthWest = new TextAction();
-        public TextAction Up = new TextAction();
-        public TextAction Down = new TextAction();
+        public TextAction Description = new();
+        public ScriptText Out = new();
+        public TextAction East = new();
+        public TextAction West = new();
+        public TextAction North = new();
+        public TextAction South = new();
+        public TextAction NorthEast = new();
+        public TextAction NorthWest = new();
+        public TextAction SouthEast = new();
+        public TextAction SouthWest = new();
+        public TextAction Up = new();
+        public TextAction Down = new();
         public string InDescription;
         public string Look;
         public PlaceType[] Places;
@@ -213,7 +214,7 @@ public partial class LegacyGame : IASL, IASLTimer
         public int ObjId;
         public string BeforeTurnScript;
         public string AfterTurnScript;
-        public LegacyASL.RoomExits Exits;
+        public RoomExits Exits;
     }
 
     internal class ObjectType
@@ -234,8 +235,8 @@ public partial class LegacyGame : IASL, IASLTimer
         public string LoseScript;
         public int NumberProperties;
         public PropertyType[] Properties;
-        public TextAction Speak = new TextAction();
-        public TextAction Take = new TextAction();
+        public TextAction Speak = new();
+        public TextAction Take = new();
         public bool IsRoom;
         public bool IsExit;
         public string CorresRoom;
@@ -257,10 +258,10 @@ public partial class LegacyGame : IASL, IASLTimer
         public string[] TypesIncluded;
         public int NumberAltNames;
         public string[] AltNames;
-        public TextAction AddScript = new TextAction();
-        public TextAction RemoveScript = new TextAction();
-        public TextAction OpenScript = new TextAction();
-        public TextAction CloseScript = new TextAction();
+        public TextAction AddScript = new();
+        public TextAction RemoveScript = new();
+        public TextAction OpenScript = new();
+        public TextAction CloseScript = new();
     }
 
     private class ChangeType
@@ -393,14 +394,14 @@ public partial class LegacyGame : IASL, IASLTimer
     }
 
     private string _openErrorReport;
-    private string[] _casKeywords = new string[256]; // Tokenised CAS keywords
+    private readonly string[] _casKeywords = new string[256]; // Tokenised CAS keywords
     private string[] _lines; // Stores the lines of the ASL script/definitions
     private DefineBlock[] _defineBlocks; // Stores the start and end lines of each 'define' section
     private int _numberSections; // Number of define sections
     private string _gameName; // The name of the game
-    internal Context _nullContext = new Context();
-    private LegacyASL.ChangeLog _changeLogRooms;
-    private LegacyASL.ChangeLog _changeLogObjects;
+    internal Context _nullContext = new();
+    private ChangeLog _changeLogRooms;
+    private ChangeLog _changeLogObjects;
     private PropertiesActions _defaultProperties;
     private PropertiesActions _defaultRoomProperties;
     internal RoomType[] _rooms;
@@ -431,7 +432,6 @@ public partial class LegacyGame : IASL, IASLTimer
     private string _afterTurnScript;
     private string _beforeTurnScript;
     private bool _outPutOn;
-    private int _gameAslVersion;
     private int _choiceNumber;
     private string _gameLoadMethod;
     private TimerType[] _timers;
@@ -439,7 +439,7 @@ public partial class LegacyGame : IASL, IASLTimer
     private int _numDisplayStrings;
     private int _numDisplayNumerics;
     private bool _gameFullyLoaded;
-    private GameChangeDataType _gameChangeData = new GameChangeDataType();
+    private readonly GameChangeDataType _gameChangeData = new();
     private int _lastIt;
     private ItType _lastItMode;
     private int _thisTurnIt;
@@ -455,24 +455,23 @@ public partial class LegacyGame : IASL, IASLTimer
     private bool _loadedFromQsg;
     private string _beforeSaveScript;
     private string _onLoadScript;
-    private int _numSkipCheckFiles;
-    private string[] _skipCheckFile;
-    private List<ListData> _compassExits = new List<ListData>();
-    private List<ListData> _gotoExits = new List<ListData>();
-    private LegacyASL.TextFormatter _textFormatter = new LegacyASL.TextFormatter();
-    private List<string> _log = new List<string>();
+    private readonly int _numSkipCheckFiles;
+    private readonly string[] _skipCheckFile;
+    private List<ListData> _compassExits = new();
+    private List<ListData> _gotoExits = new();
+    private readonly TextFormatter _textFormatter = new();
+    private readonly List<string> _log = new();
     private string _casFileData;
-    private object _commandLock = new object();
-    private object _stateLock = new object();
+    private readonly object _commandLock = new();
+    private readonly object _stateLock = new();
     private State _state = State.Ready;
-    private object _waitLock = new object();
+    private readonly object _waitLock = new();
     private bool _readyForCommand = true;
     private bool _gameLoading;
-    private Random _random = new Random();
-    private string _tempFolder;
-    private string[] _playerErrorMessageString = new string[39];
-    private Dictionary<ListType, List<string>> _listVerbs = new Dictionary<ListType, List<string>>();
-    private IGameData _gameData;
+    private readonly Random _random = new();
+    private readonly string[] _playerErrorMessageString = new string[39];
+    private readonly Dictionary<ListType, List<string>> _listVerbs = new();
+    private readonly IGameData _gameData;
     private string _originalFilename;
     private IPlayer _player;
     private bool _gameFinished;
@@ -484,8 +483,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
     public LegacyGame(IGameData gameData)
     {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-        _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
         LoadCASKeywords();
         _gameLoadMethod = "normal";
         _gameData = gameData;
@@ -590,16 +589,14 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 if (len == 0)
-                {
                     // unknown code
+                {
                     len = 1;
                 }
 
                 s = Strings.Left(s, pos - 1) + Strings.Mid(s, pos + len + 1);
             }
-        }
-
-        while (pos != 0);
+        } while (pos != 0);
 
         return s;
     }
@@ -607,10 +604,10 @@ public partial class LegacyGame : IASL, IASLTimer
     private bool CheckSections()
     {
         int defines, braces;
-        string checkLine = "";
+        var checkLine = "";
         int bracePos;
         int pos;
-        string section = "";
+        var section = "";
         bool hasErrors;
         var skipBlock = default(bool);
         _openErrorReport = "";
@@ -636,7 +633,8 @@ public partial class LegacyGame : IASL, IASLTimer
                     if (defines < 0)
                     {
                         LogASLError("Extra 'end define' after block '" + section + "'", LogType.FatalError);
-                        _openErrorReport = _openErrorReport + "Extra 'end define' after block '" + section + "'" + Constants.vbCrLf;
+                        _openErrorReport = _openErrorReport + "Extra 'end define' after block '" + section + "'" +
+                                           Constants.vbCrLf;
                         hasErrors = true;
                         defines = 0;
                     }
@@ -650,12 +648,13 @@ public partial class LegacyGame : IASL, IASLTimer
                     else if (braces < 0)
                     {
                         LogASLError("Too many } in block '" + section + "'", LogType.FatalError);
-                        _openErrorReport = _openErrorReport + "Too many } in block '" + section + "'" + Constants.vbCrLf;
+                        _openErrorReport = _openErrorReport + "Too many } in block '" + section + "'" +
+                                           Constants.vbCrLf;
                         hasErrors = true;
                     }
                 }
 
-                if (Strings.Left(_lines[i], 1) != "'" & !skipBlock)
+                if ((Strings.Left(_lines[i], 1) != "'") & !skipBlock)
                 {
                     checkLine = ObliterateParameters(_lines[i]);
                     if (BeginsWith(checkLine, "'<ERROR;"))
@@ -663,8 +662,11 @@ public partial class LegacyGame : IASL, IASLTimer
                         // ObliterateParameters denotes a mismatched $, ( etc.
                         // by prefixing line with '<ERROR;*; where * is the mismatched
                         // character
-                        LogASLError("Expected closing " + Strings.Mid(checkLine, 9, 1) + " character in '" + ReportErrorLine(_lines[i]) + "'", LogType.FatalError);
-                        _openErrorReport = _openErrorReport + "Expected closing " + Strings.Mid(checkLine, 9, 1) + " character in '" + ReportErrorLine(_lines[i]) + "'." + Constants.vbCrLf;
+                        LogASLError(
+                            "Expected closing " + Strings.Mid(checkLine, 9, 1) + " character in '" +
+                            ReportErrorLine(_lines[i]) + "'", LogType.FatalError);
+                        _openErrorReport = _openErrorReport + "Expected closing " + Strings.Mid(checkLine, 9, 1) +
+                                           " character in '" + ReportErrorLine(_lines[i]) + "'." + Constants.vbCrLf;
                         return false;
                     }
                 }
@@ -681,8 +683,7 @@ public partial class LegacyGame : IASL, IASLTimer
                             pos = bracePos + 1;
                             braces = braces + 1;
                         }
-                    }
-                    while (!(bracePos == 0 | pos > Strings.Len(checkLine)));
+                    } while (!((bracePos == 0) | (pos > Strings.Len(checkLine))));
 
                     // Now check }
                     pos = 1;
@@ -694,8 +695,7 @@ public partial class LegacyGame : IASL, IASLTimer
                             pos = bracePos + 1;
                             braces = braces - 1;
                         }
-                    }
-                    while (!(bracePos == 0 | pos > Strings.Len(checkLine)));
+                    } while (!((bracePos == 0) | (pos > Strings.Len(checkLine))));
                 }
             }
         }
@@ -737,18 +737,22 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 convPos = Strings.InStr(obscureLine, "until (");
             }
+
             if (convPos == 0)
             {
                 convPos = Strings.InStr(obscureLine, "while (");
             }
+
             if (convPos == 0)
             {
                 convPos = Strings.InStr(obscureLine, "not (");
             }
+
             if (convPos == 0)
             {
                 convPos = Strings.InStr(obscureLine, "and (");
             }
+
             if (convPos == 0)
             {
                 convPos = Strings.InStr(obscureLine, "or (");
@@ -763,9 +767,12 @@ public partial class LegacyGame : IASL, IASLTimer
                     // ObliterateVariableNames denotes a mismatched #, % or $
                     // by prefixing line with '<ERROR;*; where * is the mismatched
                     // character
-                    LogASLError("Expected closing " + Strings.Mid(varObscureLine, 9, 1) + " character in '" + ReportErrorLine(_lines[i]) + "'", LogType.FatalError);
+                    LogASLError(
+                        "Expected closing " + Strings.Mid(varObscureLine, 9, 1) + " character in '" +
+                        ReportErrorLine(_lines[i]) + "'", LogType.FatalError);
                     return true;
                 }
+
                 startParamPos = Strings.InStr(convPos, _lines[i], "(");
 
                 endParamPos = 0;
@@ -780,6 +787,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         bracketCount = bracketCount - 1;
                     }
+
                     if (bracketCount == 0)
                     {
                         endParamPos = j;
@@ -816,13 +824,13 @@ public partial class LegacyGame : IASL, IASLTimer
                                         symbPos = Strings.InStr(paramData, "=");
                                         if (symbPos == 0)
                                         {
-                                            LogASLError("Unrecognised 'if' condition in '" + ReportErrorLine(_lines[i]) + "'", LogType.FatalError);
+                                            LogASLError(
+                                                "Unrecognised 'if' condition in '" + ReportErrorLine(_lines[i]) + "'",
+                                                LogType.FatalError);
                                             return true;
                                         }
-                                        else
-                                        {
-                                            symbol = "=";
-                                        }
+
+                                        symbol = "=";
                                     }
                                     else
                                     {
@@ -885,10 +893,12 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         newParam = newParam + "!=";
                     }
+
                     newParam = newParam + ";" + secondData + ">";
                 }
 
-                _lines[i] = Strings.Left(_lines[i], startParamPos - 1) + newParam + Strings.Mid(_lines[i], endParamPos + 1);
+                _lines[i] = Strings.Left(_lines[i], startParamPos - 1) + newParam +
+                            Strings.Mid(_lines[i], endParamPos + 1);
 
                 // Repeat processing this line, in case there are
                 // further changes to be made.
@@ -918,13 +928,12 @@ public partial class LegacyGame : IASL, IASLTimer
         do
         {
             z = _lines[_defineBlocks[i].StartLine];
-            if (!BeginsWith(z, "define text ") & !BeginsWith(z, "define menu ") & z != "define synonyms")
+            if (!BeginsWith(z, "define text ") & !BeginsWith(z, "define menu ") & (z != "define synonyms"))
             {
                 for (int j = _defineBlocks[i].StartLine + 1, loopTo = _defineBlocks[i].EndLine - 1; j <= loopTo; j++)
                 {
                     if (Strings.InStr(_lines[j], "{") > 0)
                     {
-
                         afterLastBrace = "";
                         thisLine = Strings.Trim(_lines[j]);
 
@@ -932,7 +941,6 @@ public partial class LegacyGame : IASL, IASLTimer
 
                         // see if this brace's corresponding closing
                         // brace is on same line:
-
                         testLine = Strings.Mid(_lines[j], Strings.InStr(_lines[j], "{") + 1);
                         testBraceCount = 1;
                         do
@@ -940,9 +948,15 @@ public partial class LegacyGame : IASL, IASLTimer
                             obp = Strings.InStr(testLine, "{");
                             cbp = Strings.InStr(testLine, "}");
                             if (obp == 0)
+                            {
                                 obp = Strings.Len(testLine) + 1;
+                            }
+
                             if (cbp == 0)
+                            {
                                 cbp = Strings.Len(testLine) + 1;
+                            }
+
                             if (obp < cbp)
                             {
                                 testBraceCount = testBraceCount + 1;
@@ -953,17 +967,19 @@ public partial class LegacyGame : IASL, IASLTimer
                                 testBraceCount = testBraceCount - 1;
                                 testLine = Strings.Mid(testLine, cbp + 1);
                             }
-                        }
-                        while (!(obp == cbp | testBraceCount == 0));
+                        } while (!((obp == cbp) | (testBraceCount == 0)));
 
                         if (testBraceCount != 0)
                         {
                             AddLine("define procedure " + procName);
                             startLine = Information.UBound(_lines);
-                            restOfLine = Strings.Trim(Strings.Right(thisLine, Strings.Len(thisLine) - Strings.InStr(thisLine, "{")));
+                            restOfLine = Strings.Trim(Strings.Right(thisLine,
+                                Strings.Len(thisLine) - Strings.InStr(thisLine, "{")));
                             braceCount = 1;
                             if (!string.IsNullOrEmpty(restOfLine))
+                            {
                                 AddLine(restOfLine);
+                            }
 
                             for (int m = 1, loopTo1 = Strings.Len(restOfLine); m <= loopTo1; m++)
                             {
@@ -979,7 +995,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
                             if (braceCount != 0)
                             {
-                                int k = j + 1;
+                                var k = j + 1;
                                 do
                                 {
                                     for (int m = 1, loopTo2 = Strings.Len(_lines[k]); m <= loopTo2; m++)
@@ -1017,8 +1033,7 @@ public partial class LegacyGame : IASL, IASLTimer
                                     // Clear original line
                                     _lines[k] = "";
                                     k = k + 1;
-                                }
-                                while (braceCount != 0);
+                                } while (braceCount != 0);
                             }
 
                             AddLine("end define");
@@ -1043,9 +1058,9 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
                 }
             }
+
             i = i + 1;
-        }
-        while (i <= _numberSections);
+        } while (i <= _numberSections);
 
         // Join next-line "else"s to corresponding "if"s
 
@@ -1053,19 +1068,18 @@ public partial class LegacyGame : IASL, IASLTimer
         for (i = 1; i <= loopTo3; i++)
         {
             z = _lines[_defineBlocks[i].StartLine];
-            if (!BeginsWith(z, "define text ") & !BeginsWith(z, "define menu ") & z != "define synonyms")
+            if (!BeginsWith(z, "define text ") & !BeginsWith(z, "define menu ") & (z != "define synonyms"))
             {
                 for (int j = _defineBlocks[i].StartLine + 1, loopTo4 = _defineBlocks[i].EndLine - 1; j <= loopTo4; j++)
                 {
                     if (BeginsWith(_lines[j], "else "))
-                    {
-
                         // Go upwards to find "if" statement that this
                         // belongs to
-
+                    {
                         for (int k = j, loopTo5 = _defineBlocks[i].StartLine + 1; k >= loopTo5; k -= 1)
                         {
-                            if (BeginsWith(_lines[k], "if ") | Strings.InStr(ObliterateParameters(_lines[k]), " if ") != 0)
+                            if (BeginsWith(_lines[k], "if ") |
+                                (Strings.InStr(ObliterateParameters(_lines[k]), " if ") != 0))
                             {
                                 _lines[k] = _lines[k] + " " + Strings.Trim(_lines[j]);
                                 _lines[j] = "";
@@ -1076,8 +1090,6 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
             }
         }
-
-
     }
 
     private bool ErrorCheck()
@@ -1103,7 +1115,8 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 inText = true;
             }
-            if (inText & Strings.Trim(Strings.LCase(_lines[i])) == "end define")
+
+            if (inText & (Strings.Trim(Strings.LCase(_lines[i])) == "end define"))
             {
                 inText = false;
             }
@@ -1124,8 +1137,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         finLoop = true;
                     }
-                }
-                while (!finLoop);
+                } while (!finLoop);
 
                 // Find number of >'s:
                 curPos = 1;
@@ -1141,8 +1153,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         finLoop = true;
                     }
-                }
-                while (!finLoop);
+                } while (!finLoop);
 
                 if (numParamStart > numParamEnd)
                 {
@@ -1158,7 +1169,7 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         // Exit if errors found
-        if (hasErrors == true)
+        if (hasErrors)
         {
             return true;
         }
@@ -1198,24 +1209,20 @@ public partial class LegacyGame : IASL, IASLTimer
         int eop;
         eop = Strings.InStr(s, ">");
 
-        if (eop == 0 | eop + 1 > Strings.Len(s))
+        if ((eop == 0) | (eop + 1 > Strings.Len(s)))
         {
             return "";
         }
-        else
-        {
-            return Strings.Trim(Strings.Mid(s, eop + 1));
-        }
 
+        return Strings.Trim(Strings.Mid(s, eop + 1));
     }
 
     private string ObliterateParameters(string s)
     {
-
         bool inParameter;
-        string exitCharacter = "";
+        var exitCharacter = "";
         string curChar;
-        string outputLine = "";
+        var outputLine = "";
         var obscuringFunctionName = default(bool);
 
         inParameter = false;
@@ -1238,12 +1245,10 @@ public partial class LegacyGame : IASL, IASLTimer
                         // we get rid of everything between the $ characters
                         // in this case, and set a flag so we know what we're
                         // doing.
-
                         obscuringFunctionName = true;
                         exitCharacter = curChar;
 
                         // Move along please
-
                         outputLine = outputLine + "~";
                         i = i + 1;
                         curChar = Strings.Mid(s, i, 1);
@@ -1259,6 +1264,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     inParameter = true;
                     exitCharacter = ">";
                 }
+
                 if (curChar == "(")
                 {
                     inParameter = true;
@@ -1292,18 +1298,15 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return "'<ERROR;" + exitCharacter + ";" + outputLine;
         }
-        else
-        {
-            return outputLine;
-        }
 
+        return outputLine;
     }
 
     private string ObliterateVariableNames(string s)
     {
         bool inParameter;
-        string exitCharacter = "";
-        string outputLine = "";
+        var exitCharacter = "";
+        var outputLine = "";
         string curChar;
 
         inParameter = false;
@@ -1319,20 +1322,23 @@ public partial class LegacyGame : IASL, IASLTimer
                     inParameter = true;
                     exitCharacter = "$";
                 }
+
                 if (curChar == "#")
                 {
                     inParameter = true;
                     exitCharacter = "#";
                 }
+
                 if (curChar == "%")
                 {
                     inParameter = true;
                     exitCharacter = "%";
                 }
+
                 // The ~ was for collectables, and this syntax only
                 // exists in Quest 2.x. The ~ was only finally
                 // allowed to be present on its own in ASL 320.
-                if (curChar == "~" & _gameAslVersion < 320)
+                if ((curChar == "~") & (ASLVersion < 320))
                 {
                     inParameter = true;
                     exitCharacter = "~";
@@ -1355,7 +1361,6 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         return outputLine;
-
     }
 
     private void RemoveComments()
@@ -1371,7 +1376,6 @@ public partial class LegacyGame : IASL, IASLTimer
 
         for (int i = 1, loopTo = Information.UBound(_lines); i <= loopTo; i++)
         {
-
             if (BeginsWith(_lines[i], "'!qdk-note:"))
             {
                 _lines[i] = "#!qdk-note:" + GetEverythingAfter(_lines[i], "'!qdk-note:");
@@ -1429,7 +1433,6 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
                 }
             }
-
         }
     }
 
@@ -1445,26 +1448,28 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return Strings.Left(s, replaceFrom - 1) + "...";
         }
-        else
-        {
-            return s;
-        }
+
+        return s;
     }
 
     private string YesNo(bool yn)
     {
-        if (yn == true)
+        if (yn)
+        {
             return "Yes";
-        else
-            return "No";
+        }
+
+        return "No";
     }
 
     private bool IsYes(string yn)
     {
         if (Strings.LCase(yn) == "yes")
+        {
             return true;
-        else
-            return false;
+        }
+
+        return false;
     }
 
     internal bool BeginsWith(string s, string text)
@@ -1479,8 +1484,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string ConvertCasKeyword(string casChar)
     {
-        byte c = System.Text.Encoding.GetEncoding(1252).GetBytes(casChar)[0];
-        string keyword = _casKeywords[c];
+        var c = Encoding.GetEncoding(1252).GetBytes(casChar)[0];
+        var keyword = _casKeywords[c];
 
         if (keyword == "!cr")
         {
@@ -1501,7 +1506,7 @@ public partial class LegacyGame : IASL, IASLTimer
         // with "'" as part of a multi-line parameter are not destroyed,
         // before looking for braces.
 
-        for (int i = Information.UBound(_lines); i >= 1; i -= 1)
+        for (var i = Information.UBound(_lines); i >= 1; i -= 1)
         {
             if (Strings.Right(_lines[i], 2) == "__")
             {
@@ -1524,7 +1529,6 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private DefineBlock GetDefineBlock(string blockname)
     {
-
         // Returns the start and end points of a named block.
         // Returns 0 if block not found.
 
@@ -1544,7 +1548,9 @@ public partial class LegacyGame : IASL, IASLTimer
 
             // Add a space for define blocks with no parameter
             if (Strings.InStr(8, l, " ") == 0)
+            {
                 l = l + " ";
+            }
 
             blockType = Strings.Mid(l, 8, Strings.InStr(8, l, " ") - 8);
 
@@ -1560,14 +1566,14 @@ public partial class LegacyGame : IASL, IASLTimer
         return result;
     }
 
-    private DefineBlock DefineBlockParam(string blockname, string @param)
+    private DefineBlock DefineBlockParam(string blockname, string param)
     {
         // Returns the start and end points of a named block
 
         Dictionary<string, string> cache;
         var result = new DefineBlock();
 
-        @param = "k" + @param; // protect against numeric block names
+        param = "k" + param; // protect against numeric block names
 
         if (!_defineBlockParams.ContainsKey(blockname))
         {
@@ -1579,8 +1585,8 @@ public partial class LegacyGame : IASL, IASLTimer
             for (int i = 1, loopTo = _numberSections; i <= loopTo; i++)
             {
                 // get the word after "define", e.g. "procedure"
-                string blockType = GetEverythingAfter(_lines[_defineBlocks[i].StartLine], "define ");
-                int sp = Strings.InStr(blockType, " ");
+                var blockType = GetEverythingAfter(_lines[_defineBlocks[i].StartLine], "define ");
+                var sp = Strings.InStr(blockType, " ");
                 if (sp != 0)
                 {
                     blockType = Strings.Trim(Strings.Left(blockType, sp - 1));
@@ -1588,7 +1594,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
                 if ((blockType ?? "") == (blockname ?? ""))
                 {
-                    string blockKey = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext, false);
+                    var blockKey = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext, false);
 
                     blockKey = "k" + blockKey;
 
@@ -1596,10 +1602,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         cache.Add(blockKey, _defineBlocks[i].StartLine + "," + _defineBlocks[i].EndLine);
                     }
-                    else
-                    {
-                        // silently ignore duplicates
-                    }
+                    // silently ignore duplicates
                 }
             }
         }
@@ -1608,15 +1611,14 @@ public partial class LegacyGame : IASL, IASLTimer
             cache = _defineBlockParams[blockname];
         }
 
-        if (cache.ContainsKey(@param))
+        if (cache.ContainsKey(param))
         {
-            string[] blocks = Strings.Split(cache[@param], ",");
+            var blocks = Strings.Split(cache[param], ",");
             result.StartLine = Conversions.ToInteger(blocks[0]);
             result.EndLine = Conversions.ToInteger(blocks[1]);
         }
 
         return result;
-
     }
 
     internal string GetEverythingAfter(string s, string text)
@@ -1625,6 +1627,7 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return "";
         }
+
         return Strings.Right(s, Strings.Len(s) - Strings.Len(text));
     }
 
@@ -1635,7 +1638,7 @@ public partial class LegacyGame : IASL, IASLTimer
             return "";
         }
 
-        for (int i = 0; i <= 255; i++)
+        for (var i = 0; i <= 255; i++)
         {
             if ((Strings.LCase(KWord) ?? "") == (Strings.LCase(_casKeywords[i]) ?? ""))
             {
@@ -1650,16 +1653,16 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         // Loads data required for conversion of CAS files
 
-        string[] questDatLines = this.GetResourceLines(Resources.GetResourceBytes(Resources.QuestDAT));
+        var questDatLines = GetResourceLines(Resources.GetResourceBytes(Resources.QuestDAT));
 
         foreach (var line in questDatLines)
         {
             if (Strings.Left(line, 1) != "#")
             {
                 // Lines isn't a comment - so parse it.
-                int scp = Strings.InStr(line, ";");
-                string keyword = Strings.Trim(Strings.Left(line, scp - 1));
-                int num = Conversions.ToInteger(Strings.Right(line, Strings.Len(line) - scp));
+                var scp = Strings.InStr(line, ";");
+                var keyword = Strings.Trim(Strings.Left(line, scp - 1));
+                var num = Conversions.ToInteger(Strings.Right(line, Strings.Len(line) - scp));
                 _casKeywords[num] = keyword;
             }
         }
@@ -1667,15 +1670,15 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string[] GetResourceLines(byte[] res)
     {
-        var enc = new System.Text.UTF8Encoding();
-        string resFile = enc.GetString(res);
+        var enc = new UTF8Encoding();
+        var resFile = enc.GetString(res);
         return Strings.Split(resFile, "\r" + "\n");
     }
 
     private async Task<string> GetFileData(IGameData gameData)
     {
         var stream = gameData.Data;
-        return await new System.IO.StreamReader(stream).ReadToEndAsync();
+        return await new StreamReader(stream).ReadToEndAsync();
     }
 
     private async Task<bool> ParseFile(IGameData gameData)
@@ -1684,7 +1687,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         bool hasErrors;
         bool result;
-        string[] libCode = new string[1];
+        var libCode = new string[1];
         int libLines;
         bool ignoreMode, skipCheck;
         int c, d, l;
@@ -1696,14 +1699,14 @@ public partial class LegacyGame : IASL, IASLTimer
         int inDefSynBlock, synLine = default;
         bool libFoundThisSweep;
         string libFileName;
-        string[] libraryList = new string[1];
+        var libraryList = new string[1];
         int numLibraries;
         bool libraryAlreadyIncluded;
         int inDefTypeBlock;
         string typeBlockName;
         var typeLine = default(int);
         int defineCount, curLine;
-        string filename = gameData.Filename;
+        var filename = gameData.Filename;
 
         _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
 
@@ -1716,15 +1719,16 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             _originalFilename = filename;
             filename = GetUnzippedFile(filename);
-            _gamePath = System.IO.Path.GetDirectoryName(filename);
+            _gamePath = Path.GetDirectoryName(filename);
         }
 
-        if (Strings.LCase(Strings.Right(filename, 4)) == ".asl" | Strings.LCase(Strings.Right(filename, 4)) == ".txt")
+        if ((Strings.LCase(Strings.Right(filename, 4)) == ".asl") |
+            (Strings.LCase(Strings.Right(filename, 4)) == ".txt"))
         {
             // Read file into Lines array
-            string fileData = await GetFileData(gameData);
+            var fileData = await GetFileData(gameData);
 
-            string[] aslLines = fileData.Split('\r');
+            var aslLines = fileData.Split('\r');
             _lines = new string[aslLines.Length + 1];
             _lines[0] = "";
 
@@ -1758,14 +1762,14 @@ public partial class LegacyGame : IASL, IASLTimer
         do
         {
             libFoundThisSweep = false;
-            for (int i = l; i >= 1; i -= 1)
-            {
+            for (var i = l; i >= 1; i -= 1)
                 // We search for includes backwards as a game might include
                 // some-general.lib and then something-specific.lib which needs
                 // something-general; if we include something-specific first,
                 // then something-general afterwards, something-general's startscript
                 // gets executed before something-specific's, as we execute the
                 // lib startscripts backwards as well
+            {
                 if (BeginsWith(_lines[i], "!include "))
                 {
                     libFileName = GetParameter(_lines[i], _nullContext);
@@ -1800,14 +1804,13 @@ public partial class LegacyGame : IASL, IASLTimer
                         LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
                         libFileHandle = FileSystem.FreeFile();
 
-                        if (System.IO.File.Exists(libFile))
+                        if (File.Exists(libFile))
                         {
                             FileSystem.FileOpen(libFileHandle, libFile, OpenMode.Input);
                         }
                         else
                         {
                             // File was not found; try standard Quest libraries (stored here as resources)
-
                             LogASLError("     - Library not found in game path.", LogType.Init);
                             LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
                             libResourceLines = GetLibraryLines(libFileName);
@@ -1815,7 +1818,8 @@ public partial class LegacyGame : IASL, IASLTimer
                             if (libResourceLines is null)
                             {
                                 LogASLError("Library not found.", LogType.FatalError);
-                                _openErrorReport = _openErrorReport + "Library '" + libraryList[numLibraries] + "' not found." + Constants.vbCrLf;
+                                _openErrorReport = _openErrorReport + "Library '" + libraryList[numLibraries] +
+                                                   "' not found." + Constants.vbCrLf;
                                 return false;
                             }
                         }
@@ -1833,13 +1837,13 @@ public partial class LegacyGame : IASL, IASLTimer
                                 libLine = RemoveTabs(libLine);
                                 Array.Resize(ref libCode, libLines + 1);
                                 libCode[libLines] = Strings.Trim(libLine);
-                            }
-                            while (!FileSystem.EOF(libFileHandle));
+                            } while (!FileSystem.EOF(libFileHandle));
+
                             FileSystem.FileClose(libFileHandle);
                         }
                         else
                         {
-                            foreach (string resLibLine in libResourceLines)
+                            foreach (var resLibLine in libResourceLines)
                             {
                                 libLines = libLines + 1;
                                 Array.Resize(ref libCode, libLines + 1);
@@ -1849,7 +1853,7 @@ public partial class LegacyGame : IASL, IASLTimer
                             }
                         }
 
-                        int libVer = -1;
+                        var libVer = -1;
 
                         if (libCode[1] == "!library")
                         {
@@ -1889,7 +1893,8 @@ public partial class LegacyGame : IASL, IASLTimer
                                     l = l + 1;
                                 }
                             }
-                            else if (Strings.Left(libCode[c], 1) != "!" & Strings.Left(libCode[c], 1) != "'" & !ignoreMode)
+                            else if ((Strings.Left(libCode[c], 1) != "!") & (Strings.Left(libCode[c], 1) != "'") &
+                                     !ignoreMode)
                             {
                                 AddLine(libCode[c]);
                                 l = l + 1;
@@ -1911,7 +1916,7 @@ public partial class LegacyGame : IASL, IASLTimer
                                             inDefGameBlock = inDefGameBlock + 1;
                                         }
                                     }
-                                    else if (_lines[d] == "end define" & inDefGameBlock == 1)
+                                    else if ((_lines[d] == "end define") & (inDefGameBlock == 1))
                                     {
                                         gameLine = d;
                                         d = Information.UBound(_lines);
@@ -1933,28 +1938,28 @@ public partial class LegacyGame : IASL, IASLTimer
                                         Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
                                         var loopTo5 = gameLine + 1;
                                         for (d = Information.UBound(_lines); d >= loopTo5; d -= 1)
+                                        {
                                             _lines[d] = _lines[d - 1];
+                                        }
 
                                         // startscript lines in a library are prepended
                                         // with "lib" internally so they are executed
                                         // before any startscript specified by the
                                         // calling ASL file, for asl-versions 311 and
                                         // later.
-
                                         // similarly, commands in a library. NB: without this, lib
                                         // verbs have lower precedence than game verbs anyway. Also
                                         // lib commands have lower precedence than game commands. We
                                         // only need this code so that game verbs have a higher
                                         // precedence than lib commands.
-
                                         // we also need it so that lib verbs have a higher
                                         // precedence than lib commands.
-
-                                        if (libVer >= 311 & BeginsWith(libCode[c], "startscript "))
+                                        if ((libVer >= 311) & BeginsWith(libCode[c], "startscript "))
                                         {
                                             _lines[gameLine] = "lib " + libCode[c];
                                         }
-                                        else if (libVer >= 392 & (BeginsWith(libCode[c], "command ") | BeginsWith(libCode[c], "verb ")))
+                                        else if ((libVer >= 392) & (BeginsWith(libCode[c], "command ") |
+                                                                    BeginsWith(libCode[c], "verb ")))
                                         {
                                             _lines[gameLine] = "lib " + libCode[c];
                                         }
@@ -1966,8 +1971,7 @@ public partial class LegacyGame : IASL, IASLTimer
                                         l = l + 1;
                                         gameLine = gameLine + 1;
                                     }
-                                }
-                                while (!BeginsWith(libCode[c], "!end"));
+                                } while (!BeginsWith(libCode[c], "!end"));
                             }
                             else if (libCode[c] == "!addto synonyms")
                             {
@@ -1979,7 +1983,7 @@ public partial class LegacyGame : IASL, IASLTimer
                                     {
                                         inDefSynBlock = 1;
                                     }
-                                    else if (_lines[d] == "end define" & inDefSynBlock == 1)
+                                    else if ((_lines[d] == "end define") & (inDefSynBlock == 1))
                                     {
                                         synLine = d;
                                         d = Information.UBound(_lines);
@@ -2002,13 +2006,15 @@ public partial class LegacyGame : IASL, IASLTimer
                                         Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
                                         var loopTo7 = synLine + 1;
                                         for (d = Information.UBound(_lines); d >= loopTo7; d -= 1)
+                                        {
                                             _lines[d] = _lines[d - 1];
+                                        }
+
                                         _lines[synLine] = libCode[c];
                                         l = l + 1;
                                         synLine = synLine + 1;
                                     }
-                                }
-                                while (!BeginsWith(libCode[c], "!end"));
+                                } while (!BeginsWith(libCode[c], "!end"));
                             }
                             else if (BeginsWith(libCode[c], "!addto type "))
                             {
@@ -2017,11 +2023,12 @@ public partial class LegacyGame : IASL, IASLTimer
                                 var loopTo8 = Information.UBound(_lines);
                                 for (d = 1; d <= loopTo8; d++)
                                 {
-                                    if ((Strings.LCase(_lines[d]) ?? "") == ("define type <" + typeBlockName + ">" ?? ""))
+                                    if ((Strings.LCase(_lines[d]) ?? "") ==
+                                        ("define type <" + typeBlockName + ">" ?? ""))
                                     {
                                         inDefTypeBlock = 1;
                                     }
-                                    else if (_lines[d] == "end define" & inDefTypeBlock == 1)
+                                    else if ((_lines[d] == "end define") & (inDefTypeBlock == 1))
                                     {
                                         typeLine = d;
                                         d = Information.UBound(_lines);
@@ -2040,19 +2047,24 @@ public partial class LegacyGame : IASL, IASLTimer
                                 {
                                     c = c + 1;
                                     if (c > libLines)
+                                    {
                                         break;
+                                    }
+
                                     if (!BeginsWith(libCode[c], "!end"))
                                     {
                                         Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
                                         var loopTo9 = typeLine + 1;
                                         for (d = Information.UBound(_lines); d >= loopTo9; d -= 1)
+                                        {
                                             _lines[d] = _lines[d - 1];
+                                        }
+
                                         _lines[typeLine] = libCode[c];
                                         l = l + 1;
                                         typeLine = typeLine + 1;
                                     }
-                                }
-                                while (!BeginsWith(libCode[c], "!end"));
+                                } while (!BeginsWith(libCode[c], "!end"));
                             }
 
 
@@ -2080,24 +2092,29 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
                 }
             }
-        }
-        while (libFoundThisSweep != false);
+        } while (libFoundThisSweep);
 
         skipCheck = false;
 
         int lastSlashPos = default, slashPos;
-        int curPos = 1;
+        var curPos = 1;
         do
         {
             slashPos = Strings.InStr(curPos, filename, @"\");
             if (slashPos == 0)
+            {
                 slashPos = Strings.InStr(curPos, filename, "/");
+            }
+
             if (slashPos != 0)
+            {
                 lastSlashPos = slashPos;
+            }
+
             curPos = slashPos + 1;
-        }
-        while (slashPos != 0);
-        string filenameNoPath = Strings.LCase(Strings.Mid(filename, lastSlashPos + 1));
+        } while (slashPos != 0);
+
+        var filenameNoPath = Strings.LCase(Strings.Mid(filename, lastSlashPos + 1));
 
         for (int i = 1, loopTo10 = _numSkipCheckFiles; i <= loopTo10; i++)
         {
@@ -2127,38 +2144,37 @@ public partial class LegacyGame : IASL, IASLTimer
         _numberSections = 1;
 
         for (int i = 1, loopTo11 = l; i <= loopTo11; i++)
-        {
             // find section beginning with 'define'
-            if (BeginsWith(_lines[i], "define") == true)
+        {
+            if (BeginsWith(_lines[i], "define"))
             {
                 // Now, go through until we reach an 'end define'. However, if we
                 // encounter another 'define' there is a nested define. So, if we
                 // encounter 'define' we increment the definecount. When we find an
                 // 'end define' we decrement it. When definecount is zero, we have
                 // found the end of the section.
-
                 defineCount = 1;
 
                 // Don't count the current line - we know it begins with 'define'...
                 curLine = i + 1;
                 do
                 {
-                    if (BeginsWith(_lines[curLine], "define") == true)
+                    if (BeginsWith(_lines[curLine], "define"))
                     {
                         defineCount = defineCount + 1;
                     }
-                    else if (BeginsWith(_lines[curLine], "end define") == true)
+                    else if (BeginsWith(_lines[curLine], "end define"))
                     {
                         defineCount = defineCount - 1;
                     }
+
                     curLine = curLine + 1;
-                }
-                while (defineCount != 0);
+                } while (defineCount != 0);
+
                 curLine = curLine - 1;
 
                 // Now, we know that the define section begins at i and ends at
                 // curline. Remember where the section begins and ends:
-
                 Array.Resize(ref _defineBlocks, _numberSections + 1);
                 _defineBlocks[_numberSections] = new DefineBlock();
                 _defineBlocks[_numberSections].StartLine = i;
@@ -2171,7 +2187,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         _numberSections = _numberSections - 1;
 
-        bool gotGameBlock = false;
+        var gotGameBlock = false;
         for (int i = 1, loopTo12 = _numberSections; i <= loopTo12; i++)
         {
             if (BeginsWith(_lines[_defineBlocks[i].StartLine], "define game "))
@@ -2191,7 +2207,9 @@ public partial class LegacyGame : IASL, IASLTimer
 
         hasErrors = ConvertFriendlyIfs();
         if (!hasErrors)
+        {
             hasErrors = ErrorCheck();
+        }
 
         if (hasErrors)
         {
@@ -2203,7 +2221,7 @@ public partial class LegacyGame : IASL, IASLTimer
         return result;
     }
 
-    internal void LogASLError(string err, LogType @type = LogType.Misc)
+    internal void LogASLError(string err, LogType type = LogType.Misc)
     {
         if (type == LogType.FatalError)
         {
@@ -2248,23 +2266,29 @@ public partial class LegacyGame : IASL, IASLTimer
         startPos = Strings.InStr(s, "<");
         endPos = Strings.InStr(s, ">");
 
-        if (startPos == 0 | endPos == 0)
+        if ((startPos == 0) | (endPos == 0))
         {
             LogASLError("Expected parameter in '" + ReportErrorLine(s) + "'", LogType.WarningError);
             return "";
         }
 
-        string retrParam = Strings.Mid(s, startPos + 1, endPos - startPos - 1);
+        var retrParam = Strings.Mid(s, startPos + 1, endPos - startPos - 1);
 
         if (convertStringVariables)
         {
-            if (_gameAslVersion >= 320)
+            if (ASLVersion >= 320)
             {
-                newParam = ConvertParameter(ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
+                newParam = ConvertParameter(
+                    ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
+                        ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
             }
             else if (!(Strings.Left(retrParam, 9) == "~Internal"))
             {
-                newParam = ConvertParameter(ConvertParameter(ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%", ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions, ctx);
+                newParam = ConvertParameter(
+                    ConvertParameter(
+                        ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
+                            ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions,
+                    ctx);
             }
             else
             {
@@ -2291,7 +2315,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string GetCASFileData(string filename)
     {
-        return System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252));
+        return File.ReadAllText(filename, Encoding.GetEncoding(1252));
     }
 
     private void LoadCASFile(string filename)
@@ -2299,7 +2323,7 @@ public partial class LegacyGame : IASL, IASLTimer
         bool endLineReached, exitTheLoop;
         var textMode = default(bool);
         int casVersion;
-        string startCat = "";
+        var startCat = "";
         int endCatPos;
         string chkVer;
         var j = default(int);
@@ -2309,7 +2333,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         _lines = new string[1];
 
-        string fileData = GetCASFileData(filename);
+        var fileData = GetCASFileData(filename);
 
         chkVer = Strings.Left(fileData, 7);
         if (chkVer == "QCGF001")
@@ -2336,7 +2360,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         for (int i = 9, loopTo = Strings.Len(fileData); i <= loopTo; i++)
         {
-            if (casVersion == 3 & (Strings.Mid(fileData, i, 1) ?? "") == (startCat ?? ""))
+            if ((casVersion == 3) & ((Strings.Mid(fileData, i, 1) ?? "") == (startCat ?? "")))
             {
                 // Read catalog
                 _startCatPos = i;
@@ -2349,19 +2373,18 @@ public partial class LegacyGame : IASL, IASLTimer
             }
             else
             {
-
                 curLin = "";
                 endLineReached = false;
-                if (textMode == true)
+                if (textMode)
                 {
-                    textData = Strings.Mid(fileData, i, Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253))) - (i - 1));
+                    textData = Strings.Mid(fileData, i,
+                        Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253))) - (i - 1));
                     textData = Strings.Left(textData, Strings.Len(textData) - 1);
                     cpos = 1;
-                    bool finished = false;
+                    var finished = false;
 
                     if (!string.IsNullOrEmpty(textData))
                     {
-
                         do
                         {
                             nextLinePos = Strings.InStr(cpos, textData, "\0");
@@ -2370,12 +2393,11 @@ public partial class LegacyGame : IASL, IASLTimer
                                 nextLinePos = Strings.Len(textData) + 1;
                                 finished = true;
                             }
+
                             tl = DecryptString(Strings.Mid(textData, cpos, nextLinePos - cpos));
                             AddLine(tl);
                             cpos = nextLinePos + 1;
-                        }
-                        while (!finished);
-
+                        } while (!finished);
                     }
 
                     textMode = false;
@@ -2413,8 +2435,7 @@ public partial class LegacyGame : IASL, IASLTimer
                                 curLin = curLin + "> ";
                                 exitTheLoop = true;
                             }
-                        }
-                        while (!exitTheLoop);
+                        } while (!exitTheLoop);
                     }
                     else if (c == "!unknown")
                     {
@@ -2431,19 +2452,22 @@ public partial class LegacyGame : IASL, IASLTimer
                             {
                                 exitTheLoop = true;
                             }
-                        }
-                        while (!exitTheLoop);
+                        } while (!exitTheLoop);
+
                         curLin = curLin + " ";
                     }
 
                     j = j + 1;
-                }
-                while (!endLineReached);
+                } while (!endLineReached);
+
                 AddLine(Strings.Trim(curLin));
-                if (BeginsWith(curLin, "define text") | casVersion >= 2 & (BeginsWith(curLin, "define synonyms") | BeginsWith(curLin, "define type") | BeginsWith(curLin, "define menu")))
+                if (BeginsWith(curLin, "define text") | ((casVersion >= 2) & (BeginsWith(curLin, "define synonyms") |
+                                                                              BeginsWith(curLin, "define type") |
+                                                                              BeginsWith(curLin, "define menu"))))
                 {
                     textMode = true;
                 }
+
                 // j is already at correct place, but i will be
                 // incremented - so put j back one or we will miss a
                 // character.
@@ -2454,10 +2478,10 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string DecryptString(string s)
     {
-        string output = "";
+        var output = "";
         for (int i = 1, loopTo = Strings.Len(s); i <= loopTo; i++)
         {
-            byte v = System.Text.Encoding.GetEncoding(1252).GetBytes(Strings.Mid(s, i, 1))[0];
+            var v = Encoding.GetEncoding(1252).GetBytes(Strings.Mid(s, i, 1))[0];
             output = output + Strings.Chr(v ^ 255);
         }
 
@@ -2471,11 +2495,11 @@ public partial class LegacyGame : IASL, IASLTimer
             // Remove tab characters and change them into
             // spaces; otherwise they bugger up the Trim
             // commands.
-            int cpos = 1;
-            bool finished = false;
+            var cpos = 1;
+            var finished = false;
             do
             {
-                int tabChar = Strings.InStr(cpos, s, "\t");
+                var tabChar = Strings.InStr(cpos, s, "\t");
                 if (tabChar != 0)
                 {
                     s = Strings.Left(s, tabChar - 1) + Strings.Space(4) + Strings.Mid(s, tabChar + 1);
@@ -2485,16 +2509,15 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     finished = true;
                 }
-            }
-            while (!finished);
+            } while (!finished);
         }
 
         return s;
     }
 
-    private void DoAddRemove(int childId, int parentId, bool @add, Context ctx)
+    private void DoAddRemove(int childId, int parentId, bool add, Context ctx)
     {
-        if (@add)
+        if (add)
         {
             AddToObjectProperties("parent=" + _objs[parentId].ObjectName, childId, ctx);
             _objs[childId].ContainerRoom = _objs[parentId].ContainerRoom;
@@ -2504,11 +2527,11 @@ public partial class LegacyGame : IASL, IASLTimer
             AddToObjectProperties("not parent", childId, ctx);
         }
 
-        if (_gameAslVersion >= 410)
-        {
+        if (ASLVersion >= 410)
             // Putting something in a container implicitly makes that
             // container "seen". Otherwise we could try to "look at" the
             // object we just put in the container and have disambigution fail!
+        {
             AddToObjectProperties("seen", parentId, ctx);
         }
 
@@ -2518,12 +2541,12 @@ public partial class LegacyGame : IASL, IASLTimer
     private void DoLook(int id, Context ctx, bool showExamineError = false, bool showDefaultDescription = true)
     {
         string objectContents;
-        bool foundLook = false;
+        var foundLook = false;
 
         // First, set the "seen" property, and for ASL >= 391, update visibility for any
         // object that is contained by this object.
 
-        if (_gameAslVersion >= 391)
+        if (ASLVersion >= 391)
         {
             AddToObjectProperties("seen", id, ctx);
             UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
@@ -2566,7 +2589,6 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 if (BeginsWith(_lines[i], "look "))
                 {
-
                     lookLine = Strings.Trim(GetEverythingAfter(_lines[i], "look "));
 
                     if (Strings.Left(lookLine, 1) == "<")
@@ -2583,7 +2605,7 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        if (_gameAslVersion >= 391)
+        if (ASLVersion >= 391)
         {
             objectContents = ListContents(id, ctx);
         }
@@ -2609,12 +2631,15 @@ public partial class LegacyGame : IASL, IASLTimer
             // any contents.
 
             if (string.IsNullOrEmpty(objectContents))
+            {
                 PlayerErrorMessage(err, ctx);
+            }
         }
 
-        if (!string.IsNullOrEmpty(objectContents) & objectContents != "<script>")
+        if (!string.IsNullOrEmpty(objectContents) & (objectContents != "<script>"))
+        {
             Print(objectContents, ctx);
-
+        }
     }
 
     private void DoOpenClose(int id, bool open, bool showLook, Context ctx)
@@ -2623,7 +2648,9 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             AddToObjectProperties("opened", id, ctx);
             if (showLook)
+            {
                 DoLook(id, ctx, showDefaultDescription: false);
+            }
         }
         else
         {
@@ -2637,14 +2664,14 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         // Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
-        if (_gameAslVersion < 391)
+        if (ASLVersion < 391)
         {
             return s;
         }
 
         int bracePos;
-        int curPos = 1;
-        string resultLine = "";
+        var curPos = 1;
+        var resultLine = "";
 
         do
         {
@@ -2652,7 +2679,6 @@ public partial class LegacyGame : IASL, IASLTimer
 
             if (bracePos != 0)
             {
-
                 resultLine = resultLine + Strings.Mid(s, curPos, bracePos - curPos);
 
                 if (Strings.Mid(s, bracePos, 2) == "{{")
@@ -2663,33 +2689,30 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
                 else
                 {
-                    int EndBracePos = Strings.InStr(bracePos + 1, s, "}");
+                    var EndBracePos = Strings.InStr(bracePos + 1, s, "}");
                     if (EndBracePos == 0)
                     {
                         LogASLError("Expected } in '" + s + "'", LogType.WarningError);
                         return "<ERROR>";
                     }
-                    else
-                    {
-                        string expression = Strings.Mid(s, bracePos + 1, EndBracePos - bracePos - 1);
-                        var expResult = ExpressionHandler(expression);
-                        if (expResult.Success != ExpressionSuccess.OK)
-                        {
-                            LogASLError("Error evaluating expression in <" + s + "> - " + expResult.Message);
-                            return "<ERROR>";
-                        }
 
-                        resultLine = resultLine + expResult.Result;
-                        curPos = EndBracePos + 1;
+                    var expression = Strings.Mid(s, bracePos + 1, EndBracePos - bracePos - 1);
+                    var expResult = ExpressionHandler(expression);
+                    if (expResult.Success != ExpressionSuccess.OK)
+                    {
+                        LogASLError("Error evaluating expression in <" + s + "> - " + expResult.Message);
+                        return "<ERROR>";
                     }
+
+                    resultLine = resultLine + expResult.Result;
+                    curPos = EndBracePos + 1;
                 }
             }
             else
             {
                 resultLine = resultLine + Strings.Mid(s, curPos);
             }
-        }
-        while (!(bracePos == 0 | curPos > Strings.Len(s)));
+        } while (!((bracePos == 0) | (curPos > Strings.Len(s))));
 
         // Above, we only bothered checking for {{. But for consistency, also }} = }. So let's do that:
         curPos = 1;
@@ -2701,8 +2724,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 resultLine = Strings.Left(resultLine, bracePos) + Strings.Mid(resultLine, bracePos + 2);
                 curPos = bracePos + 1;
             }
-        }
-        while (!(bracePos == 0 | curPos > Strings.Len(resultLine)));
+        } while (!((bracePos == 0) | (curPos > Strings.Len(resultLine))));
 
         return resultLine;
     }
@@ -2714,16 +2736,16 @@ public partial class LegacyGame : IASL, IASLTimer
         var doAdd = default(bool);
         int sepPos = default, parentId, sepLen = default;
         string parentName;
-        string verb = "";
+        var verb = "";
         string action;
         var foundAction = default(bool);
-        string actionScript = "";
+        var actionScript = "";
         bool propertyExists;
         string textToPrint;
         bool isContainer;
         bool gotObject;
         int childLength;
-        bool noParentSpecified = false;
+        var noParentSpecified = false;
 
         if (BeginsWith(cmd, "put "))
         {
@@ -2736,6 +2758,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 sepPos = Strings.InStr(cmd, " in ");
                 sepLen = 4;
             }
+
             if (sepPos == 0)
             {
                 sepPos = Strings.InStr(cmd, " onto ");
@@ -2776,7 +2799,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         gotObject = false;
 
-        if (_gameAslVersion >= 392 & doAdd)
+        if ((ASLVersion >= 392) & doAdd)
         {
             childId = Disambiguate(childName, _currentRoom + ";inventory", ctx);
 
@@ -2795,7 +2818,9 @@ public partial class LegacyGame : IASL, IASLTimer
                     ExecCommand("take " + _objs[childId].ObjectName, ctx, false, dontSetIt: true);
 
                     if (_objs[childId].ContainerRoom == "inventory")
+                    {
                         gotObject = true;
+                    }
                 }
 
                 if (!gotObject)
@@ -2807,7 +2832,10 @@ public partial class LegacyGame : IASL, IASLTimer
             else
             {
                 if (childId != -2)
+                {
                     PlayerErrorMessage(PlayerError.NoItem, ctx);
+                }
+
                 _badCmdBefore = verb;
                 return;
             }
@@ -2820,7 +2848,10 @@ public partial class LegacyGame : IASL, IASLTimer
             if (childId <= 0)
             {
                 if (childId != -2)
+                {
                     PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
+
                 _badCmdBefore = verb;
                 return;
             }
@@ -2851,7 +2882,10 @@ public partial class LegacyGame : IASL, IASLTimer
             if (parentId <= 0)
             {
                 if (parentId != -2)
+                {
                     PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
+
                 _badCmdBefore = Strings.Left(cmd, sepPos + sepLen);
                 return;
             }
@@ -2867,7 +2901,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 return;
             }
 
-            parentId = GetObjectIdNoAlias(GetObjectProperty("parent", childId, false, true));
+            parentId = GetObjectIdNoAlias(GetObjectProperty("parent", childId));
         }
 
         // Check if parent is a container
@@ -2884,6 +2918,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
+
             return;
         }
 
@@ -2891,7 +2926,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (IsYes(GetObjectProperty("parent", childId, true, false)))
         {
-            if (doAdd & (Strings.LCase(GetObjectProperty("parent", childId, false, false)) ?? "") == (Strings.LCase(_objs[parentId].ObjectName) ?? ""))
+            if (doAdd & ((Strings.LCase(GetObjectProperty("parent", childId, false, false)) ?? "") ==
+                         (Strings.LCase(_objs[parentId].ObjectName) ?? "")))
             {
                 PlayerErrorMessage(PlayerError.AlreadyPut, ctx);
             }
@@ -2909,6 +2945,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessObject.ErrorMsg);
             }
+
             return;
         }
 
@@ -2923,12 +2960,14 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessParent.ErrorMsg);
             }
+
             return;
         }
 
         // Check if parent is a closed container
 
-        if (!IsYes(GetObjectProperty("surface", parentId, true, false)) & !IsYes(GetObjectProperty("opened", parentId, true, false)))
+        if (!IsYes(GetObjectProperty("surface", parentId, true, false)) &
+            !IsYes(GetObjectProperty("opened", parentId, true, false)))
         {
             // Not a surface and not open, so can't add to this closed container.
             if (doAdd)
@@ -2939,6 +2978,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
+
             return;
         }
 
@@ -2999,21 +3039,19 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 DoAddRemove(childId, parentId, doAdd, ctx);
-
             }
         }
-
     }
 
-    private void ExecAddRemoveScript(string parameter, bool @add, Context ctx)
+    private void ExecAddRemoveScript(string parameter, bool add, Context ctx)
     {
         int childId, parentId = default;
         string commandName;
         string childName;
-        string parentName = "";
+        var parentName = "";
         int scp;
 
-        if (@add)
+        if (add)
         {
             commandName = "add";
         }
@@ -3023,7 +3061,7 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         scp = Strings.InStr(parameter, ";");
-        if (scp == 0 & @add)
+        if ((scp == 0) & add)
         {
             LogASLError("No parent specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
             return;
@@ -3042,7 +3080,8 @@ public partial class LegacyGame : IASL, IASLTimer
         childId = GetObjectIdNoAlias(childName);
         if (childId == 0)
         {
-            LogASLError("Invalid child object name specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
+            LogASLError("Invalid child object name specified in '" + commandName + " <" + parameter + ">",
+                LogType.WarningError);
             return;
         }
 
@@ -3051,11 +3090,12 @@ public partial class LegacyGame : IASL, IASLTimer
             parentId = GetObjectIdNoAlias(parentName);
             if (parentId == 0)
             {
-                LogASLError("Invalid parent object name specified in '" + commandName + " <" + parameter + ">", LogType.WarningError);
+                LogASLError("Invalid parent object name specified in '" + commandName + " <" + parameter + ">",
+                    LogType.WarningError);
                 return;
             }
 
-            DoAddRemove(childId, parentId, @add, ctx);
+            DoAddRemove(childId, parentId, add, ctx);
         }
         else
         {
@@ -3070,8 +3110,8 @@ public partial class LegacyGame : IASL, IASLTimer
         string name;
         var doOpen = default(bool);
         bool isOpen, foundAction = default;
-        string action = "";
-        string actionScript = "";
+        var action = "";
+        var actionScript = "";
         bool propertyExists;
         string textToPrint;
         bool isContainer;
@@ -3094,7 +3134,10 @@ public partial class LegacyGame : IASL, IASLTimer
         if (id <= 0)
         {
             if (id != -2)
+            {
                 PlayerErrorMessage(PlayerError.BadThing, ctx);
+            }
+
             _badCmdBefore = action;
             return;
         }
@@ -3113,6 +3156,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage(PlayerError.CantClose, ctx);
             }
+
             return;
         }
 
@@ -3126,7 +3170,8 @@ public partial class LegacyGame : IASL, IASLTimer
             PlayerErrorMessage(PlayerError.AlreadyOpen, ctx);
             return;
         }
-        else if (!doOpen & !isOpen)
+
+        if (!doOpen & !isOpen)
         {
             // Object is already closed
             PlayerErrorMessage(PlayerError.AlreadyClosed, ctx);
@@ -3146,6 +3191,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, canAccessObject.ErrorMsg);
             }
+
             return;
         }
 
@@ -3205,10 +3251,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 DoOpenClose(id, doOpen, true, ctx);
-
             }
         }
-
     }
 
     private void ExecuteSelectCase(string script, Context ctx)
@@ -3217,7 +3261,7 @@ public partial class LegacyGame : IASL, IASLTimer
         // select case <whatever> do <!intprocX>
         // with all the case statements in the intproc.
 
-        string afterLine = GetAfterParameter(script);
+        var afterLine = GetAfterParameter(script);
 
         if (!BeginsWith(afterLine, "do <!intproc"))
         {
@@ -3225,15 +3269,14 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        string blockName = GetParameter(afterLine, ctx);
+        var blockName = GetParameter(afterLine, ctx);
         var block = DefineBlockParam("procedure", blockName);
-        string checkValue = GetParameter(script, ctx);
-        bool caseMatch = false;
+        var checkValue = GetParameter(script, ctx);
+        var caseMatch = false;
 
         for (int i = block.StartLine + 1, loopTo = block.EndLine - 1; i <= loopTo; i++)
-        {
             // Go through all the cases until we find the one that matches
-
+        {
             if (!string.IsNullOrEmpty(_lines[i]))
             {
                 if (!BeginsWith(_lines[i], "case "))
@@ -3242,7 +3285,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
                 else
                 {
-                    string caseScript = "";
+                    var caseScript = "";
 
                     if (BeginsWith(_lines[i], "case else "))
                     {
@@ -3251,19 +3294,19 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
                     else
                     {
-                        string thisCase = GetParameter(_lines[i], ctx);
-                        bool finished = false;
+                        var thisCase = GetParameter(_lines[i], ctx);
+                        var finished = false;
 
                         do
                         {
-                            int SCP = Strings.InStr(thisCase, ";");
+                            var SCP = Strings.InStr(thisCase, ";");
                             if (SCP == 0)
                             {
                                 SCP = Strings.Len(thisCase) + 1;
                                 finished = true;
                             }
 
-                            string condition = Strings.Trim(Strings.Left(thisCase, SCP - 1));
+                            var condition = Strings.Trim(Strings.Left(thisCase, SCP - 1));
                             if ((condition ?? "") == (checkValue ?? ""))
                             {
                                 caseScript = GetAfterParameter(_lines[i]);
@@ -3274,8 +3317,7 @@ public partial class LegacyGame : IASL, IASLTimer
                             {
                                 thisCase = Strings.Mid(thisCase, SCP + 1);
                             }
-                        }
-                        while (!finished);
+                        } while (!finished);
                     }
 
                     if (caseMatch)
@@ -3286,22 +3328,21 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
             }
         }
-
     }
 
     private bool ExecVerb(string cmd, Context ctx, bool libCommands = false)
     {
         DefineBlock gameBlock;
-        bool foundVerb = false;
-        string verbProperty = "";
-        string script = "";
+        var foundVerb = false;
+        var verbProperty = "";
+        var script = "";
         string verbsList;
-        string thisVerb = "";
+        var thisVerb = "";
         int scp;
         int id;
-        string verbObject = "";
+        var verbObject = "";
         string verbTag;
-        string thisScript = "";
+        var thisScript = "";
 
         if (!libCommands)
         {
@@ -3321,8 +3362,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
                 // The property or action the verb uses is either after a colon,
                 // or it's the first (or only) verb on the line.
-
-                int colonPos = Strings.InStr(verbsList, ":");
+                var colonPos = Strings.InStr(verbsList, ":");
                 if (colonPos != 0)
                 {
                     verbProperty = Strings.LCase(Strings.Trim(Strings.Mid(verbsList, colonPos + 1)));
@@ -3342,7 +3382,6 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 // Now let's see if this matches:
-
                 do
                 {
                     scp = Strings.InStr(verbsList, ";");
@@ -3366,31 +3405,33 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         verbsList = Strings.Trim(Strings.Mid(verbsList, scp + 1));
                     }
-                }
-                while (!(scp == 0 | string.IsNullOrEmpty(Strings.Trim(verbsList)) | foundVerb));
+                } while (!((scp == 0) | string.IsNullOrEmpty(Strings.Trim(verbsList)) | foundVerb));
 
                 if (foundVerb)
+                {
                     break;
-
+                }
             }
         }
 
         if (foundVerb)
         {
-
             id = Disambiguate(verbObject, "inventory;" + _currentRoom, ctx);
 
             if (id < 0)
             {
                 if (id != -2)
+                {
                     PlayerErrorMessage(PlayerError.BadThing, ctx);
+                }
+
                 _badCmdBefore = thisVerb;
             }
             else
             {
                 SetStringContents("quest.error.article", _objs[id].Article, ctx);
 
-                bool foundAction = false;
+                var foundAction = false;
 
                 // Now see if this object has the relevant action or property
                 var o = _objs[id];
@@ -3405,14 +3446,14 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 if (!string.IsNullOrEmpty(thisScript))
-                {
                     // Avoid an RTE "this array is fixed or temporarily locked"
+                {
                     ExecuteScript(thisScript, ctx, id);
                 }
 
                 if (!foundAction)
-                {
                     // Check properties for a message
+                {
                     for (int i = 1, loopTo2 = o.NumberProperties; i <= loopTo2; i++)
                     {
                         if ((Strings.LCase(o.Properties[i].PropertyName) ?? "") == (verbProperty ?? ""))
@@ -3425,8 +3466,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 if (!foundAction)
-                {
                     // Execute the default script from the verb definition
+                {
                     ExecuteScript(script, ctx);
                 }
             }
@@ -3447,7 +3488,7 @@ public partial class LegacyGame : IASL, IASLTimer
             if (openBracketPos != 0)
             {
                 // Find equivalent closing bracket
-                int BracketCount = 1;
+                var BracketCount = 1;
                 endBracketPos = 0;
                 for (int i = openBracketPos + 1, loopTo = Strings.Len(expr); i <= loopTo; i++)
                 {
@@ -3469,7 +3510,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
                 if (endBracketPos != 0)
                 {
-                    var NestedResult = ExpressionHandler(Strings.Mid(expr, openBracketPos + 1, endBracketPos - openBracketPos - 1));
+                    var NestedResult =
+                        ExpressionHandler(Strings.Mid(expr, openBracketPos + 1, endBracketPos - openBracketPos - 1));
                     if (NestedResult.Success != ExpressionSuccess.OK)
                     {
                         res.Success = NestedResult.Success;
@@ -3477,7 +3519,8 @@ public partial class LegacyGame : IASL, IASLTimer
                         return res;
                     }
 
-                    expr = Strings.Left(expr, openBracketPos - 1) + " " + NestedResult.Result + " " + Strings.Mid(expr, endBracketPos + 1);
+                    expr = Strings.Left(expr, openBracketPos - 1) + " " + NestedResult.Result + " " +
+                           Strings.Mid(expr, endBracketPos + 1);
                 }
 
                 else
@@ -3485,24 +3528,22 @@ public partial class LegacyGame : IASL, IASLTimer
                     res.Message = "Missing closing bracket";
                     res.Success = ExpressionSuccess.Fail;
                     return res;
-
                 }
             }
-        }
-        while (openBracketPos != 0);
+        } while (openBracketPos != 0);
 
         // Split expression into elements, e.g.:
         // 2 + 3 * 578.2 / 36
         // E O E O EEEEE O EE      where E=Element, O=Operator
 
-        int numElements = 1;
+        var numElements = 1;
         string[] elements;
         elements = new string[2];
-        int numOperators = 0;
-        string[] operators = new string[1];
+        var numOperators = 0;
+        var operators = new string[1];
         bool newElement;
 
-        string obscuredExpr = ObscureNumericExps(expr);
+        var obscuredExpr = ObscureNumericExps(expr);
 
         for (int i = 1, loopTo1 = Strings.Len(expr); i <= loopTo1; i++)
         {
@@ -3568,7 +3609,7 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        int opNum = 0;
+        var opNum = 0;
 
         var result = default(double);
         do
@@ -3577,7 +3618,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
             for (int i = 1, loopTo3 = numOperators; i <= loopTo3; i++)
             {
-                if (operators[i] == "/" | operators[i] == "*")
+                if ((operators[i] == "/") | (operators[i] == "*"))
                 {
                     opNum = i;
                     break;
@@ -3588,7 +3629,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 for (int i = 1, loopTo4 = numOperators; i <= loopTo4; i++)
                 {
-                    if (operators[i] == "+" | operators[i] == "-")
+                    if ((operators[i] == "+") | (operators[i] == "-"))
                     {
                         opNum = i;
                         break;
@@ -3600,9 +3641,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
             if (opNum != 0)
             {
-
-                double val1 = Conversions.ToDouble(elements[opNum]);
-                double val2 = Conversions.ToDouble(elements[opNum + 1]);
+                var val1 = Conversions.ToDouble(elements[opNum]);
+                var val2 = Conversions.ToDouble(elements[opNum + 1]);
 
                 switch (operators[opNum] ?? "")
                 {
@@ -3614,6 +3654,7 @@ public partial class LegacyGame : IASL, IASLTimer
                             res.Success = ExpressionSuccess.Fail;
                             return res;
                         }
+
                         result = val1 / val2;
                         break;
                     }
@@ -3638,22 +3679,25 @@ public partial class LegacyGame : IASL, IASLTimer
 
                 // Remove this operator, and Elements(OpNum+1) from the arrays
                 for (int i = opNum, loopTo5 = numOperators - 1; i <= loopTo5; i++)
+                {
                     operators[i] = operators[i + 1];
+                }
+
                 for (int i = opNum + 1, loopTo6 = numElements - 1; i <= loopTo6; i++)
+                {
                     elements[i] = elements[i + 1];
+                }
+
                 numOperators = numOperators - 1;
                 numElements = numElements - 1;
                 Array.Resize(ref operators, numOperators + 1);
                 Array.Resize(ref elements, numElements + 1);
-
             }
-        }
-        while (!(opNum == 0 | numOperators == 0));
+        } while (!((opNum == 0) | (numOperators == 0)));
 
         res.Success = ExpressionSuccess.OK;
         res.Result = elements[1];
         return res;
-
     }
 
     private string ListContents(int id, Context ctx)
@@ -3662,14 +3706,16 @@ public partial class LegacyGame : IASL, IASLTimer
         // If the list action causes a script to be run instead, ListContents
         // returns "<script>"
 
-        int[] contentsIDs = new int[1];
+        var contentsIDs = new int[1];
 
         if (!IsYes(GetObjectProperty("container", id, true, false)))
         {
             return "";
         }
 
-        if (!IsYes(GetObjectProperty("opened", id, true, false)) & !IsYes(GetObjectProperty("transparent", id, true, false)) & !IsYes(GetObjectProperty("surface", id, true, false)))
+        if (!IsYes(GetObjectProperty("opened", id, true, false)) &
+            !IsYes(GetObjectProperty("transparent", id, true, false)) &
+            !IsYes(GetObjectProperty("surface", id, true, false)))
         {
             // Container is closed, so return "list closed" property if there is one.
 
@@ -3677,21 +3723,20 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 return "<script>";
             }
-            else
-            {
-                return GetObjectProperty("list closed", id, false, false);
-            }
+
+            return GetObjectProperty("list closed", id, false, false);
         }
 
         // populate contents string
 
-        int numContents = 0;
+        var numContents = 0;
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
             if (_objs[i].Exists & _objs[i].Visible)
             {
-                if ((Strings.LCase(GetObjectProperty("parent", i, false, false)) ?? "") == (Strings.LCase(_objs[id].ObjectName) ?? ""))
+                if ((Strings.LCase(GetObjectProperty("parent", i, false, false)) ?? "") ==
+                    (Strings.LCase(_objs[id].ObjectName) ?? ""))
                 {
                     numContents = numContents + 1;
                     Array.Resize(ref contentsIDs, numContents + 1);
@@ -3700,7 +3745,7 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        string contents = "";
+        var contents = "";
 
         if (numContents > 0)
         {
@@ -3714,8 +3759,8 @@ public partial class LegacyGame : IASL, IASLTimer
             if (IsYes(GetObjectProperty("list", id, true, false)))
             {
                 // Read header, if any
-                string listString = GetObjectProperty("list", id, false, false);
-                bool displayList = true;
+                var listString = GetObjectProperty("list", id, false, false);
+                var displayList = true;
 
                 if (!string.IsNullOrEmpty(listString))
                 {
@@ -3732,7 +3777,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
                 else
                 {
-                    contents = Strings.UCase(Strings.Left(_objs[id].Article, 1)) + Strings.Mid(_objs[id].Article, 2) + " contains ";
+                    contents = Strings.UCase(Strings.Left(_objs[id].Article, 1)) + Strings.Mid(_objs[id].Article, 2) +
+                               " contains ";
                 }
 
                 if (displayList)
@@ -3753,7 +3799,10 @@ public partial class LegacyGame : IASL, IASLTimer
 
                         var o = _objs[contentsIDs[i]];
                         if (!string.IsNullOrEmpty(o.Prefix))
+                        {
                             contents = contents + o.Prefix;
+                        }
+
                         if (!string.IsNullOrEmpty(o.ObjectAlias))
                         {
                             contents = contents + "|b" + o.ObjectAlias + "|xb";
@@ -3762,13 +3811,17 @@ public partial class LegacyGame : IASL, IASLTimer
                         {
                             contents = contents + "|b" + o.ObjectName + "|xb";
                         }
+
                         if (!string.IsNullOrEmpty(o.Suffix))
+                        {
                             contents = contents + " " + o.Suffix;
+                        }
                     }
                 }
 
                 return contents + ".";
             }
+
             // The "list" property is not set, so do not list contents.
             return "";
         }
@@ -3779,11 +3832,8 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return "<script>";
         }
-        else
-        {
-            return GetObjectProperty("list empty", id, false, false);
-        }
 
+        return GetObjectProperty("list empty", id, false, false);
     }
 
     private string ObscureNumericExps(string s)
@@ -3793,9 +3843,9 @@ public partial class LegacyGame : IASL, IASLTimer
         // This stops huge numbers breaking parsing of maths functions
 
         int ep;
-        string result = s;
+        var result = s;
 
-        int pos = 1;
+        var pos = 1;
         do
         {
             ep = Strings.InStr(pos, result, "E");
@@ -3804,8 +3854,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 result = Strings.Left(result, ep) + "X" + Strings.Mid(result, ep + 2);
                 pos = ep + 2;
             }
-        }
-        while (ep != 0);
+        } while (ep != 0);
 
         return result;
     }
@@ -3813,7 +3862,7 @@ public partial class LegacyGame : IASL, IASLTimer
     private void ProcessListInfo(string line, int id)
     {
         var listInfo = new TextAction();
-        string propName = "";
+        var propName = "";
 
         if (BeginsWith(line, "list closed <"))
         {
@@ -3890,8 +3939,10 @@ public partial class LegacyGame : IASL, IASLTimer
 
         colour = Strings.LCase(colour);
 
-        if (string.IsNullOrEmpty(colour) | colour == "0")
+        if (string.IsNullOrEmpty(colour) | (colour == "0"))
+        {
             colour = defaultColour;
+        }
 
         switch (colour ?? "")
         {
@@ -3934,19 +3985,19 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private void DestroyExit(string exitData, Context ctx)
     {
-        string fromRoom = "";
-        string toRoom = "";
+        var fromRoom = "";
+        var toRoom = "";
         int roomId = default, exitId = default;
 
-        int scp = Strings.InStr(exitData, ";");
+        var scp = Strings.InStr(exitData, ";");
         if (scp == 0)
         {
             LogASLError("No exit name specified in 'destroy exit <" + exitData + ">'");
             return;
         }
 
-        LegacyASL.RoomExit roomExit;
-        if (_gameAslVersion >= 410)
+        RoomExit roomExit;
+        if (ASLVersion >= 410)
         {
             roomExit = FindExit(exitData);
             if (roomExit is null)
@@ -3960,12 +4011,11 @@ public partial class LegacyGame : IASL, IASLTimer
 
         else
         {
-
             fromRoom = Strings.LCase(Strings.Trim(Strings.Left(exitData, scp - 1)));
             toRoom = Strings.Trim(Strings.Mid(exitData, scp + 1));
 
             // Find From Room:
-            bool found = false;
+            var found = false;
 
             for (int i = 1, loopTo = _numberRooms; i <= loopTo; i++)
             {
@@ -3999,7 +4049,10 @@ public partial class LegacyGame : IASL, IASLTimer
             if (found)
             {
                 for (int i = exitId, loopTo2 = r.NumberPlaces - 1; i <= loopTo2; i++)
+                {
                     r.Places[i] = r.Places[i + 1];
+                }
+
                 Array.Resize(ref r.Places, r.NumberPlaces);
                 r.NumberPlaces = r.NumberPlaces - 1;
             }
@@ -4023,12 +4076,14 @@ public partial class LegacyGame : IASL, IASLTimer
         ChangeState(State.Waiting);
 
         lock (_waitLock)
-            System.Threading.Monitor.Wait(_waitLock);
+        {
+            Monitor.Wait(_waitLock);
+        }
     }
 
     private void ExecuteFlag(string line, Context ctx)
     {
-        string propertyString = "";
+        var propertyString = "";
 
         if (BeginsWith(line, "on "))
         {
@@ -4053,23 +4108,25 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         string variable;
         double change;
-        string @param = GetParameter(line, ctx);
+        var param = GetParameter(line, ctx);
 
-        int sc = Strings.InStr(@param, ";");
+        var sc = Strings.InStr(param, ";");
         if (sc == 0)
         {
             change = 1d;
-            variable = @param;
+            variable = param;
         }
         else
         {
-            change = Conversion.Val(Strings.Mid(@param, sc + 1));
-            variable = Strings.Trim(Strings.Left(@param, sc - 1));
+            change = Conversion.Val(Strings.Mid(param, sc + 1));
+            variable = Strings.Trim(Strings.Left(param, sc - 1));
         }
 
-        double value = GetNumericContents(variable, ctx, true);
+        var value = GetNumericContents(variable, ctx, true);
         if (value <= -32766)
+        {
             value = 0d;
+        }
 
         if (BeginsWith(line, "inc "))
         {
@@ -4084,22 +4141,24 @@ public partial class LegacyGame : IASL, IASLTimer
         SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
     }
 
-    private string ExtractFile(string @file)
+    private string ExtractFile(string file)
     {
         int length = default, startPos = default;
         var extracted = default(bool);
         var resId = default(int);
 
         if (string.IsNullOrEmpty(_resourceFile))
+        {
             return "";
+        }
 
         // Find file in catalog
 
-        bool found = false;
+        var found = false;
 
         for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
         {
-            if ((Strings.LCase(@file) ?? "") == (Strings.LCase(_resources[i].ResourceName) ?? ""))
+            if ((Strings.LCase(file) ?? "") == (Strings.LCase(_resources[i].ResourceName) ?? ""))
             {
                 found = true;
                 startPos = _resources[i].ResourceStart + _resourceOffset;
@@ -4112,20 +4171,20 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (!found)
         {
-            LogASLError("Unable to extract '" + @file + "' - not present in resources.", LogType.WarningError);
+            LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
 
-        string fileName = System.IO.Path.Combine(_tempFolder, @file);
-        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+        var fileName = Path.Combine(TempFolder, file);
+        Directory.CreateDirectory(Path.GetDirectoryName(fileName));
 
         if (!extracted)
         {
             // Extract file from cached CAS data
-            string fileData = Strings.Mid(_casFileData, startPos, length);
+            var fileData = Strings.Mid(_casFileData, startPos, length);
 
             // Write file to temp dir
-            System.IO.File.WriteAllText(fileName, fileData, System.Text.Encoding.GetEncoding(1252));
+            File.WriteAllText(fileName, fileData, Encoding.GetEncoding(1252));
 
             _resources[resId].Extracted = true;
         }
@@ -4135,12 +4194,11 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private void AddObjectAction(int id, string name, string script, bool noUpdate = false)
     {
-
         // Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         // AddToGiveInfo again leading to a big loop
 
         var actionNum = default(int);
-        bool foundExisting = false;
+        var foundExisting = false;
 
         var o = _objs[id];
 
@@ -4177,9 +4235,10 @@ public partial class LegacyGame : IASL, IASLTimer
         _gameChangeData.ChangeData[_gameChangeData.NumberChanges].Change = changeData;
     }
 
-    private void AddToObjectChangeLog(LegacyASL.ChangeLog.AppliesTo appliesToType, string appliesTo, string element, string changeData)
+    private void AddToObjectChangeLog(ChangeLog.AppliesTo appliesToType, string appliesTo, string element,
+        string changeData)
     {
-        LegacyASL.ChangeLog changeLog;
+        ChangeLog changeLog;
 
         // NOTE: We're only actually ever using the object changelog.
         // Rooms only get logged for creating rooms and creating/destroying exits, so we don't
@@ -4187,12 +4246,12 @@ public partial class LegacyGame : IASL, IASLTimer
 
         switch (appliesToType)
         {
-            case LegacyASL.ChangeLog.AppliesTo.Object:
+            case ChangeLog.AppliesTo.Object:
             {
                 changeLog = _changeLogObjects;
                 break;
             }
-            case LegacyASL.ChangeLog.AppliesTo.Room:
+            case ChangeLog.AppliesTo.Room:
             {
                 changeLog = _changeLogRooms;
                 break;
@@ -4224,11 +4283,9 @@ public partial class LegacyGame : IASL, IASLTimer
                 AddObjectAction(id, "give to anything", o.GiveToAnything, true);
                 return;
             }
-            else
-            {
-                giveType = GiveType.GiveToSomething;
-                actionName = "give to ";
-            }
+
+            giveType = GiveType.GiveToSomething;
+            actionName = "give to ";
         }
         else if (BeginsWith(giveData, "anything "))
         {
@@ -4245,15 +4302,16 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (Strings.Left(Strings.Trim(giveData), 1) == "<")
         {
-            string name = GetParameter(giveData, _nullContext);
+            var name = GetParameter(giveData, _nullContext);
             var dataId = default(int);
 
             actionName = actionName + "'" + name + "'";
 
-            bool found = false;
+            var found = false;
             for (int i = 1, loopTo = o.NumberGiveData; i <= loopTo; i++)
             {
-                if (o.GiveData[i].GiveType == giveType & (Strings.LCase(o.GiveData[i].GiveObject) ?? "") == (Strings.LCase(name) ?? ""))
+                if ((o.GiveData[i].GiveType == giveType) &
+                    ((Strings.LCase(o.GiveData[i].GiveObject) ?? "") == (Strings.LCase(name) ?? "")))
                 {
                     dataId = i;
                     found = true;
@@ -4269,7 +4327,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 dataId = o.NumberGiveData;
             }
 
-            int EP = Strings.InStr(giveData, ">");
+            var EP = Strings.InStr(giveData, ">");
             o.GiveData[dataId].GiveType = giveType;
             o.GiveData[dataId].GiveObject = name;
             o.GiveData[dataId].GiveScript = Strings.Mid(giveData, EP + 2);
@@ -4282,17 +4340,17 @@ public partial class LegacyGame : IASL, IASLTimer
     internal void AddToObjectActions(string actionInfo, int id, Context ctx)
     {
         var actionNum = default(int);
-        bool foundExisting = false;
+        var foundExisting = false;
 
-        string name = Strings.LCase(GetParameter(actionInfo, ctx));
-        int ep = Strings.InStr(actionInfo, ">");
+        var name = Strings.LCase(GetParameter(actionInfo, ctx));
+        var ep = Strings.InStr(actionInfo, ">");
         if (ep == Strings.Len(actionInfo))
         {
             LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
             return;
         }
 
-        string script = Strings.Trim(Strings.Mid(actionInfo, ep + 1));
+        var script = Strings.Trim(Strings.Mid(actionInfo, ep + 1));
 
         var o = _objs[id];
 
@@ -4326,10 +4384,13 @@ public partial class LegacyGame : IASL, IASLTimer
 
         do
         {
-            int endPos = Strings.InStr(altNames, ";");
+            var endPos = Strings.InStr(altNames, ";");
             if (endPos == 0)
+            {
                 endPos = Strings.Len(altNames) + 1;
-            string curName = Strings.Trim(Strings.Left(altNames, endPos - 1));
+            }
+
+            var curName = Strings.Trim(Strings.Left(altNames, endPos - 1));
 
             if (!string.IsNullOrEmpty(curName))
             {
@@ -4339,14 +4400,15 @@ public partial class LegacyGame : IASL, IASLTimer
             }
 
             altNames = Strings.Mid(altNames, endPos + 1);
-        }
-        while (!string.IsNullOrEmpty(Strings.Trim(altNames)));
+        } while (!string.IsNullOrEmpty(Strings.Trim(altNames)));
     }
 
     internal void AddToObjectProperties(string propertyInfo, int id, Context ctx)
     {
         if (id == 0)
+        {
             return;
+        }
 
         if (Strings.Right(propertyInfo, 1) != ";")
         {
@@ -4356,16 +4418,18 @@ public partial class LegacyGame : IASL, IASLTimer
         var num = default(int);
         do
         {
-            int scp = Strings.InStr(propertyInfo, ";");
-            string info = Strings.Left(propertyInfo, scp - 1);
+            var scp = Strings.InStr(propertyInfo, ";");
+            var info = Strings.Left(propertyInfo, scp - 1);
             propertyInfo = Strings.Trim(Strings.Mid(propertyInfo, scp + 1));
 
             string name, value;
 
             if (string.IsNullOrEmpty(info))
+            {
                 break;
+            }
 
-            int ep = Strings.InStr(info, "=");
+            var ep = Strings.InStr(info, "=");
             if (ep != 0)
             {
                 name = Strings.Trim(Strings.Left(info, ep - 1));
@@ -4377,7 +4441,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 value = "";
             }
 
-            bool falseProperty = false;
+            var falseProperty = false;
             if (BeginsWith(name, "not ") & string.IsNullOrEmpty(value))
             {
                 falseProperty = true;
@@ -4386,7 +4450,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
             var o = _objs[id];
 
-            bool found = false;
+            var found = false;
             for (int i = 1, loopTo = o.NumberProperties; i <= loopTo; i++)
             {
                 if ((Strings.LCase(o.Properties[i].PropertyName) ?? "") == (Strings.LCase(name) ?? ""))
@@ -4415,7 +4479,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 o.Properties[num].PropertyValue = value;
             }
 
-            this.AddToObjectChangeLog(LegacyASL.ChangeLog.AppliesTo.Object, _objs[id].ObjectName, name, "properties " + info);
+            AddToObjectChangeLog(ChangeLog.AppliesTo.Object, _objs[id].ObjectName, name, "properties " + info);
 
             switch (name ?? "")
             {
@@ -4429,6 +4493,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         o.ObjectAlias = value;
                     }
+
                     if (_gameFullyLoaded)
                     {
                         UpdateObjectList(ctx);
@@ -4457,7 +4522,10 @@ public partial class LegacyGame : IASL, IASLTimer
                 case "indescription":
                 {
                     if (o.IsRoom)
+                    {
                         _rooms[o.CorresRoomId].InDescription = value;
+                    }
+
                     break;
                 }
                 case "description":
@@ -4488,7 +4556,10 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     o.DisplayType = value;
                     if (_gameFullyLoaded)
+                    {
                         UpdateObjectList(ctx);
+                    }
+
                     break;
                 }
                 case "gender":
@@ -4518,7 +4589,10 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
 
                     if (_gameFullyLoaded)
+                    {
                         UpdateObjectList(ctx);
+                    }
+
                     break;
                 }
                 case "invisible":
@@ -4533,12 +4607,15 @@ public partial class LegacyGame : IASL, IASLTimer
                     }
 
                     if (_gameFullyLoaded)
+                    {
                         UpdateObjectList(ctx);
+                    }
+
                     break;
                 }
                 case "take":
                 {
-                    if (_gameAslVersion >= 392)
+                    if (ASLVersion >= 392)
                     {
                         if (falseProperty)
                         {
@@ -4558,8 +4635,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     break;
                 }
             }
-        }
-        while (Strings.Len(Strings.Trim(propertyInfo)) != 0);
+        } while (Strings.Len(Strings.Trim(propertyInfo)) != 0);
     }
 
     private void AddToUseInfo(int id, string useData)
@@ -4576,10 +4652,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 o.UseOnAnything = GetEverythingAfter(useData, "anything ");
                 return;
             }
-            else
-            {
-                useType = UseType.UseOnSomething;
-            }
+
+            useType = UseType.UseOnSomething;
         }
         else if (BeginsWith(useData, "anything "))
         {
@@ -4593,13 +4667,14 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (Strings.Left(Strings.Trim(useData), 1) == "<")
         {
-            string objectName = GetParameter(useData, _nullContext);
+            var objectName = GetParameter(useData, _nullContext);
             var dataId = default(int);
-            bool found = false;
+            var found = false;
 
             for (int i = 1, loopTo = o.NumberUseData; i <= loopTo; i++)
             {
-                if (o.UseData[i].UseType == useType & (Strings.LCase(o.UseData[i].UseObject) ?? "") == (Strings.LCase(objectName) ?? ""))
+                if ((o.UseData[i].UseType == useType) &
+                    ((Strings.LCase(o.UseData[i].UseObject) ?? "") == (Strings.LCase(objectName) ?? "")))
                 {
                     dataId = i;
                     found = true;
@@ -4615,7 +4690,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 dataId = o.NumberUseData;
             }
 
-            int ep = Strings.InStr(useData, ">");
+            var ep = Strings.InStr(useData, ">");
             o.UseData[dataId].UseType = useType;
             o.UseData[dataId].UseObject = objectName;
             o.UseData[dataId].UseScript = Strings.Mid(useData, ep + 2);
@@ -4624,7 +4699,6 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             o.Use = Strings.Trim(useData);
         }
-
     }
 
     private string CapFirst(string s)
@@ -4637,11 +4711,11 @@ public partial class LegacyGame : IASL, IASLTimer
         return GetParameter("<" + s + ">", ctx);
     }
 
-    private bool DisambObjHere(Context ctx, int id, string firstPlace, bool twoPlaces = false, string secondPlace = "", bool isExit = false)
+    private bool DisambObjHere(Context ctx, int id, string firstPlace, bool twoPlaces = false, string secondPlace = "",
+        bool isExit = false)
     {
-
         var isSeen = default(bool);
-        bool onlySeen = false;
+        var onlySeen = false;
 
         if (firstPlace == "game")
         {
@@ -4651,7 +4725,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 twoPlaces = false;
                 secondPlace = "";
                 onlySeen = true;
-                int roomObjId = _rooms[GetRoomID(_objs[id].ContainerRoom, ctx)].ObjId;
+                var roomObjId = _rooms[GetRoomID(_objs[id].ContainerRoom, ctx)].ObjId;
 
                 if (_objs[id].ContainerRoom == "inventory")
                 {
@@ -4665,16 +4739,21 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     isSeen = true;
                 }
-
             }
         }
 
-        if ((twoPlaces == false & ((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "") | string.IsNullOrEmpty(firstPlace)) | twoPlaces == true & ((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "") | (Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(secondPlace) ?? ""))) & _objs[id].Exists == true & _objs[id].IsExit == isExit)
+        if ((((twoPlaces == false) &
+              (((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "")) |
+               string.IsNullOrEmpty(firstPlace))) |
+             (twoPlaces & (((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "")) |
+                           ((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(secondPlace) ?? ""))))) &
+            _objs[id].Exists & (_objs[id].IsExit == isExit))
         {
             if (!onlySeen)
             {
                 return true;
             }
+
             return isSeen;
         }
 
@@ -4686,28 +4765,26 @@ public partial class LegacyGame : IASL, IASLTimer
         int id;
         string newName, cloneTo;
 
-        int scp = Strings.InStr(cloneString, ";");
+        var scp = Strings.InStr(cloneString, ";");
         if (scp == 0)
         {
             LogASLError("No new object name specified in 'clone <" + cloneString + ">", LogType.WarningError);
             return;
         }
+
+        var objectToClone = Strings.Trim(Strings.Left(cloneString, scp - 1));
+        id = GetObjectIdNoAlias(objectToClone);
+
+        var SC2 = Strings.InStr(scp + 1, cloneString, ";");
+        if (SC2 == 0)
+        {
+            cloneTo = _objs[id].ContainerRoom;
+            newName = Strings.Trim(Strings.Mid(cloneString, scp + 1));
+        }
         else
         {
-            string objectToClone = Strings.Trim(Strings.Left(cloneString, scp - 1));
-            id = GetObjectIdNoAlias(objectToClone);
-
-            int SC2 = Strings.InStr(scp + 1, cloneString, ";");
-            if (SC2 == 0)
-            {
-                cloneTo = _objs[id].ContainerRoom;
-                newName = Strings.Trim(Strings.Mid(cloneString, scp + 1));
-            }
-            else
-            {
-                cloneTo = Strings.Trim(Strings.Mid(cloneString, SC2 + 1));
-                newName = Strings.Trim(Strings.Mid(cloneString, scp + 1, SC2 - scp - 1));
-            }
+            cloneTo = Strings.Trim(Strings.Mid(cloneString, SC2 + 1));
+            newName = Strings.Trim(Strings.Mid(cloneString, scp + 1, SC2 - scp - 1));
         }
 
         _numberObjs = _numberObjs + 1;
@@ -4760,7 +4837,7 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var id = default(int);
         var found = default(bool);
-        int scp = Strings.InStr(typeData, ";");
+        var scp = Strings.InStr(typeData, ";");
 
         if (scp == 0)
         {
@@ -4768,8 +4845,8 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        string objName = Strings.Trim(Strings.Left(typeData, scp - 1));
-        string typeName = Strings.Trim(Strings.Mid(typeData, scp + 1));
+        var objName = Strings.Trim(Strings.Left(typeData, scp - 1));
+        var typeName = Strings.Trim(Strings.Mid(typeData, scp + 1));
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -4796,7 +4873,9 @@ public partial class LegacyGame : IASL, IASLTimer
         var propertyData = GetPropertiesInType(typeName);
         AddToObjectProperties(propertyData.Properties, id, ctx);
         for (int i = 1, loopTo1 = propertyData.NumberActions; i <= loopTo1; i++)
+        {
             AddObjectAction(id, propertyData.Actions[i].ActionName, propertyData.Actions[i].Script);
+        }
 
         // New as of Quest 4.0. Fixes bug that "if type" would fail for any
         // parent types included by the "type" command.
@@ -4812,7 +4891,7 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var id = default(int);
 
-        int scp = Strings.InStr(actionData, ";");
+        var scp = Strings.InStr(actionData, ";");
 
         if (scp == 0)
         {
@@ -4820,9 +4899,9 @@ public partial class LegacyGame : IASL, IASLTimer
             return false;
         }
 
-        string objName = Strings.Trim(Strings.Left(actionData, scp - 1));
-        string actionName = Strings.Trim(Strings.Mid(actionData, scp + 1));
-        bool found = false;
+        var objName = Strings.Trim(Strings.Left(actionData, scp - 1));
+        var actionName = Strings.Trim(Strings.Mid(actionData, scp + 1));
+        var found = false;
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -4836,7 +4915,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (!found)
         {
-            LogASLError("No such object '" + objName + "' in condition 'action <" + actionData + ">' ...", LogType.WarningError);
+            LogASLError("No such object '" + objName + "' in condition 'action <" + actionData + ">' ...",
+                LogType.WarningError);
             return false;
         }
 
@@ -4857,7 +4937,7 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var id = default(int);
 
-        int scp = Strings.InStr(typeData, ";");
+        var scp = Strings.InStr(typeData, ";");
 
         if (scp == 0)
         {
@@ -4865,10 +4945,10 @@ public partial class LegacyGame : IASL, IASLTimer
             return false;
         }
 
-        string objName = Strings.Trim(Strings.Left(typeData, scp - 1));
-        string typeName = Strings.Trim(Strings.Mid(typeData, scp + 1));
+        var objName = Strings.Trim(Strings.Left(typeData, scp - 1));
+        var typeName = Strings.Trim(Strings.Mid(typeData, scp + 1));
 
-        bool found = false;
+        var found = false;
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -4882,7 +4962,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (!found)
         {
-            LogASLError("No such object '" + objName + "' in condition 'type <" + typeData + ">' ...", LogType.WarningError);
+            LogASLError("No such object '" + objName + "' in condition 'type <" + typeData + ">' ...",
+                LogType.WarningError);
             return false;
         }
 
@@ -4909,15 +4990,15 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var result = new ArrayResult();
 
-        if (Strings.InStr(varName, "[") == 0 | Strings.InStr(varName, "]") == 0)
+        if ((Strings.InStr(varName, "[") == 0) | (Strings.InStr(varName, "]") == 0))
         {
             result.Name = varName;
             return result;
         }
 
-        int beginPos = Strings.InStr(varName, "[");
-        int endPos = Strings.InStr(varName, "]");
-        string data = Strings.Mid(varName, beginPos + 1, endPos - beginPos - 1);
+        var beginPos = Strings.InStr(varName, "[");
+        var endPos = Strings.InStr(varName, "]");
+        var data = Strings.Mid(varName, beginPos + 1, endPos - beginPos - 1);
 
         if (Information.IsNumeric(data))
         {
@@ -4925,7 +5006,7 @@ public partial class LegacyGame : IASL, IASLTimer
         }
         else
         {
-            result.Index = (int)Math.Round(GetNumericContents(data, ctx));
+            result.Index = (int) Math.Round(GetNumericContents(data, ctx));
         }
 
         result.Name = Strings.Left(varName, beginPos - 1);
@@ -4945,10 +5026,10 @@ public partial class LegacyGame : IASL, IASLTimer
         // Disambiguate has been called after an "exec" command to prevent the
         // player having to choose an object from the disambiguation menu twice
 
-        int numberCorresIds = 0;
-        int[] idNumbers = new int[1];
+        var numberCorresIds = 0;
+        var idNumbers = new int[1];
         string firstPlace;
-        string secondPlace = "";
+        var secondPlace = "";
         bool twoPlaces;
         string[] descriptionText;
         string[] validNames;
@@ -4960,7 +5041,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (Strings.InStr(containedIn, ";") != 0)
         {
-            int scp = Strings.InStr(containedIn, ";");
+            var scp = Strings.InStr(containedIn, ";");
             twoPlaces = true;
             firstPlace = Strings.Trim(Strings.Left(containedIn, scp - 1));
             secondPlace = Strings.Trim(Strings.Mid(containedIn, scp + 1));
@@ -4987,47 +5068,47 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         // If player uses "it", "them" etc. as name:
-        if (name == "it" | name == "them" | name == "this" | name == "those" | name == "these" | name == "that")
+        if ((name == "it") | (name == "them") | (name == "this") | (name == "those") | (name == "these") |
+            (name == "that"))
         {
             SetStringContents("quest.error.pronoun", name, ctx);
-            if (_lastIt != 0 & _lastItMode == ItType.Inanimate & DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
+            if ((_lastIt != 0) & (_lastItMode == ItType.Inanimate) &
+                DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
                 SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
-            else
-            {
-                PlayerErrorMessage(PlayerError.BadPronoun, ctx);
-                return -2;
-            }
+
+            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            return -2;
         }
-        else if (name == "him")
+
+        if (name == "him")
         {
             SetStringContents("quest.error.pronoun", name, ctx);
-            if (_lastIt != 0 & _lastItMode == ItType.Male & DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
+            if ((_lastIt != 0) & (_lastItMode == ItType.Male) &
+                DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
                 SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
-            else
-            {
-                PlayerErrorMessage(PlayerError.BadPronoun, ctx);
-                return -2;
-            }
+
+            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            return -2;
         }
-        else if (name == "her")
+
+        if (name == "her")
         {
             SetStringContents("quest.error.pronoun", name, ctx);
-            if (_lastIt != 0 & _lastItMode == ItType.Female & DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
+            if ((_lastIt != 0) & (_lastItMode == ItType.Female) &
+                DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
                 SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
-            else
-            {
-                PlayerErrorMessage(PlayerError.BadPronoun, ctx);
-                return -2;
-            }
+
+            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            return -2;
         }
 
         _thisTurnIt = 0;
@@ -5045,11 +5126,14 @@ public partial class LegacyGame : IASL, IASLTimer
                 validNames = new string[numValidNames + 1];
                 validNames[1] = _objs[i].ObjectAlias;
                 for (int j = 1, loopTo2 = _objs[i].NumberAltNames; j <= loopTo2; j++)
+                {
                     validNames[j + 1] = _objs[i].AltNames[j];
+                }
 
                 for (int j = 1, loopTo3 = numValidNames; j <= loopTo3; j++)
                 {
-                    if ((Strings.LCase(validNames[j]) ?? "") == (Strings.LCase(name) ?? "") | ("the " + Strings.LCase(name) ?? "") == (Strings.LCase(validNames[j]) ?? ""))
+                    if (((Strings.LCase(validNames[j]) ?? "") == (Strings.LCase(name) ?? "")) |
+                        (("the " + Strings.LCase(name) ?? "") == (Strings.LCase(validNames[j]) ?? "")))
                     {
                         numberCorresIds = numberCorresIds + 1;
                         Array.Resize(ref idNumbers, numberCorresIds + 1);
@@ -5060,26 +5144,36 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        if (_gameAslVersion >= 391 & numberCorresIds == 0 & _useAbbreviations & Strings.Len(name) > 0)
-        {
+        if ((ASLVersion >= 391) & (numberCorresIds == 0) & _useAbbreviations & (Strings.Len(name) > 0))
             // Check for abbreviated object names
-
+        {
             for (int i = 1, loopTo4 = _numberObjs; i <= loopTo4; i++)
             {
                 if (DisambObjHere(ctx, i, firstPlace, twoPlaces, secondPlace, isExit))
                 {
                     string thisName;
                     if (!string.IsNullOrEmpty(_objs[i].ObjectAlias))
+                    {
                         thisName = Strings.LCase(_objs[i].ObjectAlias);
+                    }
                     else
+                    {
                         thisName = Strings.LCase(_objs[i].ObjectName);
-                    if (_gameAslVersion >= 410)
+                    }
+
+                    if (ASLVersion >= 410)
                     {
                         if (!string.IsNullOrEmpty(_objs[i].Prefix))
+                        {
                             thisName = Strings.Trim(Strings.LCase(_objs[i].Prefix)) + " " + thisName;
+                        }
+
                         if (!string.IsNullOrEmpty(_objs[i].Suffix))
+                        {
                             thisName = thisName + " " + Strings.Trim(Strings.LCase(_objs[i].Suffix));
+                        }
                     }
+
                     if (Strings.InStr(" " + thisName, " " + Strings.LCase(name)) != 0)
                     {
                         numberCorresIds = numberCorresIds + 1;
@@ -5117,11 +5211,12 @@ public partial class LegacyGame : IASL, IASLTimer
 
             return idNumbers[1];
         }
-        else if (numberCorresIds > 1)
+
+        if (numberCorresIds > 1)
         {
             descriptionText = new string[numberCorresIds + 1];
 
-            string question = "Please select which " + name + " you mean:";
+            var question = "Please select which " + name + " you mean:";
             Print("- |i" + question + "|xi", ctx);
 
             var menuItems = new Dictionary<string, string>();
@@ -5142,11 +5237,10 @@ public partial class LegacyGame : IASL, IASLTimer
                 }
 
                 menuItems.Add(i.ToString(), descriptionText[i]);
-
             }
 
             var mnu = new MenuData(question, menuItems, false);
-            string response = ShowMenu(mnu);
+            var response = ShowMenu(mnu);
 
             _choiceNumber = Conversions.ToInteger(response);
 
@@ -5184,9 +5278,9 @@ public partial class LegacyGame : IASL, IASLTimer
         return -1;
     }
 
-    private string DisplayStatusVariableInfo(int id, VarType @type, Context ctx)
+    private string DisplayStatusVariableInfo(int id, VarType type, Context ctx)
     {
-        string displayData = "";
+        var displayData = "";
         int ep;
 
         if (type == VarType.String)
@@ -5196,30 +5290,34 @@ public partial class LegacyGame : IASL, IASLTimer
 
             if (ep != 0)
             {
-                displayData = Strings.Left(displayData, ep - 1) + _stringVariable[id].VariableContents[0] + Strings.Mid(displayData, ep + 1);
+                displayData = Strings.Left(displayData, ep - 1) + _stringVariable[id].VariableContents[0] +
+                              Strings.Mid(displayData, ep + 1);
             }
         }
         else if (type == VarType.Numeric)
         {
-            if (_numericVariable[id].NoZeroDisplay & Conversion.Val(_numericVariable[id].VariableContents[0]) == 0d)
+            if (_numericVariable[id].NoZeroDisplay &
+                (Conversion.Val(_numericVariable[id].VariableContents[0]) == 0d))
             {
                 return "";
             }
+
             displayData = ConvertVarsIn(_numericVariable[id].DisplayString, ctx);
             ep = Strings.InStr(displayData, "!");
 
             if (ep != 0)
             {
-                displayData = Strings.Left(displayData, ep - 1) + _numericVariable[id].VariableContents[0] + Strings.Mid(displayData, ep + 1);
+                displayData = Strings.Left(displayData, ep - 1) + _numericVariable[id].VariableContents[0] +
+                              Strings.Mid(displayData, ep + 1);
             }
 
             if (Strings.InStr(displayData, "*") > 0)
             {
-                int firstStar = Strings.InStr(displayData, "*");
-                int secondStar = Strings.InStr(firstStar + 1, displayData, "*");
-                string beforeStar = Strings.Left(displayData, firstStar - 1);
-                string afterStar = Strings.Mid(displayData, secondStar + 1);
-                string betweenStar = Strings.Mid(displayData, firstStar + 1, secondStar - firstStar - 1);
+                var firstStar = Strings.InStr(displayData, "*");
+                var secondStar = Strings.InStr(firstStar + 1, displayData, "*");
+                var beforeStar = Strings.Left(displayData, firstStar - 1);
+                var afterStar = Strings.Mid(displayData, secondStar + 1);
+                var betweenStar = Strings.Mid(displayData, firstStar + 1, secondStar - firstStar - 1);
 
                 if (Conversions.ToDouble(_numericVariable[id].VariableContents[0]) != 1d)
                 {
@@ -5238,7 +5336,7 @@ public partial class LegacyGame : IASL, IASLTimer
     internal bool DoAction(int id, string action, Context ctx, bool logError = true)
     {
         var found = default(bool);
-        string script = "";
+        var script = "";
 
         var o = _objs[id];
 
@@ -5255,7 +5353,10 @@ public partial class LegacyGame : IASL, IASLTimer
         if (!found)
         {
             if (logError)
+            {
                 LogASLError("No such action '" + action + "' defined for object '" + o.ObjectName + "'");
+            }
+
             return false;
         }
 
@@ -5293,7 +5394,8 @@ public partial class LegacyGame : IASL, IASLTimer
             scriptLine = GetEverythingAfter(scriptLine, "object ");
             if (!BeginsWith(scriptLine, "in "))
             {
-                LogASLError("Expected 'in' in 'for each object " + ReportErrorLine(scriptLine) + "'", LogType.WarningError);
+                LogASLError("Expected 'in' in 'for each object " + ReportErrorLine(scriptLine) + "'",
+                    LogType.WarningError);
                 return;
             }
         }
@@ -5302,9 +5404,11 @@ public partial class LegacyGame : IASL, IASLTimer
             scriptLine = GetEverythingAfter(scriptLine, "exit ");
             if (!BeginsWith(scriptLine, "in "))
             {
-                LogASLError("Expected 'in' in 'for each exit " + ReportErrorLine(scriptLine) + "'", LogType.WarningError);
+                LogASLError("Expected 'in' in 'for each exit " + ReportErrorLine(scriptLine) + "'",
+                    LogType.WarningError);
                 return;
             }
+
             isExit = true;
         }
         else if (BeginsWith(scriptLine, "room "))
@@ -5312,9 +5416,11 @@ public partial class LegacyGame : IASL, IASLTimer
             scriptLine = GetEverythingAfter(scriptLine, "room ");
             if (!BeginsWith(scriptLine, "in "))
             {
-                LogASLError("Expected 'in' in 'for each room " + ReportErrorLine(scriptLine) + "'", LogType.WarningError);
+                LogASLError("Expected 'in' in 'for each room " + ReportErrorLine(scriptLine) + "'",
+                    LogType.WarningError);
                 return;
             }
+
             isRoom = true;
         }
         else
@@ -5333,15 +5439,16 @@ public partial class LegacyGame : IASL, IASLTimer
         else
         {
             inLocation = Strings.LCase(GetParameter(scriptLine, ctx));
-            int bracketPos = Strings.InStr(scriptLine, ">");
+            var bracketPos = Strings.InStr(scriptLine, ">");
             scriptToRun = Strings.Trim(Strings.Mid(scriptLine, bracketPos + 1));
         }
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
-            if (string.IsNullOrEmpty(inLocation) | (Strings.LCase(_objs[i].ContainerRoom) ?? "") == (inLocation ?? ""))
+            if (string.IsNullOrEmpty(inLocation) |
+                ((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (inLocation ?? "")))
             {
-                if (_objs[i].IsRoom == isRoom & _objs[i].IsExit == isExit)
+                if ((_objs[i].IsRoom == isRoom) & (_objs[i].IsExit == isExit))
                 {
                     SetStringContents("quest.thing", _objs[i].ObjectName, ctx);
                     ExecuteScript(scriptToRun, ctx);
@@ -5356,21 +5463,21 @@ public partial class LegacyGame : IASL, IASLTimer
         string script;
         var actionNum = default(int);
         var id = default(int);
-        bool foundExisting = false;
-        bool foundObject = false;
+        var foundExisting = false;
+        var foundObject = false;
 
-        string @param = GetParameter(data, ctx);
-        int scp = Strings.InStr(@param, ";");
+        var param = GetParameter(data, ctx);
+        var scp = Strings.InStr(param, ";");
         if (scp == 0)
         {
             LogASLError("No action name specified in 'action " + data + "'", LogType.WarningError);
             return;
         }
 
-        string objName = Strings.Trim(Strings.Left(@param, scp - 1));
-        actionName = Strings.Trim(Strings.Mid(@param, scp + 1));
+        var objName = Strings.Trim(Strings.Left(param, scp - 1));
+        actionName = Strings.Trim(Strings.Mid(param, scp + 1));
 
-        int ep = Strings.InStr(data, ">");
+        var ep = Strings.InStr(data, ">");
         if (ep == Strings.Len(Strings.Trim(data)))
         {
             script = "";
@@ -5482,7 +5589,9 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         if (thisNot)
+        {
             result = !result;
+        }
 
         return result;
     }
@@ -5490,11 +5599,11 @@ public partial class LegacyGame : IASL, IASLTimer
     private bool ExecuteConditions(string list, Context ctx)
     {
         var conditions = default(string[]);
-        int numConditions = 0;
+        var numConditions = 0;
         var operations = default(string[]);
-        string obscuredConditionList = ObliterateParameters(list);
-        int pos = 1;
-        bool isFinalCondition = false;
+        var obscuredConditionList = ObliterateParameters(list);
+        var pos = 1;
+        var isFinalCondition = false;
 
         do
         {
@@ -5502,8 +5611,8 @@ public partial class LegacyGame : IASL, IASLTimer
             Array.Resize(ref conditions, numConditions + 1);
             Array.Resize(ref operations, numConditions + 1);
 
-            string nextCondition = "AND";
-            int nextConditionPos = Strings.InStr(pos, obscuredConditionList, "and ");
+            var nextCondition = "AND";
+            var nextConditionPos = Strings.InStr(pos, obscuredConditionList, "and ");
             if (nextConditionPos == 0)
             {
                 nextConditionPos = Strings.InStr(pos, obscuredConditionList, "or ");
@@ -5517,21 +5626,20 @@ public partial class LegacyGame : IASL, IASLTimer
                 nextCondition = "FINAL";
             }
 
-            string thisCondition = Strings.Trim(Strings.Mid(list, pos, nextConditionPos - pos - 1));
+            var thisCondition = Strings.Trim(Strings.Mid(list, pos, nextConditionPos - pos - 1));
             conditions[numConditions] = thisCondition;
             operations[numConditions] = nextCondition;
 
             // next condition starts from space after and/or
             pos = Strings.InStr(nextConditionPos, obscuredConditionList, " ");
-        }
-        while (!isFinalCondition);
+        } while (!isFinalCondition);
 
         operations[0] = "AND";
-        bool result = true;
+        var result = true;
 
         for (int i = 1, loopTo = numConditions; i <= loopTo; i++)
         {
-            bool thisResult = ExecuteCondition(conditions[i], ctx);
+            var thisResult = ExecuteCondition(conditions[i], ctx);
 
             if (operations[i - 1] == "AND")
             {
@@ -5570,21 +5678,24 @@ public partial class LegacyGame : IASL, IASLTimer
 
             AddToChangeLog("room " + newName, "create");
 
-            if (_gameAslVersion >= 410)
+            if (ASLVersion >= 410)
             {
                 AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx);
                 for (int j = 1, loopTo = _defaultRoomProperties.NumberActions; j <= loopTo; j++)
-                    AddObjectAction(_numberObjs, _defaultRoomProperties.Actions[j].ActionName, _defaultRoomProperties.Actions[j].Script);
+                {
+                    AddObjectAction(_numberObjs, _defaultRoomProperties.Actions[j].ActionName,
+                        _defaultRoomProperties.Actions[j].Script);
+                }
 
-                _rooms[_numberRooms].Exits = new LegacyASL.RoomExits(this);
+                _rooms[_numberRooms].Exits = new RoomExits(this);
                 _rooms[_numberRooms].Exits.SetObjId(_rooms[_numberRooms].ObjId);
             }
         }
 
         else if (BeginsWith(data, "object "))
         {
-            string paramData = GetParameter(data, ctx);
-            int scp = Strings.InStr(paramData, ";");
+            var paramData = GetParameter(data, ctx);
+            var scp = Strings.InStr(paramData, ";");
             string containerRoom;
 
             if (scp == 0)
@@ -5613,15 +5724,20 @@ public partial class LegacyGame : IASL, IASLTimer
 
             AddToChangeLog("object " + newName, "create " + _objs[_numberObjs].ContainerRoom);
 
-            if (_gameAslVersion >= 410)
+            if (ASLVersion >= 410)
             {
                 AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx);
                 for (int j = 1, loopTo1 = _defaultProperties.NumberActions; j <= loopTo1; j++)
-                    AddObjectAction(_numberObjs, _defaultProperties.Actions[j].ActionName, _defaultProperties.Actions[j].Script);
+                {
+                    AddObjectAction(_numberObjs, _defaultProperties.Actions[j].ActionName,
+                        _defaultProperties.Actions[j].Script);
+                }
             }
 
             if (!_gameLoading)
+            {
                 UpdateObjectList(ctx);
+            }
         }
 
         else if (BeginsWith(data, "exit "))
@@ -5633,13 +5749,13 @@ public partial class LegacyGame : IASL, IASLTimer
     private void ExecuteCreateExit(string data, Context ctx)
     {
         string scrRoom;
-        string destRoom = "";
+        var destRoom = "";
         var destId = default(int);
-        string exitData = GetEverythingAfter(data, "exit ");
-        string newName = GetParameter(data, ctx);
-        int scp = Strings.InStr(newName, ";");
+        var exitData = GetEverythingAfter(data, "exit ");
+        var newName = GetParameter(data, ctx);
+        var scp = Strings.InStr(newName, ";");
 
-        if (_gameAslVersion < 410)
+        if (ASLVersion < 410)
         {
             if (scp == 0)
             {
@@ -5656,7 +5772,8 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             scrRoom = Strings.Trim(Strings.Left(newName, scp - 1));
         }
-        int srcId = GetRoomID(scrRoom, ctx);
+
+        var srcId = GetRoomID(scrRoom, ctx);
 
         if (srcId == 0)
         {
@@ -5664,7 +5781,7 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        if (_gameAslVersion < 410)
+        if (ASLVersion < 410)
         {
             // only do destination room check for ASL <410, as can now have scripts on dynamically
             // created exits, so the destination doesn't necessarily have to exist.
@@ -5683,10 +5800,10 @@ public partial class LegacyGame : IASL, IASLTimer
         }
 
         // If it's a "go to" exit, check if it already exists:
-        bool exists = false;
+        var exists = false;
         if (BeginsWith(exitData, "<"))
         {
-            if (_gameAslVersion >= 410)
+            if (ASLVersion >= 410)
             {
                 exists = _rooms[srcId].Exits.GetPlaces().ContainsKey(destRoom);
             }
@@ -5709,7 +5826,7 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        int paramPos = Strings.InStr(exitData, "<");
+        var paramPos = Strings.InStr(exitData, "<");
         string saveData;
         if (paramPos == 0)
         {
@@ -5721,11 +5838,12 @@ public partial class LegacyGame : IASL, IASLTimer
             // We do this so the changelog doesn't contain unconverted variable names
             saveData = saveData + "<" + GetParameter(exitData, ctx) + ">";
         }
+
         AddToChangeLog("room " + _rooms[srcId].RoomName, "exit " + saveData);
 
         var r = _rooms[srcId];
 
-        if (_gameAslVersion >= 410)
+        if (ASLVersion >= 410)
         {
             r.Exits.AddExitFromCreateScript(exitData, ref ctx);
         }
@@ -5802,7 +5920,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
             UpdateObjectList(ctx);
 
-            if (_gameAslVersion < 410)
+            if (ASLVersion < 410)
             {
                 if ((_currentRoom ?? "") == (_rooms[srcId].RoomName ?? ""))
                 {
@@ -5842,7 +5960,7 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             if (id != -2)
             {
-                if (_gameAslVersion >= 391)
+                if (ASLVersion >= 391)
                 {
                     PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
@@ -5851,24 +5969,25 @@ public partial class LegacyGame : IASL, IASLTimer
                     PlayerErrorMessage(PlayerError.BadDrop, ctx);
                 }
             }
+
             _badCmdBefore = "drop";
             return;
         }
 
         // If object is inside a container, it must be removed before it can be dropped.
-        bool isInContainer = false;
-        if (_gameAslVersion >= 391)
+        var isInContainer = false;
+        if (ASLVersion >= 391)
         {
             if (IsYes(GetObjectProperty("parent", id, true, false)))
             {
                 isInContainer = true;
-                string parent = GetObjectProperty("parent", id, false, false);
+                var parent = GetObjectProperty("parent", id, false, false);
                 parentId = GetObjectIdNoAlias(parent);
             }
         }
 
-        bool dropFound = false;
-        string dropStatement = "";
+        var dropFound = false;
+        var dropStatement = "";
 
         for (int i = _objs[id].DefinitionSectionStart, loopTo = _objs[id].DefinitionSectionEnd; i <= loopTo; i++)
         {
@@ -5888,7 +6007,6 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 // So, we want to drop an object that's in a container or surface. So first
                 // we have to remove the object from that container.
-
                 string parentDisplayName;
 
                 if (!string.IsNullOrEmpty(_objs[parentId].ObjectAlias))
@@ -5907,8 +6025,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 ExecCommand("remove " + _objs[id].ObjectName, ctx, false, dontSetIt: true);
 
                 if (!string.IsNullOrEmpty(GetObjectProperty("parent", id, false, false)))
-                {
                     // removing the object failed
+                {
                     return;
                 }
             }
@@ -5924,7 +6042,7 @@ public partial class LegacyGame : IASL, IASLTimer
             PlayerItem(_objs[id].ObjectName, false, ctx);
             if (Strings.InStr(dropStatement, "<") != 0)
             {
-                Print(GetParameter(s: dropStatement, ctx: ctx), ctx);
+                Print(GetParameter(dropStatement, ctx), ctx);
             }
             else
             {
@@ -5935,7 +6053,7 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             if (Strings.InStr(dropStatement, "<") != 0)
             {
-                Print(GetParameter(s: dropStatement, ctx: ctx), ctx);
+                Print(GetParameter(dropStatement, ctx), ctx);
             }
             else
             {
@@ -5950,7 +6068,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private void ExecExamine(string command, Context ctx)
     {
-        string item = Strings.LCase(Strings.Trim(GetEverythingAfter(command, "examine ")));
+        var item = Strings.LCase(Strings.Trim(GetEverythingAfter(command, "examine ")));
 
         if (string.IsNullOrEmpty(item))
         {
@@ -5959,12 +6077,15 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        int id = Disambiguate(item, _currentRoom + ";inventory", ctx);
+        var id = Disambiguate(item, _currentRoom + ";inventory", ctx);
 
         if (id <= 0)
         {
             if (id != -2)
+            {
                 PlayerErrorMessage(PlayerError.BadThing, ctx);
+            }
+
             _badCmdBefore = "examine";
             return;
         }
@@ -5996,7 +6117,7 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             if (BeginsWith(_lines[i], "examine "))
             {
-                string action = Strings.Trim(GetEverythingAfter(_lines[i], "examine "));
+                var action = Strings.Trim(GetEverythingAfter(_lines[i], "examine "));
                 if (Strings.Left(action, 1) == "<")
                 {
                     Print(GetParameter(_lines[i], ctx), ctx);
@@ -6005,6 +6126,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     ExecuteScript(action, ctx, id);
                 }
+
                 return;
             }
         }
@@ -6012,11 +6134,11 @@ public partial class LegacyGame : IASL, IASLTimer
         DoLook(id, ctx, true);
     }
 
-    private void ExecMoveThing(string data, Thing @type, Context ctx)
+    private void ExecMoveThing(string data, Thing type, Context ctx)
     {
-        int scp = Strings.InStr(data, ";");
-        string name = Strings.Trim(Strings.Left(data, scp - 1));
-        string place = Strings.Trim(Strings.Mid(data, scp + 1));
+        var scp = Strings.InStr(data, ";");
+        var name = Strings.Trim(Strings.Left(data, scp - 1));
+        var place = Strings.Trim(Strings.Mid(data, scp + 1));
         MoveThing(name, place, type, ctx);
     }
 
@@ -6024,7 +6146,7 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var id = default(int);
         var found = default(bool);
-        int scp = Strings.InStr(data, ";");
+        var scp = Strings.InStr(data, ";");
 
         if (scp == 0)
         {
@@ -6032,8 +6154,8 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        string name = Strings.Trim(Strings.Left(data, scp - 1));
-        string properties = Strings.Trim(Strings.Mid(data, scp + 1));
+        var name = Strings.Trim(Strings.Left(data, scp - 1));
+        var properties = Strings.Trim(Strings.Mid(data, scp + 1));
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -6057,14 +6179,13 @@ public partial class LegacyGame : IASL, IASLTimer
     private void ExecuteDo(string procedureName, Context ctx)
     {
         var newCtx = CopyContext(ctx);
-        int numParameters = 0;
+        var numParameters = 0;
         bool useNewCtx;
 
-        if (_gameAslVersion >= 392 & Strings.Left(procedureName, 8) == "!intproc")
-        {
+        if ((ASLVersion >= 392) & (Strings.Left(procedureName, 8) == "!intproc"))
             // If "do" procedure is run in a new context, context info is not passed to any nested
             // script blocks in braces.
-
+        {
             useNewCtx = false;
         }
         else
@@ -6072,39 +6193,38 @@ public partial class LegacyGame : IASL, IASLTimer
             useNewCtx = true;
         }
 
-        if (_gameAslVersion >= 284)
+        if (ASLVersion >= 284)
         {
-            int obp = Strings.InStr(procedureName, "(");
+            var obp = Strings.InStr(procedureName, "(");
             var cbp = default(int);
             if (obp != 0)
             {
                 cbp = Strings.InStr(obp + 1, procedureName, ")");
             }
 
-            if (obp != 0 & cbp != 0)
+            if ((obp != 0) & (cbp != 0))
             {
-                string parameters = Strings.Mid(procedureName, obp + 1, cbp - obp - 1);
+                var parameters = Strings.Mid(procedureName, obp + 1, cbp - obp - 1);
                 procedureName = Strings.Left(procedureName, obp - 1);
 
                 parameters = parameters + ";";
-                int pos = 1;
+                var pos = 1;
                 do
                 {
                     numParameters = numParameters + 1;
-                    int scp = Strings.InStr(pos, parameters, ";");
+                    var scp = Strings.InStr(pos, parameters, ";");
 
                     newCtx.NumParameters = numParameters;
                     Array.Resize(ref newCtx.Parameters, numParameters + 1);
                     newCtx.Parameters[numParameters] = Strings.Trim(Strings.Mid(parameters, pos, scp - pos));
 
                     pos = scp + 1;
-                }
-                while (pos < Strings.Len(parameters));
+                } while (pos < Strings.Len(parameters));
             }
         }
 
         var block = DefineBlockParam("procedure", procedureName);
-        if (block.StartLine == 0 & block.EndLine == 0)
+        if ((block.StartLine == 0) & (block.EndLine == 0))
         {
             LogASLError("No such procedure " + procedureName, LogType.WarningError);
         }
@@ -6129,16 +6249,16 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var id = default(int);
 
-        int scp = Strings.InStr(data, ";");
+        var scp = Strings.InStr(data, ";");
         if (scp == 0)
         {
             LogASLError("No action name specified in 'doaction <" + data + ">'");
             return;
         }
 
-        string objName = Strings.LCase(Strings.Trim(Strings.Left(data, scp - 1)));
-        string actionName = Strings.Trim(Strings.Mid(data, scp + 1));
-        bool found = false;
+        var objName = Strings.LCase(Strings.Trim(Strings.Left(data, scp - 1)));
+        var actionName = Strings.Trim(Strings.Mid(data, scp + 1));
+        var found = false;
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -6161,11 +6281,11 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private bool ExecuteIfHere(string obj, Context ctx)
     {
-        if (_gameAslVersion <= 281)
+        if (ASLVersion <= 281)
         {
             for (int i = 1, loopTo = _numberChars; i <= loopTo; i++)
             {
-                if ((_chars[i].ContainerRoom ?? "") == (_currentRoom ?? "") & _chars[i].Exists)
+                if (((_chars[i].ContainerRoom ?? "") == (_currentRoom ?? "")) & _chars[i].Exists)
                 {
                     if ((Strings.LCase(obj) ?? "") == (Strings.LCase(_chars[i].ObjectName) ?? ""))
                     {
@@ -6177,7 +6297,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
         for (int i = 1, loopTo1 = _numberObjs; i <= loopTo1; i++)
         {
-            if ((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(_currentRoom) ?? "") & _objs[i].Exists)
+            if (((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(_currentRoom) ?? "")) &
+                _objs[i].Exists)
             {
                 if ((Strings.LCase(obj) ?? "") == (Strings.LCase(_objs[i].ObjectName) ?? ""))
                 {
@@ -6192,7 +6313,7 @@ public partial class LegacyGame : IASL, IASLTimer
     private bool ExecuteIfExists(string obj, bool realOnly)
     {
         var result = default(bool);
-        bool errorReport = false;
+        var errorReport = false;
         int scp;
 
         if (Strings.InStr(obj, ";") != 0)
@@ -6206,9 +6327,9 @@ public partial class LegacyGame : IASL, IASLTimer
             obj = Strings.Left(obj, scp - 1);
         }
 
-        bool found = false;
+        var found = false;
 
-        if (_gameAslVersion < 281)
+        if (ASLVersion < 281)
         {
             for (int i = 1, loopTo = _numberChars; i <= loopTo; i++)
             {
@@ -6234,13 +6355,15 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        if (found == false & errorReport)
+        if ((found == false) & errorReport)
         {
             LogASLError("No such character/object '" + obj + "'.", LogType.UserError);
         }
 
         if (found == false)
+        {
             result = false;
+        }
 
         if (realOnly)
         {
@@ -6253,7 +6376,7 @@ public partial class LegacyGame : IASL, IASLTimer
     private bool ExecuteIfProperty(string data)
     {
         var id = default(int);
-        int scp = Strings.InStr(data, ";");
+        var scp = Strings.InStr(data, ";");
 
         if (scp == 0)
         {
@@ -6261,9 +6384,9 @@ public partial class LegacyGame : IASL, IASLTimer
             return false;
         }
 
-        string objName = Strings.Trim(Strings.Left(data, scp - 1));
-        string propertyName = Strings.Trim(Strings.Mid(data, scp + 1));
-        bool found = false;
+        var objName = Strings.Trim(Strings.Left(data, scp - 1));
+        var propertyName = Strings.Trim(Strings.Mid(data, scp + 1));
+        var found = false;
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
@@ -6277,7 +6400,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (!found)
         {
-            LogASLError("No such object '" + objName + "' in condition 'property <" + data + ">' ...", LogType.WarningError);
+            LogASLError("No such object '" + objName + "' in condition 'property <" + data + ">' ...",
+                LogType.WarningError);
             return false;
         }
 
@@ -6287,10 +6411,10 @@ public partial class LegacyGame : IASL, IASLTimer
     private void ExecuteRepeat(string data, Context ctx)
     {
         bool repeatWhileTrue;
-        string repeatScript = "";
+        var repeatScript = "";
         int bracketPos;
         string afterBracket;
-        bool foundScript = false;
+        var foundScript = false;
 
         if (BeginsWith(data, "while "))
         {
@@ -6308,7 +6432,7 @@ public partial class LegacyGame : IASL, IASLTimer
             return;
         }
 
-        int pos = 1;
+        var pos = 1;
         do
         {
             bracketPos = Strings.InStr(pos, data, ">");
@@ -6322,11 +6446,10 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 pos = bracketPos + 1;
             }
-        }
-        while (!(foundScript | string.IsNullOrEmpty(afterBracket)));
+        } while (!(foundScript | string.IsNullOrEmpty(afterBracket)));
 
-        string conditions = Strings.Trim(Strings.Left(data, bracketPos));
-        bool finished = false;
+        var conditions = Strings.Trim(Strings.Left(data, bracketPos));
+        var finished = false;
 
         do
         {
@@ -6338,18 +6461,17 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 finished = true;
             }
-        }
-        while (!(finished | _gameFinished));
+        } while (!(finished | _gameFinished));
     }
 
-    private void ExecuteSetCollectable(string @param, Context ctx)
+    private void ExecuteSetCollectable(string param, Context ctx)
     {
         double val;
         var id = default(int);
-        int scp = Strings.InStr(@param, ";");
-        string name = Strings.Trim(Strings.Left(@param, scp - 1));
-        string newVal = Strings.Trim(Strings.Right(@param, Strings.Len(@param) - scp));
-        bool found = false;
+        var scp = Strings.InStr(param, ";");
+        var name = Strings.Trim(Strings.Left(param, scp - 1));
+        var newVal = Strings.Trim(Strings.Right(param, Strings.Len(param) - scp));
+        var found = false;
 
         for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
         {
@@ -6363,12 +6485,12 @@ public partial class LegacyGame : IASL, IASLTimer
 
         if (!found)
         {
-            LogASLError("No such collectable '" + @param + "'", LogType.WarningError);
+            LogASLError("No such collectable '" + param + "'", LogType.WarningError);
             return;
         }
 
-        string op = Strings.Left(newVal, 1);
-        string newValue = Strings.Trim(Strings.Right(newVal, Strings.Len(newVal) - 1));
+        var op = Strings.Left(newVal, 1);
+        var newValue = Strings.Trim(Strings.Right(newVal, Strings.Len(newVal) - 1));
         if (Information.IsNumeric(newValue))
         {
             val = Conversion.Val(newValue);
@@ -6401,7 +6523,7 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             Print(GetParameter(waitLine, ctx), ctx);
         }
-        else if (_gameAslVersion >= 410)
+        else if (ASLVersion >= 410)
         {
             PlayerErrorMessage(PlayerError.DefaultWait, ctx);
         }
@@ -6421,8 +6543,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string GetNextChunk()
     {
-        int nullPos = Strings.InStr(_fileDataPos, _fileData, "\0");
-        string result = Strings.Mid(_fileData, _fileDataPos, nullPos - _fileDataPos);
+        var nullPos = Strings.InStr(_fileDataPos, _fileData, "\0");
+        var result = Strings.Mid(_fileData, _fileDataPos, nullPos - _fileDataPos);
 
         if (nullPos < Strings.Len(_fileData))
         {
@@ -6434,22 +6556,22 @@ public partial class LegacyGame : IASL, IASLTimer
 
     public string GetFileDataChars(int count)
     {
-        string result = Strings.Mid(_fileData, _fileDataPos, count);
+        var result = Strings.Mid(_fileData, _fileDataPos, count);
         _fileDataPos = _fileDataPos + count;
         return result;
     }
 
     private ActionType GetObjectActions(string actionInfo)
     {
-        string name = Strings.LCase(GetParameter(actionInfo, _nullContext));
-        int ep = Strings.InStr(actionInfo, ">");
+        var name = Strings.LCase(GetParameter(actionInfo, _nullContext));
+        var ep = Strings.InStr(actionInfo, ">");
         if (ep == Strings.Len(actionInfo))
         {
             LogASLError("No script given for '" + name + "' action data", LogType.WarningError);
             return new ActionType();
         }
 
-        string script = Strings.Trim(Strings.Mid(actionInfo, ep + 1));
+        var script = Strings.Trim(Strings.Mid(actionInfo, ep + 1));
         var result = new ActionType();
         result.ActionName = name;
         result.Script = script;
@@ -6459,7 +6581,7 @@ public partial class LegacyGame : IASL, IASLTimer
     private int GetObjectId(string name, Context ctx, string room = "")
     {
         var id = default(int);
-        bool found = false;
+        var found = false;
 
         if (BeginsWith(name, "the "))
         {
@@ -6468,7 +6590,10 @@ public partial class LegacyGame : IASL, IASLTimer
 
         for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
         {
-            if (((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "") | (Strings.LCase(_objs[i].ObjectName) ?? "") == ("the " + Strings.LCase(name) ?? "")) & ((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "") | string.IsNullOrEmpty(room)) & _objs[i].Exists == true)
+            if ((((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "")) |
+                 ((Strings.LCase(_objs[i].ObjectName) ?? "") == ("the " + Strings.LCase(name) ?? ""))) &
+                (((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "")) |
+                 string.IsNullOrEmpty(room)) & _objs[i].Exists)
             {
                 id = i;
                 found = true;
@@ -6476,11 +6601,13 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        if (!found & _gameAslVersion >= 280)
+        if (!found & (ASLVersion >= 280))
         {
             id = Disambiguate(name, room, ctx);
             if (id > 0)
+            {
                 found = true;
+            }
         }
 
         if (found)
@@ -6506,8 +6633,8 @@ public partial class LegacyGame : IASL, IASLTimer
 
     internal string GetObjectProperty(string name, int id, bool existsOnly = false, bool logError = true)
     {
-        string result = "";
-        bool found = false;
+        var result = "";
+        var found = false;
         var o = _objs[id];
 
         for (int i = 1, loopTo = o.NumberProperties; i <= loopTo; i++)
@@ -6526,6 +6653,7 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 return "yes";
             }
+
             return "no";
         }
 
@@ -6543,17 +6671,18 @@ public partial class LegacyGame : IASL, IASLTimer
         return "";
     }
 
-    private PropertiesActions GetPropertiesInType(string @type, bool err = true)
+    private PropertiesActions GetPropertiesInType(string type, bool err = true)
     {
         var blockId = default(int);
         var propertyList = new PropertiesActions();
-        bool found = false;
+        var found = false;
 
         for (int i = 1, loopTo = _numberSections; i <= loopTo; i++)
         {
             if (BeginsWith(_lines[_defineBlocks[i].StartLine], "define type"))
             {
-                if ((Strings.LCase(GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext)) ?? "") == (Strings.LCase(type) ?? ""))
+                if ((Strings.LCase(GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext)) ?? "") ==
+                    (Strings.LCase(type) ?? ""))
                 {
                     blockId = i;
                     found = true;
@@ -6568,23 +6697,31 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 LogASLError("No such type '" + type + "'", LogType.WarningError);
             }
+
             return new PropertiesActions();
         }
 
-        for (int i = _defineBlocks[blockId].StartLine + 1, loopTo1 = _defineBlocks[blockId].EndLine - 1; i <= loopTo1; i++)
+        for (int i = _defineBlocks[blockId].StartLine + 1, loopTo1 = _defineBlocks[blockId].EndLine - 1;
+             i <= loopTo1;
+             i++)
         {
             if (BeginsWith(_lines[i], "type "))
             {
-                string typeName = Strings.LCase(GetParameter(_lines[i], _nullContext));
+                var typeName = Strings.LCase(GetParameter(_lines[i], _nullContext));
                 var newProperties = GetPropertiesInType(typeName);
                 propertyList.Properties = propertyList.Properties + newProperties.Properties;
                 Array.Resize(ref propertyList.Actions, propertyList.NumberActions + newProperties.NumberActions + 1);
-                for (int j = propertyList.NumberActions + 1, loopTo2 = propertyList.NumberActions + newProperties.NumberActions; j <= loopTo2; j++)
+                for (int j = propertyList.NumberActions + 1,
+                     loopTo2 = propertyList.NumberActions + newProperties.NumberActions;
+                     j <= loopTo2;
+                     j++)
                 {
                     propertyList.Actions[j] = new ActionType();
-                    propertyList.Actions[j].ActionName = newProperties.Actions[j - propertyList.NumberActions].ActionName;
+                    propertyList.Actions[j].ActionName =
+                        newProperties.Actions[j - propertyList.NumberActions].ActionName;
                     propertyList.Actions[j].Script = newProperties.Actions[j - propertyList.NumberActions].Script;
                 }
+
                 propertyList.NumberActions = propertyList.NumberActions + newProperties.NumberActions;
 
                 // Add this type name to the TypesIncluded list...
@@ -6593,17 +6730,24 @@ public partial class LegacyGame : IASL, IASLTimer
                 propertyList.TypesIncluded[propertyList.NumberTypesIncluded] = typeName;
 
                 // and add the names of the types included by it...
-
-                Array.Resize(ref propertyList.TypesIncluded, propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded + 1);
-                for (int j = propertyList.NumberTypesIncluded + 1, loopTo3 = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded; j <= loopTo3; j++)
+                Array.Resize(ref propertyList.TypesIncluded,
+                    propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded + 1);
+                for (int j = propertyList.NumberTypesIncluded + 1,
+                     loopTo3 = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded;
+                     j <= loopTo3;
+                     j++)
+                {
                     propertyList.TypesIncluded[j] = newProperties.TypesIncluded[j - propertyList.NumberTypesIncluded];
+                }
+
                 propertyList.NumberTypesIncluded = propertyList.NumberTypesIncluded + newProperties.NumberTypesIncluded;
             }
             else if (BeginsWith(_lines[i], "action "))
             {
                 propertyList.NumberActions = propertyList.NumberActions + 1;
                 Array.Resize(ref propertyList.Actions, propertyList.NumberActions + 1);
-                propertyList.Actions[propertyList.NumberActions] = GetObjectActions(GetEverythingAfter(_lines[i], "action "));
+                propertyList.Actions[propertyList.NumberActions] =
+                    GetObjectActions(GetEverythingAfter(_lines[i], "action "));
             }
             else if (BeginsWith(_lines[i], "properties "))
             {
@@ -6656,7 +6800,7 @@ public partial class LegacyGame : IASL, IASLTimer
         return result;
     }
 
-    private int GetThingNumber(string name, string room, Thing @type)
+    private int GetThingNumber(string name, string room, Thing type)
     {
         // Returns the number in the Chars() or _objs() array of the specified char/obj
 
@@ -6664,7 +6808,11 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             for (int i = 1, loopTo = _numberChars; i <= loopTo; i++)
             {
-                if (!string.IsNullOrEmpty(room) & (Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "") & (Strings.LCase(_chars[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "") | string.IsNullOrEmpty(room) & (Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? ""))
+                if ((!string.IsNullOrEmpty(room) &
+                     ((Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "")) &
+                     ((Strings.LCase(_chars[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? ""))) |
+                    (string.IsNullOrEmpty(room) &
+                     ((Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? ""))))
                 {
                     return i;
                 }
@@ -6674,7 +6822,11 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             for (int i = 1, loopTo1 = _numberObjs; i <= loopTo1; i++)
             {
-                if (!string.IsNullOrEmpty(room) & (Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "") & (Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "") | string.IsNullOrEmpty(room) & (Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? ""))
+                if ((!string.IsNullOrEmpty(room) &
+                     ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "")) &
+                     ((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? ""))) |
+                    (string.IsNullOrEmpty(room) &
+                     ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? ""))))
                 {
                     return i;
                 }
@@ -6684,7 +6836,7 @@ public partial class LegacyGame : IASL, IASLTimer
         return -1;
     }
 
-    private DefineBlock GetThingBlock(string name, string room, Thing @type)
+    private DefineBlock GetThingBlock(string name, string room, Thing type)
     {
         // Returns position where specified char/obj is defined in ASL code
 
@@ -6694,7 +6846,8 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             for (int i = 1, loopTo = _numberChars; i <= loopTo; i++)
             {
-                if ((Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "") & (Strings.LCase(_chars[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? ""))
+                if (((Strings.LCase(_chars[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "")) &
+                    ((Strings.LCase(_chars[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "")))
                 {
                     result.StartLine = _chars[i].DefinitionSectionStart;
                     result.EndLine = _chars[i].DefinitionSectionEnd;
@@ -6706,7 +6859,8 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             for (int i = 1, loopTo1 = _numberObjs; i <= loopTo1; i++)
             {
-                if ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "") & (Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? ""))
+                if (((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? "")) &
+                    ((Strings.LCase(_objs[i].ContainerRoom) ?? "") == (Strings.LCase(room) ?? "")))
                 {
                     result.StartLine = _objs[i].DefinitionSectionStart;
                     result.EndLine = _objs[i].DefinitionSectionEnd;
@@ -6722,9 +6876,9 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string MakeRestoreData()
     {
-        var data = new System.Text.StringBuilder();
-        ChangeType[] objectData = new ChangeType[1];
-        ChangeType[] roomData = new ChangeType[1];
+        var data = new StringBuilder();
+        var objectData = new ChangeType[1];
+        var roomData = new ChangeType[1];
         var numObjectData = default(int);
         var numRoomData = default(int);
 
@@ -6733,7 +6887,7 @@ public partial class LegacyGame : IASL, IASLTimer
         data.Append("QUEST300" + '\0' + GetOriginalFilenameForQSG() + '\0');
 
         // The start point for encrypted data is after the filename
-        int start = data.Length + 1;
+        var start = data.Length + 1;
 
         data.Append(_currentRoom + '\0');
 
@@ -6762,12 +6916,14 @@ public partial class LegacyGame : IASL, IASLTimer
         data.Append(Strings.Trim(Conversion.Str(numObjectData + _changeLogObjects.Changes.Count)) + '\0');
 
         for (int i = 1, loopTo1 = numObjectData; i <= loopTo1; i++)
-            data.Append(GetEverythingAfter(objectData[i].AppliesTo, "object ") + '\0' + objectData[i].Change + '\0');
-
-        foreach (string key in _changeLogObjects.Changes.Keys)
         {
-            string appliesTo = Strings.Split(key, "#")[0];
-            string changeData = _changeLogObjects.Changes[key];
+            data.Append(GetEverythingAfter(objectData[i].AppliesTo, "object ") + '\0' + objectData[i].Change + '\0');
+        }
+
+        foreach (var key in _changeLogObjects.Changes.Keys)
+        {
+            var appliesTo = Strings.Split(key, "#")[0];
+            var changeData = _changeLogObjects.Changes[key];
 
             data.Append(appliesTo + '\0' + changeData + '\0');
         }
@@ -6807,7 +6963,9 @@ public partial class LegacyGame : IASL, IASLTimer
         data.Append(Strings.Trim(Conversion.Str(numRoomData)) + '\0');
 
         for (int i = 1, loopTo3 = numRoomData; i <= loopTo3; i++)
+        {
             data.Append(GetEverythingAfter(roomData[i].AppliesTo, "room ") + '\0' + roomData[i].Change + '\0');
+        }
 
         // <<< TIMER STATE DATA >>>
 
@@ -6841,7 +6999,9 @@ public partial class LegacyGame : IASL, IASLTimer
             data.Append(s.VariableName + '\0' + Strings.Trim(Conversion.Str(s.VariableUBound)) + '\0');
 
             for (int j = 0, loopTo6 = s.VariableUBound; j <= loopTo6; j++)
+            {
                 data.Append(s.VariableContents[j] + '\0');
+            }
         }
 
         // <<< NUMERIC VARIABLE DATA >>>
@@ -6854,28 +7014,32 @@ public partial class LegacyGame : IASL, IASLTimer
             data.Append(n.VariableName + '\0' + Strings.Trim(Conversion.Str(n.VariableUBound)) + '\0');
 
             for (int j = 0, loopTo8 = n.VariableUBound; j <= loopTo8; j++)
+            {
                 data.Append(n.VariableContents[j] + '\0');
+            }
         }
 
         // Now encrypt data
         string dataString;
-        var newFileData = new System.Text.StringBuilder();
+        var newFileData = new StringBuilder();
 
         dataString = data.ToString();
 
         newFileData.Append(Strings.Left(dataString, start - 1));
 
         for (int i = start, loopTo9 = Strings.Len(dataString); i <= loopTo9; i++)
+        {
             newFileData.Append(Strings.Chr(255 - Strings.Asc(Strings.Mid(dataString, i, 1))));
+        }
 
         return newFileData.ToString();
     }
 
-    private void MoveThing(string name, string room, Thing @type, Context ctx)
+    private void MoveThing(string name, string room, Thing type, Context ctx)
     {
-        string oldRoom = "";
+        var oldRoom = "";
 
-        int id = GetThingNumber(name, "", type);
+        var id = GetThingNumber(name, "", type);
 
         if (Strings.InStr(room, "[") > 0)
         {
@@ -6893,9 +7057,9 @@ public partial class LegacyGame : IASL, IASLTimer
             _objs[id].ContainerRoom = room;
         }
 
-        if (_gameAslVersion >= 391)
-        {
+        if (ASLVersion >= 391)
             // If this object contains other objects, move them too
+        {
             for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
             {
                 if ((Strings.LCase(GetObjectProperty("parent", i, false, false)) ?? "") == (Strings.LCase(name) ?? ""))
@@ -6919,7 +7083,9 @@ public partial class LegacyGame : IASL, IASLTimer
         ChangeState(State.Waiting);
 
         lock (_waitLock)
-            System.Threading.Monitor.Wait(_waitLock);
+        {
+            Monitor.Wait(_waitLock);
+        }
     }
 
     private string ConvertParameter(string parameter, string convertChar, ConvertType action, Context ctx)
@@ -6928,25 +7094,25 @@ public partial class LegacyGame : IASL, IASLTimer
         // numeric variables executed or converted as
         // appropriate, read for display/etc.
 
-        string result = "";
-        int pos = 1;
-        bool finished = false;
+        var result = "";
+        var pos = 1;
+        var finished = false;
 
         do
         {
-            int varPos = Strings.InStr(pos, parameter, convertChar);
+            var varPos = Strings.InStr(pos, parameter, convertChar);
             if (varPos == 0)
             {
                 varPos = Strings.Len(parameter) + 1;
                 finished = true;
             }
 
-            string currentBit = Strings.Mid(parameter, pos, varPos - pos);
+            var currentBit = Strings.Mid(parameter, pos, varPos - pos);
             result = result + currentBit;
 
             if (finished == false)
             {
-                int nextPos = Strings.InStr(varPos + 1, parameter, convertChar);
+                var nextPos = Strings.InStr(varPos + 1, parameter, convertChar);
 
                 if (nextPos == 0)
                 {
@@ -6954,7 +7120,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     return "<ERROR>";
                 }
 
-                string varName = Strings.Mid(parameter, varPos + 1, nextPos - 1 - varPos);
+                var varName = Strings.Mid(parameter, varPos + 1, nextPos - 1 - varPos);
 
                 if (string.IsNullOrEmpty(varName))
                 {
@@ -6981,8 +7147,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
                 pos = nextPos + 1;
             }
-        }
-        while (!finished);
+        } while (!finished);
 
         return result;
     }
@@ -6990,19 +7155,20 @@ public partial class LegacyGame : IASL, IASLTimer
     private string DoFunction(string data, Context ctx)
     {
         string name, parameter;
-        string intFuncResult = "";
-        bool intFuncExecuted = false;
-        int paramPos = Strings.InStr(data, "(");
+        var intFuncResult = "";
+        var intFuncExecuted = false;
+        var paramPos = Strings.InStr(data, "(");
 
         if (paramPos != 0)
         {
             name = Strings.Trim(Strings.Left(data, paramPos - 1));
-            int endParamPos = Strings.InStrRev(data, ")");
+            var endParamPos = Strings.InStrRev(data, ")");
             if (endParamPos == 0)
             {
                 LogASLError("Expected ) in $" + data + "$", LogType.WarningError);
                 return "";
             }
+
             parameter = Strings.Mid(data, paramPos + 1, endParamPos - paramPos - 1);
         }
         else
@@ -7014,7 +7180,7 @@ public partial class LegacyGame : IASL, IASLTimer
         DefineBlock block;
         block = DefineBlockParam("function", name);
 
-        if (block.StartLine == 0 & block.EndLine == 0)
+        if ((block.StartLine == 0) & (block.EndLine == 0))
         {
             // Function does not exist; try an internal function.
             intFuncResult = DoInternalFunction(name, parameter, ctx);
@@ -7023,67 +7189,18 @@ public partial class LegacyGame : IASL, IASLTimer
                 LogASLError("No such function '" + name + "'", LogType.WarningError);
                 return "[ERROR]";
             }
-            else
-            {
-                intFuncExecuted = true;
-            }
+
+            intFuncExecuted = true;
         }
 
         if (intFuncExecuted)
         {
             return intFuncResult;
         }
-        else
-        {
-            var newCtx = CopyContext(ctx);
-            int numParameters = 0;
-            int pos = 1;
 
-            if (!string.IsNullOrEmpty(parameter))
-            {
-                parameter = parameter + ";";
-                do
-                {
-                    numParameters = numParameters + 1;
-                    int scp = Strings.InStr(pos, parameter, ";");
-
-                    string parameterData = Strings.Trim(Strings.Mid(parameter, pos, scp - pos));
-                    SetStringContents("quest.function.parameter." + Strings.Trim(Conversion.Str(numParameters)), parameterData, ctx);
-
-                    newCtx.NumParameters = numParameters;
-                    Array.Resize(ref newCtx.Parameters, numParameters + 1);
-                    newCtx.Parameters[numParameters] = parameterData;
-
-                    pos = scp + 1;
-                }
-                while (pos < Strings.Len(parameter));
-                SetStringContents("quest.function.numparameters", Strings.Trim(Conversion.Str(numParameters)), ctx);
-            }
-            else
-            {
-                SetStringContents("quest.function.numparameters", "0", ctx);
-                newCtx.NumParameters = 0;
-            }
-
-            string result = "";
-
-            for (int i = block.StartLine + 1, loopTo = block.EndLine - 1; i <= loopTo; i++)
-            {
-                ExecuteScript(_lines[i], newCtx);
-                result = newCtx.FunctionReturnValue;
-            }
-
-            return result;
-        }
-    }
-
-    private string DoInternalFunction(string name, string parameter, Context ctx)
-    {
-        var parameters = default(string[]);
-        var untrimmedParameters = default(string[]);
-        var objId = default(int);
-        int numParameters = 0;
-        int pos = 1;
+        var newCtx = CopyContext(ctx);
+        var numParameters = 0;
+        var pos = 1;
 
         if (!string.IsNullOrEmpty(parameter))
         {
@@ -7091,7 +7208,53 @@ public partial class LegacyGame : IASL, IASLTimer
             do
             {
                 numParameters = numParameters + 1;
-                int scp = Strings.InStr(pos, parameter, ";");
+                var scp = Strings.InStr(pos, parameter, ";");
+
+                var parameterData = Strings.Trim(Strings.Mid(parameter, pos, scp - pos));
+                SetStringContents("quest.function.parameter." + Strings.Trim(Conversion.Str(numParameters)),
+                    parameterData, ctx);
+
+                newCtx.NumParameters = numParameters;
+                Array.Resize(ref newCtx.Parameters, numParameters + 1);
+                newCtx.Parameters[numParameters] = parameterData;
+
+                pos = scp + 1;
+            } while (pos < Strings.Len(parameter));
+
+            SetStringContents("quest.function.numparameters", Strings.Trim(Conversion.Str(numParameters)), ctx);
+        }
+        else
+        {
+            SetStringContents("quest.function.numparameters", "0", ctx);
+            newCtx.NumParameters = 0;
+        }
+
+        var result = "";
+
+        for (int i = block.StartLine + 1, loopTo = block.EndLine - 1; i <= loopTo; i++)
+        {
+            ExecuteScript(_lines[i], newCtx);
+            result = newCtx.FunctionReturnValue;
+        }
+
+        return result;
+    }
+
+    private string DoInternalFunction(string name, string parameter, Context ctx)
+    {
+        var parameters = default(string[]);
+        var untrimmedParameters = default(string[]);
+        var objId = default(int);
+        var numParameters = 0;
+        var pos = 1;
+
+        if (!string.IsNullOrEmpty(parameter))
+        {
+            parameter = parameter + ";";
+            do
+            {
+                numParameters = numParameters + 1;
+                var scp = Strings.InStr(pos, parameter, ";");
                 Array.Resize(ref parameters, numParameters + 1);
                 Array.Resize(ref untrimmedParameters, numParameters + 1);
 
@@ -7099,8 +7262,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 parameters[numParameters] = Strings.Trim(untrimmedParameters[numParameters]);
 
                 pos = scp + 1;
-            }
-            while (pos < Strings.Len(parameter));
+            } while (pos < Strings.Len(parameter));
 
             // Remove final ";"
             parameter = Strings.Left(parameter, Strings.Len(parameter) - 1);
@@ -7125,42 +7287,44 @@ public partial class LegacyGame : IASL, IASLTimer
                 LogASLError("Object '" + parameters[1] + "' does not exist", LogType.WarningError);
                 return "!";
             }
-            else
-            {
-                return _objs[GetObjectId(parameters[1], ctx)].ObjectAlias;
-            }
+
+            return _objs[GetObjectId(parameters[1], ctx)].ObjectAlias;
         }
-        else if (name == "numberparameters")
+
+        if (name == "numberparameters")
         {
             return Strings.Trim(Conversion.Str(ctx.NumParameters));
         }
-        else if (name == "parameter")
+
+        if (name == "parameter")
         {
             if (numParameters == 0)
             {
                 LogASLError("No parameter number specified for $parameter$ function", LogType.WarningError);
                 return "";
             }
-            else if (Conversion.Val(parameters[1]) > ctx.NumParameters)
+
+            if (Conversion.Val(parameters[1]) > ctx.NumParameters)
             {
                 LogASLError("No parameter number " + parameters[1] + " sent to this function", LogType.WarningError);
                 return "";
             }
-            else
-            {
-                return Strings.Trim(ctx.Parameters[Conversions.ToInteger(parameters[1])]);
-            }
+
+            return Strings.Trim(ctx.Parameters[Conversions.ToInteger(parameters[1])]);
         }
-        else if (name == "gettag")
-        {
+
+        if (name == "gettag")
             // Deprecated
+        {
             return FindStatement(DefineBlockParam("room", parameters[1]), parameters[2]);
         }
-        else if (name == "objectname")
+
+        if (name == "objectname")
         {
             return _objs[ctx.CallingObjectId].ObjectName;
         }
-        else if (name == "locationof")
+
+        if (name == "locationof")
         {
             for (int i = 1, loopTo = _numberChars; i <= loopTo; i++)
             {
@@ -7186,25 +7350,23 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             if (Conversion.Val(parameters[2]) < 0d)
             {
-                LogASLError("Invalid function call in '$Left$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
+                LogASLError("Invalid function call in '$Left$(" + parameters[1] + "; " + parameters[2] + ")$'",
+                    LogType.WarningError);
                 return "!";
             }
-            else
-            {
-                return Strings.Left(parameters[1], Conversions.ToInteger(parameters[2]));
-            }
+
+            return Strings.Left(parameters[1], Conversions.ToInteger(parameters[2]));
         }
         else if (name == "right")
         {
             if (Conversion.Val(parameters[2]) < 0d)
             {
-                LogASLError("Invalid function call in '$Right$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
+                LogASLError("Invalid function call in '$Right$(" + parameters[1] + "; " + parameters[2] + ")$'",
+                    LogType.WarningError);
                 return "!";
             }
-            else
-            {
-                return Strings.Right(parameters[1], Conversions.ToInteger(parameters[2]));
-            }
+
+            return Strings.Right(parameters[1], Conversions.ToInteger(parameters[2]));
         }
         else if (name == "mid")
         {
@@ -7212,32 +7374,37 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 if (Conversion.Val(parameters[2]) < 0d)
                 {
-                    LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", LogType.WarningError);
+                    LogASLError(
+                        "Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + "; " +
+                        parameters[3] + ")$'", LogType.WarningError);
                     return "!";
                 }
-                else
-                {
-                    return Strings.Mid(parameters[1], Conversions.ToInteger(parameters[2]), Conversions.ToInteger(parameters[3]));
-                }
+
+                return Strings.Mid(parameters[1], Conversions.ToInteger(parameters[2]),
+                    Conversions.ToInteger(parameters[3]));
             }
-            else if (numParameters == 2)
+
+            if (numParameters == 2)
             {
                 if (Conversion.Val(parameters[2]) < 0d)
                 {
-                    LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + ")$'", LogType.WarningError);
+                    LogASLError("Invalid function call in '$Mid$(" + parameters[1] + "; " + parameters[2] + ")$'",
+                        LogType.WarningError);
                     return "!";
                 }
-                else
-                {
-                    return Strings.Mid(parameters[1], Conversions.ToInteger(parameters[2]));
-                }
+
+                return Strings.Mid(parameters[1], Conversions.ToInteger(parameters[2]));
             }
+
             LogASLError("Invalid function call to '$Mid$(...)$'", LogType.WarningError);
             return "";
         }
         else if (name == "rand")
         {
-            return Conversion.Str(Conversion.Int(_random.NextDouble() * (Conversions.ToDouble(parameters[2]) - Conversions.ToDouble(parameters[1]) + 1d)) + Conversions.ToDouble(parameters[1]));
+            return Conversion.Str(
+                Conversion.Int(_random.NextDouble() *
+                               (Conversions.ToDouble(parameters[2]) - Conversions.ToDouble(parameters[1]) + 1d)) +
+                Conversions.ToDouble(parameters[1]));
         }
         else if (name == "instr")
         {
@@ -7262,17 +7429,20 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     param3 = parameters[3];
                 }
+
                 if (Conversion.Val(parameters[1]) <= 0d)
                 {
-                    LogASLError("Invalid function call in '$instr(" + parameters[1] + "; " + parameters[2] + "; " + parameters[3] + ")$'", LogType.WarningError);
+                    LogASLError(
+                        "Invalid function call in '$instr(" + parameters[1] + "; " + parameters[2] + "; " +
+                        parameters[3] + ")$'", LogType.WarningError);
                     return "!";
                 }
-                else
-                {
-                    return Strings.Trim(Conversion.Str(Strings.InStr(Conversions.ToInteger(parameters[1]), parameters[2], param3)));
-                }
+
+                return Strings.Trim(Conversion.Str(Strings.InStr(Conversions.ToInteger(parameters[1]), parameters[2],
+                    param3)));
             }
-            else if (numParameters == 2)
+
+            if (numParameters == 2)
             {
                 param2 = "";
                 if (Strings.InStr(parameters[2], "_") != 0)
@@ -7293,8 +7463,10 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     param2 = parameters[2];
                 }
+
                 return Strings.Trim(Conversion.Str(Strings.InStr(parameters[1], param2)));
             }
+
             LogASLError("Invalid function call to '$Instr$(...)$'", LogType.WarningError);
             return "";
         }
@@ -7316,14 +7488,13 @@ public partial class LegacyGame : IASL, IASLTimer
             {
                 return "<";
             }
-            else if (parameters[1] == "gt")
+
+            if (parameters[1] == "gt")
             {
                 return ">";
             }
-            else
-            {
-                return "!";
-            }
+
+            return "!";
         }
         else if (name == "loadmethod")
         {
@@ -7339,12 +7510,11 @@ public partial class LegacyGame : IASL, IASLTimer
                     {
                         return "1";
                     }
-                    else
-                    {
-                        return "0";
-                    }
+
+                    return "0";
                 }
             }
+
             LogASLError("No such timer '" + parameters[1] + "'", LogType.WarningError);
             return "!";
         }
@@ -7357,6 +7527,7 @@ public partial class LegacyGame : IASL, IASLTimer
                     return Conversion.Str(_timers[i].TimerInterval);
                 }
             }
+
             LogASLError("No such timer '" + parameters[1] + "'", LogType.WarningError);
             return "!";
         }
@@ -7383,7 +7554,7 @@ public partial class LegacyGame : IASL, IASLTimer
         }
         else if (name == "objectproperty")
         {
-            bool FoundObj = false;
+            var FoundObj = false;
             for (int i = 1, loopTo8 = _numberObjs; i <= loopTo8; i++)
             {
                 if ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(parameters[1]) ?? ""))
@@ -7399,10 +7570,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 LogASLError("No such object '" + parameters[1] + "'", LogType.WarningError);
                 return "!";
             }
-            else
-            {
-                return GetObjectProperty(parameters[2], objId);
-            }
+
+            return GetObjectProperty(parameters[2], objId);
         }
         else if (name == "getobjectname")
         {
@@ -7416,7 +7585,6 @@ public partial class LegacyGame : IASL, IASLTimer
             }
             else
             {
-
                 objId = Disambiguate(parameters[1], _currentRoom + ";inventory", ctx);
             }
 
@@ -7425,10 +7593,8 @@ public partial class LegacyGame : IASL, IASLTimer
                 LogASLError("No object found with display name '" + parameters[1] + "'", LogType.WarningError);
                 return "!";
             }
-            else
-            {
-                return _objs[objId].ObjectName;
-            }
+
+            return _objs[objId].ObjectName;
         }
         else if (name == "thisobject")
         {
@@ -7446,17 +7612,15 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return RemoveFormatting(parameter);
         }
-        else if (name == "findexit" & _gameAslVersion >= 410)
+        else if ((name == "findexit") & (ASLVersion >= 410))
         {
             var e = FindExit(parameter);
             if (e is null)
             {
                 return "";
             }
-            else
-            {
-                return _objs[e.GetObjId()].ObjectName;
-            }
+
+            return _objs[e.GetObjId()].ObjectName;
         }
 
         return "__NOTDEFINED";
@@ -7475,14 +7639,14 @@ public partial class LegacyGame : IASL, IASLTimer
         // for <variable; startvalue; endvalue> script
         int endValue;
         int stepValue;
-        string forData = GetParameter(line, ctx);
+        var forData = GetParameter(line, ctx);
 
         // Extract individual components:
-        int scp1 = Strings.InStr(forData, ";");
-        int scp2 = Strings.InStr(scp1 + 1, forData, ";");
-        int scp3 = Strings.InStr(scp2 + 1, forData, ";");
-        string counterVariable = Strings.Trim(Strings.Left(forData, scp1 - 1));
-        int startValue = Conversions.ToInteger(Strings.Mid(forData, scp1 + 1, scp2 - 1 - scp1));
+        var scp1 = Strings.InStr(forData, ";");
+        var scp2 = Strings.InStr(scp1 + 1, forData, ";");
+        var scp3 = Strings.InStr(scp2 + 1, forData, ";");
+        var counterVariable = Strings.Trim(Strings.Left(forData, scp1 - 1));
+        var startValue = Conversions.ToInteger(Strings.Mid(forData, scp1 + 1, scp2 - 1 - scp1));
 
         if (scp3 != 0)
         {
@@ -7495,9 +7659,11 @@ public partial class LegacyGame : IASL, IASLTimer
             stepValue = 1;
         }
 
-        string loopScript = Strings.Trim(Strings.Mid(line, Strings.InStr(line, ">") + 1));
+        var loopScript = Strings.Trim(Strings.Mid(line, Strings.InStr(line, ">") + 1));
 
-        for (double i = startValue, loopTo = endValue; (double)stepValue >= 0 ? i <= loopTo : i >= loopTo; i += stepValue)
+        for (double i = startValue, loopTo = endValue;
+             (double) stepValue >= 0 ? i <= loopTo : i >= loopTo;
+             i += stepValue)
         {
             SetNumericVariableContents(counterVariable, i, ctx);
             ExecuteScript(loopScript, ctx);
@@ -7511,20 +7677,21 @@ public partial class LegacyGame : IASL, IASLTimer
         // Eg <var1;7> sets numeric variable var1
         // to 7
 
-        int scp = Strings.InStr(varInfo, ";");
-        string varName = Strings.Trim(Strings.Left(varInfo, scp - 1));
-        string varCont = Strings.Trim(Strings.Mid(varInfo, scp + 1));
+        var scp = Strings.InStr(varInfo, ";");
+        var varName = Strings.Trim(Strings.Left(varInfo, scp - 1));
+        var varCont = Strings.Trim(Strings.Mid(varInfo, scp + 1));
         var idx = GetArrayIndex(varName, ctx);
 
         if (Information.IsNumeric(idx.Name))
         {
-            LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric", LogType.WarningError);
+            LogASLError("Invalid numeric variable name '" + idx.Name + "' - variable names cannot be numeric",
+                LogType.WarningError);
             return;
         }
 
         try
         {
-            if (_gameAslVersion >= 391)
+            if (ASLVersion >= 391)
             {
                 var expResult = ExpressionHandler(varCont);
                 if (expResult.Success == ExpressionSuccess.OK)
@@ -7534,25 +7701,34 @@ public partial class LegacyGame : IASL, IASLTimer
                 else
                 {
                     varCont = "0";
-                    LogASLError("Error setting numeric variable <" + varInfo + "> : " + expResult.Message, LogType.WarningError);
+                    LogASLError("Error setting numeric variable <" + varInfo + "> : " + expResult.Message,
+                        LogType.WarningError);
                 }
             }
             else
             {
-                string obscuredVarInfo = ObscureNumericExps(varCont);
-                int opPos = Strings.InStr(obscuredVarInfo, "+");
+                var obscuredVarInfo = ObscureNumericExps(varCont);
+                var opPos = Strings.InStr(obscuredVarInfo, "+");
                 if (opPos == 0)
+                {
                     opPos = Strings.InStr(obscuredVarInfo, "*");
+                }
+
                 if (opPos == 0)
+                {
                     opPos = Strings.InStr(obscuredVarInfo, "/");
+                }
+
                 if (opPos == 0)
+                {
                     opPos = Strings.InStr(2, obscuredVarInfo, "-");
+                }
 
                 if (opPos != 0)
                 {
-                    string op = Strings.Mid(varCont, opPos, 1);
-                    double num1 = Conversion.Val(Strings.Left(varCont, opPos - 1));
-                    double num2 = Conversion.Val(Strings.Mid(varCont, opPos + 1));
+                    var op = Strings.Mid(varCont, opPos, 1);
+                    var num1 = Conversion.Val(Strings.Left(varCont, opPos - 1));
+                    var num2 = Conversion.Val(Strings.Mid(varCont, opPos + 1));
 
                     switch (op ?? "")
                     {
@@ -7579,7 +7755,8 @@ public partial class LegacyGame : IASL, IASLTimer
                             }
                             else
                             {
-                                LogASLError("Division by zero - The result of this operation has been set to zero.", LogType.WarningError);
+                                LogASLError("Division by zero - The result of this operation has been set to zero.",
+                                    LogType.WarningError);
                                 varCont = "0";
                             }
 
@@ -7603,38 +7780,45 @@ public partial class LegacyGame : IASL, IASLTimer
         ChangeState(State.Waiting);
 
         lock (_waitLock)
-            System.Threading.Monitor.Wait(_waitLock);
+        {
+            Monitor.Wait(_waitLock);
+        }
 
         return _questionResponse;
     }
 
     private void SetQuestionResponse(bool response)
     {
-        var runnerThread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(SetQuestionResponseInNewThread));
+        var runnerThread = new Thread(SetQuestionResponseInNewThread);
         ChangeState(State.Working);
         runnerThread.Start(response);
         WaitForStateChange(State.Working);
     }
 
-    void IASL.SetQuestionResponse(bool response) => SetQuestionResponse(response);
+    void IASL.SetQuestionResponse(bool response)
+    {
+        SetQuestionResponse(response);
+    }
 
     private void SetQuestionResponseInNewThread(object response)
     {
-        _questionResponse = (bool)response;
+        _questionResponse = (bool) response;
 
         lock (_waitLock)
-            System.Threading.Monitor.PulseAll(_waitLock);
+        {
+            Monitor.PulseAll(_waitLock);
+        }
     }
 
     private bool ExecuteIfGot(string item)
     {
-        if (_gameAslVersion >= 280)
+        if (ASLVersion >= 280)
         {
             for (int i = 1, loopTo = _numberObjs; i <= loopTo; i++)
             {
                 if ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(item) ?? ""))
                 {
-                    return _objs[i].ContainerRoom == "inventory" & _objs[i].Exists;
+                    return (_objs[i].ContainerRoom == "inventory") & _objs[i].Exists;
                 }
             }
 
@@ -7658,10 +7842,10 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         double checkValue;
         var colNum = default(int);
-        int scp = Strings.InStr(condition, ";");
-        string name = Strings.Trim(Strings.Left(condition, scp - 1));
-        string newVal = Strings.Trim(Strings.Right(condition, Strings.Len(condition) - scp));
-        bool found = false;
+        var scp = Strings.InStr(condition, ";");
+        var name = Strings.Trim(Strings.Left(condition, scp - 1));
+        var newVal = Strings.Trim(Strings.Right(condition, Strings.Len(condition) - scp));
+        var found = false;
 
         for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
         {
@@ -7679,8 +7863,8 @@ public partial class LegacyGame : IASL, IASLTimer
             return false;
         }
 
-        string op = Strings.Left(newVal, 1);
-        string newValue = Strings.Trim(Strings.Right(newVal, Strings.Len(newVal) - 1));
+        var op = Strings.Left(newVal, 1);
+        var newValue = Strings.Trim(Strings.Right(newVal, Strings.Len(newVal) - 1));
         if (Information.IsNumeric(newValue))
         {
             checkValue = Conversion.Val(newValue);
@@ -7694,11 +7878,13 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             return _collectables[colNum].Value > checkValue;
         }
-        else if (op == "-")
+
+        if (op == "-")
         {
             return _collectables[colNum].Value < checkValue;
         }
-        else if (op == "=")
+
+        if (op == "=")
         {
             return _collectables[colNum].Value == checkValue;
         }
@@ -7713,14 +7899,14 @@ public partial class LegacyGame : IASL, IASLTimer
         var expectNumerics = default(bool);
         ExpressionResult expResult;
 
-        int scp = Strings.InStr(condition, ";");
+        var scp = Strings.InStr(condition, ";");
         if (scp == 0)
         {
             LogASLError("Expected second parameter in 'is " + condition + "'", LogType.WarningError);
             return false;
         }
 
-        int scp2 = Strings.InStr(scp + 1, condition, ";");
+        var scp2 = Strings.InStr(scp + 1, condition, ";");
         if (scp2 == 0)
         {
             // Only two parameters => standard "="
@@ -7735,7 +7921,7 @@ public partial class LegacyGame : IASL, IASLTimer
             value2 = Strings.Trim(Strings.Mid(condition, scp2 + 1));
         }
 
-        if (_gameAslVersion >= 391)
+        if (ASLVersion >= 391)
         {
             // Evaluate expressions in Value1 and Value2
             expResult = ExpressionHandler(value1);
@@ -7753,7 +7939,7 @@ public partial class LegacyGame : IASL, IASLTimer
             }
         }
 
-        bool result = false;
+        var result = false;
 
         switch (op ?? "")
         {
@@ -7763,6 +7949,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = false;
                 break;
             }
@@ -7772,6 +7959,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = false;
                 break;
             }
@@ -7781,6 +7969,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = true;
                 break;
             }
@@ -7790,6 +7979,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = true;
                 break;
             }
@@ -7799,6 +7989,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = true;
                 break;
             }
@@ -7808,6 +7999,7 @@ public partial class LegacyGame : IASL, IASLTimer
                 {
                     result = true;
                 }
+
                 expectNumerics = true;
                 break;
             }
@@ -7823,7 +8015,8 @@ public partial class LegacyGame : IASL, IASLTimer
         {
             if (!(Information.IsNumeric(value1) & Information.IsNumeric(value2)))
             {
-                LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'", LogType.WarningError);
+                LogASLError("Expected numeric comparison comparing '" + value1 + "' and '" + value2 + "'",
+                    LogType.WarningError);
             }
         }
 
@@ -7834,24 +8027,25 @@ public partial class LegacyGame : IASL, IASLTimer
     {
         var numNumber = default(int);
         int arrayIndex;
-        bool exists = false;
+        var exists = false;
 
         // First, see if the variable already exists. If it
         // does, get its contents. If not, generate an error.
 
-        if (Strings.InStr(name, "[") != 0 & Strings.InStr(name, "]") != 0)
+        if ((Strings.InStr(name, "[") != 0) & (Strings.InStr(name, "]") != 0))
         {
-            int op = Strings.InStr(name, "[");
-            int cp = Strings.InStr(name, "]");
-            string arrayIndexData = Strings.Mid(name, op + 1, cp - op - 1);
+            var op = Strings.InStr(name, "[");
+            var cp = Strings.InStr(name, "]");
+            var arrayIndexData = Strings.Mid(name, op + 1, cp - op - 1);
             if (Information.IsNumeric(arrayIndexData))
             {
                 arrayIndex = Conversions.ToInteger(arrayIndexData);
             }
             else
             {
-                arrayIndex = (int)Math.Round(GetNumericContents(arrayIndexData, ctx));
+                arrayIndex = (int) Math.Round(GetNumericContents(arrayIndexData, ctx));
             }
+
             name = Strings.Left(name, op - 1);
         }
         else
@@ -7875,14 +8069,21 @@ public partial class LegacyGame : IASL, IASLTimer
         if (!exists)
         {
             if (!noError)
+            {
                 LogASLError("No numeric variable '" + name + "' defined.", LogType.WarningError);
+            }
+
             return -32767;
         }
 
         if (arrayIndex > _numericVariable[numNumber].VariableUBound)
         {
             if (!noError)
-                LogASLError("Array index of '" + name + "[" + Strings.Trim(Conversion.Str(arrayIndex)) + "]' too big.", LogType.WarningError);
+            {
+                LogASLError("Array index of '" + name + "[" + Strings.Trim(Conversion.Str(arrayIndex)) + "]' too big.",
+                    LogType.WarningError);
+            }
+
             return -32766;
         }
 
@@ -7897,7 +8098,7 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private void PlayerErrorMessage_ExtendInfo(PlayerError e, Context ctx, string extraInfo)
     {
-        string message = GetErrorMessage(e, ctx);
+        var message = GetErrorMessage(e, ctx);
 
         if (!string.IsNullOrEmpty(extraInfo))
         {
@@ -7914,7 +8115,9 @@ public partial class LegacyGame : IASL, IASLTimer
 
     private string GetErrorMessage(PlayerError e, Context ctx)
     {
-        return ConvertParameter(ConvertParameter(ConvertParameter(_playerErrorMessageString[(int)e], "%", ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
+        return ConvertParameter(
+            ConvertParameter(ConvertParameter(_playerErrorMessageString[(int) e], "%", ConvertType.Numeric, ctx), "$",
+                ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
     }
 
     private void PlayMedia(string filename)
@@ -7931,7 +8134,9 @@ public partial class LegacyGame : IASL, IASLTimer
         else
         {
             if (looped & sync)
+            {
                 sync = false; // Can't loop and sync at the same time, that would just hang!
+            }
 
             _player.PlaySound(filename, sync, looped);
 
@@ -7943,27 +8148,34 @@ public partial class LegacyGame : IASL, IASLTimer
             if (sync)
             {
                 lock (_waitLock)
-                    System.Threading.Monitor.Wait(_waitLock);
+                {
+                    Monitor.Wait(_waitLock);
+                }
             }
         }
     }
 
     private void PlayWav(string parameter)
     {
-        bool sync = false;
-        bool looped = false;
+        var sync = false;
+        var looped = false;
         var @params = new List<string>(parameter.Split(';'));
 
-        @params = new List<string>(@params.Select((p) => Strings.Trim(p)));
+        @params = new List<string>(@params.Select(p => Strings.Trim(p)));
 
-        string filename = @params[0];
+        var filename = @params[0];
 
         if (@params.Contains("loop"))
+        {
             looped = true;
-        if (@params.Contains("sync"))
-            sync = true;
+        }
 
-        if (filename.Length > 0 & Strings.InStr(filename, ".") == 0)
+        if (@params.Contains("sync"))
+        {
+            sync = true;
+        }
+
+        if ((filename.Length > 0) & (Strings.InStr(filename, ".") == 0))
         {
             filename = filename + ".wav";
         }
