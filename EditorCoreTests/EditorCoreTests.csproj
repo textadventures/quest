@@ -10,6 +10,7 @@
 		<AssemblyTitle>LegacyASLTests</AssemblyTitle>
 		<Product>LegacyASLTests</Product>
 		<Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
+		<RootNamespace>EditorControllerTests</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,7 +24,7 @@
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\EditorController\EditorController.csproj" />
+		<ProjectReference Include="..\EditorCore\EditorCore.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="test.aslx" />

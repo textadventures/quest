@@ -10,11 +10,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerCore", "PlayerCore\Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorController", "EditorController\EditorController.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCore", "EditorCore\EditorCore.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPlayer", "WebPlayer\WebPlayer.csproj", "{DD39556B-7A5A-4835-9372-72F4F237D511}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorControllerTests", "EditorControllerTests\EditorControllerTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCoreTests", "EditorCoreTests\EditorCoreTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyASLTests", "LegacyASLTests\LegacyASLTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
 EndProject
