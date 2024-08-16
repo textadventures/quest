@@ -3,11 +3,11 @@ using TextAdventures.Quest;
 
 namespace WebPlayer;
 
-public static class ResourceHandler
+public static class UiResources
 {
     public static IResult GetResource(string name)
     {
-        var result = PlayerHelper.GetResourceBytes(name);
+        var result = PlayerHelper.GetUiResourceBytes(name);
         if (result != null)
         {
             new FileExtensionContentTypeProvider().TryGetContentType(name, out var contentType);

@@ -25,5 +25,5 @@
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
-    private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetResourceString("playercore.htm");
+    private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
 }

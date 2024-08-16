@@ -27,9 +27,9 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.MapGet("/res/{name}", ResourceHandler.GetResource);
-app.MapGet("/res/{dir}/{name}", (string dir, string name) => ResourceHandler.GetResource($"{dir}.{name}"));
-app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) => ResourceHandler.GetResource($"{dir1}.{dir2}.{name}"));
+app.MapGet("/res/{name}", UiResources.GetResource);
+app.MapGet("/res/{dir}/{name}", (string dir, string name) => UiResources.GetResource($"{dir}.{name}"));
+app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) => UiResources.GetResource($"{dir1}.{dir2}.{name}"));
 
 app.Map("/game/{resourcesId}/{name}", GameResources.GetResource);
 

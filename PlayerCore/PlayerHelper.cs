@@ -437,24 +437,24 @@ namespace TextAdventures.Quest
         public string PlayerOverrideFontFamily { get; set; }
         public float PlayerOverrideFontSize { get; set; }
 
-        private static Stream GetResource(string name)
+        private static Stream GetUiResource(string name)
         {
             return System.Reflection.Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream($"PlayerController.Resources.{name}");
         }
 
-        public static string GetResourceString(string name)
+        public static string GetUiResourceString(string name)
         {
-            using var stream = GetResource(name);
+            using var stream = GetUiResource(name);
             if (stream == null) return null;
             
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
         
-        public static byte[] GetResourceBytes(string name)
+        public static byte[] GetUiResourceBytes(string name)
         {
-            using var stream = GetResource(name);
+            using var stream = GetUiResource(name);
             if (stream == null) return null;
 
             using var ms = new MemoryStream();
