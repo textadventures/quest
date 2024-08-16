@@ -477,7 +477,7 @@ namespace TextAdventures.Quest.LegacyASL
         private string _tempFolder;
         private string[] _playerErrorMessageString = new string[39];
         private Dictionary<ListType, List<string>> _listVerbs = new Dictionary<ListType, List<string>>();
-        private IGameDataProvider _gameDataProvider;
+        private IGameData _gameData;
         private string _originalFilename;
         private IPlayer _player;
         private bool _gameFinished;
@@ -487,13 +487,13 @@ namespace TextAdventures.Quest.LegacyASL
         private int _fileDataPos;
         private bool _questionResponse;
 
-        public LegacyGame(IGameDataProvider gameDataProvider)
+        public LegacyGame(IGameData gameData)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             _tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             LoadCASKeywords();
             _gameLoadMethod = "normal";
-            _gameDataProvider = gameDataProvider;
+            _gameData = gameData;
             _originalFilename = null;
 
             // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
@@ -1677,13 +1677,13 @@ namespace TextAdventures.Quest.LegacyASL
             return Strings.Split(resFile, "\r" + "\n");
         }
 
-        private async Task<string> GetFileData(IGameDataProvider gameDataProvider)
+        private async Task<string> GetFileData(IGameData gameData)
         {
-            var stream = await gameDataProvider.GetData();
+            var stream = gameData.Data;
             return await new System.IO.StreamReader(stream).ReadToEndAsync();
         }
 
-        private async Task<bool> ParseFile(IGameDataProvider gameDataProvider)
+        private async Task<bool> ParseFile(IGameData gameData)
         {
             // Returns FALSE if failed.
 
@@ -1708,7 +1708,7 @@ namespace TextAdventures.Quest.LegacyASL
             string typeBlockName;
             var typeLine = default(int);
             int defineCount, curLine;
-            string filename = gameDataProvider.Filename;
+            string filename = gameData.Filename;
 
             _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
 
@@ -1727,7 +1727,7 @@ namespace TextAdventures.Quest.LegacyASL
             if (Strings.LCase(Strings.Right(filename, 4)) == ".asl" | Strings.LCase(Strings.Right(filename, 4)) == ".txt")
             {
                 // Read file into Lines array
-                string fileData = await GetFileData(gameDataProvider);
+                string fileData = await GetFileData(gameData);
 
                 string[] aslLines = fileData.Split('\r');
                 _lines = new string[aslLines.Length + 1];
@@ -13962,7 +13962,7 @@ namespace TextAdventures.Quest.LegacyASL
             }
         }
 
-        private async Task<bool> InitialiseGame(IGameDataProvider gameDataProvider, bool fromQsg = false)
+        private async Task<bool> InitialiseGame(IGameData gameData, bool fromQsg = false)
         {
             _loadedFromQsg = fromQsg;
 
@@ -13977,13 +13977,13 @@ namespace TextAdventures.Quest.LegacyASL
             // TODO: ?
             // _gamePath = System.IO.Path.GetDirectoryName(filename) + "\"
 
-            LogASLError("Opening file " + gameDataProvider.Filename + " on " + DateTime.Now.ToString(), LogType.Init);
+            LogASLError("Opening file " + gameData.Filename + " on " + DateTime.Now.ToString(), LogType.Init);
 
             // Parse file and find where the 'define' blocks are:
-            if (await ParseFile(gameDataProvider) == false)
+            if (await ParseFile(gameData) == false)
             {
                 LogASLError("Unable to open file", LogType.Init);
-                string err = "Unable to open " + gameDataProvider.Filename;
+                string err = "Unable to open " + gameData.Filename;
 
                 if (!string.IsNullOrEmpty(_openErrorReport))
                 {
@@ -14099,7 +14099,7 @@ namespace TextAdventures.Quest.LegacyASL
             SetUpTimers();
             SetUpMenus();
 
-            _gameFileName = gameDataProvider.Filename;
+            _gameFileName = gameData.Filename;
 
             LogASLError("Finished loading file.", LogType.Init);
 
@@ -15574,7 +15574,7 @@ namespace TextAdventures.Quest.LegacyASL
 
         public byte[] Save(string html)
         {
-            return SaveGame(_gameDataProvider.Filename, false);
+            return SaveGame(_gameData.Filename, false);
         }
 
         public void SendCommand(string command)
@@ -15652,13 +15652,13 @@ namespace TextAdventures.Quest.LegacyASL
         public async Task<bool> Initialise(IPlayer player, bool? isCompiled = default)
         {
             _player = player;
-            if (Strings.LCase(Strings.Right(_gameDataProvider.Filename, 4)) == ".qsg")
+            if (Strings.LCase(Strings.Right(_gameData.Filename, 4)) == ".qsg")
             {
-                return OpenGame(_gameDataProvider.Filename);
+                return OpenGame(_gameData.Filename);
             }
             else
             {
-                return await InitialiseGame(_gameDataProvider);
+                return await InitialiseGame(_gameData);
             }
         }
 

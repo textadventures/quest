@@ -11,18 +11,18 @@ namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
-        public static IASL GetGame(IGameDataProvider gameDataProvider, string libraryFolder)
+        public static IASL GetGame(IGameData gameData, string libraryFolder)
         {
-            switch (System.IO.Path.GetExtension(gameDataProvider.Filename).ToLower())
+            switch (System.IO.Path.GetExtension(gameData.Filename).ToLower())
             {
                 case ".aslx":
                 case ".quest":
                 case ".quest-save":
-                    return new WorldModel(gameDataProvider, libraryFolder);
+                    return new WorldModel(gameData, libraryFolder);
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    LegacyGame game = new LegacyGame(gameDataProvider);
+                    LegacyGame game = new LegacyGame(gameData);
                     game.SetUnzipFunction(UnzipAndGetGameFile);
                     return game;
                 case ".zip":

@@ -14,8 +14,10 @@ namespace WorldModelTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
+            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx"));
+            var gameData = await gameDataProvider.GetData();
             WorldModel worldModel = new WorldModel(
-                new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx")),
+                gameData,
                 Path.Combine("..", "..", ".."));
 
             Mock<IPlayer> player = new Mock<IPlayer>();
@@ -29,7 +31,9 @@ namespace WorldModelTests
             string tempFilename = System.IO.Path.GetTempFileName();
             worldModel.Save(tempFilename, null);
 
-            WorldModel savedGameWorldModel = new WorldModel(new FileGameDataProvider(tempFilename), null);
+            var gameDataProvider2 = new FileGameDataProvider(tempFilename);
+            var gameData2 = await gameDataProvider2.GetData();
+            WorldModel savedGameWorldModel = new WorldModel(gameData2, null);
             success = await savedGameWorldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 

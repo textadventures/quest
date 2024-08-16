@@ -42,8 +42,10 @@ public partial class Runner : ComponentBase, IPlayerHelperUI
             DotNetObjectReference.Create(this));
 
         // TODO: Is there a better way of getting libraryFolder?
+
+        var gameData = await GameDataProvider.GetData();
         
-        var game = GameLauncher.GetGame(GameDataProvider, null);
+        var game = GameLauncher.GetGame(gameData, null);
         PlayerHelper = new PlayerHelper(game, this)
         {
             UseGameColours = true,

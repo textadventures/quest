@@ -51,7 +51,7 @@ namespace TextAdventures.Quest
         private Dictionary<string, int> m_nextUniqueID = new Dictionary<string, int>();
         private Template m_template;
         private UndoLogger m_undoLogger;
-        private IGameDataProvider m_gameDataProvider;
+        private IGameData m_gameData;
         private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
@@ -160,7 +160,7 @@ namespace TextAdventures.Quest
         {
         }
 
-        private WorldModel(IGameDataProvider gameDataProvider)
+        private WorldModel(IGameData gameData)
         {
             m_expressionOwner = new Functions.ExpressionOwner(this);
             m_template = new Template(this);
@@ -168,14 +168,14 @@ namespace TextAdventures.Quest
             m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
 
             InitialiseDebuggerObjectTypes();
-            m_gameDataProvider = gameDataProvider;
+            m_gameData = gameData;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
-        public WorldModel(IGameDataProvider gameDataProvider, string libFolder)
-            : this(gameDataProvider)
+        public WorldModel(IGameData gameData, string libFolder)
+            : this(gameData)
         {
             m_libFolder = libFolder;
         }
@@ -507,7 +507,7 @@ namespace TextAdventures.Quest
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             
-            var success = await loader.Load(m_gameDataProvider);
+            var success = await loader.Load(m_gameData);
             
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
@@ -728,7 +728,7 @@ namespace TextAdventures.Quest
 
         public string Filename
         {
-            get { return m_gameDataProvider.Filename; }
+            get { return m_gameData.Filename; }
         }
 
         public void Finish()

@@ -5,10 +5,11 @@ namespace TextAdventures.Quest;
 
 public class FileGameDataProvider(string filename): IGameDataProvider
 {
-    public Task<Stream> GetData()
+    public Task<IGameData?> GetData()
     {
-        return Task.FromResult((Stream)File.OpenRead(Filename));
+        var stream = File.OpenRead(filename);
+        return Task.FromResult<IGameData?>(new GameData(stream, filename));
     }
-
-    public string Filename { get; } = filename;
+    
+    public string Filename => filename;
 }

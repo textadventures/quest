@@ -328,7 +328,9 @@ namespace TextAdventures.Quest
         {
             m_lastelementscutout = false;
             m_filename = filename;
-            m_worldModel = new WorldModel(new FileGameDataProvider(filename), libFolder);
+            var gameDataProvider = new FileGameDataProvider(filename);
+            var gameData = await gameDataProvider.GetData();
+            m_worldModel = new WorldModel(gameData, libFolder);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;

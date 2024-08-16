@@ -17,9 +17,9 @@ namespace TextAdventures.Quest
             }
         }
 
-        public async Task<ReadResult> LoadPackage(IGameDataProvider gameDataProvider)
+        public Task<ReadResult> LoadPackage(IGameData gameData)
         {
-            var packageStream = await gameDataProvider.GetData();
+            var packageStream = gameData.Data;
             var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
             
             var gameFile = zip.GetEntry("game.aslx");
@@ -29,10 +29,10 @@ namespace TextAdventures.Quest
                 throw new InvalidDataException("Invalid game file");
             }
             
-            return new ReadResult(zip)
+            return Task.FromResult(new ReadResult(zip)
             {
                 GameFile = gameFile.Open()
-            };
+            });
         }
     }
 }

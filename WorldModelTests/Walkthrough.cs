@@ -14,8 +14,10 @@ namespace WorldModelTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
+            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"));
+            var gameData = await gameDataProvider.GetData();
             WorldModel worldModel = new WorldModel(
-                new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx")),
+                gameData,
                 Path.Combine("..", "..", ".."));
 
             Mock<IPlayer> player = new Mock<IPlayer>();

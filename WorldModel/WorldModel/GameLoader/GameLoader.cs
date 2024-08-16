@@ -65,17 +65,17 @@ namespace TextAdventures.Quest
             AddXMLLoaders(mode);
         }
         
-        public async Task<bool> Load(IGameDataProvider gameDataProvider)
+        public async Task<bool> Load(IGameData gameData)
         {
             Stream dataStream;
             
-            if (Path.GetExtension(gameDataProvider.Filename) == ".quest")
+            if (Path.GetExtension(gameData.Filename) == ".quest")
             {
-                dataStream = await LoadCompiledFile(gameDataProvider);
+                dataStream = await LoadCompiledFile(gameData);
             }
             else
             {
-                dataStream = await gameDataProvider.GetData();
+                dataStream = gameData.Data;
             }
 
             try
@@ -124,7 +124,7 @@ namespace TextAdventures.Quest
                     AddError("File must begin with an ASL element");
                 }
 
-                LoadXML(gameDataProvider.Filename, reader);
+                LoadXML(gameData.Filename, reader);
 
                 reader.Close();
             }
@@ -153,10 +153,10 @@ namespace TextAdventures.Quest
             return (m_errors.Count == 0);
         }
 
-        private async Task<Stream> LoadCompiledFile(IGameDataProvider gameDataProvider)
+        private async Task<Stream> LoadCompiledFile(IGameData gameData)
         {
             PackageReader packageReader = new PackageReader();
-            var result = await packageReader.LoadPackage(gameDataProvider);
+            var result = await packageReader.LoadPackage(gameData);
             WorldModel.ResourceGetter = result.GetFile;
             IsCompiledFile = true;
             return result.GameFile;

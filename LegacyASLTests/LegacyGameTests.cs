@@ -18,7 +18,9 @@ namespace LegacyASLTests
         public async Task Init()
         {
             var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
-            m_game = new LegacyGame(new FileGameDataProvider(filename));
+            var gameDataProvider = new FileGameDataProvider(filename);
+            var gameData = await gameDataProvider.GetData();
+            m_game = new LegacyGame(gameData);
             m_game.PrintText += m_player.PrintText;
             await m_game.Initialise(m_player);
             m_game.Begin();
