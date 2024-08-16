@@ -8,6 +8,7 @@
     <Product>PlayerController</Product>
     <Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
     <AssemblyVersion>5.8.%2a</AssemblyVersion>
+    <RootNamespace>PlayerController</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\LegacyASL\LegacyASL.csproj" />

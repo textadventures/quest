@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IASL", "IASL\IASL.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerController", "PlayerController\PlayerController.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerCore", "PlayerCore\PlayerCore.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
 EndProject
