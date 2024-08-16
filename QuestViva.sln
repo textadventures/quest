@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "WorldMod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASL", "LegacyASL\LegacyASL.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmPlayer", "WasmPlayer\WasmPlayer.csproj", "{A20E6FE0-71E0-4042-9E9C-B818A9598473}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,14 @@ Global
 		{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}.Release|x86.ActiveCfg = Release|Any CPU
 		{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}.Release|x86.Build.0 = Release|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Debug|x86.Build.0 = Debug|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Release|x86.ActiveCfg = Release|Any CPU
+		{A20E6FE0-71E0-4042-9E9C-B818A9598473}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
