@@ -1,6 +1,10 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TextAdventures.Quest;
 
-namespace WebPlayer;
+namespace QuestViva.PlayerCore;
 
 public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
 {
