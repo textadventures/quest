@@ -1679,7 +1679,7 @@ namespace TextAdventures.Quest.LegacyASL
 
         private async Task<string> GetFileData(IGameDataProvider gameDataProvider)
         {
-            var stream = gameDataProvider.GetData();
+            var stream = await gameDataProvider.GetData();
             return await new System.IO.StreamReader(stream).ReadToEndAsync();
         }
 

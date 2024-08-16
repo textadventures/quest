@@ -65,17 +65,17 @@ namespace TextAdventures.Quest
             AddXMLLoaders(mode);
         }
         
-        public bool Load(IGameDataProvider gameDataProvider)
+        public async Task<bool> Load(IGameDataProvider gameDataProvider)
         {
             Stream dataStream;
             
             if (Path.GetExtension(gameDataProvider.Filename) == ".quest")
             {
-                dataStream = LoadCompiledFile(gameDataProvider);
+                dataStream = await LoadCompiledFile(gameDataProvider);
             }
             else
             {
-                dataStream = gameDataProvider.GetData();
+                dataStream = await gameDataProvider.GetData();
             }
 
             try
@@ -153,10 +153,10 @@ namespace TextAdventures.Quest
             return (m_errors.Count == 0);
         }
 
-        private Stream LoadCompiledFile(IGameDataProvider gameDataProvider)
+        private async Task<Stream> LoadCompiledFile(IGameDataProvider gameDataProvider)
         {
             PackageReader packageReader = new PackageReader();
-            var result = packageReader.LoadPackage(gameDataProvider);
+            var result = await packageReader.LoadPackage(gameDataProvider);
             WorldModel.ResourceGetter = result.GetFile;
             IsCompiledFile = true;
             return result.GameFile;

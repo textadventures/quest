@@ -5,6 +5,6 @@ namespace TextAdventures.Quest;
 
 public interface IGameDataProvider
 {
-    Stream GetData();
+    Task<Stream> GetData();
     string Filename { get; }
 }

@@ -497,7 +497,7 @@ namespace TextAdventures.Quest
             return await InitialiseInternal(loader);
         }
 
-        private Task<bool> InitialiseInternal(GameLoader loader)
+        private async Task<bool> InitialiseInternal(GameLoader loader)
         {
             if (m_state != GameState.NotStarted)
             {
@@ -507,7 +507,7 @@ namespace TextAdventures.Quest
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             
-            var success = loader.Load(m_gameDataProvider);
+            var success = await loader.Load(m_gameDataProvider);
             
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
@@ -522,7 +522,7 @@ namespace TextAdventures.Quest
             {
                 m_outputLogger = new OutputLogger(this);
             }
-            return Task.FromResult(success);
+            return success;
         }
 
         void loader_LoadStatus(object sender, GameLoader.LoadStatusEventArgs e)

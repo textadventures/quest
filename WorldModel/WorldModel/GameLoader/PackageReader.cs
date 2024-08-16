@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace TextAdventures.Quest
 {
@@ -16,9 +17,9 @@ namespace TextAdventures.Quest
             }
         }
 
-        public ReadResult LoadPackage(IGameDataProvider gameDataProvider)
+        public async Task<ReadResult> LoadPackage(IGameDataProvider gameDataProvider)
         {
-            var packageStream = gameDataProvider.GetData();
+            var packageStream = await gameDataProvider.GetData();
             var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
             
             var gameFile = zip.GetEntry("game.aslx");
