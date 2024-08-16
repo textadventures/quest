@@ -73,4 +73,9 @@
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.16.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.JSInterop">
+      <HintPath>..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\8.0.5\Microsoft.JSInterop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

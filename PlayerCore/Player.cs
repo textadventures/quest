@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TextAdventures.Quest;
 
 namespace QuestViva.PlayerCore;
@@ -14,15 +15,15 @@ public class Player : IPlayerHelperUI
     private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
     private bool Finished { get; set; } = false;
     private string ResourcesId { get; }
-    private JavaScriptInvoker JSInvoker { get; }
+    public IJSRuntime JSRuntime { get; }
+    public BlazorJSInterop JSInterop { get; }
 
-    public delegate Task JavaScriptInvoker(string identifier, params object?[]? args);
-
-    public Player(IASL game, string resourcesId, JavaScriptInvoker jsInvoker)
+    public Player(IASL game, string resourcesId, IJSRuntime jsRuntime)
     {
         ResourcesId = resourcesId;
-        JSInvoker = jsInvoker;
+        JSRuntime = jsRuntime;
         ListHandler = new ListHandler(AddJavaScriptToBuffer);
+        JSInterop = new BlazorJSInterop(this);
         
         PlayerHelper = new PlayerHelper(game, this)
         {
@@ -41,6 +42,9 @@ public class Player : IPlayerHelperUI
 
     public async Task Initialise()
     {
+        await JSRuntime.InvokeVoidAsync("WebPlayer.setDotNetHelper",
+            DotNetObjectReference.Create(JSInterop));
+        
         var (result, errors) = await PlayerHelper.Initialise(this);
 
         if (result)
@@ -72,7 +76,7 @@ public class Player : IPlayerHelperUI
     {
         foreach (var (identifier, args) in JavaScriptBuffer)
         {
-            await JSInvoker(identifier, args);
+            await JSRuntime.InvokeVoidAsync(identifier, args);
         }
         JavaScriptBuffer.Clear();
     }
