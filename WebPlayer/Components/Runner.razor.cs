@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using QuestViva.PlayerCore;
 using TextAdventures.Quest;
 
 namespace WebPlayer.Components;

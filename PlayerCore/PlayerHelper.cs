@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
+using TextAdventures.Quest;
 
-namespace TextAdventures.Quest
+namespace QuestViva.PlayerCore
 {
     public interface IPlayerHelperUI : IPlayer
     {
@@ -440,7 +440,7 @@ namespace TextAdventures.Quest
         private static Stream GetUiResource(string name)
         {
             return System.Reflection.Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream($"PlayerController.Resources.{name}");
+                .GetManifestResourceStream($"QuestViva.PlayerCore.Resources.{name}");
         }
 
         public static string GetUiResourceString(string name)

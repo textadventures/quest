@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TextAdventures.Quest;
-using Ionic.Zip;
 using System.IO;
+using System.Linq;
+using Ionic.Zip;
+using TextAdventures.Quest;
 using TextAdventures.Quest.LegacyASL;
 
-namespace TextAdventures.Quest
+namespace QuestViva.PlayerCore
 {
     public static class GameLauncher
     {
