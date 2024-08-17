@@ -15,4 +15,33 @@
       <ProjectReference Include="..\PlayerCore\PlayerCore.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="wwwroot\res\grid.js" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_flat_55_fbec88_40x100.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_glass_75_d0e5f5_1x400.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_glass_85_dfeffc_1x400.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_glass_95_fef1ec_1x400.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_inset-hard_100_f5f8f9_1x100.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_217bc0_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_2e83ff_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_469bdd_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_6da8d5_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_cd0a0a_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_d8e7f3_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\images\ui-icons_f9bd01_256x240.png" />
+      <EmbeddedResource Include="wwwroot\res\lib\Jplayer.swf" />
+      <EmbeddedResource Include="wwwroot\res\lib\jquery-2.1.1.min.js" />
+      <EmbeddedResource Include="wwwroot\res\lib\jquery-ui.min.css" />
+      <EmbeddedResource Include="wwwroot\res\lib\jquery-ui.min.js" />
+      <EmbeddedResource Include="wwwroot\res\lib\jquery.jplayer.min.js" />
+      <EmbeddedResource Include="wwwroot\res\lib\jquery.multi-open-accordion-1.5.3.js" />
+      <EmbeddedResource Include="wwwroot\res\lib\paper.js" />
+      <EmbeddedResource Include="wwwroot\res\playercore.css" />
+      <EmbeddedResource Include="wwwroot\res\playercore.htm" />
+      <EmbeddedResource Include="wwwroot\res\playercore.js" />
+    </ItemGroup>
+
 </Project>

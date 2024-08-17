@@ -5,7 +5,7 @@
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private QuestViva.PlayerCore.Player Player { get; set; } = null!;
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
