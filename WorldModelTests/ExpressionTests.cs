@@ -1,106 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TextAdventures.Quest;
+﻿using TextAdventures.Quest;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
-namespace WorldModelTests
+namespace WorldModelTests;
+
+[TestClass]
+public class ExpressionTests
 {
-    [TestClass]
-    public class ExpressionTests
+    private const string AttributeName = "attribute";
+    private const string AttributeValue = "attributevalue";
+    private const string ChildAttributeValue = "childattributevalue";
+
+    private const string IntAttributeName = "intattribute";
+    private const int IntAttributeValue = 42;
+
+    private WorldModel _worldModel;
+    private Element _object;
+    private Element _child;
+
+    [TestInitialize]
+    public void Setup()
     {
-        const string attributeName = "attribute";
-        const string attributeValue = "attributevalue";
-        const string childAttributeValue = "childattributevalue";
+        _worldModel = new WorldModel();
+        _object = _worldModel.GetElementFactory(ElementType.Object).Create("object");
+        _object.Fields.Set(AttributeName, AttributeValue);
+        _object.Fields.Set(IntAttributeName, IntAttributeValue);
 
-        const string intAttributeName = "intattribute";
-        const int intAttributeValue = 42;
+        _child = _worldModel.GetElementFactory(ElementType.Object).Create("child");
+        _child.Parent = _object;
+        _child.Fields.Set(AttributeName, ChildAttributeValue);
+    }
 
-        private WorldModel m_worldModel;
-        private Element m_object;
-        private Element m_child;
+    private T RunExpression<T>(string expression)
+    {
+        Expression<T> expr = new Expression<T>(expression, new ScriptContext(_worldModel));
+        Context c = new Context();
+        return expr.Execute(c);
+    }
 
-        [TestInitialize]
-        public void Setup()
+    [TestMethod]
+    public void TestReadStringFields()
+    {
+        var result = RunExpression<string>("object.attribute");
+        Assert.AreEqual(AttributeValue, result);
+
+        result = RunExpression<string>("child.attribute");
+        Assert.AreEqual(ChildAttributeValue, result);
+    }
+
+    [TestMethod]
+    public void TestReadChildParentField()
+    {
+        var result = RunExpression<string>("child.parent.attribute");
+        Assert.AreEqual(AttributeValue, result);
+    }
+
+    [TestMethod]
+    public void TestStringConcatenate()
+    {
+        const string extraString = "testconcat";
+        var result = RunExpression<string>("object.attribute + \"" + extraString + "\"");
+        Assert.AreEqual(AttributeValue + extraString, result);
+    }
+
+    [TestMethod]
+    public void TestReadIntField()
+    {
+        var result = RunExpression<int>("object.intattribute");
+        Assert.AreEqual(IntAttributeValue, result);
+    }
+
+    [TestMethod]
+    public void TestAddition()
+    {
+        var result = RunExpression<int>("object.intattribute + 3");
+        Assert.AreEqual(IntAttributeValue + 3, result);
+    }
+
+    [TestMethod]
+    public void TestChangingTypes()
+    {
+        var scriptContext = new ScriptContext(_worldModel);
+        var expression = "a + b";
+        var expr = new ExpressionGeneric(expression, scriptContext);
+        var c = new Context
         {
-            m_worldModel = new WorldModel();
-            m_object = m_worldModel.GetElementFactory(ElementType.Object).Create("object");
-            m_object.Fields.Set(attributeName, attributeValue);
-            m_object.Fields.Set(intAttributeName, intAttributeValue);
+            Parameters = new Parameters
+            {
+                {"a", 1},
+                {"b", 2}
+            }
+        };
 
-            m_child = m_worldModel.GetElementFactory(ElementType.Object).Create("child");
-            m_child.Parent = m_object;
-            m_child.Fields.Set(attributeName, childAttributeValue);
-        }
+        Assert.AreEqual(3, (int)expr.Execute(c));
 
-        private T RunExpression<T>(string expression)
-        {
-            Expression<T> expr = new Expression<T>(expression, new ScriptContext(m_worldModel));
-            Context c = new Context();
-            return expr.Execute(c);
-        }
+        c.Parameters["a"] = "A";
+        c.Parameters["b"] = "B";
 
-        [TestMethod]
-        public void TestReadStringFields()
-        {
-            string result;
-            
-            result = RunExpression<string>("object.attribute");
-            Assert.AreEqual(attributeValue, result);
-
-            result = RunExpression<string>("child.attribute");
-            Assert.AreEqual(childAttributeValue, result);
-        }
-
-        [TestMethod]
-        public void TestReadChildParentField()
-        {
-            string result = RunExpression<string>("child.parent.attribute");
-            Assert.AreEqual(attributeValue, result);
-        }
-
-        [TestMethod]
-        public void TestStringConcatenate()
-        {
-            const string extraString = "testconcat";
-            string result = RunExpression<string>("object.attribute + \"" + extraString + "\"");
-            Assert.AreEqual(attributeValue + extraString, result);
-        }
-
-        [TestMethod]
-        public void TestReadIntField()
-        {
-            int result = RunExpression<int>("object.intattribute");
-            Assert.AreEqual(intAttributeValue, result);
-        }
-
-        [TestMethod]
-        public void TestAddition()
-        {
-            int result = RunExpression<int>("object.intattribute + 3");
-            Assert.AreEqual(intAttributeValue + 3, result);
-        }
-
-        [TestMethod]
-        public void TestChangingTypes()
-        {
-            ScriptContext scriptContext = new ScriptContext(m_worldModel);
-            string expression = "a + b";
-            ExpressionGeneric expr = new ExpressionGeneric(expression, scriptContext);
-            Context c = new Context();
-            c.Parameters = new Parameters();
-            c.Parameters.Add("a", 1);
-            c.Parameters.Add("b", 2);
-
-            Assert.AreEqual(3, (int)expr.Execute(c));
-
-            c.Parameters["a"] = "A";
-            c.Parameters["b"] = "B";
-
-            Assert.AreEqual("AB", (string)expr.Execute(c));
-        }
+        Assert.AreEqual("AB", (string)expr.Execute(c));
     }
 }
