@@ -33,8 +33,8 @@ public class ExpressionTests
 
     private T RunExpression<T>(string expression)
     {
-        Expression<T> expr = new Expression<T>(expression, new ScriptContext(_worldModel));
-        Context c = new Context();
+        var expr = new Expression<T>(expression, new ScriptContext(_worldModel));
+        var c = new Context();
         return expr.Execute(c);
     }
 
