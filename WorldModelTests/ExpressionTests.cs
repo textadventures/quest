@@ -38,43 +38,24 @@ public class ExpressionTests
         return expr.Execute(c);
     }
 
-    [TestMethod]
-    public void TestReadStringFields()
+    [DataTestMethod]
+    [DataRow("object.attribute", AttributeValue)]
+    [DataRow("child.attribute", ChildAttributeValue)]
+    [DataRow("child.parent.attribute", AttributeValue)]
+    [DataRow("object.attribute + \"testconcat\"", AttributeValue + "testconcat")]
+    public void TestStringFields(string expression, string expectedResult)
     {
-        var result = RunExpression<string>("object.attribute");
-        Assert.AreEqual(AttributeValue, result);
-
-        result = RunExpression<string>("child.attribute");
-        Assert.AreEqual(ChildAttributeValue, result);
+        var result = RunExpression<string>(expression);
+        Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod]
-    public void TestReadChildParentField()
+    [DataTestMethod]
+    [DataRow("object.intattribute", IntAttributeValue)]
+    [DataRow("object.intattribute + 3", IntAttributeValue + 3)]
+    public void TestIntFields(string expression, int expectedResult)
     {
-        var result = RunExpression<string>("child.parent.attribute");
-        Assert.AreEqual(AttributeValue, result);
-    }
-
-    [TestMethod]
-    public void TestStringConcatenate()
-    {
-        const string extraString = "testconcat";
-        var result = RunExpression<string>("object.attribute + \"" + extraString + "\"");
-        Assert.AreEqual(AttributeValue + extraString, result);
-    }
-
-    [TestMethod]
-    public void TestReadIntField()
-    {
-        var result = RunExpression<int>("object.intattribute");
-        Assert.AreEqual(IntAttributeValue, result);
-    }
-
-    [TestMethod]
-    public void TestAddition()
-    {
-        var result = RunExpression<int>("object.intattribute + 3");
-        Assert.AreEqual(IntAttributeValue + 3, result);
+        var result = RunExpression<int>(expression);
+        Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
