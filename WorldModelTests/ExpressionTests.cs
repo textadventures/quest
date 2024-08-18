@@ -1,4 +1,5 @@
-﻿using TextAdventures.Quest;
+﻿using Shouldly;
+using TextAdventures.Quest;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
@@ -18,10 +19,13 @@ public class ExpressionTests
     private Element _object;
     private Element _child;
 
+    private ScriptContext _scriptContext;
+
     [TestInitialize]
     public void Setup()
     {
         _worldModel = new WorldModel();
+        _scriptContext = new ScriptContext(_worldModel);
         _object = _worldModel.GetElementFactory(ElementType.Object).Create("object");
         _object.Fields.Set(AttributeName, AttributeValue);
         _object.Fields.Set(IntAttributeName, IntAttributeValue);
@@ -33,7 +37,14 @@ public class ExpressionTests
 
     private T RunExpression<T>(string expression)
     {
-        var expr = new Expression<T>(expression, new ScriptContext(_worldModel));
+        var expr = new Expression<T>(expression, _scriptContext);
+        var c = new Context();
+        return expr.Execute(c);
+    }
+    
+    private object RunExpressionGeneric(string expression)
+    {
+        var expr = new ExpressionGeneric(expression, _scriptContext);
         var c = new Context();
         return expr.Execute(c);
     }
@@ -46,7 +57,7 @@ public class ExpressionTests
     public void TestStringFields(string expression, string expectedResult)
     {
         var result = RunExpression<string>(expression);
-        Assert.AreEqual(expectedResult, result);
+        result.ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
@@ -55,15 +66,30 @@ public class ExpressionTests
     public void TestIntFields(string expression, int expectedResult)
     {
         var result = RunExpression<int>(expression);
-        Assert.AreEqual(expectedResult, result);
+        result.ShouldBe(expectedResult);
+    }
+
+    [TestMethod]
+    public void TestCallingNewStringListFunction()
+    {
+        var result = RunExpressionGeneric("NewStringList()");
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
+        resultList.Count.ShouldBe(0);
+    }
+    
+    [TestMethod]
+    public void TestCallingAllObjectsFunction()
+    {
+        var result = RunExpressionGeneric("AllObjects()");
+        var resultList = result.ShouldBeAssignableTo<QuestList<Element>>();
+        resultList.Count.ShouldBe(2);
     }
 
     [TestMethod]
     public void TestChangingTypes()
     {
-        var scriptContext = new ScriptContext(_worldModel);
         var expression = "a + b";
-        var expr = new ExpressionGeneric(expression, scriptContext);
+        var expr = new ExpressionGeneric(expression, _scriptContext);
         var c = new Context
         {
             Parameters = new Parameters
@@ -72,12 +98,14 @@ public class ExpressionTests
                 {"b", 2}
             }
         };
-
-        Assert.AreEqual(3, (int)expr.Execute(c));
+        
+        var result = expr.Execute(c);
+        result.ShouldBe(3);
 
         c.Parameters["a"] = "A";
         c.Parameters["b"] = "B";
-
-        Assert.AreEqual("AB", (string)expr.Execute(c));
+        
+        result = expr.Execute(c);
+        result.ShouldBe("AB");
     }
 }
