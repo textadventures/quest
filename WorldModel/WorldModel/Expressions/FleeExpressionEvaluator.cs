@@ -19,7 +19,7 @@ public class FleeExpressionEvaluator<T>(string expression, ScriptContext scriptC
             // variables we have.
             try
             {
-                _compiledExpression = scriptContext.ExpressionContext.CompileGeneric<T>(expression);
+                _compiledExpression = scriptContext.FleeExpressionContext.CompileGeneric<T>(expression);
                 scriptContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ public class FleeDynamicExpressionEvaluator(string expression, ScriptContext scr
             // variables we have.
             try
             {
-                _compiledExpression = scriptContext.ExpressionContext.CompileDynamic(expression);
+                _compiledExpression = scriptContext.FleeExpressionContext.CompileDynamic(expression);
                 scriptContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
             }
             catch (Exception ex)
