@@ -12,15 +12,15 @@ public class FleeExpressionEvaluator<T>(string expression, ScriptContext scriptC
 
     public T Evaluate(Context c)
     {
-        scriptContext.ExecutionContext = c;
-        if (_compiledExpression == null || scriptContext.HaveVariableTypesChanged(_compiledExpression.Info.GetReferencedVariables(), _types))
+        scriptContext.FleeExpressionContext.ExecutionContext = c;
+        if (_compiledExpression == null || scriptContext.FleeExpressionContext.HaveVariableTypesChanged(_compiledExpression.Info.GetReferencedVariables(), _types))
         {
             // Lazy compilation since when the game is loaded, we don't know what types of
             // variables we have.
             try
             {
-                _compiledExpression = scriptContext.FleeExpressionContext.CompileGeneric<T>(expression);
-                scriptContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
+                _compiledExpression = scriptContext.FleeExpressionContext.ExpressionContext.CompileGeneric<T>(expression);
+                scriptContext.FleeExpressionContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
             }
             catch (Exception ex)
             {
@@ -47,15 +47,15 @@ public class FleeDynamicExpressionEvaluator(string expression, ScriptContext scr
 
     public object Evaluate(Context c)
     {
-        scriptContext.ExecutionContext = c;
-        if (_compiledExpression == null || scriptContext.HaveVariableTypesChanged(_compiledExpression.Info.GetReferencedVariables(), _types))
+        scriptContext.FleeExpressionContext.ExecutionContext = c;
+        if (_compiledExpression == null || scriptContext.FleeExpressionContext.HaveVariableTypesChanged(_compiledExpression.Info.GetReferencedVariables(), _types))
         {
             // Lazy compilation since when the game is loaded, we don't know what types of
             // variables we have.
             try
             {
-                _compiledExpression = scriptContext.FleeExpressionContext.CompileDynamic(expression);
-                scriptContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
+                _compiledExpression = scriptContext.FleeExpressionContext.ExpressionContext.CompileDynamic(expression);
+                scriptContext.FleeExpressionContext.PopulateVariableTypesCache(_compiledExpression.Info.GetReferencedVariables(), _types);
             }
             catch (Exception ex)
             {
