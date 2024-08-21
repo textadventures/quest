@@ -537,7 +537,7 @@ namespace TextAdventures.Quest.Functions
         public object Eval(string expression, /* IDictionary */ object obj)
         {
             IDictionary parameters = (obj == null) ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
-            ExpressionGeneric expr = new ExpressionGeneric(expression, new ScriptContext(m_worldModel));
+            ExpressionDynamic expr = new ExpressionDynamic(expression, new ScriptContext(m_worldModel));
             Context context = new Context();
             if (parameters != null) context.Parameters = new Parameters(parameters);
             return expr.Execute(context);

@@ -17,7 +17,7 @@ namespace TextAdventures.Quest.Scripts
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new ListAddScript(scriptContext,
-                new ExpressionGeneric(parameters[0], scriptContext),
+                new ExpressionDynamic(parameters[0], scriptContext),
                 new Expression<object>(parameters[1], scriptContext));
         }
 
@@ -30,11 +30,11 @@ namespace TextAdventures.Quest.Scripts
     public class ListAddScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_list;
+        private IFunctionDynamic m_list;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public ListAddScript(ScriptContext scriptContext, IFunctionGeneric list, IFunction<object> value)
+        public ListAddScript(ScriptContext scriptContext, IFunctionDynamic list, IFunction<object> value)
         {
             m_scriptContext = scriptContext;
             m_list = list;
@@ -92,7 +92,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_list = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 1:
                     m_value = new Expression<object>((string)value, m_scriptContext);
@@ -113,7 +113,7 @@ namespace TextAdventures.Quest.Scripts
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new ListRemoveScript(scriptContext,
-                new ExpressionGeneric(parameters[0], scriptContext),
+                new ExpressionDynamic(parameters[0], scriptContext),
                 new Expression<object>(parameters[1], scriptContext));
         }
 
@@ -126,11 +126,11 @@ namespace TextAdventures.Quest.Scripts
     public class ListRemoveScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_list;
+        private IFunctionDynamic m_list;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public ListRemoveScript(ScriptContext scriptContext, IFunctionGeneric list, IFunction<object> value)
+        public ListRemoveScript(ScriptContext scriptContext, IFunctionDynamic list, IFunction<object> value)
         {
             m_scriptContext = scriptContext;
             m_list = list;
@@ -188,7 +188,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_list = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 1:
                     m_value = new Expression<object>((string)value, m_scriptContext);

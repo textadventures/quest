@@ -80,18 +80,18 @@ namespace TextAdventures.Quest.Functions
         }
     }
 
-    public class ExpressionGeneric : ExpressionBase, IFunctionGeneric
+    public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
     {
         private IDynamicExpression m_compiledExpression = null;
 
-        public ExpressionGeneric(string expression, ScriptContext scriptContext)
+        public ExpressionDynamic(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
         }
 
-        public IFunctionGeneric Clone()
+        public IFunctionDynamic Clone()
         {
-            return new ExpressionGeneric(m_expression, m_scriptContext);
+            return new ExpressionDynamic(m_expression, m_scriptContext);
         }
 
         public object Execute(Context c)

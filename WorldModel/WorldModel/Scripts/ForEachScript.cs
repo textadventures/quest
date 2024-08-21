@@ -27,7 +27,7 @@ namespace TextAdventures.Quest.Scripts
             }
             IScript loopScript = ScriptFactory.CreateScript(loop);
 
-            return new ForEachScript(scriptContext, parameters[0], new ExpressionGeneric(parameters[1], scriptContext), loopScript);
+            return new ForEachScript(scriptContext, parameters[0], new ExpressionDynamic(parameters[1], scriptContext), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -38,11 +38,11 @@ namespace TextAdventures.Quest.Scripts
     public class ForEachScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_list;
+        private IFunctionDynamic m_list;
         private IScript m_loopScript;
         private string m_variable;
 
-        public ForEachScript(ScriptContext scriptContext, string variable, IFunctionGeneric list, IScript loopScript)
+        public ForEachScript(ScriptContext scriptContext, string variable, IFunctionDynamic list, IScript loopScript)
         {
             m_scriptContext = scriptContext;
             m_variable = variable;
@@ -122,7 +122,7 @@ namespace TextAdventures.Quest.Scripts
                     m_variable = (string)value;
                     break;
                 case 1:
-                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_list = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 2:
                     throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'foreach' loop");

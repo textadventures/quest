@@ -84,7 +84,7 @@ public class ExpressionTests
 
     private object RunExpressionGeneric(string expression)
     {
-        var expr = new ExpressionGeneric(expression, _scriptContext);
+        var expr = new ExpressionDynamic(expression, _scriptContext);
         var c = new Context();
         return expr.Execute(c);
     }
@@ -214,7 +214,7 @@ public class ExpressionTests
     public void TestChangingTypes()
     {
         var expression = "a + b";
-        var expr = new ExpressionGeneric(expression, _scriptContext);
+        var expr = new ExpressionDynamic(expression, _scriptContext);
         var c = new Context
         {
             Parameters = new Parameters

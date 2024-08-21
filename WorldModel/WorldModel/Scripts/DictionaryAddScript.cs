@@ -17,7 +17,7 @@ namespace TextAdventures.Quest.Scripts
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new DictionaryAddScript(scriptContext,
-                new ExpressionGeneric(parameters[0], scriptContext),
+                new ExpressionDynamic(parameters[0], scriptContext),
                 new Expression<string>(parameters[1], scriptContext),
                 new Expression<object>(parameters[2], scriptContext));
         }
@@ -31,12 +31,12 @@ namespace TextAdventures.Quest.Scripts
     public class DictionaryAddScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_dictionary;
+        private IFunctionDynamic m_dictionary;
         private IFunction<string> m_key;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public DictionaryAddScript(ScriptContext scriptContext, IFunctionGeneric dictionary, IFunction<string> key, IFunction<object> value)
+        public DictionaryAddScript(ScriptContext scriptContext, IFunctionDynamic dictionary, IFunction<string> key, IFunction<object> value)
         {
             m_scriptContext = scriptContext;
             m_dictionary = dictionary;
@@ -97,7 +97,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_dictionary = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_dictionary = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 1:
                     m_key = new Expression<string>((string)value, m_scriptContext);
@@ -121,7 +121,7 @@ namespace TextAdventures.Quest.Scripts
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new DictionaryRemoveScript(scriptContext,
-                new ExpressionGeneric(parameters[0], scriptContext),
+                new ExpressionDynamic(parameters[0], scriptContext),
                 new Expression<string>(parameters[1], scriptContext));
         }
 
@@ -134,11 +134,11 @@ namespace TextAdventures.Quest.Scripts
     public class DictionaryRemoveScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_dictionary;
+        private IFunctionDynamic m_dictionary;
         private IFunction<string> m_key;
         private WorldModel m_worldModel;
 
-        public DictionaryRemoveScript(ScriptContext scriptContext, IFunctionGeneric dictionary, IFunction<string> key)
+        public DictionaryRemoveScript(ScriptContext scriptContext, IFunctionDynamic dictionary, IFunction<string> key)
         {
             m_scriptContext = scriptContext;
             m_dictionary = dictionary;
@@ -196,7 +196,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_dictionary = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_dictionary = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 1:
                     m_key = new Expression<string>((string)value, m_scriptContext);

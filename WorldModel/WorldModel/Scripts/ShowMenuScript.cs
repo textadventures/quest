@@ -26,7 +26,7 @@ namespace TextAdventures.Quest.Scripts
             }
             IScript callbackScript = ScriptFactory.CreateScript(callback);
 
-            return new ShowMenuScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), new ExpressionGeneric(parameters[1], scriptContext), new Expression<bool>(parameters[2], scriptContext), callbackScript);
+            return new ShowMenuScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), new ExpressionDynamic(parameters[1], scriptContext), new Expression<bool>(parameters[2], scriptContext), callbackScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -39,12 +39,12 @@ namespace TextAdventures.Quest.Scripts
         private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_caption;
-        private IFunctionGeneric m_options;
+        private IFunctionDynamic m_options;
         private IFunction<bool> m_allowCancel;
         private IScript m_callbackScript;
         private IScriptFactory m_scriptFactory;
 
-        public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IFunctionGeneric options, IFunction<bool> allowCancel, IScript callbackScript)
+        public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IFunctionDynamic options, IFunction<bool> allowCancel, IScript callbackScript)
         {
             m_scriptContext = scriptContext;
             m_worldModel = scriptContext.WorldModel;
@@ -118,7 +118,7 @@ namespace TextAdventures.Quest.Scripts
                     m_caption = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_options = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_options = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 2:
                     m_allowCancel = new Expression<bool>((string)value, m_scriptContext);

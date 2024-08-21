@@ -17,7 +17,7 @@ namespace TextAdventures.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new ErrorScript(scriptContext, new ExpressionGeneric(parameters[0], scriptContext));
+            return new ErrorScript(scriptContext, new ExpressionDynamic(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -30,10 +30,10 @@ namespace TextAdventures.Quest.Scripts
     public class ErrorScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_function;
+        private IFunctionDynamic m_function;
         private WorldModel m_worldModel;
 
-        public ErrorScript(ScriptContext scriptContext, IFunctionGeneric function)
+        public ErrorScript(ScriptContext scriptContext, IFunctionDynamic function)
         {
             m_scriptContext = scriptContext;
             m_function = function;
@@ -71,7 +71,7 @@ namespace TextAdventures.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_function = new ExpressionGeneric((string)value, m_scriptContext);
+            m_function = new ExpressionDynamic((string)value, m_scriptContext);
         }
     }
 }

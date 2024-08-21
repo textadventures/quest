@@ -20,14 +20,14 @@ namespace TextAdventures.Quest.Scripts
         {
             var param = Utility.GetParameter(script);
 
-            List<IFunctionGeneric> expressions = null;
+            List<IFunctionDynamic> expressions = null;
 
             if (param != null)
             {
                 var parameters = Utility.SplitParameter(param);
                 if (parameters.Count != 1 || parameters[0].Trim().Length != 0)
                 {
-                    expressions = new List<IFunctionGeneric>(parameters.Select(p => new ExpressionGeneric(p, scriptContext)));
+                    expressions = new List<IFunctionDynamic>(parameters.Select(p => new ExpressionDynamic(p, scriptContext)));
                 }
             }
 
@@ -50,9 +50,9 @@ namespace TextAdventures.Quest.Scripts
     {
         private readonly ScriptContext m_scriptContext;
         private string m_function;
-        private List<IFunctionGeneric> m_parameters;
+        private List<IFunctionDynamic> m_parameters;
 
-        public JSScript(ScriptContext scriptContext, string function, List<IFunctionGeneric> parameters)
+        public JSScript(ScriptContext scriptContext, string function, List<IFunctionDynamic> parameters)
         {
             m_scriptContext = scriptContext;
             m_function = function;
@@ -61,7 +61,7 @@ namespace TextAdventures.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new JSScript(m_scriptContext, m_function, m_parameters == null ? null : new List<IFunctionGeneric>(m_parameters));
+            return new JSScript(m_scriptContext, m_function, m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
         }
 
         public override void Execute(Context c)

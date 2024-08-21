@@ -13,10 +13,10 @@ namespace TextAdventures.Quest.Functions
         IFunction<T> Clone();
     }
 
-    public interface IFunctionGeneric
+    public interface IFunctionDynamic
     {
         object Execute(Context c);
         string Save();
-        IFunctionGeneric Clone();
+        IFunctionDynamic Clone();
     }
 }

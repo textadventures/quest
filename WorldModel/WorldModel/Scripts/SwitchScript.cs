@@ -18,21 +18,21 @@ namespace TextAdventures.Quest.Scripts
             string afterExpr;
             string param = Utility.GetParameter(script, out afterExpr);
             IScript defaultScript;
-            Dictionary<IFunctionGeneric, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
+            Dictionary<IFunctionDynamic, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
 
-            return new SwitchScript(scriptContext, new ExpressionGeneric(param, scriptContext), cases, defaultScript);
+            return new SwitchScript(scriptContext, new ExpressionDynamic(param, scriptContext), cases, defaultScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
 
         public WorldModel WorldModel { get; set; }
 
-        private Dictionary<IFunctionGeneric, IScript> ProcessCases(string cases, out IScript defaultScript, ScriptContext scriptContext)
+        private Dictionary<IFunctionDynamic, IScript> ProcessCases(string cases, out IScript defaultScript, ScriptContext scriptContext)
         {
             bool finished = false;
             string remainingCases;
             string afterExpr;
-            Dictionary<IFunctionGeneric, IScript> result = new Dictionary<IFunctionGeneric, IScript>();
+            Dictionary<IFunctionDynamic, IScript> result = new Dictionary<IFunctionDynamic, IScript>();
             defaultScript = null;
 
             cases = Utility.RemoveSurroundingBraces(cases);
@@ -58,12 +58,12 @@ namespace TextAdventures.Quest.Scripts
                             var matchList = Utility.SplitParameter(expr);
                             foreach (var match in matchList)
                             {
-                                result.Add(new ExpressionGeneric(match, scriptContext), script);
+                                result.Add(new ExpressionDynamic(match, scriptContext), script);
                             }
                         }
                         else
                         {
-                            result.Add(new ExpressionGeneric(expr, scriptContext), script);
+                            result.Add(new ExpressionDynamic(expr, scriptContext), script);
                         }
                     }
                     else if (cases.StartsWith("default"))
@@ -87,18 +87,18 @@ namespace TextAdventures.Quest.Scripts
     public class SwitchScript : ScriptBase
     {
         private ScriptContext m_scriptContext;
-        private IFunctionGeneric m_expr;
+        private IFunctionDynamic m_expr;
         private SwitchCases m_cases;
         private IScript m_default;
         private WorldModel m_worldModel;
 
-        public SwitchScript(ScriptContext scriptContext, IFunctionGeneric expression, Dictionary<IFunctionGeneric, IScript> cases, IScript defaultScript)
+        public SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression, Dictionary<IFunctionDynamic, IScript> cases, IScript defaultScript)
             : this(scriptContext, expression, defaultScript)
         {
             m_cases = new SwitchCases(this, cases);
         }
 
-        private SwitchScript(ScriptContext scriptContext, IFunctionGeneric expression, IScript defaultScript)
+        private SwitchScript(ScriptContext scriptContext, IFunctionDynamic expression, IScript defaultScript)
         {
             m_scriptContext = scriptContext;
             m_worldModel = scriptContext.WorldModel;
@@ -164,7 +164,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_expr = new ExpressionGeneric((string)value, m_scriptContext);
+                    m_expr = new ExpressionDynamic((string)value, m_scriptContext);
                     break;
                 case 1:
                     // any updates to the cases should change the scriptdictionary itself - nothing should cause SetParameter to be triggered.
@@ -182,16 +182,16 @@ namespace TextAdventures.Quest.Scripts
         private class SwitchCases
         {
             private QuestDictionary<IScript> m_cases = new QuestDictionary<IScript>();
-            private Dictionary<string, IFunctionGeneric> m_compiledExpressions = new Dictionary<string, IFunctionGeneric>();
+            private Dictionary<string, IFunctionDynamic> m_compiledExpressions = new Dictionary<string, IFunctionDynamic>();
             private SwitchScript m_parent;
 
-            public SwitchCases(SwitchScript parent, Dictionary<IFunctionGeneric, IScript> cases)
+            public SwitchCases(SwitchScript parent, Dictionary<IFunctionDynamic, IScript> cases)
                 : this(parent)
             {
 
                 foreach (var switchCase in cases)
                 {
-                    IFunctionGeneric compiledExpression = switchCase.Key;
+                    IFunctionDynamic compiledExpression = switchCase.Key;
                     string caseString = compiledExpression.Save();
                     IScript script = switchCase.Value;
 
@@ -217,7 +217,7 @@ namespace TextAdventures.Quest.Scripts
             {
                 SwitchCases clone = new SwitchCases(newParent);
                 clone.m_cases = (QuestDictionary<IScript>)m_cases.Clone();
-                clone.m_compiledExpressions = new Dictionary<string, IFunctionGeneric>();
+                clone.m_compiledExpressions = new Dictionary<string, IFunctionDynamic>();
                 foreach (var compiledExpression in m_compiledExpressions)
                 {
                     clone.m_compiledExpressions.Add(compiledExpression.Key, compiledExpression.Value);
@@ -244,7 +244,7 @@ namespace TextAdventures.Quest.Scripts
             {
                 foreach (var switchCase in m_cases)
                 {
-                    IFunctionGeneric expr = m_compiledExpressions[switchCase.Key];
+                    IFunctionDynamic expr = m_compiledExpressions[switchCase.Key];
 
                     if (result == expr.Execute(c).ToString())
                     {
