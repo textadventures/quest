@@ -10,9 +10,14 @@ public class ExpressionTests
 {
     private const string ObjectName = "object";
     private const string ChildName = "child";
+    // object names can contain spaces, so this must be handled in expressions
+    private const string OtherObjectName = "other object";
+
+    // note - attribute names cannot contain spaces
     private const string AttributeName = "attribute";
     private const string AttributeValue = "attributevalue";
     private const string ChildAttributeValue = "childattributevalue";
+    private const string OtherObjectAttributeValue = "some other value";
 
     private const string IntAttributeName = "intattribute";
     private const int IntAttributeValue = 42;
@@ -45,6 +50,9 @@ public class ExpressionTests
         _child = _worldModel.GetElementFactory(ElementType.Object).Create("child");
         _child.Parent = _object;
         _child.Fields.Set(AttributeName, ChildAttributeValue);
+
+        var otherObject = _worldModel.GetElementFactory(ElementType.Object).Create(OtherObjectName);
+        otherObject.Fields.Set(AttributeName, OtherObjectAttributeValue);
 
         AddFunction("CustomIntFunction", "int", ["param1", "param2"], "return (param1 + param2)");
         AddFunction("CustomStringFunction", "string", ["param1", "param2"], "return (\"a\" + param1 + param2)");
@@ -89,6 +97,7 @@ public class ExpressionTests
     [DataRow($"{ChildName}.{AttributeName}", ChildAttributeValue)]
     [DataRow($"{ChildName}.parent.{AttributeName}", AttributeValue)]
     [DataRow($"{ObjectName}.{AttributeName} + \"testconcat\"", AttributeValue + "testconcat")]
+    [DataRow($"{OtherObjectName}.{AttributeName}", OtherObjectAttributeValue)]
     [DataRow("CustomStringFunction(\"b\", \"c\")", "abc")]
     [DataRow("Left(\"abcdef\", 3)", "abc")]
     [DataRow("UCase(\"abc\")", "ABC")]
@@ -103,7 +112,7 @@ public class ExpressionTests
     [DataRow("1 + 2", 3)]
     [DataRow($"{ObjectName}.{IntAttributeName}", IntAttributeValue)]
     [DataRow($"{ObjectName}.{IntAttributeName} + 3", IntAttributeValue + 3)]
-    [DataRow("ListCount(AllObjects())", 2)]
+    [DataRow("ListCount(AllObjects())", 3)]
     [DataRow("CustomIntFunction(1, 2)", 3)]
     public void TestIntExpressions(string expression, int expectedResult)
     {
@@ -198,7 +207,7 @@ public class ExpressionTests
     {
         var result = RunExpressionGeneric("AllObjects()");
         var resultList = result.ShouldBeAssignableTo<QuestList<Element>>();
-        resultList.Count.ShouldBe(2);
+        resultList.Count.ShouldBe(3);
     }
 
     [TestMethod]
