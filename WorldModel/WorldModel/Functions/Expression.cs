@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Ciloci.Flee;
+﻿using TextAdventures.Quest.Expressions;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest.Functions
@@ -10,8 +8,7 @@ namespace TextAdventures.Quest.Functions
         protected ScriptContext m_scriptContext;
         protected string m_originalExpression;
         protected string m_expression;
-        protected WorldModel m_worldModel;
-        protected Dictionary<string, Type> m_types = new Dictionary<string, Type>();
+        private readonly WorldModel m_worldModel;
 
         public ExpressionBase(string expression, ScriptContext scriptContext)
         {
@@ -35,11 +32,12 @@ namespace TextAdventures.Quest.Functions
 
     public class Expression<T> : ExpressionBase, IFunction<T>
     {
-        private IGenericExpression<T> m_compiledExpression = null;
+        private readonly IExpressionEvaluator<T> _expressionEvaluator;
 
         public Expression(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
+            _expressionEvaluator = new FleeExpressionEvaluator<T>(m_expression, m_scriptContext);
         }
 
         public IFunction<T> Clone()
@@ -49,29 +47,7 @@ namespace TextAdventures.Quest.Functions
 
         public T Execute(Context c)
         {
-            m_scriptContext.ExecutionContext = c;
-            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables(), m_types))
-            {
-                // Lazy compilation since when the game is loaded, we don't know what types of
-                // variables we have.
-                try
-                {
-                    m_compiledExpression = m_scriptContext.ExpressionContext.CompileGeneric<T>(m_expression);
-                    m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
-                }
-            }
-            try
-            {
-                return m_compiledExpression.Evaluate();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("Error evaluating expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
-            }
+            return _expressionEvaluator.Evaluate(c);
         }
 
         public string Save()
@@ -82,11 +58,12 @@ namespace TextAdventures.Quest.Functions
 
     public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
     {
-        private IDynamicExpression m_compiledExpression = null;
+        private readonly IDynamicExpressionEvaluator _dynamicExpressionEvaluator;
 
         public ExpressionDynamic(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
+            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(m_expression, m_scriptContext);
         }
 
         public IFunctionDynamic Clone()
@@ -96,29 +73,7 @@ namespace TextAdventures.Quest.Functions
 
         public object Execute(Context c)
         {
-            m_scriptContext.ExecutionContext = c;
-            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables(), m_types))
-            {
-                // Lazy compilation since when the game is loaded, we don't know what types of
-                // variables we have.
-                try
-                {
-                    m_compiledExpression = m_scriptContext.ExpressionContext.CompileDynamic(m_expression);
-                    m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
-                }
-            }
-            try
-            {
-                return m_compiledExpression.Evaluate();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("Error evaluating expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
-            }
+            return _dynamicExpressionEvaluator.Evaluate(c);
         }
 
         public string Save()
