@@ -47,7 +47,7 @@ Cloning an object also clones its child objects. Now they get the correct "alias
 
 Following a [suggestion from mrangel](http://textadventures.co.uk/forum/quest/topic/ij3dghpuok_kgo3myoj4vg/thinking-about-the-text-processor), text processor directives are now extensible. More towards the end of [this page](http://docs.textadventures.co.uk/quest/text_processor.html).
 
-You can use the `[QuickParams](http://docs.textadventures.co.uk/quest/functions/quickparams.html)` to quickly create a dictionary with up to three entries, useful for quickly sending parameters to a script.
+You can use the [QuickParams](http://docs.textadventures.co.uk/quest/functions/quickparams.html) to quickly create a dictionary with up to three entries, useful for quickly sending parameters to a script.
 
 The `GetDefiniteName` function will return the name or alias of an object, with "the" prepended where appropriate.
 
@@ -79,5 +79,5 @@ Games can now send data to external sites, for processing, eg by PHP. This means
 
 ### Thanks to SoonGames:
 
-DeveloperMode (see [here](https://textadventures.co.uk/forum/samples/topic/k8lt6jukx0ko-dxms8vctg/sg-developer-mode-development-tool-for-better-testing-the-running-game).
+DeveloperMode (see [here](https://textadventures.co.uk/forum/samples/topic/k8lt6jukx0ko-dxms8vctg/sg-developer-mode-development-tool-for-better-testing-the-running-game)).
 
