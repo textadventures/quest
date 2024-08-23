@@ -1215,6 +1215,25 @@ namespace TextAdventures.Quest
             throw new ArgumentOutOfRangeException(string.Format("Unrecognised type '{0}'", type.ToString()));
         }
 
+        public Stream GetLibraryStream(string filename)
+        {
+            // TODO: Check if there is a file with this name in the game folder first
+            // Otherwise fall back to the embedded resource
+            
+            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("TextAdventures.Quest.Core." + filename);
+            if (stream == null)
+            {
+                stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("TextAdventures.Quest.Core.Languages." + filename);
+
+                if (stream == null)
+                {
+                    throw new Exception("Library file not found: " + filename);    
+                }
+            }
+
+            return stream;
+        }
+
         public string GetExternalPath(string file)
         {
             throw new NotImplementedException();

@@ -318,20 +318,20 @@ namespace TextAdventures.Quest
 
             public override object Load(XmlReader reader, ref Element current)
             {
-                string file = GameLoader.GetTemplateAttribute(reader, "ref");
-                if (file.Length == 0) return null;
-                string path = WorldModel.GetExternalPath(file);
-                XmlReader newReader = XmlReader.Create(path);
+                var filename = GameLoader.GetTemplateAttribute(reader, "ref");
+                if (filename.Length == 0) return null;
+                var stream = WorldModel.GetLibraryStream(filename);
+                var newReader = new XmlTextReader(stream);
                 while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
                 {
                     newReader.Read();
                 }
                 if (newReader.Name != "library")
                 {
-                    RaiseError(string.Format("Included file '{0}' is not a library", file));
+                    RaiseError($"Included file '{filename}' is not a library");
                 }
-                LoadXML(path, newReader);
-                return LoadInternal(file);
+                LoadXML(filename, newReader);
+                return LoadInternal(filename);
             }
 
             protected abstract object LoadInternal(string file);
