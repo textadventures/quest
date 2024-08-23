@@ -50,6 +50,11 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
     private object ResolveVariable(string name)
     {
+        if (name == "null")
+        {
+            return null;
+        }
+
         if (_context.Parameters?.ContainsKey(name) == true)
         {
             return _context.Parameters[name];
