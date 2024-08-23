@@ -30,7 +30,15 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
     public T Evaluate(Context c)
     {
         _context = c;
-        return (T)_nCalcExpression.Evaluate();
+        var result = _nCalcExpression.Evaluate();
+
+        // Converting ints to generic doubles is fun
+        if (typeof(T) == typeof(double) && result is int i)
+        {
+            return (T)(object)(double)i;
+        }
+
+        return (T)result;
     }
 
     private Context _context;
@@ -92,28 +100,48 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
     private void EvaluateFunction(string name, FunctionArgs args)
     {
-        var methods = typeof(ExpressionOwner)
+        var tryExpressionOwner = EvaluateFunctionFromType(typeof(ExpressionOwner), _expressionOwner, name, args.Parameters);
+        if (tryExpressionOwner.handled)
+        {
+            args.Result = tryExpressionOwner.result;
+            return;
+        }
+
+        var tryMath = EvaluateFunctionFromType(typeof(Math), null, name, args.Parameters);
+        if (tryMath.handled)
+        {
+            args.Result = tryMath.result;
+            return;
+        }
+
+        args.Result = EvaluateAslFunction(name, args);
+    }
+
+    private static (bool handled, object result) EvaluateFunctionFromType(Type type, object instance, string name, NCalc.Expression[] parameters)
+    {
+        var methods = type
             .GetMethods()
             .Cast<MethodBase>()
             .Where(m => m.IsPublic && m.Name == name)
             .ToArray();
-        
-        if (methods.Length != 0)
+
+        if (methods.Length == 0)
         {
-            var evaluatedArgs = args.Parameters.Select(p => p.Evaluate()).ToArray();
-            var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
-
-            var method = Type.DefaultBinder.SelectMethod(BindingFlags.Default, methods, types, null);
-
-            if (method == null)
-            {
-                throw new Exception($"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
-            }
-
-            args.Result = method.Invoke(_expressionOwner, evaluatedArgs);
-            return;
+            return (false, null);
         }
-        args.Result = EvaluateAslFunction(name, args);
+
+        var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
+        var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
+
+        var method = Type.DefaultBinder.SelectMethod(BindingFlags.Default, methods, types, null);
+
+        if (method == null)
+        {
+            throw new Exception($"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
+        }
+
+        return (true, method.Invoke(instance, evaluatedArgs));
+
     }
 
     private object? EvaluateAslFunction(string name, FunctionArgs args)
