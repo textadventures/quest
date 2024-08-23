@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using NCalc.Handlers;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
@@ -91,38 +92,28 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
     private void EvaluateFunction(string name, FunctionArgs args)
     {
-        var expressionOwnerCandidates = _expressionOwner.GetFunction(name);
-        if (expressionOwnerCandidates.Length != 0)
+        var methods = typeof(ExpressionOwner)
+            .GetMethods()
+            .Cast<MethodBase>()
+            .Where(m => m.IsPublic && m.Name == name)
+            .ToArray();
+        
+        if (methods.Length != 0)
         {
             var evaluatedArgs = args.Parameters.Select(p => p.Evaluate()).ToArray();
             var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
 
-            var filteredExpressionOwnerCandidates = expressionOwnerCandidates
-                .Where(
-                    c => IsFunctionCallableWithTypes(
-                        c.GetParameters().Select(p => p.ParameterType).ToArray(),
-                        types))
-                .ToArray();
+            var method = Type.DefaultBinder.SelectMethod(BindingFlags.Default, methods, types, null);
 
-            if (filteredExpressionOwnerCandidates.Length == 0)
+            if (method == null)
             {
                 throw new Exception($"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
             }
 
-            if (filteredExpressionOwnerCandidates.Length != 1)
-            {
-                throw new Exception($"Ambiguous function call to {name}");
-            }
-
-            args.Result = filteredExpressionOwnerCandidates[0].Invoke(_expressionOwner, evaluatedArgs);
+            args.Result = method.Invoke(_expressionOwner, evaluatedArgs);
             return;
         }
         args.Result = EvaluateAslFunction(name, args);
-    }
-
-    private bool IsFunctionCallableWithTypes(Type[] functionTypes, Type[] inputTypes)
-    {
-        return functionTypes.Length == inputTypes.Length && functionTypes.Zip(inputTypes).All(t => t.First.IsAssignableFrom(t.Second));
     }
 
     private object? EvaluateAslFunction(string name, FunctionArgs args)

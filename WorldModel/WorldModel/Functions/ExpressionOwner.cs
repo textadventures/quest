@@ -18,11 +18,6 @@ namespace TextAdventures.Quest.Functions
             m_worldModel = worldModel;
         }
 
-        internal MethodInfo[] GetFunction(string name)
-        {
-            return GetType().GetMethods().Where(m => m.IsPublic && m.Name == name).ToArray();
-        }
-
         private T GetParameter<T>(object parameter, string caller, string expectedType) where T : class
         {
             T result = parameter as T;
