@@ -37,7 +37,14 @@ namespace TextAdventures.Quest.Functions
         public Expression(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
-            _expressionEvaluator = new FleeExpressionEvaluator<T>(m_expression, m_scriptContext);
+            if (scriptContext.WorldModel.UseNcalc)
+            {
+                _expressionEvaluator = new NcalcExpressionEvaluator<T>(m_expression, m_scriptContext);
+            }
+            else
+            {
+                _expressionEvaluator = new FleeExpressionEvaluator<T>(m_expression, m_scriptContext);
+            }
         }
 
         public IFunction<T> Clone()
@@ -63,7 +70,14 @@ namespace TextAdventures.Quest.Functions
         public ExpressionDynamic(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
-            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(m_expression, m_scriptContext);
+            if (scriptContext.WorldModel.UseNcalc)
+            {
+                _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(m_expression, m_scriptContext);
+            }
+            else
+            {
+                _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(m_expression, m_scriptContext);    
+            }
         }
 
         public IFunctionDynamic Clone()

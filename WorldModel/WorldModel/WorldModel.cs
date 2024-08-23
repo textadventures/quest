@@ -180,6 +180,8 @@ namespace TextAdventures.Quest
             m_libFolder = libFolder;
         }
 
+        public bool UseNcalc => true;
+
         private void InitialiseElementFactories()
         {
             foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
