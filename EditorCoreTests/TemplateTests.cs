@@ -1,6 +1,6 @@
 ﻿using TextAdventures.Quest;
 
-namespace EditorControllerTests
+namespace EditorCoreTests
 {
     [TestClass]
     public class TemplateTests
