@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TextAdventures.Quest;
+﻿using TextAdventures.Quest;
 
-namespace EditorControllerTests
+namespace EditorCoreTests
 {
     [TestClass]
     public abstract class EditorControllerTestBase
@@ -56,6 +51,8 @@ namespace EditorControllerTests
 
         private void ExtractResource(string resource, string location)
         {
+            var resources = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            
             var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
             using (var streamReader = new System.IO.StreamReader(stream))
             {

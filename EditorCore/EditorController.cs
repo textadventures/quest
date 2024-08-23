@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using TextAdventures.Quest.Scripts;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Utility.Language;
@@ -58,7 +59,7 @@ namespace TextAdventures.Quest
     public class TemplateData
     {
         public string TemplateName { get; set; }
-        public string Filename { get; set; }
+        public string ResourceName { get; set; }
         public EditorStyle Type { get; set; }
     }
 
@@ -2027,67 +2028,57 @@ namespace TextAdventures.Quest
             return m_worldModel.GetBuiltInFunctionNames();
         }
 
-        public static Dictionary<string, TemplateData> GetAvailableTemplates(string folder = null)
+        public static Dictionary<string, TemplateData> GetAvailableTemplates()
         {
-            // TODO
-            throw new NotImplementedException();
-
-            // Dictionary<string, TemplateData> templates = new Dictionary<string, TemplateData>();
-            //
-            // if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
-            // folder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(folder);
-            //
-            // foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
-            // {
-            //     string key = System.IO.Path.GetFileNameWithoutExtension(file);
-            //     if (!templates.ContainsKey(key))
-            //     {
-            //         AddTemplateData(templates, key, file);
-            //     }
-            // }
-            //
-            // return templates;
+            var resources = WorldModel.GetEmbeddedResources()
+                .Where(name => name.StartsWith("TextAdventures.Quest.Core.Templates") && name.EndsWith(".template"));
+            
+            var templates = new Dictionary<string, TemplateData>();
+            
+            foreach (var resource in resources)
+            {
+                AddTemplateData(templates, resource);
+            }
+            
+            return templates;
         }
 
-        private static void AddTemplateData(Dictionary<string, TemplateData> templates, string key, string filename)
+        private static void AddTemplateData(Dictionary<string, TemplateData> templates, string resourceName)
         {
-            try
+            // TODO: Tidy up default template name
+            string templateName = resourceName;
+            EditorStyle templateEditorStyle = EditorStyle.TextAdventure;
+
+            var stream = Quest.WorldModel.GetEmbeddedResourceStream(resourceName);
+            var xmlReader =  new XmlTextReader(stream);
+            
+            xmlReader.Read();
+            if (xmlReader.Name == "asl")
             {
-                string templateName = key;
-                EditorStyle templateEditorStyle = EditorStyle.TextAdventure;
+                string templateAttr = xmlReader.GetAttribute("template");
+                if (!string.IsNullOrEmpty(templateAttr)) templateName = templateAttr;
 
-                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(filename);
-                xmlReader.Read();
-                if (xmlReader.Name == "asl")
+                string templateType = xmlReader.GetAttribute("templatetype");
+                switch (templateType)
                 {
-                    string templateAttr = xmlReader.GetAttribute("template");
-                    if (!string.IsNullOrEmpty(templateAttr)) templateName = templateAttr;
-
-                    string templateType = xmlReader.GetAttribute("templatetype");
-                    switch (templateType)
-                    {
-                        case "gamebook":
-                            templateEditorStyle = EditorStyle.GameBook;
-                            break;
-                    }
+                    case "gamebook":
+                        templateEditorStyle = EditorStyle.GameBook;
+                        break;
                 }
+            }
 
-                templates.Add(templateName, new TemplateData
-                {
-                    Filename = filename,
-                    TemplateName = templateName,
-                    Type = templateEditorStyle
-                });
-            }
-            catch
+            templates.Add(templateName, new TemplateData
             {
-                // ignore any templates which fail to load
-            }
+                ResourceName = resourceName,
+                TemplateName = templateName,
+                Type = templateEditorStyle
+            });
         }
 
-        public static string CreateNewGameFile(string filename, string template, string gameName)
+        public static string CreateNewGameFile(string template, string gameName)
         {
-            string templateText = System.IO.File.ReadAllText(template);
+            var stream = WorldModel.GetEmbeddedResourceStream(template);
+            var templateText = new System.IO.StreamReader(stream).ReadToEnd();
             string initialFileText = templateText
                 .Replace("$NAME$", Utility.SafeXML(gameName))
                 .Replace("$ID$", GetNewGameId())

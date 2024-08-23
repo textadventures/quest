@@ -1,11 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TextAdventures.Quest;
+﻿using TextAdventures.Quest;
 
-namespace EditorControllerTests
+namespace EditorCoreTests
 {
     [TestClass]
     public class EditableScriptTests : EditorControllerTestBase
