@@ -1705,6 +1705,16 @@ namespace TextAdventures.Quest
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
+
+        public static string[] GetEmbeddedResources()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+        }
+
+        public static Stream? GetEmbeddedResourceStream(string name)
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
+        }
         
         #nullable restore
 
