@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
 using System.Collections;
+using System.Reflection;
 
 namespace TextAdventures.Quest.Functions
 {
@@ -15,6 +16,11 @@ namespace TextAdventures.Quest.Functions
         public ExpressionOwner(WorldModel worldModel)
         {
             m_worldModel = worldModel;
+        }
+
+        internal MethodInfo[] GetFunction(string name)
+        {
+            return GetType().GetMethods().Where(m => m.IsPublic && m.Name == name).ToArray();
         }
 
         private T GetParameter<T>(object parameter, string caller, string expectedType) where T : class

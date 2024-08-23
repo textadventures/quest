@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using NCalc.Handlers;
+using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest.Expressions;
@@ -8,12 +10,14 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 {
     private readonly ScriptContext _scriptContext;
     private readonly NCalc.Expression _nCalcExpression;
+    private readonly ExpressionOwner _expressionOwner;
 
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
+        _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
         _nCalcExpression = new NCalc.Expression(expression);
-        _nCalcExpression.EvaluateFunction += EvaluateAslFunction;
+        _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
     }
 
@@ -85,14 +89,66 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         }
     }
 
-    private void EvaluateAslFunction(string name, FunctionArgs args)
+    private void EvaluateFunction(string name, FunctionArgs args)
+    {
+        var expressionOwnerCandidates = _expressionOwner.GetFunction(name);
+        if (expressionOwnerCandidates.Length != 0)
+        {
+            var evaluatedArgs = args.Parameters.Select(p => p.Evaluate()).ToArray();
+            var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
+
+            var filteredExpressionOwnerCandidates = expressionOwnerCandidates
+                .Where(
+                    c => IsFunctionCallableWithTypes(
+                        c.GetParameters().Select(p => p.ParameterType).ToArray(),
+                        types))
+                .ToArray();
+
+            if (filteredExpressionOwnerCandidates.Length == 0)
+            {
+                throw new Exception($"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
+            }
+
+            if (filteredExpressionOwnerCandidates.Length != 1)
+            {
+                throw new Exception($"Ambiguous function call to {name}");
+            }
+
+            args.Result = filteredExpressionOwnerCandidates[0].Invoke(_expressionOwner, evaluatedArgs);
+            return;
+        }
+        args.Result = EvaluateAslFunction(name, args);
+    }
+
+    private bool IsFunctionCallableWithTypes(Type[] functionTypes, Type[] inputTypes)
+    {
+        return functionTypes.Length == inputTypes.Length && functionTypes.Zip(inputTypes).All(t => t.First.IsAssignableFrom(t.Second));
+    }
+
+    private object? EvaluateAslFunction(string name, FunctionArgs args)
     {
         if (name == "IsDefined")
         {
-            args.Result = _context.Parameters.ContainsKey((string)args.Parameters[0].Evaluate());
+            if (args.Parameters.Length != 1)
+            {
+                throw new Exception("IsDefined function expects 1 parameter");
+            }
+
+            if (args.Parameters[0].Evaluate() is not string variableName)
+            {
+                throw new Exception("IsDefined function expects a string parameter");
+            }
+
+            return _context.Parameters.ContainsKey(variableName);
         }
 
         var proc = _scriptContext.WorldModel.Procedure(name);
+
+        if (proc == null)
+        {
+            throw new Exception($"Unknown function '{name}'");
+        }
+
         var parameters = new Parameters();
         var cnt = 0;
 
@@ -102,6 +158,6 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             cnt++;
         }
 
-        args.Result = _scriptContext.WorldModel.RunProcedure(name, parameters, true);
+        return _scriptContext.WorldModel.RunProcedure(name, parameters, true);
     }
 }
