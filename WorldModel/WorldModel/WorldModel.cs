@@ -1065,16 +1065,17 @@ namespace TextAdventures.Quest
 
         private object RunScript(IScript script, Context c, bool expectResult)
         {
-            try
-            {
+            // try
+            // {
                 script.Execute(c);
                 if (expectResult && c.ReturnValue is NoReturnValue) throw new Exception("Function did not return a value");
                 return c.ReturnValue;
-            }
-            catch (Exception ex)
-            {
-                Print("Error running script: " + Utility.SafeXML(ex.Message));
-            }
+            // }
+            // catch (Exception ex)
+            // {
+            // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
+            //     Print("Error running script: " + Utility.SafeXML(ex.Message));
+            // }
             return null;
         }
 
@@ -1345,17 +1346,18 @@ namespace TextAdventures.Quest
 
         private void DoInNewThreadAndWait(Action routine)
         {
-            Action wrappedRoutine = () =>
-            {
-                try
-                {
-                    routine();
-                }
-                catch { }
-            };
+            // Action wrappedRoutine = () =>
+            // {
+            //     try
+            //     {
+            //         routine();
+            //     }
+            //     catch { }
+            // };
 
             ChangeThreadState(ThreadState.Working);
-            Thread newThread = new Thread(new ThreadStart(wrappedRoutine));
+            // Thread newThread = new Thread(new ThreadStart(wrappedRoutine));
+            Thread newThread = new Thread(new ThreadStart(routine));
             newThread.Start();
             WaitUntilFinishedWorking();
         }

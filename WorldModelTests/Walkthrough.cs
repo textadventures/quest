@@ -19,6 +19,8 @@ namespace WorldModelTests
             WorldModel worldModel = new WorldModel(
                 gameData,
                 Path.Combine("..", "..", ".."));
+            
+            worldModel.LogError += (errorMessage) => throw new Exception(errorMessage);
 
             Mock<IPlayer> player = new Mock<IPlayer>();
             await worldModel.Initialise(player.Object);
