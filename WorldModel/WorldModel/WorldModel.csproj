@@ -28,6 +28,12 @@
     <Reference Update="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="NCalc.Core">
+      <HintPath>..\..\Dependencies\NCalc.Sync\NCalc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NCalc.Sync">
+      <HintPath>..\..\Dependencies\NCalc.Sync\NCalc.Sync.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="Core\Languages\EditorDeutsch.aslx">
@@ -44,8 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="NCalcAsync" Version="5.0.0" />
-    <PackageReference Include="NCalcSync" Version="5.0.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
