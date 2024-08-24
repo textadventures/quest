@@ -62,7 +62,8 @@ namespace TextAdventures.Quest
         TurnScript
     }
 
-    public class Element
+    // TODO: IComparable was needed for NCalc - this should be added to other types too.
+    public class Element : IComparable
     {
         private Fields m_fields;
         private Fields m_metaFields;
@@ -231,6 +232,11 @@ namespace TextAdventures.Quest
         public override string ToString()
         {
             return string.Format("{0}: {1}", TextAdventures.Utility.Strings.CapFirst(TypeString), Name);
+        }
+
+        public int CompareTo(object obj)
+        {
+            return this == obj ? 0 : -1;
         }
 
         public ObjectType Type
