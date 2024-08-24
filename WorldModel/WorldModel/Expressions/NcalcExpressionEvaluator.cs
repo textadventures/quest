@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using NCalc;
 using NCalc.Handlers;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
@@ -45,6 +46,13 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
     private void EvaluateParameter(string name, ParameterArgs args)
     {
+        var tryMath = EvaluateVariableFromType(typeof(Math), name);
+        if (tryMath.handled)
+        {
+            args.Result = tryMath.result;
+            return;
+        }
+        
         args.Result = ResolveVariable(name);
     }
 
@@ -129,7 +137,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         args.Result = EvaluateAslFunction(name, args);
     }
 
-    private static (bool handled, object result) EvaluateFunctionFromType(Type type, object instance, string name, NCalc.Expression[] parameters)
+    private static (bool handled, object result) EvaluateFunctionFromType(Type type, object instance, string name, Expression[] parameters)
     {
         var methods = type
             .GetMethods()
@@ -153,7 +161,23 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         }
 
         return (true, method.Invoke(instance, evaluatedArgs));
-
+    }
+    
+    private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
+    {
+        var fields = type
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(f => f.IsLiteral && !f.IsInitOnly)
+            .ToArray();
+        
+        var field = fields.FirstOrDefault(f => f.Name == name);
+        
+        if (field == null)
+        {
+            return (false, null);
+        }
+        
+        return (true, field.GetRawConstantValue());
     }
 
     private object? EvaluateAslFunction(string name, FunctionArgs args)
