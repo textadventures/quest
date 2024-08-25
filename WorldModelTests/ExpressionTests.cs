@@ -161,6 +161,8 @@ public class ExpressionTests
     [DataRow("1 <> 1", false)]
     [DataRow($"{ObjectName} <> null", true)]
     [DataRow($"{ObjectName} = null", false)]
+    [DataRow($"not ({ObjectName} = null)", true)]
+    [DataRow($"not {ObjectName} = null", true)]
     [DataRow($"{ObjectName} = {ObjectName}", true)]
     [DataRow($"{ObjectName} = {ChildName}", false)]
     [DataRow($"{ObjectName} <> {ChildName}", true)]
