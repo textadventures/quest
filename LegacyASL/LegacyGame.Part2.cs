@@ -8309,7 +8309,7 @@ public partial class LegacyGame
 
     private void LogException(Exception ex)
     {
-        LogError?.Invoke(ex.Message + Environment.NewLine + ex.StackTrace);
+        LogError?.Invoke(ex);
     }
 
     public IEnumerable<string> GetExternalScripts()

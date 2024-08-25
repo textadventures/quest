@@ -20,7 +20,7 @@ namespace WorldModelTests
                 gameData,
                 Path.Combine("..", "..", ".."));
             
-            worldModel.LogError += (errorMessage) => throw new Exception(errorMessage);
+            worldModel.LogError += ex => throw ex;
 
             Mock<IPlayer> player = new Mock<IPlayer>();
             bool success = await worldModel.Initialise(player.Object);

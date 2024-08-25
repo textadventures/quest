@@ -10,7 +10,7 @@ namespace TextAdventures.Quest
     public delegate void PrintTextHandler(string text);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
     public delegate void FinishedHandler();
-    public delegate void ErrorHandler(string errorMessage);
+    public delegate void ErrorHandler(Exception ex);
 
     public interface IASL
     {

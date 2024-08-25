@@ -1364,7 +1364,7 @@ namespace TextAdventures.Quest
 
         void LogException(Exception ex)
         {
-            if (LogError != null) LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            LogError?.Invoke(ex);
         }
 
         internal IPlayer PlayerUI

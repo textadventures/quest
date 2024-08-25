@@ -86,10 +86,10 @@ public class Player : IPlayerHelperUI
         AddJavaScriptToBuffer("requestNextTimerTick", seconds);
     }
     
-    private void LogError(string errormessage)
+    private void LogError(Exception ex)
     {
         OutputText("[Sorry, an error occurred]");
-        AddJavaScriptToBuffer("console.error", errormessage);
+        AddJavaScriptToBuffer("console.error", ex.Message);
     }
 
     private void UpdateList(ListType listType, List<ListData> items)
