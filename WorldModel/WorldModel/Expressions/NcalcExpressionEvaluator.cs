@@ -142,7 +142,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         var methods = type
             .GetMethods()
             .Cast<MethodBase>()
-            .Where(m => m.IsPublic && m.Name == name)
+            .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
             .ToArray();
 
         if (methods.Length == 0)
@@ -170,7 +170,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             .Where(f => f.IsLiteral && !f.IsInitOnly)
             .ToArray();
         
-        var field = fields.FirstOrDefault(f => f.Name == name);
+        var field = fields.FirstOrDefault(f => f.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
         
         if (field == null)
         {

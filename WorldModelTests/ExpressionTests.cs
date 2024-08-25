@@ -127,7 +127,9 @@ public class ExpressionTests
     [DataRow($"{ObjectName}.{DoubleAttributeName}", DoubleAttributeValue)]
     [DataRow("CustomDoubleFunction(2.2, 3.3)", 6.6)]
     [DataRow("PI", Math.PI)]
+    [DataRow("pi", Math.PI)]
     [DataRow("Sqrt(4)", 2.0)]
+    [DataRow("sqrt(4)", 2.0)]
     [DataRow("Abs(-5)", 5.0)]
     public void TestDoubleExpressions(string expression, double expectedResult)
     {
@@ -138,6 +140,10 @@ public class ExpressionTests
     [DataTestMethod]
     [DataRow("true", true)]
     [DataRow("false", false)]
+    [DataRow("True", true)]
+    [DataRow("False", false)]
+    [DataRow("TRUE", true)]
+    [DataRow("FALSE", false)]
     [DataRow("not true", !true)]
     [DataRow("not false", !false)]
     [DataRow("true and true", true)]
@@ -171,6 +177,7 @@ public class ExpressionTests
     [DataRow($"HasInt({ObjectName}, \"{IntAttributeName}\")", true)]
     [DataRow($"HasInt({ObjectName}, \"{AttributeName}\")", false)]
     [DataRow("ListContains(AllObjects(), object)", true)]
+    [DataRow("listcontains(allobjects(), object)", true)]
     [DataRow("CustomBooleanFunction(true, false)", true)]
     public void TestBooleanExpressions(string expression, bool expectedResult)
     {
