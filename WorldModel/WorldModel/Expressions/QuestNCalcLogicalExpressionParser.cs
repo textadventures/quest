@@ -368,7 +368,8 @@ public static class QuestNCalcLogicalExpressionParser
 
         // ( "-" | "not" ) unary | primary;
         var unary = exponential.Unary(
-            (not, value => new UnaryExpression(UnaryExpressionType.Not, value)),
+            // This is where Quest's parser differs from the NCalc default, as we handle "not" further down.
+            // (not, value => new UnaryExpression(UnaryExpressionType.Not, value)),
             (minus, value => new UnaryExpression(UnaryExpressionType.Negate, value)),
             (bitwiseNot, value => new UnaryExpression(UnaryExpressionType.BitwiseNot, value))
         );
@@ -428,6 +429,13 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
+        // This is where Quest's parser differs from the NCalc default, as we want to handle
+        // "not" here, rather than earlier. This is because we need to handle expressions like
+        // "not my_object = null" as "not (my_object = null)" instead of "(not my_object) = null".
+        var notOperator = equality.Unary(
+            (not, value => new UnaryExpression(UnaryExpressionType.Not, value))
+        );
+
         var andParser = and.Then(BinaryExpressionType.And)
             .Or(bitwiseAnd.Then(BinaryExpressionType.BitwiseAnd));
 
@@ -437,7 +445,7 @@ public static class QuestNCalcLogicalExpressionParser
         var xorParser = bitwiseXOr.Then(BinaryExpressionType.BitwiseXOr);
 
         // logical => equality ( ( "and" | "or" ) equality )* ;
-        var logical = equality.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(equality)))
+        var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(equality)))
             .Then(static x =>
             {
                 var result = x.Item1;
