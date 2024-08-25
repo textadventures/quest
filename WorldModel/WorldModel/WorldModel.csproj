@@ -28,11 +28,17 @@
     <Reference Update="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="ExtendedNumerics.BigDecimal">
+      <HintPath>..\..\Dependencies\NCalc.Sync\ExtendedNumerics.BigDecimal.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc.Core">
       <HintPath>..\..\Dependencies\NCalc.Sync\NCalc.Core.dll</HintPath>
     </Reference>
     <Reference Include="NCalc.Sync">
       <HintPath>..\..\Dependencies\NCalc.Sync\NCalc.Sync.dll</HintPath>
+    </Reference>
+    <Reference Include="Parlot">
+      <HintPath>..\..\Dependencies\NCalc.Sync\Parlot.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

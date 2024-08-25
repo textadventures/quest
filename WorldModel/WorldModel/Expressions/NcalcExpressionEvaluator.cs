@@ -21,11 +21,10 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-
-        // TODO: Implement our own ILogicalExpressionFactory, based on the default NCalc one
+        
         _nCalcExpression = new Expression(expression,
             new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
-            new LogicalExpressionFactory(),
+            QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance(),
             new EvaluationService());
         
