@@ -175,6 +175,7 @@ public class ExpressionTests
     [DataRow($"not HasAttribute({ObjectName}, \"{AttributeName}\")", false)]
     [DataRow($"HasAttribute({ObjectName}, \"invalid\")", false)]
     [DataRow($"not HasAttribute({ObjectName}, \"invalid\")", true)]
+    [DataRow($"not HasAttribute({ObjectName}, \"invalid\") and true", true)]
     [DataRow($"true and not HasAttribute({ObjectName}, \"invalid\")", true)]
     [DataRow($"HasString({ObjectName}, \"{AttributeName}\")", true)]
     [DataRow($"HasBoolean({ObjectName}, \"{AttributeName}\")", false)]

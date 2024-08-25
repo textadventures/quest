@@ -445,7 +445,7 @@ public static class QuestNCalcLogicalExpressionParser
         var xorParser = bitwiseXOr.Then(BinaryExpressionType.BitwiseXOr);
 
         // logical => equality ( ( "and" | "or" ) equality )* ;
-        var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(equality)))
+        var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))
             .Then(static x =>
             {
                 var result = x.Item1;
