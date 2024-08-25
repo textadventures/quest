@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NCalc;
+using NCalc.Cache;
+using NCalc.Factories;
 using NCalc.Handlers;
+using NCalc.Services;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
@@ -11,14 +14,21 @@ namespace TextAdventures.Quest.Expressions;
 public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpressionEvaluator
 {
     private readonly ScriptContext _scriptContext;
-    private readonly NCalc.Expression _nCalcExpression;
+    private readonly Expression _nCalcExpression;
     private readonly ExpressionOwner _expressionOwner;
 
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-        _nCalcExpression = new NCalc.Expression(expression, ExpressionOptions.NoStringTypeCoercion);
+
+        // TODO: Implement our own ILogicalExpressionFactory, based on the default NCalc one
+        _nCalcExpression = new Expression(expression,
+            new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
+            new LogicalExpressionFactory(),
+            LogicalExpressionCache.GetInstance(),
+            new EvaluationService());
+        
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
     }
@@ -137,7 +147,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         args.Result = EvaluateAslFunction(name, args);
     }
 
-    private static (bool handled, object result) EvaluateFunctionFromType(Type type, object instance, string name, Expression[] parameters)
+    private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object instance, string name, Expression[] parameters)
     {
         var methods = type
             .GetMethods()
@@ -153,7 +163,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
         var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
 
-        var method = Type.DefaultBinder.SelectMethod(BindingFlags.Default, methods, types, null);
+        var method = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
 
         if (method == null)
         {
