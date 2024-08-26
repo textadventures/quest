@@ -610,6 +610,8 @@
   <function name="DisableTranscript">
     game.notranscript = true
     JS.eval("savingTranscript = false;")
+    // DEPRECATED
+    // Leaving function here to avoid possible errors. - KV
   </function>
   
   <function name="DisableHtmlLog">

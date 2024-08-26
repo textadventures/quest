@@ -969,70 +969,30 @@
 
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
-      if (not GetBoolean(game, "notranscript")){
-        JS.showTranscript ()
-      }
-      else {
-        msg ("This game has no transcript feature.")
-      }
+      JS.showScrollback ()
       game.suppressturnscripts = true
     </script>
   </command>
 
   <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
     <script>
-      <![CDATA[
-      if (not GetBoolean(game, "notranscript")) {
-        if (not GetBoolean(game,"savetranscript")) {
-          msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
-          JS.eval ("$('input#txtCommand').val(transcriptName);")
-          get input {
-            filename = Trim(result)
-            if (not filename = "") {
-              JS.eval ("transcriptName = '"+filename+"';")
-            }
-            JS.eval ("savingTranscript = true;")
-            game.savetranscript = true
-            pre = "<hr/>Transcript enabled for:<br/>"
-            s = "<b>TITLE: </b>" + game.gamename + "<br/>"
-            if (HasAttribute (game, "author")) {
-              s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
-            }
-            s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-            s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-            s = s + "<br/>"
-            s = pre + s
-            msg("")
-            msg (s)
-            msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
-          }
-        }
-        else {
-          msg ("The transcript is already enabled.")
-        }
-      }
-      else {
+      if (GetBoolean(game, "notranscript")) {
         msg ("This game has no transcript feature.")
       }
+      else {
+        msg ("The transcript doesn't turn on or off. It is always available.")
+      }
       game.suppressturnscripts = true
-    ]]>
     </script>
   </command>
 
   <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
-      if (not GetBoolean(game, "notranscript")) {
-        if (GetBoolean(game,"savetranscript")) {
-          game.savetranscript = false
-          JS.eval ("var savingTranscript = false;")
-          msg ("Transcript disabled.")
-        }
-        else {
-          msg ("The transcript is already disabled.")
-        }
+      if (GetBoolean(game, "notranscript")) {
+        msg ("This game has no transcript feature.")
       }
       else {
-        msg ("This game has no transcript feature.")
+        msg ("The transcript doesn't turn on or off. It is always available.")
       }
       game.suppressturnscripts = true
     </script>
@@ -1040,7 +1000,9 @@
 
   <function name="UpdateTranscriptString" parameters="data">
     game.suppressturnscripts = true
-    game.transcriptstring = game.transcriptstring + data
+    //game.transcriptstring = game.transcriptstring + data
+    // DEPRECATED
+    //   Do nothing. Just keeping this function here to avoid possible errors. - KV
   </function>
   
   <command name="restart" pattern="^restart$">

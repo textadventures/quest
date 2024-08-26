@@ -621,18 +621,10 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
-// These 2 variables added by KV for the transcript
-var savingTranscript = false;
-var transcriptString = "";
-
-// This function altered by KV for the transcript
+// This function altered by KV to remove the old transcript code
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
-    }
-    if (savingTranscript) {
-        SaveTranscript(text);
-        ASLEvent("UpdateTranscriptString", text);
     }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
@@ -1450,53 +1442,17 @@ function getTimeAndDateForLog(){
 // **********************************
 // TRANSCRIPT FUNCTIONS
 
-// This function is for loading a saved game
-function replaceTranscriptString(data) {
-    transcriptString = data;
+// SaveTranscript left here, doing nothing, to avoid possible errors. - KV
+function SaveTranscript(data) {
+    //data = data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>";
+    //if (!webPlayer && transcriptString != '') { UIEvent("SaveTranscript", data); }
+    //transcriptString += data;
+    // DEPRECATED
+    //   Do nothing.
 }
 
 function showTranscript() {
-    var transcriptDivString = "";
-    transcriptDivString += "<div ";
-    transcriptDivString += "id='transcript-dialog' ";
-    transcriptDivString += "style='display:none;'>";
-    transcriptDivString += "<div id='transcriptdata'></div></div>";
-    addText(transcriptDivString);
-    var transcriptDialog = $("#transcript-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Transcript",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printTranscriptDiv();
-                $(this).dialog("close");
-                $(this).remove();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#transcriptdata').html(transcriptString);
-    $("#transcriptdata a").addClass("disabled");
-    transcriptDialog.dialog("open");
-    setTimeout(function () {
-        $("#transcriptdata a").addClass("disabled");
-    }, 1);
-};
-
-function printTranscriptDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#transcriptdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#transcript-dialog").dialog("close");
-    $("#transcript-dialog").remove();
+    showScrollback()
 };
 
 // ***********************************
