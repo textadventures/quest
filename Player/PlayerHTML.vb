@@ -126,6 +126,9 @@ Public Class PlayerHTML
         My.Computer.FileSystem.WriteAllText(logPath + "\" + gameName + "-log.txt", data + Environment.NewLine, True)
     End Sub
     Private Sub SaveTranscript(data As String)
+        ' NOTE FROM KV:
+        '   I disabled or removed all the Quest and JS functions concerning this, but I will leave this code in here.
+        '   This way, someone could simply add the Quest and JS functions to their game if they wished to use this functionality.
         Dim mgameName = Split(CurrentGame.Filename, "\")(Split(CurrentGame.Filename, "\").Length - 1)
         mgameName = mgameName.Replace(".aslx", "")
         Dim transcriptPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Transcripts"

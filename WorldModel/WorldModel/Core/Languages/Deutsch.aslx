@@ -544,9 +544,9 @@
 </function>
 
   <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
-  <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>
-  <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
+  <template templatetype="command" name="transcript_on_cmd">^(transkript|skript) an$|^aktiviere (skript|transkript)$</template>
+  <template templatetype="command" name="transcript_off_cmd">^transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(transkript|skript)$|^(zeige|zeig) (das |)(skript|transkript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
 
   <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>

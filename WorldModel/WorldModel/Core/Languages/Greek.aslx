@@ -384,9 +384,9 @@
 
     <template templatetype="command" name="log_cmd">^αρχείο$|^δες αρχείο$|^δείξε αρχείο$</template>
   <!-- Modified by KV -->
-  <template templatetype="command" name="transcript_on_cmd">^ιστορικό$|^ιστορικό ενεργό$</template>
+  <template templatetype="command" name="transcript_on_cmd">^ιστορικό ενεργό$</template>
   <template templatetype="command" name="transcript_off_cmd">^ιστορικό ανενεργό$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(δες|δείξε) (το |)ιστορικό$</template>
+  <template templatetype="command" name="view_transcript_cmd">^ιστορικό$|^(δες|δείξε) (το |)ιστορικό$</template>
   <!-- END of modification by KV -->
   <template templatetype="command" name="version_cmd">^(έκδοση|πληροφορίες|σχετικά)$</template>
 
