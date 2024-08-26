@@ -160,7 +160,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         }
 
         var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
-        var types = evaluatedArgs.Select(a => a.GetType()).ToArray();
+        var types = evaluatedArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
 
         var method = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
 

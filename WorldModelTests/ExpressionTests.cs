@@ -101,6 +101,9 @@ public class ExpressionTests
     [DataRow("CustomStringFunction(\"b\", \"c\")", "abc")]
     [DataRow("Left(\"abcdef\", 3)", "abc")]
     [DataRow("UCase(\"abc\")", "ABC")]
+    [DataRow("TypeOf(\"some string\")", "string")]
+    [DataRow("TypeOf(123)", "int")]
+    [DataRow("TypeOf(null)", "null")]
     public void TestStringExpressions(string expression, string expectedResult)
     {
         var result = RunExpression<string>(expression);
