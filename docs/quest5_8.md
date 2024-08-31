@@ -45,7 +45,7 @@ Scope for a command can now be set to an object list attribute of the player obj
 
 Cloning an object also clones its child objects. Now they get the correct "alias" and "prototype" attributes set.
 
-Following a [suggestion from mrangel](http://textadventures.co.uk/forum/quest/topic/ij3dghpuok_kgo3myoj4vg/thinking-about-the-text-processor), text processor directives are now extensible. More towards the end of [this page](http://docs.textadventures.co.uk/quest/text_processor.html).
+Following a [suggestion from mrangel](https://textadventures.co.uk/forum/quest/topic/ij3dghpuok_kgo3myoj4vg/thinking-about-the-text-processor), text processor directives are now extensible. More towards the end of [this page](http://docs.textadventures.co.uk/quest/text_processor.html).
 
 You can use the [QuickParams](http://docs.textadventures.co.uk/quest/functions/quickparams.html) to quickly create a dictionary with up to three entries, useful for quickly sending parameters to a script.
 

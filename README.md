@@ -9,18 +9,18 @@ Quest lets you make interactive story games – you can make text adventure game
 * Games are fully translatable - there is no hard coded text within a game. You can translate the English template to create games in other languages - we already have support for Spanish, German and Dutch.
 * HTML game output allows embedding sounds, pictures, YouTube, Vimeo clips
 * XML game file format is easily editable outside of Quest if you don't want to use Quest's own editor
-* Games can be played online by uploading the .quest file to [textadventures.co.uk](http://textadventures.co.uk/), or you can use the WebPlayer project to host them yourself on a web server with ASP.NET
+* Games can be played online by uploading the .quest file to [textadventures.co.uk](https://textadventures.co.uk/), or you can use the WebPlayer project to host them yourself on a web server with ASP.NET
 * MIT licence means you're free to create commercial Quest games, and use Quest in closed-source projects
 
 Installing Quest
 ----------------
 
-Windows users can download [Quest for Windows](http://textadventures.co.uk/quest/desktop)
+Windows users can download [Quest for Windows](https://textadventures.co.uk/quest/desktop)
 
-Or, you can [use Quest in your web browser](http://textadventures.co.uk/create)
+Or, you can [use Quest in your web browser](https://textadventures.co.uk/create)
 
 Documentation
 -------------
 
 * [Documentation](http://docs.textadventures.co.uk/quest)
-* [Quest website](http://textadventures.co.uk/quest/)
+* [Quest website](https://textadventures.co.uk/quest/)

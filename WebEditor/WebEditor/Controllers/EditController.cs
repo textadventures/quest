@@ -28,7 +28,7 @@ namespace WebEditor.Controllers
             model.GameId = id.Value;
             ViewBag.Title = "Quest";
             model.SimpleMode = GetSettingBool("simplemode", false);
-            model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://textadventures.co.uk/";
+            model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "https://textadventures.co.uk/";
             model.CacheBuster = Convert.ToInt32((DateTime.Now - (new DateTime(2012, 1, 1))).TotalSeconds);
             return View(model);
         }

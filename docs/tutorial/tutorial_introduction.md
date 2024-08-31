@@ -10,8 +10,8 @@ Quest is a program for writing text adventure games and gamebooks (both of which
 
 There are two versions:
 
--   a [web version](http://textadventures.co.uk/create/) which runs entirely in your web browser (Chrome, FireFox, Internet Explorer, Safari), without downloading any software.
--   a [Windows version](http://textadventures.co.uk/quest/desktop), downloadable for Windows 7, 8, 10 and Vista.
+-   a [web version](https://textadventures.co.uk/create/) which runs entirely in your web browser (Chrome, FireFox, Internet Explorer, Safari), without downloading any software.
+-   a [Windows version](https://textadventures.co.uk/quest/desktop), downloadable for Windows 7, 8, 10 and Vista.
 
 This tutorial applies to both versions. The versions are fundamentally the same, although the Windows version of the game editor has a few more features.
 
@@ -31,7 +31,7 @@ You don't need to have a team of people creating graphics, music and sound effec
 _Interactive text games are accessible_
 You don't need fast reactions to play a text-based game. In fact, you don't even need to be able to see - text-based games are one of the few types of games that the visually impaired can enjoy, using a screen reader to speak the text aloud. You don't need to have a particular type of computer - you can play a text game using nothing more than a web browser. All of this means that a text game can be played by just about anybody.
 
-Using Quest, you can play and create text-based games, which can include pictures, sounds and video. To play some games which people have created already, see [textadventures.co.uk](http://textadventures.co.uk/).
+Using Quest, you can play and create text-based games, which can include pictures, sounds and video. To play some games which people have created already, see [textadventures.co.uk](https://textadventures.co.uk/).
 
 If you have some time to spare, it's well worth watching the documentary [Get Lamp](http://www.getlamp.com/) (also on [YouTube](http://www.youtube.com/watch?v=LRhbcDzbGSU)) - it's a brilliant telling of the history of text adventure games.
 

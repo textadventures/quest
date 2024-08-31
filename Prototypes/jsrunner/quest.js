@@ -90,7 +90,7 @@ require(['asl6', 'ui'], function (asl6, ui) {
 		if (!id) return;
 		
 		var load = function () {
-			$.get('http://textadventures.co.uk/api/game/' + id, function (result) {
+			$.get('https://textadventures.co.uk/api/game/' + id, function (result) {
 				checkCanSave();
 				
 				if (result.ASLVersion >= 500) {
@@ -126,7 +126,7 @@ require(['asl6', 'ui'], function (asl6, ui) {
 		}
 		else {
 			$.ajax({
-				url: 'http://textadventures.co.uk/games/load/' + id,
+				url: 'https://textadventures.co.uk/games/load/' + id,
 				success: function(result) {
 					resumeData = atob(result.Data);
 					load();

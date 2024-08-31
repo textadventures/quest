@@ -1,5 +1,5 @@
 ﻿var $_GET = {};
-var apiRoot = "http://textadventures.co.uk/";
+var apiRoot = "https://textadventures.co.uk/";
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {

@@ -426,7 +426,7 @@ namespace WebPlayer
 
         protected string ApiRoot()
         {
-            return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
+            return ConfigurationManager.AppSettings["BaseURI"] ?? "https://textadventures.co.uk/";
         }
 
         protected string GameSessionLogId()

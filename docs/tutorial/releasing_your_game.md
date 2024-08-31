@@ -71,7 +71,7 @@ Now all you have to do is tell people about it, so they will play it.
 
 You can announce your game on:
 
--   the [textadventures.co.uk Game Announcements and Feedback forum](http://textadventures.co.uk/forum/games)
+-   the [textadventures.co.uk Game Announcements and Feedback forum](https://textadventures.co.uk/forum/games)
 -   the [intfiction.org forums](http://www.intfiction.org/forum/viewforum.php?f=19)
 -   [IFDB](http://ifdb.tads.org/)
 -   [rec.games.int-fiction newsgroup](http://groups.google.com/group/rec.games.int-fiction)

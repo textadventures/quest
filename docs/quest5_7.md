@@ -70,7 +70,7 @@ There is now a JS.setCss function that takes an element name and a set of CSS st
 
 There is an option to hide the save button in the web player (it does not stop players saving, for example via the command bar).
 
-You can now set the width and colour of exits for the map grid (see [here](http://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved)).
+You can now set the width and colour of exits for the map grid (see [here](https://textadventures.co.uk/forum/quest/topic/hyy-yxu7tewpc4_s_obr6g/changing-map-hallway-colors-solved)).
 
 
 
@@ -292,7 +292,7 @@ Minor Changes
 DoAskTell now adds a local variable, "text", set to the text value, for the script that runs for an unknown topic so we can now do:
 msg("Mary says, 'I don't know about anything about " + text + ".")
 
-Added a "possessive" attribute to Inanimate object, Male character, etc, with the value "its", "his", etc. This will complement the "gender" and "article" attributes. See [here](http://textadventures.co.uk/forum/samples/topic/3556/possessive-pronoun).
+Added a "possessive" attribute to Inanimate object, Male character, etc, with the value "its", "his", etc. This will complement the "gender" and "article" attributes. See [here](https://textadventures.co.uk/forum/samples/topic/3556/possessive-pronoun).
 
 Added "me" as an alternative alias of the player, so if the author changes the player alias, LOOK AT ME will still work.
 
@@ -302,11 +302,11 @@ Added an object attribute, "dropdestination", to the Room tab of rooms. If this 
 
 Modified the "put" command so that objects that cannot be dropped also cannot be put inside containers.
 
-The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room). See [here](http://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff).
+The drop script for objects will now have access to a local variable "destination", which will be where the dropped item should end up (i.e., a container if the command is "put", the dropdestination if set or just the room). See [here](https://textadventures.co.uk/forum/general/topic/er9yijag3ekdrpvj4uh-ra/dropping-stuff).
 
-Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE. See [here](http://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at).
+Added an extra verb template for lookat "look" so LOOK PLATE will do the same as LOOK AT PLATE. See [here](https://textadventures.co.uk/forum/quest/topic/zwhhqiwlfecip0emay99eg/look-and-look-at).
 
-If an exit has a "message" attribute, this will be displayed before the player is moved (unless the exit runs a script). See [here](http://textadventures.co.uk/forum/quest/topic/pzotaae1x0qc91bvnlua9q/displaying-a-message-after-choosing-an-exit).
+If an exit has a "message" attribute, this will be displayed before the player is moved (unless the exit runs a script). See [here](https://textadventures.co.uk/forum/quest/topic/pzotaae1x0qc91bvnlua9q/displaying-a-message-after-choosing-an-exit).
 
 Look directions are rarely used, so this is now a feature that must be turned on in the game object (this only changes the editor, so no effect on existing games). See [here](
 https://github.com/textadventures/quest/issues/681).
@@ -401,7 +401,7 @@ Quest 5.7.2
 Version 5.7.2 is a minor update, mostly sorting out various minor issue.
 
 DefaultListenTo, DefaultSmell use the gender not the article
-http://textadventures.co.uk/forum/quest/topic/nky_kv1oj0qpwdo0ujmz6w/fixing-pronouns
+https://textadventures.co.uk/forum/quest/topic/nky_kv1oj0qpwdo0ujmz6w/fixing-pronouns
 
 Added "npc_type", and female and male both inherit from this now. If you want to check if something is a character, use this instead of checking both.
 https://github.com/textadventures/quest/issues/912

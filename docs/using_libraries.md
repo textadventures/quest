@@ -24,7 +24,7 @@ You can find libraries:
 
 - [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
 
-- [Libraries and Code Samples forum](http://textadventures.co.uk/forum/samples).
+- [Libraries and Code Samples forum](https://textadventures.co.uk/forum/samples).
 
 
 How to Add a Library to Your Game

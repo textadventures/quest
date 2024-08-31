@@ -32,7 +32,7 @@ Click OK and you'll see the main Editor screen:
 
 ### Web version
 
-To create a new game, [log in to Quest](http://textadventures.co.uk/create/). You'll see the "New game" form.
+To create a new game, [log in to Quest](https://textadventures.co.uk/create/). You'll see the "New game" form.
 
 ![](../images/Webnewgame.png "Webnewgame.png")
 
