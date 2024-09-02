@@ -66,7 +66,7 @@ Set WebPlayer as the Startup project in VS by right-clicking it in Solution Expl
 
 Press F5 to start the web player. It will open a new tab in your browser with the TextAdventures home page, but you can then go here to load up your test game:
  
-[http://localhost:52426/Play.aspx?id=1](http://localhost:52426/Play.aspx?id=1)
+[http://localhost:52426/Play.aspx?id=0](http://localhost:52426/Play.aspx?id=0)
 
 Do Shift-F5 to stop the web player.
 
@@ -88,7 +88,7 @@ Set WebEditor as the Startup project in VS by right-clicking it in Solution Expl
 
 Press F5 to start the web editor. It will open a new tab in your browser with the TextAdventures home page, but you can then go here to edit a new game:
 
-[http://localhost:50212/Edit/Game/1](http://localhost:50212/Edit/Game/1)
+[http://localhost:50212/Edit/Game/0](http://localhost:50212/Edit/Game/0)
 
 
 
