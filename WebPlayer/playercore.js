@@ -359,7 +359,7 @@ function SetBackgroundOpacity(opacity) {
 function setBackground(col) {
     /* If '#rgb', convert to '#rrggbb'*/
     /* https://github.com/textadventures/quest/issues/1052 */
-    if (col.charAt(0) === "#") && col.length == 4) {
+    if (col.charAt(0) === "#" && col.length == 4) {
         var colBak = "" + col + "";
         newCol = col.replace(/#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/, '#$1$1$2$2$3$3');
         col = newCol || col;
