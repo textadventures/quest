@@ -32,6 +32,7 @@
     <![CDATA[
     JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
     RequestSpeak (text)
+    JS.scrollToEnd ()
     ]]>
   </function>
 
