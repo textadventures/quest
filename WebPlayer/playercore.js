@@ -1304,85 +1304,19 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog('open');
 };
 
-// Make it easy to print messages.
-//var msg = addTextAndScroll;
-    
 // Log functions
-var logVar = "";
-function addLogEntry(text){
-  logVar += getTimeAndDateForLog() + ' ' + text+"NEW_LINE";
-};
+var logArr = [];
 
-function showLog(){
-  var logDivString = "";
-  logDivString += "<div ";
-  logDivString += "id='log-dialog' ";
-  logDivString += "style='display:none;;'>";
-  logDivString += "<textarea id='logdata' rows='13'";
-  logDivString += "  cols='49'></textarea></div>";
-  addText(logDivString);
-  if(webPlayer){
-    var logDialog = $("#log-dialog").dialog({
-      autoOpen: false,
-      width: 600,
-      height: 500,
-      title: "Log",
-      buttons: {
-        Ok: function() {
-          $(this).dialog("close");
-        },
-        Print: function(){
-          $(this).dialog("close");
-          showLogDiv();
-          printLogDiv();
-        },
-        Save: function(){
-          $(this).dialog("close");
-          saveLog();
-        },
-      },
-      show: { effect: "fadeIn", duration: 500 },
-      // The modal setting keeps the player from interacting with anything besides the dialog window.
-      //  (The log will not update while open without adding a turn script.  I prefer this.)
-      modal: true,
-    });
-  }else{
-    var logDialog = $("#log-dialog").dialog({
-    autoOpen: false,
-    width: 600,
-    height: 500,
-    title: "Log",
-    buttons: {
-      Ok: function() {
-        $(this).dialog("close");
-      },
-      Print: function(){
-        $(this).dialog("close");
-        showLogDiv();
-        printLogDiv();
-      },
-    },
-    show: { effect: "fadeIn", duration: 500 },
-    // The modal setting keeps the player from interacting with anything besides the dialog window.
-    //  (The log will not update while open without adding a turn script.  I prefer this.)
-    modal: true,
-  });
+function addLogEntry(text){
+  logArr.push(getTimeAndDateForLog() + ': ' + text + "NEW_LINE");
+  if (logDivIsSetUp){
+     $("#log-contents-div").html(logArr.join("").replace(/NEW_LINE/g,"<br/>"));
   }
-  $('textarea#logdata').val(logVar.replace(/NEW_LINE/g,"\n"));
-  logDialog.dialog("open");
 };
 
 var logDivIsSetUp = false;
 
-var logDivToAdd = "";
-logDivToAdd += "<div ";
-logDivToAdd += "id='log-div' ";
-logDivToAdd += "style='display:none;'>";
-logDivToAdd += "<a class='do-not-print-with-log' ";
-logDivToAdd += "href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  ";
-logDivToAdd += "<a class='do-not-print-with-log' href='' ";
-logDivToAdd += "onclick='printLogDiv();'>PRINT</a> ";
-logDivToAdd += "<div id='log-contents-div' '></div></div>";
+var logDivToAdd = "<div id='log-div' style='display:none;border:1px solid black;padding:12px;min-height:42%; max-height:37vh; overflow-y:scroll;'><button class='do-not-print-with-log' href='' onclick='hideLogDiv()'>HIDE THE LOG</button>&nbsp;&nbsp;&nbsp;&nbsp;<button  class='do-not-print-with-log' href='' onclick='printLogDiv();'>PRINT</button > <hr/> <div id='log-contents-div' '></div></div>";
 
 function setupLogDiv(){
   addText(logDivToAdd);
@@ -1390,19 +1324,22 @@ function setupLogDiv(){
   logDivIsSetUp = true;
 };
 
-function showLogDiv(){
-    if(!logDivIsSetUp){
-     setupLogDiv(); 
-    }
-	$(".do-not-print-with-log").show();
-	$("#log-contents-div").html(logVar.replace(/NEW_LINE/g,"<br/>"));
-	$("#log-div").show();
-	$("#gameBorder").hide();
+function showLog(){
+  if(!logDivIsSetUp){
+    setupLogDiv(); 
+  }
+  hideLogDiv()
+  $(".do-not-print-with-log").show();
+  $("#log-contents-div").html(logArr.join("").replace(/NEW_LINE/g,"<br/>"));
+  if (platform !== "mobile"){
+    $('#log-div').show().insertAfter($('#txtCommandDiv'));
+  } else {
+  $('#log-div').show().insertAfter($('#inputBar')) 
+  }
 };
 
 function hideLogDiv(){
-	$("#log-div").hide();
-	$("#gameBorder").show();
+  $("#log-div").hide();
 };
 
 function printLogDiv(){
@@ -1413,48 +1350,21 @@ function printLogDiv(){
   }
   document.title = "log.txt" ;
   $('.do-not-print-with-log').hide();
+  $("#gameBorder").hide();
+  $('#log-div').insertBefore($("#gameBorder"));
   print();
   $('.do-not-print-with-log').show();
+  $('#log-div').appendTo($("#divOutput"));
+  $("#gameBorder").show();
   document.title = docTitleBak;
 };
 
-
-function saveLog(){
-  if(webPlayer){
-    var href = "data:text/plain,"+logVar.replace(/NEW_LINE/g,"\n");
-    addTextAndScroll("<a download='log.txt' href='"+href+"' id='log-save-link'>Click here to save the log if your pop-up blocker stopped the download.</a>");
-    document.getElementById("log-save-link").addEventListener ("click", function (e) {e.stopPropagation();});
-    document.getElementById("log-save-link").click();
-  }else{
-    alert("This function is only available while playing online.");
-  }
- };
-
 function getTimeAndDateForLog(){
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1;
-	var yyyy = today.getFullYear();
-	var hrs = today.getHours();
-	var mins = today.getMinutes();
-	var secs = today.getSeconds();
-	today = mm + '/' + dd + '/' + yyyy;
-	if(hrs>12) {
-	  ampm = 'PM';
-	  hrs = '0' + '' + hrs - 12
-	}else{
-	  ampm = 'AM';
-	} 
-	if (mins<10) {
-	  mins = '0'+mins;
-	} 
-	if(secs<10) {
-	  secs = '0' + secs;
-	}
-	time = hrs + ':' + mins + ':' + secs + ' ' + ampm;
-	return today + ' ' + time;
+  var date = new Date();
+  var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");
+  return currentDateTime;
 };
-    
+
 // **********************************
 // TRANSCRIPT FUNCTIONS
 

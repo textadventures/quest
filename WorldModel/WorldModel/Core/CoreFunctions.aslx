@@ -615,6 +615,11 @@
   <function name="DisableHtmlLog">
     game.nohtmllog = true
   </function>
+  
+  <function name="ClearHtmlLog">
+    JS.eval("$(\"#log-div\").html(\"\").hide(); logArr = [];")
+  </function>
+
 
   <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
     d = NewDictionary()
