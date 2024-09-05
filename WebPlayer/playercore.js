@@ -1304,61 +1304,7 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog('open');
 };
 
-// Log functions
-var logArr = [];
-
-function addLogEntry(text){
-  logArr.push(getTimeAndDateForLog() + ': ' + text + "NEW_LINE");
-  if (logDivIsSetUp){
-     $("#log-contents-div").html(logArr.join("").replace(/NEW_LINE/g,"<br/>"));
-  }
-};
-
-var logDivIsSetUp = false;
-
-var logDivToAdd = "<div id='log-div' style='display:none;border:1px solid black;padding:12px;min-height:42%; max-height:37vh; overflow-y:scroll;'><button class='do-not-print-with-log' href='' onclick='hideLogDiv()'>HIDE THE LOG</button>&nbsp;&nbsp;&nbsp;&nbsp;<button  class='do-not-print-with-log' href='' onclick='printLogDiv();'>PRINT</button > <hr/> <div id='log-contents-div' '></div></div>";
-
-function setupLogDiv(){
-  addText(logDivToAdd);
-  $("#log-div").insertBefore($("#dialog"));
-  logDivIsSetUp = true;
-};
-
-function showLog(){
-  if(!logDivIsSetUp){
-    setupLogDiv(); 
-  }
-  hideLogDiv()
-  $(".do-not-print-with-log").show();
-  $("#log-contents-div").html(logArr.join("").replace(/NEW_LINE/g,"<br/>"));
-  if (platform !== "mobile"){
-    $('#log-div').show().insertAfter($('#txtCommandDiv'));
-  } else {
-  $('#log-div').show().insertAfter($('#inputBar')) 
-  }
-};
-
-function hideLogDiv(){
-  $("#log-div").hide();
-};
-
-function printLogDiv(){
-  if(typeof(document.title) !== "undefined"){
-    var docTitleBak = document.title;
-  }else{
-    var docTitleBak = "title";
-  }
-  document.title = "log.txt" ;
-  $('.do-not-print-with-log').hide();
-  $("#gameBorder").hide();
-  $('#log-div').insertBefore($("#gameBorder"));
-  print();
-  $('.do-not-print-with-log').show();
-  $('#log-div').appendTo($("#divOutput"));
-  $("#gameBorder").show();
-  document.title = docTitleBak;
-};
-
+// Log function
 function getTimeAndDateForLog(){
   var date = new Date();
   var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");

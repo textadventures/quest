@@ -873,18 +873,15 @@
   </function>
 
   <function name="Log" parameters="text"><![CDATA[
-    //Use the log window in the desktop player, if available.
+    // Use the log window in the desktop player. If not using the desktop player, this does nothing.
     request (Log, text)
-    // Replacing double quotes with 2 single quotes
-    text = Replace(text, "\"", "''")
-    if (not GetBoolean(game, "nohtmllog")){
-      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry(\"" + text + "\"); };")
-    }
+    // Write to a file in "Documents\Quest Logs" if game.writelogtofile is true (default is false)
     if (GetBoolean (game, "writelogtofile")){
-      JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){ WriteToLog(\"" + text + "\");}")
+      JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){ WriteToLog(\"" + Replace(text, "\"", "''") + "\");}")
     }
+    // Use the console log if game.useconsolelog is true (default is false)
     if (GetBoolean (game, "useconsolelog")){
-      JS.eval("console.log(getTimeAndDateForLog() + \" : " + text + "\");")
+      JS.eval("console.log(getTimeAndDateForLog() + \"" + Replace(text, "\"", "''") + "\");")
     }
   ]]></function>
 

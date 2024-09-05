@@ -382,7 +382,6 @@
     <template templatetype="command" name="help">^βοήθεια$|^\?$</template>
     <template templatetype="command" name="save">^σώσε$|^αποθήκευσε$</template>
 
-    <template templatetype="command" name="log_cmd">^αρχείο$|^δες αρχείο$|^δείξε αρχείο$</template>
   <!-- Modified by KV -->
   <template templatetype="command" name="transcript_on_cmd">^ιστορικό$|^ιστορικό ενεργό$</template>
   <template templatetype="command" name="transcript_off_cmd">^ιστορικό ανενεργό$</template>
