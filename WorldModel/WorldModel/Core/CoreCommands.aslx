@@ -956,82 +956,76 @@
     ]]></script>
   </command>
 
-  <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
-    <script>
-      if (not GetBoolean(game, "notranscript")){
-        JS.showTranscript ()
-      }
-      else {
-        msg ("This game has no transcript feature.")
-      }
-      game.suppressturnscripts = true
-    </script>
-  </command>
-
   <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
     <script>
       <![CDATA[
-      if (not GetBoolean(game, "notranscript")) {
-        if (not GetBoolean(game,"savetranscript")) {
-          msg ("Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\".)</i></b>")
-          JS.eval ("$('input#txtCommand').val(transcriptName);")
-          get input {
-            filename = Trim(result)
-            if (not filename = "") {
-              JS.eval ("transcriptName = '"+filename+"';")
-            }
-            JS.eval ("savingTranscript = true;")
-            game.savetranscript = true
-            pre = "<hr/>Transcript enabled for:<br/>"
-            s = "<b>TITLE: </b>" + game.gamename + "<br/>"
-            if (HasAttribute (game, "author")) {
-              s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
-            }
-            s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-            s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-            s = s + "<br/>"
-            s = pre + s
-            msg("")
-            msg (s)
-            msg ("<br/><b><i>[  Enter </i>SCRIPT OFF<i> to disable the transcript.  ]</i></b>")
-          }
-        }
-        else {
-          msg ("The transcript is already enabled.")
-        }
+      // NOTE TO AUTHORS:
+      // If you don't want players to be able to enable a transcript to write to a local file when using the desktop player, set game.notranscript to true.
+      if ( GetBoolean(game, "notranscript")) {
+        msg (Template("NoTranscriptFeature"))
       }
       else {
-        msg ("This game has no transcript feature.")
+        if ( GetBoolean(game,"transcriptenabled")) {
+          msg (Template("TranscriptAlreadyEnabled"))
+        }
+        else {
+          if (not HasAttribute (game, "questplatform")) {
+            // Run whereAmI(). Things should work on the next attempt!
+            JS.whereAmI ()
+            msg (Template("TranscriptTryAgain"))
+          }
+          else {
+            if (game.questplatform = "desktop") {
+              msg (Template("TranscriptEnterFilename"))
+              // This puts the current JS value of transcriptName in the text input box.
+              // This is set to game.gamename by default when play begins.
+              JS.eval ("$('input#txtCommand').val(transcriptName);")
+              get input {
+                filename = GetWindowsSafeName(result)
+                game.transcriptname = game.gamename
+                if (not filename = "") {
+                  JS.eval ("transcriptName = '" + filename + "';")
+                  game.transcriptname = filename
+                }
+                msg ("> " + game.transcriptname)
+                EnableTranscript
+                msg ("")
+                msg (DynamicTemplate("TranscriptEnabledMessage"))
+                msg (Template("ToDisableTranscript"))
+              }
+            }
+            else {
+              msg (Template("TranscriptDesktopOnly"))
+            }
+          }
+        }
       }
-      game.suppressturnscripts = true
+      SuppressTurnscripts
     ]]>
     </script>
   </command>
 
   <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
-      if (not GetBoolean(game, "notranscript")) {
-        if (GetBoolean(game,"savetranscript")) {
-          game.savetranscript = false
-          JS.eval ("var savingTranscript = false;")
-          msg ("Transcript disabled.")
-        }
-        else {
-          msg ("The transcript is already disabled.")
-        }
+      if (GetBoolean(game, "notranscript") or not game.questplatform = "desktop") {
+        // Kill it, just in case.
+        KillTranscript
+        msg (Template("NoTranscriptFeature"))
       }
       else {
-        msg ("This game has no transcript feature.")
+        if (GetBoolean(game,"transcriptenabled")) {
+          msg (Template("TranscriptDisabled"))
+        }
+        else {
+          msg (Template("TranscriptAlreadyDisabled"))
+        }
       }
-      game.suppressturnscripts = true
+      // Disable it anyway, just in case.
+      DisableTranscript
+      SuppressTurnscripts
     </script>
   </command>
 
-  <function name="UpdateTranscriptString" parameters="data">
-    game.suppressturnscripts = true
-    game.transcriptstring = game.transcriptstring + data
-  </function>
-  
   <command name="restart" pattern="^restart$">
     <script>
       Ask (Template("WantRestartGame")){
@@ -1054,4 +1048,5 @@
       return (prefix + DynamicTemplate("ObjectNotOpen", obj))
     }
   </function>
+
 </library>

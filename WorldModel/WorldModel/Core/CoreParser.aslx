@@ -61,6 +61,12 @@
             OutputTextRaw ("&gt; " + SafeXML(command))
           }
         }
+        else {
+          // Added by KV to write the command to the transcript if game.echocommands is false.
+          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
+            JS.writeToTranscript("&gt; " + SafeXML(command) + "&gt;br&lt;")
+          }
+        }
         if (game.command_newline) {
           msg ("")
         }

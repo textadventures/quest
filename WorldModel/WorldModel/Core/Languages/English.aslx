@@ -489,7 +489,6 @@
   <!-- Added by KV -->
   <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
   
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
@@ -518,5 +517,13 @@
   <verbtemplate name="enter">get into</verbtemplate>
   <dynamictemplate name="DefaultEnter">WriteVerb(game.pov, "can't") + " enter " + object.article + "."</dynamictemplate>
   
-  
+  <template name="NoTranscriptFeature">This game has no transcript feature.</template>
+  <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
+  <template name="TranscriptTryAgain">Sorry, an error occurred. Please try again.</template>
+  <template name="TranscriptDesktopOnly">This feature is only available in the Quest desktop player.</template>
+  <template name="TranscriptDisabled">Transcript disabled.</template>
+  <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
+  <template name="TranscriptEnterFilename"><![CDATA[Please enter a filename.  (<b>  \"-transcript.html\" will be appended to this filename.)<br/>  <i>(The file will be saved in \"Documents\\Quest Transcripts\\\".)</i></b>]]></template>
+  <template name="ToDisableTranscript"><![CDATA[<br/><b><i>[  Enter </i>{command:SCRIPT OFF}<i> to disable the transcript.  ]</i></b>]]></template>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Transcript enabled for:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + "<br/><br/>"]]></dynamictemplate>
 </library>

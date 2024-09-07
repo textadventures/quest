@@ -232,7 +232,7 @@
   ]]>
   </function>
   
-  <function name="ShowMenuResponse" parameters="option">
+  <function name="ShowMenuResponse" parameters="option"><![CDATA[
     if (game.menucallback = null) {
       error ("Unexpected menu response")
     }
@@ -246,10 +246,16 @@
         game.runturnscripts = true
       }
       game.disambiguating = false
+      // Added by KV to write the result to the transcript if game.echocommands is false.
+      if (not GetBoolean(game, "echocommands")){
+        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
+          JS.writeToTranscript("&gt; " + SafeXML(result) + "&gt;br&lt;")
+        }
+      }
       invoke (script, parameters)
       FinishTurn
     }
-  </function>
+  ]]></function>
   
   <function name="EscapeQuotes" parameters="s" type="string">
     s = Replace(s, "\"", "@@@doublequote@@@")
@@ -607,11 +613,35 @@
   ]]>
   </function>
   
-  <function name="DisableTranscript">
-    game.notranscript = true
-    JS.eval("savingTranscript = false;")
+  <function name="EnableTranscript">
+    game.transcriptenabled = true
+    JS.eval("var transcriptEnabled = true;")
   </function>
-
+  
+  <function name="DisableTranscript">
+    game.transcriptenabled = false
+    JS.eval("var transcriptEnabled = false;")
+  </function>
+  
+  <function name="KillTranscript">
+    game.notranscript = true
+    JS.eval("var noTranscript = true;")
+    DisableTranscript
+  </function>
+  <function name="GetWindowsSafeName" parameters="dirty" type="string"><![CDATA[
+    if (StartsWith(dirty, ".")) {
+      dirty = Mid (dirty, 2, LengthOf (dirty) -1)
+    }
+    clean = Trim(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(dirty, "\"", "''"), "<", "_"), ">", "_"), ":", "_"), "/", "_"), "\\", "_"), "|", "_"), "?", "_"), "*", "_"))
+    changed_something = false
+    if (not clean = dirty) {
+      changed_something = true
+    }
+    if (StartsWith(clean, ".")) {
+      clean = GetWindowsSafeName(clean)
+    }
+    return (clean)
+  ]]></function>
   <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
     d = NewDictionary()
     dictionary add (d, key1, value1)

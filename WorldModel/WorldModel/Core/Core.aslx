@@ -33,13 +33,10 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
+    JS.whereAmI()
+    // Use JSSafe to remove any offensive characters
     jsgamename = JSSafe(game.gamename)
-    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
-    if (GetBoolean(game,"savetranscript")){
-      JS.eval("var savingTranscript = true;")
-      JS.replaceTranscriptString(game.transcriptstring)
-    }
+    JS.eval ("var gameName = '" + jsgamename + "'; var transcriptName = gameName;")
     // End of addition by KV for transcript
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
@@ -286,9 +283,11 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
-    // Added by KV to use the old JS clearScreen if the transcript is disabled
     if (GetBoolean(game, "notranscript")){
-      JS.eval("transcriptEnabled = false;")
+      KillTranscript
+    }
+    if (GetBoolean (game, "saveclearedtext")){
+      JS.eval("var saveClearedText = true;")
     }
     game.runturnscripts = false
     FinishTurn
