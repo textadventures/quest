@@ -43,7 +43,13 @@
                     Dim eventData As String() = cmd.Substring(6).Split(New Char() {";"c}, 2)
                     Dim eventName As String = eventData(0)
                     Dim param As String = eventData(1)
-                    m_game.SendEvent(eventName, param)
+                    ' Make sure not to call WhereAmI or NoEventFunc*
+                    If Not eventName = "WhereAmI" And Not eventName.StartsWith("NoEventFunc") Then
+                        m_game.SendEvent(eventName, param)
+                    Else
+                        ' ignore
+                        'WriteLine("<p>[WALKTHROUGH]: Ignoring event: '" + eventName + "'.</p>")
+                    End If
                 Else
                     m_game.SendCommand(cmd)
                 End If
