@@ -991,7 +991,7 @@
                 EnableTranscript
                 msg ("")
                 msg (DynamicTemplate("TranscriptEnabledMessage"))
-                msg (Template("ToDisableTranscript"))
+                msg (DynamicTemplate("ToDisableTranscript"))
               }
             }
             else {

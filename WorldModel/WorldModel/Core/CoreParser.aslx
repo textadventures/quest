@@ -36,7 +36,7 @@
         game.suppressturnscripts = true
         msg ("")
         msg (SafeXML (command))
-        msg("Noted.")
+        msg(Template("Noted"))
 	// Added for Quest 5.8    - KV
 	FinishTurn
       }

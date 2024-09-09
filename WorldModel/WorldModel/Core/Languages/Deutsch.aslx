@@ -564,5 +564,7 @@
   <template name="DevModeComSelfTestFailed">Die Zuordnung, wie sie nach dem Kommando sein sollte ist inkorrekt.</template>
   <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-
+  
+  <!-- Added by KV -->
+  <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
 </library>

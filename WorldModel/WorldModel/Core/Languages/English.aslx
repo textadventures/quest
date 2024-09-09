@@ -491,6 +491,8 @@
   <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
   
+  
+  
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
   <template name="DevModeErrorWrongFormat">That's the wrong format.</template>
   <template name="DevModeErrorObjectNotRecognised">The object was not found.</template>
@@ -524,6 +526,9 @@
   <template name="TranscriptDisabled">Transcript disabled.</template>
   <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
   <template name="TranscriptEnterFilename"><![CDATA[Please enter a filename.  (<b>  "-transcript.html" will be appended to this filename.)<br/>  <i>(The file will be saved in "Documents\Quest Transcripts\".)</i></b>]]></template>
-  <template name="ToDisableTranscript"><![CDATA[<br/><b><i>[  Enter </i>{command:SCRIPT OFF}<i> to disable the transcript.  ]</i></b>]]></template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<br/><b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Transcript enabled for:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + "<br/><br/>"]]></dynamictemplate>
+  <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
+  
+  <template name="Noted">Noted.</template>
 </library>
