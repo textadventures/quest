@@ -329,6 +329,8 @@
   <template templatetype="command" name="transcript_on_cmd">^scriptet$</template>
   <template templatetype="command" name="transcript_off_cmd">^scriptet off$</template>
   <template templatetype="command" name="version_cmd">^(version|info|om)$</template>
+  
+  <template name="TranscriptOffAllCaps">SCRIPTET OFF</template>
 
   <dynamictemplate name="WearSuccessful">"Du tager " + object.article + " på."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
