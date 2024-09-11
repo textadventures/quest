@@ -592,7 +592,7 @@
 
   <function name="DictionaryRemove" parameters="dict, key">
     if (dict = null or TypeOf(dict)="object") {
-      error ("DictionaryAdd:  Dictionary does not exist!")
+      error ("DictionaryRemove:  Dictionary does not exist!")
     }
     if (DictionaryContains(dict, key)) {
       dictionary remove (dict, key)
