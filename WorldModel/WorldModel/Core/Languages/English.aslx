@@ -494,6 +494,27 @@
   
   
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
+  <template name="EditorGameEnableDevMode">Show DevMode options</template>
+  <template name="EditorGameDevMode">DevMode</template>
+  <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game DevMode must be deactivated!</template>
+  <template name="EditorGameDevModeInfoCommands">Enhanced commands are available in the current game. Enter '#?' to get more information.</template>
+  <template name="EditorGameDevModeOptions">Options</template>
+  <template name="EditorGameDevModeChangePov">Select another player</template>
+  <template name="EditorGameDevModeChangePovPos">Select another starting location for the player</template>
+  <template name="EditorGameDevModePov">Player</template>
+  <template name="EditorGameDevModePlace">Location</template>
+  <template name="EditorGameDevModeSetInitScript">Use an initialization script for DevMode</template>
+  <template name="EditorGameDevModeInitScript">Initialization script for DevMode</template>
+  <template name="EditorGameDevModeShowDebugTable">Show debugtable</template>
+  <template name="EditorGameDevModeSetVerbs">Add DevMode verbs to the verb list of objects</template>
+  <template name="EditorGameDevModeShowInfos">Display DevMode output</template>
+  <template name="EditorGameDevModeOwnFontColour">Use your own font color for DevMode output</template>
+  <template name="EditorGameDevModeFontColour">Font color for DevMode output</template>
+  <template name="EditorGameDevModeOn">Active</template>
+  <template name="EditorGameDevModeOff">Inactive</template>
+  <template name="EditorGameDevModeAttributes">Attributes</template>
+  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello","World","!"]) and Dictionarys ({H:"Hello",W:"World"}.)]]></template>
+  
   <template name="DevModeErrorWrongFormat">That's the wrong format.</template>
   <template name="DevModeErrorObjectNotRecognised">The object was not found.</template>
   <template name="DevModeErrorWrongTyp">That's the wrong type.</template>
@@ -521,14 +542,15 @@
   
   <template name="NoTranscriptFeature">This game has no transcript feature.</template>
   <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
-  <template name="TranscriptTryAgain">Sorry, an error occurred. Please try again.</template>
-  <template name="TranscriptDesktopOnly">This feature is only available in the Quest desktop player.</template>
+  <template name="TranscriptTryAgain">An error occurred while detecting the Quest player's platform. Please try again.</template>
+  <template name="TranscriptDesktopOnly">Sorry, but this feature is only available in the Quest desktop player.</template>
   <template name="TranscriptDisabled">Transcript disabled.</template>
   <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
-  <template name="TranscriptEnterFilename"><![CDATA[Please enter a filename.  (<b>  "-transcript.html" will be appended to this filename.)<br/>  <i>(The file will be saved in "Documents\Quest Transcripts\".)</i></b>]]></template>
-  <dynamictemplate name="ToDisableTranscript"><![CDATA["<br/><b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
-  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Transcript enabled for:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + "<br/><br/>"]]></dynamictemplate>
+  <template name="TranscriptEnterFilename"><![CDATA[Please enter a filename.  (<b>  "-transcript.txt" will be appended to this filename.)<br/>  <i>(The file will be saved in "Documents\Quest Transcripts\".)</i></b>]]></template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Transcript enabled for:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + ""]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
+  <template name="TranscriptExcessiveRetries">transcript_on_cmd: Excessive retry attempts. The transcript feature has been disabled.</template>
   
   <template name="Noted">Noted.</template>
 </library>

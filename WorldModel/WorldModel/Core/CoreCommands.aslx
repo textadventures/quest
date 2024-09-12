@@ -961,6 +961,7 @@
       <![CDATA[
       // NOTE TO AUTHORS:
       // If you don't want players to be able to enable a transcript to write to a local file when using the desktop player, set game.notranscript to true.
+      SuppressTurnscripts
       if ( GetBoolean(game, "notranscript")) {
         msg (Template("NoTranscriptFeature"))
       }
@@ -972,6 +973,17 @@
           if (not HasAttribute (game, "questplatform")) {
             // Run whereAmI(). Things should work on the next attempt!
             JS.whereAmI ()
+            //Set up a counter, just in case.
+            if (not HasAttribute (game, "transcript_retries")){
+              game.transcript_retries = 0
+            }
+            game.transcript_retries = game.transcript_retries + 1
+            if (game.transcript_retries > 3){
+              KillTranscript
+              msg (Template("TranscriptExcessiveRetries"))
+              JS.eval("if (webPlayer) { addTextAndScroll (\"<br/>" + Template("TranscriptDesktopOnly") + "<br/><br/>\");}")
+              return ("")
+            }
             msg (Template("TranscriptTryAgain"))
           }
           else {
@@ -981,6 +993,7 @@
               // This is set to game.gamename by default when play begins.
               JS.eval ("$('input#txtCommand').val(transcriptName);")
               get input {
+                JS.eval ("$('input#txtCommand').val(\"\");")
                 filename = GetWindowsSafeName(result)
                 game.transcriptname = game.gamename
                 if (not filename = "") {
@@ -1000,7 +1013,6 @@
           }
         }
       }
-      SuppressTurnscripts
     ]]>
     </script>
   </command>

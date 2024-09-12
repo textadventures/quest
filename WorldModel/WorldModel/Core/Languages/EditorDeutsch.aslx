@@ -3,26 +3,7 @@
 <library type="editor">
   <template name="EditorDefault">Standard</template>
   <template name="EditorObjectWearableAdjVerbs">Die Inventarverben den Zuständen anpassen</template>
-  <template name="EditorGameEnableDevMode">Entwicklermodus (Hinzufügen von erweiterten Befehlen zum Testen des Spiels)</template>
-  <template name="EditorGameDevMode">Entwicklermodus</template>
-  <template name="EditorGameDevModeInfoRelease">Wichtig: Vor Veröffentlichung des Spiels muss der Entwicklermodus deaktiviert werden!</template>  
-  <template name="EditorGameDevModeInfoCommands">Es stehen im laufenden Spiel erweiterte Kommandos zur Verfügung. Geben Sie '#?' ein um weitere Informationen zu erhalten.</template>
-  <template name="EditorGameDevModeOptions">Optionen</template>
-  <template name="EditorGameDevModeChangePov">Einen anderen Spieler wählen</template>
-  <template name="EditorGameDevModePov">Spieler</template>
-  <template name="EditorGameDevModeChangePovPos">Eine andere Position des Spielers wählen</template>
-  <template name="EditorGameDevModePlace">Ort</template>
-  <template name="EditorGameDevModeSetInitScript">Ein Initialisierungsscript für den Entwicklermodus verwenden</template>
-  <template name="EditorGameDevModeInitScript">Initialisierungsscript für den Entwicklermodus</template>
-  <template name="EditorGameDevModeShowDebugTable">Zeige Debugtabelle</template>
-  <template name="EditorGameDevModeSetVerbs">Verben des Entwicklungsmodus in die Verbliste der Objekte hinzufügen</template>
-  <template name="EditorGameDevModeShowInfos">Ausgaben des Entwicklungsmodus anzeigen</template>  
-  <template name="EditorGameDevModeOwnFontColour">Eigene Schriftfarbe für die Ausgabe des Entwicklermodus verwenden</template>
-  <template name="EditorGameDevModeFontColour">Schriftfarbe für die Ausgaben des Entwicklermodus</template>
-  <template name="EditorGameDevModeOn">Aktiviert</template>
-  <template name="EditorGameDevModeOff">Deaktiviert</template>
-  <template name="EditorGameDevModeAttributes">Attributes</template>
-  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Lists (["Hallo","Welt","!"]) und Dictionarys ({H:"Hallo",W:"Welt"} zu erstellen.)]]></template>
+  <!-- Moved all DevMode templates to Deutsch.aslx to avoid issues with gamebooks. -->
   <template name="EditorScriptsTurnScriptsSuppressurnscript">Turn-Skripte unterdrücken</template>
   <template name="EditorGBScriptWhenEnteringPage">Skript starten bei Seitenaufruf</template>
   <template name="EditorGBClearScreenBetweenEachPage">Bildschirm zwischen jeder Seite leeren</template>

@@ -249,7 +249,10 @@
       // Added by KV to write the result to the transcript if game.echocommands is false.
       if (not GetBoolean(game, "echocommands")){
         if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
-          JS.writeToTranscript("> " + SafeXML(UnescapeQuotes(option)) + "<br/>")
+          JS.writeToTranscript("<span><br/>> " + SafeXML(UnescapeQuotes(option)) + "</span>")
+          if (game.command_newline) {
+            JS.writeToTranscript("<span><br/></span>")
+          }
         }
       }
       invoke (script, parameters)

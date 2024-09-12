@@ -15,16 +15,16 @@ function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
 }
 
-
 // RestartGame added by KV
 function RestartGame() {
     UIEvent("RestartGame", "");
 }
 
-// WriteToTranscript added by KV to write/append to GAMENAME-transcript.html in Documents\Quest Transcripts
+// WriteToTranscript added by KV to write/append to GAMENAME-transcript.txt in Documents\Quest Transcripts
 function WriteToTranscript(data) {
   if (data != '' && typeof (data) == 'string') {
-    UIEvent("WriteToTranscript", data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>");
+    //UIEvent("WriteToTranscript", data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>");
+    UIEvent("WriteToTranscript", data);
   }
 }
 
@@ -34,6 +34,7 @@ function WriteToLog(data) {
         UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
     }
 }
+
 
 function goUrl(href) {
     UIEvent("GoURL", href);
