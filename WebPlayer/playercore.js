@@ -795,40 +795,7 @@ function clearScreen() {
     }
 }
 
-// Scrollback functions added by KV
-/**
-  * The player can view the game's text in a pop-up window.
-  * To change the title of the pop-up window, you can do this after calling showScrollback: $("#scrollback-dialog").dialog({title:"TITLE"});
-  * This will include cleared text if saveClearedText is set to true (saveClearedText is false by default).
-  * Setting noScrollback to true will disable this. (noScrollback is false by default)
-  */
-function showScrollback() {
-  if (noScrollback) return;
-  addText("<div id='scrollback-dialog' style='display:none; color:black !important; background-color:white !important; font-family:sans-serif !important;background:white !important;text-align:left !important;'><div id='scrollbackdata'></div></div>");
-  var scrollbackDialog = $("#scrollback-dialog").dialog({
-    autoOpen: false,
-    width: 600,
-    height: 500,
-    title: "Scrollback",
-    buttons: {
-      Ok: function () {
-        $(this).dialog("close");
-        $(this).remove();
-      },
-      Print: function () {
-        printScrollback();
-      },
-    },
-    show: { effect: "fadeIn", duration: 500 },
-    modal: true,
-  });
-  $('#scrollbackdata').html($('#divOutput').html());
-  $("#scrollbackdata a").addClass("disabled");
-  scrollbackDialog.dialog("open");
-  setTimeout(function () {
-    $("#scrollbackdata a").addClass("disabled");
-  }, 1);
-};
+// Scrollback function added by KV
 
 /**
  * The player can print the game's text or save as PDF.
@@ -1248,70 +1215,6 @@ function isMobilePlayer() {
     return (platform === "mobile");
 };
 
-function showPopup(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
-function showPopupCustomSize(title, text, width, height) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: width,
-        height: height,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
-function showPopupFullscreen(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: $(window).width(),
-        height: $(window).height(),
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
 /**
   * Added by KV for using the JS console for the Quest log when game.useconsolelog is set to true.
   *
@@ -1328,7 +1231,7 @@ function getTimeAndDateForLog(){
 /**
   * Added by KV
   *
-  * This will write/append to an HTML document in Documents\Quest Transcripts
+  * This will write/append to a TXT document in Documents\Quest Transcripts
   *  if using the desktop player and the the player has the transcript enabled
   *  and if noTranscript is not set to true (it is false by default).
   *
@@ -1336,7 +1239,7 @@ function getTimeAndDateForLog(){
 */
 function writeToTranscript(text){
   if (!webPlayer && platform === "desktop" && typeof WriteToTranscript !== "undefined" && !noTranscript && transcriptEnabled) {
-    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + text);
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $(text.replace(/<br\/>/g,"\r\n").replace(/<br>/g,"\r\n").replace(/<br \/>/g,"\r\n")).text() + "\r\n");
   }
 }
 
