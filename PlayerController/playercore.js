@@ -1239,7 +1239,7 @@ function getTimeAndDateForLog(){
 */
 function writeToTranscript(text){
   if (!webPlayer && platform === "desktop" && typeof WriteToTranscript !== "undefined" && !noTranscript && transcriptEnabled) {
-    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $(text.replace(/<br\/>/g,"\r\n").replace(/<br>/g,"\r\n").replace(/<br \/>/g,"\r\n")).text() + "\r\n");
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"\r\n").replace(/<br>/g,"\r\n").replace(/<br \/>/g,"\r\n") + "</div>").text() + "\r\n");
   }
 }
 
