@@ -33,13 +33,11 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
+    // The walkthrough has been modified to ignore this event when recording or running.
+    JS.whereAmI()
+    // Use JSSafe to remove any offensive characters
     jsgamename = JSSafe(game.gamename)
-    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
-    if (GetBoolean(game,"savetranscript")){
-      JS.eval("var savingTranscript = true;")
-      JS.replaceTranscriptString(game.transcriptstring)
-    }
+    JS.eval ("var gameName = '" + jsgamename + "'; var transcriptName = gameName;")
     // End of addition by KV for transcript
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
@@ -232,6 +230,15 @@
   
   <function name="StartGame">
     <![CDATA[
+    // Added by KV here in case someone enables the transcript up front to record everything including the title.
+    transcript_triggered = false
+    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript")){
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      EnableTranscript
+      transcript_triggered = true
+    }
     StartTurnOutputSection
     if (game.showtitle) {
       JS.StartOutputSection ("title")
@@ -286,9 +293,21 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
-    // Added by KV to use the old JS clearScreen if the transcript is disabled
+    if (GetBoolean (game, "saveclearedtext")){
+      JS.eval("var saveClearedText = true;")
+    }
+    else {
+      JS.eval("var saveClearedText = false;")
+    }
+    // Added by KV once more here, in case someone enabled the transcript in the start script or an _initialise_ script.
+    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript") and not transcript_triggered){
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      EnableTranscript
+    }
     if (GetBoolean(game, "notranscript")){
-      JS.eval("transcriptEnabled = false;")
+      KillTranscript
     }
     game.runturnscripts = false
     FinishTurn

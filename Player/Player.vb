@@ -792,7 +792,8 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
-        If RecordWalkthrough IsNot Nothing Then
+        ' Don't save the step if calling WhereAmI or any event starting with NoEventFunc
+        If RecordWalkthrough IsNot Nothing And Not eventName.StartsWith("WhereAmI") And Not eventName.StartsWith("NoEventFunc") Then
             m_recordedWalkthrough.Add("event:" + eventName + ";" + param)
         End If
         m_game.SendEvent(eventName, param)

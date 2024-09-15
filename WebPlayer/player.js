@@ -259,3 +259,28 @@ function saveGameResponse(data) {
         }
     });
 }
+
+/**
+  * Adding this to this file because it exists in desktopplayer.js
+  *
+  * It is doing nothing here if called, except disabling the transcript. It is mainly here just so it is defined.
+  *
+  * @param {string} text This would print to the transcript file if this were the desktop player. It is ignored here.
+*/
+function WriteToTranscript (text) {
+  console.log("[QUEST]: Call to WriteToTranscript ignored. Feature only available in the desktop version of Quest. Disabling the transcript.");
+  var noTranscript = true;
+  var transcriptEnabled = false;
+}
+
+/**
+  * Adding this to this file because it exists in desktopplayer.js
+  *
+  * It is doing nothing here if called, but it is here just so it is defined.
+  *
+  * @param {data} text This would print to the log file if this were the desktop player. It is ignored here.
+*/
+function WriteToLog(data){
+  /* Do nothing at all. */
+  return;
+}

@@ -630,17 +630,17 @@ function addTextAndScroll(text) {
 }
 
 // These 2 variables added by KV for the transcript
-var savingTranscript = false;
-var transcriptString = "";
+var transcriptEnabled = false;
+var noTranscript = false;
 
 // This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    if (savingTranscript) {
-        SaveTranscript(text);
-        ASLEvent("UpdateTranscriptString", text);
+    // Only attempt writeToTranscript() if this is the desktop player.
+    if (!webPlayer && platform == "desktop" && transcriptEnabled && !noTranscript) {
+        writeToTranscript(text);
     }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
@@ -767,7 +767,10 @@ function disableAllCommandLinks() {
 }
 
 // Modified by KV to handle the scrollback feature
-var saveClearedText = true;
+// Changing saveClearedText to false by default, due to performance issues.
+var saveClearedText = false;
+// Authors can change noScrollback to true to disable the scrollback functions.
+var noScrollback = false;
 var clearedOnce = false;
 function clearScreen() {
     if (!saveClearedText) {
@@ -794,50 +797,28 @@ function clearScreen() {
     }
 }
 
-// Scrollback functions added by KV
+// Scrollback function added by KV
 
-function showScrollback() {
-    var scrollbackDivString = "";
-    scrollbackDivString += "<div ";
-    scrollbackDivString += "id='scrollback-dialog' ";
-    scrollbackDivString += "style='display:none;'>";
-    scrollbackDivString += "<div id='scrollbackdata'></div></div>";
-    addText(scrollbackDivString);
-    var scrollbackDialog = $("#scrollback-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Scrollback",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printScrollbackDiv();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#scrollbackdata').html($('#divOutput').html());
-    $("#scrollbackdata a").addClass("disabled");
-    scrollbackDialog.dialog("open");
-    setTimeout(function () {
-        $("#scrollbackdata a").addClass("disabled");
-    }, 1);
-};
-
-
-
-function printScrollbackDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#scrollbackdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#scrollback-dialog").dialog("close");
-    $("#scrollback-dialog").remove();
+/**
+ * The player can print the game's text or save as PDF.
+ * This will include cleared text if saveClearedText is set to true (saveClearedText is false by default).
+ * Setting noScrollback to true will disable this. (noScrollback is false by default)
+ */
+function printScrollback() {
+  if (noScrollback) return;
+  addText("<div id='scrollback-hider' style='display:none; color:black !important; background-color:white !important; font-family:sans-serif !important;background:white !important;text-align:left !important;'><div id='scrollbackdata'></div></div>");
+  $('#scrollbackdata').html($('#divOutput').html());
+  $("#scrollbackdata a").addClass("disabled");
+  setTimeout(function () {
+      $("#scrollbackdata a").addClass("disabled");
+  }, 1);
+  var iframe = document.createElement('iframe');
+  document.body.appendChild(iframe);
+  iframe.contentWindow.document.write($("#scrollbackdata").html());
+  iframe.contentWindow.print();
+  document.body.removeChild(iframe);
+  $("#scrollback-dialog").dialog("close");
+  $("#scrollback-dialog").remove();
 };
 
 function keyPressCode(e) {
@@ -1232,136 +1213,104 @@ $(function () {
 // ***********
 // Section added by KV
 
-
 function isMobilePlayer() {
-    if (typeof (currentTab) === 'string') {
-        return true;
-    }
-    return false;
+    return (platform === "mobile");
 };
 
-function showPopup(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
-function showPopupCustomSize(title, text, width, height) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: width,
-        height: height,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
-function showPopupFullscreen(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: $(window).width(),
-        height: $(window).height(),
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
-
-// Log function
+/**
+  * Added by KV for using the JS console for the Quest log when game.useconsolelog is set to true.
+  *
+  * @return {string} currentDateTime Time and date in format just like the Quest desktop log window
+*/
 function getTimeAndDateForLog(){
   var date = new Date();
   var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");
   return currentDateTime;
 };
 
-// **********************************
-// TRANSCRIPT FUNCTIONS
+// TRANSCRIPT STUFF
 
-// This function is for loading a saved game
-function replaceTranscriptString(data) {
-    transcriptString = data;
+/**
+  * Added by KV
+  *
+  * This will write/append to a TXT document in Documents\Quest Transcripts
+  *  if using the desktop player and the the player has the transcript enabled
+  *  and if noTranscript is not set to true (it is false by default).
+  *
+  * @param {string} text The string to be written to the file
+*/
+function writeToTranscript(text){
+  if (!webPlayer && platform === "desktop" && typeof WriteToTranscript !== "undefined" && !noTranscript && transcriptEnabled) {
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
+  }
 }
 
-function showTranscript() {
-    var transcriptDivString = "";
-    transcriptDivString += "<div ";
-    transcriptDivString += "id='transcript-dialog' ";
-    transcriptDivString += "style='display:none;'>";
-    transcriptDivString += "<div id='transcriptdata'></div></div>";
-    addText(transcriptDivString);
-    var transcriptDialog = $("#transcript-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Transcript",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printTranscriptDiv();
-                $(this).dialog("close");
-                $(this).remove();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#transcriptdata').html(transcriptString);
-    $("#transcriptdata a").addClass("disabled");
-    transcriptDialog.dialog("open");
-    setTimeout(function () {
-        $("#transcriptdata a").addClass("disabled");
-    }, 1);
-};
+/**
+  * This will enable the transcript unless noTranscript is set to true.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function enableTranscript(name){
+  if (noTranscript) return;
+  transcriptName = name || transcriptName;
+  transcriptEnabled = true;
+}
 
-function printTranscriptDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#transcriptdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#transcript-dialog").dialog("close");
-    $("#transcript-dialog").remove();
-};
+/**
+  * This will disable the transcript.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function disableTranscript(){
+  transcriptEnabled = false;
+}
+
+/**
+  * This will completely kill the transcript.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function killTranscript(){
+  noTranscript = true;
+  disableTranscript();
+}
+
+/**
+  * Make it easy to control transcript settings from Quest.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function setTranscriptStatus(status){
+  switch (status){
+    case "enabled":
+    case "enable":
+      initiateTranscript();
+      break;
+    case "disabled":
+    case "disable":
+      disableTranscript();
+      break;
+    case "none":
+    case "killed":
+      killTranscript();
+      break;
+    case "alive":
+      noTranscript = false;
+  }
+}
+
+/**
+  * 
+/**
+  * This function was missing from the webplayer in Quest 5.8.0
+  * Leaving this here as a fallback
+  * 
+  * @param {string} text The line(s) of text being printed
+*/
+function SaveTranscript(text){
+  console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+  writeToTranscript(text);  
+}
 
 // ***********************************
 

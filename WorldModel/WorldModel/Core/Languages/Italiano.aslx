@@ -415,8 +415,9 @@ Feel free to let comments and tips on http://www.textadventures.co.uk/forum/view
 
   <template templatetype="command" name="transcript_on_cmd">^trascrizione$</template>
   <template templatetype="command" name="transcript_off_cmd">^trascrizione off$|^spegni trascrizione$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(vedi|mostra|visualizza|) (la |)trascrizione$</template>
   <template templatetype="command" name="version_cmd">^(versione|info)$</template>
+  
+  <template name="TranscriptOffAllCaps">TRASCRIZIONE OFF</template>
   
   <template name="DefaultHelp"><![CDATA[<u>Aiuto rapido</u><br/><br/>
 <b>- Oggetti:</b>  Prova a scrivere GUARDA (l'oggetto o la persona)..., PARLA CON..., PRENDI..., LASCIA..., APRI..., DAI (qualcosa) A (qualcuno)..., USA... (qualcosa) SU/CON (qualcuno)...<br/>

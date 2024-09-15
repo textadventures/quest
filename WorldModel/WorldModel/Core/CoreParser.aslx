@@ -36,7 +36,7 @@
         game.suppressturnscripts = true
         msg ("")
         msg (SafeXML (command))
-        msg("Noted.")
+        msg(Template("Noted"))
 	// Added for Quest 5.8    - KV
 	FinishTurn
       }
@@ -59,6 +59,12 @@
           if (not shownlink) {
             msg ("")
             OutputTextRaw ("&gt; " + SafeXML(command))
+          }
+        }
+        else {
+          // Added by KV to write the command to the transcript if game.echocommands is false.
+          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
+            JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
           }
         }
         if (game.command_newline) {
