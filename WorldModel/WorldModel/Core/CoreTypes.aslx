@@ -96,6 +96,22 @@
     <useconsolelog type="boolean">false</useconsolelog>
     <notranscript type="boolean">false</notranscript>
     <transcriptenabled type="boolean">false</transcriptenabled>
+    <changedtranscriptenabled type="script">
+      if (game.transcriptenabled = true){
+        JS.enableTranscript()
+      }
+      else if (game.transcriptenabled = false){
+        JS.disableTranscript()
+      }
+    </changedtranscriptenabled>
+    <changednotranscript type="script">
+      if (game.notranscript = true){
+        KillTranscript
+      }
+      else if (game.notranscript = false) {
+        JS.setTranscriptStatus("alive");
+      }
+    </changednotranscript>
     <suppressturnscripts/>
     <!-- Scripts used by the text processor -->
     <textprocessorcommands type="scriptdictionary">

@@ -246,15 +246,6 @@
         game.runturnscripts = true
       }
       game.disambiguating = false
-      // Added by KV to write the result to the transcript if game.echocommands is false.
-      if (not GetBoolean(game, "echocommands")){
-        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
-          JS.writeToTranscript("<span><br/>> " + SafeXML(UnescapeQuotes(option)) + "</span>")
-          if (game.command_newline) {
-            JS.writeToTranscript("<span><br/></span>")
-          }
-        }
-      }
       invoke (script, parameters)
       FinishTurn
     }
@@ -617,20 +608,31 @@
   </function>
   
   <function name="EnableTranscript">
+    if (not HasAttribute (game, "transcriptname")){
+      game.transcriptname = game.gamename
+    }
     game.transcriptenabled = true
-    JS.eval("var transcriptEnabled = true;")
+    JS.enableTranscript(game.transcriptname)
+    msg ("")
+    msg (DynamicTemplate("TranscriptEnabledMessage"))
+    // Don't print the next line in the transcript.
+    JS.disableTranscript()
+    msg (DynamicTemplate("ToDisableTranscript"))
+    JS.enableTranscript(game.transcriptname)
+    msg("")
   </function>
   
   <function name="DisableTranscript">
     game.transcriptenabled = false
-    JS.eval("var transcriptEnabled = false;")
+    JS.disableTranscript()
   </function>
   
   <function name="KillTranscript">
     game.notranscript = true
-    JS.eval("var noTranscript = true;")
+    JS.killTranscript()
     DisableTranscript
   </function>
+  
   <function name="GetWindowsSafeName" parameters="dirty" type="string"><![CDATA[
     if (StartsWith(dirty, ".")) {
       dirty = Mid (dirty, 2, LengthOf (dirty) -1)

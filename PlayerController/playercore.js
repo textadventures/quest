@@ -1239,10 +1239,66 @@ function getTimeAndDateForLog(){
 */
 function writeToTranscript(text){
   if (!webPlayer && platform === "desktop" && typeof WriteToTranscript !== "undefined" && !noTranscript && transcriptEnabled) {
-    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"\r\n").replace(/<br>/g,"\r\n").replace(/<br \/>/g,"\r\n") + "</div>").text() + "\r\n");
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
   }
 }
 
+/**
+  * This will enable the transcript unless noTranscript is set to true.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function enableTranscript(name){
+  if (noTranscript) return;
+  transcriptName = name || transcriptName;
+  transcriptEnabled = true;
+}
+
+/**
+  * This will disable the transcript.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function disableTranscript(){
+  transcriptEnabled = false;
+}
+
+/**
+  * This will completely kill the transcript.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function killTranscript(){
+  noTranscript = true;
+  disableTranscript();
+}
+
+/**
+  * Make it easy to control transcript settings from Quest.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function setTranscriptStatus(status){
+  switch (status){
+    case "enabled":
+    case "enable":
+      initiateTranscript();
+      break;
+    case "disabled":
+    case "disable":
+      disableTranscript();
+      break;
+    case "none":
+    case "killed":
+      killTranscript();
+      break;
+    case "alive":
+      noTranscript = false;
+  }
+}
+
+/**
+  * 
 /**
   * This function was missing from the webplayer in Quest 5.8.0
   * Leaving this here as a fallback
@@ -1253,7 +1309,6 @@ function SaveTranscript(text){
   console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
   writeToTranscript(text);  
 }
-
 
 // GRID FUNCTIONS ***********************************************************************************************************************
 

@@ -33,6 +33,7 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
+    // The walkthrough has been modified to ignore this event when recording or running.
     JS.whereAmI()
     // Use JSSafe to remove any offensive characters
     jsgamename = JSSafe(game.gamename)
@@ -229,6 +230,15 @@
   
   <function name="StartGame">
     <![CDATA[
+    // Added by KV here in case someone enables the transcript up front to record everything including the title.
+    transcript_triggered = false
+    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript")){
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      EnableTranscript
+      transcript_triggered = true
+    }
     StartTurnOutputSection
     if (game.showtitle) {
       JS.StartOutputSection ("title")
@@ -283,11 +293,21 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
-    if (GetBoolean(game, "notranscript")){
-      KillTranscript
-    }
     if (GetBoolean (game, "saveclearedtext")){
       JS.eval("var saveClearedText = true;")
+    }
+    else {
+      JS.eval("var saveClearedText = false;")
+    }
+    // Added by KV once more here, in case someone enabled the transcript in the start script or an _initialise_ script.
+    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript") and not transcript_triggered){
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      EnableTranscript
+    }
+    if (GetBoolean(game, "notranscript")){
+      KillTranscript
     }
     game.runturnscripts = false
     FinishTurn

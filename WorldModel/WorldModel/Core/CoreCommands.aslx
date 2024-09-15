@@ -1002,9 +1002,6 @@
                 }
                 msg ("> " + game.transcriptname)
                 EnableTranscript
-                msg ("")
-                msg (DynamicTemplate("TranscriptEnabledMessage"))
-                msg (DynamicTemplate("ToDisableTranscript"))
               }
             }
             else {

@@ -129,7 +129,7 @@ Public Class PlayerHTML
         Dim mgameName = ""
         Dim scriptname = "DEFAULT_"
         ' In playercore.js: WriteToTranscript (transcriptName + "___SCRIPTDATA___" + text)
-        ' That could be changed to just WriteToTranscript(text) to ignore the transcript name entered by the player.
+        ' If WriteToTranscript(text) is used, this will ignore the transcript name and use the game's file name.
         If data.Contains("___SCRIPTDATA___") Then
             scriptname = Split(data, "___SCRIPTDATA___")(0)
         End If
@@ -151,7 +151,7 @@ Public Class PlayerHTML
         If data.Contains("___SCRIPTDATA___") Then
             data = Split(data, "___SCRIPTDATA___")(1)
         End If
-        My.Computer.FileSystem.WriteAllText(transcriptPath + "\" + mgameName + "-transcript.txt", data, True)
+        My.Computer.FileSystem.WriteAllText(transcriptPath + "\" + mgameName + "-transcript.txt", Replace(data, "@@@NEW_LINE@@@", Environment.NewLine), True)
 
     End Sub
     Private Sub RestartGame(data As String)
