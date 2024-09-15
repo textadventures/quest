@@ -7,7 +7,7 @@ As of Quest 5.8, if using the desktop player, there is a fully functional transc
 
 A transcript is a recording of everything the player types and the game prints, and can be very useful when beta-testing, for example.
 
-Transcripts will be saved to the directory "Documents\Quest Transcripts". This file will be in the HTML format. When double-clicked, the transcript should open in the user's default browser.
+Transcripts will be saved to the directory "Documents\Quest Transcripts". This file will be in the TXT format.
 
 To turn the transcript on, use any of these commands during play.
 
@@ -28,7 +28,5 @@ DISABLE SCRIPT
 DISABLE TRANSCRIPT
 
 
-
-CSS is added to align everything to the left. The background is set to white and the color to black. Be aware that the transcript may have a few strange-looking areas, depending on what all HTML and CSS code you have in a game (we are fixing every issue we come across, but it is hard to foresee what code a Quest game may include!).
 
 Note that during play you can type a \* and then some text, and Quest will ignore it. This is useful for when you want to comment on something, such as a bug you have found. The comment will appear in the transcript (and can be searched for as it starts with a \*), but you will not confuse the game with your weird command.
