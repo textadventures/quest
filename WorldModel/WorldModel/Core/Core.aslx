@@ -221,6 +221,8 @@
     if (HasScript(game, "inituserinterface")) {
       do (game, "inituserinterface")
     }
+    // Adding this for the transcript when loading saved games.
+    JS.eval("transcriptProhibited = " + GetBoolean (game, "transcriptprohibited") + "; transcriptEnabled = " + GetBoolean (game, "transcriptenabled") + ";")
   ]]></function>
 
   <function name="InitUserInterface">
@@ -230,7 +232,7 @@
     <![CDATA[
     // Added by KV here in case someone enables the transcript up front to record everything including the title.
     transcript_triggered = false
-    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript")){
+    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "transcriptprohibited")){
       transcript_triggered = true
       EnableTranscript
     }
@@ -295,9 +297,7 @@
       JS.eval("var saveClearedText = false;")
     }
     // Added by KV once more here, in case someone enabled the transcript in the start script or an _initialise_ script.
-    if (not transcript_triggered and GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "notranscript")){
-      // TODO: Remove this Log entry!!!
-      Log("second catch.")
+    if (not transcript_triggered and GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "transcriptprohibited")){
       EnableTranscript
     }
     game.runturnscripts = false

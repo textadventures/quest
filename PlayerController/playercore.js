@@ -1256,7 +1256,6 @@ function enableTranscript(name){
 /**
   * This will disable the transcript.
   * 
-  * @param {name} text If this is defined, the transcriptName will be set to this.
 */
 function disableTranscript(){
   transcriptEnabled = false;
@@ -1265,7 +1264,6 @@ function disableTranscript(){
 /**
   * This will completely kill the transcript.
   * 
-  * @param {name} text If this is defined, the transcriptName will be set to this.
 */
 function killTranscript(){
   noTranscript = true;
@@ -1275,7 +1273,7 @@ function killTranscript(){
 /**
   * Make it easy to control transcript settings from Quest.
   * 
-  * @param {name} text If this is defined, the transcriptName will be set to this.
+  * @param {name} status The state the transcript will be set to.
 */
 function setTranscriptStatus(status){
   switch (status){

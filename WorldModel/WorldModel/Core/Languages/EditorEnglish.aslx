@@ -21,6 +21,7 @@
   <template name="EditorGameDevModeOff">Inactive</template>
   <template name="EditorGameDevModeAttributes">Attributes</template>
   <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello","World","!"]) and Dictionarys ({H:"Hello",W:"World"}.)]]></template>
+  <template name="EditorGameProhibitTranscript">Do not allow the player to use the transcript feature.</template>
   <template name="EditorGBScriptWhenEnteringPage">Script when entering page</template>
   <template name="EditorGBClearScreenBetweenEachPage">Clear screen between each page</template>
   <template name="EditorGBColour">Colour</template>

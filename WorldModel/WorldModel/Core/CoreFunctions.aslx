@@ -608,7 +608,7 @@
   </function>
   
   <function name="EnableTranscript"><![CDATA[
-    if (GetBoolean (game, "notranscript")){
+    if (GetBoolean (game, "transcriptprohibited")){
       KillTranscript
     }
     else {
@@ -630,7 +630,7 @@
   </function>
   
   <function name="KillTranscript">
-    game.notranscript = true
+    game.transcriptprohibited = true
     JS.killTranscript()
     DisableTranscript
   </function>

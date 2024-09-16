@@ -960,14 +960,18 @@
     <script>
       <![CDATA[
       // NOTE TO AUTHORS:
-      // If you don't want players to be able to enable a transcript to write to a local file when using the desktop player, set game.notranscript to true.
+      // If you don't want players to be able to enable a transcript to write to a local file when using the desktop player, set game.transcriptprohibited to true.
       SuppressTurnscripts
-      if ( GetBoolean(game, "notranscript")) {
+      if ( GetBoolean(game, "transcriptprohibited")) {
         msg (Template("NoTranscriptFeature"))
+        // Make sure it is set the same in JS
+        JS.killTranscript()
       }
       else {
         if ( GetBoolean(game,"transcriptenabled")) {
           msg (Template("TranscriptAlreadyEnabled"))
+          // Make sure it is enabled in JS, too
+          JS.enableTranscript()
         }
         else {
           msg (Template("TranscriptEnterFilename"))
@@ -993,7 +997,7 @@
 
   <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
-      if (GetBoolean(game, "notranscript")) {
+      if (GetBoolean(game, "transcriptprohibited")) {
         // Kill it, just to be sure it's dead.
         KillTranscript
         msg (Template("NoTranscriptFeature"))
