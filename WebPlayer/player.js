@@ -25,6 +25,7 @@ function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
+    $("#showTranscripts").show();
 
     if ($_GET["id"].substr(0, 7) === "editor/") return;
 
