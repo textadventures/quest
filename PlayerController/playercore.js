@@ -631,14 +631,14 @@ function addTextAndScroll(text) {
 
 // These 2 variables added by KV for the transcript
 var transcriptEnabled = false;
-var noTranscript = false;
+var transcriptProhibited = false;
 
 // This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    if (transcriptEnabled && !noTranscript) {
+    if (transcriptEnabled && !transcriptProhibited) {
         writeToTranscript(text);
     }
     getCurrentDiv().append(text);
@@ -1232,23 +1232,23 @@ function getTimeAndDateForLog(){
   *
   * This will write/append to a TXT document in Documents\Quest Transcripts
   *  if using the desktop player and the the player has the transcript enabled
-  *  and if noTranscript is not set to true (it is false by default).
+  *  and if transcriptProhibited is not set to true (it is false by default).
   *
   * @param {string} text The string to be written to the file
 */
 function writeToTranscript(text){
-  if (!noTranscript && transcriptEnabled) {
+  if (!transcriptProhibited && transcriptEnabled) {
     WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
   }
 }
 
 /**
-  * This will enable the transcript unless noTranscript is set to true.
+  * This will enable the transcript unless transcriptProhibited is set to true.
   * 
   * @param {name} text If this is defined, the transcriptName will be set to this.
 */
 function enableTranscript(name){
-  if (noTranscript) return;
+  if (transcriptProhibited) return;
   transcriptName = name || transcriptName;
   transcriptEnabled = true;
 }
@@ -1266,7 +1266,7 @@ function disableTranscript(){
   * 
 */
 function killTranscript(){
-  noTranscript = true;
+  transcriptProhibited = true;
   disableTranscript();
 }
 
@@ -1279,7 +1279,7 @@ function setTranscriptStatus(status){
   switch (status){
     case "enabled":
     case "enable":
-      initiateTranscript();
+      enableTranscript();
       break;
     case "disabled":
     case "disable":
@@ -1290,7 +1290,7 @@ function setTranscriptStatus(status){
       killTranscript();
       break;
     case "alive":
-      noTranscript = false;
+      transcriptProhibited = false;
   }
 }
 
