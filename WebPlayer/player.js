@@ -260,18 +260,77 @@ function saveGameResponse(data) {
     });
 }
 
+
+// Added by KV  
 /**
-  * Adding this to this file because it exists in desktopplayer.js
+  * Writes data to the transcript's item in localStorage.
   *
-  * It is doing nothing here if called, except disabling the transcript. It is mainly here just so it is defined.
-  *
-  * @param {string} text This would print to the transcript file if this were the desktop player. It is ignored here.
+  * @param {string} text This is added to the transcriptData item in localStorage
 */
-function WriteToTranscript (text) {
-  console.log("[QUEST]: Call to WriteToTranscript ignored. Feature only available in the desktop version of Quest. Disabling the transcript.");
-  var noTranscript = true;
-  var transcriptEnabled = false;
+function WriteToTranscript(data){
+  if (noTranscript){
+    // Do nothing.
+    return;
+  }
+  if (!isLocalStorageAvailable()){
+    console.error("There is no localStorage. Disabling transcript functionality.");
+    noTranscript = true;
+    transcriptEnabled = false;
+    return;
+  }
+  var tName = transcriptName || "Transcript";
+  if (data.indexOf("___SCRIPTDATA___") > -1) {
+    tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
+    data = data.split("___SCRIPTDATA___")[1];
+  }
+  var oldData = localStorage.getItem("questtranscript-" + tName) || "";
+  localStorage.setItem("questtranscript-" + tName, oldData + data);
 }
+
+var wnd;
+var tName = "";
+
+function openTranscript(tsn){
+  if (!isLocalStorageAvailable()){
+    return;
+  }
+  var tscriptData = "";
+  tscriptData = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + localStorage.getItem(tsn).replace(/@@@NEW_LINE@@@/g,"<br/>") || "No transcript data found.";
+  wnd = window.open("about:blank", "", "_blank");
+  wnd.document.write(tscriptData);
+  wnd.document.title = tsn.replace(/questtranscript-/,"") + " - Transcript";
+}
+
+var tscriptWindow;
+function showTranscripts(){
+  if (!isLocalStorageAvailable()){
+    return;
+  }
+  var choices = [];
+  for (var e in localStorage) {
+    if (e.startsWith("questtranscript-")){
+      choices.push("<span id=\"" + e + "\" class=\"transcript-choice\"><a name=\"" + e + "\" href=\"#\" onclick=\"openTranscript(this.name);\" class=\"transcript-link\">" + e.replace(/questtranscript-/,"") + "</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\"  name=\"" + e + "\" onclick=\"removeTscript(this.name);\" class=\"transcript-delete\">DELETE</a></span>")
+    }
+  }
+  var choicesScript = "<script>var wnd;var tName = \"\";function openTranscript(tsn){ var tscriptData = \"\";  tscriptData = localStorage.getItem(tsn).replace(/@@@NEW_LINE@@@/g,\"<br/>\") || \"No transcript data found.\";  wnd = window.open(\"about:blank\", \"\", \"_blank\");  wnd.document.write(tscriptData);  wnd.document.title = tsn.replace(/questtranscript-/,\"\") + \" - Transcript\";};function removeTscript(tscript){console.log(tscript);var result = window.confirm(\"Delete this transcript?\");if (result){ localStorage.removeItem(tscript); document.getElementById(tscript).remove(); }};</script>";
+  tscriptWindow = window.open("about:blank", "", "_blank");
+  tscriptWindow.document.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><div id=\"main-holder\"><h3 id=\"your-transcripts\">Your Transcripts</h3><br/><div id=\"choices-holder\">" + choices.join("<br/>") + "</div></div>" + choicesScript);
+  tscriptWindow.document.title = tName + "Your Transcripts";
+}
+
+/* https://stackoverflow.com/a/16427747 */
+function isLocalStorageAvailable(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+
 
 /**
   * Adding this to this file because it exists in desktopplayer.js

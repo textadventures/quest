@@ -638,8 +638,7 @@ function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    // Only attempt writeToTranscript() if this is the desktop player.
-    if (!webPlayer && platform == "desktop" && transcriptEnabled && !noTranscript) {
+    if (transcriptEnabled && !noTranscript) {
         writeToTranscript(text);
     }
     getCurrentDiv().append(text);
@@ -817,8 +816,6 @@ function printScrollback() {
   iframe.contentWindow.document.write($("#scrollbackdata").html());
   iframe.contentWindow.print();
   document.body.removeChild(iframe);
-  $("#scrollback-dialog").dialog("close");
-  $("#scrollback-dialog").remove();
 };
 
 function keyPressCode(e) {
@@ -1240,7 +1237,7 @@ function getTimeAndDateForLog(){
   * @param {string} text The string to be written to the file
 */
 function writeToTranscript(text){
-  if (!webPlayer && platform === "desktop" && typeof WriteToTranscript !== "undefined" && !noTranscript && transcriptEnabled) {
+  if (!noTranscript && transcriptEnabled) {
     WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
   }
 }

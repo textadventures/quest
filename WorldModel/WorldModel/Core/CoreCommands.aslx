@@ -970,43 +970,20 @@
           msg (Template("TranscriptAlreadyEnabled"))
         }
         else {
-          if (not HasAttribute (game, "questplatform")) {
-            // Run whereAmI(). Things should work on the next attempt!
-            JS.whereAmI ()
-            //Set up a counter, just in case.
-            if (not HasAttribute (game, "transcript_retries")){
-              game.transcript_retries = 0
+          msg (Template("TranscriptEnterFilename"))
+          // This puts the current JS value of transcriptName in the text input box.
+          // This is set to game.gamename by default when play begins.
+          JS.eval ("$('input#txtCommand').val(transcriptName);")
+          get input {
+            JS.eval ("$('input#txtCommand').val(\"\");")
+            filename = GetWindowsSafeName(result)
+            game.transcriptname = game.gamename
+            if (not filename = "") {
+              JS.eval ("transcriptName = '" + filename + "';")
+              game.transcriptname = filename
             }
-            game.transcript_retries = game.transcript_retries + 1
-            if (game.transcript_retries > 3){
-              KillTranscript
-              msg (Template("TranscriptExcessiveRetries"))
-              JS.eval("if (webPlayer) { addTextAndScroll (\"<br/>" + Template("TranscriptDesktopOnly") + "<br/><br/>\");}")
-              return ("")
-            }
-            msg (Template("TranscriptTryAgain"))
-          }
-          else {
-            if (game.questplatform = "desktop") {
-              msg (Template("TranscriptEnterFilename"))
-              // This puts the current JS value of transcriptName in the text input box.
-              // This is set to game.gamename by default when play begins.
-              JS.eval ("$('input#txtCommand').val(transcriptName);")
-              get input {
-                JS.eval ("$('input#txtCommand').val(\"\");")
-                filename = GetWindowsSafeName(result)
-                game.transcriptname = game.gamename
-                if (not filename = "") {
-                  JS.eval ("transcriptName = '" + filename + "';")
-                  game.transcriptname = filename
-                }
-                msg ("> " + game.transcriptname)
-                EnableTranscript
-              }
-            }
-            else {
-              msg (Template("TranscriptDesktopOnly"))
-            }
+            msg ("> " + game.transcriptname)
+            EnableTranscript
           }
         }
       }
@@ -1016,8 +993,8 @@
 
   <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
     <script>
-      if (GetBoolean(game, "notranscript") or not game.questplatform = "desktop") {
-        // Kill it, just in case.
+      if (GetBoolean(game, "notranscript")) {
+        // Kill it, just to be sure it's dead.
         KillTranscript
         msg (Template("NoTranscriptFeature"))
       }
@@ -1029,7 +1006,7 @@
           msg (Template("TranscriptAlreadyDisabled"))
         }
       }
-      // Disable it anyway, just in case.
+      // Disable it, no matter what.
       DisableTranscript
       SuppressTurnscripts
     </script>

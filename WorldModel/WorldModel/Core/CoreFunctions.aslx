@@ -607,20 +607,22 @@
   ]]>
   </function>
   
-  <function name="EnableTranscript">
-    if (not HasAttribute (game, "transcriptname")){
-      game.transcriptname = game.gamename
+  <function name="EnableTranscript"><![CDATA[
+    if (GetBoolean (game, "notranscript")){
+      KillTranscript
     }
-    game.transcriptenabled = true
-    JS.enableTranscript(game.transcriptname)
-    msg ("")
-    msg (DynamicTemplate("TranscriptEnabledMessage"))
-    // Don't print the next line in the transcript.
-    JS.disableTranscript()
-    msg (DynamicTemplate("ToDisableTranscript"))
-    JS.enableTranscript(game.transcriptname)
-    msg("")
-  </function>
+    else {
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      game.transcriptenabled = true
+      JS.enableTranscript(game.transcriptname)
+      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage") + "<br/>")
+      // Don't print the next line anymore. Everyone complains about it taking up space.
+      //msg (DynamicTemplate("ToDisableTranscript"))
+      //msg("")
+    }
+  ]]></function>
   
   <function name="DisableTranscript">
     game.transcriptenabled = false

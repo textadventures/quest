@@ -542,15 +542,13 @@
   
   <template name="NoTranscriptFeature">This game has no transcript feature.</template>
   <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
-  <template name="TranscriptTryAgain">An error occurred while detecting the Quest player's platform. Please try again.</template>
-  <template name="TranscriptDesktopOnly">Sorry, but this feature is only available in the Quest desktop player.</template>
   <template name="TranscriptDisabled">End of transcript.</template>
   <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
-  <template name="TranscriptEnterFilename"><![CDATA[Please enter a filename.  (<b>  "-transcript.txt" will be appended to this filename.)<br/>  <i>(The file will be saved in "Documents\Quest Transcripts\".)</i></b>]]></template>
+  <template name="TranscriptEnterFilename"><![CDATA[Please enter a transcript name.]]></template>
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + ""]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
-  <template name="TranscriptExcessiveRetries">transcript_on_cmd: Excessive retry attempts. The transcript feature has been disabled.</template>
+
   
   <template name="Noted">Noted.</template>
 </library>
