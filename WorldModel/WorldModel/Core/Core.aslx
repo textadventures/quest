@@ -33,9 +33,7 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters
-    jsgamename = JSSafe(game.gamename)
-    JS.eval ("var gameName = '" + jsgamename + "'; var transcriptName = gameName;")
+    JS.eval ("var gameName = '" + game.gamename + "'; var transcriptName = transcriptName || gameName;")
     // End of addition by KV for transcript
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
