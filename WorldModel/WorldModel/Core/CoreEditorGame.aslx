@@ -174,12 +174,6 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>
-      
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameProhibitTranscript]</caption>
-        <attribute>transcriptprohibited</attribute>
-      </control>
 
 
     </tab>

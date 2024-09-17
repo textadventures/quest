@@ -25,7 +25,6 @@ function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
-    $("#showTranscripts").show();
 
     if ($_GET["id"].substr(0, 7) === "editor/") return;
 
@@ -279,6 +278,9 @@ function WriteToTranscript(data){
     transcriptEnabled = false;
     return;
   }
+  /*
+   * TODO: Does this name string need to be JS safe???
+  */
   var tName = transcriptName || "Transcript";
   if (data.indexOf("___SCRIPTDATA___") > -1) {
     tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
@@ -286,50 +288,6 @@ function WriteToTranscript(data){
   }
   var oldData = localStorage.getItem("questtranscript-" + tName) || "";
   localStorage.setItem("questtranscript-" + tName, oldData + data);
-}
-
-var wnd;
-var tName = "";
-
-function openTranscript(tsn){
-  if (!isLocalStorageAvailable()){
-    return;
-  }
-  var tscriptData = "";
-  tscriptData = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + localStorage.getItem(tsn).replace(/@@@NEW_LINE@@@/g,"<br/>") || "No transcript data found.";
-  wnd = window.open("about:blank", "", "_blank");
-  wnd.document.write(tscriptData);
-  wnd.document.title = tsn.replace(/questtranscript-/,"") + " - Transcript";
-}
-
-var tscriptWindow;
-function showTranscripts(){
-  if (!isLocalStorageAvailable()){
-    return;
-  }
-  var choices = [];
-  for (var e in localStorage) {
-    if (e.startsWith("questtranscript-")){
-      choices.push("<span id=\"" + e + "\" class=\"transcript-choice\"><a name=\"" + e + "\" href=\"#\" onclick=\"openTranscript(this.name);\" class=\"transcript-link\">" + e.replace(/questtranscript-/,"") + "</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=\"#\"  name=\"" + e + "\" onclick=\"removeTscript(this.name);\" class=\"transcript-delete\">DELETE</a></span>")
-    }
-  }
-  var choicesStyle = "<style>.transcript-choice { border: 1px solid black; padding: 4px;}</style>";
-  var choicesScript = "<script>var wnd;var tName = \"\";function openTranscript(tsn){ var tscriptData = \"\";  tscriptData = localStorage.getItem(tsn).replace(/@@@NEW_LINE@@@/g,\"<br/>\") || \"No transcript data found.\";  wnd = window.open(\"about:blank\", \"\", \"_blank\");  wnd.document.write(tscriptData);  wnd.document.title = tsn.replace(/questtranscript-/,\"\") + \" - Transcript\";};function removeTscript(tscript){console.log(tscript);var result = window.confirm(\"Delete this transcript?\");if (result){ localStorage.removeItem(tscript); document.getElementById(tscript).style.display = \"none\"; }};</script>";
-  tscriptWindow = window.open("about:blank", "", "_blank");
-  tscriptWindow.document.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + choicesStyle + "<div id=\"main-holder\"><h3 id=\"your-transcripts\">Your Transcripts</h3><br/><div id=\"choices-holder\">" + choices.join("<br/>") + "</div></div>" + choicesScript);
-  tscriptWindow.document.title = tName + "Your Transcripts";
-}
-
-/* https://stackoverflow.com/a/16427747 */
-function isLocalStorageAvailable(){
-    var test = 'test';
-    try {
-        localStorage.setItem(test, test);
-        localStorage.removeItem(test);
-        return true;
-    } catch(e) {
-        return false;
-    }
 }
 
 

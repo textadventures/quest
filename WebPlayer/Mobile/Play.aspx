@@ -141,7 +141,6 @@
                     <button type="button" id="cmdRestart">Restart</button>
                     <button type="button" id="cmdUndo">Undo</button>
                     <button type="button" id="cmdWait">Wait</button>
-                    <button type="button" id="showTranscripts" style="padding: 6px !important" onclick="showTranscripts();">Transcripts</button>
                 </div>
             </div>
         </div>
