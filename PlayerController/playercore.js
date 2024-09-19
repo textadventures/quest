@@ -629,20 +629,21 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
-// These 2 variables added by KV for the transcript
+// These variables added by KV for the transcript
 var transcriptEnabled = false;
 var transcriptProhibited = false;
+var transcriptName = "";
 
 // This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    if (transcriptEnabled && !transcriptProhibited) {
-        writeToTranscript(text);
-    }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
+    if (transcriptEnabled && !transcriptProhibited) {
+      writeToTranscript(text);
+    }
 }
 
 function createNewDiv(alignment) {
@@ -1238,6 +1239,30 @@ function getTimeAndDateForLog(){
 */
 function writeToTranscript(text){
   if (!transcriptProhibited && transcriptEnabled) {
+    var faker = document.createElement('div');
+    faker.innerHTML = text;
+    text = faker.innerHTML;
+    for (var key in Object.keys(faker.getElementsByTagName('img'))){
+      var elem = faker.getElementsByTagName('img')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt');
+        text = text.replace(elem.outerHTML, altProp);
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('area'))){
+      var elem = faker.getElementsByTagName('area')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt');
+        text = text.replace(elem.outerHTML, altProp);
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('input'))){
+      var elem = faker.getElementsByTagName('input')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt');
+        text = text.replace(elem.outerHTML, altProp);
+      }
+    }
     WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
   }
 }
@@ -1249,7 +1274,7 @@ function writeToTranscript(text){
 */
 function enableTranscript(name){
   if (transcriptProhibited) return;
-  transcriptName = name || transcriptName;
+  transcriptName = name || transcriptName || gameName;
   transcriptEnabled = true;
 }
 
@@ -1278,18 +1303,18 @@ function killTranscript(){
 function setTranscriptStatus(status){
   switch (status){
     case "enabled":
-    case "enable":
-      enableTranscript();
+      var name = transcriptName || gameName;
+      enableTranscript(name);
       break;
     case "disabled":
-    case "disable":
       disableTranscript();
       break;
+    case "prohibited":
     case "none":
     case "killed":
       killTranscript();
       break;
-    case "alive":
+    case "allowed":
       transcriptProhibited = false;
   }
 }

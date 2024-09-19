@@ -278,15 +278,20 @@ function WriteToTranscript(data){
     transcriptEnabled = false;
     return;
   }
-  /*
-   * TODO: Does this name string need to be JS safe???
-  */
   var tName = transcriptName || "Transcript";
+  var overwrite = false;
+  if (data.indexOf("@@@OVERWRITEFILE@@@") > -1){
+    overwrite = true;
+    data = data.replace("@@@OVERWRITEFILE@@@", "");
+  }
   if (data.indexOf("___SCRIPTDATA___") > -1) {
     tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
     data = data.split("___SCRIPTDATA___")[1];
   }
-  var oldData = localStorage.getItem("questtranscript-" + tName) || "";
+  var oldData = "";
+  if (!overwrite){
+    oldData = localStorage.getItem("questtranscript-" + tName) || "";
+  }
   localStorage.setItem("questtranscript-" + tName, oldData + data);
 }
 

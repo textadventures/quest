@@ -37,8 +37,8 @@
         msg ("")
         msg (SafeXML (command))
         msg(Template("Noted"))
-	// Added for Quest 5.8    - KV
-	FinishTurn
+	      // Added for Quest 5.8    - KV
+	      FinishTurn
       }
       else {    
         shownlink = false
@@ -62,8 +62,8 @@
           }
         }
         else {
-          // Added by KV to write the command to the transcript if game.echocommands is false.
-          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled")){
+          // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
+          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
             JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
           }
         }
@@ -129,7 +129,13 @@
   -->
   <function name="HandleSingleCommand" parameters="command">
     <![CDATA[
-    if (LCase(command) = "[Again1]" or LCase(command) = "[Again2]") {
+    if (StartsWith (command, "*")) {
+      // Bypass turn scripts and turn counts, and print "Noted."
+      game.suppressturnscripts = true
+      msg(Template("Noted"))
+      FinishTurn
+    }
+    else if (LCase(command) = "[Again1]" or LCase(command) = "[Again2]") {
       // First handle AGAIN
       if (not game.pov.currentcommand = null) {
         HandleSingleCommand(game.pov.currentcommand)

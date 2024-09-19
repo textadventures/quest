@@ -115,8 +115,11 @@ Public Class PlayerHTML
         Dim logPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\Quest Logs"
         Dim gameName = Split(CurrentGame.Filename, "\")(Split(CurrentGame.Filename, "\").Length - 1)
         gameName = gameName.Replace(".aslx", "")
-        If Not System.IO.Directory.Exists(logPath) = True Then
+        If Not System.IO.Directory.Exists(logPath) = True Or data.Contains("@@@OVERWRITEFILE@@@") Then
             System.IO.Directory.CreateDirectory(logPath)
+            If data.Contains("@@@OVERWRITEFILE@@@") Then
+                data = Replace(data, "@@@OVERWRITEFILE@@@", "")
+            End If
         End If
         If Not System.IO.File.Exists(logPath + "\" + gameName + "-log.txt") = True Then
             Dim file As System.IO.FileStream
@@ -143,10 +146,13 @@ Public Class PlayerHTML
         If Not System.IO.Directory.Exists(transcriptPath) = True Then
             System.IO.Directory.CreateDirectory(transcriptPath)
         End If
-        If Not System.IO.File.Exists(transcriptPath + "\" + mgameName + "-transcript.txt") = True Then
+        If Not System.IO.File.Exists(transcriptPath + "\" + mgameName + "-transcript.txt") = True Or data.Contains("@@@OVERWRITEFILE@@@") Then
             Dim file As System.IO.FileStream
             file = System.IO.File.Create(transcriptPath + "\" + mgameName + "-transcript.txt")
             file.Close()
+            If data.Contains("@@@OVERWRITEFILE@@@") Then
+                data = Replace(data, "@@@OVERWRITEFILE@@@", "")
+            End If
         End If
         If data.Contains("___SCRIPTDATA___") Then
             data = Split(data, "___SCRIPTDATA___")(1)

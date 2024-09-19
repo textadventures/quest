@@ -222,7 +222,8 @@
       else {
         error ("ShowMenu cannot handle a " + TypeOf(option))
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+      //msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"sendCommand('" + count + "')\">" + optionText + "</a>")
     }
     EndOutputSection (outputsection)
     game.menuoptions = options

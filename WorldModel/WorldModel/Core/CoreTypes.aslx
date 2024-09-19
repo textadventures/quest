@@ -91,7 +91,7 @@
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
-    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg</publishfileextensions>
     <writelogtofile type="boolean">false</writelogtofile>
     <useconsolelog type="boolean">false</useconsolelog>
     <transcriptprohibited type="boolean">false</transcriptprohibited>
@@ -112,7 +112,7 @@
         KillTranscript
       }
       else {
-        JS.setTranscriptStatus("alive");
+        JS.setTranscriptStatus("allowed");
       }
     </changedtranscriptprohibited>
     <suppressturnscripts/>

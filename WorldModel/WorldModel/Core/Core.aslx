@@ -220,7 +220,7 @@
       do (game, "inituserinterface")
     }
     // Adding this for the transcript when loading saved games.
-    JS.eval("transcriptProhibited = " + GetBoolean (game, "transcriptprohibited") + "; transcriptEnabled = " + GetBoolean (game, "transcriptenabled") + ";")
+    JS.eval("transcriptProhibited = " + LCase(ToString(GetBoolean (game, "transcriptprohibited"))) + "; transcriptEnabled = " + LCase(ToString(GetBoolean (game, "transcriptenabled"))) + ";")
   ]]></function>
 
   <function name="InitUserInterface">
