@@ -19,8 +19,6 @@
     End Sub
 
     Public Sub Run()
-        ' Set game.questplatform to desktop, just in case someone enables the transcript in a walkthrough step
-        m_game.SendEvent ("WhereAmI", "desktop")
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_cancelled Then Exit For
 

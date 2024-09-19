@@ -1245,22 +1245,22 @@ function writeToTranscript(text){
     for (var key in Object.keys(faker.getElementsByTagName('img'))){
       var elem = faker.getElementsByTagName('img')[key];
       if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt');
-        text = text.replace(elem.outerHTML, altProp);
+        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
       }
     }
     for (var key in Object.keys(faker.getElementsByTagName('area'))){
       var elem = faker.getElementsByTagName('area')[key];
       if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt');
-        text = text.replace(elem.outerHTML, altProp);
+        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
       }
     }
     for (var key in Object.keys(faker.getElementsByTagName('input'))){
       var elem = faker.getElementsByTagName('input')[key];
       if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt');
-        text = text.replace(elem.outerHTML, altProp);
+        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
       }
     }
     WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
