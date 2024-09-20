@@ -295,7 +295,28 @@ function WriteToTranscript(data){
   localStorage.setItem("questtranscript-" + tName, oldData + data);
 }
 
+// Make sure localStorage is available, hopefully without throwing any errors!
 
+/* https://stackoverflow.com/a/16427747 */
+function isLocalStorageAvailable(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+
+// NOTE:
+// There is a Quest game on the site to handle viewing of transcipts for all online users:
+// https://play.textadventures.co.uk/Play.aspx?id=4wqdac8qd0sf7-ilff8mia
+
+
+
+// END OF TRANSCRIPT FUNCTIONS
 
 /**
   * Adding this to this file because it exists in desktopplayer.js
