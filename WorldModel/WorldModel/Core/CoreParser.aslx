@@ -63,7 +63,7 @@
         }
         else {
           // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
-          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
+          if (not GetBoolean(game, "transcriptprohibited") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
             JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
           }
         }

@@ -115,6 +115,14 @@
         JS.setTranscriptStatus("allowed");
       }
     </changedtranscriptprohibited>
+    <!-- Fallback for old code: -->
+    <notranscript type="string">deprecated</notranscript>
+    <changednotranscript type="script">
+      // Fallback for this old attribute, just in case.
+      if (HasBoolean (game, "notranscript")){
+        game.transcriptprohibited = game.notranscript
+      }
+    </changednotranscript>
     <suppressturnscripts/>
     <!-- Scripts used by the text processor -->
     <textprocessorcommands type="scriptdictionary">

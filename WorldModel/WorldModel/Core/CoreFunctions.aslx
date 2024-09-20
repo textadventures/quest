@@ -292,7 +292,7 @@
       if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
         handled = true
         // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
-        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
+        if (not GetBoolean(game, "transcriptprohibited") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
           JS.writeToTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
         }
         ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
@@ -612,6 +612,16 @@
   ]]>
   </function>
   
+  <!--
+      <summary>Enables the transcript</summary>
+      <remarks>
+        If game.transcriptprohibited is changed to true, the user will NOT be allowed to use the transcript feature.
+        (This is set to false by default.)
+
+        Otherwise, this function will enable the transcript, and each bit of text output by JS.addText()
+        will be written to a file when using the desktop player or to localStorage when using the web player.
+      </remarks>
+   -->
   <function name="EnableTranscript"><![CDATA[
     if (GetBoolean (game, "transcriptprohibited")){
       KillTranscript
@@ -629,17 +639,38 @@
     }
   ]]></function>
   
+  <!--
+      <summary>Disables the transcript</summary>
+      <remarks>
+         "Disable" has been the common terminology since the 1970s.
+       
+         This is really more like putting the transcript on standby until the player enables it again.
+      </remarks>
+   -->
   <function name="DisableTranscript">
     game.transcriptenabled = false
     JS.disableTranscript()
   </function>
   
+  <!--
+      <summary>Completely stop the use of the transcript feature.</summary>
+   -->
   <function name="KillTranscript">
     game.transcriptprohibited = true
     JS.killTranscript()
     DisableTranscript
   </function>
   
+  <!--
+      <summary>DEPRECATED. Left in this state as a fallback to avoid errors.</summary>
+   -->
+  <function name="UpdateTranscriptString" parameters="data">
+    // Do nothing.
+  </function>  
+  
+  <!--
+      <summary>Get a Windows-safe name for the transcript file</summary>
+   -->
   <function name="GetWindowsSafeName" parameters="dirty" type="string"><![CDATA[
     if (StartsWith(dirty, ".")) {
       dirty = Mid (dirty, 2, LengthOf (dirty) -1)
@@ -654,6 +685,7 @@
     }
     return (clean)
   ]]></function>
+  
   <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
     d = NewDictionary()
     dictionary add (d, key1, value1)
