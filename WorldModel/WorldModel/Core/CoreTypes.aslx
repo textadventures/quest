@@ -95,6 +95,7 @@
     <writelogtofile type="boolean">false</writelogtofile>
     <useconsolelog type="boolean">false</useconsolelog>
     <transcriptprohibited type="boolean">false</transcriptprohibited>
+    <transcript_forcecommands type="boolean">false</transcript_forcecommands>
     <transcriptenabled type="boolean">false</transcriptenabled>
     <changedtranscriptenabled type="script">
       if (game.transcriptprohibited){
