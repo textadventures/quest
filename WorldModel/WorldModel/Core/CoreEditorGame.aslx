@@ -590,6 +590,33 @@
         <attribute>classiclocation</attribute>
         <onlydisplayif>game.showlocation</onlydisplayif>
       </control>
+      
+      <!-- Pertex: this is new -->
+     <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameLocationBarBg]</caption>
+        <attribute>locationbarimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+        <preview/>
+        <onlydisplayif>game.showlocation and not game.classiclocation and not game.locationbarimageisurl</onlydisplayif>
+      </control>
+      
+       <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameLocationBarUseUrlInstead]</caption>
+        <attribute>locationbarimageisurl</attribute>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+        <breakbefore type="boolean">false</breakbefore>
+      </control>
+      
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameURLforLocationBarImage]</caption>
+        <attribute>locationbarimage</attribute>
+        <onlydisplayif>game.showlocation and not game.classiclocation and game.locationbarimageisurl</onlydisplayif>
+      </control>
+     
 
       <control>
         <controltype>dropdown</controltype>
