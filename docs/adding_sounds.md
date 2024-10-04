@@ -240,7 +240,7 @@ msg (s)
 For things to work in a mobile browser, we MUST include the `controls` option! The `autoplay` option will do nothing in a mobile browser, by the way.  The player must actually press 'play' on a mobile device.
 
 
-There is a way to check for the mobile player using Javascript. Add this to the start script:
+There is a way to check for the mobile player using Javascript. Add this to the `game.inituserinterface` script:
 
 ```
 js = "function isMobilePlayer(){"
