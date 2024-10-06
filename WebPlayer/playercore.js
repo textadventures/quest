@@ -630,8 +630,8 @@ function addTextAndScroll(text) {
 }
 
 // These variables added by KV for the transcript
-var transcriptEnabled = false;
-var transcriptProhibited = false;
+var savingTranscript = false;
+var noTranscript = false;
 var transcriptName = "";
 
 // This function altered by KV for the transcript
@@ -641,7 +641,7 @@ function addText(text) {
     }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
-    if (transcriptEnabled && !transcriptProhibited) {
+    if (savingTranscript && !noTranscript) {
       writeToTranscript(text);
     }
 }
@@ -1233,12 +1233,12 @@ function getTimeAndDateForLog(){
   *
   * This will write/append to a TXT document in Documents\Quest Transcripts
   *  if using the desktop player and the the player has the transcript enabled
-  *  and if transcriptProhibited is not set to true (it is false by default).
+  *  and if noTranscript is not set to true (it is false by default).
   *
   * @param {string} text The string to be written to the file
 */
 function writeToTranscript(text){
-  if (!transcriptProhibited && transcriptEnabled) {
+  if (!noTranscript && savingTranscript) {
     var faker = document.createElement('div');
     faker.innerHTML = text;
     text = faker.innerHTML;
@@ -1268,14 +1268,14 @@ function writeToTranscript(text){
 }
 
 /**
-  * This will enable the transcript unless transcriptProhibited is set to true.
+  * This will enable the transcript unless noTranscript is set to true.
   * 
   * @param {name} text If this is defined, the transcriptName will be set to this.
 */
 function enableTranscript(name){
-  if (transcriptProhibited) return;
+  if (noTranscript) return;
   transcriptName = name || transcriptName || gameName;
-  transcriptEnabled = true;
+  savingTranscript = true;
 }
 
 /**
@@ -1283,7 +1283,7 @@ function enableTranscript(name){
   * 
 */
 function disableTranscript(){
-  transcriptEnabled = false;
+  savingTranscript = false;
 }
 
 /**
@@ -1291,7 +1291,7 @@ function disableTranscript(){
   * 
 */
 function killTranscript(){
-  transcriptProhibited = true;
+  noTranscript = true;
   disableTranscript();
 }
 
@@ -1315,12 +1315,11 @@ function setTranscriptStatus(status){
       killTranscript();
       break;
     case "allowed":
-      transcriptProhibited = false;
+      noTranscript = false;
   }
 }
 
-/**
-  * 
+var showedSaveTranscriptWarning = false;
 /**
   * This function was missing from the webplayer in Quest 5.8.0
   * Leaving this here as a fallback
@@ -1328,7 +1327,10 @@ function setTranscriptStatus(status){
   * @param {string} text The line(s) of text being printed
 */
 function SaveTranscript(text){
-  console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+  if(!showedSaveTranscriptWarning){
+    console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+    showedSaveTranscriptWarning = true;
+  }
   writeToTranscript(text);  
 }
 

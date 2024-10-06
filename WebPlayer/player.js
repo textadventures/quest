@@ -268,14 +268,14 @@ function saveGameResponse(data) {
   * @param {string} text This is added to the transcriptData item in localStorage
 */
 function WriteToTranscript(data){
-  if (transcriptProhibited){
+  if (noTranscript){
     // Do nothing.
     return;
   }
   if (!isLocalStorageAvailable()){
     console.error("There is no localStorage. Disabling transcript functionality.");
-    transcriptProhibited = true;
-    transcriptEnabled = false;
+    noTranscript = true;
+    savingTranscript = false;
     return;
   }
   var tName = transcriptName || "Transcript";

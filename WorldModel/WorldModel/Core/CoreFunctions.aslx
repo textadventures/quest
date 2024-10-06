@@ -292,7 +292,7 @@
       if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
         handled = true
         // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
-        if (not GetBoolean(game, "transcriptprohibited") and GetBoolean(game, "transcriptenabled") and GetBoolean (game, "transcript_forcecommands")){
+        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript") and GetBoolean (game, "transcript_forcecommands")){
           JS.writeToTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
         }
         ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
@@ -615,7 +615,7 @@
   <!--
       <summary>Enables the transcript</summary>
       <remarks>
-        If game.transcriptprohibited is changed to true, the user will NOT be allowed to use the transcript feature.
+        If game.notranscript is changed to true, the user will NOT be allowed to use the transcript feature.
         (This is set to false by default.)
 
         Otherwise, this function will enable the transcript, and each bit of text output by JS.addText()
@@ -623,14 +623,14 @@
       </remarks>
    -->
   <function name="EnableTranscript"><![CDATA[
-    if (GetBoolean (game, "transcriptprohibited")){
+    if (GetBoolean (game, "notranscript")){
       KillTranscript
     }
     else {
       if (not HasAttribute (game, "transcriptname")){
         game.transcriptname = game.gamename
       }
-      game.transcriptenabled = true
+      game.savingtranscript = true
       JS.enableTranscript(game.transcriptname)
       msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage") + "<br/>")
       // Don't print the next line anymore. Everyone complains about it taking up space.
@@ -648,7 +648,7 @@
       </remarks>
    -->
   <function name="DisableTranscript">
-    game.transcriptenabled = false
+    game.savingtranscript = false
     JS.disableTranscript()
   </function>
   
@@ -656,7 +656,7 @@
       <summary>Completely stop the use of the transcript feature.</summary>
    -->
   <function name="KillTranscript">
-    game.transcriptprohibited = true
+    game.notranscript = true
     JS.killTranscript()
     DisableTranscript
   </function>

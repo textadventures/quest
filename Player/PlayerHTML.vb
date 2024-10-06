@@ -105,6 +105,8 @@ Public Class PlayerHTML
             ' Added by KV
             Case "RestartGame"
                 RestartGame(args)
+            Case "SaveTranscript"
+                WriteToTranscript(args)
             Case "WriteToTranscript"
                 WriteToTranscript(args)
             Case "WriteToLog"

@@ -220,7 +220,7 @@
       do (game, "inituserinterface")
     }
     // Adding this for the transcript when loading saved games.
-    JS.eval("transcriptProhibited = " + LCase(ToString(GetBoolean (game, "transcriptprohibited"))) + "; transcriptEnabled = " + LCase(ToString(GetBoolean (game, "transcriptenabled"))) + ";")
+    JS.eval("noTranscript = " + LCase(ToString(GetBoolean (game, "notranscript"))) + "; savingTranscript = " + LCase(ToString(GetBoolean (game, "savingtranscript"))) + ";")
   ]]></function>
 
   <function name="InitUserInterface">
@@ -230,7 +230,7 @@
     <![CDATA[
     // Added by KV here in case someone enables the transcript up front to record everything including the title.
     transcript_triggered = false
-    if (GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "transcriptprohibited")){
+    if (GetBoolean (game, "savingtranscript") and not GetBoolean (game, "notranscript")){
       transcript_triggered = true
       EnableTranscript
     }
@@ -295,7 +295,7 @@
       JS.eval("var saveClearedText = false;")
     }
     // Added by KV once more here, in case someone enabled the transcript in the start script or an _initialise_ script.
-    if (not transcript_triggered and GetBoolean (game, "transcriptenabled") and not GetBoolean (game, "transcriptprohibited")){
+    if (not transcript_triggered and GetBoolean (game, "savingtranscript") and not GetBoolean (game, "notranscript")){
       EnableTranscript
     }
     game.runturnscripts = false

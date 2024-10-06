@@ -94,34 +94,26 @@
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg</publishfileextensions>
     <writelogtofile type="boolean">false</writelogtofile>
     <useconsolelog type="boolean">false</useconsolelog>
-    <transcriptprohibited type="boolean">false</transcriptprohibited>
+    <notranscript type="boolean">false</notranscript>
     <transcript_forcecommands type="boolean">false</transcript_forcecommands>
-    <transcriptenabled type="boolean">false</transcriptenabled>
-    <changedtranscriptenabled type="script">
-      if (game.transcriptprohibited){
+    <savingtranscript type="boolean">false</savingtranscript>
+    <changedsavingtranscript type="script">
+      if (game.notranscript){
         KillTranscript
       }
-      else if (game.transcriptenabled){
+      else if (game.savingtranscript){
         JS.enableTranscript()
       }
       else{
         JS.disableTranscript()
       }
-    </changedtranscriptenabled>
-    <changedtranscriptprohibited type="script">
-      if (game.transcriptprohibited){
+    </changedsavingtranscript>
+    <changednotranscript type="script">
+      if (game.notranscript){
         KillTranscript
       }
       else {
         JS.setTranscriptStatus("allowed");
-      }
-    </changedtranscriptprohibited>
-    <!-- Fallback for old code: -->
-    <notranscript type="string">deprecated</notranscript>
-    <changednotranscript type="script">
-      // Fallback for this old attribute, just in case.
-      if (HasBoolean (game, "notranscript")){
-        game.transcriptprohibited = game.notranscript
       }
     </changednotranscript>
     <suppressturnscripts/>
