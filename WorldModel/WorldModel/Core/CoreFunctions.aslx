@@ -586,7 +586,7 @@
 
   <function name="DictionaryRemove" parameters="dict, key">
     if (dict = null or TypeOf(dict)="object") {
-      error ("DictionaryAdd:  Dictionary does not exist!")
+      error ("DictionaryRemove:  Dictionary does not exist!")
     }
     if (DictionaryContains(dict, key)) {
       dictionary remove (dict, key)
@@ -610,10 +610,6 @@
   <function name="DisableTranscript">
     game.notranscript = true
     JS.eval("savingTranscript = false;")
-  </function>
-  
-  <function name="DisableHtmlLog">
-    game.nohtmllog = true
   </function>
 
   <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
