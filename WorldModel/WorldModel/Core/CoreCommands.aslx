@@ -878,6 +878,7 @@
   <verb template="climb" property="climb" response="DefaultClimb"/>
   <verb template="drink" property="drink" response="DefaultDrink"/>
   <verb template="eat" property="eat" response="DefaultEat"/>
+  <verb name="enter" template="enter" property="enter_verb" displayverb="[enter]" response="DefaultEnter"/>
   <verb template="hit" property="hit" response="DefaultHit"/>
   <verb template="kill" property="kill" response="DefaultKill"/>
   <verb template="kiss" property="kiss" response="DefaultKiss"/>
@@ -953,18 +954,6 @@
       msg (s)
       game.suppressturnscripts = true
     ]]></script>
-  </command>
-
-  <command name="log_cmd" pattern="[log_cmd]">
-    <script>
-      if (not GetBoolean(game, "nohtmllog")){
-        JS.showLog ()
-      }
-      else {
-        msg ("This game has no in-game log.")
-      }
-      game.suppressturnscripts = true
-    </script>
   </command>
 
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
