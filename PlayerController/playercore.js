@@ -1304,7 +1304,30 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog('open');
 };
 
-// Log function
+// Log functions
+
+// Fallback for Quest 5.8.0
+function addLogEntry(text){
+  // Just pass it along to the console log.
+  console.log(getTimeAndDateForLog() + ' ' + text);
+}
+
+// Fallback for Quest 5.8.0 -- there was a way to view the log in-game (because the Log window no longer functioned at that time)
+function showLog(){
+  var sArr = ["The <code>showLog</code> function has been deprecated."];
+  if(!webPlayer){
+    sArr.push(" Use Quest's built-in Log window instead.");
+  }
+  else if (!isMobilePlayer()){
+    sArr.push(" Try looking in your HTML dev tools console. There may be log entries there, depending on the game.");
+  }
+  addTextAndScroll(sArr.join("") + "<br/>");
+}
+
+// Fallback for Quest 5.8.0 (just in case)
+// Nothing will ever be done with this.
+var logVar = "";
+
 function getTimeAndDateForLog(){
   var date = new Date();
   var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");
