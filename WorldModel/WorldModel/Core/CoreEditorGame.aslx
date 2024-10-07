@@ -173,7 +173,7 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
-      </control>	  
+      </control>
 
 
     </tab>

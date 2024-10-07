@@ -487,13 +487,34 @@
   
   
   <!-- Added by KV -->
-  <template templatetype="command" name="log_cmd">^log$|^view log$|^display log$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
   
+  
+  
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
+  <template name="EditorGameEnableDevMode">Show DevMode options</template>
+  <template name="EditorGameDevMode">DevMode</template>
+  <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game DevMode must be deactivated!</template>
+  <template name="EditorGameDevModeInfoCommands">Enhanced commands are available in the current game. Enter '#?' to get more information.</template>
+  <template name="EditorGameDevModeOptions">Options</template>
+  <template name="EditorGameDevModeChangePov">Select another player</template>
+  <template name="EditorGameDevModeChangePovPos">Select another starting location for the player</template>
+  <template name="EditorGameDevModePov">Player</template>
+  <template name="EditorGameDevModePlace">Location</template>
+  <template name="EditorGameDevModeSetInitScript">Use an initialization script for DevMode</template>
+  <template name="EditorGameDevModeInitScript">Initialization script for DevMode</template>
+  <template name="EditorGameDevModeShowDebugTable">Show debugtable</template>
+  <template name="EditorGameDevModeSetVerbs">Add DevMode verbs to the verb list of objects</template>
+  <template name="EditorGameDevModeShowInfos">Display DevMode output</template>
+  <template name="EditorGameDevModeOwnFontColour">Use your own font color for DevMode output</template>
+  <template name="EditorGameDevModeFontColour">Font color for DevMode output</template>
+  <template name="EditorGameDevModeOn">Active</template>
+  <template name="EditorGameDevModeOff">Inactive</template>
+  <template name="EditorGameDevModeAttributes">Attributes</template>
+  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello","World","!"]) and Dictionarys ({H:"Hello",W:"World"}.)]]></template>
+  
   <template name="DevModeErrorWrongFormat">That's the wrong format.</template>
   <template name="DevModeErrorObjectNotRecognised">The object was not found.</template>
   <template name="DevModeErrorWrongTyp">That's the wrong type.</template>
@@ -512,13 +533,22 @@
   <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
 
-  <!-- Need a special verb in English because of the name collision with the "enter" script rooms use -->
-  <verb name="enter_verb">
-    <pattern>enter #object#</pattern>
-    <property>enterverb</property>
-    <defaultexpression>"You can't enter "+object.article+"."</defaultexpression>
-    <scope>notheld</scope>
-  </verb>
+  <verbtemplate name="enter">enter</verbtemplate>
+  <verbtemplate name="enter">go in</verbtemplate>
+  <verbtemplate name="enter">go into</verbtemplate>
+  <verbtemplate name="enter">get in</verbtemplate>
+  <verbtemplate name="enter">get into</verbtemplate>
+  <dynamictemplate name="DefaultEnter">WriteVerb(game.pov, "can't") + " enter " + object.article + "."</dynamictemplate>
   
+  <template name="NoTranscriptFeature">This game has no transcript feature.</template>
+  <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
+  <template name="TranscriptDisabled">End of transcript.</template>
+  <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
+  <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + ""]]></dynamictemplate>
+  <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
+
   
+  <template name="Noted">Noted.</template>
 </library>
