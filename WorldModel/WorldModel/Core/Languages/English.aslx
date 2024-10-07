@@ -487,7 +487,6 @@
   
   
   <!-- Added by KV -->
-  <template templatetype="command" name="log_cmd">^log$|^view log$|^display log$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
   <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
@@ -512,13 +511,12 @@
   <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
 
-  <!-- Need a special verb in English because of the name collision with the "enter" script rooms use -->
-  <verb name="enter_verb">
-    <pattern>enter #object#</pattern>
-    <property>enterverb</property>
-    <defaultexpression>"You can't enter "+object.article+"."</defaultexpression>
-    <scope>notheld</scope>
-  </verb>
+  <verbtemplate name="enter">enter</verbtemplate>
+  <verbtemplate name="enter">go in</verbtemplate>
+  <verbtemplate name="enter">go into</verbtemplate>
+  <verbtemplate name="enter">get in</verbtemplate>
+  <verbtemplate name="enter">get into</verbtemplate>
+  <dynamictemplate name="DefaultEnter">WriteVerb(game.pov, "can't") + " enter " + object.article + "."</dynamictemplate>
   
   
 </library>
