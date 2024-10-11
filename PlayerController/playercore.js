@@ -1933,6 +1933,12 @@ function Grid_DrawShape(id, border, fill, opacity) {
 })(jQuery);
 
 function whereAmI() {
+  var canSendCommandBak = canSendCommand;
   ASLEvent("WhereAmI", platform);
+  canSendCommand = canSendCommandBak;
 }
-var platform = "desktop";
+
+// This file is not exclusive to the desktop player.
+// Changing this to "unset", as that seems to make more sense for testing purposes. - KV
+//var platform = "desktop";
+var platform = "unset";
