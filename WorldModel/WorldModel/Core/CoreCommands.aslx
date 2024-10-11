@@ -971,7 +971,7 @@
         if ( GetBoolean(game,"savingtranscript")) {
           msg (Template("TranscriptAlreadyEnabled"))
           // Make sure it is enabled in JS, too
-          JS.enableTranscript()
+          JS.eval("if (!noTranscript){transcriptName = name || transcriptName || gameName;  savingTranscript = true};")
         }
         else {
           msg (Template("TranscriptEnterFilename"))

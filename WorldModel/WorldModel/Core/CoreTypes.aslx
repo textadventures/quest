@@ -102,10 +102,10 @@
         KillTranscript
       }
       else if (game.savingtranscript){
-        JS.enableTranscript()
+        JS.eval("if (!noTranscript){transcriptName = name || transcriptName || gameName;  savingTranscript = true};")
       }
       else{
-        JS.disableTranscript()
+        JS.eval("savingTranscript = false;")
       }
     </changedsavingtranscript>
     <changednotranscript type="script">
@@ -113,7 +113,7 @@
         KillTranscript
       }
       else {
-        JS.setTranscriptStatus("allowed");
+        JS.eval("noTranscript = false;")
       }
     </changednotranscript>
     <suppressturnscripts/>
