@@ -631,7 +631,7 @@
         game.transcriptname = game.gamename
       }
       game.savingtranscript = true
-      JS.eval("if (!noTranscript){transcriptName = name || transcriptName || gameName;  savingTranscript = true};")
+      JS.eval("if (!noTranscript){transcriptName = '" + game.transcriptname + "'; savingTranscript = true};")
       msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage") + "<br/>")
       // Don't print the next line anymore. Everyone complains about it taking up space.
       //msg (DynamicTemplate("ToDisableTranscript"))
