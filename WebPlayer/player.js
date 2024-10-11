@@ -153,16 +153,23 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
-    window.setTimeout(function () {
-        $("#fldUITickCount").val(getTickCountAndStopTimer());
-        var data = new Object();
-        data["command"] = text;
-        if (typeof metadata != "undefined") {
-            data["metadata"] = metadata;
-        }
-        $("#fldUIMsg").val("command " + JSON.stringify(data));
-        $("#cmdSubmit").click();
-    }, 100);
+    if (text.toLowerCase().trim() == "save") {
+      //console.log("KV is bypassing the save command and emulating a Save button press!");
+      saveGame();
+      afterSave();
+    }
+    else {
+      window.setTimeout(function () {
+          $("#fldUITickCount").val(getTickCountAndStopTimer());
+          var data = new Object();
+          data["command"] = text;
+          if (typeof metadata != "undefined") {
+              data["metadata"] = metadata;
+          }
+          $("#fldUIMsg").val("command " + JSON.stringify(data));
+          $("#cmdSubmit").click();
+      }, 100);
+    }
     afterSendCommand();
 }
 
