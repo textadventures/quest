@@ -61,7 +61,7 @@
         </item>
         <item>
           <key>enter</key>
-          <value>Input the verb name as "enter_verb". It will appear as "enter" to the player.</value>
+          <value>Input the verb name as "enterverb". It will appear as "enter" to the player.</value>
         </item>
       </clashmessages>
       <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>
