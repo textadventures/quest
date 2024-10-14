@@ -659,7 +659,7 @@ function createNewDiv(alignment) {
 
 var _currentDiv = null;
 
-function getCurrentDiv() {
+/* function getCurrentDiv() {
     if (_currentDiv) return _currentDiv;
 
     var divId = $("#outputData").attr("data-currentdiv");
@@ -668,6 +668,15 @@ function getCurrentDiv() {
         return _currentDiv;
     }
 
+    return null;
+} */
+
+function getCurrentDiv() {
+    var divId = $("#outputData").attr("data-currentdiv");
+    if (divId) {
+        _currentDiv = $(divId);
+        return _currentDiv;
+    }
     return null;
 }
 
