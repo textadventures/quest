@@ -639,7 +639,7 @@ function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    getCurrentDiv().append(text);
+    _currentDiv.append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
     if (savingTranscript && !noTranscript) {
       writeToTranscript(text);
