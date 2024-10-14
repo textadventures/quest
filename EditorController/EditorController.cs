@@ -1287,12 +1287,18 @@ namespace TextAdventures.Quest
             }
 
             element.Fields.AddTypeUndoable(type);
-
             if (useTransaction)
             {
                 WorldModel.UndoLogger.EndTransaction();
             }
 
+            return new ValidationResult { Valid = true };
+        }
+
+        public ValidationResult AddFieldToElement(string elementName, string field,  bool value)
+        {
+            Element element = m_worldModel.Elements.Get(elementName);
+            element.Fields.Set(field,value); 
             return new ValidationResult { Valid = true };
         }
 
@@ -1323,14 +1329,14 @@ namespace TextAdventures.Quest
         public void CreateNewObject(string name, string parent, string alias)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
-            CreateNewObject(name, parent, "editor_object", alias);
+            CreateNewObject(name, parent, "editor_object", alias, false);
             m_worldModel.UndoLogger.EndTransaction();
         }
 
         public void CreateNewRoom(string name, string parent, string alias)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create room '{0}'", name));
-            CreateNewObject(name, parent, "editor_room", alias);
+            CreateNewObject(name, parent, "editor_room", alias, true);
             m_worldModel.UndoLogger.EndTransaction();
         }
 
@@ -1419,7 +1425,7 @@ namespace TextAdventures.Quest
             return newObject.Name;
         }
 
-        private void CreateNewObject(string name, string parent, string editorType, string alias)
+        private void CreateNewObject(string name, string parent, string editorType, string alias, Boolean isRoom)
         {
             Element newObject = m_worldModel.GetElementFactory(ElementType.Object).Create(name);
             if (parent != null)
@@ -1430,6 +1436,10 @@ namespace TextAdventures.Quest
             {
                 newObject.Fields[FieldDefinitions.Alias] = alias;
             }
+
+            newObject.Fields[FieldDefinitions.IsRoom] = isRoom;
+ 
+            
             if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, editorType))
             {
                 newObject.Fields.AddTypeUndoable(m_worldModel.Elements.Get(ElementType.ObjectType, editorType));
