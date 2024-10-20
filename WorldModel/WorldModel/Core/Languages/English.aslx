@@ -546,7 +546,7 @@
   <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
   <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
-  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + ""]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid + "<br/><b>TIME AND DATE: </b>" + CurrentTime() + " " + CurrentDate()]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
 
   

@@ -1683,8 +1683,10 @@ namespace TextAdventures.Quest
             {
                 System.Reflection.MethodInfo[] methods = typeof(ExpressionOwner).GetMethods();
                 System.Reflection.MethodInfo[] stringMethods = typeof(StringFunctions).GetMethods();
+                System.Reflection.MethodInfo[] dateTimeMethods = typeof(DateTimeFunctions).GetMethods();
 
-                IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods);
+
+                IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods).Union(dateTimeMethods);
 
                 s_functionNames = new List<string>(allMethods.Select(m => m.Name));
             }
