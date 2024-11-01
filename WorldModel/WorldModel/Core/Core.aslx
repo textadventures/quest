@@ -122,8 +122,8 @@
       }
       // Pertex: this is new
       if (HasString(game, "locationbarimage")){
-        if (not Trim(url) = ""){
-          url = game.locationbarimage
+        url = game.locationbarimage
+        if (not Trim(url) = ""){ 
           if (not StartsWith(game.locationbarimage,  "http")){
             url = GetFileURL(game.locationbarimage)
           }
