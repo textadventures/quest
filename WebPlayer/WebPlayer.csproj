@@ -181,6 +181,9 @@
     <Content Include="..\PlayerController\playercore.js">
       <Link>playercore.js</Link>
     </Content>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />
