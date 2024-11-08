@@ -44,7 +44,9 @@
                     FontSize="10pt" Text=""
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto"
-                    MaxHeight="500" />
+                    MaxHeight="500"
+                    SyntaxHighlighting="C#"
+                    WordWrap="True" />
                 </Border>
                 <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.Resources>
