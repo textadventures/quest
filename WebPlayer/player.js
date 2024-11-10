@@ -153,7 +153,7 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
-    if (text.toLowerCase().trim() == "save") {
+    if (typeof text == "string" && text.toLowerCase().trim() == "save") {
       //console.log("KV is bypassing the save command and emulating a Save button press!");
       saveGame();
       afterSave();
