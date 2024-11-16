@@ -56,7 +56,7 @@ Public Class PlayerHTML
         ctlWebView.KeyboardHandler = m_keyHandler
 
         m_interop = New QuestCefInterop()
-        ' ctlWebView.RegisterJsObject("questCefInterop", m_interop)
+        ctlWebView.JavascriptObjectRepository.Register("questCefInterop", m_interop, False)
     End Sub
 
     Private Sub PlayerHTML_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
