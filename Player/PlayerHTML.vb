@@ -192,7 +192,7 @@ Public Class PlayerHTML
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         SyncLock m_buffer
-            ' m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
+            m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
         End SyncLock
     End Sub
 
