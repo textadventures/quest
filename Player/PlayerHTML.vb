@@ -30,21 +30,21 @@ Public Class PlayerHTML
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim settings As New CefSharp.CefSettings
+        'Dim settings As New CefSharp.CefSettings
 
-        m_schemeHandler = New CefSchemeHandlerFactory(Me)
-        Dim questScheme As New CefSharp.CefCustomScheme
-        questScheme.SchemeHandlerFactory = m_schemeHandler
-        questScheme.SchemeName = "quest"
-        settings.RegisterScheme(questScheme)
+        'm_schemeHandler = New CefSchemeHandlerFactory(Me)
+        'Dim questScheme As New CefSharp.CefCustomScheme
+        'questScheme.SchemeHandlerFactory = m_schemeHandler
+        'questScheme.SchemeName = "quest"
+        'settings.RegisterScheme(questScheme)
 
-        m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
-        Dim resScheme As New CefSharp.CefCustomScheme
-        resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
-        resScheme.SchemeName = "res"
-        settings.RegisterScheme(resScheme)
+        'm_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
+        'Dim resScheme As New CefSharp.CefCustomScheme
+        'resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
+        'resScheme.SchemeName = "res"
+        'settings.RegisterScheme(resScheme)
 
-        CefSharp.Cef.Initialize(settings)
+        'CefSharp.Cef.Initialize(settings)
 
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
@@ -57,7 +57,7 @@ Public Class PlayerHTML
         ctlWebView.KeyboardHandler = m_keyHandler
 
         m_interop = New QuestCefInterop()
-        ctlWebView.RegisterJsObject("questCefInterop", m_interop)
+        ' ctlWebView.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
     Private Sub PlayerHTML_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
@@ -175,7 +175,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Copy()
-        ctlWebView.Copy()
+        ' ctlWebView.Copy()
     End Sub
 
     Public Sub SelectAll()
@@ -193,7 +193,7 @@ Public Class PlayerHTML
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         SyncLock m_buffer
-            m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
+            ' m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
         End SyncLock
     End Sub
 
@@ -294,7 +294,7 @@ Public Class PlayerHTML
 
     Public Sub Finished()
         InvokeScript("gameFinished")
-        ctlWebView.CloseDevTools()
+        ' ctlWebView.CloseDevTools()
     End Sub
 
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
@@ -369,11 +369,11 @@ Public Class PlayerHTML
         ctlWebView.Load("about:blank")
     End Sub
 
-    Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
-        If Not ctlWebView.IsLoading Then
-            OnDocumentLoad()
-        End If
-    End Sub
+    'Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
+    '    If Not ctlWebView.IsLoading Then
+    '        OnDocumentLoad()
+    '    End If
+    'End Sub
 
     Private Sub ctlWebView_IsBrowserInitializedChanged() Handles ctlWebView.IsBrowserInitializedChanged
         m_browserInitialized = True
@@ -387,7 +387,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub ShowDevTools()
-        ctlWebView.ShowDevTools()
+        ' ctlWebView.ShowDevTools()
     End Sub
 
     Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
