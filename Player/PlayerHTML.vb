@@ -293,7 +293,7 @@ Public Class PlayerHTML
 
     Public Sub Finished()
         InvokeScript("gameFinished")
-        ' ctlWebView.CloseDevTools()
+        ctlWebView.CloseDevTools()
     End Sub
 
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
@@ -386,7 +386,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub ShowDevTools()
-        ' ctlWebView.ShowDevTools()
+        ctlWebView.ShowDevTools()
     End Sub
 
     Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
