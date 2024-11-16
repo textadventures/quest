@@ -301,7 +301,6 @@
     <Content Include="Mobile\KeepAlive.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\51Degrees.dat" />
     <Content Include="packages.config" />
     <Content Include="51Degrees.config" />
     <None Include="Properties\PublishProfiles\*.pubxml" />
