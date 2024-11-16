@@ -1,6 +1,7 @@
 ﻿Imports System.Xml
 Imports System.IO
 Imports Microsoft.Win32
+Imports CefSharp
 
 Public Class PlayerHTML
 
@@ -20,8 +21,7 @@ Public Class PlayerHTML
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
-    Private m_schemeHandler As CefSchemeHandlerFactory
-    Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
+    Private m_resourceSchemeHandler As ResourceSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
     Private WithEvents m_keyHandler As CefKeyboardHandler
     Private m_browserInitialized As Boolean = False
@@ -30,21 +30,20 @@ Public Class PlayerHTML
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim settings As New CefSharp.CefSettings
+        Dim settings As New WinForms.CefSettings
 
-        'm_schemeHandler = New CefSchemeHandlerFactory(Me)
-        'Dim questScheme As New CefSharp.CefCustomScheme
-        'questScheme.SchemeHandlerFactory = m_schemeHandler
-        'questScheme.SchemeName = "quest"
-        'settings.RegisterScheme(questScheme)
+        Dim questScheme As New CefCustomScheme
+        questScheme.SchemeHandlerFactory = New QuestSchemeHandlerFactory(Me)
+        questScheme.SchemeName = "quest"
+        settings.RegisterScheme(questScheme)
 
-        'm_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
-        'Dim resScheme As New CefSharp.CefCustomScheme
-        'resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
-        'resScheme.SchemeName = "res"
-        'settings.RegisterScheme(resScheme)
+        m_resourceSchemeHandler = New ResourceSchemeHandlerFactory()
+        Dim resScheme As New CefSharp.CefCustomScheme
+        resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
+        resScheme.SchemeName = "res"
+        settings.RegisterScheme(resScheme)
 
-        'CefSharp.Cef.Initialize(settings)
+        Cef.Initialize(settings)
 
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
