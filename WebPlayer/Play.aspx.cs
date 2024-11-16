@@ -76,6 +76,9 @@ namespace WebPlayer
             {
                 case 1:
                     string initialText = await LoadGameForRequest();
+                    if (initialText == null){
+                      initialText = "No game found.";
+                    }
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
@@ -112,8 +115,15 @@ namespace WebPlayer
                     if (fileManager != null)
                     {
                         var result = await fileManager.GetFileForID(id);
-                        gameFile = result.Filename;
-                        isCompiled = result.IsCompiled;
+                        if (result == null)
+                        {
+                          gameFile = null;
+                        }
+                        else 
+                        {
+                          gameFile = result.Filename;
+                          isCompiled = result.IsCompiled;
+                        }
                     }
                 }
             }
