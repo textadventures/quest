@@ -368,11 +368,11 @@ Public Class PlayerHTML
         ctlWebView.Load("about:blank")
     End Sub
 
-    'Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
-    '    If Not ctlWebView.IsLoading Then
-    '        OnDocumentLoad()
-    '    End If
-    'End Sub
+    Private Sub ctlWebView_LoadingStateChanged() Handles ctlWebView.LoadingStateChanged
+        If Not ctlWebView.IsLoading Then
+            OnDocumentLoad()
+        End If
+    End Sub
 
     Private Sub ctlWebView_IsBrowserInitializedChanged() Handles ctlWebView.IsBrowserInitializedChanged
         m_browserInitialized = True
