@@ -1,6 +1,10 @@
 ﻿var webPlayer = false;
 var canSendCommand = true;
 
+(async function () {
+    await CefSharp.BindObjectAsync("questCefInterop");
+})();
+
 function sendCommand(text, metadata) {
     markScrollPosition();
     var data = new Object();

@@ -2,7 +2,7 @@
 Imports System.IO
 Imports System.Text
 
-Public Class CefSchemeHandlerFactory
+Public Class QuestSchemeHandlerFactory
     Implements ISchemeHandlerFactory
 
     Public Sub New(parent As PlayerHTML)
@@ -11,65 +11,64 @@ Public Class CefSchemeHandlerFactory
 
     Public Property Parent As PlayerHTML
 
-    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
-        Return New CefSchemeHandler(Me)
+    Public Function Create(browser As IBrowser, frame As IFrame, schemeName As String, request As IRequest) As IResourceHandler Implements ISchemeHandlerFactory.Create
+        Return New QuestSchemeHandler(Parent)
     End Function
-
 End Class
 
-Public Class CefSchemeHandler
-    Implements ISchemeHandler
+Public Class QuestSchemeHandler
+    Inherits ResourceHandler
 
-    Private _parent As CefSchemeHandlerFactory
+    Private _parent As PlayerHTML
 
-    Public Sub New(parent As CefSchemeHandlerFactory)
+    Public Sub New(parent As PlayerHTML)
         _parent = parent
     End Sub
 
-    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
+    Public Overrides Function ProcessRequestAsync(request As IRequest, callback As ICallback) As CefReturnValue
         Dim uri = New Uri(request.Url)
-        Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
+        Dim filename = Uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
 
-        response.ResponseStream = _parent.Parent.CurrentGame.GetResource(filename)
-
-        If (response.ResponseStream IsNot Nothing) Then
-            response.MimeType = PlayerHelper.GetContentType(filename)
-            requestCompletedCallback()
-            Return True
+        Stream = _parent.CurrentGame.GetResource(filename)
+        If (Stream IsNot Nothing) Then
+            MimeType = PlayerHelper.GetContentType(filename)
+            callback.Continue()
+            Return CefReturnValue.Continue
         End If
 
-        Return False
+        callback.Dispose()
+        Return CefReturnValue.Cancel
     End Function
 End Class
 
-Public Class CefResourceSchemeHandlerFactory
+Public Class ResourceSchemeHandlerFactory
     Implements ISchemeHandlerFactory
 
-    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
-        Return New CefResourceSchemeHandler(Me)
+    Public Function Create(browser As IBrowser, frame As IFrame, schemeName As String, request As IRequest) As IResourceHandler Implements ISchemeHandlerFactory.Create
+        Return New ResourceSchemeHandler(Me)
     End Function
 
     Public Property HTML As String
 End Class
 
-Public Class CefResourceSchemeHandler
-    Implements ISchemeHandler
+Public Class ResourceSchemeHandler
+    Inherits ResourceHandler
 
-    Private _parent As CefResourceSchemeHandlerFactory
+    Private _parent As ResourceSchemeHandlerFactory
 
-    Public Sub New(parent As CefResourceSchemeHandlerFactory)
+    Public Sub New(parent As ResourceSchemeHandlerFactory)
         _parent = parent
     End Sub
 
-    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
+    Public Overrides Function ProcessRequestAsync(request As IRequest, callback As ICallback) As CefReturnValue
         Dim uri = New Uri(request.Url)
 
         If uri.AbsolutePath = "/ui" Then
-            response.MimeType = "text/html"
+            MimeType = "text/html"
             Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
-            response.ResponseStream = New MemoryStream(bytes)
-            requestCompletedCallback()
-            Return True
+            Stream = New MemoryStream(bytes)
+            callback.Continue()
+            Return CefReturnValue.Continue
         End If
 
         Dim filepath = Path.Combine(My.Application.Info.DirectoryPath(), uri.AbsolutePath.Substring(1))
@@ -77,24 +76,25 @@ Public Class CefResourceSchemeHandler
         If File.Exists(filepath) Then
             System.Diagnostics.Debug.WriteLine("Served {0} from {1}", request.Url, filepath)
 
-            response.ResponseStream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
+            Stream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
 
             Select Case Path.GetExtension(filepath)
                 Case ".js"
-                    response.MimeType = "text/javascript"
+                    MimeType = "text/javascript"
                 Case ".css"
-                    response.MimeType = "text/css"
+                    MimeType = "text/css"
                 Case ".png"
-                    response.MimeType = "image/png"
+                    MimeType = "image/png"
                 Case Else
                     Throw New Exception("Unknown MIME type")
             End Select
 
-            requestCompletedCallback()
-            Return True
+            callback.Continue()
+            Return CefReturnValue.Continue
         Else
             System.Diagnostics.Debug.WriteLine("Not found " + filepath)
-            Return False
+            callback.Dispose()
+            Return CefReturnValue.Cancel
         End If
     End Function
 End Class
