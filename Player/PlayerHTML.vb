@@ -174,7 +174,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Copy()
-        ' ctlWebView.Copy()
+        ctlWebView.Copy()
     End Sub
 
     Public Sub SelectAll()
