@@ -10,7 +10,7 @@ namespace WebPlayer.Controllers
     {
         public ActionResult Index()
         {
-            return Redirect("http://textadventures.co.uk");
+            return Redirect("https://textadventures.co.uk");
         }
     }
 }

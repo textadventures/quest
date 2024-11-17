@@ -12,7 +12,7 @@ namespace WebPlayer.Controllers
         {
             if (path.EndsWith(".html") || path.EndsWith(".htm"))
             {
-                return Redirect("http://textadventures.co.uk/games/play/" + id);
+                return Redirect("https://textadventures.co.uk/games/play/" + id);
             }
             return HttpNotFound();
         }

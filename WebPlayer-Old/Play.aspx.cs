@@ -76,6 +76,10 @@ namespace WebPlayer
             {
                 case 1:
                     string initialText = await LoadGameForRequest();
+                    if (initialText == null)
+                    {
+                        initialText = "No game found.";
+                    }
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
@@ -112,14 +116,21 @@ namespace WebPlayer
                     if (fileManager != null)
                     {
                         var result = await fileManager.GetFileForID(id);
-                        gameFile = result.Filename;
-                        isCompiled = result.IsCompiled;
+                        if (result == null)
+                        {
+                            gameFile = null;
+                        }
+                        else
+                        {
+                            gameFile = result.Filename;
+                            isCompiled = result.IsCompiled;
+                        }
                     }
                 }
             }
-            
+
             AzureFileManager.ApiGame apiGameData = null;
-            
+
             var loadData = Session["LoadData"] as string;
             Session["LoadData"] = null;
 
@@ -180,7 +191,7 @@ namespace WebPlayer
                 {
                     m_player.ResourceUrlRoot = AzureFileManager.GetResourceUrlRoot(id);
                 }
-                
+
                 if (m_player.Initialise(out errors, isCompiled))
                 {
                     Resources.AddGame(m_player.Game);
@@ -266,7 +277,7 @@ namespace WebPlayer
             if (functionName == null) return;
 
             string url = m_player.GetURL(e.Filename);
-            
+
             m_buffer.AddJavaScriptToBuffer(
                 functionName,
                 new StringParameter(url),
@@ -426,7 +437,7 @@ namespace WebPlayer
 
         protected string ApiRoot()
         {
-            return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
+            return ConfigurationManager.AppSettings["BaseURI"] ?? "https://textadventures.co.uk/";
         }
 
         protected string GameSessionLogId()

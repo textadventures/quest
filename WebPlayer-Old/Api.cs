@@ -10,7 +10,7 @@ namespace WebPlayer
 {
     public static class Api
     {
-        private static Uri s_baseAddress = new Uri(ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/");
+        private static Uri s_baseAddress = new Uri(ConfigurationManager.AppSettings["BaseURI"] ?? "https://textadventures.co.uk/");
 
         public static async Task<T> GetData<T>(string api) where T : class
         {

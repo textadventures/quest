@@ -86,4 +86,4 @@ Timers
 
 If you want to use split second timing, then `ASLEvent` is the way to go. The Quest timers work in whole second only, and when you play on-line, the exact timing can go awry, depending on the load on the server and the speed of the player's internet connection. However, you can use a JavaScript timer, which will run on the players PC, rather than the Quest server, and have that fire events in Quest using ASLEvent.
 
-The details are beyond the scope of this article, but you can see examples [here](http://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](http://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).
+The details are beyond the scope of this article, but you can see examples [here](https://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](https://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).
