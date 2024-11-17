@@ -161,6 +161,28 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
         var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
         var types = evaluatedArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+        
+        // Do any of the methods take a params array?
+        var paramsMethod =
+            methods.Where(m =>
+                m.GetParameters().LastOrDefault()?.IsDefined(typeof(ParamArrayAttribute)) ?? false)
+                .ToArray();
+        
+        if (paramsMethod.Length != 0)
+        {
+            var methodWithParams = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, paramsMethod, types, null);
+            if (methodWithParams != null)
+            {
+                var paramArray =
+                    Array.CreateInstance(methodWithParams.GetParameters().Last().ParameterType.GetElementType(),
+                        evaluatedArgs.Length - methodWithParams.GetParameters().Length + 1);
+                Array.Copy(evaluatedArgs, methodWithParams.GetParameters().Length - 1, paramArray, 0,
+                    paramArray.Length);
+                var newArgs = evaluatedArgs.Take(methodWithParams.GetParameters().Length - 1).Append(paramArray)
+                    .ToArray();
+                return (true, methodWithParams.Invoke(instance, newArgs));
+            }
+        }
 
         var method = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
 
