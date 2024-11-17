@@ -4,7 +4,7 @@ var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
 var canSendCommand = true;
-var apiRoot = "http://textadventures.co.uk/";
+var apiRoot = "https://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
 
