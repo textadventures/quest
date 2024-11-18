@@ -2,8 +2,6 @@
   <!-- Contributed by Pertex -->
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
-  <!-- In case new English templates are ever added. -->
-  <include ref="EditorEnglish.aslx"/>
   <!-- Contributed by SoonGames -->
   <include ref="EditorDeutsch.aslx"/>
   

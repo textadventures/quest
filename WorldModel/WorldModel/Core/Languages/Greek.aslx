@@ -15,7 +15,6 @@
 	-->
 	
     <include ref="English.aslx"/>
-    <include ref="EditorEnglish.aslx"/>
     <!-- Get any undefined templates from the English library -->
 
     <template name="LanguageId">el</template>
