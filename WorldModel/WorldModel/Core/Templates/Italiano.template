@@ -14,7 +14,8 @@
     <isroom />
 
     <object name="player">
-      <inherit name="defaultplayer" />
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
     </object>
   </object>
 
