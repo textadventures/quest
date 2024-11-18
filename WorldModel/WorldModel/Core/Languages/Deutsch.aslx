@@ -2,7 +2,6 @@
   <!-- Contributed by Pertex -->
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
-  
   <!-- Contributed by SoonGames -->
   <include ref="EditorDeutsch.aslx"/>
   
@@ -543,10 +542,8 @@
 	]]>
 </function>
 
-  <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
 
   <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>
@@ -566,5 +563,26 @@
   <template name="DevModeComSelfTestFailed">Die Zuordnung, wie sie nach dem Kommando sein sollte ist inkorrekt.</template>
   <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-
+  <template name="EditorGameEnableDevMode">Entwicklermodus (Hinzufügen von erweiterten Befehlen zum Testen des Spiels)</template>
+  <template name="EditorGameDevMode">Entwicklermodus</template>
+  <template name="EditorGameDevModeInfoRelease">Wichtig: Vor Veröffentlichung des Spiels muss der Entwicklermodus deaktiviert werden!</template>  
+  <template name="EditorGameDevModeInfoCommands">Es stehen im laufenden Spiel erweiterte Kommandos zur Verfügung. Geben Sie '#?' ein um weitere Informationen zu erhalten.</template>
+  <template name="EditorGameDevModeOptions">Optionen</template>
+  <template name="EditorGameDevModeChangePov">Einen anderen Spieler wählen</template>
+  <template name="EditorGameDevModePov">Spieler</template>
+  <template name="EditorGameDevModeChangePovPos">Eine andere Position des Spielers wählen</template>
+  <template name="EditorGameDevModePlace">Ort</template>
+  <template name="EditorGameDevModeSetInitScript">Ein Initialisierungsscript für den Entwicklermodus verwenden</template>
+  <template name="EditorGameDevModeInitScript">Initialisierungsscript für den Entwicklermodus</template>
+  <template name="EditorGameDevModeShowDebugTable">Zeige Debugtabelle</template>
+  <template name="EditorGameDevModeSetVerbs">Verben des Entwicklungsmodus in die Verbliste der Objekte hinzufügen</template>
+  <template name="EditorGameDevModeShowInfos">Ausgaben des Entwicklungsmodus anzeigen</template>  
+  <template name="EditorGameDevModeOwnFontColour">Eigene Schriftfarbe für die Ausgabe des Entwicklermodus verwenden</template>
+  <template name="EditorGameDevModeFontColour">Schriftfarbe für die Ausgaben des Entwicklermodus</template>
+  <template name="EditorGameDevModeOn">Aktiviert</template>
+  <template name="EditorGameDevModeOff">Deaktiviert</template>
+  <template name="EditorGameDevModeAttributes">Attributes</template>
+  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[In "Key" wird das Objekt mit dem zugehörigen Attribut eingetragen (z. B. game.showtitle oder player.look). In "Value" wird die Zuweisung eingetragen. Es ist möglich Strings ("Hallo Welt!"), Boolean (true oder false), Integer (15), Double (25.55), Lists (["Hallo","Welt","!"]) und Dictionarys ({H:"Hallo",W:"Welt"} zu erstellen.)]]></template>
+  <!-- Added by KV -->
+  <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
 </library>

@@ -357,15 +357,23 @@ function SetBackgroundOpacity(opacity) {
 }
 
 function setBackground(col) {
+    /* If '#rgb', convert to '#rrggbb'*/
+    /* https://github.com/textadventures/quest/issues/1052 */
+    if (col.charAt(0) === "#" && col.length == 4) {
+        var colBak = "" + col + "";
+        newCol = col.replace(/#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/, '#$1$1$2$2$3$3');
+        col = newCol || col;
+        console.warn("[QUEST](playercore.js): setBackground() changed \"" + colBak + "\" to \"" + col + "\".")
+    }
     colNameToHex = colourNameToHex(col);
     if (colNameToHex) col = colNameToHex;
     rgbCol = hexToRgb(col);
     var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
     $("#gameBorder").css("background-color", cssBackground);
-
     $("#gamePanel").css("background-color", col);
     $("#gridPanel").css("background-color", col);
 }
+
 
 function setPanelHeight() {
     if (_showGrid) return;
@@ -621,21 +629,21 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
-// These 2 variables added by KV for the transcript
+// These variables added by KV for the transcript
 var savingTranscript = false;
-var transcriptString = "";
+var noTranscript = false;
+var transcriptName = "";
 
 // This function altered by KV for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    if (savingTranscript) {
-        SaveTranscript(text);
-        ASLEvent("UpdateTranscriptString", text);
-    }
-    getCurrentDiv().append(text);
+    _currentDiv.append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
+    if (savingTranscript && !noTranscript) {
+      writeToTranscript(text);
+    }
 }
 
 function createNewDiv(alignment) {
@@ -652,14 +660,11 @@ function createNewDiv(alignment) {
 var _currentDiv = null;
 
 function getCurrentDiv() {
-    if (_currentDiv) return _currentDiv;
-
     var divId = $("#outputData").attr("data-currentdiv");
     if (divId) {
         _currentDiv = $(divId);
         return _currentDiv;
     }
-
     return null;
 }
 
@@ -759,7 +764,10 @@ function disableAllCommandLinks() {
 }
 
 // Modified by KV to handle the scrollback feature
-var saveClearedText = true;
+// Changing saveClearedText to false by default, due to performance issues.
+var saveClearedText = false;
+// Authors can change noScrollback to true to disable the scrollback functions.
+var noScrollback = false;
 var clearedOnce = false;
 function clearScreen() {
     if (!saveClearedText) {
@@ -786,50 +794,26 @@ function clearScreen() {
     }
 }
 
-// Scrollback functions added by KV
+// Scrollback function added by KV
 
-function showScrollback() {
-    var scrollbackDivString = "";
-    scrollbackDivString += "<div ";
-    scrollbackDivString += "id='scrollback-dialog' ";
-    scrollbackDivString += "style='display:none;'>";
-    scrollbackDivString += "<div id='scrollbackdata'></div></div>";
-    addText(scrollbackDivString);
-    var scrollbackDialog = $("#scrollback-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Scrollback",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printScrollbackDiv();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#scrollbackdata').html($('#divOutput').html());
-    $("#scrollbackdata a").addClass("disabled");
-    scrollbackDialog.dialog("open");
-    setTimeout(function () {
-        $("#scrollbackdata a").addClass("disabled");
-    }, 1);
-};
-
-
-
-function printScrollbackDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#scrollbackdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#scrollback-dialog").dialog("close");
-    $("#scrollback-dialog").remove();
+/**
+ * The player can print the game's text or save as PDF.
+ * This will include cleared text if saveClearedText is set to true (saveClearedText is false by default).
+ * Setting noScrollback to true will disable this. (noScrollback is false by default)
+ */
+function printScrollback() {
+  if (noScrollback) return;
+  addText("<div id='scrollback-hider' style='display:none; color:black !important; background-color:white !important; font-family:sans-serif !important;background:white !important;text-align:left !important;'><div id='scrollbackdata'></div></div>");
+  $('#scrollbackdata').html($('#divOutput').html());
+  $("#scrollbackdata a").addClass("disabled");
+  setTimeout(function () {
+      $("#scrollbackdata a").addClass("disabled");
+  }, 1);
+  var iframe = document.createElement('iframe');
+  document.body.appendChild(iframe);
+  iframe.contentWindow.document.write($("#scrollbackdata").html());
+  iframe.contentWindow.print();
+  document.body.removeChild(iframe);
 };
 
 function keyPressCode(e) {
@@ -1224,13 +1208,17 @@ $(function () {
 // ***********
 // Section added by KV
 
-
 function isMobilePlayer() {
-    if (typeof (currentTab) === 'string') {
-        return true;
-    }
-    return false;
+    return (platform === "mobile");
 };
+
+// Log functions
+
+// Fallback for Quest 5.8.0
+function addLogEntry(text){
+  // Just pass it along to the console log.
+  console.log(getTimeAndDateForLog() + ' ' + text);
+}
 
 function showPopup(title, text) {
     $('#msgboxCaption').html(text);
@@ -1296,207 +1284,146 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog('open');
 };
 
-// Make it easy to print messages.
-//var msg = addTextAndScroll;
-    
-// Log functions
-var logVar = "";
-function addLogEntry(text){
-  logVar += getTimeAndDateForLog() + ' ' + text+"NEW_LINE";
-};
-
+// Fallback for Quest 5.8.0 -- there was a way to view the log in-game (because the Log window no longer functioned at that time)
 function showLog(){
-  var logDivString = "";
-  logDivString += "<div ";
-  logDivString += "id='log-dialog' ";
-  logDivString += "style='display:none;;'>";
-  logDivString += "<textarea id='logdata' rows='13'";
-  logDivString += "  cols='49'></textarea></div>";
-  addText(logDivString);
-  if(webPlayer){
-    var logDialog = $("#log-dialog").dialog({
-      autoOpen: false,
-      width: 600,
-      height: 500,
-      title: "Log",
-      buttons: {
-        Ok: function() {
-          $(this).dialog("close");
-        },
-        Print: function(){
-          $(this).dialog("close");
-          showLogDiv();
-          printLogDiv();
-        },
-        Save: function(){
-          $(this).dialog("close");
-          saveLog();
-        },
-      },
-      show: { effect: "fadeIn", duration: 500 },
-      // The modal setting keeps the player from interacting with anything besides the dialog window.
-      //  (The log will not update while open without adding a turn script.  I prefer this.)
-      modal: true,
-    });
-  }else{
-    var logDialog = $("#log-dialog").dialog({
-    autoOpen: false,
-    width: 600,
-    height: 500,
-    title: "Log",
-    buttons: {
-      Ok: function() {
-        $(this).dialog("close");
-      },
-      Print: function(){
-        $(this).dialog("close");
-        showLogDiv();
-        printLogDiv();
-      },
-    },
-    show: { effect: "fadeIn", duration: 500 },
-    // The modal setting keeps the player from interacting with anything besides the dialog window.
-    //  (The log will not update while open without adding a turn script.  I prefer this.)
-    modal: true,
-  });
+  var sArr = ["The <code>showLog</code> function has been deprecated."];
+  if(!webPlayer){
+    sArr.push(" Use Quest's built-in Log window instead.");
   }
-  $('textarea#logdata').val(logVar.replace(/NEW_LINE/g,"\n"));
-  logDialog.dialog("open");
-};
-
-var logDivIsSetUp = false;
-
-var logDivToAdd = "";
-logDivToAdd += "<div ";
-logDivToAdd += "id='log-div' ";
-logDivToAdd += "style='display:none;'>";
-logDivToAdd += "<a class='do-not-print-with-log' ";
-logDivToAdd += "href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  ";
-logDivToAdd += "<a class='do-not-print-with-log' href='' ";
-logDivToAdd += "onclick='printLogDiv();'>PRINT</a> ";
-logDivToAdd += "<div id='log-contents-div' '></div></div>";
-
-function setupLogDiv(){
-  addText(logDivToAdd);
-  $("#log-div").insertBefore($("#dialog"));
-  logDivIsSetUp = true;
-};
-
-function showLogDiv(){
-    if(!logDivIsSetUp){
-     setupLogDiv(); 
-    }
-	$(".do-not-print-with-log").show();
-	$("#log-contents-div").html(logVar.replace(/NEW_LINE/g,"<br/>"));
-	$("#log-div").show();
-	$("#gameBorder").hide();
-};
-
-function hideLogDiv(){
-	$("#log-div").hide();
-	$("#gameBorder").show();
-};
-
-function printLogDiv(){
-  if(typeof(document.title) !== "undefined"){
-    var docTitleBak = document.title;
-  }else{
-    var docTitleBak = "title";
+  else if (!isMobilePlayer()){
+    sArr.push(" Try looking in your HTML dev tools console. There may be log entries there, depending on the game.");
   }
-  document.title = "log.txt" ;
-  $('.do-not-print-with-log').hide();
-  print();
-  $('.do-not-print-with-log').show();
-  document.title = docTitleBak;
-};
-
-
-function saveLog(){
-  if(webPlayer){
-    var href = "data:text/plain,"+logVar.replace(/NEW_LINE/g,"\n");
-    addTextAndScroll("<a download='log.txt' href='"+href+"' id='log-save-link'>Click here to save the log if your pop-up blocker stopped the download.</a>");
-    document.getElementById("log-save-link").addEventListener ("click", function (e) {e.stopPropagation();});
-    document.getElementById("log-save-link").click();
-  }else{
-    alert("This function is only available while playing online.");
-  }
- };
-
-function getTimeAndDateForLog(){
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1;
-	var yyyy = today.getFullYear();
-	var hrs = today.getHours();
-	var mins = today.getMinutes();
-	var secs = today.getSeconds();
-	today = mm + '/' + dd + '/' + yyyy;
-	if(hrs>12) {
-	  ampm = 'PM';
-	  hrs = '0' + '' + hrs - 12
-	}else{
-	  ampm = 'AM';
-	} 
-	if (mins<10) {
-	  mins = '0'+mins;
-	} 
-	if(secs<10) {
-	  secs = '0' + secs;
-	}
-	time = hrs + ':' + mins + ':' + secs + ' ' + ampm;
-	return today + ' ' + time;
-};
-    
-// **********************************
-// TRANSCRIPT FUNCTIONS
-
-// This function is for loading a saved game
-function replaceTranscriptString(data) {
-    transcriptString = data;
+  addTextAndScroll(sArr.join("") + "<br/>");
 }
 
-function showTranscript() {
-    var transcriptDivString = "";
-    transcriptDivString += "<div ";
-    transcriptDivString += "id='transcript-dialog' ";
-    transcriptDivString += "style='display:none;'>";
-    transcriptDivString += "<div id='transcriptdata'></div></div>";
-    addText(transcriptDivString);
-    var transcriptDialog = $("#transcript-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Transcript",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printTranscriptDiv();
-                $(this).dialog("close");
-                $(this).remove();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#transcriptdata').html(transcriptString);
-    $("#transcriptdata a").addClass("disabled");
-    transcriptDialog.dialog("open");
-    setTimeout(function () {
-        $("#transcriptdata a").addClass("disabled");
-    }, 1);
+// Fallback for Quest 5.8.0 (just in case)
+// Nothing will ever be done with this.
+var logVar = "";
+
+function getTimeAndDateForLog(){
+  var date = new Date();
+  var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");
+  return currentDateTime;
 };
 
-function printTranscriptDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#transcriptdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#transcript-dialog").dialog("close");
-    $("#transcript-dialog").remove();
+// **********************************
+// TRANSCRIPT STUFF
+
+/**
+  * Added by KV
+  *
+  * This will write/append to a TXT document in Documents\Quest Transcripts
+  *  if using the desktop player and the the player has the transcript enabled
+  *  and if noTranscript is not set to true (it is false by default).
+  *
+  * @param {string} text The string to be written to the file
+*/
+function writeToTranscript(text){
+  if (!noTranscript && savingTranscript) {
+    var faker = document.createElement('div');
+    faker.innerHTML = text;
+    text = faker.innerHTML;
+    for (var key in Object.keys(faker.getElementsByTagName('img'))){
+      var elem = faker.getElementsByTagName('img')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('area'))){
+      var elem = faker.getElementsByTagName('area')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('input'))){
+      var elem = faker.getElementsByTagName('input')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@") + "</div>").text());
+  }
+}
+
+/**
+  * This will enable the transcript unless noTranscript is set to true.
+  * 
+  * @param {name} text If this is defined, the transcriptName will be set to this.
+*/
+function enableTranscript(name){
+  if (noTranscript) return;
+  transcriptName = name || transcriptName || gameName;
+  savingTranscript = true;
+}
+
+/**
+  * This will disable the transcript.
+  * 
+*/
+function disableTranscript(){
+  savingTranscript = false;
+}
+
+/**
+  * This will completely kill the transcript.
+  * 
+*/
+function killTranscript(){
+  noTranscript = true;
+  disableTranscript();
+}
+
+/**
+  * Make it easy to control transcript settings from Quest.
+  * 
+  * @param {name} status The state the transcript will be set to.
+*/
+function setTranscriptStatus(status){
+  switch (status){
+    case "enabled":
+      var name = transcriptName || gameName;
+      enableTranscript(name);
+      break;
+    case "disabled":
+      disableTranscript();
+      break;
+    case "prohibited":
+    case "none":
+    case "killed":
+      killTranscript();
+      break;
+    case "allowed":
+      noTranscript = false;
+  }
+}
+
+var showedSaveTranscriptWarning = false;
+/**
+  * This function was missing from the webplayer in Quest 5.8.0
+  * Leaving this here as a fallback
+  * 
+  * @param {string} text The line(s) of text being printed
+*/
+function SaveTranscript(text){
+  if(!showedSaveTranscriptWarning){
+    console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+    showedSaveTranscriptWarning = true;
+  }
+  writeToTranscript(text);  
+}
+
+var transcriptUrl = 'Play.aspx?id=4wqdac8qd0sf7-ilff8mia';
+// Another fallback to avoid errors
+function showTranscript(){
+  if (webPlayer){
+    addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
+  }
+  else {
+    addTextAndScroll('Your transcripts are saved to "Documents\\Quest Transcripts\\".<br/>');
+  }
 };
 
 // ***********************************
@@ -2067,6 +1994,12 @@ function Grid_DrawShape(id, border, fill, opacity) {
 })(jQuery);
 
 function whereAmI() {
+  var canSendCommandBak = canSendCommand;
   ASLEvent("WhereAmI", platform);
+  canSendCommand = canSendCommandBak;
 }
-var platform = "desktop";
+
+// This file is not exclusive to the desktop player.
+// Changing this to "unset", as that seems to make more sense for testing purposes. - KV
+//var platform = "desktop";
+var platform = "unset";

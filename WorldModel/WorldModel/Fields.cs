@@ -91,6 +91,7 @@ namespace TextAdventures.Quest
         public static IField<string> Property = new FieldDef<string>("property");
         public static IField<string> DefaultTemplate = new FieldDef<string>("defaulttemplate");
         public static IField<bool> IsVerb = new FieldDef<bool>("isverb");
+        public static IField<bool> IsRoom = new FieldDef<bool>("isroom");
         public static IField<string> DefaultText = new FieldDef<string>("defaulttext");
         public static IField<string> GameName = new FieldDef<string>("gamename");
         public static IField<string> Text = new FieldDef<string>("text");

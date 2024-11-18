@@ -101,6 +101,7 @@
     <Compile Include="Functions\ExpressionOwner.cs" />
     <Compile Include="Functions\IFunction.cs" />
     <Compile Include="Functions\StringFunctions.cs" />
+    <Compile Include="Functions\DateTimeFunctions.cs" />
     <Compile Include="GameLoader\AttributeLoaders.cs" />
     <Compile Include="GameLoader\ElementLoaders.cs" />
     <Compile Include="GameLoader\ElementSavers.cs" />

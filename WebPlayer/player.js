@@ -153,16 +153,23 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
-    window.setTimeout(function () {
-        $("#fldUITickCount").val(getTickCountAndStopTimer());
-        var data = new Object();
-        data["command"] = text;
-        if (typeof metadata != "undefined") {
-            data["metadata"] = metadata;
-        }
-        $("#fldUIMsg").val("command " + JSON.stringify(data));
-        $("#cmdSubmit").click();
-    }, 100);
+    if (typeof text == "string" && text.toLowerCase().trim() == "save") {
+      //console.log("player.js: sendCommand: Bypassing the save command and emulating a Save button press!");
+      saveGame();
+      afterSave();
+    }
+    else {
+      window.setTimeout(function () {
+          $("#fldUITickCount").val(getTickCountAndStopTimer());
+          var data = new Object();
+          data["command"] = text;
+          if (typeof metadata != "undefined") {
+              data["metadata"] = metadata;
+          }
+          $("#fldUIMsg").val("command " + JSON.stringify(data));
+          $("#cmdSubmit").click();
+      }, 100);
+    }
     afterSendCommand();
 }
 
@@ -240,15 +247,15 @@ function saveGameResponse(data) {
         url: apiRoot + "games/save/?id=" + $_GET["id"],
         success: function (result) {
             if (result.Success) {
-                addText("Game saved successfully.<br/>");
+                addTextAndScroll("Game saved successfully.<br/>");
             } else {
-                addText("Failed to save game: " + result.Reason + "<br/>");
+                addTextAndScroll("Failed to save game: " + result.Reason + "<br/>");
             }
         },
         error: function (xhr, status, err) {
             console.log(status);
             console.log(err);
-            addText("Failed to save game.<br/>");
+            addTextAndScroll("Failed to save game.<br/>");
         },
         xhrFields: {
             withCredentials: true
@@ -258,4 +265,73 @@ function saveGameResponse(data) {
             data: data
         }
     });
+}
+
+// Added by KV  
+/**
+  * Writes data to the transcript's item in localStorage.
+  *
+  * @param {string} text This is added to the transcriptData item in localStorage
+*/
+function WriteToTranscript(data){
+  if (noTranscript){
+    // Do nothing.
+    return;
+  }
+  if (!isLocalStorageAvailable()){
+    console.error("There is no localStorage. Disabling transcript functionality.");
+    noTranscript = true;
+    savingTranscript = false;
+    return;
+  }
+  var tName = transcriptName || "Transcript";
+  var overwrite = false;
+  if (data.indexOf("@@@OVERWRITEFILE@@@") > -1){
+    overwrite = true;
+    data = data.replace("@@@OVERWRITEFILE@@@", "");
+  }
+  if (data.indexOf("___SCRIPTDATA___") > -1) {
+    tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
+    data = data.split("___SCRIPTDATA___")[1];
+  }
+  var oldData = "";
+  if (!overwrite){
+    oldData = localStorage.getItem("questtranscript-" + tName) || "";
+  }
+  localStorage.setItem("questtranscript-" + tName, oldData + data);
+}
+
+// Make sure localStorage is available, hopefully without throwing any errors!
+
+/* https://stackoverflow.com/a/16427747 */
+function isLocalStorageAvailable(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+
+// NOTE:
+// There is a Quest game on the site to handle viewing of transcipts for all online users:
+// https://play.textadventures.co.uk/Play.aspx?id=4wqdac8qd0sf7-ilff8mia
+
+
+
+// END OF TRANSCRIPT FUNCTIONS
+
+/**
+  * Adding this to this file because it exists in desktopplayer.js
+  *
+  * It is doing nothing here if called, but it is here just so it is defined.
+  *
+  * @param {data} text This would print to the log file if this were the desktop player. It is ignored here.
+*/
+function WriteToLog(data){
+  /* Do nothing at all. */
+  return;
 }
