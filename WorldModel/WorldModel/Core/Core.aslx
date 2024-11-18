@@ -32,6 +32,8 @@
   
   <function name="InitInterface">
     <![CDATA[
+    game.init_date = CurrentDate()
+    game.init_time = CurrentTime()
     // Added by KV for transcript
     JS.eval ("var gameName = '" + game.gamename + "'; var transcriptName = transcriptName || gameName;")
     // End of addition by KV for transcript
@@ -238,6 +240,8 @@
   
   <function name="StartGame">
     <![CDATA[
+    game.start_date = CurrentDate()
+    game.start_time = CurrentTime()
     // Added by KV here in case someone enables the transcript up front to record everything including the title.
     transcript_triggered = false
     if (GetBoolean (game, "savingtranscript") and not GetBoolean (game, "notranscript")){
