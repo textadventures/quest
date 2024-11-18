@@ -247,15 +247,15 @@ function saveGameResponse(data) {
         url: apiRoot + "games/save/?id=" + $_GET["id"],
         success: function (result) {
             if (result.Success) {
-                addText("Game saved successfully.<br/>");
+                addTextAndScroll("Game saved successfully.<br/>");
             } else {
-                addText("Failed to save game: " + result.Reason + "<br/>");
+                addTextAndScroll("Failed to save game: " + result.Reason + "<br/>");
             }
         },
         error: function (xhr, status, err) {
             console.log(status);
             console.log(err);
-            addText("Failed to save game.<br/>");
+            addTextAndScroll("Failed to save game.<br/>");
         },
         xhrFields: {
             withCredentials: true
