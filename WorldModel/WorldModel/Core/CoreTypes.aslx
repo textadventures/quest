@@ -91,9 +91,31 @@
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
     <multiplecommands type="boolean">false</multiplecommands>
-    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
-    <nohtmllog type="boolean">false</nohtmllog>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg</publishfileextensions>
+    <writelogtofile type="boolean">false</writelogtofile>
+    <useconsolelog type="boolean">false</useconsolelog>
     <notranscript type="boolean">false</notranscript>
+    <transcript_forcecommands type="boolean">false</transcript_forcecommands>
+    <savingtranscript type="boolean">false</savingtranscript>
+    <changedsavingtranscript type="script">
+      if (game.notranscript){
+        KillTranscript
+      }
+      else if (game.savingtranscript){
+        JS.eval("if (!noTranscript){transcriptName = transcriptName || gameName; savingTranscript = true};")
+      }
+      else{
+        JS.eval("savingTranscript = false;")
+      }
+    </changedsavingtranscript>
+    <changednotranscript type="script">
+      if (game.notranscript){
+        KillTranscript
+      }
+      else {
+        JS.eval("noTranscript = false;")
+      }
+    </changednotranscript>
     <suppressturnscripts/>
     <!-- Scripts used by the text processor -->
     <textprocessorcommands type="scriptdictionary">

@@ -204,6 +204,10 @@
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
   <template name="EditorGameCommandBarCaption">Command bar</template>
+  <!-- Pertex: this is new -->
+  <template name="EditorGameLocationBarBg">Location Bar Background Image</template>
+  <template name="EditorGameLocationBarUseUrlInstead">Use a URL for the Location Bar Background Image.</template>
+  <template name="EditorGameURLforLocationBarImage">URL for Location Bar Background Image</template>
   <template name="EditorGamePictureOptions">Picture frame</template>
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
@@ -859,7 +863,7 @@
   <template name="TypeCanPlayer">Can be a player</template>
   <template name="TypeObjectRoom">Room</template>
   <template name="TypeObjectObject">Object</template>
-  <template name="TypeObjectAndOr">Object and/or room</template>
+  <template name="TypeObjectAndRoom">Object and room</template>
   <template name="TypeInanimateObject">Inanimate object</template>
   <template name="TypeMaleCharacter">Male character</template>
   <template name="TypeMaleCharacterNamed">Male character (named)</template>

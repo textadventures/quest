@@ -1524,6 +1524,17 @@ namespace WebEditor.Services
 
             m_controller.StartTransaction(String.Format("Change type from '{0}' to '{1}'", types[oldType], types[value]));
 
+            if (value == k_noType)
+            {
+              if (oldType == "editor_object" ||  oldType == "editor_room")
+              {
+                IEditorData data = m_controller.GetEditorData(element);
+
+                var result = data.SetAttribute("isroom", true);
+                //m_controller.AddFieldToElement(element, "isroom", true);
+              }
+            }
+            
             if (oldType != k_noType)
             {
                 m_controller.RemoveInheritedTypeFromElement(element, oldType, false);
@@ -1532,6 +1543,18 @@ namespace WebEditor.Services
             if (value != k_noType)
             {
                 m_controller.AddInheritedTypeToElement(element, value, false);
+                if (value == "editor_room")
+                {
+                  IEditorData data = m_controller.GetEditorData(element);
+
+                var result = data.SetAttribute("isroom", true);;
+                }
+                else if (value == "editor_object")
+                {
+                  IEditorData data = m_controller.GetEditorData(element);
+
+                var result = data.SetAttribute("isroom", false);
+                }
             }
 
             m_controller.EndTransaction();
