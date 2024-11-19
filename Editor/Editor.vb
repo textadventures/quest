@@ -68,7 +68,8 @@ Public Class Editor
                             m_fileWatcher = New System.IO.FileSystemWatcher(path, "*.aslx")
                             m_fileWatcher.IncludeSubdirectories = True
                             m_fileWatcher.EnableRaisingEvents = True
-                            m_fileWatcherQuest = New System.IO.FileSystemWatcher(Environment.CurrentDirectory + "\Core", "*.aslx")
+                            'm_fileWatcherQuest = New System.IO.FileSystemWatcher(Environment.CurrentDirectory + "\Core", "*.aslx")
+                            m_fileWatcherQuest = New System.IO.FileSystemWatcher(Application.StartupPath + "\Core", "*.aslx")
                             m_fileWatcherQuest.EnableRaisingEvents = True
                             m_fileWatcher.IncludeSubdirectories = True
                             m_simpleMode = False
