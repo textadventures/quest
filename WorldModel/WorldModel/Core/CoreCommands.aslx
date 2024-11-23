@@ -963,20 +963,18 @@
           JS.eval("if (!noTranscript){transcriptName = transcriptName || gameName; savingTranscript = true};")
         }
         else {
-          msg (Template("TranscriptEnterFilename"))
-          // This puts the current JS value of transcriptName in the text input box.
-          // This is set to game.gamename by default when play begins.
-          JS.eval ("$('input#txtCommand').val(transcriptName);")
-          get input {
+          if (game.showcommandbar) {
+            msg (Template("TranscriptEnterFilename"))
+            // This puts the current JS value of transcriptName in the text input box.
+            // This is set to game.gamename by default when play begins.
+            JS.eval ("$('input#txtCommand').val(transcriptName);")
             JS.eval ("$('input#txtCommand').val(\"\");")
-            filename = GetWindowsSafeName(result)
-            game.transcriptname = game.gamename
-            if (not filename = "") {
-              JS.eval ("transcriptName = '" + filename + "';")
-              game.transcriptname = filename
+            get input {
+              InitiateTranscript (result)
             }
-            msg ("> " + game.transcriptname)
-            EnableTranscript
+          }
+          else{
+            InitiateTranscript (game.gamename)
           }
         }
       }
@@ -1026,6 +1024,17 @@
     else {
       return (prefix + DynamicTemplate("ObjectNotOpen", obj))
     }
+  </function>
+  
+  <function name="InitiateTranscript" parameters="s">
+    filename = GetWindowsSafeName(s)
+    game.transcriptname = game.gamename
+    if (not filename = "") {
+      JS.eval ("transcriptName = '" + filename + "';")
+      game.transcriptname = filename
+    }
+    msg ("> " + game.transcriptname)
+    EnableTranscript
   </function>
 
 </library>
