@@ -222,7 +222,7 @@
       else {
         error ("ShowMenu cannot handle a " + TypeOf(option))
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"sendCommand('" + count + "')\">" + optionText + "</a>")
     }
     EndOutputSection (outputsection)
     game.menuoptions = options
@@ -232,7 +232,7 @@
   ]]>
   </function>
   
-  <function name="ShowMenuResponse" parameters="option">
+  <function name="ShowMenuResponse" parameters="option"><![CDATA[
     if (game.menucallback = null) {
       error ("Unexpected menu response")
     }
@@ -249,7 +249,7 @@
       invoke (script, parameters)
       FinishTurn
     }
-  </function>
+  ]]></function>
   
   <function name="EscapeQuotes" parameters="s" type="string">
     s = Replace(s, "\"", "@@@doublequote@@@")
@@ -290,6 +290,10 @@
       number = ToInt(input)
       if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
         handled = true
+        // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
+        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript") and GetBoolean (game, "transcript_forcecommands")){
+          JS.writeToTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
+        }
         ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
       }
     }
@@ -586,7 +590,7 @@
 
   <function name="DictionaryRemove" parameters="dict, key">
     if (dict = null or TypeOf(dict)="object") {
-      error ("DictionaryAdd:  Dictionary does not exist!")
+      error ("DictionaryRemove:  Dictionary does not exist!")
     }
     if (DictionaryContains(dict, key)) {
       dictionary remove (dict, key)
@@ -607,15 +611,91 @@
   ]]>
   </function>
   
+  <!--
+      <summary>Enables the transcript</summary>
+      <remarks>
+        If game.notranscript is changed to true, the user will NOT be allowed to use the transcript feature.
+        (This is set to false by default.)
+
+        Otherwise, this function will enable the transcript, and each bit of text output by JS.addText()
+        will be written to a file when using the desktop player or to localStorage when using the web player.
+      </remarks>
+   -->
+  <function name="EnableTranscript"><![CDATA[
+    if (GetBoolean (game, "notranscript")){
+      KillTranscript
+    }
+    else {
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      game.savingtranscript = true
+      JS.eval("if (!noTranscript){transcriptName = '" + game.transcriptname + "'; savingTranscript = true};")
+      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage") + "<br/>")
+      // Don't print the next line anymore. Everyone complains about it taking up space.
+      //msg (DynamicTemplate("ToDisableTranscript"))
+      //msg("")
+    }
+  ]]></function>
+  
+  <!--
+      <summary>Disables the transcript</summary>
+      <remarks>
+         "Disable" has been the common terminology since the 1970s.
+       
+         This is really more like putting the transcript on standby until the player enables it again.
+      </remarks>
+   -->
   <function name="DisableTranscript">
-    game.notranscript = true
+    game.savingtranscript = false
     JS.eval("savingTranscript = false;")
   </function>
   
-  <function name="DisableHtmlLog">
-    game.nohtmllog = true
+  <!--
+      <summary>Completely stop the use of the transcript feature.</summary>
+   -->
+  <function name="KillTranscript">
+    game.notranscript = true
+    JS.eval("savingTranscript = false; noTranscript = true;")
+    DisableTranscript
   </function>
-
+  
+  <!--
+      <summary>DEPRECATED. Left in this state as a fallback to avoid errors.</summary>
+   -->
+  <function name="UpdateTranscriptString" parameters="data">
+    // Do nothing.
+  </function>
+  
+  <function name="InitiateTranscript" parameters="s">
+    filename = GetWindowsSafeName(s)
+    game.transcriptname = game.gamename
+    if (not filename = "") {
+      JS.eval ("transcriptName = '" + filename + "';")
+      game.transcriptname = filename
+    }
+    msg ("> " + game.transcriptname)
+    EnableTranscript
+  </function>
+  
+  <!--
+      <summary>Get a Windows-safe name for the transcript file</summary>
+   -->
+  <function name="GetWindowsSafeName" parameters="dirty" type="string"><![CDATA[
+    if (StartsWith(dirty, ".")) {
+      dirty = Mid (dirty, 2, LengthOf (dirty) -1)
+    }
+    clean = Trim(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(dirty, "\"", "''"), "<", "_"), ">", "_"), ":", "_"), "/", "_"), "\\", "_"), "|", "_"), "?", "_"), "*", "_"))
+    changed_something = false
+    if (not clean = dirty) {
+      changed_something = true
+    }
+    if (StartsWith(clean, ".")) {
+      clean = GetWindowsSafeName(clean)
+    }
+    return (clean)
+  ]]></function>
+  
   <function name="QuickParams" parameters="key1, value1, key2, value2, key3, value3" type="dictionary">
     d = NewDictionary()
     dictionary add (d, key1, value1)

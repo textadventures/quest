@@ -872,18 +872,18 @@
     ]]>
   </function>
 
-  <function name="Log" parameters="text">
-    <![CDATA[
-    //request (Log, text)
-    // Replacing double quotes with 2 single quotes
-    text = Replace(text, "\"", "''")
-    // Changing syntax from single quotes to escaped double quotes to allow single quotes in log entries
-    if (not GetBoolean(game, "nohtmllog")){
-      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry(\""+text+"\"); };")
+  <function name="Log" parameters="text"><![CDATA[
+    // Use the log window in the desktop player. If not using the desktop player, this does nothing.
+    request (Log, text)
+    // Write to a file in "Documents\Quest Logs" if game.writelogtofile is true (default is false)
+    if (GetBoolean (game, "writelogtofile")){
+      JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){ WriteToLog(\"" + Replace(text, "\"", "''") + "\");}")
     }
-    JS.eval("if(!webPlayer && typeof(WriteToLog)===\"function\"){var s = \""+text+"\";WriteToLog(s);}")
-    ]]>
-  </function>
+    // Use the console log if game.useconsolelog is true (default is false)
+    if (GetBoolean (game, "useconsolelog")){
+      JS.eval("console.log(getTimeAndDateForLog() + \"" + Replace(text, "\"", "''") + "\");")
+    }
+  ]]></function>
 
   <function name="SetBackgroundImage" parameters="filename">
     JS.SetBackgroundImage(GetFileURL(filename))
