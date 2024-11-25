@@ -631,7 +631,8 @@
       }
       game.savingtranscript = true
       JS.eval("if (!noTranscript){transcriptName = '" + game.transcriptname + "'; savingTranscript = true};")
-      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage") + "<br/>")
+      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage"))
+      JS.eval("addTextAndScroll('<b>TIME and DATE:</b> ' + getTimeAndDateForLog());")
       // Don't print the next line anymore. Everyone complains about it taking up space.
       //msg (DynamicTemplate("ToDisableTranscript"))
       //msg("")

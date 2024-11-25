@@ -972,13 +972,13 @@
         }
         else {
           if (game.showcommandbar) {
-            msg (Template("TranscriptEnterFilename"))
             // This puts the current JS value of transcriptName in the text input box.
             // This is set to game.gamename by default when play begins.
             JS.eval ("$('input#txtCommand').val(transcriptName);")
-            JS.eval ("$('input#txtCommand').val(\"\");")
+            msg (Template("TranscriptEnterFilename"))
             get input {
               InitiateTranscript (result)
+              JS.eval ("$('input#txtCommand').val(\"\");")
             }
           }
           else{
