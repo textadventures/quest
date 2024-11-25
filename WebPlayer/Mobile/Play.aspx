@@ -187,6 +187,8 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div id="endWaitDiv">
                 <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Continue...</a>
             </div>
         </div>
