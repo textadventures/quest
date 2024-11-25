@@ -35,6 +35,7 @@ function WriteToTranscript(data) {
   if (data != '' && typeof (data) == 'string') {
     UIEvent("WriteToTranscript", data);
   }
+}
 
 // Added by KV to write/append to GAMENAME-log.txt in Documents\Quest Logs
 function WriteToLog(data) {
