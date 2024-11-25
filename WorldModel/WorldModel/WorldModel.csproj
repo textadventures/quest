@@ -102,6 +102,7 @@
     <Compile Include="Functions\IFunction.cs" />
     <Compile Include="Functions\StringFunctions.cs" />
     <Compile Include="GameLoader\AttributeLoaders.cs" />
+    <Compile Include="Functions\DateTimeFunctions.cs" />
     <Compile Include="GameLoader\ElementLoaders.cs" />
     <Compile Include="GameLoader\ElementSavers.cs" />
     <Compile Include="GameLoader\ExtendedAttributeLoaders.cs" />
