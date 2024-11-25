@@ -21,13 +21,13 @@ namespace TextAdventures.Quest.Functions
         
         public static string CurrentUtcDate()
         {
-            DateTime utcDate = DateTime.Now; 
+            DateTime utcDate = DateTime.UtcNow; 
             return utcDate.ToShortDateString();
         }
 
         public static string CurrentUtcTime()
         {
-            DateTime utcTime = DateTime.Now;
+            DateTime utcTime = DateTime.UtcNow;
             return utcTime.ToShortTimeString();
         }
      
