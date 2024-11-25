@@ -2,7 +2,6 @@
   <!-- Contributed by Pertex -->
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
-  
   <!-- Contributed by SoonGames -->
   <include ref="EditorDeutsch.aslx"/>
   
@@ -543,10 +542,8 @@
 	]]>
 </function>
 
-  <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
-  <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
 
   <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>
@@ -566,5 +563,6 @@
   <template name="DevModeComSelfTestFailed">Die Zuordnung, wie sie nach dem Kommando sein sollte ist inkorrekt.</template>
   <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-
+  <!-- Added by KV -->
+  <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
 </library>

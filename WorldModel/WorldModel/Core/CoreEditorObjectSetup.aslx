@@ -6,7 +6,7 @@
     <control>
       <caption>[EditorObjectSetupType]</caption>
       <controltype>dropdowntypes</controltype>
-      <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; *=[TypeObjectAndOr]</types>
+      <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; *=[TypeObjectAndRoom]</types>
       <width>150</width>
       <advanced/>
     </control>
@@ -58,12 +58,6 @@
       <controltype>textbox</controltype>
       <attribute>suffix</attribute>
       <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
-    </control>
-
-    <control>
-      <controltype>checkbox</controltype>
-      <caption>[EditorObjectSetupIsRoom]</caption>
-      <attribute>isroom</attribute>
     </control>
 
     <control>
