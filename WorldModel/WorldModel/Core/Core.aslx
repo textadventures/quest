@@ -33,13 +33,7 @@
   <function name="InitInterface">
     <![CDATA[
     // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
-    jsgamename = JSSafe(game.gamename)
-    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
-    if (GetBoolean(game,"savetranscript")){
-      JS.eval("var savingTranscript = true;")
-      JS.replaceTranscriptString(game.transcriptstring)
-    }
+    JS.eval ("var gameName = '" + game.gamename + "'; var transcriptName = transcriptName || gameName;")
     // End of addition by KV for transcript
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
@@ -125,6 +119,16 @@
       }
       else {
         JS.setCss ("#status", "border:none")
+      }
+      // Pertex: this is new
+      if (HasString(game, "locationbarimage")){
+        url = game.locationbarimage
+        if (not Trim(url) = ""){ 
+          if (not StartsWith(game.locationbarimage,  "http")){
+            url = GetFileURL(game.locationbarimage)
+          }
+          JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
+        }
       }
     }
     //request (Show, "Location")
@@ -225,6 +229,8 @@
     if (HasScript(game, "inituserinterface")) {
       do (game, "inituserinterface")
     }
+    // Adding this for the transcript when loading saved games.
+    JS.eval("noTranscript = " + LCase(ToString(GetBoolean (game, "notranscript"))) + "; savingTranscript = " + LCase(ToString(GetBoolean (game, "savingtranscript"))) + ";")
   ]]></function>
 
   <function name="InitUserInterface">
@@ -232,6 +238,12 @@
   
   <function name="StartGame">
     <![CDATA[
+    // Added by KV here in case someone enables the transcript up front to record everything including the title.
+    transcript_triggered = false
+    if (GetBoolean (game, "savingtranscript") and not GetBoolean (game, "notranscript")){
+      transcript_triggered = true
+      EnableTranscript
+    }
     StartTurnOutputSection
     if (game.showtitle) {
       JS.StartOutputSection ("title")
@@ -286,9 +298,15 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
-    // Added by KV to use the old JS clearScreen if the transcript is disabled
-    if (GetBoolean(game, "notranscript")){
-      JS.eval("transcriptEnabled = false;")
+    if (GetBoolean (game, "saveclearedtext")){
+      JS.eval("var saveClearedText = true;")
+    }
+    else {
+      JS.eval("var saveClearedText = false;")
+    }
+    // Added by KV once more here, in case someone enabled the transcript in the start script or an _initialise_ script.
+    if (not transcript_triggered and GetBoolean (game, "savingtranscript") and not GetBoolean (game, "notranscript")){
+      EnableTranscript
     }
     game.runturnscripts = false
     FinishTurn
