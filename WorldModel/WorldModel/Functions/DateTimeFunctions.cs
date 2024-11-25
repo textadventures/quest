@@ -18,6 +18,18 @@ namespace TextAdventures.Quest.Functions
             DateTime localTime = DateTime.Now;
             return localTime.ToShortTimeString();
         }
+        
+        public static string CurrentUtcDate()
+        {
+            DateTime utcDate = DateTime.Now; 
+            return utcDate.ToShortDateString();
+        }
+
+        public static string CurrentUtcTime()
+        {
+            DateTime utcTime = DateTime.Now;
+            return utcTime.ToShortTimeString();
+        }
      
     }
 }
