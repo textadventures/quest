@@ -1,5 +1,6 @@
 ﻿var webPlayer = false;
 var canSendCommand = true;
+var platform = "desktop";
 
 (async function () {
     await CefSharp.BindObjectAsync("questCefInterop");
