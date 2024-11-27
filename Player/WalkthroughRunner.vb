@@ -1,4 +1,6 @@
-﻿Friend Class WalkthroughRunner
+﻿Imports System.Threading
+
+Friend Class WalkthroughRunner
     Private m_gameDebug As IASLDebug
     Private m_game As IASL
     Private m_walkthrough As String
@@ -19,6 +21,7 @@
     End Sub
 
     Public Sub Run()
+        Dim delay As Integer = 0
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_cancelled Then Exit For
 
@@ -39,6 +42,8 @@
                     End If
                 ElseIf cmd.StartsWith("label:") Then
                     ' ignore
+                ElseIf cmd.StartsWith("delay:") Then
+                    delay = Int32.Parse(cmd.Substring(6).Trim)
                 ElseIf cmd.StartsWith("event:") Then
                     Dim eventData As String() = cmd.Substring(6).Split(New Char() {";"c}, 2)
                     Dim eventName As String = eventData(0)
@@ -62,6 +67,7 @@
                     FinishPause()
                 End If
             Loop Until (Not m_waiting And Not m_pausing) Or m_cancelled
+            Thread.Sleep(delay * 1000)
         Next
     End Sub
 
