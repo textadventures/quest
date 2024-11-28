@@ -769,6 +769,8 @@ var saveClearedText = false;
 var noScrollback = false;
 var clearedOnce = false;
 function clearScreen() {
+    // Move outputData out of divOutput
+    $("#outputData").appendTo($("body"));
     if (!saveClearedText) {
         $("#divOutput").css("min-height", 0);
         $("#divOutput").html("");
@@ -784,6 +786,7 @@ function clearScreen() {
         }
         clearedOnce = true;
         $('#divOutput').children().addClass('clearedScreen');
+        $('.clearedScreen').attr('id',null);
         $('#divOutput').css('min-height', 0);
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
@@ -791,6 +794,8 @@ function clearScreen() {
             $('html,body').scrollTop(0);
         }, 100);
     }
+    // Move outputData back to divOutput
+    $("#outputData").appendTo($("#divOutput"));
 }
 
 // Scrollback function added by KV
@@ -1301,7 +1306,7 @@ var logVar = "";
 
 function getTimeAndDateForLog(){
   var date = new Date();
-  var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z]/g, "");
+  var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
   return currentDateTime;
 };
 
