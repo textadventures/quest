@@ -67,7 +67,7 @@ Friend Class WalkthroughRunner
                     FinishPause()
                 End If
             Loop Until (Not m_waiting And Not m_pausing) Or m_cancelled
-            Thread.Sleep(delay * 1000)
+            Thread.Sleep(delay)
         Next
     End Sub
 
