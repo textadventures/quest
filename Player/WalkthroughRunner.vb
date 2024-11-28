@@ -22,9 +22,9 @@ Friend Class WalkthroughRunner
 
     Public Sub Run()
         Dim delay As Integer = 0
+        Dim dateStart = DateTime.Now
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_cancelled Then Exit For
-
             RaiseEvent MarkScrollPosition()
             If m_showingMenu Then
                 SetMenuResponse(cmd)
@@ -67,8 +67,12 @@ Friend Class WalkthroughRunner
                     FinishPause()
                 End If
             Loop Until (Not m_waiting And Not m_pausing) Or m_cancelled
-            Thread.Sleep(delay * 1000)
+            Thread.Sleep(delay)
         Next
+        Dim dateEnd = DateTime.Now
+        Dim diff = dateEnd.Subtract(dateStart)
+        Dim res = String.Format("{0}:{1}:{2}", diff.Hours, diff.Minutes, diff.Seconds)
+        WriteLine("Walkthrough Runtime: " + res)
     End Sub
 
     Public Sub ShowMenu(menu As MenuData)
