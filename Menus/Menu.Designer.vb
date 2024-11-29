@@ -93,7 +93,7 @@ Partial Class Menu
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewHelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.QuestForumsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.QuestDiscussionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReportABugToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -539,7 +539,7 @@ Partial Class Menu
         '
         'HelpToolStripMenuItem
         '
-        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ViewHelpToolStripMenuItem, Me.toolStripSeparator5, Me.QuestForumsToolStripMenuItem, Me.ReportABugToolStripMenuItem, Me.ToolStripSeparator6, Me.AboutToolStripMenuItem})
+        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ViewHelpToolStripMenuItem, Me.toolStripSeparator5, Me.QuestDiscussionsToolStripMenuItem, Me.ReportABugToolStripMenuItem, Me.ToolStripSeparator6, Me.AboutToolStripMenuItem})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
         resources.ApplyResources(Me.HelpToolStripMenuItem, "HelpToolStripMenuItem")
         '
@@ -555,12 +555,12 @@ Partial Class Menu
         Me.toolStripSeparator5.Name = "toolStripSeparator5"
         resources.ApplyResources(Me.toolStripSeparator5, "toolStripSeparator5")
         '
-        'QuestForumsToolStripMenuItem
+        'QuestDiscussionsToolStripMenuItem
         '
-        Me.QuestForumsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_forum
-        resources.ApplyResources(Me.QuestForumsToolStripMenuItem, "QuestForumsToolStripMenuItem")
-        Me.QuestForumsToolStripMenuItem.Name = "QuestForumsToolStripMenuItem"
-        Me.QuestForumsToolStripMenuItem.Tag = "forums"
+        Me.QuestDiscussionsToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.s_forum
+        resources.ApplyResources(Me.QuestDiscussionsToolStripMenuItem, "QuestDiscussionsToolStripMenuItem")
+        Me.QuestDiscussionsToolStripMenuItem.Name = "QuestDiscussionsToolStripMenuItem"
+        Me.QuestDiscussionsToolStripMenuItem.Tag = "discussions"
         '
         'ReportABugToolStripMenuItem
         '
@@ -634,7 +634,7 @@ Partial Class Menu
     Friend WithEvents PasteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DeleteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents WalkthroughToolStripMenuItem1 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents QuestForumsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents QuestDiscussionsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ReportABugToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator6 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents ViewToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem

@@ -585,8 +585,8 @@
   <data name="LauncherReadTutorial" xml:space="preserve">
     <value>Read the Tutorial</value>
   </data>
-  <data name="LauncherGetHelpInForums" xml:space="preserve">
-    <value>Get help in the forums</value>
+  <data name="LauncherGetHelpInDiscussions" xml:space="preserve">
+    <value>Get help in Discussions</value>
   </data>
   <data name="LauncherRecent" xml:space="preserve">
     <value>Recent</value>
