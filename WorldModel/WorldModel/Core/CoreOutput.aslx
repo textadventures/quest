@@ -146,6 +146,7 @@
     data = NewDictionary()
     dictionary add (data, "fulltext", text)
     text = ProcessTextSection(text, data)
+    text = Replace(text, "@@@lt@@@", Chr(60))
     return (Replace(Replace(text, "@@@open@@@", "{"), "@@@close@@@", "}"))
   </function>
   
@@ -767,6 +768,16 @@
           return (ProcessTextSection(ListItem(elementslist, index), data))
         }
       }
+    }
+  ]]></function>
+  
+  <function name="ProcessTextCommand_Element" parameters="section, data"><![CDATA[
+    if (IsRegexMatch(":?/?\\w+\\b((?<=\\s)\\w+\\b|(?<=\\s)\\w+=\\w+\\b|(?<=\\s)\\w+=\"[^\"]*\"|(?<=\\s)\\w+='[^']*')*/?\\s*", section)) {
+      if (StartsWith (section, ":")) section = LTrim (Mid (section, 2))
+      game.textprocessorcommandresult = "<" + section + ">"
+    }
+    else {
+      game.textprocessorcommandresult = "@@@open@@@" + ProcessTextSection (section, data) + "@@@close@@@"
     }
   ]]></function>
   
