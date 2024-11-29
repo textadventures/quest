@@ -19,7 +19,7 @@ Public Class EditorWelcome
     End Sub
 
     Private Sub Hyperlink_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
-        LaunchURL("http://forum.textadventures.co.uk/")
+        LaunchURL("https://github.com/textadventures/quest/discussions")
     End Sub
 
     Private Sub LaunchURL(url As String)
@@ -42,7 +42,7 @@ Public Class EditorWelcome
         lblReadTheTutorial.Text = T("LauncherReadTutorial")
     End Sub
 
-    Private Sub lblGetHelpInForums_Initialized(sender As Object, e As EventArgs) Handles lblGetHelpInForums.Initialized
-        lblGetHelpInForums.Text = T("LauncherGetHelpInForums")
+    Private Sub lblGetHelpInDiscussions_Initialized(sender As Object, e As EventArgs) Handles lblGetHelpInDiscussions.Initialized
+        lblGetHelpInDiscussions.Text = T("LauncherGetHelpInDiscussions")
     End Sub
 End Class
