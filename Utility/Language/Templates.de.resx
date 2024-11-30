@@ -228,8 +228,8 @@
   <data name="LauncherReadTutorial" xml:space="preserve">
     <value>Das Tutorial lesen</value>
   </data>
-  <data name="LauncherGetHelpInForums" xml:space="preserve">
-    <value>Im Forum nach Hilfe suchen</value>
+  <data name="LauncherGetHelpInDiscussions" xml:space="preserve">
+    <value>Im Discussions nach Hilfe suchen</value>
   </data>
   <data name="LauncherRecent" xml:space="preserve">
     <value>Kürzlich geöffnet</value>

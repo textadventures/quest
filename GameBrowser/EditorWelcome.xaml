@@ -43,7 +43,7 @@
                 </Button.Background>
                 <TextBlock x:Name="lblReadTheTutorial" FontSize="16">Read the tutorial</TextBlock>
             </Button>
-            <TextBlock Grid.Row="3" Margin="20" FontSize="16" TextAlignment="Center"><Hyperlink Click="Hyperlink_Click" Foreground="#FF1D1B61"><TextBlock x:Name="lblGetHelpInForums">Get help in the forums</TextBlock></Hyperlink></TextBlock>
+            <TextBlock Grid.Row="3" Margin="20" FontSize="16" TextAlignment="Center"><Hyperlink Click="Hyperlink_Click" Foreground="#FF1D1B61"><TextBlock x:Name="lblGetHelpInDiscussions">Get help in Discussions</TextBlock></Hyperlink></TextBlock>
         </Grid>
     </ScrollViewer>
 </UserControl>

@@ -768,14 +768,14 @@
   <data name="toolStripSeparator5.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="QuestForumsToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+  <data name="QuestDiscussionsToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
-  <data name="QuestForumsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="QuestDiscussionsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>176, 26</value>
   </data>
-  <data name="QuestForumsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Quest &amp;Forums</value>
+  <data name="QuestDiscussionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Quest &amp;Discussions</value>
   </data>
   <data name="ReportABugToolStripMenuItem.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
@@ -1266,10 +1266,10 @@
   <data name="&gt;&gt;toolStripSeparator5.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;QuestForumsToolStripMenuItem.Name" xml:space="preserve">
-    <value>QuestForumsToolStripMenuItem</value>
+  <data name="&gt;&gt;QuestDiscussionsToolStripMenuItem.Name" xml:space="preserve">
+    <value>QuestDiscussionsToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;QuestForumsToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;QuestDiscussionsToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;ReportABugToolStripMenuItem.Name" xml:space="preserve">

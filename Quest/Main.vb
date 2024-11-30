@@ -60,7 +60,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("restart", AddressOf RestartMenuClick)
         ctlMenu.AddMenuClickHandler("createnew", AddressOf CreateNewMenuClick)
         ctlMenu.AddMenuClickHandler("viewhelp", AddressOf Help)
-        ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
+        ctlMenu.AddMenuClickHandler("discussions", AddressOf Discussions)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
         ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
@@ -389,16 +389,16 @@ Public Class Main
         LaunchURL("https://github.com/textadventures/quest/issues")
     End Sub
 
-    Private Sub Forums()
-        LaunchURL("http://forum.textadventures.co.uk/")
+    Private Sub Discussions()
+        LaunchURL("https://github.com/textadventures/quest/discussions")
     End Sub
 
     Private Sub Help()
-        LaunchURL("http://docs.textadventures.co.uk/quest/")
+        LaunchURL("https://docs.textadventures.co.uk/quest/")
     End Sub
 
     Private Sub Tutorial()
-        LaunchURL("http://docs.textadventures.co.uk/quest/tutorial/")
+        LaunchURL("https://docs.textadventures.co.uk/quest/tutorial/")
     End Sub
 
     Private Sub LaunchURL(url As String)
