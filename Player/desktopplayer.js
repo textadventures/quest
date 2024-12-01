@@ -1,5 +1,6 @@
 ﻿var webPlayer = false;
 var canSendCommand = true;
+var platform = "desktop";
 
 (async function () {
     await CefSharp.BindObjectAsync("questCefInterop");
@@ -25,16 +26,21 @@ function RestartGame() {
     UIEvent("RestartGame", "");
 }
 
-// SaveTranscript added by KV to write/append to GAMENAME-transcript.html in Documents\Quest Transcripts
+// SaveTranscript "renamed"/replaced by WriteToTranscript
 function SaveTranscript(data) {
-    data = data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>";
-    if (!webPlayer && transcriptString != '') { UIEvent("SaveTranscript", data); }
-    transcriptString += data;
+    WriteToTranscript(data);
+}
+
+// WriteToTranscript added by KV to write/append to GAMENAME-transcript.txt in Documents\Quest Transcripts
+function WriteToTranscript(data) {
+  if (data != '' && typeof (data) == 'string') {
+    UIEvent("WriteToTranscript", data);
+  }
 }
 
 // Added by KV to write/append to GAMENAME-log.txt in Documents\Quest Logs
 function WriteToLog(data) {
-    if (!webPlayer && data != '' && typeof (data) == 'string') {
+    if (data != '' && typeof (data) == 'string') {
         UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
     }
 }

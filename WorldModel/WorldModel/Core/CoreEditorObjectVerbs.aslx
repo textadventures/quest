@@ -61,7 +61,7 @@
         </item>
         <item>
           <key>enter</key>
-          <value>Use a command, rather than a verb, to allow the player to enter this object.</value>
+          <value>Input the verb name as "enterverb". It will appear as "enter" to the player.</value>
         </item>
       </clashmessages>
       <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>
