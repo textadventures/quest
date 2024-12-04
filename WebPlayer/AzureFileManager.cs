@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Configuration;
 
 namespace WebPlayer
 {
@@ -21,9 +22,10 @@ namespace WebPlayer
         {
             if (id.StartsWith("editor/"))
             {
+                var gameResourcesURI = ConfigurationManager.AppSettings["GameResourcesURI"] ?? "https://textadventures.blob.core.windows.net/";
                 return new SourceFileData
                 {
-                    Filename = string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7)),
+                    Filename = string.Format(gameResourcesURI + "editorgames/{0}", id.Substring(7)),
                     IsCompiled = false
                 };
             }
@@ -42,7 +44,8 @@ namespace WebPlayer
         private static string GetSourceGameUrl(ApiGame game)
         {
             var gameFile = game.ASLVersion >= 500 ? "game.aslx" : System.IO.Path.GetFileName(game.OnlineRef);
-            return string.Format("https://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
+            var gameResourcesURI = ConfigurationManager.AppSettings["GameResourcesURI"] ?? "https://textadventures.blob.core.windows.net/";
+            return string.Format(gameResourcesURI + "gameresources/{0}/{1}", game.UniqueId, gameFile);
         }
 
         public static async Task<ApiGame> GetGameData(string id)
@@ -55,7 +58,8 @@ namespace WebPlayer
         public static string GetResourceUrlRoot(string id)
         {
             if (!id.StartsWith("editor/")) return null;
-            return string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7, id.LastIndexOf('/') - 6));
+            var gameResourcesURI = ConfigurationManager.AppSettings["GameResourcesURI"] ?? "https://textadventures.blob.core.windows.net/";
+            return string.Format(gameResourcesURI + "editorgames/{0}", id.Substring(7, id.LastIndexOf('/') - 6));
         }
     }
 }
