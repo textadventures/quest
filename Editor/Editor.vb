@@ -15,6 +15,7 @@ Public Class Editor
     Private m_currentEditorData As IEditorDataExtendedAttributeInfo
     Private m_unsavedChanges As Boolean
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
+    Private WithEvents m_fileWatcherQuest As System.IO.FileSystemWatcher
     Private m_simpleMode As Boolean
     Private m_editorStyle As EditorStyle = EditorStyle.TextAdventure
     Private m_reloadingFromCodeView As Boolean
@@ -65,7 +66,11 @@ Public Class Editor
                             Dim path As String = System.IO.Path.GetDirectoryName(m_filename)
                             Dim filter As String = System.IO.Path.GetFileName(m_filename)
                             m_fileWatcher = New System.IO.FileSystemWatcher(path, "*.aslx")
+                            m_fileWatcher.IncludeSubdirectories = True
                             m_fileWatcher.EnableRaisingEvents = True
+                            m_fileWatcherQuest = New System.IO.FileSystemWatcher(Application.StartupPath + "\Core", "*.aslx")
+                            m_fileWatcherQuest.EnableRaisingEvents = True
+                            m_fileWatcher.IncludeSubdirectories = True
                             m_simpleMode = False
                             SetUpTree()
                             SetUpToolbar()
@@ -421,6 +426,7 @@ Public Class Editor
     Private Function Save(filename As String) As Boolean
         Try
             m_fileWatcher.EnableRaisingEvents = False
+            m_fileWatcherQuest.EnableRaisingEvents = False
             If m_codeView Then
                 ctlTextEditor.SaveFile(filename)
             Else
@@ -437,6 +443,7 @@ Public Class Editor
             Return False
         Finally
             m_fileWatcher.EnableRaisingEvents = True
+            m_fileWatcherQuest.EnableRaisingEvents = True
         End Try
     End Function
 
@@ -1021,6 +1028,14 @@ Public Class Editor
         Reload()
     End Sub
 
+    Private Sub m_fileWatcherQuest_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcherQuest.Changed
+        BeginInvoke(Sub()
+                        ctlReloadBanner.AlertText = String.Format(T("EditorModifiedOutside"), e.Name)
+                        ctlReloadBanner.ButtonText = T("EditorReload")
+                        ctlReloadBanner.Visible = True
+                    End Sub)
+    End Sub
+    
     Private Sub Reload()
         Dim lastSelection As String = Nothing
         If Not m_codeView Then
