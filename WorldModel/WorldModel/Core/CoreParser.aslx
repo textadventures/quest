@@ -71,17 +71,20 @@
           msg ("")
         }
         game.pov.commandmetadata = metadata
-        if (game.multiplecommands){		
+        if (game.multiplecommands) {
+          foreach (alias, metadata) {
+            command = Replace (command, alias, Replace (alias, ".", "@@@DOT@@@"))
+          }
           commands = Split(command, ".")
           if (ListCount(commands) = 1) {
             game.pov.commandqueue = null
-            HandleSingleCommand (Trim(command))
+            HandleSingleCommand (Trim(Replace(command, "@@@DOT@@@", ".")))
           }
           else {
             game.pov.commandqueue = commands
             HandleNextCommandQueueItem
           }
-		    }
+        }
         else {
           game.pov.commandqueue = null
           HandleSingleCommand (Trim(command))	

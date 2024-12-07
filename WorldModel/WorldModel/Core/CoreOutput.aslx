@@ -771,13 +771,13 @@
     }
   ]]></function>
   
-  <function name="ProcessTextCommand_Element" parameters="section, data"><![CDATA[
+  <function name="ProcessTextCommand_Element" parameters="section, data" type="string"><![CDATA[
     if (IsRegexMatch(":?/?\\w+\\b((?<=\\s)\\w+\\b|(?<=\\s)\\w+=\\w+\\b|(?<=\\s)\\w+=\"[^\"]*\"|(?<=\\s)\\w+='[^']*')*/?\\s*", section)) {
       if (StartsWith (section, ":")) section = LTrim (Mid (section, 2))
-      game.textprocessorcommandresult = "<" + section + ">"
+      return("<" + section + ">")
     }
     else {
-      game.textprocessorcommandresult = "@@@open@@@" + ProcessTextSection (section, data) + "@@@close@@@"
+      return ("@@@open@@@" + ProcessTextSection (section, data) + "@@@close@@@")
     }
   ]]></function>
   
