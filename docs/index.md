@@ -248,7 +248,7 @@ Due to restrictions in the web editor, the following are only applicable to the 
 -   [Functions](functions/)
 -   [Attribute Types](types/)
 -   [Elements](elements/)
--   [Javascript functions](js/js/)
+-   [Javascript functions](js/js)
 -   [Null](null.html)
 -   [About SAVE](about_save.html)
 -   [Using doubles](using_doubles.html)
