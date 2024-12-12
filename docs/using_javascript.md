@@ -67,4 +67,4 @@ To do this, the button must have an attribute, "onclick", with some Javascript c
 
 This is Javascript calling a `ProcessButtonClick` function which should be defined in the Quest game. It passes a parameter - the id of the button clicked - to indicate which button the player clicked.
 
-For more on how to use JavaScript oin your game, yoyu might like to look [here](https://github.com/ThePix/quest/wiki#ui).
+For more on how to use JavaScript in your game, you might like to look [here](https://github.com/ThePix/quest/wiki#ui).

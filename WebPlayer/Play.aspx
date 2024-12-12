@@ -17,6 +17,7 @@
     <script type="text/javascript" src="<%= CacheBuster("playerweb.js") %>"></script>
     <script type="text/javascript" src="paper.js"></script>
     <script type="text/paperscript" src="<%= CacheBuster("grid.js") %>" canvas="gridCanvas"></script>
+    <link rel="icon" href="Content/favicon.png">
 </head>
 <body onload="init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>');">
     <div style="display: none">

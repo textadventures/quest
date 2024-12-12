@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../playercore.js"></script>
     <script type="text/javascript" src="../player.js"></script>
     <script type="text/javascript" src="playermobile.js"></script>
+    <link rel="icon" href="../Content/favicon.png">
 </head>
 <body onload="init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>');">
     <div id="dialog" title="Menu">
