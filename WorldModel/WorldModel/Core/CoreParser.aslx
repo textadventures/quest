@@ -40,7 +40,7 @@
 	      // Added for Quest 5.8    - KV
 	      FinishTurn
       }
-      else {    
+      else { 
         shownlink = false
         if (game.echocommand) {
           if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
@@ -138,7 +138,7 @@
       msg(Template("Noted"))
       FinishTurn
     }
-    else if (LCase(command) = LCase(Template("Again1")) or LCase(command) = LCase(Template(Again2"))) {
+    else if (LCase(command) = LCase(Template("Again1")) or LCase(command) = LCase(Template("Again2"))) {
       // First handle AGAIN
       if (not game.pov.currentcommand = null) {
         HandleSingleCommand(game.pov.currentcommand)
