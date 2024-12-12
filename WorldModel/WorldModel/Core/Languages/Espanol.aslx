@@ -2,7 +2,6 @@
     <!-- Contributed by Jhames and Mauricio Díaz -->
     <!-- Additions for 5.7 by Luis Felipe Morales -->
     <include ref="English.aslx"/>
-    <include ref="EditorEnglish.aslx"/>
     <include ref="EditorEspanol.aslx"/>
     <!-- Get any undefined templates from the English library -->
 
