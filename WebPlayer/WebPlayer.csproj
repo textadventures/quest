@@ -195,7 +195,9 @@
     <Content Include="robots.txt" />
     <Content Include="Scripts\resume.js" />
     <Content Include="updating.gif" />
-    <Content Include="Content\favicon.png" />
+    <Content Include="Content\favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
