@@ -458,9 +458,10 @@ namespace WebPlayer
         {
             if (Config.ReadGameFileFromAzureBlob)
             {
-                if (ResourceUrlRoot == null)
+                if (ResourceUrlRoot == null || !string.IsNullOrEmpty(ConfigurationManager.AppSettings["GameResourcesURI"]))
                 {
-                    return string.Format("https://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
+                    var gameResourcesURI = ConfigurationManager.AppSettings["GameResourcesURI"] ?? "https://textadventures.blob.core.windows.net/";
+                    return string.Format(gameResourcesURI + "gameresources/{0}/{1}",
                         m_controller.Game.GameID,
                         file);
                 }
