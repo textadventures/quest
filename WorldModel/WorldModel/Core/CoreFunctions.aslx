@@ -193,8 +193,7 @@
   </function>
 
 
-  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
-    <![CDATA[
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
     count = 0
@@ -229,15 +228,14 @@
       else {
         error ("ShowMenu cannot handle a " + TypeOf(option))
       }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"sendCommand('" + count + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
     }
     EndOutputSection (outputsection)
     game.menuoptions = options
     game.menuallowcancel = allowCancel
     game.menucallback = callback
     game.menuoutputsection = outputsection
-  ]]>
-  </function>
+  ]]></function>
   
   <function name="ShowMenuResponse" parameters="option"><![CDATA[
     if (game.menucallback = null) {
@@ -246,6 +244,7 @@
     else {
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", UnescapeQuotes(option))
+      msg (Template("ShowMenuResponsePrompt") + option)
       script = game.menucallback
       ClearMenu
       // Added by KV to handle the new FinishTurn setup in 580

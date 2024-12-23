@@ -523,7 +523,6 @@
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
-
-  
   <template name="Noted">Noted.</template>
+  <template name="ShowMenuResponsePrompt">>> </template>
 </library>
