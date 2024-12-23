@@ -21,6 +21,26 @@
   </editor>
   
   <editor>
+    <appliesto>(function)MovePlayer</appliesto>
+    <display>Move player to #0</display>
+    <category>[EditorScriptsObjectsObjects]</category>
+    <create>MovePlayer ()</create>
+    <add>[EditorScriptsObjectsMovePlayer]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsObjectsMovePlayerto]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)MoveObject</appliesto>
     <display>Move #0 to #1</display>
     <category>[EditorScriptsObjectsObjects]</category>

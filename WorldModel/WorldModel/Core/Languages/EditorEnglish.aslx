@@ -557,6 +557,8 @@
   <template name="EditorScriptsGameStateStarttransaction">Start transaction for command</template>
   <template name="EditorScriptsObjectsObjects">Objects</template>  
   <template name="EditorScriptsObjectsAddtoinventory">Add to inventory</template>
+  <template name="EditorScriptsObjectsMovePlayer">Move player</template>
+  <template name="EditorScriptsObjectsMovePlayerto">Move player to</template>
   <template name="EditorScriptsObjectsMoveobject">Move object</template>
   <template name="EditorScriptsObjectsto">to</template>
   <template name="EditorScriptsObjectsMoveobjectCurrentRoom">Move object to the current room</template>
