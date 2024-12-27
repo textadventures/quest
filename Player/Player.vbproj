@@ -247,10 +247,6 @@
       <Project>{BE34CB28-317F-4732-AA32-9D715B4F2C7E}</Project>
       <Name>IASL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JawsApi\JawsApi.csproj">
-      <Project>{B351E843-2BE4-4302-BD98-43D149185FB7}</Project>
-      <Name>JawsApi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Menus\Menus.vbproj">
       <Project>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</Project>
       <Name>Menus</Name>
