@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EditorControllerTests")]
-[assembly: AssemblyCopyright("Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")]
+[assembly: AssemblyCopyright("Copyright © 2024 Alex Warren, Andy Joel and contributors - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,4 +31,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("5.8.*")]
+[assembly: AssemblyVersion("5.9.*")]
