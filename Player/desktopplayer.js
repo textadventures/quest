@@ -32,11 +32,12 @@ function SaveTranscript(data) {
     transcriptString += data;
 }
 
-// Added by KV to write/append to GAMENAME-log.txt in Documents\Quest Logs
+// Write/append to GAMENAME-log.txt in Documents\Quest Logs
 function WriteToLog(data) {
-    if (!webPlayer && data != '' && typeof (data) == 'string') {
-        UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
+    if (typeof (data) != 'string') {
+        data = '';
     }
+    UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
 }
 
 function goUrl(href) {
