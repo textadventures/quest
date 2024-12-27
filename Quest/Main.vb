@@ -12,6 +12,8 @@ Public Class Main
     Private m_language As String
 
     Public Sub New()
+        Application.EnableVisualStyles()
+
         LoadLanguage()
 
         ' This call is required by the Windows Form Designer.
