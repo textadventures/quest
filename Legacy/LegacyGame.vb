@@ -9420,7 +9420,7 @@ Public Class LegacyGame
     End Function
 
     Private Sub ExecGive(giveString As String, ctx As Context)
-        Dim article As String
+        Dim article As String = ""
         Dim item, character As String
         Dim type As Thing
         Dim id As Integer
@@ -9479,8 +9479,6 @@ Public Class LegacyGame
             If notGot = True Then
                 PlayerErrorMessage(PlayerError.NoItem, ctx)
                 Exit Sub
-            Else
-                article = _objs(id).Article
             End If
         End If
 

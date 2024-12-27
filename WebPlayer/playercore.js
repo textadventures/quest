@@ -357,12 +357,18 @@ function SetBackgroundOpacity(opacity) {
 }
 
 function setBackground(col) {
+    /* If '#rgb', convert to '#rrggbb'*/
+    /* https://github.com/textadventures/quest/issues/1052 */
+    if (col.charAt(0) === "#" && col.length == 4) {
+        var colBak = "" + col + "";
+        newCol = col.replace(/#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/, '#$1$1$2$2$3$3');
+        col = newCol || col;
+    }
     colNameToHex = colourNameToHex(col);
     if (colNameToHex) col = colNameToHex;
     rgbCol = hexToRgb(col);
     var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
     $("#gameBorder").css("background-color", cssBackground);
-
     $("#gamePanel").css("background-color", col);
     $("#gridPanel").css("background-color", col);
 }
