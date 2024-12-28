@@ -23,6 +23,7 @@ Friend Class WalkthroughRunner
     Public Sub Run()
         Dim delay As Integer = 0
         Dim dateStart = DateTime.Now
+        Dim showRuntime As Boolean = False
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_cancelled Then Exit For
             RaiseEvent MarkScrollPosition()
@@ -49,6 +50,8 @@ Friend Class WalkthroughRunner
                     Dim eventName As String = eventData(0)
                     Dim param As String = eventData(1)
                     m_game.SendEvent(eventName, param)
+                ElseIf cmd.StartsWith("runtime:") Then
+                    showRuntime = True
                 Else
                     m_game.SendCommand(cmd)
                 End If
@@ -70,9 +73,11 @@ Friend Class WalkthroughRunner
             Thread.Sleep(delay)
         Next
         Dim dateEnd = DateTime.Now
-        Dim diff = dateEnd.Subtract(dateStart)
-        Dim res = String.Format("{0}:{1}:{2}", diff.Hours, diff.Minutes, diff.Seconds)
-        WriteLine("Walkthrough Runtime: " + res)
+        If (showRuntime) Then
+            Dim diff = dateEnd.Subtract(dateStart)
+            Dim res = String.Format("{0}:{1}:{2}", diff.Hours, diff.Minutes, diff.Seconds)
+            WriteLine("Walkthrough Runtime: " + res)
+        End If
     End Sub
 
     Public Sub ShowMenu(menu As MenuData)
