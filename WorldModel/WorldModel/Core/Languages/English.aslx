@@ -485,16 +485,10 @@
     return (result)
   </function>  
   
-  
-  <!-- Added by KV -->
-  <template templatetype="command" name="log_cmd">^log$|^view log$|^display log$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
   <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
-  
-  <template name="OpeningInGameLog">Opening in-game log.</template>
-  <template name="NoInGameLog">This game has no in-game log.</template>
   
   <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
   <template name="DevModeErrorWrongFormat">That's the wrong format.</template>
