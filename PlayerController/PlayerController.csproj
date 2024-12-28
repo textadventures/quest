@@ -78,6 +78,7 @@
     <Content Include="grid.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="moment.min.js" />
     <Content Include="paper.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
