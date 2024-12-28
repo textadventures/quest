@@ -9,6 +9,8 @@ title: ShowMenu
 
 Shows an inline menu of the specified options and returns a [string](../types/string.html) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or (as of Quest 5.7) the name of the object.
 
+**Note:** Strings used for options cannot contain HTML elements when using a list of options (the option will not be selectable when playing online), but HTML *can* be used as values when using a dictionary of options.
+
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
 
 Use the [show menu](../scripts/show_menu.html) script command for a popup menu.
