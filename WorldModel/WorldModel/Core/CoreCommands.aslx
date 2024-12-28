@@ -958,12 +958,13 @@
   <command name="log_cmd" pattern="[log_cmd]">
     <script>
       if (not GetBoolean(game, "nohtmllog")){
+        msg(Template("OpeningInGameLog"))
         JS.showLog ()
       }
       else {
-        msg ("This game has no in-game log.")
+        msg (Template("NoInGameLog"))
       }
-      game.suppressturnscripts = true
+      SuppressTurnscripts
     </script>
   </command>
 

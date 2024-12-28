@@ -162,11 +162,11 @@ function markScrollPosition() {
 // Variable added by KV
 var gameName = document.title;
 
-function setGameName(text) {
+function setGameName(s) {
     $("#gameTitle").remove();
-    document.title = text;
+    document.title = s;
     // Added by KV
-    gameName = text;
+    gameName = s;
 }
 
 var _waitMode = false;
@@ -1302,24 +1302,26 @@ function showPopupFullscreen(title, text) {
     $('#msgbox').dialog('open');
 };
 
-// Make it easy to print messages.
-//var msg = addTextAndScroll;
-    
 // Log functions
-var logVar = "";
-function addLogEntry(text){
-  logVar += getTimeAndDateForLog() + ' ' + text+"NEW_LINE";
-};
+var logArr = [];
+
+function addLogEntry(data){
+  if(typeof(data) != "string") data = "[" + typeof(data) + "]";
+  logArr.push(getTimeAndDateForLog() + ' ' + data);
+}
 
 function showLog(){
-  var logDivString = "";
-  logDivString += "<div ";
-  logDivString += "id='log-dialog' ";
-  logDivString += "style='display:none;;'>";
-  logDivString += "<textarea id='logdata' rows='13'";
-  logDivString += "  cols='49'></textarea></div>";
-  addText(logDivString);
-  if(webPlayer){
+  $("#log-dialog").remove();
+  $("#log-data").remove();
+  var logDiv = document.createElement("DIV");
+  logDiv.id = "log-dialog";
+  logDiv.style = "display:none;";
+  var textAreaDiv = document.createElement("TEXTAREA");
+  textAreaDiv.id = "logdata";
+  textAreaDiv.rows = "13";
+  textAreaDiv.cols = "49";
+  addText(logDiv);
+  logDiv.appendChild(textAreaDiv);
     var logDialog = $("#log-dialog").dialog({
       autoOpen: false,
       width: 600,
@@ -1341,67 +1343,37 @@ function showLog(){
       },
       show: { effect: "fadeIn", duration: 500 },
       // The modal setting keeps the player from interacting with anything besides the dialog window.
-      //  (The log will not update while open without adding a turn script.  I prefer this.)
+      //  (NOTE: The log will not update while open without adding a turn script.)
       modal: true,
     });
-  }else{
-    var logDialog = $("#log-dialog").dialog({
-    autoOpen: false,
-    width: 600,
-    height: 500,
-    title: "Log",
-    buttons: {
-      Ok: function() {
-        $(this).dialog("close");
-      },
-      Print: function(){
-        $(this).dialog("close");
-        showLogDiv();
-        printLogDiv();
-      },
-    },
-    show: { effect: "fadeIn", duration: 500 },
-    // The modal setting keeps the player from interacting with anything besides the dialog window.
-    //  (The log will not update while open without adding a turn script.  I prefer this.)
-    modal: true,
-  });
-  }
-  $('textarea#logdata').val(logVar.replace(/NEW_LINE/g,"\n"));
+  $('textarea#logdata').val(logArr.join("\r\n"));
   logDialog.dialog("open");
-};
+}
 
 var logDivIsSetUp = false;
 
-var logDivToAdd = "";
-logDivToAdd += "<div ";
-logDivToAdd += "id='log-div' ";
-logDivToAdd += "style='display:none;'>";
-logDivToAdd += "<a class='do-not-print-with-log' ";
-logDivToAdd += "href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  ";
-logDivToAdd += "<a class='do-not-print-with-log' href='' ";
-logDivToAdd += "onclick='printLogDiv();'>PRINT</a> ";
-logDivToAdd += "<div id='log-contents-div' '></div></div>";
+var logDivToAdd = "<div id='log-div' style='display:none;'><a class='do-not-print-with-log' href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  <a class='do-not-print-with-log' href='' onclick='printLogDiv();'>PRINT</a> <div id='log-contents-div' '></div></div>";
 
 function setupLogDiv(){
   addText(logDivToAdd);
   $("#log-div").insertBefore($("#dialog"));
   logDivIsSetUp = true;
-};
+}
 
 function showLogDiv(){
     if(!logDivIsSetUp){
      setupLogDiv(); 
     }
-	$(".do-not-print-with-log").show();
-	$("#log-contents-div").html(logVar.replace(/NEW_LINE/g,"<br/>"));
-	$("#log-div").show();
-	$("#gameBorder").hide();
-};
+	  $(".do-not-print-with-log").show();
+	  $("#log-contents-div").html(logArr.join("<br/>"));
+	  $("#log-div").show();
+	  $("#gameBorder").hide();
+}
 
 function hideLogDiv(){
 	$("#log-div").hide();
 	$("#gameBorder").show();
-};
+}
 
 function printLogDiv(){
   if(typeof(document.title) !== "undefined"){
@@ -1409,50 +1381,36 @@ function printLogDiv(){
   }else{
     var docTitleBak = "title";
   }
-  document.title = "log.txt" ;
+  document.title = gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase(); /* this doesn't work in the desktop player */
   $('.do-not-print-with-log').hide();
   print();
   $('.do-not-print-with-log').show();
+  hideLogDiv();
   document.title = docTitleBak;
-};
+  addTextAndScroll("Done.<br/>");
+}
 
 
 function saveLog(){
-  if(webPlayer){
-    var href = "data:text/plain,"+logVar.replace(/NEW_LINE/g,"\n");
-    addTextAndScroll("<a download='log.txt' href='"+href+"' id='log-save-link'>Click here to save the log if your pop-up blocker stopped the download.</a>");
-    document.getElementById("log-save-link").addEventListener ("click", function (e) {e.stopPropagation();});
-    document.getElementById("log-save-link").click();
-  }else{
-    alert("This function is only available while playing online.");
-  }
- };
+    $("#log-save-link").attr("href",null).attr("id",null).attr("download",null);
+    let a = document.createElement('a');
+    a.download = gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '-log.txt';
+    let blob = new Blob([logArr.join("\r\n")], {type: 'text/plain'});
+    a.href = URL.createObjectURL(blob);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    addTextAndScroll('Saved.<br/>');
+    a.innerHTML = "Click here to save the log if your pop-up blocker stopped the download.";
+    a.id = "log-save-link";
+    addTextAndScroll(a);
+}
 
 function getTimeAndDateForLog(){
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1;
-	var yyyy = today.getFullYear();
-	var hrs = today.getHours();
-	var mins = today.getMinutes();
-	var secs = today.getSeconds();
-	today = mm + '/' + dd + '/' + yyyy;
-	if(hrs>12) {
-	  ampm = 'PM';
-	  hrs = '0' + '' + hrs - 12
-	}else{
-	  ampm = 'AM';
-	} 
-	if (mins<10) {
-	  mins = '0'+mins;
-	} 
-	if(secs<10) {
-	  secs = '0' + secs;
-	}
-	time = hrs + ':' + mins + ':' + secs + ' ' + ampm;
-	return today + ' ' + time;
-};
-    
+    var date = new Date();
+    var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
+    return currentDateTime;
+}
+
 // **********************************
 // TRANSCRIPT FUNCTIONS
 

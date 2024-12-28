@@ -35,7 +35,7 @@ function SaveTranscript(data) {
 // Write/append to GAMENAME-log.txt in Documents\Quest Logs
 function WriteToLog(data) {
     if (typeof (data) != 'string') {
-        data = '';
+        data = "[" + typeof(data) + "]";
     }
     UIEvent("WriteToLog", getTimeAndDateForLog() + " " + data);
 }

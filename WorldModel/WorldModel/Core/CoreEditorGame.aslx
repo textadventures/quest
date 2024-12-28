@@ -174,20 +174,12 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>
-      
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameDisableInGameLog]</caption>
-        <attribute>nohtmllog</attribute>
-      </control>
-      
+    
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameWriteLogToFile]</caption>
         <attribute>writelogtofile</attribute>
       </control>
-
-
     </tab>
 
     
