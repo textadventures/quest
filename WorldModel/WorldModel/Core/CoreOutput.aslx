@@ -878,13 +878,8 @@
       text = "[" + TypeOf(text) + "]"
     }
     request (Log, text)
-    // Replacing double quotes with 2 single quotes
-    text = Replace(text, "\"", "''")
-    // Changing syntax from single quotes to escaped double quotes to allow single quotes in log entries
-    if (not GetBoolean(game, "nohtmllog")){
-      JS.eval("if(typeof(addLogEntry)===\"function\"){ addLogEntry(\""+text+"\"); };")
-    }
     if (GetBoolean(game, "writelogtofile")){
+      text = Replace(text, "\"", "''")
       JS.WriteToLog(text)
     }
     ]]>

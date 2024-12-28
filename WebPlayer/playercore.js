@@ -1311,6 +1311,8 @@ function addLogEntry(data){
 }
 
 function showLog(){
+  var col = isMobilePlayer() ? "20" : "49";
+  var wid = isMobilePlayer() ? "90vw" : "60vw";
   $("#log-dialog").remove();
   $("#log-data").remove();
   var logDiv = document.createElement("DIV");
@@ -1319,12 +1321,12 @@ function showLog(){
   var textAreaDiv = document.createElement("TEXTAREA");
   textAreaDiv.id = "logdata";
   textAreaDiv.rows = "13";
-  textAreaDiv.cols = "49";
+  textAreaDiv.cols = col;
   addText(logDiv);
   logDiv.appendChild(textAreaDiv);
     var logDialog = $("#log-dialog").dialog({
       autoOpen: false,
-      width: 600,
+      width: wid,
       height: 500,
       title: "Log",
       buttons: {
