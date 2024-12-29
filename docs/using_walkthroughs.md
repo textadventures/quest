@@ -81,13 +81,12 @@ As of Quest 5.9 you can include the line
 
      runtime:
 
-anywhere in the walkthrough to display the total runtime of the walkthrough.
+anywhere in the walkthrough to display the total runtime of the walkthrough. The command can also be used several times in a walkthrough.
 
 Output speed
 ------------
 
 From Quest 5.9 you can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
-
 
      <walkthrough name="main">
        <steps>
@@ -101,9 +100,7 @@ From Quest 5.9 you can influence the speed of the output with the line "delay:".
          examine horse
          use apple with horse
          runtime:
-
        <steps>
      <walkthrough>
-
 
 The command can also be used several times in a walkthrough if certain areas are to be displayed with their own speed.
