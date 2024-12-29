@@ -39,6 +39,10 @@
     object.parent = parent
   </function>
 
+  <function name="MovePlayer" parameters="loc">
+    game.pov.parent = loc
+  </function>
+  
   <function name="MoveObjectHere" parameters="object">
     object.parent = game.pov.parent
   </function>
