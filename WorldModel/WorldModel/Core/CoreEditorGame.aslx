@@ -179,6 +179,7 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameWriteLogToFile]</caption>
         <attribute>writelogtofile</attribute>
+        <desktop/>
       </control>
     </tab>
 

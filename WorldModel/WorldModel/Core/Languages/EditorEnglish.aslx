@@ -930,5 +930,5 @@
   <template name="EditorScriptObjectsHide">Hide</template>
   <template name="EditorScriptObjectsPrint">Print</template>
   <template name="EditorScriptObjectsIf">If</template>
-  <template name="EditorGameWriteLogToFile">Save log entries to a file in "Documents\Quest Logs" (Windows desktop player only)</template>
+  <template name="EditorGameWriteLogToFile">Save log entries to a file in "Documents\Quest Logs"</template>
 </library>
