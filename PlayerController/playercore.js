@@ -162,11 +162,11 @@ function markScrollPosition() {
 // Variable added by KV
 var gameName = document.title;
 
-function setGameName(s) {
+function setGameName(text) {
     $("#gameTitle").remove();
     document.title = s;
     // Added by KV
-    gameName = s;
+    gameName = text;
 }
 
 var _waitMode = false;
@@ -1314,9 +1314,9 @@ function addLogEntry(data){
 
 var displayedInGameLogWarning = false;
 function showLog(){
-  // In-game HTML log introduced in 5.8. Deprecated in 5.9
+  // In-game HTML log introduced in 5.8. Removed in 5.9
   if (!displayedInGameLogWarning) {
-    console.warning("The in-game HTML log feature has been deprecated.")
+    console.warning("The in-game HTML log feature has been removed.")
     displayedInGameLogWarning = true;
   }
   // Do nothing.

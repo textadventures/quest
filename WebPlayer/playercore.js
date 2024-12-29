@@ -162,11 +162,11 @@ function markScrollPosition() {
 // Variable added by KV
 var gameName = document.title;
 
-function setGameName(s) {
+function setGameName(text) {
     $("#gameTitle").remove();
     document.title = s;
     // Added by KV
-    gameName = s;
+    gameName = text;
 }
 
 var _waitMode = false;
@@ -1303,110 +1303,46 @@ function showPopupFullscreen(title, text) {
 };
 
 // Log functions
-var logArr = [];
+// In-game HTML log introduced in 5.8. Deprecated in 5.9
+// Its functions and variables are only here to avoid errors
+
+var logVar = "";
 
 function addLogEntry(data){
-  if(typeof(data) != "string") data = "[" + typeof(data) + "]";
-  logArr.push(getTimeAndDateForLog() + ' ' + data);
+  // Do nothing.
 }
 
+var displayedInGameLogWarning = false;
 function showLog(){
-  var col = isMobilePlayer() ? "20" : "49";
-  var wid = isMobilePlayer() ? "90vw" : "60vw";
-  $("#log-dialog").remove();
-  $("#log-data").remove();
-  var logDiv = document.createElement("DIV");
-  logDiv.id = "log-dialog";
-  logDiv.style = "display:none;";
-  var textAreaDiv = document.createElement("TEXTAREA");
-  textAreaDiv.id = "logdata";
-  textAreaDiv.rows = "13";
-  textAreaDiv.cols = col;
-  addText(logDiv);
-  logDiv.appendChild(textAreaDiv);
-    var logDialog = $("#log-dialog").dialog({
-      autoOpen: false,
-      width: wid,
-      height: 500,
-      title: "Log",
-      buttons: {
-        Ok: function() {
-          $(this).dialog("close");
-        },
-        Print: function(){
-          $(this).dialog("close");
-          showLogDiv();
-          printLogDiv();
-        },
-        Save: function(){
-          $(this).dialog("close");
-          saveLog();
-        },
-      },
-      show: { effect: "fadeIn", duration: 500 },
-      // The modal setting keeps the player from interacting with anything besides the dialog window.
-      //  (NOTE: The log will not update while open without adding a turn script.)
-      modal: true,
-    });
-  $('textarea#logdata').val(logArr.join("\r\n"));
-  logDialog.dialog("open");
+  // In-game HTML log introduced in 5.8. Removed in 5.9
+  if (!displayedInGameLogWarning) {
+    console.warning("The in-game HTML log feature has been removed.")
+    displayedInGameLogWarning = true;
+  }
+  // Do nothing.
 }
-
-var logDivIsSetUp = false;
-
-var logDivToAdd = "<div id='log-div' style='display:none;'><a class='do-not-print-with-log' href='' onclick='hideLogDiv()'>RETURN TO THE GAME</a>  <a class='do-not-print-with-log' href='' onclick='printLogDiv();'>PRINT</a> <div id='log-contents-div' '></div></div>";
 
 function setupLogDiv(){
-  addText(logDivToAdd);
-  $("#log-div").insertBefore($("#dialog"));
-  logDivIsSetUp = true;
+  // Do nothing.
 }
 
 function showLogDiv(){
-    if(!logDivIsSetUp){
-     setupLogDiv(); 
-    }
-	  $(".do-not-print-with-log").show();
-	  $("#log-contents-div").html(logArr.join("<br/>"));
-	  $("#log-div").show();
-	  $("#gameBorder").hide();
+  // Do nothing.
 }
 
 function hideLogDiv(){
-	$("#log-div").hide();
-	$("#gameBorder").show();
+  // Do nothing.
 }
 
 function printLogDiv(){
-  if(typeof(document.title) !== "undefined"){
-    var docTitleBak = document.title;
-  }else{
-    var docTitleBak = "title";
-  }
-  document.title = gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase(); /* this doesn't work in the desktop player */
-  $('.do-not-print-with-log').hide();
-  print();
-  $('.do-not-print-with-log').show();
-  hideLogDiv();
-  document.title = docTitleBak;
-  addTextAndScroll("Done.<br/>");
+  // Do nothing.
 }
-
 
 function saveLog(){
-    $("#log-save-link").attr("href",null).attr("id",null).attr("download",null);
-    let a = document.createElement('a');
-    a.download = gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '-log.txt';
-    let blob = new Blob([logArr.join("\r\n")], {type: 'text/plain'});
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    URL.revokeObjectURL(a.href);
-    addTextAndScroll('Saved.<br/>');
-    a.innerHTML = "Click here to save the log if your pop-up blocker stopped the download.";
-    a.id = "log-save-link";
-    addTextAndScroll(a);
+  // Do nothing.
 }
 
+// The transcript uses this function.
 function getTimeAndDateForLog(){
     var date = new Date();
     var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
