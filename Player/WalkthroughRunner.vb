@@ -1,4 +1,6 @@
-﻿Friend Class WalkthroughRunner
+﻿Imports System.Threading
+
+Friend Class WalkthroughRunner
     Private m_gameDebug As IASLDebug
     Private m_game As IASL
     Private m_walkthrough As String
@@ -19,9 +21,10 @@
     End Sub
 
     Public Sub Run()
+        Dim delay As Integer = 0
+        Dim dateStart = DateTime.Now
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_cancelled Then Exit For
-
             RaiseEvent MarkScrollPosition()
             If m_showingMenu Then
                 SetMenuResponse(cmd)
@@ -39,11 +42,18 @@
                     End If
                 ElseIf cmd.StartsWith("label:") Then
                     ' ignore
+                ElseIf cmd.StartsWith("delay:") Then
+                    delay = Int32.Parse(cmd.Substring(6).Trim)
                 ElseIf cmd.StartsWith("event:") Then
                     Dim eventData As String() = cmd.Substring(6).Split(New Char() {";"c}, 2)
                     Dim eventName As String = eventData(0)
                     Dim param As String = eventData(1)
                     m_game.SendEvent(eventName, param)
+                ElseIf cmd.StartsWith("runtime:") Then
+                    Dim dateEnd = DateTime.Now
+                    Dim diff = dateEnd.Subtract(dateStart)
+                    Dim res = String.Format("{0}:{1}:{2}", diff.Hours, diff.Minutes, diff.Seconds)
+                    WriteLine("Walkthrough Runtime: " + res)
                 Else
                     m_game.SendCommand(cmd)
                 End If
@@ -62,7 +72,9 @@
                     FinishPause()
                 End If
             Loop Until (Not m_waiting And Not m_pausing) Or m_cancelled
+            Thread.Sleep(delay)
         Next
+
     End Sub
 
     Public Sub ShowMenu(menu As MenuData)
