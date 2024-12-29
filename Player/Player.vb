@@ -637,8 +637,6 @@ Public Class Player
         BeginInvoke(Sub()
                         If UseSAPI Then
                             m_speech.SpeakAsync(text)
-                        Else
-                            JawsApi.JawsApi.JFWSayString(text, False)
                         End If
                     End Sub)
     End Sub

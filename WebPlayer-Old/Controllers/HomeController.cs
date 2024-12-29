@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace WebPlayer.Controllers
 {
@@ -10,7 +11,7 @@ namespace WebPlayer.Controllers
     {
         public ActionResult Index()
         {
-            return Redirect("https://textadventures.co.uk");
+            return Redirect(ConfigurationManager.AppSettings["WebsiteHome"] ?? "https://textadventures.co.uk/");
         }
     }
 }

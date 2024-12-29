@@ -34,9 +34,9 @@
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
-            this.cmdLink = new System.Windows.Forms.ToolStripButton();
             this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
+            this.cmdLink = new System.Windows.Forms.ToolStripButton();
             this.cmdGoToPage = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
@@ -58,7 +58,7 @@
             // 
             this.ctlToolStrip.BackColor = System.Drawing.Color.White;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
             this.cmdAddNewPage,
@@ -94,14 +94,6 @@
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             // 
-            // cmdLink
-            // 
-            this.cmdLink.AutoToolTip = false;
-            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
-            resources.ApplyResources(this.cmdLink, "cmdLink");
-            this.cmdLink.Name = "cmdLink";
-            this.cmdLink.Tag = "link";
-            // 
             // cmdEditKey
             // 
             this.cmdEditKey.AutoToolTip = false;
@@ -115,6 +107,14 @@
             this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
             resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.Name = "cmdEdit";
+            // 
+            // cmdLink
+            // 
+            this.cmdLink.AutoToolTip = false;
+            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
+            resources.ApplyResources(this.cmdLink, "cmdLink");
+            this.cmdLink.Name = "cmdLink";
+            this.cmdLink.Tag = "link";
             // 
             // cmdGoToPage
             // 

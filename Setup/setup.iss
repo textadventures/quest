@@ -1,23 +1,21 @@
-; Based on Modular InnoSetup Dependency Installer:
-; github.com/stfx/innodependencyinstaller
-; codeproject.com/Articles/20868/NET-Framework-1-1-2-0-3-5-Installer-for-InnoSetup
-
-#define QuestVersion '5.8.0'
-#define SetupVersion '580'
+#define QuestVersion '5.9.0'
+#define SetupVersion '590'
 
 [Setup]
 AppName=Quest
 AppVersion={#QuestVersion}
 AppVerName=Quest {#QuestVersion}
-AppCopyright=Copyright © 2017/2018 Andy Joel, 1998-2016 Alex Warren
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+AppCopyright=Copyright © 2024 Alex Warren, Andy Joel and contributors
 VersionInfoVersion={#QuestVersion}
-AppPublisher=Andy Joel
+AppPublisher=Alex Warren
 AppPublisherURL=https://textadventures.co.uk/
 AppSupportURL=https://textadventures.co.uk/help
 AppUpdatesURL=https://textadventures.co.uk/quest/desktop
 OutputBaseFilename=quest{#SetupVersion}
 DefaultGroupName=Quest
-DefaultDirName={pf}\Quest 5
+DefaultDirName={autopf}\Quest 5
 UninstallDisplayIcon={app}\Quest.exe
 OutputDir=bin
 SourceDir=.
@@ -25,25 +23,24 @@ AllowNoIcons=yes
 SolidCompression=yes
 PrivilegesRequired=admin
 ChangesAssociations=yes
-MinVersion=6.0
 UsePreviousSetupType=no
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "..\Quest\bin\x86\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml"; DestDir: "{app}"; Flags: recursesubdirs
-Source: "..\Dependencies\vcredist_x86.exe"; DestDir: "{tmp}"
+Source: "..\Quest\bin\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml,\x86\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "..\Dependencies\VC_redist.x64.exe"; DestDir: "{tmp}"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Icons]
 Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
-Name: "{commondesktop}\Quest"; Filename: "{app}\Quest.exe"; Tasks: desktopicon; WorkingDir: {app}
+Name: "{autodesktop}\Quest"; Filename: "{app}\Quest.exe"; Tasks: desktopicon; WorkingDir: {app}
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/quiet"; StatusMsg: "Installing components..."
+Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/quiet"; StatusMsg: "Installing components..."
 Filename: "{app}\Quest.exe"; Description: "Launch Quest"; Flags: nowait postinstall skipifsilent
 
 [Registry]
@@ -77,27 +74,3 @@ Root: HKCR; Subkey: ".qsg"; ValueType: string; ValueName: ""; ValueData: "Quest-
 Root: HKCR; Subkey: "Quest-qsg"; ValueType: string; ValueName: ""; ValueData: "Quest Saved Game"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Quest-qsg\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\QUEST.EXE,0"
 Root: HKCR; Subkey: "Quest-qsg\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\QUEST.EXE"" ""%1"""
-
-
-#include "scripts\products.iss"
-#include "scripts\products\stringversion.iss"
-#include "scripts\products\winversion.iss"
-#include "scripts\products\fileversion.iss"
-#include "scripts\products\dotnetfxversion.iss"
-#include "scripts\products\dotnetfx40client.iss"
-#include "scripts\products\dotnetfx40full.iss"
-
-[CustomMessages]
-win_sp_title=Windows %1 Service Pack %2
-
-[Code]
-function InitializeSetup(): boolean;
-begin
-	//init windows version
-	initwinversion();
-
-	if (not netfxinstalled(NetFx40Client, '') and not netfxinstalled(NetFx40Full, '')) then
-		dotnetfx40client();
-
-	Result := true;
-end;

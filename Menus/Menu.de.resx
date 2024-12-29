@@ -397,11 +397,11 @@
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 6</value>
   </data>
-  <data name="QuestForumsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="QuestDiscussionsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 26</value>
   </data>
-  <data name="QuestForumsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Quest &amp;Forum</value>
+  <data name="QuestDiscussionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Quest &amp;Discussions</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 26</value>

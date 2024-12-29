@@ -75,24 +75,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp">
-      <HintPath>..\packages\CefSharp.Common.39.0.1\build\..\CefSharp\x86\CefSharp.dll</HintPath>
+      <HintPath>..\packages\CefSharp.Common.130.1.90\lib\net462\CefSharp.dll</HintPath>
     </Reference>
     <Reference Include="CefSharp.Core">
-      <HintPath>..\packages\CefSharp.Common.39.0.1\build\..\CefSharp\x86\CefSharp.Core.dll</HintPath>
+      <HintPath>..\packages\CefSharp.Common.130.1.90\lib\net462\CefSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="CefSharp.WinForms">
-      <HintPath>..\packages\CefSharp.WinForms.39.0.1\build\..\CefSharp\x86\CefSharp.WinForms.dll</HintPath>
+      <HintPath>..\packages\CefSharp.WinForms.130.1.90\lib\net462\CefSharp.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="IASL, Version=5.7.6437.26202, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\IASL\bin\x86\Debug\IASL.dll</HintPath>
     </Reference>
-    <Reference Include="JawsApi">
-      <HintPath>..\JawsApi\bin\Debug\JawsApi.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PlayerController">
       <HintPath>..\PlayerController\bin\Debug\PlayerController.dll</HintPath>
