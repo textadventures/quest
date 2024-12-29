@@ -163,6 +163,9 @@
   
   <function name="ChangePOV" parameters="object">
     <![CDATA[
+    if (not HasObject(object, "parent")) {
+      error ("ChangePOV cannot change player to object with no parent.")
+    }
     if (game.pov <> object) {
       game.pov = object
       if (game.gridmap) {
