@@ -859,7 +859,7 @@
   <template name="TypeCanPlayer">Can be a player</template>
   <template name="TypeObjectRoom">Room</template>
   <template name="TypeObjectObject">Object</template>
-  <template name="TypeObjectAndOr">Object and/or room</template>
+  <template name="TypeObjectAndRoom">Object and room</template>
   <template name="TypeInanimateObject">Inanimate object</template>
   <template name="TypeMaleCharacter">Male character</template>
   <template name="TypeMaleCharacterNamed">Male character (named)</template>

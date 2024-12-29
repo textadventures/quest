@@ -116,6 +116,14 @@ namespace TextAdventures.Quest.EditorControls
 
             m_helper.Controller.StartTransaction(String.Format("Change type from '{0}' to '{1}'", m_dropDownValues[m_currentType], m_dropDownValues[selectedType]));
 
+            if (selectedType == k_noType)
+            {
+              if (m_currentType == "editor_object" ||  m_currentType == "editor_room")
+                {
+                  m_helper.Controller.AddFieldToElement(m_data.Name, "isroom", true);
+                }
+            }
+            
             if (m_currentType != k_noType)
             {
                 m_helper.Controller.RemoveInheritedTypeFromElement(m_data.Name, m_currentType, false);
@@ -124,6 +132,14 @@ namespace TextAdventures.Quest.EditorControls
             if (selectedType != k_noType)
             {
                 m_helper.Controller.AddInheritedTypeToElement(m_data.Name, selectedType, false);
+                if (selectedType == "editor_room")
+                {
+                    m_helper.Controller.AddFieldToElement(m_data.Name, "isroom", true);
+                } 
+                else if (selectedType == "editor_object")
+                {
+                    m_helper.Controller.AddFieldToElement(m_data.Name, "isroom", false);
+                }
             }
 
             m_helper.Controller.EndTransaction();
