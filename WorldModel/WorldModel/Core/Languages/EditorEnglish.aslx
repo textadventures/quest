@@ -557,6 +557,8 @@
   <template name="EditorScriptsObjectsto">to</template>
   <template name="EditorScriptsObjectsMoveobjectCurrentRoom">Move object to the current room</template>
   <template name="EditorScriptsObjectstothecurrent">to the current room</template>
+  <template name="EditorScriptsObjectsMovePlayer">Move player</template>
+  <template name="EditorScriptsObjectsMovePlayerto">Move player to</template>
   <template name="EditorScriptsObjectsMakeobject">Make object visible</template>  
   <template name="EditorScriptsObjectsMakeobjectinvisible">Make object invisible</template>
   <template name="EditorScriptsObjectsMakevisible">Make visible</template>
