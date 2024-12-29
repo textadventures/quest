@@ -164,7 +164,7 @@ var gameName = document.title;
 
 function setGameName(text) {
     $("#gameTitle").remove();
-    document.title = s;
+    document.title = text;
     // Added by KV
     gameName = text;
 }
