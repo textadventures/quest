@@ -259,3 +259,7 @@ function saveGameResponse(data) {
         }
     });
 }
+
+function WriteToLog(data){
+  // Do nothing.
+}

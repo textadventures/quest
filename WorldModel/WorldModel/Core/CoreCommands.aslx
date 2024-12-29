@@ -955,18 +955,6 @@
     ]]></script>
   </command>
 
-  <command name="log_cmd" pattern="[log_cmd]">
-    <script>
-      if (not GetBoolean(game, "nohtmllog")){
-        JS.showLog ()
-      }
-      else {
-        msg ("This game has no in-game log.")
-      }
-      game.suppressturnscripts = true
-    </script>
-  </command>
-
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
       if (not GetBoolean(game, "notranscript")){
