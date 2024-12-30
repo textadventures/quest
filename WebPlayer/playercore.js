@@ -765,7 +765,7 @@ function disableAllCommandLinks() {
 }
 
 // Modified by KV to handle the scrollback feature
-var saveClearedText = true;
+var saveClearedText = false;
 var clearedOnce = false;
 function clearScreen() {
     if (!saveClearedText) {
@@ -795,16 +795,12 @@ function clearScreen() {
 // Scrollback functions added by KV
 
 function showScrollback() {
-    var scrollbackDivString = "";
-    scrollbackDivString += "<div ";
-    scrollbackDivString += "id='scrollback-dialog' ";
-    scrollbackDivString += "style='display:none;'>";
-    scrollbackDivString += "<div id='scrollbackdata'></div></div>";
+    var scrollbackDivString = '<div id="scrollback-dialog" style="display:none;"><div id="scrollbackdata"></div></div>';
     addText(scrollbackDivString);
     var scrollbackDialog = $("#scrollback-dialog").dialog({
         autoOpen: false,
-        width: 600,
-        height: 500,
+        width: $(window).width(),
+        height: $(window).height(),
         title: "Scrollback",
         buttons: {
             Ok: function () {
@@ -825,8 +821,6 @@ function showScrollback() {
         $("#scrollbackdata a").addClass("disabled");
     }, 1);
 };
-
-
 
 function printScrollbackDiv() {
     var iframe = document.createElement('iframe');
