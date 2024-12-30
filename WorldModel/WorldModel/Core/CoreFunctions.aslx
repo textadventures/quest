@@ -568,10 +568,14 @@
     return (l)
   </function>
   
-  <!-- Added by KV -->
-
   <function name="AllRooms" type="objectlist">
-    return (FilterByAttribute(AllObjects(),"isroom",true))
+    l = NewObjectList()
+    foreach (o, AllObjects()) {
+      if (HasBoolean (o, "isroom") = false or GetBoolean (o, "isroom") = true){
+        list add (l, o)
+      }  
+    }
+    return (l)
   </function>
 
   <function name="DictionaryAdd" parameters="dict, key, val">

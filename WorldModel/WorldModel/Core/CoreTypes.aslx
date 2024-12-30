@@ -227,6 +227,7 @@
   </type>
 
   <type name="defaultobject">
+    <isroom  type="boolean">true</isroom>
     <visible/>
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <inventoryverbs type="simplestringlist">[LookAt];[Use];[Drop]</inventoryverbs>
