@@ -444,7 +444,6 @@
   <template name="EditorObjectScriptsTurnscripts">Turn scripts - run after every turn the player takes in this room</template>
   <template name="EditorObjectScriptsCommands">Commands</template>
   <template name="EditorObjectSetupSetup">Setup</template>
-  <template name="EditorObjectSetupIsRoom">Object is a room</template>
   <template name="EditorObjectSetupType">Type</template>
   <template name="EditorObjectSetupName">Name</template>
   <template name="EditorObjectSetupAlias">Alias</template>
