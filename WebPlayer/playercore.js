@@ -768,6 +768,8 @@ function disableAllCommandLinks() {
 var saveClearedText = false;
 var clearedOnce = false;
 function clearScreen() {
+    // Move outputData out of divOutput
+    $("#outputData").appendTo($("body"));
     if (!saveClearedText) {
         $("#divOutput").css("min-height", 0);
         $("#divOutput").html("");
@@ -783,12 +785,15 @@ function clearScreen() {
         }
         clearedOnce = true;
         $('#divOutput').children().addClass('clearedScreen');
+        $('.clearedScreen').attr('id',null);
         $('#divOutput').css('min-height', 0);
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
         setTimeout(function () {
             $('html,body').scrollTop(0);
         }, 100);
+    // Move outputData back to divOutput
+    $("#outputData").appendTo($("#divOutput"));
     }
 }
 
