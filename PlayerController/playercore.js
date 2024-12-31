@@ -799,13 +799,16 @@ function showScrollback() {
     addText(scrollbackDivString);
     var scrollbackDialog = $("#scrollback-dialog").dialog({
         autoOpen: false,
-        width: $(window).width(),
-        height: $(window).height(),
+        width: (window.innerWidth || document.documentElement.clientWidth || 
+document.body.clientWidth) - 100,
+        height: (window.innerHeight|| document.documentElement.clientHeight|| 
+document.body.clientHeight) - 100,
         title: "Scrollback",
         buttons: {
             Ok: function () {
                 $(this).dialog("close");
                 $(this).remove();
+                $("#scrollback-dialog,#scrollbackdata").remove();
             },
             Print: function () {
                 printScrollbackDiv();
@@ -820,7 +823,7 @@ function showScrollback() {
     setTimeout(function () {
         $("#scrollbackdata a").addClass("disabled");
     }, 1);
-};
+}
 
 function printScrollbackDiv() {
     var iframe = document.createElement('iframe');
@@ -830,7 +833,7 @@ function printScrollbackDiv() {
     document.body.removeChild(iframe);
     $("#scrollback-dialog").dialog("close");
     $("#scrollback-dialog").remove();
-};
+}
 
 function keyPressCode(e) {
     var keynum
