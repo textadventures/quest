@@ -323,6 +323,7 @@
     <hasbeenmoved type="boolean">false</hasbeenmoved>
     <timesexamined type="int">0</timesexamined>
     <not_all type="boolean">false</not_all>
+    <isroom/>
   </type>
 
   <type name="defaultexit">

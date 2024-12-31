@@ -426,10 +426,16 @@
     UpdateObjectLinks
   </function>  
 
-
-
   <function name="WhereAmI" parameters="s">
     game.questplatform = s
   </function>
 
+  <type name="editor_room">
+    <isroom />
+  </type>
+  
+  <type name="editor_object">
+    <isroom type="boolean">false</isroom>
+  </type>
+  
 </library>
