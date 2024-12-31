@@ -446,7 +446,6 @@
   <template name="EditorObjectScriptsTurnscripts">Nach jedem Zug in diesem Raum</template>
   <template name="EditorObjectScriptsCommands">Kommandos in diesem Raum</template>
   <template name="EditorObjectSetupSetup">Konfiguration</template>
-  <template name="EditorObjectSetupIsRoom">Das Objekt ist ein Raum</template>
   <template name="EditorObjectSetupType">Typ</template>
   <template name="EditorObjectSetupName">Name</template>
   <template name="EditorObjectSetupAlias">Alias</template>
