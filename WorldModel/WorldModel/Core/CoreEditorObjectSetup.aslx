@@ -6,7 +6,7 @@
     <control>
       <caption>[EditorObjectSetupType]</caption>
       <controltype>dropdowntypes</controltype>
-      <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; *=[TypeObjectAndOr]</types>
+      <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; editor_room_object=[TypeObjectAndOr]; *=[TypeObjectUndefined]</types>
       <width>150</width>
       <advanced/>
     </control>

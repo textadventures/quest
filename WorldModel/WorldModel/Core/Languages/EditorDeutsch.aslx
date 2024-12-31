@@ -861,7 +861,8 @@
   <template name="TypeCanPlayer">Kann der Spieler sein</template>
   <template name="TypeObjectRoom">Raum</template>
   <template name="TypeObjectObject">Objekt</template>
-  <template name="TypeObjectAndOr">Objekt und/oder Raum</template>
+  <template name="TypeObjectAndOr">Objekt und Raum</template>
+  <template name="TypeObjectUndefined">Object ist undefiniert</template>
   <template name="TypeInanimateObject">Neutrales Objekt</template>
   <template name="TypeMaleCharacter">Maskuline Person</template>
   <template name="TypeMaleCharacterNamed">Maskuline Person (Nullartikel)</template>
