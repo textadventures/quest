@@ -862,7 +862,7 @@
   <template name="TypeObjectRoom">Raum</template>
   <template name="TypeObjectObject">Objekt</template>
   <template name="TypeObjectAndOr">Objekt und Raum</template>
-  <template name="TypeObjectUndefined">Object ist undefiniert</template>
+  <template name="TypeObjectUndefined">Objekttyp ist nicht festgelegt</template>
   <template name="TypeInanimateObject">Neutrales Objekt</template>
   <template name="TypeMaleCharacter">Maskuline Person</template>
   <template name="TypeMaleCharacterNamed">Maskuline Person (Nullartikel)</template>
