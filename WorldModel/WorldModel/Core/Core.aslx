@@ -432,4 +432,13 @@
     game.questplatform = s
   </function>
 
+  <type name="editor_object">
+    <isroom type="boolean">false</isroom>
+  </type>
+  <type name="editor_room">
+    <isroom />
+  </type>
+  <type name="editor_room_object">
+    <isroom />
+  </type>
 </library>

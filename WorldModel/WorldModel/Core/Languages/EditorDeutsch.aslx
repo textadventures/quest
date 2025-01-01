@@ -446,7 +446,6 @@
   <template name="EditorObjectScriptsTurnscripts">Nach jedem Zug in diesem Raum</template>
   <template name="EditorObjectScriptsCommands">Kommandos in diesem Raum</template>
   <template name="EditorObjectSetupSetup">Konfiguration</template>
-  <template name="EditorObjectSetupIsRoom">Das Objekt ist ein Raum</template>
   <template name="EditorObjectSetupType">Typ</template>
   <template name="EditorObjectSetupName">Name</template>
   <template name="EditorObjectSetupAlias">Alias</template>
@@ -862,7 +861,8 @@
   <template name="TypeCanPlayer">Kann der Spieler sein</template>
   <template name="TypeObjectRoom">Raum</template>
   <template name="TypeObjectObject">Objekt</template>
-  <template name="TypeObjectAndOr">Objekt und/oder Raum</template>
+  <template name="TypeObjectAndOr">Objekt und Raum</template>
+  <template name="TypeObjectUndefined">Objekttyp ist nicht festgelegt</template>
   <template name="TypeInanimateObject">Neutrales Objekt</template>
   <template name="TypeMaleCharacter">Maskuline Person</template>
   <template name="TypeMaleCharacterNamed">Maskuline Person (Nullartikel)</template>
