@@ -12,6 +12,7 @@
   <implied element="timer" property="interval" type="int"/>
   <implied element="timer" property="script" type="script"/>
   <implied element="turnscript" property="script" type="script"/>
+  <implied element="exit" property="alt" type="simplestringlist"/>
 
   <include ref="CoreCommands.aslx"/>
   <include ref="CoreFunctions.aslx"/>

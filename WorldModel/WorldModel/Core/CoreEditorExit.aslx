@@ -21,6 +21,13 @@
       </control>
 
       <control>
+        <caption>[EditorObjectObjectOthernames]</caption>
+        <controltype>list</controltype>
+        <attribute>alt</attribute>
+        <editprompt>[EditorObjectObjectPleaseenter]</editprompt>
+      </control>
+
+      <control>
         <caption>[EditorExitAlias]</caption>
         <controltype>dropdown</controltype>
         <attribute>alias</attribute>
