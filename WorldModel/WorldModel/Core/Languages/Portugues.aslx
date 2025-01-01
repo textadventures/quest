@@ -459,13 +459,15 @@
   <template name="LanguageSpecificObjectTypes">feminine=Inanimate object (feminine); feminineplural=Inanimate object (feminineplural); </template>
 
   <type name="feminine">
-  <gender>isso</gender>
-  <article>a</article>
+    <gender>isso</gender>
+    <article>a</article>
+    <possessive>dessa</possessive> <!-- https://github.com/textadventures/quest/issues/1175 -->
   </type>
   
   <type name="feminineplural">
-  <gender>essas</gender>
-  <article>as</article>
+    <gender>essas</gender>
+    <article>as</article>
+    <possessive>dessas</possessive> <!-- https://github.com/textadventures/quest/issues/1175 -->
   </type>
 
   <template name="EditorVerbDefaultExpression">"Você não " + object.article + " pode #verb#."</template>
@@ -622,4 +624,51 @@
     }
   </function>
 
+  <!-- https://github.com/textadventures/quest/issues/1175 -->
+  <template name="Score">Pontuação</template>
+  <template name="Health">Vida</template>
+  <template name="Money">Dinheiro</template>
+
+  <template name="MalePossessive">dele</template>
+  <template name="FemalePossessive">dela</template>
+  <template name="MalePluralPossessive">deles</template>
+  <template name="FemalePluralPossessive">delas</template>
+
+  <template name="MaleWornModifier">vestido</template>
+  <template name="FemaleWornModifier">vestida</template>
+  <template name="MalePluralWornModifier">vestidos</template>
+  <template name="FemalePluralWornModifier">vestidas</template>
+
+  <template name="Wear">Vestir</template>
+  <verbtemplate name="wear">colocar #object#</verbtemplate>
+	<verbtemplate name="wear">veste</verbtemplate>
+	<verbtemplate name="wear">colocar</verbtemplate>
+	<verbtemplate name="wear">coloca</verbtemplate>
+	
+  <template name="Remove">Remover</template>
+  <verbtemplate name="remove">Tirar #object#</verbtemplate>
+	<verbtemplate name="remove">remover</verbtemplate>
+	<verbtemplate name="remove">Tirar</verbtemplate>
+	<verbtemplate name="remove">Retirar</verbtemplate>
+
+  <dynamictemplate name="WearSuccessful">"Você " + object.article + " veste."</dynamictemplate>
+  <dynamictemplate name="WearUnsuccessful">"Você não pode " + object.article + " usar."</dynamictemplate>
+  <dynamictemplate name="CannotWearIfNotHeld">"Você precisaria " + object.article + " pegar antes de poder " + object.article + " colocar."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotHeld">"Você precisaria " + object.article + " pegar antes de poder " + object.article + " retirar."</dynamictemplate>
+  <dynamictemplate name="AlreadyWearing">"Você já está " + object.article + " usando."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotWearing">"Você não está " + object.article + " usando."</dynamictemplate>
+  <dynamictemplate name="NotRemovable">"Você não pode removê-l" + object.article + "!"</dynamictemplate>
+  <dynamictemplate name="CannotWearOver">"Você não pode usar isso sobre " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <dynamictemplate name="CannotWearWith">"Você não pode usar isso enquanto usa " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <dynamictemplate name="RemoveSuccessful">"Você " + object.article + " retira."</dynamictemplate>
+  <dynamictemplate name="RemoveFirst">"Você não pode retirar isso enquanto usa " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
+      return ("um")
+    }
+    else {
+      return ("um")
+    }
+  </function>
+  
 </library>
