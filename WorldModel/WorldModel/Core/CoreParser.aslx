@@ -123,7 +123,7 @@
   -->
   <function name="HandleSingleCommand" parameters="command">
     <![CDATA[
-    if (LCase(command) = "[Again1]" or LCase(command) = "[Again2]") {
+    if (LCase(command) = LCase(Template("Again1")) or LCase(command) = LCase(Template("Again2"))) {
       // First handle AGAIN
       if (not game.pov.currentcommand = null) {
         HandleSingleCommand(game.pov.currentcommand)
