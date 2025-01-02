@@ -7,9 +7,9 @@ namespace TextAdventures.Quest.Functions
 {
     public static class DateTimeFunctions
     {
-        public static long CurrentDateUTC()
+        public static string CurrentDateUTC()
         {
-            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         }
 
     }
