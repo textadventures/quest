@@ -126,6 +126,16 @@
       else {
         JS.setCss ("#status", "border:none")
       }
+      // Pertex: this is new
+      if (HasString(game, "locationbarimage")){
+        url = game.locationbarimage
+        if (not Trim(url) = ""){ 
+          if (not StartsWith(game.locationbarimage,  "http")){
+            url = GetFileURL(game.locationbarimage)
+          }
+          JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
+        }
+      }
     }
     //request (Show, "Location")
     if (game.showlocation) {
