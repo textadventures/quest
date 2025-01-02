@@ -792,9 +792,9 @@ function clearScreen() {
         setTimeout(function () {
             $('html,body').scrollTop(0);
         }, 100);
+    }
     // Move outputData back to divOutput
     $("#outputData").appendTo($("#divOutput"));
-    }
 }
 
 // Scrollback functions added by KV
