@@ -97,6 +97,7 @@
     <Compile Include="Element.cs" />
     <Compile Include="Elements.cs" />
     <Compile Include="Fields.cs" />
+    <Compile Include="Functions\DateTimeFunctions.cs" />
     <Compile Include="Functions\Expression.cs" />
     <Compile Include="Functions\ExpressionOwner.cs" />
     <Compile Include="Functions\IFunction.cs" />

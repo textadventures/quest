@@ -32,6 +32,7 @@ namespace TextAdventures.Quest.Scripts
         {
             m_expressionContext = new ExpressionContext(m_worldModel.ExpressionOwner);
             m_expressionContext.Imports.AddType(typeof(StringFunctions));
+            m_expressionContext.Imports.AddType(typeof(DateTimeFunctions));
             m_expressionContext.Imports.AddType(typeof(System.Math));
 
             m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);

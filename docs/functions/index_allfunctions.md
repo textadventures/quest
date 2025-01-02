@@ -35,6 +35,7 @@ title: Functions
 *  [Create exit](../scripts/create_exit.html)
 *  [Create timer](../scripts/create_timer.html)
 *  [Create turnscript](../scripts/create_turnscript.html)
+*  [CurrentDateUTC](currentDateUTC.html)  
 
 ## D
 
