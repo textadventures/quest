@@ -627,18 +627,19 @@ function addTextAndScroll(text) {
     scrollToEnd();
 }
 
-// These 2 variables added by KV for the transcript
+// Added by KV for the transcript
 var savingTranscript = false;
-var transcriptString = "";
+var noTranscript = false;
+var transcriptString = ""; /* Added in Quest 5.8, but never worked properly */
 
-// This function altered by KV for the transcript
+
+// This function altered for the transcript
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
-    if (savingTranscript) {
-        SaveTranscript(text);
-        ASLEvent("UpdateTranscriptString", text);
+    if (savingTranscript && !noTranscript) {
+        writeToTranscript(text);
     }
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
@@ -1349,54 +1350,120 @@ function getTimeAndDateForLog(){
 // **********************************
 // TRANSCRIPT FUNCTIONS
 
-// This function is for loading a saved game
-function replaceTranscriptString(data) {
-    transcriptString = data;
+function writeToTranscript(text){
+  if (!noTranscript && savingTranscript) {
+    var faker = document.createElement('div');
+    faker.innerHTML = text;
+    text = faker.innerHTML;
+    for (var key in Object.keys(faker.getElementsByTagName('img'))){
+      var elem = faker.getElementsByTagName('img')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('area'))){
+      var elem = faker.getElementsByTagName('area')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    for (var key in Object.keys(faker.getElementsByTagName('input'))){
+      var elem = faker.getElementsByTagName('input')[key];
+      if (elem != null) {
+        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
+        text = text.replace(elem.outerHTML, altProp) || text;
+      }
+    }
+    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@").replace("&nbsp;"," ") + "</div>").text());
+  }
 }
 
-function showTranscript() {
-    var transcriptDivString = "";
-    transcriptDivString += "<div ";
-    transcriptDivString += "id='transcript-dialog' ";
-    transcriptDivString += "style='display:none;'>";
-    transcriptDivString += "<div id='transcriptdata'></div></div>";
-    addText(transcriptDivString);
-    var transcriptDialog = $("#transcript-dialog").dialog({
-        autoOpen: false,
-        width: 600,
-        height: 500,
-        title: "Transcript",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-            },
-            Print: function () {
-                printTranscriptDiv();
-                $(this).dialog("close");
-                $(this).remove();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#transcriptdata').html(transcriptString);
-    $("#transcriptdata a").addClass("disabled");
-    transcriptDialog.dialog("open");
-    setTimeout(function () {
-        $("#transcriptdata a").addClass("disabled");
-    }, 1);
-};
+function enableTranscript(name){
+  if (noTranscript) return;
+  transcriptName = name || transcriptName || gameName;
+  savingTranscript = true;
+}
 
+function disableTranscript(){
+  savingTranscript = false;
+}
+
+function killTranscript(){
+  noTranscript = true;
+  disableTranscript();
+}
+
+function setTranscriptStatus(status){
+  switch (status){
+    case "enabled":
+      var name = transcriptName || gameName;
+      enableTranscript(name);
+      break;
+    case "disabled":
+      disableTranscript();
+      break;
+    case "prohibited":
+    case "none":
+    case "killed":
+      killTranscript();
+      break;
+    case "allowed":
+      noTranscript = false;
+  }
+}
+
+var showedSaveTranscriptWarning = false;
+
+/*
+ * This function was missing from the webplayer in Quest 5.8.0
+ * Leaving this here as a fallback
+*/
+function SaveTranscript(text){
+  if(!showedSaveTranscriptWarning){
+    console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+    showedSaveTranscriptWarning = true;
+  }
+  writeToTranscript(text);  
+}
+
+var transcriptUrl = 'Play.aspx?id=4wqdac8qd0sf7-ilff8mia';
+
+// Another fallback to avoid errors
+function showTranscript(){
+  if (webPlayer){
+    addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
+  }
+  else {
+    addTextAndScroll('Your transcripts are saved to "Documents\\Quest Transcripts\\".<br/>');
+  }
+}
+
+function replaceTranscriptString(data) {
+    // Added in 5.8, and never worked properly.
+    // Do nothing.
+}
 function printTranscriptDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#transcriptdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#transcript-dialog").dialog("close");
-    $("#transcript-dialog").remove();
-};
+    // Added in 5.8, and never worked properly.
+    // Do nothing.
+}
+
+function reviveTranscript(){
+  noTranscript = false;
+}
+
+function getDateAndTimeForTranscript(){
+  return new Date().toLocaleString(navigator.language, { timeZoneName: 'short' });
+}
+
+function printTranscriptDateAndTime(){
+  addTextAndScroll('<b>DATE AND TIME:</b> ' + getDateAndTimeForTranscript());
+}
+
+function loadTranscriptNameInputVal(){
+  $('input#txtCommand').val(transcriptName);
+}
 
 // ***********************************
 
