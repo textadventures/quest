@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TextAdventures.Quest
@@ -14,6 +16,11 @@ namespace TextAdventures.Quest
             {
                 var entry = zip.GetEntry(filename);
                 return entry?.Open();
+            }
+            
+            public IEnumerable<string> GetFileNames()
+            {
+                return zip.Entries.Select(entry => entry.FullName);
             }
         }
 

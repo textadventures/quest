@@ -38,6 +38,7 @@ namespace TextAdventures.Quest
         System.IO.Stream? GetResource(string filename);
         string GetResourcePath(string filename);
         string GameID { get; }
+        IEnumerable<string> GetResourceNames();
     }
 
     public interface IPlayer

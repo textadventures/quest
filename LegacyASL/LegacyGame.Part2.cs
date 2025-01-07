@@ -8384,7 +8384,7 @@ public partial class LegacyGame
         }
     }
 
-    public IEnumerable<string> GetResources()
+    public IEnumerable<string> GetResourceNames()
     {
         for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
         {

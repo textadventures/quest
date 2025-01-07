@@ -1610,6 +1610,7 @@ namespace TextAdventures.Quest
         }
 
         public Func<string, Stream> ResourceGetter { get; internal set; }
+        public Func<IEnumerable<string>> GetResourceNames { get; internal set; }
         public bool DebugEnabled { get; private set; }
 
         private static List<string> s_functionNames = null;
@@ -1736,6 +1737,12 @@ namespace TextAdventures.Quest
         public int ASLVersion { get { return int.Parse(VersionString); } }
 
         public string GameID => m_game.Fields[FieldDefinitions.GameID];
+        
+        IEnumerable<string> IASL.GetResourceNames()
+        {
+            return GetResourceNames();
+        }
+
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
         public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
         public string Cover { get { return m_game.Fields[FieldDefinitions.Cover]; } }

@@ -158,6 +158,7 @@ namespace TextAdventures.Quest
             PackageReader packageReader = new PackageReader();
             var result = await packageReader.LoadPackage(gameData);
             WorldModel.ResourceGetter = result.GetFile;
+            WorldModel.GetResourceNames = result.GetFileNames;
             IsCompiledFile = true;
             return result.GameFile;
         }
