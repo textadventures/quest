@@ -46,4 +46,24 @@ public class GameQueryTests
         var result = await query.Initialise();
         Assert.IsFalse(result);
     }
+
+    [TestMethod]
+    public async Task TestQuestResources()
+    {
+        var query = new GameQuery("resources.quest");
+        var result = await query.Initialise();
+        Assert.IsTrue(result);
+        var resources = query.GetResourceNames()?.ToList();
+        Assert.IsNotNull(resources);
+        Assert.AreEqual(3, resources.Count);
+        Assert.IsTrue(resources.Contains("game.aslx"));
+        Assert.IsTrue(resources.Contains("aw.jpg"));
+        Assert.IsTrue(resources.Contains("ta.png"));
+        
+        var stream = query.GetResource("aw.jpg");
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+        Assert.AreEqual(0xd8, bytes[1]);
+    }
 }

@@ -33,6 +33,9 @@
       <None Update="test2.quest">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="resources.quest">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
