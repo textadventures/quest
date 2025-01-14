@@ -89,7 +89,7 @@
             if (Object.keys(choices).length > 0){
                 document.getElementById("transcript-table-header").innerHTML = "Your Transcripts";
                 for (var tname in choices){
-                    $("#transcript-tbody").append(choices[tname]);
+                    document.getElementById("transcript-tbody").innerHTML += choices[tname];
                 }
             }
             else {
