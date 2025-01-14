@@ -135,6 +135,13 @@ Public Class PlayerHTML
         If data.Contains("___SCRIPTDATA___") Then
             scriptname = Split(data, "___SCRIPTDATA___")(0)
         End If
+        If Not scriptname = "DEFAULT_" Then
+          scriptname = scriptname.Replace("\""", "''").Replace("<", "_").Replace(">", "_").Replace(":", "_").Replace("/", "_").Replace("\\", "_").Replace("|", "_").Replace("?", "_").Replace("*", "_")
+          scriptname = Trim(scriptname)
+          If scriptname = "" Then
+            scriptname = "DEFAULT_"
+          End If
+        End If
         If scriptname = "DEFAULT_" Then
           mgameName = Split(CurrentGame.Filename, "\")(Split(CurrentGame.Filename, "\").Length - 1)
           mgameName = mgameName.Replace(".aslx", "")

@@ -634,8 +634,8 @@
   </function>
   
   <function name="InitiateTranscript" parameters="s">
-    filename = GetWindowsSafeName(s)
-    game.transcriptname = GetWindowsSafeName(game.gamename)
+    filename = s
+    game.transcriptname = game.gamename
     if (not filename = "") {
       JS.eval ("transcriptName = '" + filename + "';")
       //JS.setTranscriptName(filename)
@@ -651,7 +651,7 @@
     }
     else {
       if (not HasAttribute (game, "transcriptname")){
-        game.transcriptname = GetWindowsSafeName(game.gamename)
+        game.transcriptname = game.gamename
       }
       game.savetranscript = true
       JS.enableTranscript(game.transcriptname)
@@ -682,20 +682,5 @@
   <function name="IsDesktop" type="boolean">
     return (StartsWith(GetFileURL(""), "quest"))
   </function>
-  
-  <function name="GetWindowsSafeName" parameters="dirty" type="string"><![CDATA[
-    if (StartsWith(dirty, ".")) {
-      dirty = Mid (dirty, 2, LengthOf (dirty) -1)
-    }
-    clean = Trim(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(Replace(dirty, "\"", "''"), "<", "_"), ">", "_"), ":", "_"), "/", "_"), "\\", "_"), "|", "_"), "?", "_"), "*", "_"))
-    changed_something = false
-    if (not clean = dirty) {
-      changed_something = true
-    }
-    if (StartsWith(clean, ".")) {
-      clean = GetWindowsSafeName(clean)
-    }
-    return (clean)
-  ]]></function>
 
 </library>

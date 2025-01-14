@@ -1428,7 +1428,7 @@ function SaveTranscript(text){
   writeToTranscript(text);  
 }
 
-var transcriptUrl = 'Play.aspx?id=4wqdac8qd0sf7-ilff8mia';
+var transcriptUrl = 'TranscriptViewer/Quest 5.9 Online Transcript Viewer.html';
 
 // Another fallback to avoid errors
 function showTranscript(){
