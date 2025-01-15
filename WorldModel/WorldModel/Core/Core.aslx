@@ -127,12 +127,9 @@
         JS.setCss ("#status", "border:none")
       }
       if (HasString(game, "locationbarimage")){
-        url = game.locationbarimage
-        if (not Trim(url) = ""){ 
-          if (not StartsWith(url,  "http://") and not StartsWith(url, "https://")){
-            url = GetFileURL(url)
-            JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
-          }
+        if (not Trim(game.locationbarimage) = ""){ 
+          url = GetFileURL(game.locationbarimage)
+          JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
         }
       }
     }
