@@ -193,8 +193,7 @@
   </function>
 
 
-  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
-    <![CDATA[
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
     count = 0
@@ -236,8 +235,7 @@
     game.menuallowcancel = allowCancel
     game.menucallback = callback
     game.menuoutputsection = outputsection
-  ]]>
-  </function>
+  ]]></function>
   
   <function name="ShowMenuResponse" parameters="option">
     if (game.menucallback = null) {
@@ -246,6 +244,7 @@
     else {
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", UnescapeQuotes(option))
+      msg (Template("ShowMenuResponsePrompt") + option)
       script = game.menucallback
       ClearMenu
       // Added by KV to handle the new FinishTurn setup in 580
@@ -297,6 +296,10 @@
       number = ToInt(input)
       if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
         handled = true
+        // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
+        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savetranscript") and GetBoolean (game, "transcript_forcecommands")){
+          JS.SaveTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
+        }
         ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
       }
     }
@@ -614,11 +617,6 @@
   ]]>
   </function>
   
-  <function name="DisableTranscript">
-    game.notranscript = true
-    JS.eval("savingTranscript = false;")
-  </function>
-  
   <function name="DisableHtmlLog">
     game.nohtmllog = true
   </function>
@@ -633,6 +631,55 @@
       dictionary add (d, key3, value3)
     }
     return (d)
+  </function>
+  
+  <function name="InitiateTranscript" parameters="s">
+    filename = s
+    game.transcriptname = game.gamename
+    if (not filename = "") {
+      JS.eval ("transcriptName = '" + filename + "';")
+      game.transcriptname = filename
+    }
+    msg ("> " + game.transcriptname)
+    EnableTranscript
+  </function>
+
+  <function name="EnableTranscript"><![CDATA[
+    if (GetBoolean (game, "notranscript")){
+      KillTranscript
+    }
+    else {
+      if (not HasAttribute (game, "transcriptname")){
+        game.transcriptname = game.gamename
+      }
+      game.savetranscript = true
+      JS.enableTranscript(game.transcriptname)
+      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage"))
+      JS.printTranscriptDateAndTime()
+    }
+  ]]></function>
+  
+  <function name="DisableTranscript">
+    game.savetranscript = false
+    JS.disableTranscript()
+  </function>
+  
+  <function name="KillTranscript">
+    game.notranscript = true
+    JS.killTranscript()
+    DisableTranscript
+  </function>
+  
+
+  <function name="UpdateTranscriptString" parameters="data">
+    if (not HasAttribute(game,"transcriptstring")){
+      game.transcriptstring = ""
+    }
+    game.transcriptstring = game.transcriptstring + data
+  </function>
+  
+  <function name="IsDesktop" type="boolean">
+    return (StartsWith(GetFileURL(""), "quest"))
   </function>
 
 </library>

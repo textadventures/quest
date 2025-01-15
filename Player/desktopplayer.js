@@ -25,11 +25,11 @@ function RestartGame() {
     UIEvent("RestartGame", "");
 }
 
-// SaveTranscript added by KV to write/append to GAMENAME-transcript.html in Documents\Quest Transcripts
-function SaveTranscript(data) {
-    data = data + "<style>*{color:black !important;background:white !important;text-align:left !important}</style>";
-    if (!webPlayer && transcriptString != '') { UIEvent("SaveTranscript", data); }
-    transcriptString += data;
+// Write/append to GAMENAME-transcript.txt in Documents\Quest Transcripts
+function WriteToTranscript(data) {
+  if (data != '' && typeof (data) == 'string') {
+    UIEvent("WriteToTranscript", data);
+  }
 }
 
 // Write/append to GAMENAME-log.txt in Documents\Quest Logs
