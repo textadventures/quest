@@ -769,6 +769,16 @@
       }
     }
   ]]></function>
+
+  <function name="ProcessTextCommand_Element" parameters="section, data" type="string"><![CDATA[
+    if (IsRegexMatch(":?/?\\w+\\b((?<=\\s)\\w+\\b|(?<=\\s)\\w+=\\w+\\b|(?<=\\s)\\w+=\"[^\"]*\"|(?<=\\s)\\w+='[^']*')*/?\\s*", section)) {
+      if (StartsWith (section, ":")) section = LTrim (Mid (section, 2))
+      return("<" + section + ">")
+    }
+    else {
+      return ("@@@open@@@" + ProcessTextSection (section, data) + "@@@close@@@")
+    }
+  ]]></function>
   
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[

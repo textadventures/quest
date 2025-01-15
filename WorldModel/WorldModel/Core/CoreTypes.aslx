@@ -202,6 +202,12 @@
       <item key="=">
         game.textprocessorcommandresult = ProcessTextCommand_Eval (section, data)
       </item>
+      <item key=":">
+        game.textprocessorcommandresult = ProcessTextCommand_Element (section, data)
+      </item>
+      <item key="/">
+        game.textprocessorcommandresult = ProcessTextCommand_Element (section, data)
+      </item>
     </textprocessorcommands>
     <feature_devmode type="boolean">false</feature_devmode>
   </type>
