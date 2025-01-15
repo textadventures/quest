@@ -638,7 +638,6 @@
     game.transcriptname = game.gamename
     if (not filename = "") {
       JS.eval ("transcriptName = '" + filename + "';")
-      //JS.setTranscriptName(filename)
       game.transcriptname = filename
     }
     msg ("> " + game.transcriptname)

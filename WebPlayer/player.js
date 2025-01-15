@@ -302,8 +302,8 @@ function isLocalStorageAvailable(){
 }
 
 // NOTE:
-// There is a Quest game on the site to handle viewing of transcipts for all online users:
-// https://play.textadventures.co.uk/Play.aspx?id=4wqdac8qd0sf7-ilff8mia
+// There is a site to handle viewing of transcipts for all online users:
+// https://play.textadventures.co.uk/TranscriptViewer
 
 
 // END OF TRANSCRIPT FUNCTIONS

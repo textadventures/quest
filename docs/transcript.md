@@ -9,7 +9,7 @@ A transcript is a recording of everything the player types and the game prints, 
 
 When using the desktop player, transcripts will be saved to the directory "Documents\Quest Transcripts". This file will be in the TXT format.
 
-When playing online, transcripts will be saved to the user's browser in localStorage. Online users can visit this page to access online transcripts: https://play.textadventures.co.uk/Play.aspx?id=4wqdac8qd0sf7-ilff8mia
+When playing online, transcripts will be saved to the user's browser in localStorage. Online users can visit this page to access online transcripts: https://play.textadventures.co.uk/TranscriptViewer
 
 
 IMPORTANT NOTE TO ONLINE USERS: If your cookies are deleted, your transcripts will all be deleted!!! If your browser settings have been changed to delete cookies when closed, your transcript files will be deleted!!! Make sure to view and/or print your transcript(s) before closing your browser if it is set to delete cookies when closed!

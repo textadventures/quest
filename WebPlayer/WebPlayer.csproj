@@ -200,7 +200,7 @@
     <Content Include="playerweb.js" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\resume.js" />
-    <Content Include="TranscriptViewer\Quest 5.9 Online Transcript Viewer.html">
+    <Content Include="TranscriptViewer\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="updating.gif" />
