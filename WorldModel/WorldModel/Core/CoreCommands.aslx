@@ -913,7 +913,6 @@
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
   
-  <!-- Modified to suppress turn scripts -->
   <command name="help" pattern="[help]">
     <script>
       msg (Template("DefaultHelp"))
@@ -921,27 +920,19 @@
     </script>
   </command>
 
-  <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
   <command name="save">
     <pattern type="string">^save$</pattern>
     <script>
-      if (HasAttribute(game, "questplatform")) {
-        if (game.questplatform = "desktop") {
-           request(RequestSave, "")
-        }
-        else {
-          JS.saveGame ()
-        }
-      }
-      else {
+      if (IsDesktop()){}
         request(RequestSave, "")
       }
-      game.suppressturnscripts = true
+      else {
+        JS.saveGame ()
+      }
+      SuppressTurnscripts
     </script>
   </command>
   
-  <!-- added by KV -->
-
   <command name="version_cmd" pattern="[version_cmd]">
     <script><![CDATA[
       s = "<b>TITLE: </b>" + game.gamename + "<br/>"
