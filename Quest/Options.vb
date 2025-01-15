@@ -10,9 +10,7 @@ Public Enum OptionNames
     FontSize
     FontStyle
     GamesFolder
-    ShowSandpit
     PlaySounds
-    ShowAdult
     UseSAPI
 End Enum
 
@@ -40,9 +38,7 @@ Public Class Options
                         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                         "Quest Games",
                         "Downloaded Games")},
-        {OptionNames.ShowSandpit, False.ToString()},
         {OptionNames.PlaySounds, True.ToString()},
-        {OptionNames.ShowAdult, False.ToString()},
         {OptionNames.UseSAPI, False.ToString()}
     }
 

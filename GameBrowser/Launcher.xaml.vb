@@ -120,24 +120,6 @@ Public Class Launcher
         End Set
     End Property
 
-    Public Property ShowSandpit As Boolean
-        Get
-            Return ctlPlayBrowser.ShowSandpit
-        End Get
-        Set(value As Boolean)
-            ctlPlayBrowser.ShowSandpit = value
-        End Set
-    End Property
-
-    Public Property ShowAdult As Boolean
-        Get
-            Return ctlPlayBrowser.ShowAdult
-        End Get
-        Set(value As Boolean)
-            ctlPlayBrowser.ShowAdult = value
-        End Set
-    End Property
-
     Public Function CloseLauncher() As Boolean
         If ctlPlayBrowser.DownloadingCount = 0 Then
             Return True

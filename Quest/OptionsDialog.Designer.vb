@@ -42,9 +42,6 @@ Partial Class OptionsDialog
         Me.cmdLink = New System.Windows.Forms.Button()
         Me.chkUseDefaultColours = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.lnkShowAdultHelp = New System.Windows.Forms.LinkLabel()
-        Me.chkShowAdult = New System.Windows.Forms.CheckBox()
-        Me.chkShowSandpit = New System.Windows.Forms.CheckBox()
         Me.cmdGamesFolder = New System.Windows.Forms.Button()
         Me.txtGamesFolder = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -85,7 +82,6 @@ Partial Class OptionsDialog
         '
         'TabPage1
         '
-        resources.ApplyResources(Me.TabPage1, "TabPage1")
         Me.TabPage1.Controls.Add(Me.chkUseSAPI)
         Me.TabPage1.Controls.Add(Me.chkPlaySounds)
         Me.TabPage1.Controls.Add(Me.cmdFont)
@@ -98,6 +94,7 @@ Partial Class OptionsDialog
         Me.TabPage1.Controls.Add(Me.lblLink)
         Me.TabPage1.Controls.Add(Me.cmdLink)
         Me.TabPage1.Controls.Add(Me.chkUseDefaultColours)
+        resources.ApplyResources(Me.TabPage1, "TabPage1")
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.UseVisualStyleBackColor = True
         '
@@ -115,16 +112,16 @@ Partial Class OptionsDialog
         '
         'cmdFont
         '
-        resources.ApplyResources(Me.cmdFont, "cmdFont")
         Me.cmdFont.BackColor = System.Drawing.SystemColors.Control
+        resources.ApplyResources(Me.cmdFont, "cmdFont")
         Me.cmdFont.Name = "cmdFont"
         Me.cmdFont.UseVisualStyleBackColor = False
         '
         'lblFontSample
         '
-        resources.ApplyResources(Me.lblFontSample, "lblFontSample")
         Me.lblFontSample.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblFontSample.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        resources.ApplyResources(Me.lblFontSample, "lblFontSample")
         Me.lblFontSample.Name = "lblFontSample"
         '
         'chkUseDefaultFont
@@ -140,8 +137,8 @@ Partial Class OptionsDialog
         '
         'cmdForeground
         '
-        resources.ApplyResources(Me.cmdForeground, "cmdForeground")
         Me.cmdForeground.BackColor = System.Drawing.Color.White
+        resources.ApplyResources(Me.cmdForeground, "cmdForeground")
         Me.cmdForeground.Name = "cmdForeground"
         Me.cmdForeground.UseVisualStyleBackColor = True
         '
@@ -152,8 +149,8 @@ Partial Class OptionsDialog
         '
         'cmdBackground
         '
-        resources.ApplyResources(Me.cmdBackground, "cmdBackground")
         Me.cmdBackground.BackColor = System.Drawing.Color.Black
+        resources.ApplyResources(Me.cmdBackground, "cmdBackground")
         Me.cmdBackground.Name = "cmdBackground"
         Me.cmdBackground.UseVisualStyleBackColor = True
         '
@@ -164,8 +161,8 @@ Partial Class OptionsDialog
         '
         'cmdLink
         '
-        resources.ApplyResources(Me.cmdLink, "cmdLink")
         Me.cmdLink.BackColor = System.Drawing.Color.Blue
+        resources.ApplyResources(Me.cmdLink, "cmdLink")
         Me.cmdLink.Name = "cmdLink"
         Me.cmdLink.UseVisualStyleBackColor = True
         '
@@ -177,33 +174,12 @@ Partial Class OptionsDialog
         '
         'TabPage2
         '
-        resources.ApplyResources(Me.TabPage2, "TabPage2")
-        Me.TabPage2.Controls.Add(Me.lnkShowAdultHelp)
-        Me.TabPage2.Controls.Add(Me.chkShowAdult)
-        Me.TabPage2.Controls.Add(Me.chkShowSandpit)
         Me.TabPage2.Controls.Add(Me.cmdGamesFolder)
         Me.TabPage2.Controls.Add(Me.txtGamesFolder)
         Me.TabPage2.Controls.Add(Me.Label1)
+        resources.ApplyResources(Me.TabPage2, "TabPage2")
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.UseVisualStyleBackColor = True
-        '
-        'lnkShowAdultHelp
-        '
-        resources.ApplyResources(Me.lnkShowAdultHelp, "lnkShowAdultHelp")
-        Me.lnkShowAdultHelp.Name = "lnkShowAdultHelp"
-        Me.lnkShowAdultHelp.TabStop = True
-        '
-        'chkShowAdult
-        '
-        resources.ApplyResources(Me.chkShowAdult, "chkShowAdult")
-        Me.chkShowAdult.Name = "chkShowAdult"
-        Me.chkShowAdult.UseVisualStyleBackColor = True
-        '
-        'chkShowSandpit
-        '
-        resources.ApplyResources(Me.chkShowSandpit, "chkShowSandpit")
-        Me.chkShowSandpit.Name = "chkShowSandpit"
-        Me.chkShowSandpit.UseVisualStyleBackColor = True
         '
         'cmdGamesFolder
         '
@@ -223,10 +199,6 @@ Partial Class OptionsDialog
         '
         resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.Name = "Label1"
-        '
-        'dlgFolderBrowser
-        '
-        resources.ApplyResources(Me.dlgFolderBrowser, "dlgFolderBrowser")
         '
         'OptionsDialog
         '
@@ -260,10 +232,7 @@ Partial Class OptionsDialog
     Friend WithEvents txtGamesFolder As System.Windows.Forms.TextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents cmdGamesFolder As System.Windows.Forms.Button
-    Friend WithEvents chkShowSandpit As System.Windows.Forms.CheckBox
     Friend WithEvents dlgFolderBrowser As System.Windows.Forms.FolderBrowserDialog
-    Friend WithEvents chkShowAdult As System.Windows.Forms.CheckBox
-    Friend WithEvents lnkShowAdultHelp As System.Windows.Forms.LinkLabel
     Friend WithEvents chkUseSAPI As CheckBox
     Friend WithEvents chkPlaySounds As CheckBox
     Friend WithEvents cmdFont As Button
