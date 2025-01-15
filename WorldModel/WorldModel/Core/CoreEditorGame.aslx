@@ -589,6 +589,17 @@
         <attribute>showlocation</attribute>
       </control>
 
+
+      <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameLocationBarBg]</caption>
+        <attribute>locationbarimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+        <preview/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
+      </control>
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameClassiclocation]</caption>

@@ -126,6 +126,12 @@
       else {
         JS.setCss ("#status", "border:none")
       }
+      if (HasString(game, "locationbarimage")){
+        if (not Trim(game.locationbarimage) = ""){ 
+          url = GetFileURL(game.locationbarimage)
+          JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
+        }
+      }
     }
     //request (Show, "Location")
     if (game.showlocation) {

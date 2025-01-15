@@ -204,6 +204,7 @@
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
   <template name="EditorGameCommandBarCaption">Command bar</template>
+  <template name="EditorGameLocationBarBg">Location Bar Background Image</template>
   <template name="EditorGamePictureOptions">Picture frame</template>
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
