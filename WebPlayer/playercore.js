@@ -769,73 +769,22 @@ var saveClearedText = false;
 var clearedOnce = false;
 function clearScreen() {
     $("#outputData").appendTo($("body"));
-    if (!saveClearedText) {
-        $("#divOutput").css("min-height", 0);
-        $("#divOutput").html("");
-        createNewDiv("left");
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $("html,body").scrollTop(0);
-        }, 100);
-    } else {
-        $("#divOutput").append("<hr class='clearedAbove' />");
-        if (!clearedOnce) {
-            addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
-        }
-        clearedOnce = true;
-        $('#divOutput').children().addClass('clearedScreen');
-        $('.clearedScreen').attr('id',null);
-        $('#divOutput').css('min-height', 0);
-        createNewDiv('left');
-        beginningOfCurrentTurnScrollPosition = 0;
-        setTimeout(function () {
-            $('html,body').scrollTop(0);
-        }, 100);
+    $("#divOutput").css("min-height", 0);
+    $("#divOutput").html("");
     $("#outputData").appendTo($("#divOutput"));
-    }
+    createNewDiv("left");
+    beginningOfCurrentTurnScrollPosition = 0;
+    setTimeout(function () {
+        $("html,body").scrollTop(0);
+    }, 100);
 }
 
-// Scrollback functions added by KV
-
 function showScrollback() {
-    var scrollbackDivString = '<div id="scrollback-dialog" style="display:none;"><div id="scrollbackdata"></div></div>';
-    addText(scrollbackDivString);
-    var scrollbackDialog = $("#scrollback-dialog").dialog({
-        autoOpen: false,
-        width: (window.innerWidth || document.documentElement.clientWidth || 
-document.body.clientWidth) - 100,
-        height: (window.innerHeight|| document.documentElement.clientHeight|| 
-document.body.clientHeight) - 100,
-        title: "Scrollback",
-        buttons: {
-            Ok: function () {
-                $(this).dialog("close");
-                $(this).remove();
-                $("#scrollback-dialog,#scrollbackdata").remove();
-            },
-            Print: function () {
-                printScrollbackDiv();
-            },
-        },
-        show: { effect: "fadeIn", duration: 500 },
-        modal: true,
-    });
-    $('#scrollbackdata').html($('#divOutput').html());
-    $("#scrollbackdata a").addClass("disabled");
-    scrollbackDialog.dialog("open");
-    setTimeout(function () {
-        $("#scrollbackdata a").addClass("disabled");
-    }, 1);
+    // Do nothing
 }
 
 function printScrollbackDiv() {
-    var iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.contentWindow.document.write($("#scrollbackdata").html());
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-    $("#scrollback-dialog").dialog("close");
-    $("#scrollback-dialog").remove();
+    // Do nothing
 }
 
 function keyPressCode(e) {
@@ -1236,71 +1185,19 @@ function isMobilePlayer() {
         return true;
     }
     return false;
-};
+}
 
 function showPopup(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
+    // Do nothing.
+}
 
 function showPopupCustomSize(title, text, width, height) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: width,
-        height: height,
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
+    // Do nothing.
+}
 
 function showPopupFullscreen(title, text) {
-    $('#msgboxCaption').html(text);
-
-    var msgboxOptions = {
-        modal: true,
-        autoOpen: false,
-        title: title,
-        width: $(window).width(),
-        height: $(window).height(),
-        buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
-        ],
-        closeOnEscape: false,
-    };
-
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
-};
+    //Do nothing.
+}
 
 // Log functions
 // In-game HTML log introduced in 5.8. Deprecated in 5.9
