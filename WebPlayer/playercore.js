@@ -765,10 +765,10 @@ function disableAllCommandLinks() {
     });
 }
 
-// Modified by KV to handle the scrollback feature
 var saveClearedText = false;
 var clearedOnce = false;
 function clearScreen() {
+    $("#outputData").appendTo($("body"));
     if (!saveClearedText) {
         $("#divOutput").css("min-height", 0);
         $("#divOutput").html("");
@@ -784,12 +784,14 @@ function clearScreen() {
         }
         clearedOnce = true;
         $('#divOutput').children().addClass('clearedScreen');
+        $('.clearedScreen').attr('id',null);
         $('#divOutput').css('min-height', 0);
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
         setTimeout(function () {
             $('html,body').scrollTop(0);
         }, 100);
+    $("#outputData").appendTo($("#divOutput"));
     }
 }
 
