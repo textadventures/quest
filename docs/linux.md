@@ -3,7 +3,7 @@ layout: index
 title: How to run Quest on Linux
 ---
 
-Very grateful to redyoshi49q for working out how to do this. His/her instructions are reproduced as-is. The discusion can be found [here](https://textadventures.co.uk/forum/samples/topic/nwsz5gf0te6qdtfrwzdmga/quest-5-8-working-in-wine).
+Very grateful to redyoshi49q for working out how to do this. His/her instructions are reproduced as-is. The discussion can be found [here](https://textadventures.co.uk/forum/samples/topic/nwsz5gf0te6qdtfrwzdmga/quest-5-8-working-in-wine).
 
 I suggest you also look at [this](https://github.com/textadventures/quest/issues/1158), which has additional comments.
 
