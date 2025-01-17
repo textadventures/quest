@@ -11,3 +11,4 @@ Returns an [objectlist](../types/list.html), based on the given list, but with a
 
 ```
 combinedlist = ObjectListCompact (list1 + list2)
+```
