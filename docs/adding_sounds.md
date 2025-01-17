@@ -80,7 +80,7 @@ Just for fun, we have a button.  We've set up a "Press" verb on the button so it
 
 Play the example game:
 
-<a href="https://textadventures.co.uk/games/view/w1m_x18cmual0x11x098og/play-audio-example">Play "play audio Example" at textadventures.co.uk</a>
+<a href="https://textadventures.co.uk/games/view/fbmbs2hb-eo8yyjfcqiu8q/play-audio-example">Play "play audio Example" at textadventures.co.uk</a>
 
 View the example game's code:
 
