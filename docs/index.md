@@ -42,8 +42,6 @@ Contents
 [Search](#Search)
 
 
-You can download a copy (31/Dec/18) of the documentation in a .zip file [here](docs.zip) if you prefer to read it off-line.
-
 
 <a name="Tutorial"></a>Tutorial
 -------------------------------
