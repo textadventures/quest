@@ -21,7 +21,7 @@ First the dynamic template is defined as:
 
     <dynamictemplate name="BlockedExit">"Your exit "+object.alias+" is blocked"</dynamictemplate>
 
-Now we could add a message expesssion to the script in an exit, something like:
+Now we could add a message expression to the script in an exit, something like:
 
     msg (DynamicTemplate("BlockedExit",this))
 

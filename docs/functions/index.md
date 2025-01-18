@@ -438,7 +438,7 @@ These will not be relevant to many games at all, but are available as a conseque
 
 Quest has `e` and `pi` as built-in constants.
 
-These all take a single foating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
+These all take a single floating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
 
 * Abs
 * Acos
