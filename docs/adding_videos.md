@@ -15,7 +15,7 @@ Copy the video's ID from YouTube.
 
 Paste the ID into the "Play YouTube video" script.
 
-[![animated gif](images/AddingYouTube.gif)](AddingYouTube.gif)
+[![animated gif](images/AddingYouTube.gif)](images/AddingYouTube.gif)
 
 
 

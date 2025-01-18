@@ -36,7 +36,7 @@ The second part is to modify the exit to use the random code. There is just one 
 
 One last thing - you need a way to tell the player what the code is. Something somewhere has to do something like this:
 
-![](randomcode3.png "randomcode3.png")
+![](randomcode3.png "Randomcode3.png")
 
 This is going to print an expression, and in that expression the plain text is in double quotes, the code is game.code, as before, and it is all joined together with + signs. Alternatively, you can use the text processor:
 
