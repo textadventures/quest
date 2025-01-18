@@ -100,7 +100,7 @@ JS.setCss ("#gamePanesRunning", "pointer-events:inherit;")
 
 ### Moving the screen to the bottom
 
-Sometimes when you dislay something on the screen, Quest fails to scroll down for. You can force that with this:
+Sometimes when you display something on the screen, Quest fails to scroll down for. You can force that with this:
 
 ```
 JS.scrollToEnd()

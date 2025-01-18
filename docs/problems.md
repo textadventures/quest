@@ -42,7 +42,7 @@ Follow these steps (thanks Jay!):
 -    Look for SOFTWARE under that and open the folder.
 -    Search down for Quest under that and open the folder.
 
-We need to delete two keys, "Recent" and "EditorRecent" (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word "Recent" and then choose "Delete" from the popup menu. Choose yes to confirm. Do the same for "EditorRecent". Close the Rededit program (no need to save).
+We need to delete two keys, "Recent" and "EditorRecent" (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word "Recent" and then choose "Delete" from the popup menu. Choose yes to confirm. Do the same for "EditorRecent". Close the Regedit program (no need to save).
 
 Note that when you open Quest, the "recent" lists will be empty until you begin using Quest again, but that is preferable to not being to open Quest at all!
 
@@ -91,13 +91,13 @@ Try uninstalling Quest, restarting your PC and then re-installing.
 Problems when creating games
 ----------------------------
 
-There are all sorts of problems that can arise as you code with Quest. Computer languagers are fussy things that expect you to type to very strict rules, and Quest is no different. Some things to check:
+There are all sorts of problems that can arise as you code with Quest. Computer languages are fussy things that expect you to type to very strict rules, and Quest is no different. Some things to check:
 
 - Variables, attributes and objects are named consistently (if it is `hitpoints` in one place and `hit points` in another and `Hit points` in a third, it is not going to work)
 - Brackets and braces need to match; if you have three open brackets and only two close brackets it is not going to work
 - Quotes likewise need to quote marks at the start and end
 - If a function's return type in "None" there should be no `return`; if it is not "None" then there must be
-- Functions must have exactly the right number of paramters in the right order
+- Functions must have exactly the right number of parameters in the right order
 
 
 ### Room description appears twice
@@ -123,7 +123,7 @@ Sometimes Quest is clever and will warn you or take some action if you try to gi
 
 ### Items/Rooms called K1, K2, etc.
 
-Quest automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anyhing in your game 'K' following by a number you are in danger of having a name collision!
+Quest automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anything in your game 'K' following by a number you are in danger of having a name collision!
 
 ### 'e' and 'pi'
 
@@ -174,7 +174,7 @@ Error running script: Error compiling expression '[whatever]':
 
 The `[whatever]` is the important part, as that is the code that Quest cannot understand.
 
-If you are using the desktop version, copy the bit inside the single quotes (without the quotes) and go to _Tools - Code view_, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurance.
+If you are using the desktop version, copy the bit inside the single quotes (without the quotes) and go to _Tools - Code view_, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurrence.
 
 If using the web version, it is not as easy, but you could download your game, open it in a text editor and then search for the error. You would have to then correct the on-line version, and it still may not be clear how to do that.
 
@@ -249,7 +249,7 @@ list add (sword.inventoryverbs, "Equip")
 list remove (hat.displayverbs, "Flatten")
 ```
 
-The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the listwhen it belongs to the type.
+The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
 
 There are two solutions. The easiest is to add something to the the list in the editor (bottom of the __ tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
 

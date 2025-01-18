@@ -306,7 +306,7 @@ Functions for manipulating dictionaries. For a discussion on how to use dictiona
 <a name="random"></a>Randomising Functions
 -------------------------------------
 
-These functions all return a random value. See also [here](random.html).
+These functions all return a random value. See also [here](../random.html).
 
 * [DiceRoll](corelibrary/diceroll.html)
 * [GetRandomDouble](getrandomdouble.html)
@@ -438,7 +438,7 @@ These will not be relevant to many games at all, but are available as a conseque
 
 Quest has `e` and `pi` as built-in constants.
 
-These all take a single foating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
+These all take a single floating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
 
 * Abs
 * Acos

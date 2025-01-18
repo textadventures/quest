@@ -55,9 +55,9 @@ Objects in a container are considered _visible_ if it is either open or transpar
 Rooms
 ------
 
-As of Quest 5.8, you can get a list of rooms (more specifically, objects with "isroon" set to true).
+As of Quest 5.8, you can get a list of rooms (more specifically, objects with "isroom" set to true).
 
-* [AllRooms](functions/corelibrary/allrooms.html)
+* [AllRooms](functions/allrooms.html)
 
 
 Others

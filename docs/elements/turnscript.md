@@ -13,4 +13,4 @@ enabled
 script  
 [script](../types/script.html) specifying what to do after each turn
 
-Note that as of 5.7.2, turnscipts run in alphabetic order (in earlier versions the order could change unexpectedly). To have turnscripts in a certain order, prefix them "ts01_", "ts02_", ... .
+Note that as of 5.7.2, turnscripts run in alphabetic order (in earlier versions the order could change unexpectedly). To have turnscripts in a certain order, prefix them "ts01_", "ts02_", ... .

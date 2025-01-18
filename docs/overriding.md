@@ -5,7 +5,7 @@ title: Overriding functions
 
 
 <div class="alert alert-info">
-Note: Functions can currently only be overriden in the Windows desktop version of Quest.
+Note: Functions can currently only be overridden in the Windows desktop version of Quest.
 
 </div>
 

@@ -41,7 +41,7 @@ becomes this in Quest 5:
 
      myfunction(otherfunction("test"), differentfunction(5))
 
--   Game output is now HTML. You can use simple formatting codes - see [Text formatting](tutorial/text_formatting.html). You can also completely customise the user interface [using Javascript](tutorial/using_javascript.html).
+-   Game output is now HTML. You can use simple formatting codes - see [Text formatting](tutorial/text_formatting.html). You can also completely customise the user interface [using Javascript](using_javascript.html).
 
 New features
 ------------

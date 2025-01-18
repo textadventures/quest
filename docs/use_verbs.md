@@ -14,7 +14,7 @@ The verb element adds a new verb to the game's vocabulary. In XML, a verb might 
         <defaulttext>You can't zing that.</defaulttext>
       </verb>
 
-You can create a new verb in quest by right clicking on Obhects and selecting "Add verb"; all the above are then filled in a text boxes.
+You can create a new verb in quest by right clicking on Objects and selecting "Add verb"; all the above are then filled in a text boxes.
 
 The verb is called "zing", and it has various synonyms, in the pattern element, each separated by a semi-colon. Any attempt to use this verb (or its synonyms) with an object that is not set up for it will produce the given default text.
 

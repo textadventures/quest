@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Editiong in Full Code View
+title: Editing in Full Code View
 ---
 
 

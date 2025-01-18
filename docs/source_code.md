@@ -219,7 +219,7 @@ First ensure all version numbers are updated. There are lots of places! Also mak
 - **Github**
 - Synchronise with Github
 - Rename the local repository
-- Download a fresh from Github (this ensures I release the version currently on Githib, which could be different to the version on my PC)
+- Download a fresh from Github (this ensures I release the version currently on Github, which could be different to the version on my PC)
 
 - **Visual Studio**
 - Run unit tests, check they all pass

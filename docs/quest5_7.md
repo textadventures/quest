@@ -244,7 +244,7 @@ If you already use either my library or Chase's you should find this works with 
 Money
 -----
 
-Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formating too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
+Quest already has score and health built-in, now money is too. It can be activated the same way, and will appear in the status attributes. There are a lot of options for formatting too, using the new function `DisplayMoney`, controlled by an attribute of the game object.
 
 Objects can now have a price set for them ("price" attribute), and the player can have starting money set ("money" attribute). To see these in the GUI, turn them on on the _Features_ tab of the game object. This will make adding commerce to an on-line game much easier (however, there are various ways to do that, so the rest is up to you). Also added "purchase" as a synonym of "buy".
 
@@ -317,7 +317,7 @@ The `DiceRoll` function has been expanded to understand "d6" and "4d6+2" (but wi
 
 The _Containers_ tab in the editor now has comments under the scripts that explains when they run, and that names the flags, "isopen" and "locked", that track its state.
 
-If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this messagwe will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
+If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this message will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
 
 You can now have single and double quotes in options when using the [ShowMenu](functions/showmenu.html) function. ShowMenu will now accept any list of strings or objects, not just string lists. Links for objects will be displayed in the objects link colour, if used. This will also apply to disambiguation menus too.
 
@@ -338,7 +338,7 @@ When adding a new verb, Quest will check if it will clash with an existing comma
 Testing
 -------
 
-Many of the changes have been unit tested in a Quest game made for that purpose; it can be found [here](unit test_for_5_7.aslx). The start script will test each feature in turn, and compare the result against an expected value, outputing a dot if it passes and an 'F' otherwise. There are over 500 such tests.
+Many of the changes have been unit tested in a Quest game made for that purpose; it can be found [here](unit test_for_5_7.aslx). The start script will test each feature in turn, and compare the result against an expected value, outputting a dot if it passes and an 'F' otherwise. There are over 500 such tests.
 
 Some features, such as those related to the interface, do not lend themselves to testing in this way.
  

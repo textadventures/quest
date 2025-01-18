@@ -4,7 +4,7 @@ title: Using Javascript
 ---
 
 <div class="alert alert-info">
-Note: As the `InitUserInterface` can only be overriden in the desktop version, using JavaScript in the web version will be problematic..
+Note: As the `InitUserInterface` can only be overridden in the desktop version, using JavaScript in the web version will be problematic.
 
 </div>
 

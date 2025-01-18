@@ -11,7 +11,7 @@ Creating a blank game
 
 Most of the tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along.
 
-This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](tutorial.html).
+This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](creating_a_simple_game.html).
 
 ### Windows desktop version
 

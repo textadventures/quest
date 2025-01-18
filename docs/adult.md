@@ -5,7 +5,7 @@ title: What counts as "adult"?
 
 NOTE: _It is important to say that this is my opinion. I curate the Quest program, but I have no control over the `textadventures.co.uk` web site and no control over how games are moderated. This is what I would have as the policy, if it was up to me._
 
-Quest is used in schools, but it is my understanding that games are only available thern if they have been further moderated.
+Quest is used in schools, but it is my understanding that games are only available there if they have been further moderated.
 
 My opinion is that text by its nature is much tamer than images, and you can write about stuff that would get a high rating in a movie or graphic game. 
 
@@ -28,7 +28,7 @@ I am feeling it is the intent. If the player has to kill someone to achieve his 
 
 ### Including Images
 
-Of course, if you game includes images of sex and violence that takes it up a level. How graphic is? Is there a lot of blood? Can you see genetalia or female nipples? If so it is an adult game. Even more extreme may stop it appearing on `textadventures.co.uk` at all.
+Of course, if your game includes images of sex and violence that takes it up a level. How graphic is? Is there a lot of blood? Can you see genitalia or female nipples? If so it is an adult game. Even more extreme may stop it appearing on `textadventures.co.uk` at all.
 
 Remember copyrighted material cannot be used without permission.
 
@@ -37,7 +37,7 @@ Remember copyrighted material cannot be used without permission.
 
 Casual mention of drug-taking is fine. In interactive fiction, I would suggest that other characters doing it is fine. However, if the player can do it, and that is either necessary or obvious (follow a link, or told the game allows it), then it is an adult game. 
 
-I would include smoking here too, but would be more relaxed about drinking (possibly because I drink, but do noit smoke myself?), and would only consider it adult if it was _about_ drinking, or involves drinking to excess.
+I would include smoking here too, but would be more relaxed about drinking (possibly because I drink, but do not smoke myself?), and would only consider it adult if it was _about_ drinking, or involves drinking to excess.
 
 I would probably not consider games that are clearly educational with regards to the risk from drugs to be adult.
 
@@ -59,4 +59,4 @@ I would consider anyone under the age of 16 a child. Between 16 and 18 is a bit 
 Anything involving sex with animals should not even be published on `textadventures.co.uk`.
 
 
-By animal, I mean any _non-intelligent_ creature. If you have an intelligent unicorn or catgirl, able to understand the consequences and to discuss them, that is fine (as long as she is over 18 of course!).
+By animal, I mean any _non-intelligent_ creature. If you have an intelligent unicorn or cat-girl, able to understand the consequences and to discuss them, that is fine (as long as she is over 18 of course!).

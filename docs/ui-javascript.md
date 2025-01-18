@@ -37,7 +37,7 @@ Quest has a JavaScript object, called `JS`, and we can use that to dynamically c
 The JS Object
 -------------
 
-The `JS` object is a quick way to use JavaSript in your game. 
+The `JS` object is a quick way to use JavaScript in your game. 
 
 Let us start with the easy stuff. Quest has an `addText` method on the `JS` object which simply adds the given text to the web page at a certain point, i.e., at the end of the existing output text. `JS.addText` is used by both `OutputTextRaw` and `OutputTextRawNoBr`, which are in turn used by `OutputTextRaw` and `OutputTextRawNoBr` respectively, and `OutputTextRaw` is in turn used by `msg` and `PrintCentred`, so everything you print to screen uses `JS.addText`.
 
@@ -68,7 +68,7 @@ You can use it to access the other built-in JavaScript functions (and your own t
   JS.hideBorder()
   JS.showBorder()
   JS.setGamePadding(top, bottom, left, right)
-  JS.addExternalStyleheet(stylesheet)
+  JS.addExternalStylesheet(stylesheet)
   // I think the stylesheet should be a file name (or perhaps a URL) as the parameter
   JS.SetMenuBackground(colour)
   JS.SetMenuForeground(colour)

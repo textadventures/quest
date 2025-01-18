@@ -8,7 +8,7 @@ Occasionally you want to stop the player moving to another room, say because he 
 Move to another room
 --------------------
 
-The first way is to move him to another room with no exits. This might not be appropriate in some cases, but suppose the player logs on to a computer, and while logged on, all commmands relate to the computer. The player does not need to interact or even see other objects in the room with the computer, so effectively moving the player inside the computer is a good solution.
+The first way is to move him to another room with no exits. This might not be appropriate in some cases, but suppose the player logs on to a computer, and while logged on, all commands relate to the computer. The player does not need to interact or even see other objects in the room with the computer, so effectively moving the player inside the computer is a good solution.
 
 
 Block the exit
