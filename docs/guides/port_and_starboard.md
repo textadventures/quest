@@ -62,14 +62,14 @@ Wouldn't this be easier in a library?
 
 Well, go on then.
 
-[Shipwise.aslx]({{site.baseurl}}/files/Shipwise.aslx)
+[ShipwiseLib.aslx](https://raw.githubusercontent.com/ThePix/quest/refs/heads/master/ShipwiseLib.aslx)
 
 Save this file to your game's folder, and modify the code at the start of the file to this:
 
       <!--Saved by Quest 5.2.4515.34846-->
       <asl version="520">
         <include ref="English.aslx" />
-        <include ref="Shipwise.aslx" />
+        <include ref="ShipwiseLib.aslx" />
         <include ref="Core.aslx" />
 
 One last note. After adding new templates, or a library with templates, you need to save the game, quit Quest, then open it up again to get the templates loaded up properly.
@@ -82,7 +82,7 @@ It might be a good idea to implement a command so your game responds to NORTH, E
         <pattern>w;e;s;n;se;ne;sw;ne;west;south;east;north;northeast;southeast;northwest;southwest</pattern>
         <script>
           msg ("This story is set on a ship, and the standard compass directions make no sense in that context. Instead,directions are referenced shipwise. Looking towards the front of the ship, ahead of you is \"forward\" (where north would be on the compass rose to the right) and behind you is \"aft\". To the left is \"port\", and to the right is \"starboard\".")
-          msg ("If you get confused about port and starboard, remember that \"port\" and \"left\" are both four letters long. Or remember that starboard is a corruption of stearboard, an early form of rudder. Most people are right haneed so the stearboard was always on the right,")
+          msg ("If you get confused about port and starboard, remember that \"port\" and \"left\" are both four letters long. Or remember that starboard is a corruption of stearboard, an early form of rudder. Most people are right handed so the stearboard was always on the right,")
         </script>
       </command>
 

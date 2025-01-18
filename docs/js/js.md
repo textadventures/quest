@@ -13,7 +13,7 @@ Below is an alphabetic list of the more commonly used functions. If you add your
 
 ---
 
--  [addScript](addScript.html)
+-  [addScript](addscript.html)
 -  [addText](addtext.html)
 -  [colourBlend](colourblend.html)
 -  [eval](eval.html)

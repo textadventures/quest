@@ -46,7 +46,7 @@ In general, if there are several things with the same name in your game, later o
 
 The upshot of this is that your libraries should be after the standard libraries, and you may need to be careful exactly what order they come in.
 
-An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here(translating_quest.html)] if you are).
+An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here](translating_quest.html) if you are).
 
 
 Your own libraries?

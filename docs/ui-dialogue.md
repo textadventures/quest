@@ -140,4 +140,4 @@ JS.addText (GetFileData("dialogue.png"))
 ```
 
 
-In the [second part](ui-dialogue2.html) we will build on this to create a dialogue panel where the player can assign points to attributes.
+In the [second part](ui-dialogue-points.html) we will build on this to create a dialogue panel where the player can assign points to attributes.

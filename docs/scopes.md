@@ -57,7 +57,7 @@ Rooms
 
 As of Quest 5.8, you can get a list of rooms (more specifically, objects with "isroom" set to true).
 
-* [AllRooms](functions/corelibrary/allrooms.html)
+* [AllRooms](functions/allrooms.html)
 
 
 Others

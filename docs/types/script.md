@@ -29,7 +29,7 @@ do(fridge, "look")
 invoke(fridge.look)
 ```
 
-If you use the `do` command, your script will have access to a local variable called `this`, which points to the object the script belogs to. This is very useful when making generic scripts; one script can be added to numerous objects, and when the script runs it can find out what it belongs to.
+If you use the `do` command, your script will have access to a local variable called `this`, which points to the object the script belongs to. This is very useful when making generic scripts; one script can be added to numerous objects, and when the script runs it can find out what it belongs to.
 
 You can send other values to a script by adding them to a dictionary. For each name-value pair you add to the dictionary, a local variable will be available the name being the key, and the value being the value.
 
@@ -54,4 +54,4 @@ You can use the `IsDefined` function within a script to determine if it has acce
 if (IsDefined("npc")) {
 ```
 
-There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](functions/eval.html) function).
+There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](../functions/eval.html) function).

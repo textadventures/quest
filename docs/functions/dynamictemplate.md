@@ -13,7 +13,7 @@ Returns a [string](../types/string.html) containing the requested text, based on
 
 You can pass in multiple objects. If you only pass in one, you can refer to it using the variable "object". Otherwise you can use "object1", "object2" etc.
 
-See [Using Templates](../guides/using_templates.html)
+See [Using Templates](../using_templates.html)
 
 *Example:* We want to provide a templated message about a blocked exit.
 
