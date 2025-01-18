@@ -17,7 +17,7 @@ In the room are lots of different objects:
 
 3. I highlight the player and go to **Attributes** and click the **Add** symbol.
 
-4. I give the Attribute a single word name eg: **countdown** (CASE SENTITIVE!)
+4. I give the Attribute a single word name eg: **countdown** (CASE SENSITIVE!)
 
      ![](hscountdown2.jpg)
 
@@ -37,7 +37,7 @@ In the room are lots of different objects:
 
 9. Now I need to add a label so the value appears when you play.
 
-10. I go up to **status attributes** and click the **Add** button and type in the name of the attribute: (CASE SENTITIVE!)
+10. I go up to **status attributes** and click the **Add** button and type in the name of the attribute: (CASE SENSITIVE!)
 
      ![](hscountdown6.jpg)
 
