@@ -9,7 +9,7 @@ Containers have been a feature of text adventures from the very early days, and 
 
 A container is a type of object, so the first thing to do is to create an object. Let's say we want to create a chest.
 
-To make it a container, go to the _Featurees_ tab of the object, and tick "Container: ...". A new tab will appear; go to the _Container_ tab, and select the type of container that you want.
+To make it a container, go to the _Features_ tab of the object, and tick "Container: ...". A new tab will appear; go to the _Container_ tab, and select the type of container that you want.
 
 **Container:** Your basic container. We will look in detail in a moment.
 
@@ -123,7 +123,7 @@ The basic principle is straightforward. An `if` command is used to test the cond
 
 ### Keeping count
 
-We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general princple, always check if the player has exceeded a certain amount rather than got a certain amount.
+We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general principle, always check if the player has exceeded a certain amount rather than got a certain amount.
 
 ![](images/containercounter.png "A counting container")
 

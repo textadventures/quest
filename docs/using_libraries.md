@@ -36,7 +36,7 @@ To add a library to your game, go the bottom of the left pane in the GUI, and ex
 Publishing Your Game
 --------------------
 
-When you use the publish tool before uploading your game, Quest creates a .quest file. This file includes everything from all the libraries you use, including Core.aslx (this means if Core.aslx is updated, it will not break your game because it will still be using the same version). You do not have to do anything to ensure the libraries are included (even libraries in other folders; as long as Quest could find a library when you were creatingyour game, it will be included).
+When you use the publish tool before uploading your game, Quest creates a .quest file. This file includes everything from all the libraries you use, including Core.aslx (this means if Core.aslx is updated, it will not break your game because it will still be using the same version). You do not have to do anything to ensure the libraries are included (even libraries in other folders; as long as Quest could find a library when you were creating your game, it will be included).
 
 
 Conflicts and The Order of Libraries

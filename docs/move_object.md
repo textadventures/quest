@@ -62,7 +62,7 @@ else {
 }
 ```
 
-We use `GetBoolean` because mostr objects will not have a "shiftable" attribute. `GetBoolean` will return false if the "shiftable" attribute is false or if it is absent altogether.
+We use `GetBoolean` because most objects will not have a "shiftable" attribute. `GetBoolean` will return false if the "shiftable" attribute is false or if it is absent altogether.
 
 We also check the value of the "take" attribute to give a different error message when the player tries to push a hat, compared to trying to push a wall.
 

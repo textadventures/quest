@@ -150,7 +150,7 @@ That said, where possible I would recommend breaking paragraphs into separate `m
 
 ### More style options
 
-For more involved styling, you are better using CSS. This can be associatedwith a section of HTML using `span` and `div` elements. Use `span` for a section within a single line, and use `div` for a section that includes several sections.
+For more involved styling, you are better using CSS. This can be associated with a section of HTML using `span` and `div` elements. Use `span` for a section within a single line, and use `div` for a section that includes several sections.
 
 Whichever you use, give it a `style` attribute, and use CSS as the value. Here is an example that sets both the foreground and background colour. Note that CSS attributes take a colon between the name and the value, and each pair is separated by a semi-colon (and the US spelling of "color").
 ```

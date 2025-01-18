@@ -9,7 +9,7 @@ In this article we will modify the status bar and game panes of the Quest interf
 
 The first thing to do is to decide what we want; what colours will we use and so on.
 
-Once you know that, you can work out how it is described in CSS. CSS is a language that is used by web pages. A full description is beyond the scope of this article, but in essense it is about associating a description of how an HTML element will be displayed with that element. The description consists of a list of properties, each made up of a name and a value separated by a colon. Each property is separated by a semi-colon.
+Once you know that, you can work out how it is described in CSS. CSS is a language that is used by web pages. A full description is beyond the scope of this article, but in essence it is about associating a description of how an HTML element will be displayed with that element. The description consists of a list of properties, each made up of a name and a value separated by a colon. Each property is separated by a semi-colon.
 
 Here is an example:
 

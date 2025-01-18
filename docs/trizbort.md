@@ -123,7 +123,7 @@ Quest Maps
 
 You will need to go to the _Interface_ tab of the game object to turn the map on, if you want to have an in-game map.
 
-Quest handles maps very differently to Trizbort. Quest tries to guess where each room is in relation to each other, whilst Trozbort is a drawing package, and allows rooms to go anywhere. Quest uses exits and Trizbort uses links. The upshot is that map itself does not export from Trizbort. The only values that are exported are the colours and size of the room.
+Quest handles maps very differently to Trizbort. Quest tries to guess where each room is in relation to each other, whilst Trizbort is a drawing package, and allows rooms to go anywhere. Quest uses exits and Trizbort uses links. The upshot is that map itself does not export from Trizbort. The only values that are exported are the colours and size of the room.
 
 Alternatively, export the Trizbort map to an image, and add that to your game.
 
