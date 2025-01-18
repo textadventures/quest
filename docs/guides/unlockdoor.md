@@ -5,7 +5,7 @@ title: Unlock with combination
 
 Here is an example of an exit that will be unlocked when the player inserts the right code.
 
-After creating an exit set the "Locked" checkbox and type somthing in the "Print message when locked" box. To unlock the exit later you must enter a name for your exit!
+After creating an exit set the "Locked" checkbox and type something in the "Print message when locked" box. To unlock the exit later you must enter a name for your exit!
 
 ![](Unlockdoor1.jpg "Unlockdoor1.jpg")
 

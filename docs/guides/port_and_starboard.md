@@ -76,7 +76,7 @@ One last note. After adding new templates, or a library with templates, you need
 
 * * * * *
 
-It might be a good idea to implement a command so your game responds to NORTH, EAST, etc., explaining the system. Here is an example of such a command, but you will propbably want to tailor it to your game and style.
+It might be a good idea to implement a command so your game responds to NORTH, EAST, etc., explaining the system. Here is an example of such a command, but you will probably want to tailor it to your game and style.
 
       <command name="compass_directions">
         <pattern>w;e;s;n;se;ne;sw;ne;west;south;east;north;northeast;southeast;northwest;southwest</pattern>
