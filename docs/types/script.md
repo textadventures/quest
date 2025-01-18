@@ -46,7 +46,7 @@ Now the "look" script will have access to local variables called "npc" and "obj"
 do(fridge, "look", QuickParams("npc", mary, "obj", sandwich))
 ```
 
-The `QuickParams` function can take either 2, 4 or 6 parameters, allowing you to add 1, 2 or 3 varables.
+The `QuickParams` function can take either 2, 4 or 6 parameters, allowing you to add 1, 2 or 3 variables.
 
 You can use the `IsDefined` function within a script to determine if it has access to a certain variable. Note that it takes a string.
 
