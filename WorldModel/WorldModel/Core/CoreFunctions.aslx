@@ -270,14 +270,14 @@
   ]]></function>
   
   <function name="DisableMenu">
-    DisableOutputSection (game.menuoutputsection)
+    DisableMenuOutputSection (game.menuoutputsection)
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
   </function>
-  
-  <function name="DisableOutputSection" parameters="section">
-    JS.disableCmdLink (section)
+
+  <function name="DisableMenuOutputSection" parameters="section">
+    JS.disableMenuOutputSection (section)
   </function>
   
   <function name="EscapeQuotes" parameters="s" type="string">

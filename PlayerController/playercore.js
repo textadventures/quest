@@ -1469,7 +1469,7 @@ function loadTranscriptNameInputVal(){
 
 // ***********************************
 
-function disableCmdLink(el){
+function disableMenuOutputSection (el){
   $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick',null);
 }
 
