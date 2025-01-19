@@ -923,7 +923,7 @@
   <command name="save">
     <pattern type="string">^save$</pattern>
     <script>
-      if (IsDesktop()){}
+      if (IsDesktop()){
         request(RequestSave, "")
       }
       else {
