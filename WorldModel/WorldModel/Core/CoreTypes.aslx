@@ -90,6 +90,8 @@
     <feature_advancedwearables type="boolean">false</feature_advancedwearables>
     <feature_advancedscripts type="boolean">false</feature_advancedscripts>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+    <donotclearmenus type="boolean">false</donotclearmenus>
+    <showmenuresponses type="boolean">false</showmenuresponses>
     <multiplecommands type="boolean">false</multiplecommands>
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
     <writelogtofile type="boolean">false</writelogtofile>

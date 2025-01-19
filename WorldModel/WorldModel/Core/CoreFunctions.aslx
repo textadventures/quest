@@ -237,24 +237,47 @@
     game.menuoutputsection = outputsection
   ]]></function>
   
-  <function name="ShowMenuResponse" parameters="option">
+  <function name="ShowMenuResponse" parameters="option"><![CDATA[
     if (game.menucallback = null) {
       error ("Unexpected menu response")
     }
     else {
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", UnescapeQuotes(option))
-      msg (Template("ShowMenuResponsePrompt") + option)
       script = game.menucallback
-      ClearMenu
-      // Added by KV to handle the new FinishTurn setup in 580
+      if (GetBoolean (game, "donotclearmenus")) {
+        DisableMenu
+      }
+      else {
+        ClearMenu
+      }
       if (not GetBoolean(game, "disambiguating")) {
         game.runturnscripts = true
+      }
+      else {
+        if (GetBoolean (game, "showmenuresponses")) {
+          obj = GetObject (option)
+          if (obj <> null){
+            option = GetDisplayAlias(obj)
+          }
+          msg (Template("ShowMenuResponsePrompt") + option)
+        }
       }
       game.disambiguating = false
       invoke (script, parameters)
       FinishTurn
     }
+  ]]></function>
+  
+  <function name="DisableMenu">
+    DisableOutputSection (game.menuoutputsection)
+    game.menuoutputsection = null
+    game.menuoptions = null
+    game.menucallback = null
+  </function>
+  
+  <function name="DisableOutputSection" parameters="section">
+    JS.disableCmdLink (section)
   </function>
   
   <function name="EscapeQuotes" parameters="s" type="string">

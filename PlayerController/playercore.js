@@ -1469,6 +1469,9 @@ function loadTranscriptNameInputVal(){
 
 // ***********************************
 
+function disableCmdLink(el){
+  $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick',null);
+}
 
 
 // GRID FUNCTIONS ***********************************************************************************************************************
