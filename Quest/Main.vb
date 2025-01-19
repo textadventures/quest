@@ -28,8 +28,6 @@ Public Class Main
         ctlLauncher.QuestVersion = My.Application.Info.Version
         ctlLauncher.MaxASLVersion = Constants.MaxASLVersion
         ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
-        ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
-        ctlLauncher.ShowAdult = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
@@ -463,10 +461,6 @@ Public Class Main
                 ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
             Case OptionNames.GamesFolder
                 ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
-            Case OptionNames.ShowSandpit
-                ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
-            Case OptionNames.ShowAdult
-                ctlLauncher.ShowAdult = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
             Case OptionNames.PlaySounds
                 ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
             Case OptionNames.UseSAPI

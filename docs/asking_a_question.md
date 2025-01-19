@@ -19,7 +19,7 @@ Often in a text adventure you want the game to ask an open-ended question of the
 
 The first line just asks the question. Then we see the `get input` command. The block after that gets run only once the player has typed a response. A magic variable called `result` has the text the player typed, so we just need to assign that.
 
-Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's nasme in text:
+Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
 
 > 'Hi, {player.alias},' says the oddly-shaped doll.
 

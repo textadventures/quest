@@ -34,4 +34,4 @@ If the ASLX defines a type called "[defaultobject](attributes/defaultobject.html
 -   The neutral [gender](attributes/gender.html) and [article](attributes/article.html) ("it") are set
 -   Default container attributes are set – by default the object is not a container, cannot be opened or closed, etc. This is just for convenience really – if we didn’t set these in the default type, then attributes such as "isopen" would default to null instead of false, which would make the container logic messier.
 
-See also [Using inherited types](tutorial/using_inherited_types.html) in the tutorial.
+See also [Using inherited types](using_inherited_types.html) in the tutorial.

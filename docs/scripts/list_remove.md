@@ -7,4 +7,4 @@ title: list remove
 
 Removes an item from a list.
 
-See [Using Lists](../guides/using_lists.html)
+See [Using Lists](../using_lists.html)

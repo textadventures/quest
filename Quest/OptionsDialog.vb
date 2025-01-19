@@ -20,11 +20,6 @@ Public Class OptionsDialog
         cmdLink.BackColor = Options.Instance.GetColourValue(OptionNames.LinkColour)
         chkUseDefaultFont.Checked = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
         txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
-        chkShowSandpit.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
-        chkShowAdult.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
-        Dim showAdult As Boolean = DirectCast(Registry.GetHKLMSetting("Quest", "Settings", "LockAdult", "0"), String) = "0"
-        chkShowAdult.Visible = showAdult
-        lnkShowAdultHelp.Visible = showAdult
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         chkUseSAPI.Checked = Options.Instance.GetBooleanValue(OptionNames.UseSAPI)
         UpdateSampleText()
@@ -68,9 +63,7 @@ Public Class OptionsDialog
         Options.Instance.SetSingleValue(OptionNames.FontSize, fontSize)
         Options.Instance.SetIntValue(OptionNames.FontStyle, fontStyle)
         Options.Instance.SetStringValue(OptionNames.GamesFolder, txtGamesFolder.Text)
-        Options.Instance.SetBooleanValue(OptionNames.ShowSandpit, chkShowSandpit.Checked)
         Options.Instance.SetBooleanValue(OptionNames.PlaySounds, chkPlaySounds.Checked)
-        Options.Instance.SetBooleanValue(OptionNames.ShowAdult, chkShowAdult.Checked)
         Options.Instance.SetBooleanValue(OptionNames.UseSAPI, chkUseSAPI.Checked)
         Me.Hide()
     End Sub
@@ -155,10 +148,6 @@ Public Class OptionsDialog
         If dlgFolderBrowser.ShowDialog() = Windows.Forms.DialogResult.OK Then
             txtGamesFolder.Text = dlgFolderBrowser.SelectedPath
         End If
-    End Sub
-
-    Private Sub lnkShowAdultHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkShowAdultHelp.LinkClicked
-        LaunchURL("http://docs.textadventures.co.uk/quest/configuring_quest.html")
     End Sub
 
     Private Sub LaunchURL(url As String)

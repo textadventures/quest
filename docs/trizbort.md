@@ -8,7 +8,7 @@ Trizbort is a map-making program specifically designed for text adventures, firs
 
 You can find it here:
 
-[www.trizbort.com](www.trizbort.com)
+[https://www.trizbort.com](https://www.trizbort.com)
 
 
  
@@ -29,7 +29,7 @@ Rooms
 
 Press “R” to create a room. When a room is selected you can drag it to move it, or select it and then drag its square handles to change its size. Double click on the room to change its properties. Here you can type in a description. You can tick it as dark too.
 
-![](images/triz01.png "Trizbort room dioalog")
+![](images/triz01.png "Trizbort room dialog")
 
 You should make sure one room is flagged as the start room so the exporter will create a player object there.
 
@@ -123,7 +123,7 @@ Quest Maps
 
 You will need to go to the _Interface_ tab of the game object to turn the map on, if you want to have an in-game map.
 
-Quest handles maps very differently to Trizbort. Quest tries to guess where each room is in relation to each other, whilst Trozbort is a drawing package, and allows rooms to go anywhere. Quest uses exits and Trizbort uses links. The upshot is that map itself does not export from Trizbort. The only values that are exported are the colours and size of the room.
+Quest handles maps very differently to Trizbort. Quest tries to guess where each room is in relation to each other, whilst Trizbort is a drawing package, and allows rooms to go anywhere. Quest uses exits and Trizbort uses links. The upshot is that map itself does not export from Trizbort. The only values that are exported are the colours and size of the room.
 
 Alternatively, export the Trizbort map to an image, and add that to your game.
 

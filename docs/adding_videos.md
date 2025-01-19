@@ -15,7 +15,7 @@ Copy the video's ID from YouTube.
 
 Paste the ID into the "Play YouTube video" script.
 
-[![animated gif](images/AddingYouTube.gif)](AddingYouTube.gif)
+[![animated gif](images/AddingYouTube.gif)](images/AddingYouTube.gif)
 
 
 
@@ -193,7 +193,7 @@ The most basic example of a video tag:
 
 For more information, see [here](https://www.w3schools.com/html/html5_video.asp).
 
-When using a local video file in Quest, we need to use [`GetFileURL()`](http://docs.textadventures.co.uk/quest/functions/getfileurl.html) to retrieve our local file's URL.
+When using a local video file in Quest, we need to use [`GetFileURL()`](functions/getfileurl.html) to retrieve our local file's URL.
 
 This will find the correct path to the file, whether we are using the desktop player or the web player.
 
@@ -219,7 +219,7 @@ src = "http://media.textadventures.co.uk/games/SQBeLzc7F0mHVspXyUfbbg/spinning_c
 msg ("<video src='" + src + "' autoplay>")
 ```
 
-For more on the maximum upload size, see the last section on [this page](http://docs.textadventures.co.uk/quest/publishing.html).
+For more on the maximum upload size, see the last section on [this page](publishing.html).
 
 
 ### Adding Controls
@@ -252,7 +252,7 @@ If you choose to loop your video, you will probably need a way to stop it. Like 
 
 ### Controlling HTML Video with JS (Stopping, Pausing, and Playing)
 
-The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](http://docs.textadventures.co.uk/quest/using_javascript.html) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
+The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](using_javascript.html) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
 
 ```
 JS.eval("$('video').remove();")

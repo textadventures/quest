@@ -26,7 +26,7 @@ You can add as many types as you want to an object (the technical term for this 
 
 Alternatively, you could add the "male" type to the "securityguard" type, so now "securityguard" inherits from both "npc" and "male". Then when you create a security guard, you do not need to add the "male" type too, but you still have the option to add the "female" type to make a female guard (but make sure "female" is added _after_ "securityguard").
 
-A great advantage of using types is that you only need to do things once. If you have a special script for NPCs, you just give that script to the "npc" type, and all your NPCs have it. If you later find you want to alter it, you just alter it fo the type, not each NPC. If you later realise you want your NPCs to inheir from another type (perhaps to support conversations with dynamic  menus), you can add the new type to the "npc" type.
+A great advantage of using types is that you only need to do things once. If you have a special script for NPCs, you just give that script to the "npc" type, and all your NPCs have it. If you later find you want to alter it, you just alter it fo the type, not each NPC. If you later realise you want your NPCs to inherit from another type (perhaps to support conversations with dynamic  menus), you can add the new type to the "npc" type.
 
 Quest types
 -----------

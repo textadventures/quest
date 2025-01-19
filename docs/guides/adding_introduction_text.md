@@ -5,7 +5,7 @@ title: Adding Introduction Text
 
 Many games start with some introductory text before getting the player started. This is an suggestion how to create an introduction. This version is supported by Quest5.2
 
-The introduction is devited into three parts. In the first part a startpicture is displayed. The complete intro is coded in the startscript of the game calling an additional function questionname.
+The introduction is divided into three parts. In the first part a startpicture is displayed. The complete intro is coded in the startscript of the game calling an additional function questionname.
 
 After creating a nearly full-screen picture, set it as the frame picture of the startroom.
 

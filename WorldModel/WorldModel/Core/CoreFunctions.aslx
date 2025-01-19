@@ -677,9 +677,5 @@
     }
     game.transcriptstring = game.transcriptstring + data
   </function>
-  
-  <function name="IsDesktop" type="boolean">
-    return (StartsWith(GetFileURL(""), "quest"))
-  </function>
 
 </library>

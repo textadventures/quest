@@ -9,7 +9,7 @@ Containers have been a feature of text adventures from the very early days, and 
 
 A container is a type of object, so the first thing to do is to create an object. Let's say we want to create a chest.
 
-To make it a container, go to the _Featurees_ tab of the object, and tick "Container: ...". A new tab will appear; go to the _Container_ tab, and select the type of container that you want.
+To make it a container, go to the _Features_ tab of the object, and tick "Container: ...". A new tab will appear; go to the _Container_ tab, and select the type of container that you want.
 
 **Container:** Your basic container. We will look in detail in a moment.
 
@@ -45,7 +45,7 @@ In the "Locking" section, select: "Lockable". Again, you will see a bunch of opt
 
 By default, the player will need to have all they keys to unlock the container. As of Quest 5.8, you can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
 
-![](images/locklandkey.png "Locked with a key")
+![](images/lockandkey.png "Locked with a key")
 
 Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Set the number of keys to zero and untick the "Require all keys" check box (if using earlier versions of Quest you will need to set the number of keys to 1, and create a dummy key the player cannot get to).
 
@@ -123,7 +123,7 @@ The basic principle is straightforward. An `if` command is used to test the cond
 
 ### Keeping count
 
-We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general princple, always check if the player has exceeded a certain amount rather than got a certain amount.
+We can use a similar script to track how many items are in the chest, and to react accordingly. In this example, the game finishes when three or more things are put in the chest. The player might put some items in the backpack, and then put the backpack in the chest, so the total could be more than three; this is a good general principle, always check if the player has exceeded a certain amount rather than got a certain amount.
 
 ![](images/containercounter.png "A counting container")
 

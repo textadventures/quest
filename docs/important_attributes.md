@@ -73,9 +73,9 @@ The parent attribute is an object that determines where a thing is. If the paren
 
 The parent attribute also determines how an object is displayed in the editor. This means that an object in a room in the editor will also be in that room at the start of the game.
 
-To change the parent in the desktop version of he editor, you can drag the object to its new parent. For the web version, click on the "Move" towards the top right. For any object you want the player to have at the stary, for instance, just move them to the player.
+To change the parent in the desktop version of he editor, you can drag the object to its new parent. For the web version, click on the "Move" towards the top right. For any object you want the player to have at the start, for instance, just move them to the player.
 
-Objects can and will change there parent as the game is played. When the player picks up and then drops an item, its parent will change to the player, and then to the room. When the player moves to a different room, the parent attribute of the player changes to the new room (so the parent attrbute of the player is the current room).
+Objects can and will change there parent as the game is played. When the player picks up and then drops an item, its parent will change to the player, and then to the room. When the player moves to a different room, the parent attribute of the player changes to the new room (so the parent attribute of the player is the current room).
 
 You can change the parent attribute directly in code, or use the helper functions. All three of these will move the object `ball` to the current room:
 

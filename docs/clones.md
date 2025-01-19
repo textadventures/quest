@@ -69,7 +69,7 @@ Finding and checking for clones
 
 Note that neither of these techniques will flag up the prototype; it is generally best to keep the prototypes somewhere the player will never find them.
 
-Back at the start the "prototype" attribute was mentioned. This will point to the protoype (even if you clone a clone, it will point to the original protortype) on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
+Back at the start the "prototype" attribute was mentioned. This will point to the prototype (even if you clone a clone, it will point to the original prototype) on our clones. We can use that to see if an object is a clone of a certain item. In this case, we are testing a object in a local variable called "obj".
 
 
 ```
@@ -122,7 +122,7 @@ It will clone any item, move it to the given room, then, to give some variety, i
 
 > This is a {random:red:blue:green} hat.
 
-The text processor directive will get processed now, as the item is created, and so its colour will not change each time the player looks at it. The price is also varietied to with 25% of the price of the prototype.
+The text processor directive will get processed now, as the item is created, and so its colour will not change each time the player looks at it. The price is also varied within 25% of the price of the prototype.
 
 The next one, `CreateProtectionPotion` is a bit more specialised, but could readily be adapted. It take a single parameter, room. It makes a clone of a specific item, masterpotionprotection, and assigns an element from one of a set of predefined objects too.
 

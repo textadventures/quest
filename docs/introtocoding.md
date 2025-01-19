@@ -26,7 +26,7 @@ I am going to assume you have made it to the end of the tutorial, and now you ar
 
 Well, the first thing to say is you are already splashing around in the shallow end. If you completed the tutorial, you have already written code! Let us take a look at the "saying" command. This is the script:
 
-![](../images/Say_to_troll.png "Say_to_troll.png")
+![](images/Say_to_troll.png "Say_to_troll.png")
 
 What you are looking at is a graphical representation of Quest code. Click on the "Code view" button (in the desktop version, this is icon that looks like the </>; it has changed since the image above)...
 

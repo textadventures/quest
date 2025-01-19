@@ -3,7 +3,7 @@ layout: index
 title: Character Creation
 ---
 
-Some text adventures leave the protagonist an empty slate, with no background or even a specific gender. In others, the protagonist is a certain person, and for the course of the game the player assumes the role of someone devised by the author. The third option is to let the player choose - afterall, that is the nature of the genre.
+Some text adventures leave the protagonist an empty slate, with no background or even a specific gender. In others, the protagonist is a certain person, and for the course of the game the player assumes the role of someone devised by the author. The third option is to let the player choose - after all, that is the nature of the genre.
 
 To do that in Quest involves setting up a start script on the game object and asking the player a series of questions.
 

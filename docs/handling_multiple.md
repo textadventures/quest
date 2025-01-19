@@ -95,8 +95,8 @@ The first line sets up a flag we will use later. Then we go though each member o
 
 For each item, we need to consider if the item should be included in an ALL list. If `multiple` is false, we need to handle it whatever - he player has specified this item. If it is true, there are some situations where we should not handle it (in this case, if the container has already been taken or if the item is held by a character, but it will be different for you).
 
-Note that any item that is glagged as scenery or as "not_all" will already be excluded from the list.
+Note that any item that is flagged as scenery or as "not_all" will already be excluded from the list.
 
 Then the action is done. In this case, another function is called. Inside that function, if `multiple` is true, the object name and a colon are prefixed to the response.
 
-Finally, we need to handle what happens if there was nothing in the list - for any command, you need to ensure theplayer always get some kind of a response. This will be flagged by the `took_something` flag still being false, and is only applicable if `multiple` is true.
+Finally, we need to handle what happens if there was nothing in the list - for any command, you need to ensure the player always get some kind of a response. This will be flagged by the `took_something` flag still being false, and is only applicable if `multiple` is true.

@@ -80,7 +80,7 @@ Can the player sneak? If so, what is the benefit? If the player can sneak, can t
 
 ### Special stuff
 
-Is there magic/pisions/etc.? How can magic affect combat; bonus to attack, to armour, to defence, etc.? Does casting magic use power points (how are they got back), use up the spell or what? What about magic items?
+Is there magic/poisons/etc.? How can magic affect combat; bonus to attack, to armour, to defence, etc.? Does casting magic use power points (how are they got back), use up the spell or what? What about magic items?
 
 What about poison and venom?
 

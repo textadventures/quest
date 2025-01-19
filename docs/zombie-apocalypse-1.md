@@ -142,7 +142,7 @@ obj.armour = 20
 The player
 ----------
 
-The player needs the same attributes for combat as the zombies. If you were using the desktop version, you would set attributes on the _Attributes_ tab of the player object, but on the web version we do not have that. Prior to Quest 5.7, you would have to do this in the start script of the game object, which is fine at first, but as your game gets more complex, the script will get huge, and increasely difficult to maintain. So instead will will set up attributes for an object in its initialisation script.
+The player needs the same attributes for combat as the zombies. If you were using the desktop version, you would set attributes on the _Attributes_ tab of the player object, but on the web version we do not have that. Prior to Quest 5.7, you would have to do this in the start script of the game object, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead will will set up attributes for an object in its initialisation script.
 
 On the player object's _Features_ tab, tick "Run an initialisation script for this object". Then go to the _Initialisation script_ tab, and put in this code, which will set its attributes.
 

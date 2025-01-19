@@ -6,13 +6,13 @@ title: Customising the UI - Part 3
 Testing
 -------
 
-When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check thast it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
+When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check that it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
 
 
 Various Tricks
 --------------
 
-A collection of tricks using the techniques already descussed.
+A collection of tricks using the techniques already discussed.
 
 ### The "Continue" link
 
@@ -89,7 +89,7 @@ JS.setCss ("#gamePanesRunning", "pointer-events:inherit;")
 
 ### Moving the screen to the bottom
 
-Sometimes when you dislay something on the screen, Quest fails to scroll down for. You can force that with this:
+Sometimes when you display something on the screen, Quest fails to scroll down for. You can force that with this:
 
 ```
 JS.scrollToEnd()
