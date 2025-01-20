@@ -92,7 +92,8 @@ namespace TextAdventures.Quest.EditorControls
                 }
             }
 
-            ctlEditorTree.ExpandAll();
+            ctlEditorTree.CollapseAll();
+            ctlEditorTree.ExpandFirst();
             ctlEditorTree.SelectFirstNode();
         }
 
