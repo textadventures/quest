@@ -254,14 +254,14 @@
       if (not GetBoolean(game, "disambiguating")) {
         game.runturnscripts = true
       }
-      else {
-        if (GetBoolean (game, "showmenuresponses")) {
+      if (GetBoolean (game, "showmenuresponses")) {
+        if (GetBoolean (game, "disambiguating")){
           obj = GetObject (option)
           if (obj <> null){
             option = GetDisplayAlias(obj)
           }
-          msg (Template("ShowMenuResponsePrompt") + option)
         }
+        msg (Template("ShowMenuResponsePrompt") + option)
       }
       game.disambiguating = false
       invoke (script, parameters)
