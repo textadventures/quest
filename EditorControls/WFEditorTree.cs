@@ -386,7 +386,11 @@ namespace TextAdventures.Quest.EditorControls
             get { return ctlToolStrip.Visible; }
             set { ctlToolStrip.Visible = value; }
         }
-
+        public void ExpandFirst()
+        {
+            ctlTreeView.Nodes[0].Expand();
+            if (ctlTreeView.SelectedNode != null) ctlTreeView.SelectedNode.EnsureVisible();
+        }
         public void ExpandAll()
         {
             ctlTreeView.ExpandAll();
