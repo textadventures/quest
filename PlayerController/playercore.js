@@ -1469,6 +1469,9 @@ function loadTranscriptNameInputVal(){
 
 // ***********************************
 
+function disableMenuOutputSection (el){
+  $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick',null);
+}
 
 
 // GRID FUNCTIONS ***********************************************************************************************************************

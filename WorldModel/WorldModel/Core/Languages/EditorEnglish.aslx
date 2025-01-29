@@ -193,6 +193,9 @@
   <template name="EditorGameBackground">Background</template>
   <template name="EditorGameHoverbackground">Hover background</template>
   <template name="EditorGameHoverforeground">Hover foreground</template>
+  <template name="EditorGameShowMenuOptionsCaption">Menus</template>
+  <template name="EditorGameDoNotClearMenus">Do not clear menus after selections are made.</template>
+  <template name="EditorGameShowMenuResponses">Print reponses after making menu selections.</template>
   <template name="EditorGameInterface">Interface</template>
   <template name="EditorGameMap">Map</template>
   <template name="EditorGameScale">Scale</template>

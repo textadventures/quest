@@ -921,22 +921,11 @@
     </script>
   </command>
 
-  <!-- Modified by KV to resolve issue with empty divOutput when saving online with this command. -->
   <command name="save">
     <pattern type="string">^save$</pattern>
     <script>
-      if (HasAttribute(game, "questplatform")) {
-        if (game.questplatform = "desktop") {
-           request(RequestSave, "")
-        }
-        else {
-          JS.saveGame ()
-        }
-      }
-      else {
-        request(RequestSave, "")
-      }
-      game.suppressturnscripts = true
+      request(RequestSave, "")
+      SuppressTurnscripts
     </script>
   </command>
   

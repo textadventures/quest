@@ -20,6 +20,7 @@ Public Class PlayerHTML
 
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
+    Private m_hasRaisedReadyEvent As Boolean = False
     Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
     Private m_resourceSchemeHandler As ResourceSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
@@ -84,7 +85,11 @@ Public Class PlayerHTML
             m_resetting = False
             Return
         End If
-        RaiseEvent Ready()
+
+        If Not m_hasRaisedReadyEvent Then
+            m_hasRaisedReadyEvent = True
+            RaiseEvent Ready()
+        End If
     End Sub
 
     Private Sub UIEvent(cmd As String, args As String)
@@ -389,6 +394,7 @@ Public Class PlayerHTML
     Public Sub Reset()
         m_resetting = True
         ctlWebView.Load("about:blank")
+        m_hasRaisedReadyEvent = False
     End Sub
 
     Private Sub ctlWebView_LoadingStateChanged() Handles ctlWebView.LoadingStateChanged
