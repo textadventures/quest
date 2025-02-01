@@ -106,7 +106,7 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
       MoveObject (lilies, player)
     }
     case ("Orchids") {
-      msg ("You buy some orchidsfrom Cindy.")
+      msg ("You buy some orchids from Cindy.")
       MoveObject (orchids, player)
     }
   }

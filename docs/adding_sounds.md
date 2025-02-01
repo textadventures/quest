@@ -10,7 +10,7 @@ Using Quest's Built-in Script Commands to Add MP3 or WAV Files
 
 ### Adding Sounds
 
-You can add sounds to your game using the [`play sound`](http://docs.textadventures.co.uk/quest/scripts/play_sound.html) script command. 
+You can add sounds to your game using the [`play sound`](scripts/play_sound.html) script command. 
 
 ![](images/play_a_sound.jpg)
 
@@ -28,7 +28,7 @@ Also note that Quest will only play one sound at a time when using the `play sou
 
 ### Stopping Sounds
 
-Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](http://docs.textadventures.co.uk/quest/scripts/stop_sound.html) script command is run. 
+Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](scripts/stop_sound.html) script command is run. 
 
 ![](images/stop_sound.jpg)
 
@@ -80,7 +80,7 @@ Just for fun, we have a button.  We've set up a "Press" verb on the button so it
 
 Play the example game:
 
-<a href="https://textadventures.co.uk/games/view/w1m_x18cmual0x11x098og/play-audio-example">Play "play audio Example" at textadventures.co.uk</a>
+<a href="https://textadventures.co.uk/games/view/fbmbs2hb-eo8yyjfcqiu8q/play-audio-example">Play "play audio Example" at textadventures.co.uk</a>
 
 View the example game's code:
 
@@ -107,7 +107,7 @@ For more information:
 
 https://www.w3schools.com/html/html5_audio.asp
 
-When using a local audio file in Quest, we need to use [`GetFileURL()`](http://docs.textadventures.co.uk/quest/functions/getfileurl.html) to retrieve our local file's URL.
+When using a local audio file in Quest, we need to use [`GetFileURL()`](functions/getfileurl.html) to retrieve our local file's URL.
 
 This will find the correct path to the file, whether we are using the desktop player or the web player.
 
@@ -123,7 +123,7 @@ The file "snd effect.ogg" is in my game's main folder.
 
 I also had to add ";*.ogg" to the end of the string attribute `game.publishfileextensions` so Quest would include the file when publishing the game.  Otherwise, it would not work because the file would not be present.
 
-For more on the file extensions included in your game, see [A Note on The Publish Process](http://docs.textadventures.co.uk/quest/tutorial/releasing_your_game.html).
+For more on the file extensions included in your game, see [A Note on The Publish Process](tutorial/releasing_your_game.html).
 
 To simulate the “Wait for sound to finish before continuing” option when adding sounds to your game via HTML audio elements, follow the link at the end of this document.
 
@@ -136,7 +136,7 @@ src = "http://media.textadventures.co.uk/games/1RurGHLuLUqrWdMJh53LTQ/bushcave-e
 msg ("<audio src='" + src + "' autoplay>")
 ```
 
-For more on the maximum upload size, see the last section on [this page](http://docs.textadventures.co.uk/quest/publishing.html).
+For more on the maximum upload size, see the last section on [this page](publishing.html).
 
 
 ### Adding Controls
@@ -176,7 +176,7 @@ Like everything else, there are numerous ways to handle this.
 Controlling HTML Audio with JS (Stopping, Pausing, and Playing)
 ---------------------------------------------------------------
 
-The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](http://docs.textadventures.co.uk/quest/using_javascript.html) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
+The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](using_javascript.html) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
 
 ```
 JS.eval("$('audio').remove();")

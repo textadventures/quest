@@ -33,4 +33,4 @@ _Note:_ The iterator variable should be a local variable, not an attribute. For 
 
 If `game.i` already exists, the loop will run 5 times as expected, but the value of `game.i` will keep its original value. If  `game.i` does not exist, an error will be produced.
 
-See [Using Lists](../guides/using_lists.html)
+See [Using Lists](../using_lists.html)

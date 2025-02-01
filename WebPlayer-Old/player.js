@@ -263,3 +263,47 @@ function saveGameResponse(data) {
 function WriteToLog(data){
   // Do nothing.
 }
+
+// TRANCSCRIPT FUNCTIONS
+// Added by KV  
+
+function WriteToTranscript(data){
+  if (noTranscript){
+    // Do nothing.
+    return;
+  }
+  if (!isLocalStorageAvailable()){
+    console.error("There is no localStorage. Disabling transcript functionality.");
+    noTranscript = true;
+    savingTranscript = false;
+    return;
+  }
+  var tName = transcriptName || "Transcript";
+  if (data.indexOf("___SCRIPTDATA___") > -1) {
+    tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
+    data = data.split("___SCRIPTDATA___")[1];
+  }
+  var oldData = localStorage.getItem("questtranscript-" + tName) || "";
+  localStorage.setItem("questtranscript-" + tName, oldData + data);
+}
+
+// Make sure localStorage is available, hopefully without throwing any errors!
+
+/* https://stackoverflow.com/a/16427747 */
+function isLocalStorageAvailable(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+// NOTE:
+// There is a site to handle viewing of transcipts for all online users:
+// https://play.textadventures.co.uk/TranscriptViewer
+
+
+// END OF TRANSCRIPT FUNCTIONS

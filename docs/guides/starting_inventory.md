@@ -7,4 +7,4 @@ To have the player start with things in the inventory, simply drag the object in
 
 Alternatively, in the game start script, use the "move object" command to move the object to the player.
 
-![](Howto_startinventory.jpg‎ "Howto_startinventory.jpg‎")
+![](Howto_startinventory.jpg "Howto_startinventory.jpg")

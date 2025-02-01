@@ -61,6 +61,12 @@
             OutputTextRaw ("&gt; " + SafeXML(command))
           }
         }
+        else {
+          // Added by KV to write the command to the transcript if game.echocommand is false and game.transcript_forcecommands exists and is true.
+          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript") and GetBoolean (game, "transcript_forcecommands")){
+            JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
+          }
+        }
         if (game.command_newline) {
           msg ("")
         }
@@ -123,7 +129,7 @@
   -->
   <function name="HandleSingleCommand" parameters="command">
     <![CDATA[
-    if (LCase(command) = "[Again1]" or LCase(command) = "[Again2]") {
+    if (LCase(command) = LCase(Template("Again1")) or LCase(command) = LCase(Template("Again2"))) {
       // First handle AGAIN
       if (not game.pov.currentcommand = null) {
         HandleSingleCommand(game.pov.currentcommand)

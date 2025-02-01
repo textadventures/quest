@@ -3,7 +3,7 @@ layout: index
 title: Random default answers
 ---
 
-The default answer of an command is defined in the languagefile of Quest5. So if you want to change this text, you have to copy your languagefile (for example english.aslx) from the Quest5-directory to your gamedirectory. There you can open it with an external texteditor and change templates with the name "Default...".
+The default answer of an command is defined in the language file of Quest5. So if you want to change this text, you have to copy your language file (for example english.aslx) from the Quest5-directory to your game directory. There you can open it with an external text editor and change templates with the name "Default...".
 
        
      <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>

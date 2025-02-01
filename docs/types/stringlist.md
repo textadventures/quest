@@ -3,7 +3,7 @@ layout: index
 title: Stringlist
 ---
 
-A stringlist is a [list](list.html) that can contain a number of elements, all have to be of type [string](string.html). see [Using Lists](../guides/using_lists.html) for more information.
+A stringlist is a [list](list.html) that can contain a number of elements, all have to be of type [string](string.html).
 
 For Quest 5.3 and earlier, the format in an ASLX file is this:
 
@@ -21,4 +21,4 @@ In Quest 5.4, you can still use the older semi-colon separate format with "simpl
 
      <mylist type="simplestringlist">one; two; three</mylist>
 
-There is more on lists [here](../using_lists.html).
+See [Using Lists](../using_lists.html).

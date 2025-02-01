@@ -43,7 +43,7 @@ For other quantities, you can do similar. If you want to track temperature to th
 When to use doubles...
 ----------------------
 
-I have been messing with Quest for over 6 years and besides experimenting for tutorials like this have never had to use anything other than integers. The only time I have seen it come up on the forum was for someone trying to track the progress of a ship across the ocean (or spaceship across space maybe), where the player specifies an angle and distance. For complex trigonmetric calculations, you are into the realm of doubles.
+I have been messing with Quest for over 6 years and besides experimenting for tutorials like this have never had to use anything other than integers. The only time I have seen it come up on the forum was for someone trying to track the progress of a ship across the ocean (or spaceship across space maybe), where the player specifies an angle and distance. For complex trigonometric calculations, you are into the realm of doubles.
 
 
 Trigonometry

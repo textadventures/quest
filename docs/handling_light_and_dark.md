@@ -158,7 +158,7 @@ If you have set the room description to be a script, then Quest will again check
 
 For objects, however, the Quest will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. Yo may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
 
-To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper descriotion.
+To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper description.
 
 ```
 if (CheckDarkness()) {

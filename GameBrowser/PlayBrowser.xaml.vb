@@ -113,26 +113,6 @@ Public Class PlayBrowser
         End If
     End Sub
 
-    Public Property ShowSandpit As Boolean
-        Get
-            Return m_onlineGames.ShowSandpit
-        End Get
-        Set(value As Boolean)
-            m_onlineGames.ShowSandpit = value
-            RedownloadGameData()
-        End Set
-    End Property
-
-    Public Property ShowAdult As Boolean
-        Get
-            Return m_onlineGames.ShowAdult
-        End Get
-        Set(value As Boolean)
-            m_onlineGames.ShowAdult = value
-            RedownloadGameData()
-        End Set
-    End Property
-
     Private Sub RedownloadGameData()
         If m_initialised Then
             ctlOnlineGameList.IsDownloading = True

@@ -160,27 +160,6 @@
   <data name="TabPage1.Text" xml:space="preserve">
     <value>Spieler</value>
   </data>
-  <data name="lnkShowAdultHelp.Location" type="System.Drawing.Point, System.Drawing">
-    <value>233, 100</value>
-  </data>
-  <data name="lnkShowAdultHelp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>256, 17</value>
-  </data>
-  <data name="lnkShowAdultHelp.Text" xml:space="preserve">
-    <value>Wie Sie diese Option entfernen können</value>
-  </data>
-  <data name="chkShowAdult.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 22</value>
-  </data>
-  <data name="chkShowAdult.Text" xml:space="preserve">
-    <value>Zeige Spiele für &amp;Erwachsene</value>
-  </data>
-  <data name="chkShowSandpit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 22</value>
-  </data>
-  <data name="chkShowSandpit.Text" xml:space="preserve">
-    <value>Zeige &amp;Sandkasten-Kategorie</value>
-  </data>
   <data name="cmdGamesFolder.Text" xml:space="preserve">
     <value>Ä&amp;ndern...</value>
   </data>

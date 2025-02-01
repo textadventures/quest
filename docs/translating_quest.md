@@ -47,7 +47,7 @@ At the top you will see this:
   <template name="LanguageId">en</template>
 ```
 
-The first step is to moduify that so it uses "English.aslx", rather than "EditorEnglish.aslx", and change the language ID. This example is for Icelandic:
+The first step is to modify that so it uses "English.aslx", rather than "EditorEnglish.aslx", and change the language ID. This example is for Icelandic:
 
 ```
 <library>
@@ -180,7 +180,7 @@ For example, in German, the verb to display to allow the player to wear somethin
 Releasing your translation
 --------------------------
 
-When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation. We would also be grateful for undates to existing translations.
+When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation. We would also be grateful for updates to existing translations.
 
 [Github Issue Tracker](https://github.com/textadventures/quest/issues)
 

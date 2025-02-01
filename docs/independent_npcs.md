@@ -335,7 +335,7 @@ this.deletefromlist = false
 
 ```
 
-Here is a more involved example. The NPC is serving drinks at a party, and has an object, `tray_of_drinks`. This has an attribute, "count", representing the number of glasses on the tray. If the NPC is in the kitchen and the tray is not full, he will add another glass to the tray. If the tray is empty he will start a new sequence, going to the kitchen. Otherwiose he will start a new sequence, going to a randomly picked destination and waiting there three turns.
+Here is a more involved example. The NPC is serving drinks at a party, and has an object, `tray_of_drinks`. This has an attribute, "count", representing the number of glasses on the tray. If the NPC is in the kitchen and the tray is not full, he will add another glass to the tray. If the tray is empty he will start a new sequence, going to the kitchen. Otherwise he will start a new sequence, going to a randomly picked destination and waiting there three turns.
 
 ```
 if (tray_of_drinks.count < 5 and this.parent = kitchen) {

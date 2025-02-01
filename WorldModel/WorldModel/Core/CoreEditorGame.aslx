@@ -355,6 +355,23 @@
         <attribute>deactivatecommandlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
+      
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameShowMenuOptionsCaption]</caption>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameDoNotClearMenus]</caption>
+        <attribute>donotclearmenus</attribute>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowMenuResponses]</caption>
+        <attribute>showmenuresponses</attribute>
+      </control>
 
       <control>
         <controltype>title</controltype>
@@ -587,6 +604,17 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowlocation]</caption>
         <attribute>showlocation</attribute>
+      </control>
+
+
+      <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameLocationBarBg]</caption>
+        <attribute>locationbarimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+        <preview/>
+        <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
 
       <control>

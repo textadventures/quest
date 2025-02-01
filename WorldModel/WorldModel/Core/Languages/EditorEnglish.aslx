@@ -193,6 +193,9 @@
   <template name="EditorGameBackground">Background</template>
   <template name="EditorGameHoverbackground">Hover background</template>
   <template name="EditorGameHoverforeground">Hover foreground</template>
+  <template name="EditorGameShowMenuOptionsCaption">Menus</template>
+  <template name="EditorGameDoNotClearMenus">Do not clear menus after selections are made.</template>
+  <template name="EditorGameShowMenuResponses">Print reponses after making menu selections.</template>
   <template name="EditorGameInterface">Interface</template>
   <template name="EditorGameMap">Map</template>
   <template name="EditorGameScale">Scale</template>
@@ -204,6 +207,7 @@
   <template name="EditorGameBorderCaption">Border</template>
   <template name="EditorGameLocationCaption">Location bar</template>
   <template name="EditorGameCommandBarCaption">Command bar</template>
+  <template name="EditorGameLocationBarBg">Location Bar Background Image</template>
   <template name="EditorGamePictureOptions">Picture frame</template>
   <template name="EditorGamePanesCaption">Game panes</template>
   <template name="EditorGameShowpanesInventory,">Show panes (Inventory, Places and Objects, Compass)</template>
@@ -444,7 +448,6 @@
   <template name="EditorObjectScriptsTurnscripts">Turn scripts - run after every turn the player takes in this room</template>
   <template name="EditorObjectScriptsCommands">Commands</template>
   <template name="EditorObjectSetupSetup">Setup</template>
-  <template name="EditorObjectSetupIsRoom">Object is a room</template>
   <template name="EditorObjectSetupType">Type</template>
   <template name="EditorObjectSetupName">Name</template>
   <template name="EditorObjectSetupAlias">Alias</template>
@@ -557,6 +560,8 @@
   <template name="EditorScriptsObjectsto">to</template>
   <template name="EditorScriptsObjectsMoveobjectCurrentRoom">Move object to the current room</template>
   <template name="EditorScriptsObjectstothecurrent">to the current room</template>
+  <template name="EditorScriptsObjectsMovePlayer">Move player</template>
+  <template name="EditorScriptsObjectsMovePlayerto">Move player to</template>
   <template name="EditorScriptsObjectsMakeobject">Make object visible</template>  
   <template name="EditorScriptsObjectsMakeobjectinvisible">Make object invisible</template>
   <template name="EditorScriptsObjectsMakevisible">Make visible</template>
@@ -859,7 +864,8 @@
   <template name="TypeCanPlayer">Can be a player</template>
   <template name="TypeObjectRoom">Room</template>
   <template name="TypeObjectObject">Object</template>
-  <template name="TypeObjectAndOr">Object and/or room</template>
+  <template name="TypeObjectAndOr">Object and room</template>
+  <template name="TypeObjectUndefined">Object type not set</template>
   <template name="TypeInanimateObject">Inanimate object</template>
   <template name="TypeMaleCharacter">Male character</template>
   <template name="TypeMaleCharacterNamed">Male character (named)</template>

@@ -567,4 +567,20 @@
   <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
 
+ <verbtemplate name="enter">betrete</verbtemplate>
+  <verbtemplate name="enter">gehe</verbtemplate>
+  <verbtemplate name="enter">gehe in</verbtemplate>
+  <dynamictemplate name="DefaultEnter">"Du kannst " + object.article + " nicht betreten."</dynamictemplate>
+  
+  <template name="NoTranscriptFeature">Dieses Spiel unterstützt kein Transkript.</template>
+  <template name="TranscriptAlreadyEnabled">Das Tanskript ist schon aktiviert.</template>
+  <template name="TranscriptDisabled">Ende des Transkripts.</template>
+  <template name="TranscriptAlreadyDisabled">Das Tanskript ist schon deaktiviert.</template>
+  <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Gib </i>" + Template("TranscriptOffAllCaps") + "<i> ein um das Transkript zu beenden.  ]</i></b>"]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start des Transkripts:<br/><b>TITEL: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
+  <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
+  <template name="Noted">Vermerkt.</template>
+  <template name="ShowMenuResponsePrompt">>> </template>
+
 </library>

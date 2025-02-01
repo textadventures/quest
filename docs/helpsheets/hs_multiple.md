@@ -7,64 +7,64 @@ title: Multiple Options using Switch
 
 1. I have made an object called telephone and added a Verb called Dial:
 
-     ![](hsmultiplel1.jpg)
+     ![](Hsmultiplel1.jpg)
 
 2. I then add a **Print Message** Script to the Verb to give a message with clear instructions:
 
-     ![](hsmultiplel2.jpg)
+     ![](Hsmultiplel2.jpg)
 
 3. Next Add the verb to the **Display verbs**:
 
-     ![](hsmultiplel3.jpg)
+     ![](Hsmultiplel3.jpg)
 
 4. Next I add a Command to the Room. The reason I do this is because I can “Dial” the number any time at all.
 
 5. I click on Room and then press **Add** and **Command**:
 
-     ![](hsmultiplel4.jpg)
+     ![](Hsmultiplel4.jpg)
 
 6. In the empty box below I type in **Dial \#text\#**
 
-     ![](hsmultiplel5.jpg)
+     ![](Hsmultiplel5.jpg)
 
 7. This means Dial followed by whatever number you want to add in (the variable) eg Dial 999
 
 8. Move down to Script and choose the **Switch…** command and type in the variable name “**text**” in the line:
 
-     ![](hsmultiplel6.jpg)
+     ![](Hsmultiplel6.jpg)
 
 9. In the Cases box I click **Add** and enter the first number you want to dial eg:
 
-     ![](hsmultiplel7.jpg)
+     ![](Hsmultiplel7.jpg)
 
 10. Click **OK** and select **Print a message**:
 
      
-     ![](hsmultiplel8.jpg)
+     ![](Hsmultiplel8.jpg)
 
 11. Type in the message you want to have when you type in “999”
 
      
-     ![](hsmultiplel9.jpg)
+     ![](Hsmultiplel9.jpg)
 
 12. Close the message to save it:
 
-     ![](hsmultiplel10.jpg)
+     ![](Hsmultiplel10.jpg)
 
 13. Repeat this for lots of different numbers eg
 
-     ![](hsmultiple11.jpg)
+     ![](Hsmultiple11.jpg)
 
 15. When you are finished, click **Default** and choose **Print a message** and write something like:
 
-     ![](hsmultiplel12.jpg)
+     ![](Hsmultiplel12.jpg)
 
 16. This means that any number not on the list will get this message.
 
 17. Here is the final list:
 
-     ![](hsmultiplel13.jpg)
+     ![](Hsmultiplel13.jpg)
 
 18. Here is how it looks with different options in action:
 
-     ![](hsmultiplel14.jpg)
+     ![](Hsmultiplel14.jpg)

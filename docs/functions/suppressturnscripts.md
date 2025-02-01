@@ -9,4 +9,4 @@ title: SuppressTurnscripts
 
 Stops all turnscripts running for one turn.
 
-For more on turnscrips, see [here]((../using_turnscripts.html).
+For more on turnscripts, see [here](../using_turnscripts.html).

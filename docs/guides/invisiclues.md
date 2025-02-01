@@ -37,7 +37,7 @@ Once you have the command, you need to put in the data. Go to the _Attributes_ t
 
 If using the web editor, you will not have an _Attributes_ tab, so we will have to do it differently. Go to the _Scripts_ tab of the game object, and modify the start script.
 
-Click to add a new script, and select "Set a variable or attribute" from the list of scripts. in the first boxm type `helpdict`, then select "New string dictionary" from the drop down.
+Click to add a new script, and select "Set a variable or attribute" from the list of scripts. in the first box type `helpdict`, then select "New string dictionary" from the drop down.
 
 Click to add a new script again, and select "Add a value to a dictionary. In the first box, put in `helpdict`. The two dropdowns should be set to "String". In the second box put the question, and in the third the answer. You need to do this for every hint you wish to add to your game.
 
@@ -50,5 +50,5 @@ game.helpdict = NewStringDictionary()
 dictionary add (game.helpdict, "How do I go north?", "Open the door!")
 dictionary add (game.helpdict, "How do I open the door?", "Type OPEN DOOR!")
 dictionary add (game.helpdict, "How do I kill the bugbear?", "There are allergic to jam...")
-dictionary add (game.helpdict, "How do I kill the bugbear with jam?", "Perhaps you could give him a sandwiche?")
+dictionary add (game.helpdict, "How do I kill the bugbear with jam?", "Perhaps you could give him a sandwich?")
 ```

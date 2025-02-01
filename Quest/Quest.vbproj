@@ -212,9 +212,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsDialog.de.resx">
       <DependentUpon>OptionsDialog.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsDialog.resx">
       <DependentUpon>OptionsDialog.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

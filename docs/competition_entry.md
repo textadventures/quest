@@ -7,7 +7,7 @@ Competitions are a good way to reach a wider audience for your Quest adventure, 
 
 Probably the most significant Interactive Fiction competition is [IfComp](http://www.ifcomp.org/), run during October each year, and this page is mostly geared towards that. It will not guarantee your game is a winner, but hopefully will improve its ranking to some degree.
 
-I originally wrote this in 2013, and have pdated it slightly. My game The Myothian Falcon was placed 24th in IFComp 2011 (hey, it was high enough to get offered a prize), and I beta-tested three out of the top five games from IFComp 2012, including the winner, so I have at least *some* experience. That said, obviously, this is just my opinion.
+I originally wrote this in 2013, and have updated it slightly. My game The Myothian Falcon was placed 24th in IFComp 2011 (hey, it was high enough to get offered a prize), and I beta-tested three out of the top five games from IFComp 2012, including the winner, so I have at least *some* experience. That said, obviously, this is just my opinion.
 
 
 Starting Out
@@ -29,7 +29,7 @@ Do not make the puzzles too tricky. With only two hours playing time, if a playe
 
 ### Compare to Other Entries
 
-Take a look at some other entries from previous years, and see what works and what does not. See what the standard is. Just as important, read the reviews and see what the judges think worked and what did not. Think if common critisms might also apply to your own work, and modify it accordingly.
+Take a look at some other entries from previous years, and see what works and what does not. See what the standard is. Just as important, read the reviews and see what the judges think worked and what did not. Think if common criticisms might also apply to your own work, and modify it accordingly.
 
 Implementation
 --------------
@@ -62,7 +62,7 @@ Unfortunately, it is easy for players to miss feelies; if they play on line, the
 
 Bear in mind that the vast majority of players will be playing on-line, so bear that in mind.
 
-Think carefully what elemenbts of the user interface (UI) you want to include. By default, Quest includes a command line, hyperlinks in the text and the panes on the right. Are they all appropriate to your game?
+Think carefully what elements of the user interface (UI) you want to include. By default, Quest includes a command line, hyperlinks in the text and the panes on the right. Are they all appropriate to your game?
 
 Turning off the command bar will make it much easier to build your game, as you very much limit what the player can do, but at the cost of destroying the illusion of freedom for the player. For a traditional game, you might prefer to have only the command line.
 

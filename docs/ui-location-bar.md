@@ -104,7 +104,7 @@ When we put this code into Quest, we need to escape the double quotes, by puttin
 Modifying the Style
 -------------------
 
-As we have not touced the "status" element, changes you make on the _Interface_ tab will still be applied. The one exception to that is the colour of the text for commands, because links always get displayed in a different colour. The simple way to handle that is to set the colour in the "style" attribute.
+As we have not touched the "status" element, changes you make on the _Interface_ tab will still be applied. The one exception to that is the colour of the text for commands, because links always get displayed in a different colour. The simple way to handle that is to set the colour in the "style" attribute.
 
 For example, to have it black (note the spelling of "color"!):
 ```

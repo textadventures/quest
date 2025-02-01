@@ -82,7 +82,7 @@ obj.buy => {
 
 So this is a bit more complicated. First, it gives the object an alias if one is not set, so we can use it in the next step. Then it sets the "listalias" attribute. This is what will appear in the right pane, and it will show the alias, followed by the price in brackets.
 
-Then it sets "cloneme" to true. This will diffentiate items that start in stock with items the player has sold to the shop. The former get cloned when bought, and destroyed when sold.
+Then it sets "cloneme" to true. This will differentiate items that start in stock with items the player has sold to the shop. The former get cloned when bought, and destroyed when sold.
 
 Then we set the "take" and "buy" attributes to scripts that call the functions we created above, so now those functions will be called when the player tries to TAKE or BUY the item.
 

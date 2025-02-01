@@ -75,7 +75,7 @@ Object attributes handled by Core.aslx:
 -   [open](../attributes/open.html)
 -   [openscript](../attributes/openscript.html)
 -   [parent](../attributes/parent.html)
--   [picture](../attributes/picture_attribute.html)
+-   [picture](../attributes/picture.html)
 -   [pov\_alias](../attributes/pov_alias.html)
 -   [pov\_alt](../attributes/pov_alt.html)
 -   [pov\_article](../attributes/pov_article.html)

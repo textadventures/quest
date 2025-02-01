@@ -509,13 +509,22 @@
   <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
   <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
 
-  <!-- Need a special verb in English because of the name collision with the "enter" script rooms use -->
-  <verb name="enter_verb">
-    <pattern>enter #object#</pattern>
-    <property>enterverb</property>
-    <defaultexpression>"You can't enter "+object.article+"."</defaultexpression>
-    <scope>notheld</scope>
-  </verb>
+  <verbtemplate name="enter">enter</verbtemplate>
+  <verbtemplate name="enter">go in</verbtemplate>
+  <verbtemplate name="enter">go into</verbtemplate>
+  <verbtemplate name="enter">get in</verbtemplate>
+  <verbtemplate name="enter">get into</verbtemplate>
+  <dynamictemplate name="DefaultEnter">WriteVerb(game.pov, "can't") + " enter " + object.article + "."</dynamictemplate>
   
-  
+  <template name="NoTranscriptFeature">This game has no transcript feature.</template>
+  <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
+  <template name="TranscriptDisabled">End of transcript.</template>
+  <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
+  <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
+  <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
+  <template name="Noted">Noted.</template>
+  <template name="ShowMenuResponsePrompt">>> </template>
+
 </library>

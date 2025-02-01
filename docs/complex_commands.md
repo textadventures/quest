@@ -150,7 +150,7 @@ The code here has two changes. Condition number 3 now checks the attachable flag
   }
   // 2. The first object is the cord
   else if (not object1 = cord) {
-    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anytthing.")
+    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
   }
   // 3. The second object is the attachable
   else if (not GetBoolean(object2, "attachable")) {
@@ -173,7 +173,7 @@ Let's ook at another example. Suppose you want to have fire in your game, to all
 
 We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
 
-Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest this is something objects can be burned on. Then for any object that can be destoyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
+Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest this is something objects can be burned on. Then for any object that can be destroyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
 
 For the first command give it this pattern:
 

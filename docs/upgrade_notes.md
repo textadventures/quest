@@ -95,14 +95,14 @@ New features:
 
 -   there is a new "Simple Mode" in the Editor, which can be toggled on and off from the Tools menu. This hides away much of Quest's more advanced functionality, so is useful for beginners, or if you don't need to use the more advanced features.
 -   you can now add, view and edit comments in the script editor
--   [walkthrough assertions](guides/walkthroughs.html#Assertions) let you test the value of expressions when a walkthrough is running
+-   [walkthrough assertions](using_walkthroughs.html#Assertions) let you test the value of expressions when a walkthrough is running
 -   new [while](scripts/while.html) script command
 -   [for](scripts/for.html) has a new "step" parameter
 -   new [ObjectLink](functions/corelibrary/objectlink.html) and [CommandLink](functions/corelibrary/commandlink.html) functions make it easier to output hyperlinks within a script
 
 Other changes:
 
--   ["changedXXXX" script attributes](guides/running_a_script_when_an_attribute_changes.html) can now access "oldvalue" to get the previous value of the attribute they're watching
+-   ["changedXXXX" script attributes](change_scripts.html) can now access "oldvalue" to get the previous value of the attribute they're watching
 -   richer set of attributes for use...on... and give...to...: [useanything](attributes/useanything.html), [giveanything](attributes/giveanything.html), [selfuseon](attributes/selfuseon.html), [selfuseanything](attributes/selfuseanything.html), [giveto](attributes/giveto.html), [givetoanything](attributes/givetoanything.html)
 -   new [onexit](attributes/onexit.html) script can be run when leaving a room
 -   new [GetAllChildObjects](functions/getallchildobjects.html) function, and the related [GetDirectChildren](functions/getdirectchildren.html) function has been moved from Core.aslx to become a Quest function

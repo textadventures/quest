@@ -11,3 +11,4 @@ Returns a [list](../types/list.html), based on the given list, but with any repe
 
 ```
 combinedlist = ListCompact (list1 + list2)
+```
