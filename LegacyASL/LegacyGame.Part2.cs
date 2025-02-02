@@ -4264,13 +4264,27 @@ public partial class LegacyGame
             {
                 ExecLook("look " + GetEverythingAfter(input, "l "), ctx);
             }
-            else if (CmdStartsWith(input, "examine ") & (ASLVersion >= 280))
+            else if (CmdStartsWith(input, "examine "))
             {
-                ExecExamine(input, ctx);
+                if (ASLVersion >= 280)
+                {
+                    ExecExamine(input, ctx);
+                }
+                else
+                {
+                    ExecLook("look " + GetEverythingAfter(input, "examine "), ctx);
+                }
             }
-            else if (CmdStartsWith(input, "x ") & (ASLVersion >= 280))
+            else if (CmdStartsWith(input, "x "))
             {
-                ExecExamine("examine " + GetEverythingAfter(input, "x "), ctx);
+                if (ASLVersion >= 280)
+                {
+                    ExecExamine("examine " + GetEverythingAfter(input, "x "), ctx);
+                }
+                else
+                {
+                    ExecLook("look " + GetEverythingAfter(input, "x "), ctx);
+                }
             }
             else if ((cmd == "l") | (cmd == "look"))
             {
