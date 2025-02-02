@@ -10922,8 +10922,7 @@ Public Class LegacyGame
     End Sub
 
     Friend Sub Print(txt As String, ctx As Context)
-        If Not _outPutOn Then 
-            LogASLError(Date.Now.ToString() & " - PRINT: Text not printed because outputoff is true:" & vbCrLf & "'" & txt & "'")
+        If Not _outPutOn Then
             Exit Sub
         End If
         Dim printString = ""
