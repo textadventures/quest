@@ -9288,10 +9288,18 @@ Public Class LegacyGame
                 ExecLook(input, ctx)
             ElseIf CmdStartsWith(input, "l ") Then
                 ExecLook("look " & GetEverythingAfter(input, "l "), ctx)
-            ElseIf CmdStartsWith(input, "examine ") And _gameAslVersion >= 280 Then
-                ExecExamine(input, ctx)
-            ElseIf CmdStartsWith(input, "x ") And _gameAslVersion >= 280 Then
-                ExecExamine("examine " & GetEverythingAfter(input, "x "), ctx)
+            ElseIf CmdStartsWith(input, "examine ") Then
+                If _gameAslVersion >= 280 Then
+                    ExecExamine(input, ctx)
+                Else
+                    ExecLook("look " & GetEverythingAfter(input, "examine "), ctx)
+                End If
+            ElseIf CmdStartsWith(input, "x ") Then
+                If _gameAslVersion >= 280 Then
+                    ExecExamine("examine " & GetEverythingAfter(input, "x "), ctx)
+                Else
+                    ExecLook("look " & GetEverythingAfter(input, "x "), ctx)
+                End If
             ElseIf cmd = "l" Or cmd = "look" Then
                 ExecLook("look", ctx)
             ElseIf cmd = "x" Or cmd = "examine" Then
