@@ -4472,7 +4472,7 @@ public partial class LegacyGame
 
     private void ExecGive(string giveString, Context ctx)
     {
-        string article;
+        var article = "";
         string item, character;
         Thing type;
         var id = default(int);
@@ -4552,8 +4552,6 @@ public partial class LegacyGame
                 PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             }
-
-            article = _objs[id].Article;
         }
 
         if (ASLVersion >= 281)
