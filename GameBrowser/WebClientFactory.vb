@@ -1,5 +1,5 @@
 ﻿Friend Class WebClientFactory
-    Private Const GamesListURL As String = "http://www.textadventures.co.uk/gamesxml.php"
+    Private Const GamesListURL As String = "https://textadventures.co.uk/gamesxml.php"
 
     Private Shared m_questVersion As String
     Private Shared m_maxAslVersion As Integer

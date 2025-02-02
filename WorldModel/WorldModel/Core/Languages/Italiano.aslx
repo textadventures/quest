@@ -4,8 +4,6 @@
 
  Version 1.0 by Luca Salvicchi with some tips by Francesco Cordella
 
-Feel free to let comments and tips on http://www.textadventures.co.uk/forum/viewtopic.php?f=10&t=2726&hilit=traslation
-
 	Cordella: ho messo ovunque + object.article + " " + object.alias + invece di lasciare cose tipo: 
 	"non puoi prender" + object.article che possono creare casini con i pronomi, tanto vale fare dire a Quest
 	la frase intera "Non puoi prendere la mela"

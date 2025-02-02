@@ -239,7 +239,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Utility.Utility.LaunchURL("http://docs.textadventures.co.uk/quest/text_processor.html");
+            Utility.Utility.LaunchURL("https://docs.textadventures.co.uk/quest/text_processor.html");
         }
 
         private void txtProcessorHelp_Initialized(object sender, EventArgs e)
