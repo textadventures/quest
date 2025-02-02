@@ -28,7 +28,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>http://docs.textadventures.co.uk/quest/handling_light_and_dark.html</href>
+      <href>https://docs.textadventures.co.uk/quest/handling_light_and_dark.html</href>
     </control>
 
   </tab>

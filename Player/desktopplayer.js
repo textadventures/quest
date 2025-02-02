@@ -5,8 +5,6 @@ var canSendCommand = true;
     await CefSharp.BindObjectAsync("questCefInterop");
 })();
 
-// TODO: this code is part of an attempt to prevent the mouse "back" button from navigating
-// back to about:blank. Unfortunately it's only a partial fix as the game reloads.
 history.pushState(null, null, null);
 window.addEventListener('popstate', function () {
     history.pushState(null, null, null);

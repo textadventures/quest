@@ -1,6 +1,4 @@
-﻿Imports System.Xml
-Imports System.IO
-Imports Microsoft.Win32
+﻿Imports System.IO
 Imports CefSharp
 
 Public Class PlayerHTML
@@ -43,6 +41,21 @@ Public Class PlayerHTML
         resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
         resScheme.SchemeName = "res"
         settings.RegisterScheme(resScheme)
+
+        Dim tempRootCachePath = Path.Combine(Path.GetTempPath(), "cefsharp_cache_" + Guid.NewGuid().ToString())
+
+        ' Forces an In-memory cache
+        settings.CachePath = ""
+        ' Required To avoid singleton issues
+        settings.RootCachePath = tempRootCachePath
+
+        AddHandler AppDomain.CurrentDomain.ProcessExit, Sub(s, evt)
+                                                            Try
+                                                                Directory.Delete(tempRootCachePath, True)
+                                                            Catch
+                                                                ' Ignore failures
+                                                            End Try
+                                                        End Sub
 
         Cef.Initialize(settings)
 
@@ -397,7 +410,11 @@ Public Class PlayerHTML
         m_hasRaisedReadyEvent = False
     End Sub
 
-    Private Sub ctlWebView_LoadingStateChanged() Handles ctlWebView.LoadingStateChanged
+    Public Sub PrepareForReload()
+        m_hasRaisedReadyEvent = False
+    End Sub
+
+    Private Sub ctlWebView_LoadingStateChanged(sender As Object, e As LoadingStateChangedEventArgs) Handles ctlWebView.LoadingStateChanged
         If Not ctlWebView.IsLoading Then
             OnDocumentLoad()
         End If

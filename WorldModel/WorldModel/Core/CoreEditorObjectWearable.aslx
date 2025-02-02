@@ -221,7 +221,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorObjectWearableInstructionsLink]</caption>
-      <href>http://docs.textadventures.co.uk/quest/wearables.html</href>
+      <href>https://docs.textadventures.co.uk/quest/wearables.html</href>
     </control>
 
 	</tab>

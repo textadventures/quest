@@ -178,6 +178,7 @@ Public Class Player
         If Not m_menu Is Nothing Then
             ResetMenu()
         End If
+        ctlPlayerHtml.PrepareForReload()
     End Sub
 
     Private Sub ResetMenu()
@@ -240,7 +241,10 @@ Public Class Player
             RaiseEvent RecordedWalkthrough(RecordWalkthrough, m_recordedWalkthrough)
         End If
         RecordWalkthrough = Nothing
-        m_speech.SpeakAsyncCancelAll()
+        Try
+            m_speech.SpeakAsyncCancelAll()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
@@ -636,7 +640,10 @@ Public Class Player
         text = StripTags(text)
         BeginInvoke(Sub()
                         If UseSAPI Then
-                            m_speech.SpeakAsync(text)
+                            Try
+                                m_speech.SpeakAsync(text)
+                            Catch ex As Exception
+                            End Try
                         End If
                     End Sub)
     End Sub
@@ -973,7 +980,10 @@ Public Class Player
         Set(value As Boolean)
             m_useSapi = value
             If Not value Then
-                m_speech.SpeakAsyncCancelAll()
+                Try
+                    m_speech.SpeakAsyncCancelAll()
+                Catch ex As Exception
+                End Try
             End If
         End Set
     End Property
