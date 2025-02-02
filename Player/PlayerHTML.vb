@@ -397,7 +397,11 @@ Public Class PlayerHTML
         m_hasRaisedReadyEvent = False
     End Sub
 
-    Private Sub ctlWebView_LoadingStateChanged() Handles ctlWebView.LoadingStateChanged
+    Public Sub PrepareForReload()
+        m_hasRaisedReadyEvent = False
+    End Sub
+
+    Private Sub ctlWebView_LoadingStateChanged(sender As Object, e As LoadingStateChangedEventArgs) Handles ctlWebView.LoadingStateChanged
         If Not ctlWebView.IsLoading Then
             OnDocumentLoad()
         End If

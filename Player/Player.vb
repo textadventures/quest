@@ -178,6 +178,7 @@ Public Class Player
         If Not m_menu Is Nothing Then
             ResetMenu()
         End If
+        ctlPlayerHtml.PrepareForReload()
     End Sub
 
     Private Sub ResetMenu()
