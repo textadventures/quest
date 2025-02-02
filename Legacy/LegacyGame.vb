@@ -10922,6 +10922,9 @@ Public Class LegacyGame
     End Sub
 
     Friend Sub Print(txt As String, ctx As Context)
+        If Not _outPutOn Then
+            Exit Sub
+        End If
         Dim printString = ""
 
         If txt = "" Then
