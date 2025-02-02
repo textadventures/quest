@@ -6579,6 +6579,11 @@ public partial class LegacyGame
 
     internal void Print(string txt, Context ctx)
     {
+        if (!_outPutOn)
+        {
+            return;
+        } 
+        
         var printString = "";
 
         if (string.IsNullOrEmpty(txt))
