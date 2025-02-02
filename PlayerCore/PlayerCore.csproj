@@ -72,7 +72,4 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
-  </ItemGroup>
 </Project>

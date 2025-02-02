@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Ionic.Zip;
 using TextAdventures.Quest;
 using TextAdventures.Quest.LegacyASL;
 
@@ -32,6 +31,11 @@ namespace QuestViva.PlayerCore
             }
         }
 
+        // For Zip files we previously used DotNetZip - should be able to use System.IO.Compression now:
+        // https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-compress-and-extract-files
+        // https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.zipfile?view=net-9.0
+        // We already use this in WorldModel/WorldModel/GameLoader/PackageReader.cs
+        
         // private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
         // {
         //     string gameFile = UnzipAndGetGameFile(filename, out tempDir);
@@ -46,14 +50,16 @@ namespace QuestViva.PlayerCore
 
         private static string UnzipAndGetGameFile(string zipFile, out string tempDir)
         {
-            // Unzips a file to a temp directory and returns the path of the ASL/CAS/ASLX file contained within it.
+            throw new NotImplementedException();
 
-            tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempDir);
-            ZipFile zip = ZipFile.Read(zipFile);
-            zip.ExtractAll(tempDir);
-
-            return SearchForGameFile(tempDir, "aslx", "asl", "cas");
+            // // Unzips a file to a temp directory and returns the path of the ASL/CAS/ASLX file contained within it.
+            //
+            // tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
+            // Directory.CreateDirectory(tempDir);
+            // ZipFile zip = ZipFile.Read(zipFile);
+            // zip.ExtractAll(tempDir);
+            //
+            // return SearchForGameFile(tempDir, "aslx", "asl", "cas");
         }
 
         private static string SearchForGameFile(string dir, params string[] exts)
