@@ -4,7 +4,7 @@ namespace WasmPlayer;
 
 public class UrlGameDataProvider(HttpClient client, string url, string resourcesId) : IGameDataProvider
 {
-    public async Task<IGameData> GetData()
+    public async Task<IGameData?> GetData()
     {
         var response = await client.GetAsync(url);
         if (!response.IsSuccessStatusCode) return null;

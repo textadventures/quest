@@ -4,7 +4,7 @@ namespace WebPlayer;
 
 public class UrlGameDataProvider(string url, string resourcesId) : IGameDataProvider
 {
-    public async Task<IGameData> GetData()
+    public async Task<IGameData?> GetData()
     {
         var client = new HttpClient();
         var response = await client.GetAsync(url);
