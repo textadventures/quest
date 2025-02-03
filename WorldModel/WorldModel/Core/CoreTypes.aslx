@@ -96,7 +96,6 @@
     <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv</publishfileextensions>
     <writelogtofile type="boolean">false</writelogtofile>
     <notranscript type="boolean">false</notranscript>
-    <transcript_forcecommands type="boolean">false</transcript_forcecommands>
     <savetranscript type="boolean">false</savetranscript>
     <changedsavetranscript type="script">
       if (game.notranscript){
