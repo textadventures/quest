@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestViva.Engine;
+﻿using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
-using TextAdventures.Quest;
 
-namespace WorldModelTests
+namespace QuestViva.EngineTests
 {
     [TestClass]
     public class ExpressionTests

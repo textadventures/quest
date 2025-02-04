@@ -1,10 +1,6 @@
-﻿using TextAdventures.Quest;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using QuestViva.Engine;
+﻿using QuestViva.Engine;
 
-namespace WorldModelTests
+namespace QuestViva.EngineTests
 {
     [TestClass()]
     public class QuestListTest

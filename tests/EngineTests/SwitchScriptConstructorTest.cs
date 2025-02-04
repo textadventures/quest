@@ -1,12 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using QuestViva.Engine;
+﻿using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
-using TextAdventures.Quest;
 
-namespace WorldModelTests
+namespace QuestViva.EngineTests
 {
     [TestClass()]
     public class SwitchScriptConstructorTest

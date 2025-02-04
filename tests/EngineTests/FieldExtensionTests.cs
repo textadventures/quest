@@ -1,12 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestViva.Engine;
-using TextAdventures.Quest;
+﻿using QuestViva.Engine;
 
-namespace WorldModelTests
+namespace QuestViva.EngineTests
 {
     [TestClass]
     public class FieldExtensionTests

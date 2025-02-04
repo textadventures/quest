@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCoreTests", "tests\Ed
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyTests", "tests\LegacyTests\LegacyTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "tests\WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EngineTests", "tests\EngineTests\EngineTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legacy", "src\Legacy\Legacy.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
 EndProject

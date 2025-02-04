@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TextAdventures.Quest;
-using Moq;
+﻿using Moq;
 using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
 
-namespace WorldModelTests
+namespace QuestViva.EngineTests
 {
     [TestClass]
     public class MultiScriptTests
