@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
-using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore
 {

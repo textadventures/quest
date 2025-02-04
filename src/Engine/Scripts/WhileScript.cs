@@ -1,6 +1,5 @@
 ﻿using System;
 using QuestViva.Engine.Functions;
-using TextAdventures.Quest;
 
 namespace QuestViva.Engine.Scripts
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Xml;
-using TextAdventures.Quest;
 
 namespace QuestViva.Engine
 {

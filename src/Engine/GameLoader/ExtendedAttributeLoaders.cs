@@ -5,7 +5,6 @@ using System.Xml;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
-using TextAdventures.Quest;
 
 // AttributeLoaders load properties which are stored in the XML as simple values.
 // ExtendedAttributeLoaders load properties which are stored with nested XML.

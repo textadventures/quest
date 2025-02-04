@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
-using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore
 {

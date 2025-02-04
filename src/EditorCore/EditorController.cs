@@ -8,7 +8,6 @@ using QuestViva.Engine;
 using QuestViva.Engine.GameLoader;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
-using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore
 {
@@ -2033,7 +2032,7 @@ namespace QuestViva.EditorCore
         public static Dictionary<string, TemplateData> GetAvailableTemplates()
         {
             var resources = WorldModel.GetEmbeddedResources()
-                .Where(name => name.StartsWith("TextAdventures.Quest.Core.Templates") && name.EndsWith(".template"));
+                .Where(name => name.StartsWith("QuestViva.Engine.Core.Templates") && name.EndsWith(".template"));
             
             var templates = new Dictionary<string, TemplateData>();
             

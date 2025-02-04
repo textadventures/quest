@@ -1,5 +1,4 @@
-﻿using TextAdventures.Quest;
-
+﻿
 namespace QuestViva.Engine.Scripts
 {
     class DelegateImplementation

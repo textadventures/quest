@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using QuestViva.Engine.Functions;
-using TextAdventures.Quest;
 
 /*
  * This script command is an alternative to request (Speak, "some text"), and is added as part of deprecating

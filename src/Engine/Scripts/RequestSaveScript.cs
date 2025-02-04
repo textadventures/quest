@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TextAdventures.Quest;
 
 /*
  * This script command is an alternative to request (Save, ""), and is added as part of deprecating

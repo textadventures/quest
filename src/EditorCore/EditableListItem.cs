@@ -1,5 +1,4 @@
-﻿using TextAdventures.Quest;
-
+﻿
 namespace QuestViva.EditorCore
 {
     public class EditableListItem<T> : IEditableListItem<T>

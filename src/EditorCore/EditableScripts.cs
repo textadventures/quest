@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using QuestViva.Engine;
 using QuestViva.Engine.Scripts;
-using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore
 {

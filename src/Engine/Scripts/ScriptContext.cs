@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Ciloci.Flee;
 using QuestViva.Engine.Functions;
-using TextAdventures.Quest;
 
 namespace QuestViva.Engine.Scripts
 {
