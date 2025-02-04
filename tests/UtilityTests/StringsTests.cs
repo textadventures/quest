@@ -1,7 +1,6 @@
 ﻿using QuestViva.Utility;
-using TextAdventures.Utility;
 
-namespace UtilityTests;
+namespace QuestViva.UtilityTests;
 
 [TestClass]
 public sealed class StringsTests

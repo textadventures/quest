@@ -5,6 +5,7 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>QuestViva.UtilityTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
