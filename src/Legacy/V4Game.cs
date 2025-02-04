@@ -3,9 +3,9 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
 
-namespace TextAdventures.Quest.LegacyASL;
+namespace QuestViva.Legacy;
 
-public partial class LegacyGame : IGame, IGameTimer
+public partial class V4Game : IGame, IGameTimer
 {
     public enum State
     {
@@ -482,7 +482,7 @@ public partial class LegacyGame : IGame, IGameTimer
     private int _fileDataPos;
     private bool _questionResponse;
 
-    public LegacyGame(IGameData gameData)
+    public V4Game(IGameData gameData)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
@@ -5243,7 +5243,7 @@ public partial class LegacyGame : IGame, IGameTimer
             var mnu = new MenuData(question, menuItems, false);
             var response = ShowMenu(mnu);
 
-            _choiceNumber = Conversions.ToInteger(response);
+            _choiceNumber = Conversions.ToInteger((string) response);
 
             SetStringContents("quest.lastobject", _objs[idNumbers[_choiceNumber]].ObjectName, ctx);
 

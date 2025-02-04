@@ -12,7 +12,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LegacyASL\LegacyASL.csproj" />
+    <ProjectReference Include="..\Legacy\Legacy.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
     <ProjectReference Include="..\WorldModel\WorldModel.csproj" />

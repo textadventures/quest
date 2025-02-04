@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 
-namespace TextAdventures.Quest.LegacyASL
+namespace QuestViva.Legacy
 {
     public class TextFormatter
     {

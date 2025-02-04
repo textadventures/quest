@@ -4,9 +4,9 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
 
-namespace TextAdventures.Quest.LegacyASL;
+namespace QuestViva.Legacy;
 
-public partial class LegacyGame
+public partial class V4Game
 {
     private void RestoreGameData(string fileData)
     {
@@ -8104,7 +8104,7 @@ public partial class LegacyGame
         }
     }
 
-    ~LegacyGame()
+    ~V4Game()
     {
         Cleanup();
     }
@@ -8398,7 +8398,7 @@ public partial class LegacyGame
                 return null;
             }
 
-            return Utility.Utility.FileMD5Hash(_gameFileName);
+            return TextAdventures.Utility.Utility.FileMD5Hash(_gameFileName);
         }
     }
 

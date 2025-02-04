@@ -11,6 +11,7 @@
 		<Product>LegacyASLTests</Product>
 		<Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
 		<LangVersion>default</LangVersion>
+		<RootNamespace>QuestViva.LegacyTests</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\LegacyASL\LegacyASL.csproj" />
+		<ProjectReference Include="..\..\src\Legacy\Legacy.csproj" />
 		<ProjectReference Include="..\..\src\Common\Common.csproj" />
 	</ItemGroup>
 </Project>

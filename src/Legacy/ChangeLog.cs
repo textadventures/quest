@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
 
-namespace TextAdventures.Quest.LegacyASL
+namespace QuestViva.Legacy
 {
     internal class ChangeLog
     {

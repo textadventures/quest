@@ -1,4 +1,4 @@
-namespace TextAdventures.Quest.LegacyASL;
+namespace QuestViva.Legacy;
 
 public static class Resources
 {
@@ -12,7 +12,7 @@ public static class Resources
     private static Stream GetResource(string name)
     {
         return System.Reflection.Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream($"ASL4.Libraries.{name}");
+            .GetManifestResourceStream($"QuestViva.Legacy.Libraries.{name}");
     }
     
     public static byte[] GetResourceBytes(string name)

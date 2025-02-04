@@ -1,24 +1,24 @@
 ﻿using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace TextAdventures.Quest.LegacyASL
+namespace QuestViva.Legacy
 {
     internal class RoomExit
     {
         private int _objId;
         private int _roomId;
-        private LegacyASL.LegacyGame.Direction _direction;
-        private LegacyASL.RoomExits _parent;
+        private QuestViva.Legacy.V4Game.Direction _direction;
+        private RoomExits _parent;
         private string _objName;
         private string _displayName; // this could be a place exit's alias
-        private LegacyASL.LegacyGame _game;
+        private QuestViva.Legacy.V4Game _game;
 
-        public RoomExit(LegacyASL.LegacyGame game)
+        public RoomExit(QuestViva.Legacy.V4Game game)
         {
             _game = game;
             game._numberObjs = game._numberObjs + 1;
             Array.Resize(ref game._objs, game._numberObjs + 1);
-            game._objs[game._numberObjs] = new LegacyASL.LegacyGame.ObjectType();
+            game._objs[game._numberObjs] = new QuestViva.Legacy.V4Game.ObjectType();
             _objId = game._numberObjs;
             var o = game._objs[_objId];
             o.IsExit = true;
@@ -89,24 +89,24 @@ namespace TextAdventures.Quest.LegacyASL
             return _game.HasAction(_objId, "script");
         }
 
-        public void SetDirection(LegacyASL.LegacyGame.Direction value)
+        public void SetDirection(QuestViva.Legacy.V4Game.Direction value)
         {
             _direction = value;
-            if (value != LegacyASL.LegacyGame.Direction.None)
+            if (value != QuestViva.Legacy.V4Game.Direction.None)
                 UpdateObjectName();
         }
 
-        public LegacyASL.LegacyGame.Direction GetDirection()
+        public QuestViva.Legacy.V4Game.Direction GetDirection()
         {
             return _direction;
         }
 
-        public void SetParent(LegacyASL.RoomExits value)
+        public void SetParent(RoomExits value)
         {
             _parent = value;
         }
 
-        public LegacyASL.RoomExits GetParent()
+        public RoomExits GetParent()
         {
             return _parent;
         }
@@ -156,12 +156,12 @@ namespace TextAdventures.Quest.LegacyASL
             return GetExitProperty("lockmessage");
         }
 
-        private void RunAction(ref string actionName, ref LegacyASL.LegacyGame.Context ctx)
+        private void RunAction(ref string actionName, ref QuestViva.Legacy.V4Game.Context ctx)
         {
             _game.DoAction(_objId, actionName, ctx);
         }
 
-        internal void RunScript(ref LegacyASL.LegacyGame.Context ctx)
+        internal void RunScript(ref QuestViva.Legacy.V4Game.Context ctx)
         {
             string argactionName = "script";
             RunAction(ref argactionName, ref ctx);
@@ -183,7 +183,7 @@ namespace TextAdventures.Quest.LegacyASL
 
             objName = parentRoom;
 
-            if (_direction != LegacyASL.LegacyGame.Direction.None)
+            if (_direction != QuestViva.Legacy.V4Game.Direction.None)
             {
                 objName = objName + "." + _parent.GetDirectionName(ref _direction);
                 _game._objs[_objId].ObjectAlias = _parent.GetDirectionName(ref _direction);
@@ -229,7 +229,7 @@ namespace TextAdventures.Quest.LegacyASL
 
         }
 
-        internal void Go(ref LegacyASL.LegacyGame.Context ctx)
+        internal void Go(ref QuestViva.Legacy.V4Game.Context ctx)
         {
             if (GetIsLocked())
             {
@@ -239,7 +239,7 @@ namespace TextAdventures.Quest.LegacyASL
                 }
                 else
                 {
-                    _game.PlayerErrorMessage(LegacyASL.LegacyGame.PlayerError.Locked, ctx);
+                    _game.PlayerErrorMessage(QuestViva.Legacy.V4Game.PlayerError.Locked, ctx);
                 }
             }
             else if (IsScript())

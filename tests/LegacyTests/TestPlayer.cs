@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using QuestViva.Common;
-using TextAdventures.Quest;
+﻿using QuestViva.Common;
 
-namespace LegacyASLTests
+namespace QuestViva.LegacyTests
 {
     class TestPlayer : IPlayer
     {

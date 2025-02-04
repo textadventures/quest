@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using QuestViva.Common;
+using QuestViva.Legacy;
 using TextAdventures.Quest;
-using TextAdventures.Quest.LegacyASL;
 
 namespace QuestViva.PlayerCore
 {
@@ -20,7 +20,7 @@ namespace QuestViva.PlayerCore
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    LegacyGame game = new LegacyGame(gameData);
+                    V4Game game = new V4Game(gameData);
                     game.SetUnzipFunction(UnzipAndGetGameFile);
                     return game;
                 case ".zip":

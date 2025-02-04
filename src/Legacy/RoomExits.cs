@@ -1,25 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Xml.Linq;
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
 
-namespace TextAdventures.Quest.LegacyASL
+namespace QuestViva.Legacy
 {
     internal class RoomExits
     {
-        private Dictionary<LegacyASL.LegacyGame.Direction, LegacyASL.RoomExit> _directions = new Dictionary<LegacyASL.LegacyGame.Direction, LegacyASL.RoomExit>();
-        private Dictionary<string, LegacyASL.RoomExit> _places = new Dictionary<string, LegacyASL.RoomExit>();
+        private Dictionary<QuestViva.Legacy.V4Game.Direction, RoomExit> _directions = new Dictionary<QuestViva.Legacy.V4Game.Direction, RoomExit>();
+        private Dictionary<string, RoomExit> _places = new Dictionary<string, RoomExit>();
         private int _objId;
-        private Dictionary<object, LegacyASL.RoomExit> _allExits;
+        private Dictionary<object, RoomExit> _allExits;
         private bool _regenerateAllExits;
-        private LegacyASL.LegacyGame _game;
+        private QuestViva.Legacy.V4Game _game;
 
-        public RoomExits(LegacyASL.LegacyGame game)
+        public RoomExits(QuestViva.Legacy.V4Game game)
         {
             _game = game;
             _regenerateAllExits = true;
         }
 
-        private void SetDirection(ref LegacyASL.LegacyGame.Direction direction, ref LegacyASL.RoomExit roomExit)
+        private void SetDirection(ref QuestViva.Legacy.V4Game.Direction direction, ref RoomExit roomExit)
         {
 
             if (_directions.ContainsKey(direction))
@@ -29,7 +27,7 @@ namespace TextAdventures.Quest.LegacyASL
             }
             else
             {
-                roomExit = new LegacyASL.RoomExit(_game);
+                roomExit = new RoomExit(_game);
                 _directions.Add(direction, roomExit);
             }
 
@@ -37,16 +35,16 @@ namespace TextAdventures.Quest.LegacyASL
 
         }
 
-        public LegacyASL.RoomExit GetDirectionExit(ref LegacyASL.LegacyGame.Direction direction)
+        public RoomExit GetDirectionExit(ref QuestViva.Legacy.V4Game.Direction direction)
         {
             if (_directions.ContainsKey(direction))
             {
                 return _directions[direction];
             }
-            return (LegacyASL.RoomExit)null;
+            return (RoomExit)null;
         }
 
-        public void AddPlaceExit(ref LegacyASL.RoomExit roomExit)
+        public void AddPlaceExit(ref RoomExit roomExit)
         {
 
             if (_places.ContainsKey(roomExit.GetToRoom()))
@@ -63,8 +61,8 @@ namespace TextAdventures.Quest.LegacyASL
         public void AddExitFromTag(string tag)
         {
 
-            LegacyASL.LegacyGame.Direction thisDir;
-            LegacyASL.RoomExit roomExit = (LegacyASL.RoomExit)null;
+            QuestViva.Legacy.V4Game.Direction thisDir;
+            RoomExit roomExit = (RoomExit)null;
             string[] @params = new string[1];
             string afterParam;
             var @param = default(bool);
@@ -72,69 +70,69 @@ namespace TextAdventures.Quest.LegacyASL
             if (_game.BeginsWith(tag, "out "))
             {
                 tag = _game.GetEverythingAfter(tag, "out ");
-                thisDir = LegacyASL.LegacyGame.Direction.Out;
+                thisDir = QuestViva.Legacy.V4Game.Direction.Out;
             }
             else if (_game.BeginsWith(tag, "east "))
             {
                 tag = _game.GetEverythingAfter(tag, "east ");
-                thisDir = LegacyASL.LegacyGame.Direction.East;
+                thisDir = QuestViva.Legacy.V4Game.Direction.East;
             }
             else if (_game.BeginsWith(tag, "west "))
             {
                 tag = _game.GetEverythingAfter(tag, "west ");
-                thisDir = LegacyASL.LegacyGame.Direction.West;
+                thisDir = QuestViva.Legacy.V4Game.Direction.West;
             }
             else if (_game.BeginsWith(tag, "north "))
             {
                 tag = _game.GetEverythingAfter(tag, "north ");
-                thisDir = LegacyASL.LegacyGame.Direction.North;
+                thisDir = QuestViva.Legacy.V4Game.Direction.North;
             }
             else if (_game.BeginsWith(tag, "south "))
             {
                 tag = _game.GetEverythingAfter(tag, "south ");
-                thisDir = LegacyASL.LegacyGame.Direction.South;
+                thisDir = QuestViva.Legacy.V4Game.Direction.South;
             }
             else if (_game.BeginsWith(tag, "northeast "))
             {
                 tag = _game.GetEverythingAfter(tag, "northeast ");
-                thisDir = LegacyASL.LegacyGame.Direction.NorthEast;
+                thisDir = QuestViva.Legacy.V4Game.Direction.NorthEast;
             }
             else if (_game.BeginsWith(tag, "northwest "))
             {
                 tag = _game.GetEverythingAfter(tag, "northwest ");
-                thisDir = LegacyASL.LegacyGame.Direction.NorthWest;
+                thisDir = QuestViva.Legacy.V4Game.Direction.NorthWest;
             }
             else if (_game.BeginsWith(tag, "southeast "))
             {
                 tag = _game.GetEverythingAfter(tag, "southeast ");
-                thisDir = LegacyASL.LegacyGame.Direction.SouthEast;
+                thisDir = QuestViva.Legacy.V4Game.Direction.SouthEast;
             }
             else if (_game.BeginsWith(tag, "southwest "))
             {
                 tag = _game.GetEverythingAfter(tag, "southwest ");
-                thisDir = LegacyASL.LegacyGame.Direction.SouthWest;
+                thisDir = QuestViva.Legacy.V4Game.Direction.SouthWest;
             }
             else if (_game.BeginsWith(tag, "up "))
             {
                 tag = _game.GetEverythingAfter(tag, "up ");
-                thisDir = LegacyASL.LegacyGame.Direction.Up;
+                thisDir = QuestViva.Legacy.V4Game.Direction.Up;
             }
             else if (_game.BeginsWith(tag, "down "))
             {
                 tag = _game.GetEverythingAfter(tag, "down ");
-                thisDir = LegacyASL.LegacyGame.Direction.Down;
+                thisDir = QuestViva.Legacy.V4Game.Direction.Down;
             }
             else if (_game.BeginsWith(tag, "place "))
             {
                 tag = _game.GetEverythingAfter(tag, "place ");
-                thisDir = LegacyASL.LegacyGame.Direction.None;
+                thisDir = QuestViva.Legacy.V4Game.Direction.None;
             }
             else
             {
                 return;
             }
 
-            if (thisDir != LegacyASL.LegacyGame.Direction.None)
+            if (thisDir != QuestViva.Legacy.V4Game.Direction.None)
             {
                 // This will reuse an existing Exit object if we're resetting
                 // the destination of an existing directional exit.
@@ -142,7 +140,7 @@ namespace TextAdventures.Quest.LegacyASL
             }
             else
             {
-                roomExit = new LegacyASL.RoomExit(_game);
+                roomExit = new RoomExit(_game);
             }
 
             roomExit.SetParent(this);
@@ -170,7 +168,7 @@ namespace TextAdventures.Quest.LegacyASL
                 // Script exit
                 roomExit.SetScript(afterParam);
 
-                if (thisDir == LegacyASL.LegacyGame.Direction.None)
+                if (thisDir == QuestViva.Legacy.V4Game.Direction.None)
                 {
                     // A place exit with a script still has a ToRoom
                     roomExit.SetToRoom(@params[0]);
@@ -197,14 +195,14 @@ namespace TextAdventures.Quest.LegacyASL
                 }
             }
 
-            if (thisDir == LegacyASL.LegacyGame.Direction.None)
+            if (thisDir == QuestViva.Legacy.V4Game.Direction.None)
             {
                 AddPlaceExit(ref roomExit);
             }
 
         }
 
-        internal void AddExitFromCreateScript(string script, ref LegacyASL.LegacyGame.Context ctx)
+        internal void AddExitFromCreateScript(string script, ref QuestViva.Legacy.V4Game.Context ctx)
         {
             // sScript is the "create exit ..." script, but without the "create exit" at the beginning.
             // So it's very similar to creating an exit from a tag, except we have the source room
@@ -252,7 +250,7 @@ namespace TextAdventures.Quest.LegacyASL
             {
                 if (Information.UBound(@params) < 1)
                 {
-                    _game.LogASLError("No exit destination given in 'create exit " + script + "'", LegacyASL.LegacyGame.LogType.WarningError);
+                    _game.LogASLError("No exit destination given in 'create exit " + script + "'", QuestViva.Legacy.V4Game.LogType.WarningError);
                     return;
                 }
 
@@ -272,17 +270,17 @@ namespace TextAdventures.Quest.LegacyASL
             return _objId;
         }
 
-        public Dictionary<string, LegacyASL.RoomExit> GetPlaces()
+        public Dictionary<string, RoomExit> GetPlaces()
         {
             return _places;
         }
 
-        internal void ExecuteGo(string cmd, ref LegacyASL.LegacyGame.Context ctx)
+        internal void ExecuteGo(string cmd, ref QuestViva.Legacy.V4Game.Context ctx)
         {
             // This will handle "n", "go east", "go [to] library" etc.
 
             int lExitID;
-            LegacyASL.RoomExit oExit;
+            RoomExit oExit;
 
             if (_game.BeginsWith(cmd, "go to "))
             {
@@ -297,7 +295,7 @@ namespace TextAdventures.Quest.LegacyASL
 
             if (lExitID == -1)
             {
-                _game.PlayerErrorMessage(LegacyASL.LegacyGame.PlayerError.BadPlace, ctx);
+                _game.PlayerErrorMessage(QuestViva.Legacy.V4Game.PlayerError.BadPlace, ctx);
             }
             else
             {
@@ -310,7 +308,7 @@ namespace TextAdventures.Quest.LegacyASL
         internal void GetAvailableDirectionsDescription(ref string description, ref string list)
         {
 
-            LegacyASL.RoomExit roomExit;
+            RoomExit roomExit;
             int count;
             string descPrefix;
             string orString;
@@ -321,7 +319,7 @@ namespace TextAdventures.Quest.LegacyASL
             list = "";
             count = 0;
 
-            foreach (KeyValuePair<object, LegacyASL.RoomExit> kvp in AllExits())
+            foreach (KeyValuePair<object, RoomExit> kvp in AllExits())
             {
                 count = count + 1;
                 roomExit = kvp.Value;
@@ -350,51 +348,51 @@ namespace TextAdventures.Quest.LegacyASL
 
         }
 
-        public string GetDirectionName(ref LegacyASL.LegacyGame.Direction dir)
+        public string GetDirectionName(ref QuestViva.Legacy.V4Game.Direction dir)
         {
             switch (dir)
             {
-                case LegacyASL.LegacyGame.Direction.Out:
+                case QuestViva.Legacy.V4Game.Direction.Out:
                     {
                         return "out";
                     }
-                case LegacyASL.LegacyGame.Direction.North:
+                case QuestViva.Legacy.V4Game.Direction.North:
                     {
                         return "north";
                     }
-                case LegacyASL.LegacyGame.Direction.South:
+                case QuestViva.Legacy.V4Game.Direction.South:
                     {
                         return "south";
                     }
-                case LegacyASL.LegacyGame.Direction.East:
+                case QuestViva.Legacy.V4Game.Direction.East:
                     {
                         return "east";
                     }
-                case LegacyASL.LegacyGame.Direction.West:
+                case QuestViva.Legacy.V4Game.Direction.West:
                     {
                         return "west";
                     }
-                case LegacyASL.LegacyGame.Direction.NorthWest:
+                case QuestViva.Legacy.V4Game.Direction.NorthWest:
                     {
                         return "northwest";
                     }
-                case LegacyASL.LegacyGame.Direction.NorthEast:
+                case QuestViva.Legacy.V4Game.Direction.NorthEast:
                     {
                         return "northeast";
                     }
-                case LegacyASL.LegacyGame.Direction.SouthWest:
+                case QuestViva.Legacy.V4Game.Direction.SouthWest:
                     {
                         return "southwest";
                     }
-                case LegacyASL.LegacyGame.Direction.SouthEast:
+                case QuestViva.Legacy.V4Game.Direction.SouthEast:
                     {
                         return "southeast";
                     }
-                case LegacyASL.LegacyGame.Direction.Up:
+                case QuestViva.Legacy.V4Game.Direction.Up:
                     {
                         return "up";
                     }
-                case LegacyASL.LegacyGame.Direction.Down:
+                case QuestViva.Legacy.V4Game.Direction.Down:
                     {
                         return "down";
                     }
@@ -403,103 +401,103 @@ namespace TextAdventures.Quest.LegacyASL
             return null;
         }
 
-        public LegacyASL.LegacyGame.Direction GetDirectionEnum(ref string dir)
+        public QuestViva.Legacy.V4Game.Direction GetDirectionEnum(ref string dir)
         {
             switch (dir ?? "")
             {
                 case "out":
                     {
-                        return LegacyASL.LegacyGame.Direction.Out;
+                        return QuestViva.Legacy.V4Game.Direction.Out;
                     }
                 case "north":
                     {
-                        return LegacyASL.LegacyGame.Direction.North;
+                        return QuestViva.Legacy.V4Game.Direction.North;
                     }
                 case "south":
                     {
-                        return LegacyASL.LegacyGame.Direction.South;
+                        return QuestViva.Legacy.V4Game.Direction.South;
                     }
                 case "east":
                     {
-                        return LegacyASL.LegacyGame.Direction.East;
+                        return QuestViva.Legacy.V4Game.Direction.East;
                     }
                 case "west":
                     {
-                        return LegacyASL.LegacyGame.Direction.West;
+                        return QuestViva.Legacy.V4Game.Direction.West;
                     }
                 case "northwest":
                     {
-                        return LegacyASL.LegacyGame.Direction.NorthWest;
+                        return QuestViva.Legacy.V4Game.Direction.NorthWest;
                     }
                 case "northeast":
                     {
-                        return LegacyASL.LegacyGame.Direction.NorthEast;
+                        return QuestViva.Legacy.V4Game.Direction.NorthEast;
                     }
                 case "southwest":
                     {
-                        return LegacyASL.LegacyGame.Direction.SouthWest;
+                        return QuestViva.Legacy.V4Game.Direction.SouthWest;
                     }
                 case "southeast":
                     {
-                        return LegacyASL.LegacyGame.Direction.SouthEast;
+                        return QuestViva.Legacy.V4Game.Direction.SouthEast;
                     }
                 case "up":
                     {
-                        return LegacyASL.LegacyGame.Direction.Up;
+                        return QuestViva.Legacy.V4Game.Direction.Up;
                     }
                 case "down":
                     {
-                        return LegacyASL.LegacyGame.Direction.Down;
+                        return QuestViva.Legacy.V4Game.Direction.Down;
                     }
             }
-            return LegacyASL.LegacyGame.Direction.None;
+            return QuestViva.Legacy.V4Game.Direction.None;
         }
 
-        public string GetDirectionToken(ref LegacyASL.LegacyGame.Direction dir)
+        public string GetDirectionToken(ref QuestViva.Legacy.V4Game.Direction dir)
         {
             switch (dir)
             {
-                case LegacyASL.LegacyGame.Direction.Out:
+                case QuestViva.Legacy.V4Game.Direction.Out:
                     {
                         return "o";
                     }
-                case LegacyASL.LegacyGame.Direction.North:
+                case QuestViva.Legacy.V4Game.Direction.North:
                     {
                         return "n";
                     }
-                case LegacyASL.LegacyGame.Direction.South:
+                case QuestViva.Legacy.V4Game.Direction.South:
                     {
                         return "s";
                     }
-                case LegacyASL.LegacyGame.Direction.East:
+                case QuestViva.Legacy.V4Game.Direction.East:
                     {
                         return "e";
                     }
-                case LegacyASL.LegacyGame.Direction.West:
+                case QuestViva.Legacy.V4Game.Direction.West:
                     {
                         return "w";
                     }
-                case LegacyASL.LegacyGame.Direction.NorthWest:
+                case QuestViva.Legacy.V4Game.Direction.NorthWest:
                     {
                         return "b";
                     }
-                case LegacyASL.LegacyGame.Direction.NorthEast:
+                case QuestViva.Legacy.V4Game.Direction.NorthEast:
                     {
                         return "a";
                     }
-                case LegacyASL.LegacyGame.Direction.SouthWest:
+                case QuestViva.Legacy.V4Game.Direction.SouthWest:
                     {
                         return "d";
                     }
-                case LegacyASL.LegacyGame.Direction.SouthEast:
+                case QuestViva.Legacy.V4Game.Direction.SouthEast:
                     {
                         return "c";
                     }
-                case LegacyASL.LegacyGame.Direction.Up:
+                case QuestViva.Legacy.V4Game.Direction.Up:
                     {
                         return "u";
                     }
-                case LegacyASL.LegacyGame.Direction.Down:
+                case QuestViva.Legacy.V4Game.Direction.Down:
                     {
                         return "f";
                     }
@@ -508,9 +506,9 @@ namespace TextAdventures.Quest.LegacyASL
             return null;
         }
 
-        public string GetDirectionNameDisplay(ref LegacyASL.RoomExit roomExit)
+        public string GetDirectionNameDisplay(ref RoomExit roomExit)
         {
-            if (roomExit.GetDirection() != LegacyASL.LegacyGame.Direction.None)
+            if (roomExit.GetDirection() != QuestViva.Legacy.V4Game.Direction.None)
             {
                 var argdir = roomExit.GetDirection();
                 string dir = this.GetDirectionName(ref argdir);
@@ -525,28 +523,28 @@ namespace TextAdventures.Quest.LegacyASL
             return "to " + sDisplay;
         }
 
-        private LegacyASL.RoomExit GetExitByObjectId(ref int id)
+        private RoomExit GetExitByObjectId(ref int id)
         {
-            foreach (KeyValuePair<object, LegacyASL.RoomExit> kvp in AllExits())
+            foreach (KeyValuePair<object, RoomExit> kvp in AllExits())
             {
                 if (kvp.Value.GetObjId() == id)
                 {
                     return kvp.Value;
                 }
             }
-            return (LegacyASL.RoomExit)null;
+            return (RoomExit)null;
         }
 
-        private Dictionary<object, LegacyASL.RoomExit> AllExits()
+        private Dictionary<object, RoomExit> AllExits()
         {
             if (!_regenerateAllExits)
             {
                 return _allExits;
             }
 
-            _allExits = new Dictionary<object, LegacyASL.RoomExit>();
+            _allExits = new Dictionary<object, RoomExit>();
 
-            foreach (LegacyASL.LegacyGame.Direction dir in _directions.Keys)
+            foreach (QuestViva.Legacy.V4Game.Direction dir in _directions.Keys)
             {
                 var roomExit = _directions[dir];
                 if (_game._objs[roomExit.GetObjId()].Exists)
@@ -567,13 +565,13 @@ namespace TextAdventures.Quest.LegacyASL
             return _allExits;
         }
 
-        public void RemoveExit(ref LegacyASL.RoomExit roomExit)
+        public void RemoveExit(ref RoomExit roomExit)
         {
             // Don't remove directional exits, as if they're recreated
             // a new object will be created which will have the same name
             // as the old one. This is because we can't delete objects yet...
 
-            if (roomExit.GetDirection() == LegacyASL.LegacyGame.Direction.None)
+            if (roomExit.GetDirection() == QuestViva.Legacy.V4Game.Direction.None)
             {
                 if (_places.ContainsKey(roomExit.GetToRoom()))
                 {

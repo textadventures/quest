@@ -1,16 +1,10 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestViva.Common;
-using TextAdventures.Quest;
-using TextAdventures.Quest.LegacyASL;
+﻿using QuestViva.Common;
+using QuestViva.Legacy;
 
-namespace LegacyASLTests
+namespace QuestViva.LegacyTests
 {
     [TestClass]
-    public class LegacyGameTests
+    public class V4GameTests
     {
         private IGame m_game;
         private TestPlayer m_player = new TestPlayer();
@@ -21,7 +15,7 @@ namespace LegacyASLTests
             var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
             var gameDataProvider = new FileGameDataProvider(filename, "test");
             var gameData = await gameDataProvider.GetData();
-            m_game = new LegacyGame(gameData);
+            m_game = new V4Game(gameData);
             m_game.PrintText += m_player.PrintText;
             await m_game.Initialise(m_player);
             m_game.Begin();

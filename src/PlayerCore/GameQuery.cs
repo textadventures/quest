@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using QuestViva.Common;
+using QuestViva.Legacy;
 using TextAdventures.Quest;
-using TextAdventures.Quest.LegacyASL;
 
 namespace QuestViva.PlayerCore;
 
@@ -14,7 +14,7 @@ public class GameQuery(string filename)
     private readonly GameQueryUi _dummyUi = new GameQueryUi();
     private readonly List<string> _errors = [];
     private IGame _game;
-    private LegacyGame _v4Game;
+    private V4Game _v4Game;
     private WorldModel _v5Game;
 
     public async Task<bool> Initialise()
@@ -23,7 +23,7 @@ public class GameQuery(string filename)
         var gameData = await gameDataProvider.GetData();
         
         _game = GameLauncher.GetGame(gameData, null);
-        _v4Game = _game as LegacyGame;
+        _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
         _helper = new PlayerHelper(_game, _dummyUi);
 

@@ -16,11 +16,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPlayer", "src\WebPlayer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCoreTests", "tests\EditorCoreTests\EditorCoreTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyASLTests", "tests\LegacyASLTests\LegacyASLTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyTests", "tests\LegacyTests\LegacyTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "tests\WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASL", "src\LegacyASL\LegacyASL.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legacy", "src\Legacy\Legacy.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmPlayer", "src\WasmPlayer\WasmPlayer.csproj", "{A20E6FE0-71E0-4042-9E9C-B818A9598473}"
 EndProject
