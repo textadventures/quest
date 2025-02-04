@@ -16,7 +16,13 @@ Formerly known as Quest 5, Quest Viva is a modern cross-platform update, current
 
 ## Getting started
 
-TODO: Instructions here...
+**⚠️⚠️⚠️ If you just want to create a game, then [please use Quest 5 for now](https://textadventures.co.uk/quest) ⚠️⚠️⚠️**
+
+### For Developers testing and contributing to Quest Viva
+
+- [Install Docker](https://www.docker.com/)
+- Clone this GitHub repository
+- Run `docker compose up --build`
 
 ## Community and Support
 
