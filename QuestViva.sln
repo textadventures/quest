@@ -2,29 +2,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IASL", "IASL\IASL.csproj", "{BE34CB28-317F-4732-AA32-9D715B4F2C7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IASL", "src\IASL\IASL.csproj", "{BE34CB28-317F-4732-AA32-9D715B4F2C7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "src\Utility\Utility.csproj", "{0E926905-F750-49F9-AEBD-CE14B2B231D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerCore", "PlayerCore\PlayerCore.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerCore", "src\PlayerCore\PlayerCore.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "src\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCore", "EditorCore\EditorCore.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCore", "src\EditorCore\EditorCore.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPlayer", "WebPlayer\WebPlayer.csproj", "{DD39556B-7A5A-4835-9372-72F4F237D511}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPlayer", "src\WebPlayer\WebPlayer.csproj", "{DD39556B-7A5A-4835-9372-72F4F237D511}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCoreTests", "EditorCoreTests\EditorCoreTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCoreTests", "tests\EditorCoreTests\EditorCoreTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyASLTests", "LegacyASLTests\LegacyASLTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyASLTests", "tests\LegacyASLTests\LegacyASLTests.csproj", "{9D7478AE-52D8-41B6-8E5C-D3F483919993}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModelTests", "tests\WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASL", "LegacyASL\LegacyASL.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASL", "src\LegacyASL\LegacyASL.csproj", "{3BDC19F9-FF88-499A-B5C8-CCDC44CFFD12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmPlayer", "WasmPlayer\WasmPlayer.csproj", "{A20E6FE0-71E0-4042-9E9C-B818A9598473}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmPlayer", "src\WasmPlayer\WasmPlayer.csproj", "{A20E6FE0-71E0-4042-9E9C-B818A9598473}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCoreTests", "PlayerCoreTests\PlayerCoreTests.csproj", "{14713715-BBC2-4F0F-A247-A11994EC4E4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCoreTests", "tests\PlayerCoreTests\PlayerCoreTests.csproj", "{14713715-BBC2-4F0F-A247-A11994EC4E4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
