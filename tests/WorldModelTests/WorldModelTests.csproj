@@ -28,11 +28,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Common\Common.csproj" />
 		<ProjectReference Include="..\..\src\Utility\Utility.csproj" />
-		<ProjectReference Include="..\..\src\WorldModel\WorldModel.csproj" />
+		<ProjectReference Include="..\..\src\Engine\Engine.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="savetest.aslx">
 			<SubType>Designer</SubType>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="walkthrough.aslx">
 			<SubType>Designer</SubType>

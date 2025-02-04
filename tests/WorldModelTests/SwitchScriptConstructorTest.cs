@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using QuestViva.Engine;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 
 namespace WorldModelTests
 {

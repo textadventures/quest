@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QuestViva.Engine;
+using QuestViva.Engine.Functions;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Functions;
 
 namespace QuestViva.EditorCore
 {
@@ -37,7 +39,7 @@ namespace QuestViva.EditorCore
             string expression = source.Fields.GetString("onlydisplayif");
             if (expression != null)
             {
-                m_visibilityExpression = new Expression<bool>(TextAdventures.Quest.Utility.ConvertVariablesToFleeFormat(expression), new TextAdventures.Quest.Scripts.ScriptContext(worldModel, true));
+                m_visibilityExpression = new Expression<bool>(Engine.Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
                 m_alwaysVisible = false;
             }
         }
@@ -49,8 +51,8 @@ namespace QuestViva.EditorCore
             if (m_visibilityExpression != null)
             {
                 // evaluate <onlydisplayif> expression, with "this" as the current element
-                TextAdventures.Quest.Scripts.Context context = new TextAdventures.Quest.Scripts.Context();
-                context.Parameters = new TextAdventures.Quest.Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
+                Context context = new Context();
+                context.Parameters = new Parameters("this", m_worldModel.Elements.Get(data.Name));
                 bool result = false;
                 try
                 {

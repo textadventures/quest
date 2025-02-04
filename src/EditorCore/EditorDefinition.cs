@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QuestViva.Engine;
 using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore

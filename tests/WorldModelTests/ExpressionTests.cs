@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuestViva.Engine;
+using QuestViva.Engine.Functions;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Functions;
-using TextAdventures.Quest.Scripts;
 
 namespace WorldModelTests
 {

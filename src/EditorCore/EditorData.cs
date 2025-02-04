@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuestViva.Common;
+using QuestViva.Engine;
 using TextAdventures.Quest;
 
 namespace QuestViva.EditorCore
@@ -95,7 +96,7 @@ namespace QuestViva.EditorCore
                 }
             }
 
-            if (!TextAdventures.Quest.Utility.IsValidAttributeName(attribute))
+            if (!Engine.Utility.IsValidAttributeName(attribute))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidAttributeName };
             }

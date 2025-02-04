@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 using Moq;
+using QuestViva.Engine;
+using QuestViva.Engine.Scripts;
 
 namespace WorldModelTests
 {

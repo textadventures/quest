@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using QuestViva.Engine;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 
 namespace QuestViva.EditorCore
 {

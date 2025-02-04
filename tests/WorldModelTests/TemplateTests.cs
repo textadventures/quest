@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuestViva.Engine;
 using TextAdventures.Quest;
 
 namespace WorldModelTests

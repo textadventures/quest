@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "src\Utility\Util
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerCore", "src\PlayerCore\PlayerCore.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldModel", "src\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "src\Engine\Engine.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCore", "src\EditorCore\EditorCore.csproj", "{B3B92783-0D5E-43BB-833B-87DEA9B67D00}"
 EndProject

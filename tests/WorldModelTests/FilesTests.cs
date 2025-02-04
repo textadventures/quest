@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuestViva.Engine;
 using TextAdventures.Quest;
 
 namespace WorldModelTests

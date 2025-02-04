@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TextAdventures.Quest;
 using Moq;
 using QuestViva.Common;
+using QuestViva.Engine;
 
 namespace WorldModelTests
 {

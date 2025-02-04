@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
+using QuestViva.Engine;
 
 namespace WorldModelTests
 {

@@ -15,7 +15,7 @@
     <ProjectReference Include="..\Legacy\Legacy.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
-    <ProjectReference Include="..\WorldModel\WorldModel.csproj" />
+    <ProjectReference Include="..\Engine\Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\grid.js" />

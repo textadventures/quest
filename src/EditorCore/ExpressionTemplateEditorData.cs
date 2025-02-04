@@ -19,7 +19,7 @@ namespace QuestViva.EditorCore
             // We create the parameter dictionary in the same way as the command parser, so
             // we end up with a dictionary like "object=myobject".
 
-            m_parameters = TextAdventures.Quest.Utility.Populate(definition.Pattern, expression);
+            m_parameters = Engine.Utility.Populate(definition.Pattern, expression);
             m_originalPattern = definition.OriginalPattern;
             m_parentData = parentData;
         }

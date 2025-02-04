@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuestViva.Engine;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 
 namespace QuestViva.EditorCore
 {

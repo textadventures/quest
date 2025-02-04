@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QuestViva.Engine;
+using QuestViva.Engine.Functions;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Functions;
-using TextAdventures.Quest.Scripts;
 
 namespace QuestViva.EditorCore
 {
@@ -22,7 +23,7 @@ namespace QuestViva.EditorCore
             var expression = editor.Fields.GetString("onlydisplayif");
             if (expression != null)
             {
-                m_visibilityExpression = new Expression<bool>(TextAdventures.Quest.Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
+                m_visibilityExpression = new Expression<bool>(Engine.Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
             }
         }
 

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using QuestViva.Common;
+using QuestViva.Engine;
+using QuestViva.Engine.GameLoader;
+using QuestViva.Engine.Scripts;
+using QuestViva.Engine.Types;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 
 namespace QuestViva.EditorCore
 {
@@ -1662,7 +1665,7 @@ namespace QuestViva.EditorCore
             }
 
             string[] words = name.Split(' ');
-            IList<string> keywords = TextAdventures.Quest.Utility.ExpressionKeywords;
+            IList<string> keywords = Engine.Utility.ExpressionKeywords;
             foreach (string word in words)
             {
                 if (keywords.Contains(word))
@@ -1676,7 +1679,7 @@ namespace QuestViva.EditorCore
 
         public static IList<string> ExpressionKeywords
         {
-            get { return TextAdventures.Quest.Utility.ExpressionKeywords; }
+            get { return Engine.Utility.ExpressionKeywords; }
         }
 
         public ValidationResult CanAddTemplate(string name)
@@ -1943,13 +1946,13 @@ namespace QuestViva.EditorCore
 
             var candidates = from def in m_expressionDefinitions.Values
                              where def.ExpressionType == expressionType
-                             where TextAdventures.Quest.Utility.IsRegexMatch(def.Pattern, expression)
+                             where Engine.Utility.IsRegexMatch(def.Pattern, expression)
                              select def;
 
             if (!candidates.Any()) return null;
 
             var orderedCandidates = from def in candidates
-                                    orderby TextAdventures.Quest.Utility.GetMatchStrength(def.Pattern, expression) descending
+                                    orderby Engine.Utility.GetMatchStrength(def.Pattern, expression) descending
                                     select def;
 
             return orderedCandidates.First();
@@ -2048,7 +2051,7 @@ namespace QuestViva.EditorCore
             string templateName = resourceName;
             EditorStyle templateEditorStyle = EditorStyle.TextAdventure;
 
-            var stream = TextAdventures.Quest.WorldModel.GetEmbeddedResourceStream(resourceName);
+            var stream = WorldModel.GetEmbeddedResourceStream(resourceName);
             var xmlReader =  new XmlTextReader(stream);
             
             xmlReader.Read();
@@ -2079,7 +2082,7 @@ namespace QuestViva.EditorCore
             var stream = WorldModel.GetEmbeddedResourceStream(template);
             var templateText = new System.IO.StreamReader(stream).ReadToEnd();
             string initialFileText = templateText
-                .Replace("$NAME$", TextAdventures.Quest.Utility.SafeXML(gameName))
+                .Replace("$NAME$", Engine.Utility.SafeXML(gameName))
                 .Replace("$ID$", GetNewGameId())
                 .Replace("$YEAR$", DateTime.Now.Year.ToString());
 
@@ -2137,7 +2140,7 @@ namespace QuestViva.EditorCore
 
                     if (editorCommandPattern != null)
                     {
-                        regexPattern = TextAdventures.Quest.Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern, null);
+                        regexPattern = Engine.Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern, null);
                     }
                     else
                     {
@@ -2151,7 +2154,7 @@ namespace QuestViva.EditorCore
                         if (regex.IsMatch(matchPattern))
                         {
                             isClash = true;
-                            IDictionary<string, string> parseResult = TextAdventures.Quest.Utility.Populate(regexPattern, matchPattern);
+                            IDictionary<string, string> parseResult = Engine.Utility.Populate(regexPattern, matchPattern);
 
                             // if verbPattern is "get in object", then it will match the regex for the "get" command -
                             // but we still want to allow this to be added, as it's not "really" a clash. So, if the
@@ -2415,7 +2418,7 @@ namespace QuestViva.EditorCore
             string obscured = String.Empty;
             try
             {
-                obscured = TextAdventures.Quest.Utility.ObscureStrings(expression);
+                obscured = Engine.Utility.ObscureStrings(expression);
             }
             catch (MismatchingQuotesException)
             {

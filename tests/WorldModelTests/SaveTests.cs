@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TextAdventures.Quest;
 using Moq;
 using QuestViva.Common;
+using QuestViva.Engine;
 
 namespace WorldModelTests
 {
@@ -15,11 +16,11 @@ namespace WorldModelTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
-            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "savetest.aslx"), "test");
+            var gameDataProvider = new FileGameDataProvider("savetest.aslx", "test");
             var gameData = await gameDataProvider.GetData();
             WorldModel worldModel = new WorldModel(
                 gameData,
-                Path.Combine("..", "..", ".."));
+                "");
 
             Mock<IPlayer> player = new Mock<IPlayer>();
             bool success = await worldModel.Initialise(player.Object);

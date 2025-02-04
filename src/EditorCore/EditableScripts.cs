@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QuestViva.Engine;
+using QuestViva.Engine.Scripts;
 using TextAdventures.Quest;
-using TextAdventures.Quest.Scripts;
 
 namespace QuestViva.EditorCore
 {
@@ -336,7 +337,7 @@ namespace QuestViva.EditorCore
             get
             {
                 if (m_underlyingScript == null) return string.Empty;
-                string result = TextAdventures.Quest.Utility.IndentScript(m_underlyingScript.Save(), 0, "  ");
+                string result = Engine.Utility.IndentScript(m_underlyingScript.Save(), 0, "  ");
                 if (result.StartsWith(Environment.NewLine)) result = result.Substring(Environment.NewLine.Length);
                 if (result.EndsWith(Environment.NewLine)) result = result.Substring(0, result.Length - Environment.NewLine.Length);
                 return result;

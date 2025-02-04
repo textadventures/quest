@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using QuestViva.Common;
+using QuestViva.Engine;
 using QuestViva.Legacy;
 using TextAdventures.Quest;
 
