@@ -8,7 +8,7 @@ using TextAdventures.Quest;
 namespace WorldModelTests
 {
     [TestClass]
-    public class UtilityTests
+    public class FilesTests
     {
         [TestMethod]
         public void TestConvertDottedProperties()

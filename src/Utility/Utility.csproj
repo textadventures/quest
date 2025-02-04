@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>TextAdventures.Utility</RootNamespace>
+    <RootNamespace>QuestViva.Utility</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>false</UseWindowsForms>
     <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>

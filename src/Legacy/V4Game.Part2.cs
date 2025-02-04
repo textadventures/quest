@@ -3,6 +3,8 @@ using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
+using QuestViva.Utility;
+using Strings = Microsoft.VisualBasic.Strings;
 
 namespace QuestViva.Legacy;
 
@@ -8398,7 +8400,7 @@ public partial class V4Game
                 return null;
             }
 
-            return TextAdventures.Utility.Utility.FileMD5Hash(_gameFileName);
+            return Files.FileMD5Hash(_gameFileName);
         }
     }
 

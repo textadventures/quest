@@ -4,7 +4,7 @@ using TextAdventures.Quest;
 namespace EditorCoreTests
 {
     [TestClass]
-    public class UtilityTests
+    public class FilesTests
     {
         [TestMethod]
         public void TestIsSimpleStringExpression()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using QuestViva.Utility;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest
@@ -18,7 +19,7 @@ namespace TextAdventures.Quest
             m_saver = saver;
 
             // Use Reflection to create instances of all IFieldSavers
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IFieldSaver)))
             {
                 AddSaver((IFieldSaver)Activator.CreateInstance(t));

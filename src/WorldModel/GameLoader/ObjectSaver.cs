@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using QuestViva.Utility;
 
 namespace TextAdventures.Quest
 {
@@ -64,7 +65,7 @@ namespace TextAdventures.Quest
             protected override void Initialise()
             {
                 // Use Reflection to create instances of all IObjectSavers
-                foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                     typeof(IObjectSaver)))
                 {
                     AddSaver((IObjectSaver)Activator.CreateInstance(t));

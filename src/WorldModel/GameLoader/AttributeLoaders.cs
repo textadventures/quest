@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using QuestViva.Utility;
 
 namespace TextAdventures.Quest
 {
@@ -15,13 +16,13 @@ namespace TextAdventures.Quest
 
         private void AddLoaders(LoadMode mode)
         {
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IAttributeLoader)))
             {
                 AddLoader((IAttributeLoader)Activator.CreateInstance(t), mode);
             }
 
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IValueLoader)))
             {
                 AddValueLoader((IValueLoader)Activator.CreateInstance(t));

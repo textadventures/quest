@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 
-namespace TextAdventures.Utility
+namespace QuestViva.Utility
 {
     public static class Classes
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using QuestViva.Utility;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest
@@ -27,14 +28,14 @@ namespace TextAdventures.Quest
             m_worldModel = worldModel;
 
             // Use Reflection to create instances of all IElementSavers (save individual elements)
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IElementSaver)))
             {
                 AddElementSaver((IElementSaver)Activator.CreateInstance(t));
             }
 
             // Use Reflection to create instances of all IElementsSavers (save all elements of a type)
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IElementsSaver)))
             {
                 AddElementsSaver((IElementsSaver)Activator.CreateInstance(t));

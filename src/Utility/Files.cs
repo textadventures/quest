@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.IO;
 
-namespace TextAdventures.Utility
+namespace QuestViva.Utility
 {
-    public static class Utility
+    public static class Files
     {
         public static string RemoveFileColonPrefix(string path)
         {

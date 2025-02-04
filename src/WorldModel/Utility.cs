@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using QuestViva.Utility;
 
 namespace TextAdventures.Quest
 {
@@ -488,7 +489,7 @@ namespace TextAdventures.Quest
             foreach (string groupName in regex.GetGroupNames())
             {
                 // exclude group names like "0", we only want the explicitly named groups
-                if (!TextAdventures.Utility.Strings.IsNumeric(groupName))
+                if (!Strings.IsNumeric(groupName))
                 {
                     string groupMatch = regex.Match(input).Groups[groupName].Value;
                     lengthOfTextMatchedByGroups += groupMatch.Length;
@@ -516,7 +517,7 @@ namespace TextAdventures.Quest
 
             foreach (string groupName in regex.GetGroupNames())
             {
-                if (!TextAdventures.Utility.Strings.IsNumeric(groupName))
+                if (!Strings.IsNumeric(groupName))
                 {
                     string groupMatch = regex.Match(input).Groups[groupName].Value;
                     result.Add(groupName, groupMatch);

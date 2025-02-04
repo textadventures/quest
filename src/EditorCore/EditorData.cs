@@ -95,7 +95,7 @@ namespace QuestViva.EditorCore
                 }
             }
 
-            if (!Utility.IsValidAttributeName(attribute))
+            if (!TextAdventures.Quest.Utility.IsValidAttributeName(attribute))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidAttributeName };
             }

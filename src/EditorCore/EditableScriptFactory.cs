@@ -22,7 +22,7 @@ namespace QuestViva.EditorCore
             var expression = editor.Fields.GetString("onlydisplayif");
             if (expression != null)
             {
-                m_visibilityExpression = new Expression<bool>(Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
+                m_visibilityExpression = new Expression<bool>(TextAdventures.Quest.Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
             }
         }
 

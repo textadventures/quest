@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using QuestViva.Common;
+using QuestViva.Utility;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest
@@ -231,7 +232,7 @@ namespace TextAdventures.Quest
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", TextAdventures.Utility.Strings.CapFirst(TypeString), Name);
+            return string.Format("{0}: {1}", Strings.CapFirst(TypeString), Name);
         }
 
         public ObjectType Type

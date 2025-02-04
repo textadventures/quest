@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using QuestViva.Utility;
 using TextAdventures.Quest.Scripts;
 
 // AttributeLoaders load properties which are stored in the XML as simple values.
@@ -25,7 +26,7 @@ namespace TextAdventures.Quest
 
         private void AddExtendedAttributeLoaders(LoadMode mode)
         {
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IExtendedAttributeLoader)))
             {
                 AddExtendedAttributeLoader((IExtendedAttributeLoader)Activator.CreateInstance(t), mode);

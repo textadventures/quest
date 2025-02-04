@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
 using System.Text.RegularExpressions;
+using QuestViva.Utility;
 
 namespace TextAdventures.Quest
 {
@@ -35,7 +36,7 @@ namespace TextAdventures.Quest
             m_worldModel = worldModel;
 
             // Use Reflection to create instances of all IScriptConstructors
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IScriptConstructor)))
             {
                 AddConstructor((IScriptConstructor)Activator.CreateInstance(t));

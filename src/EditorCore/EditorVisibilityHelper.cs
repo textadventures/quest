@@ -37,7 +37,7 @@ namespace QuestViva.EditorCore
             string expression = source.Fields.GetString("onlydisplayif");
             if (expression != null)
             {
-                m_visibilityExpression = new Expression<bool>(Utility.ConvertVariablesToFleeFormat(expression), new TextAdventures.Quest.Scripts.ScriptContext(worldModel, true));
+                m_visibilityExpression = new Expression<bool>(TextAdventures.Quest.Utility.ConvertVariablesToFleeFormat(expression), new TextAdventures.Quest.Scripts.ScriptContext(worldModel, true));
                 m_alwaysVisible = false;
             }
         }

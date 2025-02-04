@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QuestViva.Utility;
 
 namespace TextAdventures.Quest.Functions
 {
@@ -44,7 +45,7 @@ namespace TextAdventures.Quest.Functions
 
         public static string CapFirst(string input)
         {
-            return TextAdventures.Utility.Strings.CapFirst(input);
+            return Strings.CapFirst(input);
         }
 
         public static int Instr(string input, string search)
@@ -94,7 +95,7 @@ namespace TextAdventures.Quest.Functions
 
         public static bool IsNumeric(string input)
         {
-            return TextAdventures.Utility.Strings.IsNumeric(input);
+            return Strings.IsNumeric(input);
         }
 
         public static string Replace(string input, string oldString, string newString)

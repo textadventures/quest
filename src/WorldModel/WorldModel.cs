@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using QuestViva.Common;
+using QuestViva.Utility;
 using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest
@@ -183,7 +184,7 @@ namespace TextAdventures.Quest
 
         private void InitialiseElementFactories()
         {
-            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IElementFactory)))
             {
                 AddElementFactory((IElementFactory)Activator.CreateInstance(t));
@@ -1263,7 +1264,7 @@ namespace TextAdventures.Quest
 
         private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
         {
-            path = TextAdventures.Utility.Utility.RemoveFileColonPrefix(path);
+            path = QuestViva.Utility.Files.RemoveFileColonPrefix(path);
             System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             foreach (var result in System.IO.Directory.GetFiles(path, searchPattern, option))
             {
