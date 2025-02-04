@@ -8,7 +8,7 @@ using NCalc.Exceptions;
 using NCalc.Factories;
 using NCalc.Parser;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 public class QuestNCalcExpressionFactory : ILogicalExpressionFactory
 {

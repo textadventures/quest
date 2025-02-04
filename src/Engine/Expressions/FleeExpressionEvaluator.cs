@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Ciloci.Flee;
-using TextAdventures.Quest.Scripts;
+using QuestViva.Engine.Scripts;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 public class FleeExpressionEvaluator<T>(string expression, ScriptContext scriptContext) : IExpressionEvaluator<T>
 {

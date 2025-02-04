@@ -1,9 +1,12 @@
 ﻿using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
+using Shouldly;
+
+namespace QuestViva.EngineTests;
 
 [TestClass]
-namespace QuestViva.EngineTests
+public class ExpressionTests
 {
     private const string ObjectName = "object";
     private const string ChildName = "child";

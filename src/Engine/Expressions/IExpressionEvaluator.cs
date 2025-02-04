@@ -1,6 +1,6 @@
-using TextAdventures.Quest.Scripts;
+using QuestViva.Engine.Scripts;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 public interface IExpressionEvaluator<out T>
 {

@@ -26,6 +26,9 @@
     <Reference Update="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Ciloci.Flee">
+      <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
+    </Reference>
     <Reference Include="ExtendedNumerics.BigDecimal">
       <HintPath>..\..\Dependencies\NCalc.Sync\ExtendedNumerics.BigDecimal.dll</HintPath>
     </Reference>

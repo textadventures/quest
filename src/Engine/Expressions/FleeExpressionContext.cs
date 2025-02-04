@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ciloci.Flee;
-using TextAdventures.Quest.Functions;
-using TextAdventures.Quest.Scripts;
+using QuestViva.Engine.Functions;
+using QuestViva.Engine.Scripts;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 public class FleeExpressionContext
 {

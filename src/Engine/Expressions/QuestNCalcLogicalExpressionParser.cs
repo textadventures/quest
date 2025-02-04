@@ -14,7 +14,7 @@ using Parlot.Fluent;
 using static Parlot.Fluent.Parsers;
 using Identifier = NCalc.Domain.Identifier;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 /// <summary>
 /// Class responsible for parsing strings into <see cref="LogicalExpression"/> objects.

@@ -3,13 +3,12 @@ using System.Linq;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
-using NCalc.Factories;
 using NCalc.Handlers;
 using NCalc.Services;
-using TextAdventures.Quest.Functions;
-using TextAdventures.Quest.Scripts;
+using QuestViva.Engine.Functions;
+using QuestViva.Engine.Scripts;
 
-namespace TextAdventures.Quest.Expressions;
+namespace QuestViva.Engine.Expressions;
 
 public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpressionEvaluator
 {
