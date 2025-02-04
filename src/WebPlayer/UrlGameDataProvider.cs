@@ -1,7 +1,6 @@
 using QuestViva.Common;
-using TextAdventures.Quest;
 
-namespace WebPlayer;
+namespace QuestViva.WebPlayer;
 
 public class UrlGameDataProvider(string url, string resourcesId) : IGameDataProvider
 {

@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>QuestViva.WebPlayer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

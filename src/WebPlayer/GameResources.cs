@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.StaticFiles;
 
-namespace WebPlayer;
+namespace QuestViva.WebPlayer;
 
 public static class GameResources
 {

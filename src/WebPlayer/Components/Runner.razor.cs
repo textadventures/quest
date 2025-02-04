@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using QuestViva.Common;
 using QuestViva.PlayerCore;
-using TextAdventures.Quest;
 
-namespace WebPlayer.Components;
+namespace QuestViva.WebPlayer.Components;
 
 public partial class Runner : ComponentBase
 {

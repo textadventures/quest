@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.StaticFiles;
-using TextAdventures.Quest;
-using WebPlayer;
-using WebPlayer.Components;
+using QuestViva.WebPlayer;
+using QuestViva.WebPlayer.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 

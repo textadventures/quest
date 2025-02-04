@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.StaticFiles;
 using QuestViva.PlayerCore;
-using TextAdventures.Quest;
 
-namespace WebPlayer;
+namespace QuestViva.WebPlayer;
 
 public static class UiResources
 {
