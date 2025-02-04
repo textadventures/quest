@@ -1,6 +1,6 @@
 ﻿using QuestViva.PlayerCore;
 
-namespace PlayerCoreTests;
+namespace QuestViva.PlayerCoreTests;
 
 [TestClass]
 public class GameQueryTests
