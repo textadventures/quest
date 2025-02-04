@@ -5,7 +5,7 @@ title: if
 
     if (boolean expression) { script } [ else if ... ]* [ else { script } ]
 
-Conditionally runs the script. If the condition fails, the `else` script is run, if present. Muliple `if/else`s can be put together. Some examples:
+Conditionally runs the script. If the condition fails, the `else` script is run, if present. Multiple `if/else`s can be put together. Some examples:
 
 ```
 if (result > 10) {
@@ -21,7 +21,7 @@ else {
   msg("Rubbish!")
 }
 ```
-Or we can have a condition; nohing gets printed if result is between 2 and 10.
+Or we can have a condition; nothing gets printed if result is between 2 and 10.
 ```
 if (result > 10) {
   msg("Great!")

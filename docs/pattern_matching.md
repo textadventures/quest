@@ -158,7 +158,7 @@ You can match against a class of characters. For example, `\d` will match a sing
 \S    Anything not white space
 .     Anything (except return)
 ```
-You can also set up you own class using square backets. Some examples:
+You can also set up you own class using square brackets. Some examples:
 ```
 [aeiou]     Any single character in the group aeiou
 [^aeiou]    Any single character NOT in the group aeiou

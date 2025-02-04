@@ -35,7 +35,7 @@ title: Baddies behind a Door who want to kill you (but if you close the door you
 
 10. I then click on **Add new script** and choose the from the *Timers* section, choose “**Run a script after a number of seconds**”.
 
-     ![](Hsbaddy26.jpg)
+     ![](Hsbaddy13.jpg)
 
 11. I can choose how many seconds to wait before something else happens. In this case, 10 seconds.
 

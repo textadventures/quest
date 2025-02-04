@@ -52,7 +52,7 @@ Then when the hat is worn:
   hat.inventoryverbs = Split("look at;Remove", ";")
 ```
 
-That will not work if there are potentially other verbs that may or may not be there, and you are better off assign the attribute each time using `ListConbine:
+That will not work if there are potentially other verbs that may or may not be there, and you are better off assign the attribute each time using `ListCombine:
 
 ```
 object.displayverbs = ListCombine(object.displayverbs, Split("Attack"))

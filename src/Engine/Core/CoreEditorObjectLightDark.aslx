@@ -1,0 +1,35 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>[EditorObjectLightDarkLight/Dark]</caption>
+    <mustnotinherit>editor_object</mustnotinherit>
+    <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
+
+    <control>
+      <caption>[EditorObjectLightDarkRoomisinitially]</caption>
+      <controltype>checkbox</controltype>
+      <attribute>dark</attribute>
+    </control>
+
+    <control>
+      <selfcaption>[EditorObjectLightDarkDescription]</selfcaption>
+      <controltype>multi</controltype>
+      <attribute>darkroomdescription</attribute>
+      <types>
+        null=[TypeUseDefaultRoom]; string=[TypeText]; script=[TypeRunScript]
+      </types>
+      <editors>
+        string=richtext
+      </editors>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorObjectWearableInstructionsLink]</caption>
+      <href>https://docs.textadventures.co.uk/quest/handling_light_and_dark.html</href>
+    </control>
+
+  </tab>
+</library>

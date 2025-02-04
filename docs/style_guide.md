@@ -4,7 +4,7 @@ title: Docs Style Guide
 ---
 
 
-This gives some general rules for anyone writing or editing documents for Quest. To a larghe extent, this reflect the way it has always been done, which should be followed for consistency, even if it is not the best way.
+This gives some general rules for anyone writing or editing documents for Quest. To a large extent, this reflect the way it has always been done, which should be followed for consistency, even if it is not the best way.
 
 
 Filenames
@@ -33,22 +33,22 @@ Headings
 The documents use two levels of headings, H1 and H3. H1 should be indicated by a row of hyphens under the title, whilst H3 should be indicated by three hashes at the start of the line.
 
 
-Inline Formating
+Inline Formatting
 ----------
 
-Inline formating is for a short bit of text within a line or paragraph.
+Inline formatting is for a short bit of text within a line or paragraph.
 
 Names of functions should be denoted with single backticks. Names of objects and attributes can be denoted with double quotes (but is not done with any consistency at present!).
 
 Commands or anything the player will type should be written in full capitals.
 
 
-Block Formating
+Block Formatting
 ----------
 
-Block formating is where the text is a whole line or paragraph.
+Block formatting is where the text is a whole line or paragraph.
 
-For text the player will see or will type, use the greater than symbol to produce block quotes, and again, what theplayer types should be in capitals. For code, use either three back ticks or indent every line by four (or more) spaces.
+For text the player will see or will type, use the greater than symbol to produce block quotes, and again, what the player types should be in capitals. For code, use either three back ticks or indent every line by four (or more) spaces.
 
 
 

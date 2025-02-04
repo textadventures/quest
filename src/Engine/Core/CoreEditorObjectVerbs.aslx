@@ -1,0 +1,71 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>[EditorObjectVerbsVerbs]</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+
+    <control>
+      <controltype>verbs</controltype>
+      <clashmessages type="stringdictionary">
+        <item>
+          <key>lookat</key>
+          <value>To configure the response for this command, set the Description on the Setup tab.</value>
+        </item>
+        <item>
+          <key>take</key>
+          <value>Use the Inventory tab to configure taking the object.</value>
+        </item>
+        <item>
+          <key>drop</key>
+          <value>Use the Inventory tab to configure dropping the object.</value>
+        </item>
+        <item>
+          <key>give</key>
+          <value>Use the Use/Give tab to configure giving the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>givesingle</key>
+          <value>Use the Use/Give tab to configure giving the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>use</key>
+          <value>Use the Use/Give tab to configure using the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>useon</key>
+          <value>Use the Use/Give tab to configure using the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>go</key>
+          <value>Use the room Exits tab to create an exit to this object.</value>
+        </item>
+        <item>
+          <key>open</key>
+          <value>Use the Container to tab to configure opening the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>close</key>
+          <value>Use the Container tab to configure closing the object (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>put</key>
+          <value>Use the Container tab to configure container behaviour (you may need to turn this on from the Features tab).</value>
+        </item>
+        <item>
+          <key>ask</key>
+          <value>Use the Ask/Tell tab to configure topics (you may need to turn this on in game features).</value>
+        </item>
+        <item>
+          <key>tell</key>
+          <value>Use the Ask/Tell tab to configure topics (you may need to turn this on in game features).</value>
+        </item>
+        <item>
+          <key>enter</key>
+          <value>Input the verb name as "enter_verb". It will appear as "enter" to the player.</value>
+        </item>
+      </clashmessages>
+      <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>
+      <expand/>
+    </control>
+  </tab>
+</library>

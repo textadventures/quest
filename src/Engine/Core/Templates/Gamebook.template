@@ -1,0 +1,27 @@
+﻿<asl version="580" templatetype="gamebook">
+
+  <include ref="GamebookCore.aslx"/>
+
+  <game name="$NAME$">
+    <gameid>$ID$</gameid>
+    <version>1.0</version>
+    <firstpublished>$YEAR$</firstpublished>
+  </game>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>This is page 1. Type a description here, and then create links to other pages below.</description>
+    <options type="simplestringdictionary">Page2 = This link goes to page 2;Page3 = And this link goes to page 3</options>
+  </object>
+
+  <object name="Page2">
+    <description>This is page 2. Type a description here, and then create links to other pages below.</description>
+  </object>
+  
+  <object name="Page3">
+    <description>This is page 3. Type a description here, and then create links to other pages below.</description>
+  </object>
+
+</asl>

@@ -1,0 +1,8 @@
+﻿services:
+  webplayer:
+    image: webplayer
+    build:
+      context: .
+      dockerfile: src/WebPlayer/Dockerfile
+    ports:
+      - "8080:8080"

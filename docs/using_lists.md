@@ -82,7 +82,7 @@ The first `msg` prints the number 42, because that is the fourth entry, and 3 is
 
 It is good practice to consider a list as either:
 
-- Static: The list will never have an element removed over the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of exisyting elements).
+- Static: The list will never have an element removed over the course of the game, so the position of each element will never change, and can be relied upon (adding elements is allowed as this will not change the position of existing elements).
 
 - Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
 

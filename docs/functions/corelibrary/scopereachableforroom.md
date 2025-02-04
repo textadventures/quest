@@ -5,7 +5,7 @@ title: ScopeReachableForRoom
 
     ScopeReachableForRoom (room)
 
-Returns an [objectlist](../../types/objectlist.html) containing all the objects which are reachable in the spezific room.
+Returns an [objectlist](../../types/objectlist.html) containing all the objects which are reachable in the specific room.
 
 All objects in this scope can be interacted with directly by the player.
 

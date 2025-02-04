@@ -11,6 +11,6 @@ Returns a new object list containing only the objects in the given list for whic
 
 Note that if the value is `null` this effectively filters for objects with the named attribute, whatever the value.
 
-See also [FilterByAttribute](filebyattribute.html).
+See also [FilterByAttribute](filterbyattribute.html).
 
 As of Quest 5.8, you can omit the last value, and it will be assumed to be `null`.

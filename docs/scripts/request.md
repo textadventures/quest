@@ -115,7 +115,7 @@ JS.uiHide("#compassLabel")
 JS.uiHide("#compassAccordion")
 ```
 
-For the inventory, do `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#custonStatusPane` and `#commandPane` respectively (these have only one part).
+For the inventory, do `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#customStatusPane` and `#commandPane` respectively (these have only one part).
 
 
 _Hide_

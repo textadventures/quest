@@ -1,0 +1,530 @@
+<library>
+  <include ref="EditorEnglish.aslx"/>
+  <template name="LanguageId">en</template>
+  
+  <template name="WantRestartGame">Are you sure you want to restart the game?</template>
+  <template name="Again1">again</template>
+  <template name="Again2">g</template>
+  <template name="NothingToRepeat">There is nothing to repeat.</template>
+  <template name="UnresolvedObject">I can't see that.</template>
+  <template name="UnresolvedLocation">{=WriteVerb(game.pov, "can't")} go there.</template>
+  <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
+  <template name="DefaultSelfDescription">Looking good.</template>
+	<dynamictemplate name="TakeSuccessful">WriteVerb(game.pov, "pick") + " " + object.article + " up."</dynamictemplate>
+	<dynamictemplate name="TakeUnsuccessful">WriteVerb(game.pov, "can't") + " take " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " too heavy to be taken."</dynamictemplate>
+	<dynamictemplate name="MaxObjectsInInventory">WriteVerb(game.pov, "can't") + " carry any more items."</dynamictemplate>
+	<dynamictemplate name="MaxObjectsInContainer">WriteVerb(game.pov, "can't") + " put more items in " + object.article + "."</dynamictemplate>
+	<template name="SeeListHeader">{=WriteVerb(game.pov, "can")} see</template>
+	<template name="GoListHeader">{=WriteVerb(game.pov, "can")} go</template>
+  <template name="And">and</template>
+  <template name="Nothing">nothing</template>
+  <template name="Or">or</template>
+  <template name="NothingToUndo">Nothing to undo!</template>
+	<template name="NotCarryingAnything">{=WriteVerb(game.pov, "be")} not carrying anything.</template>
+	<template name="CarryingListHeader">{=WriteVerb(game.pov, "be")} carrying</template>
+	<dynamictemplate name="DropSuccessful">WriteVerb(game.pov, "drop") + " " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="DropUnsuccessful">WriteVerb(game.pov, "can't") + " drop " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="ObjectCannotBeStored">WriteVerb(game.pov, "can't") + " put " + object.article + " there."</dynamictemplate>
+	<dynamictemplate name="AlreadyTaken">WriteVerb(game.pov, "be") + " already carrying " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="NotCarrying">WriteVerb(game.pov, "be") + " not carrying " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CantUse">WriteVerb(game.pov, "can't") + " use " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CantGive">WriteVerb(game.pov, "can't") + " give " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nothing."</dynamictemplate>
+  <template name="UnrecognisedCommand">I don't understand your command.</template>
+	<template name="YouAreIn">{=WriteVerb(game.pov, "be")} in</template>
+  <template name="LookAt">Look at</template>
+  <template name="Take">Take</template>
+  <template name="SpeakTo">Speak to</template>
+  <template name="Use">Use</template>
+  <template name="Drop">Drop</template>
+  <template name="GoTo">Go to</template>
+  <template name="Go">Go</template>
+  <template name="SwitchOn">Switch on</template>
+  <template name="SwitchOff">Switch off</template>
+  <template name="Open">Open</template>
+  <template name="Close">Close</template>
+  <template name="Eat">Eat</template>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDefiniteName(object)) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
+  <template name="NeutralGender">it</template>
+  <template name="MaleGender">he</template>
+  <template name="FemaleGender">she</template>
+  <template name="SelfGender">you</template>
+  <template name="NeutralPluralGender">they</template>
+  <template name="MalePluralGender">they</template>
+  <template name="FemalePluralGender">they</template>
+  <template name="NeutralArticle">it</template>
+  <template name="MaleArticle">him</template>
+  <template name="FemaleArticle">her</template>
+  <template name="SelfArticle">yourself</template>
+  <template name="NeutralPluralArticle">them</template>
+  <template name="MalePluralArticle">them</template>
+  <template name="FemalePluralArticle">them</template>
+  <template name="NeutralPossessive">its</template>
+  <template name="MalePossessive">his</template>
+  <template name="FemalePossessive">her</template>
+  <template name="SelfPossessive">your</template>
+  <template name="NeutralPluralPossessive">their</template>
+  <template name="MalePluralPossessive">their</template>
+  <template name="FemalePluralPossessive">their</template>
+  <template name="SelfAlias">me</template>
+  <template name="SelfAlt">me; myself; self</template>
+  <template name="AllObjects">all; everything</template>
+  <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="UseDefaultPrefixIfNamed">false</template>
+  <template name="Score">Score</template>
+  <template name="Health">Health</template>
+  <template name="Money">Money</template>
+  <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
+	<dynamictemplate name="CantOpen">WriteVerb(game.pov, "can't") + " open " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CantClose">WriteVerb(game.pov, "can't") + " close " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="OpenSuccessful">WriteVerb(game.pov, "open") + " " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CloseSuccessful">WriteVerb(game.pov, "close") + " " + object.article + "."</dynamictemplate>
+	<template name="CannotDoThat">{=WriteVerb(game.pov, "can't")} do that.</template>
+  <dynamictemplate name="AlreadyThere">WriteVerb(object, "be") + " already there."</dynamictemplate>
+  <template name="Done">Done.</template>
+  <template name="ContainerContentsPrefix">containing</template>
+  <template name="SurfaceContentsPrefix">on which there is</template>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "contain")</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "be") + " full."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
+  <template name="LockedExit">That way is locked.</template>
+  <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+	<template name="NoKey">{=WriteVerb(game.pov, "do")} not have the key.</template>
+  <template name="UnlockMessage">Unlocked.</template>
+  <template name="LockMessage">Locked.</template>
+  <dynamictemplate name="LockedObject">WriteVerb(object, "be") + " locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " already locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " already unlocked."</dynamictemplate>
+	<dynamictemplate name="CannotLockOpen">WriteVerb(game.pov, "cannot") + " lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>"
+	<dynamictemplate name="SwitchedOn">WriteVerb(game.pov, "switch") + " " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="SwitchedOff">WriteVerb(game.pov, "switch") + " " + object.article + " off."</dynamictemplate>
+	<dynamictemplate name="Eaten">WriteVerb(game.pov, "eat") + " " + object.article + "."</dynamictemplate>
+  <template name="DefaultOops">There is nothing to correct.</template>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " not contain " + GetDisplayAlias(object2) + "."</dynamictemplate>
+	<dynamictemplate name="YouLooking">WriteVerb(game.pov, "be") + " looking " + text +"."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"It is too dark to make anything out."</dynamictemplate>
+  <template name="VerbObjectSeparator">with; using</template>
+  <template name="DefaultMultiObjectVerb">That doesn't work.</template>
+  <template name="MultiObjectVerbMenu">With which object?</template>
+  <template name="UseOnMenu">On which object?</template>
+  <template name="GiveToMenu">To which object?</template>
+  <template name="NoObjectsAvailable">There are no objects available to do that with.</template>
+  <template name="Yes">Yes</template>
+  <template name="No">No</template>
+  <template name="By">by</template>
+  <template name="NothingToTake">Nothing here to take.</template>
+	<template name="NothingToDrop">{=WriteVerb (game.pov, "'ve")} nothing to drop.</template>
+	<template name="NothingToWear">{=WriteVerb (game.pov, "'ve")} nothing to wear.</template>
+	<template name="NothingToRemove">{=WriteVerb (game.pov, "'ve")} nothing to take off.</template>
+	<dynamictemplate name="WearSuccessful">WriteVerb(game.pov, "put") + " " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="WearUnsuccessful">WriteVerb(game.pov, "can't") + " wear " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearIfNotHeld">WriteVerb(game.pov, "would") + " need to get " + object.article + " before " + game.pov.gender + " can put " + object.article + " on."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotHeld">WriteVerb(game.pov, "would") + " need to get " + object.article + " before " + game.pov.gender + " can take " + object.article + " off."</dynamictemplate>
+	<dynamictemplate name="AlreadyWearing">WriteVerb(game.pov, "be") + " already wearing " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="CannotRemoveIfNotWearing">WriteVerb(game.pov, "be") + " not wearing " + object.article + "."</dynamictemplate>
+	<dynamictemplate name="NotRemovable">WriteVerb(game.pov, "cannot") + " remove " + object.article + "!"</dynamictemplate>
+	<dynamictemplate name="CannotWearOver">WriteVerb(game.pov, "cannot") + " wear that over " + GetDisplayGarment(object) + "."</dynamictemplate>
+	<dynamictemplate name="CannotWearWith">WriteVerb(game.pov, "cannot") + " wear that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+	<dynamictemplate name="RemoveSuccessful">WriteVerb(game.pov, "take") + " " + object.article + " off."</dynamictemplate>
+	<dynamictemplate name="RemoveFirst">WriteVerb(game.pov, "can't") + " remove that while wearing " + GetDisplayGarment(object) + "."</dynamictemplate>
+
+	<template name="NeutralWornModifier">worn</template>
+	<template name="MaleWornModifier">worn</template>
+	<template name="FemaleWornModifier">worn</template>
+	<template name="NeutralPluralWornModifier">worn</template>
+	<template name="MalePluralWornModifier">worn</template>
+	<template name="FemalePluralWornModifier">worn</template>
+
+  <template name="Wear">Wear</template>
+  <verbtemplate name="wear">put #object# on</verbtemplate>
+	<verbtemplate name="wear">wear</verbtemplate>
+	<verbtemplate name="wear">put on</verbtemplate>
+	<verbtemplate name="wear">don</verbtemplate>
+
+  <template name="Remove">Remove</template>
+  <verbtemplate name="remove">take #object# off</verbtemplate>
+	<verbtemplate name="remove">remove</verbtemplate>
+	<verbtemplate name="remove">take off</verbtemplate>
+	<verbtemplate name="remove">doff</verbtemplate>
+
+  <template name="CompassNW">northwest</template>
+  <template name="CompassN">north</template>
+  <template name="CompassNE">northeast</template>
+  <template name="CompassW">west</template>
+  <template name="CompassE">east</template>
+  <template name="CompassSW">southwest</template>
+  <template name="CompassS">south</template>
+  <template name="CompassSE">southeast</template>
+  <template name="CompassUp">up</template>
+  <template name="CompassDown">down</template>
+  <template name="CompassIn">in</template>
+  <template name="CompassOut">out</template>
+  <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
+  <template name="CompassNWShort">nw</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">ne</template>
+  <template name="CompassWShort">w</template>
+  <template name="CompassEShort">e</template>
+  <template name="CompassSWShort">sw</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">se</template>
+  <template name="CompassUpShort">u</template>
+  <template name="CompassDownShort">d</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort">o</template>
+
+  <template name="InventoryLabel">Inventory</template>
+  <template name="StatusLabel">Status</template>
+  <template name="PlacesObjectsLabel">Places and Objects</template>
+  <template name="CompassLabel">Compass</template>
+  <template name="InButtonLabel">in</template>
+  <template name="OutButtonLabel">out</template>
+  <template name="EmptyListLabel">(empty)</template>
+  <template name="NothingSelectedLabel">(nothing selected)</template>
+  <template name="TypeHereLabel">Type here...</template>
+  <template name="ContinueLabel">Continue...</template>
+
+  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="look">^look$|^l$</template>
+  <verbtemplate name="lookat">look at</verbtemplate>
+  <verbtemplate name="lookat">look</verbtemplate>
+  <verbtemplate name="lookat">x</verbtemplate>
+  <verbtemplate name="lookat">examine</verbtemplate>
+  <verbtemplate name="lookat">exam</verbtemplate>
+  <verbtemplate name="lookat">ex</verbtemplate>
+  <verbtemplate name="take">take</verbtemplate>
+  <verbtemplate name="take">get</verbtemplate>
+  <verbtemplate name="take">pick up</verbtemplate>
+  <template templatetype="command" name="undo">^undo$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
+  <template templatetype="command" name="quit">^quit$</template>
+  <verbtemplate name="drop">drop</verbtemplate>
+  <verbtemplate name="use">use</verbtemplate>
+  <verbtemplate name="speakto">speak to</verbtemplate>
+  <verbtemplate name="speakto">speak</verbtemplate>
+  <verbtemplate name="speakto">talk to</verbtemplate>
+  <verbtemplate name="speakto">talk</verbtemplate>
+  <verbtemplate name="open">open</verbtemplate>
+  <verbtemplate name="close">close</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^(put|insert|place|drop) (?<object1>.*) (on to|onto|in to|into|on|in) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^(remove|take|get|eject) (?<object1>.*) (from|out of|off|out) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+
+  <verbtemplate name="buy">buy</verbtemplate>
+  <verbtemplate name="buy">purchase</verbtemplate>
+	<dynamictemplate name="DefaultBuy">WriteVerb(game.pov, "can't") + " buy " + object.article + "."</dynamictemplate>
+  <verbtemplate name="climb">climb</verbtemplate>
+	<dynamictemplate name="DefaultClimb">WriteVerb(game.pov, "can't") + " climb " + object.article + "."</dynamictemplate>
+  <verbtemplate name="drink">drink</verbtemplate>
+	<dynamictemplate name="DefaultDrink">WriteVerb(game.pov, "can't") + " drink " + object.article + "."</dynamictemplate>
+  <verbtemplate name="eat">eat</verbtemplate>
+	<dynamictemplate name="DefaultEat">WriteVerb(game.pov, "can't") + " eat " + object.article + "."</dynamictemplate>
+  <verbtemplate name="givesingle">give</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">WriteVerb(object1, "do") + " not want " + object2.article + "."</dynamictemplate>
+  <verbtemplate name="hit">hit</verbtemplate>
+	<dynamictemplate name="DefaultHit">WriteVerb(game.pov, "can't") + " hit " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kill">kill</verbtemplate>
+	<dynamictemplate name="DefaultKill">WriteVerb(game.pov, "can't") + " kill " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kiss">kiss</verbtemplate>
+	<dynamictemplate name="DefaultKiss">WriteVerb(game.pov, "can't") + " kiss " + object.article + "."</dynamictemplate>
+  <verbtemplate name="knock">knock</verbtemplate>
+	<dynamictemplate name="DefaultKnock">WriteVerb(game.pov, "can't") + " knock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lick">lick</verbtemplate>
+	<dynamictemplate name="DefaultLick">WriteVerb(game.pov, "can't") + " lick " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lie">lie on</verbtemplate>
+  <verbtemplate name="lie">lie upon</verbtemplate>
+  <verbtemplate name="lie">lie down on</verbtemplate>
+  <verbtemplate name="lie">lie down upon</verbtemplate>
+	<dynamictemplate name="DefaultLie">WriteVerb(game.pov, "can't") + " lie on " + object.article + "."</dynamictemplate>
+  <verbtemplate name="listento">listen to</verbtemplate>
+	<dynamictemplate name="DefaultListenTo">WriteVerb(game.pov, "listen,") + " but " + object.gender + " makes no sound."</dynamictemplate>
+  <verbtemplate name="lock">lock</verbtemplate>
+	<dynamictemplate name="DefaultLock">WriteVerb(game.pov, "can't") + " lock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="move">move</verbtemplate>
+	<dynamictemplate name="DefaultMove">WriteVerb(game.pov, "can't") + " move " + object.article + "."</dynamictemplate>
+  <verbtemplate name="pull">pull</verbtemplate>
+	<dynamictemplate name="DefaultPull">WriteVerb(game.pov, "can't") + " pull " + object.article + "."</dynamictemplate>
+  <verbtemplate name="push">push</verbtemplate>
+	<dynamictemplate name="DefaultPush">WriteVerb(game.pov, "can't") + " push " + object.article + "."</dynamictemplate>
+  <verbtemplate name="read">read</verbtemplate>
+	<dynamictemplate name="DefaultRead">WriteVerb(game.pov, "can't") + " read " + object.article + "."</dynamictemplate>
+  <verbtemplate name="search">search</verbtemplate>
+	<dynamictemplate name="DefaultSearch">WriteVerb(game.pov, "can't") + " search " + object.article + "."</dynamictemplate>
+  <verbtemplate name="show">show</verbtemplate>
+	<dynamictemplate name="DefaultShow">WriteVerb(game.pov, "can't") + " show " + object.article + "."</dynamictemplate>
+  <verbtemplate name="sit">sit on</verbtemplate>
+  <verbtemplate name="sit">sit upon</verbtemplate>
+  <verbtemplate name="sit">sit down on</verbtemplate>
+  <verbtemplate name="sit">sit down upon</verbtemplate>
+	<dynamictemplate name="DefaultSit">WriteVerb(game.pov, "can't") + " sit on " + object.article + "."</dynamictemplate>
+  <verbtemplate name="smell">smell</verbtemplate>
+  <verbtemplate name="smell">sniff</verbtemplate>
+	<dynamictemplate name="DefaultSmell">WriteVerb(game.pov, "sniff,") + " but " + object.gender + " doesn't smell of much."</dynamictemplate>
+  <verbtemplate name="taste">taste</verbtemplate>
+	<dynamictemplate name="DefaultTaste">WriteVerb(game.pov, "can't") + " taste " + object.article + "."</dynamictemplate>
+  <verbtemplate name="throw">throw</verbtemplate>
+	<dynamictemplate name="DefaultThrow">WriteVerb(game.pov, "can't") + " throw " + object.article + "."</dynamictemplate>
+  <verbtemplate name="tie">tie</verbtemplate>
+	<dynamictemplate name="DefaultTie">WriteVerb(game.pov, "can't") + " tie " + object.article + "."</dynamictemplate>
+  <verbtemplate name="touch">touch</verbtemplate>
+	<dynamictemplate name="DefaultTouch">WriteVerb(game.pov, "can't") + " touch " + object.article + "."</dynamictemplate>
+  <verbtemplate name="turnon">turn on</verbtemplate>
+  <verbtemplate name="turnon">turn #object# on</verbtemplate>
+  <verbtemplate name="turnon">switch on</verbtemplate>
+  <verbtemplate name="turnon">switch #object# on</verbtemplate>
+	<dynamictemplate name="DefaultTurnOn">WriteVerb(game.pov, "can't") + " turn " + object.article + " on."</dynamictemplate>
+  <verbtemplate name="turnoff">turn off</verbtemplate>
+  <verbtemplate name="turnoff">turn #object# off</verbtemplate>
+  <verbtemplate name="turnoff">switch off</verbtemplate>
+  <verbtemplate name="turnoff">switch #object# off</verbtemplate>
+	<dynamictemplate name="DefaultTurnOff">WriteVerb(game.pov, "can't") + " turn " + object.article + " off."</dynamictemplate>
+  <verbtemplate name="turn">turn</verbtemplate>
+	<dynamictemplate name="DefaultTurn">WriteVerb(game.pov, "can't") + " turn " + object.article + "."</dynamictemplate>
+  <verbtemplate name="unlock">unlock</verbtemplate>
+	<dynamictemplate name="DefaultUnlock">WriteVerb(game.pov, "can't") + " unlock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="untie">untie</verbtemplate>
+	<dynamictemplate name="DefaultUntie">WriteVerb(game.pov, "can't") + " untie " + object.article + "."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) (on|with) (?<object2>.*)$]]></template>
+	<dynamictemplate name="DefaultUseOn">WriteVerb(game.pov, "can't") + " use " + object2.article + " that way."</dynamictemplate>
+  <verbtemplate name="wear">wear</verbtemplate>
+	<dynamictemplate name="DefaultWear">WriteVerb(game.pov, "can't") + " wear " + object.article + "."</dynamictemplate>
+  <template templatetype="command" name="listen">^listen$</template>
+	<template name="DefaultListen">{=WriteVerb(game.pov, "can't")} hear much.</template>
+  <template templatetype="command" name="jump">^jump$</template>
+	<template name="DefaultJump">{=WriteVerb(game.pov, "jump,")} but nothing happens.</template>
+  <template templatetype="command" name="sitdown">^sit$|^sit down$</template>
+  <template name="DefaultSitDown">No time for lounging about now.</template>
+  <template templatetype="command" name="liedown">^lie$|^lie down$</template>
+  <template name="DefaultLieDown">No time for lounging about now.</template>
+  <template templatetype="command" name="sleep">^sleep$|^rest$</template>
+  <template name="DefaultSleep">No time for lounging about now.</template>
+  <template templatetype="command" name="wait">^wait$|^z$</template>
+  <template name="DefaultWait">Time passes.</template>
+  <template templatetype="command" name="xyzzy">^xyzzy$</template>
+  <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
+  <template templatetype="command" name="help">^help$|^\?$</template>
+  <template templatetype="command" name="save">^save$</template>
+  <dynamictemplate name="DefaultTellTo">WriteVerb(object, "do") + " nothing."</dynamictemplate>
+
+  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
+<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
+<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
+<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
+<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+
+	<template name="EditorVerbDefaultExpression">WriteVerb(game.pov, "can't") + " #verb# " + object.article + "."</template>
+  
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
+      return ("an")
+    }
+    else {
+      return ("a")
+    }
+  </function>
+
+  <function name="WriteVerb" type="string" parameters="obj, verb">
+    result = Conjugate(obj, verb)
+    if (not UCase (Left (result, 1)) = LCase (Left (result, 1))) {
+      // Don't add a space for 'm, etc.
+      result = " " + result
+    }
+    return (CapFirst(obj.gender) + result)
+  </function>
+
+  <function name="Conjugate" type="string" parameters="obj, verb">
+    InitConjugation
+    gender = LCase(obj.gender)
+    if (gender = "he" or gender = "she") {
+        gender = "it"
+    }
+    cmd = GetObject (verb)
+    if (not cmd = null and HasString (cmd, "conjugate_"+gender)) {
+      return (GetString (cmd, "conjugate_"+gender))
+    }
+    dict = GetAttribute (game, "conjugations_"+gender)
+    if (not dict = null) {
+      if (DictionaryContains (dict, verb)) {
+        return (DictionaryItem (dict, verb))
+      }
+      foreach (ending, dict) {
+        if (Left (ending, 1) = "@" and EndsWith (verb, Mid (ending, 2))) {
+          return (Conjugate (obj, Left (verb, LengthOf(verb) - LengthOf(ending) + 1)) + DictionaryItem (dict, ending))
+        }
+        else if (Left (ending, 1) = "*" and EndsWith (verb, Mid (ending, 2))) {
+          return (Left (verb, LengthOf(verb) - LengthOf(ending) + 1) + DictionaryItem (dict, ending))
+        }
+      }
+    }
+    return (verb)
+  </function>
+
+  
+  <function name="InitConjugation">
+    if (not HasAttribute(game, "conjugations_i")) {
+      game.conjugations_i = NewStringDictionary()
+      dictionary add (game.conjugations_i, "be", "am")
+      dictionary add (game.conjugations_i, "'be", "'m")
+
+      game.conjugations_you = NewStringDictionary()
+      dictionary add (game.conjugations_you, "be", "are")
+      dictionary add (game.conjugations_you, "'be", "'re")
+      
+      game.conjugations_we = NewStringDictionary()
+      dictionary add (game.conjugations_we, "be", "are")
+      dictionary add (game.conjugations_we, "'be", "'re")
+      
+      game.conjugations_they = NewStringDictionary()
+      dictionary add (game.conjugations_they, "be", "are")
+      dictionary add (game.conjugations_they, "'be", "'re")
+      
+      game.conjugations_it = NewStringDictionary()
+      dictionary add (game.conjugations_it, "be", "is")
+      dictionary add (game.conjugations_it, "have", "has")
+      dictionary add (game.conjugations_it, "can", "can")
+      dictionary add (game.conjugations_it, "mould", "moulds")
+      dictionary add (game.conjugations_it, "*ould", "ould")
+      dictionary add (game.conjugations_it, "must", "must")
+      dictionary add (game.conjugations_it, "can't", "can't")
+      dictionary add (game.conjugations_it, "won't", "won't")
+      dictionary add (game.conjugations_it, "cannot", "cannot")
+      dictionary add (game.conjugations_it, "@n't", "n't")
+      dictionary add (game.conjugations_it, "'ve", "'s")
+      dictionary add (game.conjugations_it, "'be", "'s")
+      dictionary add (game.conjugations_it, "*ay", "ays")
+      dictionary add (game.conjugations_it, "*oy", "oys")
+      dictionary add (game.conjugations_it, "*ey", "eys")
+      dictionary add (game.conjugations_it, "*y", "ies")
+      dictionary add (game.conjugations_it, "*ss", "sses")
+      dictionary add (game.conjugations_it, "*s", "sses")
+      dictionary add (game.conjugations_it, "*sh", "shes")
+      dictionary add (game.conjugations_it, "*ch", "ches")
+      dictionary add (game.conjugations_it, "*o", "oes")
+      dictionary add (game.conjugations_it, "*x", "xes")
+      dictionary add (game.conjugations_it, "*z", "zes")
+      dictionary add (game.conjugations_it, "*", "s")
+    }
+  </function>
+
+  <function name="Possessive" parameters="possessive, object" type="string">
+    return (possessive + " " + GetDisplayAlias(object))
+  </function>
+  
+
+  <function name="ToWords" parameters="number" type="string">
+    <![CDATA[
+    if (not TypeOf(number) = "int") error ("ToWords can only handle ints")
+    
+    number_units = Split("zero;one;two;three;four;five;six;seven;eight;nine;ten;eleven;twelve;thirteen;fourteen;fifteen;sixteen;seventeen;eighteen;nineteen;twenty", ";")
+    number_tens = Split("twenty;thirty;forty;fifty;sixty;seventy;eighty;ninety", ";")
+
+    s = ""
+    if (number < 0) {
+      s = "minus "
+      number = -number
+    }
+    if (number < 2000) {
+      hundreds = number / 100
+      number = number % 100
+      if (hundreds > 0) {
+        s = s + StringListItem(number_units, hundreds) + " hundred "
+        if (number > 0) {
+          s = s + "and "
+        }
+      }
+      if (number < 20) {
+        if (not number = 0 or s = "") {
+          s = s + StringListItem(number_units, number)
+        }
+      }
+      else {
+        units = number % 10
+        tens = (number / 10) % 10
+        s = s + StringListItem(number_tens, tens - 2)
+        if (not units = 0) {
+          s = s + StringListItem(number_units, units)
+        }
+      }
+    }
+    else {
+      s = ToString(number)
+    }
+    return (Trim(s))
+  ]]>
+  </function>
+  
+  
+  <function name="GetDefiniteName" parameters="obj" type="string">
+    result = GetDisplayAlias(obj)
+    if (not DoesInherit(obj, "namedmale") and not DoesInherit(obj, "namedfemale") and not result = "me" and not result = "you") {
+    result = "the " + result
+    }
+    return (result)
+  </function>  
+  
+  <template templatetype="command" name="transcript_on_cmd">^(transcript|script)( on|)$|^enable (script|transcript)$</template>
+  <template templatetype="command" name="transcript_off_cmd">^(transcript|script) off$|^disable (script|transcript)$</template>
+  <template templatetype="command" name="view_transcript_cmd">^(view|display|show) (the |)(script|transcript)$</template>
+  <template templatetype="command" name="version_cmd">^(version|info|about)$</template>
+  
+  <!-- DevMode templates moved here by KV to avoid issues with gamebooks-->
+  <template name="DevModeErrorWrongFormat">That's the wrong format.</template>
+  <template name="DevModeErrorObjectNotRecognised">The object was not found.</template>
+  <template name="DevModeErrorWrongTyp">That's the wrong type.</template>
+  <template name="DevModeErrorWrongKey">The key was not found.</template>
+  <template name="DevModeExecuteCommand">The command was executed.</template>
+  <template name="DevModeNotActive">DevMode is not active!</template>
+  <template name="DevModeDescriptionCommands"><![CDATA[<h3>FlyScript - Help</h3><b><u>Object-Commends</u></b><br/>#take object<br/>#drop object<br/>#put object1 in object2<br/>#open object<br/>#close object<br/>#on object<br/>#off object<br/>#to player<br/>#go room<br/><br/><i>Unlike the commands in the game, they are executed directly and without detours via intercept scripts.</i><br/><br/><b><u>Single-Commands</u></b><br/>#clr (clear screen)<br/>#? (help)<br/># (close game)<br/><br/><b><u>Object-Attributes</u></b><br/>#object1.attribute=object2.attribute (attribute assignment of another object)<br/>#object.attribute=true / false (set true / false)<br/>#object.attribute=? / ! (set true / false)<br/>#~object.attribute (toggle true or false)<br/>#object.attribute="value" (string)<br/>#object.attribute=15 (integer)<br/>#object.attribute=25.55 (double)<br/>#object.attribute=[item1,item2,item3] (list)<br/>#object.attribute[]=element (add element to list)<br/>#object.attribute[key]=element (add or overwrite element to list)<br/>#object.attribute=[] (create new list)<br/>#object.attribute={key1:item1,key2:item2,key3:item3} (dictionary)<br/>#object.attribute{key}=element (add or overwrite element to dictionary)<br/>#object.attribute={} (create new dictionary)<br/>#object.attribute (read attribute)<br/>]]></template>
+  <template name="DevModeActive"><![CDATA[<b>DevMode: Active</b>]]></template>
+  <template name="DevModeInitDegugTable">Debug table initialized.</template>
+  <template name="DevModeStartScript">Initialization script started.</template>
+  <template name="DevModeSetVerbs">Verbs assigned.</template>
+  <template name="DevModeComExecute">Command executed.</template>
+  <template name="DevModeComSetAttribute">Set Attribute: </template>
+  <template name="DevModeComGetAttribute">Get Attribute: </template>
+  <template name="DevModeComSelfTestFailed">The assignment as it should be after the command is incorrect.</template>
+  <dynamictemplate name="DevModeErrorCantFindObject">"The object with the name '" + text + "' cannot be found."</dynamictemplate>
+  <dynamictemplate name="DevModeErrorCantFindAttribute">"The attribute with the name '" + text + "' cannot be found."</dynamictemplate>
+
+  <verbtemplate name="enter">enter</verbtemplate>
+  <verbtemplate name="enter">go in</verbtemplate>
+  <verbtemplate name="enter">go into</verbtemplate>
+  <verbtemplate name="enter">get in</verbtemplate>
+  <verbtemplate name="enter">get into</verbtemplate>
+  <dynamictemplate name="DefaultEnter">WriteVerb(game.pov, "can't") + " enter " + object.article + "."</dynamictemplate>
+  
+  <template name="NoTranscriptFeature">This game has no transcript feature.</template>
+  <template name="TranscriptAlreadyEnabled">The transcript is already enabled.</template>
+  <template name="TranscriptDisabled">End of transcript.</template>
+  <template name="TranscriptAlreadyDisabled">The transcript is already disabled.</template>
+  <template name="TranscriptEnterFilename">Please enter a transcript name.</template>
+  <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Enter </i>" + Template("TranscriptOffAllCaps") + "<i> to disable the transcript.  ]</i></b>"]]></dynamictemplate>
+  <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start of a transcript of:<br/><b>TITLE: </b>" + game.gamename + "<br/><b>AUTHOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
+  <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
+  <template name="Noted">Noted.</template>
+  <template name="ShowMenuResponsePrompt">>> </template>
+
+</library>

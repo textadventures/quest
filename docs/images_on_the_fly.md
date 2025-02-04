@@ -42,4 +42,4 @@ For really complicated shapes, you might want to look at using InkScape, a drawi
 
 You can even capture mouse events to make the image interactive. Here is the start of a strategy game, go to the Stars & Planets section, to see a galactic map. Click on the side arrows to move and the + and - to zoom in and out.
 
-[http://textadventures.co.uk/games/view/ohqyc_lfuuiqjsuwmvbkbw/star-empire-v0-1](http://textadventures.co.uk/games/view/ohqyc_lfuuiqjsuwmvbkbw/star-empire-v0-1)
+[https://textadventures.co.uk/games/view/ohqyc_lfuuiqjsuwmvbkbw/star-empire-v0-1](https://textadventures.co.uk/games/view/ohqyc_lfuuiqjsuwmvbkbw/star-empire-v0-1)

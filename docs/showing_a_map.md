@@ -46,7 +46,7 @@ Now another loop has been added, but the lengths do not match, so the exits do n
 
 So let's sort it out! You need the rooms to match horizontally and vertically, so you need to do this process twice. We will do the horizontal here. On the bottom, there is the Garden and Gazebo. As the player dot sits in the middle of each room, we need half the width in both cases (3 and 1 respectively), plus the length of the exit, 1. This is a total of 5.
 
-Now look at the top of the loop, and the kitchen and garage. The widths are 2 and 1, so the total of half of each in 1.5. Unfortunately the interface cannot cope with fractions, so we will need to adjust a room; we will make the garage 2 units wide, so now we have a total of 2. We need the total distace to be 5, like the bottom of the loop, so the exit needs a length of 3 (remember to change both directions).
+Now look at the top of the loop, and the kitchen and garage. The widths are 2 and 1, so the total of half of each in 1.5. Unfortunately the interface cannot cope with fractions, so we will need to adjust a room; we will make the garage 2 units wide, so now we have a total of 2. We need the total distance to be 5, like the bottom of the loop, so the exit needs a length of 3 (remember to change both directions).
 
 Once the vertical is also matched, we end up with this:
 
@@ -176,7 +176,7 @@ Of course, this is not ideal, as the player loses their map every time, and if s
 
 Restriction: _Only for isolated regions._
 
-Instead of reseting the map, we can save it as an attribute.
+Instead of resetting the map, we can save it as an attribute.
 
 Say your game is divided into three regions, with no way for the player to walk between them. What you can do when the player teleports from area one to area two, is to save the map for area one, and then grab the previously saved data for area two.
 
@@ -236,7 +236,7 @@ foreach (key, d) {
 }
 ```
 
-Then create a new function, call it `InGridRoom`, set it to return a Boolean, with these paramters: room, dict, x, y, z. Paste in this code:
+Then create a new function, call it `InGridRoom`, set it to return a Boolean, with these parameters: room, dict, x, y, z. Paste in this code:
 
 ```
 flag = DictionaryItem(dict, "grid_isdrawn")

@@ -23,7 +23,7 @@ Basic
 
 Be prepared to see code - but not write it. Most of these have blocks of code, but do not let that put you off; it is pretty easy to copy-and-paste a chunk of code straight into your game, then go back to the GUI view to look at it or change it.
 
--   [Character Creation](character_creation.html)
+-   [Character Creation](../character_creation.html)
 -   [Immobilise the player](immobilise_the_player.html)
 -   [Use InvisiClues for Help](invisiclues.html)
 -   [Random responses](random_default_answers.html)
@@ -36,7 +36,7 @@ For those happy to use code.
 
 -   [A Hint System](a_hint_system.html)
 -   [Turn-based events](turn_based_events.html)
--   [Use and code functions](using_functions.html)
+-   [Use and code functions](../use_functions.html)
 -   [Random default messages](random_default_answers.html)
 
 

@@ -7,7 +7,7 @@ We'll now start creating things in the kitchen, where we'll look at some more of
 
 Enter a description like "The kitchen is cold and the stench of the overflowing bin makes you feel somewhat faint." As an exercise, add a scenery object called "bin" and give it a sensible description.
 
-We're now going to look at **attributes**. Every time we've edited any aspect of an object or room so far, we've actually been editing an attribute. The prefix, description, "take" behaviour and so on are all attributes of an object. Whenever something changes in ther game, it is a change in an objects attribute. When the TV is turned on or off, the "switchedon" attribute is changing. Even when the player moves, this is actually just changing an attribute of the player object called "parent".
+We're now going to look at **attributes**. Every time we've edited any aspect of an object or room so far, we've actually been editing an attribute. The prefix, description, "take" behaviour and so on are all attributes of an object. Whenever something changes in the game, it is a change in an objects attribute. When the TV is turned on or off, the "switchedon" attribute is changing. Even when the player moves, this is actually just changing an attribute of the player object called "parent".
 
 In this example, we'll store the weights of various objects by creating a new "weight" attribute. Later we will create a "weigh" command which will tell us the weight of **any** object.
 

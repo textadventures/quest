@@ -1,0 +1,529 @@
+﻿<library type="editor">
+
+  <implied element="control" property="height" type="int"/>
+  <implied element="control" property="width" type="int"/>
+  <implied element="control" property="types" type="simplestringdictionary"/>
+  <implied element="control" property="filters" type="simplestringdictionary"/>
+  <implied element="control" property="editors" type="simplestringdictionary"/>
+  <implied element="control" property="minimum" type="int"/>
+  <implied element="control" property="mustinherit" type="simplestringlist"/>
+  <implied element="control" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="parent" type="object"/>
+
+  <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>
+  <template name="HTMLColorNames">AliceBlue;AntiqueWhite;Aqua;Aquamarine;Azure;Beige;Bisque;Black;BlanchedAlmond;Blue;BlueViolet;Brown;BurlyWood;CadetBlue;Chartreuse;Chocolate;Coral;CornflowerBlue;Cornsilk;Crimson;Cyan;DarkBlue;DarkCyan;DarkGoldenRod;DarkGray;DarkGrey;DarkGreen;DarkKhaki;DarkMagenta;DarkOliveGreen;Darkorange;DarkOrchid;DarkRed;DarkSalmon;DarkSeaGreen;DarkSlateBlue;DarkSlateGray;DarkSlateGrey;DarkTurquoise;DarkViolet;DeepPink;DeepSkyBlue;DimGray;DimGrey;DodgerBlue;FireBrick;FloralWhite;ForestGreen;Fuchsia;Gainsboro;GhostWhite;Gold;GoldenRod;Gray;Grey;Green;GreenYellow;HoneyDew;HotPink;IndianRed ;Indigo ;Ivory;Khaki;Lavender;LavenderBlush;LawnGreen;LemonChiffon;LightBlue;LightCoral;LightCyan;LightGoldenRodYellow;LightGray;LightGrey;LightGreen;LightPink;LightSalmon;LightSeaGreen;LightSkyBlue;LightSlateGray;LightSlateGrey;LightSteelBlue;LightYellow;Lime;LimeGreen;Linen;Magenta;Maroon;MediumAquaMarine;MediumBlue;MediumOrchid;MediumPurple;MediumSeaGreen;MediumSlateBlue;MediumSpringGreen;MediumTurquoise;MediumVioletRed;MidnightBlue;MintCream;MistyRose;Moccasin;NavajoWhite;Navy;OldLace;Olive;OliveDrab;Orange;OrangeRed;Orchid;PaleGoldenRod;PaleGreen;PaleTurquoise;PaleVioletRed;PapayaWhip;PeachPuff;Peru;Pink;Plum;PowderBlue;Purple;Red;RosyBrown;RoyalBlue;SaddleBrown;Salmon;SandyBrown;SeaGreen;SeaShell;Sienna;Silver;SkyBlue;SlateBlue;SlateGray;SlateGrey;Snow;SpringGreen;SteelBlue;Tan;Teal;Thistle;Tomato;Turquoise;Violet;Wheat;White;WhiteSmoke;Yellow;YellowGreen</template>
+
+  <include ref="GamebookCoreEditorScripts.aslx"/>
+  <include ref="GamebookCoreEditorExpressions.aslx"/>
+  <include ref="CoreEditorElements.aslx"/>
+  <include ref="CoreEditorFunction.aslx"/>
+  <include ref="CoreEditorIncludedLibrary.aslx"/>
+  <include ref="CoreEditorJavascript.aslx"/>
+
+  <editor name="_RichTextControl_TextProcessorCommands">
+    <data type="list">
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorBold]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;b&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/b&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;b&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorItalic]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;i&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/i&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;i&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorUnderline]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;u&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/u&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;u&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorPage]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{page:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{page}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>pages</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorOnce]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{once:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{once}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorIf]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>flag:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorRandomText]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{random:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{random}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorImage]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{img:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{img}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>images</value>
+        </item>
+        <item>
+          <key>extensions</key>
+          <value>[EditorImageFormats]</value>
+        </item>
+      </value>
+    </data>
+  </editor>
+
+  <editor>
+    <appliesto>game</appliesto>
+    <tab>
+      <caption>Setup</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameGamename]</caption>
+        <attribute>gamename</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameSubtitle]</caption>
+        <attribute>subtitle</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameAuthor]</caption>
+        <attribute>author</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameDisplaytitle]</caption>
+        <attribute>showtitle</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameVersion]</caption>
+        <attribute>version</attribute>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameTheGameIDbelow]</caption>
+        <advanced/>
+        <desktop/>
+      </control>
+
+      <control>
+        <controltype>gameid</controltype>
+        <caption>[EditorGameGameID]</caption>
+        <attribute>gameid</attribute>
+        <advanced/>
+        <desktop/>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameCategory]</caption>
+        <attribute>category</attribute>
+        <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>[EditorGameYearofrelease]</caption>
+        <attribute>firstpublished</attribute>
+      </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>[EditorGameCoverart]</caption>
+        <attribute>cover</attribute>
+        <source>*.jpg;*.jpeg;*.png;*.gif</source>
+        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
+        <preview/>
+      </control>
+
+      <control>
+        <controltype>richtext</controltype>
+        <caption>[EditorGameDescription]</caption>
+        <attribute>description</attribute>
+        <notextprocessor/>
+        <expand/>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>[EditorGBPageTypeScript]</caption>
+      <advanced/>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>[EditorGBScriptWhenEnteringPage]</caption>
+        <attribute>roomenter</attribute>
+      </control>
+    </tab>   
+    
+
+    <tab>
+      <caption>[EditorGameDisplay]</caption>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>clearlastpage</attribute>
+        <caption>[EditorGBClearScreenBetweenEachPage]</caption>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameFont]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameThewebfont]</caption>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameBasefont]</caption>
+        <attribute>defaultfont</attribute>
+        <source>basefonts</source>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGameWebfont]</caption>
+        <attribute>defaultwebfont</attribute>
+        <source>webfonts</source>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameBrowseavailable]</caption>
+        <href>https://fonts.google.com/</href>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>[EditorGameFontsize]</caption>
+        <attribute>defaultfontsize</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGBColour]</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGameYoucanuseany]</caption>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGBBackground]</caption>
+        <attribute>defaultbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGBForeground]</caption>
+        <attribute>defaultforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>[EditorGBLinkForeground]</caption>
+        <attribute>defaultlinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>[EditorGameLayout]</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameShowborder]</caption>
+        <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameSetacustom]</caption>
+        <attribute>setcustomwidth</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustomwidth</onlydisplayif>
+        <attribute>customwidth</attribute>
+        <caption>[EditorGameWidth]</caption>
+        <minimum>100</minimum>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameSetcustompadding]</caption>
+        <attribute>setcustompadding</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingtop</attribute>
+        <caption>[EditorGameTop]</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingbottom</attribute>
+        <caption>[EditorGameBottom]</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingleft</attribute>
+        <caption>[EditorGameLeft]</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingright</attribute>
+        <caption>[EditorGameRight]</caption>
+        <minimum>0</minimum>
+      </control>
+    </tab>
+
+  </editor>
+
+  <editor>
+    <appliesto>object</appliesto>
+
+    <tab>
+      <caption>[EditorGamePlayer]</caption>
+      <mustinherit>defaultplayer</mustinherit>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>[EditorGBYouCanChange]</caption>
+      </control>
+    </tab>
+
+    <tab>
+      <caption>[EditorGBPage]</caption>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+
+      <control>
+        <caption>[EditorGBName]</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>dropdowntypes</controltype>
+        <caption>[EditorGBPageType]</caption>
+        <types>*=Text; picture=[EditorGBPageTypePicture]; youtube=YouTube; link=[EditorGBPageTypeExternalLink]; script=[EditorGBPageTypeScript]; scripttext=[EditorGBPageTypeScriptText]</types>
+        <width>150</width>
+      </control>
+
+      <control>
+        <caption>[EditorGBPageTypePicture]</caption>
+        <controltype>file</controltype>
+        <attribute>picture</attribute>
+        <source>*.jpg;*.jpeg;*.png;*.gif</source>
+        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
+        <mustinherit>picture</mustinherit>
+        <preview/>
+      </control>
+
+      <control>
+        <caption>YouTube id</caption>
+        <controltype>textbox</controltype>
+        <attribute>youtube</attribute>
+        <mustinherit>youtube</mustinherit>
+      </control>
+
+      <control>
+        <caption>[EditorGBPageTypeExternalLink]</caption>
+        <controltype>textbox</controltype>
+        <attribute>address</attribute>
+        <mustinherit>link</mustinherit>
+      </control>
+
+      <control>
+        <caption>[EditorGBPageTypeScript]</caption>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+        <mustinherit>script; scripttext</mustinherit>
+      </control>
+
+      <control>
+        <controltype>richtext</controltype>
+        <caption>[EditorGameDescription]</caption>
+        <attribute>description</attribute>
+        <mustnotinherit>link; script</mustnotinherit>
+        <expand/>
+      </control>
+
+      <control>
+        <controltype>gamebookoptions</controltype>
+        <caption>[EditorGameOptions]</caption>
+        <keyprompt>[EditorGBOptionsPleaseEnterPageName]</keyprompt>
+        <valueprompt>[EditorGBOptionsPleaseEnterLinkText]</valueprompt>
+        <attribute>options</attribute>
+        <source>object</source>
+        <sourceexclude>player</sourceexclude>
+        <mustnotinherit>link; script</mustnotinherit>
+      </control>
+
+    </tab>
+    <tab>
+      <caption>[EditorGBAction]</caption>
+      <mustnotinherit>defaultplayer; script</mustnotinherit>
+
+      <control>
+        <caption>[EditorGBPlaySoundWhenEnterPage]</caption>
+        <controltype>file</controltype>
+        <attribute>sound</attribute>
+        <source>*.mp3;*.wav</source>
+        <filefiltername>[EditorGBPlaySoundFilterName]</filefiltername>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGBContinueToPlaySound]</caption>
+        <attribute>continuesound</attribute>
+        <onlydisplayif>LengthOf(GetString(this, "sound")) > 0</onlydisplayif>
+      </control>
+
+    </tab>
+  </editor>
+
+</library>

@@ -120,7 +120,7 @@ dictionary add (options, "vomit", "Try to vomit the poison up")
 ShowMenu ("Choose", options, false) {
   do(player, result)
 }
-
+```
 
 ### Script parameters
 

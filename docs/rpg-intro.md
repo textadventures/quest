@@ -17,7 +17,7 @@ In a traditional RPG (role-playing game), each player takes the part of a charac
 For the purposes of interactive fiction, an RPG-style game is one is which the player controls a character whose capabilities are defined by a set of statistics, and his or her success at any action is determined in part by those statistics and partly at random. Those statistics can be determined to some degree by the player, and are likely to change during the game. It is assumed that combat will be an important feature of the game.
 
 Here is an example game so you can see what we are talking about. It is based in a fantasy world, but the same ideas apply to science fiction, Wild West, cyberpunk and pulp genres too:
-http://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper
+https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper
 
 
 ### So how do you create one?
@@ -80,7 +80,7 @@ Can the player sneak? If so, what is the benefit? If the player can sneak, can t
 
 ### Special stuff
 
-Is there magic/pisions/etc.? How can magic affect combat; bonus to attack, to armour, to defence, etc.? Does casting magic use power points (how are they got back), use up the spell or what? What about magic items?
+Is there magic/poisons/etc.? How can magic affect combat; bonus to attack, to armour, to defence, etc.? Does casting magic use power points (how are they got back), use up the spell or what? What about magic items?
 
 What about poison and venom?
 

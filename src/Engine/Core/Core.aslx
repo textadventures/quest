@@ -1,0 +1,450 @@
+﻿<library>
+
+  <delegate name="AddScript" parameters="object"/>
+  <delegate name="AssociatedScope" type="objectlist"/>
+  <implied element="object" property="alt" type="simplestringlist"/>
+  <implied element="command" property="pattern" type="simplepattern"/>
+  <implied element="command" property="script" type="script"/>
+  <implied element="command" property="multiple" type="AssociatedScope"/>
+  <implied element="object" property="displayverbs" type="simplestringlist"/>
+  <implied element="object" property="inventoryverbs" type="simplestringlist"/>
+  <implied element="walkthrough" property="steps" type="simplestringlist"/>
+  <implied element="timer" property="interval" type="int"/>
+  <implied element="timer" property="script" type="script"/>
+  <implied element="turnscript" property="script" type="script"/>
+
+  <include ref="CoreCommands.aslx"/>
+  <include ref="CoreFunctions.aslx"/>
+  <include ref="CoreParser.aslx"/>
+  <include ref="CoreScopes.aslx"/>
+  <include ref="CoreTypes.aslx"/>
+  <include ref="CoreDescriptions.aslx"/>
+  <include ref="CoreTimers.aslx"/>
+  <include ref="CoreTurnScripts.aslx"/>
+  <include ref="CoreStatusAttributes.aslx"/>
+  <include ref="CoreOutput.aslx"/>
+  <include ref="CoreGrid.aslx"/>
+  <include ref="CoreCombat.aslx"/>
+  <include ref="CoreEffects.aslx"/>
+  <include ref="CoreEditor.aslx"/>
+  <include ref="CoreWearable.aslx"/>
+  <include ref="CoreDevMode.aslx"/>
+  
+  <function name="InitInterface">
+    <![CDATA[
+    // Added by KV for transcript
+    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
+    jsgamename = JSSafe(game.gamename)
+    JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
+    if (GetBoolean(game,"savetranscript")){
+      JS.eval("var savingTranscript = true;")
+      JS.replaceTranscriptString(game.transcriptstring)
+    }
+    // End of addition by KV for transcript
+    if (game.setcustomwidth) {
+      JS.setGameWidth (game.customwidth)
+    }
+    if (game.setcustompadding) {
+      JS.setGamePadding (game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+    }
+    if (game.externalstylesheets <> null) {
+      foreach (stylesheet, game.externalstylesheets) {
+        JS.addExternalStylesheet (stylesheet)
+      }
+    }
+    if (game.setbackgroundopacity) {
+      SetBackgroundOpacity (game.backgroundopacity)
+    }
+    SetBackgroundColour(game.defaultbackground)
+    SetForegroundColour(game.defaultforeground)
+    SetLinkForegroundColour(game.defaultlinkforeground)
+    if (LengthOf(game.backgroundimage) > 0) {
+      SetBackgroundImage (game.backgroundimage)
+    }
+    JS.setCompassDirections(Join(game.compassdirections, ";"))
+    JS.setInterfaceString("InventoryLabel", "[InventoryLabel]")
+    JS.setInterfaceString("StatusLabel", "[StatusLabel]")
+    JS.setInterfaceString("PlacesObjectsLabel", "[PlacesObjectsLabel]")
+    JS.setInterfaceString("CompassLabel", "[CompassLabel]")
+    JS.setInterfaceString("InButtonLabel", "[InButtonLabel]")
+    JS.setInterfaceString("OutButtonLabel", "[OutButtonLabel]")
+    JS.setInterfaceString("EmptyListLabel", "[EmptyListLabel]")
+    JS.setInterfaceString("NothingSelectedLabel", "[NothingSelectedLabel]")
+    JS.setInterfaceString("TypeHereLabel", "[TypeHereLabel]")
+    JS.setInterfaceString("ContinueLabel", "[ContinueLabel]")    
+    JS.SetMenuBackground (game.menubackground)
+    JS.SetMenuForeground (game.menuforeground)
+    JS.SetMenuHoverBackground (game.menuhoverbackground)
+    JS.SetMenuHoverForeground (game.menuhoverforeground)
+    JS.SetMenuFontName (game.menufont)
+    JS.SetMenuFontSize (game.menufontsize + "pt")
+    if (not game.underlinehyperlinks) {
+      JS.TurnOffHyperlinksUnderline ()
+    }
+    ResetCommandBarFormat
+    if (game.showcommandbar) {
+      JS.uiShow("#txtCommandDiv")
+    }
+    else {
+      JS.uiHide("#txtCommandDiv")
+    }
+    if (HasString(game, "panelcontents")) {
+      SetFramePicture (game.panelcontents)
+    }
+    if (game.gridmap) {
+      JS.ShowGrid (game.mapsize)
+      Grid_SetScale (game.mapscale)
+      if (game.pov <> null) {
+        if (game.pov.parent <> null) {
+          Grid_Redraw
+          Grid_DrawPlayerInRoom (game.pov.parent)
+        }
+      }
+    }
+    // Added by the Pixie
+    // Note that panesVisible in playercore.js must be updated too
+    // This line will get the save confirmation to appear in the right font and colour
+    JS.setCss ("body", "color:" + game.defaultforeground + ";font-family:" + game.defaultfont + ";font-size:" + game.defaultfontsize + "pt;")
+    // various new options
+    if (HasString(game, "bordercolour")) {
+      JS.setCss ("#gameBorder", "border-left:1px solid " + game.bordercolour + ";border-right:1px solid " + game.bordercolour)
+    }
+    if (not game.classiclocation) {
+      JS.setCss ("#status", "background-image:none")
+      if (HasString(game, "customlocationcolour")) {
+        JS.setCss ("#status", "background-color:" + game.customlocationcolour)
+      }
+      else {
+        JS.setCss ("#status", "background:transparent")
+      }
+      if (HasString(game, "customlocationtextcolour")) {
+        JS.setCss ("#status", "color:" + game.customlocationtextcolour)
+      }
+      if (HasString(game, "customlocationbordercolour")) {
+        JS.setCss ("#status", "border:1px solid " + game.customlocationbordercolour)
+      }
+      else {
+        JS.setCss ("#status", "border:none")
+      }
+      if (HasString(game, "locationbarimage")){
+        if (not Trim(game.locationbarimage) = ""){ 
+          url = GetFileURL(game.locationbarimage)
+          JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
+        }
+      }
+    }
+    //request (Show, "Location")
+    if (game.showlocation) {
+      JS.uiShow("#location")
+      JS.setCss ("#status", "display:block")
+    }
+    else {
+      JS.setCss ("#status", "display:none")
+    }
+    if (HasString(game, "marginscolour")) {
+      JS.setCss ("body", "background-color:" + game.marginscolour)
+    }
+    if (game.turnoffsavebutton) {
+      JS.setCss ("#controlButtons", "display:none")
+    }
+    if (game.turnoffcompass) {
+      JS.setCss ("#compassLabel", "display:none;")
+      JS.setCss ("#compassAccordion", "display:none;")
+    }
+    if (game.turnoffinventory) {
+      JS.setCss ("#inventoryLabel", "display:none")
+      JS.setCss ("#inventoryAccordion", "display:none")
+    }
+    if (game.turnoffplacesandobjects) {
+      JS.setCss ("#placesObjectsLabel", "display:none")
+      JS.setCss ("#placesObjectsAccordion", "display:none")
+    }
+    if (game.statusandcompassattop) {
+      JS.eval ("$('#commandPane').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#customStatusPane').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#statusVarsLabel').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#statusVarsAccordion').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#compassLabel').insertBefore('#inventoryLabel')")
+      JS.eval ("$('#compassAccordion').insertBefore('#inventoryLabel')")
+    }
+    if (game.showpanes and game.commandpane) {
+      JS.setCss ("#commandPane", "display:block")
+    }
+    if (game.showpanes and game.customstatuspane) {
+      JS.setCss ("#customStatusPane", "display:block")
+    }
+    if (game.colourblend) {
+      JS.colourBlend (game.colourblendtop, game.colourblendbottom)
+    }
+    if (game.borderlesscursor) {
+      JS.addScript("<style>#txtCommand { outline:none; border:none; margin:0; padding:0; width:100px; background-color:transparent;}</style>")
+      JS.setCss ("#txtCommandDiv", "color:" + game.defaultforeground)
+      JS.eval("$('#txtCommandPrompt').html('" + game.commandcursor + "')")
+    }
+    else if (game.shadowbox) {
+      JS.addScript ("<style>#txtCommand { outline:none; border:none; margin:2px; padding:7px; width:100 px;box-shadow: 0px 0px 15px 5px #888;}</style>")
+    }
+    if (game.panestheme = "Midnight") {
+      JS.setPanes ("white", "midnightblue", "midnightblue", "skyblue")
+    }
+    if (game.panestheme = "Nature") {
+      JS.setPanes ("#A1C935", "#254117", "#306754", "#A1C935", "green")
+    }
+    if (game.panestheme = "Parchment") {
+      JS.setPanes ("#493D26", "#FAEBD7", "#FAEBD7", "#493D26", "#C88141")
+    }
+    if (game.panestheme = "Vanilla") {
+      JS.setPanes ("black", "white")
+    }
+    if (game.panestheme = "Black") {
+      JS.setPanes ("orange", "black", "black", "orange")
+    }
+    if (game.panestheme = "Blood") {
+      JS.setPanes ("orange", "#800000", "#800000", "orange", "yellow")
+    }
+    if (game.panestheme = "Tranquil") {
+      JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
+    }
+    if (game.respondtogridclicks) {
+      JS.respondToGridClicks (true)
+    }
+    //
+    // -----------------------------------------------------------------------
+    // This is in the original, but must come last
+    if (not game.showborder) {
+      JS.hideBorder ()
+    }
+    if (game.showpanes) {
+      JS.panesVisible(true)
+    }
+    else {
+      JS.panesVisible(false)
+    }
+    JS.getDivCount ()
+    if (not game.pov = null) {
+      JS.updateLocation (CapFirst(GetDisplayName(game.pov.parent)))
+    }
+    if (game.feature_devmode) {
+      setDevMode
+    }
+    InitUserInterface
+    if (HasScript(game, "inituserinterface")) {
+      do (game, "inituserinterface")
+    }
+  ]]></function>
+
+  <function name="InitUserInterface">
+  </function>
+  
+  <function name="StartGame">
+    <![CDATA[
+    StartTurnOutputSection
+    if (game.showtitle) {
+      JS.StartOutputSection ("title")
+      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+      if (game.subtitle <> null) {
+        if (LengthOf(game.subtitle) > 0) {
+          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+        }
+      }
+      if (game.author <> null) {
+        if (LengthOf(game.author) > 0) {
+          PrintCentered ("<br/><span style=\"font-size:140%\">[By] " + game.author + "</span>")
+        }
+      }
+      msg ("<div style=\"margin-top:20px\"></div>")
+      JS.EndOutputSection ("title")
+    }
+    if (game.pov = null) {
+      playerObject = GetObject("player")
+      if (playerObject = null) {
+        if (ListCount(AllObjects()) > 0) {
+          firstRoom = ObjectListItem(AllObjects(), 0)
+        }
+        else {
+          create ("room")
+          firstRoom = room
+        }
+        create ("player")
+        player.parent = firstRoom
+      }
+      game.pov = player
+    }
+    else {
+      InitPOV (null, game.pov)
+    }
+    InitStatusAttributes
+    UpdateStatusAttributes
+    InitVerbsList
+    if (HasScript(game, "start")) do (game, "start")
+    foreach (obj, AllObjects()) {
+      if (HasScript(obj, "_initialise_")) do (obj, "_initialise_")
+    }
+    UpdateStatusAttributes
+    UpdateObjectLinks
+    on ready {
+      if (game.gridmap) {
+        Grid_DrawPlayerInRoom (game.pov.parent)
+      }
+      if (game.displayroomdescriptiononstart) {
+        OnEnterRoom (null)
+      }
+      UpdateStatusAttributes
+      UpdateObjectLinks
+    }
+    // Added by KV to use the old JS clearScreen if the transcript is disabled
+    if (GetBoolean(game, "notranscript")){
+      JS.eval("transcriptEnabled = false;")
+    }
+    game.runturnscripts = false
+    FinishTurn
+    ]]>
+  </function>
+  
+  <function name="InitVerbsList">
+    game.verbattributes = NewStringList()
+    game.verbattributeslookup = NewObjectDictionary()
+    foreach (cmd, AllCommands()) {
+      if (HasString(cmd, "property")) {
+        list add (game.verbattributes, cmd.property)
+        dictionary add (game.verbattributeslookup, cmd.property, cmd)
+      }
+    }
+  </function>
+
+  <function name="GetDisplayVerbs" parameters="object" type="stringlist">
+    if (Contains(game.pov, object)) {
+      baselist = object.inventoryverbs
+    }
+    else {
+      baselist = object.displayverbs
+    }
+    
+    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist") or not HasAttribute(game, "verbattributes")) {
+      return (baselist)
+    }
+    else {
+      if (HasAttribute(object, "generatedverbslist")) {
+        verbs = object.generatedverbslist
+      }
+      else {
+        verbs = NewStringList()
+        foreach (attr, GetAttributeNames(object, false)) {
+          if (ListContains(game.verbattributes, attr)) {
+            cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
+            if (HasString(cmd, "displayverb")) {
+              displayverb = CapFirst(cmd.displayverb)
+            }
+            else {
+              displayverb = CapFirst(attr)
+            }
+            if (not ListContains(baselist, displayverb)) {
+              list add (verbs, displayverb)
+            }
+          }
+        }
+        object.generatedverbslist = verbs
+      }
+      if (GetBoolean(object, "useindividualverblist")) {
+        return (verbs)
+      }
+      else {
+        return (ListCombine(baselist, verbs))
+      }  
+    }
+  </function>
+
+  <function name="InitPOV" parameters="oldPOV, newPOV">
+    <![CDATA[
+    if (oldPOV <> null) {
+      oldPOV.alias = oldPOV.external_alias
+      oldPOV.alt = oldPOV.external_alt
+      oldPOV.look = oldPOV.external_look
+      oldPOV.gender = oldPOV.external_gender
+      oldPOV.article = oldPOV.external_article
+      oldPOV.possessive = oldPOV.external_possessive
+    }
+
+    newPOV.external_alias = newPOV.alias
+    newPOV.external_alt = newPOV.alt
+    newPOV.external_look = newPOV.look
+    newPOV.external_gender = newPOV.gender
+    newPOV.external_article = newPOV.article
+    newPOV.external_possessive = newPOV.possessive
+    
+    if (not GetBoolean(newPOV, "pov_used")) {
+      if (newPOV.alt = null) {
+        newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
+      }
+      else {
+        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
+      }
+      if (newPOV.alias <> null) {
+        list add (newPOV.pov_alt, newPOV.alias)
+      }
+      
+      if (game.showmoney and not HasInt(newPOV, "money")) {
+        newPOV.money = 0
+      }
+      
+      if (game.showhealth) {
+        newPOV.health = 100
+        newPOV.changedhealth => {
+          if (this.health > 100) {
+            this.health = 100
+          }
+          else if (this.health = 0) {
+            if (HasScript(game, "onhealthzero")) {
+              do (game, "onhealthzero")
+            }
+          }
+          else if (this.health < 0) {
+            this.health = 0
+            // changedhealth will be called again so the onhealthzero script will run
+          }
+        }
+      }
+
+      newPOV.pov_used = true
+    }
+
+    newPOV.alias = newPOV.pov_alias
+    newPOV.alt = newPOV.pov_alt
+    newPOV.look = newPOV.pov_look
+    newPOV.gender = newPOV.pov_gender
+    newPOV.article = newPOV.pov_article
+    newPOV.possessive = newPOV.pov_possessive
+    ]]>
+  </function>  
+
+
+
+  <function name="FinishTurn">
+    if (GetBoolean(game,"runturnscripts")) {
+      if (not GetBoolean(game, "suppressturnscripts")) {
+        RunTurnScripts
+      }
+    }
+    game.runturnscripts = false
+    game.suppressturnscripts = false
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
+  </function>  
+
+
+
+  <function name="WhereAmI" parameters="s">
+    game.questplatform = s
+  </function>
+
+  <type name="editor_object">
+    <isroom type="boolean">false</isroom>
+  </type>
+  <type name="editor_room">
+    <isroom />
+  </type>
+  <type name="editor_room_object">
+    <isroom />
+  </type>
+</library>

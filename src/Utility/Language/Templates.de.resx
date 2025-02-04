@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EditorFromLibrary" xml:space="preserve">
+    <value>Von Bibliothek {0}</value>
+  </data>
+  <data name="EditorFromLibraryCopy" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="EditorUnableToSave" xml:space="preserve">
+    <value>Die Datei konnte aufgrund des folgenden Fehlers nicht gespeichert werden:</value>
+  </data>
+  <data name="EditorNewElement" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für das neue Element '{0}' ein</value>
+  </data>
+  <data name="EditorNewObject" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für das neue Objekt ein</value>
+  </data>
+  <data name="EditorNewRoom" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für den neuen Raum ein</value>
+  </data>
+  <data name="EditorNewWalkthrough" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für den neuen Walkthrough ein</value>
+  </data>
+  <data name="EditorNewdata" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für die neue Vorlage ein</value>
+  </data>
+  <data name="EditorNewPage" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für die neue Seite ein</value>
+  </data>
+  <data name="EditorUnableToAddEmement" xml:space="preserve">
+    <value>Element kann nicht hinzugefügt werden</value>
+  </data>
+  <data name="EditorUnableToAdddata" xml:space="preserve">
+    <value>Kann keine Vorlage hinzufügen</value>
+  </data>
+  <data name="EditorSaveBeforeClosing" xml:space="preserve">
+    <value>Möchten Sie Ihre Änderungen vor dem Schließen speichern?</value>
+  </data>
+  <data name="EditorSaveBeforeLeavingCodeView" xml:space="preserve">
+    <value>Möchten Sie Ihre Änderungen speichern, bevor Sie die Codeansicht verlassen?</value>
+  </data>
+  <data name="EditorSaveBeforeEditingThisGame" xml:space="preserve">
+    <value>Möchten Sie Ihre Änderungen speichern, bevor Sie dieses Spiel in der Codeansicht bearbeiten?</value>
+  </data>
+  <data name="EditorCreateLocalCopy" xml:space="preserve">
+    <value>Erstellen Sie eine lokale Kopie von '{0}'</value>
+  </data>
+  <data name="EditorUnsavedChanges" xml:space="preserve">
+    <value>Sie haben nicht gespeicherte Änderungen.</value>
+  </data>
+  <data name="EditorModifiedOutside" xml:space="preserve">
+    <value>{0} wurde außerhalb von Quest geändert.</value>
+  </data>
+  <data name="EditorSaveGameAndClickReload" xml:space="preserve">
+    <value>Speichern Sie dieses Spiel und klicken Sie dann auf 'Neu laden', um Änderungen von der Aktualisierung der enthaltenen Bibliotheken zu übernehmen.</value>
+  </data>
+  <data name="EditorParent" xml:space="preserve">
+    <value>Überobjekt</value>
+  </data>
+  <data name="EditorNotParents" xml:space="preserve">
+    <value>(keins)</value>
+  </data>
+  <data name="EditorChangeLangRestartContinue" xml:space="preserve">
+    <value>Zur Änderung der Sprache muss Quest neu gestartet werden. Wollen Sie fortfahren?</value>
+  </data>
+  <data name="EditorBrowseFilter" xml:space="preserve">
+    <value>Quest-Spiele|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|Alle Dateien|*.*</value>
+  </data>
+  <data name="EditorUnrecognisedFileType" xml:space="preserve">
+    <value>Unbekannter Dateityp. Dieses Spiel kann nicht in Quest geladen werden.</value>
+  </data>
+  <data name="EditorSaveChangesBeforeOpening" xml:space="preserve">
+    <value>Möchten Sie Ihre Änderungen vor dem öffnen eines neuen Spiels speichern?</value>
+  </data>
+  <data name="EditorSaveChangesBeforeCreating" xml:space="preserve">
+    <value>Möchten Sie Ihre Änderungen vor dem Erstellen eines neuen Spiels speichern?</value>
+  </data>
+  <data name="EditorBrowseEditFilter" xml:space="preserve">
+    <value>Quest-Spiele (*.aslx)|*.aslx|Alle Dateien|*.*</value>
+  </data>
+  <data name="EditorIf" xml:space="preserve">
+    <value>Wenn</value>
+  </data>
+  <data name="EditorElseIf" xml:space="preserve">
+    <value>Ansonsten, wenn</value>
+  </data>
+  <data name="EditorElse" xml:space="preserve">
+    <value>Ansonsten</value>
+  </data>
+  <data name="EditorThen" xml:space="preserve">
+    <value>Dann</value>
+  </data>
+  <data name="EditorAddElseIf" xml:space="preserve">
+    <value>Ansonsten, wenn</value>
+  </data>
+  <data name="EditorAddElse" xml:space="preserve">
+    <value>Ansonsten</value>
+  </data>
+  <data name="EditorCmdDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="LauncherCreate" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="LauncherCreateNewGame" xml:space="preserve">
+    <value>Ein neues Spiel erstellen</value>
+  </data>
+  <data name="LauncherOpenExistingGame" xml:space="preserve">
+    <value>Ein existierendes Spiel öffnen</value>
+  </data>
+  <data name="LauncherReadTutorial" xml:space="preserve">
+    <value>Das Tutorial lesen</value>
+  </data>
+  <data name="LauncherGetHelpInDiscussions" xml:space="preserve">
+    <value>Im Discussions nach Hilfe suchen</value>
+  </data>
+  <data name="LauncherRecent" xml:space="preserve">
+    <value>Kürzlich geöffnet</value>
+  </data>
+  <data name="LauncherPlay" xml:space="preserve">
+    <value>Starten</value>
+  </data>
+  <data name="LauncherDownload" xml:space="preserve">
+    <value>Herunterladen</value>
+  </data>
+  <data name="LauncherDownloading" xml:space="preserve">
+    <value>Herunterladen...</value>
+  </data>
+  <data name="LauncherDownloadComplete" xml:space="preserve">
+    <value>Herunterladen komplett</value>
+  </data>
+  <data name="LauncherNotDownloaded" xml:space="preserve">
+    <value>Nicht heruntergeladen</value>
+  </data>
+  <data name="LauncherCancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="LauncherNoReviewsOrComments" xml:space="preserve">
+    <value>Keine Bewertungen oder Kommentare</value>
+  </data>
+  <data name="LauncherReviewsAndComments" xml:space="preserve">
+    <value>Bewertungen und Kommentare</value>
+  </data>
+  <data name="LauncherGetGames" xml:space="preserve">
+    <value>Spiele laden</value>
+  </data>
+  <data name="LauncherEdit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="LauncherNewVersion" xml:space="preserve">
+    <value>Neue Version verfügbar</value>
+  </data>
+  <data name="LauncherClickHereToUpdate" xml:space="preserve">
+    <value>Zum aktualisieren hier klicken</value>
+  </data>
+  <data name="EditorChkCorresponding" xml:space="preserve">
+    <value>Ausgang in entgegengesetzter Richtung erstellen</value>
+  </data>
+  <data name="EditorChooseTypeToAdd" xml:space="preserve">
+    <value>Bitte wählen Sie den hinzuzufügenden Typ aus</value>
+  </data>
+  <data name="EditorCorresponding" xml:space="preserve">
+    <value>Ein Ausgang in entgegengesetzter Richtung existiert</value>
+  </data>
+  <data name="EditorCreate" xml:space="preserve">
+    <value>Ausgang erstellen</value>
+  </data>
+  <data name="EditorCreateCorresponding" xml:space="preserve">
+    <value>Ausgang in entgegengesetzter Richtung erstellen</value>
+  </data>
+  <data name="EditorCreateExitTitle" xml:space="preserve">
+    <value>Einen Ausgang erstellen:</value>
+  </data>
+  <data name="EditorCreateLookOnly" xml:space="preserve">
+    <value>"Schau"-Richtung erstellen</value>
+  </data>
+  <data name="EditorCreateLookOnlyDesc" xml:space="preserve">
+    <value>Der Spieler kann in die Richtung schauen, aber sie nicht betreten.</value>
+  </data>
+  <data name="EditorCreateLookOnlyTitle" xml:space="preserve">
+    <value>Oder "Schau"-Richtung erstellen:</value>
+  </data>
+  <data name="EditorDirectionNoSelect" xml:space="preserve">
+    <value>Kein Ausgang ausgewählt</value>
+  </data>
+  <data name="EditorEdit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="EditorEnterNameAttribute" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für das neue Attribut ein</value>
+  </data>
+  <data name="EditorGenerate" xml:space="preserve">
+    <value>Generieren...</value>
+  </data>
+  <data name="EditorNoLinkDestinationLook" xml:space="preserve">
+    <value>schauen</value>
+  </data>
+  <data name="EditorToLabel" xml:space="preserve">
+    <value>Nach:</value>
+  </data>
+  <data name="EditorEnterNameForNewVerb" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für das neue Verb ein</value>
+  </data>
+  <data name="EditorMenuItemAdd" xml:space="preserve">
+    <value>+ addiere</value>
+  </data>
+  <data name="EditorMenuItemAnd" xml:space="preserve">
+    <value>und</value>
+  </data>
+  <data name="EditorMenuItemAttribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="EditorMenuItemClear" xml:space="preserve">
+    <value>(Löschen)</value>
+  </data>
+  <data name="EditorMenuItemDivide" xml:space="preserve">
+    <value>/ dividiere</value>
+  </data>
+  <data name="EditorMenuItemEquals" xml:space="preserve">
+    <value>= gleich als</value>
+  </data>
+  <data name="EditorMenuItemFunction" xml:space="preserve">
+    <value>Funktion</value>
+  </data>
+  <data name="EditorMenuItemGreaterThan" xml:space="preserve">
+    <value>&gt; größer als</value>
+  </data>
+  <data name="EditorMenuItemlessThan" xml:space="preserve">
+    <value>&lt; kleiner als</value>
+  </data>
+  <data name="EditorMenuItemMultiply" xml:space="preserve">
+    <value>* multipliziere</value>
+  </data>
+  <data name="EditorMenuItemNotEquals" xml:space="preserve">
+    <value>&lt;&gt; ungleich als</value>
+  </data>
+  <data name="EditorMenuItemObject" xml:space="preserve">
+    <value>Objekt</value>
+  </data>
+  <data name="EditorMenuItemOr" xml:space="preserve">
+    <value>oder</value>
+  </data>
+  <data name="EditorMenuItemSubtract" xml:space="preserve">
+    <value>- subtrahiere</value>
+  </data>
+  <data name="EditorMenuItemVariable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="EditorPleaseEnterName" xml:space="preserve">
+    <value>Bitte geben Sie den Namen für {0} ein</value>
+  </data>
+  <data name="EditorPleaseEnterNameAttribute" xml:space="preserve">
+    <value>das Attribut</value>
+  </data>
+  <data name="EditorPleaseEnterNameFunction" xml:space="preserve">
+    <value>die Funktion</value>
+  </data>
+  <data name="EditorPleaseEnterNameObject" xml:space="preserve">
+    <value>das Objekt</value>
+  </data>
+  <data name="EditorPleaseEnterNameVariable" xml:space="preserve">
+    <value>die Variable</value>
+  </data>
+  <data name="EditorToolBarAddScript" xml:space="preserve">
+    <value>Skript hinzufügen</value>
+  </data>
+  <data name="EditorToolBarCodeView" xml:space="preserve">
+    <value>Codeansicht</value>
+  </data>
+  <data name="EditorToolBarCopy" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="EditorToolBarCut" xml:space="preserve">
+    <value>Ausschneiden</value>
+  </data>
+  <data name="EditorToolBarDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="EditorToolBarMakeEditable" xml:space="preserve">
+    <value>Bearbeitbare Kopie erstellen</value>
+  </data>
+  <data name="EditorToolBarMoveDown" xml:space="preserve">
+    <value>Nach unten</value>
+  </data>
+  <data name="EditorToolBarMoveUp" xml:space="preserve">
+    <value>Nach oben</value>
+  </data>
+  <data name="EditorToolBarPaste" xml:space="preserve">
+    <value>Einfügen</value>
+  </data>
+  <data name="EditorToolBarPopOut" xml:space="preserve">
+    <value>Popout-Fenster</value>
+  </data>
+  <data name="EditorKeypromptEnterObjectName" xml:space="preserve">
+    <value>Bitte geben Sie den Objektnamen ein</value>
+  </data>
+  <data name="EditorPleaseEnterKey" xml:space="preserve">
+    <value>Bitte geben Sie einen Schlüssel ein</value>
+  </data>
+  <data name="EditorPleaseEnterValue" xml:space="preserve">
+    <value>Bitte geben Sie einen Wert ein</value>
+  </data>
+  <data name="EditorScriptAdderAdd" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="EditorScriptAdderClose" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="TypePrintMessage" xml:space="preserve">
+    <value>Text anzeigen</value>
+  </data>
+  <data name="TypeRequireAnotherObject" xml:space="preserve">
+    <value>Mit anderem Objekt kombinieren</value>
+  </data>
+  <data name="TypeRunScript" xml:space="preserve">
+    <value>Skript starten</value>
+  </data>
+  <data name="EditorBrowseButton" xml:space="preserve">
+    <value>Durchsuchen...</value>
+  </data>
+  <data name="EditorCancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="EditorClearAllItems" xml:space="preserve">
+    <value>Alle Einträge löschen</value>
+  </data>
+  <data name="EditorDeleteDownloadedFile" xml:space="preserve">
+    <value>Heruntergeladene Datei löschen</value>
+  </data>
+  <data name="EditorFileNone" xml:space="preserve">
+    <value>Ohne</value>
+  </data>
+  <data name="EditorFilterShowLibraryElements" xml:space="preserve">
+    <value>Bibliothekselemente anzeigen</value>
+  </data>
+  <data name="EditorImageSelectionWindowTitle" xml:space="preserve">
+    <value>Bild auswählen</value>
+  </data>
+  <data name="EditorNewFileButton" xml:space="preserve">
+    <value>Neu...</value>
+  </data>
+  <data name="EditorNewTemplate" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für die neue Vorlage ein</value>
+  </data>
+  <data name="EditorOkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="EditorRemoveThisItem" xml:space="preserve">
+    <value>Diesen Eintrag löschen</value>
+  </data>
+  <data name="EditorScriptAdderWindowTitle" xml:space="preserve">
+    <value>Skript hinzufügen</value>
+  </data>
+  <data name="EditorTextProcessorHelp" xml:space="preserve">
+    <value>Hilfe zum Text-Prozessor</value>
+  </data>
+  <data name="EditorKeypromptEnterExitName" xml:space="preserve">
+    <value>Bitte geben Sie den Namen des Ausgangs ein</value>
+  </data>
+  <data name="EditorMenuItemThis" xml:space="preserve">
+    <value>Dieses Objekt</value>
+  </data>
+  <data name="EditorMenuItemFalse" xml:space="preserve">
+    <value>Falsch</value>
+  </data>
+  <data name="EditorMenuItemTrue" xml:space="preserve">
+    <value>Wahr</value>
+  </data>
+  <data name="FindControlchkBoxRegex" xml:space="preserve">
+    <value>Reguläre Suche</value>
+  </data>
+  <data name="FindControlcmdClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="FindControlcmdFind" xml:space="preserve">
+    <value>Finde nächstes</value>
+  </data>
+  <data name="FindControlcmdReplace" xml:space="preserve">
+    <value>Ersetze</value>
+  </data>
+  <data name="FindControlcmdReplaceAll" xml:space="preserve">
+    <value>Ersetze alles</value>
+  </data>
+  <data name="FindControllblFind" xml:space="preserve">
+    <value>Finde:</value>
+  </data>
+  <data name="FindControllblReplace" xml:space="preserve">
+    <value>Ersetze mit:</value>
+  </data>
+  <data name="EditorReplacedOccurrences" xml:space="preserve">
+    <value>{0} Vorkommen ersetzt.</value>
+  </data>
+  <data name="EditorTextNotFound" xml:space="preserve">
+    <value>{0} wurde nicht gefunden.</value>
+  </data>
+  <data name="EditorReload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="EditorChooseWalkthrough" xml:space="preserve">
+    <value>Bitte wählen Sie einen Walkthrough aus:</value>
+  </data>
+</root>

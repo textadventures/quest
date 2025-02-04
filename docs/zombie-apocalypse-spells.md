@@ -5,7 +5,7 @@ title: Spells for the Zombie Apocalypse
 
 
 
-_Why are there spells in a zombie apocalyse? No one knows, but it is a fact._
+_Why are there spells in a zombie apocalypse? No one knows, but it is a fact._
 
 This is an extension to the two part series on how to do combat on the web version of Quest. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest code, at least to be able to copy-and-paste it).
 

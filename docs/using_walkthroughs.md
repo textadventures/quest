@@ -33,7 +33,7 @@ Creating sub-walkthroughs
 
 Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
 
-Currently you need to go into Full Code View to create a sub-walkthough.
+Currently you need to go into Full Code View to create a sub-walkthrough.
 
 
 Handling menus and questions
@@ -73,3 +73,34 @@ For example, in the walkthrough below, the assert expression checks that the "ta
      <walkthrough>
 
 If a walkthrough assert expression returns false, the walkthrough is immediately stopped.
+
+Displaying runtime
+------------------
+
+As of Quest 5.9 you can include the line
+
+     runtime:
+
+anywhere in the walkthrough to display the total runtime of the walkthrough. The command can also be used several times in a walkthrough.
+
+Output speed
+------------
+
+From Quest 5.9 you can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
+
+     <walkthrough name="main">
+       <steps>
+         look 
+         get apple
+         delay:1000
+         examine apple
+         north
+         look
+         delay:200
+         examine horse
+         use apple with horse
+         runtime:
+       <steps>
+     <walkthrough>
+
+The command can also be used several times in a walkthrough if certain areas are to be displayed with their own speed.

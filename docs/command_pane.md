@@ -27,7 +27,7 @@ JS.setCommands ("Look;Wait;Sit", "blue")
 
 Go in game, and test it works!
 
-You can change the commands at any time in your game, just be using the `JS.setCommands` function again. If the player does sit, you might want to have a line in the SIT command like this, so now there will be a "Stand" commmand, and not "Sit":
+You can change the commands at any time in your game, just be using the `JS.setCommands` function again. If the player does sit, you might want to have a line in the SIT command like this, so now there will be a "Stand" command, and not "Sit":
 
 ```
 JS.setCommands ("Look;Wait;Stand", "blue")

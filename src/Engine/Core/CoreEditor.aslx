@@ -1,0 +1,305 @@
+﻿<library type="editor">
+
+  <implied element="control" property="height" type="int"/>
+  <implied element="control" property="width" type="int"/>
+  <implied element="control" property="types" type="simplestringdictionary"/>
+  <implied element="control" property="filters" type="simplestringdictionary"/>
+  <implied element="control" property="editors" type="simplestringdictionary"/>
+  <implied element="control" property="minimum" type="int"/>
+  <implied element="control" property="maximum" type="int"/>
+  <implied element="control" property="mustinherit" type="simplestringlist"/>
+  <implied element="control" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="parent" type="object"/>
+
+  <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>
+  <template name="HTMLColorNames">AliceBlue;AntiqueWhite;Aqua;Aquamarine;Azure;Beige;Bisque;Black;BlanchedAlmond;Blue;BlueViolet;Brown;BurlyWood;CadetBlue;Chartreuse;Chocolate;Coral;CornflowerBlue;Cornsilk;Crimson;Cyan;DarkBlue;DarkCyan;DarkGoldenRod;DarkGray;DarkGrey;DarkGreen;DarkKhaki;DarkMagenta;DarkOliveGreen;Darkorange;DarkOrchid;DarkRed;DarkSalmon;DarkSeaGreen;DarkSlateBlue;DarkSlateGray;DarkSlateGrey;DarkTurquoise;DarkViolet;DeepPink;DeepSkyBlue;DimGray;DimGrey;DodgerBlue;FireBrick;FloralWhite;ForestGreen;Fuchsia;Gainsboro;GhostWhite;Gold;GoldenRod;Gray;Grey;Green;GreenYellow;HoneyDew;HotPink;IndianRed ;Indigo ;Ivory;Khaki;Lavender;LavenderBlush;LawnGreen;LemonChiffon;LightBlue;LightCoral;LightCyan;LightGoldenRodYellow;LightGray;LightGrey;LightGreen;LightPink;LightSalmon;LightSeaGreen;LightSkyBlue;LightSlateGray;LightSlateGrey;LightSteelBlue;LightYellow;Lime;LimeGreen;Linen;Magenta;Maroon;MediumAquaMarine;MediumBlue;MediumOrchid;MediumPurple;MediumSeaGreen;MediumSlateBlue;MediumSpringGreen;MediumTurquoise;MediumVioletRed;MidnightBlue;MintCream;MistyRose;Moccasin;NavajoWhite;Navy;OldLace;Olive;OliveDrab;Orange;OrangeRed;Orchid;PaleGoldenRod;PaleGreen;PaleTurquoise;PaleVioletRed;PapayaWhip;PeachPuff;Peru;Pink;Plum;PowderBlue;Purple;Red;RosyBrown;RoyalBlue;SaddleBrown;Salmon;SandyBrown;SeaGreen;SeaShell;Sienna;Silver;SkyBlue;SlateBlue;SlateGray;SlateGrey;Snow;SpringGreen;SteelBlue;Tan;Teal;Thistle;Tomato;Turquoise;Violet;Wheat;White;WhiteSmoke;Yellow;YellowGreen</template>
+
+  <type name="editor_player">
+    <feature_player />
+  </type>
+  
+  <editor name="_RichTextControl_TextProcessorCommands">
+    <data type="list">
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorBold]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;b&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/b&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;b&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorItalic]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;i&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/i&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;i&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorUnderline]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;u&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/u&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;u&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorOnce]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{once:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{once}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorObjectLink]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{object:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{object}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>objects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorCommandLink]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{command:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{command}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorExit]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{exit:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{exit}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>exits</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorIf]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>object.attribute=value:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorIfNot]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if not </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>object.attribute=value:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if not}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{here </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{here}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorNotHere]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{nothere </value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{nothere}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>hereobjects</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorRandomText]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{random:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{random}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>[EditorTextProcessorImage]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{img:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{img}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>images</value>
+        </item>
+        <item>
+          <key>extensions</key>
+          <value>[EditorImageFormats]</value>
+        </item>
+      </value>
+    </data>
+  </editor>
+
+  <include ref="CoreEditorGame.aslx"/>
+  <include ref="CoreEditorObject.aslx"/>
+  <include ref="CoreEditorExit.aslx"/>
+  <include ref="CoreEditorCommand.aslx"/>
+  <include ref="CoreEditorVerb.aslx"/>
+  <include ref="CoreEditorScripts.aslx"/>
+  <include ref="CoreEditorExpressions.aslx"/>
+  <include ref="CoreEditorFunction.aslx"/>
+  <include ref="CoreEditorType.aslx"/>
+  <include ref="CoreEditorElements.aslx"/>
+  <include ref="CoreEditorWalkthrough.aslx"/>
+  <include ref="CoreEditorIncludedLibrary.aslx"/>
+  <include ref="CoreEditorTemplate.aslx"/>
+  <include ref="CoreEditorDynamicTemplate.aslx"/>
+  <include ref="CoreEditorJavascript.aslx"/>
+  <include ref="CoreEditorTimer.aslx"/>
+  <include ref="CoreEditorTurnScript.aslx"/>
+  <include ref="CoreEditorAnnotation.aslx"/>
+
+</library>

@@ -1,0 +1,1030 @@
+<library>
+
+  <!-- lookat modified by KV to include timesexamined attribute -->
+  <command name="lookat" template="lookat">
+    <![CDATA[
+    if (GetBoolean(object, "hidechildren")) {
+      object.hidechildren = false
+    }
+    
+    if (TypeOf(object, "look") = "script") {
+      if (not HasAttribute(object,"timesexamined")){
+        object.timesexamined = 0
+      }
+      do (object, "look")
+      object.timesexamined = object.timesexamined + 1
+    }
+    else {
+      lookdesc = ""
+      if (HasString(object, "look")) {
+        lookdesc = object.look
+      }
+      
+      if (LengthOf(lookdesc) = 0) {
+        lookdesc = Template("DefaultObjectDescription")
+      }
+      
+      if (GetBoolean(object, "switchedon")) {
+        if (HasString(object, "switchedondesc")) {
+          lookdesc = lookdesc + " " + object.switchedondesc
+        }
+      }
+      else {
+        if (HasString(object, "switchedoffdesc")) {
+          lookdesc = lookdesc + " " + object.switchedoffdesc
+        }
+      }
+      
+      isDark = CheckDarkness()
+      if (isDark and not GetBoolean(object, "lightsource")) {
+        lookdesc = DynamicTemplate("LookAtDarkness", object)
+      }
+      else {
+        if (not HasAttribute(object,"timesexamined")){
+          object.timesexamined = 0
+        }
+        object.timesexamined = object.timesexamined + 1
+      }
+      msg (lookdesc)
+    }
+    
+    ListObjectContents (object)
+    ]]>
+  </command>
+
+  <function name="ListObjectContents" parameters="object">
+    <![CDATA[
+    if ((GetBoolean(object, "isopen") or GetBoolean(object, "transparent")) and GetBoolean(object, "listchildren")) {
+      if (GetBoolean(object, "hidechildren")) {
+        object.hidechildren = false
+      }
+      if (HasString(object, "listchildrenprefix")) {
+        listprefix = object.listchildrenprefix
+      }
+      else {
+        listprefix = DynamicTemplate("ObjectContains", object)
+      }
+      list = FormatObjectList(listprefix, object, Template("And"), ".")
+      if (list <> "") {
+        msg (list)
+      }
+    }
+    ]]>
+  </function>
+
+  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
+  <command name="take" template="take">
+    <allow_all />
+    <scope>notheld</scope>
+    <script>
+      took_something = false
+      foreach (obj, object) {
+        // if this is multiple then we should skip anything in a container that has already been taken
+        // (always earlier in the list) and anything held by an NPC.
+        // Scenery and anything flagged "not_all" will already be excluded
+        if (not multiple or (not Contains(game.pov, obj.parent) and not DoesInherit(obj.parent, "npc_type"))) {
+          DoTake (obj, multiple)
+          took_something = true
+        }
+      }
+      if (multiple and not took_something) {
+        msg (Template("NothingToTake"))
+      }
+    </script>
+  </command>
+  
+  <function name="DoTake" parameters="object, ismultiple"><![CDATA[
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    if (object.parent = game.pov) {
+      msg (prefix + DynamicTemplate("AlreadyTaken", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (BlockingMessage(object, prefix))
+    }
+    else if (not TestTakeGlobal(object, prefix)) {
+      // Do nothing, already handled
+    }
+    else if (not CheckLimits(object, prefix)) {
+      // Do nothing, already handled
+    }
+    else {
+      found = true
+      takemsg = object.takemsg
+      switch (TypeOf(object, "take")) {
+        case ("script") {
+          if (ismultiple) {
+            OutputTextNoBr (prefix)
+          }
+          do (object, "take")
+          takemsg = ""
+        }
+        case ("boolean") {
+          if (object.take = true) {
+            object.parent = game.pov
+            if (takemsg = null) {
+              takemsg = DynamicTemplate("TakeSuccessful", object)
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = game.pov
+          takemsg = object.take
+        }
+        default {
+          found = false
+        }
+      }
+      if (not found and takemsg = null) {
+        takemsg = DynamicTemplate("TakeUnsuccessful", object)
+      }
+      if (LengthOf(takemsg) > 0) {
+        msg (prefix + takemsg)
+      }
+      if (HasScript(object, "ontake")) {
+        do (object, "ontake")
+      }
+      if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+        object.scenery = false
+      }
+    }
+  ]]></function>
+
+  <function name="CheckLimits" parameters="object, prefix" type="boolean"><![CDATA[
+    volume = 0
+    foreach (obj, GetAllChildObjects(game.pov)) {
+      if (HasInt(obj, "volume")) {
+        volume = volume + obj.volume
+      }
+    }
+    if (not Contains(game.pov, object)) {
+      volume = volume + GetVolume(object,true)
+    }
+    if (HasInt(game.pov, "maxvolume")) {
+      if (volume > game.pov.maxvolume) {
+        if (HasString(game.pov, "containerfullmessage")) {
+          msg (prefix + game.pov.containerfullmessage)
+        }
+        else {
+          msg (prefix + DynamicTemplate("FullInventory", object))
+        }
+        return (false)
+      }
+    }
+    children = GetDirectChildren(game.pov)
+    if (HasInt(game.pov, "maxobjects")) {
+      if (game.pov.maxobjects > 0) {
+        if (ListCount(children) >= game.pov.maxobjects) {
+          if (HasString(game.pov, "containermaxobjects")) {
+            msg (prefix + game.pov.containermaxobjects)
+          }
+          else {
+            msg (prefix + DynamicTemplate("MaxObjectsInInventory", object))
+          }
+        }
+      }
+    }
+    return (true)
+  ]]></function>
+
+  <function name="TestTakeGlobal" parameters="object, prefix" type="boolean">
+    if (HasString(game.pov, "notallowedtotake")) {
+      msg(game.pov.notallowedtotake)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
+  <command name="drop" template="drop">
+    <allow_all />
+    <scope>inventory</scope>
+    <script>
+      if (multiple and ListCount(object) = 0) {
+        msg(Template("NotCarryingAnything"))
+      }
+      else {
+        foreach (obj, object) {
+          if (not multiple or Contains(game.pov, obj)) {
+            DoDrop (obj, multiple)
+          }
+        }
+      }
+    </script>
+  </command>
+
+  <function name="DoDrop" parameters="object, ismultiple">
+    prefix = ""
+    oldparent = object.parent
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+
+    if (not ListContains(ScopeInventory(), object)) {
+      msg (prefix + DynamicTemplate("NotCarrying", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (BlockingMessage(object, prefix))
+    }
+    else if (not TestDropGlobal(object, prefix)) {
+      // Do nothing, already handled
+    }
+    else {
+      found = true
+      dropmsg = object.dropmsg
+      if (HasObject(game.pov.parent, "dropdestination")) {
+        destination = game.pov.parent.dropdestination
+      }
+      else {
+        destination = game.pov.parent
+      }
+      
+      switch (TypeOf(object, "drop")) {
+        case ("script") {
+          if (ismultiple) {
+            OutputTextNoBr (prefix)
+          }
+          d = NewDictionary()
+          dictionary add (d, "destination", destination)
+          do (object, "drop", d)
+          dropmsg = ""
+        }
+        case ("boolean") {
+          if (object.drop = true) {
+            object.parent = destination
+            if (dropmsg = null) {
+              dropmsg = DynamicTemplate("DropSuccessful", object)
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = game.pov.parent
+          dropmsg = object.drop
+        }
+        default {
+          found = false
+        }
+      }
+      
+      if (not found and dropmsg = null) dropmsg = DynamicTemplate("DropUnsuccessful", object)
+      
+      if (LengthOf(dropmsg) > 0) {
+        msg (prefix + dropmsg)
+      }
+      
+      if (HasScript(object, "ondrop")) {
+         do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
+      }
+    }
+  </function>
+
+  <function name="TestDropGlobal" parameters="object, prefix" type="boolean">
+    if (HasString(game.pov, "notallowedtodrop")) {
+      msg(game.pov.notallowedtodrop)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
+  <function name="CreateUseMenuList" parameters="object" type="objectlist">
+    objectlist = NewObjectList()
+    objectlist = ScopeReachableInventory()
+    objectlist = ListCombine (objectlist, ScopeReachableNotHeld())
+    excludelist = NewObjectList()
+    list add (excludelist, game.pov)
+    list add (excludelist, object)
+    candidates = NewObjectList()
+    candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+    return (candidates)
+  </function>
+
+  <command name="use" template="use"><![CDATA[
+    if (HasScript(object, "use")) {
+      do (object, "use")
+    }
+    else {
+      if (GetBoolean(object, "use")) {
+        candidates = CreateUseMenuList (object)
+        if (ListCount(candidates) = 0) {
+          msg (Template("NoObjectsAvailable"))
+        }
+        else {
+          game.pov.usemenuobject = object
+          if (HasString(object, "usemenuprompt")) {
+            menucaption = object.usemenuprompt
+          }
+          else {
+            menucaption = Template("UseOnMenu")
+          }
+          ShowMenu (menucaption, candidates, true) {
+            if (result <> null) {
+              HandleUseOn (game.pov.usemenuobject, GetObject(result))
+              game.pov.usemenuobject = null
+            }
+          }
+        }
+      }
+      else {
+        msg (DynamicTemplate("CantUse", object))
+      }
+    }
+  ]]></command>
+  
+  <command name="undo">
+    <pattern type="string">[undo]</pattern>
+    <script>
+      undo
+      game.suppressturnscripts = true
+      if (GetBoolean (game, "gridmap")){
+        Grid_DrawPlayerInRoom (game.pov.parent)
+      }
+    </script>
+    <isundo/>
+  </command>
+
+  
+  <command name="inventory" pattern="[inventory]">
+    list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
+    if (list = "") {
+      msg (Template("NotCarryingAnything"))
+    }
+    else {
+      msg (list)
+    }
+  </command>
+  <command name="look" pattern="[look]">
+    ShowRoomDescription
+  </command>
+
+  <command name="lookdir" pattern="[lookdir]">
+   <![CDATA[
+    if (HasScript(exit, "look")) {
+        do (exit, "look")
+    }
+    else {
+      message = DynamicTemplate("YouLooking",exit.alias)
+      if (HasString(exit, "look")){
+        if (exit.look <> "") {
+          message = exit.look
+        }
+      }
+      if (exit.locked) {
+        if (HasString(exit,"lockmessage")) {
+          lockmessage = exit.lockmessage
+        }
+        else {
+          lockmessage = Template("LockedExit")
+        }
+        msg (message+" "+lockmessage)
+      } 
+      else {
+        msg (message)
+      }
+    }
+   ]]>
+  </command>
+
+  <command name="quit" pattern="[quit]">
+    finish
+  </command>
+
+  <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
+    if (exit.visible) {
+      if (exit.locked) {
+        msg (exit.lockmessage)
+      }
+      else if (not TestExitGlobal(exit)) {
+        // Do nothing, already handled
+      }
+      else if (exit.runscript) {
+        if (HasScript(exit, "script")) {
+          do (exit, "script")
+        }
+      }
+      else if (exit.lookonly) {
+         msg (Template("UnresolvedLocation"))
+      } 
+      else {
+        if (HasString(exit, "message")) {
+          if (not exit.message = "") {
+            if (game.clearscreenonroomenter) {
+              game.currentexitmessage = exit.message
+            }
+            else {
+              msg(exit.message)
+            }
+          }
+        }
+        game.pov.parent = exit.to
+      }   
+    } 
+    else {   
+      msg (Template("UnresolvedLocation"))
+    }
+  </command>
+
+  <function name="TestExitGlobal" parameters="exit" type="boolean">
+    if (HasString(game.pov, "notallowedtoexit")) {
+      msg(game.pov.notallowedtoexit)
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  </function>
+  
+  <function name="TryOpenClose" parameters="doopen, object">
+    if (doopen) {
+      action = "open"
+      scriptaction = "openscript"
+    }
+    else {
+      action = "close"
+      scriptaction = "closescript"
+    }
+
+    if (not ListContains(ScopeReachable(), object)) {
+      msg (BlockingMessage(object, ""))
+    }
+    else {
+      found = false
+      
+      if (GetBoolean(object, action)) {
+        if (doopen) {
+          if (object.isopen) {
+            msg (DynamicTemplate("AlreadyOpen", object))
+          }
+          else {
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              OpenObject (object)
+            }
+          }
+        }
+        else {
+          if (not object.isopen) {
+            msg (DynamicTemplate("AlreadyClosed", object))
+          }
+          else {
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              CloseObject (object)
+            }
+          }
+        }
+      }
+      else {
+        if (doopen) {
+          msg (DynamicTemplate("CantOpen", object))
+        }
+        else {
+          msg (DynamicTemplate("CantClose", object))
+        }
+      }
+    }
+  </function>
+
+  <function name="OpenObject" parameters="object">
+    if (HasString(object, "openmsg")) {
+      msg (object.openmsg)
+    }
+    else {
+      msg (DynamicTemplate("OpenSuccessful", object))
+    }
+    object.isopen = true
+    ListObjectContents (object)
+  </function>
+
+  <function name="CloseObject" parameters="object">
+    if (HasString(object, "closemsg")) {
+      msg (object.closemsg)
+    }
+    else {
+      msg (DynamicTemplate("CloseSuccessful", object))
+    }
+    object.isopen = false
+  </function>
+
+  <command name="open" template="open">
+    TryOpenClose(true, object)
+  </command>
+
+  <command name="close" template="close">
+    TryOpenClose(false, object)
+  </command>
+
+  <command name="put" pattern="[put]">
+    <scope>object1=inventory|object2=container</scope>
+    <script>
+      // put object1 in/on object 2
+      canbedropped = true
+      if (HasBoolean(object1, "drop")) {
+        if (not object1.drop) {
+          canbedropped = false
+        }
+      }
+      if (object1.parent = object2) {
+        msg (DynamicTemplate("AlreadyThere", object1))
+      }
+      // must be carrying object1
+      else if (not ListContains(ScopeInventory(), object1)) {
+        msg (DynamicTemplate("NotCarrying", object1))
+      }
+      // item cannot be dropped
+      else if (not canbedropped) {
+        msg (DynamicTemplate("ObjectCannotBeStored", object1))
+      }
+      // object1 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object1)) {
+        msg (BlockingMessage(object1, ""))
+      }
+      // object2 must not be inside a closed container
+      else if (not ListContains(ScopeReachable(), object2)) {
+        msg (BlockingMessage(object2, ""))
+      }
+      // object2 must be an open container or surface
+      else if (not object2.container) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not object2.isopen) {
+        msg (DynamicTemplate("ObjectNotOpen", object2))
+      }
+      // object1 is inside object 2
+      else if (ListContains(ListParents(object2), object1)) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not TestDropGlobal(object1, "")) {
+        // Do nothing, already handled
+      }
+      else {
+        if (GetBoolean(object2, "hidechildren")) {
+          object2.hidechildren = false
+        }
+
+        params = NewDictionary()
+        dictionary add (params, "object", object1)
+        dictionary add (params, "destination", object2)
+        if (HasScript(object2, "addscript")) {
+          do (object2, "addscript", params)
+        }
+        else if (HasScript(object1, "drop")) {
+          do (object1, "drop", params)
+        }
+        else {
+          object1.parent = object2
+          msg (Template("Done"))
+        }
+      }
+    </script>
+  </command>
+
+  <command name="removefrom" pattern="[removefrom]">
+    <scope>object1=contents|object2=container</scope>
+    <script>
+      // remove object1 from object2
+      // if object2 does indeed contain object1, this is a synonym for "take object1"
+      
+      if (not Contains(object2, object1)) {
+        msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
+      }
+      else {
+        DoTake (object1, false)
+      }
+    </script>
+  </command>
+
+  <function name="CreateGiveMenuList" parameters="object" type="objectlist">
+    objectlist = NewObjectList()
+    objectlist = ScopeReachableInventory()
+    objectlist = ListCombine (objectlist, ScopeReachableNotHeld())
+    excludelist = NewObjectList()
+    list add (excludelist, game.pov)
+    list add (excludelist, object)
+    candidates = NewObjectList()
+    candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+    return (candidates)
+  </function>
+
+  <command name="givesingle" template="givesingle">
+    <![CDATA[
+    if (HasScript(object, "givesingle")) {
+      do (object, "givesingle")
+    }
+    else {
+      if (GetBoolean(object, "givesingle")) {
+        candidates = CreateGiveMenuList (object)
+        if (ListCount(candidates) = 0) {
+          msg (Template("NoObjectsAvailable"))
+        }
+        else {
+          game.pov.givemenuobject = object
+          if (HasString(object, "givemenuprompt")) {
+            menucaption = object.givemenuprompt
+          }
+          else {
+            menucaption = Template("GiveToMenu")
+          }
+          ShowMenu (menucaption, candidates, true) {
+            if (result <> null) {
+              HandleGiveTo (game.pov.givemenuobject, GetObject(result))
+              game.pov.givemenuobject = null
+            }
+          }
+        }
+      }
+      else {
+        msg (DynamicTemplate("CantGive", object))
+      }
+    }
+  ]]>
+  </command>
+
+  <command name="give" pattern="[give]">
+    HandleGiveTo (object1, object2)
+  </command>
+
+  <function name="HandleGiveTo" parameters="object1, object2">
+    handled = false
+    if (not TestDropGlobal(object1, "")) {
+      handled = true
+    }
+    else if (HasString(object2, "give")) {
+      msg (object2.give)
+      handled = true
+    }
+    else if (TypeOf(object2, "give") = "scriptdictionary") {
+      if (DictionaryContains(object2.give, object1.name)) {
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.give, object1.name), parameters)
+        handled = true
+      }
+      if (not handled) {
+        if (HasScript(object2, "giveanything")) {
+          // TO DO: Would be better to use a delegate for giveanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "giveanything", parameters)
+          handled = true
+        }
+      }
+    }
+    
+    if (not handled) {
+      if (HasString(object1, "giveto")) {
+        msg (object1.giveto)
+        handled = true
+      }
+      else if (TypeOf(object1, "giveto") = "scriptdictionary") {
+        if (DictionaryContains(object1.giveto, object2.name)) {
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.giveto, object2.name), parameters)
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "givetoanything")) {
+            // TO DO: Would be better to use a delegate for givetoanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "givetoanything", parameters)
+            handled = true
+          }
+        }
+      }
+    }
+    
+    if (not handled) {
+      msg (DynamicTemplate("DefaultGive", object2, object1))
+    }
+  </function>
+  
+  <command name="useon" pattern="[useon]">
+    HandleUseOn (object1, object2)
+  </command>
+
+  <function name="HandleUseOn" parameters="object1, object2">
+    handled = false
+    if (HasString(object2, "useon")) {
+      msg (object2.useon)
+      handled = true
+    }
+    else if (TypeOf(object2, "useon") = "scriptdictionary") {
+      if (DictionaryContains(object2.useon, object1.name)) {
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.useon, object1.name), parameters)
+        handled = true
+      }
+      else {
+        if (HasScript(object2, "useanything")) {
+          // TO DO: Would be better to use a delegate for useanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "useanything", parameters)
+          handled = true
+        }
+      }
+    }
+    
+    if (not handled) {
+      if (HasString(object1, "selfuseon")) {
+        msg (object1.selfuseon)
+        handled = true
+      }
+      else if (TypeOf(object1, "selfuseon") = "scriptdictionary") {
+        if (DictionaryContains(object1.selfuseon, object2.name)) {
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name), parameters)
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "selfuseanything")) {
+            // TO DO: Would be better to use a delegate for selfuseanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "selfuseanything", parameters)
+            handled = true
+          }
+        }
+      }
+    }
+    
+    if (not handled) {
+      msg (DynamicTemplate("DefaultUseOn", object2, object1))
+    }
+  </function>
+
+  <command name="ask" pattern="[ask]">
+    DoAskTell (object, text, "ask", "askdefault", "DefaultAsk")
+  </command>
+
+  <command name="tell" pattern="[tell]">
+    DoAskTell (object, text, "tell", "telldefault", "DefaultTell")
+  </command>
+
+  <command name="tellto" pattern="[tellto]">
+    DoAskTell (object, text, "tellto", "telltodefault", "DefaultTellTo")
+  </command>
+
+  <command name="alttellto" pattern="[alttellto]">
+    DoAskTell (object, text, "tellto", "telltodefault", "DefaultTellTo")
+  </command>
+
+  <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate">
+    <![CDATA[
+    handled = false
+    
+    maxstrength = 0
+    match = null
+    
+    text = LCase(text)
+    
+    if (TypeOf(object, property) = "scriptdictionary") {
+      dictionary = GetAttribute(object, property)
+      foreach (keywords, dictionary) {
+        strength = GetKeywordsMatchStrength(LCase(keywords), text)
+        if (strength >= maxstrength and strength>0) {
+          match = ScriptDictionaryItem(dictionary, keywords)
+          maxstrength = strength
+        }
+      }
+      
+      if (match <> null) {
+        parameters = NewObjectDictionary()
+        dictionary add(parameters, "this", object)
+        invoke (match, parameters)
+        handled = true
+      }
+    }
+    
+    if (not handled) {
+      if (HasScript(object, defaultscript)) {
+        d = NewDictionary()
+        dictionary add(d, "text", text)
+        do (object, defaultscript, d)
+      } else {
+        msg (DynamicTemplate(defaulttemplate, object))
+      }
+    }
+    ]]>    
+  </function>
+
+  <function name="GetKeywordsMatchStrength" parameters="keywords, input" type="int">
+    // Keywords is the subject. We split it into individual words, and then see how well
+    // the words in the input match the keywords.
+    
+    keywordlist = Split(keywords, " ")
+    inputlist = Split(input, " ")
+    
+    strength = 0
+    
+    foreach (word, inputlist) {
+      foreach (keyword, keywordlist) {
+        if (StartsWith(word, keyword)) {
+          strength = strength + LengthOf(keyword)
+        }
+      }
+    }
+    
+    return (strength)
+  </function>
+
+  <command name="oops" pattern="[oops]">
+    <isoops/>
+    <script><![CDATA[
+      hasoops = false
+      if (HasAttribute(game, "unresolvedcommand")) {
+        if (game.unresolvedcommand <> null) {
+          hasoops = true
+        }
+      }
+      if (not hasoops) {
+        msg (Template("DefaultOops"))
+      }
+      else {
+        dictionary remove (game.unresolvedcommandvarlist, game.unresolvedcommandkey)
+        dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
+        HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
+      }
+      game.suppressturnscripts = true
+    ]]></script>
+  </command>
+
+  <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
+       as we do here e.g. to prevent a clash with the "sit" command -->
+  <verb template="speakto" property="speak" response="DefaultSpeakTo"/>
+  <verb template="buy" property="buy" response="DefaultBuy"/>
+  <verb template="climb" property="climb" response="DefaultClimb"/>
+  <verb template="drink" property="drink" response="DefaultDrink"/>
+  <verb template="eat" property="eat" response="DefaultEat"/>
+  <verb name="enter" template="enter" property="enterverb" displayverb="[enter]" response="DefaultEnter"/>
+  <verb template="hit" property="hit" response="DefaultHit"/>
+  <verb template="kill" property="kill" response="DefaultKill"/>
+  <verb template="kiss" property="kiss" response="DefaultKiss"/>
+  <verb template="knock" property="knock" response="DefaultKnock"/>
+  <verb template="lick" property="lick" response="DefaultLick"/>
+  <verb name="lieon" template="lie" property="lie" response="DefaultLie"/>
+  <verb name="listento" template="listento" property="listen" response="DefaultListenTo"/>
+  <verb template="lock" property="lock" response="DefaultLock"/>
+  <verb template="move" property="move" response="DefaultMove"/>
+  <verb template="pull" property="pull" response="DefaultPull"/>
+  <verb template="push" property="push" response="DefaultPush"/>
+  <verb template="read" property="read" response="DefaultRead"/>
+  <verb template="search" property="search" response="DefaultSearch"/>
+  <verb template="show" property="show" response="DefaultShow"/>
+  <verb name="siton" template="sit" property="sit" response="DefaultSit"/>
+  <verb template="smell" property="smell" response="DefaultSmell"/>
+  <verb template="taste" property="taste" response="DefaultTaste"/>
+  <verb template="throw" property="throw" response="DefaultThrow"/>
+  <verb template="tie" property="tie" response="DefaultTie"/>
+  <verb template="touch" property="touch" response="DefaultTouch"/>
+  <verb template="turnon" property="turnon" response="DefaultTurnOn"/>
+  <verb template="turnoff" property="turnoff" response="DefaultTurnOff"/>
+  <verb template="turn" property="turn" response="DefaultTurn"/>
+  <verb template="unlock" property="unlock" response="DefaultUnlock"/>
+  <verb template="untie" property="untie" response="DefaultUntie"/>
+
+  <command name="listen" pattern="[listen]">msg (Template("DefaultListen"))</command>
+  <command name="jump" pattern="[jump]">msg (Template("DefaultJump"))</command>
+  <command name="sit" pattern="[sitdown]">msg (Template("DefaultSitDown"))</command>
+  <command name="lie" pattern="[liedown]">msg (Template("DefaultLieDown"))</command>
+  <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
+  <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
+  <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
+  
+  <!-- Modified to suppress turn scripts -->
+  <command name="help" pattern="[help]">
+    <script>
+      msg (Template("DefaultHelp"))
+      game.suppressturnscripts = true
+    </script>
+  </command>
+
+  <command name="save">
+    <pattern type="string">^save$</pattern>
+    <script>
+      request(RequestSave, "")
+      SuppressTurnscripts
+    </script>
+  </command>
+  
+  <!-- added by KV -->
+
+  <command name="version_cmd" pattern="[version_cmd]">
+    <script><![CDATA[
+      s = "<b>TITLE: </b>" + game.gamename + "<br/>"
+      if (HasAttribute (game, "author")) {
+        s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+      }
+      s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+      s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
+      s = s + "<br/>"
+      msg (s)
+      game.suppressturnscripts = true
+    ]]></script>
+  </command>
+
+  <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
+    <script>
+      if (not GetBoolean(game, "notranscript")){
+        JS.showTranscript ()
+      }
+      else {
+        msg (Template("NoTranscriptFeature"))
+      }
+      SuppressTurnscripts
+    </script>
+  </command>
+
+  <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
+    <script>
+      <![CDATA[
+      if (not GetBoolean(game, "notranscript")) {
+        if (not GetBoolean(game,"savetranscript")) {
+          if (GetBoolean(game,"showcommandbar")){
+            msg (Template("TranscriptEnterFilename"))
+            JS.loadTranscriptNameInputVal()
+            get input {
+              filename = Trim(result)
+              InitiateTranscript(filename)
+            }
+          }
+          else {
+            filename = GetWindowsSafeName(game.gamename)
+            InitiateTranscript(filename)
+          }
+        }
+        else {
+          msg (Template("TranscriptAlreadyEnabled"))
+        }
+      }
+      else {
+        msg (Template("NoTranscriptFeature"))
+      }
+      SuppressTurnscripts
+    ]]>
+    </script>
+  </command>
+
+  <command name="transcript_off_cmd" pattern="[transcript_off_cmd]">
+    <script>
+      if (not GetBoolean(game, "notranscript")) {
+        if (GetBoolean(game,"savetranscript")) {
+          DisableTranscript
+          msg (Template("TranscriptDisabled"))
+        }
+        else {
+           msg (Template("TranscriptAlreadyDisabled"))
+        }
+      }
+      else {
+        msg (Template("NoTranscriptFeature"))
+      }
+      SuppressTurnscripts
+    </script>
+  </command>
+
+  <command name="restart" pattern="^restart$">
+    <script>
+      Ask (Template("WantRestartGame")){
+        if (result){
+          JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
+        }
+        else {
+          game.suppressturnscripts = true
+        }
+      }
+    </script>
+  </command>
+  
+  <function name="BlockingMessage" parameters="blocked, prefix" type="string">
+    obj = GetBlockingObject(blocked)
+    if (HasString(obj, "blockingmessage")) {
+      return (obj.blockingmessage)
+    }
+    else {
+      return (prefix + DynamicTemplate("ObjectNotOpen", obj))
+    }
+  </function>
+</library>
