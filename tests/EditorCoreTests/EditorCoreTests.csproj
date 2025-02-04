@@ -10,7 +10,7 @@
 		<AssemblyTitle>LegacyASLTests</AssemblyTitle>
 		<Product>LegacyASLTests</Product>
 		<Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
-		<RootNamespace>EditorCoreTests</RootNamespace>
+		<RootNamespace>QuestViva.EditorCoreTests</RootNamespace>
 		<LangVersion>default</LangVersion>
 	</PropertyGroup>
 

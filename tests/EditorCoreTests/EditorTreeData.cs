@@ -1,4 +1,4 @@
-﻿namespace EditorCoreTests
+﻿namespace QuestViva.EditorCoreTests
 {
     public class EditorTreeItem
     {

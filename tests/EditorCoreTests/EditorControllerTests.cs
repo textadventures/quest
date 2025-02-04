@@ -1,7 +1,6 @@
 ﻿using QuestViva.EditorCore;
-using TextAdventures.Quest;
 
-namespace EditorCoreTests
+namespace QuestViva.EditorCoreTests
 {
     [TestClass]
     public class EditorControllerTests : EditorControllerTestBase

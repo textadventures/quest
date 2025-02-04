@@ -1,7 +1,6 @@
 ﻿using QuestViva.EditorCore;
-using TextAdventures.Quest;
 
-namespace EditorCoreTests
+namespace QuestViva.EditorCoreTests
 {
     [TestClass]
     public abstract class EditorControllerTestBase
@@ -37,7 +36,7 @@ namespace EditorCoreTests
             m_controller.UndoListUpdated += m_controller_UndoListUpdated;
             m_controller.RedoListUpdated += m_controller_RedoListUpdated;
             string tempFile = System.IO.Path.GetTempFileName();
-            ExtractResource("EditorCoreTests.test.aslx", tempFile);
+            ExtractResource("QuestViva.EditorCoreTests.test.aslx", tempFile);
             await m_controller.Initialise(tempFile);
             DoExtraInitialisation();
             try
