@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using TextAdventures.Quest;
 using TextAdventures.Quest.Functions;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     internal class EditorVisibilityHelper
     {
@@ -50,8 +49,8 @@ namespace TextAdventures.Quest
             if (m_visibilityExpression != null)
             {
                 // evaluate <onlydisplayif> expression, with "this" as the current element
-                Scripts.Context context = new Scripts.Context();
-                context.Parameters = new Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
+                TextAdventures.Quest.Scripts.Context context = new TextAdventures.Quest.Scripts.Context();
+                context.Parameters = new TextAdventures.Quest.Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
                 bool result = false;
                 try
                 {

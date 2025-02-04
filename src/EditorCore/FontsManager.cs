@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     internal class FontsManager
     {

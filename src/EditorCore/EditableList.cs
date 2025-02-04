@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using TextAdventures.Quest;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollectionChanged
     {

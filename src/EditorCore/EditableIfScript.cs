@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using TextAdventures.Quest;
 using TextAdventures.Quest.Scripts;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
@@ -29,7 +28,7 @@ namespace TextAdventures.Quest
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
-                EditableScripts = TextAdventures.Quest.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
+                EditableScripts = EditorCore.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
             }
 
             public IEditableScripts EditableScripts { get; private set; }

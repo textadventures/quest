@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using TextAdventures.Quest;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     internal class ExpressionTemplateEditorData : IEditorData
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using TextAdventures.Quest;
 using TextAdventures.Quest.Scripts;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public class EditableScripts : IEditableScripts, IDataWrapper
     {

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>TextAdventures.Quest</RootNamespace>
+    <RootNamespace>QuestViva.EditorCore</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>EditorController</AssemblyTitle>
     <Product>EditorController</Product>

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using TextAdventures.Quest;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     // This class is used to create an IEditableDictionary wrapper where the values in the dictionary are
     // themselves wrapped.

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TextAdventures.Utility.Language;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public class AttributeSubEditorControlData:IEditorControl
     {

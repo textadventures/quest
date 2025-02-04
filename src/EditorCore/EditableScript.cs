@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TextAdventures.Quest.Scripts;
-using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using TextAdventures.Quest;
+using TextAdventures.Quest.Scripts;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public class EditableScript : EditableScriptBase, IEditableScript
     {

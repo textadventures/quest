@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using TextAdventures.Quest;
 using TextAdventures.Quest.Scripts;
-using TextAdventures.Quest.Functions;
-using TextAdventures.Utility.Language;
 
-namespace TextAdventures.Quest
+namespace QuestViva.EditorCore
 {
     public enum EditorUpdateSource
     {
@@ -1631,7 +1629,7 @@ namespace TextAdventures.Quest
 
         internal ValidationResult CanRename(Element element, string newName)
         {
-            if (m_editorStyle == Quest.EditorStyle.GameBook && element.Name == "player")
+            if (m_editorStyle == EditorStyle.GameBook && element.Name == "player")
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.CannotRenamePlayerElement };
             }
@@ -1793,11 +1791,11 @@ namespace TextAdventures.Quest
             foreach (Element e in m_clipboardElements)
             {
                 Element newElement;
-                if (m_editorStyle == Quest.EditorStyle.TextAdventure)
+                if (m_editorStyle == EditorStyle.TextAdventure)
                 {
                     newElement = e.Clone(el => true, m_lastelementscutout);
                 }
-                else if (m_editorStyle == Quest.EditorStyle.GameBook)
+                else if (m_editorStyle == EditorStyle.GameBook)
                 {
                     newElement = e.Clone(el => el.Name != "player", m_lastelementscutout);
                 }
@@ -1848,7 +1846,7 @@ namespace TextAdventures.Quest
 
         private Element GetPasteParent(string parentName)
         {
-            if (m_editorStyle == Quest.EditorStyle.GameBook)
+            if (m_editorStyle == EditorStyle.GameBook)
             {
                 return null;
             }
@@ -1879,7 +1877,7 @@ namespace TextAdventures.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
-            if (m_editorStyle == Quest.EditorStyle.GameBook && elementName == "player") return false;
+            if (m_editorStyle == EditorStyle.GameBook && elementName == "player") return false;
             Element e = m_worldModel.Elements.Get(elementName);
             if (e.ElemType == ElementType.IncludedLibrary) return false;
             if (e.ElemType == ElementType.Javascript) return false;
@@ -1891,8 +1889,8 @@ namespace TextAdventures.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
-            if (m_editorStyle == Quest.EditorStyle.GameBook && elementName == "player") return false;
-            if (m_editorStyle == Quest.EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
+            if (m_editorStyle == EditorStyle.GameBook && elementName == "player") return false;
+            if (m_editorStyle == EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 
@@ -2049,7 +2047,7 @@ namespace TextAdventures.Quest
             string templateName = resourceName;
             EditorStyle templateEditorStyle = EditorStyle.TextAdventure;
 
-            var stream = Quest.WorldModel.GetEmbeddedResourceStream(resourceName);
+            var stream = TextAdventures.Quest.WorldModel.GetEmbeddedResourceStream(resourceName);
             var xmlReader =  new XmlTextReader(stream);
             
             xmlReader.Read();
