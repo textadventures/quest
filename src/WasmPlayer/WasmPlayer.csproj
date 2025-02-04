@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
+        <RootNamespace>QuestViva.WasmPlayer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

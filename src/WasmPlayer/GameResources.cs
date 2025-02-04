@@ -1,4 +1,4 @@
-namespace WasmPlayer;
+namespace QuestViva.WasmPlayer;
 
 public static class GameResources
 {
