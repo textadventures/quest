@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
 using System.Collections;
+using QuestViva.Common;
 
 namespace TextAdventures.Quest.Functions
 {

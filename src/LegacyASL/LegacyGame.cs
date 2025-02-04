@@ -1,10 +1,11 @@
 ﻿using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using QuestViva.Common;
 
 namespace TextAdventures.Quest.LegacyASL;
 
-public partial class LegacyGame : IASL, IASLTimer
+public partial class LegacyGame : IGame, IGameTimer
 {
     public enum State
     {
@@ -7795,7 +7796,7 @@ public partial class LegacyGame : IASL, IASLTimer
         WaitForStateChange(State.Working);
     }
 
-    void IASL.SetQuestionResponse(bool response)
+    void IGame.SetQuestionResponse(bool response)
     {
         SetQuestionResponse(response);
     }

@@ -10,6 +10,7 @@
     <AssemblyVersion>5.8.%2a</AssemblyVersion>
     <Nullable>enable</Nullable>
     <LangVersion>default</LangVersion>
+    <RootNamespace>QuestViva.Common</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>

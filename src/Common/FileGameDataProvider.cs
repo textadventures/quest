@@ -1,7 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace TextAdventures.Quest;
+namespace QuestViva.Common;
 
 public class FileGameDataProvider(string filename, string resourcesId): IGameDataProvider
 {

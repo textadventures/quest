@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
+using QuestViva.Common;
 using TextAdventures.Quest;
 
 namespace QuestViva.PlayerCore
@@ -20,8 +21,8 @@ namespace QuestViva.PlayerCore
     /// </summary>
     public class PlayerHelper
     {
-        private IASL m_game;
-        private IASLTimer m_gameTimer;
+        private IGame m_game;
+        private IGameTimer m_gameTimer;
         private IPlayerHelperUI m_playerUI;
 
         private string m_font = "";
@@ -49,7 +50,7 @@ namespace QuestViva.PlayerCore
             s_mimeTypes.Add(".svg", "image/svg+xml");
         }
 
-        public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
+        public PlayerHelper(IGame game, IPlayerHelperUI playerUI)
         {
             UseGameColours = true;
             UseGameFont = true;
@@ -58,7 +59,7 @@ namespace QuestViva.PlayerCore
 
             m_game.PrintText += m_game_PrintText;
 
-            m_gameTimer = m_game as IASLTimer;
+            m_gameTimer = m_game as IGameTimer;
         }
 
         public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player, bool? isCompiled = null)
@@ -383,12 +384,12 @@ namespace QuestViva.PlayerCore
             return output;
         }
 
-        public IASL Game
+        public IGame Game
         {
             get { return m_game; }
         }
 
-        public IASLTimer GameTimer
+        public IGameTimer GameTimer
         {
             get { return m_gameTimer; }
         }

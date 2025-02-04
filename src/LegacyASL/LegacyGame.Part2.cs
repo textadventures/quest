@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using QuestViva.Common;
 
 namespace TextAdventures.Quest.LegacyASL;
 
@@ -8079,7 +8080,7 @@ public partial class LegacyGame
         return Path.Combine(_gamePath, filename);
     }
 
-    string IASL.GetResourcePath(string filename)
+    string IGame.GetResourcePath(string filename)
     {
         return GetResourcePath(filename);
     }

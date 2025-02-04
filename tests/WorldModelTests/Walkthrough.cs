@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TextAdventures.Quest;
 using Moq;
+using QuestViva.Common;
 
 namespace WorldModelTests
 {

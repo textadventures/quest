@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using QuestViva.Common;
 
 namespace TextAdventures.Quest
 {

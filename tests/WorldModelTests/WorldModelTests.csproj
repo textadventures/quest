@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\IASL\IASL.csproj" />
+		<ProjectReference Include="..\..\src\Common\Common.csproj" />
 		<ProjectReference Include="..\..\src\Utility\Utility.csproj" />
 		<ProjectReference Include="..\..\src\WorldModel\WorldModel.csproj" />
 	</ItemGroup>

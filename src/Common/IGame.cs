@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TextAdventures.Quest
+namespace QuestViva.Common
 {
     public delegate void PrintTextHandler(string text);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
     public delegate void FinishedHandler();
     public delegate void ErrorHandler(string errorMessage);
 
-    public interface IASL
+    public interface IGame
     {
         Task<bool> Initialise(IPlayer player, bool? isCompiled = null);
         void Begin();

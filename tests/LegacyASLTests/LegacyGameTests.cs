@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuestViva.Common;
 using TextAdventures.Quest;
 using TextAdventures.Quest.LegacyASL;
 
@@ -11,7 +12,7 @@ namespace LegacyASLTests
     [TestClass]
     public class LegacyGameTests
     {
-        private IASL m_game;
+        private IGame m_game;
         private TestPlayer m_player = new TestPlayer();
 
         [TestInitialize]

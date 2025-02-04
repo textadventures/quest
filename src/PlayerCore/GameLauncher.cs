@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using QuestViva.Common;
 using TextAdventures.Quest;
 using TextAdventures.Quest.LegacyASL;
 
@@ -8,7 +9,7 @@ namespace QuestViva.PlayerCore
 {
     public static class GameLauncher
     {
-        public static IASL GetGame(IGameData gameData, string libraryFolder)
+        public static IGame GetGame(IGameData gameData, string libraryFolder)
         {
             switch (System.IO.Path.GetExtension(gameData.Filename).ToLower())
             {

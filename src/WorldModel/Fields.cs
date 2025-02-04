@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QuestViva.Common;
 using TextAdventures.Quest.Scripts;
 using TextAdventures.Quest.Functions;
 

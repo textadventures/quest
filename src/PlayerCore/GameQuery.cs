@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using QuestViva.Common;
 using TextAdventures.Quest;
 using TextAdventures.Quest.LegacyASL;
 
@@ -12,7 +13,7 @@ public class GameQuery(string filename)
     private PlayerHelper _helper;
     private readonly GameQueryUi _dummyUi = new GameQueryUi();
     private readonly List<string> _errors = [];
-    private IASL _game;
+    private IGame _game;
     private LegacyGame _v4Game;
     private WorldModel _v5Game;
 

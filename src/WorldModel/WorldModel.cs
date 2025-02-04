@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using QuestViva.Common;
 using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest
@@ -44,7 +45,7 @@ namespace TextAdventures.Quest
         v580
     }
 
-    public class WorldModel : IASL, IASLDebug, IASLTimer
+    public class WorldModel : IGame, IGameDebug, IGameTimer
     {
         private Element m_game;
         private Elements m_elements;
@@ -1739,7 +1740,7 @@ namespace TextAdventures.Quest
 
         public string GameID => m_game.Fields[FieldDefinitions.GameID];
         
-        IEnumerable<string> IASL.GetResourceNames()
+        IEnumerable<string> IGame.GetResourceNames()
         {
             return GetResourceNames();
         }

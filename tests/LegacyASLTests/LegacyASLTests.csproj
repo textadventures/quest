@@ -26,6 +26,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\LegacyASL\LegacyASL.csproj" />
-		<ProjectReference Include="..\..\src\IASL\IASL.csproj" />
+		<ProjectReference Include="..\..\src\Common\Common.csproj" />
 	</ItemGroup>
 </Project>

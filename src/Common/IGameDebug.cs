@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace TextAdventures.Quest
+namespace QuestViva.Common
 {
     public class ObjectsUpdatedEventArgs : EventArgs
     {
@@ -11,7 +9,7 @@ namespace TextAdventures.Quest
         public string? Removed { get; set; }
     }
 
-    public interface IASLDebug
+    public interface IGameDebug
     {
         bool DebugEnabled { get; }
         event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;

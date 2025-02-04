@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace TextAdventures.Quest
+namespace QuestViva.Common
 {
-    public interface IASLTimer : IASL
+    public interface IGameTimer : IGame
     {
         event Action<int>? RequestNextTimerTick;
         void Tick(int elapsedTime);

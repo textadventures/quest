@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using QuestViva.Common;
 using TextAdventures.Quest;
 
 namespace QuestViva.PlayerCore;
@@ -18,7 +19,7 @@ public class Player : IPlayerHelperUI
     public IJSRuntime JSRuntime { get; }
     public BlazorJSInterop JSInterop { get; }
 
-    public Player(IASL game, string resourcesId, IJSRuntime jsRuntime)
+    public Player(IGame game, string resourcesId, IJSRuntime jsRuntime)
     {
         ResourcesId = resourcesId;
         JSRuntime = jsRuntime;
@@ -34,7 +35,7 @@ public class Player : IPlayerHelperUI
         PlayerHelper.Game.LogError += LogError;
         PlayerHelper.Game.UpdateList += UpdateList;
         PlayerHelper.Game.Finished += GameFinished;
-        if (game is IASLTimer gameTimer)
+        if (game is IGameTimer gameTimer)
         {
             gameTimer.RequestNextTimerTick += RequestNextTimerTick;
         }
