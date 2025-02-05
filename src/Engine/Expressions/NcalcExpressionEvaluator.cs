@@ -145,13 +145,12 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         args.Result = EvaluateAslFunction(name, args);
     }
 
+    #nullable enable
     private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object instance, string name, Expression[] parameters)
     {
-        var methods = type
-            .GetMethods()
-            .Cast<MethodBase>()
+        var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
-            .ToArray();
+            .ToArray<MethodBase>();
 
         if (methods.Length == 0)
         {
@@ -159,40 +158,82 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         }
 
         var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
-        var types = evaluatedArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
-        
-        // Do any of the methods take a params array?
-        var paramsMethod =
-            methods.Where(m =>
-                m.GetParameters().LastOrDefault()?.IsDefined(typeof(ParamArrayAttribute)) ?? false)
-                .ToArray();
-        
-        if (paramsMethod.Length != 0)
-        {
-            var methodWithParams = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, paramsMethod, types, null);
-            if (methodWithParams != null)
+
+        // First, try to find a method with a params parameter.
+        var paramsMethods = methods
+            .Where(m =>
             {
-                var paramArray =
-                    Array.CreateInstance(methodWithParams.GetParameters().Last().ParameterType.GetElementType(),
-                        evaluatedArgs.Length - methodWithParams.GetParameters().Length + 1);
-                Array.Copy(evaluatedArgs, methodWithParams.GetParameters().Length - 1, paramArray, 0,
-                    paramArray.Length);
-                var newArgs = evaluatedArgs.Take(methodWithParams.GetParameters().Length - 1).Append(paramArray)
-                    .ToArray();
-                return (true, methodWithParams.Invoke(instance, newArgs));
-            }
-        }
+                var ps = m.GetParameters();
+                return ps.Length > 0 &&
+                       ps.Last().IsDefined(typeof(ParamArrayAttribute), false);
+            })
+            .ToArray();
 
-        var method = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
-
-        if (method == null)
+        foreach (var method in paramsMethods)
         {
-            throw new Exception($"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
+            var ps = method.GetParameters();
+            var fixedParamCount = ps.Length - 1; // the last parameter is the params array
+
+            // We must have at least as many arguments as the fixed parameters.
+            if (evaluatedArgs.Length < fixedParamCount)
+                continue;
+
+            var fixedArgsMatch = true;
+            for (var i = 0; i < fixedParamCount; i++)
+            {
+                if (evaluatedArgs[i] == null ||
+                    ps[i].ParameterType.IsInstanceOfType(evaluatedArgs[i]))
+                {
+                    continue;
+                }
+
+                fixedArgsMatch = false;
+                break;
+            }
+
+            if (!fixedArgsMatch)
+                continue;
+
+            // We assume here that all extra arguments (if any) can be converted to the element type.
+            var elementType = ps.Last().ParameterType.GetElementType()!;
+            var paramsCount = evaluatedArgs.Length - fixedParamCount;
+            var paramsArray = Array.CreateInstance(elementType, paramsCount);
+            for (var i = 0; i < paramsCount; i++)
+            {
+                var arg = evaluatedArgs[fixedParamCount + i];
+                if (arg != null && !elementType.IsInstanceOfType(arg))
+                {
+                    fixedArgsMatch = false;
+                    break;
+                }
+
+                paramsArray.SetValue(arg, i);
+            }
+
+            if (!fixedArgsMatch)
+                continue;
+
+            // Build the new arguments list: fixed parameters + one array for the params parameter.
+            var newArgs = evaluatedArgs.Take(fixedParamCount)
+                .Concat([paramsArray])
+                .ToArray();
+            return (true, method.Invoke(instance, newArgs));
         }
 
-        return (true, method.Invoke(instance, evaluatedArgs));
+        // If no params-method was found that can handle these arguments, try a normal method.
+        var types = evaluatedArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+        var methodNoParams = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
+
+        if (methodNoParams == null)
+        {
+            throw new Exception(
+                $"{name} function does not handle parameters of types {string.Join(", ", types.Select(t => t.Name))}");
+        }
+
+        return (true, methodNoParams.Invoke(instance, evaluatedArgs));
     }
-    
+    #nullable restore
+
     private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
     {
         var fields = type
