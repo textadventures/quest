@@ -53,7 +53,6 @@ namespace QuestViva.Engine
         private Template m_template;
         private UndoLogger m_undoLogger;
         private IGameData m_gameData;
-        private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
         private Dictionary<string, ElementType> m_debuggerElementTypes = new Dictionary<string, ElementType>();
@@ -157,11 +156,11 @@ namespace QuestViva.Engine
         }
 
         public WorldModel()
-            : this(null, null)
+            : this(null)
         {
         }
 
-        private WorldModel(IGameData gameData)
+        public WorldModel(IGameData gameData)
         {
             m_expressionOwner = new ExpressionOwner(this);
             m_template = new Template(this);
@@ -173,12 +172,6 @@ namespace QuestViva.Engine
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
-        }
-
-        public WorldModel(IGameData gameData, string libFolder)
-            : this(gameData)
-        {
-            m_libFolder = libFolder;
         }
 
         private void InitialiseElementFactories()

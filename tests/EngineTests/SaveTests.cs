@@ -12,35 +12,33 @@ namespace QuestViva.EngineTests
         {
             var gameDataProvider = new FileGameDataProvider("savetest.aslx", "test");
             var gameData = await gameDataProvider.GetData();
-            WorldModel worldModel = new WorldModel(
-                gameData,
-                "");
+            var worldModel = new WorldModel(gameData);
 
-            Mock<IPlayer> player = new Mock<IPlayer>();
-            bool success = await worldModel.Initialise(player.Object);
+            var player = new Mock<IPlayer>();
+            var success = await worldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 
             worldModel.Begin();
 
             worldModel.SendCommand("update");
 
-            string tempFilename = System.IO.Path.GetTempFileName();
+            var tempFilename = System.IO.Path.GetTempFileName();
             worldModel.Save(tempFilename, null);
 
             var gameDataProvider2 = new FileGameDataProvider(tempFilename, "test");
             var gameData2 = await gameDataProvider2.GetData();
-            WorldModel savedGameWorldModel = new WorldModel(gameData2, null);
+            var savedGameWorldModel = new WorldModel(gameData2);
             success = await savedGameWorldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 
             savedGameWorldModel.Begin();
 
-            foreach (string cmd in worldModel.Walkthroughs.Walkthroughs["verify"].Steps)
+            foreach (var cmd in worldModel.Walkthroughs.Walkthroughs["verify"].Steps)
             {
                 if (cmd.StartsWith("assert:"))
                 {
-                    string expr = cmd.Substring(7);
-                    Assert.AreEqual(true, worldModel.Assert(expr), expr);
+                    var expr = cmd.Substring(7);
+                    Assert.IsTrue(worldModel.Assert(expr), expr);
                 }
                 else
                 {
@@ -48,7 +46,7 @@ namespace QuestViva.EngineTests
                 }
             }
 
-            System.IO.File.Delete(tempFilename);
+            File.Delete(tempFilename);
         }
     }
 }

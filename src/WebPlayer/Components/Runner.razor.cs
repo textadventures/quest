@@ -16,9 +16,7 @@ public partial class Runner : ComponentBase
         if (!firstRender) return;
         
         var gameData = await GameDataProvider.GetData();
-        
-        // TODO: Is there a better way of getting libraryFolder?
-        var game = GameLauncher.GetGame(gameData, null);
+        var game = GameLauncher.GetGame(gameData);
         
         Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
         
