@@ -1214,10 +1214,10 @@ namespace QuestViva.Engine
             // TODO: Check if there is a file with this name in the game folder first
             // Otherwise fall back to the embedded resource
             
-            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("TextAdventures.Quest.Core." + filename);
+            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core." + filename);
             if (stream == null)
             {
-                stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("TextAdventures.Quest.Core.Languages." + filename);
+                stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core.Languages." + filename);
 
                 if (stream == null)
                 {
