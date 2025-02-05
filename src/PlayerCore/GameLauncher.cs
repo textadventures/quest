@@ -9,14 +9,14 @@ namespace QuestViva.PlayerCore
 {
     public static class GameLauncher
     {
-        public static IGame GetGame(IGameData gameData, string libraryFolder)
+        public static IGame GetGame(IGameData gameData)
         {
-            switch (System.IO.Path.GetExtension(gameData.Filename).ToLower())
+            switch (Path.GetExtension(gameData.Filename).ToLower())
             {
                 case ".aslx":
                 case ".quest":
                 case ".quest-save":
-                    return new WorldModel(gameData, libraryFolder);
+                    return new WorldModel(gameData);
                 case ".asl":
                 case ".cas":
                 case ".qsg":

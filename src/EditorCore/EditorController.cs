@@ -314,26 +314,26 @@ namespace QuestViva.EditorCore
             public bool Success { get; private set; }
         }
 
-        public event EventHandler<InitialiseResults> InitialiseFinished;
+        // public event EventHandler<InitialiseResults> InitialiseFinished;
 
-        public void StartInitialise(string filename, string libFolder = null)
-        {
-            System.Threading.Thread newThread = new System.Threading.Thread(async () =>
-            {
-                bool result = await Initialise(filename, libFolder);
-                if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
-            });
-            newThread.Start();
-        }
+        // public void StartInitialise(string filename)
+        // {
+        //     var newThread = new System.Threading.Thread(async () =>
+        //     {
+        //         bool result = await Initialise(filename);
+        //         if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
+        //     });
+        //     newThread.Start();
+        // }
 
-        public async Task<bool> Initialise(string filename, string libFolder = null)
+        public async Task<bool> Initialise(string filename)
         {
             m_lastelementscutout = false;
             m_filename = filename;
             // TODO: ResourcesId is probably not relevant here?
             var gameDataProvider = new FileGameDataProvider(filename, "editor");
             var gameData = await gameDataProvider.GetData();
-            m_worldModel = new WorldModel(gameData, libFolder);
+            m_worldModel = new WorldModel(gameData);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;

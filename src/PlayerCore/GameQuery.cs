@@ -22,7 +22,7 @@ public class GameQuery(string filename)
         var gameDataProvider = new FileGameDataProvider(filename, "dummy-resources-id");
         var gameData = await gameDataProvider.GetData();
         
-        _game = GameLauncher.GetGame(gameData, null);
+        _game = GameLauncher.GetGame(gameData);
         _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
         _helper = new PlayerHelper(_game, _dummyUi);
