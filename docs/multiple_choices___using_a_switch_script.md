@@ -13,7 +13,7 @@ The `ShowMenu` bit
 
 The first step is to create some options the player can choose from. Do add script, and select "Set a variable or attribute". Call the variable `options`, and for the expression: `Split("The weather;Her hair;The Lost Key of Arenbos", ";")`
 
-What that will do is create a variable, called "options", and will put a string list n to it. To create the list we are using the `Split` function, which breaks a string into a list, in the case at each semi-colon. We just have three options, but you can have any number.
+What that will do is create a variable, called "options", and will put a string listen to it. To create the list we are using the `Split` function, which breaks a string into a list, in the case at each semi-colon. We just have three options, but you can have any number.
 
 Then do add a new script again, and this time pick "Show a menu". For the text, type is `Talk about?`.
 
