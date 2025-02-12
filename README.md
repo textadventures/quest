@@ -36,15 +36,11 @@ Formerly known as Quest 5, Quest Viva is a modern cross-platform update, current
 ```
 services:
   webplayer:
-    image: webplayer
-    build:
-      context: .
-      dockerfile: src/WebPlayer/Dockerfile
+    image: ghcr.io/textadventures/quest-viva-webplayer:latest
     ports:
       - "8080:8080"
     environment:
       Home__File: "/data/game.quest"
     volumes:
       - "/path/to/game.quest:/data/game.quest:ro"
-
 ```
