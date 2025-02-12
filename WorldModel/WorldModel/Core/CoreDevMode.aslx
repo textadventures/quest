@@ -850,9 +850,8 @@
     </control>
 
     <control>
-      <controltype>expression</controltype>
-      <simple>[EditorGameDevModePov]</simple>
-      <simpleeditor>objects</simpleeditor>
+      <controltype>objects</controltype>
+      <caption>[EditorGameDevModePov]</caption>
       <attribute>devmode_pov</attribute>
       <onlydisplayif>game.devmode_changepov</onlydisplayif>
       <mustinherit>devmode</mustinherit>
@@ -866,9 +865,8 @@
     </control>
 
     <control>
-      <controltype>expression</controltype>
-      <simple>[EditorGameDevModePlace]</simple>
-      <simpleeditor>objects</simpleeditor>
+      <controltype>objects</controltype>
+      <caption>[EditorGameDevModePlace]</caption>
       <attribute>devmode_povpos</attribute>
       <onlydisplayif>game.devmode_changepovpos</onlydisplayif>
       <mustinherit>devmode</mustinherit>
