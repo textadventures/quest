@@ -5,9 +5,10 @@ using Shouldly;
 
 namespace QuestViva.EngineTests;
 
-[TestClass]
-public class ExpressionTests
+public abstract class ExpressionTestsBase
 {
+    protected abstract bool UseNCalc { get; } 
+    
     private const string ObjectName = "object";
     private const string ChildName = "child";
     // object names can contain spaces, so this must be handled in expressions
@@ -37,7 +38,10 @@ public class ExpressionTests
     [TestInitialize]
     public void Setup()
     {
-        _worldModel = new WorldModel();
+        _worldModel = new WorldModel
+        {
+            UseNcalc = UseNCalc
+        };
         _scriptContext = new ScriptContext(_worldModel);
         _scriptFactory = new ScriptFactory(_worldModel);
 
@@ -260,4 +264,16 @@ public class ExpressionTests
         result = expr.Execute(c);
         result.ShouldBe("AB");
     }
+}
+
+[TestClass]
+public class NCalcExpressionTests : ExpressionTestsBase
+{
+    protected override bool UseNCalc => true;
+}
+
+[TestClass]
+public class FleeExpressionTests : ExpressionTestsBase
+{
+    protected override bool UseNCalc => false;
 }

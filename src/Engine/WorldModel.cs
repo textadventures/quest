@@ -174,7 +174,7 @@ namespace QuestViva.Engine
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
-        public bool UseNcalc => true;
+        public bool UseNcalc { get; set; }
 
         private void InitialiseElementFactories()
         {
