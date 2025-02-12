@@ -5,6 +5,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
 using QuestViva.Utility;
 using Strings = Microsoft.VisualBasic.Strings;
+using Constants = Microsoft.VisualBasic.Constants;
 
 namespace QuestViva.Legacy;
 
