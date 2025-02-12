@@ -251,7 +251,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         return (true, field.GetRawConstantValue());
     }
 
-    private object? EvaluateAslFunction(string name, FunctionArgs args)
+    private object EvaluateAslFunction(string name, FunctionArgs args)
     {
         if (name == "IsDefined")
         {

@@ -1070,7 +1070,7 @@ namespace QuestViva.Engine
             // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
             //     Print("Error running script: " + QuestViva.Engine.Utility.SafeXML(ex.Message));
             // }
-            return null;
+            // return null;
         }
 
         public Element AddProcedure(string name)

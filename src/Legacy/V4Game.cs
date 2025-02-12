@@ -242,7 +242,8 @@ public partial class V4Game : IGame, IGameTimer
         public bool IsExit;
         public string CorresRoom;
         public int CorresRoomId;
-        public bool Loaded;
+        // TODO: Uncomment when reimplementing OpenGame
+        // public bool Loaded;
         public int NumberActions;
         public ActionType[] Actions;
         public int NumberUseData;
@@ -468,7 +469,8 @@ public partial class V4Game : IGame, IGameTimer
     private State _state = State.Ready;
     private readonly object _waitLock = new();
     private bool _readyForCommand = true;
-    private bool _gameLoading;
+    // TODO: Uncomment when reimplementing OpenGame
+    // private bool _gameLoading;
     private readonly Random _random = new();
     private readonly string[] _playerErrorMessageString = new string[39];
     private readonly Dictionary<ListType, List<string>> _listVerbs = new();
@@ -5735,10 +5737,11 @@ public partial class V4Game : IGame, IGameTimer
                 }
             }
 
-            if (!_gameLoading)
-            {
+            // TODO: Uncomment when reimplementing OpenGame
+            // if (!_gameLoading)
+            // {
                 UpdateObjectList(ctx);
-            }
+            // }
         }
 
         else if (BeginsWith(data, "exit "))
@@ -5914,8 +5917,9 @@ public partial class V4Game : IGame, IGameTimer
             LogASLError("Invalid direction in 'create exit " + exitData + "'", LogType.WarningError);
         }
 
-        if (!_gameLoading)
-        {
+        // TODO: Uncomment when reimplementing OpenGame
+        // if (!_gameLoading)
+        // {
             // Update quest.doorways variables
             ShowRoomInfo(_currentRoom, ctx, true);
 
@@ -5938,7 +5942,7 @@ public partial class V4Game : IGame, IGameTimer
                 // for current room anyway.
                 UpdateDoorways(GetRoomID(_currentRoom, ctx), ctx);
             }
-        }
+        // }
     }
 
     private void ExecDrop(string obj, Context ctx)
