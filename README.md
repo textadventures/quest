@@ -28,3 +28,23 @@ Formerly known as Quest 5, Quest Viva is a modern cross-platform update, current
 
 - [Documentation](https://docs.textadventures.co.uk/quest)
 - For help, [join us in Discord](https://textadventures.co.uk/community/discord) or post in [Quest discussions](https://github.com/textadventures/quest/discussions)
+
+---
+
+## Sample compose.yml
+
+```
+services:
+  webplayer:
+    image: webplayer
+    build:
+      context: .
+      dockerfile: src/WebPlayer/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      Home__File: "/data/game.quest"
+    volumes:
+      - "/path/to/game.quest:/data/game.quest:ro"
+
+```
