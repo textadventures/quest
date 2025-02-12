@@ -29,9 +29,10 @@ function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
 
-    // TODO: Temporarily always showing Save button here - need to work out where the game gets
-    // saved (localStorage?), and if we implement server-side saving below
-    $("#cmdSave").show();
+    // TODO: Actually implement this properly
+    // // TODO: Temporarily always showing Save button here - need to work out where the game gets
+    // // saved (localStorage?), and if we implement server-side saving below
+    // $("#cmdSave").show();
 
     if (apiRoot) {
         $.ajax({
