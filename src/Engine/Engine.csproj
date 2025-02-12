@@ -1,0 +1,516 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>QuestViva.Engine</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>false</UseWindowsForms>
+    <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Update="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Update="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Ciloci.Flee">
+      <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Core\Languages\EditorDeutsch.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="NCalcSync" Version="5.3.1" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="frmMain.resx" />
+    <None Remove="Core\Core.aslx" />
+    <EmbeddedResource Include="Core\Core.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreCombat.aslx" />
+    <EmbeddedResource Include="Core\CoreCombat.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreCommands.aslx" />
+    <EmbeddedResource Include="Core\CoreCommands.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreDescriptions.aslx" />
+    <EmbeddedResource Include="Core\CoreDescriptions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreDevMode.aslx" />
+    <EmbeddedResource Include="Core\CoreDevMode.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditor.aslx" />
+    <EmbeddedResource Include="Core\CoreEditor.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorAnnotation.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorAnnotation.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorCommand.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorCommand.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorDynamicTemplate.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorDynamicTemplate.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorElements.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorElements.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorExit.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorExit.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorExpressions.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorExpressions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorFunction.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorFunction.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorGame.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorGame.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorIncludedLibrary.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorIncludedLibrary.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorJavascript.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorJavascript.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObject.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObject.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectAskTell.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectAskTell.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectAttributes.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectAttributes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectChildren.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectChildren.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectContainer.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectContainer.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectExits.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectExits.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectFeatures.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectFeatures.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectInventory.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectInventory.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectLightDark.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectLightDark.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectMap.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectMap.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectObject.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectObject.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectOptions.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectOptions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectRoom.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectRoom.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectScripts.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectSetup.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectSetup.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectUseGive.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectUseGive.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectVerbs.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectVerbs.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorObjectWearable.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorObjectWearable.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScripts.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsDarkness.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsDarkness.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsDrawing.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsDrawing.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsEffects.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsEffects.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsGameState.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsGameState.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsObjects.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsObjects.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsOutput.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsOutput.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsPlayer.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsPlayer.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsScripts.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsTimers.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsTimers.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsTurnScripts.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsTurnScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorScriptsVariables.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorScriptsVariables.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorTemplate.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorTemplate.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorTimer.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorTimer.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorTurnScript.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorTurnScript.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorType.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorType.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorVerb.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorVerb.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEditorWalkthrough.aslx" />
+    <EmbeddedResource Include="Core\CoreEditorWalkthrough.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreEffects.aslx" />
+    <EmbeddedResource Include="Core\CoreEffects.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreFunctions.aslx" />
+    <EmbeddedResource Include="Core\CoreFunctions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\CoreGrid.aslx" />
+    <EmbeddedResource Include="Core\CoreGrid.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreOutput.aslx" />
+    <EmbeddedResource Include="Core\CoreOutput.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreParser.aslx" />
+    <EmbeddedResource Include="Core\CoreParser.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreScopes.aslx" />
+    <EmbeddedResource Include="Core\CoreScopes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreStatusAttributes.aslx" />
+    <EmbeddedResource Include="Core\CoreStatusAttributes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreTimers.aslx" />
+    <EmbeddedResource Include="Core\CoreTimers.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreTurnScripts.aslx" />
+    <EmbeddedResource Include="Core\CoreTurnScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreTypes.aslx" />
+    <EmbeddedResource Include="Core\CoreTypes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\CoreWearable.aslx" />
+    <EmbeddedResource Include="Core\CoreWearable.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\GamebookCore.aslx" />
+    <EmbeddedResource Include="Core\GamebookCore.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\GamebookCoreEditor.aslx" />
+    <EmbeddedResource Include="Core\GamebookCoreEditor.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\GamebookCoreEditorExpressions.aslx" />
+    <EmbeddedResource Include="Core\GamebookCoreEditorExpressions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\GamebookCoreEditorScripts.aslx" />
+    <EmbeddedResource Include="Core\GamebookCoreEditorScripts.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\GamebookCoreEditorScriptsPages.aslx" />
+    <EmbeddedResource Include="Core\GamebookCoreEditorScriptsPages.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Dansk.aslx" />
+    <EmbeddedResource Include="Core\Languages\Dansk.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Deutsch.aslx" />
+    <EmbeddedResource Include="Core\Languages\Deutsch.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\EditorDeutsch.aslx" />
+    <EmbeddedResource Include="Core\Languages\EditorDeutsch.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\EditorEnglish.aslx" />
+    <EmbeddedResource Include="Core\Languages\EditorEnglish.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\EditorEspanol.aslx" />
+    <EmbeddedResource Include="Core\Languages\EditorEspanol.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\English.aslx" />
+    <EmbeddedResource Include="Core\Languages\English.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Espanol.aslx" />
+    <EmbeddedResource Include="Core\Languages\Espanol.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Esperanto.aslx" />
+    <EmbeddedResource Include="Core\Languages\Esperanto.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Francais.aslx" />
+    <EmbeddedResource Include="Core\Languages\Francais.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Greek.aslx" />
+    <EmbeddedResource Include="Core\Languages\Greek.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Icelandic.aslx" />
+    <EmbeddedResource Include="Core\Languages\Icelandic.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Italiano.aslx" />
+    <EmbeddedResource Include="Core\Languages\Italiano.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Nederlands.aslx" />
+    <EmbeddedResource Include="Core\Languages\Nederlands.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Norsk.aslx" />
+    <EmbeddedResource Include="Core\Languages\Norsk.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Portugues.aslx" />
+    <EmbeddedResource Include="Core\Languages\Portugues.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Portugues-Portugal.aslx" />
+    <EmbeddedResource Include="Core\Languages\Portugues-Portugal.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Romana.aslx" />
+    <EmbeddedResource Include="Core\Languages\Romana.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Languages\Russian.aslx" />
+    <EmbeddedResource Include="Core\Languages\Russian.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Dansk.template" />
+    <EmbeddedResource Include="Core\Templates\Dansk.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Deutsch.template" />
+    <EmbeddedResource Include="Core\Templates\Deutsch.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\English.template" />
+    <EmbeddedResource Include="Core\Templates\English.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Espanol.template" />
+    <EmbeddedResource Include="Core\Templates\Espanol.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Esperanto.template" />
+    <EmbeddedResource Include="Core\Templates\Esperanto.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Francais.template" />
+    <EmbeddedResource Include="Core\Templates\Francais.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Gamebook.template" />
+    <EmbeddedResource Include="Core\Templates\Gamebook.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Greek.template" />
+    <EmbeddedResource Include="Core\Templates\Greek.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Icelandic.template" />
+    <EmbeddedResource Include="Core\Templates\Icelandic.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Italiano.template" />
+    <EmbeddedResource Include="Core\Templates\Italiano.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Nederlands.template" />
+    <EmbeddedResource Include="Core\Templates\Nederlands.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Norsk.template" />
+    <EmbeddedResource Include="Core\Templates\Norsk.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Portugues.template" />
+    <EmbeddedResource Include="Core\Templates\Portugues.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Portugues-Portugal.template" />
+    <EmbeddedResource Include="Core\Templates\Portugues-Portugal.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Romana.template" />
+    <EmbeddedResource Include="Core\Templates\Romana.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Core\Templates\Russian.template" />
+    <EmbeddedResource Include="Core\Templates\Russian.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <AssemblyTitle>Quest ASL WorldModel</AssemblyTitle>
+    <Company>Textadventures.co.uk</Company>
+    <Product>Quest</Product>
+    <Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
+    <AssemblyVersion>5.8.%2a</AssemblyVersion>
+  </PropertyGroup>
+</Project>

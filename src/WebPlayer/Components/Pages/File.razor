@@ -1,0 +1,25 @@
+@page "/file/{Id}"
+@using QuestViva.Common
+
+<Player GameDataProvider="@GetGameDataProvider()"></Player>
+
+@code {
+    [Parameter] public required string Id { get; set; }
+    
+    private IGameDataProvider GetGameDataProvider()
+    {
+        var filename = Id switch
+        {
+            "asl4" => "/Users/alexwarren/Code/quest/examples/test.asl",
+            "cas" => "/Users/alexwarren/Code/quest/examples/test.cas",
+            "asl5" => "/Users/alexwarren/Code/quest/examples/test.aslx",
+            "blank" => "/Users/alexwarren/Code/quest/examples/blank.aslx",
+            "gamebook" => "/Users/alexwarren/Code/quest/examples/gamebook.aslx",
+            "quest" => "/Users/alexwarren/Code/quest/examples/published.quest",
+            "res" => "/Users/alexwarren/Code/quest/examples/resources.quest",
+            _ => throw new NotImplementedException()
+        };
+
+        return new FileGameDataProvider(filename, $"file.{Id}");
+    }
+}
