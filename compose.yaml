@@ -1,6 +1,6 @@
 ﻿services:
   webplayer:
-    image: webplayer
+    image: ghcr.io/textadventures/quest-viva-webplayer:latest
     build:
       context: .
       dockerfile: src/WebPlayer/Dockerfile
