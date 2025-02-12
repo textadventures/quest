@@ -8,11 +8,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/WebPlayer/WebPlayer.csproj", "src/WebPlayer/"]
-COPY ["src/PlayerCore/PlayerCore.csproj", "src/PlayerCore/"]
-COPY ["src/LegacyASL/LegacyASL.csproj", "src/LegacyASL/"]
-COPY ["src/IASL/IASL.csproj", "src/IASL/"]
 COPY ["src/Utility/Utility.csproj", "src/Utility/"]
-COPY ["src/WorldModel/WorldModel.csproj", "src/WorldModel/"]
+COPY ["src/Legacy/Legacy.csproj", "src/Legacy/"]
+COPY ["src/Common/Common.csproj", "src/Common/"]
+COPY ["src/Engine/Engine.csproj", "src/Engine/"]
+COPY ["src/PlayerCore/PlayerCore.csproj", "src/PlayerCore/"]
 RUN dotnet restore "src/WebPlayer/WebPlayer.csproj"
 COPY . .
 WORKDIR "/src/src/WebPlayer"
