@@ -141,6 +141,13 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             args.Result = tryStringFunctions.result;
             return;
         }
+        
+        var tryDateTimeFunctions = EvaluateFunctionFromType(typeof(DateTimeFunctions), null, name, args.Parameters);
+        if (tryDateTimeFunctions.handled)
+        {
+            args.Result = tryDateTimeFunctions.result;
+            return;
+        }
 
         args.Result = EvaluateAslFunction(name, args);
     }

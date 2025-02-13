@@ -264,6 +264,16 @@ public abstract class ExpressionTestsBase
         result = expr.Execute(c);
         result.ShouldBe("AB");
     }
+
+    [TestMethod]
+    public void TestCurrentDateUTC()
+    {
+        const string expression = "CurrentDateUTC()";
+        var result = RunExpression<int>(expression);
+        var now = DateTimeOffset.UtcNow;
+        var expected = (int)now.ToUnixTimeSeconds();
+        Math.Abs(result - expected).ShouldBeLessThan(2);
+    }
 }
 
 [TestClass]

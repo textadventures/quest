@@ -18,6 +18,7 @@ public class FleeExpressionContext
         ExpressionContext = new ExpressionContext(_worldModel.ExpressionOwner);
         ExpressionContext.Imports.AddType(typeof(StringFunctions));
         ExpressionContext.Imports.AddType(typeof(Math));
+        ExpressionContext.Imports.AddType(typeof(DateTimeFunctions));
 
         ExpressionContext.Variables.ResolveVariableType += Variables_ResolveVariableType;
         ExpressionContext.Variables.ResolveVariableValue += Variables_ResolveVariableValue;
