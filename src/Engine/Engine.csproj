@@ -3,29 +3,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>QuestViva.Engine</RootNamespace>
-    <StartupObject>
-    </StartupObject>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>false</UseWindowsForms>
-    <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup />
   <ItemGroup>
-    <Reference Update="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Update="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
     </Reference>
@@ -46,7 +26,6 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="frmMain.resx" />
     <None Remove="Core\Core.aslx" />
     <EmbeddedResource Include="Core\Core.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -506,11 +485,4 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <PropertyGroup>
-    <AssemblyTitle>Quest ASL WorldModel</AssemblyTitle>
-    <Company>Textadventures.co.uk</Company>
-    <Product>Quest</Product>
-    <Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
-    <AssemblyVersion>5.8.%2a</AssemblyVersion>
-  </PropertyGroup>
 </Project>

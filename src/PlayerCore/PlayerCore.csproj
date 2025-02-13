@@ -2,12 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyTitle>PlayerCore</AssemblyTitle>
-    <Company>Microsoft</Company>
-    <Product>PlayerCore</Product>
-    <Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
-    <AssemblyVersion>5.8.%2a</AssemblyVersion>
     <RootNamespace>QuestViva.PlayerCore</RootNamespace>
     <LangVersion>default</LangVersion>
   </PropertyGroup>

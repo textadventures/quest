@@ -8,9 +8,6 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 
-		<AssemblyTitle>LegacyASLTests</AssemblyTitle>
-		<Product>LegacyASLTests</Product>
-		<Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
 		<LangVersion>default</LangVersion>
 		<RootNamespace>QuestViva.EngineTests</RootNamespace>
 	</PropertyGroup>

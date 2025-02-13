@@ -2,12 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyTitle>Quest ASL Interface</AssemblyTitle>
-    <Company>Textadventures.co.uk</Company>
-    <Product>Quest</Product>
-    <Copyright>Copyright © 2017 Andy Joel - full copyright and license information at https://github.com/textadventures/quest/blob/master/LICENSE</Copyright>
-    <AssemblyVersion>5.8.%2a</AssemblyVersion>
     <Nullable>enable</Nullable>
     <LangVersion>default</LangVersion>
     <RootNamespace>QuestViva.Common</RootNamespace>
