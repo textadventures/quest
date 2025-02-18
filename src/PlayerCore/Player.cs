@@ -42,8 +42,20 @@ public class Player : IPlayerHelperUI
 
     public async Task Initialise()
     {
-        await JSRuntime.InvokeVoidAsync("WebPlayer.setDotNetHelper",
-            DotNetObjectReference.Create(JSInterop));
+        // HACK: If JS hasn't loaded yet then WebPlayer.setDotNetHelper will fail.
+        for (var i = 0; i < 3; i++)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("WebPlayer.setDotNetHelper",
+                    DotNetObjectReference.Create(JSInterop));
+                break;
+            }
+            catch
+            {
+                await Task.Delay(1000);
+            }
+        }
         
         var (result, errors) = await PlayerHelper.Initialise(this);
 
