@@ -1,0 +1,22 @@
+@page "/open"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<InputFile OnChange="@LoadFile" ></InputFile>
+
+@code {
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+    
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var tempFile = Path.Combine(
+            Path.GetTempPath(),
+            e.File.Name);
+
+        await using FileStream fs = new(tempFile, FileMode.Create);
+        await e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024).CopyToAsync(fs);
+        
+        NavigationManager.NavigateTo("/open/play?file=" + e.File.Name);
+    }
+}

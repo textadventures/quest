@@ -1,0 +1,15 @@
+@page "/open/play"
+@using QuestViva.Common
+
+<Player GameDataProvider="@GetGameDataProvider()"></Player>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public required string File { get; set; }
+    
+    private IGameDataProvider GetGameDataProvider()
+    {
+        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File), $"open.play.{File}");
+    }
+}
