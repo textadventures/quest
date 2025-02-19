@@ -9,20 +9,30 @@ namespace QuestViva.Engine.GameLoader
 {
     internal class PackageReader
     {
-        public class ReadResult(ZipArchive zip)
+        public class ReadResult
         {
+            private readonly Dictionary<string, byte[]> _files = new();
+            
+            public ReadResult(ZipArchive zip)
+            {
+                foreach (var entry in zip.Entries)
+                {
+                    var entryName = entry.FullName;
+                    var memoryStream = new MemoryStream();
+                    entry.Open().CopyTo(memoryStream);
+                    _files.Add(entryName, memoryStream.ToArray());
+                }
+            }
+            
             public Stream GameFile;
             
             public Stream GetFile(string filename)
             {
-                var entry = zip.GetEntry(filename);
-                return entry?.Open();
+                var bytes = _files[filename];
+                return new MemoryStream(bytes);
             }
             
-            public IEnumerable<string> GetFileNames()
-            {
-                return zip.Entries.Select(entry => entry.FullName);
-            }
+            public IEnumerable<string> GetFileNames() => _files.Keys;
         }
 
         public Task<ReadResult> LoadPackage(IGameData gameData)
