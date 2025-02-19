@@ -1676,7 +1676,8 @@ public partial class V4Game : IGame, IGameTimer
     {
         var enc = new UTF8Encoding();
         var resFile = enc.GetString(res);
-        return Strings.Split(resFile, "\r" + "\n");
+        
+        return resFile.Split(["\r\n", "\n"], StringSplitOptions.None);
     }
 
     private async Task<string> GetFileData(IGameData gameData)
