@@ -217,8 +217,9 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.ShowPicture(string filename)
     {
-        // TODO
-        throw new NotImplementedException();
+        OutputText(PlayerHelper.ClearBuffer());
+        var url = GetURL(filename);
+        OutputText($"<img src=\"{url}\" onload=\"scrollToEnd();\" /><br />");
     }
 
     void IPlayer.SetPanesVisible(string data)
