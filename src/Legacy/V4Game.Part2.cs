@@ -8410,7 +8410,8 @@ public partial class V4Game
     {
         for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
         {
-            yield return _resources[i].ResourceName;
+            // Resources are always extracted with lowercase filenames (see ExtractFile)
+            yield return _resources[i].ResourceName.ToLowerInvariant();
         }
 
         if (_numResources > 0)

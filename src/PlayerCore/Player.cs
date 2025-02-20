@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using QuestViva.Common;
@@ -191,7 +192,11 @@ public class Player : IPlayerHelperUI
     
     string GetURL(string file)
     {
-        return $"/game/{ResourcesId}/{file}";
+        // We might be running on a case-sensitive file system, so look up the correct casing
+        var resource = PlayerHelper.Game.GetResourceNames()
+            .FirstOrDefault(n => string.Equals(n, file, StringComparison.InvariantCultureIgnoreCase));
+        
+        return $"/game/{ResourcesId}/{resource ?? file}";
     }
 
     void IPlayer.LocationUpdated(string location)

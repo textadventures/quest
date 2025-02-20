@@ -4180,7 +4180,8 @@ public partial class V4Game : IGame, IGameTimer
             return null;
         }
 
-        var fileName = Path.Combine(TempFolder, file);
+        // always lowercase the filename to match the resource name returned by GetResourceNames()
+        var fileName = Path.Combine(TempFolder, file.ToLowerInvariant());
         Directory.CreateDirectory(Path.GetDirectoryName(fileName));
 
         if (!extracted)
