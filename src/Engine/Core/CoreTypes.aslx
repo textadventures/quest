@@ -103,7 +103,7 @@
       }
       else if (game.savetranscript){
         if (not HasAttribute (game, "transcriptname")){
-          game.transcriptname = GetWindowsSafeName(game.gamename)
+          game.transcriptname = game.gamename
         }
         JS.enableTranscript(game.transcriptname)
       }
