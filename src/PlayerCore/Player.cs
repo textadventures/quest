@@ -75,11 +75,23 @@ public class Player : IPlayerHelperUI
     
     private async Task ClearJavaScriptBuffer()
     {
-        foreach (var (identifier, args) in JavaScriptBuffer)
+        while (JavaScriptBuffer.Count != 0)
         {
-            await JSRuntime.InvokeVoidAsync(identifier, args);
+            var buffer = JavaScriptBuffer.ToArray();
+            JavaScriptBuffer.Clear();
+        
+            foreach (var (identifier, args) in buffer)
+            {
+                try
+                {
+                    await JSRuntime.InvokeVoidAsync(identifier, args);
+                }
+                catch (Exception ex)
+                {
+                    AddJavaScriptToBuffer("console.error", ex.Message);
+                }
+            }
         }
-        JavaScriptBuffer.Clear();
     }
     
     private void RequestNextTimerTick(int seconds)
