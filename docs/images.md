@@ -146,8 +146,6 @@ if (HasInt(game.pov.parent, "number")) {
 
 The first three lines set all the maps to hidden. The next five lines set the maps for any room visited to be visible, but transparent, so it seems greyed out. The last three lines show the current room fully opaque.
 
-![](images/selective-map.png "selective-map.png")
-
 ### Or You Could
 
 Another possibility is to display a map and to have a marker on it that shows the players position, by changing the `margin-top` and `margin-left` values. Or display an image of the player, to which armour and weapons can be added. Or allow the user to design a face. Or...

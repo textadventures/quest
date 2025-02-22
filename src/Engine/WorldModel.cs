@@ -1739,7 +1739,7 @@ namespace QuestViva.Engine
         
         IEnumerable<string> IGame.GetResourceNames()
         {
-            return GetResourceNames();
+            return GetResourceNames == null ? [] : GetResourceNames();
         }
 
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
