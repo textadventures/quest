@@ -1,0 +1,23 @@
+name: Enforce Version Change
+
+on:
+  pull_request:
+    branches:
+      - release
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if VERSION has changed
+        id: version-check
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }} | grep -q "^VERSION$"; then
+            echo "VERSION file has been updated ✅"
+          else
+            echo "❌ VERSION file must be updated in this PR"
+            exit 1
+          fi
