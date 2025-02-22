@@ -971,7 +971,7 @@
             }
           }
           else {
-            filename = GetWindowsSafeName(game.gamename)
+            filename = game.gamename
             InitiateTranscript(filename)
           }
         }
