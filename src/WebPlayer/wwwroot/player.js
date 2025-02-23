@@ -171,7 +171,7 @@ function ASLEvent(event, parameter) {
     // using setTimeout here to work around a double-submission race condition which seems to only affect Firefox,
     // even though we use "return false" to suppress submission of the form with the Enter key.
     window.setTimeout(async function () {
-        await WebPlayer.uiSendEvent(event, parameter);
+        await WebPlayer.uiSendEvent(event, "" + parameter);
     }, 100);
     return true;
 }
