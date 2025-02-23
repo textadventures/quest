@@ -1431,7 +1431,7 @@ function SaveTranscript(text){
   writeToTranscript(text);  
 }
 
-var transcriptUrl = 'TranscriptViewer';
+var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
 function showTranscript(){
