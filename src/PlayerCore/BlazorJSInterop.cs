@@ -61,4 +61,10 @@ public class BlazorJSInterop(Player player)
     {
         await Player.UiSaveGameAsync(html); 
     }
+
+    [JSInvokable]
+    public async Task ShowDebugger()
+    {
+        await Player.ShowDebugger();
+    }
 }

@@ -2,10 +2,20 @@
 @using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
+@if (showDebugger)
+{
+    <p>Debugger...</p>
+}
+else
+{
+    <p>No debugger here</p>
+}
+
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private QuestViva.PlayerCore.Player Player { get; set; } = null!;
+    private bool showDebugger = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -15,9 +25,16 @@
         var game = GameLauncher.GetGame(gameData);
         
         Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
+        Player.OnShowDebugger += OnShowDebugger;
         
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
 
         await Player.Initialise();
+    }
+    
+    private void OnShowDebugger(object? sender, EventArgs args)
+    {
+        showDebugger = true;
+        StateHasChanged();
     }
 }

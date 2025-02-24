@@ -44,7 +44,7 @@ class WebPlayer {
     }
     
     static async showDebugger() {
-        console.log("show debugger...");
+        await WebPlayer.dotNetHelper.invokeMethodAsync("ShowDebugger");
     }
 }
 
