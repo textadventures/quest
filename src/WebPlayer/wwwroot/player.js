@@ -29,6 +29,9 @@ function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
 
+    // TODO: Determine criteria for showing/hiding this button.
+    $("#cmdDebug").show();
+
     // TODO: Actually implement this properly
     // // TODO: Temporarily always showing Save button here - need to work out where the game gets
     // // saved (localStorage?), and if we implement server-side saving below
@@ -298,4 +301,8 @@ function isLocalStorageAvailable(){
     } catch(e) {
         return false;
     }
+}
+
+async function showDebugger() {
+    await WebPlayer.showDebugger();
 }

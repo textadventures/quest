@@ -33,7 +33,12 @@ $(function () {
         saveGame();
         afterSave();
     });
-
+    
+    const cmdDebug = document.getElementById("cmdDebug");
+    cmdDebug.addEventListener("click", async () => {
+        await showDebugger();
+    });
+    
     $("#lstInventory").selectable({
         selected: function (event, ui) {
             $(ui.selected).siblings().removeClass("ui-selected");

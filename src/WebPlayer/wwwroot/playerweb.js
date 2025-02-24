@@ -42,6 +42,10 @@ class WebPlayer {
     static async uiSaveGame(html) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
     }
+    
+    static async showDebugger() {
+        console.log("show debugger...");
+    }
 }
 
 window.WebPlayer = WebPlayer;
