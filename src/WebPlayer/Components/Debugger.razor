@@ -1,0 +1,19 @@
+@using QuestViva.Common
+
+<dialog id="questVivaDebugger">
+    <button @onclick="CloseDialog">Close</button>
+    @foreach (var objectType in Game.DebuggerObjectTypes)
+    {
+        <p>@objectType</p>
+    }
+</dialog>
+
+@code {
+    [Parameter] public required IGameDebug Game { get; set; }
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+    
+    private async Task CloseDialog()
+    {
+        await JS.InvokeVoidAsync("WebPlayer.closeDebugger");
+    }
+}

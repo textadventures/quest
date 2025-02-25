@@ -2,20 +2,16 @@
 @using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
-@if (canDebug)
+@if (gameDebug != null)
 {
-    <dialog id="questVivaDebugger">
-        <button @onclick="CloseDialog">Close</button>
-        <h2>Native HTML Dialog</h2>
-        <p>This is a native HTML dialog opened from Blazor.</p>
-    </dialog>
+    <Debugger Game="@gameDebug"></Debugger>
 }
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private QuestViva.PlayerCore.Player Player { get; set; } = null!;
-    private bool canDebug = false;
+    private IGameDebug? gameDebug;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -28,23 +24,9 @@
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
 
         await Player.Initialise();
-
-        if (game is IGameDebug debug)
-        {
-            await InitDebugger(debug);
-        }
-    }
-    
-    private async Task CloseDialog()
-    {
-        await JS.InvokeVoidAsync("WebPlayer.closeDebugger");
-    }
-
-    private async Task InitDebugger(IGameDebug game)
-    {
-        canDebug = game.DebugEnabled;
-        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", canDebug);
+        
+        gameDebug = game as IGameDebug;
+        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
         StateHasChanged();
-        if (!canDebug) return;
     }
 }
