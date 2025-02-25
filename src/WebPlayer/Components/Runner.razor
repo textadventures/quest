@@ -2,20 +2,16 @@
 @using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
-@if (showDebugger)
-{
-    <p>Debugger...</p>
-}
-else
-{
-    <p>No debugger here</p>
-}
+<dialog id="questVivaDebugger">
+    <h2>Native HTML Dialog</h2>
+    <p>This is a native HTML dialog opened from Blazor.</p>
+    <button @onclick="CloseDialog">Close</button>
+</dialog>
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private QuestViva.PlayerCore.Player Player { get; set; } = null!;
-    private bool showDebugger = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -25,16 +21,14 @@ else
         var game = GameLauncher.GetGame(gameData);
         
         Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
-        Player.OnShowDebugger += OnShowDebugger;
         
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
 
         await Player.Initialise();
     }
     
-    private void OnShowDebugger(object? sender, EventArgs args)
+    private async Task CloseDialog()
     {
-        showDebugger = true;
-        StateHasChanged();
+        await JS.InvokeVoidAsync("WebPlayer.closeDebugger");
     }
 }

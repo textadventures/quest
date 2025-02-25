@@ -5,6 +5,11 @@ class WebPlayer {
         WebPlayer.dotNetHelper = value;
     }
     
+    static closeDebugger() {
+        const dialog = document.getElementById("questVivaDebugger");
+        dialog.close();
+    }
+    
     static async sendCommand(command, tickCount, metadata) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
@@ -41,10 +46,6 @@ class WebPlayer {
     
     static async uiSaveGame(html) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
-    }
-    
-    static async showDebugger() {
-        await WebPlayer.dotNetHelper.invokeMethodAsync("ShowDebugger");
     }
 }
 

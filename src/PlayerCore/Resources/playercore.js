@@ -35,8 +35,9 @@ $(function () {
     });
     
     const cmdDebug = document.getElementById("cmdDebug");
-    cmdDebug.addEventListener("click", async () => {
-        await showDebugger();
+    cmdDebug.addEventListener("click", () => {
+        const dialog = document.getElementById("questVivaDebugger");
+        dialog.showModal();
     });
     
     $("#lstInventory").selectable({

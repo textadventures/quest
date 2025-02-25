@@ -302,7 +302,3 @@ function isLocalStorageAvailable(){
         return false;
     }
 }
-
-async function showDebugger() {
-    await WebPlayer.showDebugger();
-}
