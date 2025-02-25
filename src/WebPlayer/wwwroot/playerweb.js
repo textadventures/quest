@@ -10,6 +10,11 @@ class WebPlayer {
         dialog.close();
     }
     
+    static setCanDebug(value) {
+        const cmdDebug = document.getElementById("cmdDebug");
+        cmdDebug.style.display = value ? "initial" : "none";
+    }
+    
     static async sendCommand(command, tickCount, metadata) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
