@@ -33,7 +33,12 @@
         }
     </div>
     <div class="tab-content">
-        <p>Content for Tab @activeTab</p>
+        <ul>
+            @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[activeTab]))
+            {
+                <li>@obj</li>
+            }
+        </ul>
     </div>
 </dialog>
 
