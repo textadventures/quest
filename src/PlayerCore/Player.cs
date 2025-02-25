@@ -19,8 +19,6 @@ public class Player : IPlayerHelperUI
     public IJSRuntime JSRuntime { get; }
     public BlazorJSInterop JSInterop { get; }
 
-    public event EventHandler? OnShowDebugger;
-
     public Player(IGame game, string resourcesId, IJSRuntime jsRuntime)
     {
         ResourcesId = resourcesId;
@@ -441,11 +439,5 @@ public class Player : IPlayerHelperUI
             var data = PlayerHelper.Game.Save(html);
             AddJavaScriptToBuffer("saveGameResponse", data);
         });
-    }
-
-    public Task ShowDebugger()
-    {
-        OnShowDebugger?.Invoke(this, EventArgs.Empty);
-        return Task.CompletedTask;
     }
 }
