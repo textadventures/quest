@@ -1,16 +1,46 @@
 @using QuestViva.Common
 
+<style scoped>
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .tab.active {
+        border-bottom: 2px solid #007BFF;
+        font-weight: bold;
+    }
+
+    .tab-content {
+        padding: 20px 0;
+    }
+</style>
+
 <dialog id="questVivaDebugger">
     <button @onclick="CloseDialog">Close</button>
-    @foreach (var objectType in Game.DebuggerObjectTypes)
-    {
-        <p>@objectType</p>
-    }
+    <div class="tabs">
+        @for (var i = 0; i < Game.DebuggerObjectTypes.Count; i++)
+        {
+            var tab = i;
+            <div class="tab @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
+                @Game.DebuggerObjectTypes[i]
+            </div>
+        }
+    </div>
+    <div class="tab-content">
+        <p>Content for Tab @activeTab</p>
+    </div>
 </dialog>
 
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
+    private int activeTab = 0;
     
     private async Task CloseDialog()
     {
