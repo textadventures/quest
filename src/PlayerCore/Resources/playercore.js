@@ -129,17 +129,8 @@ $(function () {
 
     ui_init();
     updateStatusVisibility();
-
-    var overrideContextMenuClick = function(e) {
-        if (!e) e = window.event;
-        if ((e.type && e.type == "contextmenu") || (e.button && e.button == 2) || (e.which && e.which == 3)) {
-            return false;
-        }
-        return true;
-    };
+    
     if (document.layers) document.captureEvents(Event.MOUSEDOWN);
-    document.onmousedown = overrideContextMenuClick;
-    document.oncontextmenu = overrideContextMenuClick;
 
     $("#txtCommand").focus();
 });
