@@ -13,45 +13,126 @@
     dialog::backdrop {
         background: rgba(0, 0, 0, 0.5);
     }
-    
-    .tabs {
+
+    .debugger-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .debugger-tabs {
         display: flex;
         border-bottom: 1px solid #ccc;
     }
 
-    .tab {
+    .tab-button {
         padding: 10px 20px;
+        background: none;
+        border: none;
         cursor: pointer;
+        outline: none;
+        font: inherit;
     }
 
-    .tab.active {
+    .tab-button:hover {
+        background-color: #e0e0e0;
+    }
+
+    .tab-button.active {
+        background-color: #fff;
         border-bottom: 2px solid #007BFF;
         font-weight: bold;
     }
+    
+    .debugger-main {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
 
-    .tab-content {
-        padding: 20px 0;
+    .left-pane {
+        width: 200px;
+        min-width: 150px;
+        border-right: 1px solid #ccc;
+        overflow-y: auto;
+        padding: 10px;
+    }
+
+    .right-pane {
+        flex: 1;
+        overflow: auto;
+        padding: 10px;
+    }
+    
+    .debugger-container table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+    }
+
+    .debugger-container th, .debugger-container td {
+        border: 1px solid #ccc;
+        padding: 6px 8px;
+        text-align: left;
+    }
+    
+    .close-button {
+        align-self: flex-end;
+        margin: 10px;
+        padding: 6px 12px;
+        cursor: pointer;
     }
 </style>
 
 <dialog id="questVivaDebugger">
-    <button @onclick="CloseDialog">Close</button>
-    <div class="tabs">
-        @for (var i = 0; i < Game.DebuggerObjectTypes.Count; i++)
-        {
-            var tab = i;
-            <div class="tab @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
-                @Game.DebuggerObjectTypes[i]
-            </div>
-        }
-    </div>
-    <div class="tab-content">
-        <ul>
-            @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[activeTab]))
+    <div class="debugger-container">
+        <div class="debugger-tabs">
+            @for (var i = 0; i < Game.DebuggerObjectTypes.Count; i++)
             {
-                <li>@obj</li>
+                var tab = i;
+                <button class="tab-button @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
+                    @Game.DebuggerObjectTypes[i]
+                </button>
             }
-        </ul>
+        </div>
+        <div class="debugger-main">
+            <!-- Left column: object list/tree -->
+            <div class="left-pane">
+                <ul>
+                    @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[activeTab]))
+                    {
+                        <li>@obj</li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Right column: attribute table -->
+            <div class="right-pane">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Value</th>
+                        <th>Source</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>player</td>
+                        <td>object</td>
+                    </tr>
+                    <tr>
+                        <td>location</td>
+                        <td>lounge</td>
+                        <td>defaultobject</td>
+                    </tr>
+                    <!-- etc. -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button @onclick="CloseDialog" class="close-button">Close</button>
     </div>
 </dialog>
 
