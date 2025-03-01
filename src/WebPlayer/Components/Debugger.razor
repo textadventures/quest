@@ -19,30 +19,6 @@
         flex-direction: column;
         height: 100%;
     }
-
-    .debugger-tabs {
-        display: flex;
-        border-bottom: 1px solid #ccc;
-    }
-
-    .tab-button {
-        padding: 10px 20px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        outline: none;
-        font: inherit;
-    }
-
-    .tab-button:hover {
-        background-color: #e0e0e0;
-    }
-
-    .tab-button.active {
-        background-color: #fff;
-        border-bottom: 2px solid #007BFF;
-        font-weight: bold;
-    }
     
     .debugger-main {
         flex: 1;
@@ -64,18 +40,6 @@
         padding: 10px;
     }
     
-    .debugger-container table {
-        width: 100%;
-        border-collapse: collapse;
-        border: 1px solid #ccc;
-    }
-
-    .debugger-container th, .debugger-container td {
-        border: 1px solid #ccc;
-        padding: 6px 8px;
-        text-align: left;
-    }
-    
     .close-button {
         align-self: flex-end;
         margin: 10px;
@@ -86,15 +50,17 @@
 
 <dialog id="questVivaDebugger">
     <div class="debugger-container">
-        <div class="debugger-tabs">
+        <ul class="nav nav-tabs">
             @for (var i = 0; i < Game.DebuggerObjectTypes.Count; i++)
             {
                 var tab = i;
-                <button class="tab-button @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
-                    @Game.DebuggerObjectTypes[i]
-                </button>
+                <li class="nav-item">
+                    <button class="nav-link @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
+                        @Game.DebuggerObjectTypes[i]
+                    </button>
+                </li>
             }
-        </div>
+        </ul>
         <div class="debugger-main">
             <!-- Left column: object list/tree -->
             <div class="left-pane">
@@ -108,7 +74,7 @@
 
             <!-- Right column: attribute table -->
             <div class="right-pane">
-                <table>
+                <table class="table table-sm">
                     <thead>
                     <tr>
                         <th>Attribute</th>
@@ -132,7 +98,7 @@
                 </table>
             </div>
         </div>
-        <button @onclick="CloseDialog" class="close-button">Close</button>
+        <button @onclick="CloseDialog" class="close-button btn btn-primary">Close</button>
     </div>
 </dialog>
 
