@@ -157,11 +157,7 @@ function sendCommand(text, metadata) {
     
     // TODO: See if setTimeout is still needed here
     window.setTimeout(async function () {
-        // TODO: Check metadata format
-        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), {
-            command: text,
-            metadata
-        });
+        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
     }, 100);
 }
 
