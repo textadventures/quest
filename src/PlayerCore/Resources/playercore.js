@@ -442,13 +442,12 @@ function paneButtonClick(target, button) {
     var selectedElementId = selectedListItem.data("elementid");
     var selectedElementName = selectedListItem.data("elementname");
     var verb = button.data("verb");
-    var metadata = new Object();
+    var metadata = {};
     metadata[selectedElementName] = selectedElementId;
-    var metadataString = JSON.stringify(metadata);
 
     if (selectedObject.length > 0) {
         var cmd = verb.toLowerCase() + " " + selectedElementName;
-        sendCommand(cmd, metadataString);
+        sendCommand(cmd, metadata);
     }
 }
 
