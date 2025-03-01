@@ -8,6 +8,8 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         width: 100%;
         height: 100%;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1rem;
     }
 
     dialog::backdrop {
@@ -118,7 +120,7 @@
                         {
                             foreach (var attr in Game.GetDebugData(selectedObject).Data)
                             {
-                                <tr>
+                                <tr class="@(attr.Value.IsInherited ? "table-secondary" : "")">
                                     <td>@attr.Key</td>
                                     <td>@attr.Value.Value</td>
                                     <td>@attr.Value.Source</td>
