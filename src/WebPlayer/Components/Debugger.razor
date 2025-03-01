@@ -34,6 +34,27 @@
         padding: 10px;
     }
 
+    .left-pane ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .left-pane li {
+        padding: 6px 8px;
+        cursor: pointer;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .left-pane li:hover {
+        background-color: #f0f0f0;
+    }
+
+    .left-pane li.selected {
+        background-color: #007BFF;
+        color: #fff;
+    }
+
     .right-pane {
         flex: 1;
         overflow: auto;
@@ -55,7 +76,7 @@
             {
                 var tab = i;
                 <li class="nav-item">
-                    <button class="nav-link @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
+                    <button class="nav-link @(i == activeTab ? "active" : "")" @onclick="() => OnTabSelected(tab)">
                         @Game.DebuggerObjectTypes[i]
                     </button>
                 </li>
@@ -67,7 +88,11 @@
                 <ul>
                     @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[activeTab]))
                     {
-                        <li>@obj</li>
+                        <li
+                            class="@(obj == selectedObject ? "selected" : "")"
+                            @onclick="() => OnObjectSelected(obj)">
+                            @obj
+                        </li>
                     }
                 </ul>
             </div>
@@ -83,17 +108,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>name</td>
-                        <td>player</td>
-                        <td>object</td>
-                    </tr>
-                    <tr>
-                        <td>location</td>
-                        <td>lounge</td>
-                        <td>defaultobject</td>
-                    </tr>
-                    <!-- etc. -->
+                        @if (selectedObject == null)
+                        {
+                            <tr>
+                                <td colspan="3">Select an object to view its attributes</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var attr in Game.GetDebugData(selectedObject).Data)
+                            {
+                                <tr>
+                                    <td>@attr.Key</td>
+                                    <td>@attr.Value.Value</td>
+                                    <td>@attr.Value.Source</td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
@@ -106,9 +137,21 @@
     [Parameter] public required IGameDebug Game { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private int activeTab = 0;
+    private string? selectedObject;
     
     private async Task CloseDialog()
     {
         await JS.InvokeVoidAsync("WebPlayer.closeDebugger");
+    }
+    
+    private void OnTabSelected(int tab)
+    {
+        activeTab = tab;
+        selectedObject = null;
+    }
+    
+    private void OnObjectSelected(string objName)
+    {
+        selectedObject = objName;
     }
 }
