@@ -1,0 +1,17 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Simple">
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+
+    <object name="thing">
+    </object>
+  </object>
+
+</asl>
