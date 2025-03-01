@@ -157,11 +157,7 @@ function sendCommand(text, metadata) {
     
     // TODO: See if setTimeout is still needed here
     window.setTimeout(async function () {
-        // TODO: Check metadata format
-        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), {
-            command: text,
-            metadata
-        });
+        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
     }, 100);
 }
 
@@ -171,7 +167,7 @@ function ASLEvent(event, parameter) {
     // using setTimeout here to work around a double-submission race condition which seems to only affect Firefox,
     // even though we use "return false" to suppress submission of the form with the Enter key.
     window.setTimeout(async function () {
-        await WebPlayer.uiSendEvent(event, parameter);
+        await WebPlayer.uiSendEvent(event, "" + parameter);
     }, 100);
     return true;
 }
@@ -260,4 +256,42 @@ function addExternalScript(url) {
     const script = document.createElement("script");
     script.src = url;
     document.head.appendChild(script);
+}
+
+function WriteToLog(data){
+    // Do nothing.
+  }
+  
+function WriteToTranscript(data){
+    if (noTranscript){
+      // Do nothing.
+      return;
+    }
+    if (!isLocalStorageAvailable()){
+      console.error("There is no localStorage. Disabling transcript functionality.");
+      noTranscript = true;
+      savingTranscript = false;
+      return;
+    }
+    var tName = transcriptName || "Transcript";
+    if (data.indexOf("___SCRIPTDATA___") > -1) {
+      tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
+      data = data.split("___SCRIPTDATA___")[1];
+    }
+    var oldData = localStorage.getItem("questtranscript-" + tName) || "";
+    localStorage.setItem("questtranscript-" + tName, oldData + data);
+}
+  
+// Make sure localStorage is available, hopefully without throwing any errors!
+  
+/* https://stackoverflow.com/a/16427747 */
+function isLocalStorageAvailable(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
 }

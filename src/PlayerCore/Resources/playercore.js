@@ -698,16 +698,15 @@ function bindMenu(linkid, verbs, text, elementId) {
 function buildMenuOptions(verbs, text, elementId) {
     var verbsList = verbs.split("/");
     var options = [];
-    var metadata = new Object();
+    var metadata = {};
     metadata[text] = elementId;
-    var metadataString = JSON.stringify(metadata);
 
     $.each(verbsList, function (key, value) {
         options = options.concat({
             title: value,
             action: {
                 callback: function (selectedValue) {
-                    sendCommand(selectedValue.toLowerCase() + " " + text, metadataString);
+                    sendCommand(selectedValue.toLowerCase() + " " + text, metadata);
                 }
             }
         });
@@ -1431,7 +1430,7 @@ function SaveTranscript(text){
   writeToTranscript(text);  
 }
 
-var transcriptUrl = 'TranscriptViewer';
+var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
 function showTranscript(){
