@@ -42,17 +42,20 @@
         padding: 0;
     }
 
-    .left-pane li {
-        padding: 6px 8px;
+    .list-item-button {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
         cursor: pointer;
-        border-bottom: 1px solid #ddd;
+        padding: 6px 8px;
     }
 
-    .left-pane li:hover {
+    .list-item-button:hover {
         background-color: #f0f0f0;
     }
 
-    .left-pane li.selected {
+    .list-item-button.selected {
         background-color: #007BFF;
         color: #fff;
     }
@@ -90,10 +93,12 @@
                 <ul>
                     @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[activeTab]))
                     {
-                        <li
-                            class="@(obj == selectedObject ? "selected" : "")"
-                            @onclick="() => OnObjectSelected(obj)">
-                            @obj
+                        <li>
+                            <button
+                                class="list-item-button @(obj == selectedObject ? "selected" : "")"
+                                @onclick="() => OnObjectSelected(obj)">
+                                @obj
+                            </button>
                         </li>
                     }
                 </ul>
