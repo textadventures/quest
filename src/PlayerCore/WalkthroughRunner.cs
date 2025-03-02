@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
@@ -16,7 +17,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
     private bool _cancelled;
 
     public event OutputEventHandler Output;
-    public delegate void OutputEventHandler(string text);
+    public delegate Task OutputEventHandler(string text);
     public event MarkScrollPositionEventHandler MarkScrollPosition;
     public delegate void MarkScrollPositionEventHandler();
 
