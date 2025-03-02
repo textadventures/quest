@@ -21,7 +21,10 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
     public event MarkScrollPositionEventHandler MarkScrollPosition;
     public delegate void MarkScrollPositionEventHandler();
 
-    public void Run()
+    public event ClearBufferEventHandler ClearBuffer;
+    public delegate Task ClearBufferEventHandler();
+
+    public async Task Run()
     {
         var delay = 0;
         var dateStart = DateTime.Now;
@@ -82,6 +85,8 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             {
                 _game.SendCommand(cmd);
             }
+            
+            await ClearBuffer?.Invoke();
 
             if (_cancelled)
             {

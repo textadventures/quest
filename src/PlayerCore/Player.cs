@@ -485,12 +485,14 @@ public class Player : IPlayerHelperUI
             {
                 _walkthroughRunner.MarkScrollPosition -= Runner_MarkScrollPosition;
                 _walkthroughRunner.Output -= Runner_Output;
+                _walkthroughRunner.ClearBuffer -= ClearBuffer;
             }
             _walkthroughRunner = value;
             if (_walkthroughRunner != null)
             {
                 _walkthroughRunner.MarkScrollPosition += Runner_MarkScrollPosition;
                 _walkthroughRunner.Output += Runner_Output;
+                _walkthroughRunner.ClearBuffer += ClearBuffer;
             }
         }
     }
@@ -555,7 +557,7 @@ public class Player : IPlayerHelperUI
 
         try
         {
-            Runner.Run();
+            await Runner.Run();
             await ClearBuffer();
         }
         catch (Exception ex)
