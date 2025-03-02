@@ -500,7 +500,6 @@ public class Player : IPlayerHelperUI
     private Task Runner_Output(string text)
     {
         OutputText(text);
-        // await ClearBuffer();
         return Task.CompletedTask;
     }
 
