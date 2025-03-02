@@ -1,0 +1,44 @@
+@using QuestViva.Common
+
+<style scoped>
+    .pane {
+        flex: 1;
+        overflow: auto;
+        padding: 10px;
+    }
+</style>
+
+<List Items="Game.Walkthroughs.Walkthroughs.Keys" OnItemSelected="OnWalkthroughSelected"></List>
+
+<div class="pane">
+    @if (selectedWalkthrough == null)
+    {
+        <p>Select a walkthrough to view its steps</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var step in Game.Walkthroughs.Walkthroughs[selectedWalkthrough].Steps)
+            {
+                <li>@step</li>
+            }
+        </ul>
+    }
+</div>
+
+<div class="pane">
+    @if (selectedWalkthrough != null)
+    {
+        <button class="btn btn-primary">Run</button>
+    }
+</div>
+
+@code {
+    [Parameter] public required IGameDebug Game { get; set; }
+    private string? selectedWalkthrough;
+
+    private void OnWalkthroughSelected(string walkthrough)
+    {
+        selectedWalkthrough = walkthrough;
+    }
+}

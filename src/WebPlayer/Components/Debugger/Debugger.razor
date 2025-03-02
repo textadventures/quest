@@ -48,7 +48,7 @@
         <div class="debugger-main">
             @if (activeTab == "Walkthrough")
             {
-                
+                <Walkthrough Game="Game"></Walkthrough>
             }
             else if (activeTab != "")
             {
@@ -62,7 +62,7 @@
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
-    private string activeTab = "";
+    private string activeTab = "Walkthrough";
 
     private RenderFragment TabItem(string tab) =>
         @<li class="nav-item">
