@@ -483,14 +483,12 @@ public class Player : IPlayerHelperUI
         {
             if (_walkthroughRunner != null)
             {
-                _walkthroughRunner.MarkScrollPosition -= Runner_MarkScrollPosition;
                 _walkthroughRunner.Output -= Runner_Output;
                 _walkthroughRunner.ClearBuffer -= ClearBuffer;
             }
             _walkthroughRunner = value;
             if (_walkthroughRunner != null)
             {
-                _walkthroughRunner.MarkScrollPosition += Runner_MarkScrollPosition;
                 _walkthroughRunner.Output += Runner_Output;
                 _walkthroughRunner.ClearBuffer += ClearBuffer;
             }
@@ -498,13 +496,6 @@ public class Player : IPlayerHelperUI
     }
 
     private WalkthroughRunner? _walkthroughRunner = null;
-
-    private void Runner_MarkScrollPosition()
-    {
-        // TODO
-        // ctlPlayerHtml.MarkScrollPosition()
-        // ClearBuffer()
-    }
 
     private Task Runner_Output(string text)
     {
