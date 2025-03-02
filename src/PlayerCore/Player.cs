@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using QuestViva.Common;
@@ -112,6 +113,7 @@ public class Player : IPlayerHelperUI
     
     private void GameFinished()
     {
+        CancelWalkthrough();
         AddJavaScriptToBuffer("gameFinished");
         Finished = true;
     }
@@ -130,22 +132,50 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.ShowMenu(MenuData menuData)
     {
-        AddJavaScriptToBuffer("showMenu", menuData.Caption, menuData.Options, menuData.AllowCancel);
+        if (Runner != null)
+        {
+            Runner.ShowMenu(menuData);
+        }
+        else
+        {
+            AddJavaScriptToBuffer("showMenu", menuData.Caption, menuData.Options, menuData.AllowCancel);
+        }
     }
 
     void IPlayer.DoWait()
     {
-        AddJavaScriptToBuffer("beginWait");
+        if (Runner != null)
+        {
+            Runner.BeginWait();
+        }
+        else
+        {
+            AddJavaScriptToBuffer("beginWait");
+        }
     }
 
     void IPlayer.DoPause(int ms)
     {
-        AddJavaScriptToBuffer("beginPause", ms);
+        if (Runner != null)
+        {
+            Runner.BeginPause();
+        }
+        else
+        {
+            AddJavaScriptToBuffer("beginPause", ms);
+        }
     }
 
     void IPlayer.ShowQuestion(string caption)
     {
-        AddJavaScriptToBuffer("showQuestion", caption);
+        if (Runner != null)
+        {
+            Runner.ShowQuestion(caption);
+        }
+        else
+        {
+            AddJavaScriptToBuffer("showQuestion", caption);
+        }
     }
 
     void IPlayer.SetWindowMenu(MenuData menuData)
@@ -160,6 +190,11 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
     {
+        if (Runner != null && synchronous)
+        {
+            synchronous = false;
+            Runner.BeginWait();
+        }
         string? functionName = null;
         if (filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
         if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
@@ -439,5 +474,97 @@ public class Player : IPlayerHelperUI
             var data = PlayerHelper.Game.Save(html);
             AddJavaScriptToBuffer("saveGameResponse", data);
         });
+    }
+    
+    private WalkthroughRunner? Runner
+    {
+        get => _walkthroughRunner;
+        set
+        {
+            if (_walkthroughRunner != null)
+            {
+                _walkthroughRunner.Output -= Runner_Output;
+                _walkthroughRunner.ClearBuffer -= ClearBuffer;
+            }
+            _walkthroughRunner = value;
+            if (_walkthroughRunner != null)
+            {
+                _walkthroughRunner.Output += Runner_Output;
+                _walkthroughRunner.ClearBuffer += ClearBuffer;
+            }
+        }
+    }
+
+    private WalkthroughRunner? _walkthroughRunner = null;
+
+    private Task Runner_Output(string text)
+    {
+        OutputText(text);
+        return Task.CompletedTask;
+    }
+
+    public async Task RunWalkthrough(string name)
+    {
+        if (InitWalkthrough(name))
+        {
+            await StartWalkthrough();
+        }
+    }
+
+    private bool InitWalkthrough(string name)
+    {
+        if (Runner != null)
+        {
+            return false;
+        }
+        
+        if (PlayerHelper.Game is not IGameDebug gameDebug)
+        {
+            return false;
+        }
+
+        Runner = new WalkthroughRunner(gameDebug, name);
+
+        if (Runner.Steps == 0)
+        {
+            Runner = null;
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task StartWalkthrough()
+    {
+        await Task.Run(WalkthroughRunner);
+    }
+
+    private async Task WalkthroughRunner()
+    {
+        if (Runner == null) return;
+        
+        await JSRuntime.InvokeVoidAsync("WebPlayer.setAnimateScroll", false);
+
+        try
+        {
+            await Runner.Run();
+            await ClearBuffer();
+        }
+        catch (Exception ex)
+        {
+            OutputText($"Error: {ex.Message}");
+        }
+        finally
+        {
+            Runner = null;
+            await JSRuntime.InvokeVoidAsync("WebPlayer.setAnimateScroll", true);
+        }
+    }
+
+    private void CancelWalkthrough()
+    {
+        if (Runner == null) return;
+        Runner.Cancel();
+        Runner = null;
     }
 }

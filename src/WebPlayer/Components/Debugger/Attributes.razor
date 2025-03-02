@@ -1,0 +1,66 @@
+@using QuestViva.Common
+
+<style scoped>
+    .right-pane {
+        flex: 1;
+        overflow: auto;
+        padding: 10px;
+    }
+</style>
+
+<List Items="Game.GetObjects(ActiveTab)" OnItemSelected="OnObjectSelected"></List>
+
+<div class="right-pane">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+            <th>Source</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (selectedObject == null)
+        {
+            <tr>
+                <td colspan="3">Select an object to view its attributes</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var attr in Game.GetDebugData(selectedObject).Data)
+            {
+                <tr class="@(attr.Value.IsInherited ? "table-secondary" : "")">
+                    <td>@attr.Key</td>
+                    <td>@attr.Value.Value</td>
+                    <td>@attr.Value.Source</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public required IGameDebug Game { get; set; }
+    [Parameter] public string ActiveTab { get; set; } = "";
+    private string _previousTab = "";
+
+    private string? selectedObject;
+
+    protected override void OnParametersSet()
+    {
+        if (ActiveTab != _previousTab)
+        {
+            selectedObject = null;
+            _previousTab = ActiveTab;
+        }
+
+        base.OnParametersSet();
+    }
+    
+    private void OnObjectSelected(string objName)
+    {
+        selectedObject = objName;
+    }
+}

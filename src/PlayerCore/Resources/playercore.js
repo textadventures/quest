@@ -327,21 +327,14 @@ function panesVisible(visible) {
 var _animateScroll = true;
 
 function scrollToEnd() {
-    var scrollTo = _animateScroll ? beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() : $(document).height();
-    var currentScrollTop = Math.max($("body").scrollTop(), $("html").scrollTop());
-    if (scrollTo > currentScrollTop) {
-        var maxScrollTop = $(document).height() - $(window).height();
-        if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
-        var distance = scrollTo - currentScrollTop;
-        var duration = _animateScroll ? distance / 0.4 : 1;
-        // Added by The Pixie on behalf of alexandretorres
-        if (duration>2000) duration=2000;
-        $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
+    if (!_animateScroll)
+    {
+        $('html,body').scrollTop(document.body.scrollHeight);
+    }
+    else {
+        $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
     }
     $("#txtCommand").focus();
-    // Added by The Pixie; this is a fall back, as the above seems not to work on some browsers
-    // In fact it may be the all the rest of this can deleted
-    $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
 }
 
 function SetAnimateScroll(value) {
