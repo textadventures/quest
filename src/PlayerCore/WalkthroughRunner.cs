@@ -18,8 +18,6 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
 
     public event OutputEventHandler Output;
     public delegate Task OutputEventHandler(string text);
-    public event MarkScrollPositionEventHandler MarkScrollPosition;
-    public delegate void MarkScrollPositionEventHandler();
 
     public event ClearBufferEventHandler ClearBuffer;
     public delegate Task ClearBufferEventHandler();
@@ -34,8 +32,6 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             {
                 break;
             }
-                
-            MarkScrollPosition?.Invoke();
             
             if (_showingMenu)
             {
@@ -85,8 +81,11 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             {
                 _game.SendCommand(cmd);
             }
-            
-            await ClearBuffer?.Invoke();
+
+            if (ClearBuffer != null)
+            {
+                await ClearBuffer.Invoke();
+            }
 
             if (_cancelled)
             {
