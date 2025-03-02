@@ -551,7 +551,7 @@ public class Player : IPlayerHelperUI
     {
         if (Runner == null) return;
         
-        // BeginInvoke(Sub() ctlPlayerHtml.SetAnimateScroll(False))
+        await JSRuntime.InvokeVoidAsync("WebPlayer.setAnimateScroll", false);
 
         try
         {
@@ -565,7 +565,7 @@ public class Player : IPlayerHelperUI
         finally
         {
             Runner = null;
-            // BeginInvoke(Sub() ctlPlayerHtml.SetAnimateScroll(True))
+            await JSRuntime.InvokeVoidAsync("WebPlayer.setAnimateScroll", true);
         }
     }
 
