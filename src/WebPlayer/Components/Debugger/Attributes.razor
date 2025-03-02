@@ -1,0 +1,72 @@
+@using QuestViva.Common
+<!-- Left column: object list/tree -->
+<div class="left-pane">
+    <ul>
+        @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[ActiveTab]))
+        {
+            <li>
+                <button
+                    class="list-item-button @(obj == selectedObject ? "selected" : "")"
+                    @onclick="() => OnObjectSelected(obj)">
+                    @obj
+                </button>
+            </li>
+        }
+    </ul>
+</div>
+
+<!-- Right column: attribute table -->
+<div class="right-pane">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+            <th>Source</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (selectedObject == null)
+        {
+            <tr>
+                <td colspan="3">Select an object to view its attributes</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var attr in Game.GetDebugData(selectedObject).Data)
+            {
+                <tr class="@(attr.Value.IsInherited ? "table-secondary" : "")">
+                    <td>@attr.Key</td>
+                    <td>@attr.Value.Value</td>
+                    <td>@attr.Value.Source</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public required IGameDebug Game { get; set; }
+    [Parameter] public int ActiveTab { get; set; }
+    private int _previousTab = -1;
+
+    private string? selectedObject;
+
+    protected override void OnParametersSet()
+    {
+        if (ActiveTab != _previousTab)
+        {
+            selectedObject = null;
+            _previousTab = ActiveTab;
+        }
+
+        base.OnParametersSet();
+    }
+    
+    private void OnObjectSelected(string objName)
+    {
+        selectedObject = objName;
+    }
+}
