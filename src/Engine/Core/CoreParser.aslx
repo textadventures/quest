@@ -30,61 +30,53 @@
       }
     }
     if (not handled) {
-      StartTurnOutputSection
-      if (StartsWith (command, "*")) {
-        // Modified by KV to bypass turn scripts and turn counts, and to print "Noted."
-        game.suppressturnscripts = true
-        msg ("")
-        msg (SafeXML (command))
-        msg("Noted.")
-	// Added for Quest 5.8    - KV
-	FinishTurn
-      }
-      else {    
-        shownlink = false
-        if (game.echocommand) {
-          if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
-            foreach (key, metadata) {
-              if (EndsWith(command, key)) {
-                objectname = StringDictionaryItem(metadata, key)
-                object = GetObject(objectname)
-                if (object <> null) {
-                  msg ("")
-                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}" )
-                  shownlink = true
-                }
+      StartTurnOutputSection   
+      shownlink = false
+      if (game.echocommand) {
+        if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
+          foreach (key, metadata) {
+            if (EndsWith(command, key)) {
+              objectname = StringDictionaryItem(metadata, key)
+              object = GetObject(objectname)
+              if (object <> null) {
+                msg ("")
+                msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}" )
+                shownlink = true
               }
             }
           }
-          if (not shownlink) {
-            msg ("")
-            OutputTextRaw ("&gt; " + SafeXML(command))
-          }
         }
-        else {
-          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript")){
-            JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
-          }
-        }
-        if (game.command_newline) {
+        if (not shownlink) {
           msg ("")
+          OutputTextRaw ("&gt; " + SafeXML(command))
         }
-        game.pov.commandmetadata = metadata
-        if (game.multiplecommands){		
-          commands = Split(command, ".")
-          if (ListCount(commands) = 1) {
-            game.pov.commandqueue = null
-            HandleSingleCommand (Trim(command))
-          }
-          else {
-            game.pov.commandqueue = commands
-            HandleNextCommandQueueItem
-          }
-		    }
-        else {
+      }
+      else {
+        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savingtranscript")){
+          JS.writeToTranscript("<span><br/>> " + SafeXML(command) + "<br/></span>")
+        }
+      }
+      if (game.command_newline) {
+        msg ("")
+      }
+      game.pov.commandmetadata = metadata
+      if (game.multiplecommands){
+        foreach (alias, metadata) {
+          command = Replace (command, alias, Replace (alias, ".", "@@@DOT@@@"))
+        }
+        commands = Split(command, ".")
+        if (ListCount(commands) = 1) {
           game.pov.commandqueue = null
-          HandleSingleCommand (Trim(command))	
-        }		
+          HandleSingleCommand (Trim(Replace(command, "@@@DOT@@@", ".")))
+        }
+        else {
+          game.pov.commandqueue = commands
+          HandleNextCommandQueueItem
+        }
+      }
+      else {
+        game.pov.commandqueue = null
+        HandleSingleCommand (Trim(command))	
       }
     }
     ]]>
@@ -136,6 +128,16 @@
       else {
         msg ("[NothingToRepeat]")
       }
+    }
+    else if (StartsWith (command, "*")) {
+      // Modified by KV to bypass turn scripts and turn counts, and to print "Noted."
+      game.suppressturnscripts = true
+      msg ("")
+      msg (SafeXML (command))
+      msg("Noted.")
+      // Added for Quest 5.8    - KV
+      FinishTurn
+      HandleNextCommandQueueItem
     }
     else {
       // Check through all commands for any that match
