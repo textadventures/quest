@@ -43,7 +43,7 @@
 <!-- Left column: object list/tree -->
 <div class="left-pane">
     <ul>
-        @foreach (var obj in Game.GetObjects(Game.DebuggerObjectTypes[ActiveTab]))
+        @foreach (var obj in Game.GetObjects(ActiveTab))
         {
             <li>
                 <button
@@ -90,8 +90,8 @@
 
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
-    [Parameter] public int ActiveTab { get; set; }
-    private int _previousTab = -1;
+    [Parameter] public string ActiveTab { get; set; } = "";
+    private string _previousTab = "";
 
     private string? selectedObject;
 

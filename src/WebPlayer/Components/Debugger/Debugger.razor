@@ -39,18 +39,25 @@
 <dialog id="questVivaDebugger">
     <div class="debugger-container">
         <ul class="nav nav-tabs">
-            @for (var i = 0; i < Game.DebuggerObjectTypes.Count; i++)
+            @TabItem("Walkthrough")
+            @foreach (var tab in Game.DebuggerObjectTypes)
             {
-                var tab = i;
-                <li class="nav-item">
-                    <button class="nav-link @(i == activeTab ? "active" : "")" @onclick="() => activeTab = tab">
-                        @Game.DebuggerObjectTypes[i]
-                    </button>
-                </li>
+                @TabItem(tab)
             }
         </ul>
         <div class="debugger-main">
-            <Attributes Game="Game" ActiveTab="activeTab"></Attributes>
+            @if (activeTab == "")
+            {
+                
+            }
+            else if (activeTab == "Walkthrough")
+            {
+                
+            }
+            else
+            {
+                <Attributes Game="Game" ActiveTab="@activeTab"></Attributes>
+            }
         </div>
         <button @onclick="CloseDialog" class="close-button btn btn-primary">Close</button>
     </div>
@@ -59,8 +66,15 @@
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
-    private int activeTab = 0;
-    
+    private string activeTab = "";
+
+    private RenderFragment TabItem(string tab) =>
+        @<li class="nav-item">
+            <button class="nav-link @(activeTab == tab ? "active" : "")"
+                    @onclick="() => activeTab = tab">
+                @tab
+            </button>
+        </li>;
     
     private async Task CloseDialog()
     {
