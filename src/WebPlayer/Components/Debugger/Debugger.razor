@@ -46,15 +46,11 @@
             }
         </ul>
         <div class="debugger-main">
-            @if (activeTab == "")
+            @if (activeTab == "Walkthrough")
             {
                 
             }
-            else if (activeTab == "Walkthrough")
-            {
-                
-            }
-            else
+            else if (activeTab != "")
             {
                 <Attributes Game="Game" ActiveTab="@activeTab"></Attributes>
             }
