@@ -48,14 +48,14 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             else if (cmd.StartsWith("assert:"))
             {
                 var expr = cmd.Substring(7);
-                WriteLine("<br/><b>Assert:</b> " + expr);
+                WriteLine("<br><b>Assert:</b> " + expr);
                 if (game.Assert(expr))
                 {
-                    WriteLine("<span style=\"color:green\"><b>Pass</b></span>");
+                    WriteLine("<br><span style=\"color:green\"><b>Pass</b></span>");
                 }
                 else
                 {
-                    WriteLine("<span style=\"color:red\"><b>Failed</b></span>");
+                    WriteLine("<br><span style=\"color:red\"><b>Failed</b></span>");
                     return;
                 }
             }
