@@ -5,7 +5,7 @@
 
 @if (gameDebug != null)
 {
-    <Debugger Game="@gameDebug"></Debugger>
+    <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
 }
 
 @code {
@@ -29,5 +29,10 @@
         gameDebug = game as IGameDebug;
         await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
         StateHasChanged();
+    }
+
+    private async Task RunWalkthrough(string name)
+    {
+        await Player.RunWalkthrough(name);
     }
 }

@@ -29,16 +29,25 @@
 <div class="pane">
     @if (selectedWalkthrough != null)
     {
-        <button class="btn btn-primary">Run</button>
+        <button class="btn btn-primary" @onclick="RunWalkthrough">Run</button>
     }
 </div>
 
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
+    [Parameter] public EventCallback<string> OnRunWalkthrough { get; set; }
     private string? selectedWalkthrough;
 
     private void OnWalkthroughSelected(string walkthrough)
     {
         selectedWalkthrough = walkthrough;
+    }
+    
+    private void RunWalkthrough()
+    {
+        if (selectedWalkthrough != null)
+        {
+            OnRunWalkthrough.InvokeAsync(selectedWalkthrough);
+        }
     }
 }

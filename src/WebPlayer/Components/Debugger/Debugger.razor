@@ -48,7 +48,7 @@
         <div class="debugger-main">
             @if (activeTab == "Walkthrough")
             {
-                <Walkthrough Game="Game"></Walkthrough>
+                <Walkthrough Game="Game" OnRunWalkthrough="RunWalkthrough"></Walkthrough>
             }
             else if (activeTab != "")
             {
@@ -61,6 +61,7 @@
 
 @code {
     [Parameter] public required IGameDebug Game { get; set; }
+    [Parameter] public EventCallback<string> OnRunWalkthrough { get; set; }
     [Inject] private IJSRuntime JS { get; set; } = null!;
     private string activeTab = "Walkthrough";
 
@@ -71,6 +72,12 @@
                 @tab
             </button>
         </li>;
+
+    private async Task RunWalkthrough(string name)
+    {
+        await CloseDialog();
+        await OnRunWalkthrough.InvokeAsync(name);
+    }
     
     private async Task CloseDialog()
     {

@@ -440,4 +440,10 @@ public class Player : IPlayerHelperUI
             AddJavaScriptToBuffer("saveGameResponse", data);
         });
     }
+
+    public async Task RunWalkthrough(string name)
+    {
+        OutputText($"Run walkthrough {name}...");
+        await ClearBuffer();
+    }
 }
