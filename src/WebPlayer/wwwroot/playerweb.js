@@ -15,6 +15,10 @@ class WebPlayer {
         cmdDebug.style.display = value ? "initial" : "none";
     }
     
+    static setAnimateScroll(value) {
+        _animateScroll = value;
+    }
+    
     static async sendCommand(command, tickCount, metadata) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
