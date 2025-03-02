@@ -504,19 +504,18 @@ public class Player : IPlayerHelperUI
         // ClearBuffer()
     }
 
-    private async Task Runner_Output(string text)
+    private Task Runner_Output(string text)
     {
         OutputText(text);
-        await ClearBuffer();
+        // await ClearBuffer();
+        return Task.CompletedTask;
     }
 
     public async Task RunWalkthrough(string name)
     {
-        OutputText($"Run walkthrough {name}...");
-        await ClearBuffer();
         if (InitWalkthrough(name))
         {
-            StartWalkthrough();
+            await StartWalkthrough();
         }
     }
 
@@ -543,13 +542,12 @@ public class Player : IPlayerHelperUI
         return true;
     }
 
-    private void StartWalkthrough()
+    private async Task StartWalkthrough()
     {
-        var runnerThread = new Thread(WalkthroughRunner);
-        runnerThread.Start();
+        await Task.Run(WalkthroughRunner);
     }
 
-    private void WalkthroughRunner()
+    private async Task WalkthroughRunner()
     {
         if (Runner == null) return;
         
@@ -558,6 +556,7 @@ public class Player : IPlayerHelperUI
         try
         {
             Runner.Run();
+            await ClearBuffer();
         }
         catch (Exception ex)
         {
