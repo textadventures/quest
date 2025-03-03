@@ -6233,6 +6233,9 @@ Public Class LegacyGame
     End Sub
 
     Private Sub PlayMedia(filename As String, sync As Boolean, looped As Boolean)
+        If Config.ReadGameFileFromAzureBlob Then
+            filename = LCase(filename)
+        End If
         If filename.Length = 0 Then
             _player.StopSound()
         Else
@@ -7303,6 +7306,9 @@ Public Class LegacyGame
     End Sub
 
     Private Sub ShowPictureInText(filename As String)
+        If Config.ReadGameFileFromAzureBlob Then
+            filename = LCase(filename)
+        End If
         If Not _useStaticFrameForPictures Then
             _player.ShowPicture(filename)
         Else
@@ -8754,6 +8760,9 @@ Public Class LegacyGame
         ' this is no longer supported - ALL images are displayed in-line with the game text. Any
         ' image caption is displayed as text, and any image size specified is ignored.
 
+        If Config.ReadGameFileFromAzureBlob Then
+            filename = LCase(filename)
+        End If
         Dim caption As String = ""
 
         If InStr(filename, ";") <> 0 Then
