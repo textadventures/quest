@@ -105,7 +105,7 @@
           game.pov.commandqueue = newqueue
         }
         if (LengthOf(thiscommand) > 0) {
-          HandleSingleCommand (thiscommand)
+          HandleSingleCommand (Trim(Replace(thiscommand, "@@@DOT@@@", ".")))
         }
         else {
           HandleNextCommandQueueItem
@@ -140,6 +140,7 @@
       HandleNextCommandQueueItem
     }
     else {
+
       // Check through all commands for any that match
       candidates = NewObjectList()
       foreach (cmd, ScopeCommands()) {
