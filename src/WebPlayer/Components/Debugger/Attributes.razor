@@ -28,7 +28,7 @@
         }
         else
         {
-            foreach (var attr in Game.GetDebugData(selectedObject).Data)
+            foreach (var attr in Game.GetDebugData(ActiveTab, selectedObject).Data)
             {
                 <tr class="@(attr.Value.IsInherited ? "table-secondary" : "")">
                     <td>@attr.Key</td>

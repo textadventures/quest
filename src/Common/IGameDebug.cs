@@ -14,7 +14,7 @@ namespace QuestViva.Common
         bool DebugEnabled { get; }
         event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
         List<string> GetObjects(string type);
-        DebugData GetDebugData(string obj);
+        DebugData GetDebugData(string tab, string obj);
         List<string> DebuggerObjectTypes { get; }
         IWalkthroughs Walkthroughs { get; }
         bool Assert(string expression);

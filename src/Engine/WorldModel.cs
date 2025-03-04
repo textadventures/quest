@@ -888,6 +888,11 @@ namespace QuestViva.Engine
             return result;
         }
 
+        public DebugData GetDebugData(string _, string el)
+        {
+            return m_elements.Get(el).GetDebugData();
+        }
+        
         public DebugData GetDebugData(string el)
         {
             return m_elements.Get(el).GetDebugData();
