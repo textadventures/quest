@@ -32,7 +32,7 @@ namespace QuestViva.Engine
             m_walkthroughs = walkthroughs;
         }
 
-        public List<string> Steps
+        public string[] Steps
         {
             get {
                 if (m_element.Parent == null)
@@ -44,12 +44,12 @@ namespace QuestViva.Engine
                     List<string> result = new List<string>();
                     result.AddRange(m_walkthroughs.Walkthroughs[m_element.Parent.Name].Steps);
                     result.AddRange(ThisSteps());
-                    return result;
+                    return result.ToArray();
                 }
             }
         }
 
-        private List<string> ThisSteps()
+        private string[] ThisSteps()
         {
             List<string> result = new List<string>();
             IEnumerable<string> steps = m_element.Fields[FieldDefinitions.Steps];
@@ -57,7 +57,7 @@ namespace QuestViva.Engine
             {
                 result.AddRange(steps);
             }
-            return result;
+            return result.ToArray();
         }
     }
 }

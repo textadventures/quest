@@ -14,7 +14,7 @@ namespace QuestViva.Common
         bool DebugEnabled { get; }
         event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
         List<string> GetObjects(string type);
-        DebugData GetDebugData(string obj);
+        DebugData GetDebugData(string tab, string obj);
         List<string> DebuggerObjectTypes { get; }
         IWalkthroughs Walkthroughs { get; }
         bool Assert(string expression);
@@ -66,6 +66,8 @@ namespace QuestViva.Common
 
     public class DebugData
     {
+        public static readonly DebugData Empty = new DebugData();
+        
         private Dictionary<string, DebugDataItem> m_data = new Dictionary<string, DebugDataItem>();
         public Dictionary<string, DebugDataItem> Data
         {
@@ -81,6 +83,6 @@ namespace QuestViva.Common
 
     public interface IWalkthrough
     {
-        List<string> Steps { get; }
+        string[] Steps { get; }
     }
 }
