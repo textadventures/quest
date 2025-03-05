@@ -38,7 +38,7 @@
         {
             <li>
                 <button
-                    class="list-item-button @(item == selectedItem ? "selected" : "")"
+                    class="list-item-button @(item == SelectedItem ? "selected" : "")"
                     @onclick="() => ItemSelected(item)">
                     @item
                 </button>
@@ -50,15 +50,15 @@
 @code {
     [Parameter] public IEnumerable<string> Items { get; set; } = [];
     [Parameter] public EventCallback<string> OnItemSelected { get; set; }
-    private string? selectedItem;
+    [Parameter] public string? SelectedItem { get; set; }
     
     private void ItemSelected(string item)
     {
-        if (item == selectedItem)
+        if (item == SelectedItem)
         {
             return;
         }
-        selectedItem = item;
+        SelectedItem = item;
         OnItemSelected.InvokeAsync(item);
     }
 }

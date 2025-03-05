@@ -8,7 +8,7 @@
     }
 </style>
 
-<List Items="Game.GetObjects(ActiveTab)" OnItemSelected="OnObjectSelected"></List>
+<List Items="Game.GetObjects(ActiveTab)" OnItemSelected="OnObjectSelected" SelectedItem="@selectedObject"></List>
 
 <div class="right-pane">
     <table class="table table-sm">
