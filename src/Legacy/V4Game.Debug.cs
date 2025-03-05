@@ -18,6 +18,14 @@ public partial class V4Game
         {
             case "Variables":
                 return ["Strings", "Numerics"];
+            case "Game":
+                return [_objs[1].ObjectName];
+            case "Rooms":
+                return _objs.Skip(2).Where(o => o.IsRoom).Select(r => r.ObjectName).ToList();
+            case "Objects":
+                return _objs.Skip(2).Where(o => !o.IsRoom && !o.IsExit).Select(r => r.ObjectName).ToList();
+            case "Exits":
+                return _objs.Skip(2).Where(o => o.IsExit).Select(r => r.ObjectName).ToList();
             default:
                 throw new NotImplementedException();
         }
@@ -62,6 +70,7 @@ public partial class V4Game
 
     public List<string> DebuggerObjectTypes => [
         "Variables",
+        "Game",
         "Rooms",
         "Objects",
         "Exits",
