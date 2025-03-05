@@ -26,6 +26,8 @@ public partial class V4Game
                 return _objs.Skip(2).Where(o => !o.IsRoom && !o.IsExit).Select(r => r.ObjectName).ToList();
             case "Exits":
                 return _objs.Skip(2).Where(o => o.IsExit).Select(r => r.ObjectName).ToList();
+            case "Timers":
+                return _timers.Skip(1).Select(t => t.TimerName).ToList();
             default:
                 throw new NotImplementedException();
         }
@@ -42,6 +44,13 @@ public partial class V4Game
                     "Numerics" => GetVariableDebugData(_numericVariable),
                     _ => throw new NotImplementedException()
                 };
+            case "Game":
+            case "Rooms":
+            case "Objects":
+            case "Exits":
+                return GetObjectDebugData(_objs.Skip(1).First(o => o.ObjectName == obj));
+            case "Timers":
+                return GetTimerDebugData(_timers.Skip(1).First(t => t.TimerName == obj));
             default:
                 throw new NotImplementedException();
         }
@@ -51,10 +60,7 @@ public partial class V4Game
     {
         if (variable == null || variable.Length == 0)
         {
-            return new DebugData
-            {
-                Data = new Dictionary<string, DebugDataItem>()
-            };
+            return DebugData.Empty;
         }
         
         var data = variable
@@ -65,6 +71,38 @@ public partial class V4Game
         return new DebugData
         {
             Data = data.ToDictionary()
+        };
+    }
+
+    private DebugData GetObjectDebugData(ObjectType obj)
+    {
+        if (obj.Properties == null)
+        {
+            return DebugData.Empty;
+        }
+        
+        var data = obj
+            .Properties
+            .Skip(1)
+            .Select(p => new KeyValuePair<string, DebugDataItem>(p.PropertyName,
+                new DebugDataItem(p.PropertyValue)));
+
+        return new DebugData
+        {
+            Data = data.ToDictionary()
+        };
+    }
+
+    private DebugData GetTimerDebugData(TimerType timer)
+    {
+        return new DebugData
+        {
+            Data = new Dictionary<string, DebugDataItem>
+            {
+                ["Ticks"] = new(timer.TimerTicks.ToString()),
+                ["Interval"] = new(timer.TimerInterval.ToString()),
+                ["Active"] = new(timer.TimerActive ? "true" : "false")
+            }
         };
     }
 

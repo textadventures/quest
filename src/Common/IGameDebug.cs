@@ -66,6 +66,8 @@ namespace QuestViva.Common
 
     public class DebugData
     {
+        public static readonly DebugData Empty = new DebugData();
+        
         private Dictionary<string, DebugDataItem> m_data = new Dictionary<string, DebugDataItem>();
         public Dictionary<string, DebugDataItem> Data
         {
