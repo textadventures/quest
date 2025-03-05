@@ -42,7 +42,9 @@ public partial class V4Game
     }
     
     public bool DebugEnabled => true;
+    #pragma warning disable CS0067
     public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+    #pragma warning restore CS0067
     
     public List<string> GetObjects(string type)
     {
