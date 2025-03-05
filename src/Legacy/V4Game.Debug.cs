@@ -6,7 +6,39 @@ public partial class V4Game
 {
     private class WalkthroughList : IWalkthroughs
     {
-        public IDictionary<string, IWalkthrough> Walkthroughs => new Dictionary<string, IWalkthrough>();
+        private readonly Dictionary<string, IWalkthrough> _walkthroughs = new();
+        
+        public WalkthroughList(V4Game game)
+        {
+            foreach (var section in game._defineBlocks.Skip(1))
+            {
+                var startLine = game._lines[section.StartLine];
+                
+                if (!startLine.StartsWith("define text <walkthrough"))
+                {
+                    continue;
+                }
+
+                var name = game.GetParameter(startLine, game._nullContext, false);
+
+                var steps = new List<string>();
+                for (var i = section.StartLine + 1; i < section.EndLine; i++)
+                {
+                    steps.Add(game._lines[i].Trim());
+                }
+                
+                var walkthrough = new Walkthrough(steps.ToArray());
+                
+                _walkthroughs.Add(name, walkthrough);
+            }
+        }
+        
+        public IDictionary<string, IWalkthrough> Walkthroughs => _walkthroughs;
+    }
+
+    private class Walkthrough(string[] steps) : IWalkthrough
+    {
+        public string[] Steps => steps;
     }
     
     public bool DebugEnabled => true;
@@ -115,8 +147,9 @@ public partial class V4Game
         "Timers"
     ];
 
-    public IWalkthroughs Walkthroughs => new WalkthroughList();
-    
+    private IWalkthroughs _walkthroughs;
+    public IWalkthroughs Walkthroughs => _walkthroughs ??= new WalkthroughList(this);
+
     public bool Assert(string expression)
     {
         throw new NotImplementedException();

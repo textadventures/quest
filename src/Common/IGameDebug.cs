@@ -83,6 +83,6 @@ namespace QuestViva.Common
 
     public interface IWalkthrough
     {
-        List<string> Steps { get; }
+        string[] Steps { get; }
     }
 }

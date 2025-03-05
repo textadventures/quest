@@ -88,3 +88,11 @@ define selection <test menu>
 	choice <one> msg <Option 1>
 	choice <two> msg <Option 2>
 end define
+
+define text <walkthrough test>
+	x thing
+	x book
+	menu:1
+	take it
+	e
+end define
