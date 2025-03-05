@@ -152,6 +152,6 @@ public partial class V4Game
 
     public bool Assert(string expression)
     {
-        throw new NotImplementedException();
+        return ExecuteConditions(expression, _nullContext);
     }
 }

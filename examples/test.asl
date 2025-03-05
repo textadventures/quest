@@ -6,6 +6,9 @@ define game <>
 	asl-version <410>
 	start <room>
 	game info <Created with QDK 4.1.5>
+	command <ifp> {
+		if property <kitchen; visited> then msg <Visited kitchen> else msg <Not visited kitchen>
+	}
 	command <test> {
 		msg <Enter some words...>
 		enter <input>
@@ -95,4 +98,5 @@ define text <walkthrough test>
 	menu:1
 	take it
 	e
+	assert:property <kitchen; visited>
 end define
