@@ -1,6 +1,7 @@
 @page "/"
 @using QuestViva.Common
 @inject IConfiguration Configuration
+@rendermode InteractiveServer
 
 @if (string.IsNullOrEmpty(Configuration["Home:File"]))
 {

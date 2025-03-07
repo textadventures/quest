@@ -10,6 +10,10 @@ class WebPlayer {
         dialog.close();
     }
     
+    static initUI() {
+        initPlayerUI();
+    }
+    
     static setCanDebug(value) {
         const cmdDebug = document.getElementById("cmdDebug");
         cmdDebug.style.display = value ? "initial" : "none";

@@ -9,7 +9,7 @@ var placesObjectsVerbs = null;
 var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
-$(function () {
+function initPlayerUI() {
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
@@ -133,7 +133,7 @@ $(function () {
     if (document.layers) document.captureEvents(Event.MOUSEDOWN);
 
     $("#txtCommand").focus();
-});
+}
 
 function loadHtml(html) {
     $("#divOutput").html(html);
