@@ -1,12 +1,13 @@
-using QuestViva.Common;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-namespace QuestViva.WebPlayer;
+namespace QuestViva.Common;
 
-public class UrlGameDataProvider(string url, string resourcesId) : IGameDataProvider
+public class UrlGameDataProvider(HttpClient client, string url, string resourcesId) : IGameDataProvider
 {
     public async Task<IGameData?> GetData()
     {
-        var client = new HttpClient();
         var response = await client.GetAsync(url);
         if (!response.IsSuccessStatusCode) return null;
         
