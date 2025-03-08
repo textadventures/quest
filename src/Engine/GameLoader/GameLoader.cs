@@ -63,7 +63,7 @@ namespace QuestViva.Engine.GameLoader
             AddXMLLoaders(mode);
         }
         
-        public async Task<bool> Load(IGameData gameData)
+        public async Task<bool> Load(GameData gameData)
         {
             Stream dataStream;
             
@@ -151,7 +151,7 @@ namespace QuestViva.Engine.GameLoader
             return (m_errors.Count == 0);
         }
 
-        private async Task<Stream> LoadCompiledFile(IGameData gameData)
+        private async Task<Stream> LoadCompiledFile(GameData gameData)
         {
             PackageReader packageReader = new PackageReader();
             var result = await packageReader.LoadPackage(gameData);

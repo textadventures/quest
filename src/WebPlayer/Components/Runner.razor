@@ -23,6 +23,8 @@
         
         Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        
+        await JS.InvokeVoidAsync("WebPlayer.initUI");
 
         await Player.Initialise();
         

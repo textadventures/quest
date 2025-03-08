@@ -196,7 +196,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
         Output?.Invoke(text);
     }
 
-    public int Steps => game.Walkthroughs.Walkthroughs[walkthrough].Steps.Count;
+    public int Steps => game.Walkthroughs.Walkthroughs[walkthrough].Steps.Length;
 
     public void Cancel()
     {

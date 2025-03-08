@@ -9,7 +9,7 @@ namespace QuestViva.PlayerCore
 {
     public static class GameLauncher
     {
-        public static IGame GetGame(IGameData gameData)
+        public static IGame GetGame(GameData gameData)
         {
             switch (Path.GetExtension(gameData.Filename).ToLower())
             {
