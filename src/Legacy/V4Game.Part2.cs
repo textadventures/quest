@@ -6276,7 +6276,7 @@ public partial class V4Game
         }
     }
 
-    private async Task<bool> InitialiseGame(IGameData gameData, bool fromQsg = false)
+    private async Task<bool> InitialiseGame(GameData gameData, bool fromQsg = false)
     {
         _loadedFromQsg = fromQsg;
 

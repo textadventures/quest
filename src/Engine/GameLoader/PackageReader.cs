@@ -35,7 +35,7 @@ namespace QuestViva.Engine.GameLoader
             public IEnumerable<string> GetFileNames() => _files.Keys;
         }
 
-        public Task<ReadResult> LoadPackage(IGameData gameData)
+        public Task<ReadResult> LoadPackage(GameData gameData)
         {
             var packageStream = gameData.Data;
             var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);

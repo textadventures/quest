@@ -16,6 +16,6 @@ else
 @code {
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileGameDataProvider(Configuration["Home:File"]!, $"home");
+        return new FileDirectoryGameDataProvider(Configuration["Home:File"]!, $"home");
     }
 }

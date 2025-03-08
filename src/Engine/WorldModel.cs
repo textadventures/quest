@@ -52,7 +52,7 @@ namespace QuestViva.Engine
         private Dictionary<string, int> m_nextUniqueID = new Dictionary<string, int>();
         private Template m_template;
         private UndoLogger m_undoLogger;
-        private IGameData m_gameData;
+        private GameData m_gameData;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
         private Dictionary<string, ElementType> m_debuggerElementTypes = new Dictionary<string, ElementType>();
@@ -160,7 +160,7 @@ namespace QuestViva.Engine
         {
         }
 
-        public WorldModel(IGameData gameData)
+        public WorldModel(GameData gameData)
         {
             m_expressionOwner = new ExpressionOwner(this);
             m_template = new Template(this);
@@ -1219,21 +1219,25 @@ namespace QuestViva.Engine
 
         public Stream GetLibraryStream(string filename)
         {
-            // TODO: Check if there is a file with this name in the game folder first
-            // Otherwise fall back to the embedded resource
-            
-            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core." + filename);
-            if (stream == null)
+            var stream = m_gameData.GetAdjacentFile(filename);
+            if (stream != null)
             {
-                stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core.Languages." + filename);
-
-                if (stream == null)
-                {
-                    throw new Exception("Library file not found: " + filename);    
-                }
+                return stream;
             }
 
-            return stream;
+            stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core." + filename);
+            if (stream != null)
+            {
+                return stream;
+            }
+
+            stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core.Languages." + filename);
+            if (stream != null)
+            {
+                return stream;
+            }
+
+            throw new Exception("Library file not found: " + filename);
         }
 
         public string GetExternalPath(string file)

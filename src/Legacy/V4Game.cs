@@ -475,7 +475,7 @@ public partial class V4Game : IGameDebug, IGameTimer
     private readonly Random _random = new();
     private readonly string[] _playerErrorMessageString = new string[39];
     private readonly Dictionary<ListType, List<string>> _listVerbs = new();
-    private readonly IGameData _gameData;
+    private readonly GameData _gameData;
     private string _originalFilename;
     private IPlayer _player;
     private bool _gameFinished;
@@ -485,7 +485,7 @@ public partial class V4Game : IGameDebug, IGameTimer
     private int _fileDataPos;
     private bool _questionResponse;
 
-    public V4Game(IGameData gameData)
+    public V4Game(GameData gameData)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
@@ -1680,13 +1680,13 @@ public partial class V4Game : IGameDebug, IGameTimer
         return resFile.Split(["\r\n", "\n"], StringSplitOptions.None);
     }
 
-    private async Task<string> GetFileData(IGameData gameData)
+    private async Task<string> GetFileData(GameData gameData)
     {
         var stream = gameData.Data;
         return await new StreamReader(stream).ReadToEndAsync();
     }
 
-    private async Task<bool> ParseFile(IGameData gameData)
+    private async Task<bool> ParseFile(GameData gameData)
     {
         // Returns FALSE if failed.
 
