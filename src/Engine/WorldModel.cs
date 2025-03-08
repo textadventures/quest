@@ -1704,7 +1704,11 @@ namespace QuestViva.Engine
 
         public Stream? GetResource(string filename)
         {
-            return ResourceGetter?.Invoke(filename);
+            if (ResourceGetter != null)
+            {
+                return ResourceGetter.Invoke(filename);
+            }
+            return m_gameData.GetAdjacentFile(filename);
         }
 
         public string? GetResourceData(string filename)
