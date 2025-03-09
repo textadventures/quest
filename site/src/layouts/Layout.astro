@@ -3,6 +3,8 @@ import "bootswatch/dist/cosmo/bootstrap.min.css";
 import NavItem from "./NavItem.astro";
 
 const current = Astro.url.pathname;
+
+const { title } = Astro.props.frontmatter || Astro.props;
 ---
 
 <!doctype html>
@@ -10,7 +12,7 @@ const current = Astro.url.pathname;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<title>Quest Viva - {Astro.props.title}</title>
+		<title>Quest Viva - {title}</title>
         <script>
             import 'bootstrap/dist/js/bootstrap.bundle.min.js'
         </script>
@@ -29,6 +31,7 @@ const current = Astro.url.pathname;
                     <div class="navbar-collapse collapse d-md-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <NavItem href="/" text="Home" current={current} />
+                            <NavItem href="/docs" text="Docs" current={current} />
                             <NavItem href="/project" text="Project" current={current} />
                         </ul>
                     </div>
