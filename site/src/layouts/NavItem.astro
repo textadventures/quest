@@ -1,0 +1,17 @@
+---
+const { href, text, current } = Astro.props;
+
+let isCurrent = false;
+
+if (href === "/") {
+    isCurrent = current === href;
+} else {
+    isCurrent = current.startsWith(href);
+}
+
+---
+<li class="nav-item">
+    <a class={`nav-link ${isCurrent ? "active" : ""}`}
+        aria-current={isCurrent ? "page" : undefined}
+        href={href}>{text}</a>
+</li>
