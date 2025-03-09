@@ -7,4 +7,4 @@ title: News
 
 ## 9th March 2025
 
-Site created.
+Site created, stay tuned for updates!
