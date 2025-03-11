@@ -8,15 +8,6 @@ var apiRoot = "https://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
 
-$(() => {
-    canSendCommand = true;
-    
-    // TODO: Play.aspx used this:
-    // init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>')
-    
-    init(null, null);
-});
-
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
         return decodeURIComponent(s.split("+").join(" "));
@@ -24,46 +15,6 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
     $_GET[decode(arguments[1])] = decode(arguments[2]);
 });
-
-function init(url, gameSessionLogId) {
-    apiRoot = url;
-    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-
-    // TODO: Actually implement this properly
-    // // TODO: Temporarily always showing Save button here - need to work out where the game gets
-    // // saved (localStorage?), and if we implement server-side saving below
-    // $("#cmdSave").show();
-
-    if (apiRoot) {
-        $.ajax({
-            url: apiRoot + "games/cansave",
-            success: function (result) {
-                if (result) {
-                    $("#cmdSave").show();
-                }
-            },
-            xhrFields: {
-                withCredentials: true
-            }
-        });   
-    }
-
-    if (gameSessionLogId) {
-        $.ajax({
-            url: apiRoot + "games/startsession/?gameId=" + $_GET["id"] + "&blobId=" + gameSessionLogId,
-            success: function (result) {
-                if (result) {
-                    gameSessionLogData = result;
-                    setUpSessionLog();
-                }
-            },
-            type: "POST",
-            xhrFields: {
-                withCredentials: true
-            }
-        });
-    }
-}
 
 function setOutputBufferId(id) {
     outputBufferId = id;
