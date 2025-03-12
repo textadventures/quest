@@ -2,8 +2,9 @@
 title: Quest Viva
 description: Create text adventure games
 template: splash
+editUrl: false
 hero:
-  tagline: Create text adventure games
+  tagline: Quest Viva is a powerful platform for creating text adventure games and interactive fiction. It's easy to use, and you can create games quickly - no programming required!
   image:
     alt: Quest Viva logo
     file: ../../assets/quest-viva.svg
@@ -11,27 +12,64 @@ hero:
     - text: Get Started
       link: /guides/webplayer
       icon: right-arrow
-    # - text: Read the Starlight docs
-    #   link: https://starlight.astro.build
-    #   icon: external
-    #   variant: minimal
+    - text: View on GitHub
+      link: https://github.com/textadventures/quest
+      icon: external
+      variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-{/* ## Next steps
+:::caution
+Quest Viva is currently **under construction**. To create a game, [please use Quest 5](https://textadventures.co.uk/quest) for now.
+:::
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+
+<CardGrid>
+	<Card title="It's free..." icon="sun">
+		Quest Viva is free to use, and runs in your browser. Quest Viva is free open source software.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="...and you're free" icon="heart">
+		No restrictions. Quest Viva is licenced under the [MIT License](https://opensource.org/license/MIT).
+
+    This means you can [download and modify the Quest Viva source code](https://github.com/textadventures/quest), and do whatever you want with it.
+
+    You can sell the games you make with Quest Viva. You can use the Quest Viva source code inside closed source commercial applications.
+
+    You don't need to ask for permission - you already have it.
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="Get started quickly" icon="rocket">
+		You don't need to know how to program to use Quest Viva. But you might pick up some handy programming knowledge along the way.
+
+    Everything about your game is displayed in plain English, but the source code to your game is also viewable and editable for the more technically minded.
+
+    A full tutorial is included, and help is always available on [Discord](https://textadventures.co.uk/community/discord) and [GitHub Discussions](https://github.com/textadventures/quest/discussions).
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Ever wanted to..." icon="approve-check">
+		Ever wanted to create your own game, but were put off by complicated programming languages? Quest Viva is a great way to get started.
+
+    Want to get into game writing, or prototype game narrative before turning it into something bigger? Quest Viva is a quick way to experiment with interactive stories.
 	</Card>
-</CardGrid> */}
+  <Card title="Surprisingly powerful" icon="seti:html">
+    Quest Viva is a powerful game platform. Although designed to be easy to learn, it has huge power when you need it.
+
+    There is a fully featured scripting language behind the scenes, which you can dip in and out of as required. You can use variables and functions, and encapsulate functionality using object types to share scripts between objects. You can create and share libraries of advanced functionality.
+	</Card>
+  <Card title="Graphics, sound and video" icon="seti:video">
+		Who says text adventures are all about text?
+
+    You can add pictures to your game, music and sound effects. You can even embed video from YouTube.
+
+    And you can go even further, by customising the user interface using HTML and Javascript, to get your game looking exactly how you want it.
+	</Card>
+  <Card title="Any language" icon="translate">
+		Create games in English, French, German, Spanish, Dutch, Italian, Poruguese, Romanian, even Esperanto.
+
+    Or create your own translation.
+	</Card>
+  <Card title="Share with the world" icon="open-book">
+    Publish your game to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play. Or, host your game on your own server.
+
+    There's no need for players to download any software - people can play your game directly in their browser, whatever device they're using.
+	</Card>
+</CardGrid>
