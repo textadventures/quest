@@ -61,7 +61,7 @@ public partial class V4Game
             case "Exits":
                 return _objs.Skip(2).Where(o => o.IsExit).Select(r => r.ObjectName).ToList();
             case "Timers":
-                return _timers.Skip(1).Select(t => t.TimerName).ToList();
+                return _timers == null ? [] : _timers.Skip(1).Select(t => t.TimerName).ToList();
             default:
                 throw new NotImplementedException();
         }
