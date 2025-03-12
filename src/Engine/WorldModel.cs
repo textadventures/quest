@@ -1064,18 +1064,18 @@ namespace QuestViva.Engine
 
         private object RunScript(IScript script, Context c, bool expectResult)
         {
-            // try
-            // {
+            try
+            {
                 script.Execute(c);
                 if (expectResult && c.ReturnValue is NoReturnValue) throw new Exception("Function did not return a value");
                 return c.ReturnValue;
-            // }
-            // catch (Exception ex)
-            // {
-            // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
-            //     Print("Error running script: " + QuestViva.Engine.Utility.SafeXML(ex.Message));
-            // }
-            // return null;
+            }
+            catch (Exception ex)
+            {
+                // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
+                Print("Error running script: " + Utility.SafeXML(ex.Message));
+            }
+            return null;
         }
 
         public Element AddProcedure(string name)

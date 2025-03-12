@@ -71,6 +71,16 @@ public class Player : IPlayerHelperUI
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
     {
+        if (args != null)
+        {
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (args[i] is string str)
+                {
+                    args[i] = str.Replace("\n", "").Replace("\r", "");
+                }
+            }
+        }
         JavaScriptBuffer.Add((identifier, args));
     }
     
