@@ -12,8 +12,19 @@
     <script type="text/javascript" src="/res/playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="playerweb.js"></script>
-    <script type="text/javascript" src="/res/lib/paper.js"></script>
-    <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas"></script>
+    <script>
+        function addPaperScript() {
+            const gridJs = document.createElement("script");
+            gridJs.type = "text/paperscript";
+            gridJs.src = "/res/grid.js";
+            gridJs.setAttribute("canvas", "gridCanvas");
+            document.head.appendChild(gridJs);
+
+            const paperJs = document.createElement("script");
+            paperJs.src = "/res/lib/paper.js";
+            document.head.appendChild(paperJs);
+        }
+    </script>
 </HeadContent>
 
 @UiHtml

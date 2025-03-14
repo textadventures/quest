@@ -12,7 +12,8 @@ var beginningOfCurrentTurnScrollPosition = 0;
 function initPlayerUI() {
     // TODO: Implement this properly
     // $("#cmdSave").show();
-    
+
+    addPaperScript();
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     
     $("#txtCommand").bind("inview", function (event, visible) {
