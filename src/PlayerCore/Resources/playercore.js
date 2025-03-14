@@ -132,8 +132,27 @@ function initPlayerUI() {
         }
     });
 
-    $("#cmdShowPanes").on("click", function(){
-        $("#sidebar").toggle();
+    const sidebar = document.getElementById("sidebar");
+    const cmdShowPanes = document.getElementById("cmdShowPanes");
+    
+    cmdShowPanes.addEventListener("click", function () {
+        sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
+    });
+
+    let wasWide = window.innerWidth > 950;
+
+    window.addEventListener("resize", function() {
+        const sidebar = document.getElementById("sidebar");
+
+        let isWide = window.innerWidth > 950;
+
+        if (isWide) {
+            sidebar.style.display = "block";
+        } else if (wasWide) {
+            sidebar.style.display = "none";
+        }
+        
+        wasWide = isWide;
     });
 
     ui_init();
