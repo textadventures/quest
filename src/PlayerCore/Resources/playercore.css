@@ -151,12 +151,18 @@ div#txtCommandDiv
     height: 40px;
     display: none;
 }
+div#txtCommandContainer
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 #txtCommand
 {
-    max-width: 680px;
     font-size: 20px;
     vertical-align: bottom;
     padding: 6px;
+    flex-grow: 1;
 }
 #txtCommandSpacer
 {

@@ -159,10 +159,11 @@
         </div>
         <div id="txtCommandSpacer"></div>
         <div id="txtCommandDiv">
-            <!-- TODO: Temp txtCommandPrompt for testing. We want a flex layout here instead of the JS stuff. -->
-            <span id="txtCommandPrompt">&gt;</span>
-            <input type="text" x-webkit-speech id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
-                autofocus />
+            <div id="txtCommandContainer">
+                <span id="txtCommandPrompt"></span>
+                <input type="text" x-webkit-speech id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
+                       autofocus />
+            </div>
         </div>
         <div id="endWaitDiv">
             <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Continue...</a>

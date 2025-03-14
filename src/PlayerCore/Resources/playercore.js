@@ -319,6 +319,10 @@ function isElementVisible(element) {
 
 function panesVisible(visible) {
     var screenWidth = $("#gameBorder").width();
+    
+    // TODO: Verfy resize behaviour when an image or map panel is displayed,
+    // then remove the commented-out code here.
+    
     var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
     var promptSpacing = $("#txtCommandPrompt").width() + 5;
 
