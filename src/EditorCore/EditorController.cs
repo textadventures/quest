@@ -123,7 +123,7 @@ namespace QuestViva.EditorCore
         private AvailableFilters m_availableFilters;
         private FilterOptions m_filterOptions;
         private EditableScriptFactory m_editableScriptFactory;
-        private FontsManager m_fontsManager;
+        // private FontsManager m_fontsManager;
         private Dictionary<string, EditorDefinition> m_editorDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<string, EditorDefinition> m_expressionDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
@@ -301,7 +301,8 @@ namespace QuestViva.EditorCore
             m_filterOptions = new FilterOptions();
             // set default filters here
 
-            m_fontsManager = new FontsManager();
+            // TODO: Replace. This is commented out because it downloads the font list in the constructor
+            // m_fontsManager = new FontsManager();
         }
 
         public class InitialiseResults : EventArgs
@@ -2446,12 +2447,14 @@ namespace QuestViva.EditorCore
 
         public List<string> AvailableBaseFonts()
         {
-            return m_fontsManager.GetBaseFonts();
+            return [];
+            // return m_fontsManager.GetBaseFonts();
         }
 
         public List<string> AvailableWebFonts()
         {
-            return m_fontsManager.GetWebFonts();
+            return [];
+            // return m_fontsManager.GetWebFonts();
         }
     }
 }
