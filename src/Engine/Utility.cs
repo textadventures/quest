@@ -43,7 +43,7 @@ namespace QuestViva.Engine
             afterScript = null;
             string obscuredScript = ObscureStrings(script);
             int bracePos = obscuredScript.IndexOf('{');
-            int crlfPos = obscuredScript.IndexOf("\n", StringComparison.Ordinal);
+            int crlfPos = obscuredScript.IndexOf('\n');
             int commentPos = obscuredScript.IndexOf("//", StringComparison.Ordinal);
             if (crlfPos == -1) return script;
 
@@ -58,7 +58,7 @@ namespace QuestViva.Engine
 
             string result;
 
-            if (insideBraces.Contains("\n"))
+            if (insideBraces.Contains('\n'))
             {
                 result = beforeBrace + "{" + insideBraces + "}";
             }
@@ -184,29 +184,36 @@ namespace QuestViva.Engine
         public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
         {
             variable = ConvertVariablesToFleeFormat(ResolveElementName(name));
-            obj = null;
+            StringBuilder sb = null;
+
             do
             {
-                if (Utility.ContainsUnresolvedDotNotation(variable))
+                if (!ContainsUnresolvedDotNotation(variable))
                 {
-                    // We may have been passed in something like someobj.parent.someproperty
-                    string nestedObj;
-                    Utility.ResolveVariableName(ref variable, out nestedObj, out variable);
-
-                    if (nestedObj != null)
-                    {
-                        if (obj == null)
-                        {
-                            obj = string.Empty;
-                        }
-                        else
-                        {
-                            obj += ".";
-                        }
-                        obj += nestedObj;
-                    }
+                    continue;
                 }
-            } while (Utility.ContainsUnresolvedDotNotation(variable));
+
+                // We may have been passed in something like someobj.parent.someproperty
+                ResolveVariableName(ref variable, out var nestedObj, out variable);
+
+                if (nestedObj == null)
+                {
+                    continue;
+                }
+
+                if (sb == null)
+                {
+                    sb = new StringBuilder();
+                }
+                else
+                {
+                    sb.Append('.');
+                }
+                
+                sb.Append(nestedObj);
+            } while (ContainsUnresolvedDotNotation(variable));
+            
+            obj = sb?.ToString();
         }
 
         public static string ResolveElementName(string name)
@@ -251,24 +258,25 @@ namespace QuestViva.Engine
                 // our space placeholder. However, if one of the two words is a
                 // keyword ("and", "not" etc.), we don't convert it.
                 string[] words = text.Split(' ');
-                string result = words[0];
-
-                if (words.Length == 1) return result;
+                
+                if (words.Length == 1) return words[0];
+                
+                var result = new StringBuilder(words[0]);
 
                 for (int i = 1; i < words.Length; i++)
                 {
                     if (IsSplitVariableName(words[i - 1], words[i]))
                     {
-                        result += k_spaceReplacementString;
+                        result.Append(k_spaceReplacementString);
                     }
                     else
                     {
-                        result += " ";
+                        result.Append(' ');
                     }
-                    result += words[i];
+                    result.Append(words[i]);
                 }
 
-                return result;
+                return result.ToString();
             });
         }
 
@@ -300,7 +308,7 @@ namespace QuestViva.Engine
             // We ignore regex matches which appear within quotes by splitting the string
             // at the position of quote marks, and then alternating whether we replace or not.
             string[] sections = SplitQuotes(input);
-            string result = string.Empty;
+            var result = new StringBuilder();
 
             bool insideQuote = false;
             for (int i = 0; i <= sections.Length - 1; i++)
@@ -309,17 +317,17 @@ namespace QuestViva.Engine
                 bool doReplace = (insideQuote && replaceInsideQuote) || (!insideQuote && !replaceInsideQuote);
                 if (doReplace)
                 {
-                    result += replaceFunction(section);
+                    result.Append(replaceFunction(section));
                 }
                 else
                 {
-                    result += section;
+                    result.Append(section);
                 }
-                if (i < sections.Length - 1) result += "\"";
+                if (i < sections.Length - 1) result.Append('"');
                 insideQuote = !insideQuote;
             }
 
-            return result;
+            return result.ToString();
         }
 
         private static string[] SplitQuotes(string text)
@@ -366,7 +374,7 @@ namespace QuestViva.Engine
         public static string RemoveComments(string input, bool onlyRemoveMidLineComments = false)
         {
             if (!input.Contains("//")) return input;
-            if (input.Contains("\n"))
+            if (input.Contains('\n'))
             {
                 return RemoveCommentsMultiLine(input, onlyRemoveMidLineComments);
             }
@@ -439,7 +447,7 @@ namespace QuestViva.Engine
                 {
                     result.Append(section);
                 }
-                if (i < sections.Length - 1) result.Append("\"");
+                if (i < sections.Length - 1) result.Append('"');
                 insideQuote = !insideQuote;
             }
             return result.ToString();
