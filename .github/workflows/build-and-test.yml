@@ -1,0 +1,40 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repo so the workflow can access it
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Set up the .NET SDK (change to the specific version you’re using)
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the project
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # Run tests
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
