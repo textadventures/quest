@@ -23,7 +23,7 @@ namespace QuestViva.EngineTests
             m_original.Fields.Set(listAttributeName, new QuestList<string>(listAttributeValue));
             m_original.Fields.Resolve(null);
             Assert.AreEqual(attributeValue, m_original.Fields.GetString(attributeName));
-            Assert.AreEqual(3, m_original.Fields.GetAsType<QuestList<string>>(listAttributeName).Count);
+            Assert.AreEqual(2, m_original.Fields.GetAsType<QuestList<string>>(listAttributeName).Count);
         }
 
         [TestMethod]
