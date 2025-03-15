@@ -49,11 +49,11 @@ namespace QuestViva.Engine
 
             if (bracePos == -1 || crlfPos < bracePos || (commentPos != -1 && commentPos < bracePos && commentPos < crlfPos))
             {
-                afterScript = script.Substring(crlfPos + 1);
-                return script.Substring(0, crlfPos);
+                afterScript = script[(crlfPos + 1)..];
+                return script[..crlfPos];
             }
 
-            string beforeBrace = script.Substring(0, bracePos);
+            string beforeBrace = script[..bracePos];
             string insideBraces = GetParameterInt(script, '{', '}', out afterScript);
 
             string result;
@@ -85,9 +85,9 @@ namespace QuestViva.Engine
             while (!finished)
             {
                 pos++;
-                string curChar = obscuredText.Substring(pos, 1);
-                if (curChar == open.ToString()) braceCount++;
-                if (curChar == close.ToString()) braceCount--;
+                var curChar = obscuredText[pos];
+                if (curChar == open) braceCount++;
+                if (curChar == close) braceCount--;
                 if (braceCount == 0 || pos == obscuredText.Length - 1) finished = true;
             }
 
@@ -96,7 +96,7 @@ namespace QuestViva.Engine
                 throw new Exception(string.Format("Missing '{0}'", close));
             }
 
-            afterParameter = text.Substring(pos + 1);
+            afterParameter = text[(pos + 1)..];
             return text.Substring(start + 1, pos - start - 1);
         }
 
@@ -115,7 +115,7 @@ namespace QuestViva.Engine
 
         public static string GetTextAfter(string text, string startsWith)
         {
-            return text.Substring(startsWith.Length);
+            return text[startsWith.Length..];
         }
 
         public static List<string> SplitParameter(string text)
@@ -177,8 +177,8 @@ namespace QuestViva.Engine
                 return;
             }
 
-            obj = name.Substring(0, eqPos);
-            variable = name.Substring(eqPos + k_dotReplacementString.Length);
+            obj = name[..eqPos];
+            variable = name[(eqPos + k_dotReplacementString.Length)..];
         }
 
         public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
@@ -383,7 +383,7 @@ namespace QuestViva.Engine
             string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments, "--", true);
             if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
             {
-                return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal));
+                return input[..obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal)];
             }
             return input;
         }
@@ -643,7 +643,7 @@ namespace QuestViva.Engine
                 // then resume with the rest of the line.
                 indentLevel--;
                 result += GetIndentChars(indentLevel, indentChars) + "}" + Environment.NewLine;
-                AddLine(ref result, ref indentLevel, line.Substring(1), indentChars);
+                AddLine(ref result, ref indentLevel, line[1..], indentChars);
                 return;
             }
 
