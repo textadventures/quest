@@ -115,9 +115,10 @@ namespace QuestViva.Engine
             if (TransactionsUpdated != null) TransactionsUpdated(this, new EventArgs());
         }
 
-        internal void AddUndoAction(IUndoAction action)
+        internal void AddUndoAction(Func<IUndoAction> getAction)
         {
-            if (m_logging) m_currentTransaction.AddUndoAction(action);
+            if (!m_logging) return;
+            m_currentTransaction.AddUndoAction(getAction());
         }
 
         public void RollbackTransaction()

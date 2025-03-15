@@ -49,7 +49,7 @@ namespace QuestViva.Engine
 
             if (addToUndoLog)
             {
-                WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, CreateElementType, newElement, true, NotifyAddedElement, NotifyRemovedElement));
+                WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(name, CreateElementType, newElement, true, NotifyAddedElement, NotifyRemovedElement));
             }
 
             try
@@ -178,7 +178,7 @@ namespace QuestViva.Engine
 
         private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
         {
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType, appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
+            WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType, appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
         }
 
         protected class CreateDestroyLogEntry : UndoLogger.IUndoAction

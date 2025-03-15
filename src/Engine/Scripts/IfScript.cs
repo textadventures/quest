@@ -113,7 +113,7 @@ namespace QuestViva.Engine.Scripts
                 get { return Expression.Save(); }
                 set
                 {
-                    m_parent.UndoLog.AddUndoAction(new UndoChangeExpression(this, Expression.Save(), value));
+                    m_parent.UndoLog.AddUndoAction(() => new UndoChangeExpression(this, Expression.Save(), value));
                     SetExpressionSilent(value);
                 }
             }
@@ -168,7 +168,7 @@ namespace QuestViva.Engine.Scripts
                 System.Diagnostics.Debug.Assert(elseScript == null || !m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
 
                 base.UndoLog.StartTransaction("Add Else script");
-                base.UndoLog.AddUndoAction(new UndoSetElse(this, m_elseScript, elseScript, m_hasElse, true));
+                base.UndoLog.AddUndoAction(() => new UndoSetElse(this, m_elseScript, elseScript, m_hasElse, true));
             }
 
             m_hasElse = true;
@@ -214,7 +214,7 @@ namespace QuestViva.Engine.Scripts
             if (base.UndoLog != null)
             {
                 base.UndoLog.StartTransaction("Add Else If script");
-                base.UndoLog.AddUndoAction(new UndoAddElseIf(this, elseIfScript));
+                base.UndoLog.AddUndoAction(() => new UndoAddElseIf(this, elseIfScript));
             }
 
             AddElseIfSilent(elseIfScript);
@@ -242,7 +242,7 @@ namespace QuestViva.Engine.Scripts
             if (base.UndoLog != null)
             {
                 base.UndoLog.StartTransaction("Remove Else If script");
-                base.UndoLog.AddUndoAction(new UndoRemoveElseIf(this, elseIfScript));
+                base.UndoLog.AddUndoAction(() => new UndoRemoveElseIf(this, elseIfScript));
             }
 
             RemoveElseIfSilent(elseIfScript);
@@ -342,7 +342,7 @@ namespace QuestViva.Engine.Scripts
             get { return m_expression.Save(); }
             set
             {
-                base.UndoLog.AddUndoAction(new UndoChangeExpression(this, m_expression.Save(), value));
+                base.UndoLog.AddUndoAction(() => new UndoChangeExpression(this, m_expression.Save(), value));
                 SetExpressionSilent(value);
             }
         }

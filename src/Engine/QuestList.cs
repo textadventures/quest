@@ -196,7 +196,7 @@ namespace QuestViva.Engine
                     mutableValue.UndoLog = UndoLog;
                 }
 
-                UndoLog.AddUndoAction(new UndoListAdd(this, item, index));
+                UndoLog.AddUndoAction(() => new UndoListAdd(this, item, index));
             }
         }
 
@@ -204,7 +204,7 @@ namespace QuestViva.Engine
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoListRemove(this, item, index));
+                UndoLog.AddUndoAction(() => new UndoListRemove(this, item, index));
             }
         }
 

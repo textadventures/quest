@@ -308,12 +308,12 @@ namespace QuestViva.Engine
 
         private void UndoLog(string property, object oldValue, object newValue, bool added)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(() => new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
         }
 
         internal void UndoLog(UndoLogger.IUndoAction action)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(action);
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(() => action);
         }
 
         public void Set(string name, object value)
@@ -412,6 +412,9 @@ namespace QuestViva.Engine
             {
                 throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
             }
+            
+            // TODO: If name or parent are set _not_ via the .Name or .Parent fields on the Element, we need to update
+            // that Element's Parent and Name properties.
 
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
             {
@@ -630,7 +633,7 @@ namespace QuestViva.Engine
             Stack<Element> oldValue = CloneStack(m_types);
             AddType(addType);
             Stack<Element> newValue = CloneStack(m_types);
-            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
             if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
         }
 
@@ -639,7 +642,7 @@ namespace QuestViva.Engine
             Stack<Element> oldValue = CloneStack(m_types);
             m_types = CloneStackAndDelete(m_types, removeType);
             Stack<Element> newValue = CloneStack(m_types);
-            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
             if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
         }
 

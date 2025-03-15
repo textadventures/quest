@@ -158,7 +158,7 @@ namespace QuestViva.Engine.Scripts
             SetParameterSilent(index, value);
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoScriptChange(this, index, oldValue, value));
+                UndoLog.AddUndoAction(() => new UndoScriptChange(this, index, oldValue, value));
             }
         }
 

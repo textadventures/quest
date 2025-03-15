@@ -208,16 +208,28 @@ namespace QuestViva.Engine
             get { return m_metaFields; }
         }
 
+        private string _name;
+
         public string Name
         {
-            get { return Fields.GetString("name"); }
-            set { Fields.Set("name", value); }
+            get { return _name; }
+            set
+            {
+                _name = value;
+                Fields.Set("name", value);
+            }
         }
+
+        private Element _parent;
 
         public Element Parent
         {
-            get { return Fields.GetObject("parent"); }
-            set { Fields.Set("parent", value); }
+            get { return _parent; }
+            set
+            {
+                _parent = value;
+                Fields.Set("parent", value);
+            }
         }
 
         internal void AddType(Element addType)
