@@ -403,18 +403,22 @@ namespace QuestViva.Engine
                 }
             }
 
-            if (name == "name" && !(value is string))
+            switch (name)
             {
-                throw new ArgumentException("Invalid data type for 'name'");
+                case "name":
+                {
+                    if (value is not string strValue)
+                    {
+                        throw new ArgumentException("Invalid data type for 'name'");
+                    }
+                
+                    m_element.SetNameFromFields(strValue);
+                    break;
+                }
+                case "parent":
+                    m_element.SetParentFromFields(value as Element);
+                    break;
             }
-
-            if (name == "parent" && value == m_element)
-            {
-                throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
-            }
-            
-            // TODO: If name or parent are set _not_ via the .Name or .Parent fields on the Element, we need to update
-            // that Element's Parent and Name properties.
 
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
             {

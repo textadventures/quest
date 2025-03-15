@@ -212,24 +212,31 @@ namespace QuestViva.Engine
 
         public string Name
         {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                Fields.Set("name", value);
-            }
+            get => _name;
+            set => Fields.Set("name", value);
+        }
+        
+        internal void SetNameFromFields(string name)
+        {
+            _name = name;
         }
 
         private Element _parent;
 
         public Element Parent
         {
-            get { return _parent; }
-            set
+            get => _parent;
+            set => Fields.Set("parent", value);
+        }
+
+        internal void SetParentFromFields(Element parent)
+        {
+            if (parent == this)
             {
-                _parent = value;
-                Fields.Set("parent", value);
+                throw new ArgumentException($"Parent of element '{Name}' cannot be set to itself");                
             }
+            
+            _parent = parent;
         }
 
         internal void AddType(Element addType)

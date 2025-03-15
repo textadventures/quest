@@ -100,5 +100,19 @@ namespace QuestViva.EngineTests
                 > m_worldModel.Elements.Get("e").MetaFields[MetaFieldDefinitions.SortIndex],
                 "d should be after e in the sort order");
         }
+
+        [TestMethod]
+        public void UpdateParentByFieldName()
+        {
+            var element = m_worldModel.GetElementFactory(ElementType.Object).Create("element");
+            var parent1 = m_worldModel.GetElementFactory(ElementType.Object).Create("parent");
+            var parent2 = m_worldModel.GetElementFactory(ElementType.Object).Create("parent2");
+            
+            element.Parent = parent1;
+            Assert.AreEqual(parent1, element.Parent);
+            
+            element.Fields.Set("parent", parent2);
+            Assert.AreEqual(parent2, element.Parent);
+        }
     }
 }
