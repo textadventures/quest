@@ -14,7 +14,6 @@ namespace QuestViva.Common
         Task<bool> Initialise(IPlayer player, bool? isCompiled = null);
         void Begin();
         void SendCommand(string command);
-        void SendCommand(string command, IDictionary<string, string> metadata);
         void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
         void SendEvent(string eventName, string param);
         event PrintTextHandler? PrintText;

@@ -7965,11 +7965,6 @@ public partial class V4Game
         SendCommand(command, 0, null);
     }
 
-    public void SendCommand(string command, IDictionary<string, string> metadata)
-    {
-        SendCommand(command, 0, metadata);
-    }
-
     public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
         // The processing of commands is done in a separate thread, so things like the "enter" command can

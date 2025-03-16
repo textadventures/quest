@@ -555,11 +555,6 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public void SendCommand(string command, IDictionary<string, string> metadata)
-    {
-        SendCommand(command, 0, metadata);
-    }
-
     public void SendCommand(string command)
     {
         SendCommand(command, 0, null);
