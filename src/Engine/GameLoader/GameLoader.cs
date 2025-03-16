@@ -27,7 +27,6 @@ internal partial class GameLoader
     }
 
     private readonly WorldModel _worldModel;
-    private readonly List<string> _errors = [];
     private readonly ScriptFactory _scriptFactory;
     private readonly ImplicitTypes _implicitTypes = new();
     private readonly Stack<FileData> _currentFile = new();
@@ -102,7 +101,7 @@ internal partial class GameLoader
 
                 var originalFile = reader.GetAttribute("original");
 
-                if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
+                if (!string.IsNullOrEmpty(originalFile) && Path.GetExtension(originalFile) == ".quest")
                 {
                     // TODO
                     throw new NotImplementedException();
@@ -125,17 +124,17 @@ internal partial class GameLoader
         }
         catch (XmlException e)
         {
-            AddError(string.Format("Invalid XML: {0}", e.Message));
+            AddError($"Invalid XML: {e.Message}");
         }
         catch (Exception e)
         {
-            AddError(string.Format("Error: {0}", e.Message));
+            AddError($"Error: {e.Message}");
         }
             
         System.Diagnostics.Debug.WriteLine($"XML load time: {timer.ElapsedMilliseconds}ms");
         timer.Restart();
 
-        if (_errors.Count == 0)
+        if (Errors.Count == 0)
         {
             try
             {
@@ -143,18 +142,18 @@ internal partial class GameLoader
             }
             catch (Exception e)
             {
-                AddError(string.Format("Error: {0}", e.Message));
+                AddError($"Error: {e.Message}");
             }
         }
             
         System.Diagnostics.Debug.WriteLine($"ResolveGame: {timer.ElapsedMilliseconds}ms");
 
-        return (_errors.Count == 0);
+        return (Errors.Count == 0);
     }
 
     private async Task<Stream> LoadCompiledFile(GameData gameData)
     {
-        PackageReader packageReader = new PackageReader();
+        var packageReader = new PackageReader();
         var result = await packageReader.LoadPackage(gameData);
         WorldModel.ResourceGetter = result.GetFile;
         WorldModel.GetResourceNames = result.GetFileNames;
@@ -221,7 +220,7 @@ internal partial class GameLoader
         string status;
         if (_currentFile.Count > 0)
         {
-            status = "Loading " + System.IO.Path.GetFileName(_currentFile.Peek().Filename);
+            status = "Loading " + Path.GetFileName(_currentFile.Peek().Filename);
         }
         else
         {
@@ -232,10 +231,7 @@ internal partial class GameLoader
 
     private void UpdateStatus(string status)
     {
-        if (LoadStatus != null)
-        {
-            LoadStatus(this, new LoadStatusEventArgs(status));
-        }
+        LoadStatus?.Invoke(this, new LoadStatusEventArgs(status));
     }
 
     private void AddedElement(Element newElement)
@@ -248,7 +244,7 @@ internal partial class GameLoader
     private IXMLLoader GetLoader(string name, Element? current)
     {
         if (!m_xmlLoaders.TryGetValue(name, out var loader) && current != null) loader = m_defaultXmlLoader;
-        if (loader == null) throw new Exception(string.Format("Unrecognised tag '{0}' outside object definition", name));
+        if (loader == null) throw new Exception($"Unrecognised tag '{name}' outside object definition");
         return loader;
     }
 
@@ -272,7 +268,7 @@ internal partial class GameLoader
     private void ResolveGame()
     {
         UpdateStatus("Initialising elements...");
-        foreach (Element e in _worldModel.Elements.GetElements())
+        foreach (var e in _worldModel.Elements.GetElements())
         {
             e.Fields.LazyFields.Resolve(_scriptFactory);
         }
@@ -285,20 +281,17 @@ internal partial class GameLoader
 
     private void AddError(string error)
     {
-        _errors.Add(error);
+        Errors.Add(error);
     }
 
-    public List<string> Errors
-    {
-        get { return _errors; }
-    }
+    public List<string> Errors { get; } = [];
 
-    private class RequiredAttribute
+    private class RequiredAttribute(string name)
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = name;
         public bool UseTemplate { get; set; }
         public bool AllowBlank { get; set; }
-        public bool Required { get; set; }
+        public bool Required { get; set; } = true;
 
         public RequiredAttribute(string name, bool useTemplate, bool allowBlank, bool required)
             : this(name, useTemplate, allowBlank)
@@ -312,7 +305,7 @@ internal partial class GameLoader
             AllowBlank = allowBlank;
         }
 
-        public RequiredAttribute(string name, bool useTemplate)
+        private RequiredAttribute(string name, bool useTemplate)
             : this(name)
         {
             UseTemplate = useTemplate;
@@ -322,12 +315,6 @@ internal partial class GameLoader
             : this(name)
         {
             Required = required;
-        }
-
-        public RequiredAttribute(string name)
-        {
-            Name = name;
-            Required = true;
         }
     }
 
@@ -340,8 +327,8 @@ internal partial class GameLoader
         }
         public RequiredAttributes(bool canUseTemplates, params string[] attribs)
         {
-            Attributes = new List<RequiredAttribute>();
-            foreach (string attrib in attribs)
+            Attributes = [];
+            foreach (var attrib in attribs)
             {
                 Attributes.Add(new RequiredAttribute(attrib, canUseTemplates, false));
             }
@@ -350,19 +337,13 @@ internal partial class GameLoader
 
     private Dictionary<string, string?> GetRequiredAttributes(XmlReader reader, RequiredAttributes attribs)
     {
-        Dictionary<string, string?> result = new Dictionary<string, string?>();
+        var result = new Dictionary<string, string?>();
 
-        foreach (RequiredAttribute attrib in attribs.Attributes)
+        foreach (var attrib in attribs.Attributes)
         {
-            string? value;
-            if (attrib.UseTemplate)
-            {
-                value = GetTemplateAttribute(reader, attrib.Name);
-            }
-            else
-            {
-                value = reader.GetAttribute(attrib.Name);
-            }
+            var value = attrib.UseTemplate
+                ? GetTemplateAttribute(reader, attrib.Name)
+                : reader.GetAttribute(attrib.Name);
 
             if (attrib.Required && (value == null || (!attrib.AllowBlank && value.Length == 0)))
             {
@@ -383,19 +364,20 @@ internal partial class GameLoader
         // then we add those and mark them as non-overwritable.
 
         var timer = System.Diagnostics.Stopwatch.StartNew();
-        XmlReader reader;
-            
-        var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        reader = new XmlTextReader(stream);
 
-        TemplateLoader templateLoader = new TemplateLoader();
-        templateLoader.GameLoader = this;
-        templateLoader.IsBaseTemplateLoader = true;
+        var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        XmlReader reader = new XmlTextReader(stream);
+
+        var templateLoader = new TemplateLoader
+        {
+            GameLoader = this,
+            IsBaseTemplateLoader = true
+        };
         Element? e = null;
 
         while (reader.Read())
         {
-            if (reader.NodeType == XmlNodeType.Element && reader.Name == "template")
+            if (reader is {NodeType: XmlNodeType.Element, Name: "template"})
             {
                 templateLoader.Load(reader, ref e);
             }
@@ -406,16 +388,16 @@ internal partial class GameLoader
 
     private class ImplicitTypes
     {
-        private Dictionary<string, string> m_implicitTypes = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _implicitTypes = new();
 
         public void Add(string element, string property, string type)
         {
-            m_implicitTypes.Add(GetKey(element, property), type);
+            _implicitTypes.Add(GetKey(element, property), type);
         }
 
         public string? Get(string element, string property)
         {
-            return m_implicitTypes.GetValueOrDefault(GetKey(element, property));
+            return _implicitTypes.GetValueOrDefault(GetKey(element, property));
         }
 
         private static string GetKey(string element, string property)
