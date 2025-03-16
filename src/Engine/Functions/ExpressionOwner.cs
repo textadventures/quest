@@ -23,130 +23,161 @@ internal class ExpressionOwner(WorldModel worldModel)
         return result;
     }
 
-    public string Template(string template)
+    public string Template(string? template)
     {
+        ArgumentNullException.ThrowIfNull(template);
         return worldModel.Template.GetText(template);
     }
 
-    public string DynamicTemplate(string template, params Element[] obj)
+    public string DynamicTemplate(string? template, params Element[] obj)
     {
+        ArgumentNullException.ThrowIfNull(template);
         return worldModel.Template.GetDynamicText(template, obj);
     }
 
-    public string DynamicTemplate(string template, string text)
+    public string DynamicTemplate(string? template, string? text)
     {
+        ArgumentNullException.ThrowIfNull(template);
+        ArgumentNullException.ThrowIfNull(text);
         return worldModel.Template.GetDynamicText(template, text);
     }
 
-    public bool HasString(/* Element */ object obj, string property)
+    public bool HasString(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasString", "object");
         return element.Fields.HasString(property);
     }
 
-    public string GetString(/* Element */ object obj, string property)
+    public string GetString(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetString", "object");
         return element.Fields.GetString(property);
     }
 
-    public bool HasBoolean(/* Element */ object obj, string property)
+    public bool HasBoolean(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasBoolean", "object");
         return element.Fields.HasType<bool>(property);
     }
 
-    public bool GetBoolean(/* Element */ object obj, string property)
+    public bool GetBoolean(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetBoolean", "object");
         return element.Fields.GetAsType<bool>(property);
     }
         
-    public bool HasInt(/* Element */ object obj, string property)
+    public bool HasInt(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasInt", "object");
         return element.Fields.HasType<int>(property);
     }
 
-    public int GetInt(/* Element */ object obj, string property)
+    public int GetInt(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetInt", "object");
         return element.Fields.GetAsType<int>(property);
     }
 
-    public bool HasDouble(/* Element */ object obj, string property)
+    public bool HasDouble(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasDouble", "object");
         return element.Fields.HasType<double>(property);
     }
 
-    public double GetDouble(/* Element */ object obj, string property)
+    public double GetDouble(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetDouble", "object");
         return element.Fields.GetAsType<double>(property);
     }
 
-    public bool HasScript(/* Element */ object obj, string property)
+    public bool HasScript(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasScript", "object");
         return element.Fields.HasType<IScript>(property);
     }
 
-    public bool HasObject(/* Element */ object obj, string property)
+    public bool HasObject(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasObject", "object");
         return element.Fields.HasType<Element>(property);
     }
 
-    public bool HasDelegateImplementation(/* Element */ object obj, string property)
+    public bool HasDelegateImplementation(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasDelegateImplementation", "object");
         return element.Fields.HasType<DelegateImplementation>(property);
     }
 
-    public object GetAttribute(/* Element */ object obj, string property)
+    public object GetAttribute(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetAttribute", "object");
         return element.Fields.Get(property);
     }
 
-    public bool HasAttribute(/* Element */ object obj, string property)
+    public bool HasAttribute(/* Element */ object? obj, string? property)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "HasAttribute", "object");
         return element.Fields.Exists(property, true);
     }
 
-    public QuestList<string> GetAttributeNames(/* Element */ object obj, bool includeInheritedAttributes)
+    public QuestList<string> GetAttributeNames(/* Element */ object? obj, bool includeInheritedAttributes)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAttributeNames", "object");
         return new QuestList<string>(element.Fields.GetAttributeNames(includeInheritedAttributes));
     }
 
-    public string? GetExitByLink(/* Element */ object from, /* Element */ object to)
+    public string? GetExitByLink(/* Element */ object? from, /* Element */ object? to)
     {
+        ArgumentNullException.ThrowIfNull(from);
+        ArgumentNullException.ThrowIfNull(to);
         var fromElement = GetParameter<Element>(from, "GetExitByLink", "object");
         var toElement = GetParameter<Element>(to, "GetExitByLink", "object");
-        foreach (var e in worldModel.Objects)
-        {
-            if (e.Parent == fromElement && e.Fields[FieldDefinitions.To] == toElement) return e.Name;
-        }
-
-        return null;
+        return (from e in worldModel.Objects
+            where e.Parent == fromElement && e.Fields[FieldDefinitions.To] == toElement
+            select e.Name).FirstOrDefault();
     }
 
-    public string? GetExitByName(/* Element */ object parent, string name)
+    public string? GetExitByName(/* Element */ object? parent, string? name)
     {
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(name);
         var parentElement = GetParameter<Element>(parent, "GetExitByName", "object");
-        foreach (var e in worldModel.Objects)
-        {
-            if (e.Parent == parentElement && e.Fields[FieldDefinitions.Alias] == name) return e.Name;
-        }
-
-        return null;
+        return (from e in worldModel.Objects
+            where e.Parent == parentElement && e.Fields[FieldDefinitions.Alias] == name
+            select e.Name).FirstOrDefault();
     }
 
-    public bool Contains(/* Element */ object parent, /* Element */ object name)
+    public bool Contains(/* Element */ object? parent, /* Element */ object? name)
     {
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(name);
         var parentElement = GetParameter<Element>(parent, "Contains", "object");
         var nameElement = GetParameter<Element>(name, "Contains", "object");
         return WorldModel.ObjectContains(parentElement, nameElement);
@@ -187,8 +218,10 @@ internal class ExpressionOwner(WorldModel worldModel)
         return new QuestDictionary<object>();
     }
 
-    public bool ListContains(/* IQuestList */ object list, object item)
+    public bool ListContains(/* IQuestList */ object? list, object? item)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(item);
         var questList = GetParameter<IQuestList>(list, "ListContains", "list");
         return questList.Contains(item);
     }
@@ -237,14 +270,17 @@ internal class ExpressionOwner(WorldModel worldModel)
         return result;
     }
 
-    public int ListCount(/* ICollection */ object list)
+    public int ListCount(/* ICollection */ object? list)
     {
+        ArgumentNullException.ThrowIfNull(list);
         var questList = GetParameter<ICollection>(list, "ListCount", "list");
         return questList.Count;
     }
 
-    public object ListItem(/* IQuestList */ object list, int index)
+    public object ListItem(/* IQuestList */ object? list, int index)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        
         var questList = GetParameter<IQuestList>(list, "ListItem", "list");
 
         try
@@ -253,12 +289,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
         catch (ArgumentOutOfRangeException ex)
         {
-            throw new Exception(string.Format("ListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, questList.Count, questList.Count - 1), ex);
+            throw new Exception(
+                $"ListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})", ex);
         }
     }
 
-    public string? StringListItem(/* IQuestList */ object list, int index)
+    public string? StringListItem(/* IQuestList */ object? list, int index)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        
         var questList = GetParameter<IQuestList>(list, "StringListItem", "list");
 
         try
@@ -272,8 +311,10 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
     }
 
-    public Element? ObjectListItem(/* IQuestList */ object list, int index)
+    public Element? ObjectListItem(/* IQuestList */ object? list, int index)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        
         var questList = GetParameter<IQuestList>(list, "ObjectListItem", "list");
 
         try
@@ -287,13 +328,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         }
     }
 
-    public Element GetObject(string name)
+    public Element GetObject(string? name)
     {
+        ArgumentNullException.ThrowIfNull(name);
         return TryGetElement(ElementType.Object, name);
     }
 
-    public Element GetTimer(string name)
+    public Element GetTimer(string? name)
     {
+        ArgumentNullException.ThrowIfNull(name);
         return TryGetElement(ElementType.Timer, name);
     }
 
@@ -303,8 +346,9 @@ internal class ExpressionOwner(WorldModel worldModel)
         return result;
     }
 
-    public string TypeOf(/* Element */ object obj, string attribute)
+    public string TypeOf(/* Element */ object? obj, string attribute)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "TypeOf", "object");
         var value = element.Fields.Get(attribute);
         return TypeOf(value);
@@ -320,14 +364,16 @@ internal class ExpressionOwner(WorldModel worldModel)
         };
     }
 
-    public object RunDelegateFunction(/* Element */ object obj, string del, params object[] parameters)
+    public object RunDelegateFunction(/* Element */ object? obj, string? del, params object[] parameters)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(del);
         var element = GetParameter<Element>(obj, "RunDelegateFunction", "object");
         var impl = element.Fields.Get(del) as DelegateImplementation;
 
         if (impl == null)
         {
-            throw new Exception(string.Format("Object '{0}' has no delegate implementation '{1}'", element.Name, del));
+            throw new Exception($"Object '{element.Name}' has no delegate implementation '{del}'");
         }
 
         var paramValues = new Parameters();
@@ -343,67 +389,103 @@ internal class ExpressionOwner(WorldModel worldModel)
     }
 
     // ReSharper disable once InconsistentNaming
-    public string SafeXML(string input)
+    public string SafeXML(string? input)
     {
+        ArgumentNullException.ThrowIfNull(input);
         return Utility.SafeXML(input);
     }
 
-    public bool IsRegexMatch(string regexPattern, string input)
+    public bool IsRegexMatch(string? regexPattern, string? input)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
         return Utility.IsRegexMatch(regexPattern, input);
     }
 
-    public bool IsRegexMatch(string regexPattern, string input, string cacheId)
+    public bool IsRegexMatch(string? regexPattern, string? input, string? cacheId)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(cacheId);
+        
         return Utility.IsRegexMatch(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
-    public int GetMatchStrength(string regexPattern, string input)
+    public int GetMatchStrength(string? regexPattern, string? input)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
+        
         return Utility.GetMatchStrength(regexPattern, input);
     }
 
-    public int GetMatchStrength(string regexPattern, string input, string cacheId)
+    public int GetMatchStrength(string? regexPattern, string? input, string? cacheId)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(cacheId);
+        
         return Utility.GetMatchStrength(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
-    public QuestDictionary<string> Populate(string regexPattern, string input)
+    public QuestDictionary<string> Populate(string? regexPattern, string? input)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
+
         return Utility.Populate(regexPattern, input);
     }
 
-    public QuestDictionary<string> Populate(string regexPattern, string input, string cacheId)
+    public QuestDictionary<string> Populate(string? regexPattern, string? input, string? cacheId)
     {
+        ArgumentNullException.ThrowIfNull(regexPattern);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(cacheId);
+        
         return Utility.Populate(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
-    public object? DictionaryItem(/* IDictionary */ object obj, string key)
+    public object? DictionaryItem(/* IDictionary */ object? obj, string? key)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
+        
         var dictionary = GetParameter<IDictionary>(obj, "DictionaryItem", "dictionary");
         return dictionary[key];
     }
 
-    public string? StringDictionaryItem(/* IDictionary */ object obj, string key)
+    public string? StringDictionaryItem(/* IDictionary */ object? obj, string? key)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
+        
         var dictionary = GetParameter<IDictionary>(obj, "StringDictionaryItem", "dictionary");
         return dictionary[key] as string;
     }
 
-    public Element? ObjectDictionaryItem(/* IDictionary */ object obj, string key)
+    public Element? ObjectDictionaryItem(/* IDictionary */ object? obj, string? key)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
+        
         var dictionary = GetParameter<IDictionary>(obj, "ObjectDictionaryItem", "dictionary");
         return dictionary[key] as Element;
     }
 
-    public IScript? ScriptDictionaryItem(/* IDictionary */ object obj, string key)
+    public IScript? ScriptDictionaryItem(/* IDictionary */ object? obj, string? key)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
+        
         var dictionary = GetParameter<IDictionary>(obj, "ScriptDictionaryItem", "dictionary");
         return dictionary[key] as IScript;
     }
 
-    public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
+    public string ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
     {
+        ArgumentNullException.ThrowIfNull(caption);
+        ArgumentNullException.ThrowIfNull(options);
+        
         if (worldModel.Version >= WorldModelVersion.v540)
         {
             throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
@@ -411,8 +493,11 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.DisplayMenu(caption, options, allowCancel, false);
     }
 
-    public string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
+    public string ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
     {
+        ArgumentNullException.ThrowIfNull(caption);
+        ArgumentNullException.ThrowIfNull(options);
+        
         if (worldModel.Version >= WorldModelVersion.v540)
         {
             throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
@@ -420,25 +505,31 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.DisplayMenu(caption, options, allowCancel, false);
     }
 
-    public bool DictionaryContains(/* IDictionary */ object obj, string key)
+    public bool DictionaryContains(/* IDictionary */ object? obj, string? key)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
+        
         var dictionary = GetParameter<IDictionary>(obj, "DictionaryContains", "dictionary");
         return dictionary.Contains(key);
     }
 
-    public int DictionaryCount(IDictionary obj)
+    public int DictionaryCount(IDictionary? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var dictionary = GetParameter<IDictionary>(obj, "DictionaryCount", "dictionary");
         return dictionary.Count;
     }
 
-    public int ToInt(string number)
+    public int ToInt(string? number)
     {
+        ArgumentNullException.ThrowIfNull(number);
         return int.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    public double ToDouble(string number)
+    public double ToDouble(string? number)
     {
+        ArgumentNullException.ThrowIfNull(number);
         return double.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
     }
 
@@ -452,18 +543,21 @@ internal class ExpressionOwner(WorldModel worldModel)
         return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    public string? ToString(object obj)
+    public string? ToString(object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         return obj.ToString();
     }
 
-    public bool IsInt(string number)
+    public bool IsInt(string? number)
     {
+        ArgumentNullException.ThrowIfNull(number);
         return int.TryParse(number, out _);
     }
 
-    public bool IsDouble(string number)
+    public bool IsDouble(string? number)
     {
+        ArgumentNullException.ThrowIfNull(number);
         return double.TryParse(number,
             System.Globalization.NumberStyles.AllowDecimalPoint |
             System.Globalization.NumberStyles.AllowLeadingSign,
@@ -480,14 +574,16 @@ internal class ExpressionOwner(WorldModel worldModel)
     }
 
     // ReSharper disable once InconsistentNaming
-    public string GetFileURL(string filename)
+    public string GetFileURL(string? filename)
     {
+        ArgumentNullException.ThrowIfNull(filename);
         if (filename.Contains("..")) throw new Exception("Invalid filename");
         return worldModel.GetExternalUrl(filename);
     }
 
-    public string? GetFileData(string filename)
+    public string? GetFileData(string? filename)
     {
+        ArgumentNullException.ThrowIfNull(filename);
         if (filename.Contains("..")) throw new Exception("Invalid filename");
         return worldModel.GetResourceData(filename);
     }
@@ -504,13 +600,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         throw new Exception("SetExternalFileData is not supported");
     }
 
-    public string GetUniqueElementName(string name)
+    public string GetUniqueElementName(string? name)
     {
+        ArgumentNullException.ThrowIfNull(name);
         return worldModel.GetUniqueElementName(name);
     }
 
-    public bool Ask(string caption)
+    public bool Ask(string? caption)
     {
+        ArgumentNullException.ThrowIfNull(caption);
         if (worldModel.Version >= WorldModelVersion.v540)
         {
             throw new Exception("The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
@@ -531,13 +629,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         return _random.NextDouble();
     }
 
-    public object Eval(string expression)
+    public object Eval(string? expression)
     {
+        ArgumentNullException.ThrowIfNull(expression);
         return Eval(expression, null);
     }
 
-    public object Eval(string expression, /* IDictionary */ object? obj)
+    public object Eval(string? expression, /* IDictionary */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(expression);
         var parameters = (obj == null) ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
         var expr = new ExpressionDynamic(expression, new ScriptContext(worldModel));
         var context = new Context();
@@ -545,87 +645,105 @@ internal class ExpressionOwner(WorldModel worldModel)
         return expr.Execute(context);
     }
 
-    public Element Clone(/* Element */ object obj)
+    public Element Clone(/* Element */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "Clone", "object");
         var newElement = element.Clone();
         return newElement;
     }
 
-    public Element ShallowClone(/* Element */ object obj)
+    public Element ShallowClone(/* Element */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "Clone", "object");
         var newElement = element.ShallowClone();
         return newElement;
     }
 
-    public bool DoesInherit(/* Element */ object obj, string typeName)
+    public bool DoesInherit(/* Element */ object? obj, string? typeName)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(typeName);
         var element = GetParameter<Element>(obj, "DoesInherit", "object");
         var type = worldModel.Elements.Get(ElementType.ObjectType, typeName);
         return element.Fields.InheritsTypeRecursive(type);
     }
 
-    public QuestList<string> ListCombine(QuestList<string> list1, QuestList<string> list2)
+    public QuestList<string> ListCombine(QuestList<string>? list1, QuestList<string>? list2)
     {
         return ListCombine<string>(list1, list2);
     }
 
-    public QuestList<Element> ListCombine(QuestList<Element> list1, QuestList<Element> list2)
+    public QuestList<Element> ListCombine(QuestList<Element>? list1, QuestList<Element>? list2)
     {
         return ListCombine<Element>(list1, list2);
     }
 
-    public QuestList<object> ListCombine(QuestList<object> list1, QuestList<object> list2)
+    public QuestList<object> ListCombine(QuestList<object>? list1, QuestList<object>? list2)
     {
         return ListCombine<object>(list1, list2);
     }
 
-    private QuestList<T> ListCombine<T>(QuestList<T>? list1, QuestList<T> list2)
+    private QuestList<T> ListCombine<T>(QuestList<T>? list1, QuestList<T>? list2)
     {
         return list1 == null ? new QuestList<T>(list2) : list1.MergeLists(list2);
     }
 
-    public QuestList<string> ListExclude(QuestList<string> list, string str)
+    public QuestList<string> ListExclude(QuestList<string>? list, string? str)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(str);
         return list.Exclude(str);
     }
 
-    public QuestList<Element> ListExclude(QuestList<Element> list, Element element)
+    public QuestList<Element> ListExclude(QuestList<Element>? list, Element? element)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(element);
         return list.Exclude(element);
     }
 
-    public QuestList<object> ListExclude(QuestList<object> list, Element element)
+    public QuestList<object> ListExclude(QuestList<object>? list, Element? element)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(element);
         return list.Exclude(element);
     }
 
-    public QuestList<string> ListExclude(QuestList<string> list, QuestList<string> excludeList)
+    public QuestList<string> ListExclude(QuestList<string>? list, QuestList<string>? excludeList)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(excludeList);
         return list.Exclude(excludeList);
     }
 
-    public QuestList<Element> ListExclude(QuestList<Element> list, QuestList<Element> excludeList)
+    public QuestList<Element> ListExclude(QuestList<Element>? list, QuestList<Element>? excludeList)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(excludeList);
         return list.Exclude(excludeList);
     }
 
-    public QuestList<object> ListExclude(QuestList<object> list, QuestList<object> excludeList)
+    public QuestList<object> ListExclude(QuestList<object>? list, QuestList<object>? excludeList)
     {
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(excludeList);
         return list.Exclude(excludeList);
     }
 
-    public QuestList<Element> GetAllChildObjects(/* Element */ object obj)
+    public QuestList<Element> GetAllChildObjects(/* Element */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildObjects", "object");
         return GetAllChildren(element, ObjectType.Object);
     }
 
-    private QuestList<Element> GetAllChildren(/* Element */ object obj, ObjectType type)
+    private QuestList<Element> GetAllChildren(/* Element */ object? obj, ObjectType type)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildren", "object");
-        QuestList<Element> result = new QuestList<Element>();
+        var result = new QuestList<Element>();
         foreach (var child in worldModel.Elements.GetDirectChildren(element).Where(e => e.ElemType == ElementType.Object && e.Type == type))
         {
             result.Add(child);
@@ -634,8 +752,9 @@ internal class ExpressionOwner(WorldModel worldModel)
         return result;
     }
 
-    public QuestList<Element> GetDirectChildren(/* Element */ object obj)
+    public QuestList<Element> GetDirectChildren(/* Element */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetDirectChildren", "object");
         return new QuestList<Element>(
             worldModel.Elements.GetDirectChildren(element)
@@ -647,8 +766,9 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.State != GameState.Finished;
     }
 
-    public QuestList<Element> ObjectListSort(/* QuestList<Element> */ object obj, params string[] attribute)
+    public QuestList<Element> ObjectListSort(/* QuestList<Element> */ object? obj, params string[] attribute)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<Element>>(obj, "ObjectListSort", "objectlist");
         var result = list.OrderBy(e => e.Fields.Get(attribute[0]));
         for (var i = 1; i < attribute.Length; i++)
@@ -659,26 +779,30 @@ internal class ExpressionOwner(WorldModel worldModel)
         return new QuestList<Element>(result);
     }
 
-    public QuestList<Element> ObjectListSortDescending(/* QuestList<Element> */ object obj, params string[] attribute)
+    public QuestList<Element> ObjectListSortDescending(/* QuestList<Element> */ object? obj, params string[] attribute)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<Element>>(obj, "ObjectListSortDescending", "objectlist");
         return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
     }
 
-    public QuestList<string> StringListSort(/* QuestList<string> */ object obj)
+    public QuestList<string> StringListSort(/* QuestList<string> */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSort", "objectlist");
         return new QuestList<string>(list.OrderBy(item => item));
     }
 
-    public QuestList<string> StringListSortDescending(/* QuestList<string> */ object obj)
+    public QuestList<string> StringListSortDescending(/* QuestList<string> */ object? obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSortDescending", "objectlist");
         return new QuestList<string>(StringListSort(list).Reverse());
     }
 
-    public string? GetUiOption(string optionName)
+    public string? GetUiOption(string? optionName)
     {
+        ArgumentNullException.ThrowIfNull(optionName);
         if (Enum.TryParse(optionName, out UIOption option))
         {
             return worldModel.PlayerUi.GetUIOption(option);
