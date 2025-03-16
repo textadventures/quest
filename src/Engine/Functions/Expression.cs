@@ -1,99 +1,95 @@
-﻿#nullable disable
-using QuestViva.Engine.Expressions;
+﻿using QuestViva.Engine.Expressions;
 using QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine.Functions
+namespace QuestViva.Engine.Functions;
+
+public abstract class ExpressionBase
 {
-    public abstract class ExpressionBase
+    protected readonly ScriptContext ScriptContext;
+    protected readonly string OriginalExpression;
+    protected readonly string Expression;
+
+    protected ExpressionBase(string expression, ScriptContext scriptContext)
     {
-        protected ScriptContext m_scriptContext;
-        protected string m_originalExpression;
-        protected string m_expression;
-        private readonly WorldModel m_worldModel;
+        ScriptContext = scriptContext;
 
-        public ExpressionBase(string expression, ScriptContext scriptContext)
+        OriginalExpression = expression;
+        if (!scriptContext.WorldModel.EditMode)
         {
-            m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
-
-            m_originalExpression = expression;
-            if (!m_worldModel.EditMode)
-            {
-                expression = Utility.ConvertVariablesToFleeFormat(expression);
-            }
-
-            m_expression = expression;
+            expression = Utility.ConvertVariablesToFleeFormat(expression);
         }
 
-        public override string ToString()
+        Expression = expression;
+    }
+
+    public override string ToString()
+    {
+        return "Expression: " + OriginalExpression;
+    }
+}
+
+public class Expression<T> : ExpressionBase, IFunction<T>
+{
+    private readonly IExpressionEvaluator<T> _expressionEvaluator;
+
+    public Expression(string expression, ScriptContext scriptContext)
+        : base(expression, scriptContext)
+    {
+        if (scriptContext.WorldModel.UseNCalc)
         {
-            return "Expression: " + m_originalExpression;
+            _expressionEvaluator = new NcalcExpressionEvaluator<T>(Expression, ScriptContext);
+        }
+        else
+        {
+            _expressionEvaluator = new FleeExpressionEvaluator<T>(Expression, ScriptContext);
         }
     }
 
-    public class Expression<T> : ExpressionBase, IFunction<T>
+    public IFunction<T> Clone()
     {
-        private readonly IExpressionEvaluator<T> _expressionEvaluator;
+        return new Expression<T>(Expression, ScriptContext);
+    }
 
-        public Expression(string expression, ScriptContext scriptContext)
-            : base(expression, scriptContext)
+    public T Execute(Context c)
+    {
+        return _expressionEvaluator.Evaluate(c);
+    }
+
+    public string Save()
+    {
+        return OriginalExpression;
+    }
+}
+
+public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
+{
+    private readonly IDynamicExpressionEvaluator _dynamicExpressionEvaluator;
+
+    public ExpressionDynamic(string expression, ScriptContext scriptContext)
+        : base(expression, scriptContext)
+    {
+        if (scriptContext.WorldModel.UseNCalc)
         {
-            if (scriptContext.WorldModel.UseNCalc)
-            {
-                _expressionEvaluator = new NcalcExpressionEvaluator<T>(m_expression, m_scriptContext);
-            }
-            else
-            {
-                _expressionEvaluator = new FleeExpressionEvaluator<T>(m_expression, m_scriptContext);
-            }
+            _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(Expression, ScriptContext);
         }
-
-        public IFunction<T> Clone()
+        else
         {
-            return new Expression<T>(m_expression, m_scriptContext);
-        }
-
-        public T Execute(Context c)
-        {
-            return _expressionEvaluator.Evaluate(c);
-        }
-
-        public string Save()
-        {
-            return m_originalExpression;
+            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(Expression, ScriptContext);    
         }
     }
 
-    public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
+    public IFunctionDynamic Clone()
     {
-        private readonly IDynamicExpressionEvaluator _dynamicExpressionEvaluator;
+        return new ExpressionDynamic(Expression, ScriptContext);
+    }
 
-        public ExpressionDynamic(string expression, ScriptContext scriptContext)
-            : base(expression, scriptContext)
-        {
-            if (scriptContext.WorldModel.UseNCalc)
-            {
-                _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(m_expression, m_scriptContext);
-            }
-            else
-            {
-                _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(m_expression, m_scriptContext);    
-            }
-        }
+    public object Execute(Context c)
+    {
+        return _dynamicExpressionEvaluator.Evaluate(c);
+    }
 
-        public IFunctionDynamic Clone()
-        {
-            return new ExpressionDynamic(m_expression, m_scriptContext);
-        }
-
-        public object Execute(Context c)
-        {
-            return _dynamicExpressionEvaluator.Evaluate(c);
-        }
-
-        public string Save()
-        {
-            return m_originalExpression;
-        }
+    public string Save()
+    {
+        return OriginalExpression;
     }
 }

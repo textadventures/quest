@@ -258,8 +258,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         Print(caption);
 
         var menuData = new MenuData(caption, options, allowCancel);
@@ -369,7 +367,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void SetGameName(string name)
     {
-        PlayerUi?.UpdateGameName(name);
+        _playerUi?.UpdateGameName(name);
     }
 
     public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
@@ -438,8 +436,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void Begin()
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         DoInNewThreadAndWait(() =>
         {
             try
@@ -773,8 +769,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartWait()
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
         PlayerUi.DoWait();
 
@@ -790,8 +784,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartWaitAsync(IScript callback, Context c)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
         PlayerUi.DoWait();
     }
@@ -821,8 +813,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartPause(int ms)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         PlayerUi.DoPause(ms);
 
         ChangeThreadState(ThreadState.Waiting);
@@ -1106,8 +1096,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal string GetExternalUrl(string file)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         return PlayerUi.GetURL(file);
     }
 
@@ -1173,8 +1161,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void ScrollToEnd()
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         PlayerUi.RunScript("scrollToEnd", null);
     }
 
@@ -1227,7 +1213,18 @@ public partial class WorldModel : IGame, IGameDebug
         LogError?.Invoke(ex);
     }
 
-    internal IPlayer? PlayerUi { get; private set; } = null;
+    internal IPlayer PlayerUi
+    {
+        get
+        {
+            if (_playerUi == null)
+            {
+                throw new Exception("Player UI not set");
+            }
+            return _playerUi;
+        }
+        private set => _playerUi = value;
+    }
 
     public static ElementType GetElementTypeForTypeString(string typeString)
     {
@@ -1369,11 +1366,10 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     private bool _questionResponse;
+    private IPlayer? _playerUi = null;
 
     internal bool ShowQuestion(string caption)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         _callbacks.Pop(CallbackManager.CallbackTypes.Question);
         PlayerUi.ShowQuestion(caption);
 
@@ -1391,8 +1387,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void ShowQuestionAsync(string caption, IScript callback, Context c)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
         PlayerUi.ShowQuestion(caption);
     }
@@ -1501,8 +1495,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void PlaySound(string filename, bool sync, bool looped)
     {
-        if (PlayerUi == null) throw new Exception("Player UI not set");
-        
         PlayerUi.PlaySound(filename, sync, looped);
         if (!sync)
         {
