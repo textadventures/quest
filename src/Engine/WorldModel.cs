@@ -1554,8 +1554,6 @@ public partial class WorldModel : IGame, IGameDebug
             _callbacks.AddOnReadyCallback(new Callback(callback, c));
         }
     }
-        
-#nullable enable
 
     public Stream? GetResource(string filename)
     {
@@ -1581,8 +1579,6 @@ public partial class WorldModel : IGame, IGameDebug
     {
         return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
     }
-        
-#nullable disable
 
     public string GetResourcePath(string filename)
     {
@@ -1593,13 +1589,13 @@ public partial class WorldModel : IGame, IGameDebug
 
     public WorldModelVersion Version { get; internal set; }
 
-    internal string VersionString { get; set; }
+    internal string? VersionString { get; set; }
 
-    public string TempFolder { get; set; }
+    public string? TempFolder { get; set; }
 
-    internal IOutputLogger OutputLogger { get; private set; }
+    internal IOutputLogger? OutputLogger { get; private set; }
 
-    public int ASLVersion => int.Parse(VersionString);
+    public int ASLVersion => int.Parse(VersionString!);
 
     public string GameID => Game.Fields[FieldDefinitions.GameID];
         
