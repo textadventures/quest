@@ -9,6 +9,7 @@ namespace QuestViva.Engine.Functions;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 internal class ExpressionOwner(WorldModel worldModel)
 {
     private readonly Random _random = new();
