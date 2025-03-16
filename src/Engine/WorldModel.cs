@@ -13,41 +13,78 @@ using QuestViva.Utility;
 
 namespace QuestViva.Engine
 {
-    public partial class WorldModel : IGame, IGameDebug, IGameTimer
+    public partial class WorldModel : IGameDebug, IGameTimer
     {
-        private Element m_game;
-        private Elements m_elements;
-        private Dictionary<string, int> m_nextUniqueID = new Dictionary<string, int>();
-        private Template m_template;
-        private UndoLogger m_undoLogger;
-        private GameData m_gameData;
-        private List<string> m_errors;
-        private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
-        private Dictionary<string, ElementType> m_debuggerElementTypes = new Dictionary<string, ElementType>();
-        private GameState m_state = GameState.NotStarted;
-        private Dictionary<ElementType, IElementFactory> m_elementFactories = new Dictionary<ElementType, IElementFactory>();
-        private ObjectFactory m_objectFactory;
-        private QuestViva.Engine.GameLoader.GameSaver m_saver;
-        private bool m_loadedFromSaved = false;
-        private bool m_editMode = false;
-        private ExpressionOwner m_expressionOwner;
-        private IPlayer m_playerUI = null;
-        private ThreadState m_threadState = ThreadState.Ready;
-        private object m_threadLock = new object();
-        private Walkthroughs m_walkthroughs;
-        private List<string> m_attributeNames = new List<string>();
-        private bool m_commandOverride = false;
-        private string m_commandOverrideInput;
-        private object m_commandOverrideLock = new object();
-        private TimerRunner m_timerRunner;
-        private RegexCache m_regexCache = new RegexCache();
-        private IOutputLogger m_outputLogger;
-        private LegacyOutputLogger m_legacyOutputLogger;
-        private CallbackManager m_callbacks = new CallbackManager();
+        private readonly Element _game;
+        private readonly Elements _elements;
+        private readonly Dictionary<string, int> _nextUniqueId = new();
+        private readonly Template _template;
+        private readonly UndoLogger _undoLogger;
+        private readonly GameData _gameData;
+        private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
+        private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
+        private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
+        private readonly ObjectFactory _objectFactory;
+        private readonly ExpressionOwner _expressionOwner;
+        private readonly List<string> _attributeNames = [];
+        private readonly RegexCache _regexCache = new();
+        private readonly CallbackManager _callbacks = new();
+        private readonly object _threadLock = new();
+        private readonly object _commandOverrideLock = new();
+        
+        private IPlayer _playerUi = null;
+        private GameSaver _saver;
+        
+        private Walkthroughs _walkthroughs;
+        private TimerRunner _timerRunner;
+        
+        private bool _commandOverride = false;
+        private string _commandOverrideInput;
+        
+        private IOutputLogger _outputLogger;
+        private LegacyOutputLogger _legacyOutputLogger;
+        
+        private bool _loadedFromSaved = false;
+        private bool _editMode = false;
+        
+        private List<string> _errors;
+        private GameState _state = GameState.NotStarted;
+        private ThreadState _threadState = ThreadState.Ready;
 
-        private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
-        private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
-        private static Dictionary<Type, string> s_typesToTypeNames = new Dictionary<Type, string>();
+        internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
+        {
+            {ObjectType.Object, "defaultobject"},
+            {ObjectType.Exit, "defaultexit"},
+            {ObjectType.Command, "defaultcommand"},
+            {ObjectType.Game, "defaultgame"},
+            {ObjectType.TurnScript, "defaultturnscript"}
+        };
+        
+        private static readonly Dictionary<string, Type> TypeNamesToTypes = new()
+        {
+            {"string", typeof(string)},
+            {"script", typeof(IScript)},
+            {"boolean", typeof(bool)},
+            {"int", typeof(int)},
+            {"double", typeof(double)},
+            {"object", typeof(Element)},
+            {"stringlist", typeof(QuestList<string>)},
+            {"objectlist", typeof(QuestList<Element>)},
+            {"stringdictionary", typeof(QuestDictionary<string>)},
+            {"objectdictionary", typeof(QuestDictionary<Element>)},
+            {"scriptdictionary", typeof(QuestDictionary<IScript>)},
+            {"dictionary", typeof(QuestDictionary<object>)},
+            {"list", typeof(QuestList<object>)}
+        };
+        private static readonly Dictionary<Type, string> TypesToTypeNames = new();
+        
+        static WorldModel()
+        {
+            foreach (var kvp in TypeNamesToTypes)
+            {
+                TypesToTypeNames.Add(kvp.Value, kvp.Key);
+            }
+        }
 
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
         public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
@@ -56,34 +93,6 @@ namespace QuestViva.Engine
 
         public event Action<int> RequestNextTimerTick;
 
-        static WorldModel()
-        {
-            s_defaultTypeNames.Add(ObjectType.Object, "defaultobject");
-            s_defaultTypeNames.Add(ObjectType.Exit, "defaultexit");
-            s_defaultTypeNames.Add(ObjectType.Command, "defaultcommand");
-            s_defaultTypeNames.Add(ObjectType.Game, "defaultgame");
-            s_defaultTypeNames.Add(ObjectType.TurnScript, "defaultturnscript");
-
-            s_typeNamesToTypes.Add("string", typeof(string));
-            s_typeNamesToTypes.Add("script", typeof(IScript));
-            s_typeNamesToTypes.Add("boolean", typeof(bool));
-            s_typeNamesToTypes.Add("int", typeof(int));
-            s_typeNamesToTypes.Add("double", typeof(double));
-            s_typeNamesToTypes.Add("object", typeof(Element));
-            s_typeNamesToTypes.Add("stringlist", typeof(QuestList<string>));
-            s_typeNamesToTypes.Add("objectlist", typeof(QuestList<Element>));
-            s_typeNamesToTypes.Add("stringdictionary", typeof(QuestDictionary<string>));
-            s_typeNamesToTypes.Add("objectdictionary", typeof(QuestDictionary<Element>));
-            s_typeNamesToTypes.Add("scriptdictionary", typeof(QuestDictionary<IScript>));
-            s_typeNamesToTypes.Add("dictionary", typeof(QuestDictionary<object>));
-            s_typeNamesToTypes.Add("list", typeof (QuestList<object>));
-
-            foreach (KeyValuePair<string, Type> kvp in s_typeNamesToTypes)
-            {
-                s_typesToTypeNames.Add(kvp.Value, kvp.Key);
-            }
-        }
-
         public WorldModel()
             : this(null)
         {
@@ -91,16 +100,16 @@ namespace QuestViva.Engine
 
         public WorldModel(GameData gameData)
         {
-            m_expressionOwner = new ExpressionOwner(this);
-            m_template = new Template(this);
+            _expressionOwner = new ExpressionOwner(this);
+            _template = new Template(this);
             InitialiseElementFactories();
-            m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
+            _objectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
 
             InitialiseDebuggerObjectTypes();
-            m_gameData = gameData;
-            m_elements = new Elements();
-            m_undoLogger = new UndoLogger(this);
-            m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
+            _gameData = gameData;
+            _elements = new Elements();
+            _undoLogger = new UndoLogger(this);
+            _game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
         public bool UseNcalc { get; set; }
@@ -116,14 +125,9 @@ namespace QuestViva.Engine
 
         private void AddElementFactory(IElementFactory factory)
         {
-            m_elementFactories.Add(factory.CreateElementType, factory);
+            _elementFactories.Add(factory.CreateElementType, factory);
             factory.WorldModel = this;
             factory.ObjectsUpdated += ElementsUpdated;
-        }
-
-        internal static Dictionary<ObjectType, string> DefaultTypeNames
-        {
-            get { return s_defaultTypeNames; }
         }
 
         void ElementsUpdated(object sender, ObjectsUpdatedEventArgs args)
@@ -133,28 +137,28 @@ namespace QuestViva.Engine
 
         private void InitialiseDebuggerObjectTypes()
         {
-            m_debuggerObjectTypes.Add("Objects", ObjectType.Object);
-            m_debuggerObjectTypes.Add("Exits", ObjectType.Exit);
-            m_debuggerObjectTypes.Add("Commands", ObjectType.Command);
-            m_debuggerObjectTypes.Add("Game", ObjectType.Game);
-            m_debuggerObjectTypes.Add("Turn Scripts", ObjectType.TurnScript);
-            m_debuggerElementTypes.Add("Timers", ElementType.Timer);
+            _debuggerObjectTypes.Add("Objects", ObjectType.Object);
+            _debuggerObjectTypes.Add("Exits", ObjectType.Exit);
+            _debuggerObjectTypes.Add("Commands", ObjectType.Command);
+            _debuggerObjectTypes.Add("Game", ObjectType.Game);
+            _debuggerObjectTypes.Add("Turn Scripts", ObjectType.TurnScript);
+            _debuggerElementTypes.Add("Timers", ElementType.Timer);
         }
 
         public void FinishGame()
         {
-            m_state = GameState.Finished;
+            _state = GameState.Finished;
 
             // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
 
-            lock (m_commandOverrideLock)
+            lock (_commandOverrideLock)
             {
-                Monitor.PulseAll(m_commandOverrideLock);
+                Monitor.PulseAll(_commandOverrideLock);
             }
 
-            lock (m_threadLock)
+            lock (_threadLock)
             {
-                Monitor.PulseAll(m_threadLock);
+                Monitor.PulseAll(_threadLock);
             }
 
             lock (m_waitForResponseLock)
@@ -175,49 +179,49 @@ namespace QuestViva.Engine
         internal string GetUniqueID(string prefix)
         {
             if (string.IsNullOrEmpty(prefix)) prefix = "k";
-            if (!m_nextUniqueID.ContainsKey(prefix))
+            if (!_nextUniqueId.ContainsKey(prefix))
             {
-                m_nextUniqueID.Add(prefix, 0);
+                _nextUniqueId.Add(prefix, 0);
             }
 
             string newid;
             do
             {
-                m_nextUniqueID[prefix]++;
-                newid = prefix + m_nextUniqueID[prefix].ToString();
-            } while (m_elements.ContainsKey(newid));
+                _nextUniqueId[prefix]++;
+                newid = prefix + _nextUniqueId[prefix].ToString();
+            } while (_elements.ContainsKey(newid));
             
             return newid;
         }
 
         public Element Game
         {
-            get { return m_game; }
+            get { return _game; }
         }
 
         public Element Object(string name)
         {
-            return m_elements.Get(ElementType.Object, name);
+            return _elements.Get(ElementType.Object, name);
         }
 
         public ObjectFactory ObjectFactory
         {
-            get { return m_objectFactory; }
+            get { return _objectFactory; }
         }
 
         public IElementFactory GetElementFactory(ElementType t)
         {
-            return m_elementFactories[t];
+            return _elementFactories[t];
         }
 
         public void PrintTemplate(string t)
         {
-            Print(m_template.GetText(t));
+            Print(_template.GetText(t));
         }
 
         public void Print(string text, bool linebreak = true)
         {
-            if (Version >= WorldModelVersion.v540 && m_elements.ContainsKey(ElementType.Function, "OutputText"))
+            if (Version >= WorldModelVersion.v540 && _elements.ContainsKey(ElementType.Function, "OutputText"))
             {
                 try
                 {
@@ -242,21 +246,21 @@ namespace QuestViva.Engine
                     }
                 }
 
-                if (m_legacyOutputLogger != null)
+                if (_legacyOutputLogger != null)
                 {
-                    m_legacyOutputLogger.AddText(text, linebreak);
+                    _legacyOutputLogger.AddText(text, linebreak);
                 }
             }
         }
 
         internal QuestList<Element> GetAllObjects()
         {
-            return new QuestList<Element>(m_elements.Objects);
+            return new QuestList<Element>(_elements.Objects);
         }
 
         internal QuestList<Element> GetObjectsInScope(string scopeFunction)
         {
-            if (m_elements.ContainsKey(ElementType.Function, scopeFunction))
+            if (_elements.ContainsKey(ElementType.Function, scopeFunction))
             {
                 return (QuestList<Element>)RunProcedure(scopeFunction, true);
             }
@@ -281,14 +285,14 @@ namespace QuestViva.Engine
             MenuData menuData = new MenuData(caption, options, allowCancel);
             m_menuOptions = options;
 
-            m_playerUI.ShowMenu(menuData);
+            _playerUi.ShowMenu(menuData);
 
             if (async)
             {
                 return string.Empty;
             }
 
-            m_callbacks.Pop(CallbackManager.CallbackTypes.Menu);
+            _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
             m_menuOptions = null;
 
             ChangeThreadState(ThreadState.Waiting);
@@ -315,7 +319,7 @@ namespace QuestViva.Engine
 
         public void SetMenuResponse(string response)
         {
-            Callback menuCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Menu);
+            Callback menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
             if (menuCallback != null)
             {
                 if (response != null) Print(" - " + m_menuOptions[response]);
@@ -342,13 +346,13 @@ namespace QuestViva.Engine
 
         internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
         {
-            m_callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
+            _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
             DisplayMenu(caption, options, allowCancel, true);
         }
 
         internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
         {
-            m_callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
+            _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
             DisplayMenu(caption, options, allowCancel, true);
         }
 
@@ -356,14 +360,14 @@ namespace QuestViva.Engine
         {
             get
             {
-                foreach (Element o in m_elements.Objects)
+                foreach (Element o in _elements.Objects)
                     yield return o;
             }
         }
 
         public bool ObjectExists(string name)
         {
-            return m_elements.ContainsKey(ElementType.Object, name);
+            return _elements.ContainsKey(ElementType.Object, name);
         }
 
         /// <summary>
@@ -375,9 +379,9 @@ namespace QuestViva.Engine
         public bool TryResolveExpressionElement(string name, out Element element)
         {
             element = null;
-            if (!m_elements.ContainsKey(name)) return false;
+            if (!_elements.ContainsKey(name)) return false;
 
-            Element result = m_elements.Get(name);
+            Element result = _elements.Get(name);
             if (result.ElemType == ElementType.Object || result.ElemType == ElementType.Timer)
             {
                 element = result;
@@ -389,63 +393,63 @@ namespace QuestViva.Engine
 
         internal void RemoveElement(ElementType type, string name)
         {
-            m_elements.Remove(type, name);
+            _elements.Remove(type, name);
         }
 
         internal IEnumerable<Element> ElementTypes
         {
-            get { return m_elements.GetElements(ElementType.ObjectType); }
+            get { return _elements.GetElements(ElementType.ObjectType); }
         }
 
         internal void SetGameName(string name)
         {
-            if (m_playerUI != null) m_playerUI.UpdateGameName(name);
+            if (_playerUi != null) _playerUi.UpdateGameName(name);
         }
 
         public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
         {
-            m_editMode = false;
-            m_playerUI = player;
+            _editMode = false;
+            _playerUi = player;
             QuestViva.Engine.GameLoader.GameLoader loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
             bool result = await InitialiseInternal(loader);
             if (result)
             {
-                m_walkthroughs = new Walkthroughs(this);
+                _walkthroughs = new Walkthroughs(this);
             }
             return result;
         }
 
         public async Task<bool> InitialiseEdit()
         {
-            m_editMode = true;
+            _editMode = true;
             QuestViva.Engine.GameLoader.GameLoader loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Edit);
             return await InitialiseInternal(loader);
         }
 
         private async Task<bool> InitialiseInternal(QuestViva.Engine.GameLoader.GameLoader loader)
         {
-            if (m_state != GameState.NotStarted)
+            if (_state != GameState.NotStarted)
             {
                 throw new Exception("Game already initialised");
             }
             loader.FilenameUpdated += loader_FilenameUpdated;
             loader.LoadStatus += loader_LoadStatus;
-            m_state = GameState.Loading;
+            _state = GameState.Loading;
             
-            var success = await loader.Load(m_gameData);
+            var success = await loader.Load(_gameData);
             
             DebugEnabled = !loader.IsCompiledFile;
-            m_state = success ? GameState.Running : GameState.Finished;
-            m_errors = loader.Errors;
-            m_saver = new QuestViva.Engine.GameLoader.GameSaver(this);
+            _state = success ? GameState.Running : GameState.Finished;
+            _errors = loader.Errors;
+            _saver = new QuestViva.Engine.GameLoader.GameSaver(this);
             if (Version <= WorldModelVersion.v530)
             {
-                m_legacyOutputLogger = new LegacyOutputLogger(this);
-                m_outputLogger = m_legacyOutputLogger;
+                _legacyOutputLogger = new LegacyOutputLogger(this);
+                _outputLogger = _legacyOutputLogger;
             }
             else
             {
-                m_outputLogger = new OutputLogger(this);
+                _outputLogger = new OutputLogger(this);
             }
             return success;
         }
@@ -466,7 +470,7 @@ namespace QuestViva.Engine
             // m_filename = filename;
             
             // ... but we now only need it to do this, which could be more explicit:
-            m_loadedFromSaved = true;
+            _loadedFromSaved = true;
         }
 
         public void Begin()
@@ -475,21 +479,21 @@ namespace QuestViva.Engine
             {
                 try
                 {
-                    m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
+                    _timerRunner = new TimerRunner(this, !_loadedFromSaved);
                     if (Version <= WorldModelVersion.v540)
                     {
                         PlayerUI.Show("Panes");
                         PlayerUI.Show("Location");
                         PlayerUI.Show("Command");
                     }
-                    if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
-                    if (!m_loadedFromSaved)
+                    if (_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
+                    if (!_loadedFromSaved)
                     {
-                        if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                        if (_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
                     }
                     TryRunOnFinallyScripts();
                     UpdateLists();
-                    if (m_loadedFromSaved)
+                    if (_loadedFromSaved)
                     {
                         var output = Elements.GetSingle(ElementType.Output);
                         if (output == null)
@@ -502,9 +506,9 @@ namespace QuestViva.Engine
                             PlayerUI.RunScript("markScrollPosition", null);
                             ScrollToEnd();
                         }
-                        else if (m_legacyOutputLogger != null)
+                        else if (_legacyOutputLogger != null)
                         {
-                            m_legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
+                            _legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
                         }
                     }
                     SendNextTimerRequest();
@@ -523,32 +527,32 @@ namespace QuestViva.Engine
 
         public List<string> Errors
         {
-            get { return m_errors; }
+            get { return _errors; }
         }
 
         public IWalkthroughs Walkthroughs
         {
             get
             {
-                return m_walkthroughs;
+                return _walkthroughs;
             }
         }
 
         public List<string> DebuggerObjectTypes
         {
-            get { return new List<string>(m_debuggerObjectTypes.Keys.Union(m_debuggerElementTypes.Keys)); }
+            get { return new List<string>(_debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)); }
         }
 
         public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
         {
             if (elapsedTime > 0)
             {
-                m_timerRunner.IncrementTime(elapsedTime);
+                _timerRunner.IncrementTime(elapsedTime);
             }
 
             DoInNewThreadAndWait(() =>
             {
-                if (!m_commandOverride)
+                if (!_commandOverride)
                 {
                     if (Version < WorldModelVersion.v520)
                     {
@@ -581,20 +585,20 @@ namespace QuestViva.Engine
                 }
                 else
                 {
-                    Callback getinputCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
+                    Callback getinputCallback = _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
                     if (getinputCallback != null)
                     {
-                        m_commandOverride = false;
+                        _commandOverride = false;
                         getinputCallback.Context.Parameters["result"] = command;
                         RunCallbackAndFinishTurn(getinputCallback);
                     }
                     else
                     {
-                        m_commandOverrideInput = command;
+                        _commandOverrideInput = command;
 
-                        lock (m_commandOverrideLock)
+                        lock (_commandOverrideLock)
                         {
-                            Monitor.Pulse(m_commandOverrideLock);
+                            Monitor.Pulse(_commandOverrideLock);
                         }
                     }
                 }
@@ -625,7 +629,7 @@ namespace QuestViva.Engine
         public void SendEvent(string eventName, string param)
         {
             Element handler;
-            m_elements.TryGetValue(ElementType.Function, eventName, out handler);
+            _elements.TryGetValue(ElementType.Function, eventName, out handler);
 
             if (handler == null)
             {
@@ -653,7 +657,7 @@ namespace QuestViva.Engine
 
         public string Filename
         {
-            get { return m_gameData.Filename; }
+            get { return _gameData.Filename; }
         }
 
         public void Finish()
@@ -671,17 +675,17 @@ namespace QuestViva.Engine
 
         internal Template Template
         {
-            get { return m_template; }
+            get { return _template; }
         }
 
         public UndoLogger UndoLogger
         {
-            get { return m_undoLogger; }
+            get { return _undoLogger; }
         }
 
         private void UpdateStatusVariables()
         {
-            if (m_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+            if (_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
             {
                 try
                 {
@@ -714,7 +718,7 @@ namespace QuestViva.Engine
                 List<ListData> objects = new List<ListData>();
                 foreach (Element obj in GetObjectsInScope(scope))
                 {
-                    if (Version <= WorldModelVersion.v520 || !m_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+                    if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
                     {
                         if (scope == "ScopeInventory")
                         {
@@ -748,7 +752,7 @@ namespace QuestViva.Engine
 
         private string GetListDisplayAlias(Element obj)
         {
-            if (m_elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
+            if (_elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
             {
                 return (string)RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true);
             }
@@ -757,7 +761,7 @@ namespace QuestViva.Engine
 
         private string GetDisplayAlias(Element obj)
         {
-            if (m_elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
+            if (_elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
             {
                 return (string)RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true);
             }
@@ -780,7 +784,7 @@ namespace QuestViva.Engine
             foreach (Element exit in GetObjectsInScope(scopeFunction))
             {
                 IEnumerable<string> verbs;
-                if (Version <= WorldModelVersion.v520 || !m_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+                if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
                 {
                     verbs = exit.Fields[FieldDefinitions.DisplayVerbs];
                 }
@@ -798,15 +802,15 @@ namespace QuestViva.Engine
             List<string> result = new List<string>();
             IEnumerable<Element> elements;
 
-            if (m_debuggerObjectTypes.ContainsKey(type))
+            if (_debuggerObjectTypes.ContainsKey(type))
             {
-                ObjectType filterType = m_debuggerObjectTypes[type];
-                elements = m_elements.ObjectsFiltered(o => o.Type == filterType);
+                ObjectType filterType = _debuggerObjectTypes[type];
+                elements = _elements.ObjectsFiltered(o => o.Type == filterType);
             }
             else
             {
-                ElementType filterType = m_debuggerElementTypes[type];
-                elements = m_elements.GetElements(filterType);
+                ElementType filterType = _debuggerElementTypes[type];
+                elements = _elements.GetElements(filterType);
             }
 
             foreach (Element obj in elements)
@@ -819,28 +823,28 @@ namespace QuestViva.Engine
 
         public DebugData GetDebugData(string _, string el)
         {
-            return m_elements.Get(el).GetDebugData();
+            return _elements.Get(el).GetDebugData();
         }
         
         public DebugData GetDebugData(string el)
         {
-            return m_elements.Get(el).GetDebugData();
+            return _elements.Get(el).GetDebugData();
         }
 
         public DebugData GetInheritedTypesDebugData(string el)
         {
-            return m_elements.Get(el).Fields.GetInheritedTypesDebugData();
+            return _elements.Get(el).Fields.GetInheritedTypesDebugData();
         }
 
         public DebugDataItem GetDebugDataItem(string el, string attribute)
         {
-            return m_elements.Get(el).Fields.GetDebugDataItem(attribute);
+            return _elements.Get(el).Fields.GetDebugDataItem(attribute);
         }
 
         public void StartWait()
         {
-            m_callbacks.Pop(CallbackManager.CallbackTypes.Wait);
-            m_playerUI.DoWait();
+            _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
+            _playerUi.DoWait();
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -854,13 +858,13 @@ namespace QuestViva.Engine
 
         public void StartWaitAsync(IScript callback, Context c)
         {
-            m_callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
-            m_playerUI.DoWait();
+            _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
+            _playerUi.DoWait();
         }
 
         public void FinishWait()
         {
-            Callback waitCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Wait);
+            Callback waitCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
             if (waitCallback != null)
             {
                 DoInNewThreadAndWait(() =>
@@ -870,7 +874,7 @@ namespace QuestViva.Engine
             }
             else
             {
-                if (m_state == GameState.Finished) return;
+                if (_state == GameState.Finished) return;
                 DoInNewThreadAndWait(() =>
                 {
                     lock (m_waitForResponseLock)
@@ -883,7 +887,7 @@ namespace QuestViva.Engine
 
         public void StartPause(int ms)
         {
-            m_playerUI.DoPause(ms);
+            _playerUi.DoPause(ms);
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -909,7 +913,7 @@ namespace QuestViva.Engine
         public IEnumerable<string> GetExternalScripts()
         {
             var result = new List<string>();
-            foreach (Element jsRef in m_elements.GetElements(ElementType.Javascript))
+            foreach (Element jsRef in _elements.GetElements(ElementType.Javascript))
             {
                 if (Version == WorldModelVersion.v500)
                 {
@@ -930,7 +934,7 @@ namespace QuestViva.Engine
             if (Version < WorldModelVersion.v530) return null;
 
             var webFontsInUse = new List<string>();
-            var defaultWebFont = m_game.Fields[FieldDefinitions.DefaultWebFont];
+            var defaultWebFont = _game.Fields[FieldDefinitions.DefaultWebFont];
             if (!string.IsNullOrEmpty(defaultWebFont))
             {
                 webFontsInUse.Add(defaultWebFont);
@@ -1039,9 +1043,9 @@ namespace QuestViva.Engine
 
         public object RunProcedure(string name, Parameters parameters, bool expectResult)
         {
-            if (m_elements.ContainsKey(ElementType.Function, name))
+            if (_elements.ContainsKey(ElementType.Function, name))
             {
-                Element function = m_elements.Get(ElementType.Function, name);
+                Element function = _elements.Get(ElementType.Function, name);
 
                 // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
                 // would ignore this (but would usually still fail when the function was run, as the required
@@ -1075,23 +1079,23 @@ namespace QuestViva.Engine
 
         public Element Procedure(string name)
         {
-            if (!m_elements.ContainsKey(ElementType.Function, name)) return null;
-            return m_elements.Get(ElementType.Function, name);
+            if (!_elements.ContainsKey(ElementType.Function, name)) return null;
+            return _elements.Get(ElementType.Function, name);
         }
 
         internal Element GetObjectType(string name)
         {
-            return m_elements.Get(ElementType.ObjectType, name);
+            return _elements.Get(ElementType.ObjectType, name);
         }
 
         public GameState State
         {
-            get { return m_state; }
+            get { return _state; }
         }
 
         public Elements Elements
         {
-            get { return m_elements; }
+            get { return _elements; }
         }
 
         public void Save(string filename, string html)
@@ -1108,13 +1112,13 @@ namespace QuestViva.Engine
 
         public string Save(SaveMode mode, bool? includeWalkthrough = null, string html = null)
         {
-            return m_saver.Save(mode, includeWalkthrough, html);
+            return _saver.Save(mode, includeWalkthrough, html);
         }
 
         public static Type ConvertTypeNameToType(string name)
         {
             Type type;
-            if (s_typeNamesToTypes.TryGetValue(name, out type))
+            if (TypeNamesToTypes.TryGetValue(name, out type))
             {
                 return type;
             }
@@ -1130,12 +1134,12 @@ namespace QuestViva.Engine
         public static string ConvertTypeToTypeName(Type type)
         {
             string name;
-            if (s_typesToTypeNames.TryGetValue(type, out name))
+            if (TypesToTypeNames.TryGetValue(type, out name))
             {
                 return name;
             }
 
-            foreach (KeyValuePair<Type, string> kvp in s_typesToTypeNames)
+            foreach (KeyValuePair<Type, string> kvp in TypesToTypeNames)
             {
                 if (kvp.Key.IsAssignableFrom(type))
                 {
@@ -1148,7 +1152,7 @@ namespace QuestViva.Engine
 
         public Stream GetLibraryStream(string filename)
         {
-            var stream = m_gameData.GetAdjacentFile(filename);
+            var stream = _gameData.GetAdjacentFile(filename);
             if (stream != null)
             {
                 return stream;
@@ -1176,7 +1180,7 @@ namespace QuestViva.Engine
 
         internal string GetExternalURL(string file)
         {
-            return m_playerUI.GetURL(file);
+            return _playerUi.GetURL(file);
         }
 
         public IEnumerable<string> GetAvailableLibraries()
@@ -1237,12 +1241,12 @@ namespace QuestViva.Engine
 
         public bool EditMode
         {
-            get { return m_editMode; }
+            get { return _editMode; }
         }
 
         internal ExpressionOwner ExpressionOwner
         {
-            get { return m_expressionOwner; }
+            get { return _expressionOwner; }
         }
 
         private void ScrollToEnd()
@@ -1257,21 +1261,21 @@ namespace QuestViva.Engine
                 ScrollToEnd();
             }
 
-            if (newState == ThreadState.Waiting && m_state == GameState.Finished) throw new Exception("Game is finished");
-            m_threadState = newState;
-            lock (m_threadLock)
+            if (newState == ThreadState.Waiting && _state == GameState.Finished) throw new Exception("Game is finished");
+            _threadState = newState;
+            lock (_threadLock)
             {
-                Monitor.PulseAll(m_threadLock);
+                Monitor.PulseAll(_threadLock);
             }
         }
 
         private void WaitUntilFinishedWorking()
         {
-            lock (m_threadLock)
+            lock (_threadLock)
             {
-                while (m_threadState == ThreadState.Working)
+                while (_threadState == ThreadState.Working)
                 {
-                    Monitor.Wait(m_threadLock);
+                    Monitor.Wait(_threadLock);
                 }
             }
         }
@@ -1301,7 +1305,7 @@ namespace QuestViva.Engine
 
         internal IPlayer PlayerUI
         {
-            get { return m_playerUI; }
+            get { return _playerUi; }
         }
 
         public ElementType GetElementTypeForTypeString(string typeString)
@@ -1331,13 +1335,13 @@ namespace QuestViva.Engine
 
         public Element AddNewTemplate(string templateName)
         {
-            return m_template.AddTemplate(templateName, string.Empty, false);
+            return _template.AddTemplate(templateName, string.Empty, false);
         }
 
         public Element TryGetTemplateElement(string templateName)
         {
-            if (!m_template.TemplateExists(templateName)) return null;
-            return m_template.GetTemplateElement(templateName);
+            if (!_template.TemplateExists(templateName)) return null;
+            return _template.GetTemplateElement(templateName);
         }
 
         [GeneratedRegex(@"\d*$")]
@@ -1370,52 +1374,52 @@ namespace QuestViva.Engine
 
         internal void AddAttributeName(string name)
         {
-            if (!m_attributeNames.Contains(name)) m_attributeNames.Add(name);
+            if (!_attributeNames.Contains(name)) _attributeNames.Add(name);
         }
 
         public IEnumerable<string> GetAllAttributeNames
         {
-            get { return m_attributeNames.AsReadOnly(); }
+            get { return _attributeNames.AsReadOnly(); }
         }
 
         internal string GetNextCommandInput(bool async)
         {
-            m_commandOverride = true;
+            _commandOverride = true;
 
             if (async)
             {
                 return string.Empty;
             }
 
-            m_callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
+            _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
 
             ChangeThreadState(ThreadState.Waiting);
 
-            lock (m_commandOverrideLock)
+            lock (_commandOverrideLock)
             {
-                Monitor.Wait(m_commandOverrideLock);
+                Monitor.Wait(_commandOverrideLock);
             }
 
             ChangeThreadState(ThreadState.Working);
 
-            m_commandOverride = false;
-            return m_commandOverrideInput;
+            _commandOverride = false;
+            return _commandOverrideInput;
         }
 
         internal void GetNextCommandInputAsync(IScript callback, Context c)
         {
-            m_callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c), "Only one 'get input' can be in progress at a time");
+            _callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c), "Only one 'get input' can be in progress at a time");
             GetNextCommandInput(true);
         }
 
         public void Tick(int elapsedTime)
         {
-            if (m_state == GameState.Finished) return;
+            if (_state == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
                 try
                 {
-                    var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
+                    var scripts = _timerRunner.TickAndGetScripts(elapsedTime);
 
                     foreach (var timerScript in scripts)
                     {
@@ -1437,8 +1441,8 @@ namespace QuestViva.Engine
 
         private void SendNextTimerRequest()
         {
-            if (m_state == GameState.Finished) return;
-            int next = m_timerRunner.GetTimeUntilNextTimerRuns();
+            if (_state == GameState.Finished) return;
+            int next = _timerRunner.GetTimeUntilNextTimerRuns();
             if (RequestNextTimerTick != null) RequestNextTimerTick(next);
             System.Diagnostics.Debug.Print("Request next timer in {0}", next);
         }
@@ -1447,8 +1451,8 @@ namespace QuestViva.Engine
 
         internal bool ShowQuestion(string caption)
         {
-            m_callbacks.Pop(CallbackManager.CallbackTypes.Question);
-            m_playerUI.ShowQuestion(caption);
+            _callbacks.Pop(CallbackManager.CallbackTypes.Question);
+            _playerUi.ShowQuestion(caption);
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -1464,13 +1468,13 @@ namespace QuestViva.Engine
 
         internal void ShowQuestionAsync(string caption, IScript callback, Context c)
         {
-            m_callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
-            m_playerUI.ShowQuestion(caption);
+            _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
+            _playerUi.ShowQuestion(caption);
         }
 
         public void SetQuestionResponse(bool response)
         {
-            Callback questionCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Question);
+            Callback questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
             if (questionCallback != null)
             {
                 questionCallback.Context.Parameters["result"] = response;
@@ -1508,9 +1512,9 @@ namespace QuestViva.Engine
         private void TryFinishTurn()
         {
             TryRunOnFinallyScripts();
-            if (!m_callbacks.AnyOutstanding())
+            if (!_callbacks.AnyOutstanding())
             {
-                if (m_elements.ContainsKey(ElementType.Function, "FinishTurn"))
+                if (_elements.ContainsKey(ElementType.Function, "FinishTurn"))
                 {
                     try
                     {
@@ -1526,8 +1530,8 @@ namespace QuestViva.Engine
 
         private void TryRunOnFinallyScripts()
         {
-            if (m_callbacks.AnyOutstanding()) return;
-            IEnumerable<Callback> onReadyScripts = m_callbacks.FlushOnReadyCallbacks();
+            if (_callbacks.AnyOutstanding()) return;
+            IEnumerable<Callback> onReadyScripts = _callbacks.FlushOnReadyCallbacks();
             foreach (var callback in onReadyScripts)
             {
                 RunScript(callback.Script, callback.Context);
@@ -1570,7 +1574,7 @@ namespace QuestViva.Engine
 
         public void PlaySound(string filename, bool sync, bool looped)
         {
-            m_playerUI.PlaySound(filename, sync, looped);
+            _playerUi.PlaySound(filename, sync, looped);
             if (sync)
             {
                 ChangeThreadState(ThreadState.Waiting);
@@ -1602,7 +1606,7 @@ namespace QuestViva.Engine
 
             int maxIndex = -1;
 
-            foreach (Element sibling in m_elements.GetDirectChildren(movedElement.Parent))
+            foreach (Element sibling in _elements.GetDirectChildren(movedElement.Parent))
             {
                 int thisSortIndex = sibling.MetaFields[MetaFieldDefinitions.SortIndex];
                 if (thisSortIndex > maxIndex) maxIndex = thisSortIndex;
@@ -1620,13 +1624,13 @@ namespace QuestViva.Engine
 
         internal void AddOnReady(IScript callback, Context c)
         {
-            if (!m_callbacks.AnyOutstanding())
+            if (!_callbacks.AnyOutstanding())
             {
                 RunScript(callback, c);
             }
             else
             {
-                m_callbacks.AddOnReadyCallback(new Callback(callback, c));
+                _callbacks.AddOnReadyCallback(new Callback(callback, c));
             }
         }
         
@@ -1638,7 +1642,7 @@ namespace QuestViva.Engine
             {
                 return ResourceGetter.Invoke(filename);
             }
-            return m_gameData.GetAdjacentFile(filename);
+            return _gameData.GetAdjacentFile(filename);
         }
 
         public string? GetResourceData(string filename)
@@ -1666,7 +1670,7 @@ namespace QuestViva.Engine
             throw new NotImplementedException();
         }
 
-        internal RegexCache RegexCache { get { return m_regexCache; } }
+        internal RegexCache RegexCache { get { return _regexCache; } }
 
         public WorldModelVersion Version { get; internal set; }
 
@@ -1674,19 +1678,19 @@ namespace QuestViva.Engine
 
         public string TempFolder { get; set; }
 
-        internal IOutputLogger OutputLogger { get { return m_outputLogger; } }
+        internal IOutputLogger OutputLogger { get { return _outputLogger; } }
 
         public int ASLVersion { get { return int.Parse(VersionString); } }
 
-        public string GameID => m_game.Fields[FieldDefinitions.GameID];
+        public string GameID => _game.Fields[FieldDefinitions.GameID];
         
         IEnumerable<string> IGame.GetResourceNames()
         {
             return GetResourceNames == null ? [] : GetResourceNames();
         }
 
-        public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
-        public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
-        public string Cover { get { return m_game.Fields[FieldDefinitions.Cover]; } }
+        public string Category { get { return _game.Fields[FieldDefinitions.Category]; } }
+        public string Description { get { return _game.Fields[FieldDefinitions.Description]; } }
+        public string Cover { get { return _game.Fields[FieldDefinitions.Cover]; } }
     }
 }
