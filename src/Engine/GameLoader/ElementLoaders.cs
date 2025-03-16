@@ -42,12 +42,12 @@ namespace QuestViva.Engine.GameLoader
 
         private WorldModel WorldModel
         {
-            get { return m_worldModel; }
+            get { return _worldModel; }
         }
 
         private ScriptFactory ScriptFactory
         {
-            get { return m_scriptFactory; }
+            get { return _scriptFactory; }
         }
 
         private void AddXMLLoader(IXMLLoader loader, GameLoader.LoadMode mode)
@@ -63,7 +63,7 @@ namespace QuestViva.Engine.GameLoader
         {
             loader.GameLoader = this;
             loader.AddError += AddError;
-            loader.LoadNestedXML += LoadXML;
+            loader.LoadNestedXML += LoadXml;
         }
 
         private interface IXMLLoader
@@ -440,7 +440,7 @@ namespace QuestViva.Engine.GameLoader
                         // the type property is the object type, so is not set for other element types.
                         currentElementType = current.Fields.GetString("elementtype");
                     }
-                    type = GameLoader.m_implicitTypes.Get(currentElementType, attribute);
+                    type = GameLoader._implicitTypes.Get(currentElementType, attribute);
                 }
 
                 // map old to new type names if necessary (but not in included library files)
@@ -655,7 +655,7 @@ namespace QuestViva.Engine.GameLoader
 
             private Element AddVerbTemplate(string c, string text)
             {
-                return WorldModel.Template.AddVerbTemplate(c, text, GameLoader.m_currentFile.Peek().Filename);
+                return WorldModel.Template.AddVerbTemplate(c, text, GameLoader._currentFile.Peek().Filename);
             }
         }
 
@@ -816,7 +816,7 @@ namespace QuestViva.Engine.GameLoader
             public override object Load(XmlReader reader, ref Element current)
             {
                 Dictionary<string, string> data = GameLoader.GetRequiredAttributes(reader, m_required);
-                GameLoader.m_implicitTypes.Add(data["element"], data["property"], data["type"]);
+                GameLoader._implicitTypes.Add(data["element"], data["property"], data["type"]);
                 return LoadInternal(data["element"], data["property"], data["type"]);
             }
 

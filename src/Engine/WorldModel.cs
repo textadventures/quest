@@ -392,10 +392,16 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task<bool> InitialiseInternal(QuestViva.Engine.GameLoader.GameLoader loader)
     {
+        if (_gameData == null)
+        {
+            throw new Exception("Game data not set");
+        }
+        
         if (State != GameState.NotStarted)
         {
             throw new Exception("Game already initialised");
         }
+        
         loader.FilenameUpdated += loader_FilenameUpdated;
         loader.LoadStatus += loader_LoadStatus;
         State = GameState.Loading;
