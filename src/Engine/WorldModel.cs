@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,7 +17,7 @@ namespace QuestViva.Engine;
 public partial class WorldModel : IGame, IGameDebug
 {
     private readonly Dictionary<string, int> _nextUniqueId = new();
-    private readonly GameData _gameData;
+    private readonly GameData? _gameData;
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
@@ -27,19 +26,22 @@ public partial class WorldModel : IGame, IGameDebug
     private readonly object _threadLock = new();
     private readonly object _commandOverrideLock = new();
 
-    private GameSaver _saver;
+    private GameSaver? _saver;
         
-    private Walkthroughs _walkthroughs;
-    private TimerRunner _timerRunner;
+    private Walkthroughs? _walkthroughs;
+    private TimerRunner? _timerRunner;
         
     private bool _commandOverride = false;
-    private string _commandOverrideInput;
+    private string? _commandOverrideInput;
 
-    private LegacyOutputLogger _legacyOutputLogger;
-        
+    private LegacyOutputLogger? _legacyOutputLogger;
+
     private bool _loadedFromSaved = false;
-
     private ThreadState _threadState = ThreadState.Ready;
+    
+    public Func<string, Stream>? ResourceGetter { get; internal set; }
+    public Func<IEnumerable<string>>? GetResourceNames { get; internal set; }
+    public bool DebugEnabled { get; private set; }
 
     internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
     {
@@ -76,19 +78,23 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
-    public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
-    public event EventHandler<ElementFieldUpdatedEventArgs> ElementMetaFieldUpdated;
-    public event EventHandler<LoadStatusEventArgs> LoadStatus;
-
-    public event Action<int> RequestNextTimerTick;
+    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;
+    public event EventHandler<ElementRefreshEventArgs>? ElementRefreshed;
+    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementMetaFieldUpdated;
+    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
+    public event Action<int>? RequestNextTimerTick;
+    public event PrintTextHandler? PrintText;
+    public event UpdateListHandler? UpdateList;
+    public event FinishedHandler? Finished;
+    public event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
+    public event ErrorHandler? LogError;
 
     internal WorldModel()
         : this(null)
     {
     }
 
-    public WorldModel(GameData gameData)
+    public WorldModel(GameData? gameData)
     {
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
@@ -109,7 +115,7 @@ public partial class WorldModel : IGame, IGameDebug
         foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                      typeof(IElementFactory)))
         {
-            AddElementFactory((IElementFactory)Activator.CreateInstance(t));
+            AddElementFactory((IElementFactory)Activator.CreateInstance(t)!);
         }
     }
 
@@ -120,7 +126,7 @@ public partial class WorldModel : IGame, IGameDebug
         factory.ObjectsUpdated += ElementsUpdated;
     }
 
-    private void ElementsUpdated(object sender, ObjectsUpdatedEventArgs args)
+    private void ElementsUpdated(object? sender, ObjectsUpdatedEventArgs args)
     {
         ObjectsUpdated?.Invoke(this, args);
     }
@@ -160,7 +166,7 @@ public partial class WorldModel : IGame, IGameDebug
         Finished?.Invoke();
     }
 
-    internal string GetUniqueId(string prefix = null)
+    internal string GetUniqueId(string? prefix = null)
     {
         if (string.IsNullOrEmpty(prefix)) prefix = "k";
         _nextUniqueId.TryAdd(prefix, 0);
@@ -233,7 +239,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
-            return (QuestList<Element>)RunProcedure(scopeFunction, true);
+            return (QuestList<Element>)RunProcedure(scopeFunction, true)!;
         }
         throw new Exception($"No function '{scopeFunction}'");
     }
@@ -245,11 +251,13 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     private readonly object _waitForResponseLock = new();
-    private string _menuResponse = null;
-    private IDictionary<string, string> _menuOptions = null;
+    private string? _menuResponse = null;
+    private IDictionary<string, string>? _menuOptions = null;
 
     internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         Print(caption);
 
         var menuData = new MenuData(caption, options, allowCancel);
@@ -274,7 +282,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         ChangeThreadState(ThreadState.Working);
 
-        return _menuResponse;
+        return _menuResponse!;
     }
 
     internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
@@ -283,12 +291,12 @@ public partial class WorldModel : IGame, IGameDebug
         return DisplayMenu(caption, optionsDictionary, allowCancel, async);
     }
 
-    public void SetMenuResponse(string response)
+    public void SetMenuResponse(string? response)
     {
         var menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
         if (menuCallback != null)
         {
-            if (response != null) Print(" - " + _menuOptions[response]);
+            if (response != null) Print(" - " + _menuOptions![response]);
             menuCallback.Context.Parameters["result"] = response;
             _menuOptions = null;
             DoInNewThreadAndWait(() =>
@@ -336,7 +344,7 @@ public partial class WorldModel : IGame, IGameDebug
     /// <param name="name"></param>
     /// <param name="element"></param>
     /// <returns></returns>
-    public bool TryResolveExpressionElement(string name, out Element element)
+    public bool TryResolveExpressionElement(string name, out Element? element)
     {
         element = null;
         if (!Elements.ContainsKey(name)) return false;
@@ -410,7 +418,7 @@ public partial class WorldModel : IGame, IGameDebug
         return success;
     }
 
-    private void loader_LoadStatus(object sender, QuestViva.Engine.GameLoader.GameLoader.LoadStatusEventArgs e)
+    private void loader_LoadStatus(object? sender, QuestViva.Engine.GameLoader.GameLoader.LoadStatusEventArgs e)
     {
         LoadStatus?.Invoke(this, new LoadStatusEventArgs(e.Status));
     }
@@ -428,6 +436,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void Begin()
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         DoInNewThreadAndWait(() =>
         {
             try
@@ -480,12 +490,14 @@ public partial class WorldModel : IGame, IGameDebug
 
     public List<string> Errors { get; private set; } = [];
 
-    public IWalkthroughs Walkthroughs => _walkthroughs;
+    public IWalkthroughs Walkthroughs => _walkthroughs!;
 
     public List<string> DebuggerObjectTypes => [.._debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)];
 
     public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
+        if (_timerRunner == null) throw new Exception("Begin() has not been called");
+        
         if (elapsedTime > 0)
         {
             _timerRunner.IncrementTime(elapsedTime);
@@ -592,7 +604,7 @@ public partial class WorldModel : IGame, IGameDebug
         SendNextTimerRequest();
     }
 
-    public string Filename => _gameData.Filename;
+    public string Filename => _gameData?.Filename ?? string.Empty;
 
     public void Finish()
     {
@@ -600,12 +612,6 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     public string SaveExtension => "quest-save";
-
-    public event PrintTextHandler PrintText;
-    public event UpdateListHandler UpdateList;
-    public event FinishedHandler Finished;
-    public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
-    public event ErrorHandler LogError;
 
     internal Template Template { get; }
 
@@ -683,7 +689,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
         {
-            return (string)RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true);
+            return (string)RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true)!;
         }
         return GetDisplayAlias(obj);
     }
@@ -692,14 +698,14 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
         {
-            return (string)RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true);
+            return (string)RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true)!;
         }
         return obj.Name;
     }
 
     private IEnumerable<string> GetDisplayVerbs(Element obj)
     {
-        return (QuestList<string>)RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true);
+        return (QuestList<string>)RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true)!;
     }
 
     private List<ListData> GetExitsListData()
@@ -765,6 +771,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartWait()
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
         PlayerUi.DoWait();
 
@@ -780,6 +788,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartWaitAsync(IScript callback, Context c)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
         PlayerUi.DoWait();
     }
@@ -809,6 +819,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartPause(int ms)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         PlayerUi.DoPause(ms);
 
         ChangeThreadState(ThreadState.Waiting);
@@ -869,7 +881,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void RunScript(IScript script)
     {
-        RunScript(script, (Parameters)null, false);
+        RunScript(script, (Parameters?)null, false);
     }
 
     /// <summary>
@@ -894,15 +906,15 @@ public partial class WorldModel : IGame, IGameDebug
 
     public object RunDelegateScript(IScript script, Parameters parameters, Element thisElement)
     {
-        return RunScript(script, parameters, true, thisElement);
+        return RunScript(script, parameters, true, thisElement)!;
     }
 
-    private object RunScript(IScript script, Parameters parameters, bool expectResult)
+    private object? RunScript(IScript script, Parameters? parameters, bool expectResult)
     {
         return RunScript(script, parameters, expectResult, null);
     }
 
-    private object RunScript(IScript script, Parameters parameters, bool expectResult, Element thisElement)
+    private object? RunScript(IScript script, Parameters? parameters, bool expectResult, Element? thisElement)
     {
         var c = new Context();
         parameters ??= new Parameters();
@@ -917,7 +929,7 @@ public partial class WorldModel : IGame, IGameDebug
         RunScript(script, c, false);
     }
 
-    private object RunScript(IScript script, Context c, bool expectResult)
+    private object? RunScript(IScript script, Context c, bool expectResult)
     {
         try
         {
@@ -958,12 +970,12 @@ public partial class WorldModel : IGame, IGameDebug
         RunProcedure(name, false);
     }
 
-    private object RunProcedure(string name, bool expectResult)
+    private object? RunProcedure(string name, bool expectResult)
     {
         return RunProcedure(name, null, expectResult);
     }
 
-    public object RunProcedure(string name, Parameters parameters, bool expectResult)
+    public object? RunProcedure(string name, Parameters? parameters, bool expectResult)
     {
         if (Elements.ContainsKey(ElementType.Function, name))
         {
@@ -997,7 +1009,7 @@ public partial class WorldModel : IGame, IGameDebug
         return null;
     }
 
-    public Element Procedure(string name)
+    public Element? Procedure(string name)
     {
         return !Elements.ContainsKey(ElementType.Function, name) ? null : Elements.Get(ElementType.Function, name);
     }
@@ -1023,12 +1035,14 @@ public partial class WorldModel : IGame, IGameDebug
         return System.Text.Encoding.UTF8.GetBytes(saveData);
     }
 
-    public string Save(SaveMode mode, bool? includeWalkthrough = null, string html = null)
+    public string Save(SaveMode mode, bool? includeWalkthrough = null, string? html = null)
     {
+        if (_saver == null) throw new Exception("Game not initialised");
+        
         return _saver.Save(mode, includeWalkthrough, html);
     }
 
-    public static Type ConvertTypeNameToType(string name)
+    public static Type? ConvertTypeNameToType(string name)
     {
         if (TypeNamesToTypes.TryGetValue(name, out var type))
         {
@@ -1060,6 +1074,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public Stream GetLibraryStream(string filename)
     {
+        if (_gameData == null) throw new Exception("Game data not set");
+        
         var stream = _gameData.GetAdjacentFile(filename);
         if (stream != null)
         {
@@ -1088,6 +1104,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal string GetExternalUrl(string file)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         return PlayerUi.GetURL(file);
     }
 
@@ -1125,7 +1143,7 @@ public partial class WorldModel : IGame, IGameDebug
         var patterns = searchPatterns.Split(';');
         foreach (string searchPattern in patterns)
         {
-            AddFilesInPathToList(result, Path.GetDirectoryName(Filename), false, searchPattern);
+            AddFilesInPathToList(result, Path.GetDirectoryName(Filename)!, false, searchPattern);
         }
         return result;
     }
@@ -1153,6 +1171,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void ScrollToEnd()
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         PlayerUi.RunScript("scrollToEnd", null);
     }
 
@@ -1205,7 +1225,7 @@ public partial class WorldModel : IGame, IGameDebug
         LogError?.Invoke(ex);
     }
 
-    internal IPlayer PlayerUi { get; private set; } = null;
+    internal IPlayer? PlayerUi { get; private set; } = null;
 
     public static ElementType GetElementTypeForTypeString(string typeString)
     {
@@ -1237,7 +1257,7 @@ public partial class WorldModel : IGame, IGameDebug
         return Template.AddTemplate(templateName, string.Empty, false);
     }
 
-    public Element TryGetTemplateElement(string templateName)
+    public Element? TryGetTemplateElement(string templateName)
     {
         return !Template.TemplateExists(templateName) ? null : Template.GetTemplateElement(templateName);
     }
@@ -1258,7 +1278,7 @@ public partial class WorldModel : IGame, IGameDebug
         var root = s_removeTrailingDigits().Replace(elementName, "");
         var elementAlreadyExists = true;
         var number = 0;
-        string result = null;
+        string result = null!;
 
         while (elementAlreadyExists)
         {
@@ -1267,7 +1287,7 @@ public partial class WorldModel : IGame, IGameDebug
             elementAlreadyExists = Elements.ContainsKey(result);
         }
 
-        return result;
+        return result!;
     }
 
     internal void AddAttributeName(string name)
@@ -1298,7 +1318,7 @@ public partial class WorldModel : IGame, IGameDebug
         ChangeThreadState(ThreadState.Working);
 
         _commandOverride = false;
-        return _commandOverrideInput;
+        return _commandOverrideInput!;
     }
 
     internal void GetNextCommandInputAsync(IScript callback, Context c)
@@ -1309,6 +1329,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void Tick(int elapsedTime)
     {
+        if (_timerRunner == null) throw new Exception("Begin() has not been called");
+        
         if (State == GameState.Finished) return;
         DoInNewThreadAndWait(() =>
         {
@@ -1336,6 +1358,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void SendNextTimerRequest()
     {
+        if (_timerRunner == null) throw new Exception("Begin() has not been called");
+        
         if (State == GameState.Finished) return;
         var next = _timerRunner.GetTimeUntilNextTimerRuns();
         RequestNextTimerTick?.Invoke(next);
@@ -1346,6 +1370,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal bool ShowQuestion(string caption)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         _callbacks.Pop(CallbackManager.CallbackTypes.Question);
         PlayerUi.ShowQuestion(caption);
 
@@ -1363,6 +1389,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void ShowQuestionAsync(string caption, IScript callback, Context c)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
         PlayerUi.ShowQuestion(caption);
     }
@@ -1439,8 +1467,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public class PackageIncludeFile
     {
-        public string Filename { get; set; }
-        public Stream Content { get; set; }
+        public required string Filename { get; set; }
+        public required Stream Content { get; set; }
     }
 
     public bool CreatePackage(string filename, bool includeWalkthrough, out string error, IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
@@ -1449,11 +1477,7 @@ public partial class WorldModel : IGame, IGameDebug
         return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
     }
 
-    public Func<string, Stream> ResourceGetter { get; internal set; }
-    public Func<IEnumerable<string>> GetResourceNames { get; internal set; }
-    public bool DebugEnabled { get; private set; }
-
-    private static List<string> FunctionNames = null;
+    private static List<string>? FunctionNames = null;
 
     public IEnumerable<string> GetBuiltInFunctionNames()
     {
@@ -1475,6 +1499,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void PlaySound(string filename, bool sync, bool looped)
     {
+        if (PlayerUi == null) throw new Exception("Player UI not set");
+        
         PlayerUi.PlaySound(filename, sync, looped);
         if (!sync)
         {
@@ -1533,7 +1559,9 @@ public partial class WorldModel : IGame, IGameDebug
 
     public Stream? GetResource(string filename)
     {
-        return ResourceGetter != null ? ResourceGetter.Invoke(filename) : _gameData.GetAdjacentFile(filename);
+        return ResourceGetter != null
+            ? ResourceGetter.Invoke(filename)
+            : _gameData?.GetAdjacentFile(filename);
     }
 
     public string? GetResourceData(string filename)
