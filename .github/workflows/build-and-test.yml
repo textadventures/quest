@@ -37,4 +37,4 @@ jobs:
 
       # Run tests
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test --no-build --configuration Release --verbosity normal --blame --blame-hang --blame-hang-timeout 1min --logger "console;verbosity=detailed" --diag diag.log
