@@ -418,6 +418,9 @@ namespace QuestViva.Engine
                 case "parent":
                     m_element.SetParentFromFields(value as Element);
                     break;
+                case "text":
+                    m_element.SetTextFromFields(value as string);
+                    break;
             }
 
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)

@@ -49,19 +49,21 @@ namespace QuestViva.Engine
 
         public string GetText(string t, bool throwException = true)
         {
-            if (!m_templateLookup.ContainsKey(t))
+            if (m_templateLookup.TryGetValue(t, out var value))
             {
-                if (m_worldModel.EditMode && throwException)
-                {
-                    return string.Format("{{UNKNOWN TEMPLATE: {0}}}", t);
-                }
-                if (throwException)
-                {
-                    throw new Exception(string.Format("No template named '{0}'", t));
-                }
-                return null;
+                return value.Text;
             }
-            return m_templateLookup[t].Fields[FieldDefinitions.Text];
+
+            if (m_worldModel.EditMode && throwException)
+            {
+                return $"{{UNKNOWN TEMPLATE: {t}}}";
+            }
+            
+            if (throwException)
+            {
+                throw new Exception($"No template named '{t}'");
+            }
+            return null;
         }
 
         public string GetDynamicText(string t, params Element[] obj)
@@ -174,19 +176,30 @@ namespace QuestViva.Engine
         {
             if (text == null) return null;
 
-            int start = 0;
+            var regex = m_templateRegex();
+            var start = 0;
 
-            while (m_templateRegex().IsMatch(text, start))
+            while (true)
             {
-                var match = m_templateRegex().Match(text, start);
+                var match = regex.Match(text, start);
+                if (!match.Success)
+                {
+                    break;
+                }
+
                 var templateName = match.Groups["name"].Value;
                 var templateValue = GetText(templateName, false) ?? "[" + templateName + "]";
-                text = m_templateRegex().Replace(text, templateValue, 1, start);
+                text = regex.Replace(text, templateValue, 1, start);
                 start = match.Index + templateValue.Length;
-                if (start > text.Length) break;
+                if (start >= text.Length)
+                {
+                    break;
+                }
             }
+
             return text;
         }
+
     }
 }
 

@@ -76,6 +76,8 @@ namespace QuestViva.Engine.GameLoader
                 dataStream = gameData.Data;
             }
 
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
             try
             {
                 using var reader = new XmlTextReader(dataStream);
@@ -134,19 +136,23 @@ namespace QuestViva.Engine.GameLoader
             {
                 AddError(string.Format("Error: {0}", e.Message));
             }
+            
+            System.Diagnostics.Debug.WriteLine($"XML load time: {timer.ElapsedMilliseconds}ms");
+            timer.Restart();
 
             if (m_errors.Count == 0)
             {
                 try
                 {
                     ResolveGame();
-                    ValidateGame();
                 }
                 catch (Exception e)
                 {
                     AddError(string.Format("Error: {0}", e.Message));
                 }
             }
+            
+            System.Diagnostics.Debug.WriteLine($"ResolveGame: {timer.ElapsedMilliseconds}ms");
 
             return (m_errors.Count == 0);
         }
@@ -163,14 +169,15 @@ namespace QuestViva.Engine.GameLoader
 
         private void LoadXML(string filename, XmlReader reader)
         {
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
             Element current = null;
             IXMLLoader currentLoader = null;
 
             // Set the "IsEditorLibrary" flag for any library with type="editor", and its sub-libraries
-            bool isEditorLibrary = false;
-            if (m_currentFile.Count > 0 && m_currentFile.Peek().IsEditorLibrary) isEditorLibrary = true;
-            if (reader.GetAttribute("type") == "editor") isEditorLibrary = true;
-            
+            var isEditorLibrary = m_currentFile.Count > 0 && m_currentFile.Peek().IsEditorLibrary ||
+                                  reader.GetAttribute("type") == "editor";
+
             if (!IsCompiledFile && m_currentFile.Count == 0 && m_worldModel.Version >= WorldModelVersion.v530)
             {
                 ScanForTemplates(filename);
@@ -209,6 +216,8 @@ namespace QuestViva.Engine.GameLoader
 
             m_currentFile.Pop();
             UpdateLoadStatus();
+            
+            System.Diagnostics.Debug.WriteLine($"Parsed {filename} in {timer.ElapsedMilliseconds}ms");
         }
 
         private void UpdateLoadStatus()
@@ -267,28 +276,11 @@ namespace QuestViva.Engine.GameLoader
         // and allows scripts to refer to procedures that aren't defined until later in the XML
         private void ResolveGame()
         {
-            //int total = m_worldModel.Elements.Count();
-            //int count = 0;
             UpdateStatus("Initialising elements...");
             foreach (Element e in m_worldModel.Elements.GetElements())
             {
-                //count++;
-                //UpdateStatus(string.Format("Setting up element {0} / {1} ({2:P0})", count, total, 1.0 * count / total));
                 e.Fields.LazyFields.Resolve(m_scriptFactory);
             }
-        }
-
-        private void ValidateGame()
-        {
-            // Check that exits don't point to invalid room names
-            //    -- now impossible...
-            //foreach (Exit exit in m_worldModel.Exits.Values)
-            //{
-            //    if (!m_worldModel.Objects.ContainsKey(exit.To))
-            //    {
-            //        AddError(string.Format("Exit '{0}' in '{1}' points to room '{2}', which does not exist", exit.Alias, exit.Parent, exit.To));
-            //    }
-            //}
         }
 
         private void AddError(object sender, ScriptFactory.AddErrorEventArgs e)
@@ -395,6 +387,7 @@ namespace QuestViva.Engine.GameLoader
             // do a preliminary pass of the base .aslx file to scan for any template definitions,
             // then we add those and mark them as non-overwritable.
 
+            var timer = System.Diagnostics.Stopwatch.StartNew();
             XmlReader reader;
             
             var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -412,6 +405,8 @@ namespace QuestViva.Engine.GameLoader
                     templateLoader.Load(reader, ref e);
                 }
             }
+            
+            System.Diagnostics.Debug.WriteLine($"Scanned for templates in {filename} in {timer.ElapsedTicks}ms");
         }
 
         private class ImplicitTypes

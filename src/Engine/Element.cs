@@ -238,6 +238,19 @@ namespace QuestViva.Engine
             
             _parent = parent;
         }
+        
+        private string _text;
+        
+        public string Text
+        {
+            get => _text;
+            set => Fields.Set("text", value);
+        }
+        
+        internal void SetTextFromFields(string text)
+        {
+            _text = text;
+        }
 
         internal void AddType(Element addType)
         {
