@@ -5,8 +5,6 @@ namespace QuestViva.EditorCoreTests
     [TestClass]
     public class TemplateTests
     {
-        // TODO: Fix
-        [Ignore("Skipping slow tests")]
         [TestMethod]
         public async Task TestTemplates()
         {
