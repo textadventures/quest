@@ -327,7 +327,7 @@ namespace QuestViva.EditorCore
         //     newThread.Start();
         // }
 
-        public async Task<bool> Initialise(string filename)
+        public async Task<bool> Initialise(string filename, bool partialInit = false)
         {
             m_lastelementscutout = false;
             m_filename = filename;
@@ -347,40 +347,45 @@ namespace QuestViva.EditorCore
 
             if (ok)
             {
-                if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
+                // TODO: Move this code to another initialisation method - it's not needed when running tests
+                if (!partialInit)
                 {
-                    m_editorStyle = EditorStyle.GameBook;
-                    m_ignoredTypes.Add(ElementType.Template);
-                    m_ignoredTypes.Add(ElementType.ObjectType);
-                }
-
-                // need to initialise the EditableScriptFactory after we've loaded the game XML above,
-                // as the editor definitions contain the "friendly" templates for script commands.
-                m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
-
-                m_initialised = true;
-
-                m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
-
-                foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
-                {
-                    EditorDefinition def = new EditorDefinition(m_worldModel, e);
-                    if (def.AppliesTo != null)
+                    if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
                     {
-                        // Normal editor definition for editing an element or a script command
-                        m_editorDefinitions.Add(def.AppliesTo, def);
+                        m_editorStyle = EditorStyle.GameBook;
+                        m_ignoredTypes.Add(ElementType.Template);
+                        m_ignoredTypes.Add(ElementType.ObjectType);
                     }
-                    else if (def.Pattern != null)
-                    {
-                        // Editor definition for an expression template in the "if" editor
-                        m_expressionDefinitions.Add(def.Pattern, def);
-                    }
-                }
 
-                if (m_worldModel.Version == WorldModelVersion.v500)
-                {
-                    m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
+                    // need to initialise the EditableScriptFactory after we've loaded the game XML above,
+                    // as the editor definitions contain the "friendly" templates for script commands.
+                    m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
+
+                    m_initialised = true;
+
+                    m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
+
+                    foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
+                    {
+                        EditorDefinition def = new EditorDefinition(m_worldModel, e);
+                        if (def.AppliesTo != null)
+                        {
+                            // Normal editor definition for editing an element or a script command
+                            m_editorDefinitions.Add(def.AppliesTo, def);
+                        }
+                        else if (def.Pattern != null)
+                        {
+                            // Editor definition for an expression template in the "if" editor
+                            m_expressionDefinitions.Add(def.Pattern, def);
+                        }
+                    }
+
+                    if (m_worldModel.Version == WorldModelVersion.v500)
+                    {
+                        m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
+                    }
                 }
+                
             }
             else
             {

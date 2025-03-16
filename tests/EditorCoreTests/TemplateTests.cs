@@ -21,7 +21,7 @@ namespace QuestViva.EditorCoreTests
                 var errorsRaised = string.Empty;
 
                 controller.ShowMessage += OnControllerOnShowMessage;
-                var result = await controller.Initialise(tempFile);
+                var result = await controller.Initialise(tempFile, partialInit: true);
 
                 Assert.IsTrue(result,
                     $"Initialisation failed for template '{template.ResourceName}': {errorsRaised}");
