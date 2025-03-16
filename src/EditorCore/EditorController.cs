@@ -400,7 +400,7 @@ namespace QuestViva.EditorCore
             return ok;
         }
 
-        void m_worldModel_LoadStatus(object sender, WorldModel.LoadStatusEventArgs e)
+        void m_worldModel_LoadStatus(object sender, Engine.LoadStatusEventArgs e)
         {
             if (LoadStatus != null)
             {
@@ -414,7 +414,7 @@ namespace QuestViva.EditorCore
             string newName = e.Element.Name;
 
             RenamedNode(this, new RenamedNodeEventArgs { OldName = oldName, NewName = newName });
-            if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
+            if (ElementsUpdated != null) ElementsUpdated(this, EventArgs.Empty);
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
@@ -423,7 +423,7 @@ namespace QuestViva.EditorCore
             if (RedoListUpdated != null) RedoListUpdated(this, new UpdateUndoListEventArgs(m_worldModel.UndoLogger.RedoList()));
         }
 
-        void m_worldModel_ElementFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
+        void m_worldModel_ElementFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
         {
             if (!m_initialised) return;
 
@@ -450,7 +450,7 @@ namespace QuestViva.EditorCore
                 {
                     // element name might be null if we're undoing an element add
                     RetitledNode(this, new RetitledNodeEventArgs { Key = e.Element.Name, NewTitle = GetDisplayName(e.Element) });
-                    if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
+                    if (ElementsUpdated != null) ElementsUpdated(this, EventArgs.Empty);
                 }
             }
 
@@ -465,7 +465,7 @@ namespace QuestViva.EditorCore
             }
         }
 
-        void m_worldModel_ElementMetaFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
+        void m_worldModel_ElementMetaFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
         {
             if (!m_initialised) return;
 
@@ -525,7 +525,7 @@ namespace QuestViva.EditorCore
             RemovedNode(this, new RemovedNodeEventArgs { Key = e.Name });
         }
 
-        void m_worldModel_ElementRefreshed(object sender, WorldModel.ElementRefreshEventArgs e)
+        void m_worldModel_ElementRefreshed(object sender, ElementRefreshEventArgs e)
         {
             if (m_initialised)
             {

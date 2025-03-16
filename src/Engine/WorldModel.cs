@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,45 +87,6 @@ namespace QuestViva.Engine
         public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public event Action<int> RequestNextTimerTick;
-        
-        static readonly HttpClient HttpClient = new HttpClient();
-
-        public class ElementFieldUpdatedEventArgs : EventArgs
-        {
-            internal ElementFieldUpdatedEventArgs(Element element, string attribute, object newValue, bool isUndo)
-            {
-                Element = element;
-                Attribute = attribute;
-                NewValue = newValue;
-                IsUndo = isUndo;
-            }
-
-            public Element Element { get; private set; }
-            public string Attribute { get; private set; }
-            public object NewValue { get; private set; }
-            public bool IsUndo { get; private set; }
-            public bool Refresh { get; private set; }
-        }
-
-        public class ElementRefreshEventArgs : EventArgs
-        {
-            internal ElementRefreshEventArgs(Element element)
-            {
-                Element = element;
-            }
-
-            public Element Element { get; private set; }
-        }
-
-        public class LoadStatusEventArgs : EventArgs
-        {
-            public LoadStatusEventArgs(string status)
-            {
-                Status = status;
-            }
-
-            public string Status { get; private set; }
-        }
 
         static WorldModel()
         {
