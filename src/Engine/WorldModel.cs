@@ -15,20 +15,16 @@ namespace QuestViva.Engine;
 
 public partial class WorldModel : IGameDebug, IGameTimer
 {
-    private readonly Elements _elements;
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly GameData _gameData;
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
-    private readonly ExpressionOwner _expressionOwner;
     private readonly List<string> _attributeNames = [];
-    private readonly RegexCache _regexCache = new();
     private readonly CallbackManager _callbacks = new();
     private readonly object _threadLock = new();
     private readonly object _commandOverrideLock = new();
-        
-    private IPlayer _playerUi = null;
+
     private GameSaver _saver;
         
     private Walkthroughs _walkthroughs;
@@ -36,14 +32,11 @@ public partial class WorldModel : IGameDebug, IGameTimer
         
     private bool _commandOverride = false;
     private string _commandOverrideInput;
-        
-    private IOutputLogger _outputLogger;
+
     private LegacyOutputLogger _legacyOutputLogger;
         
     private bool _loadedFromSaved = false;
-    private bool _editMode = false;
 
-    private GameState _state = GameState.NotStarted;
     private ThreadState _threadState = ThreadState.Ready;
 
     internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
@@ -95,14 +88,14 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public WorldModel(GameData gameData)
     {
-        _expressionOwner = new ExpressionOwner(this);
+        ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
         InitialiseElementFactories();
         ObjectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
         _gameData = gameData;
-        _elements = new Elements();
+        Elements = new Elements();
         UndoLogger = new UndoLogger(this);
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
@@ -142,7 +135,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void FinishGame()
     {
-        _state = GameState.Finished;
+        State = GameState.Finished;
 
         // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
 
@@ -174,7 +167,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         {
             _nextUniqueId[prefix]++;
             newid = prefix + _nextUniqueId[prefix];
-        } while (_elements.ContainsKey(newid));
+        } while (Elements.ContainsKey(newid));
             
         return newid;
     }
@@ -183,7 +176,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Element Object(string name)
     {
-        return _elements.Get(ElementType.Object, name);
+        return Elements.Get(ElementType.Object, name);
     }
 
     public ObjectFactory ObjectFactory { get; }
@@ -200,7 +193,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void Print(string text, bool linebreak = true)
     {
-        if (Version >= WorldModelVersion.v540 && _elements.ContainsKey(ElementType.Function, "OutputText"))
+        if (Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
         {
             try
             {
@@ -225,21 +218,18 @@ public partial class WorldModel : IGameDebug, IGameTimer
                 }
             }
 
-            if (_legacyOutputLogger != null)
-            {
-                _legacyOutputLogger.AddText(text, linebreak);
-            }
+            _legacyOutputLogger?.AddText(text, linebreak);
         }
     }
 
     internal QuestList<Element> GetAllObjects()
     {
-        return new QuestList<Element>(_elements.Objects);
+        return new QuestList<Element>(Elements.Objects);
     }
 
     private QuestList<Element> GetObjectsInScope(string scopeFunction)
     {
-        if (_elements.ContainsKey(ElementType.Function, scopeFunction))
+        if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
             return (QuestList<Element>)RunProcedure(scopeFunction, true);
         }
@@ -263,7 +253,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         var menuData = new MenuData(caption, options, allowCancel);
         _menuOptions = options;
 
-        _playerUi.ShowMenu(menuData);
+        PlayerUi.ShowMenu(menuData);
 
         if (async)
         {
@@ -330,11 +320,11 @@ public partial class WorldModel : IGameDebug, IGameTimer
         DisplayMenu(caption, options, allowCancel, true);
     }
 
-    public IEnumerable<Element> Objects => _elements.Objects;
+    public IEnumerable<Element> Objects => Elements.Objects;
 
     public bool ObjectExists(string name)
     {
-        return _elements.ContainsKey(ElementType.Object, name);
+        return Elements.ContainsKey(ElementType.Object, name);
     }
 
     /// <summary>
@@ -347,9 +337,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public bool TryResolveExpressionElement(string name, out Element element)
     {
         element = null;
-        if (!_elements.ContainsKey(name)) return false;
+        if (!Elements.ContainsKey(name)) return false;
 
-        var result = _elements.Get(name);
+        var result = Elements.Get(name);
         if (result.ElemType != ElementType.Object && result.ElemType != ElementType.Timer)
         {
             return false;
@@ -362,18 +352,18 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     internal void RemoveElement(ElementType type, string name)
     {
-        _elements.Remove(type, name);
+        Elements.Remove(type, name);
     }
 
     internal void SetGameName(string name)
     {
-        _playerUi?.UpdateGameName(name);
+        PlayerUi?.UpdateGameName(name);
     }
 
     public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
     {
-        _editMode = false;
-        _playerUi = player;
+        EditMode = false;
+        PlayerUi = player;
         var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
         var result = await InitialiseInternal(loader);
         if (result)
@@ -385,35 +375,35 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public async Task<bool> InitialiseEdit()
     {
-        _editMode = true;
+        EditMode = true;
         var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Edit);
         return await InitialiseInternal(loader);
     }
 
     private async Task<bool> InitialiseInternal(QuestViva.Engine.GameLoader.GameLoader loader)
     {
-        if (_state != GameState.NotStarted)
+        if (State != GameState.NotStarted)
         {
             throw new Exception("Game already initialised");
         }
         loader.FilenameUpdated += loader_FilenameUpdated;
         loader.LoadStatus += loader_LoadStatus;
-        _state = GameState.Loading;
+        State = GameState.Loading;
             
         var success = await loader.Load(_gameData);
             
         DebugEnabled = !loader.IsCompiledFile;
-        _state = success ? GameState.Running : GameState.Finished;
+        State = success ? GameState.Running : GameState.Finished;
         Errors = loader.Errors;
         _saver = new GameSaver(this);
         if (Version <= WorldModelVersion.v530)
         {
             _legacyOutputLogger = new LegacyOutputLogger(this);
-            _outputLogger = _legacyOutputLogger;
+            OutputLogger = _legacyOutputLogger;
         }
         else
         {
-            _outputLogger = new OutputLogger(this);
+            OutputLogger = new OutputLogger(this);
         }
         return success;
     }
@@ -443,14 +433,14 @@ public partial class WorldModel : IGameDebug, IGameTimer
                 _timerRunner = new TimerRunner(this, !_loadedFromSaved);
                 if (Version <= WorldModelVersion.v540)
                 {
-                    PlayerUI.Show("Panes");
-                    PlayerUI.Show("Location");
-                    PlayerUI.Show("Command");
+                    PlayerUi.Show("Panes");
+                    PlayerUi.Show("Location");
+                    PlayerUi.Show("Command");
                 }
-                if (_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
+                if (Elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
                 if (!_loadedFromSaved)
                 {
-                    if (_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                    if (Elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
                 }
                 TryRunOnFinallyScripts();
                 UpdateLists();
@@ -463,8 +453,8 @@ public partial class WorldModel : IGameDebug, IGameTimer
                     }
                     else if (Version >= WorldModelVersion.v540)
                     {
-                        PlayerUI.RunScript("loadHtml", [output.Fields.GetString("html")]);
-                        PlayerUI.RunScript("markScrollPosition", null);
+                        PlayerUi.RunScript("loadHtml", [output.Fields.GetString("html")]);
+                        PlayerUi.RunScript("markScrollPosition", null);
                         ScrollToEnd();
                     }
                     else if (_legacyOutputLogger != null)
@@ -486,7 +476,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         SendNextTimerRequest();
     }
 
-    public List<string> Errors { get; private set; }
+    public List<string> Errors { get; private set; } = [];
 
     public IWalkthroughs Walkthroughs => _walkthroughs;
 
@@ -506,7 +496,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
                 if (Version < WorldModelVersion.v520)
                 {
                     Print("");
-                    Print("> " + QuestViva.Engine.Utility.SafeXML(command));
+                    Print("> " + Utility.SafeXML(command));
                 }
 
                 try
@@ -577,7 +567,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void SendEvent(string eventName, string param)
     {
-        _elements.TryGetValue(ElementType.Function, eventName, out var handler);
+        Elements.TryGetValue(ElementType.Function, eventName, out var handler);
 
         if (handler == null)
         {
@@ -626,7 +616,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private void UpdateStatusVariables()
     {
-        if (!_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+        if (!Elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
         {
             return;
         }
@@ -664,7 +654,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         var objects = new List<ListData>();
         foreach (var obj in GetObjectsInScope(scope))
         {
-            if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+            if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
                 if (scope == "ScopeInventory")
                 {
@@ -694,7 +684,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private string GetListDisplayAlias(Element obj)
     {
-        if (_elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
+        if (Elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
         {
             return (string)RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true);
         }
@@ -703,7 +693,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private string GetDisplayAlias(Element obj)
     {
-        if (_elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
+        if (Elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
         {
             return (string)RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true);
         }
@@ -726,7 +716,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         foreach (var exit in GetObjectsInScope(scopeFunction))
         {
             IEnumerable<string> verbs;
-            if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+            if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
                 verbs = exit.Fields[FieldDefinitions.DisplayVerbs];
             }
@@ -745,12 +735,12 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         if (_debuggerObjectTypes.TryGetValue(type, out var objectType))
         {
-            elements = _elements.ObjectsFiltered(o => o.Type == objectType);
+            elements = Elements.ObjectsFiltered(o => o.Type == objectType);
         }
         else
         {
             var filterType = _debuggerElementTypes[type];
-            elements = _elements.GetElements(filterType);
+            elements = Elements.GetElements(filterType);
         }
 
         return elements.Select(obj => obj.Name).ToList();
@@ -758,28 +748,28 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public DebugData GetDebugData(string _, string el)
     {
-        return _elements.Get(el).GetDebugData();
+        return Elements.Get(el).GetDebugData();
     }
         
     public DebugData GetDebugData(string el)
     {
-        return _elements.Get(el).GetDebugData();
+        return Elements.Get(el).GetDebugData();
     }
 
     public DebugData GetInheritedTypesDebugData(string el)
     {
-        return _elements.Get(el).Fields.GetInheritedTypesDebugData();
+        return Elements.Get(el).Fields.GetInheritedTypesDebugData();
     }
 
     public DebugDataItem GetDebugDataItem(string el, string attribute)
     {
-        return _elements.Get(el).Fields.GetDebugDataItem(attribute);
+        return Elements.Get(el).Fields.GetDebugDataItem(attribute);
     }
 
     public void StartWait()
     {
         _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
-        _playerUi.DoWait();
+        PlayerUi.DoWait();
 
         ChangeThreadState(ThreadState.Waiting);
 
@@ -794,7 +784,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public void StartWaitAsync(IScript callback, Context c)
     {
         _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
-        _playerUi.DoWait();
+        PlayerUi.DoWait();
     }
 
     public void FinishWait()
@@ -809,7 +799,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         }
         else
         {
-            if (_state == GameState.Finished) return;
+            if (State == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
                 lock (_waitForResponseLock)
@@ -822,7 +812,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void StartPause(int ms)
     {
-        _playerUi.DoPause(ms);
+        PlayerUi.DoPause(ms);
 
         ChangeThreadState(ThreadState.Waiting);
 
@@ -848,13 +838,13 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public IEnumerable<string> GetExternalScripts()
     {
         var result = new List<string>();
-        foreach (Element jsRef in _elements.GetElements(ElementType.Javascript))
+        foreach (var jsRef in Elements.GetElements(ElementType.Javascript))
         {
             if (Version == WorldModelVersion.v500)
             {
                 // v500 games used Frame.js functions for static panel feature. This is now implemented natively
                 // in Player and WebPlayer.
-                if (jsRef.Fields[FieldDefinitions.Src].ToLower() == "frame.js") continue;
+                if (jsRef.Fields[FieldDefinitions.Src].Equals("frame.js", StringComparison.CurrentCultureIgnoreCase)) continue;
             }
 
             result.Add(jsRef.Fields[FieldDefinitions.Src]);
@@ -866,7 +856,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
     // should simply be able to use the SetWebFontName function to load game.defaultwebfont
     public IEnumerable<string> GetExternalStylesheets()
     {
-        if (Version < WorldModelVersion.v530) return null;
+        if (Version < WorldModelVersion.v530) return [];
 
         var webFontsInUse = new List<string>();
         var defaultWebFont = Game.Fields[FieldDefinitions.DefaultWebFont];
@@ -917,8 +907,8 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private object RunScript(IScript script, Parameters parameters, bool expectResult, Element thisElement)
     {
-        Context c = new Context();
-        if (parameters == null) parameters = new Parameters();
+        var c = new Context();
+        parameters ??= new Parameters();
         if (thisElement != null) parameters.Add("this", thisElement);
         c.Parameters = parameters;
 
@@ -948,7 +938,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Element AddProcedure(string name)
     {
-        Element proc = GetElementFactory(ElementType.Function).Create(name);
+        var proc = GetElementFactory(ElementType.Function).Create(name);
         return proc;
     }
 
@@ -962,7 +952,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Element AddDelegate(string name)
     {
-        Element del = GetElementFactory(ElementType.Delegate).Create(name);
+        var del = GetElementFactory(ElementType.Delegate).Create(name);
         return del;
     }
 
@@ -971,22 +961,22 @@ public partial class WorldModel : IGameDebug, IGameTimer
         RunProcedure(name, false);
     }
 
-    public object RunProcedure(string name, bool expectResult)
+    private object RunProcedure(string name, bool expectResult)
     {
         return RunProcedure(name, null, expectResult);
     }
 
     public object RunProcedure(string name, Parameters parameters, bool expectResult)
     {
-        if (_elements.ContainsKey(ElementType.Function, name))
+        if (Elements.ContainsKey(ElementType.Function, name))
         {
-            Element function = _elements.Get(ElementType.Function, name);
+            var function = Elements.Get(ElementType.Function, name);
 
             // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
             // would ignore this (but would usually still fail when the function was run, as the required
             // variable wouldn't exist). For Quest 5.3, an additional check if parameters is non-null but empty.
 
-            bool parametersInvalid = false;
+            var parametersInvalid = false;
             if (Version == WorldModelVersion.v520)
             {
                 parametersInvalid = parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0;
@@ -1005,43 +995,34 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
             return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult);
         }
-        else
-        {
-            Print(string.Format("Error - no such procedure '{0}'", name));
-        }
+
+        Print($"Error - no such procedure '{name}'");
         return null;
     }
 
     public Element Procedure(string name)
     {
-        if (!_elements.ContainsKey(ElementType.Function, name)) return null;
-        return _elements.Get(ElementType.Function, name);
+        return !Elements.ContainsKey(ElementType.Function, name) ? null : Elements.Get(ElementType.Function, name);
     }
 
     internal Element GetObjectType(string name)
     {
-        return _elements.Get(ElementType.ObjectType, name);
+        return Elements.Get(ElementType.ObjectType, name);
     }
 
-    public GameState State
-    {
-        get { return _state; }
-    }
+    public GameState State { get; private set; } = GameState.NotStarted;
 
-    public Elements Elements
-    {
-        get { return _elements; }
-    }
+    public Elements Elements { get; }
 
     public void Save(string filename, string html)
     {
-        string saveData = Save(SaveMode.SavedGame, html: html);
+        var saveData = Save(SaveMode.SavedGame, html: html);
         File.WriteAllText(filename, saveData);
     }
 
     public byte[] Save(string html)
     {
-        string saveData = Save(SaveMode.SavedGame, html: html);
+        var saveData = Save(SaveMode.SavedGame, html: html);
         return System.Text.Encoding.UTF8.GetBytes(saveData);
     }
 
@@ -1052,8 +1033,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public static Type ConvertTypeNameToType(string name)
     {
-        Type type;
-        if (TypeNamesToTypes.TryGetValue(name, out type))
+        if (TypeNamesToTypes.TryGetValue(name, out var type))
         {
             return type;
         }
@@ -1063,26 +1043,22 @@ public partial class WorldModel : IGameDebug, IGameTimer
         // TO DO: type name could also be a DelegateImplementation
         //if (value is DelegateImplementation) return ((DelegateImplementation)value).TypeName;
 
-        throw new ArgumentOutOfRangeException(string.Format("Unrecognised type name '{0}'", name));
+        throw new ArgumentOutOfRangeException($"Unrecognised type name '{name}'");
     }
 
     public static string ConvertTypeToTypeName(Type type)
     {
-        string name;
-        if (TypesToTypeNames.TryGetValue(type, out name))
+        if (TypesToTypeNames.TryGetValue(type, out var name))
         {
             return name;
         }
 
-        foreach (KeyValuePair<Type, string> kvp in TypesToTypeNames)
+        foreach (var kvp in TypesToTypeNames.Where(kvp => kvp.Key.IsAssignableFrom(type)))
         {
-            if (kvp.Key.IsAssignableFrom(type))
-            {
-                return kvp.Value;
-            }
+            return kvp.Value;
         }
 
-        throw new ArgumentOutOfRangeException(string.Format("Unrecognised type '{0}'", type.ToString()));
+        throw new ArgumentOutOfRangeException($"Unrecognised type '{type.ToString()}'");
     }
 
     public Stream GetLibraryStream(string filename)
@@ -1113,9 +1089,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
         throw new NotImplementedException();
     }
 
-    internal string GetExternalURL(string file)
+    internal string GetExternalUrl(string file)
     {
-        return _playerUi.GetURL(file);
+        return PlayerUi.GetURL(file);
     }
 
     public IEnumerable<string> GetAvailableLibraries()
@@ -1136,23 +1112,23 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
     {
-        path = QuestViva.Utility.Files.RemoveFileColonPrefix(path);
-        System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
-        foreach (var result in System.IO.Directory.GetFiles(path, searchPattern, option))
+        path = Files.RemoveFileColonPrefix(path);
+        var option = recurse ? SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+        foreach (var result in Directory.GetFiles(path, searchPattern, option))
         {
             if (result == Filename) continue;
-            string filename = System.IO.Path.GetFileName(result);
+            var filename = Path.GetFileName(result);
             if (!list.Contains(filename)) list.Add(filename);
         }
     }
 
     public IEnumerable<string> GetAvailableExternalFiles(string searchPatterns)
     {
-        List<string> result = new List<string>();
-        string[] patterns = searchPatterns.Split(';');
+        var result = new List<string>();
+        var patterns = searchPatterns.Split(';');
         foreach (string searchPattern in patterns)
         {
-            AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false, searchPattern);
+            AddFilesInPathToList(result, Path.GetDirectoryName(Filename), false, searchPattern);
         }
         return result;
     }
@@ -1160,33 +1136,27 @@ public partial class WorldModel : IGameDebug, IGameTimer
     internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
     {
         if (!element.Initialised) return;
-        if (ElementFieldUpdated != null) ElementFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
+        ElementFieldUpdated?.Invoke(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
     }
 
     internal void NotifyElementMetaFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
     {
         if (!element.Initialised) return;
-        if (ElementMetaFieldUpdated != null) ElementMetaFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
+        ElementMetaFieldUpdated?.Invoke(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
     }
 
     internal void NotifyElementRefreshed(Element element)
     {
-        if (ElementRefreshed != null) ElementRefreshed(this, new ElementRefreshEventArgs(element));
+        ElementRefreshed?.Invoke(this, new ElementRefreshEventArgs(element));
     }
 
-    public bool EditMode
-    {
-        get { return _editMode; }
-    }
+    public bool EditMode { get; private set; } = false;
 
-    internal ExpressionOwner ExpressionOwner
-    {
-        get { return _expressionOwner; }
-    }
+    internal ExpressionOwner ExpressionOwner { get; }
 
     private void ScrollToEnd()
     {
-        PlayerUI.RunScript("scrollToEnd", null);
+        PlayerUi.RunScript("scrollToEnd", null);
     }
 
     private void ChangeThreadState(ThreadState newState, bool scroll = true)
@@ -1196,7 +1166,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
             ScrollToEnd();
         }
 
-        if (newState == ThreadState.Waiting && _state == GameState.Finished) throw new Exception("Game is finished");
+        if (newState == ThreadState.Waiting && State == GameState.Finished) throw new Exception("Game is finished");
         _threadState = newState;
         lock (_threadLock)
         {
@@ -1228,42 +1198,39 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         ChangeThreadState(ThreadState.Working);
         // Thread newThread = new Thread(new ThreadStart(wrappedRoutine));
-        Thread newThread = new Thread(new ThreadStart(routine));
+        var newThread = new Thread(new ThreadStart(routine));
         newThread.Start();
         WaitUntilFinishedWorking();
     }
 
-    void LogException(Exception ex)
+    private void LogException(Exception ex)
     {
         LogError?.Invoke(ex);
     }
 
-    internal IPlayer PlayerUI
-    {
-        get { return _playerUi; }
-    }
+    internal IPlayer PlayerUi { get; private set; } = null;
 
-    public ElementType GetElementTypeForTypeString(string typeString)
+    public static ElementType GetElementTypeForTypeString(string typeString)
     {
         return Element.GetElementTypeForTypeString(typeString);
     }
 
-    public ObjectType GetObjectTypeForTypeString(string typeString)
+    public static ObjectType GetObjectTypeForTypeString(string typeString)
     {
         return Element.GetObjectTypeForTypeString(typeString);
     }
 
-    public string GetTypeStringForElementType(ElementType type)
+    public static string GetTypeStringForElementType(ElementType type)
     {
         return Element.GetTypeStringForElementType(type);
     }
 
-    public string GetTypeStringForObjectType(ObjectType type)
+    public static string GetTypeStringForObjectType(ObjectType type)
     {
         return Element.GetTypeStringForObjectType(type);
     }
 
-    public bool IsDefaultTypeName(string typeName)
+    public static bool IsDefaultTypeName(string typeName)
     {
         return DefaultTypeNames.ContainsValue(typeName);
     }
@@ -1275,8 +1242,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Element TryGetTemplateElement(string templateName)
     {
-        if (!Template.TemplateExists(templateName)) return null;
-        return Template.GetTemplateElement(templateName);
+        return !Template.TemplateExists(templateName) ? null : Template.GetTemplateElement(templateName);
     }
 
     [GeneratedRegex(@"\d*$")]
@@ -1292,15 +1258,15 @@ public partial class WorldModel : IGameDebug, IGameTimer
         }
 
         // Otherwise get a uniquely numbered element
-        string root = s_removeTrailingDigits().Replace(elementName, "");
-        bool elementAlreadyExists = true;
-        int number = 0;
+        var root = s_removeTrailingDigits().Replace(elementName, "");
+        var elementAlreadyExists = true;
+        var number = 0;
         string result = null;
 
         while (elementAlreadyExists)
         {
             number++;
-            result = root + number.ToString();
+            result = root + number;
             elementAlreadyExists = Elements.ContainsKey(result);
         }
 
@@ -1312,10 +1278,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         if (!_attributeNames.Contains(name)) _attributeNames.Add(name);
     }
 
-    public IEnumerable<string> GetAllAttributeNames
-    {
-        get { return _attributeNames.AsReadOnly(); }
-    }
+    public IEnumerable<string> GetAllAttributeNames => _attributeNames.AsReadOnly();
 
     internal string GetNextCommandInput(bool async)
     {
@@ -1349,7 +1312,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void Tick(int elapsedTime)
     {
-        if (_state == GameState.Finished) return;
+        if (State == GameState.Finished) return;
         DoInNewThreadAndWait(() =>
         {
             try
@@ -1376,18 +1339,18 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private void SendNextTimerRequest()
     {
-        if (_state == GameState.Finished) return;
-        int next = _timerRunner.GetTimeUntilNextTimerRuns();
-        if (RequestNextTimerTick != null) RequestNextTimerTick(next);
+        if (State == GameState.Finished) return;
+        var next = _timerRunner.GetTimeUntilNextTimerRuns();
+        RequestNextTimerTick?.Invoke(next);
         System.Diagnostics.Debug.Print("Request next timer in {0}", next);
     }
 
-    private bool m_questionResponse;
+    private bool _questionResponse;
 
     internal bool ShowQuestion(string caption)
     {
         _callbacks.Pop(CallbackManager.CallbackTypes.Question);
-        _playerUi.ShowQuestion(caption);
+        PlayerUi.ShowQuestion(caption);
 
         ChangeThreadState(ThreadState.Waiting);
 
@@ -1398,18 +1361,18 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         ChangeThreadState(ThreadState.Working);
 
-        return m_questionResponse;
+        return _questionResponse;
     }
 
     internal void ShowQuestionAsync(string caption, IScript callback, Context c)
     {
         _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
-        _playerUi.ShowQuestion(caption);
+        PlayerUi.ShowQuestion(caption);
     }
 
     public void SetQuestionResponse(bool response)
     {
-        Callback questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
+        var questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
         if (questionCallback != null)
         {
             questionCallback.Context.Parameters["result"] = response;
@@ -1422,7 +1385,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         {
             DoInNewThreadAndWait(() =>
             {
-                m_questionResponse = response;
+                _questionResponse = response;
 
                 lock (_waitForResponseLock)
                 {
@@ -1447,26 +1410,30 @@ public partial class WorldModel : IGameDebug, IGameTimer
     private void TryFinishTurn()
     {
         TryRunOnFinallyScripts();
-        if (!_callbacks.AnyOutstanding())
+        if (_callbacks.AnyOutstanding())
         {
-            if (_elements.ContainsKey(ElementType.Function, "FinishTurn"))
-            {
-                try
-                {
-                    RunProcedure("FinishTurn");
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-            }
+            return;
+        }
+
+        if (!Elements.ContainsKey(ElementType.Function, "FinishTurn"))
+        {
+            return;
+        }
+
+        try
+        {
+            RunProcedure("FinishTurn");
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
         }
     }
 
     private void TryRunOnFinallyScripts()
     {
         if (_callbacks.AnyOutstanding()) return;
-        IEnumerable<Callback> onReadyScripts = _callbacks.FlushOnReadyCallbacks();
+        var onReadyScripts = _callbacks.FlushOnReadyCallbacks();
         foreach (var callback in onReadyScripts)
         {
             RunScript(callback.Script, callback.Context);
@@ -1481,7 +1448,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public bool CreatePackage(string filename, bool includeWalkthrough, out string error, IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
     {
-        Packager packager = new Packager(this);
+        var packager = new Packager(this);
         return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
     }
 
@@ -1489,35 +1456,39 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public Func<IEnumerable<string>> GetResourceNames { get; internal set; }
     public bool DebugEnabled { get; private set; }
 
-    private static List<string> s_functionNames = null;
+    private static List<string> FunctionNames = null;
 
     public IEnumerable<string> GetBuiltInFunctionNames()
     {
-        if (s_functionNames == null)
+        if (FunctionNames != null)
         {
-            System.Reflection.MethodInfo[] methods = typeof(ExpressionOwner).GetMethods();
-            System.Reflection.MethodInfo[] stringMethods = typeof(StringFunctions).GetMethods();
-            System.Reflection.MethodInfo[] dateTimeMethods = typeof(DateTimeFunctions).GetMethods();
-
-            IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods);
-
-            s_functionNames = new List<string>(allMethods.Select(m => m.Name));
+            return FunctionNames.AsReadOnly();
         }
 
-        return s_functionNames.AsReadOnly();
+        var methods = typeof(ExpressionOwner).GetMethods();
+        var stringMethods = typeof(StringFunctions).GetMethods();
+        var dateTimeMethods = typeof(DateTimeFunctions).GetMethods();
+
+        var allMethods = methods.Union(stringMethods).Union(dateTimeMethods);
+
+        FunctionNames = new List<string>(allMethods.Select(m => m.Name));
+
+        return FunctionNames.AsReadOnly();
     }
 
     public void PlaySound(string filename, bool sync, bool looped)
     {
-        _playerUi.PlaySound(filename, sync, looped);
-        if (sync)
+        PlayerUi.PlaySound(filename, sync, looped);
+        if (!sync)
         {
-            ChangeThreadState(ThreadState.Waiting);
+            return;
+        }
 
-            lock (_waitForResponseLock)
-            {
-                Monitor.Wait(_waitForResponseLock);
-            }
+        ChangeThreadState(ThreadState.Waiting);
+
+        lock (_waitForResponseLock)
+        {
+            Monitor.Wait(_waitForResponseLock);
         }
     }
 
@@ -1527,11 +1498,8 @@ public partial class WorldModel : IGameDebug, IGameTimer
         // player
         if (!EditMode)
         {
-            bool doUpdate = false;
-            if (movedElement.ElemType == ElementType.Object && (movedElement.Type == ObjectType.Exit || movedElement.Type == ObjectType.Object))
-            {
-                doUpdate = true;
-            }
+            var doUpdate = movedElement.ElemType == ElementType.Object &&
+                           (movedElement.Type == ObjectType.Exit || movedElement.Type == ObjectType.Object);
             if (!doUpdate) return;
         }
 
@@ -1539,21 +1507,16 @@ public partial class WorldModel : IGameDebug, IGameTimer
         // When this happens, its SortIndex MetaField must be updated so that it
         // is at the end of the list of children.
 
-        int maxIndex = -1;
-
-        foreach (Element sibling in _elements.GetDirectChildren(movedElement.Parent))
-        {
-            int thisSortIndex = sibling.MetaFields[MetaFieldDefinitions.SortIndex];
-            if (thisSortIndex > maxIndex) maxIndex = thisSortIndex;
-        }
+        var maxIndex = Elements.GetDirectChildren(movedElement.Parent)
+            .Select(sibling => sibling.MetaFields[MetaFieldDefinitions.SortIndex]).Prepend(-1).Max();
 
         movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
     }
 
     public bool Assert(string expr)
     {
-        Expression<bool> expression = new Expression<bool>(expr, new ScriptContext(this));
-        Context c = new Context();
+        var expression = new Expression<bool>(expr, new ScriptContext(this));
+        var c = new Context();
         return expression.Execute(c);
     }
 
@@ -1573,11 +1536,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Stream? GetResource(string filename)
     {
-        if (ResourceGetter != null)
-        {
-            return ResourceGetter.Invoke(filename);
-        }
-        return _gameData.GetAdjacentFile(filename);
+        return ResourceGetter != null ? ResourceGetter.Invoke(filename) : _gameData.GetAdjacentFile(filename);
     }
 
     public string? GetResourceData(string filename)
@@ -1605,7 +1564,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         throw new NotImplementedException();
     }
 
-    internal RegexCache RegexCache { get { return _regexCache; } }
+    internal RegexCache RegexCache { get; } = new();
 
     public WorldModelVersion Version { get; internal set; }
 
@@ -1613,9 +1572,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public string TempFolder { get; set; }
 
-    internal IOutputLogger OutputLogger { get { return _outputLogger; } }
+    internal IOutputLogger OutputLogger { get; private set; }
 
-    public int ASLVersion { get { return int.Parse(VersionString); } }
+    public int ASLVersion => int.Parse(VersionString);
 
     public string GameID => Game.Fields[FieldDefinitions.GameID];
         
@@ -1624,7 +1583,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         return GetResourceNames == null ? [] : GetResourceNames();
     }
 
-    public string Category { get { return Game.Fields[FieldDefinitions.Category]; } }
-    public string Description { get { return Game.Fields[FieldDefinitions.Description]; } }
-    public string Cover { get { return Game.Fields[FieldDefinitions.Cover]; } }
+    public string Category => Game.Fields[FieldDefinitions.Category];
+    public string Description => Game.Fields[FieldDefinitions.Description];
+    public string Cover => Game.Fields[FieldDefinitions.Cover];
 }

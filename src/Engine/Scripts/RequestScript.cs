@@ -80,29 +80,29 @@ namespace QuestViva.Engine.Scripts
             switch (m_request)
             {
                 case Request.UpdateLocation:
-                    m_worldModel.PlayerUI.LocationUpdated(data);
+                    m_worldModel.PlayerUi.LocationUpdated(data);
                     break;
                 case Request.GameName:
-                    m_worldModel.PlayerUI.UpdateGameName(data);
+                    m_worldModel.PlayerUi.UpdateGameName(data);
                     break;
                 case Request.ClearScreen:
-                    m_worldModel.PlayerUI.ClearScreen();
+                    m_worldModel.PlayerUi.ClearScreen();
                     m_worldModel.OutputLogger.Clear();
                     break;
                 case Request.ShowPicture:
-                    m_worldModel.PlayerUI.ShowPicture(data);
+                    m_worldModel.PlayerUi.ShowPicture(data);
                     // TO DO: Picture should be added to the OutputLogger, but the data we
                     // get here includes the full path/URL - we want the original filename
                     // only, so this would be a breaking change.
                     break;
                 case Request.PanesVisible:
-                    m_worldModel.PlayerUI.SetPanesVisible(data);
+                    m_worldModel.PlayerUi.SetPanesVisible(data);
                     break;
                 case Request.Background:
-                    m_worldModel.PlayerUI.SetBackground(data);
+                    m_worldModel.PlayerUi.SetBackground(data);
                     break;
                 case Request.Foreground:
-                    m_worldModel.PlayerUI.SetForeground(data);
+                    m_worldModel.PlayerUi.SetForeground(data);
                     break;
                 case Request.RunScript:
                     if (m_worldModel.Version == WorldModelVersion.v500)
@@ -113,12 +113,12 @@ namespace QuestViva.Engine.Scripts
                         if (data.StartsWith("setFramePicture;"))
                         {
                             string[] frameArgs = data.Split(';');
-                            m_worldModel.PlayerUI.SetPanelContents("<img src=\"" + frameArgs[1].Trim() + "\" onload=\"setPanelHeight()\"/>");
+                            m_worldModel.PlayerUi.SetPanelContents("<img src=\"" + frameArgs[1].Trim() + "\" onload=\"setPanelHeight()\"/>");
                             return;
                         }
                         if (data == "clearFramePicture")
                         {
-                            m_worldModel.PlayerUI.SetPanelContents("");
+                            m_worldModel.PlayerUi.SetPanelContents("");
                         }
                     }
 
@@ -126,16 +126,16 @@ namespace QuestViva.Engine.Scripts
                     string functionName = jsArgs[0];
                     if (jsArgs.Length == 0)
                     {
-                        m_worldModel.PlayerUI.RunScript(functionName, null);
+                        m_worldModel.PlayerUi.RunScript(functionName, null);
                     }
                     else
                     {
-                        m_worldModel.PlayerUI.RunScript(functionName, jsArgs.Skip(1).ToArray());
+                        m_worldModel.PlayerUi.RunScript(functionName, jsArgs.Skip(1).ToArray());
                     }
                     
                     break;
                 case Request.Quit:
-                    m_worldModel.PlayerUI.Quit();
+                    m_worldModel.PlayerUi.Quit();
                     m_worldModel.Finish();
                     break;
                 case Request.FontName:
@@ -143,7 +143,7 @@ namespace QuestViva.Engine.Scripts
                     {
                         throw new InvalidOperationException("FontName request is not supported for games written for Quest 5.4 or later.");
                     }
-                    m_worldModel.PlayerUI.SetFont(data);
+                    m_worldModel.PlayerUi.SetFont(data);
                     ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontName(data);
                     break;
                 case Request.FontSize:
@@ -151,23 +151,23 @@ namespace QuestViva.Engine.Scripts
                     {
                         throw new InvalidOperationException("FontSize request is not supported for games written for Quest 5.4 or later.");
                     }
-                    m_worldModel.PlayerUI.SetFontSize(data);
+                    m_worldModel.PlayerUi.SetFontSize(data);
                     ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontSize(data);
                     break;
                 case Request.LinkForeground:
-                    m_worldModel.PlayerUI.SetLinkForeground(data);
+                    m_worldModel.PlayerUi.SetLinkForeground(data);
                     break;
                 case Request.Show:
-                    m_worldModel.PlayerUI.Show(data);
+                    m_worldModel.PlayerUi.Show(data);
                     break;
                 case Request.Hide:
-                    m_worldModel.PlayerUI.Hide(data);
+                    m_worldModel.PlayerUi.Hide(data);
                     break;
                 case Request.SetCompassDirections:
-                    m_worldModel.PlayerUI.SetCompassDirections(data.Split(';'));
+                    m_worldModel.PlayerUi.SetCompassDirections(data.Split(';'));
                     break;
                 case Request.SetStatus:
-                    m_worldModel.PlayerUI.SetStatusText(data.Replace("\n", Environment.NewLine));
+                    m_worldModel.PlayerUi.SetStatusText(data.Replace("\n", Environment.NewLine));
                     break;
                 case Request.Pause:
                     if (m_worldModel.Version >= WorldModelVersion.v550)
@@ -188,19 +188,19 @@ namespace QuestViva.Engine.Scripts
                     break;
                 case Request.SetInterfaceString:
                     string[] args = data.Split('=');
-                    m_worldModel.PlayerUI.SetInterfaceString(args[0], args[1]);
+                    m_worldModel.PlayerUi.SetInterfaceString(args[0], args[1]);
                     break;
                 case Request.RequestSave:
-                    m_worldModel.PlayerUI.RequestSave(null);
+                    m_worldModel.PlayerUi.RequestSave(null);
                     break;
                 case Request.SetPanelContents:
-                    m_worldModel.PlayerUI.SetPanelContents(data);
+                    m_worldModel.PlayerUi.SetPanelContents(data);
                     break;
                 case Request.Log:
-                    m_worldModel.PlayerUI.Log(data);
+                    m_worldModel.PlayerUi.Log(data);
                     break;
                 case Request.Speak:
-                    m_worldModel.PlayerUI.Speak(data);
+                    m_worldModel.PlayerUi.Speak(data);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

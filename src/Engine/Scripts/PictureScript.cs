@@ -49,7 +49,7 @@ namespace QuestViva.Engine.Scripts
             }
             else
             {
-                m_worldModel.PlayerUI.ShowPicture(filename);
+                m_worldModel.PlayerUi.ShowPicture(filename);
                 ((LegacyOutputLogger)m_worldModel.OutputLogger).AddPicture(filename);
             }
         }

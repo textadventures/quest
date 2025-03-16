@@ -1583,7 +1583,7 @@ namespace QuestViva.EditorCore
             // object as a sub-object of the current selection, or as a sibling of the current object.
             // It could also be created with no parent at all (it's up to the GUI to provide that option).
 
-            ElementType elementType = m_worldModel.GetElementTypeForTypeString(elementTypeString);
+            ElementType elementType = WorldModel.GetElementTypeForTypeString(elementTypeString);
 
             if (elementKey == null) return null;
             if (!m_worldModel.Elements.ContainsKey(elementType, elementKey)) return null;

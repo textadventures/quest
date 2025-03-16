@@ -480,7 +480,7 @@ namespace QuestViva.Engine.Functions
         public string GetFileURL(string filename)
         {
             if (filename.Contains("..")) throw new ArgumentOutOfRangeException("Invalid filename");
-            return m_worldModel.GetExternalURL(filename);
+            return m_worldModel.GetExternalUrl(filename);
         }
 
         public string GetFileData(string filename)
@@ -680,7 +680,7 @@ namespace QuestViva.Engine.Functions
             UIOption option;
             if (Enum.TryParse(optionName, out option))
             {
-                return m_worldModel.PlayerUI.GetUIOption(option);
+                return m_worldModel.PlayerUi.GetUIOption(option);
             }
             throw new Exception(string.Format("Unrecognised UI option name '{0}'", optionName));
         }

@@ -51,7 +51,7 @@ namespace QuestViva.Engine.Scripts
         public override void Execute(Context c)
         {
             object result = m_function.Execute(c);
-            m_worldModel.PlayerUI.Speak(result.ToString());
+            m_worldModel.PlayerUi.Speak(result.ToString());
         }
 
         public override string Save()

@@ -111,7 +111,7 @@ namespace QuestViva.Engine
                                     m_worldModel.Print(output.ToString());
                                     output.Clear();
                                 }
-                                m_worldModel.PlayerUI.ShowPicture(m_worldModel.GetExternalPath(reader.GetAttribute("filename")));
+                                m_worldModel.PlayerUi.ShowPicture(m_worldModel.GetExternalPath(reader.GetAttribute("filename")));
                                 break;
                             case "output_setfontsize":
                                 if (output.Length > 0)
@@ -121,7 +121,7 @@ namespace QuestViva.Engine
                                 }
                                 string size = reader.GetAttribute("size");
                                 ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontSize(size);
-                                m_worldModel.PlayerUI.SetFontSize(size);
+                                m_worldModel.PlayerUi.SetFontSize(size);
                                 break;
                             case "output_setfontname":
                                 if (output.Length > 0)
@@ -131,7 +131,7 @@ namespace QuestViva.Engine
                                 }
                                 string name = reader.GetAttribute("name");
                                 ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontName(name);
-                                m_worldModel.PlayerUI.SetFont(name);
+                                m_worldModel.PlayerUi.SetFont(name);
                                 break;
                             default:
                                 output.Append("<" + reader.Name);
