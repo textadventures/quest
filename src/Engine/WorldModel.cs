@@ -82,7 +82,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public event Action<int> RequestNextTimerTick;
 
-    public WorldModel()
+    internal WorldModel()
         : this(null)
     {
     }
