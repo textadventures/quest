@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#nullable disable
+using System.Collections;
 using System.Collections.Generic;
 
 namespace QuestViva.Engine.Scripts

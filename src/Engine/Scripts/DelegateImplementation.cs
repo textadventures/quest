@@ -1,4 +1,4 @@
-﻿
+﻿#nullable disable
 namespace QuestViva.Engine.Scripts
 {
     class DelegateImplementation

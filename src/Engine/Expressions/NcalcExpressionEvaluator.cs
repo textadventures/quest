@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Linq;
 using System.Reflection;
@@ -239,7 +240,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
     }
-    #nullable restore
+    #nullable disable
 
     private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
     {

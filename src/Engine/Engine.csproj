@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QuestViva.Engine</RootNamespace>
     <LangVersion>default</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ciloci.Flee">

@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1553,7 +1554,7 @@ public partial class WorldModel : IGame, IGameDebug
         return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
     }
         
-#nullable restore
+#nullable disable
 
     public string GetResourcePath(string filename)
     {

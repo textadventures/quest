@@ -1,4 +1,5 @@
-﻿namespace QuestViva.Engine.Types
+﻿#nullable disable
+namespace QuestViva.Engine.Types
 {
     public class EditorCommandPattern
     {
