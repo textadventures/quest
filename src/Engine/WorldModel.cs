@@ -13,7 +13,7 @@ using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
-public partial class WorldModel : IGameDebug, IGameTimer
+public partial class WorldModel : IGame, IGameDebug
 {
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly GameData _gameData;

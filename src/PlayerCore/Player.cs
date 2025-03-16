@@ -36,10 +36,7 @@ public class Player : IPlayerHelperUI
         PlayerHelper.Game.LogError += LogError;
         PlayerHelper.Game.UpdateList += UpdateList;
         PlayerHelper.Game.Finished += GameFinished;
-        if (game is IGameTimer gameTimer)
-        {
-            gameTimer.RequestNextTimerTick += RequestNextTimerTick;
-        }
+        PlayerHelper.Game.RequestNextTimerTick += RequestNextTimerTick;
     }
 
     public async Task Initialise()
@@ -464,7 +461,7 @@ public class Player : IPlayerHelperUI
     
     public async Task UiTickAsync(int tickCount)
     {
-        await UiActionAsync(() => PlayerHelper.GameTimer.Tick(tickCount));
+        await UiActionAsync(() => PlayerHelper.Game.Tick(tickCount));
     }
     
     public async Task UiSetQuestionResponseAsync(bool response)

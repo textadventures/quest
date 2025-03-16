@@ -21,7 +21,6 @@ namespace QuestViva.PlayerCore
     public class PlayerHelper
     {
         private IGame m_game;
-        private IGameTimer m_gameTimer;
         private IPlayerHelperUI m_playerUI;
 
         private string m_font = "";
@@ -57,8 +56,6 @@ namespace QuestViva.PlayerCore
             m_game = game;
 
             m_game.PrintText += m_game_PrintText;
-
-            m_gameTimer = m_game as IGameTimer;
         }
 
         public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player, bool? isCompiled = null)
@@ -387,22 +384,10 @@ namespace QuestViva.PlayerCore
         {
             get { return m_game; }
         }
-
-        public IGameTimer GameTimer
-        {
-            get { return m_gameTimer; }
-        }
-
+        
         public void SendCommand(string command, int tickCount, IDictionary<string, string> metadata)
         {
-            if (m_gameTimer != null)
-            {
-                m_gameTimer.SendCommand(command, tickCount, metadata);
-            }
-            else
-            {
-                m_game.SendCommand(command);
-            }
+            m_game.SendCommand(command, tickCount, metadata);
         }
 
         public void SetForeground(string colour)
