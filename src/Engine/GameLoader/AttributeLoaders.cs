@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
@@ -290,13 +291,13 @@ namespace QuestViva.Engine.GameLoader
             }
         }
 
-        private class SimplePatternLoader : AttributeLoaderBase
+        private partial class SimplePatternLoader : AttributeLoaderBase
         {
             // TO DO: It would be nice if we could also specify optional text in square brackets
             // e.g. ask man about[ the] #subject#
 
-            private System.Text.RegularExpressions.Regex m_regex = new System.Text.RegularExpressions.Regex(
-                "#([A-Za-z]\\w+)#");
+            [GeneratedRegex("#([A-Za-z]\\w+)#")]
+            private partial Regex m_regex();
 
             public override string AppliesTo
             {
@@ -323,7 +324,7 @@ namespace QuestViva.Engine.GameLoader
             private void LoadCommand(Element element, string attribute, string value)
             {
                 value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
-                value = m_regex.Replace(value, MatchReplace);
+                value = m_regex().Replace(value, MatchReplace);
 
                 if (value.Contains("#"))
                 {

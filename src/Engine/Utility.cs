@@ -14,7 +14,7 @@ namespace QuestViva.Engine
         public MismatchingQuotesException(string message) : base(message) { }
     }
 
-    public static class Utility
+    public static partial class Utility
     {
         private const string k_dotReplacementString = "___DOT___";
         private const string k_spaceReplacementString = "___SPACE___";
@@ -221,8 +221,12 @@ namespace QuestViva.Engine
             return name.Replace(k_spaceReplacementString, " ");
         }
 
-        private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
-        private static Regex s_detectComments = new Regex("//");
+        // private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
+        [GeneratedRegex(@"(\w)\.([a-zA-Z])")]
+        private static partial Regex s_convertVariables();
+        
+        [GeneratedRegex(@"//")]
+        private static partial Regex s_detectComments();
 
         /// <summary>
         /// FLEE doesn't allow us to have control over dot notation i.e. "object.property",
@@ -232,7 +236,7 @@ namespace QuestViva.Engine
         /// <returns></returns>
         public static string ConvertVariablesToFleeFormat(string expression)
         {
-            string result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
+            string result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables(), "$1" + k_dotReplacementString + "$2", false);
             return ConvertVariableNamesWithSpaces(result);
         }
 
@@ -282,16 +286,20 @@ namespace QuestViva.Engine
 
         // Given two words e.g. "my" and "variable", see if they together comprise a variable name
 
-        private static Regex s_wordRegex1 = new System.Text.RegularExpressions.Regex(@"(\w+)$");
-        private static Regex s_wordRegex2 = new System.Text.RegularExpressions.Regex(@"^(\w+)");
+        [GeneratedRegex(@"(\w+)$")]
+        private static partial Regex s_wordRegex1();
+        
+        [GeneratedRegex(@"^(\w+)")]
+        private static partial Regex s_wordRegex2();
+        
         private static List<string> s_keywords = new List<string> { "and", "or", "xor", "not", "if", "in" };
 
         private static bool IsSplitVariableName(string word1, string word2)
         {
-            if (!(s_wordRegex1.IsMatch(word1) && s_wordRegex2.IsMatch(word2))) return false;
+            if (!(s_wordRegex1().IsMatch(word1) && s_wordRegex2().IsMatch(word2))) return false;
 
-            string word1last = s_wordRegex1.Match(word1).Groups[1].Value;
-            string word2first = s_wordRegex2.Match(word2).Groups[1].Value;
+            string word1last = s_wordRegex1().Match(word1).Groups[1].Value;
+            string word2first = s_wordRegex2().Match(word2).Groups[1].Value;
 
             if (s_keywords.Contains(word1last)) return false;
             if (s_keywords.Contains(word2first)) return false;
@@ -388,7 +396,7 @@ namespace QuestViva.Engine
 
             // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
             // which remain mark the beginning of a comment.
-            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments, "--", true);
+            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments(), "--", true);
             if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
             {
                 return input[..obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal)];
@@ -611,11 +619,12 @@ namespace QuestViva.Engine
         //  - must not contain keywords "and", "or" etc.
         //  - can contain spaces, but not at the beginning or end
         //  - cannot be "object", "finish" etc. (attributes only)
-        private static Regex s_validAttributeName = new Regex(@"^[A-Za-z_][\w ]*$");
+        [GeneratedRegex(@"^[A-Za-z_][\w ]*$")]
+        private static partial Regex s_validAttributeName();
 
         public static bool IsValidFieldName(string name)
         {
-            if (!s_validAttributeName.IsMatch(name)) return false;
+            if (!s_validAttributeName().IsMatch(name)) return false;
             if (name.EndsWith(" ")) return false;
             if (name.Split(' ').Any(w => s_keywords.Contains(w))) return false;
             return true;

@@ -6,7 +6,7 @@ using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine
 {
-    public class Template
+    public partial class Template
     {
         private WorldModel m_worldModel;
         private Dictionary<string, Element> m_templateLookup = new Dictionary<string, Element>();
@@ -167,7 +167,8 @@ namespace QuestViva.Engine
             return m_templateLookup[name];
         }
 
-        private Regex m_templateRegex = new Regex(@"\[(?<name>.*?)\]");
+        [GeneratedRegex(@"\[(?<name>.*?)\]")]
+        private partial Regex m_templateRegex();
 
         public string ReplaceTemplateText(string text)
         {
@@ -175,12 +176,12 @@ namespace QuestViva.Engine
 
             int start = 0;
 
-            while (m_templateRegex.IsMatch(text, start))
+            while (m_templateRegex().IsMatch(text, start))
             {
-                var match = m_templateRegex.Match(text, start);
+                var match = m_templateRegex().Match(text, start);
                 var templateName = match.Groups["name"].Value;
                 var templateValue = GetText(templateName, false) ?? "[" + templateName + "]";
-                text = m_templateRegex.Replace(text, templateValue, 1, start);
+                text = m_templateRegex().Replace(text, templateValue, 1, start);
                 start = match.Index + templateValue.Length;
                 if (start > text.Length) break;
             }

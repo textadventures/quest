@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using QuestViva.Common;
@@ -45,7 +46,7 @@ namespace QuestViva.Engine
         v580
     }
 
-    public class WorldModel : IGame, IGameDebug, IGameTimer
+    public partial class WorldModel : IGame, IGameDebug, IGameTimer
     {
         private Element m_game;
         private Elements m_elements;
@@ -1411,7 +1412,8 @@ namespace QuestViva.Engine
             return m_template.GetTemplateElement(templateName);
         }
 
-        private static System.Text.RegularExpressions.Regex s_removeTrailingDigits = new System.Text.RegularExpressions.Regex(@"\d*$");
+        [GeneratedRegex(@"\d*$")]
+        private static partial Regex s_removeTrailingDigits();
 
         public string GetUniqueElementName(string elementName)
         {
@@ -1423,7 +1425,7 @@ namespace QuestViva.Engine
             }
 
             // Otherwise get a uniquely numbered element
-            string root = s_removeTrailingDigits.Replace(elementName, "");
+            string root = s_removeTrailingDigits().Replace(elementName, "");
             bool elementAlreadyExists = true;
             int number = 0;
             string result = null;

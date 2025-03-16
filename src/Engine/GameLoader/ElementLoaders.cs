@@ -159,7 +159,7 @@ namespace QuestViva.Engine.GameLoader
             }
         }
 
-        private class CommandLoader : XMLLoaderBase
+        private partial class CommandLoader : XMLLoaderBase
         {
             private GameLoader.RequiredAttributes m_requiredAttributes = new GameLoader.RequiredAttributes(
                 new GameLoader.RequiredAttribute("name", true, true, false),
@@ -258,11 +258,12 @@ namespace QuestViva.Engine.GameLoader
                 }
             }
 
-            private Regex m_regex = new Regex("[A-Za-z0-9]+");
+            [GeneratedRegex("[A-Za-z0-9]+")]
+            private partial Regex m_regex();
 
             private string GetUniqueCommandID(string pattern)
             {
-                string name = pattern == null ? null : m_regex.Match(pattern.Replace(" ", "")).Value;
+                string name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
 
                 if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueID(name);
                 return name;

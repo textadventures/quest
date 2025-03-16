@@ -14,7 +14,7 @@ namespace QuestViva.Engine
         IScript CreateScript(string line);
     }
 
-    public class ScriptFactory : IScriptFactory
+    public partial class ScriptFactory : IScriptFactory
     {
         private bool m_lazyLoadingEnabled = true;
 
@@ -265,7 +265,8 @@ namespace QuestViva.Engine
             return result;
         }
 
-        private static Regex s_nonWordCharacterRegex = new Regex(@"^\W");
+        [GeneratedRegex(@"^\W")]
+        private static partial Regex s_nonWordCharacterRegex();
 
         private IScriptConstructor GetScriptConstructor(string line)
         {
@@ -279,7 +280,7 @@ namespace QuestViva.Engine
                     // character must be a non-word character. For example "msgfunction" is not
                     // a match for "msg".
 
-                    if (line.Length == c.Keyword.Length || s_nonWordCharacterRegex.IsMatch(line.Substring(c.Keyword.Length)) || c is CommentScriptConstructor || c is JSScriptConstructor)
+                    if (line.Length == c.Keyword.Length || s_nonWordCharacterRegex().IsMatch(line.Substring(c.Keyword.Length)) || c is CommentScriptConstructor || c is JSScriptConstructor)
                     {
                         if (c.Keyword.Length > strength)
                         {
