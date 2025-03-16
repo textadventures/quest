@@ -17,8 +17,6 @@ public partial class WorldModel : IGameDebug, IGameTimer
 {
     private readonly Elements _elements;
     private readonly Dictionary<string, int> _nextUniqueId = new();
-    private readonly Template _template;
-    private readonly UndoLogger _undoLogger;
     private readonly GameData _gameData;
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
@@ -44,8 +42,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         
     private bool _loadedFromSaved = false;
     private bool _editMode = false;
-        
-    private List<string> _errors;
+
     private GameState _state = GameState.NotStarted;
     private ThreadState _threadState = ThreadState.Ready;
 
@@ -99,14 +96,14 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public WorldModel(GameData gameData)
     {
         _expressionOwner = new ExpressionOwner(this);
-        _template = new Template(this);
+        Template = new Template(this);
         InitialiseElementFactories();
         ObjectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
         _gameData = gameData;
         _elements = new Elements();
-        _undoLogger = new UndoLogger(this);
+        UndoLogger = new UndoLogger(this);
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
@@ -198,7 +195,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void PrintTemplate(string t)
     {
-        Print(_template.GetText(t));
+        Print(Template.GetText(t));
     }
 
     public void Print(string text, bool linebreak = true)
@@ -333,14 +330,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         DisplayMenu(caption, options, allowCancel, true);
     }
 
-    public IEnumerable<Element> Objects
-    {
-        get
-        {
-            foreach (Element o in _elements.Objects)
-                yield return o;
-        }
-    }
+    public IEnumerable<Element> Objects => _elements.Objects;
 
     public bool ObjectExists(string name)
     {
@@ -352,20 +342,22 @@ public partial class WorldModel : IGameDebug, IGameTimer
     /// i.e. objects and timers
     /// </summary>
     /// <param name="name"></param>
+    /// <param name="element"></param>
     /// <returns></returns>
     public bool TryResolveExpressionElement(string name, out Element element)
     {
         element = null;
         if (!_elements.ContainsKey(name)) return false;
 
-        Element result = _elements.Get(name);
-        if (result.ElemType == ElementType.Object || result.ElemType == ElementType.Timer)
+        var result = _elements.Get(name);
+        if (result.ElemType != ElementType.Object && result.ElemType != ElementType.Timer)
         {
-            element = result;
-            return true;
+            return false;
         }
 
-        return false;
+        element = result;
+        return true;
+
     }
 
     internal void RemoveElement(ElementType type, string name)
@@ -373,22 +365,17 @@ public partial class WorldModel : IGameDebug, IGameTimer
         _elements.Remove(type, name);
     }
 
-    internal IEnumerable<Element> ElementTypes
-    {
-        get { return _elements.GetElements(ElementType.ObjectType); }
-    }
-
     internal void SetGameName(string name)
     {
-        if (_playerUi != null) _playerUi.UpdateGameName(name);
+        _playerUi?.UpdateGameName(name);
     }
 
     public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
     {
         _editMode = false;
         _playerUi = player;
-        QuestViva.Engine.GameLoader.GameLoader loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
-        bool result = await InitialiseInternal(loader);
+        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
+        var result = await InitialiseInternal(loader);
         if (result)
         {
             _walkthroughs = new Walkthroughs(this);
@@ -399,7 +386,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public async Task<bool> InitialiseEdit()
     {
         _editMode = true;
-        QuestViva.Engine.GameLoader.GameLoader loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Edit);
+        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Edit);
         return await InitialiseInternal(loader);
     }
 
@@ -417,8 +404,8 @@ public partial class WorldModel : IGameDebug, IGameTimer
             
         DebugEnabled = !loader.IsCompiledFile;
         _state = success ? GameState.Running : GameState.Finished;
-        _errors = loader.Errors;
-        _saver = new QuestViva.Engine.GameLoader.GameSaver(this);
+        Errors = loader.Errors;
+        _saver = new GameSaver(this);
         if (Version <= WorldModelVersion.v530)
         {
             _legacyOutputLogger = new LegacyOutputLogger(this);
@@ -431,15 +418,12 @@ public partial class WorldModel : IGameDebug, IGameTimer
         return success;
     }
 
-    void loader_LoadStatus(object sender, QuestViva.Engine.GameLoader.GameLoader.LoadStatusEventArgs e)
+    private void loader_LoadStatus(object sender, QuestViva.Engine.GameLoader.GameLoader.LoadStatusEventArgs e)
     {
-        if (LoadStatus != null)
-        {
-            LoadStatus(this, new LoadStatusEventArgs(e.Status));
-        }
+        LoadStatus?.Invoke(this, new LoadStatusEventArgs(e.Status));
     }
 
-    void loader_FilenameUpdated(string filename)
+    private void loader_FilenameUpdated(string filename)
     {
         // TODO: This previously did this...
         // // Update base ASLX filename to original filename if we're loading a saved game
@@ -479,7 +463,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
                     }
                     else if (Version >= WorldModelVersion.v540)
                     {
-                        PlayerUI.RunScript("loadHtml", new object[] { output.Fields.GetString("html") });
+                        PlayerUI.RunScript("loadHtml", [output.Fields.GetString("html")]);
                         PlayerUI.RunScript("markScrollPosition", null);
                         ScrollToEnd();
                     }
@@ -502,23 +486,11 @@ public partial class WorldModel : IGameDebug, IGameTimer
         SendNextTimerRequest();
     }
 
-    public List<string> Errors
-    {
-        get { return _errors; }
-    }
+    public List<string> Errors { get; private set; }
 
-    public IWalkthroughs Walkthroughs
-    {
-        get
-        {
-            return _walkthroughs;
-        }
-    }
+    public IWalkthroughs Walkthroughs => _walkthroughs;
 
-    public List<string> DebuggerObjectTypes
-    {
-        get { return new List<string>(_debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)); }
-    }
+    public List<string> DebuggerObjectTypes => [.._debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)];
 
     public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
@@ -562,12 +534,12 @@ public partial class WorldModel : IGameDebug, IGameTimer
             }
             else
             {
-                Callback getinputCallback = _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
-                if (getinputCallback != null)
+                var getInputCallback = _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
+                if (getInputCallback != null)
                 {
                     _commandOverride = false;
-                    getinputCallback.Context.Parameters["result"] = command;
-                    RunCallbackAndFinishTurn(getinputCallback);
+                    getInputCallback.Context.Parameters["result"] = command;
+                    RunCallbackAndFinishTurn(getInputCallback);
                 }
                 else
                 {
@@ -605,44 +577,42 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public void SendEvent(string eventName, string param)
     {
-        Element handler;
-        _elements.TryGetValue(ElementType.Function, eventName, out handler);
+        _elements.TryGetValue(ElementType.Function, eventName, out var handler);
 
         if (handler == null)
         {
-            Print(string.Format("Error - no handler for event '{0}'", eventName));
+            Print($"Error - no handler for event '{eventName}'");
             return;
         }
 
-        Parameters parameters = new Parameters();
-        parameters.Add((string)handler.Fields[FieldDefinitions.ParamNames][0], param);
+        var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames][0], param}};
 
         RunProcedure(eventName, parameters, false);
-        if (Version >= WorldModelVersion.v540)
+        
+        switch (Version)
         {
-            if (Version < WorldModelVersion.v580)
-            {
+            case < WorldModelVersion.v540:
+                return;
+            case < WorldModelVersion.v580:
                 TryFinishTurn();
-            }
-            if (State != GameState.Finished)
-            {
-                UpdateLists();
-            }
-            SendNextTimerRequest();
+                break;
         }
+
+        if (State != GameState.Finished)
+        {
+            UpdateLists();
+        }
+        SendNextTimerRequest();
     }
 
-    public string Filename
-    {
-        get { return _gameData.Filename; }
-    }
+    public string Filename => _gameData.Filename;
 
     public void Finish()
     {
         FinishGame();
     }
 
-    public string SaveExtension { get { return "quest-save"; } }
+    public string SaveExtension => "quest-save";
 
     public event PrintTextHandler PrintText;
     public event UpdateListHandler UpdateList;
@@ -650,81 +620,76 @@ public partial class WorldModel : IGameDebug, IGameTimer
     public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
     public event ErrorHandler LogError;
 
-    internal Template Template
-    {
-        get { return _template; }
-    }
+    internal Template Template { get; }
 
-    public UndoLogger UndoLogger
-    {
-        get { return _undoLogger; }
-    }
+    public UndoLogger UndoLogger { get; }
 
     private void UpdateStatusVariables()
     {
-        if (_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+        if (!_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
         {
-            try
-            {
-                RunProcedure("UpdateStatusAttributes");
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
+            return;
+        }
+
+        try
+        {
+            RunProcedure("UpdateStatusAttributes");
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
         }
     }
 
-    internal void UpdateLists()
+    private void UpdateLists()
     {
         UpdateObjectsList();
         UpdateExitsList();
         UpdateStatusVariables();
     }
 
-    internal void UpdateObjectsList()
+    private void UpdateObjectsList()
     {
         UpdateObjectsList("GetPlacesObjectsList", ListType.ObjectsList);
         UpdateObjectsList("ScopeInventory", ListType.InventoryList);
     }
 
-    internal void UpdateObjectsList(string scope, ListType listType)
+    private void UpdateObjectsList(string scope, ListType listType)
     {
-        if (UpdateList != null)
+        if (UpdateList == null)
         {
-            List<ListData> objects = new List<ListData>();
-            foreach (Element obj in GetObjectsInScope(scope))
+            return;
+        }
+
+        var objects = new List<ListData>();
+        foreach (var obj in GetObjectsInScope(scope))
+        {
+            if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
-                if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+                if (scope == "ScopeInventory")
                 {
-                    if (scope == "ScopeInventory")
-                    {
-                        objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs], obj.Name, GetDisplayAlias(obj)));
-                    }
-                    else
-                    {
-                        objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs], obj.Name, GetDisplayAlias(obj)));
-                    }
+                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs], obj.Name, GetDisplayAlias(obj)));
                 }
                 else
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs], obj.Name, GetDisplayAlias(obj)));
                 }
             }
-            // The "Places and Objects" list is generated by function, so we also
-            // need to add any exits. (The UI is responsible for filtering out the
-            // directional exits so they only display in the compass)
-            if (scope == "GetPlacesObjectsList") objects.AddRange(GetExitsListData());
-            UpdateList(listType, objects);
+            else
+            {
+                objects.Add(new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
+            }
         }
+        // The "Places and Objects" list is generated by function, so we also
+        // need to add any exits. (The UI is responsible for filtering out the
+        // directional exits so they only display in the compass)
+        if (scope == "GetPlacesObjectsList") objects.AddRange(GetExitsListData());
+        UpdateList(listType, objects);
     }
 
-    internal void UpdateExitsList()
+    private void UpdateExitsList()
     {
-        if (UpdateList != null)
-        {
-            UpdateList(ListType.ExitsList, GetExitsListData());
-        }
+        UpdateList?.Invoke(ListType.ExitsList, GetExitsListData());
     }
 
     private string GetListDisplayAlias(Element obj)
@@ -752,13 +717,13 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     private List<ListData> GetExitsListData()
     {
-        List<ListData> exits = new List<ListData>();
+        var exits = new List<ListData>();
         var scopeFunction = "ScopeExits";
         if (Version >= WorldModelVersion.v530 && Elements.ContainsKey(ElementType.Function, "GetExitsList"))
         {
             scopeFunction = "GetExitsList";
         }
-        foreach (Element exit in GetObjectsInScope(scopeFunction))
+        foreach (var exit in GetObjectsInScope(scopeFunction))
         {
             IEnumerable<string> verbs;
             if (Version <= WorldModelVersion.v520 || !_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
@@ -776,26 +741,19 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public List<string> GetObjects(string type)
     {
-        List<string> result = new List<string>();
         IEnumerable<Element> elements;
 
-        if (_debuggerObjectTypes.ContainsKey(type))
+        if (_debuggerObjectTypes.TryGetValue(type, out var objectType))
         {
-            ObjectType filterType = _debuggerObjectTypes[type];
-            elements = _elements.ObjectsFiltered(o => o.Type == filterType);
+            elements = _elements.ObjectsFiltered(o => o.Type == objectType);
         }
         else
         {
-            ElementType filterType = _debuggerElementTypes[type];
+            var filterType = _debuggerElementTypes[type];
             elements = _elements.GetElements(filterType);
         }
 
-        foreach (Element obj in elements)
-        {
-            result.Add(obj.Name);
-        }
-
-        return result;
+        return elements.Select(obj => obj.Name).ToList();
     }
 
     public DebugData GetDebugData(string _, string el)
@@ -1312,13 +1270,13 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public Element AddNewTemplate(string templateName)
     {
-        return _template.AddTemplate(templateName, string.Empty, false);
+        return Template.AddTemplate(templateName, string.Empty, false);
     }
 
     public Element TryGetTemplateElement(string templateName)
     {
-        if (!_template.TemplateExists(templateName)) return null;
-        return _template.GetTemplateElement(templateName);
+        if (!Template.TemplateExists(templateName)) return null;
+        return Template.GetTemplateElement(templateName);
     }
 
     [GeneratedRegex(@"\d*$")]
