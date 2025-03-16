@@ -16,6 +16,7 @@ namespace QuestViva.Engine;
 
 public partial class WorldModel : IGame, IGameDebug
 {
+    private readonly IConfig _config;
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly GameData? _gameData;
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
@@ -89,12 +90,12 @@ public partial class WorldModel : IGame, IGameDebug
     public event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
     public event ErrorHandler? LogError;
 
-    internal WorldModel()
-        : this(null)
+    internal WorldModel(IConfig config)
+        : this(config, null)
     {
     }
 
-    public WorldModel(GameData? gameData)
+    public WorldModel(IConfig config, GameData? gameData)
     {
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
@@ -102,13 +103,14 @@ public partial class WorldModel : IGame, IGameDebug
         ObjectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
+        _config = config;
         _gameData = gameData;
         Elements = new Elements();
         UndoLogger = new UndoLogger(this);
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
-    public bool UseNcalc { get; set; }
+    public bool UseNCalc => _config.UseNCalc;
 
     private void InitialiseElementFactories()
     {

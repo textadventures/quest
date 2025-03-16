@@ -31,7 +31,7 @@ namespace QuestViva.EngineTests
             const string subInheritedTypeName = "subtype";
             const string defaultObject = "defaultobject";
 
-            m_worldModel = new WorldModel();
+            m_worldModel = Helpers.CreateWorldModel();
 
             m_defaultType = m_worldModel.GetElementFactory(ElementType.ObjectType).Create(defaultObject);
             m_defaultType.Fields.Set(attributeDefinedByDefaultName, attributeDefinedByDefaultValue);

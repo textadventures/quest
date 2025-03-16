@@ -38,7 +38,7 @@ namespace QuestViva.Engine.Functions
         public Expression(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
-            if (scriptContext.WorldModel.UseNcalc)
+            if (scriptContext.WorldModel.UseNCalc)
             {
                 _expressionEvaluator = new NcalcExpressionEvaluator<T>(m_expression, m_scriptContext);
             }
@@ -71,7 +71,7 @@ namespace QuestViva.Engine.Functions
         public ExpressionDynamic(string expression, ScriptContext scriptContext)
             : base(expression, scriptContext)
         {
-            if (scriptContext.WorldModel.UseNcalc)
+            if (scriptContext.WorldModel.UseNCalc)
             {
                 _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(m_expression, m_scriptContext);
             }

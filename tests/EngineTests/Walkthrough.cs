@@ -12,7 +12,7 @@ namespace QuestViva.EngineTests
         {
             var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"), "test");
             var gameData = await gameDataProvider.GetData();
-            var worldModel = new WorldModel(gameData);
+            var worldModel = Helpers.CreateWorldModel(gameData);
 
             worldModel.LogError += ex => throw ex;
 

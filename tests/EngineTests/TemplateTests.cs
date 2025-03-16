@@ -10,7 +10,7 @@ namespace QuestViva.EngineTests
         [TestInitialize]
         public void Init()
         {
-            m_worldModel = new WorldModel();
+            m_worldModel = Helpers.CreateWorldModel();
             m_worldModel.Template.AddTemplate("Test1", "my text", false);
             m_worldModel.Template.AddTemplate("Test2", "other text", false);
         }

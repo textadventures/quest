@@ -15,7 +15,7 @@ namespace QuestViva.EngineTests
         [TestInitialize]
         public void Setup()
         {
-            m_worldModel = new WorldModel();
+            m_worldModel = Helpers.CreateWorldModel();
             m_scriptFactory = new ScriptFactory(m_worldModel);
 
             m_constructor = new SwitchScriptConstructor();

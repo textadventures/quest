@@ -8,7 +8,7 @@ using QuestViva.Legacy;
 
 namespace QuestViva.PlayerCore;
 
-public class GameQuery(string filename)
+public class GameQuery(WorldModelFactory worldModelFactory, string filename)
 {
     private PlayerHelper _helper;
     private readonly GameQueryUi _dummyUi = new GameQueryUi();
@@ -22,7 +22,9 @@ public class GameQuery(string filename)
         var gameDataProvider = new FileGameDataProvider(filename, "dummy-resources-id");
         var gameData = await gameDataProvider.GetData();
         
-        _game = GameLauncher.GetGame(gameData);
+        var gameLauncher = new GameLauncher(worldModelFactory);
+        
+        _game = gameLauncher.GetGame(gameData);
         _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
         _helper = new PlayerHelper(_game, _dummyUi);

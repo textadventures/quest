@@ -12,7 +12,7 @@ namespace QuestViva.EngineTests
         {
             var gameDataProvider = new FileGameDataProvider("savetest.aslx", "test");
             var gameData = await gameDataProvider.GetData();
-            var worldModel = new WorldModel(gameData);
+            var worldModel = Helpers.CreateWorldModel(gameData);
 
             worldModel.LogError += ex => throw ex;
 
@@ -29,7 +29,7 @@ namespace QuestViva.EngineTests
 
             var gameDataProvider2 = new FileGameDataProvider(tempFilename, "test");
             var gameData2 = await gameDataProvider2.GetData();
-            var savedGameWorldModel = new WorldModel(gameData2);
+            var savedGameWorldModel = Helpers.CreateWorldModel(gameData2);
             success = await savedGameWorldModel.Initialise(player.Object);
             Assert.IsTrue(success, "Initialisation failed");
 

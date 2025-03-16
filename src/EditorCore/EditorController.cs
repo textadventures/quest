@@ -327,14 +327,14 @@ namespace QuestViva.EditorCore
         //     newThread.Start();
         // }
 
-        public async Task<bool> Initialise(string filename, bool partialInit = false)
+        public async Task<bool> Initialise(IConfig config, string filename, bool partialInit = false)
         {
             m_lastelementscutout = false;
             m_filename = filename;
             // TODO: ResourcesId is probably not relevant here?
             var gameDataProvider = new FileGameDataProvider(filename, "editor");
             var gameData = await gameDataProvider.GetData();
-            m_worldModel = new WorldModel(gameData);
+            m_worldModel = new WorldModel(config, gameData);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;

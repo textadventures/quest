@@ -10,7 +10,7 @@ namespace QuestViva.EngineTests
         [TestInitialize]
         public void Setup()
         {
-            m_worldModel = new WorldModel();
+            m_worldModel = Helpers.CreateWorldModel();
 
             // a
             // - b

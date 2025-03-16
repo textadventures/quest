@@ -1,7 +1,13 @@
-﻿using QuestViva.EditorCore;
+﻿using QuestViva.Common;
+using QuestViva.EditorCore;
 
 namespace QuestViva.EditorCoreTests
 {
+    public class Config : IConfig
+    {
+        public bool UseNCalc => false;
+    }
+    
     [TestClass]
     public abstract class EditorControllerTestBase
     {
@@ -37,7 +43,7 @@ namespace QuestViva.EditorCoreTests
             m_controller.RedoListUpdated += m_controller_RedoListUpdated;
             string tempFile = System.IO.Path.GetTempFileName();
             ExtractResource("QuestViva.EditorCoreTests.test.aslx", tempFile);
-            await m_controller.Initialise(tempFile);
+            await m_controller.Initialise(new Config(), tempFile);
             DoExtraInitialisation();
             try
             {
